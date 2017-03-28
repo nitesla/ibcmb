@@ -9,8 +9,8 @@ import javax.persistence.*;
 public class CorporateCustomer {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long Id;
-
     private String rcNumber;
     private String companyName;
     private String email;

@@ -9,6 +9,7 @@ import javax.persistence.*;
 public class LoanType {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long Id;
     private String name;
 

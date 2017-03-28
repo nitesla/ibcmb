@@ -9,6 +9,7 @@ import javax.persistence.*;
 public class MailBox {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long Id;
     private Long user_Id;
 

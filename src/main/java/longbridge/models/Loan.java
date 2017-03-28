@@ -10,6 +10,7 @@ import java.util.Date;
 public class Loan {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long Id;
     private String loanType;
     private Date startDate;

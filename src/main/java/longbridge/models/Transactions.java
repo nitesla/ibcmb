@@ -10,6 +10,7 @@ import java.util.Date;
 public class Transactions {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long Id;
     private Long transactionType;
     private Long customerId;

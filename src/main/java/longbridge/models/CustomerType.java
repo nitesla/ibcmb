@@ -9,7 +9,7 @@ import javax.persistence.*;
 public class CustomerType {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long Id;
-
     private String name;
 }

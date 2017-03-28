@@ -9,5 +9,6 @@ import javax.persistence.*;
 public class UserGroup {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long Id;
 }

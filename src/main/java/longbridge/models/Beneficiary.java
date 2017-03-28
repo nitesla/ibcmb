@@ -9,6 +9,7 @@ import javax.persistence.*;
 public class Beneficiary {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long Id;
     private String ownerId;
     private String name;
