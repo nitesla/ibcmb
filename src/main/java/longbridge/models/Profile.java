@@ -9,6 +9,7 @@ import javax.persistence.*;
 public class Profile {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long Id;
     private String name;
     private String description;

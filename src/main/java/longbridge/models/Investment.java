@@ -10,6 +10,7 @@ import java.util.Date;
 public class Investment {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long Id;
     private String referenceNumber;
     private Date bookingDate;

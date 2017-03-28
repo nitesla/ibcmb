@@ -9,6 +9,7 @@ import javax.persistence.*;
 public class Messages {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long Id;
     private Long userId;
     private String recepient;

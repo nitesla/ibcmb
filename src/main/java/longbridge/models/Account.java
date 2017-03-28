@@ -9,6 +9,7 @@ import javax.persistence.*;
 public class Account {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long Id;
     private String accountNumber;
     private String accountName;

@@ -10,6 +10,7 @@ import java.util.Date;
 public class ServiceRequest {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long Id;
     private Long senderId;
     private String serviceRequestType;

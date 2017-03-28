@@ -10,6 +10,7 @@ import java.util.Date;
 public class RequestHistory {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long Id;
     private Long requestId;
     private String status;

@@ -9,8 +9,8 @@ import javax.persistence.*;
 public class Customer {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long Id;
-
     private String userName;
     private String firstName;
     private String lastName;
