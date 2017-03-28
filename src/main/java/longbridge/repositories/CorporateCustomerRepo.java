@@ -1,6 +1,6 @@
 package longbridge.repositories;
 
-import longbridge.models.CorporateCustomer;
+import longbridge.models.CorporateUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -9,5 +9,5 @@ import org.springframework.stereotype.Repository;
  */
 
 @Repository
-public interface CorporateCustomerRepo extends JpaRepository<CorporateCustomer, Long> {
+public interface CorporateCustomerRepo extends JpaRepository<CorporateUser, Long> {
 }

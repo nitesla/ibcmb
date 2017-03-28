@@ -1,6 +1,6 @@
 package longbridge.repositories;
 
-import longbridge.models.Messages;
+import longbridge.models.Message;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -9,5 +9,5 @@ import org.springframework.stereotype.Repository;
  */
 
 @Repository
-public interface MessagesRepo extends JpaRepository<Messages, Long> {
+public interface MessagesRepo extends JpaRepository<Message, Long> {
 }

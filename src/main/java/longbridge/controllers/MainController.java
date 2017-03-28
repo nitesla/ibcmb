@@ -25,7 +25,7 @@ public class MainController {
         return new ModelAndView("login", "error", error);
     }
 
-    @PreAuthorize("hasAuthority('Control')")
+
     @RequestMapping("/dashboard")
     public String getDashboard() {
         return "dashboard";
