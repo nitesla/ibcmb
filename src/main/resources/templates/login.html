@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Title</title>
+</head>
+<body>
+    <p>Welcome</p>
+
+    <form role="form" th:action="@{/login}" method="post">
+        <div class="form-group has-feedback" id="email_div">
+            <input type="email" class="form-control" id="email" name="email" placeholder="Email address" autofocus="autofocus"/>
+            <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+        </div>
+        <div class="form-group has-feedback" id="password_div">
+            <input type="password" name="password" id="password" class="form-control" placeholder="Password" required="required"/>
+            <span class="glyphicon glyphicon-lock form-control-feedback" ></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary block full-width m-b" id="login-button">Login</button>
+    </form>
+</body>
+</html>
