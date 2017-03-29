@@ -1,0 +1,51 @@
+package longbridge.services.implementations;
+
+import longbridge.models.RetailUser;
+import longbridge.services.RetailUserService;
+
+/**
+ * Created by ayoade_farooq@yahoo.com on 3/29/2017.
+ */
+public class RetailUserServiceImpl implements RetailUserService {
+
+
+
+
+
+
+
+    @Override
+    public RetailUser getUser() {
+        return null;
+    }
+
+    @Override
+    public Iterable<RetailUser> getUsers() {
+        return null;
+    }
+
+    @Override
+    public void setPassword(RetailUser User, String password) {
+
+    }
+
+    @Override
+    public void addUser() {
+
+    }
+
+    @Override
+    public void resetPassword() {
+
+    }
+
+    @Override
+    public void changePassword(String oldPassword, String newPassword) {
+
+    }
+
+    @Override
+    public void generateAndSendPassword() {
+
+    }
+}
