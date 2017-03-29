@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 /**
- * Created by Showboy on 27/03/2017.
+ * Created by Wunmi on 27/03/2017.
  */
 @Entity
 public class Loan extends AbstractEntity{

@@ -6,7 +6,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 /**
- * Created by Fortune on 3/28/2017.
+ * Created by Wunmi on 3/28/2017.
  */
 
 @Entity
