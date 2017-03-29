@@ -1,22 +1,19 @@
 package longbridge.models;
 
-import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 /**
- * Created by Fortune on 3/28/2017.
+ * Created by Fortune on 3/29/2017.
  */
-@Entity
-public class AdminUser extends AbstractEntity{
+public class CorporateCustomer {
 
-<<<<<<< HEAD
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long Id;
-
-=======
-  
->>>>>>> 93ae8a1f5235023912f9e0c871393e5770fea1ae
+    private String rcNumber;
+    private String companyName;
+    private String email;
+    private String address;
 }

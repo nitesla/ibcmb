@@ -8,9 +8,6 @@ import javax.persistence.*;
 @Entity
 public class CardType {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long Id;
     private String name;
 
 }

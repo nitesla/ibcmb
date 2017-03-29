@@ -1,7 +1,7 @@
 package longbridge.services;
 
 /**
- * Created by Fortune on 3/28/2017.
+ *This {@code CodeService} interface provides the methods for managing system codes
  */
 public interface CodeService {
 }
