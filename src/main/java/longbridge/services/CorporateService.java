@@ -140,4 +140,53 @@ public interface CorporateService {
      */
     void disableCorporateCustomer(CorporateCustomer corporateCustomer);
 
+<<<<<<< HEAD
+    void deleteCorporate();
+
+    void updateCorporate();
+
+    void getCorporate();
+
+    void getCorporates();
+
+    /**
+     *
+     * @param transactionType
+     * @param limitValue
+     */
+    void setLimit(TransactionType transactionType, double limitValue);
+
+    void updateLimit();
+
+    void getLimit();
+
+    void deleteLimit();
+
+    void setcorporateLimit(CorporateUser corporateUser, double limit);
+
+    void setCorporateUserLimit(CorporateUser corporateUser, double limit);
+
+    void setUserLimit();
+
+    void updateUserLimits();
+
+    void getUserLimits();
+
+    void deleteUserLimits();
+
+    void setTransactionLimit(TransactionType transactionType, double limit, String currency);
+
+    void updateTransactionLimits();
+
+    void getTransactionLimits();
+
+    void deleteTransactionLimits();
+
+    void addAccount();
+
+    void addUser();
+
+    void disableUser();
+=======
+>>>>>>> 93ae8a1f5235023912f9e0c871393e5770fea1ae
 }
