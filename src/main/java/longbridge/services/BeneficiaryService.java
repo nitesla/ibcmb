@@ -5,7 +5,7 @@ import longbridge.models.Customer;
 
 /**
  * The {@code BeneficiaryService} interface provides the methods to manage the customer's beneficiaries
- * @author Fortunatus Ekenachi
+ *
  *
  */
 public interface BeneficiaryService {
@@ -18,13 +18,25 @@ public interface BeneficiaryService {
     void  addBeneficiary(Customer customer, Beneficiary beneficiary);
 
     /**
-     * Dele
+     * Deletes a beneficiary
+     * @param customer the customer
+     * @param beneficiaryId the beneficiary's id
      */
-    void deleteBeneficiary();
+    void deleteBeneficiary(Customer customer, Long beneficiaryId);
 
+    /**
+     * Returns a beneficiary
+     * @param id the beneficiary's id
+     * @return the specified beneficiary
+     */
     Beneficiary getBeneficiary(Long id);
 
-    Beneficiary getBeneficiaries(Customer customer);
+    /**
+     * Returns a list of the customer's beneficiaries
+     * @param customer the customer
+     * @return a list of the beneficiaries
+     */
+    Iterable<Beneficiary> getBeneficiaries(Customer customer);
 
-    void updateBeneficiary(Long id);
+
 }

@@ -9,9 +9,7 @@ import java.util.Date;
 @Entity
 public class ServiceRequest extends AbstractEntity{
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long Id;
+
     private Long senderId;
     private String serviceRequestType;
     private String subject;

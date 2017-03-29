@@ -8,9 +8,7 @@ import javax.persistence.*;
 @Entity
 public class TransactionType extends AbstractEntity{
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long Id;
+
     private String name;
 
 }

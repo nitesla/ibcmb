@@ -1,7 +1,8 @@
 package longbridge.services;
 
 /**
- * Created by Fortune on 3/28/2017.
+ *The {@ConfigurationService} interface provides the methods for setting and managing system configurations
+ *
  */
 public interface ConfigurationService {
 }

@@ -8,9 +8,6 @@ import javax.persistence.*;
 @Entity
 public class Beneficiary extends AbstractEntity{
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long Id;
     private String ownerId;
     private String name;
     private String beneficiaryType;

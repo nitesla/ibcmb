@@ -11,8 +11,5 @@ import javax.persistence.Id;
 @Entity
 public class AdminUser extends AbstractEntity{
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long Id;
-
+  
 }

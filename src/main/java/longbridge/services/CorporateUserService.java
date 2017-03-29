@@ -8,17 +8,24 @@ import java.util.List;
  * Created by Fortune on 3/28/2017.
  */
 public interface CorporateUserService {
-    CorporateUser getUser();
+
+    CorporateUser getUser(Long id);
 
     List<CorporateUser> getUsers();
 
     void setPassword(CorporateUser User, String password);
 
-    void addUser();
+    void addUser(CorporateUser user);
 
-    void resetPassword();
+    void resetPassword(CorporateUser user);
 
-    void changePassword(String oldPassword, String newPassword);
+    void deleteUser(CorporateUser user);
 
-    void generateAndSendPassword();
+    void enableUser(CorporateUser user);
+
+    void disableUser(CorporateUser user);
+
+    void changePassword(CorporateUser user, String oldPassword, String newPassword);
+
+    void generateAndSendPassword(CorporateUser user);
 }
