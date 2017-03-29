@@ -1,22 +1,91 @@
 package longbridge.models;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 
 /**
  * Created by Wunmi on 3/28/2017.
  */
 
 @Entity
-public class OperationsUser extends AbstractEntity implements Staff{
+public class OperationsUser extends AbstractEntity implements User {
 
-<<<<<<< HEAD
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long Id;
-=======
+    @Override
+    public String getUserName() {
+        return null;
+    }
 
->>>>>>> 93ae8a1f5235023912f9e0c871393e5770fea1ae
+    @Override
+    public void setUserName(String userName) {
+
+    }
+
+    @Override
+    public String getFirstName() {
+        return null;
+    }
+
+    @Override
+    public void setFirstName(String firstName) {
+
+    }
+
+    @Override
+    public String getLastName() {
+        return null;
+    }
+
+    @Override
+    public void setLastName(String lastName) {
+
+    }
+
+    @Override
+    public String getEmail() {
+        return null;
+    }
+
+    @Override
+    public void setEmail(String email) {
+
+    }
+
+    @Override
+    public String getPassword() {
+        return null;
+    }
+
+    @Override
+    public void setPassword(String password) {
+
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return false;
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+
+    }
+
+    @Override
+    public Role getRole() {
+        return null;
+    }
+
+    @Override
+    public void setRole(Role role) {
+
+    }
+
+    @Override
+    public Profile getProfile() {
+        return null;
+    }
+
+    @Override
+    public void setProfile(Profile profile) {
+
+    }
 }

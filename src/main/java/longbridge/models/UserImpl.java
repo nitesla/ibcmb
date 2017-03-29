@@ -1,16 +1,34 @@
 package longbridge.models;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 
 /**
- * Created by Wunmi on 3/28/2017.
+ * Created by Showboy on 29/03/2017.
  */
-
-@Entity
-public class RetailUser extends AbstractEntity implements User{
+public class UserImpl extends AbstractEntity implements User{
 
 
-    private Long customerType;
+    private String userName;
+    private String firstName;
+    private String lastName;
+    private String email;
+    private String password;
+    private boolean enabled;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "user_role", joinColumns =
+    @JoinColumn(name = "user_id", referencedColumnName = "Id"), inverseJoinColumns =
+    @JoinColumn(name = "role_id", referencedColumnName = "Id"))
+    private Role role;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "user_profile", joinColumns =
+    @JoinColumn(name = "user_id", referencedColumnName = "Id"), inverseJoinColumns =
+    @JoinColumn(name = "profile_id", referencedColumnName = "Id"))
+    private Profile profile;
 
     @Override
     public String getUserName() {
@@ -91,20 +109,4 @@ public class RetailUser extends AbstractEntity implements User{
     public void setProfile(Profile profile) {
 
     }
-
-    @Override
-    public String toString() {
-        return "RetailUser{" +
-                ", customerType=" + customerType +
-                '}';
-    }
-
-    public Long getCustomerType() {
-        return customerType;
-    }
-
-    public void setCustomerType(Long customerType) {
-        this.customerType = customerType;
-    }
-
 }

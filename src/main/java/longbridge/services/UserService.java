@@ -1,7 +1,7 @@
 package longbridge.services;
 
-import longbridge.models.Customer;
-import longbridge.repositories.CustomerRepo;
+import longbridge.models.User;
+import longbridge.repositories.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -10,12 +10,12 @@ import org.springframework.stereotype.Service;
  * Created by Showboy on 27/03/2017.
  */
 @Service
-public class CustomerService {
+public class UserService {
     @Autowired
-    private CustomerRepo customerRepository;
+    private UserRepo userRepository;
 
     @PreAuthorize("hasAuthority('CREATE_USER')")
-    public Customer findByEmail(String email){
-        return customerRepository.findByEmail(email);
+    public User findByEmail(String email){
+        return userRepository.findByEmail(email);
     }
 }
