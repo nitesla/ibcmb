@@ -9,7 +9,7 @@ import javax.persistence.Id;
  *
  */
 @Entity
-public class AdminUser extends AbstractEntity{
+public class AdminUser extends AbstractEntity implements Staff{
 
   
 }
