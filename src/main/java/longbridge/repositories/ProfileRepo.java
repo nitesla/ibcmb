@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 /**
  * Created by Showboy on 27/03/2017.
  */
+
 @Repository
 public interface ProfileRepo extends JpaRepository<Profile, Long>{
 

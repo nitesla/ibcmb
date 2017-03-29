@@ -6,7 +6,7 @@ import javax.persistence.*;
  * Created by Showboy on 27/03/2017.
  */
 @Entity
-public class Messages {
+public class Message {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -17,5 +17,6 @@ public class Messages {
     private String body;
     private String dateTime;
     private String status;
+    private String location;
 
 }

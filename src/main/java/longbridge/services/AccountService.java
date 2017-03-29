@@ -1,21 +1,22 @@
 package longbridge.services;
 
 import longbridge.models.Account;
-import longbridge.repositories.AccountRepo;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import longbridge.models.Customer;
+import longbridge.models.FinancialTransaction;
+
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.Map;
 
 /**
- * Created by Showboy on 28/03/2017.
+ * Created by Fortune on 3/28/2017.
  */
-@Service
-public class AccountService {
-    @Autowired
-    private AccountRepo accountRepository;
+public interface AccountService {
+    Account getAccount(Long accId);
 
-    public Account findByAccountNumber(String acctNumber){
-        return accountRepository.findByAccountNumber(acctNumber);
-    }
+    Iterable<Account> getAccounts(Customer customer);
 
-     //public
+    Map<String,BigDecimal> getBalance(Account account);
+
+    FinancialTransaction getAccountStatements(Account account, Date fromDate, Date toDate);
 }
