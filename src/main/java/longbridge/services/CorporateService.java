@@ -3,7 +3,7 @@ package longbridge.services;
 import longbridge.models.Account;
 import longbridge.models.CorporateCustomer;
 import longbridge.models.CorporateUser;
-import longbridge.models.TransactionType;
+
 
 /**
  *The {@code CorporateService} interface provides the method managing corporate operations
@@ -52,70 +52,62 @@ public interface CorporateService {
      * Sets the limit of transaction amount for the corporate customer
      *
      * @param corporateCustomer the corporate customer
-     * @param transactionType   the transaction type
      * @param limitValue        the limit
      */
-    void setLimit(CorporateCustomer corporateCustomer, TransactionType transactionType, double limitValue);
+    void setLimit(CorporateCustomer corporateCustomer, double limitValue);
 
     /**
      * Updates the limit of transaction amount for the specified corporate customer
      *
      * @param corporateCustomer the corporate customer
-     * @param transactionType   the transaction type
      * @param limitValue        the limit
      */
-    void updateLimit(CorporateCustomer corporateCustomer, TransactionType transactionType, double limitValue);
+    void updateLimit(CorporateCustomer corporateCustomer, double limitValue);
 
     /**
      * Returns the transaction limit set for the specified customer
      *
      * @param corporateCustomer the corporate customer
-     * @param transactionType   the transaction type
      */
-    double getLimit(CorporateCustomer corporateCustomer, TransactionType transactionType);
+    double getLimit(CorporateCustomer corporateCustomer);
 
     /**
      * Deletes the transaction limit set for the specified customer
      *
      * @param corporateCustomer the corporate customer
-     * @param transactionType   the transaction type
      */
-    void deleteLimit(CorporateCustomer corporateCustomer, TransactionType transactionType);
+    void deleteLimit(CorporateCustomer corporateCustomer);
 
 
     /**
      * Sets a transaction limit for the specified corporate user
      *
      * @param corporateUser   the corporate user
-     * @param transactionType the transaction type
      * @param limitValue      the limit
      */
-    void setCorporateUserLimit(CorporateUser corporateUser, TransactionType transactionType, double limitValue);
+    void setCorporateUserLimit(CorporateUser corporateUser, double limitValue);
 
     /**
      * Updates the set of the corporate user with the new limt
      *
      * @param corporateUser   the corporate user
-     * @param transactionType the transaction type
      * @param limitValue      the limit
      */
-    void updateCorporateUserLimit(CorporateUser corporateUser, TransactionType transactionType, double limitValue);
+    void updateCorporateUserLimit(CorporateUser corporateUser, double limitValue);
 
     /**
      * Returns the transaction limit set for the specified corporate user
      *
      * @param corporateUser   the corporate user
-     * @param transactionType the transaction type
      */
-    double getCorporateUserLimit(CorporateUser corporateUser, TransactionType transactionType);
+    double getCorporateUserLimit(CorporateUser corporateUser);
 
     /**
      * Deletes the transaction limit set for the corporate user
      *
      * @param corporateUser   the corporate user
-     * @param transactionType the transaction type
      */
-    void deleteCorporateUserLimit(CorporateUser corporateUser, TransactionType transactionType);
+    void deleteCorporateUserLimit(CorporateUser corporateUser);
 
     /**
      * Adds an account to a corporate customer. This makes the added account to be available for transactions
