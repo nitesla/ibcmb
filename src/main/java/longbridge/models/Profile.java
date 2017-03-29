@@ -7,7 +7,7 @@ import java.util.Collection;
  * Created by Showboy on 27/03/2017.
  */
 @Entity
-public class Profile {
+public class Profile extends AbstractEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

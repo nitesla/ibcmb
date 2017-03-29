@@ -7,7 +7,7 @@ import java.util.Date;
  * Created by Showboy on 27/03/2017.
  */
 @Entity
-public class ServiceRequest {
+public class ServiceRequest extends AbstractEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

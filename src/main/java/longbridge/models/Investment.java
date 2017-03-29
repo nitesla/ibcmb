@@ -7,7 +7,7 @@ import java.util.Date;
  * Created by Showboy on 27/03/2017.
  */
 @Entity
-public class Investment {
+public class Investment extends AbstractEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
