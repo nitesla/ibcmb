@@ -6,11 +6,11 @@ import javax.persistence.*;
  * Created by Showboy on 27/03/2017.
  */
 @Entity
-public class Account {
+public class Account extends AbstractEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long Id;
+    private Long id;
     private String accountNumber;
     private String accountName;
     private String accountType;
@@ -23,12 +23,14 @@ public class Account {
         this.accountNumber = accountNumber;
     }
 
+    @Override
     public Long getId() {
-        return Id;
+        return id;
     }
 
+    @Override
     public void setId(Long id) {
-        Id = id;
+        this.id = id;
     }
 
     public String getAccountName() {

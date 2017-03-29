@@ -7,5 +7,5 @@ import javax.persistence.Entity;
  */
 
 
-public class FinancialTransaction {
+public class FinancialTransaction extends AbstractEntity{
 }

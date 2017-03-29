@@ -6,7 +6,7 @@ import javax.persistence.*;
  * Created by Showboy on 27/03/2017.
  */
 @Entity
-public class Role {
+public class Role extends AbstractEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
