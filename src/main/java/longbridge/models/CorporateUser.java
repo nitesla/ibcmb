@@ -8,9 +8,7 @@ import javax.persistence.*;
 @Entity
 public class CorporateUser extends AbstractEntity{
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long Id;
+
     private String rcNumber;
     private String companyName;
     private String email;

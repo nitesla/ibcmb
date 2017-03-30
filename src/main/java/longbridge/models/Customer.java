@@ -9,9 +9,7 @@ import java.util.Collection;
 @Entity
 public class Customer {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long Id;
+
     private String userName;
     private String firstName;
     private String lastName;
@@ -33,13 +31,7 @@ public class Customer {
     @JoinColumn(name = "profile_id", referencedColumnName = "Id"))
     private Collection<Profile> profiles;
 
-    public Long getId() {
-        return Id;
-    }
 
-    public void setId(Long id) {
-        Id = id;
-    }
 
     public String getUserName() {
         return userName;

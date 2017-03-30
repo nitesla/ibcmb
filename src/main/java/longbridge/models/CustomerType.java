@@ -8,8 +8,6 @@ import javax.persistence.*;
 @Entity
 public class CustomerType {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long Id;
+
     private String name;
 }

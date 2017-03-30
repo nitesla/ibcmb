@@ -9,9 +9,6 @@ import java.util.Date;
 @Entity
 public class Investment extends AbstractEntity{
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long Id;
     private String referenceNumber;
     private Date bookingDate;
     private Date valueDate;

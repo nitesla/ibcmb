@@ -57,4 +57,6 @@ public interface AdminUserService {
      * Generates and sends password to an admin user
      */
     void generateAndSendPassword(AdminUser user);
+
+
 }

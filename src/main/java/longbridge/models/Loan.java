@@ -9,9 +9,7 @@ import java.util.Date;
 @Entity
 public class Loan extends AbstractEntity{
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long Id;
+
     private String loanType;
     private Date startDate;
     private Long amount;

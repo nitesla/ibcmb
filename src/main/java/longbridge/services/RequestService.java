@@ -7,12 +7,25 @@ import longbridge.models.RequestHistory;
  */
 public interface RequestService {
 
+    /**
+     * the addRequest method creates a particular request
+     */
     void addRequest();
 
+    /**
+     *
+     */
     void getRequest();
 
+    /**
+     *
+     */
     void cancelRequest();
 
+    /**
+     *
+     * @param requestHistory the request history
+     */
     void addRequestHistory(RequestHistory requestHistory);
 
 }

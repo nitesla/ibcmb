@@ -18,11 +18,7 @@ public interface CorporateService {
 
     void getCorporates();
 
-    /**
-     *
-     * @param transactionType
-     * @param limitValue
-     */
+
     void setLimit(TransactionType transactionType, double limitValue);
 
     void updateLimit();
