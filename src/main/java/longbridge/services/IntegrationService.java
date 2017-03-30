@@ -27,7 +27,7 @@ public interface IntegrationService {
      * @param toDate the Date to stop fetching the account statement (inclusive)
      * @return {@code AccountStatement} object
      */
-    AccountStatement getAccountStatement(String accountId, LocalDate fromDate, LocalDate toDate);
+    AccountStatement getAccountStatements(String accountId, LocalDate fromDate, LocalDate toDate);
 
 
     /** Fetches the account Balance of the account specified by accountId
