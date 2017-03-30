@@ -20,21 +20,21 @@ public class Account extends AbstractEntity{
     private String accountId;
     private String accountNumber;
     private String accountName;
-    private  String custId;
-    private String schmType;
-    private  String schmCode;
+    private  String customerId;
+    private String schemeType;
+    private  String schemeCode;
     private  String solId;
 
     public Account() {
     }
 
-    public Account(String accountId, String accountNumber, String accountName, String custId, String schmType, String schmCode, String solId) {
+    public Account(String accountId, String accountNumber, String accountName, String customerId, String schemeType, String schmCode, String solId) {
         this.accountId = accountId;
         this.accountNumber = accountNumber;
         this.accountName = accountName;
-        this.custId = custId;
-        this.schmType = schmType;
-        this.schmCode = schmCode;
+        this.customerId = customerId;
+        this.schemeType = schemeType;
+        this.schemeCode = schmCode;
         this.solId = solId;
     }
 
@@ -63,28 +63,28 @@ public class Account extends AbstractEntity{
         this.accountName = accountName;
     }
 
-    public String getCustId() {
-        return custId;
+    public String getCustomerId() {
+        return customerId;
     }
 
-    public void setCustId(String custId) {
-        this.custId = custId;
+    public void setCustomerId(String customerId) {
+        this.customerId = customerId;
     }
 
-    public String getSchmType() {
-        return schmType;
+    public String getSchemeType() {
+        return schemeType;
     }
 
-    public void setSchmType(String schmType) {
-        this.schmType = schmType;
+    public void setSchemeType(String schemeType) {
+        this.schemeType = schemeType;
     }
 
     public String getSchmCode() {
-        return schmCode;
+        return schemeCode;
     }
 
     public void setSchmCode(String schmCode) {
-        this.schmCode = schmCode;
+        this.schemeCode = schmCode;
     }
 
     public String getSolId() {
@@ -107,9 +107,9 @@ public class Account extends AbstractEntity{
         if (!accountId.equals(account.accountId)) return false;
         if (!accountNumber.equals(account.accountNumber)) return false;
         if (!accountName.equals(account.accountName)) return false;
-        if (!custId.equals(account.custId)) return false;
-        if (!schmType.equals(account.schmType)) return false;
-        if (!schmCode.equals(account.schmCode)) return false;
+        if (!customerId.equals(account.customerId)) return false;
+        if (!schemeType.equals(account.schemeType)) return false;
+        if (!schemeCode.equals(account.schemeCode)) return false;
         return solId != null ? solId.equals(account.solId) : account.solId == null;
     }
 
@@ -119,9 +119,9 @@ public class Account extends AbstractEntity{
         result = 31 * result + accountId.hashCode();
         result = 31 * result + accountNumber.hashCode();
         result = 31 * result + accountName.hashCode();
-        result = 31 * result + custId.hashCode();
-        result = 31 * result + schmType.hashCode();
-        result = 31 * result + schmCode.hashCode();
+        result = 31 * result + customerId.hashCode();
+        result = 31 * result + schemeType.hashCode();
+        result = 31 * result + schemeCode.hashCode();
         result = 31 * result + (solId != null ? solId.hashCode() : 0);
         return result;
     }
@@ -134,9 +134,9 @@ public class Account extends AbstractEntity{
                 + ",                         \"accountId\":\"" + accountId + "\""
                 + ",                         \"accountNumber\":\"" + accountNumber + "\""
                 + ",                         \"accountName\":\"" + accountName + "\""
-                + ",                         \"custId\":\"" + custId + "\""
-                + ",                         \"schmType\":\"" + schmType + "\""
-                + ",                         \"schmCode\":\"" + schmCode + "\""
+                + ",                         \"customerId\":\"" + customerId + "\""
+                + ",                         \"schemeType\":\"" + schemeType + "\""
+                + ",                         \"schmCode\":\"" + schemeCode + "\""
                 + ",                         \"solId\":\"" + solId + "\""
                 + "}";
     }
