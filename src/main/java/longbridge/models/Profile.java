@@ -10,6 +10,7 @@ import java.util.Collection;
 public class Profile extends AbstractEntity{
 
     private String name;
+    private String email;
     private String description;
 
     @ManyToMany(cascade = CascadeType.ALL)
@@ -46,7 +47,15 @@ public class Profile extends AbstractEntity{
         this.permissions = permissions;
     }
 
-//    public Collection<User> getUsers() {
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    //    public Collection<User> getUsers() {
 //        return users;
 //    }
 //
@@ -54,10 +63,12 @@ public class Profile extends AbstractEntity{
 //        this.users = users;
 //    }
 
+
     @Override
     public String toString() {
         return "Profile{" +
                 "name='" + name + '\'' +
+                ", email='" + email + '\'' +
                 ", description='" + description + '\'' +
                 ", permissions=" + permissions +
                 '}';

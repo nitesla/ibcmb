@@ -9,7 +9,7 @@ import javax.persistence.*;
 
 public class CorporateUser extends User {
 
-    private Long corporateCustomer_Id;
+    private CorporateCustomer corporateCustomer;
 
 
     @Override
@@ -91,21 +91,18 @@ public class CorporateUser extends User {
     public void setProfile(Profile profile) {
     }
 
+    public CorporateCustomer getCorporateCustomer() {
+        return corporateCustomer;
+    }
+
+    public void setCorporateCustomer(CorporateCustomer corporateCustomer) {
+        this.corporateCustomer = corporateCustomer;
+    }
+
     @Override
     public String toString() {
         return "CorporateUser{" +
-                ", corporateCustomer_Id=" + corporateCustomer_Id +
+                "corporateCustomer=" + corporateCustomer +
                 '}';
     }
-
-
-    public Long getCorporateCustomer_Id() {
-        return corporateCustomer_Id;
-    }
-
-    public void setCorporateCustomer_Id(Long corporateCustomer_Id) {
-        this.corporateCustomer_Id = corporateCustomer_Id;
-    }
-
-
 }
