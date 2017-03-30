@@ -1,7 +1,15 @@
 package longbridge.models;
 
+<<<<<<< HEAD
 import javax.persistence.*;
 import java.util.Collection;
+=======
+<<<<<<< HEAD
+import javax.persistence.CascadeType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+>>>>>>> 21972ffea0b84236dd74742d57bac1d69c5b614a
 
 /**
  * Created by Showboy on 29/03/2017.
@@ -93,4 +101,46 @@ public abstract class User extends AbstractEntity {
     public void setProfile(Profile profile) {
         this.profile = profile;
     }
+=======
+/**
+ * Created by Showboy on 29/03/2017.
+ */
+public interface User{
+
+    String getUserName();
+
+    void setUserName(String userName);
+
+    String getFirstName();
+
+    void setFirstName(String firstName);
+
+    String getLastName();
+
+    void setLastName(String lastName);
+
+    String getEmail();
+
+    void setEmail(String email);
+
+    String getPassword();
+
+    void setPassword(String password);
+
+    boolean isEnabled();
+
+    void setEnabled(boolean enabled);
+
+    Role getRole();
+
+    void setRole(Role role);
+
+    Profile getProfile();
+
+    void setProfile(Profile profile);
+
+    String toString();
+
+
+>>>>>>> OLUGINGIN
 }

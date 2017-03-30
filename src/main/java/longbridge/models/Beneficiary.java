@@ -8,6 +8,7 @@ import javax.persistence.*;
 @Entity
 public class Beneficiary extends AbstractEntity{
 
+
     private String ownerId;
     private String name;
     private String beneficiaryType;

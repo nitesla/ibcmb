@@ -18,8 +18,11 @@ public class Profile extends AbstractEntity{
     @JoinColumn(name = "permission_id", referencedColumnName = "Id"))
     private Collection<Permission> permissions;
 
+<<<<<<< HEAD
 //    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
 //    private Collection<User> users;
+=======
+>>>>>>> 21972ffea0b84236dd74742d57bac1d69c5b614a
 
     public String getName() {
         return name;
