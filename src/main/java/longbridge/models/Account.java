@@ -14,6 +14,8 @@ public class Account extends AbstractEntity{
     private String accountName;
     private String accountType;
 
+    private String customerId;
+
     public String getAccountNumber() {
         return accountNumber;
     }
@@ -23,6 +25,13 @@ public class Account extends AbstractEntity{
     }
 
 
+    public String getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(String customerId) {
+        this.customerId = customerId;
+    }
 
     public String getAccountName() {
         return accountName;

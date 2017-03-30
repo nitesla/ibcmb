@@ -1,8 +1,7 @@
 package longbridge.services;
 
 import longbridge.models.Account;
-import longbridge.models.Customer;
-import longbridge.models.FinancialTransaction;
+import longbridge.utils.AccountStatement;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -25,10 +24,10 @@ public interface AccountService {
 
     /**
      * Returns a list of accounts owned by a particular customer
-     * @param customer the particular customer
+     * @param customerId the particular customer_id of the customer
      * @return a list of {@link Account}
      */
-    Iterable<Account> getAccounts(Customer customer);
+    Iterable<Account> getAccounts(String customerId);
 
     /**
      * Returns the details of an account balance.
@@ -46,7 +45,7 @@ public interface AccountService {
      * @param account the particular account
      * @param fromDate the starting date
      * @param toDate the ending date
-     * @return a {@link FinancialTransaction} containing details of the transactions
+     * @return a {@link AccountStatement} containing details of the transactions
      */
-    FinancialTransaction getAccountStatements(Account account, Date fromDate, Date toDate);
+    AccountStatement getAccountStatements(Account account, Date fromDate, Date toDate);
 }
