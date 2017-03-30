@@ -13,4 +13,6 @@ public interface IntegrationService {
      * @return  a list of accounts
      */
     Iterable<Account> fetchAccount(String cifid);
-}
+
+
+        }

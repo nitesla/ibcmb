@@ -2,6 +2,7 @@ package longbridge.models;
 
 import javax.persistence.*;
 
+import java.util.Collection;
 /**
  * Created by Showboy on 29/03/2017.
  */
@@ -15,17 +16,21 @@ public abstract class User extends AbstractEntity {
     private String password;
     private boolean enabled;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinTable(name = "user_role", joinColumns =
-    @JoinColumn(name = "user_id", referencedColumnName = "Id"), inverseJoinColumns =
-    @JoinColumn(name = "role_id", referencedColumnName = "Id"))
+
+
+    @ManyToOne
+    @JoinColumn(name = "role_id")
     private Role role;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinTable(name = "user_profile", joinColumns =
-    @JoinColumn(name = "user_id", referencedColumnName = "Id"), inverseJoinColumns =
-    @JoinColumn(name = "profile_id", referencedColumnName = "Id"))
+    @ManyToOne
+    @JoinColumn(name = "profile_id")
     private Profile profile;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "user_groups", joinColumns =
+    @JoinColumn(name = "user_id", referencedColumnName = "Id"), inverseJoinColumns =
+    @JoinColumn(name = "group_id", referencedColumnName = "Id"))
+    private Collection<UserGroup> userGroups;
 
     public String getUserName() {
         return userName;

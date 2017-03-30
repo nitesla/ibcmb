@@ -9,27 +9,68 @@ import longbridge.models.Role;
  */
 public interface SecurityService {
 
+    /**
+     *
+     */
+
     void addProfile();
 
+    /**
+     *
+     *
+     */
     Profile getProfile();
 
+    /**
+     *
+     */
     void updateProfile();
 
+    /**
+     *
+     */
     void deleteProfile();
 
+    /**
+     *
+     */
     void addRole();
 
+    /**
+     *
+     *
+     */
     Role getRole();
 
+    /**
+     *
+     */
     void updateRole();
 
+    /**
+     *
+     */
     void deleteRole();
 
+    /**
+     *
+     */
     void addPermission();
 
+    /**
+     *
+     * @return
+     */
     Permission getPermission();
 
+    /**
+     *
+     *
+     */
     void updatePermission();
 
+    /**
+     *
+     */
     void deletePermission();
 }

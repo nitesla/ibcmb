@@ -9,6 +9,9 @@ import javax.persistence.*;
 public class Card extends AbstractEntity{
 
 
+
+    private String cardReference;
+
     private String cardName;
     private Long cardType;
 

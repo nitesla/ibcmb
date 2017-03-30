@@ -1,6 +1,6 @@
 package longbridge.models;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
 
 /**
  * Created by Wunmi on 27/03/2017.
@@ -8,9 +8,11 @@ import javax.persistence.*;
 @Entity
 public class Role extends AbstractEntity{
 
-
     private String name;
     private String description;
+
+//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+//    private Collection<User> users;
 
     public String getName() {
         return name;
@@ -27,6 +29,14 @@ public class Role extends AbstractEntity{
     public void setDescription(String description) {
         this.description = description;
     }
+
+//    public Collection<User> getUsers() {
+//        return users;
+//    }
+//
+//    public void setUsers(Set<User> users) {
+//        this.users = users;
+//    }
 
     @Override
     public String toString() {

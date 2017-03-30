@@ -42,6 +42,7 @@ public interface CorporateService {
     CorporateCustomer getCorporate(Long id);
 
 
+
     /**
      * Returns a list of all the corporate customers
      *

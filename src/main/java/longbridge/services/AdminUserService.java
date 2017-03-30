@@ -58,4 +58,6 @@ public interface AdminUserService {
      * @param user the admin user
      */
     void generateAndSendPassword(AdminUser user);
+
+
 }

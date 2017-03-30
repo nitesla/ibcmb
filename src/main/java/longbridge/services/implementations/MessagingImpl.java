@@ -41,6 +41,11 @@ public class MessagingImpl implements MessagingService{
     }
 
     @Override
+    public void setStatus(String status) {
+
+    }
+
+    @Override
     public void setStatus() {
 
     }
