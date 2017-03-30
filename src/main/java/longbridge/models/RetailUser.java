@@ -12,7 +12,4 @@ import javax.persistence.Id;
 @Entity
 public class RetailUser extends AbstractEntity{
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long Id;
 }

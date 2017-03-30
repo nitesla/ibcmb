@@ -1,5 +1,6 @@
 package longbridge.repositories;
 
+import longbridge.models.Message;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import sun.misc.resources.Messages;
@@ -9,6 +10,6 @@ import sun.misc.resources.Messages;
  */
 
 @Repository
-public interface MessagesRepo extends JpaRepository<Messages, Long> {
+public interface MessagesRepo extends JpaRepository<Message, Long> {
 
 }

@@ -9,7 +9,7 @@ import java.util.Date;
 import java.util.Map;
 
 /**
- * The {@code AccountService} interface provides the provides the methods for retrieving
+ * The {@code AccountService} interface provides the methods for retrieving
  * a customer's account information
  * @author Fortunatus Ekenachi
  * Created on 3/28/2017.

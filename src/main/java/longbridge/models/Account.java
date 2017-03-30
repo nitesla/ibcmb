@@ -1,6 +1,7 @@
 package longbridge.models;
 
 import javax.persistence.*;
+import java.util.Collection;
 
 /**
  *
@@ -14,6 +15,11 @@ public class Account extends AbstractEntity{
     private String accountName;
     private String accountType;
 
+    @OneToMany(mappedBy = "account")
+    private Collection<FinancialTransaction> financialTransactions;
+
+
+
     public String getAccountNumber() {
         return accountNumber;
     }
@@ -21,7 +27,6 @@ public class Account extends AbstractEntity{
     public void setAccountNumber(String accountNumber) {
         this.accountNumber = accountNumber;
     }
-
 
 
     public String getAccountName() {
@@ -39,4 +44,6 @@ public class Account extends AbstractEntity{
     public void setAccountType(String accountType) {
         this.accountType = accountType;
     }
+
+
 }

@@ -9,9 +9,7 @@ import java.util.Date;
 @Entity
 public class Transactions extends AbstractEntity{
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long Id;
+
     private Long transactionType;
     private Long customerId;
     private Long beneficiaryId;
