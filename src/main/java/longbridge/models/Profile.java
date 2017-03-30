@@ -9,9 +9,6 @@ import java.util.Collection;
 @Entity
 public class Profile extends AbstractEntity{
 
-
-
-
     private String name;
     private String description;
 
