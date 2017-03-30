@@ -8,7 +8,7 @@ import java.util.Collection;
 /**
  * The {@code Account} class is a model that shows
  * an Account information
- * @author ayoade_farooq@yahoo.com
+ * @author ayoade farooq
  * Created on 3/28/2017.
  */
 
@@ -106,50 +106,48 @@ public class Account extends AbstractEntity{
         return financialTransactions;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Account)) return false;
-        if (!super.equals(o)) return false;
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((accountId == null) ? 0 : accountId.hashCode());
+		result = prime * result + ((accountNumber == null) ? 0 : accountNumber.hashCode());
+		return result;
+	}
 
-        Account account = (Account) o;
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Account other = (Account) obj;
+		if (accountId == null) {
+			if (other.accountId != null)
+				return false;
+		} else if (!accountId.equals(other.accountId))
+			return false;
+		if (accountNumber == null) {
+			if (other.accountNumber != null)
+				return false;
+		} else if (!accountNumber.equals(other.accountNumber))
+			return false;
+		return true;
+	}
 
-        if (!accountId.equals(account.accountId)) return false;
-        if (!accountNumber.equals(account.accountNumber)) return false;
-        if (!accountName.equals(account.accountName)) return false;
-        if (!customerId.equals(account.customerId)) return false;
-        if (!schemeType.equals(account.schemeType)) return false;
-        if (!schemeCode.equals(account.schemeCode)) return false;
-        return solId != null ? solId.equals(account.solId) : account.solId == null;
-    }
+	//TODO: Update tostring
+	@Override
+	public String toString() {
+		return "Account [accountId=" + accountId + ", accountNumber=" + accountNumber + ", accountName=" + accountName
+				+ ", customerId=" + customerId + ", schemeType=" + schemeType + ", schemeCode=" + schemeCode
+				+ ", solId=" + solId + ", financialTransactions=" + financialTransactions + "]";
+	}
 
-    @Override
-    public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + accountId.hashCode();
-        result = 31 * result + accountNumber.hashCode();
-        result = 31 * result + accountName.hashCode();
-        result = 31 * result + customerId.hashCode();
-        result = 31 * result + schemeType.hashCode();
-        result = 31 * result + schemeCode.hashCode();
-        result = 31 * result + (solId != null ? solId.hashCode() : 0);
-        return result;
-    }
+   
 
 
-    @Override
-    public String toString() {
-        return "{\"Account\":"
-                + super.toString()
-                + ",                         \"accountId\":\"" + accountId + "\""
-                + ",                         \"accountNumber\":\"" + accountNumber + "\""
-                + ",                         \"accountName\":\"" + accountName + "\""
-                + ",                         \"customerId\":\"" + customerId + "\""
-                + ",                         \"schemeType\":\"" + schemeType + "\""
-                + ",                         \"schmCode\":\"" + schemeCode + "\""
-                + ",                         \"solId\":\"" + solId + "\""
-                + "}";
-    }
-
+    
 
 }

@@ -8,12 +8,11 @@ import java.math.BigDecimal;
  * Created by Wunmi on 3/28/2017.
  */
 public class FinancialTransaction{
-    public static enum TranType {DEBIT, CREDIT}
+    public String tranType ;
     private String transactionParticulars;
     private String currencyCode;
     private BigDecimal amount;
     private BigDecimal currentBalance;
-    private TranType tranType;
     private String accountId;
     private LocalDateTime valueDate;
     private LocalDateTime postDate;
@@ -34,7 +33,7 @@ public class FinancialTransaction{
         this.currencyCode = currencyCode;
     }
 
-    public BigDecimal getAmount()er{
+    public BigDecimal getAmount(){
         return amount;
     }
 
@@ -50,11 +49,11 @@ public class FinancialTransaction{
         this.currentBalance = currentBalance;
     }
 
-    public TranType getTranType() {
+    public String getTranType() {
         return tranType;
     }
 
-    public void setTranType(TranType tranType) {
+    public void setTranType(String tranType) {
         this.tranType = tranType;
     }
 
