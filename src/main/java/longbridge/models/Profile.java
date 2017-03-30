@@ -18,6 +18,9 @@ public class Profile extends AbstractEntity{
     @JoinColumn(name = "permission_id", referencedColumnName = "Id"))
     private Collection<Permission> permissions;
 
+//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+//    private Collection<User> users;
+
     public String getName() {
         return name;
     }
@@ -41,6 +44,14 @@ public class Profile extends AbstractEntity{
     public void setPermissions(Collection<Permission> permissions) {
         this.permissions = permissions;
     }
+
+//    public Collection<User> getUsers() {
+//        return users;
+//    }
+//
+//    public void setUsers(Collection<User> users) {
+//        this.users = users;
+//    }
 
     @Override
     public String toString() {

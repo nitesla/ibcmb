@@ -9,9 +9,6 @@ import java.util.Date;
 @Entity
 public class RequestHistory extends AbstractEntity{
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long Id;
     private Long requestId;
     private String status;
     private String comment;

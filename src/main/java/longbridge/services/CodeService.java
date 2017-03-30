@@ -13,5 +13,7 @@ public interface CodeService {
 
     Code getCode(Long codeId);
 
+    Iterable<Code> getCodesofType(String codeType);
+
     Iterable<Code> getCodes();
 }
