@@ -1,4 +1,4 @@
-package longbridge.services.implementation;
+package longbridge.services.implementations;
 
 import longbridge.models.Message;
 import longbridge.services.MessagingService;

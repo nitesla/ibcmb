@@ -12,7 +12,6 @@ public class Code extends AbstractEntity {
     private String code;
     private String type;
     private String description;
-    private String modification;
 
     @Override
     public int hashCode() {
