@@ -3,7 +3,6 @@ package longbridge.services;
 import longbridge.models.User;
 import longbridge.repositories.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 /**
@@ -14,7 +13,6 @@ public class UserService {
     @Autowired
     private UserRepo userRepository;
 
-    @PreAuthorize("hasAuthority('CREATE_USER')")
     public User findByEmail(String email){
         return userRepository.findByEmail(email);
     }

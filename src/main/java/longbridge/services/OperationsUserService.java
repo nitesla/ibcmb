@@ -37,7 +37,7 @@ public interface OperationsUserService {
      * Create an OperationsUser
      * @param user the new OperationsUser
      */
-    void addUser(OperationsUser user);
+    boolean addUser(OperationsUser user);
 
     /**
      * Resets the password of the specified Operations user

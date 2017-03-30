@@ -9,7 +9,7 @@ import java.util.Date;
 /**
  * Created by Showboy on 29/03/2017.
  */
-public class MessagingImpl implements MessagingService{
+public class MessagingServiceImpl implements MessagingService{
     @Override
     public Iterable<Message> getMessages() {
         return null;

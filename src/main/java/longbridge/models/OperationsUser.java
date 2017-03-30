@@ -7,7 +7,7 @@ import javax.persistence.Entity;
  */
 
 @Entity
-public class OperationsUser extends AbstractEntity implements User {
+public class OperationsUser extends User {
 
     @Override
     public String getUserName() {

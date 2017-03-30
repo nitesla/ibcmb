@@ -8,7 +8,7 @@ import javax.persistence.ManyToMany;
 /**
  * Created by Showboy on 29/03/2017.
  */
-public class UserImpl extends AbstractEntity implements User{
+public class UserImpl extends User{
 
 
     private String userName;
