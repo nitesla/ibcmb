@@ -7,17 +7,17 @@ import longbridge.models.OperationsUser;
  */
 public interface OperationsUserService {
 
-    OperationsUser getUser();
+    OperationsUser getUser(Long id);
 
     Iterable<OperationsUser> getUsers();
 
-    void setPassword(OperationsUser User, String password);
 
-    void addUser();
 
-    void resetPassword();
+    boolean  addUser(OperationsUser User);
 
-    void changePassword(String oldPassword, String newPassword);
+    void resetPassword(OperationsUser User,String newPassword);
+
+    boolean changePassword(OperationsUser User,String oldPassword, String newPassword);
 
     void generateAndSendPassword();
 }

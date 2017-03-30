@@ -3,6 +3,8 @@ package longbridge.services.implementations;
 import longbridge.models.RetailUser;
 import longbridge.services.RetailUserService;
 
+import java.util.Collection;
+
 /**
  * Created by ayoade_farooq@yahoo.com on 3/29/2017.
  */
@@ -20,7 +22,7 @@ public class RetailUserServiceImpl implements RetailUserService {
     }
 
     @Override
-    public Iterable<RetailUser> getUsers() {
+    public Collection<RetailUser> getUsers() {
         return null;
     }
 
@@ -30,7 +32,8 @@ public class RetailUserServiceImpl implements RetailUserService {
     }
 
     @Override
-    public void addUser() {
+    public void addUser()
+    {
 
     }
 
