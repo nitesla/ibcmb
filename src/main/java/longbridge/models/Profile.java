@@ -10,6 +10,8 @@ import java.util.Collection;
 public class Profile extends AbstractEntity{
 
 
+
+
     private String name;
     private String description;
 
@@ -18,7 +20,6 @@ public class Profile extends AbstractEntity{
     @JoinColumn(name = "profile_id", referencedColumnName = "Id"), inverseJoinColumns =
     @JoinColumn(name = "permission_id", referencedColumnName = "Id"))
     private Collection<Permission> permissions;
-
 
 
     public String getName() {
@@ -43,5 +44,14 @@ public class Profile extends AbstractEntity{
 
     public void setPermissions(Collection<Permission> permissions) {
         this.permissions = permissions;
+    }
+
+    @Override
+    public String toString() {
+        return "Profile{" +
+                "name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", permissions=" + permissions +
+                '}';
     }
 }

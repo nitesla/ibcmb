@@ -16,7 +16,7 @@ public abstract class AbstractEntity {
 
     @javax.persistence.Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    Long id;
 
     public Long getId() {
         return id;

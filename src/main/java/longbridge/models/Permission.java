@@ -1,9 +1,6 @@
 package longbridge.models;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 
 /**
  * Created by Wunmi on 27/03/2017.
@@ -16,9 +13,11 @@ public class Permission extends AbstractEntity{
     private String description;
     private String code;
 
+
     public Permission(){
 
     }
+
 
 
 
@@ -44,5 +43,14 @@ public class Permission extends AbstractEntity{
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    @Override
+    public String toString() {
+        return "Permission{" +
+                "name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", code='" + code + '\'' +
+                '}';
     }
 }

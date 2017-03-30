@@ -3,6 +3,7 @@ package longbridge.services;
 import longbridge.models.Account;
 import longbridge.models.CorporateCustomer;
 import longbridge.models.CorporateUser;
+import longbridge.models.FinancialTransaction;
 
 
 /**
@@ -141,6 +142,9 @@ public interface CorporateService {
      *
      */
     void disableCorporateCustomer(CorporateCustomer corporateCustomer);
+
+
+
 
 
 }
