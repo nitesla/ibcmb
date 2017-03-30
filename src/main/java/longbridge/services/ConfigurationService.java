@@ -5,4 +5,6 @@ package longbridge.services;
  *
  */
 public interface ConfigurationService {
+
+
 }
