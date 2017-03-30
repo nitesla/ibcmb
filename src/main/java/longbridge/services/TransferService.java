@@ -1,5 +1,8 @@
 package longbridge.services;
 
+import longbridge.models.Transfer;
+import longbridge.models.User;
+
 /**
  * The {@code TransferService} interface provides the methods for making transfers.
  * The various transfer types supported include own account transfer, coronation bank transfer, interbank transfer
@@ -8,15 +11,17 @@ package longbridge.services;
  */
 public interface TransferService {
 
-    void makeTransfer();
+    void makeTransfer(Transfer transfer);
 
-    void getTransaction();
+    Transfer getTransaction(Long id);
 
-    void getTransactions();
+    Iterable<Transfer> getTransactions(User user);
 
-    void saveTransaction();
+    Iterable<Transfer> getTransactions();
 
-    void cancelTransaction();
+    void saveTransaction(Transfer transfer);
 
-    void deleteTransaction();
+    void cancelTransaction(Transfer transfer);
+
+    void deleteTransaction(Long id);
 }

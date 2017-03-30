@@ -1,5 +1,7 @@
 package longbridge.models;
 
+import longbridge.utils.TransferType;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 
@@ -11,6 +13,7 @@ public class Transfer extends AbstractEntity{
 
     private  Account account;
 
+    private TransferType transferType;
 
     @ManyToOne(fetch = FetchType.LAZY,optional = false,cascade = CascadeType.ALL)
     private FinancialInstitution financialInstitution;
