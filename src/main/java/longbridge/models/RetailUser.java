@@ -9,7 +9,4 @@ import javax.persistence.*;
 @Entity
 public class RetailUser extends User {
 
-
-
-
 }

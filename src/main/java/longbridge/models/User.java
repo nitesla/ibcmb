@@ -1,9 +1,6 @@
 package longbridge.models;
 
-import javax.persistence.CascadeType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
+import javax.persistence.*;
 
 /**
  * Created by Showboy on 29/03/2017.
@@ -18,13 +15,13 @@ public abstract class User extends AbstractEntity {
     private String password;
     private boolean enabled;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinTable(name = "user_role", joinColumns =
     @JoinColumn(name = "user_id", referencedColumnName = "Id"), inverseJoinColumns =
     @JoinColumn(name = "role_id", referencedColumnName = "Id"))
     private Role role;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinTable(name = "user_profile", joinColumns =
     @JoinColumn(name = "user_id", referencedColumnName = "Id"), inverseJoinColumns =
     @JoinColumn(name = "profile_id", referencedColumnName = "Id"))

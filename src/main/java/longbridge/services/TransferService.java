@@ -1,7 +1,10 @@
 package longbridge.services;
 
 /**
- * Created by Fortune on 3/28/2017.
+ * The {@code TransferService} interface provides the methods for making transfers.
+ * The various transfer types supported include own account transfer, coronation bank transfer, interbank transfer
+ * and international transfer. The transfers can be carried via Finacle, NIP, NAPS and RTGS
+ * @author Fortune
  */
 public interface TransferService {
 
