@@ -1,5 +1,8 @@
 package longbridge.services;
 
+import longbridge.models.Transfer;
+import longbridge.models.User;
+
 /**
 <
  * The {@code TransferService} interface provides the methods for making transfers.
@@ -10,33 +13,17 @@ package longbridge.services;
  */
 public interface TransferService {
 
-    /**
+    void makeTransfer(Transfer transfer);
 
-     */
-    void makeTransfer();
+    Transfer getTransaction(Long id);
 
-    /**
-     *
-     */
-    void getTransaction();
+    Iterable<Transfer> getTransactions(User user);
 
-    /**
-     *
-     */
-    void getTransactions();
+    Iterable<Transfer> getTransactions();
 
-    /**
-     *
-     */
-    void saveTransaction();
+    void saveTransaction(Transfer transfer);
 
-    /**
-     *cancel transaction
-     */
-    void cancelTransaction();
-/**
- * delete transaction
- */
+    void cancelTransaction(Transfer transfer);
 
-    void deleteTransaction();
+    void deleteTransaction(Long id);
 }
