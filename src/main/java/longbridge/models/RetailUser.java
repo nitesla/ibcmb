@@ -7,8 +7,7 @@ import javax.persistence.*;
  */
 
 @Entity
-public class RetailUser extends AbstractEntity implements User{
-
+public class RetailUser extends User{
 
     private Long customerType;
 

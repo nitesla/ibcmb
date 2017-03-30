@@ -14,12 +14,12 @@ import java.util.Collection;
  * Created by ayoade_farooq@yahoo.com on 3/29/2017.
  */
 @Service("OperationsUserService")
-public class OperationsUserServiceImpl
-        implements OperationsUserService {
-private Logger logger= LoggerFactory.getLogger(this.getClass());
+public class OperationsUserServiceImpl implements OperationsUserService {
+    private Logger logger= LoggerFactory.getLogger(this.getClass());
 
     private UserRepo<OperationsUser, Long> opUserRepo;
-    private   BCryptPasswordEncoder passwordEncoder;
+    private BCryptPasswordEncoder passwordEncoder;
+
 
     public OperationsUserServiceImpl()
     {
@@ -27,7 +27,7 @@ private Logger logger= LoggerFactory.getLogger(this.getClass());
     }
 
     @Autowired
-    public OperationsUserServiceImpl(UserRepo<OperationsUser, Long> opUserRepo, BCryptPasswordEncoder passwordEncoder) {
+    public OperationsUserServiceImpl(UserRepo<OperationsUser, Long>, BCryptPasswordEncoder passwordEncoder) {
         this.opUserRepo = opUserRepo;
         this.passwordEncoder=passwordEncoder;
     }
@@ -44,6 +44,10 @@ private Logger logger= LoggerFactory.getLogger(this.getClass());
         return this.opUserRepo.findAll();
     }
 
+    @Override
+    public void setPassword(OperationsUser User, String password) {
+
+    }
 
     @Override
     public boolean addUser(OperationsUser User) {
@@ -65,10 +69,12 @@ private Logger logger= LoggerFactory.getLogger(this.getClass());
     }
 
     @Override
-    public void resetPassword(OperationsUser User ,String newPassword) {
-          //TODO
+    public void resetPassword(OperationsUser user) {
 
+    }
 
+    @Override
+    public void changePassword(String oldPassword, String newPassword) {
 
     }
 

@@ -1,6 +1,10 @@
 package longbridge.repositories;
 
+<<<<<<< HEAD
 <<<<<<< HEAD:src/main/java/longbridge/repositories/UserRepo.java
+=======
+
+>>>>>>> wunmi
 import longbridge.models.User;
 =======
 >>>>>>> OLUGINGIN:src/main/java/longbridge/repositories/UserRepo.java

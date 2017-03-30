@@ -24,6 +24,7 @@ public class Profile extends AbstractEntity{
 =======
 >>>>>>> 21972ffea0b84236dd74742d57bac1d69c5b614a
 
+
     public String getName() {
         return name;
     }

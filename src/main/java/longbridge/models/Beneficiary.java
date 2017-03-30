@@ -1,17 +1,15 @@
 package longbridge.models;
 
-import javax.persistence.*;
-
 /**
  * Created by Wunmi on 27/03/2017.
  */
-@Entity
-public class Beneficiary extends AbstractEntity{
+public abstract class Beneficiary extends AbstractEntity{
+
 
 
     private String ownerId;
     private String name;
-    private String beneficiaryType;
+
     private String accountNo;
     private String beneficiaryBank;
 
@@ -20,7 +18,6 @@ public class Beneficiary extends AbstractEntity{
         return "Beneficiary{" +
                 "ownerId='" + ownerId + '\'' +
                 ", name='" + name + '\'' +
-                ", beneficiaryType='" + beneficiaryType + '\'' +
                 ", accountNo='" + accountNo + '\'' +
                 ", beneficiaryBank='" + beneficiaryBank + '\'' +
                 '}';
@@ -40,14 +37,6 @@ public class Beneficiary extends AbstractEntity{
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getBeneficiaryType() {
-        return beneficiaryType;
-    }
-
-    public void setBeneficiaryType(String beneficiaryType) {
-        this.beneficiaryType = beneficiaryType;
     }
 
     public String getAccountNo() {
