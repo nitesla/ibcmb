@@ -2,8 +2,9 @@ package longbridge.services;
 
 import longbridge.models.Account;
 import longbridge.utils.AccountStatement;
+import org.joda.time.LocalDate;
 
-import java.util.Date;
+import java.math.BigDecimal;
 import java.util.Map;
 
 /**
@@ -26,7 +27,7 @@ public interface IntegrationService {
      * @param toDate the Date to stop fetching the account statement (inclusive)
      * @return {@code AccountStatement} object
      */
-    AccountStatement getAccountStatement(String accountId, Date fromDate, Date toDate);
+    AccountStatement getAccountStatement(String accountId, LocalDate fromDate, LocalDate toDate);
 
 
     /** Fetches the account Balance of the account specified by accountId
@@ -34,7 +35,7 @@ public interface IntegrationService {
      * @param accountId accountId of the account
      * @return Map containing the available balance and ledger balance of the account
      */
-    Map<String, String> getBalance(String accountId);
+    Map<String, BigDecimal> getBalance(String accountId);
 
 
 }
