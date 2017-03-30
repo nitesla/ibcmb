@@ -1,10 +1,10 @@
 package longbridge.security;
 
-import longbridge.models.Customer;
 import longbridge.models.Permission;
 import longbridge.models.Profile;
 import longbridge.models.Role;
-import longbridge.services.CustomerService;
+import longbridge.models.User;
+import longbridge.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -26,7 +26,10 @@ import java.util.List;
 public class LtUserDetailsService implements UserDetailsService {
 
     @Autowired
-    private CustomerService customerService;
+    private UserService userService;
+
+
+
     //private RoleRepo roleRepository;
 
 //    public LtUserDetailsService(CustomerService custService){
@@ -37,15 +40,15 @@ public class LtUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) {
 
         try {
-            Customer customer = customerService.findByEmail(email);
+            User user = userService.findByEmail(email);
 
-            if (customer == null) {
+            if (user == null) {
                 throw new UsernameNotFoundException("No user found with username: " + email);
             }
 
             return new org.springframework.security.core.userdetails.User(
-                    customer.getEmail(), customer.getPassword(), customer.isEnabled(), true, true,
-                    true, getAuthorities(customer.getProfiles(), customer.getRoles()));
+                    user.getEmail(), user.getPassword(), user.isEnabled(), true, true,
+                    true, getAuthorities(user.getProfile(), user.getRole()));
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -55,24 +58,24 @@ public class LtUserDetailsService implements UserDetailsService {
     }
 
     private Collection<? extends GrantedAuthority> getAuthorities(
-            Collection<Profile> profiles, Collection<Role> roles) {
+            Profile profile, Role role) {
 
-        return getGrantedAuthorities(getPrivileges(profiles, roles));
+        return getGrantedAuthorities(getPrivileges(profile, role));
     }
 
-    private List<String> getPrivileges(Collection<Profile> profiles, Collection<Role> roles) {
+    private List<String> getPrivileges(Profile profile, Role role) {
 
         List<String> permissions = new ArrayList<>();
         List<Permission> collection = new ArrayList<>();
-        for (Role role : roles) {
+        //for (Role role : roles) {
             permissions.add(role.getName());
-        }
-        for (Profile profile : profiles) {
+        //}
+        //for (Profile profile : profiles) {
             permissions.add(profile.getName());
-        }
-        for (Profile profile : profiles) {
+        //}
+        //for (Profile profile : profiles) {
             collection.addAll(profile.getPermissions());
-        }
+        //}
         for (Permission item : collection) {
             permissions.add(item.getName());
         }
@@ -86,65 +89,5 @@ public class LtUserDetailsService implements UserDetailsService {
         }
         return authorities;
     }
-
-//    public Collection<? extends GrantedAuthority> getAuthorities(Profile profile, Role role) {
-//
-//        Set<SimpleGrantedAuthority> authList = new TreeSet<SimpleGrantedAuthority>();
-//
-//        //for (Role role : roles) {
-//        authList.addAll(getGrantedAuthorities(profile, role));
-//        //}
-//
-//        return authList;
-//    }
-//
-//    /**
-//     * Wraps a {@link Profile} role to {@link SimpleGrantedAuthority} objects
-//     *
-//     * @param profile
-//     *            {@link String} of roles
-//     * @return list of granted authorities
-//     */
-//    public static Set<SimpleGrantedAuthority> getGrantedAuthorities(Profile profile, Role role) {
-//
-//        Set<SimpleGrantedAuthority> authorities = new HashSet<SimpleGrantedAuthority>();
-//        authorities.add(new SimpleGrantedAuthority(role.getName()));
-//        authorities.add(new SimpleGrantedAuthority(profile.getName()));
-//        Collection<Permission> profilePermissions = profile.getPermissions();
-//        for (Permission permission : profilePermissions) {
-//            authorities.add(new SimpleGrantedAuthority(permission.getName()));
-//        }
-//
-//        //System.out.println(authorities);
-//        return authorities;
-//    }
-//
-////    private Collection<? extends GrantedAuthority> getAuthorities(
-////            Collection<Profile> profiles, Collection<Role> roles) {
-////
-////        return getGrantedAuthorities(getPermissions(profiles, roles));
-////    }
-////
-////    private List<GrantedAuthority> getGrantedAuthorities(List<String> Permissions) {
-////        List<GrantedAuthority> authorities = new ArrayList<>();
-////        for (String Permission : Permissions) {
-////            authorities.add(new SimpleGrantedAuthority(Permission));
-////        }
-////        return authorities;
-////    }
-////
-////    private List<String> getPermissions(Collection<Profile> profiles, Collection<Role> roles) {
-////
-////        List<String> Permissions = new ArrayList<>();
-////        List<Permission> collection = new ArrayList<>();
-////        for (Profile profile : profiles) {
-////            collection.addAll(profile.getPermissions());
-////        }
-////        for (Permission item : collection) {
-////            Permissions.add(item.getName());
-////        }
-////        return Permissions;
-////    }
-
 
 }
