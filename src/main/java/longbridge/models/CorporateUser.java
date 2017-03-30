@@ -6,6 +6,7 @@ import javax.persistence.*;
  * Created by Wunmi on 27/03/2017.
  */
 @Entity
+
 public class CorporateUser extends User {
 
     private Long corporateCustomer_Id;
@@ -25,6 +26,7 @@ public class CorporateUser extends User {
     public void setCorporateCustomer_Id(Long corporateCustomer_Id) {
         this.corporateCustomer_Id = corporateCustomer_Id;
     }
+
 
 
 }

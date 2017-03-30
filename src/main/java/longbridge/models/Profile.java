@@ -18,6 +18,7 @@ public class Profile extends AbstractEntity{
     @JoinColumn(name = "permission_id", referencedColumnName = "Id"))
     private Collection<Permission> permissions;
 
+
     public String getName() {
         return name;
     }

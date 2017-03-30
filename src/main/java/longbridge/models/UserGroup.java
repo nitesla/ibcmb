@@ -17,4 +17,5 @@ public class UserGroup extends AbstractEntity {
     @JoinColumn(name = "group_id", referencedColumnName = "Id"))
     private Collection<User> users;
 
+
 }

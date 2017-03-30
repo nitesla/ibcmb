@@ -9,4 +9,5 @@ import javax.persistence.Entity;
 public class AdminUser extends User {
 
 
+
 }

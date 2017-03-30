@@ -8,6 +8,7 @@ import javax.persistence.*;
 @Entity
 public class MailBox extends AbstractEntity{
 
+
     private Long user_Id;
 
     @Override

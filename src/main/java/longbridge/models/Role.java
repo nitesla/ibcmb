@@ -8,6 +8,7 @@ import javax.persistence.*;
 @Entity
 public class Role extends AbstractEntity{
 
+
     private String name;
     private String description;
 

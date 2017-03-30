@@ -8,27 +8,67 @@ import longbridge.models.Role;
  * Created by Fortune on 3/28/2017.
  */
 public interface SecurityService {
+    /**
+     *
+     */
     void addProfile();
 
+    /**
+     *
+     *
+     */
     Profile getProfile();
 
+    /**
+     *
+     */
     void updateProfile();
 
+    /**
+     *
+     */
     void deleteProfile();
 
+    /**
+     *
+     */
     void addRole();
 
+    /**
+     *
+     *
+     */
     Role getRole();
 
+    /**
+     *
+     */
     void updateRole();
 
+    /**
+     *
+     */
     void deleteRole();
 
+    /**
+     *
+     */
     void addPermission();
 
+    /**
+     *
+     * @return
+     */
     Permission getPermission();
 
+    /**
+     *
+     *
+     */
     void updatePermission();
 
+    /**
+     *
+     */
     void deletePermission();
 }

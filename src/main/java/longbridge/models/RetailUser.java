@@ -12,4 +12,8 @@ public class RetailUser extends User {
 
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> cruza
 }

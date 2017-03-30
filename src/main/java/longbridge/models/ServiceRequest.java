@@ -9,6 +9,10 @@ import java.util.Date;
 @Entity
 public class ServiceRequest extends AbstractEntity{
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> cruza
     private Long senderId;
     private String serviceRequestType;
     private String subject;

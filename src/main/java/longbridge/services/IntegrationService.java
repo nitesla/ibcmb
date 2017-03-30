@@ -8,4 +8,6 @@ import longbridge.models.Account;
 public interface IntegrationService {
 
     Iterable<Account> fetchAccount(String cifid);
-}
+
+
+        }
