@@ -3,6 +3,7 @@ package longbridge.services;
 import longbridge.models.Account;
 import longbridge.models.FinancialTransaction;
 import longbridge.models.User;
+import longbridge.utils.AccountStatement;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -30,7 +31,6 @@ public interface AccountService {
      */
     Iterable<Account> getAccounts(User user);
 
-
     /**
      * Returns the details of an account balance.
      * The details are contained in a map  to represent the various account balances.
@@ -47,7 +47,7 @@ public interface AccountService {
      * @param account the particular account
      * @param fromDate the starting date
      * @param toDate the ending date
-     * @return a {@link FinancialTransaction} containing details of the transactions
+     * @return a {@link AccountStatement} containing details of the transactions
      */
-    FinancialTransaction getAccountStatements(Account account, Date fromDate, Date toDate);
+    AccountStatement getAccountStatements(Account account, Date fromDate, Date toDate);
 }

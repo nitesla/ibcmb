@@ -1,6 +1,10 @@
 package longbridge.services;
 
 import longbridge.models.Account;
+import longbridge.utils.AccountStatement;
+
+import java.util.Date;
+import java.util.Map;
 
 /**
  * The {@IntegrationService} interface provides the methods for accessing the various integration service
@@ -12,7 +16,25 @@ public interface IntegrationService {
      * @param cifid the customer's id
      * @return  a list of accounts
      */
-    Iterable<Account> fetchAccount(String cifid);
+    Iterable<Account> fetchAccounts(String cifid);
 
 
-        }
+    /** Fetches the {@link longbridge.utils.AccountStatement} of the account identified by
+     * {@code accountId} for the period between {@code fromDate} and {@code toDate}
+     * @param accountId the finacle acid of the Account
+     * @param fromDate the Date from where to begin fetching the account statement
+     * @param toDate the Date to stop fetching the account statement (inclusive)
+     * @return {@code AccountStatement} object
+     */
+    AccountStatement getAccountStatement(String accountId, Date fromDate, Date toDate);
+
+
+    /** Fetches the account Balance of the account specified by accountId
+     *
+     * @param accountId accountId of the account
+     * @return Map containing the available balance and ledger balance of the account
+     */
+    Map<String, String> getBalance(String accountId);
+
+
+}

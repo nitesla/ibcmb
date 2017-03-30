@@ -54,8 +54,6 @@ public class Account extends AbstractEntity{
     @OneToMany(mappedBy = "account")
     private Collection<FinancialTransaction> financialTransactions;
 
-
-
     public String getAccountNumber() {
         return accountNumber;
     }
@@ -63,7 +61,6 @@ public class Account extends AbstractEntity{
     public void setAccountNumber(String accountNumber) {
         this.accountNumber = accountNumber;
     }
-
 
     public String getAccountName() {
         return accountName;
@@ -89,12 +86,12 @@ public class Account extends AbstractEntity{
         this.schemeType = schemeType;
     }
 
-    public String getSchmCode() {
+    public String getSchemeCode() {
         return schemeCode;
     }
 
-    public void setSchmCode(String schmCode) {
-        this.schemeCode = schmCode;
+    public void setSchemeCode(String schemeCode) {
+        this.schemeCode = schemeCode;
     }
 
     public String getSolId() {
@@ -105,6 +102,9 @@ public class Account extends AbstractEntity{
         this.solId = solId;
     }
 
+    public Collection<FinancialTransaction> getFinancialTransactions() {
+        return financialTransactions;
+    }
 
     @Override
     public boolean equals(Object o) {
