@@ -27,6 +27,12 @@ public class LtUserDetailsService implements UserDetailsService {
 
     @Autowired
     private UserService userService;
+<<<<<<< HEAD
+=======
+
+
+
+>>>>>>> OLUGINGIN
     //private RoleRepo roleRepository;
 
 //    public LtUserDetailsService(CustomerService custService){

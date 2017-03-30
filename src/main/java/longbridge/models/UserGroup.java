@@ -8,6 +8,7 @@ import java.util.Collection;
  */
 @Entity
 public class UserGroup extends AbstractEntity {
+<<<<<<< HEAD
 
     private String name;
 
@@ -17,5 +18,15 @@ public class UserGroup extends AbstractEntity {
     @JoinColumn(name = "group_id", referencedColumnName = "Id"))
     private Collection<User> users;
 
+=======
+
+    private String name;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "user_userGroup", joinColumns =
+    @JoinColumn(name = "user_id", referencedColumnName = "Id"), inverseJoinColumns =
+    @JoinColumn(name = "group_id", referencedColumnName = "Id"))
+    private Collection<User> users;
+>>>>>>> OLUGINGIN
 
 }

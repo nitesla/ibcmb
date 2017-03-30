@@ -9,6 +9,7 @@ import longbridge.models.OperationsUser;
  */
 public interface OperationsUserService {
 
+<<<<<<< HEAD
     /**
      *
      * @param id the userid
@@ -50,6 +51,19 @@ public interface OperationsUserService {
      * @param newPassword the newPassword
      */
     void changePassword(String oldPassword, String newPassword);
+=======
+    OperationsUser getUser(Long id);
+
+    Iterable<OperationsUser> getUsers();
+
+
+
+    boolean  addUser(OperationsUser User);
+
+    void resetPassword(OperationsUser User,String newPassword);
+
+    boolean changePassword(OperationsUser User,String oldPassword, String newPassword);
+>>>>>>> OLUGINGIN
 
     void generateAndSendPassword();
 }
