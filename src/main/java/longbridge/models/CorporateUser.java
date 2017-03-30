@@ -8,6 +8,9 @@ import javax.persistence.*;
 @Entity
 public class CorporateUser extends User {
 
+    //private Long customerType;
+
+
     private Long corporateCustomer_Id;
 
     @Override

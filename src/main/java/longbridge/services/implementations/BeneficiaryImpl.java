@@ -3,11 +3,15 @@ package longbridge.services.implementations;
 import longbridge.models.Beneficiary;
 import longbridge.models.User;
 import longbridge.services.BeneficiaryService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by Showboy on 29/03/2017.
  */
 public class BeneficiaryImpl implements BeneficiaryService {
+
+    private Logger logger= LoggerFactory.getLogger(this.getClass());
 
     @Override
     public void addBeneficiary(User user, Beneficiary beneficiary) {

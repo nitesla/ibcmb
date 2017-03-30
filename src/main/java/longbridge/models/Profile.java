@@ -21,6 +21,7 @@ public class Profile extends AbstractEntity{
 //    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
 //    private Collection<User> users;
 
+
     public String getName() {
         return name;
     }

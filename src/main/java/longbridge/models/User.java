@@ -2,7 +2,6 @@ package longbridge.models;
 
 import javax.persistence.*;
 import java.util.Collection;
-
 /**
  * Created by Showboy on 29/03/2017.
  */
