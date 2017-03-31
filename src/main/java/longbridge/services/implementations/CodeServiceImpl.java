@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * Created by Showboy on 29/03/2017.
  */
 public class CodeServiceImpl implements CodeService {
+
     private CodeRepo codeRepo;
 
     @Autowired
@@ -31,7 +32,7 @@ public class CodeServiceImpl implements CodeService {
 
     @Override
     public Iterable<Code> getCodesofType(String codeType) {
-        return this.codeRepo.findByType(codeType);
+        return this.codeRepo.findByTypeandDelFlag(codeType, "N");
     }
 
     @Override

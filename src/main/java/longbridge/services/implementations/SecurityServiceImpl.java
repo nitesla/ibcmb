@@ -10,14 +10,11 @@ import longbridge.services.SecurityService;
  */
 public class SecurityServiceImpl implements SecurityService {
 
-<<<<<<< HEAD
-=======
     /**
      * Adds a new profile to the system
      *
      * @param profile the profile to be added
      */
->>>>>>> 86df58a0b6c4b5abd1770a69d3019712e40742df
     @Override
     public void addProfile(Profile profile) {
 

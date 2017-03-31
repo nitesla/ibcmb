@@ -45,6 +45,11 @@ public class MessagingServiceImpl implements MessagingService{
 
     }
 
+    @Override
+    public void setStatus() {
+
+    }
+
 
     @Override
     public void deleteMessage() {
