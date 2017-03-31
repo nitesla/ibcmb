@@ -18,9 +18,6 @@ public class Permission extends AbstractEntity{
 
     }
 
-
-
-
     public String getName() {
         return name;
     }

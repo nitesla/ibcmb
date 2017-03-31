@@ -3,8 +3,9 @@ package longbridge.utils;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * Created by Fortune on 3/30/2017.
+/**The {@code TransferType} enum contains the various types of transfers
+ * @author Fortunatus Eekenachi
+ * Created on 3/30/2017.
  */
 public enum TransferType {
 

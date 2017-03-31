@@ -7,7 +7,6 @@ import java.util.Date;
 
 /**
  * The {@code MessagingService} interface provides a service for sending messages
- *
  * Created on 3/29/2017.
  */
 public interface MessagingService {

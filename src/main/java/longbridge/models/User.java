@@ -3,9 +3,11 @@ package longbridge.models;
 import javax.persistence.*;
 
 import java.util.Collection;
+import java.util.Date;
 /**
  * Created by Showboy on 29/03/2017.
  */
+@MappedSuperclass
 public abstract class User extends AbstractEntity {
 
 
@@ -14,23 +16,25 @@ public abstract class User extends AbstractEntity {
     private String lastName;
     private String email;
     private String password;
-    private boolean enabled;
-
+    private String status;
+    private Date expiryDate;
+    private Date lockedUntilDate;
+    private Date lastLoginDate;
+    private int noOfLoginAttempts;
 
 
     @ManyToOne
-    @JoinColumn(name = "role_id")
     private Role role;
 
     @ManyToOne
-    @JoinColumn(name = "profile_id")
     private Profile profile;
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "user_groups", joinColumns =
-    @JoinColumn(name = "user_id", referencedColumnName = "Id"), inverseJoinColumns =
-    @JoinColumn(name = "group_id", referencedColumnName = "Id"))
-    private Collection<UserGroup> userGroups;
+    @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns =
+    @JoinColumn(name = "group_id", referencedColumnName = "id"))
+    
+    private Collection<UserGroup> groups;
 
     public String getUserName() {
         return userName;
@@ -72,15 +76,16 @@ public abstract class User extends AbstractEntity {
         this.password = password;
     }
 
-    public boolean isEnabled() {
-        return enabled;
-    }
+   
+    public String getStatus() {
+		return status;
+	}
 
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
+	public void setStatus(String status) {
+		this.status = status;
+	}
 
-    public Role getRole() {
+	public Role getRole() {
         return role;
     }
 
@@ -95,4 +100,52 @@ public abstract class User extends AbstractEntity {
     public void setProfile(Profile profile) {
         this.profile = profile;
     }
+
+	public Collection<UserGroup> getGroups() {
+		return groups;
+	}
+
+	public void setGroups(Collection<UserGroup> groups) {
+		this.groups = groups;
+	}
+
+	public Date getExpiryDate() {
+		return expiryDate;
+	}
+
+	public void setExpiryDate(Date expiryDate) {
+		this.expiryDate = expiryDate;
+	}
+
+	public Date getLockedUntilDate() {
+		return lockedUntilDate;
+	}
+
+	public void setLockedUntilDate(Date lockedUntilDate) {
+		this.lockedUntilDate = lockedUntilDate;
+	}
+
+	public Date getLastLoginDate() {
+		return lastLoginDate;
+	}
+
+	public void setLastLoginDate(Date lastLoginDate) {
+		this.lastLoginDate = lastLoginDate;
+	}
+
+	public int getNoOfLoginAttempts() {
+		return noOfLoginAttempts;
+	}
+
+	public void setNoOfLoginAttempts(int noOfLoginAttempts) {
+		this.noOfLoginAttempts = noOfLoginAttempts;
+	}
+
+	@Override
+	public String toString() {
+		return "User [userName=" + userName + ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email
+				+ ", status=" + status + ", role=" + role + "]";
+	}
+    
+    
 }

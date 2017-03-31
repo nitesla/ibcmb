@@ -6,6 +6,7 @@ import java.util.List;
 
 /**The {@code AdminUserService} interface provides the methods for managing an Admin user
  * @author Fortunatus Ekenachi
+ * @see AdminUser
  * Created on 3/28/2017.
  */
 public interface AdminUserService {

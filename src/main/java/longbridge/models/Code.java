@@ -3,9 +3,13 @@ package longbridge.models;
 import javax.persistence.Entity;
 
 /**
- * Created by Fortune on 3/29/2017.
- * 
- * Code is lookup table (or enumeration) predicate
+ * The {@code Code} class model represents unique data that can be used for system configurations.
+ * This can be used to set up a list of items that can be presented in drop-down menus
+ * Example is a country eg Nigeria with code: NG, type: COUNTRY and description: the description if necessary
+ * With this approach, new items can be added or removed from a list presented to the user
+ * @author Fortunatus Ekenachi
+ * Created on 3/29/2017.
+ *
  */
 
 @Entity
@@ -39,25 +43,36 @@ public class Code extends AbstractEntity {
         this.description = description;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((code == null) ? 0 : code.hashCode());
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		return result;
+	}
 
-        Code code1 = (Code) o;
-
-        if (!code.equals(code1.code)) return false;
-        return type.equals(code1.type);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + code.hashCode();
-        result = 31 * result + type.hashCode();
-        return result;
-    }
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Code other = (Code) obj;
+		if (code == null) {
+			if (other.code != null)
+				return false;
+		} else if (!code.equals(other.code))
+			return false;
+		if (type == null) {
+			if (other.type != null)
+				return false;
+		} else if (!type.equals(other.type))
+			return false;
+		return true;
+	}
 
     @Override
     public String toString() {

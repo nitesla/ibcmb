@@ -31,7 +31,6 @@ public interface IntegrationService {
 
 
     /** Fetches the account Balance of the account specified by accountId
-     *
      * @param accountId accountId of the account
      * @return Map containing the available balance and ledger balance of the account
      */

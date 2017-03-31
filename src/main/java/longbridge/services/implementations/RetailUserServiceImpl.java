@@ -11,13 +11,8 @@ import java.util.Collection;
 public class RetailUserServiceImpl implements RetailUserService {
 
 
-
-
-
-
-
     @Override
-    public RetailUser getUser() {
+    public RetailUser getUser(Long id) {
         return null;
     }
 
@@ -48,7 +43,7 @@ public class RetailUserServiceImpl implements RetailUserService {
     }
 
     @Override
-    public void generateAndSendPassword() {
+    public void generateAndSendPassword(RetailUser retailUser) {
 
     }
 }

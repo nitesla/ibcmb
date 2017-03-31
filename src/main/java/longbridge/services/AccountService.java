@@ -11,6 +11,7 @@ import java.util.Map;
  * The {@code AccountService} interface provides the methods for retrieving
  * a customer's account information
  * @author Fortunatus Ekenachi
+ * @see Account
  * Created on 3/28/2017.
  */
 public interface AccountService {

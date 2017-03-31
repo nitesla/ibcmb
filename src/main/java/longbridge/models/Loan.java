@@ -9,7 +9,6 @@ import java.util.Date;
 @Entity
 public class Loan extends AbstractEntity{
 
-
     private String loanType;
     private Date startDate;
     private Long amount;

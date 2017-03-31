@@ -8,7 +8,7 @@ import java.util.Collection;
 /**
  * The {@code Account} class is a model that shows
  * an Account information
- * @author ayoade_farooq@yahoo.com
+ * @author ayoade farooq
  * Created on 3/28/2017.
  */
 
@@ -116,10 +116,7 @@ public class Account extends AbstractEntity{
 
         if (!accountId.equals(account.accountId)) return false;
         if (!accountNumber.equals(account.accountNumber)) return false;
-        if (!accountName.equals(account.accountName)) return false;
         if (!customerId.equals(account.customerId)) return false;
-        if (!schemeType.equals(account.schemeType)) return false;
-        if (!schemeCode.equals(account.schemeCode)) return false;
         return solId != null ? solId.equals(account.solId) : account.solId == null;
     }
 
@@ -128,10 +125,7 @@ public class Account extends AbstractEntity{
         int result = super.hashCode();
         result = 31 * result + accountId.hashCode();
         result = 31 * result + accountNumber.hashCode();
-        result = 31 * result + accountName.hashCode();
         result = 31 * result + customerId.hashCode();
-        result = 31 * result + schemeType.hashCode();
-        result = 31 * result + schemeCode.hashCode();
         result = 31 * result + (solId != null ? solId.hashCode() : 0);
         return result;
     }
@@ -150,6 +144,7 @@ public class Account extends AbstractEntity{
                 + ",                         \"solId\":\"" + solId + "\""
                 + "}";
     }
+
 
 
 }

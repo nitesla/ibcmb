@@ -3,22 +3,22 @@ package longbridge.services;
 import longbridge.models.OperationsUser;
 
 /**
- * The {@code OperationsUserService} i
- *
+ * The {@code OperationsUserService} provides the methods for managing operations users
+ * @see OperationsUser
  * Created on 3/29/2017.
  */
 public interface OperationsUserService {
 
     /**
-     *
-     * @param id the userid
-     * @return the OperationsUser
+     *Returns the specified operations user
+     * @param id the user's id
+     * @return the Operations User
      */
     OperationsUser getUser(Long id);
 
 
     /**
-     * Returns all Operation user present in th system
+     * Returns all Operations users present in th system
      * @return list of user
      */
     Iterable<OperationsUser> getUsers();
@@ -34,7 +34,7 @@ public interface OperationsUserService {
     void setPassword(OperationsUser User, String password);
 
     /**
-     * Create an OperationsUser
+     * Creates an Operations User
      * @param user the new OperationsUser
      */
     boolean addUser(OperationsUser user);

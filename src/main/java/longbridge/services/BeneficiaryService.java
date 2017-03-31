@@ -8,6 +8,8 @@ import longbridge.models.User;
 /**
  * The {@code BeneficiaryService} interface provides the methods to manage the customer's beneficiaries
  * @author Fortunatus Ekenachi
+ * @see Beneficiary
+ * @see User
 
  *
  */
@@ -21,7 +23,7 @@ public interface BeneficiaryService {
     boolean addLocalBeneficiary(User user, LocalBeneficiary beneficiary);
 
     /**
-     * Deletes a beneficiary
+     * Deletes a beneficiary that has been created by the user
      * @param beneficiaryId the beneficiary's id
      */
     boolean deleteLocalBeneficiary(Long beneficiaryId);
@@ -54,7 +56,7 @@ public interface BeneficiaryService {
     boolean deleteInternationalBeneficiary(Long beneficiaryId);
 
     /**
-     * Returns a beneficiary
+     * Returns a beneficiary specified by the {@code id}
      * @param id the beneficiary's id
      * @return the specified beneficiary
      */
