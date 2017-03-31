@@ -3,91 +3,26 @@ package longbridge.models;
 import javax.persistence.Entity;
 
 /**
- *
+ * AdminUser is a Staff of the bank tasked with administration of the item system 
+ * and it configurations. They don't take part directly in transaction impacting activities
  */
 @Entity
 public class AdminUser extends User {
 
+	private String authenticateMethod;
 
-    @Override
-    public String getUserName() {
-        return null;
-    }
+	public String getAuthenticateMethod() {
+		return authenticateMethod;
+	}
 
-    @Override
-    public void setUserName(String userName) {
-
-    }
-
-    @Override
-    public String getFirstName() {
-        return null;
-    }
-
-    @Override
-    public void setFirstName(String firstName) {
-
-    }
-
-    @Override
-    public String getLastName() {
-        return null;
-    }
-
-    @Override
-    public void setLastName(String lastName) {
-
-    }
-
-    @Override
-    public String getEmail() {
-        return null;
-    }
-
-    @Override
-    public void setEmail(String email) {
-
-    }
-
-    @Override
-    public String getPassword() {
-        return null;
-    }
-
-    @Override
-    public void setPassword(String password) {
-
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return false;
-    }
-
-    @Override
-    public void setEnabled(boolean enabled) {
-
-    }
-
-    @Override
-    public Role getRole() {
-        return null;
-    }
-
-    @Override
-    public void setRole(Role role) {
-
-    }
-
-    @Override
-    public Profile getProfile() {
-        return null;
-    }
-
-    @Override
-    public void setProfile(Profile profile) {
-
-    }
-
-
+	public void setAuthenticateMethod(String authenticateMethod) {
+		this.authenticateMethod = authenticateMethod;
+	}
+	
+	
+	@Override
+	public String toString() {
+		return "AdminUser ["+super.toString()+"]";
+	}
+    
 }

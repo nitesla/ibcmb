@@ -95,18 +95,16 @@ public class Message extends AbstractEntity{
         this.location = location;
     }
 
-
     @Override
     public String toString() {
-        return "{\"Message\":"
-                + super.toString()
-                + ",                         \"userId\":\"" + userId + "\""
-                + ",                         \"recipient\":\"" + recipient + "\""
-                + ",                         \"subject\":\"" + subject + "\""
-                + ",                         \"body\":\"" + body + "\""
-                + ",                         \"dateTime\":\"" + dateTime + "\""
-                + ",                         \"status\":\"" + status + "\""
-                + ",                         \"location\":\"" + location + "\""
-                + "}";
+        return "Message{" +
+                "userId=" + userId +
+                ", recipient='" + recipient + '\'' +
+                ", subject='" + subject + '\'' +
+                ", body='" + body + '\'' +
+                ", dateTime=" + dateTime +
+                ", status='" + status + '\'' +
+                ", location='" + location + '\'' +
+                '}';
     }
 }

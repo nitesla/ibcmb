@@ -1,9 +1,10 @@
 package longbridge.services;
 
-import longbridge.models.CorporateCustomer;
+import java.util.Date;
+
+import longbridge.models.Corporate;
 import longbridge.models.CorporateUser;
 
-import java.util.List;
 
 /**The {@code CorporateUserService} interface provides the methods for managing a corporate user
  * @author Fortunatus Ekenachi
@@ -20,10 +21,10 @@ public interface CorporateUserService {
 
     /**
      * Returns all the corporate users for the corporate customer
-     * @param corporateCustomer  the corporate customer
+     * @param Corporate  the corporate customer
      * @return a list of the corporate users
      */
-    Iterable<CorporateUser> getUsers(CorporateCustomer corporateCustomer);
+    Iterable<CorporateUser> getUsers(Corporate Corporate);
 
     /**
      * Returns all the corporate users in the system
@@ -69,6 +70,12 @@ public interface CorporateUserService {
      * @param user disables the corporate user
      */
     void disableUser(CorporateUser user);
+    
+    /**
+     * Temporarily Locks the corporate user
+     * @param user disables the corporate user
+     */
+    void lockUser(CorporateUser user, Date unlockat);
 
     /**
      * Replaces the old password with the new password for the specified corporate user.

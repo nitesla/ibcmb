@@ -8,7 +8,7 @@ import java.util.Collection;
 /**
  * The {@code Account} class is a model that shows
  * an Account information
- * @author ayoade_farooq@yahoo.com
+ * @author ayoade farooq
  * Created on 3/28/2017.
  */
 
@@ -144,6 +144,7 @@ public class Account extends AbstractEntity{
                 + ",                         \"solId\":\"" + solId + "\""
                 + "}";
     }
+
 
 
 }

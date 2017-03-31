@@ -1,9 +1,9 @@
 package longbridge.services;
 
 import longbridge.models.Account;
-import longbridge.models.CorporateCustomer;
+import longbridge.models.Corporate;
 import longbridge.models.CorporateUser;
-import longbridge.models.FinancialTransaction;
+import longbridge.models.Limit;
 
 
 /**
@@ -17,21 +17,21 @@ public interface CorporateService {
      *
      * @param corporateCustomer the corporate customer
      */
-    void addCorporateCustomer(CorporateCustomer corporateCustomer);
+    void addCorporate(Corporate corporateCustomer);
 
     /**
      * Deletes a corporate customer
      *
      * @param corporateCustomer the corporate customer
      */
-    void deleteCorporateCustomer(CorporateCustomer corporateCustomer);
+    void deleteCorporate(Corporate corporateCustomer);
 
     /**
      * Updates the details of the corporate customer
      *
      * @param corporateCustomer the corporate customer
      */
-    void updateCorporateCustomer(CorporateCustomer corporateCustomer);
+    void updateCorporateCustomer(Corporate corporateCustomer);
 
     /**
      * Returns a {@code CorporateCustomer} object that has the details of the customer
@@ -39,7 +39,7 @@ public interface CorporateService {
      * @param id the id of the corporate customer
      * @return the corporate customer
      */
-    CorporateCustomer getCorporate(Long id);
+    Corporate getCorporate(Long id);
 
 
 
@@ -48,7 +48,7 @@ public interface CorporateService {
      *
      * @return a list of the corporate customers
      */
-    Iterable<CorporateCustomer> getCorporateCustomers();
+    Iterable<Corporate> getCorporateCustomers();
 
     /**
      * Sets the limit of transaction amount for the corporate customer
@@ -56,7 +56,7 @@ public interface CorporateService {
      * @param corporateCustomer the corporate customer
      * @param limitValue        the limit
      */
-    void setLimit(CorporateCustomer corporateCustomer, double limitValue);
+    void setLimit(Corporate corporateCustomer, Limit limitValue);
 
     /**
      * Updates the limit of transaction amount for the specified corporate customer
@@ -64,7 +64,7 @@ public interface CorporateService {
      * @param corporateCustomer the corporate customer
      * @param limitValue        the limit
      */
-    void updateLimit(CorporateCustomer corporateCustomer, double limitValue);
+    void updateLimit(Corporate corporateCustomer,  Limit limitValue);
 
     /**
      * Returns the transaction limit set for the specified customer
@@ -72,14 +72,14 @@ public interface CorporateService {
      * @param corporateCustomer the corporate customer
      * @return the limit set for the corporate customer
      */
-    double getLimit(CorporateCustomer corporateCustomer);
+    Iterable<Limit>  getLimit(Corporate corporateCustomer);
 
     /**
      * Deletes the transaction limit set for the specified customer
      *
      * @param corporateCustomer the corporate customer
      */
-    void deleteLimit(CorporateCustomer corporateCustomer);
+    void deleteLimit(Corporate corporateCustomer, Limit limit);
 
 
     /**
@@ -119,7 +119,7 @@ public interface CorporateService {
      * @param corporateCustomer the corporate customer
      * @param account           the account
      */
-    void addAccount(CorporateCustomer corporateCustomer, Account account);
+    void addAccount(Corporate corporateCustomer, Account account);
 
     /**
      * Adds a corporate user to a corporate customer
@@ -127,14 +127,14 @@ public interface CorporateService {
      * @param corporateCustomer the corporate customer
      * @param corporateUser     the corporate user
      */
-    void addCorporateUser(CorporateCustomer corporateCustomer, CorporateUser corporateUser);
+    void addCorporateUser(Corporate corporateCustomer, CorporateUser corporateUser);
 
     /**
      * Enables the corporate customer
      *
      * @param corporateCustomer the corporate customer
      */
-    void enableCorporateCustomer(CorporateCustomer corporateCustomer);
+    void enableCorporate(Corporate corporateCustomer);
 
     /**
      * Disables the corporate customer
@@ -142,7 +142,7 @@ public interface CorporateService {
      * @param corporateCustomer the corporate customer
      *
      */
-    void disableCorporateCustomer(CorporateCustomer corporateCustomer);
+    void disableCorporateCustomer(Corporate corporateCustomer);
 
 
 

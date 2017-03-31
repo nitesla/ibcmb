@@ -3,14 +3,13 @@ package longbridge.models;
 import javax.persistence.*;
 
 /**
- * Created by Wunmi on 27/03/2017.
+ * Created by Wunmi on 27/03/2017. CorporateUser is a bank customer. Typically
+ * with a multiple identities representing an organization operating a set of
+ * accounts.
  */
 @Entity
-
 public class CorporateUser extends User {
 
-
-    private Long corporateCustomer_Id;
 
 
     @Override
@@ -63,15 +62,15 @@ public class CorporateUser extends User {
 
     }
 
-    @Override
-    public boolean isEnabled() {
-        return false;
-    }
-
-    @Override
-    public void setEnabled(boolean enabled) {
-
-    }
+//    @Override
+//    public boolean isEnabled() {
+//        return false;
+//    }
+//
+//    @Override
+//    public void setEnabled(boolean enabled) {
+//
+//    }
 
     @Override
     public Role getRole() {
@@ -92,21 +91,17 @@ public class CorporateUser extends User {
     public void setProfile(Profile profile) {
     }
 
-    @Override
-    public String toString() {
-        return "CorporateUser{" +
-                ", corporateCustomer_Id=" + corporateCustomer_Id +
-                '}';
-    }
+
+	private Corporate corporate;
 
 
-    public Long getCorporateCustomer_Id() {
-        return corporateCustomer_Id;
-    }
+	public Corporate getCorporate() {
+		return corporate;
+	}
 
-    public void setCorporateCustomer_Id(Long corporateCustomer_Id) {
-        this.corporateCustomer_Id = corporateCustomer_Id;
-    }
+	public void setCorporate(Corporate corporate) {
+		this.corporate = corporate;
+	}
 
 
 }
