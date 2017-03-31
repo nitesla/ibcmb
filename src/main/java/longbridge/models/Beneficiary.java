@@ -5,8 +5,6 @@ package longbridge.models;
  */
 public abstract class Beneficiary extends AbstractEntity{
 
-
-
     private String ownerId;
     private String name;
 

@@ -7,13 +7,14 @@ import longbridge.models.Code;
  */
 public interface CodeService {
 
-    void  addCode(Code code);
+    boolean  addCode(Code code);
 
-    void deleteCode(Long codeId);
+    boolean deleteCode(Long codeId);
 
     Code getCode(Long codeId);
 
     Iterable<Code> getCodesofType(String codeType);
 
     Iterable<Code> getCodes();
+
 }

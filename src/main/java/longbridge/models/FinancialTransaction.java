@@ -34,7 +34,7 @@ public class FinancialTransaction{
         this.currencyCode = currencyCode;
     }
 
-    public BigDecimal getAmount()er{
+    public BigDecimal getAmount(){
         return amount;
     }
 

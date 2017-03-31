@@ -9,63 +9,64 @@ import longbridge.services.SecurityService;
  * Created by ayoade_farooq@yahoo.com on 3/29/2017.
  */
 public class SecurityServiceImpl implements SecurityService {
+
     @Override
-    public void addProfile() {
+    public void addProfile(Profile profile) {
 
     }
 
     @Override
-    public Profile getProfile() {
+    public Profile getProfile(Long id) {
         return null;
     }
 
     @Override
-    public void updateProfile() {
+    public void updateProfile(Profile profile) {
 
     }
 
     @Override
-    public void deleteProfile() {
+    public void deleteProfile(Long id) {
 
     }
 
     @Override
-    public void addRole() {
+    public void addRole(Role role) {
 
     }
 
     @Override
-    public Role getRole() {
+    public Role getRole(Long id) {
         return null;
     }
 
     @Override
-    public void updateRole() {
+    public void updateRole(Role role) {
 
     }
 
     @Override
-    public void deleteRole() {
+    public void deleteRole(Long id) {
 
     }
 
     @Override
-    public void addPermission() {
+    public void addPermission(Permission permission) {
 
     }
 
     @Override
-    public Permission getPermission() {
+    public Permission getPermission(Long id) {
         return null;
     }
 
     @Override
-    public void updatePermission() {
+    public void updatePermission(Permission permission) {
 
     }
 
     @Override
-    public void deletePermission() {
+    public void deletePermission(Long id) {
 
     }
 }
