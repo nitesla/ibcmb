@@ -37,8 +37,9 @@ public class TransferServiceImpl implements TransferService {
     @Override
     public void deleteTransfer(Long id) {
         Transfer transfer = transferRepo.findById(id);
-        if(transfer!=null){
-
+        if(transfer==null){
+ // todo           throw new Exception("No Transfer found");
+            return;
         }
         transfer.setDelFlag("Y");
         transferRepo.save(transfer);
