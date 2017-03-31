@@ -6,7 +6,8 @@ import longbridge.models.Role;
 
 /**
  * The {@code SecurityService} interface provides the methods for managing roles, profiles and permissions
- * Created by Fortune on 3/28/2017.
+ * @author Fortunatus Ekenachi
+ * Created on 3/28/2017.
  */
 public interface SecurityService {
 
@@ -17,9 +18,9 @@ public interface SecurityService {
     void addProfile(Profile profile);
 
     /**
-     * Returns a profile
+     * Returns a profile that has the specified {@code id}
      * @param id the profile id
-     * @return
+     * @return the profile
      */
     Profile getProfile(Long id);
 

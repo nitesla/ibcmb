@@ -54,8 +54,6 @@ public class Account extends AbstractEntity{
     @OneToMany(mappedBy = "account")
     private Collection<FinancialTransaction> financialTransactions;
 
-
-
     public String getAccountNumber() {
         return accountNumber;
     }
@@ -63,7 +61,6 @@ public class Account extends AbstractEntity{
     public void setAccountNumber(String accountNumber) {
         this.accountNumber = accountNumber;
     }
-
 
     public String getAccountName() {
         return accountName;
@@ -89,12 +86,12 @@ public class Account extends AbstractEntity{
         this.schemeType = schemeType;
     }
 
-    public String getSchmCode() {
+    public String getSchemeCode() {
         return schemeCode;
     }
 
-    public void setSchmCode(String schmCode) {
-        this.schemeCode = schmCode;
+    public void setSchemeCode(String schemeCode) {
+        this.schemeCode = schemeCode;
     }
 
     public String getSolId() {
@@ -105,6 +102,9 @@ public class Account extends AbstractEntity{
         this.solId = solId;
     }
 
+    public Collection<FinancialTransaction> getFinancialTransactions() {
+        return financialTransactions;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -116,10 +116,7 @@ public class Account extends AbstractEntity{
 
         if (!accountId.equals(account.accountId)) return false;
         if (!accountNumber.equals(account.accountNumber)) return false;
-        if (!accountName.equals(account.accountName)) return false;
         if (!customerId.equals(account.customerId)) return false;
-        if (!schemeType.equals(account.schemeType)) return false;
-        if (!schemeCode.equals(account.schemeCode)) return false;
         return solId != null ? solId.equals(account.solId) : account.solId == null;
     }
 
@@ -128,10 +125,7 @@ public class Account extends AbstractEntity{
         int result = super.hashCode();
         result = 31 * result + accountId.hashCode();
         result = 31 * result + accountNumber.hashCode();
-        result = 31 * result + accountName.hashCode();
         result = 31 * result + customerId.hashCode();
-        result = 31 * result + schemeType.hashCode();
-        result = 31 * result + schemeCode.hashCode();
         result = 31 * result + (solId != null ? solId.hashCode() : 0);
         return result;
     }

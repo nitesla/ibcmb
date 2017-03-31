@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Created by Showboy on 29/03/2017.
  */
-public class BeneficiaryImpl implements BeneficiaryService {
+public class BeneficiaryServiceImpl implements BeneficiaryService {
 
     private Logger logger= LoggerFactory.getLogger(this.getClass());
 

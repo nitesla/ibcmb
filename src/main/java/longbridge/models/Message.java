@@ -5,8 +5,7 @@ import org.joda.time.DateTime;
 import javax.persistence.*;
 
 /**
- * The {@code Message} class is a model that shows
- * a message information
+ * The {@code Message} class is a model that shows a message information
  * @author ayoade_farooq@yahoo.com
  * Created on 3/28/2017.
  */
@@ -30,9 +29,9 @@ public class Message extends AbstractEntity{
     public Message() {
     }
 
-    public Message(Long userId, String recepient, String subject, String body, DateTime dateTime, String status, String location) {
+    public Message(Long userId, String recipient, String subject, String body, DateTime dateTime, String status, String location) {
         this.userId = userId;
-        this.recepient = recepient;
+        this.recipient = recipient;
         this.subject = subject;
         this.body = body;
         this.dateTime = dateTime;
@@ -48,12 +47,12 @@ public class Message extends AbstractEntity{
         this.userId = userId;
     }
 
-    public String getRecepient() {
-        return recepient;
+    public String getRecipient() {
+        return recipient;
     }
 
-    public void setRecepient(String recepient) {
-        this.recepient = recepient;
+    public void setRecipient(String recipient) {
+        this.recipient = recipient;
     }
 
     public String getSubject() {
@@ -102,7 +101,7 @@ public class Message extends AbstractEntity{
         return "{\"Message\":"
                 + super.toString()
                 + ",                         \"userId\":\"" + userId + "\""
-                + ",                         \"recepient\":\"" + recepient + "\""
+                + ",                         \"recipient\":\"" + recipient + "\""
                 + ",                         \"subject\":\"" + subject + "\""
                 + ",                         \"body\":\"" + body + "\""
                 + ",                         \"dateTime\":\"" + dateTime + "\""

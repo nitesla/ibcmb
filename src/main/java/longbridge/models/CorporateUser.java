@@ -9,13 +9,6 @@ import javax.persistence.*;
 
 public class CorporateUser extends User {
 
-    //private Long customerType;
-
-
-    private Long corporateCustomer_Id;
-
-    //private Long customerType;
-
 
     private Long corporateCustomer_Id;
 

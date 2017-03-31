@@ -1,27 +1,99 @@
 package longbridge.models;
 
+import org.joda.time.LocalDateTime;
 
+import java.math.BigDecimal;
 
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import java.util.Date;
-
-
-import java.util.Date;
 /**
  * Created by Wunmi on 3/28/2017.
  */
+public class FinancialTransaction{
+    public static enum TranType {DEBIT, CREDIT}
+    private String transactionParticulars;
+    private String currencyCode;
+    private BigDecimal amount;
+    private BigDecimal currentBalance;
+    private TranType tranType;
+    private String accountId;
+    private LocalDateTime valueDate;
+    private LocalDateTime postDate;
 
-@Entity
-public class FinancialTransaction extends AbstractEntity{
+    public String getTransactionParticulars() {
+        return transactionParticulars;
+    }
 
-    private Long transactionType;
-    private Long amount;
-    private String remarks;
-    private Date dateTime;
+    public void setTransactionParticulars(String transactionParticulars) {
+        this.transactionParticulars = transactionParticulars;
+    }
 
-    @ManyToOne
-    private Account account;
+    public String getCurrencyCode() {
+        return currencyCode;
+    }
+
+    public void setCurrencyCode(String currencyCode) {
+        this.currencyCode = currencyCode;
+    }
+
+    public BigDecimal getAmount(){
+        return amount;
+    }
+
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
+    }
+
+    public BigDecimal getCurrentBalance() {
+        return currentBalance;
+    }
+
+    public void setCurrentBalance(BigDecimal currentBalance) {
+        this.currentBalance = currentBalance;
+    }
+
+    public TranType getTranType() {
+        return tranType;
+    }
+
+    public void setTranType(TranType tranType) {
+        this.tranType = tranType;
+    }
+
+    public String getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(String accountId) {
+        this.accountId = accountId;
+    }
+
+    public LocalDateTime getValueDate() {
+        return valueDate;
+    }
+
+    public void setValueDate(LocalDateTime valueDate) {
+        this.valueDate = valueDate;
+    }
+
+    public LocalDateTime getPostDate() {
+        return postDate;
+    }
+
+    public void setPostDate(LocalDateTime postDate) {
+        this.postDate = postDate;
+    }
 
 
+    @Override
+    public String toString() {
+        return "FinancialTransaction{" +
+                "transactionParticulars='" + transactionParticulars + '\'' +
+                ", currencyCode='" + currencyCode + '\'' +
+                ", amount=" + amount +
+                ", currentBalance=" + currentBalance +
+                ", tranType=" + tranType +
+                ", accountId='" + accountId + '\'' +
+                ", valueDate=" + valueDate +
+                ", postDate=" + postDate +
+                '}';
+    }
 }

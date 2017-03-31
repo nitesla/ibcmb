@@ -13,6 +13,6 @@ public class RequestHistory extends AbstractEntity{
     private Long requestId;
     private String status;
     private String comment;
-    private Long updatedBy;
+    private Long createdBy;
     private Date date;
 }

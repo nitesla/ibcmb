@@ -10,11 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 /**
  * Created by Showboy on 29/03/2017.
  */
-public class CodeImpl implements CodeService {
+public class CodeServiceImpl implements CodeService {
     private CodeRepo codeRepo;
 
     @Autowired
-    public CodeImpl(CodeRepo codeRepository) {
+    public CodeServiceImpl(CodeRepo codeRepository) {
         codeRepo = codeRepository;
     }
 

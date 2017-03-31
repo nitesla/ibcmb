@@ -20,40 +20,39 @@ import java.util.*;
 public class ServiceRequest extends AbstractEntity{
 
 
-    private Long senderId;
+    private User user;
     private String serviceRequestType;
     private String subject;
     private String body;
     private String recepient;
-    private Set<String> groupRecepientId;
+    private UserGroup userGroup;
     private DateTime date;
 
 
     public ServiceRequest() {
     }
 
-    public ServiceRequest(Long senderId, String serviceRequestType, String subject, String body, String recepient, Set<String> groupRecepientId, DateTime date) {
-        this.senderId = senderId;
+    public ServiceRequest(User user, String serviceRequestType, String subject, String body, String recepient, UserGroup userGroup, DateTime date) {
+        this.user = user;
         this.serviceRequestType = serviceRequestType;
         this.subject = subject;
         this.body = body;
         this.recepient = recepient;
-        this.groupRecepientId = groupRecepientId;
+        this.userGroup = userGroup;
         this.date = date;
     }
 
 
     @Override
     public String toString() {
-        return "{\"ServiceRequest\":"
-                + super.toString()
-                + ",                         \"senderId\":\"" + senderId + "\""
-                + ",                         \"serviceRequestType\":\"" + serviceRequestType + "\""
-                + ",                         \"subject\":\"" + subject + "\""
-                + ",                         \"body\":\"" + body + "\""
-                + ",                         \"recepient\":\"" + recepient + "\""
-                + ",                         \"groupRecepientId\":" + groupRecepientId
-                + ",                         \"date\":" + date
-                + "}";
+        return "ServiceRequest{" +
+                "user=" + user +
+                ", serviceRequestType='" + serviceRequestType + '\'' +
+                ", subject='" + subject + '\'' +
+                ", body='" + body + '\'' +
+                ", recepient='" + recepient + '\'' +
+                ", userGroup=" + userGroup +
+                ", date=" + date +
+                '}';
     }
 }

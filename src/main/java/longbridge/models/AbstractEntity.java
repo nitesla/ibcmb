@@ -7,7 +7,9 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.Version;
 
 /**
- * An abstract Entity
+ * The {@code AbstractEntity} abstract class is a superclass for all entities.
+ * Entities that are subclasses of this {@code AbstractEntity} inherits the variables and methods defined here
+ * @author Fortunatus Ekenachi
  */
 
 
@@ -18,6 +20,11 @@ public abstract class AbstractEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
 
+    @Version
+    protected int version;
+
+    protected String delFlag;
+
     public Long getId() {
         return id;
     }
@@ -25,11 +32,6 @@ public abstract class AbstractEntity {
     public void setId(Long id) {
         this.id = id;
     }
-
-    @Version
-    protected int version;
-
-    protected String delFlag;
 
     public int getVersion() {
         return version;

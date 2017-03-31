@@ -7,6 +7,7 @@ import java.util.List;
 
 /**The {@code CorporateUserService} interface provides the methods for managing a corporate user
  * @author Fortunatus Ekenachi
+ * @see CorporateUser
  */
 public interface CorporateUserService {
 

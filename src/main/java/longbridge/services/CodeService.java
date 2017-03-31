@@ -4,7 +4,9 @@ import longbridge.models.Code;
 
 /**
  *This {@code CodeService} interface provides the methods for managing system codes
- * A {@link Code} can be used add new items to the system which can be displayed in list or in drop down menus
+ * A {@code Code}can be used add new items to the system which can be displayed in list or in drop down menus
+ * @see Code
+ * @author Wunmi
  */
 public interface CodeService {
 

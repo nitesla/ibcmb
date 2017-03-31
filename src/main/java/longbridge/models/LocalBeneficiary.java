@@ -6,7 +6,7 @@ import javax.persistence.Entity;
  * Created by Showboy on 30/03/2017.
  */
 @Entity
-public class localBeneficiary extends Beneficiary {
+public class LocalBeneficiary extends Beneficiary {
 
     private String beneficiaryType;
 }
