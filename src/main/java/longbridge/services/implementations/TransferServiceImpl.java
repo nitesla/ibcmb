@@ -3,6 +3,7 @@ package longbridge.services.implementations;
 import longbridge.models.Transfer;
 import longbridge.models.User;
 import longbridge.repositories.TransferRepo;
+import longbridge.services.IntegrationService;
 import longbridge.services.TransferService;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -13,9 +14,13 @@ public class TransferServiceImpl implements TransferService {
     @Autowired
     TransferRepo transferRepo;
 
+    @Autowired
+    IntegrationService integrationService;
+
     @Override
     public void makeTransfer(Transfer transfer) {
-        transfer.getAccount();
+//        transfer.getAccount();
+        integrationService.makeTransfer(transfer);
     }
 
     @Override

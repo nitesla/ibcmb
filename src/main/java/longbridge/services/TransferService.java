@@ -20,8 +20,6 @@ public interface TransferService {
 
     Iterable<Transfer> getTransfers(User user);
 
-    Iterable<Transfer> getTransfers();
-
     void saveTransfer(Transfer transfer);
 
     void deleteTransfer(Long id);
