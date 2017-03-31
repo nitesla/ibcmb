@@ -11,4 +11,5 @@ public class InternationalBeneficiary extends Beneficiary {
     private String swiftCode;
     private String sortCode;
 
+
 }

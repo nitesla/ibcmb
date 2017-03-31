@@ -5,30 +5,26 @@ package longbridge.models;
  */
 public abstract class Beneficiary extends AbstractEntity{
 
-
-
-    private String ownerId;
+    private User user;
     private String name;
-
     private String accountNo;
     private String beneficiaryBank;
 
     @Override
     public String toString() {
         return "Beneficiary{" +
-                "ownerId='" + ownerId + '\'' +
                 ", name='" + name + '\'' +
                 ", accountNo='" + accountNo + '\'' +
                 ", beneficiaryBank='" + beneficiaryBank + '\'' +
                 '}';
     }
 
-    public String getOwnerId() {
-        return ownerId;
+    public User getUser() {
+        return user;
     }
 
-    public void setOwnerId(String ownerId) {
-        this.ownerId = ownerId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public String getName() {

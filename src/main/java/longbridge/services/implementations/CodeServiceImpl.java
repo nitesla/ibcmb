@@ -5,12 +5,17 @@ import longbridge.models.Code;
 import longbridge.repositories.CodeRepo;
 
 import longbridge.services.CodeService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Created by Showboy on 29/03/2017.
  */
 public class CodeServiceImpl implements CodeService {
+
+    private Logger logger= LoggerFactory.getLogger(this.getClass());
+
     private CodeRepo codeRepo;
 
     @Autowired
@@ -20,8 +25,22 @@ public class CodeServiceImpl implements CodeService {
 
 
     @Override
-    public void deleteCode(Long codeId) {
+    public boolean deleteCode(Long codeId) {
+        boolean result= false;
 
+        try {
+
+            Code code = codeRepo.findOne(codeId);
+            code.setDelFlag("Y");
+            this.codeRepo.save(code);
+            logger.info("BENEFICIARY {} HAS BEEN DELETED ");
+            result=true;
+        }
+        catch (Exception e){
+            logger.error("ERROR OCCURRED {}",e.getMessage());
+
+        }
+        return result;
     }
 
     @Override
@@ -31,17 +50,28 @@ public class CodeServiceImpl implements CodeService {
 
     @Override
     public Iterable<Code> getCodesofType(String codeType) {
-        return this.codeRepo.findByType(codeType);
+        return this.codeRepo.findByTypeandDelFlag(codeType, "N");
     }
 
     @Override
     public Iterable<Code> getCodes() {
-        return this.codeRepo.findAll();
+        return this.codeRepo.findByDelFlag("N");
     }
 
     @Override
-    public void addCode(Code code) {
+    public boolean addCode(Code code) {
+        boolean result= false;
 
+        try {
+            this.codeRepo.save(code);
+            logger.info("CODE {} HAS BEEN ADDED ");
+            result=true;
+        }
+        catch (Exception e){
+            logger.error("ERROR OCCURRED {}",e.getMessage());
+
+        }
+        return result;
     }
 
 

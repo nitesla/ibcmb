@@ -10,67 +10,7 @@ import javax.persistence.*;
 @Entity
 public class CorporateUser extends User {
 
-
-
-    @Override
-    public String getUserName() {
-        return null;
-    }
-
-    @Override
-    public void setUserName(String userName) {
-
-    }
-
-    @Override
-    public String getFirstName() {
-        return null;
-    }
-
-    @Override
-    public void setFirstName(String firstName) {
-
-    }
-
-    @Override
-    public String getLastName() {
-        return null;
-    }
-
-    @Override
-    public void setLastName(String lastName) {
-
-    }
-
-    @Override
-    public String getEmail() {
-        return null;
-    }
-
-    @Override
-    public void setEmail(String email) {
-
-    }
-
-    @Override
-    public String getPassword() {
-        return null;
-    }
-
-    @Override
-    public void setPassword(String password) {
-
-    }
-
-//    @Override
-//    public boolean isEnabled() {
-//        return false;
-//    }
-//
-//    @Override
-//    public void setEnabled(boolean enabled) {
-//
-//    }
+    private Corporate corporate;
 
     @Override
     public Role getRole() {
@@ -91,10 +31,6 @@ public class CorporateUser extends User {
     public void setProfile(Profile profile) {
     }
 
-
-	private Corporate corporate;
-
-
 	public Corporate getCorporate() {
 		return corporate;
 	}
@@ -102,6 +38,4 @@ public class CorporateUser extends User {
 	public void setCorporate(Corporate corporate) {
 		this.corporate = corporate;
 	}
-
-
 }

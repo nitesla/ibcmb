@@ -9,7 +9,6 @@ import javax.persistence.Entity;
  */
 
 @Entity
-
 public class OperationsUser extends User {
 	
 	@Override

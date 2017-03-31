@@ -47,6 +47,8 @@ public interface MessagingService {
      */
     void  setStatus(String status);
 
+    void setStatus();
+
     /**
      * logical delete of message
      */

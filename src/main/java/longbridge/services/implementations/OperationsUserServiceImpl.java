@@ -27,7 +27,6 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     }
 
     @Autowired
-
     public OperationsUserServiceImpl(UserRepo<OperationsUser, Long> userRepo, BCryptPasswordEncoder passwordEncoder) {
           this.opUserRepo = opUserRepo;
         this.passwordEncoder=passwordEncoder;
