@@ -37,4 +37,9 @@ public interface IntegrationService {
     Map<String, BigDecimal> getBalance(String accountId);
 
 
+    /** Initiates a transfer request to the relevant Transfer service.
+     *
+     */
+    void makeTransfer();
+
 }
