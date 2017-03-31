@@ -1,8 +1,8 @@
 package longbridge.services;
 
 import longbridge.models.Permission;
-import longbridge.models.Profile;
 import longbridge.models.Role;
+import longbridge.models.UserType;
 
 /**
  * The {@code SecurityService} interface provides the methods for managing roles, profiles and permissions
@@ -12,23 +12,23 @@ import longbridge.models.Role;
 public interface SecurityService {
 
   /**
-     * Adds a new profile to the system
-     * @param profile the profile to be added
+     * Adds a new role to the system
+     * @param role the role to be added
      */
-    void addProfile(Profile profile);
+    void addProfile(Role role);
 
     /**
      * Returns a profile that has the specified {@code id}
      * @param id the profile id
      * @return the profile
      */
-    Profile getProfile(Long id);
+    Role getProfile(Long id);
 
     /**
-     * Updates a given profile
-     * @param profile the profile to be updated
+     * Updates a given role
+     * @param role the role to be updated
      */
-    void updateProfile(Profile profile);
+    void updateProfile(Role role);
 
     /**
      * Deletes a profile
@@ -38,22 +38,22 @@ public interface SecurityService {
     void deleteProfile(Long id);
 
     /**
-     * Adds a new role to the system
-     * @param role the role to be added to the system
+     * Adds a new userType to the system
+     * @param userType the userType to be added to the system
      */
-    void addRole(Role role);
+    void addRole(UserType userType);
 
     /**
      * Returns a role
      * @return the role id
      */
-    Role getRole(Long id);
+    UserType getRole(Long id);
 
     /**
-     * Updates the details of the specified role
-     * @param role the role to be updated
+     * Updates the details of the specified userType
+     * @param userType the userType to be updated
      */
-    void updateRole(Role role);
+    void updateRole(UserType userType);
 
     /**
      * Deletes a role

@@ -8,7 +8,6 @@ import javax.persistence.Entity;
 @Entity
 public class Permission extends AbstractEntity{
 
-
     private String name;
     private String description;
     private String code;

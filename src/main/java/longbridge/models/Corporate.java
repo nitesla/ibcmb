@@ -1,8 +1,7 @@
 package longbridge.models;
 
-import java.util.Collection;
-
 import javax.persistence.Entity;
+import java.util.Collection;
 
 /**
  * Created by Fortune on 3/29/2017.
@@ -11,6 +10,7 @@ import javax.persistence.Entity;
 public class Corporate extends AbstractEntity{
 
     private String rcNumber;
+    private String customerId;
     private String companyName;
     private String email;
     private String address;
@@ -18,6 +18,14 @@ public class Corporate extends AbstractEntity{
     private Collection<CorporateUser> users;
     
     private Collection<Beneficiary> beneficiaries;
+
+    public String getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(String customerId) {
+        this.customerId = customerId;
+    }
 
     public String getRcNumber() {
         return rcNumber;

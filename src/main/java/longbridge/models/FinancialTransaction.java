@@ -8,7 +8,7 @@ import java.math.BigDecimal;
  * Created by Wunmi on 3/28/2017.
  */
 public class FinancialTransaction{
-    public String tranType ;
+    private String tranType ;
     private String transactionParticulars;
     private String currencyCode;
     private BigDecimal amount;

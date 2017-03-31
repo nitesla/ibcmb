@@ -1,9 +1,9 @@
 package longbridge.models;
 
-import org.joda.time.DateTime;
+import org.joda.time.LocalDateTime;
 
-import javax.persistence.*;
-import java.util.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 
 /**
@@ -17,7 +17,7 @@ import java.util.*;
         schema = " "
 
 )
-public class ServiceRequest extends AbstractEntity{
+public class ServiceRequest extends AbstractEntity {
 
 
     private User user;
@@ -26,20 +26,20 @@ public class ServiceRequest extends AbstractEntity{
     private String body;
     private String recepient;
     private UserGroup userGroup;
-    private DateTime date;
+    private LocalDateTime requestTime;
 
 
     public ServiceRequest() {
     }
 
-    public ServiceRequest(User user, String serviceRequestType, String subject, String body, String recepient, UserGroup userGroup, DateTime date) {
+    public ServiceRequest(User user, String serviceRequestType, String subject, String body, String recepient, UserGroup userGroup, LocalDateTime date) {
         this.user = user;
         this.serviceRequestType = serviceRequestType;
         this.subject = subject;
         this.body = body;
         this.recepient = recepient;
         this.userGroup = userGroup;
-        this.date = date;
+        this.requestTime = date;
     }
 
 
@@ -52,7 +52,7 @@ public class ServiceRequest extends AbstractEntity{
                 ", body='" + body + '\'' +
                 ", recepient='" + recepient + '\'' +
                 ", userGroup=" + userGroup +
-                ", date=" + date +
+                ", requestTime=" + requestTime +
                 '}';
     }
 }

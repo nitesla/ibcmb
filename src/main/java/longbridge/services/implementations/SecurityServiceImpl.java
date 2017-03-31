@@ -1,8 +1,8 @@
 package longbridge.services.implementations;
 
 import longbridge.models.Permission;
-import longbridge.models.Profile;
 import longbridge.models.Role;
+import longbridge.models.UserType;
 import longbridge.services.SecurityService;
 
 /**
@@ -11,12 +11,12 @@ import longbridge.services.SecurityService;
 public class SecurityServiceImpl implements SecurityService {
 
     /**
-     * Adds a new profile to the system
+     * Adds a new role to the system
      *
-     * @param profile the profile to be added
+     * @param role the role to be added
      */
     @Override
-    public void addProfile(Profile profile) {
+    public void addProfile(Role role) {
 
     }
 
@@ -27,17 +27,17 @@ public class SecurityServiceImpl implements SecurityService {
      * @return
      */
     @Override
-    public Profile getProfile(Long id) {
+    public Role getProfile(Long id) {
         return null;
     }
 
     /**
-     * Updates a given profile
+     * Updates a given role
      *
-     * @param profile the profile to be updated
+     * @param role the role to be updated
      */
     @Override
-    public void updateProfile(Profile profile) {
+    public void updateProfile(Role role) {
 
     }
 
@@ -53,12 +53,12 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     /**
-     * Adds a new role to the system
+     * Adds a new userType to the system
      *
-     * @param role the role to be added to the system
+     * @param userType the userType to be added to the system
      */
     @Override
-    public void addRole(Role role) {
+    public void addRole(UserType userType) {
 
     }
 
@@ -69,17 +69,17 @@ public class SecurityServiceImpl implements SecurityService {
      * @return the role id
      */
     @Override
-    public Role getRole(Long id) {
+    public UserType getRole(Long id) {
         return null;
     }
 
     /**
-     * Updates the details of the specified role
+     * Updates the details of the specified userType
      *
-     * @param role the role to be updated
+     * @param userType the userType to be updated
      */
     @Override
-    public void updateRole(Role role) {
+    public void updateRole(UserType userType) {
 
     }
 

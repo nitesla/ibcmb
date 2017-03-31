@@ -8,7 +8,8 @@ import javax.persistence.Entity;
 @Entity
 public class LocalBeneficiary extends Beneficiary {
 
-    private String beneficiaryType;
-
-
+    @Override
+    public String toString() {
+        return "LocalBeneficiary{" + super.toString() + "}";
+    }
 }

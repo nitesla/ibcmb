@@ -19,10 +19,18 @@ public class AdminUser extends User {
 		this.authenticateMethod = authenticateMethod;
 	}
 	
-	
-	@Override
-	public String toString() {
+	public AdminUser(){
+		this.role = (UserType.ADMIN.toString());
+	}
+
+	public String toString2() {
 		return "AdminUser ["+super.toString()+"]";
 	}
-    
+
+	@Override
+	public String toString() {
+		return "AdminUser{" +super.toString()+"," +
+				"authenticateMethod='" + authenticateMethod + '\'' +
+				'}';
+	}
 }

@@ -10,11 +10,12 @@ import javax.persistence.Entity;
 
 @Entity
 public class OperationsUser extends User {
-	
+	public OperationsUser(){
+		this.role = (UserType.OPERATIONS.toString());
+	}
 	@Override
 	public String toString() {
-		return "OperationsUser ["+super.toString()+"]";
+		return "OperationsUser{"+super.toString()+"}";
 	}
-
 
 }

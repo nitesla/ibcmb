@@ -2,8 +2,8 @@
 //package longbridge.security;
 //
 //import longbridge.models.Permission;
-//import longbridge.models.Profile;
 //import longbridge.models.Role;
+//import longbridge.models.UserType;
 //import longbridge.models.User;
 //import longbridge.services.UserService;
 //import org.springframework.beans.factory.annotation.Autowired;
@@ -42,8 +42,8 @@
 ////package longbridge.security;
 ////
 ////import longbridge.models.Permission;
-////import longbridge.models.Profile;
 ////import longbridge.models.Role;
+////import longbridge.models.UserType;
 ////import longbridge.models.User;
 ////import longbridge.services.UserService;
 ////import org.springframework.beans.factory.annotation.Autowired;
@@ -87,7 +87,7 @@
 ////
 ////            return new org.springframework.security.core.userdetails.User(
 ////                    user.getEmail(), user.getPassword(), user.isEnabled(), true, true,
-////                    true, getAuthorities(user.getProfile(), user.getRole()));
+////                    true, getAuthorities(user.getRole(), user.getUserType()));
 ////
 ////        } catch (Exception e) {
 ////            throw new RuntimeException(e);
@@ -98,22 +98,22 @@
 ////    }
 ////
 ////    private Collection<? extends GrantedAuthority> getAuthorities(
-////            Profile profile, Role role) {
+////            Role profile, UserType role) {
 ////
 ////        return getGrantedAuthorities(getPrivileges(profile, role));
 ////    }
 ////
-////    private List<String> getPrivileges(Profile profile, Role role) {
+////    private List<String> getPrivileges(Role profile, UserType role) {
 ////
 ////        List<String> permissions = new ArrayList<>();
 ////        List<Permission> collection = new ArrayList<>();
-////        //for (Role role : roles) {
+////        //for (UserType role : roles) {
 ////            permissions.add(role.getName());
 ////        //}
-////        //for (Profile profile : profiles) {
+////        //for (Role profile : profiles) {
 ////            permissions.add(profile.getName());
 ////        //}
-////        //for (Profile profile : profiles) {
+////        //for (Role profile : profiles) {
 ////            collection.addAll(profile.getPermissions());
 ////        //}
 ////        for (Permission item : collection) {
