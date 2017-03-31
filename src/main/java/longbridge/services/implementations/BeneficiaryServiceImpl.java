@@ -4,9 +4,11 @@ import longbridge.models.Beneficiary;
 import longbridge.models.InternationalBeneficiary;
 import longbridge.models.LocalBeneficiary;
 import longbridge.models.User;
+import longbridge.repositories.BeneficiaryRepo;
 import longbridge.services.BeneficiaryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Created by Showboy on 29/03/2017.
@@ -15,43 +17,106 @@ public class BeneficiaryServiceImpl implements BeneficiaryService {
 
     private Logger logger= LoggerFactory.getLogger(this.getClass());
 
+    private BeneficiaryRepo<LocalBeneficiary, Long> localBeneficiary;
+    private BeneficiaryRepo<InternationalBeneficiary, Long> internationalBeneficiary;
+
+    @Autowired
+    public BeneficiaryServiceImpl(BeneficiaryRepo<LocalBeneficiary, Long> localBeneficiary, BeneficiaryRepo<InternationalBeneficiary, Long> internationalBeneficiary) {
+        this.localBeneficiary = localBeneficiary;
+        this.internationalBeneficiary=internationalBeneficiary;
+    }
+
     @Override
     public boolean addLocalBeneficiary(User user, LocalBeneficiary beneficiary) {
-        return false;
+        boolean result= false;
+
+        try {
+
+            beneficiary.setUser(user);
+            this.localBeneficiary.save(beneficiary);
+            logger.info("BENEFICIARY {} HAS BEEN ADDED ");
+            result=true;
+        }
+        catch (Exception e){
+            logger.error("ERROR OCCURRED {}",e.getMessage());
+
+        }
+        return result;
     }
 
     @Override
     public boolean deleteLocalBeneficiary(Long beneficiaryId) {
-        return false;
+        boolean result= false;
+
+        try {
+
+            LocalBeneficiary beneficiary = localBeneficiary.findOne(beneficiaryId);
+            beneficiary.setDelFlag("Y");
+            this.localBeneficiary.save(beneficiary);
+            logger.info("BENEFICIARY {} HAS BEEN DELETED ");
+            result=true;
+        }
+        catch (Exception e){
+            logger.error("ERROR OCCURRED {}",e.getMessage());
+
+        }
+        return result;
     }
 
     @Override
     public Beneficiary getLocalBeneficiary(Long id) {
-        return null;
+        return localBeneficiary.findOne(id);
     }
 
     @Override
     public Iterable<Beneficiary> getLocalBeneficiaries(User user) {
-        return null;
+        return localBeneficiary.findByUserAndDelFlag(user, "N");
     }
 
     @Override
     public boolean addInternationalBeneficiary(User user, InternationalBeneficiary beneficiary) {
-        return false;
+        boolean result= false;
+
+        try {
+
+            beneficiary.setUser(user);
+            this.internationalBeneficiary.save(beneficiary);
+            logger.info("BENEFICIARY {} HAS BEEN ADDED ");
+            result=true;
+        }
+        catch (Exception e){
+            logger.error("ERROR OCCURRED {}",e.getMessage());
+
+        }
+        return result;
     }
 
     @Override
     public boolean deleteInternationalBeneficiary(Long beneficiaryId) {
-        return false;
+        boolean result= false;
+
+        try {
+
+            InternationalBeneficiary beneficiary = internationalBeneficiary.findOne(beneficiaryId);
+            beneficiary.setDelFlag("Y");
+            this.internationalBeneficiary.save(beneficiary);
+            logger.info("BENEFICIARY {} HAS BEEN DELETED ");
+            result=true;
+        }
+        catch (Exception e){
+            logger.error("ERROR OCCURRED {}",e.getMessage());
+
+        }
+        return result;
     }
 
     @Override
     public Beneficiary getInternationalBeneficiary(Long id) {
-        return null;
+        return internationalBeneficiary.findOne(id);
     }
 
     @Override
     public Iterable<Beneficiary> getInternationalBeneficiaries(User user) {
-        return null;
+        return internationalBeneficiary.findByUserAndDelFlag(user, "N");
     }
 }

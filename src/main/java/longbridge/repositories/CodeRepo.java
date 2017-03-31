@@ -11,4 +11,6 @@ public interface CodeRepo extends JpaRepository<Code, Long>{
     Iterable<Code> findByTypeandDelFlag(String type, String delFlag);
 
     Iterable<Code> findByDelFlag(String delFlag);
+
+
 }
