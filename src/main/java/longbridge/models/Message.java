@@ -17,8 +17,8 @@ import javax.persistence.*;
 public class Message extends AbstractEntity{
 
 
-    private Long userId;
-    private String recipient;
+    private User sender;
+    private User recipient;
     private String subject;
     private String body;
     private DateTime dateTime;
@@ -29,8 +29,8 @@ public class Message extends AbstractEntity{
     public Message() {
     }
 
-    public Message(Long userId, String recipient, String subject, String body, DateTime dateTime, String status, String location) {
-        this.userId = userId;
+    public Message(User sender, User recipient, String subject, String body, DateTime dateTime, String status, String location) {
+        this.sender = sender;
         this.recipient = recipient;
         this.subject = subject;
         this.body = body;
@@ -39,19 +39,19 @@ public class Message extends AbstractEntity{
         this.location = location;
     }
 
-    public Long getUserId() {
-        return userId;
+    public User getSender() {
+        return sender;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setSender(User sender) {
+        this.sender = sender;
     }
 
-    public String getRecipient() {
+    public User getRecipient() {
         return recipient;
     }
 
-    public void setRecipient(String recipient) {
+    public void setRecipient(User recipient) {
         this.recipient = recipient;
     }
 
@@ -98,7 +98,7 @@ public class Message extends AbstractEntity{
     @Override
     public String toString() {
         return "Message{" +
-                "userId=" + userId +
+                "sender=" + sender +
                 ", recipient='" + recipient + '\'' +
                 ", subject='" + subject + '\'' +
                 ", body='" + body + '\'' +

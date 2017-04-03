@@ -29,23 +29,30 @@ public interface RetailUserService {
      */
     void setPassword(RetailUser User, String password);
 
-    void addUser();
+    /**
+     * Adds a new retail user to the system
+     * @param retailUser the retail user to be added
+     */
+    void addUser(RetailUser retailUser);
 
     /**
      * Resets the password of the specified Retail user
-     *
+     *@param retailUser the retail user
      */
-    void resetPassword();
+    void resetPassword(RetailUser retailUser);
 
     /**
      *Replaces the old password with the new password
+     * The new password must meed the password policy of the organization if any one is defined
+     * It is important that the password is hashed before storing it
+     * @param retailUser  the retail user
      * @param oldPassword the old password
      * @param newPassword the new password
      */
-    void changePassword(String oldPassword, String newPassword);
+    void changePassword(RetailUser retailUser, String oldPassword, String newPassword);
 
     /**
-     *Generates a password and send it to the specified user
+     *Generates a password and sends it to the specified retail user
      * @param retailUser the user
      */
     void generateAndSendPassword(RetailUser retailUser);

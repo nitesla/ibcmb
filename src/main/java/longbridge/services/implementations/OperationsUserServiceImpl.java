@@ -21,8 +21,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     private BCryptPasswordEncoder passwordEncoder;
 
 
-    public OperationsUserServiceImpl()
-    {
+    public OperationsUserServiceImpl() {
 
     }
 

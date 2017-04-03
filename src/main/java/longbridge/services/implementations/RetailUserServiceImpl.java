@@ -27,18 +27,17 @@ public class RetailUserServiceImpl implements RetailUserService {
     }
 
     @Override
-    public void addUser()
-    {
+    public void addUser(RetailUser retailUser) {
 
     }
 
     @Override
-    public void resetPassword() {
+    public void resetPassword(RetailUser retailUser) {
 
     }
 
     @Override
-    public void changePassword(String oldPassword, String newPassword) {
+    public void changePassword(RetailUser retailUser, String oldPassword, String newPassword) {
 
     }
 

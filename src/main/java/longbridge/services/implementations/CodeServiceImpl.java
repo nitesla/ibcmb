@@ -8,7 +8,7 @@ import longbridge.services.CodeService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * Created by Showboy on 29/03/2017.
+ * Created by Wunmi on 29/03/2017.
  */
 public class CodeServiceImpl implements CodeService {
     private CodeRepo codeRepo;

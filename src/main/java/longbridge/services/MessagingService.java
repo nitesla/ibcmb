@@ -1,77 +1,95 @@
 package longbridge.services;
 
 import longbridge.models.Message;
+import longbridge.models.User;
 
 import java.awt.print.Pageable;
 import java.util.Date;
 
 /**
  * The {@code MessagingService} interface provides a service for sending messages
+ * @author Fortunatus Ekenachi
+ * @see Message
  * Created on 3/29/2017.
  */
 public interface MessagingService {
 
-    Iterable<Message> getMessages();
-
     /**
-     * The getMessages get
-     * @param firstRecord the firstRecord
-     * @param totalNumOfRecords the total Number of Records
-     * @return this will return a list of messages
+     *Returns a {@code Message} identified by the given {@code id}
+     * @param id the message's id
+     * @return the {@code Message} object
      */
-
-    Pageable getMessages(int firstRecord, int totalNumOfRecords);
-
     Message getMessage(Long id);
 
-    Message getMessage(Date date);
+    /**
+     * Returns a list of messages for the specified user
+     * @param user the user
+     * @return a list of messages
+     */
+    Iterable<Message> getMessages(User user);
 
     /**
-     *
+     * Returns a page of messages specified by the {@code firstRecord} and {@code totalNumOfRecords}
+     * @param firstRecord the firstRecord
+     * @param totalNumOfRecords the total Number of Records
+     * @return a list of messages
+     */
+
+    Pageable getMessages(User user,int firstRecord, int totalNumOfRecords);
+
+
+    /**
+     * Returns a list of messages on the given date
+     * @param date the date on the messages
+     * @return the list of messages
+     */
+   Iterable<Message> getMessages(User user,Date date);
+
+    /**
+     *Returns a list of messages within the given date range
      * @param fromDate the start date
      * @param toDate the end date
-     * @return the start date and end date
+     * @return a list of messages
      */
-    Iterable<Message> getMessage(Date fromDate, Date toDate);
+    Iterable<Message> getMessage(User user,Date fromDate, Date toDate);
 
     /**
-     *
+     *Marks the message as READ or UNREAD
      * @param asType the type
      * @return the message as read and unread
      */
-    void markMessage(String asType); //Read or Unread
+    void markMessage(Message message,String asType); //Read or Unread
 
     /**
-     * set the status of the message which can be read and unread
-     * @param status the status
+     * set the status of the message which can be DELIVERED or UNDELIVERED
+     * @param status the status of the message
      */
-    void  setStatus(String status);
+    void  setStatus(Message message,String status);
 
     /**
-     * logical delete of message
+     * Deletes the message identified by the given {@code id}
+     * @param id the message id
      */
-    void deleteMessage();
+    void deleteMessage(Long id);
 
     /**
-     * purge method clears message after a specific period
-     */
-    void purge();
-
-    /**
-     *
+     *Purges the messages after the specified days
      * @param daysOld the daysOld
      */
     void purge(int daysOld);
 
     /**
-     *
+     *Purges the messages with the given date range
      * @param fromDate the start date
      * @param toDate the end date
      */
     void purge(Date fromDate, Date toDate);
 
     /**
-     * create message
+     * Creates and sends the message from the sender to the recipient
+     * @param sender the user that sends the message
+     * @param recipient the user the recieves the message
+     * @param message  the message
      */
-    void sendMessage();
+    void sendMessage(User sender, User recipient, Message message);
 }

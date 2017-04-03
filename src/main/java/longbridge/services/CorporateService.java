@@ -13,14 +13,14 @@ import longbridge.models.Limit;
 public interface CorporateService {
 
     /**
-     * Adds a corporate customer
+     * Adds a new corporate customer to the system
      *
      * @param corporateCustomer the corporate customer
      */
     void addCorporate(Corporate corporateCustomer);
 
     /**
-     * Deletes a corporate customer
+     * Deletes the given corporate customer
      *
      * @param corporateCustomer the corporate customer
      */

@@ -13,7 +13,7 @@ import longbridge.models.CorporateUser;
 public interface CorporateUserService {
 
     /**
-     * Returns a corporate user
+     * Returns a corporate user specified by the {@code id}
      * @param id the corporate user's id
      * @return the user
      */
@@ -42,7 +42,7 @@ public interface CorporateUserService {
     void setPassword(CorporateUser user, String hashedPassword);
 
     /**
-     * Adds a corporate user to corporate customer
+     * Adds a corporate user to a corporate customer
      * @param user the corporate user
      */
     void addUser(CorporateUser user);
@@ -60,20 +60,21 @@ public interface CorporateUserService {
     void deleteUser(CorporateUser user);
 
     /**
-     * Enables the corporate user
+     * Enables the corporate user. This allows the corporate user to perform
+     * operations with the required permissions
      * @param user the corporate user
      */
     void enableUser(CorporateUser user);
 
     /**
-     * Disables the corporate user
+     * Disables the corporate user. A disabled user cannot access the system.
      * @param user disables the corporate user
      */
     void disableUser(CorporateUser user);
     
     /**
      * Temporarily Locks the corporate user
-     * @param user disables the corporate user
+     * @param user the corporate user
      */
     void lockUser(CorporateUser user, Date unlockat);
 
