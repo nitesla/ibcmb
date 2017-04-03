@@ -35,7 +35,7 @@ public interface MessagingService {
      * @return a list of messages
      */
 
-    Pageable getMessages(User user,int firstRecord, int totalNumOfRecords);
+    Pageable getMessages(User user, int firstRecord, int totalNumOfRecords);
 
 
     /**
@@ -43,7 +43,7 @@ public interface MessagingService {
      * @param date the date on the messages
      * @return the list of messages
      */
-   Iterable<Message> getMessages(User user,Date date);
+   Iterable<Message> getMessages(User user, Date date);
 
     /**
      *Returns a list of messages within the given date range
@@ -51,7 +51,7 @@ public interface MessagingService {
      * @param toDate the end date
      * @return a list of messages
      */
-    Iterable<Message> getMessage(User user,Date fromDate, Date toDate);
+    Iterable<Message> getMessage(User user, Date fromDate, Date toDate);
 
     /**
      *Marks the message as READ or UNREAD

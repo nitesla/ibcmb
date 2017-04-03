@@ -7,7 +7,7 @@ import javax.persistence.Entity;
  * and it configurations. They don't take part directly in transaction impacting activities
  */
 @Entity
-public class AdminUser extends User {
+public class AdminUser extends User{
 
 	private String authenticateMethod;
 
@@ -20,7 +20,7 @@ public class AdminUser extends User {
 	}
 	
 	public AdminUser(){
-		this.role = (UserType.ADMIN.toString());
+		this.userType = (UserType.ADMIN.toString());
 	}
 
 	public String toString2() {

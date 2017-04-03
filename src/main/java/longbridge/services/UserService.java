@@ -9,11 +9,8 @@ import org.springframework.stereotype.Service;
  * Created by Wunmi on 27/03/2017.
  */
 @Service
-public class UserService {
-    @Autowired
-    private UserRepo userRepository;
+public interface UserService {
 
-    public User findByEmail(String email){
-        return userRepository.findByEmail(email);
-    }
+    public User findByEmail(String email);
+
 }

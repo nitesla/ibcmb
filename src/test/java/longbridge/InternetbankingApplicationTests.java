@@ -12,14 +12,14 @@ import static org.junit.Assert.assertEquals;
 @SpringBootTest
 public class InternetbankingApplicationTests {
 
-	@Test
-	public void contextLoads() {
-
-        Account account = new Account();
-        account.setAccountNumber("123456");
-        String acct = account.getAccountNumber();
-        assertEquals("123456", acct);
-
-	}
+//	@Test
+//	public void contextLoads() {
+//
+//        Account account = new Account();
+//        account.setAccountNumber("123456");
+//        String acct = account.getAccountNumber();
+//        assertEquals("123456", acct);
+//
+//	}
 
 }

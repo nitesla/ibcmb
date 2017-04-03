@@ -10,7 +10,7 @@ import java.util.Collection;
 
 
 @Entity
-public class RetailUser extends User{
+public class RetailUser extends AbstractEntity {
 
 
 	private Collection<Beneficiary> beneficiaries;
@@ -27,9 +27,9 @@ public class RetailUser extends User{
 	}
 
 
-	public RetailUser(){
-		this.role = (UserType.RETAIL.toString());
-	}
+//	public RetailUser(){
+//		this.userType = (UserType.RETAIL.toString());
+//	}
 
 	@Override
 	public String toString() {

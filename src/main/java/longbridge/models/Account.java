@@ -12,12 +12,13 @@ import java.util.Collection;
  * Created on 3/28/2017.
  */
 
+
+/*
+//@Table(name = "ACCOUNT_TABLE",/*SCHEMA NAME WILL COME IN LATER*/
+       // schema = " ",//TODO
+//        @UniqueConstraint(columnNames={"accountId", "accountNumber"})
+//)*/
 @Entity
-@Table(name = "ACCOUNT_TABLE",/*SCHEMA NAME WILL COME IN LATER*/
-        schema = " ",//TODO
-        uniqueConstraints=
-        @UniqueConstraint(columnNames={"accountId", "accountNumber"})
-)
 public class Account extends AbstractEntity{
 
 
@@ -51,8 +52,8 @@ public class Account extends AbstractEntity{
         this.accountId = accountId;
     }
 
-    @OneToMany(mappedBy = "account")
-    private Collection<FinancialTransaction> financialTransactions;
+//    @OneToMany(mappedBy = "account")
+//    private Collection<FinancialTransaction> financialTransactions;
 
     public String getAccountNumber() {
         return accountNumber;
@@ -102,9 +103,9 @@ public class Account extends AbstractEntity{
         this.solId = solId;
     }
 
-    public Collection<FinancialTransaction> getFinancialTransactions() {
-        return financialTransactions;
-    }
+//   public Collection<FinancialTransaction> getFinancialTransactions() {
+//        return financialTransactions;
+//    }
 
     @Override
     public boolean equals(Object o) {

@@ -8,7 +8,7 @@ import java.util.Date;
  * Created by Showboy on 29/03/2017.
  */
 @MappedSuperclass
-public abstract class User extends AbstractEntity {
+public /*abstract*/ class User extends AbstractEntity {
 
     private String userName;
     private String firstName;
@@ -22,7 +22,9 @@ public abstract class User extends AbstractEntity {
     private int noOfLoginAttempts;
 
 
-    protected String role;
+    protected String userType;
+
+
 
 
     @ManyToOne
@@ -84,14 +86,10 @@ public abstract class User extends AbstractEntity {
 		this.status = status;
 	}
 
-	public String getRole() {
+	public Role getRole() {
         return role;
     }
 
-
-    public Role getRole() {
-        return role;
-    }
 
     public void setRole(Role role) {
         this.role = role;
@@ -137,7 +135,11 @@ public abstract class User extends AbstractEntity {
 		this.noOfLoginAttempts = noOfLoginAttempts;
 	}
 
-	@Override
+    public String getUserType() {return userType;}
+
+    public void setUserType(String userType) {this.userType = userType;}
+
+    @Override
 	public String toString() {
 		return "User [userName=" + userName + ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email
 				+ ", status=" + status + ", role=" + role + "]";

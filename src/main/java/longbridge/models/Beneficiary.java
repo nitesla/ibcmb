@@ -1,8 +1,12 @@
 package longbridge.models;
 
+import javax.persistence.MappedSuperclass;
+
 /**
  * Created by Wunmi on 27/03/2017.
  */
+
+@MappedSuperclass
 public abstract class Beneficiary extends AbstractEntity{
 
     private User user;

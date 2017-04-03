@@ -13,7 +13,7 @@ public class CorporateUser extends User {
     private Corporate corporate;
 
     public CorporateUser(){
-		this.role = (UserType.CORPORATE.toString());
+		this.userType = (UserType.CORPORATE.toString());
 	}
 	public Corporate getCorporate() {
 		return corporate;

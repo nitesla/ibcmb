@@ -2,7 +2,6 @@ package longbridge.services;
 
 import longbridge.models.Permission;
 import longbridge.models.Role;
-import longbridge.models.UserType;
 
 /**
  * The {@code SecurityService} interface provides the methods for managing roles, profiles and permissions

@@ -54,7 +54,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
 
      try {
 
-         User.setPassword(this.passwordEncoder.encode(User.getPassword()));
+//         User.setPassword(this.passwordEncoder.encode(User.getPassword()));
 
          this.opUserRepo.save(User);
          logger.info("USER {} HAS BEEN ADDED ",User.getId());
@@ -78,7 +78,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     }
 
     @Override
-    public boolean changePassword(OperationsUser User,String oldPassword, String newPassword) {
+    public boolean changePassword(OperationsUser User, String oldPassword, String newPassword) {
       boolean ok=false;
 
 

@@ -2,7 +2,6 @@ package longbridge.models;
 
 import org.joda.time.LocalDateTime;
 
-import javax.persistence.*;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
