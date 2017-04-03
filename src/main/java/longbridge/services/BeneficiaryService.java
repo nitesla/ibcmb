@@ -1,9 +1,6 @@
 package longbridge.services;
 
-import longbridge.models.Beneficiary;
-import longbridge.models.InternationalBeneficiary;
-import longbridge.models.LocalBeneficiary;
-import longbridge.models.User;
+import longbridge.models.*;
 
 /**
  * The {@code BeneficiaryService} interface provides the methods to manage the customer's beneficiaries
@@ -20,7 +17,7 @@ public interface BeneficiaryService {
      * @param user the customer
      * @param  beneficiary  the beneficiary
      */
-    boolean addLocalBeneficiary(User user, LocalBeneficiary beneficiary);
+    boolean addLocalBeneficiary(RetailUser user, LocalBeneficiary beneficiary);
 
     /**
      * Deletes a beneficiary that has been created by the user
@@ -47,7 +44,7 @@ public interface BeneficiaryService {
      * @param user the customer
      * @param  beneficiary  the beneficiary
      */
-    boolean addInternationalBeneficiary(User user, InternationalBeneficiary beneficiary);
+    boolean addInternationalBeneficiary(RetailUser user, InternationalBeneficiary beneficiary);
 
     /**
      * Deletes a beneficiary

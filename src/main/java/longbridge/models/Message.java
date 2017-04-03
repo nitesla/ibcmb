@@ -10,14 +10,10 @@ import javax.persistence.Entity;
  * Created on 3/28/2017.
  */
 @Entity
-//@Table(name = "MESSAGE_TABLE",/*SCHEMA NAME WILL COME IN LATER*/
-    //    schema = " "
-
-//)
 public class Message extends AbstractEntity{
 
 
-    private User sender;
+    private String sender;
     private String recipient;
     private String subject;
     private String body;
@@ -30,7 +26,7 @@ public class Message extends AbstractEntity{
     }
 
 
-    public Message(User sender, String recipient, String subject, String body, LocalDateTime dateTime, String status, String location) {
+    public Message(String sender, String recipient, String subject, String body, LocalDateTime dateTime, String status, String location) {
         this.sender = sender;
         this.recipient = recipient;
         this.subject = subject;
@@ -40,11 +36,11 @@ public class Message extends AbstractEntity{
         this.location = location;
     }
 
-    public User getSender() {
+    public String getSender() {
         return sender;
     }
 
-    public void setSender(User sender) {
+    public void setSender(String sender) {
         this.sender = sender;
     }
 

@@ -1,8 +1,6 @@
 package longbridge.models;
 
 import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
 
 /**
  * The {@code FinancialInstitution} class model contains details of a bank or any
@@ -17,9 +15,6 @@ public class FinancialInstitution extends AbstractEntity {
     private String institutionCode;
 
     private String institutionName;
-
-    @OneToMany(mappedBy = "financialInstitution")
-    private Transfer transfer;
 
     public String getInstitutionCode() {
         return institutionCode;

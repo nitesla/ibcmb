@@ -21,13 +21,10 @@ public class AdminUser extends User{
 	
 	public AdminUser(){
 
-		this.userType = (UserType.ADMIN.toString());
+		this.userType = (UserType.ADMIN);
 
 	}
 
-	public String toString2() {
-		return "AdminUser ["+super.toString()+"]";
-	}
 
 	@Override
 	public String toString() {

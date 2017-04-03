@@ -1,6 +1,7 @@
 package longbridge.models;
 
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import java.util.Collection;
 
 /**
@@ -14,10 +15,15 @@ public class Corporate extends AbstractEntity{
     private String companyName;
     private String email;
     private String address;
-   
+
+    @OneToMany
     private Collection<CorporateUser> users;
-    
-    private Collection<Beneficiary> beneficiaries;
+
+//    @OneToMany
+//    private Collection<Beneficiary> beneficiaries;
+
+    @OneToMany
+    private Collection<CorpLimit> corpLimits;
 
     public String getCustomerId() {
         return customerId;
@@ -69,13 +75,13 @@ public class Corporate extends AbstractEntity{
 		this.users = users;
 	}
 
-	public Collection<Beneficiary> getBeneficiaries() {
-		return beneficiaries;
-	}
-
-	public void setBeneficiaries(Collection<Beneficiary> beneficiaries) {
-		this.beneficiaries = beneficiaries;
-	}
+//	public Collection<Beneficiary> getBeneficiaries() {
+//		return beneficiaries;
+//	}
+//
+//	public void setBeneficiaries(Collection<Beneficiary> beneficiaries) {
+//		this.beneficiaries = beneficiaries;
+//	}
 
 	@Override
 	public String toString() {

@@ -1,7 +1,8 @@
 package longbridge.models;
 
-import javax.persistence.*;
-import java.util.Date;
+import org.joda.time.LocalDateTime;
+
+import javax.persistence.Entity;
 
 /**
  * Created by Wunmi on 27/03/2017.
@@ -10,7 +11,7 @@ import java.util.Date;
 public class Loan extends AbstractEntity{
 
     private String loanType;
-    private Date startDate;
+    private LocalDateTime startDate;
     private Long amount;
     private String tenure;
     private Long rate;
