@@ -33,7 +33,7 @@ public class CodeServiceImpl implements CodeService {
             Code code = codeRepo.findOne(codeId);
             code.setDelFlag("Y");
             this.codeRepo.save(code);
-            logger.info("BENEFICIARY {} HAS BEEN DELETED ");
+            logger.info("Code {} HAS BEEN DELETED ",code.toString());
             result=true;
         }
         catch (Exception e){

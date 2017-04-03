@@ -15,13 +15,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 public class AdminUserServiceImpl implements AdminUserService {
 
     private Logger logger= LoggerFactory.getLogger(this.getClass());
-    private UserRepo<AdminUser, Long> adminUserLongUserRepo;
+    private UserRepo<AdminUser, Long> adminUserRepo;
     private BCryptPasswordEncoder passwordEncoder;
 
 @Autowired
-public AdminUserServiceImpl(UserRepo<AdminUser, Long> adminUserLongUserRepo, BCryptPasswordEncoder passwordEncoder){
+public AdminUserServiceImpl(UserRepo<AdminUser, Long> adminUserRepo, BCryptPasswordEncoder passwordEncoder){
 
-    this.adminUserLongUserRepo=adminUserLongUserRepo;
+    this.adminUserRepo = adminUserRepo;
     this.passwordEncoder=passwordEncoder;
 }
     public AdminUserServiceImpl(){
@@ -30,12 +30,12 @@ public AdminUserServiceImpl(UserRepo<AdminUser, Long> adminUserLongUserRepo, BCr
 
     @Override
     public AdminUser getUser(Long id) {
-        return this.adminUserLongUserRepo.findOne(id);
+        return this.adminUserRepo.findOne(id);
     }
 
     @Override
     public Iterable<AdminUser> getUsers() {
-        return this.adminUserLongUserRepo.findAll();
+        return this.adminUserRepo.findAll();
     }
 
     @Override
@@ -56,7 +56,7 @@ public AdminUserServiceImpl(UserRepo<AdminUser, Long> adminUserLongUserRepo, BCr
 
         if(user!=null){
             user.setPassword(this.passwordEncoder.encode(user.getPassword()));
-            this.adminUserLongUserRepo.save(user);
+            this.adminUserRepo.save(user);
             logger.info("USER {} HAS BEEN CREATED");
         }
         else{logger.error("USER NOT FOUND");}
@@ -81,8 +81,6 @@ public AdminUserServiceImpl(UserRepo<AdminUser, Long> adminUserLongUserRepo, BCr
     @Override
     public boolean changePassword(AdminUser user,String oldPassword, String newPassword) {
         boolean ok = false;
-
-
         try {
 
             if (getUser(user.getId()) == null) {
@@ -96,7 +94,7 @@ public AdminUserServiceImpl(UserRepo<AdminUser, Long> adminUserLongUserRepo, BCr
 
                 if (this.passwordEncoder.matches(oldPassword, user.getPassword())) {
                     user.setPassword(this.passwordEncoder.encode(newPassword));
-                    this.adminUserLongUserRepo.save(user);
+                    this.adminUserRepo.save(user);
                     logger.info("USER {}'s password has been updated", user.getId());
                     ok = true;
                 } else {
@@ -104,15 +102,13 @@ public AdminUserServiceImpl(UserRepo<AdminUser, Long> adminUserLongUserRepo, BCr
 
                     if (this.passwordEncoder.matches(oldPassword, user.getPassword())) {
                         user.setPassword(this.passwordEncoder.encode(newPassword));
-                        this.adminUserLongUserRepo.save(user);
+                        this.adminUserRepo.save(user);
                         logger.info("USER {}'s password has been updated", user.getId());
                         ok = true;
                     } else {
                         logger.error("INVALID CURRENT PASSWORD FOR USER {}", user.getId());
 
                     }
-
-
                 }
             }
         } catch (Exception e){
@@ -121,6 +117,7 @@ public AdminUserServiceImpl(UserRepo<AdminUser, Long> adminUserLongUserRepo, BCr
             }
             return ok;
         }
+
 
     @Override
     public boolean generateAndSendPassword(AdminUser user) {
@@ -155,11 +152,13 @@ public AdminUserServiceImpl(UserRepo<AdminUser, Long> adminUserLongUserRepo, BCr
         //TODO use an smtp server to send new password to user via mail
         return false;
     }
+
+    @Override
     public boolean updateUser(AdminUser user) {
         boolean ok=false;
         try {
             if(user!=null) {
-                this.adminUserLongUserRepo.save(user);
+                this.adminUserRepo.save(user);
                 logger.info("USER SUCCESSFULLY UPDATED");
             }
         }

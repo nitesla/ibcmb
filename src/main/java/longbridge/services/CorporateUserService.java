@@ -42,6 +42,12 @@ public interface CorporateUserService {
     void setPassword(CorporateUser user, String hashedPassword);
 
     /**
+     * Updates the details of the specified corporate customer
+     * @param user the corporate user
+     */
+    boolean updateUser(CorporateUser user);
+
+    /**
      * Adds a corporate user to a corporate customer
      * @param user the corporate user
      */

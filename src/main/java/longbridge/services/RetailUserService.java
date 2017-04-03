@@ -37,6 +37,13 @@ public interface RetailUserService {
     boolean addUser(RetailUser user);
 
     /**
+     * Updates the details of the specified retail user
+     * @param user the retail user whose details are to be updated
+     */
+
+    boolean updateUser(RetailUser user);
+
+    /**
      * Resets the password of the specified Retail user
      *@param user the retail user
      */

@@ -17,7 +17,7 @@ public class RetailUserServiceImpl implements RetailUserService {
 
     private Logger logger= LoggerFactory.getLogger(this.getClass());
 
-    private UserRepo<RetailUser, Long> retailUserLongUserRepo;
+    private UserRepo<RetailUser, Long> retailUserRepo;
     private BCryptPasswordEncoder passwordEncoder;
 
     public RetailUserServiceImpl(){
@@ -26,19 +26,19 @@ public class RetailUserServiceImpl implements RetailUserService {
 
     @Autowired
     public  RetailUserServiceImpl(UserRepo<RetailUser, Long> ruUserRepo, BCryptPasswordEncoder passwordEncoder) {
-        this.retailUserLongUserRepo = ruUserRepo;
+        this.retailUserRepo = ruUserRepo;
         this.passwordEncoder=passwordEncoder;
     }
 
 
     @Override
     public RetailUser getUser(Long id) {
-        return this.retailUserLongUserRepo.findOne(id) ;
+        return this.retailUserRepo.findOne(id) ;
     }
 
     @Override
     public Collection<RetailUser> getUsers() {
-        return this.retailUserLongUserRepo.findAll();
+        return this.retailUserRepo.findAll();
     }
 
     @Override
@@ -60,7 +60,7 @@ public class RetailUserServiceImpl implements RetailUserService {
         /*Get the user's details from the model */
         if(user!=null){
             user.setPassword(this.passwordEncoder.encode(user.getPassword()));
-            this.retailUserLongUserRepo.save(user);
+            this.retailUserRepo.save(user);
             logger.info("USER {} HAS BEEN CREATED");
         }
         else{logger.error("USER NOT FOUND");}
@@ -99,7 +99,7 @@ public class RetailUserServiceImpl implements RetailUserService {
 
                 if (this.passwordEncoder.matches(oldPassword, user.getPassword())) {
                     user.setPassword(this.passwordEncoder.encode(newPassword));
-                    this.retailUserLongUserRepo.save(user);
+                    this.retailUserRepo.save(user);
                     logger.info("USER {}'s password has been updated", user.getId());
                     ok = true;
                 } else {
@@ -107,7 +107,7 @@ public class RetailUserServiceImpl implements RetailUserService {
 
                     if (this.passwordEncoder.matches(oldPassword, user.getPassword())) {
                         user.setPassword(this.passwordEncoder.encode(newPassword));
-                        this.retailUserLongUserRepo.save(user);
+                        this.retailUserRepo.save(user);
                         logger.info("USER {}'s password has been updated", user.getId());
                         ok = true;
                     } else {
@@ -125,11 +125,13 @@ public class RetailUserServiceImpl implements RetailUserService {
                 }
                 return ok;
     }
+
+    @Override
     public boolean updateUser(RetailUser user) {
         boolean ok=false;
         try {
             if(user!=null) {
-                this.retailUserLongUserRepo.save(user);
+                this.retailUserRepo.save(user);
                 logger.info("USER SUCCESSFULLY UPDATED");
             }
         }

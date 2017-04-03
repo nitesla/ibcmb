@@ -40,20 +40,24 @@ public interface OperationsUserService {
     boolean addUser(OperationsUser user);
 
     /**
+     * Update the details of the Operations User
+     * @param user the Operations User
+     */
+    boolean updateUser(OperationsUser user);
+
+    /**
      * Resets the password of the specified Operations user
      * @param user the user
      */
     void resetPassword(OperationsUser user);
 
     /**
-     * Change password get OldPassword from user and takes in the new password
-     * @param oldPassword the oldPassword
-     * @param newPassword the newPassword
+     * Replaces the old password with the new password
+     * Also, the password must meet the organization's password policy if any one has been defined
+     * It is important that the password is hashed before storing it in the database.     * @param oldPassword the oldPassword
+     * @param oldPassword the old password
+     * @param newPassword the new Password
      */
-    void changePassword(String oldPassword, String newPassword);
-
-
-
     boolean changePassword(OperationsUser User, String oldPassword, String newPassword);
 
     void generateAndSendPassword();

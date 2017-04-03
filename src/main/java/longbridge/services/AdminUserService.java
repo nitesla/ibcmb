@@ -38,6 +38,13 @@ public interface AdminUserService {
      */
     boolean addUser(AdminUser user);
 
+
+    /**
+     * Updates the details of the specified Admin user
+     * @param user the admin user whose details are to be updated
+     */
+    boolean updateUser(AdminUser user);
+
     /**
      * Resets the password of the specified Admin user
      * @param userId the admin user
