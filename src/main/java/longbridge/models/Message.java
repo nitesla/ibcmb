@@ -19,6 +19,8 @@ public class Message extends AbstractEntity{
 
     private User sender;
     private User recipient;
+    private Long userId;
+    private String recepient;
     private String subject;
     private String body;
     private DateTime dateTime;

@@ -1,6 +1,7 @@
 package longbridge.services;
 
 import longbridge.models.Account;
+import longbridge.models.Transfer;
 import longbridge.utils.AccountStatement;
 import org.joda.time.LocalDate;
 
@@ -36,5 +37,10 @@ public interface IntegrationService {
      */
     Map<String, BigDecimal> getBalance(String accountId);
 
+
+    /** Initiates a transfer request to the relevant Transfer service.
+     *
+     */
+    void makeTransfer(Transfer transfer);
 
 }

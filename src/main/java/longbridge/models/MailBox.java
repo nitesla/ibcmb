@@ -10,6 +10,5 @@ public class MailBox extends AbstractEntity{
 
 
     private Long user_Id;
-
-
+    
 }

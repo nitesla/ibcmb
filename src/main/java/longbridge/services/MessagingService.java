@@ -60,6 +60,7 @@ public interface MessagingService {
      */
     void markMessage(Message message,String asType); //Read or Unread
 
+
     /**
      * set the status of the message which can be DELIVERED or UNDELIVERED
      * @param status the status of the message

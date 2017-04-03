@@ -16,15 +16,11 @@ public interface TransferService {
 
     void makeTransfer(Transfer transfer);
 
-    Transfer getTransaction(Long id);
+    Transfer getTransfer(Long id);
 
-    Iterable<Transfer> getTransactions(User user);
+    Iterable<Transfer> getTransfers(User user);
 
-    Iterable<Transfer> getTransactions();
+    void saveTransfer(Transfer transfer);
 
-    void saveTransaction(Transfer transfer);
-
-    void cancelTransaction(Transfer transfer);
-
-    void deleteTransaction(Long id);
+    void deleteTransfer(Long id);
 }

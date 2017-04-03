@@ -14,13 +14,13 @@ public interface CodeService {
      * Adds a new code to the syste
      * @param code the code
      */
-    void  addCode(Code code);
+    boolean  addCode(Code code);
 
     /**
      * Deletes a code from the system
      * @param codeId the oode's id
      */
-    void deleteCode(Long codeId);
+    boolean deleteCode(Long codeId);
 
     /**
      * Returns the specified code
@@ -41,4 +41,5 @@ public interface CodeService {
      * @return a list of the codes
      */
     Iterable<Code> getCodes();
+
 }
