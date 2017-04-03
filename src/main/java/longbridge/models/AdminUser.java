@@ -20,7 +20,7 @@ public class AdminUser extends User {
 	}
 	
 	public AdminUser(){
-		this.role = (UserType.ADMIN.toString());
+		this.usertype = (UserType.ADMIN.toString());
 	}
 
 	public String toString2() {

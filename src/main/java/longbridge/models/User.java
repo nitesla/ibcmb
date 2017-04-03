@@ -22,7 +22,7 @@ public abstract class User extends AbstractEntity {
     private int noOfLoginAttempts;
 
 
-    protected String role;
+    protected String usertype;
 
 
     @ManyToOne
@@ -84,14 +84,7 @@ public abstract class User extends AbstractEntity {
 		this.status = status;
 	}
 
-	public String getRole() {
-        return role;
-    }
 
-
-    public Role getRole() {
-        return role;
-    }
 
     public void setRole(Role role) {
         this.role = role;
@@ -101,7 +94,15 @@ public abstract class User extends AbstractEntity {
 		return groups;
 	}
 
-	public void setGroups(Collection<UserGroup> groups) {
+    public String getUsertype() {
+        return usertype;
+    }
+
+    public void setUsertype(String usertype) {
+        this.usertype = usertype;
+    }
+
+    public void setGroups(Collection<UserGroup> groups) {
 		this.groups = groups;
 	}
 

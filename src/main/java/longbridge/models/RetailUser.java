@@ -28,7 +28,7 @@ public class RetailUser extends User{
 
 
 	public RetailUser(){
-		this.role = (UserType.RETAIL.toString());
+		this.usertype= (UserType.RETAIL.toString());
 	}
 
 	@Override

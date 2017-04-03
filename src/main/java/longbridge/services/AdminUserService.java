@@ -1,6 +1,7 @@
 package longbridge.services;
 
 import longbridge.models.AdminUser;
+import longbridge.models.RetailUser;
 
 import java.util.List;
 
@@ -31,34 +32,34 @@ public interface AdminUserService {
      * @param user the admin user
      * @param hashedPassword the hashed password
      */
-    void setPassword(AdminUser user, String hashedPassword);
+    boolean setPassword(AdminUser user, String hashedPassword);
 
     /**
      * Creates an Admin user
      * @param user the new admin user
      */
-    void addUser(AdminUser user);
+    boolean addUser(AdminUser user);
 
     /**
      * Resets the password of the specified Admin user
-     * @param user the admin user
+     * @param userId the admin user
      */
-    void resetPassword(AdminUser user);
+    boolean resetPassword(Long userId, String newPassword);
 
     /**
      * Replaces the old password of the admin user with the new password.
      * The new password must meet the organisation's password policy if any one has been defined
      * It is important that the password is hashed before storing it in the database.
      * @param oldPassword the old password
-     * @param hashedNewPassword the new password
+     * @param newPassword the new password
      */
-    void changePassword(String oldPassword, String hashedNewPassword);
+    boolean changePassword(AdminUser user, String oldPassword, String newPassword);
 
     /**
      * Generates and sends password to an admin user
      * @param user the admin user
      */
-    void generateAndSendPassword(AdminUser user);
+    boolean generateAndSendPassword(AdminUser user);
 
 
 }
