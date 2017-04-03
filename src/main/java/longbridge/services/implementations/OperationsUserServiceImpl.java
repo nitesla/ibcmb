@@ -13,22 +13,16 @@ import java.util.Collection;
 /**
  * Created by ayoade_farooq@yahoo.com on 3/29/2017.
  */
-@Service("OperationsUserService")
+@Service
 public class OperationsUserServiceImpl implements OperationsUserService {
     private Logger logger= LoggerFactory.getLogger(this.getClass());
 
     private UserRepo<OperationsUser, Long> opUserRepo;
     private BCryptPasswordEncoder passwordEncoder;
 
-
-    public OperationsUserServiceImpl()
-    {
-
-    }
-
     @Autowired
-    public OperationsUserServiceImpl(UserRepo<OperationsUser, Long> userRepo, BCryptPasswordEncoder passwordEncoder) {
-          this.opUserRepo = opUserRepo;
+    public OperationsUserServiceImpl(UserRepo<OperationsUser, Long> opUserRepo, BCryptPasswordEncoder passwordEncoder) {
+        this.opUserRepo = opUserRepo;
         this.passwordEncoder=passwordEncoder;
     }
 

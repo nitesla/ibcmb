@@ -1,9 +1,6 @@
 package longbridge.services.implementations;
 
-import longbridge.models.Beneficiary;
-import longbridge.models.InternationalBeneficiary;
-import longbridge.models.LocalBeneficiary;
-import longbridge.models.User;
+import longbridge.models.*;
 import longbridge.repositories.BeneficiaryRepo;
 import longbridge.services.BeneficiaryService;
 import org.slf4j.Logger;
@@ -27,7 +24,7 @@ public class BeneficiaryServiceImpl implements BeneficiaryService {
     }
 
     @Override
-    public boolean addLocalBeneficiary(User user, LocalBeneficiary beneficiary) {
+    public boolean addLocalBeneficiary(RetailUser user, LocalBeneficiary beneficiary) {
         boolean result= false;
 
         try {
@@ -74,7 +71,7 @@ public class BeneficiaryServiceImpl implements BeneficiaryService {
     }
 
     @Override
-    public boolean addInternationalBeneficiary(User user, InternationalBeneficiary beneficiary) {
+    public boolean addInternationalBeneficiary(RetailUser user, InternationalBeneficiary beneficiary) {
         boolean result= false;
 
         try {

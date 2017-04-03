@@ -2,10 +2,12 @@ package longbridge.models;
 
 
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class CorpLimit extends Limit {
 
+	@ManyToOne
 	private Corporate corporate;
 	
 	

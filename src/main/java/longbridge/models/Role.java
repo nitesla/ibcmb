@@ -12,6 +12,8 @@ public class Role extends AbstractEntity{
     private String name;
     private String email;
     private String description;
+
+    @Enumerated(value = EnumType.STRING)
     private UserType userType;
 
     @ManyToMany(cascade = CascadeType.ALL)
@@ -19,10 +21,6 @@ public class Role extends AbstractEntity{
     @JoinColumn(name = "profile_id", referencedColumnName = "id"), inverseJoinColumns =
     @JoinColumn(name = "permission_id", referencedColumnName = "id"))
     private Collection<Permission> permissions;
-
-//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-//    private Collection<User> users;
-
 
     public UserType getUserType() {
         return userType;

@@ -11,7 +11,7 @@ import javax.persistence.Entity;
 @Entity
 public class OperationsUser extends User {
 	public OperationsUser(){
-		this.role = (UserType.OPERATIONS.toString());
+		this.userType = (UserType.OPERATIONS);
 	}
 	@Override
 	public String toString() {

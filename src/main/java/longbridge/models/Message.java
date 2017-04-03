@@ -3,7 +3,6 @@ package longbridge.models;
 import org.joda.time.LocalDateTime;
 
 import javax.persistence.Entity;
-import javax.persistence.Table;
 
 /**
  * The {@code Message} class is a model that shows a message information
@@ -11,10 +10,6 @@ import javax.persistence.Table;
  * Created on 3/28/2017.
  */
 @Entity
-@Table(name = "MESSAGE_TABLE",/*SCHEMA NAME WILL COME IN LATER*/
-        schema = " "
-
-)
 public class Message extends AbstractEntity{
 
     private Long userId;

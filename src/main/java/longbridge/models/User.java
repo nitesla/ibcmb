@@ -1,14 +1,16 @@
 package longbridge.models;
 
-import javax.persistence.*;
-
-import java.util.Collection;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.ManyToOne;
+import javax.persistence.MappedSuperclass;
 import java.util.Date;
 /**
  * Created by Showboy on 29/03/2017.
  */
 @MappedSuperclass
-public abstract class User extends AbstractEntity {
+public class User extends AbstractEntity{
+
 
     private String userName;
     private String firstName;
@@ -21,19 +23,17 @@ public abstract class User extends AbstractEntity {
     private Date lastLoginDate;
     private int noOfLoginAttempts;
 
-
-    protected String role;
-
+    @Enumerated(value = EnumType.STRING)
+    protected UserType userType;
 
     @ManyToOne
     private Role role;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "user_groups", joinColumns =
-    @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns =
-    @JoinColumn(name = "group_id", referencedColumnName = "id"))
-    
-    private Collection<UserGroup> groups;
+//    @ManyToMany(cascade = CascadeType.ALL)
+//    @JoinTable(name = "user_groups", joinColumns =
+//    @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns =
+//    @JoinColumn(name = "group_id", referencedColumnName = "id"))
+//    private Collection<UserGroup> groups;
 
     public String getUserName() {
         return userName;
@@ -84,26 +84,17 @@ public abstract class User extends AbstractEntity {
 		this.status = status;
 	}
 
-	public String getRole() {
-        return role;
-    }
-
-
-    public Role getRole() {
-        return role;
-    }
-
     public void setRole(Role role) {
         this.role = role;
     }
 
-	public Collection<UserGroup> getGroups() {
-		return groups;
-	}
+//	public Collection<UserGroup> getGroups() {
+//		return groups;
+//	}
 
-	public void setGroups(Collection<UserGroup> groups) {
-		this.groups = groups;
-	}
+//	public void setGroups(Collection<UserGroup> groups) {
+//		this.groups = groups;
+//	}
 
 	public Date getExpiryDate() {
 		return expiryDate;

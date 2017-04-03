@@ -3,7 +3,9 @@ package longbridge.models;
 import org.joda.time.LocalDateTime;
 
 import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import java.util.Collection;
 
 
 /**
@@ -13,32 +15,32 @@ import javax.persistence.Table;
  * Created on 3/28/2017.
  */
 @Entity
-@Table(name = "Service_Request_TABLE",/*SCHEMA NAME WILL COME IN LATER*/
-        schema = " "
-
-)
 public class ServiceRequest extends AbstractEntity {
 
+    @ManyToOne
+    private RetailUser user;
 
-    private User user;
     private String serviceRequestType;
     private String subject;
     private String body;
     private String recepient;
-    private UserGroup userGroup;
+    //private UserGroup userGroup;
     private LocalDateTime requestTime;
+
+    @OneToMany
+    private Collection<RequestHistory> requestHistories;
 
 
     public ServiceRequest() {
     }
 
-    public ServiceRequest(User user, String serviceRequestType, String subject, String body, String recepient, UserGroup userGroup, LocalDateTime date) {
+    public ServiceRequest(RetailUser user, String serviceRequestType, String subject, String body, String recepient, UserGroup userGroup, LocalDateTime date) {
         this.user = user;
         this.serviceRequestType = serviceRequestType;
         this.subject = subject;
         this.body = body;
         this.recepient = recepient;
-        this.userGroup = userGroup;
+        //this.userGroup = userGroup;
         this.requestTime = date;
     }
 
@@ -51,7 +53,7 @@ public class ServiceRequest extends AbstractEntity {
                 ", subject='" + subject + '\'' +
                 ", body='" + body + '\'' +
                 ", recepient='" + recepient + '\'' +
-                ", userGroup=" + userGroup +
+                //", userGroup=" + userGroup +
                 ", requestTime=" + requestTime +
                 '}';
     }

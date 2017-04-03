@@ -1,10 +1,12 @@
 package longbridge.models;
 
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class RetailCustLimit extends Limit {
 
+	@ManyToOne
 	private RetailUser customer;
 
 	public RetailUser getCustomer() {

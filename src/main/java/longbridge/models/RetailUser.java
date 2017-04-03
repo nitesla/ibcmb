@@ -1,6 +1,7 @@
 package longbridge.models;
 
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import java.util.Collection;
 
 /**
@@ -12,23 +13,27 @@ import java.util.Collection;
 @Entity
 public class RetailUser extends User{
 
+	@OneToMany
+	private Collection<RetailCustLimit> retailCustLimits;
 
-	private Collection<Beneficiary> beneficiaries;
-
-
-	
-	public Collection<Beneficiary> getBeneficiaries() {
-		return beneficiaries;
-	}
+	@OneToMany(mappedBy= "user")
+    private Collection<LocalBeneficiary> beneficiaries;
 
 
-	public void setBeneficiaries(Collection<Beneficiary> beneficiaries) {
-		this.beneficiaries = beneficiaries;
-	}
+//	private Collection<Beneficiary> beneficiaries;
+//
+//	public Collection<Beneficiary> getBeneficiaries() {
+//		return beneficiaries;
+//	}
+//
+//
+//	public void setBeneficiaries(Collection<Beneficiary> beneficiaries) {
+//		this.beneficiaries = beneficiaries;
+//	}
 
 
 	public RetailUser(){
-		this.role = (UserType.RETAIL.toString());
+		this.userType = (UserType.RETAIL);
 	}
 
 	@Override

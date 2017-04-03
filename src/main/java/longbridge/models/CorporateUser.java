@@ -10,11 +10,13 @@ import javax.persistence.*;
 @Entity
 public class CorporateUser extends User {
 
+	@ManyToOne
     private Corporate corporate;
 
     public CorporateUser(){
-		this.role = (UserType.CORPORATE.toString());
+		this.userType = (UserType.CORPORATE);
 	}
+
 	public Corporate getCorporate() {
 		return corporate;
 	}

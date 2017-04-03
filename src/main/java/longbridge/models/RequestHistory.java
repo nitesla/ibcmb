@@ -3,6 +3,7 @@ package longbridge.models;
 import org.joda.time.LocalDateTime;
 
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 
 /**
  * Created by Wunmi on 27/03/2017.
@@ -10,7 +11,7 @@ import javax.persistence.Entity;
 @Entity
 public class RequestHistory extends AbstractEntity{
 
-
+    @ManyToOne
     private ServiceRequest serviceRequest;
     private String status;
     private String comment;

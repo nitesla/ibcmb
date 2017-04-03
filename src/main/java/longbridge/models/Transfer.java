@@ -13,6 +13,7 @@ import javax.persistence.ManyToOne;
 @Entity
 public class Transfer extends AbstractEntity{
 
+    @ManyToOne
     private  Account account;
 
     private TransferType transferType;

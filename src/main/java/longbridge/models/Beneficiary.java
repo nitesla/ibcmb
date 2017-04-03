@@ -1,11 +1,16 @@
 package longbridge.models;
 
+import javax.persistence.ManyToOne;
+import javax.persistence.MappedSuperclass;
+
 /**
  * Created by Wunmi on 27/03/2017.
  */
-public abstract class Beneficiary extends AbstractEntity{
+@MappedSuperclass
+public class Beneficiary extends AbstractEntity{
 
-    private User user;
+    @ManyToOne
+    private RetailUser user;
     private String name;
     private String accountNo;
     private String beneficiaryBank;
@@ -23,7 +28,7 @@ public abstract class Beneficiary extends AbstractEntity{
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(RetailUser user) {
         this.user = user;
     }
 

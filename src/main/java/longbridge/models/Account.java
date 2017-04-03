@@ -1,8 +1,6 @@
 package longbridge.models;
 
-import javax.persistence.*;
-
-import java.util.Collection;
+import javax.persistence.Entity;
 
 
 /**
@@ -13,11 +11,6 @@ import java.util.Collection;
  */
 
 @Entity
-@Table(name = "ACCOUNT_TABLE",/*SCHEMA NAME WILL COME IN LATER*/
-        schema = " ",//TODO
-        uniqueConstraints=
-        @UniqueConstraint(columnNames={"accountId", "accountNumber"})
-)
 public class Account extends AbstractEntity{
 
 
@@ -50,9 +43,6 @@ public class Account extends AbstractEntity{
     public void setAccountId(String accountId) {
         this.accountId = accountId;
     }
-
-    @OneToMany(mappedBy = "account")
-    private Collection<FinancialTransaction> financialTransactions;
 
     public String getAccountNumber() {
         return accountNumber;
@@ -100,10 +90,6 @@ public class Account extends AbstractEntity{
 
     public void setSolId(String solId) {
         this.solId = solId;
-    }
-
-    public Collection<FinancialTransaction> getFinancialTransactions() {
-        return financialTransactions;
     }
 
     @Override

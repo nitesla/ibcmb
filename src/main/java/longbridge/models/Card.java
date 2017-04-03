@@ -49,6 +49,7 @@ public class Card extends AbstractEntity{
     public void setCardName(String cardName) {
         this.cardName = cardName;
     }
+
     @Override
     public String toString() {
         return "Card{" +
