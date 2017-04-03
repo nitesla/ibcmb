@@ -25,6 +25,15 @@ public abstract class AbstractEntity {
 
     protected String delFlag;
 
+//    protected LocalDateTime lastModificationTime;
+//
+//    protected LocalDateTime createdTime = LocalDateTime.now();
+//
+//    protected String createdBy;
+//
+//    protected String modifiedBy;
+//todo envers implementation
+
     public Long getId() {
         return id;
     }

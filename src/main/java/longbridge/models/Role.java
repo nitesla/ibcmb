@@ -1,6 +1,7 @@
 package longbridge.models;
 
-import javax.persistence.Entity;
+import javax.persistence.*;
+import java.util.Collection;
 
 /**
  * Created by Wunmi on 27/03/2017.
@@ -9,10 +10,27 @@ import javax.persistence.Entity;
 public class Role extends AbstractEntity{
 
     private String name;
+    private String email;
     private String description;
+    private UserType userType;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "profile_permission", joinColumns =
+    @JoinColumn(name = "profile_id", referencedColumnName = "id"), inverseJoinColumns =
+    @JoinColumn(name = "permission_id", referencedColumnName = "id"))
+    private Collection<Permission> permissions;
 
 //    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
 //    private Collection<User> users;
+
+
+    public UserType getUserType() {
+        return userType;
+    }
+
+    public void setUserType(UserType userType) {
+        this.userType = userType;
+    }
 
     public String getName() {
         return name;
@@ -30,19 +48,38 @@ public class Role extends AbstractEntity{
         this.description = description;
     }
 
-//    public Collection<User> getUsers() {
+    public Collection<Permission> getPermissions() {
+        return permissions;
+    }
+
+    public void setPermissions(Collection<Permission> permissions) {
+        this.permissions = permissions;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    //    public Collection<User> getUsers() {
 //        return users;
 //    }
 //
-//    public void setUsers(Set<User> users) {
+//    public void setUsers(Collection<User> users) {
 //        this.users = users;
 //    }
+
 
     @Override
     public String toString() {
         return "Role{" +
                 "name='" + name + '\'' +
+                ", email='" + email + '\'' +
                 ", description='" + description + '\'' +
+                ", permissions=" + permissions +
                 '}';
     }
 }

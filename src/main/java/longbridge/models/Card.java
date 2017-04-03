@@ -11,7 +11,20 @@ public class Card extends AbstractEntity{
     private String cardReference;
     private String cardNumber;
     private String cardName;
-    private Long cardType;
+    private String expiryDate;
+    private String cardType;
+
+    public String getExpiryDate() {
+        return expiryDate;
+    }
+
+    public void setExpiryDate(String expiryDate) {
+        this.expiryDate = expiryDate;
+    }
+
+    public void setCardType(String cardType) {
+        this.cardType = cardType;
+    }
 
     public String getCardReference() {
         return cardReference;
@@ -36,15 +49,6 @@ public class Card extends AbstractEntity{
     public void setCardName(String cardName) {
         this.cardName = cardName;
     }
-
-    public Long getCardType() {
-        return cardType;
-    }
-
-    public void setCardType(Long cardType) {
-        this.cardType = cardType;
-    }
-
     @Override
     public String toString() {
         return "Card{" +

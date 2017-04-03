@@ -38,7 +38,6 @@ public class TransferServiceImpl implements TransferService {
         transferRepo.save(transfer);
     }
 
-
     @Override
     public void deleteTransfer(Long id) {
         Transfer transfer = transferRepo.findById(id);

@@ -1,8 +1,7 @@
 package longbridge.models;
 
+import javax.persistence.Entity;
 import java.util.Collection;
-
-import javax.persistence.*;
 
 /**
  * Created by Wunmi on 3/28/2017.
@@ -12,10 +11,11 @@ import javax.persistence.*;
 
 @Entity
 public class RetailUser extends User{
-	
+
+
 	private Collection<Beneficiary> beneficiaries;
 
-	
+
 	
 	public Collection<Beneficiary> getBeneficiaries() {
 		return beneficiaries;
@@ -26,6 +26,10 @@ public class RetailUser extends User{
 		this.beneficiaries = beneficiaries;
 	}
 
+
+	public RetailUser(){
+		this.role = (UserType.RETAIL.toString());
+	}
 
 	@Override
 	public String toString() {

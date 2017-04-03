@@ -1,8 +1,9 @@
 package longbridge.models;
 
-import org.joda.time.DateTime;
+import org.joda.time.LocalDateTime;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 /**
  * The {@code Message} class is a model that shows a message information
@@ -18,12 +19,10 @@ public class Message extends AbstractEntity{
 
 
     private User sender;
-    private User recipient;
-    private Long userId;
-    private String recepient;
+    private String recipient;
     private String subject;
     private String body;
-    private DateTime dateTime;
+    private LocalDateTime sentTime;
     private String status;
     private String location;
 
@@ -31,12 +30,13 @@ public class Message extends AbstractEntity{
     public Message() {
     }
 
-    public Message(User sender, User recipient, String subject, String body, DateTime dateTime, String status, String location) {
+
+    public Message(User sender, String recipient, String subject, String body, LocalDateTime dateTime, String status, String location) {
         this.sender = sender;
         this.recipient = recipient;
         this.subject = subject;
         this.body = body;
-        this.dateTime = dateTime;
+        this.sentTime = dateTime;
         this.status = status;
         this.location = location;
     }
@@ -49,11 +49,11 @@ public class Message extends AbstractEntity{
         this.sender = sender;
     }
 
-    public User getRecipient() {
+    public String getRecipient() {
         return recipient;
     }
 
-    public void setRecipient(User recipient) {
+    public void setRecipient(String recipient) {
         this.recipient = recipient;
     }
 
@@ -73,14 +73,6 @@ public class Message extends AbstractEntity{
         this.body = body;
     }
 
-    public DateTime getDateTime() {
-        return dateTime;
-    }
-
-    public void setDateTime(DateTime dateTime) {
-        this.dateTime = dateTime;
-    }
-
     public String getStatus() {
         return status;
     }
@@ -97,6 +89,14 @@ public class Message extends AbstractEntity{
         this.location = location;
     }
 
+    public LocalDateTime getSentTime() {
+        return sentTime;
+    }
+
+    public void setSentTime(LocalDateTime sentTime) {
+        this.sentTime = sentTime;
+    }
+
     @Override
     public String toString() {
         return "Message{" +
@@ -104,9 +104,10 @@ public class Message extends AbstractEntity{
                 ", recipient='" + recipient + '\'' +
                 ", subject='" + subject + '\'' +
                 ", body='" + body + '\'' +
-                ", dateTime=" + dateTime +
+                ", sentTime=" + sentTime +
                 ", status='" + status + '\'' +
                 ", location='" + location + '\'' +
                 '}';
     }
 }
+

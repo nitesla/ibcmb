@@ -6,14 +6,14 @@ import javax.persistence.Entity;
 import java.math.BigDecimal;
 
 /**
- * Created by Wunmi on 27/03/2017.
+ * Created by Chigozirim Torti on 27/03/2017.
  */
 @Entity
-public class Investment extends AbstractEntity{
+public class Investment extends AbstractEntity {
 
     private int tenor;
     private int depositPeriodDays;
-    private String referenceNumber;
+    private String accountNumber;
     private String accountId;
     private LocalDateTime effectiveOpenDate;
     private String currencyCode;
@@ -38,30 +38,6 @@ public class Investment extends AbstractEntity{
         this.tenor = tenor;
     }
 
-    public String getAccountId() {
-        return accountId;
-    }
-
-    public void setAccountId(String accountId) {
-        this.accountId = accountId;
-    }
-
-    public void setEffectiveOpenDate(LocalDateTime effectiveOpenDate) {
-        this.effectiveOpenDate = effectiveOpenDate;
-    }
-
-    public BigDecimal getDepositAmount() {
-        return depositAmount;
-    }
-
-    public void setDepositAmount(BigDecimal depositAmount) {
-        this.depositAmount = depositAmount;
-    }
-
-    public void setMaturityDate(LocalDateTime maturityDate) {
-        this.maturityDate = maturityDate;
-    }
-
     public int getDepositPeriodDays() {
         return depositPeriodDays;
     }
@@ -70,12 +46,28 @@ public class Investment extends AbstractEntity{
         this.depositPeriodDays = depositPeriodDays;
     }
 
-    public String getReferenceNumber() {
-        return referenceNumber;
+    public String getAccountNumber() {
+        return accountNumber;
     }
 
-    public void setReferenceNumber(String referenceNumber) {
-        this.referenceNumber = referenceNumber;
+    public void setAccountNumber(String accountNumber) {
+        this.accountNumber = accountNumber;
+    }
+
+    public String getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(String accountId) {
+        this.accountId = accountId;
+    }
+
+    public LocalDateTime getEffectiveOpenDate() {
+        return effectiveOpenDate;
+    }
+
+    public void setEffectiveOpenDate(LocalDateTime effectiveOpenDate) {
+        this.effectiveOpenDate = effectiveOpenDate;
     }
 
     public String getCurrencyCode() {
@@ -94,6 +86,14 @@ public class Investment extends AbstractEntity{
         this.maturityAmount = maturityAmount;
     }
 
+    public BigDecimal getDepositAmount() {
+        return depositAmount;
+    }
+
+    public void setDepositAmount(BigDecimal depositAmount) {
+        this.depositAmount = depositAmount;
+    }
+
     public String getCustomerId() {
         return customerId;
     }
@@ -110,7 +110,15 @@ public class Investment extends AbstractEntity{
         this.interestRate = interestRate;
     }
 
-   public String getFundingAccountName() {
+    public LocalDateTime getMaturityDate() {
+        return maturityDate;
+    }
+
+    public void setMaturityDate(LocalDateTime maturityDate) {
+        this.maturityDate = maturityDate;
+    }
+
+    public String getFundingAccountName() {
         return fundingAccountName;
     }
 
@@ -169,14 +177,24 @@ public class Investment extends AbstractEntity{
     @Override
     public String toString() {
         return "Investment{" +
-                "depositPeriodDays=" + depositPeriodDays +
-                ", referenceNumber='" + referenceNumber + '\'' +
+                "tenor=" + tenor +
+                ", depositPeriodDays=" + depositPeriodDays +
+                ", accountNumber='" + accountNumber + '\'' +
+                ", accountId='" + accountId + '\'' +
+                ", effectiveOpenDate=" + effectiveOpenDate +
                 ", currencyCode='" + currencyCode + '\'' +
                 ", maturityAmount=" + maturityAmount +
+                ", depositAmount=" + depositAmount +
                 ", customerId='" + customerId + '\'' +
                 ", interestRate=" + interestRate +
                 ", maturityDate=" + maturityDate +
+                ", fundingAccountName='" + fundingAccountName + '\'' +
+                ", fundingAccountNumber='" + fundingAccountNumber + '\'' +
                 ", accountName='" + accountName + '\'' +
+                ", addressLine1='" + addressLine1 + '\'' +
+                ", addressLine2='" + addressLine2 + '\'' +
+                ", addressLine3='" + addressLine3 + '\'' +
+                ", contractRate='" + contractRate + '\'' +
                 '}';
     }
 }

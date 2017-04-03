@@ -12,30 +12,21 @@ public class CorporateUser extends User {
 
     private Corporate corporate;
 
-    @Override
-    public Role getRole() {
-        return null;
-    }
-
-    @Override
-    public void setRole(Role role) {
-
-    }
-
-    @Override
-    public Profile getProfile() {
-        return null;
-    }
-
-    @Override
-    public void setProfile(Profile profile) {
-    }
-
+    public CorporateUser(){
+		this.role = (UserType.CORPORATE.toString());
+	}
 	public Corporate getCorporate() {
 		return corporate;
 	}
 
 	public void setCorporate(Corporate corporate) {
 		this.corporate = corporate;
+	}
+
+	@Override
+	public String toString() {
+		return "CorporateUser{" + super.toString() + "," +
+				"corporate=" + corporate +
+				'}';
 	}
 }

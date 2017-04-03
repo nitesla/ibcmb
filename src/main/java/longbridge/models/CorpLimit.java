@@ -29,7 +29,7 @@ public class CorpLimit extends Limit {
 	}
 
 
-	@Override
+	@Override //TODO fix toString()
 	public String toString() {
 		return "CorpLimit [corporate=" + corporate + ","+ super.toString() +"]";
 	}

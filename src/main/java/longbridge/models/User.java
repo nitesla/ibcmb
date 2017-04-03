@@ -10,7 +10,6 @@ import java.util.Date;
 @MappedSuperclass
 public abstract class User extends AbstractEntity {
 
-
     private String userName;
     private String firstName;
     private String lastName;
@@ -23,11 +22,11 @@ public abstract class User extends AbstractEntity {
     private int noOfLoginAttempts;
 
 
-    @ManyToOne
-    private Role role;
+    protected String role;
+
 
     @ManyToOne
-    private Profile profile;
+    private Role role;
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "user_groups", joinColumns =
@@ -85,20 +84,17 @@ public abstract class User extends AbstractEntity {
 		this.status = status;
 	}
 
-	public Role getRole() {
+	public String getRole() {
+        return role;
+    }
+
+
+    public Role getRole() {
         return role;
     }
 
     public void setRole(Role role) {
         this.role = role;
-    }
-
-    public Profile getProfile() {
-        return profile;
-    }
-
-    public void setProfile(Profile profile) {
-        this.profile = profile;
     }
 
 	public Collection<UserGroup> getGroups() {

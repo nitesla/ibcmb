@@ -74,11 +74,12 @@ public class Code extends AbstractEntity {
 		return true;
 	}
 
-    @Override
-    public String toString() {
-        return "Code [id=" + id + ", code=" + code + ", description="
-                + description + ", type=" + type + "]";
-    }
-
-    
+	@Override
+	public String toString() {
+		return "Code{" +
+				"code='" + code + '\'' +
+				", type='" + type + '\'' +
+				", description='" + description + '\'' +
+				'}';
+	}
 }

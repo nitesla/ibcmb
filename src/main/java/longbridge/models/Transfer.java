@@ -2,8 +2,8 @@ package longbridge.models;
 
 import longbridge.utils.TransferType;
 
-import javax.persistence.*;
-import java.math.BigDecimal;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 
 /**The {@code Transfer} class model represents a single transfer transaction.
  * This model can be used to represent intra-bank and inter-bank transfers
@@ -17,7 +17,7 @@ public class Transfer extends AbstractEntity{
 
     private TransferType transferType;
 
-    @ManyToOne(fetch = FetchType.LAZY,optional = false,cascade = CascadeType.ALL)
+    @ManyToOne
     private FinancialInstitution financialInstitution;
 
     private String beneficiaryAccountNumber;
