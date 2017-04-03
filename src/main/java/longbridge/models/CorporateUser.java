@@ -14,6 +14,7 @@ public class CorporateUser extends User {
 
     public CorporateUser(){
 		this.userType = (UserType.CORPORATE.toString());
+
 	}
 	public Corporate getCorporate() {
 		return corporate;

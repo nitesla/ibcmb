@@ -99,7 +99,7 @@ public /*abstract*/ class User extends AbstractEntity {
 		return groups;
 	}
 
-	public void setGroups(Collection<UserGroup> groups) {
+    public void setGroups(Collection<UserGroup> groups) {
 		this.groups = groups;
 	}
 

@@ -24,22 +24,24 @@ public interface RetailUserService {
      *Sets the password of the specified retail user
      * The password must meet the organisation's password policy if any one has been defined
      * It is important to hash the password before storing in the database
-     * @param User the user
+     * @param user the user
      * @param password the password
      */
-    void setPassword(RetailUser User, String password);
+    boolean setPassword(RetailUser user, String password);
 
     /**
      * Adds a new retail user to the system
-     * @param retailUser the retail user to be added
+     * @param user the retail user to be added
      */
-    void addUser(RetailUser retailUser);
+
+    boolean addUser(RetailUser user);
 
     /**
      * Resets the password of the specified Retail user
-     *@param retailUser the retail user
+     *@param user the retail user
      */
-    void resetPassword(RetailUser retailUser);
+
+    boolean resetPassword(RetailUser user, String newPassword);
 
     /**
      *Replaces the old password with the new password
@@ -49,11 +51,12 @@ public interface RetailUserService {
      * @param oldPassword the old password
      * @param newPassword the new password
      */
-    void changePassword(RetailUser retailUser, String oldPassword, String newPassword);
+    boolean changePassword(RetailUser retailUser, String oldPassword, String newPassword);
+
 
     /**
-     *Generates a password and sends it to the specified retail user
-     * @param retailUser the user
+     *Generates a password and send it to the specified user
+     * @param user the user
      */
-    void generateAndSendPassword(RetailUser retailUser);
+    boolean generateAndSendPassword(RetailUser user);
 }

@@ -20,7 +20,9 @@ public class AdminUser extends User{
 	}
 	
 	public AdminUser(){
+
 		this.userType = (UserType.ADMIN.toString());
+
 	}
 
 	public String toString2() {
