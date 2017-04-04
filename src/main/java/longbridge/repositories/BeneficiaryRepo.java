@@ -12,9 +12,10 @@ import java.io.Serializable;
  */
 
 @Repository
-public interface BeneficiaryRepo<T,ID  extends Serializable> extends JpaRepository<T, ID>{
+public interface BeneficiaryRepo<T extends Beneficiary,ID  extends Serializable> extends JpaRepository<T, ID>{
 
     Iterable<Beneficiary> findByUser(User user);
 
     Iterable<Beneficiary> findByUserAndDelFlag(User user, String delFlag);
+
 }

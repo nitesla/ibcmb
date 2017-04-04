@@ -6,10 +6,12 @@ import longbridge.repositories.TransferRepo;
 import longbridge.services.IntegrationService;
 import longbridge.services.TransferService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * Created by Fortune on 3/30/2017.
  */
+@Service
 public class TransferServiceImpl implements TransferService {
     @Autowired
     TransferRepo transferRepo;

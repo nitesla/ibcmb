@@ -7,11 +7,13 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
 
 
 /**
  * Created by SYLVESTER on 3/30/2017.
  */
+@Service
 public class AdminUserServiceImpl implements AdminUserService {
 
     private Logger logger= LoggerFactory.getLogger(this.getClass());

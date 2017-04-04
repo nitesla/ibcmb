@@ -7,6 +7,7 @@ import longbridge.services.IntegrationService;
 import longbridge.utils.AccountStatement;
 import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.Map;
 /**
  * Created by chigozirim on 3/29/17.
  */
+@Service
 public class AccountServiceImpl implements AccountService{
     private AccountRepo accountRepo;
 

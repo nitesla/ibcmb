@@ -6,10 +6,12 @@ import longbridge.services.BeneficiaryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * Created by Showboy on 29/03/2017.
  */
+@Service
 public class BeneficiaryServiceImpl implements BeneficiaryService {
 
     private Logger logger= LoggerFactory.getLogger(this.getClass());

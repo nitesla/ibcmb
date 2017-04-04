@@ -3,6 +3,7 @@ package longbridge.services.implementations;
 import longbridge.models.Message;
 import longbridge.models.User;
 import longbridge.services.MessagingService;
+import org.springframework.stereotype.Service;
 
 import java.awt.print.Pageable;
 import java.util.Date;
@@ -10,6 +11,7 @@ import java.util.Date;
 /**
  * Created by Wunmi on 29/03/2017.
  */
+@Service
 public class MessagingServiceImpl implements MessagingService{
 
 
