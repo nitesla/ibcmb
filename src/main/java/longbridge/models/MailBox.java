@@ -10,5 +10,7 @@ import java.util.Collection;
 public class MailBox extends AbstractEntity{
     private Long userId;
     private UserType userType;
+
+    @OneToMany(mappedBy = "mailBox")
     private Collection<Message> messages;
 }

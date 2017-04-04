@@ -1,5 +1,7 @@
 package longbridge.models;
 
+import org.joda.time.LocalDateTime;
+
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import java.util.Collection;
@@ -12,6 +14,8 @@ import java.util.Collection;
 
 @Entity
 public class RetailUser extends User{
+
+	private LocalDateTime birthDate;
 
 	@OneToMany
 	private Collection<RetailCustLimit> retailCustLimits;

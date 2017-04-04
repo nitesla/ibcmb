@@ -1,7 +1,7 @@
 package longbridge.repositories;
 
-import longbridge.models.Beneficiary;
-import longbridge.models.User;
+import longbridge.models.*;
+import org.apache.tomcat.jni.Local;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,8 +14,9 @@ import java.io.Serializable;
 @Repository
 public interface BeneficiaryRepo<T extends Beneficiary,ID  extends Serializable> extends JpaRepository<T, ID>{
 
-    Iterable<Beneficiary> findByUser(User user);
+    Iterable<LocalBeneficiary> findByUser(RetailUser user);
 
-    Iterable<Beneficiary> findByUserAndDelFlag(User user, String delFlag);
+    Iterable<LocalBeneficiary> findByUserAndDelFlag(RetailUser user, String delFlag);
+
 
 }

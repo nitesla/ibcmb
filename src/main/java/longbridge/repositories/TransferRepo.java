@@ -9,5 +9,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface TransferRepo extends JpaRepository<TransferRequest, Long> {
     TransferRequest findById(long id);
 
-    Iterable<TransferRequest> getTransactions(long userId);
+   // Iterable<TransferRequest> getTransactions(long userId);
 }

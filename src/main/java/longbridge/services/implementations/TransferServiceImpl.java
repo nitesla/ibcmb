@@ -33,7 +33,8 @@ public class TransferServiceImpl implements TransferService {
 
     @Override
     public Iterable<TransferRequest> getTransfers(User user) {
-        return transferRepo.getTransactions(user.getId());
+       // return transferRepo.getTransactions(user.getId());
+        return  null;
     }
 
     @Override

@@ -68,7 +68,8 @@ public class BeneficiaryServiceImpl implements BeneficiaryService {
 
     @Override
     public Iterable<Beneficiary> getLocalBeneficiaries(User user) {
-        return localBeneficiary.findByUserAndDelFlag(user, "N");
+        //return localBeneficiary.findByUserAndDelFlag(user, "N");
+        return null;
     }
 
     @Override
@@ -115,6 +116,7 @@ public class BeneficiaryServiceImpl implements BeneficiaryService {
 
     @Override
     public Iterable<Beneficiary> getInternationalBeneficiaries(User user) {
-        return internationalBeneficiary.findByUserAndDelFlag(user, "N");
+        //return internationalBeneficiary.findByUserAndDelFlag(user, "N");
+        return null;
     }
 }

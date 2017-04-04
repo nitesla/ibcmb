@@ -4,7 +4,6 @@ import longbridge.models.Permission;
 import longbridge.models.Role;
 
 import longbridge.repositories.PermissionRepo;
-import longbridge.repositories.ProfileRepo;
 import longbridge.repositories.RoleRepo;
 
 import longbridge.services.SecurityService;
