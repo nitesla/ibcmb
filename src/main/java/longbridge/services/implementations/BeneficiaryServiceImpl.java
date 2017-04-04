@@ -31,12 +31,11 @@ public class BeneficiaryServiceImpl implements BeneficiaryService {
 
             beneficiary.setUser(user);
             this.localBeneficiary.save(beneficiary);
-            logger.info("BENEFICIARY {} HAS BEEN ADDED ");
+            logger.trace("Beneficiary {} HAS BEEN ADDED ", this.localBeneficiary.toString());
             result=true;
         }
         catch (Exception e){
-            logger.error("ERROR OCCURRED {}",e.getMessage());
-
+            logger.error("Beneficiary was not created",e);
         }
         return result;
     }

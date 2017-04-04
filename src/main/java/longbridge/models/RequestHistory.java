@@ -15,8 +15,9 @@ public class RequestHistory extends AbstractEntity{
     private ServiceRequest serviceRequest;
     private String status;
     private String comment;
-    private Long createdBy;
-    private LocalDateTime date;
+    @ManyToOne
+    private OperationsUser createdBy;
+    private LocalDateTime createdOn;
 
     public ServiceRequest getServiceRequest() {
         return serviceRequest;
@@ -42,20 +43,8 @@ public class RequestHistory extends AbstractEntity{
         this.comment = comment;
     }
 
-    public Long getCreatedBy() {
+    public OperationsUser getCreatedBy() {
         return createdBy;
-    }
-
-    public void setCreatedBy(Long createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public LocalDateTime getDate() {
-        return date;
-    }
-
-    public void setDate(LocalDateTime date) {
-        this.date = date;
     }
 
     @Override
@@ -65,7 +54,20 @@ public class RequestHistory extends AbstractEntity{
                 ", status='" + status + '\'' +
                 ", comment='" + comment + '\'' +
                 ", createdBy=" + createdBy +
-                ", date=" + date +
+                ", createdOn=" + createdOn +
                 '}';
     }
+
+    public void setCreatedBy(OperationsUser createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public LocalDateTime getCreatedOn() {
+        return createdOn;
+    }
+
+    public void setCreatedOn(LocalDateTime createdOn) {
+        this.createdOn = createdOn;
+    }
+
 }

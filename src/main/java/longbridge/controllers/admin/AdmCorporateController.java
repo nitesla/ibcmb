@@ -1,4 +1,4 @@
-package longbridge.controllers.customer;
+package longbridge.controllers.admin;
 
 import org.springframework.stereotype.Controller;
 
@@ -7,5 +7,5 @@ import org.springframework.stereotype.Controller;
  */
 
 @Controller
-public class CorporateController {
+public class AdmCorporateController {
 }

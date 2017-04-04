@@ -7,8 +7,7 @@ import javax.persistence.Entity;
 /**
  * Created by Wunmi on 27/03/2017.
  */
-@Entity
-public class Loan extends AbstractEntity{
+public class Loan {
 
     private String loanType;
     private LocalDateTime startDate;

@@ -1,5 +1,6 @@
 package longbridge.repositories;
 
+import longbridge.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -9,7 +10,7 @@ import java.io.Serializable;
  */
 @Repository
 
-public interface UserRepo<T,ID extends Serializable> extends JpaRepository<T, ID>
+public interface UserRepo<T extends User,ID extends Serializable> extends JpaRepository<T, ID>
 {
 
     //User findByEmail(String email);

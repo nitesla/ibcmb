@@ -7,12 +7,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 
 /**
  * Created by SYLVESTER on 3/29/2017.
  */
+
+@Service
 public class RetailUserServiceImpl implements RetailUserService {
 
     private Logger logger= LoggerFactory.getLogger(this.getClass());

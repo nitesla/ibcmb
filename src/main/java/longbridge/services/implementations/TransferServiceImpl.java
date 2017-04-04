@@ -1,15 +1,18 @@
 package longbridge.services.implementations;
 
-import longbridge.models.Transfer;
+import longbridge.models.TransferRequest;
 import longbridge.models.User;
 import longbridge.repositories.TransferRepo;
 import longbridge.services.IntegrationService;
 import longbridge.services.TransferService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * Created by Fortune on 3/30/2017.
  */
+
+@Service
 public class TransferServiceImpl implements TransferService {
     @Autowired
     TransferRepo transferRepo;
@@ -18,35 +21,35 @@ public class TransferServiceImpl implements TransferService {
     IntegrationService integrationService;
 
     @Override
-    public void makeTransfer(Transfer transfer) {
+    public void makeTransfer(TransferRequest transferRequest) {
 //        transfer.getAccount();
-        integrationService.makeTransfer(transfer);
+        integrationService.makeTransfer(transferRequest);
     }
 
     @Override
-    public Transfer getTransfer(Long id) {
+    public TransferRequest getTransfer(Long id) {
         return transferRepo.findById(id);
     }
 
     @Override
-    public Iterable<Transfer> getTransfers(User user) {
+    public Iterable<TransferRequest> getTransfers(User user) {
         return transferRepo.getTransactions(user.getId());
     }
 
     @Override
-    public void saveTransfer(Transfer transfer) {
-        transferRepo.save(transfer);
+    public void saveTransfer(TransferRequest transferRequest) {
+        transferRepo.save(transferRequest);
     }
 
     @Override
     public void deleteTransfer(Long id) {
-        Transfer transfer = transferRepo.findById(id);
-        if(transfer==null){
+        TransferRequest transferRequest = transferRepo.findById(id);
+        if(transferRequest ==null){
  // todo           throw new Exception("No Transfer found");
             return;
         }
-        transfer.setDelFlag("Y");
-        transferRepo.save(transfer);
+        transferRequest.setDelFlag("Y");
+        transferRepo.save(transferRequest);
     }
 
 }

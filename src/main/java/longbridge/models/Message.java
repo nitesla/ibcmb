@@ -19,21 +19,21 @@ public class Message extends AbstractEntity{
     private String body;
     private LocalDateTime sentTime;
     private String status;
-    private String location;
+    private String tag; //a comma separated list of keywords to identify a message
+//    private String location;
 
 
     public Message() {
     }
 
 
-    public Message(String sender, String recipient, String subject, String body, LocalDateTime dateTime, String status, String location) {
+    public Message(String sender, String recipient, String subject, String body, LocalDateTime dateTime, String status ) {
         this.sender = sender;
         this.recipient = recipient;
         this.subject = subject;
         this.body = body;
         this.sentTime = dateTime;
         this.status = status;
-        this.location = location;
     }
 
     public String getSender() {
@@ -76,14 +76,6 @@ public class Message extends AbstractEntity{
         this.status = status;
     }
 
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
     public LocalDateTime getSentTime() {
         return sentTime;
     }
@@ -101,7 +93,6 @@ public class Message extends AbstractEntity{
                 ", body='" + body + '\'' +
                 ", sentTime=" + sentTime +
                 ", status='" + status + '\'' +
-                ", location='" + location + '\'' +
                 '}';
     }
 }

@@ -8,10 +8,12 @@ import longbridge.services.CodeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * Created by Wunmi on 29/03/2017.
  */
+@Service
 public class CodeServiceImpl implements CodeService {
 
     private Logger logger= LoggerFactory.getLogger(this.getClass());
@@ -50,7 +52,7 @@ public class CodeServiceImpl implements CodeService {
 
     @Override
     public Iterable<Code> getCodesofType(String codeType) {
-        return this.codeRepo.findByTypeandDelFlag(codeType, "N");
+        return this.codeRepo.findByTypeAndDelFlag(codeType, "N");
     }
 
     @Override
@@ -73,6 +75,7 @@ public class CodeServiceImpl implements CodeService {
         }
         return result;
     }
+
 
 
 }

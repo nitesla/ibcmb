@@ -11,7 +11,7 @@ import javax.persistence.ManyToOne;
  * Created on 3/30/2017.
  */
 @Entity
-public class Transfer extends AbstractEntity{
+public class TransferRequest extends AbstractEntity{
 
     @ManyToOne
     private  Account account;
@@ -35,7 +35,7 @@ public class Transfer extends AbstractEntity{
 
     private String sessionId;
 
-    public Transfer(Account account, TransferType transferType, FinancialInstitution financialInstitution, String beneficiaryAccountNumber, String beneficiaryAccountName, String remarks, String referenceNumber, String userReferenceNumber, String narration, String sessionId) {
+    public TransferRequest(Account account, TransferType transferType, FinancialInstitution financialInstitution, String beneficiaryAccountNumber, String beneficiaryAccountName, String remarks, String referenceNumber, String userReferenceNumber, String narration, String sessionId) {
         this.account = account;
         this.transferType = transferType;
         this.financialInstitution = financialInstitution;

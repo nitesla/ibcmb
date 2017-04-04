@@ -8,8 +8,7 @@ import java.math.BigDecimal;
 /**
  * Created by Chigozirim Torti on 27/03/2017.
  */
-@Entity
-public class Investment extends AbstractEntity {
+public class Investment {
 
     private int tenor;
     private int depositPeriodDays;

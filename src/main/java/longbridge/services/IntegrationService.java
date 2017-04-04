@@ -1,7 +1,7 @@
 package longbridge.services;
 
 import longbridge.models.Account;
-import longbridge.models.Transfer;
+import longbridge.models.TransferRequest;
 import longbridge.utils.AccountStatement;
 import org.joda.time.LocalDate;
 
@@ -41,6 +41,6 @@ public interface IntegrationService {
     /** Initiates a transfer request to the relevant Transfer service.
      *
      */
-    void makeTransfer(Transfer transfer);
+    void makeTransfer(TransferRequest transferRequest);
 
 }

@@ -19,8 +19,6 @@ import javax.validation.Valid;
  * Created by SYLVESTER on 31/03/2017.
  */
 @RestController
-
-
 @RequestMapping("/admin")
 public class AdminUserController {
 

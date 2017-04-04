@@ -1,9 +1,8 @@
-package longbridge.controllers.customer;
+package longbridge.controllers.admin;
 
 import longbridge.formValidations.ChangePassword;
-import longbridge.models.CorporateUser;
 import longbridge.models.RetailUser;
-import longbridge.services.CorporateUserService;
+import longbridge.services.RetailUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+
 import javax.validation.Valid;
 
 /**
@@ -22,10 +22,10 @@ import javax.validation.Valid;
  */
 
 @RestController
-@RequestMapping("/corporate/user")
-public class CorporateUserController {
+@RequestMapping("/retail/user")
+public class AdmRetailUserController {
     @Autowired
-    CorporateUserService corporateUserService;
+    RetailUserService retailUserService;
 
     private Logger logger= LoggerFactory.getLogger(this.getClass());
 
@@ -36,32 +36,32 @@ public class CorporateUserController {
     }
 
     @PostMapping("/add")
-    public String createUser(CorporateUser corporateUser, Model model) throws Exception{
-        corporateUserService.addUser(corporateUser);
-        model.addAttribute("success","Corporate user created successfully");
+    public String createUser(RetailUser retailUser, Model model) throws Exception{
+        retailUserService.addUser(retailUser);
+        model.addAttribute("success","Retail user created successfully");
         return "addUser";
     }
 
     @GetMapping("/all")
-    public Iterable<CorporateUser> getAllRetailUsers(Model model){
-        Iterable<CorporateUser> corporateUserList= corporateUserService.getUsers();
-        model.addAttribute("corporateUserList",corporateUserList);
-        return corporateUserList;
+    public Iterable<RetailUser> getAllRetailUsers(Model model){
+        Iterable<RetailUser> retailUserList= retailUserService.getUsers();
+        model.addAttribute("retailUserList",retailUserList);
+        return retailUserList;
     }
 
     @GetMapping("/user")
     public String getUser(Long userId, Model model){
-        CorporateUser user = corporateUserService.getUser(userId);
-        model.addAttribute("corporateUser",user);
-        return "corporateUser";
+        RetailUser user = retailUserService.getUser(userId);
+        model.addAttribute("retailUser",user);
+        return "retailUser";
     }
 
     @PostMapping("/update")
-    public String UpdateUser(CorporateUser user, Model model) throws Exception{
-        boolean result = corporateUserService.updateUser(user);
-        if(result) {
-            model.addAttribute("success", "Corporate user updated successfully");
-        }
+    public String UpdateUser(RetailUser retailUser, Model model) throws Exception{
+       boolean result = retailUserService.updateUser(retailUser);
+       if(result) {
+           model.addAttribute("success", "Retail user updated successfully");
+       }
         return "updateUser";
     }
 
@@ -74,12 +74,12 @@ public class CorporateUserController {
     public String changePassword(@Valid ChangePassword changePassword, Long userId, BindingResult result, HttpRequest request, Model model){
         /* if(result.hasError()){
         }*/
-        CorporateUser user= corporateUserService.getUser(userId);
+        RetailUser user= retailUserService.getUser(userId);
         String oldPassword=changePassword.getOldPassword();
         String newPassword=changePassword.getNewPassword();
         String confirmPassword=changePassword.getConfirmPassword();
 
-        //TODO validate password according to the defined password policy
+        //validate password according to the defined password policy
         //The validations can be done on the ChangePassword class
 
 
@@ -88,7 +88,7 @@ public class CorporateUserController {
         }
 
         user.setPassword(newPassword);
-        corporateUserService.addUser(user);
+        retailUserService.addUser(user);
         logger.info("PASSWORD CHANGED SUCCESSFULLY");
         return "changePassword";
     }

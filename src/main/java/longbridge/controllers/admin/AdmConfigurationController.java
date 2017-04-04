@@ -9,5 +9,5 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/admin")
-public class ConfigurationController {
+public class AdmConfigurationController {
 }

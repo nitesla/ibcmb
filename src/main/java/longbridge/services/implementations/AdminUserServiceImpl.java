@@ -7,24 +7,27 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
 
 
 /**
  * Created by SYLVESTER on 3/30/2017.
  */
+@Service
 public class AdminUserServiceImpl implements AdminUserService {
 
-    private Logger logger= LoggerFactory.getLogger(this.getClass());
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
     private UserRepo<AdminUser, Long> adminUserRepo;
     private BCryptPasswordEncoder passwordEncoder;
 
-@Autowired
-public AdminUserServiceImpl(UserRepo<AdminUser, Long> adminUserRepo, BCryptPasswordEncoder passwordEncoder){
+    @Autowired
+    public AdminUserServiceImpl(UserRepo<AdminUser, Long> adminUserRepo, BCryptPasswordEncoder passwordEncoder) {
 
-    this.adminUserRepo = adminUserRepo;
-    this.passwordEncoder=passwordEncoder;
-}
-    public AdminUserServiceImpl(){
+        this.adminUserRepo = adminUserRepo;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    public AdminUserServiceImpl() {
 
     }
 
@@ -40,26 +43,28 @@ public AdminUserServiceImpl(UserRepo<AdminUser, Long> adminUserRepo, BCryptPassw
 
     @Override
     public boolean setPassword(AdminUser user, String hashedPassword) {
-        boolean ok=false;
-        if(user!=null) {
+        boolean ok = false;
+        if (user != null) {
             user.setPassword(this.passwordEncoder.encode(user.getPassword()));
             updateUser(user);
+        } else {
+            throw new RuntimeException("NO USER FOUND");
         }
-        else{throw new RuntimeException("NO USER FOUND");}
         return ok;
     }
 
     @Override
     public boolean addUser(AdminUser user) {
-        boolean ok=false;
+        boolean ok = false;
         /*Get the user's details from the model */
 
-        if(user!=null){
+        if (user != null) {
             user.setPassword(this.passwordEncoder.encode(user.getPassword()));
             this.adminUserRepo.save(user);
             logger.info("USER {} HAS BEEN CREATED");
+        } else {
+            logger.error("USER NOT FOUND");
         }
-        else{logger.error("USER NOT FOUND");}
 
         return ok;
     }
@@ -67,19 +72,18 @@ public AdminUserServiceImpl(UserRepo<AdminUser, Long> adminUserRepo, BCryptPassw
     @Override
     public boolean resetPassword(Long userId, String newPassword) {
         boolean ok = false;
-        AdminUser user=   getUser(userId);
-        if(user!=null)
-        {
-            setPassword(user,newPassword);
+        AdminUser user = getUser(userId);
+
+        if (user != null) {
+            setPassword(user, newPassword);
 
             logger.info("PASSWORD RESET SUCCESSFULLY");
         }
-
         return ok;
     }
 
     @Override
-    public boolean changePassword(AdminUser user,String oldPassword, String newPassword) {
+    public boolean changePassword(AdminUser user, String oldPassword, String newPassword) {
         boolean ok = false;
         try {
 
@@ -111,12 +115,12 @@ public AdminUserServiceImpl(UserRepo<AdminUser, Long> adminUserRepo, BCryptPassw
                     }
                 }
             }
-        } catch (Exception e){
-                e.printStackTrace();
-                logger.error("ERROR OCCURRED {}",e.getMessage());
-            }
-            return ok;
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("ERROR OCCURRED {}", e.getMessage());
         }
+        return ok;
+    }
 
 
     @Override
@@ -130,39 +134,37 @@ public AdminUserServiceImpl(UserRepo<AdminUser, Long> adminUserRepo, BCryptPassw
 
             sendPassword(user);
             logger.info("PASSWORD GENERATED AND SENT");
+        } catch (Exception e) {
+            logger.error("ERROR OCCURRED {}", e.getMessage());
         }
-        catch (Exception e){
-            logger.error("ERROR OCCURRED {}",e.getMessage());
-        }
-
 
 
         return ok;
     }
 
-    public String generatePassword(){
+    public String generatePassword() {
        /* String password=   RandomStringUtils.randomNumeric(10);
         return password!=null? password: "";*/
-        return  null;
+        return null;
     }
 
 
-
-    public boolean sendPassword(AdminUser user){
+    public boolean sendPassword(AdminUser user) {
         //TODO use an smtp server to send new password to user via mail
         return false;
     }
 
     @Override
     public boolean updateUser(AdminUser user) {
-        boolean ok=false;
+        boolean ok = false;
         try {
-            if(user!=null) {
+            if (user != null) {
                 this.adminUserRepo.save(user);
                 logger.info("USER SUCCESSFULLY UPDATED");
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        catch(Exception e){e.printStackTrace();}
         return ok;
     }
 }

@@ -1,6 +1,6 @@
 package longbridge.services;
 
-import longbridge.models.Transfer;
+import longbridge.models.TransferRequest;
 import longbridge.models.User;
 
 /**
@@ -9,18 +9,18 @@ import longbridge.models.User;
  * The various transfer types supported include own account transfer, coronation bank transfer, interbank transfer
  * and international transfer. The transfers can be carried via Finacle, NIP, NAPS and RTGS
  * @author Fortunatus Ekenachi
- * @see Transfer
+ * @see TransferRequest
 
  */
 public interface TransferService {
 
-    void makeTransfer(Transfer transfer);
+    void makeTransfer(TransferRequest transferRequest);
 
-    Transfer getTransfer(Long id);
+    TransferRequest getTransfer(Long id);
 
-    Iterable<Transfer> getTransfers(User user);
+    Iterable<TransferRequest> getTransfers(User user);
 
-    void saveTransfer(Transfer transfer);
+    void saveTransfer(TransferRequest transferRequest);
 
     void deleteTransfer(Long id);
 }

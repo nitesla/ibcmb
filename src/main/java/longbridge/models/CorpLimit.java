@@ -7,14 +7,15 @@ import javax.persistence.ManyToOne;
 @Entity
 public class CorpLimit extends Limit {
 
-	@ManyToOne
+	@ManyToOne//TODO implement globallimit for corporate and for retail
 	private Corporate corporate;
 	
 	
 	public CorpLimit(){}
 	
 	
-	
+
+
 	public CorpLimit(Limit limit) {
 		super(limit.getDescription(), limit.getType(), limit.getLowerLimit(), limit.getUpperLimit(),
 				limit.getCurrency(), limit.getStatus(), limit.getEffectiveDate());

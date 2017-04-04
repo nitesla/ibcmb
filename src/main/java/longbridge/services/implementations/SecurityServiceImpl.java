@@ -9,14 +9,16 @@ import longbridge.repositories.RoleRepo;
 
 import longbridge.services.SecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * Created by ayoade_farooq@yahoo.com on 3/29/2017.
  */
+
+@Service
 public class SecurityServiceImpl implements SecurityService {
 
-    @Autowired
-    ProfileRepo profileRepo;
+
     @Autowired
     RoleRepo roleRepo;
     @Autowired

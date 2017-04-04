@@ -1,5 +1,8 @@
 package longbridge.models;
 
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
+
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -14,13 +17,13 @@ public class Limit extends AbstractEntity {
 	private BigDecimal upperLimit;
 	private String currency;
 	private String status;
-	private Date effectiveDate;
+	private LocalDateTime effectiveDate;
 	
 	public Limit(){
 	}
 	
 	public Limit(String description, String type, BigDecimal lowerLimit, BigDecimal upperLimit, String currency,
-			String status, Date effectiveDate) {
+			String status, LocalDateTime effectiveDate) {
 		super();
 		this.description = description;
 		this.type = type;
@@ -67,12 +70,15 @@ public class Limit extends AbstractEntity {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-	public Date getEffectiveDate() {
+
+	public LocalDateTime getEffectiveDate() {
 		return effectiveDate;
 	}
-	public void setEffectiveDate(Date effectiveDate) {
+
+	public void setEffectiveDate(LocalDateTime effectiveDate) {
 		this.effectiveDate = effectiveDate;
 	}
+
 	@Override
 	public String toString() {
 		return "Limit [description=" + description + ", type=" + type + ", upperLimit=" + upperLimit + ", currency="
