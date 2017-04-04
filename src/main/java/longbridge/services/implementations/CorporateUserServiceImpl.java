@@ -11,11 +11,11 @@ import java.util.Date;
  * Created by Fortune on 4/4/2017.
  */
 
+
+
+
 @Service
 public class CorporateUserServiceImpl implements CorporateUserService {
-
-
-    public CorporateUserServiceImpl(){}
 
     @Override
     public CorporateUser getUser(Long id) {
