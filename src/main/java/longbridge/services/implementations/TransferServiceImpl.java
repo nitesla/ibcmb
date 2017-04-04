@@ -2,7 +2,7 @@ package longbridge.services.implementations;
 
 import longbridge.models.TransferRequest;
 import longbridge.models.User;
-import longbridge.repositories.TransferRepo;
+import longbridge.repositories.TransferRequestRepo;
 import longbridge.services.IntegrationService;
 import longbridge.services.TransferService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class TransferServiceImpl implements TransferService {
     @Autowired
-    TransferRepo transferRepo;
+    TransferRequestRepo transferRequestRepo;
 
     @Autowired
     IntegrationService integrationService;
@@ -28,7 +28,7 @@ public class TransferServiceImpl implements TransferService {
 
     @Override
     public TransferRequest getTransfer(Long id) {
-        return transferRepo.findById(id);
+        return transferRequestRepo.findById(id);
     }
 
     @Override
@@ -39,18 +39,18 @@ public class TransferServiceImpl implements TransferService {
 
     @Override
     public void saveTransfer(TransferRequest transferRequest) {
-        transferRepo.save(transferRequest);
+        transferRequestRepo.save(transferRequest);
     }
 
     @Override
     public void deleteTransfer(Long id) {
-        TransferRequest transferRequest = transferRepo.findById(id);
+        TransferRequest transferRequest = transferRequestRepo.findById(id);
         if(transferRequest ==null){
  // todo           throw new Exception("No Transfer found");
             return;
         }
         transferRequest.setDelFlag("Y");
-        transferRepo.save(transferRequest);
+        transferRequestRepo.save(transferRequest);
     }
 
 }
