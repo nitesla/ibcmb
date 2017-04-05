@@ -56,7 +56,7 @@ private Logger logger= LoggerFactory.getLogger(this.getClass());
     @PostMapping
     public String createUser(@ModelAttribute("adminUserForm") AdminUser adminUser, BindingResult result, Model model) throws Exception{
         if(result.hasErrors()){
-            return "admin/users/edit";
+            return "addUser";
         }
         adminUserService.addUser(adminUser);
         model.addAttribute("success","Admin user created successfully");
