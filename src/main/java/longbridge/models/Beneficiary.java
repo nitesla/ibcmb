@@ -15,14 +15,7 @@ public class Beneficiary extends AbstractEntity{
     private String accountNo;
     private String beneficiaryBank;
 
-    @Override
-    public String toString() {
-        return "Beneficiary{" +
-                ", name='" + name + '\'' +
-                ", accountNo='" + accountNo + '\'' +
-                ", beneficiaryBank='" + beneficiaryBank + '\'' +
-                '}';
-    }
+
 
     public User getUser() {
         return user;
@@ -54,5 +47,14 @@ public class Beneficiary extends AbstractEntity{
 
     public void setBeneficiaryBank(String beneficiaryBank) {
         this.beneficiaryBank = beneficiaryBank;
+    }
+
+    @Override
+    public String toString() {
+        return "Beneficiary{" +
+                ", name='" + name + '\'' +
+                ", accountNo='" + accountNo + '\'' +
+                ", beneficiaryBank='" + beneficiaryBank + '\'' +
+                '}';
     }
 }

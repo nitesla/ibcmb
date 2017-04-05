@@ -1,7 +1,8 @@
 package longbridge.services.implementations;
 
 import longbridge.models.*;
-import longbridge.repositories.BeneficiaryRepo;
+import longbridge.repositories.InternationalBeneficiaryRepo;
+import longbridge.repositories.LocalBeneficiaryRepo;
 import longbridge.services.BeneficiaryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,20 +10,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
- * Created by Showboy on 29/03/2017.
+ * Created by Wunmi on 29/03/2017.
  */
 @Service
 public class BeneficiaryServiceImpl implements BeneficiaryService {
 
     private Logger logger= LoggerFactory.getLogger(this.getClass());
 
-    private BeneficiaryRepo<LocalBeneficiary, Long> localBeneficiary;
-    private BeneficiaryRepo<InternationalBeneficiary, Long> internationalBeneficiary;
+    private LocalBeneficiaryRepo localBeneficiaryRepo;
+    private InternationalBeneficiaryRepo internationalBeneficiaryRepo;
 
     @Autowired
-    public BeneficiaryServiceImpl(BeneficiaryRepo<LocalBeneficiary, Long> localBeneficiary, BeneficiaryRepo<InternationalBeneficiary, Long> internationalBeneficiary) {
-        this.localBeneficiary = localBeneficiary;
-        this.internationalBeneficiary=internationalBeneficiary;
+    public BeneficiaryServiceImpl(LocalBeneficiaryRepo localBeneficiaryRepo, InternationalBeneficiaryRepo internationalBeneficiaryRepo) {
+        this.localBeneficiaryRepo = localBeneficiaryRepo;
+        this.internationalBeneficiaryRepo = internationalBeneficiaryRepo;
     }
 
     @Override
@@ -32,8 +33,8 @@ public class BeneficiaryServiceImpl implements BeneficiaryService {
         try {
 
             beneficiary.setUser(user);
-            this.localBeneficiary.save(beneficiary);
-            logger.trace("Beneficiary {} HAS BEEN ADDED ", this.localBeneficiary.toString());
+            this.localBeneficiaryRepo.save(beneficiary);
+            logger.trace("Beneficiary {} HAS BEEN ADDED ", this.localBeneficiaryRepo.toString());
             result=true;
         }
         catch (Exception e){
@@ -48,9 +49,9 @@ public class BeneficiaryServiceImpl implements BeneficiaryService {
 
         try {
 
-            LocalBeneficiary beneficiary = localBeneficiary.findOne(beneficiaryId);
+            LocalBeneficiary beneficiary = localBeneficiaryRepo.findOne(beneficiaryId);
             beneficiary.setDelFlag("Y");
-            this.localBeneficiary.save(beneficiary);
+            this.localBeneficiaryRepo.save(beneficiary);
             logger.info("BENEFICIARY {} HAS BEEN DELETED ");
             result=true;
         }
@@ -63,12 +64,13 @@ public class BeneficiaryServiceImpl implements BeneficiaryService {
 
     @Override
     public Beneficiary getLocalBeneficiary(Long id) {
-        return localBeneficiary.findOne(id);
+        return localBeneficiaryRepo.findOne(id);
     }
 
     @Override
     public Iterable<Beneficiary> getLocalBeneficiaries(User user) {
-        return localBeneficiary.findByUserAndDelFlag(user, "N");
+        //return localBeneficiaryRepo.findByUserAndDelFlag(user, "N");
+        return null;
     }
 
     @Override
@@ -78,7 +80,7 @@ public class BeneficiaryServiceImpl implements BeneficiaryService {
         try {
 
             beneficiary.setUser(user);
-            this.internationalBeneficiary.save(beneficiary);
+            this.internationalBeneficiaryRepo.save(beneficiary);
             logger.info("BENEFICIARY {} HAS BEEN ADDED ");
             result=true;
         }
@@ -95,9 +97,9 @@ public class BeneficiaryServiceImpl implements BeneficiaryService {
 
         try {
 
-            InternationalBeneficiary beneficiary = internationalBeneficiary.findOne(beneficiaryId);
+            InternationalBeneficiary beneficiary = internationalBeneficiaryRepo.findOne(beneficiaryId);
             beneficiary.setDelFlag("Y");
-            this.internationalBeneficiary.save(beneficiary);
+            this.internationalBeneficiaryRepo.save(beneficiary);
             logger.info("BENEFICIARY {} HAS BEEN DELETED ");
             result=true;
         }
@@ -110,11 +112,12 @@ public class BeneficiaryServiceImpl implements BeneficiaryService {
 
     @Override
     public Beneficiary getInternationalBeneficiary(Long id) {
-        return internationalBeneficiary.findOne(id);
+        return internationalBeneficiaryRepo.findOne(id);
     }
 
     @Override
     public Iterable<Beneficiary> getInternationalBeneficiaries(User user) {
-        return internationalBeneficiary.findByUserAndDelFlag(user, "N");
+        //return internationalBeneficiaryRepo.findByUserAndDelFlag(user, "N");
+        return null;
     }
 }

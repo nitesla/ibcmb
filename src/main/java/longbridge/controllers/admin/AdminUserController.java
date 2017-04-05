@@ -19,40 +19,78 @@ import javax.validation.Valid;
  * Created by SYLVESTER on 31/03/2017.
  */
 @RestController
-@RequestMapping("/admin")
+@RequestMapping("/admin/users")
 public class AdminUserController {
 
 private Logger logger= LoggerFactory.getLogger(this.getClass());
     @Autowired
     AdminUserService adminUserService;
 
-    @GetMapping("/add")
+    /**
+     * Edit a new user
+     * @return
+     */
+    @GetMapping("/edit")
     public String addUser(){
         return "addUser";
     }
 
-    @PostMapping("/add")
+    /**
+     * Edit a existing user
+     * @return
+     */
+    @GetMapping("/{user}/edit")
+    public String editUser(){
+        return "addUser";
+    }
+
+    /**
+     * Creates a new user
+     * @param adminUser
+     * @param model
+     * @return
+     * @throws Exception
+     */
+    @PostMapping()
     public String createUser( AdminUser adminUser, Model model) throws Exception{
         adminUserService.addUser(adminUser);
         model.addAttribute("success","Admin user created successfully");
         return "addUser";
     }
 
-    @GetMapping("/adminUsers")
+    /**
+     * Returnsa all users
+     * @param model
+     * @return
+     */
+    @GetMapping()
     public Iterable<AdminUser> getAllAdminUsers(Model model){
         Iterable<AdminUser> adminUserList=adminUserService.getUsers();
         model.addAttribute("adminUserList",adminUserList);
         return adminUserList;
     }
 
-    @GetMapping("/user")
+    /**
+     * Returns user
+     * @param userId
+     * @param model
+     * @return
+     */
+    @GetMapping("/{user}")
     public String getAdminUser(Long userId, Model model){
        AdminUser user =adminUserService.getUser(userId);
        model.addAttribute("adminUser",user);
        return "adminUser";
     }
 
-    @PostMapping("/update")
+    /**
+     * Updates the user
+     * @param adminUser
+     * @param model
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("/{user}")
     public String updateUser( AdminUser adminUser, Model model) throws Exception{
        boolean result = adminUserService.updateUser(adminUser);
        if(result) {
@@ -61,7 +99,7 @@ private Logger logger= LoggerFactory.getLogger(this.getClass());
         return "addUser";
     }
 
-    @PostMapping("/delete")
+    @PostMapping("/{user}/delete")
     public String deleteUser(AdminUser user){
         //TODO
         return "adminUsers";
@@ -94,7 +132,5 @@ private Logger logger= LoggerFactory.getLogger(this.getClass());
         logger.info("PASSWORD CHANGED SUCCESSFULLY");
         return "changePassword";
     }
-
-
 
 }
