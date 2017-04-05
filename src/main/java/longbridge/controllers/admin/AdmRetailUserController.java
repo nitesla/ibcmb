@@ -1,6 +1,6 @@
 package longbridge.controllers.admin;
 
-import longbridge.formValidations.ChangePassword;
+import longbridge.dtos.ChangePassword;
 import longbridge.models.RetailUser;
 import longbridge.services.RetailUserService;
 import org.slf4j.Logger;
@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpRequest;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -27,10 +28,13 @@ public class AdmRetailUserController {
     private Logger logger= LoggerFactory.getLogger(this.getClass());
 
 
+
     @GetMapping("/new")
     public String addUser(){
         return "addUser";
     }
+
+
 
     @PostMapping
     public String createUser(@ModelAttribute("retailUserForm") RetailUser retailUser, BindingResult result,Model model) throws Exception{
@@ -60,31 +64,42 @@ public class AdmRetailUserController {
         return retailUserList;
     }
 
-    @GetMapping("/{user}")
+    @GetMapping("/{userId}")
     public String getUser(@PathVariable  Long userId, Model model){
         RetailUser user = retailUserService.getUser(userId);
         model.addAttribute("retailUser",user);
-        return "retailUser";
+        return "retailUserDetails";
     }
 
-    @PostMapping("/update")
-    public String UpdateUser(RetailUser retailUser, Model model) throws Exception{
-       boolean result = retailUserService.updateUser(retailUser);
-       if(result) {
+    @PostMapping("/{userId}")
+    public String UpdateUser(@ModelAttribute("retailUserForm") RetailUser retailUser, @PathVariable Long userId, BindingResult result, Model model) throws Exception{
+       if(result.hasErrors()){
+           return "addUser";
+       }
+       retailUser.setId(userId);
+        boolean updated = retailUserService.updateUser(retailUser);
+       if(updated) {
            model.addAttribute("success", "Retail user updated successfully");
        }
-        return "updateUser";
+        return "redirect:/retail/users";
     }
 
-    @GetMapping("/changePassword")
+    @PostMapping("/{userId}/delete")
+    public String deleteUser(@PathVariable Long userId) {
+        retailUserService.deleteUser(userId);
+        return "redirect:/retail/users";
+    }
+
+    @GetMapping("/password")
     public String changePassword(){
         return "changePassword";
     }
 
-    @PostMapping("/changePassword")
-    public String changePassword(@Valid ChangePassword changePassword, Long userId, BindingResult result, HttpRequest request, Model model){
-        /* if(result.hasError()){
-        }*/
+    @PostMapping("/password")
+    public String changePassword(@Validated ChangePassword changePassword, Long userId, BindingResult result, HttpRequest request, Model model){
+         if(result.hasErrors()){
+             return "changePassword";
+        }
         RetailUser user= retailUserService.getUser(userId);
         String oldPassword=changePassword.getOldPassword();
         String newPassword=changePassword.getNewPassword();

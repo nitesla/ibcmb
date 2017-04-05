@@ -73,6 +73,11 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     }
 
     @Override
+    public void deleteUser(Long userId) {
+
+    }
+
+    @Override
     public void resetPassword(OperationsUser user) {
 
     }

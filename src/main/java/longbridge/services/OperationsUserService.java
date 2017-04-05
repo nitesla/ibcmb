@@ -45,10 +45,19 @@ public interface OperationsUserService {
      */
     boolean updateUser(OperationsUser user);
 
+
+
+    /**
+     * Deletes an Operations User
+     * @param userId the  Operations user's id
+     */
+    void deleteUser(Long userId);
+
     /**
      * Resets the password of the specified Operations user
      * @param user the user
      */
+
     void resetPassword(OperationsUser user);
 
     /**

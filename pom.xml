@@ -85,6 +85,11 @@
 			<artifactId>spring-context</artifactId>
 			<version>4.3.7.RELEASE</version>
 		</dependency>
+		<dependency>
+			<groupId>org.modelmapper.extensions</groupId>
+			<artifactId>modelmapper-spring</artifactId>
+			<version>0.7.5</version>
+		</dependency>
 	</dependencies>
 
 	<build>

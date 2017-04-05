@@ -53,7 +53,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     }
 
     @Override
-    public void deleteUser(CorporateUser user) {
+    public void deleteUser(Long userId) {
 
     }
 

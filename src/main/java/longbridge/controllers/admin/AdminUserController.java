@@ -1,6 +1,6 @@
 package longbridge.controllers.admin;
 
-import longbridge.formValidations.ChangePassword;
+import longbridge.dtos.ChangePassword;
 import longbridge.models.AdminUser;
 import longbridge.services.AdminUserService;
 import org.slf4j.Logger;
@@ -21,9 +21,9 @@ import javax.validation.Valid;
 @RequestMapping("/admin/users")
 public class AdminUserController {
 
-private Logger logger= LoggerFactory.getLogger(this.getClass());
+    private Logger logger= LoggerFactory.getLogger(this.getClass());
     @Autowired
-    AdminUserService adminUserService;
+   private  AdminUserService adminUserService;
 
     /**
      * Page for adding a new user
@@ -64,12 +64,12 @@ private Logger logger= LoggerFactory.getLogger(this.getClass());
     }
 
     /**
-     * Returnsa all users
+     * Returns all users
      * @param model
      * @return
      */
     @GetMapping
-    public Iterable<AdminUser> getAllAdminUsers(Model model){
+    public Iterable<AdminUser> getUsers(Model model){
         Iterable<AdminUser> adminUserList=adminUserService.getUsers();
         model.addAttribute("adminUserList",adminUserList);
         return adminUserList;
@@ -100,7 +100,7 @@ private Logger logger= LoggerFactory.getLogger(this.getClass());
       if(result.hasErrors()) {
           return "addUser";
       }
-      adminUser.setId(userId);
+         adminUser.setId(userId);
           boolean updated = adminUserService.updateUser(adminUser);
           if (updated) {
               model.addAttribute("success", "Admin user updated successfully");
@@ -111,7 +111,7 @@ private Logger logger= LoggerFactory.getLogger(this.getClass());
     @PostMapping("/{userId}/delete")
     public String deleteUser(@PathVariable Long userId){
         adminUserService.deleteUser(userId);
-        return "adminUsers";
+        return "redirect:/admin/users";
     }
 
     @GetMapping("/password")
