@@ -100,6 +100,7 @@ private Logger logger= LoggerFactory.getLogger(this.getClass());
       if(result.hasErrors()) {
           return "addUser";
       }
+      adminUser.setId(userId);
           boolean updated = adminUserService.updateUser(adminUser);
           if (updated) {
               model.addAttribute("success", "Admin user updated successfully");

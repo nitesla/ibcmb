@@ -1,7 +1,7 @@
 package longbridge.services.implementations;
 
 import longbridge.models.AdminUser;
-import longbridge.repositories.UserRepo;
+import longbridge.repositories.AdminUserRepo;
 import longbridge.services.AdminUserService;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
@@ -17,11 +17,11 @@ import org.springframework.stereotype.Service;
 public class AdminUserServiceImpl implements AdminUserService {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
-    private UserRepo<AdminUser, Long> adminUserRepo;
+    private AdminUserRepo adminUserRepo;
     private BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
-    public AdminUserServiceImpl(UserRepo<AdminUser, Long> adminUserRepo, BCryptPasswordEncoder passwordEncoder) {
+    public AdminUserServiceImpl(AdminUserRepo adminUserRepo, BCryptPasswordEncoder passwordEncoder) {
 
         this.adminUserRepo = adminUserRepo;
         this.passwordEncoder = passwordEncoder;
@@ -33,7 +33,7 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     @Override
     public AdminUser getUser(Long id) {
-        return this.adminUserRepo.findOne(id);
+        return this.adminUserRepo.getOne(id);
     }
 
     @Override
