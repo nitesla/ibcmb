@@ -40,6 +40,13 @@ public interface AdminUserService {
 
 
     /**
+     * * Deletes the admin user identified by the id
+     * @param id the user's id
+     */
+    void deleteUser(Long id);
+
+
+    /**
      * Updates the details of the specified Admin user
      * @param user the admin user whose details are to be updated
      */

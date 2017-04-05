@@ -22,7 +22,7 @@ import javax.validation.Valid;
  */
 
 @RestController
-@RequestMapping("/retail/user")
+@RequestMapping("/retail/users")
 public class AdmRetailUserController {
     @Autowired
     RetailUserService retailUserService;
