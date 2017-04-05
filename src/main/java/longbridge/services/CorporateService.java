@@ -38,8 +38,6 @@ public interface CorporateService {
      */
     Corporate getCorporate(Long id);
 
-
-
     /**
      * Returns a list of all the corporate customers
      *
@@ -89,7 +87,7 @@ public interface CorporateService {
     void setCorporateUserLimit(CorporateUser corporateUser, double limitValue);
 
     /**
-     * Updates the set of the corporate user with the new limt
+     * Updates the corporate user with the new limt
      *
      * @param corporateUser   the corporate user
      * @param limitValue      the limit

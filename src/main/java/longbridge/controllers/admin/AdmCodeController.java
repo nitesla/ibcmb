@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping("admin/codes")
-public class CodeController {
+public class AdmCodeController {
 
     @Autowired
     private CodeService codeService;

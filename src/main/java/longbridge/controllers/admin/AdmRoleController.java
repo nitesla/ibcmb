@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("admin/roles")
-public class RoleController {
+public class AdmRoleController {
 
     @Autowired
     private SecurityService securityService;

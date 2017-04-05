@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping("admin/permissions")
-public class PermissionController {
+public class AdmPermissionController {
 
     @Autowired
     private SecurityService securityService;

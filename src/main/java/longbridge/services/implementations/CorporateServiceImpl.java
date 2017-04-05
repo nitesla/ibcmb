@@ -2,10 +2,12 @@ package longbridge.services.implementations;
 
 import longbridge.models.*;
 import longbridge.services.CorporateService;
+import org.springframework.stereotype.Service;
 
 /**
  * Created by Fortune on 4/5/2017.
  */
+@Service
 public class CorporateServiceImpl implements CorporateService {
 
     @Override

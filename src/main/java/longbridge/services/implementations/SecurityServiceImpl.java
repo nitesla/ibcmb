@@ -60,6 +60,11 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
+    public Iterable<Permission> getPermissions() {
+        return null;
+    }
+
+    @Override
     public void updatePermission(Permission permission) {
 
     }
