@@ -62,11 +62,17 @@ public class AdminUserServiceImpl implements AdminUserService {
             user.setPassword(this.passwordEncoder.encode(user.getPassword()));
             this.adminUserRepo.save(user);
             logger.info("USER {} HAS BEEN CREATED");
+            ok=true;
         } else {
             logger.error("USER NOT FOUND");
         }
 
         return ok;
+    }
+
+    @Override
+    public void deleteUser(Long id) {
+        //adminUserRepo.delete(id); //TODO implement logical delete
     }
 
     @Override
@@ -76,8 +82,10 @@ public class AdminUserServiceImpl implements AdminUserService {
 
         if (user != null) {
             setPassword(user, newPassword);
+            this.adminUserRepo.save(user);
 
             logger.info("PASSWORD RESET SUCCESSFULLY");
+            ok=true;
         }
         return ok;
     }

@@ -9,10 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpRequest;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
 import javax.validation.Valid;
 
 /**
@@ -27,20 +26,23 @@ private Logger logger= LoggerFactory.getLogger(this.getClass());
     AdminUserService adminUserService;
 
     /**
-     * Edit a new user
+     * Page for adding a new user
      * @return
      */
-    @GetMapping("/edit")
+    @GetMapping("/new")
     public String addUser(){
         return "addUser";
     }
 
     /**
-     * Edit a existing user
+     * Edit an existing user
      * @return
      */
-    @GetMapping("/{user}/edit")
-    public String editUser(){
+    @GetMapping("/{userId}/edit")
+    public String editUser(@PathVariable Long userId, Model model) {
+
+        AdminUser user = adminUserService.getUser(userId);
+        model.addAttribute("user", user);
         return "addUser";
     }
 
@@ -51,11 +53,14 @@ private Logger logger= LoggerFactory.getLogger(this.getClass());
      * @return
      * @throws Exception
      */
-    @PostMapping()
-    public String createUser( AdminUser adminUser, Model model) throws Exception{
+    @PostMapping
+    public String createUser(@ModelAttribute("adminUserForm") AdminUser adminUser, BindingResult result, Model model) throws Exception{
+        if(result.hasErrors()){
+            return "admin/users/edit";
+        }
         adminUserService.addUser(adminUser);
         model.addAttribute("success","Admin user created successfully");
-        return "addUser";
+        return "redirect:/admin/users";
     }
 
     /**
@@ -63,7 +68,7 @@ private Logger logger= LoggerFactory.getLogger(this.getClass());
      * @param model
      * @return
      */
-    @GetMapping()
+    @GetMapping
     public Iterable<AdminUser> getAllAdminUsers(Model model){
         Iterable<AdminUser> adminUserList=adminUserService.getUsers();
         model.addAttribute("adminUserList",adminUserList);
@@ -76,11 +81,11 @@ private Logger logger= LoggerFactory.getLogger(this.getClass());
      * @param model
      * @return
      */
-    @GetMapping("/{user}")
-    public String getAdminUser(Long userId, Model model){
+    @GetMapping("/{userId}")
+    public String getAdminUser(@PathVariable  Long userId, Model model){
        AdminUser user =adminUserService.getUser(userId);
        model.addAttribute("adminUser",user);
-       return "adminUser";
+       return "adminUserDetails";
     }
 
     /**
@@ -90,28 +95,31 @@ private Logger logger= LoggerFactory.getLogger(this.getClass());
      * @return
      * @throws Exception
      */
-    @PostMapping("/{user}")
-    public String updateUser( AdminUser adminUser, Model model) throws Exception{
-       boolean result = adminUserService.updateUser(adminUser);
-       if(result) {
-           model.addAttribute("success", "Admin user updated successfully");
-       }
-        return "addUser";
+    @PostMapping("/{userId}")
+    public String updateUser(@ModelAttribute("adminUserForm") @Validated AdminUser adminUser, @PathVariable Long userId, BindingResult result, Model model) throws Exception{
+      if(result.hasErrors()) {
+          return "addUser";
+      }
+          boolean updated = adminUserService.updateUser(adminUser);
+          if (updated) {
+              model.addAttribute("success", "Admin user updated successfully");
+          }
+        return "redirect:/admin/users";
     }
 
-    @PostMapping("/{user}/delete")
-    public String deleteUser(AdminUser user){
-        //TODO
+    @PostMapping("/{userId}/delete")
+    public String deleteUser(@PathVariable Long userId){
+        adminUserService.deleteUser(userId);
         return "adminUsers";
     }
 
-    @GetMapping("/changePassword")
+    @GetMapping("/password")
     public String changePassword(){
         return "changePassword";
     }
 
-    @PostMapping("/changePassword")
-    public String changePassword(@Valid ChangePassword changePassword,Long userId,BindingResult result, HttpRequest request, Model model){
+    @PostMapping("/password")
+    public String changePassword(@Valid ChangePassword changePassword,Long userId, BindingResult result, HttpRequest request, Model model){
 /*        if(result.hasError()){
 
         }*/
@@ -129,7 +137,7 @@ private Logger logger= LoggerFactory.getLogger(this.getClass());
 
         user.setPassword(newPassword);
         adminUserService.addUser(user);
-        logger.info("PASSWORD CHANGED SUCCESSFULLY");
+        logger.trace("Password for user {} changed successfully",user.getUserName());
         return "changePassword";
     }
 
