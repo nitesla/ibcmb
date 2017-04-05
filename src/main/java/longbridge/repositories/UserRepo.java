@@ -10,7 +10,7 @@ import java.io.Serializable;
  */
 @Repository
 
-public interface UserRepo<T extends User,ID extends Serializable> extends JpaRepository<T, ID>
+public interface UserRepo<T extends User,ID extends Serializable> extends CommonRepo<T, ID>
 {
 
     //User findByEmail(String email);

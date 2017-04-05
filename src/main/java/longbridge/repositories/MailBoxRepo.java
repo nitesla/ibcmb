@@ -9,5 +9,5 @@ import org.springframework.stereotype.Repository;
  */
 
 @Repository
-public interface MailBoxRepo extends JpaRepository<MailBox, Long> {
+public interface MailBoxRepo extends CommonRepo<MailBox, Long> {
 }

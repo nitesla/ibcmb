@@ -9,5 +9,5 @@ import org.springframework.stereotype.Repository;
  */
 
 @Repository
-public interface UserGroupRepo extends JpaRepository<UserGroup, Long> {
+public interface UserGroupRepo extends CommonRepo<UserGroup, Long> {
 }

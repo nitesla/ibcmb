@@ -9,5 +9,5 @@ import org.springframework.stereotype.Repository;
  */
 
 @Repository
-public interface ServiceRequestRepo extends JpaRepository<ServiceRequest, Long> {
+public interface ServiceRequestRepo extends CommonRepo<ServiceRequest, Long> {
 }

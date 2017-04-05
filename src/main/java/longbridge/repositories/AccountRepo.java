@@ -10,7 +10,7 @@ import java.util.List;
  * Created by Wunmi on 27/03/2017.
  */
 @Repository
-public interface AccountRepo extends JpaRepository<Account, Long> {
+public interface AccountRepo extends CommonRepo<Account, Long> {
 
     Account findById(Long id);
     Account findByAccountNumber(String acctNumber);

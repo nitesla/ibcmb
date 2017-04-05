@@ -1,6 +1,7 @@
 package longbridge.services.implementations;
 
 import longbridge.models.OperationsUser;
+import longbridge.repositories.OperationsUserRepo;
 import longbridge.repositories.UserRepo;
 import longbridge.services.OperationsUserService;
 import org.slf4j.Logger;
@@ -17,7 +18,7 @@ import java.util.Collection;
 public class OperationsUserServiceImpl implements OperationsUserService {
     private Logger logger= LoggerFactory.getLogger(this.getClass());
 
-    private UserRepo<OperationsUser, Long> opUserRepo;
+    private OperationsUserRepo opUserRepo;
     private BCryptPasswordEncoder passwordEncoder;
 
     public OperationsUserServiceImpl() {
@@ -25,7 +26,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     }
 
     @Autowired
-    public OperationsUserServiceImpl(UserRepo<OperationsUser, Long> opUserRepo, BCryptPasswordEncoder passwordEncoder) {
+    public OperationsUserServiceImpl(OperationsUserRepo opUserRepo, BCryptPasswordEncoder passwordEncoder) {
         this.opUserRepo = opUserRepo;
         this.passwordEncoder=passwordEncoder;
     }
