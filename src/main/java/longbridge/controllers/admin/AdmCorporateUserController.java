@@ -1,8 +1,10 @@
 package longbridge.controllers.admin;
 
 import longbridge.dtos.ChangePassword;
+import longbridge.dtos.CorporateUserDTO;
 import longbridge.models.CorporateUser;
 import longbridge.services.CorporateUserService;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,9 @@ public class AdmCorporateUserController {
 
     private Logger logger= LoggerFactory.getLogger(this.getClass());
 
+    @Autowired
+    private ModelMapper modelMapper;
+
 
     @GetMapping("/new")
     public String addUser(){
@@ -33,10 +38,11 @@ public class AdmCorporateUserController {
     }
 
     @PostMapping
-    public String createUser(@ModelAttribute("corporateUserForm") CorporateUser corporateUser, BindingResult result, Model model) throws Exception{
+    public String createUser(@ModelAttribute("corporateUser") CorporateUserDTO corporateUserDTO, BindingResult result, Model model) throws Exception{
         if(result.hasErrors()){
             return "addUser";
         }
+        CorporateUser corporateUser = modelMapper.map(corporateUserDTO,CorporateUser.class);
         corporateUserService.addUser(corporateUser);
         model.addAttribute("success","Corporate user created successfully");
         return "redirect:/corporate/users";
@@ -52,17 +58,19 @@ public class AdmCorporateUserController {
     @GetMapping("/{userId}")
     public String getUser(@PathVariable Long userId, Model model){
         CorporateUser user = corporateUserService.getUser(userId);
-        model.addAttribute("corporateUser",user);
+        CorporateUserDTO corporateUserDTO = modelMapper.map(user,CorporateUserDTO.class);
+        model.addAttribute("corporateUser",corporateUserDTO);
         return "corporateUser";
     }
 
     @PostMapping("/{userId}")
-    public String UpdateUser(@ModelAttribute("corporateUserForm") CorporateUser user, @PathVariable Long userId, BindingResult result,Model model) throws Exception{
+    public String UpdateUser(@ModelAttribute("corporateUser") CorporateUserDTO corporateUserDTO, @PathVariable Long userId, BindingResult result,Model model) throws Exception{
         if(result.hasErrors()){
             return "addUser";
         }
-        user.setId(userId);
-        boolean updated = corporateUserService.updateUser(user);
+        corporateUserDTO.setId(userId);
+        CorporateUser corporateUser = modelMapper.map(corporateUserDTO,CorporateUser.class);
+        boolean updated = corporateUserService.updateUser(corporateUser);
         if(updated) {
             model.addAttribute("success", "Corporate user updated successfully");
         }
@@ -81,7 +89,7 @@ public class AdmCorporateUserController {
     }
 
     @PostMapping("/changePassword")
-    public String changePassword(@Validated ChangePassword changePassword, Long userId, BindingResult result, HttpRequest request, Model model){
+    public String changePassword(@Valid ChangePassword changePassword, Long userId, BindingResult result, HttpRequest request, Model model){
          if(result.hasErrors()){
              return "changePassword";
         }

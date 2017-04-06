@@ -12,7 +12,7 @@ import java.util.Date;
  * @see Message
  * Created on 3/29/2017.
  */
-public interface MessagingService {
+public interface MessageService {
 
     /**
      *Returns a {@code Message} identified by the given {@code id}

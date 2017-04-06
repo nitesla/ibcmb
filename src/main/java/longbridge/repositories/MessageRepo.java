@@ -10,6 +10,6 @@ import sun.misc.resources.Messages;
  */
 
 @Repository
-public interface MessagesRepo extends CommonRepo<Message, Long> {
+public interface MessageRepo extends CommonRepo<Message, Long> {
 
 }

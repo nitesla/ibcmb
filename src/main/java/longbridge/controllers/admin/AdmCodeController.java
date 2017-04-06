@@ -23,7 +23,7 @@ public class AdmCodeController {
     }
 
     @PostMapping
-    public String createCode(@ModelAttribute("codeForm") Code code, BindingResult result, Model model){
+    public String createCode(@ModelAttribute("code") Code code, BindingResult result, Model model){
         if(result.hasErrors()){
             return "add-code";
         }

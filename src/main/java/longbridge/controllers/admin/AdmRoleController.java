@@ -1,7 +1,9 @@
 package longbridge.controllers.admin;
 
+import longbridge.dtos.RoleDTO;
 import longbridge.models.Role;
 import longbridge.services.SecurityService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,6 +19,8 @@ public class AdmRoleController {
 
     @Autowired
     private SecurityService securityService;
+    @Autowired
+    private ModelMapper modelMapper;
 
     @GetMapping("/new")
     public String addRole(){
@@ -24,10 +28,11 @@ public class AdmRoleController {
     }
 
     @PostMapping
-    public String createRole(@ModelAttribute("roleForm") Role role, BindingResult result, Model model){
+    public String createRole(@ModelAttribute("roleForm") RoleDTO roleDTO, BindingResult result, Model model){
         if(result.hasErrors()){
             return "add-role";
         }
+        Role role = modelMapper.map(roleDTO,Role.class);
         securityService.addRole(role);
         model.addAttribute("success", "Role added successfully");
         return "/admin/roles";
@@ -36,7 +41,8 @@ public class AdmRoleController {
     @GetMapping("/{roleId}")
     public Role getRole(@PathVariable Long roleId, Model model){
         Role role = securityService.getRole(roleId);
-        model.addAttribute("role",role);
+        RoleDTO roleDTO = modelMapper.map(role,RoleDTO.class);
+        model.addAttribute("role",roleDTO);
         return role;
     }
 
@@ -49,12 +55,13 @@ public class AdmRoleController {
     }
 
     @PostMapping("/{roleId}")
-    public String updateRole(@ModelAttribute("roleForm") Role role, @PathVariable Long roleId, BindingResult result, Model model){
+    public String updateRole(@ModelAttribute("role") RoleDTO roleDTO, @PathVariable Long roleId, BindingResult result, Model model){
 
         if(result.hasErrors()){
             return "add-role";
         }
-        role.setId(roleId);
+        roleDTO.setId(roleId);
+        Role role = modelMapper.map(roleDTO,Role.class);
         securityService.addRole(role);
         model.addAttribute("success", "Role updated successfully");
         return "/admin/roles";
