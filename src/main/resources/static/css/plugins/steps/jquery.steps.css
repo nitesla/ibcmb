@@ -138,7 +138,6 @@
     display: block;
     margin: 5px 5px 10px 5px;
     min-height: 120px;
-    overflow: hidden;
     position: relative;
     width: auto;
 
@@ -161,9 +160,8 @@
 .wizard > .content > .body
 {
     float: left;
-    position: absolute;
     width: 95%;
-    height: 95%;
+    height: auto;
     padding: 2.5%;
 }
 

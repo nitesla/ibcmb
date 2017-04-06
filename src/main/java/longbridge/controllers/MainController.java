@@ -29,4 +29,9 @@ public class MainController {
     public String getDashboard() {
         return "dashboard";
     }
+
+    @RequestMapping("/account")
+    public String getAdminUser() {
+        return "adminUser/add";
+    }
 }
