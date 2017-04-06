@@ -1,4 +1,4 @@
-package longbridge.controllers.customer;
+package longbridge.controllers.retail;
 
 import org.springframework.stereotype.Controller;
 
@@ -6,5 +6,5 @@ import org.springframework.stereotype.Controller;
  * Created by Fortune on 4/3/2017.
  */
 @Controller
-public class AccountController {
+public class TransferController {
 }

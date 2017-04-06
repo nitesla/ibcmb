@@ -25,6 +25,12 @@ public interface SecurityService {
     Role getRole(Long id);
 
     /**
+     * Returns all  the roles in the system
+     * @return a list of roles
+     */
+    Iterable<Role> getRoles();
+
+    /**
      * Updates the details of the specified userType
      * @param role the role to be updated
      */
@@ -47,6 +53,12 @@ public interface SecurityService {
      * @return the permission's id
      */
     Permission getPermission(Long id);
+
+    /**
+     * Returns all  the permissions in the system
+     * @return a list of permissions
+     */
+    Iterable<Permission> getPermissions();
 
     /**
      * Updates the details of the permission

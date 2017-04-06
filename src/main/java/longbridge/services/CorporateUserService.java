@@ -61,9 +61,9 @@ public interface CorporateUserService {
 
     /**
      * Deletes the specified corporate user
-     * @param user the corporate user
+     * @param userId the corporate user's id
      */
-    void deleteUser(CorporateUser user);
+    void deleteUser(Long userId);
 
     /**
      * Enables the corporate user. This allows the corporate user to perform

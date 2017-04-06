@@ -1,4 +1,4 @@
-package longbridge.controllers.customer;
+package longbridge.controllers.retail;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

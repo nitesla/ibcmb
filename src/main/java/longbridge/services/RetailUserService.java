@@ -37,6 +37,13 @@ public interface RetailUserService {
     boolean addUser(RetailUser user);
 
     /**
+     * Deletes a retail user to the system
+     * @param userId the retail user's id
+     */
+
+    void deleteUser(Long userId);
+
+    /**
      * Updates the details of the specified retail user
      * @param user the retail user whose details are to be updated
      */

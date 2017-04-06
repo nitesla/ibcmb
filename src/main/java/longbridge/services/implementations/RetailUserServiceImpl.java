@@ -73,6 +73,11 @@ public class RetailUserServiceImpl implements RetailUserService {
     }
 
     @Override
+    public void deleteUser(Long userId) {
+        retailUserRepo.delete(userId);
+    }
+
+    @Override
     public boolean resetPassword(RetailUser user, String newPassword) {
         boolean ok = false;
 

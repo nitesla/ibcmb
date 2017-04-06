@@ -1,6 +1,6 @@
 package longbridge.controllers.operations;
 
-import longbridge.formValidations.ChangePassword;
+import longbridge.dtos.ChangePassword;
 import longbridge.models.OperationsUser;
 import longbridge.services.OperationsUserService;
 import org.slf4j.Logger;
@@ -9,10 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpRequest;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -21,7 +18,7 @@ import javax.validation.Valid;
  */
 
 @RestController
-@RequestMapping("/operations/user")
+@RequestMapping("/operations/users")
 public class OperationsUserController {
     @Autowired
     OperationsUserService operationsUserService;
@@ -29,39 +26,52 @@ public class OperationsUserController {
     private Logger logger= LoggerFactory.getLogger(this.getClass());
 
 
-    @GetMapping("/add")
+    @GetMapping("/new")
     public String addUser(){
         return "addUser";
     }
 
-    @PostMapping("/add")
-    public String createUser(OperationsUser operationsUser, Model model) throws Exception{
+    @PostMapping
+    public String createUser(@ModelAttribute("operationsUserForm") OperationsUser operationsUser, BindingResult result, Model model) throws Exception{
+        if(result.hasErrors()){
+            return "addUser";
+        }
         operationsUserService.addUser(operationsUser);
         model.addAttribute("success","Retail user created successfully");
-        return "addUser";
+        return "redirect:/operations/users";
     }
 
-    @GetMapping("/all")
+    @GetMapping
     public Iterable<OperationsUser> getAllOperationsUsers(Model model){
         Iterable<OperationsUser> operationsUserList= operationsUserService.getUsers();
         model.addAttribute("operationsUserList",operationsUserList);
         return operationsUserList;
     }
 
-    @GetMapping("/user")
-    public String getUser(Long userId, Model model){
+    @GetMapping("/{userId}")
+    public String getUser(@PathVariable Long userId, Model model){
         OperationsUser user = operationsUserService.getUser(userId);
         model.addAttribute("operationsUser",user);
-        return "operationsUser";
+        return "operationsUserDetails";
     }
 
-    @PostMapping("/update")
-    public String UpdateUser(OperationsUser operationsUser, Model model) throws Exception{
-        boolean result = operationsUserService.updateUser(operationsUser);
-        if(result) {
+    @PostMapping("/{userId}")
+    public String UpdateUser(@ModelAttribute("operationsUserForm") OperationsUser user, @PathVariable Long userId, BindingResult result,Model model) throws Exception{
+        if(result.hasErrors()){
+            return "addUser";
+        }
+        user.setId(userId);
+        boolean updated = operationsUserService.updateUser(user);
+        if(updated) {
             model.addAttribute("success", "Operations user updated successfully");
         }
         return "updateUser";
+    }
+
+    @PostMapping("/{userId}/delete")
+    public String deleteUser(@PathVariable Long userId) {
+        operationsUserService.deleteUser(userId);
+        return "redirect:/operations/users";
     }
 
     @GetMapping("/changePassword")

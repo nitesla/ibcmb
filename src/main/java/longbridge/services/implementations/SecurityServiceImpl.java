@@ -35,6 +35,11 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
+    public Iterable<Role> getRoles() {
+        return null;
+    }
+
+    @Override
     public void updateRole(Role role) {
 
     }
@@ -51,6 +56,11 @@ public class SecurityServiceImpl implements SecurityService {
 
     @Override
     public Permission getPermission(Long id) {
+        return null;
+    }
+
+    @Override
+    public Iterable<Permission> getPermissions() {
         return null;
     }
 

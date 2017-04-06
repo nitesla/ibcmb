@@ -1,4 +1,4 @@
-package longbridge.formValidations;
+package longbridge.dtos;
 
 /**
  * Created by Fortune on 4/3/2017.

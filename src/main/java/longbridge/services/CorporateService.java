@@ -1,9 +1,6 @@
 package longbridge.services;
 
-import longbridge.models.Account;
-import longbridge.models.Corporate;
-import longbridge.models.CorporateUser;
-import longbridge.models.Limit;
+import longbridge.models.*;
 
 
 /**
@@ -15,71 +12,70 @@ public interface CorporateService {
     /**
      * Adds a new corporate customer to the system
      *
-     * @param corporateCustomer the corporate customer
+     * @param corporate the corporate customer
      */
-    void addCorporate(Corporate corporateCustomer);
+    void addCorporate(Corporate corporate);
 
     /**
      * Deletes the given corporate customer
      *
-     * @param corporateCustomer the corporate customer
+     * @param corporateId the corporate customer's id
      */
-    void deleteCorporate(Corporate corporateCustomer);
+    void deleteCorporate(Long corporateId);
 
     /**
      * Updates the details of the corporate customer
      *
-     * @param corporateCustomer the corporate customer
+     * @param corporate the corporate customer
      */
-    void updateCorporateCustomer(Corporate corporateCustomer);
+    void updateCorporate(Corporate corporate);
 
     /**
-     * Returns a {@code CorporateCustomer} object that has the details of the customer
+     * Returns a {@code Corporate} object that has the details of the customer
      *
      * @param id the id of the corporate customer
      * @return the corporate customer
      */
     Corporate getCorporate(Long id);
 
-
-
     /**
      * Returns a list of all the corporate customers
      *
      * @return a list of the corporate customers
      */
-    Iterable<Corporate> getCorporateCustomers();
+    Iterable<Corporate> getCorporates();
 
     /**
      * Sets the limit of transaction amount for the corporate customer
      *
-     * @param corporateCustomer the corporate customer
-     * @param limitValue        the limit
+     * @param corporate the corporate customer
+     * @param limit        the corporate limit
      */
-    void setLimit(Corporate corporateCustomer, Limit limitValue);
+    void setLimit(Corporate corporate, CorpLimit limit);
 
     /**
      * Updates the limit of transaction amount for the specified corporate customer
      *
-     * @param corporateCustomer the corporate customer
-     * @param limitValue        the limit
+     * @param corporate the corporate customer
+     * @param limit        the corporate limit
      */
-    void updateLimit(Corporate corporateCustomer,  Limit limitValue);
+    void updateLimit(Corporate corporate,  CorpLimit limit);
 
     /**
      * Returns the transaction limit set for the specified customer
      *
-     * @param corporateCustomer the corporate customer
+     * @param corporate the corporate customer
      * @return the limit set for the corporate customer
      */
-    Iterable<Limit>  getLimit(Corporate corporateCustomer);
+    Iterable<CorpLimit>  getLimit(Corporate corporate);
 
     /**
      * Deletes the transaction limit set for the specified customer
      *
-     * @param corporateCustomer the corporate customer
+     * @param corporateId the corporate customer's id
+     * @param  limit the corporate limit
      */
-    void deleteLimit(Corporate corporateCustomer, Limit limit);
+    void deleteLimit(Long corporateId, CorpLimit limit);
 
 
     /**
@@ -91,7 +87,7 @@ public interface CorporateService {
     void setCorporateUserLimit(CorporateUser corporateUser, double limitValue);
 
     /**
-     * Updates the set of the corporate user with the new limt
+     * Updates the corporate user with the new limt
      *
      * @param corporateUser   the corporate user
      * @param limitValue      the limit
@@ -116,33 +112,33 @@ public interface CorporateService {
     /**
      * Adds an account to a corporate customer.
      * This makes the added account to be available for transactions
-     * @param corporateCustomer the corporate customer
+     * @param corporate the corporate customer
      * @param account           the account
      */
-    void addAccount(Corporate corporateCustomer, Account account);
+    void addAccount(Corporate corporate, Account account);
 
     /**
      * Adds a corporate user to a corporate customer
      *
-     * @param corporateCustomer the corporate customer
+     * @param corporate the corporate customer
      * @param corporateUser     the corporate user
      */
-    void addCorporateUser(Corporate corporateCustomer, CorporateUser corporateUser);
+    void addCorporateUser(Corporate corporate, CorporateUser corporateUser);
 
     /**
      * Enables the corporate customer
      *
-     * @param corporateCustomer the corporate customer
+     * @param corporate the corporate customer
      */
-    void enableCorporate(Corporate corporateCustomer);
+    void enableCorporate(Corporate corporate);
 
     /**
      * Disables the corporate customer
      *
-     * @param corporateCustomer the corporate customer
+     * @param corporate the corporate customer
      *
      */
-    void disableCorporateCustomer(Corporate corporateCustomer);
+    void disableCorporate(Corporate corporate);
 
 
 

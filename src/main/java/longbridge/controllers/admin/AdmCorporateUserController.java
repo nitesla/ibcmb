@@ -1,8 +1,7 @@
 package longbridge.controllers.admin;
 
-import longbridge.formValidations.ChangePassword;
+import longbridge.dtos.ChangePassword;
 import longbridge.models.CorporateUser;
-import longbridge.models.RetailUser;
 import longbridge.services.CorporateUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,10 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpRequest;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -22,7 +19,7 @@ import javax.validation.Valid;
  */
 
 @RestController
-@RequestMapping("/corporate/user")
+@RequestMapping("/admin/corporate/users")
 public class AdmCorporateUserController {
     @Autowired
     CorporateUserService corporateUserService;
@@ -30,39 +27,52 @@ public class AdmCorporateUserController {
     private Logger logger= LoggerFactory.getLogger(this.getClass());
 
 
-    @GetMapping("/add")
+    @GetMapping("/new")
     public String addUser(){
         return "addUser";
     }
 
-    @PostMapping("/add")
-    public String createUser(CorporateUser corporateUser, Model model) throws Exception{
+    @PostMapping
+    public String createUser(@ModelAttribute("corporateUserForm") CorporateUser corporateUser, BindingResult result, Model model) throws Exception{
+        if(result.hasErrors()){
+            return "addUser";
+        }
         corporateUserService.addUser(corporateUser);
         model.addAttribute("success","Corporate user created successfully");
-        return "addUser";
+        return "redirect:/corporate/users";
     }
 
-    @GetMapping("/all")
-    public Iterable<CorporateUser> getAllRetailUsers(Model model){
+    @GetMapping
+    public Iterable<CorporateUser> getRetailUsers(Model model){
         Iterable<CorporateUser> corporateUserList= corporateUserService.getUsers();
         model.addAttribute("corporateUserList",corporateUserList);
         return corporateUserList;
     }
 
-    @GetMapping("/user")
-    public String getUser(Long userId, Model model){
+    @GetMapping("/{userId}")
+    public String getUser(@PathVariable Long userId, Model model){
         CorporateUser user = corporateUserService.getUser(userId);
         model.addAttribute("corporateUser",user);
         return "corporateUser";
     }
 
-    @PostMapping("/update")
-    public String UpdateUser(CorporateUser user, Model model) throws Exception{
-        boolean result = corporateUserService.updateUser(user);
-        if(result) {
+    @PostMapping("/{userId}")
+    public String UpdateUser(@ModelAttribute("corporateUserForm") CorporateUser user, @PathVariable Long userId, BindingResult result,Model model) throws Exception{
+        if(result.hasErrors()){
+            return "addUser";
+        }
+        user.setId(userId);
+        boolean updated = corporateUserService.updateUser(user);
+        if(updated) {
             model.addAttribute("success", "Corporate user updated successfully");
         }
-        return "updateUser";
+        return "redirect:/corporate/users";
+    }
+
+    @PostMapping("/{userId}/delete")
+    public String deleteUser(@PathVariable Long userId) {
+        corporateUserService.deleteUser(userId);
+        return "redirect:/corporate/users";
     }
 
     @GetMapping("/changePassword")
@@ -71,9 +81,10 @@ public class AdmCorporateUserController {
     }
 
     @PostMapping("/changePassword")
-    public String changePassword(@Valid ChangePassword changePassword, Long userId, BindingResult result, HttpRequest request, Model model){
-        /* if(result.hasError()){
-        }*/
+    public String changePassword(@Validated ChangePassword changePassword, Long userId, BindingResult result, HttpRequest request, Model model){
+         if(result.hasErrors()){
+             return "changePassword";
+        }
         CorporateUser user= corporateUserService.getUser(userId);
         String oldPassword=changePassword.getOldPassword();
         String newPassword=changePassword.getNewPassword();
