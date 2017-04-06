@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpRequest;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +18,7 @@ import javax.validation.Valid;
 /**
  * Created by SYLVESTER on 31/03/2017.
  */
-@RestController
+@Controller
 @RequestMapping("/admin/users")
 public class AdminUserController {
 
@@ -33,20 +34,7 @@ public class AdminUserController {
      */
     @GetMapping("/new")
     public String addUser(){
-        return "addUser";
-    }
-
-    /**
-     * Edit an existing user
-     * @return
-     */
-    @GetMapping("/{userId}/edit")
-    public String editUser(@PathVariable Long userId, Model model) {
-
-        AdminUser user = adminUserService.getUser(userId);
-        AdminUserDTO userDTO = modelMapper.map(user,AdminUserDTO.class);
-        model.addAttribute("user", userDTO);
-        return "addUser";
+        return "admin/add";
     }
 
     /**
@@ -59,7 +47,7 @@ public class AdminUserController {
     @PostMapping
     public String createUser(@ModelAttribute("user") AdminUserDTO adminUserDTO, BindingResult result, Model model) throws Exception{
         if(result.hasErrors()){
-            return "addUser";
+            return "admin/add";
         }
 
         AdminUser adminUser =modelMapper.map(adminUserDTO,AdminUser.class);
@@ -67,6 +55,21 @@ public class AdminUserController {
         model.addAttribute("success","Admin user created successfully");
         return "redirect:/admin/users";
     }
+
+    /**
+     * Edit an existing user
+     * @return
+     */
+    @GetMapping("/{userId}/edit")
+    public String editUser(@PathVariable Long userId, Model model) {
+
+        AdminUser user = adminUserService.getUser(userId);
+        AdminUserDTO userDTO = modelMapper.map(user,AdminUserDTO.class);
+        model.addAttribute("user", userDTO);
+        return "edit";
+    }
+
+
 
     /**
      * Returns all users
@@ -91,7 +94,7 @@ public class AdminUserController {
        AdminUser user =adminUserService.getUser(userId);
        AdminUserDTO adminUserDTO = modelMapper.map(user,AdminUserDTO.class);
        model.addAttribute("user",adminUserDTO);
-       return "adminUserDetails";
+       return "admin/details";
     }
 
     /**
