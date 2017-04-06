@@ -1,4 +1,4 @@
-package longbridge.controllers.Operations;
+package longbridge.controllers.operations;
 
 import longbridge.formValidations.ChangePassword;
 import longbridge.models.OperationsUser;

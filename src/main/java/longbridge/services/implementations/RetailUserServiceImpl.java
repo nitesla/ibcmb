@@ -1,6 +1,7 @@
 package longbridge.services.implementations;
 
 import longbridge.models.RetailUser;
+import longbridge.repositories.RetailUserRepo;
 import longbridge.repositories.UserRepo;
 import longbridge.services.RetailUserService;
 import org.slf4j.Logger;
@@ -20,7 +21,7 @@ public class RetailUserServiceImpl implements RetailUserService {
 
     private Logger logger= LoggerFactory.getLogger(this.getClass());
 
-    private UserRepo<RetailUser, Long> retailUserRepo;
+    private RetailUserRepo retailUserRepo;
     private BCryptPasswordEncoder passwordEncoder;
 
     public RetailUserServiceImpl(){
@@ -28,8 +29,8 @@ public class RetailUserServiceImpl implements RetailUserService {
     }
 
     @Autowired
-    public  RetailUserServiceImpl(UserRepo<RetailUser, Long> ruUserRepo, BCryptPasswordEncoder passwordEncoder) {
-        this.retailUserRepo = ruUserRepo;
+    public  RetailUserServiceImpl(RetailUserRepo retailUserRepo, BCryptPasswordEncoder passwordEncoder) {
+        this.retailUserRepo = retailUserRepo;
         this.passwordEncoder=passwordEncoder;
     }
 

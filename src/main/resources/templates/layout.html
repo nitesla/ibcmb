@@ -5,30 +5,32 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport"/>
 
-    <link th:href="@{~/css/bootstrap.min.css}" href="../static/css/bootstrap.min.css" rel="stylesheet"/>
-    <link th:href="@{~/font-awesome/css/font-awesome.css}" href="../static/font-awesome/css/font-awesome.css" rel="stylesheet"/>
 
-    <link th:href="@{~/css/animate.css}" href="../static/css/animate.css" rel="stylesheet"/>
-    <link th:href="@{~/css/style.css}" href="../static/css/style.css" rel="stylesheet"/>
+    <link th:href="@{~/css/bootstrap.min.css}" href="static/css/bootstrap.min.css" rel="stylesheet"/>
+    <link th:href="@{~/font-awesome/css/font-awesome.css}" href="static/font-awesome/css/font-awesome.css" rel="stylesheet"/>
 
-    <link th:href="@{~/css/plugins/dataTables/dataTables.bootstrap.css}" href="../static/css/plugins/dataTables/dataTables.bootstrap.css" rel="stylesheet"/>
-    <link th:href="@{~/css/plugins/dataTables/dataTables.responsive.css}" href="../static/css/plugins/dataTables/dataTables.responsive.css" rel="stylesheet"/>
-    <link th:href="@{~/css/plugins/dataTables/dataTables.tableTools.min.css}" href="../static/css/plugins/dataTables/dataTables.tableTools.min.css" rel="stylesheet"/>
+    <link th:href="@{~/css/animate.css}" href="static/css/animate.css" rel="stylesheet"/>
+    <link th:href="@{~/css/style.css}" href="static/css/style.css" rel="stylesheet"/>
 
-    <link th:href="@{~/css/plugins/iCheck/custom.css}" href="../static/css/plugins/iCheck/custom.css" rel="stylesheet"/>
+    <link th:href="@{~/css/plugins/dataTables/dataTables.bootstrap.css}" href="static/css/plugins/dataTables/dataTables.bootstrap.css" rel="stylesheet"/>
+    <link th:href="@{~/css/plugins/dataTables/dataTables.responsive.css}" href="static/css/plugins/dataTables/dataTables.responsive.css" rel="stylesheet"/>
+    <link th:href="@{~/css/plugins/dataTables/dataTables.tableTools.min.css}" href="static/css/plugins/dataTables/dataTables.tableTools.min.css" rel="stylesheet"/>
+
+    <link th:href="@{~/css/plugins/iCheck/custom.css}" href="static/css/plugins/iCheck/custom.css" rel="stylesheet"/>
     <!--<script type="text/javascript" src="http://code.jquery.com/jquery-1.4.2.min.js"></script>-->
-    <script th:src="@{/js/jquery-2.js}" src="../static/js/jquery-2.js"></script>
-    <script th:src="@{/js/jquery.steps.js}" src="../static/js/jquery.steps.js"></script>
-    <link th:href="@{/css/plugins/steps/jquery.steps.css}" href="../static/css/plugins/steps/jquery.steps.css" rel="stylesheet"/>
+    <script th:src="@{/js/jquery-2.js}" src="static/js/jquery-2.js"></script>
+    <script th:src="@{/js/jquery.steps.js}" src="static/js/jquery.steps.js"></script>
+    <link th:href="@{/css/plugins/steps/jquery.steps.css}" href="static/css/plugins/steps/jquery.steps.css" rel="stylesheet"/>
 
-    <title>Internet Banking</title>
-
+    <title>Coronation Trade Portal</title>
 
 </head>
 
 <body>
-<!-- Main Header -->
-<div th:fragment="main-header" class="row border-bottom">
+
+
+<div th:fragment="header" class="row border-bottom">
+
     <nav class="navbar navbar-static-top  " role="navigation" style="margin-bottom: 0">
         <div class="navbar-header">
             <a class="navbar-minimalize minimalize-styl-2 btn btn-primary" href="#"><i class="fa fa-bars"></i></a>
@@ -154,157 +156,104 @@
     </nav>
 </div>
 
-<nav th:fragment="main-sidebar" class="navbar-default navbar-static-side" role="navigation">
-        <div class="sidebar-collapse">
-            <ul class="nav" id="side-menu">
-                <li class="nav-header">
-                    <div class="profile-element"> <span>
-                            <img alt="image" class="img" th:src="@{~/img/corologo.png}" src="../static/img/corologo.png" width="150px" />
-                             </span>
-                    </div>
-                    <div class="logo-element">
-                        <span>
-                            <img alt="image" class="img" th:src="@{~/img/smalllogo.png}"  src="../static/img/smalllogo.png" />
-                             </span>
-                    </div>
-                </li>
-                <li>
-                    <a href="form-index.html"><i class="fa fa-edit"></i><span class="nav-label">Forms</span></a>
-                    <ul class="nav nav-second-level">
-                        <li><a href="/formM">Form M</a></li>
-                        <li><a href="/formNXP">Form NXP</a></li>
-                        <li><a href="/formA">Form A</a></li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="/lc"><i class="fa fa-file-o"></i><span class="nav-label">Letter of Credit</span></a>
-                </li>
-                <li>
-                    <a href="#"><i class="fa fa-file"></i><span class="nav-label">PAAR</span></a>
-                    <ul class="nav nav-second-level">
-                        <li><a href="/paar">Pre Arrival Assessmet Report</a></li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="#"><i class="fa fa-files-o"></i><span class="nav-label">BILLS</span></a>
-                    <ul class="nav nav-second-level">
-                        <li><a href="bills/import">Import Bills</a></li>
-                        <li><a href="form-view.html">Export Bills</a></li>
-                    </ul>
-                </li>
 
-                <li>
-                    <a href="mailbox.html"><i class="fa fa-envelope"></i> <span class="nav-label">Mailbox </span><span class="label label-warning pull-right">16/24</span></a>
-                    <ul class="nav nav-second-level">
-                        <li><a href="mailbox.html">Inbox</a></li>
-                        <li><a href="mail_detail.html">Email view</a></li>
-                        <li><a href="mail_compose.html">Compose email</a></li>
-                        <li><a href="email_template.html">Email templates</a></li>
-                    </ul>
-                </li>
-            </ul>
+<nav th:fragment="menu" class="navbar-default navbar-static-side" role="navigation">
 
-        </div>
-    </nav>
-
-<!--Trade sidebar-->
-<nav th:fragment="trade-sidebar" class="navbar-default navbar-static-side" role="navigation">
     <div class="sidebar-collapse">
         <ul class="nav" id="side-menu">
             <li class="nav-header">
                 <div class="profile-element"> <span>
-                            <img alt="image" class="img" th:src="@{~/img/corologo.png}" src="../static/img/corologo.png" width="150px" />
+
+                            <img alt="image" class="img" th:src="@{~/img/corologo.png}" src="static/img/corologo.png" width="150px" />
+
                              </span>
                 </div>
                 <div class="logo-element">
                         <span>
-                            <img alt="image" class="img" th:src="@{~/img/smalllogo.png}"  src="../static/img/smalllogo.png" />
+
+                            <img alt="image" class="img" th:src="@{~/img/smalllogo.png}"  src="static/img/smalllogo.png" />
                              </span>
                 </div>
             </li>
+            <li>
+                <a href="form-index.html"><i class="fa fa-file"></i><span class="nav-label">Accounts</span></a>
+                <ul class="nav nav-second-level">
+                    <li><a href="view.html">View Accounts</a></li>
+                    <li><a href="add.html">Add account</a></li>
+                    <li><a href="details.html">Account Details</a></li>
+                    <li><a href="edit.html">Edit Account</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="form-index.html"><i class="fa fa-file"></i><span class="nav-label">Code</span></a>
+                <ul class="nav nav-second-level">
+                    <li><a href="view.html">View Codes</a></li>
+                    <li><a href="add.html">Add Code</a></li>
+                    <li><a href="edit.html">Edit Code</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="form-index.html"><i class="fa fa-file"></i><span class="nav-label">Financial Institution</span></a>
+                <ul class="nav nav-second-level">
+                    <li><a href="view.html">View FI</a></li>
+                    <li><a href="add.html">Add FI</a></li>
+                    <li><a href="edit.html">Edit FI</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="form-index.html"><i class="fa fa-file"></i><span class="nav-label">Transfer Request</span></a>
+                <ul class="nav nav-second-level">
+                    <li><a href="view.html">View TR</a></li>
+                    <li><a href="add.html">Add TR</a></li>
+                    <li><a href="edit.html">Edit TR</a></li>
 
-            <li>
-                <a href="#"><i class="fa fa-edit"></i><span class="nav-label">Forms</span></a>
-                <ul class="nav nav-second-level">
-                    <li><a href="/trade/formM">Form M</a></li>
-                    <li><a href="/trade/formNXP">Form NXP</a></li>
-                    <li><a href="/trade/formA">Form A</a></li>
                 </ul>
             </li>
-            <li>
-                <a href="/trade/lc"><i class="fa fa-file-o"></i><span class="nav-label">Letter of Credit</span></a>
-            </li>
-            <li>
-                <a href="#"><i class="fa fa-file"></i><span class="nav-label">PAAR</span></a>
-                <ul class="nav nav-second-level">
-                    <li><a href="/trade/paar">Pre Arrival Assessmet Report</a></li>
-                </ul>
-            </li>
-            <li>
-                <a href="#"><i class="fa fa-files-o"></i><span class="nav-label">BILLS</span></a>
-                <ul class="nav nav-second-level">
-                    <li><a href="form-add.html">Import Bills</a></li>
-                    <li><a href="form-view.html">Export Bills</a></li>
-                </ul>
-            </li>
-            <li>
-                <a href="form-index.html"><i class="fa fa-users"></i><span class="nav-label">Trade Users</span></a>
-                <ul class="nav nav-second-level">
-                    <li><a href="trade/formM">Form M</a></li>
-                    <li><a href="form-view.html">Form NXP</a></li>
-                    <li><a href="trade/formA">Form A</a></li>
-                </ul>
-            </li>
-            <li>
-                <a href="mailbox.html"><i class="fa fa-envelope"></i> <span class="nav-label">Mailbox </span><span class="label label-warning pull-right">16/24</span></a>
-                <ul class="nav nav-second-level">
-                    <li><a href="mailbox.html">Inbox</a></li>
-                    <li><a href="mail_detail.html">Email view</a></li>
-                    <li><a href="mail_compose.html">Compose email</a></li>
-                    <li><a href="email_template.html">Email templates</a></li>
-                </ul>
-            </li>
+
         </ul>
 
     </div>
 </nav>
-
 <!--Admin side bar-->
-<nav th:fragment="admin-sidebar" class="navbar-default navbar-static-side" role="navigation">
+<nav th:fragment="admin" class="navbar-default navbar-static-side" role="navigation">
+
     <div class="sidebar-collapse">
         <ul class="nav" id="side-menu">
             <li class="nav-header">
                 <div class="profile-element"> <span>
-                            <img alt="image" class="img" th:src="@{~/img/corologo.png}" src="../static/img/corologo.png" width="150px" />
+
+                            <img alt="image" class="img" th:src="@{~/img/corologo.png}" src="static/img/corologo.png" width="150px" />
+
                              </span>
                 </div>
                 <div class="logo-element">
                         <span>
-                            <img alt="image" class="img" th:src="@{~/img/smalllogo.png}"  src="../static/img/smalllogo.png" />
+
+                            <img alt="image" class="img" th:src="@{~/img/smalllogo.png}"  src="static/img/smalllogo.png" />
                              </span>
                 </div>
             </li>
             <li>
-                <a href="form-index.html"><i class="fa fa-briefcase"></i><span class="nav-label">Admin User</span></a>
-                <ul class="nav nav-second-level">
-                    <li><a th:href="@{/corp-cust/create}" href="/corp-cust/create">New Corporate Account</a></li>
-                    <li><a th:href="@{/corp-cust}" href="/corp-cust">Corporate Accounts</a></li>
-                    <li><a th:href="@{/corp-users}" href="/corp-users">Corporate Users</a></li>
-                </ul>
+                <a href="adminUser/add.html"><i class="fa fa-file"></i><span class="nav-label">Add</span></a>
+
             </li>
             <li>
-                <a href="#"><i class="fa fa-users"></i><span class="nav-label">Bank Staff</span></a>
-                <ul class="nav nav-second-level">
-                    <li><a th:href="@{/user/create}" href="/user/create">New Bank Staff</a></li>
-                    <li><a th:href="@{/user}" href="/user">View Bank Staffs</a></li>
-                </ul>
+                <a href="adminUser/edit.html"><i class="fa fa-file"></i><span class="nav-label">Edit</span></a>
+
+            </li>
+            <li>
+                <a href="adminUser/details.html"><i class="fa fa-file"></i><span class="nav-label">View</span></a>
+
+            </li>
+            <li>
+                <a href="form-index.html"><i class="fa fa-file"></i><span class="nav-label">Details</span></a>
+
             </li>
 
         </ul>
 
     </div>
 </nav>
-
 
 <!-- Main Footer -->
 <div th:fragment="main-footer" class="footer">
@@ -313,21 +262,23 @@
     </div>
     <!-- Mainly scripts -->
 
-    <script th:src="@{~/js/bootstrap.min.js}" src="../static/js/bootstrap.min.js"></script>
-    <script th:src="@{~/js/plugins/metisMenu/jquery.metisMenu.js}" src="../static/js/plugins/metisMenu/jquery.metisMenu.js"></script>
-    <script th:src="@{~/js/plugins/slimscroll/jquery.slimscroll.min.js}" src="../static/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+
+    <script th:src="@{~/js/bootstrap.min.js}" src="static/js/bootstrap.min.js"></script>
+    <script th:src="@{~/js/plugins/metisMenu/jquery.metisMenu.js}" src="static/js/plugins/metisMenu/jquery.metisMenu.js"></script>
+    <script th:src="@{~/js/plugins/slimscroll/jquery.slimscroll.min.js}" src="static/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
 
     <!-- Data Tables -->
-    <script th:src="@{~/js/plugins/dataTables/jquery.dataTables.js}" src="../static/js/plugins/dataTables/jquery.dataTables.js"></script>
-    <script th:src="@{~/js/plugins/dataTables/dataTables.bootstrap.js}" src="../static/js/plugins/dataTables/dataTables.bootstrap.js"></script>
-    <script th:src="@{~/js/plugins/dataTables/dataTables.responsive.js}" src="../static/js/plugins/dataTables/dataTables.responsive.js"></script>
+    <script th:src="@{~/js/plugins/dataTables/jquery.dataTables.js}" src="static/js/plugins/dataTables/jquery.dataTables.js"></script>
+    <script th:src="@{~/js/plugins/dataTables/dataTables.bootstrap.js}" src="static/js/plugins/dataTables/dataTables.bootstrap.js"></script>
+    <script th:src="@{~/js/plugins/dataTables/dataTables.responsive.js}" src="static/js/plugins/dataTables/dataTables.responsive.js"></script>
 
     <!-- Custom and plugin javascript -->
-    <script th:src="@{~/js/inspinia.js}" src="../static/js/inspinia.js"></script>
-    <script th:src="@{~/js/plugins/pace/pace.min.js}" src="../static/js/plugins/pace/pace.min.js"></script>
+    <script th:src="@{~/js/inspinia.js}" src="static/js/inspinia.js"></script>
+    <script th:src="@{~/js/plugins/pace/pace.min.js}" src="static/js/plugins/pace/pace.min.js"></script>
 
     <!-- Jquery Validate -->
-    <script th:src="@{~/js/plugins/validate/jquery.validate.min.js}" src="../static/js/plugins/validate/jquery.validate.min.js"></script>
+    <script th:src="@{~/js/plugins/validate/jquery.validate.min.js}" src="static/js/plugins/validate/jquery.validate.min.js"></script>
+
 
 </div>
 

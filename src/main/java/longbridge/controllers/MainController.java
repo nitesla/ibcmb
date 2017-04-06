@@ -30,8 +30,8 @@ public class MainController {
         return "dashboard";
     }
 
-    @RequestMapping("/admin_user")
+    @RequestMapping("/account")
     public String getAdminUser() {
-        return "Admin/add";
+        return "adminUser/add";
     }
 }

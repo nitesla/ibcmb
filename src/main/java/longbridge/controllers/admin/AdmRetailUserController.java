@@ -9,10 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpRequest;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 import javax.validation.Valid;
@@ -22,7 +19,7 @@ import javax.validation.Valid;
  */
 
 @RestController
-@RequestMapping("/retail/user")
+@RequestMapping("/retail/users")
 public class AdmRetailUserController {
     @Autowired
     RetailUserService retailUserService;
@@ -30,27 +27,41 @@ public class AdmRetailUserController {
     private Logger logger= LoggerFactory.getLogger(this.getClass());
 
 
-    @GetMapping("/add")
+    @GetMapping("/new")
     public String addUser(){
         return "addUser";
     }
 
-    @PostMapping("/add")
-    public String createUser(RetailUser retailUser, Model model) throws Exception{
+    @PostMapping
+    public String createUser(@ModelAttribute("retailUserForm") RetailUser retailUser, BindingResult result,Model model) throws Exception{
+        if(result.hasErrors()){
+            return "addUser";
+        }
         retailUserService.addUser(retailUser);
         model.addAttribute("success","Retail user created successfully");
+        return "redirect:/retail/users";
+    }
+
+    /**
+     * Edit an existing user
+     * @return
+     */
+    @GetMapping("/{userId}/edit")
+    public String editUser(@PathVariable Long userId, Model model) {
+        RetailUser user = retailUserService.getUser(userId);
+        model.addAttribute("user", user);
         return "addUser";
     }
 
-    @GetMapping("/all")
+    @GetMapping
     public Iterable<RetailUser> getAllRetailUsers(Model model){
         Iterable<RetailUser> retailUserList= retailUserService.getUsers();
         model.addAttribute("retailUserList",retailUserList);
         return retailUserList;
     }
 
-    @GetMapping("/user")
-    public String getUser(Long userId, Model model){
+    @GetMapping("/{user}")
+    public String getUser(@PathVariable  Long userId, Model model){
         RetailUser user = retailUserService.getUser(userId);
         model.addAttribute("retailUser",user);
         return "retailUser";

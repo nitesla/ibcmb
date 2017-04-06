@@ -9,5 +9,5 @@ import org.springframework.stereotype.Repository;
  */
 
 @Repository
-public interface CardRepo extends JpaRepository<Card, Long> {
+public interface CardRepo extends CommonRepo<Card, Long> {
 }

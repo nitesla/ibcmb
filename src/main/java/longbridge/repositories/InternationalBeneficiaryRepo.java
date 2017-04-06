@@ -12,7 +12,7 @@ import java.io.Serializable;
  */
 
 @Repository
-public interface InternationalBeneficiaryRepo extends JpaRepository<InternationalBeneficiary, Long>{
+public interface InternationalBeneficiaryRepo extends CommonRepo<InternationalBeneficiary, Long>{
 
     Iterable<InternationalBeneficiary> findByUser(RetailUser user);
 
