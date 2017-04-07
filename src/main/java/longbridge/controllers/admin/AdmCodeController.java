@@ -2,7 +2,10 @@ package longbridge.controllers.admin;
 
 import longbridge.models.Code;
 import longbridge.services.CodeService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -10,16 +13,17 @@ import org.springframework.web.bind.annotation.*;
 /**
  * Created by Fortune on 4/5/2017.
  */
-@RestController
+@Controller
 @RequestMapping("admin/codes")
 public class AdmCodeController {
 
+    private Logger logger= LoggerFactory.getLogger(this.getClass());
     @Autowired
     private CodeService codeService;
 
     @GetMapping("/new")
     public String addCode(){
-        return "add-code";
+        return "code/add";
     }
 
     @PostMapping
@@ -27,7 +31,9 @@ public class AdmCodeController {
         if(result.hasErrors()){
             return "add";
         }
-        codeService.addCode(code);
+        logger.info("Code {}", code.toString());
+
+//        codeService.addCode(code);
         model.addAttribute("success", "Code added successfully");
         return "/admin/list";
     }
@@ -62,7 +68,7 @@ public class AdmCodeController {
             return "add-code";
         }
         code.setId(codeId);
-        codeService.addCode(code);
+//        codeService.addCode(code);
         model.addAttribute("success", "Code updated successfully");
         return "/admin/codes";
     }
