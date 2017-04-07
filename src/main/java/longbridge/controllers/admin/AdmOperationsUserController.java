@@ -46,7 +46,7 @@ public class AdmOperationsUserController {
     public String getAllOperationsUsers(Model model){
         //Iterable<OperationsUser> operationsUserList= operationsUserService.getUsers();
         //model.addAttribute("operationsUserList",operationsUserList);
-        return "operation/view";
+        return "adm/operation/view";
     }
 
     @GetMapping(path="/all", produces = "application/json")

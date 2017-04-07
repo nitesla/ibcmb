@@ -35,7 +35,7 @@ public class AdminUserController {
      */
     @GetMapping("/new")
     public String addUser(){
-        return "admin/add";
+        return "adm/admin/add";
     }
 
     /**
@@ -86,7 +86,7 @@ public class AdminUserController {
     public String getUsers(Model model){
 //        Iterable<AdminUser> adminUserList=adminUserService.getUsers();
 //        model.addAttribute("adminUserList",adminUserList);
-        return "admin/view";
+        return "adm/admin/view";
     }
 
     /**
