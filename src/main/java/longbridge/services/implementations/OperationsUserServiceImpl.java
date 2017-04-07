@@ -2,14 +2,12 @@ package longbridge.services.implementations;
 
 import longbridge.models.OperationsUser;
 import longbridge.repositories.OperationsUserRepo;
-import longbridge.repositories.UserRepo;
 import longbridge.services.OperationsUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import java.util.Collection;
 
 /**
  * Created by ayoade_farooq@yahoo.com on 3/29/2017.
@@ -38,7 +36,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     }
 
     @Override
-    public Collection<OperationsUser> getUsers()
+    public Iterable<OperationsUser> getUsers()
     {
         return this.opUserRepo.findAll();
     }

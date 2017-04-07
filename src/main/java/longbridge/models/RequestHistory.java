@@ -1,9 +1,8 @@
 package longbridge.models;
 
-import org.joda.time.LocalDateTime;
-
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import java.util.Date;
 
 /**
  * Created by Wunmi on 27/03/2017.
@@ -17,7 +16,7 @@ public class RequestHistory extends AbstractEntity{
     private String comment;
     @ManyToOne
     private OperationsUser createdBy;
-    private LocalDateTime createdOn;
+    private Date createdOn;
 
     public ServiceRequest getServiceRequest() {
         return serviceRequest;
@@ -62,11 +61,11 @@ public class RequestHistory extends AbstractEntity{
         this.createdBy = createdBy;
     }
 
-    public LocalDateTime getCreatedOn() {
+    public Date getCreatedOn() {
         return createdOn;
     }
 
-    public void setCreatedOn(LocalDateTime createdOn) {
+    public void setCreatedOn(Date createdOn) {
         this.createdOn = createdOn;
     }
 

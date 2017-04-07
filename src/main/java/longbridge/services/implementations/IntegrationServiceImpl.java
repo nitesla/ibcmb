@@ -2,13 +2,12 @@ package longbridge.services.implementations;
 
 import longbridge.models.Account;
 import longbridge.models.TransferRequest;
-
 import longbridge.services.IntegrationService;
 import longbridge.utils.AccountStatement;
-import org.joda.time.LocalDate;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -23,7 +22,7 @@ public class IntegrationServiceImpl implements IntegrationService {
     }
 
     @Override
-    public AccountStatement getAccountStatements(String accountId, LocalDate fromDate, LocalDate toDate) {
+    public AccountStatement getAccountStatements(String accountId, Date fromDate, Date toDate) {
         return null;
     }
 

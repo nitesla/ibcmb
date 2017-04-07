@@ -4,9 +4,9 @@ import longbridge.models.EmailDetail;
 import longbridge.models.MailBox;
 import longbridge.models.Message;
 import longbridge.models.User;
-import org.joda.time.LocalDateTime;
 
 import java.awt.print.Pageable;
+import java.util.Date;
 
 /**
  * The {@code MessagingService} interface provides a service for sending messages
@@ -46,7 +46,7 @@ public interface MessageService {
      * @param date the date on the messages
      * @return the list of messages
      */
-   Iterable<Message> getMessages(MailBox mailBox, LocalDateTime date);
+   Iterable<Message> getMessages(MailBox mailBox, Date date);
 
     /**
      *Returns a list of messages within the given date range
@@ -54,7 +54,7 @@ public interface MessageService {
      * @param toDate the end date
      * @return a list of messages
      */
-    Iterable<Message> getMessage(MailBox mailBox, LocalDateTime fromDate, LocalDateTime toDate);
+    Iterable<Message> getMessage(MailBox mailBox, Date fromDate, Date toDate);
 
     /**
      *Marks the message as READ or UNREAD
@@ -80,7 +80,7 @@ public interface MessageService {
      * @param fromDate the start date
      * @param toDate the end date
      */
-    void purge(LocalDateTime fromDate, LocalDateTime toDate);
+    void purge(Date fromDate, Date toDate);
 
     /**
      * Creates and sends the message from the sender to the recipient

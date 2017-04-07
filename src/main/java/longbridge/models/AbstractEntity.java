@@ -5,6 +5,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Version;
+import java.io.Serializable;
 
 /**
  * The {@code AbstractEntity} abstract class is a superclass for all entities.
@@ -14,7 +15,7 @@ import javax.persistence.Version;
 
 
 @MappedSuperclass
-public abstract class AbstractEntity {
+public abstract class AbstractEntity implements Serializable{
 
     @javax.persistence.Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -25,9 +26,9 @@ public abstract class AbstractEntity {
 
     protected String delFlag;
 
-//    protected LocalDateTime lastModificationTime;
+//    protected Date lastModificationTime;
 //
-//    protected LocalDateTime createdTime = LocalDateTime.now();
+//    protected Date createdTime = Date.now();
 //
 //    protected String createdBy;
 //

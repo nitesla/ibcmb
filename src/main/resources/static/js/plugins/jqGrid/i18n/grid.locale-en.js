@@ -135,7 +135,7 @@ $.extend($.jgrid,{
 				//    i - Minutes with leading zeros
 				//    s - Seconds, with leading zeros
 				//    A - Uppercase Ante meridiem and Post meridiem (AM or PM)
-				FullDateTime: "l, F d, Y g:i:s A", // in jQuery UI Datepicker: "dddd, MMMM dd, yyyy h:mm:ss tt"
+				FullDate: "l, F d, Y g:i:s A", // in jQuery UI Datepicker: "dddd, MMMM dd, yyyy h:mm:ss tt"
 				// month day:
 				//    F - A full textual representation of a month
 				//    d - Day of the month, 2 digits with leading zeros
@@ -151,8 +151,8 @@ $.extend($.jgrid,{
 				//    s - Seconds, with leading zeros
 				//    A - Uppercase Ante meridiem and Post meridiem (AM or PM)
 				LongTime: "g:i:s A", // in jQuery UI Datepicker: "h:mm:ss tt"
-				SortableDateTime: "Y-m-d\\TH:i:s",
-				UniversalSortableDateTime: "Y-m-d H:i:sO",
+				SortableDate: "Y-m-d\\TH:i:s",
+				UniversalSortableDate: "Y-m-d H:i:sO",
 				// month with year
 				//    Y - A full numeric representation of a year, 4 digits
 				//    F - A full textual representation of a month

@@ -1,11 +1,10 @@
 package longbridge.models;
 
-import org.joda.time.LocalDateTime;
-
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import java.util.Collection;
+import java.util.Date;
 
 
 /**
@@ -26,7 +25,7 @@ public class ServiceRequest extends AbstractEntity {
     private String recepient;
     private String status;
     //private UserGroup userGroup;
-    private LocalDateTime requestTime;
+    private Date requestTime;
 
     public RetailUser getUser() {
         return user;
@@ -72,11 +71,11 @@ public class ServiceRequest extends AbstractEntity {
         this.status = status;
     }
 
-    public LocalDateTime getRequestTime() {
+    public Date getRequestTime() {
         return requestTime;
     }
 
-    public void setRequestTime(LocalDateTime requestTime) {
+    public void setRequestTime(Date requestTime) {
         this.requestTime = requestTime;
     }
 
@@ -99,7 +98,7 @@ public class ServiceRequest extends AbstractEntity {
     public ServiceRequest() {
     }
 
-    public ServiceRequest(RetailUser user, String serviceRequestType, String subject, String body, String recepient, UserGroup userGroup, LocalDateTime date) {
+    public ServiceRequest(RetailUser user, String serviceRequestType, String subject, String body, String recepient, UserGroup userGroup, Date date) {
 
         this.user = user;
         this.serviceRequestType = serviceRequestType;

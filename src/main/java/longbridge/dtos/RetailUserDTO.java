@@ -1,6 +1,7 @@
 package longbridge.dtos;
 
-import org.joda.time.LocalDateTime;
+
+import java.util.Date;
 
 /**
  * Created by Fortune on 4/5/2017.
@@ -12,12 +13,12 @@ public class RetailUserDTO {
     private String firstName;
     private String lastName;
     private String email;
-    private LocalDateTime birthDate;
+    private Date birthDate;
     private String password;
     private String status;
-    private LocalDateTime expiryDate;
-    private LocalDateTime lockedUntilDate;
-    private LocalDateTime lastLoginDate;
+    private Date expiryDate;
+    private Date lockedUntilDate;
+    private Date lastLoginDate;
     private int noOfLoginAttempts;
 
     public Long getId() {
@@ -60,11 +61,11 @@ public class RetailUserDTO {
         this.email = email;
     }
 
-    public LocalDateTime getBirthDate() {
+    public Date getBirthDate() {
         return birthDate;
     }
 
-    public void setBirthDate(LocalDateTime birthDate) {
+    public void setBirthDate(Date birthDate) {
         this.birthDate = birthDate;
     }
 
@@ -84,27 +85,27 @@ public class RetailUserDTO {
         this.status = status;
     }
 
-    public LocalDateTime getExpiryDate() {
+    public Date getExpiryDate() {
         return expiryDate;
     }
 
-    public void setExpiryDate(LocalDateTime expiryDate) {
+    public void setExpiryDate(Date expiryDate) {
         this.expiryDate = expiryDate;
     }
 
-    public LocalDateTime getLockedUntilDate() {
+    public Date getLockedUntilDate() {
         return lockedUntilDate;
     }
 
-    public void setLockedUntilDate(LocalDateTime lockedUntilDate) {
+    public void setLockedUntilDate(Date lockedUntilDate) {
         this.lockedUntilDate = lockedUntilDate;
     }
 
-    public LocalDateTime getLastLoginDate() {
+    public Date getLastLoginDate() {
         return lastLoginDate;
     }
 
-    public void setLastLoginDate(LocalDateTime lastLoginDate) {
+    public void setLastLoginDate(Date lastLoginDate) {
         this.lastLoginDate = lastLoginDate;
     }
 

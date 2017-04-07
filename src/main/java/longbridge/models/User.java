@@ -1,9 +1,7 @@
 package longbridge.models;
 
-import org.joda.time.LocalDateTime;
 
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
+
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 import java.util.Date;
@@ -19,12 +17,12 @@ public class User extends AbstractEntity{
     private String email;
     private String password;
     private String status;
-    private LocalDateTime expiryDate;
-    private LocalDateTime lockedUntilDate;
-    private LocalDateTime lastLoginDate;
+    private Date expiryDate;
+    private Date lockedUntilDate;
+    private Date lastLoginDate;
     private int noOfLoginAttempts;
 
-    @Enumerated(value = EnumType.STRING)
+    //@Enumerated(value = EnumType.STRING)
     protected UserType userType;
 
 
@@ -104,17 +102,17 @@ public class User extends AbstractEntity{
 //	}
 
 
-    public LocalDateTime getExpiryDate() {return expiryDate;}
+    public Date getExpiryDate() {return expiryDate;}
 
-    public void setExpiryDate(LocalDateTime expiryDate) {this.expiryDate = expiryDate;}
+    public void setExpiryDate(Date expiryDate) {this.expiryDate = expiryDate;}
 
-    public LocalDateTime getLockedUntilDate() {return lockedUntilDate;}
+    public Date getLockedUntilDate() {return lockedUntilDate;}
 
-    public void setLockedUntilDate(LocalDateTime lockedUntilDate) {this.lockedUntilDate = lockedUntilDate;}
+    public void setLockedUntilDate(Date lockedUntilDate) {this.lockedUntilDate = lockedUntilDate;}
 
-    public LocalDateTime getLastLoginDate() {return lastLoginDate;}
+    public Date getLastLoginDate() {return lastLoginDate;}
 
-    public void setLastLoginDate(LocalDateTime lastLoginDate) {this.lastLoginDate = lastLoginDate;}
+    public void setLastLoginDate(Date lastLoginDate) {this.lastLoginDate = lastLoginDate;}
 
     public int getNoOfLoginAttempts() {
 		return noOfLoginAttempts;

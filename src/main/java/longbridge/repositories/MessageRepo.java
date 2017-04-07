@@ -2,8 +2,9 @@ package longbridge.repositories;
 
 import longbridge.models.MailBox;
 import longbridge.models.Message;
-import org.joda.time.LocalDateTime;
 import org.springframework.stereotype.Repository;
+
+import java.util.Date;
 
 /**
  * Created by Wunmi on 27/03/2017.
@@ -14,10 +15,10 @@ public interface MessageRepo extends CommonRepo<Message, Long> {
 
     Iterable<Message> getByMailBox(MailBox mailBox);
 
-    Iterable<Message> getByMailBoxAndSentTime(MailBox mailBox, LocalDateTime sentTime);
+    Iterable<Message> getByMailBoxAndSentTime(MailBox mailBox, Date sentTime);
 
-    Iterable<Message> getByMailBoxAndSentTimeBetween(MailBox mailBox, LocalDateTime startTime, LocalDateTime endTime);
+    Iterable<Message> getByMailBoxAndSentTimeBetween(MailBox mailBox, Date startTime, Date endTime);
 
-    Iterable<Message> getBySentTimeBetween(LocalDateTime startTime, LocalDateTime endTime);
+    Iterable<Message> getBySentTimeBetween(Date startTime, Date endTime);
 
 }
