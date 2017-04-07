@@ -53,7 +53,7 @@ public class AdminUserController {
         AdminUser adminUser =modelMapper.map(adminUserDTO,AdminUser.class);
         adminUserService.addUser(adminUser);
         model.addAttribute("success","Admin user created successfully");
-        return "redirect:/admin/users";
+        return "redirect:/admin/list";
     }
 
     /**
@@ -66,7 +66,7 @@ public class AdminUserController {
         AdminUser user = adminUserService.getUser(userId);
         AdminUserDTO userDTO = modelMapper.map(user,AdminUserDTO.class);
         model.addAttribute("user", userDTO);
-        return "edit";
+        return "admin/edit";
     }
 
 
@@ -89,9 +89,9 @@ public class AdminUserController {
      * @param model
      * @return
      */
-    @GetMapping("/{userId}")
-    public String getAdminUser(@PathVariable  Long userId, Model model){
-       AdminUser user =adminUserService.getUser(userId);
+    @GetMapping("/{userId}/details")
+    public String getAdminUser(@PathVariable  String userId, Model model){
+       AdminUser user =adminUserService.getUser(Long.parseLong(userId));
        AdminUserDTO adminUserDTO = modelMapper.map(user,AdminUserDTO.class);
        model.addAttribute("user",adminUserDTO);
        return "admin/details";
