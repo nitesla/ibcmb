@@ -2,6 +2,8 @@ package longbridge.services;
 
 import longbridge.models.*;
 
+import java.util.List;
+
 
 /**
  *The {@code CorporateService} interface provides the method managing corporate operations
@@ -43,7 +45,7 @@ public interface CorporateService {
      *
      * @return a list of the corporate customers
      */
-    Iterable<Corporate> getCorporates();
+    List<Corporate> getCorporates();
 
     /**
      * Sets the limit of transaction amount for the corporate customer
@@ -67,7 +69,7 @@ public interface CorporateService {
      * @param corporate the corporate customer
      * @return the limit set for the corporate customer
      */
-    Iterable<CorpLimit>  getLimit(Corporate corporate);
+    List<CorpLimit>  getLimit(Corporate corporate);
 
     /**
      * Deletes the transaction limit set for the specified customer
@@ -139,9 +141,5 @@ public interface CorporateService {
      *
      */
     void disableCorporate(Corporate corporate);
-
-
-
-
 
 }

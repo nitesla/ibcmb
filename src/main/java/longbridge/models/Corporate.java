@@ -15,6 +15,23 @@ public class Corporate extends AbstractEntity{
     private String companyName;
     private String email;
     private String address;
+    private boolean isEnabled;
+
+    public boolean isEnabled() {
+        return isEnabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        isEnabled = enabled;
+    }
+
+    public Collection<CorpLimit> getCorpLimits() {
+        return corpLimits;
+    }
+
+    public void setCorpLimits(Collection<CorpLimit> corpLimits) {
+        this.corpLimits = corpLimits;
+    }
 
     @OneToMany
     private Collection<CorporateUser> users;

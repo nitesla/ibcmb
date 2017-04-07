@@ -1,5 +1,6 @@
 package longbridge.controllers.admin;
 
+import longbridge.models.Setting;
 import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,22 +18,23 @@ public class AdmSettingController {
 
     @GetMapping()
     public String listSettings(Model model){
-        return "listsettings";
+        return "view";
     }
 
     @GetMapping("/{settingId}")
     public String viewSetting(@PathVariable Long id, Model model){
-        return "viewsetting";
+        return "details";
     }
+
 
     @GetMapping("/edit/{settingId}")
     public String editSetting(@PathVariable Long id, Model model){
-        return  "editsetting";
+        return "edit";
     }
 
     @PostMapping("/edit/{settingId}")
     public String updateSetting(@PathVariable Long id, Model model){
-        return "editsetting";
+        return "redirect: /";
     }
 
     @PostMapping()
@@ -42,7 +44,7 @@ public class AdmSettingController {
 
     @GetMapping("/add")
     public String newSetting(Model model){
-        return "addSetting";
+        return "add";
     }
 }
 
