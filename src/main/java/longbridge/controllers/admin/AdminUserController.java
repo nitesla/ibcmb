@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpRequest;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -17,7 +18,7 @@ import javax.validation.Valid;
 /**
  * Created by SYLVESTER on 31/03/2017.
  */
-@RestController
+@Controller
 @RequestMapping("/admin/users")
 public class AdminUserController {
 
@@ -31,7 +32,7 @@ public class AdminUserController {
      */
     @GetMapping("/new")
     public String addUser(){
-        return "addUser";
+        return "admin/add";
     }
 
     /**

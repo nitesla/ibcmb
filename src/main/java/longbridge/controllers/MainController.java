@@ -32,6 +32,6 @@ public class MainController {
 
     @RequestMapping("/account")
     public String getAdminUser() {
-        return "adminUser/add";
+        return "admin/add";
     }
 }
