@@ -15,6 +15,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
+import static javax.swing.text.html.HTML.Tag.HEAD;
+
 /**
  * Created by SYLVESTER on 31/03/2017.
  */
@@ -35,7 +37,6 @@ public class AdminUserController {
     @GetMapping("/new")
     public String addUser(){
         return "admin/add";
-<<<<<<< HEAD
     }
 
     /**
@@ -48,8 +49,6 @@ public class AdminUserController {
         AdminUser user = adminUserService.getUser(userId);
         model.addAttribute("user", user);
         return "addUser";
-=======
->>>>>>> 82b950a00a95d17a8954d080c088e518422df2c2
     }
 
     /**
