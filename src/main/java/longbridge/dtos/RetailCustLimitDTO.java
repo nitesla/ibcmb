@@ -1,11 +1,9 @@
 package longbridge.dtos;
 
 import longbridge.models.RetailUser;
-import org.joda.time.LocalDateTime;
 
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
 import java.math.BigDecimal;
+import java.util.Date;
 
 /** Created by Fortune on 4/5/2017.
  *
@@ -19,7 +17,7 @@ public class RetailCustLimitDTO {
 	private BigDecimal upperLimit;
 	private String currency;
 	private String status;
-	private LocalDateTime effectiveDate;
+	private Date effectiveDate;
 
 
 	public RetailUser getCustomer() {
@@ -78,11 +76,11 @@ public class RetailCustLimitDTO {
 		this.status = status;
 	}
 
-	public LocalDateTime getEffectiveDate() {
+	public Date getEffectiveDate() {
 		return effectiveDate;
 	}
 
-	public void setEffectiveDate(LocalDateTime effectiveDate) {
+	public void setEffectiveDate(Date effectiveDate) {
 		this.effectiveDate = effectiveDate;
 	}
 }

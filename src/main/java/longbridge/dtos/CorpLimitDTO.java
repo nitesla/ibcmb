@@ -1,6 +1,6 @@
 package longbridge.dtos;
 
-import org.joda.time.LocalDateTime;
+import java.util.Date;
 
 import java.math.BigDecimal;
 
@@ -20,7 +20,7 @@ public class CorpLimitDTO {
 	private BigDecimal upperLimit;
 	private String currency;
 	private String status;
-	private LocalDateTime effectiveDate;
+	private Date effectiveDate;
 
 
 	public CorpLimitDTO() {
@@ -84,11 +84,11 @@ public class CorpLimitDTO {
 		this.status = status;
 	}
 
-	public LocalDateTime getEffectiveDate() {
+	public Date getEffectiveDate() {
 		return effectiveDate;
 	}
 
-	public void setEffectiveDate(LocalDateTime effectiveDate) {
+	public void setEffectiveDate(Date effectiveDate) {
 		this.effectiveDate = effectiveDate;
 	}
 }

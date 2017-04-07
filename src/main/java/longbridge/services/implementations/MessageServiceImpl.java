@@ -6,13 +6,13 @@ import longbridge.models.Message;
 import longbridge.models.User;
 import longbridge.repositories.MessageRepo;
 import longbridge.services.MessageService;
-import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.awt.print.Pageable;
+import java.util.Date;
 
 /**
  * Created by Wunmi on 29/03/2017.
@@ -74,7 +74,7 @@ public class MessageServiceImpl implements MessageService {
      * @return the list of messages
      */
     @Override
-    public Iterable<Message> getMessages(MailBox mailBox, LocalDateTime date) {
+    public Iterable<Message> getMessages(MailBox mailBox, Date date) {
         return this.messageRepo.getByMailBoxAndSentTime(mailBox, date);
     }
 
@@ -87,7 +87,7 @@ public class MessageServiceImpl implements MessageService {
      * @return a list of messages
      */
     @Override
-    public Iterable<Message> getMessage(MailBox mailBox, LocalDateTime fromDate, LocalDateTime toDate) {
+    public Iterable<Message> getMessage(MailBox mailBox, Date fromDate, Date toDate) {
         return this.messageRepo.getByMailBoxAndSentTimeBetween(mailBox, fromDate, toDate);
     }
 
@@ -98,7 +98,7 @@ public class MessageServiceImpl implements MessageService {
      * @param toDate   the end date
      * @return a list of messages
      */
-    public Iterable<Message> getMessage(LocalDateTime fromDate, LocalDateTime toDate) {
+    public Iterable<Message> getMessage(Date fromDate, Date toDate) {
         return this.messageRepo.getBySentTimeBetween(fromDate, toDate);
     }
 
@@ -145,7 +145,7 @@ public class MessageServiceImpl implements MessageService {
      * @param toDate   the end date
      */
     @Override
-    public void purge(LocalDateTime fromDate, LocalDateTime toDate) {
+    public void purge(Date fromDate, Date toDate) {
         Iterable<Message> messages = getMessage(fromDate, toDate);
         this.messageRepo.delete(messages);
     }

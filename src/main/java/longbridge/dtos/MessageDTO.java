@@ -1,11 +1,6 @@
 package longbridge.dtos;
 
-import longbridge.models.AbstractEntity;
-import longbridge.models.MailBox;
-import org.joda.time.LocalDateTime;
-
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
+import java.util.Date;
 
 /**
  *  Created by Fortune on 4/5/2017.
@@ -17,7 +12,7 @@ public class MessageDTO {
     private String recipient;
     private String subject;
     private String body;
-    private LocalDateTime sentTime;
+    private Date sentTime;
     private String status;
     private String tag; //a comma separated list of keywords to identify a message
 
@@ -26,12 +21,12 @@ public class MessageDTO {
     }
 
 
-    public MessageDTO(String sender, String recipient, String subject, String body, LocalDateTime dateTime, String status ) {
+    public MessageDTO(String sender, String recipient, String subject, String body, Date Date, String status ) {
         this.sender = sender;
         this.recipient = recipient;
         this.subject = subject;
         this.body = body;
-        this.sentTime = dateTime;
+        this.sentTime = Date;
         this.status = status;
     }
 
@@ -75,11 +70,11 @@ public class MessageDTO {
         this.status = status;
     }
 
-    public LocalDateTime getSentTime() {
+    public Date getSentTime() {
         return sentTime;
     }
 
-    public void setSentTime(LocalDateTime sentTime) {
+    public void setSentTime(Date sentTime) {
         this.sentTime = sentTime;
     }
 

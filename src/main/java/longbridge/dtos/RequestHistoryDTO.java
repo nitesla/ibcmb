@@ -1,8 +1,8 @@
 package longbridge.dtos;
 
 import longbridge.models.OperationsUser;
-import org.joda.time.LocalDateTime;
 
+import java.util.Date;
 /**
  * Created by Fortune on 4/5/2017.
  */
@@ -13,7 +13,7 @@ public class RequestHistoryDTO {
     private String status;
     private String comment;
     private OperationsUser createdBy;
-    private LocalDateTime createdOn;
+    private Date createdOn;
 
     public ServiceRequestDTO getServiceRequestDTO() {
         return serviceRequestDTO;
@@ -58,11 +58,11 @@ public class RequestHistoryDTO {
         this.createdBy = createdBy;
     }
 
-    public LocalDateTime getCreatedOn() {
+    public Date getCreatedOn() {
         return createdOn;
     }
 
-    public void setCreatedOn(LocalDateTime createdOn) {
+    public void setCreatedOn(Date createdOn) {
         this.createdOn = createdOn;
     }
 

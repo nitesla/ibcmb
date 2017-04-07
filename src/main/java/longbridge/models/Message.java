@@ -1,9 +1,9 @@
 package longbridge.models;
 
-import org.joda.time.LocalDateTime;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import java.util.Date;
 
 /**
  * The {@code Message} class is a model that shows a message information
@@ -18,7 +18,7 @@ public class Message extends AbstractEntity{
     private String recipient;
     private String subject;
     private String body;
-    private LocalDateTime sentTime;
+    private Date sentTime;
     private String status;
     @ManyToOne
     private MailBox mailBox;
@@ -30,12 +30,12 @@ public class Message extends AbstractEntity{
     }
 
 
-    public Message(String sender, String recipient, String subject, String body, LocalDateTime dateTime, String status ) {
+    public Message(String sender, String recipient, String subject, String body, Date Date, String status ) {
         this.sender = sender;
         this.recipient = recipient;
         this.subject = subject;
         this.body = body;
-        this.sentTime = dateTime;
+        this.sentTime = Date;
         this.status = status;
     }
 
@@ -79,11 +79,11 @@ public class Message extends AbstractEntity{
         this.status = status;
     }
 
-    public LocalDateTime getSentTime() {
+    public Date getSentTime() {
         return sentTime;
     }
 
-    public void setSentTime(LocalDateTime sentTime) {
+    public void setSentTime(Date sentTime) {
         this.sentTime = sentTime;
     }
 

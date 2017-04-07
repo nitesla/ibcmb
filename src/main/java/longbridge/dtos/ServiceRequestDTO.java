@@ -1,15 +1,9 @@
 package longbridge.dtos;
 
-import longbridge.models.AbstractEntity;
 import longbridge.models.RetailUser;
 import longbridge.models.UserGroup;
-import org.joda.time.LocalDateTime;
 
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import java.util.Collection;
-
+import java.util.Date;
 
 /**
  *  * Created by Fortune on 4/5/2017.
@@ -25,7 +19,7 @@ public class ServiceRequestDTO {
     private String recepient;
     private String status;
     //private UserGroup userGroup;
-    private LocalDateTime requestTime;
+    private Date requestTime;
 
     public RetailUser getUser() {
         return user;
@@ -71,11 +65,11 @@ public class ServiceRequestDTO {
         this.status = status;
     }
 
-    public LocalDateTime getRequestTime() {
+    public Date getRequestTime() {
         return requestTime;
     }
 
-    public void setRequestTime(LocalDateTime requestTime) {
+    public void setRequestTime(Date requestTime) {
         this.requestTime = requestTime;
     }
 
@@ -88,7 +82,7 @@ public class ServiceRequestDTO {
     public ServiceRequestDTO() {
     }
 
-    public ServiceRequestDTO(RetailUser user, String serviceRequestType, String subject, String body, String recepient, UserGroup userGroup, LocalDateTime date) {
+    public ServiceRequestDTO(RetailUser user, String serviceRequestType, String subject, String body, String recepient, UserGroup userGroup, Date date) {
 
         this.user = user;
         this.serviceRequestType = serviceRequestType;

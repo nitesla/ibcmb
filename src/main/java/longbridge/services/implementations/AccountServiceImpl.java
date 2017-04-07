@@ -5,11 +5,11 @@ import longbridge.repositories.AccountRepo;
 import longbridge.services.AccountService;
 import longbridge.services.IntegrationService;
 import longbridge.utils.AccountStatement;
-import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -46,7 +46,7 @@ public class AccountServiceImpl implements AccountService{
     }
 
     @Override
-    public AccountStatement getAccountStatements(Account account, LocalDate fromDate, LocalDate toDate) {
+    public AccountStatement getAccountStatements(Account account, Date fromDate, Date toDate) {
         return integrationService.getAccountStatements(account.getAccountId(), fromDate, toDate);
     }
 

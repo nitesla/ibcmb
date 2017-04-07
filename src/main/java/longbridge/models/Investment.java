@@ -1,7 +1,7 @@
 package longbridge.models;
 
-import org.joda.time.LocalDateTime;
 
+import java.util.Date;
 import javax.persistence.Entity;
 import java.math.BigDecimal;
 
@@ -14,13 +14,13 @@ public class Investment {
     private int depositPeriodDays;
     private String accountNumber;
     private String accountId;
-    private LocalDateTime effectiveOpenDate;
+    private Date effectiveOpenDate;
     private String currencyCode;
     private BigDecimal maturityAmount;
     private BigDecimal depositAmount;
     private String customerId;
     private double interestRate;
-    private LocalDateTime maturityDate;
+    private Date maturityDate;
     private String fundingAccountName;
     private String fundingAccountNumber;
     private String accountName;
@@ -61,11 +61,11 @@ public class Investment {
         this.accountId = accountId;
     }
 
-    public LocalDateTime getEffectiveOpenDate() {
+    public Date getEffectiveOpenDate() {
         return effectiveOpenDate;
     }
 
-    public void setEffectiveOpenDate(LocalDateTime effectiveOpenDate) {
+    public void setEffectiveOpenDate(Date effectiveOpenDate) {
         this.effectiveOpenDate = effectiveOpenDate;
     }
 
@@ -109,11 +109,11 @@ public class Investment {
         this.interestRate = interestRate;
     }
 
-    public LocalDateTime getMaturityDate() {
+    public Date getMaturityDate() {
         return maturityDate;
     }
 
-    public void setMaturityDate(LocalDateTime maturityDate) {
+    public void setMaturityDate(Date maturityDate) {
         this.maturityDate = maturityDate;
     }
 

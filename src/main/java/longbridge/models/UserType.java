@@ -6,7 +6,8 @@ package longbridge.models;
 public enum UserType {
     ADMIN("ADM"),
     OPERATIONS("OPS"),
-    RETAIL("RET"), CORPORATE("CORP");
+    RETAIL("RET"),
+    CORPORATE("CORP");
 
 
     private String description;

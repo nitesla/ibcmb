@@ -13,9 +13,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import javax.validation.Valid;
 
-import static javax.swing.text.html.HTML.Tag.HEAD;
+import javax.validation.Valid;
 
 /**
  * Created by SYLVESTER on 31/03/2017.
@@ -71,7 +70,12 @@ public class AdminUserController {
     }
 
 
-
+    @GetMapping(path="/all")
+    public @ResponseBody Iterable<AdminUser> getUsers(){
+        Iterable<AdminUser> adminUserList=adminUserService.getUsers();
+        //model.addAttribute("adminUserList",adminUserList);
+        return adminUserList;
+    }
 
     /**
      * Returns all users
@@ -79,10 +83,10 @@ public class AdminUserController {
      * @return
      */
     @GetMapping
-    public Iterable<AdminUser> getUsers(Model model){
-        Iterable<AdminUser> adminUserList=adminUserService.getUsers();
-        model.addAttribute("adminUserList",adminUserList);
-        return adminUserList;
+    public String getUsers(Model model){
+//        Iterable<AdminUser> adminUserList=adminUserService.getUsers();
+//        model.addAttribute("adminUserList",adminUserList);
+        return "admin/view";
     }
 
     /**
