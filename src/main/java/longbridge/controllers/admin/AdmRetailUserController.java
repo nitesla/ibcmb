@@ -1,8 +1,10 @@
 package longbridge.controllers.admin;
 
 import longbridge.dtos.ChangePassword;
+import longbridge.dtos.RetailUserDTO;
 import longbridge.models.RetailUser;
 import longbridge.services.RetailUserService;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +25,11 @@ import javax.validation.Valid;
 @RequestMapping("/retail/users")
 public class AdmRetailUserController {
     @Autowired
-    RetailUserService retailUserService;
+    private RetailUserService retailUserService;
+    @Autowired
+    private ModelMapper modelMapper;
 
     private Logger logger= LoggerFactory.getLogger(this.getClass());
-
 
 
     @GetMapping("/new")
@@ -37,10 +40,11 @@ public class AdmRetailUserController {
 
 
     @PostMapping
-    public String createUser(@ModelAttribute("retailUserForm") RetailUser retailUser, BindingResult result,Model model) throws Exception{
+    public String createUser(@ModelAttribute("retailUser") @Valid RetailUserDTO retailUserDTO, BindingResult result, Model model) throws Exception{
         if(result.hasErrors()){
             return "addUser";
         }
+        RetailUser retailUser = modelMapper.map(retailUserDTO,RetailUser.class);
         retailUserService.addUser(retailUser);
         model.addAttribute("success","Retail user created successfully");
         return "redirect:/retail/users";
@@ -53,7 +57,8 @@ public class AdmRetailUserController {
     @GetMapping("/{userId}/edit")
     public String editUser(@PathVariable Long userId, Model model) {
         RetailUser user = retailUserService.getUser(userId);
-        model.addAttribute("user", user);
+        RetailUserDTO retailUserDTO = modelMapper.map(user,RetailUserDTO.class);
+        model.addAttribute("user", retailUserDTO);
         return "addUser";
     }
 
@@ -67,16 +72,18 @@ public class AdmRetailUserController {
     @GetMapping("/{userId}")
     public String getUser(@PathVariable  Long userId, Model model){
         RetailUser user = retailUserService.getUser(userId);
-        model.addAttribute("retailUser",user);
+        RetailUserDTO retailUserDTO = modelMapper.map(user,RetailUserDTO.class);
+        model.addAttribute("user",retailUserDTO);
         return "retailUserDetails";
     }
 
     @PostMapping("/{userId}")
-    public String UpdateUser(@ModelAttribute("retailUserForm") RetailUser retailUser, @PathVariable Long userId, BindingResult result, Model model) throws Exception{
+    public String UpdateUser(@ModelAttribute("retailUserForm") RetailUserDTO retailUserDTO, @PathVariable Long userId, BindingResult result, Model model) throws Exception{
        if(result.hasErrors()){
            return "addUser";
        }
-       retailUser.setId(userId);
+        retailUserDTO.setId(userId);
+        RetailUser retailUser = modelMapper.map(retailUserDTO,RetailUser.class);
         boolean updated = retailUserService.updateUser(retailUser);
        if(updated) {
            model.addAttribute("success", "Retail user updated successfully");

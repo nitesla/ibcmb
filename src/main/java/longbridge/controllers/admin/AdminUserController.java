@@ -1,29 +1,32 @@
 package longbridge.controllers.admin;
 
+import longbridge.dtos.AdminUserDTO;
 import longbridge.dtos.ChangePassword;
 import longbridge.models.AdminUser;
 import longbridge.services.AdminUserService;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpRequest;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
 import javax.validation.Valid;
 
 /**
  * Created by SYLVESTER on 31/03/2017.
  */
-@RestController
+@Controller
 @RequestMapping("/admin/users")
 public class AdminUserController {
 
     private Logger logger= LoggerFactory.getLogger(this.getClass());
     @Autowired
-   private  AdminUserService adminUserService;
+    private  AdminUserService adminUserService;
+    @Autowired
+    private ModelMapper modelMapper;
 
     /**
      * Page for adding a new user
@@ -31,7 +34,26 @@ public class AdminUserController {
      */
     @GetMapping("/new")
     public String addUser(){
-        return "addUser";
+        return "admin/add";
+    }
+
+    /**
+     * Creates a new user
+     * @param adminUserDTO
+     * @param model
+     * @return
+     * @throws Exception
+     */
+    @PostMapping
+    public String createUser(@ModelAttribute("user") AdminUserDTO adminUserDTO, BindingResult result, Model model) throws Exception{
+        if(result.hasErrors()){
+            return "admin/add";
+        }
+
+        AdminUser adminUser =modelMapper.map(adminUserDTO,AdminUser.class);
+        adminUserService.addUser(adminUser);
+        model.addAttribute("success","Admin user created successfully");
+        return "redirect:/admin/users";
     }
 
     /**
@@ -42,26 +64,12 @@ public class AdminUserController {
     public String editUser(@PathVariable Long userId, Model model) {
 
         AdminUser user = adminUserService.getUser(userId);
-        model.addAttribute("user", user);
-        return "addUser";
+        AdminUserDTO userDTO = modelMapper.map(user,AdminUserDTO.class);
+        model.addAttribute("user", userDTO);
+        return "edit";
     }
 
-    /**
-     * Creates a new user
-     * @param adminUser
-     * @param model
-     * @return
-     * @throws Exception
-     */
-    @PostMapping
-    public String createUser(@ModelAttribute("adminUserForm") AdminUser adminUser, BindingResult result, Model model) throws Exception{
-        if(result.hasErrors()){
-            return "addUser";
-        }
-        adminUserService.addUser(adminUser);
-        model.addAttribute("success","Admin user created successfully");
-        return "redirect:/admin/users";
-    }
+
 
     /**
      * Returns all users
@@ -84,23 +92,25 @@ public class AdminUserController {
     @GetMapping("/{userId}")
     public String getAdminUser(@PathVariable  Long userId, Model model){
        AdminUser user =adminUserService.getUser(userId);
-       model.addAttribute("adminUser",user);
-       return "adminUserDetails";
+       AdminUserDTO adminUserDTO = modelMapper.map(user,AdminUserDTO.class);
+       model.addAttribute("user",adminUserDTO);
+       return "admin/details";
     }
 
     /**
      * Updates the user
-     * @param adminUser
+     * @param adminUserDTO
      * @param model
      * @return
      * @throws Exception
      */
     @PostMapping("/{userId}")
-    public String updateUser(@ModelAttribute("adminUserForm") @Validated AdminUser adminUser, @PathVariable Long userId, BindingResult result, Model model) throws Exception{
+    public String updateUser(@ModelAttribute("user") @Valid AdminUserDTO adminUserDTO, @PathVariable Long userId, BindingResult result, Model model) throws Exception{
       if(result.hasErrors()) {
           return "addUser";
       }
-         adminUser.setId(userId);
+         adminUserDTO.setId(userId);
+         AdminUser adminUser = modelMapper.map(adminUserDTO,AdminUser.class);
           boolean updated = adminUserService.updateUser(adminUser);
           if (updated) {
               model.addAttribute("success", "Admin user updated successfully");
@@ -121,9 +131,9 @@ public class AdminUserController {
 
     @PostMapping("/password")
     public String changePassword(@Valid ChangePassword changePassword,Long userId, BindingResult result, HttpRequest request, Model model){
-/*        if(result.hasError()){
-
-        }*/
+       if(result.hasErrors()){
+            return "password";
+        }
         AdminUser user=adminUserService.getUser(userId);
         String oldPassword=changePassword.getOldPassword();
         String newPassword=changePassword.getNewPassword();

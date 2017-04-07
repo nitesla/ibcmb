@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport"/>
 
+
     <link th:href="@{~/css/bootstrap.min.css}" href="static/css/bootstrap.min.css" rel="stylesheet"/>
     <link th:href="@{~/font-awesome/css/font-awesome.css}" href="static/font-awesome/css/font-awesome.css" rel="stylesheet"/>
 
@@ -23,12 +24,13 @@
 
     <title>Coronation Trade Portal</title>
 
-
 </head>
 
 <body>
 
+
 <div th:fragment="header" class="row border-bottom">
+
     <nav class="navbar navbar-static-top  " role="navigation" style="margin-bottom: 0">
         <div class="navbar-header">
             <a class="navbar-minimalize minimalize-styl-2 btn btn-primary" href="#"><i class="fa fa-bars"></i></a>
@@ -154,16 +156,21 @@
     </nav>
 </div>
 
+
 <nav th:fragment="menu" class="navbar-default navbar-static-side" role="navigation">
+
     <div class="sidebar-collapse">
         <ul class="nav" id="side-menu">
             <li class="nav-header">
                 <div class="profile-element"> <span>
+
                             <img alt="image" class="img" th:src="@{~/img/corologo.png}" src="static/img/corologo.png" width="150px" />
+
                              </span>
                 </div>
                 <div class="logo-element">
                         <span>
+
                             <img alt="image" class="img" th:src="@{~/img/smalllogo.png}"  src="static/img/smalllogo.png" />
                              </span>
                 </div>
@@ -199,7 +206,48 @@
                     <li><a href="view.html">View TR</a></li>
                     <li><a href="add.html">Add TR</a></li>
                     <li><a href="edit.html">Edit TR</a></li>
+
                 </ul>
+            </li>
+
+        </ul>
+
+    </div>
+</nav>
+<!--Admin side bar-->
+<nav th:fragment="admin" class="navbar-default navbar-static-side" role="navigation">
+
+    <div class="sidebar-collapse">
+        <ul class="nav" id="side-menu">
+            <li class="nav-header">
+                <div class="profile-element"> <span>
+
+                            <img alt="image" class="img" th:src="@{~/img/corologo.png}" src="static/img/corologo.png" width="150px" />
+
+                             </span>
+                </div>
+                <div class="logo-element">
+                        <span>
+
+                            <img alt="image" class="img" th:src="@{~/img/smalllogo.png}"  src="static/img/smalllogo.png" />
+                             </span>
+                </div>
+            </li>
+            <li>
+                <a href="adminUser/add.html"><i class="fa fa-file"></i><span class="nav-label">Add</span></a>
+
+            </li>
+            <li>
+                <a href="adminUser/edit.html"><i class="fa fa-file"></i><span class="nav-label">Edit</span></a>
+
+            </li>
+            <li>
+                <a href="adminUser/details.html"><i class="fa fa-file"></i><span class="nav-label">View</span></a>
+
+            </li>
+            <li>
+                <a href="form-index.html"><i class="fa fa-file"></i><span class="nav-label">Details</span></a>
+
             </li>
 
         </ul>
@@ -213,6 +261,7 @@
         <strong>Copyright</strong> Coronation Merchant Bank &copy; 2017
     </div>
     <!-- Mainly scripts -->
+
 
     <script th:src="@{~/js/bootstrap.min.js}" src="static/js/bootstrap.min.js"></script>
     <script th:src="@{~/js/plugins/metisMenu/jquery.metisMenu.js}" src="static/js/plugins/metisMenu/jquery.metisMenu.js"></script>
@@ -229,6 +278,7 @@
 
     <!-- Jquery Validate -->
     <script th:src="@{~/js/plugins/validate/jquery.validate.min.js}" src="static/js/plugins/validate/jquery.validate.min.js"></script>
+
 
 </div>
 

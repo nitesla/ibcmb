@@ -1,5 +1,6 @@
 package longbridge.config;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,5 +20,10 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
 	@Bean
 	public ServletListenerRegistrationBean<HttpSessionEventPublisher> httpSessionEventPublisher() {
 		return new ServletListenerRegistrationBean<>(new HttpSessionEventPublisher());
+	}
+
+	@Bean
+	public ModelMapper modelMapper() {
+		return new ModelMapper();
 	}
 }
