@@ -1,9 +1,9 @@
 package longbridge.repositories;
 
+import longbridge.models.MailBox;
 import longbridge.models.Message;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.joda.time.LocalDateTime;
 import org.springframework.stereotype.Repository;
-import sun.misc.resources.Messages;
 
 /**
  * Created by Wunmi on 27/03/2017.
@@ -11,5 +11,13 @@ import sun.misc.resources.Messages;
 
 @Repository
 public interface MessagesRepo extends CommonRepo<Message, Long> {
+
+    Iterable<Message> getByMailBox(MailBox mailBox);
+
+    Iterable<Message> getByMailBoxAndSentTime(MailBox mailBox, LocalDateTime sentTime);
+
+    Iterable<Message> getByMailBoxAndSentTimeBetween(MailBox mailBox, LocalDateTime startTime, LocalDateTime endTime);
+
+    Iterable<Message> getBySentTimeBetween(LocalDateTime startTime, LocalDateTime endTime);
 
 }
