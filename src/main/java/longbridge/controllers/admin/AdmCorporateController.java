@@ -3,6 +3,7 @@ package longbridge.controllers.admin;
 import longbridge.models.Corporate;
 import longbridge.services.CorporateService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -11,8 +12,8 @@ import org.springframework.web.bind.annotation.*;
  * Created by Fortune on 4/3/2017.
  */
 
-@RestController
-@RequestMapping("admin/corporates")
+@Controller
+@RequestMapping("/admin/corporates")
 public class AdmCorporateController {
 
     @Autowired
@@ -41,11 +42,17 @@ public class AdmCorporateController {
     }
 
     @GetMapping
-    public Iterable<Corporate> getCorporates(Model model){
-        Iterable<Corporate> corporateList = corporateService.getCorporates();
-        model.addAttribute("corporateList",corporateList);
-        return corporateList;
+    public String getAllCorporates(Model model){
+        //Iterable<OperationsUser> operationsUserList= operationsUserService.getUsers();
+        //model.addAttribute("operationsUserList",operationsUserList);
+        return "adm/corporate/view";
+    }
 
+    @GetMapping(path="/all")
+    public @ResponseBody Iterable<Corporate> getCorporates(){
+        Iterable<Corporate> corporateList= corporateService.getCorporates();
+        //model.addAttribute("adminUserList",adminUserList);
+        return corporateList;
     }
 
     @PostMapping("/{corporateId}")
