@@ -1,6 +1,8 @@
 package longbridge.services;
 
+import longbridge.models.AdminUser;
 import longbridge.models.Code;
+import longbridge.models.Verifiable;
 
 /**
  *This {@code CodeService} interface provides the methods for managing system codes
@@ -8,13 +10,19 @@ import longbridge.models.Code;
  * @see Code
  * @author Wunmi
  */
-public interface CodeService {
+public interface CodeService extends Verifiable<Code> {
 
     /**
      * Adds a new code to the syste
      * @param code the code
      */
-    boolean  addCode(Code code);
+    boolean addCode(Code code, AdminUser adminUser);
+
+    /**
+     * Modifies an existing code
+     * @param code the code
+     */
+    boolean modifyCode(Code code, AdminUser adminUser);
 
     /**
      * Deletes a code from the system
