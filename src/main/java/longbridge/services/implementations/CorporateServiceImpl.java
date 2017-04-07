@@ -29,7 +29,7 @@ public class CorporateServiceImpl implements CorporateService {
     @Autowired
     public CorporateServiceImpl(CorporateCustomerRepo corporateCustomerRepo, CorpLimitRepo corpLimitRepo){
         this.corporateCustomerRepo = corporateCustomerRepo;
-        this.corporateUserRepo = corporateUserRepo;
+        this.corpLimitRepo = corpLimitRepo;
     }
     @Override
     public void addCorporate(Corporate corporate) {

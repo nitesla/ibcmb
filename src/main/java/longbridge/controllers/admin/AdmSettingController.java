@@ -18,18 +18,18 @@ public class AdmSettingController {
 
     @GetMapping()
     public String listSettings(Model model){
-        return "view";
+        return "setting/view";
     }
 
     @GetMapping("/{settingId}")
     public String viewSetting(@PathVariable Long id, Model model){
-        return "details";
+        return "setting/details";
     }
 
 
     @GetMapping("/edit/{settingId}")
     public String editSetting(@PathVariable Long id, Model model){
-        return "edit";
+        return "setting/edit";
     }
 
     @PostMapping("/edit/{settingId}")
@@ -39,12 +39,12 @@ public class AdmSettingController {
 
     @PostMapping()
     public String createSetting(@PathVariable Long id, Model model){
-        return "redirect: /listSettings";
+        return "redirect: /setting";
     }
 
     @GetMapping("/add")
     public String newSetting(Model model){
-        return "add";
+        return "setting/add";
     }
 }
 
