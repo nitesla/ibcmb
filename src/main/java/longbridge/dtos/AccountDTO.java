@@ -6,7 +6,7 @@ import javax.persistence.Entity;
 
 
 
-public class AccountDTO extends AbstractEntity{
+public class AccountDTO{
 
     private Long id;
     private String accountId;
@@ -87,29 +87,6 @@ public class AccountDTO extends AbstractEntity{
         this.solId = solId;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof AccountDTO)) return false;
-        if (!super.equals(o)) return false;
-
-        AccountDTO account = (AccountDTO) o;
-
-        if (!accountId.equals(account.accountId)) return false;
-        if (!accountNumber.equals(account.accountNumber)) return false;
-        if (!customerId.equals(account.customerId)) return false;
-        return solId != null ? solId.equals(account.solId) : account.solId == null;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + accountId.hashCode();
-        result = 31 * result + accountNumber.hashCode();
-        result = 31 * result + customerId.hashCode();
-        result = 31 * result + (solId != null ? solId.hashCode() : 0);
-        return result;
-    }
 
 
     @Override

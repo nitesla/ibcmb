@@ -25,11 +25,11 @@ public class AdmCodeController {
     @PostMapping
     public String createCode(@ModelAttribute("code") Code code, BindingResult result, Model model){
         if(result.hasErrors()){
-            return "add-code";
+            return "add";
         }
         codeService.addCode(code);
         model.addAttribute("success", "Code added successfully");
-        return "/admin/codes";
+        return "/admin/list";
     }
 
     @GetMapping("/{codeId}")

@@ -71,7 +71,7 @@ public interface SecurityService {
 
     /**
      * Deletes the permissiont
-     * @param permission the permission object
+     * @param permission the permission
      */
     void deletePermission(Permission permission);
 
