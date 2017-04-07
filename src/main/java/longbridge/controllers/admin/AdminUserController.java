@@ -15,8 +15,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
-import static javax.swing.text.html.HTML.Tag.HEAD;
-
 /**
  * Created by SYLVESTER on 31/03/2017.
  */
