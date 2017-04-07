@@ -1,5 +1,6 @@
 package longbridge.services;
 
+import longbridge.dtos.AdminUserDTO;
 import longbridge.models.AdminUser;
 import longbridge.models.RetailUser;
 

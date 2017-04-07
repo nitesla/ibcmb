@@ -1,5 +1,6 @@
 package longbridge.controllers.admin;
 
+import longbridge.dtos.PermissionDTO;
 import longbridge.models.Permission;
 import longbridge.services.SecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +24,11 @@ public class AdmPermissionController {
     }
 
     @PostMapping
-    public String createPermission(@ModelAttribute("permissionForm") Permission permission, BindingResult result, Model model){
+    public String createPermission(@ModelAttribute("permission") Permission permission, BindingResult result, Model model){
         if(result.hasErrors()){
             return "add-permission";
         }
+
         securityService.addPermission(permission);
         model.addAttribute("success", "Permission added successfully");
         return "/admin/permissions";

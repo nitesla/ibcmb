@@ -1,8 +1,10 @@
 package longbridge.services.implementations;
 
+import longbridge.dtos.AdminUserDTO;
 import longbridge.models.AdminUser;
 import longbridge.repositories.AdminUserRepo;
 import longbridge.services.AdminUserService;
+import org.modelmapper.ModelMapper;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,8 @@ public class AdminUserServiceImpl implements AdminUserService {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private AdminUserRepo adminUserRepo;
     private BCryptPasswordEncoder passwordEncoder;
+    @Autowired
+    private ModelMapper modelMapper;
 
     @Autowired
     public AdminUserServiceImpl(AdminUserRepo adminUserRepo, BCryptPasswordEncoder passwordEncoder) {
@@ -33,13 +37,15 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     @Override
     public AdminUser getUser(Long id) {
-        return this.adminUserRepo.getOne(id);
+        return   this.adminUserRepo.getOne(id);
+
     }
 
     @Override
     public Iterable<AdminUser> getUsers() {
-        return this.adminUserRepo.findAll();
-    }
+
+   return this.adminUserRepo.findAll();
+     }
 
     @Override
     public boolean setPassword(AdminUser user, String hashedPassword) {
