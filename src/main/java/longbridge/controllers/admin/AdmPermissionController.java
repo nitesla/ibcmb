@@ -63,7 +63,8 @@ public class AdmPermissionController {
 
     @PostMapping("/{permissionId}/delete")
     public String deletePermission(@PathVariable Long permissionId, Model model){
-        securityService.deletePermission(permissionId);
+        Permission permission = securityService.getPermission(permissionId);
+        securityService.deletePermission(permission);
         model.addAttribute("success", "Permission deleted successfully");
         return "redirect:/admin/permissions";
     }

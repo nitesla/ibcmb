@@ -69,7 +69,8 @@ public class AdmRoleController {
 
     @PostMapping("/{roleId}/delete")
     public String deleteRole(@PathVariable Long roleId, Model model){
-        securityService.deleteRole(roleId);
+        Role role = securityService.getRole(roleId);
+        securityService.deleteRole(role);
         model.addAttribute("success", "Role deleted successfully");
         return "redirect:/admin/roles";
     }

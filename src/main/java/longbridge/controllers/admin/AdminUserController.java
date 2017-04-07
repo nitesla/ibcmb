@@ -70,18 +70,6 @@ public class AdminUserController {
         return "redirect:/admin/list";
     }
 
-    /**
-     * Edit an existing user
-     * @return
-     */
-    @GetMapping("/{userId}/edit")
-    public String editUser(@PathVariable Long userId, Model model) {
-
-        AdminUser user = adminUserService.getUser(userId);
-        AdminUserDTO userDTO = modelMapper.map(user,AdminUserDTO.class);
-        model.addAttribute("user", userDTO);
-        return "admin/edit";
-    }
 
 
 

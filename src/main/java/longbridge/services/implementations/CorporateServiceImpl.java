@@ -20,6 +20,9 @@ public class CorporateServiceImpl implements CorporateService {
 
     private CorporateCustomerRepo corporateCustomerRepo;
 
+    @Autowired
+    private CorporateUserRepo corporateUserRepo;
+
     private CorpLimitRepo corpLimitRepo;
 
 
