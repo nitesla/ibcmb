@@ -1,7 +1,9 @@
 package longbridge.controllers.admin;
 
+import longbridge.dtos.CodeDTO;
 import longbridge.models.Code;
 import longbridge.services.CodeService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,6 +18,8 @@ public class AdmCodeController {
 
     @Autowired
     private CodeService codeService;
+    @Autowired
+    ModelMapper modelMapper;
 
     @GetMapping("/new")
     public String addCode(){
@@ -23,29 +27,23 @@ public class AdmCodeController {
     }
 
     @PostMapping
-    public String createCode(@ModelAttribute("code") Code code, BindingResult result, Model model){
+    public String createCode(@ModelAttribute("code") CodeDTO codeDTO, BindingResult result, Model model){
         if(result.hasErrors()){
             return "add";
         }
+        Code code = modelMapper.map(codeDTO,Code.class);
         codeService.addCode(code);
         model.addAttribute("success", "Code added successfully");
         return "/admin/list";
     }
 
-    @GetMapping("/{codeId}")
+    @GetMapping("/{codeId}/details")
     public Code getCode(@PathVariable Long codeId, Model model){
         Code code = codeService.getCode(codeId);
         model.addAttribute("code",code);
         return code;
     }
 
-    @GetMapping("/{type}")
-    public Iterable<Code> getCodesByType(@PathVariable String type, Model model){
-        Iterable<Code> codeList = codeService.getCodesofType(type);
-        model.addAttribute("codeList",codeList);
-        return codeList;
-
-    }
 
     @GetMapping
     public Iterable<Code> getCodes(Model model){
@@ -55,8 +53,18 @@ public class AdmCodeController {
 
     }
 
+    @GetMapping("/{type}")
+    public Iterable<Code> getCodesByType(@PathVariable String type, Model model){
+        Iterable<Code> codeList = codeService.getCodesByType(type);
+        model.addAttribute("codeList",codeList);
+        return codeList;
+
+    }
+
+
+
     @PostMapping("/{codeId}")
-    public String updateCode(@ModelAttribute("codeForm") Code code, @PathVariable Long codeId, BindingResult result, Model model){
+    public String updateCode(@ModelAttribute("code") Code code, @PathVariable Long codeId, BindingResult result, Model model){
 
         if(result.hasErrors()){
             return "add-code";

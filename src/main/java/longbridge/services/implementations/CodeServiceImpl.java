@@ -51,13 +51,13 @@ public class CodeServiceImpl implements CodeService {
     }
 
     @Override
-    public Iterable<Code> getCodesofType(String codeType) {
-        return this.codeRepo.findByTypeAndDelFlag(codeType, "N");
+    public Iterable<Code> getCodesByType(String codeType) {
+        return this.codeRepo.findByType(codeType);
     }
 
     @Override
     public Iterable<Code> getCodes() {
-        return this.codeRepo.findByDelFlag("N");
+        return this.codeRepo.findAll();
     }
 
     @Override

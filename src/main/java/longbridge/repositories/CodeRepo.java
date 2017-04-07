@@ -12,5 +12,7 @@ public interface CodeRepo extends CommonRepo<Code, Long>{
 
     Iterable<Code> findByDelFlag(String delFlag);
 
+    Iterable<Code> findByType(String type);
+
 
 }

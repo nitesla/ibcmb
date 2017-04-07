@@ -34,7 +34,7 @@ public interface CodeService {
      * @param codeType the code's type
      * @return a list of codes
      */
-    Iterable<Code> getCodesofType(String codeType);
+    Iterable<Code> getCodesByType(String codeType);
 
     /**
      * Returns all the codes in the system
