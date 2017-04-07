@@ -3,10 +3,7 @@ package longbridge.models;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.util.Date;
 
 /** this represents a change that needs Verification. This can be
@@ -26,7 +23,8 @@ public class Verification extends  AbstractEntity {
     private String description;
 
     private Long verifiedId;
-    private String operationCode;
+    @Enumerated(value = EnumType.STRING)
+    private OperationCode operationCode;
 
     @ManyToOne
     private AdminUser initiatedBy;
@@ -98,11 +96,11 @@ public class Verification extends  AbstractEntity {
         this.verifiedId = verifiedId;
     }
 
-    public String getOperationCode() {
+    public OperationCode getOperationCode() {
         return operationCode;
     }
 
-    public void setOperationCode(String operationCode) {
+    public void setOperationCode(OperationCode operationCode) {
         this.operationCode = operationCode;
     }
 

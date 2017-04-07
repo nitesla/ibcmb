@@ -15,6 +15,7 @@ public interface Verifiable<T> {
      */
     T deserialize(String data) throws IOException;
 
+
     /** Serializes an object of type T into json
      *
      * @param t object to be serialized

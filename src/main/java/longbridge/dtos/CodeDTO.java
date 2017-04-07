@@ -39,6 +39,12 @@ public class CodeDTO {
         this.description = description;
     }
 
-
-
+    @Override
+    public String toString() {
+        return "CodeDTO{" +
+                "code='" + code + '\'' +
+                ", type='" + type + '\'' +
+                ", description='" + description + '\'' +
+                '}';
+    }
 }

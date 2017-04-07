@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import longbridge.models.AdminUser;
 import longbridge.models.Code;
 
+import longbridge.models.OperationCode;
 import longbridge.models.Verification;
 import longbridge.repositories.CodeRepo;
 
@@ -83,9 +84,10 @@ public class CodeServiceImpl implements CodeService {
             verification.setBeforeObject("");
             verification.setAfterObject(serialize(code));
             verification.setOriginal("");
-            verification.setDescription("");
-            verification.setOperationCode("rogaroga");
+            verification.setDescription("Added a new Code");
+            verification.setOperationCode(OperationCode.ADD_CODE);
             verification.setInitiatedBy(adminUser);
+            verification.setInitiatedOn(new Date());
             verificationRepo.save(verification);
 
             logger.info("Code creation request has been added ");
@@ -97,6 +99,29 @@ public class CodeServiceImpl implements CodeService {
         return result;
     }
 
+    public boolean modifyCode(Code code, AdminUser adminUser){
+         boolean result= false;
+         Code originalObject = codeRepo.findOne(code.getId());
+
+        try {
+            Verification verification = new Verification();
+            verification.setBeforeObject(serialize(originalObject));
+            verification.setAfterObject(serialize(code));
+            verification.setOriginal(serialize(originalObject));
+            verification.setDescription("Modified a Code");
+            verification.setOperationCode(OperationCode.MODIFY_CODE);
+            verification.setInitiatedBy(adminUser);
+            verification.setInitiatedOn(new Date());
+            verificationRepo.save(verification);
+
+            logger.info("Code modification request has been added ");
+            result=true;
+        }
+        catch (Exception e){
+            logger.error("ERROR OCCURRED {}",e.getMessage());
+        }
+        return result;
+    }
 
     @Override
     public Code deserialize(String data) throws IOException {
@@ -116,10 +141,12 @@ public class CodeServiceImpl implements CodeService {
     public void verify(Verification verificationObject, AdminUser verifier) throws IOException {
         verificationObject.setVerifiedBy(verifier);
         verificationObject.setVerifiedOn(new Date());
-        Code code = deserialize(verificationObject.getAfterObject());
-        codeRepo.save(code);
-        verificationObject.setVerifiedId(code.getId());
-        //save verification
+
+        Code afterCode = deserialize(verificationObject.getAfterObject());
+
+        codeRepo.save(afterCode);
+        verificationObject.setVerifiedId(afterCode.getId());
+        verificationRepo.save(verificationObject);
     }
 
     @Override
@@ -128,5 +155,6 @@ public class CodeServiceImpl implements CodeService {
         verificationObject.setDeclinedOn(new Date());
         verificationObject.setDeclineReason(declineReason);
         //save verification
+        verificationRepo.save(verificationObject);
     }
 }

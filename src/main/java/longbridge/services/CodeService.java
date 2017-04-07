@@ -19,6 +19,12 @@ public interface CodeService extends Verifiable<Code> {
     boolean addCode(Code code, AdminUser adminUser);
 
     /**
+     * Modifies an existing code
+     * @param code the code
+     */
+    boolean modifyCode(Code code, AdminUser adminUser);
+
+    /**
      * Deletes a code from the system
      * @param codeId the oode's id
      */
