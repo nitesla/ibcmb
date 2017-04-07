@@ -1,10 +1,12 @@
 package longbridge.services;
 
+import longbridge.models.EmailDetail;
+import longbridge.models.MailBox;
 import longbridge.models.Message;
 import longbridge.models.User;
+import org.joda.time.LocalDateTime;
 
 import java.awt.print.Pageable;
-import java.util.Date;
 
 /**
  * The {@code MessagingService} interface provides a service for sending messages
@@ -21,12 +23,13 @@ public interface MessageService {
      */
     Message getMessage(Long id);
 
+
     /**
      * Returns a list of messages for the specified user
-     * @param user the user
+     * @param mailbox the user
      * @return a list of messages
      */
-    Iterable<Message> getMessages(User user);
+    Iterable<Message> getMessages(MailBox mailbox);
 
     /**
      * Returns a page of messages specified by the {@code firstRecord} and {@code totalNumOfRecords}
@@ -35,7 +38,7 @@ public interface MessageService {
      * @return a list of messages
      */
 
-    Pageable getMessages(User user, int firstRecord, int totalNumOfRecords);
+    Pageable getMessages(MailBox mailBox, int firstRecord, int totalNumOfRecords);
 
 
     /**
@@ -43,7 +46,7 @@ public interface MessageService {
      * @param date the date on the messages
      * @return the list of messages
      */
-   Iterable<Message> getMessages(User user, Date date);
+   Iterable<Message> getMessages(MailBox mailBox, LocalDateTime date);
 
     /**
      *Returns a list of messages within the given date range
@@ -51,21 +54,14 @@ public interface MessageService {
      * @param toDate the end date
      * @return a list of messages
      */
-    Iterable<Message> getMessage(User user, Date fromDate, Date toDate);
+    Iterable<Message> getMessage(MailBox mailBox, LocalDateTime fromDate, LocalDateTime toDate);
 
     /**
      *Marks the message as READ or UNREAD
-     * @param asType the type
+     * @param status the type
      * @return the message as read and unread
      */
-    void markMessage(Message message,String asType); //Read or Unread
-
-
-    /**
-     * set the status of the message which can be DELIVERED or UNDELIVERED
-     * @param status the status of the message
-     */
-    void  setStatus(Message message,String status);
+    void setStatus(Long id,String status); //Read or Unread
 
     /**
      * Deletes the message identified by the given {@code id}
@@ -84,7 +80,7 @@ public interface MessageService {
      * @param fromDate the start date
      * @param toDate the end date
      */
-    void purge(Date fromDate, Date toDate);
+    void purge(LocalDateTime fromDate, LocalDateTime toDate);
 
     /**
      * Creates and sends the message from the sender to the recipient
@@ -93,4 +89,10 @@ public interface MessageService {
      * @param message  the message
      */
     void sendMessage(User sender, User recipient, Message message);
+
+    /** Makes a request to send an email to using the details
+     * in the {@link EmailDetail} object
+     * @param email EmailDetail object containing all the details required to send an email
+     */
+    void sendEmail(EmailDetail email);
 }

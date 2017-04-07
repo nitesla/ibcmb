@@ -1,18 +1,32 @@
 package longbridge.services.implementations;
 
+import longbridge.models.EmailDetail;
+import longbridge.models.MailBox;
 import longbridge.models.Message;
 import longbridge.models.User;
+import longbridge.repositories.MessageRepo;
 import longbridge.services.MessageService;
+import org.joda.time.LocalDateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.awt.print.Pageable;
-import java.util.Date;
 
 /**
  * Created by Wunmi on 29/03/2017.
  */
 @Service
 public class MessageServiceImpl implements MessageService {
+
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private MessageRepo messageRepo;
+
+    @Autowired
+    public MessageServiceImpl(MessageRepo messageRepo) {
+        this.messageRepo = messageRepo;
+    }
 
 
     /**
@@ -23,81 +37,83 @@ public class MessageServiceImpl implements MessageService {
      */
     @Override
     public Message getMessage(Long id) {
-        return null;
+
+        return this.messageRepo.getOne(id);
     }
+
 
     /**
      * Returns a list of messages for the specified user
      *
-     * @param user the user
+     * @param mailBox of a user
      * @return a list of messages
      */
     @Override
-    public Iterable<Message> getMessages(User user) {
-        return null;
+    public Iterable<Message> getMessages(MailBox mailBox) {
+        return this.messageRepo.getByMailBox(mailBox);
     }
 
     /**
      * Returns a page of messages specified by the {@code firstRecord} and {@code totalNumOfRecords}
      *
-     * @param user the user
+     * @param mailBox the user
      * @param firstRecord       the firstRecord
      * @param totalNumOfRecords the total Number of Records
      * @return  a list of messages
      */
     @Override
-    public Pageable getMessages(User user, int firstRecord, int totalNumOfRecords) {
+    public Pageable getMessages(MailBox mailBox, int firstRecord, int totalNumOfRecords) {
         return null;
     }
 
     /**
      * Returns a list of messages on the given date
      *
-     * @param user
+     * @param mailBox
      * @param date the date on the messages
      * @return the list of messages
      */
     @Override
-    public Iterable<Message> getMessages(User user, Date date) {
-        return null;
+    public Iterable<Message> getMessages(MailBox mailBox, LocalDateTime date) {
+        return this.messageRepo.getByMailBoxAndSentTime(mailBox, date);
     }
 
     /**
      * Returns a list of messages within the given date range
      *
-     * @param user
+     * @param mailBox
      * @param fromDate the start date
      * @param toDate   the end date
      * @return a list of messages
      */
     @Override
-    public Iterable<Message> getMessage(User user, Date fromDate, Date toDate) {
-        return null;
+    public Iterable<Message> getMessage(MailBox mailBox, LocalDateTime fromDate, LocalDateTime toDate) {
+        return this.messageRepo.getByMailBoxAndSentTimeBetween(mailBox, fromDate, toDate);
     }
 
     /**
-     * Marks the message as READ or UNREAD
+     * Returns a list of messages within the given date range
      *
-     * @param message
-     * @param asType  the type
-     * @return the message as read and unread
+     * @param fromDate the start date
+     * @param toDate   the end date
+     * @return a list of messages
      */
-    @Override
-    public void markMessage(Message message, String asType) {
-
+    public Iterable<Message> getMessage(LocalDateTime fromDate, LocalDateTime toDate) {
+        return this.messageRepo.getBySentTimeBetween(fromDate, toDate);
     }
 
     /**
      * set the status of the message which can be DELIVERED or UNDELIVERED
      *
-     * @param message
-     * @param status  the status of the message
+     * @param id
+     * @param status  the type
+     * @return the message as read and unread
      */
-
-
     @Override
-    public void setStatus(Message message, String status) {
-
+    public void setStatus(Long id, String status) {
+        Message mes = this.messageRepo.getOne(id);
+        mes.setStatus(status);
+        this.messageRepo.save(mes);
     }
 
     /**
@@ -107,7 +123,9 @@ public class MessageServiceImpl implements MessageService {
      */
     @Override
     public void deleteMessage(Long id) {
-
+        Message mes = this.messageRepo.getOne(id);
+        mes.setDelFlag("Y");
+        this.messageRepo.save(mes);
     }
 
     /**
@@ -127,8 +145,9 @@ public class MessageServiceImpl implements MessageService {
      * @param toDate   the end date
      */
     @Override
-    public void purge(Date fromDate, Date toDate) {
-
+    public void purge(LocalDateTime fromDate, LocalDateTime toDate) {
+        Iterable<Message> messages = getMessage(fromDate, toDate);
+        this.messageRepo.delete(messages);
     }
 
     /**
@@ -141,5 +160,10 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public void sendMessage(User sender, User recipient, Message message) {
 
+    }
+
+    @Override
+    public void sendEmail(EmailDetail email){
+        //todo  send email
     }
 }

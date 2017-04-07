@@ -3,6 +3,9 @@ package longbridge.services;
 import longbridge.models.Permission;
 import longbridge.models.Role;
 
+import java.math.BigInteger;
+import java.security.SecureRandom;
+
 /**
  * The {@code SecurityService} interface provides the methods for managing roles, profiles and permissions
  * @author Fortunatus Ekenachi
@@ -40,7 +43,7 @@ public interface SecurityService {
      * Deletes a role
      * This is a logical deletion because the data is not removed from the database
      */
-    void deleteRole(Long id);
+    void deleteRole(Role role);
 
     /**
      * Adds a new permission to the system
@@ -68,7 +71,15 @@ public interface SecurityService {
 
     /**
      * Deletes the permissiont
-     * @param id the permissions id
+     * @param permission the permission object
      */
-    void deletePermission(Long id);
+    void deletePermission(Permission permission);
+
+    /** Generates a random password of 12 characters
+     *
+     * @return a random password string
+     */
+    String generatePassword();
+
+
 }

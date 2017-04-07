@@ -10,6 +10,16 @@ import javax.persistence.*;
 @Entity
 public class CorporateUser extends User {
 
+	private boolean isEnabled;
+
+	public boolean isEnabled() {
+		return isEnabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		isEnabled = enabled;
+	}
+
 	@ManyToOne
     private Corporate corporate;
 
