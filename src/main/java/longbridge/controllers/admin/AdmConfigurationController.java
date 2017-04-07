@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/admin/settings")
-
 public class AdmConfigurationController {
 
 }

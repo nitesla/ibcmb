@@ -1,5 +1,6 @@
 package longbridge.services;
 
+import longbridge.models.EmailDetail;
 import longbridge.models.Message;
 import longbridge.models.User;
 
@@ -93,4 +94,10 @@ public interface MessagingService {
      * @param message  the message
      */
     void sendMessage(User sender, User recipient, Message message);
+
+    /** Makes a request to send an email to using the details
+     * in the {@link EmailDetail} object
+     * @param email EmailDetail object containing all the details required to send an email
+     */
+    void sendEmail(EmailDetail email);
 }

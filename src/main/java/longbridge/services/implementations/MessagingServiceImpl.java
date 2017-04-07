@@ -1,5 +1,6 @@
 package longbridge.services.implementations;
 
+import longbridge.models.EmailDetail;
 import longbridge.models.Message;
 import longbridge.models.User;
 import longbridge.services.MessagingService;
@@ -141,5 +142,10 @@ public class MessagingServiceImpl implements MessagingService{
     @Override
     public void sendMessage(User sender, User recipient, Message message) {
 
+    }
+
+    @Override
+    public void sendEmail(EmailDetail email){
+        //todo  send email
     }
 }

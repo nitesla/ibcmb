@@ -13,8 +13,8 @@ public class Limit extends AbstractEntity {
 	
 	private String description;
 	private String type;
-	private BigDecimal lowerLimit;
-	private BigDecimal upperLimit;
+	private double lowerLimit;
+	private double upperLimit;
 	private String currency;
 	private String status;
 	private LocalDateTime effectiveDate;
@@ -22,7 +22,7 @@ public class Limit extends AbstractEntity {
 	public Limit(){
 	}
 	
-	public Limit(String description, String type, BigDecimal lowerLimit, BigDecimal upperLimit, String currency,
+	public Limit(String description, String type, double lowerLimit, double upperLimit, String currency,
 			String status, LocalDateTime effectiveDate) {
 		super();
 		this.description = description;
@@ -46,16 +46,16 @@ public class Limit extends AbstractEntity {
 	public void setType(String type) {
 		this.type = type;
 	}
-	public BigDecimal getLowerLimit() {
+	public double getLowerLimit() {
 		return lowerLimit;
 	}
-	public void setLowerLimit(BigDecimal lowerLimit) {
+	public void setLowerLimit(double lowerLimit) {
 		this.lowerLimit = lowerLimit;
 	}
-	public BigDecimal getUpperLimit() {
+	public double getUpperLimit() {
 		return upperLimit;
 	}
-	public void setUpperLimit(BigDecimal upperLimit) {
+	public void setUpperLimit(double upperLimit) {
 		this.upperLimit = upperLimit;
 	}
 	public String getCurrency() {
