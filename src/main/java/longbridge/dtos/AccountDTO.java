@@ -12,10 +12,10 @@ public class AccountDTO{
     private String accountId;
     private String accountNumber;
     private String accountName;
-    private  String customerId;
+    private String customerId;
     private String schemeType;
-    private  String schemeCode;
-    private  String solId;
+    private String schemeCode;
+    private String solId;
 
     public AccountDTO() {
     }

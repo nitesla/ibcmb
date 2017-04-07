@@ -30,6 +30,15 @@ public class AccountServiceImpl implements AccountService{
     }
 
     @Override
+    public boolean AddAccount(String customerId, Account account) {
+        if (!customerId.equals(account.getCustomerId())) {
+            return false;
+        }
+        accountRepo.save(account);
+        return true;
+    }
+
+    @Override
     public Account getAccount(Long accId) {
         return accountRepo.findById(accId);
     }
@@ -48,6 +57,16 @@ public class AccountServiceImpl implements AccountService{
     @Override
     public AccountStatement getAccountStatements(Account account, Date fromDate, Date toDate) {
         return integrationService.getAccountStatements(account.getAccountId(), fromDate, toDate);
+    }
+
+    @Override
+    public Iterable<Account> getAccountsForDebit(String customerId) {
+        return null;
+    }
+
+    @Override
+    public Iterable<Account> getAccountsForCredit(String customerId) {
+        return null;
     }
 
 

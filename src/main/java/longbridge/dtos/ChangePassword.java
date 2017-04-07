@@ -1,12 +1,21 @@
 package longbridge.dtos;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 /**
  * Created by Fortune on 4/3/2017.
  */
 public class ChangePassword {
-
+    @NotNull
+    @Min(8)
     private String oldPassword;
+    @NotNull
+    @Size(min=8)
     private String newPassword;
+    @NotNull
+    @Size(min=8)
     private String confirmPassword;
 
     public String getOldPassword() {

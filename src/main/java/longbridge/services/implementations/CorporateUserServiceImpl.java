@@ -2,9 +2,7 @@ package longbridge.services.implementations;
 
 import longbridge.models.Corporate;
 import longbridge.models.CorporateUser;
-import longbridge.models.EmailDetail;
 import longbridge.repositories.CorpLimitRepo;
-import longbridge.repositories.CorporateCustomerRepo;
 import longbridge.repositories.CorporateUserRepo;
 import longbridge.services.CorporateUserService;
 import longbridge.services.SecurityService;
@@ -14,8 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.math.BigInteger;
-import java.security.SecureRandom;
 import java.util.Date;
 
 /**

@@ -1,8 +1,10 @@
 package longbridge.services.implementations;
 
+import longbridge.models.Account;
 import longbridge.models.RetailUser;
 import longbridge.repositories.RetailUserRepo;
 import longbridge.repositories.UserRepo;
+import longbridge.services.AccountService;
 import longbridge.services.RetailUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +25,9 @@ public class RetailUserServiceImpl implements RetailUserService {
 
     private RetailUserRepo retailUserRepo;
     private BCryptPasswordEncoder passwordEncoder;
+
+    @Autowired
+    AccountService accountService;
 
     public RetailUserServiceImpl(){
 
@@ -146,6 +151,11 @@ public class RetailUserServiceImpl implements RetailUserService {
         }
         catch(Exception e){e.printStackTrace();}
         return ok;
+    }
+
+    @Override
+    public boolean AddAccount(RetailUser user, Account account) {
+       return accountService.AddAccount(user.getCustomerId(),account);
     }
 
     @Override

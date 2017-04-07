@@ -1,5 +1,6 @@
 package longbridge.dtos;
 
+import javax.validation.constraints.NotNull;
 import java.util.*;
 
 /**
@@ -8,17 +9,14 @@ import java.util.*;
 public class AdminUserDTO {
 
     private Long id;
+    @NotNull
     private String userName;
+    @NotNull
     private String firstName;
+    @NotNull
     private String lastName;
     private String email;
     private String password;
-    private String status;
-    private Date expiryDate;
-    private Date lockedUntilDate;
-    private Date lastLoginDate;
-    private int noOfLoginAttempts;
-
 
     public Long getId() {
         return id;
@@ -68,43 +66,4 @@ public class AdminUserDTO {
         this.password = password;
     }
 
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public Date getExpiryDate() {
-        return expiryDate;
-    }
-
-    public void setExpiryDate(Date expiryDate) {
-        this.expiryDate = expiryDate;
-    }
-
-    public Date getLockedUntilDate() {
-        return lockedUntilDate;
-    }
-
-    public void setLockedUntilDate(Date lockedUntilDate) {
-        this.lockedUntilDate = lockedUntilDate;
-    }
-
-    public Date getLastLoginDate() {
-        return lastLoginDate;
-    }
-
-    public void setLastLoginDate(Date lastLoginDate) {
-        this.lastLoginDate = lastLoginDate;
-    }
-
-    public int getNoOfLoginAttempts() {
-        return noOfLoginAttempts;
-    }
-
-    public void setNoOfLoginAttempts(int noOfLoginAttempts) {
-        this.noOfLoginAttempts = noOfLoginAttempts;
-    }
-}
+   }

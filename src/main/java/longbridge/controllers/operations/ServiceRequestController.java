@@ -1,4 +1,4 @@
-package longbridge.controllers.corporate;
+package longbridge.controllers.operations;
 
 import org.springframework.stereotype.Controller;
 
@@ -7,5 +7,5 @@ import org.springframework.stereotype.Controller;
  */
 
 
-public class RequestController {
+public class ServiceRequestController {
 }

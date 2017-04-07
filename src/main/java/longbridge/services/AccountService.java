@@ -17,6 +17,14 @@ import java.util.Map;
 public interface AccountService {
 
     /**
+     * Adds the specified account to a customer's list of accounts
+     * @param customerId the customer's id
+     * @param account the account to be added
+     * @return an {@link Account} object
+     */
+    boolean AddAccount(String customerId, Account account);
+
+    /**
      * Returns a particular account for a customer
      * @param accId the account id
      * @return an {@link Account} object
@@ -49,4 +57,19 @@ public interface AccountService {
      * @return a {@link AccountStatement} containing details of the transactions
      */
     AccountStatement getAccountStatements(Account account, Date fromDate, Date toDate);
+
+    /**
+     * Returns a list of accounts owned by a particular customer for debit
+     * @param customerId the customer id of particular customer
+     * @return a list of {@link Account}
+     */
+    Iterable<Account> getAccountsForDebit(String customerId);
+
+    /**
+     * Returns a list of accounts owned by a particular customer for credit
+     * @param customerId the customer id of particular customer
+     * @return a list of {@link Account}
+     */
+    Iterable<Account> getAccountsForCredit(String customerId);
+
 }

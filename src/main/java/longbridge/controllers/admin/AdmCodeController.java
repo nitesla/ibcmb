@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 /**
  * Created by Fortune on 4/5/2017.
  */
-@Controller
+@RestController
 @RequestMapping("admin/codes")
 public class AdmCodeController {
 
@@ -30,12 +30,12 @@ public class AdmCodeController {
     @PostMapping
     public String createCode(@ModelAttribute("code") CodeDTO codeDTO, BindingResult result, Model model){
         if(result.hasErrors()){
-            return "add";
+            //return "add";
         }
         Code code = modelMapper.map(codeDTO,Code.class);
         codeService.addCode(code);
         model.addAttribute("success", "Code added successfully");
-        return "/admin/list";
+        return "redirect:/admin/list";
     }
 
     @GetMapping("/{codeId}/details")

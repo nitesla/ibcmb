@@ -1,5 +1,6 @@
 package longbridge.services;
 
+import longbridge.models.Account;
 import longbridge.models.RetailUser;
 
 /**
@@ -51,9 +52,19 @@ public interface RetailUserService {
     boolean updateUser(RetailUser user);
 
     /**
+     * Adds the specified account to the user's list of accounts
+     * @param user the specified user
+     * @param account the account to be added
+     * @return true if the account is successfully added for the customer
+     */
+    boolean AddAccount(RetailUser user, Account account);
+
+
+    /**
      * Resets the password of the specified Retail user
      *@param user the retail user
      */
+
 
     boolean resetPassword(RetailUser user, String newPassword);
 

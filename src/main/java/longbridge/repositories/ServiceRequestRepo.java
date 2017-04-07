@@ -1,6 +1,8 @@
 package longbridge.repositories;
 
+import longbridge.models.RetailUser;
 import longbridge.models.ServiceRequest;
+import longbridge.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -10,4 +12,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ServiceRequestRepo extends CommonRepo<ServiceRequest, Long> {
+
+    Iterable<ServiceRequest> findByUser(User user);
 }

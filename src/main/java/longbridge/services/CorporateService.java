@@ -80,36 +80,6 @@ public interface CorporateService {
     void deleteLimit(Long corporateId, CorpLimit limit);
 
 
-    /**
-     * Sets a transaction limit for the specified corporate user
-     *
-     * @param corporateUser   the corporate user
-     * @param limitValue      the limit
-     */
-    void setCorporateUserLimit(CorporateUser corporateUser, double limitValue);
-
-    /**
-     * Updates the corporate user with the new limt
-     *
-     * @param corporateUser   the corporate user
-     * @param limitValue      the limit
-     */
-    void updateCorporateUserLimit(CorporateUser corporateUser, double limitValue);
-
-    /**
-     * Returns the transaction limit set for the specified corporate user
-     *
-     * @param corporateUser   the corporate user
-     * @return  the corporate user limit
-     */
-    double getCorporateUserLimit(CorporateUser corporateUser);
-
-    /**
-     * Deletes the transaction limit set for the corporate user
-     *
-     * @param corporateUser   the corporate user
-     */
-    void deleteCorporateUserLimit(CorporateUser corporateUser);
 
     /**
      * Adds an account to a corporate customer.

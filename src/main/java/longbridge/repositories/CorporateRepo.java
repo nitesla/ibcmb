@@ -10,6 +10,6 @@ import org.springframework.stereotype.Repository;
  */
 
 @Repository
-public interface CorporateCustomerRepo extends CommonRepo<Corporate, Long> {
+public interface CorporateRepo extends CommonRepo<Corporate, Long> {
 
 }
