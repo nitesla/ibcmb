@@ -11,7 +11,8 @@ import java.util.Date;
 
 public class RetailCustLimitDTO {
 
-	private RetailUser customer;private String description;
+	private RetailUser customer;
+	private String description;
 	private String type;
 	private BigDecimal lowerLimit;
 	private BigDecimal upperLimit;

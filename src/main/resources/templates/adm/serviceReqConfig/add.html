@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="layout :: site-head">
+</head>
+
+<script type="text/javascript" language="javascript" class="init">
+    /*<![CDATA[*/
+    $(document).ready(function() {
+        var t = $('#mytab').DataTable({dom : 'rt',
+            select : {style:'single'},
+            ordering : false,
+            "language": {
+                "emptyTable": "Enter service request fields"
+            }
+        });
+
+
+
+
+        $('#button_add').on( 'click', function (e) {
+            e.preventDefault();
+            t.row.add( [
+                '<input name="fname" class="form-control"/>',
+                '<input name="flabel" class="form-control"/>',
+                '<select name="ftype" class="form-control"/>\
+                                <option value"CODE">Code</option>\
+                                <option value"TEXT">Text</option>\
+                                <option value"ACCT">Account</option>\
+                                <option value"DATE">Date</option>\
+                                <option value"LIST">Fixed List</option></select>',
+                '<input name="fdata" class="form-control "/>'
+            ] ).draw( false );
+
+        } );
+
+        $('#button_del').click( function (e) {
+            e.preventDefault()
+            var dt = $('#mytab').DataTable();
+            dt.row('.selected').remove().draw( false );
+
+
+        } );
+    } );
+    /*]]>*/
+
+</script>
+
+<body>
+<div id="wrapper">
+
+    <nav th:replace="layout :: admin-menu" role="navigation">
+
+    </nav>
+
+    <div id="page-wrapper" class="gray-bg">
+        <div th:replace="layout :: header">
+
+        </div>
+        <div class="row wrapper border-bottom white-bg page-heading">
+            <div class="col-lg-10">
+                <h2>Service Request Configurations</h2>
+            </div>
+            <div class="col-lg-2">
+
+            </div>
+        </div>
+        <div class="wrapper wrapper-content animated fadeInRight">
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>Add Config</h5>
+                        </div>
+                        <div class="ibox-content">
+                            <form method="post" th:action="@{/admin/srconfig/new}" th:object="${serviceReqConfigDTO}" class="form-horizontal">
+                                <div class="form-group"><label class="col-sm-4 control-label">Service Request Name</label>
+
+                                    <div class="col-sm-6"><input type="text" class="form-control" name="requestName" placeholder="Service" /></div>
+                                </div>
+
+
+
+                                <div class="form-group">
+                                    <div class="col-sm-4 col-sm-offset-2">
+                                        <br/>
+                                        <br/>
+                                        <button type="submit" id="button_add" class="btn-xs btn-success btn">Add Field</button>
+                                        <button type="submit" id="button_del btn-save" class="btn-xs btn-warning btn">Remove</button>
+                                    </div>
+                                    <table id="mytab" class="table table-striped table-bordered table-hover" cellspacing="0" width="100%" >
+                                        <thead>
+                                        <tr>
+                                            <th>Field Name</th>
+                                            <th>Field Label</th>
+                                            <th>Field Type</th>
+                                            <th>Type Data</th>
+                                        </tr>
+                                        </thead>
+
+                                    </table>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-sm-4 col-sm-offset-2">
+                                        <button class="btn btn-primary" type="submit">Submit Request</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div th:replace="layout :: main-footer">
+
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,12 +1,11 @@
 package longbridge.services.implementations;
 
-import longbridge.dtos.AdminUserDTO;
 import longbridge.models.AdminUser;
 import longbridge.repositories.AdminUserRepo;
 import longbridge.services.AdminUserService;
 import org.modelmapper.ModelMapper;
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,6 +20,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private AdminUserRepo adminUserRepo;
     private BCryptPasswordEncoder passwordEncoder;
+
     @Autowired
     private ModelMapper modelMapper;
 

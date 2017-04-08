@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<link rel="shortcut icon" type="image/ico" href="http://www.datatables.net/favicon.ico">
+	<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
+	<title>DataTables Sample</title>
+	<link rel="stylesheet" type="text/css" href="css/jquery.dataTables.css">
+    <link rel="stylesheet" type="text/css" href="css/select.bootstrap.css">
+      <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/dataTables.bootstrap.css">
+	
+	<script type="text/javascript" language="javascript" src="js/jquery.js">
+	</script>
+   
+     	<script type="text/javascript" language="javascript" src="js/jquery.dataTables.js">
+	</script>
+   
+    <script type="text/javascript" language="javascript" src="js/dataTables.select.js">
+	</script>
+      <script type="text/javascript" language="javascript" src="js/bootstrap.js">
+	</script>
+	
+	<script type="text/javascript" language="javascript" class="init">
+	
+
+	$(document).ready(function() {
+		var t = $('#mytab').DataTable({dom : 'rt',
+                                    select : {style:'single'},
+                                   ordering : false,
+                                   "language": {
+                                            "emptyTable": "Enter service request fields"
+                                                }
+                                    });
+	
+    
+    
+   
+	$('#button_add').on( 'click', function (e) {
+        e.preventDefault();
+		t.row.add( [
+			'<input name="fname" class="form-control">',
+			'<input name="flabel" class="form-control">',
+			'<select name="ftype" class="form-control">\
+                            <option value"CODE">Code</option>\
+                            <option value"TEXT">Text</option>\
+                            <option value"ACCT">Account</option>\
+                            <option value"DATE">Date</option>\
+                            <option value"LIST">Fixed List</option></select>',
+            '<input name="fdata" class="form-control ">'
+		] ).draw( false );
+        
+	} );
+
+	 $('#button_del').click( function (e) {
+         e.preventDefault()
+           var dt = $('#mytab').DataTable();
+       dt.row('.selected').remove().draw( false );
+       
+        
+    } );
+} );
+  
+
+	</script>
+</head>
+    
+<body class="dt-example">
+     <form>
+    <h1>Service Request</h1>
+    <div class="x_content">
+						<br />
+						
+							<div class="form-group">
+								<label class="control-label col-md-2 col-sm-2 col-xs-12" for="requestName">Service Request Name <span class="required">*</span>
+								</label>
+								<div class="col-md-4 col-sm-4 col-xs-12">
+									<input class="form-control col-md-7 col-xs-12" name="requestName" placeholder="Service" />
+								</div>
+							</div><br/><br/>
+							<div class="form-group">
+                      
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                          <button type="submit" id="button_add" class="btn-xs btn-success btn">Add Field</button>
+                          <button type="submit" id="button_del" class="btn-xs btn-warning btn"  id="btn-save">Remove</button>
+                        </div>
+                  <div class="col-md-12 col-sm-6 col-xs-12">                
+			<table id="mytab" class="table table-striped table-bordered table-hover" cellspacing="0" width="100%" >
+				<thead>
+					<tr>
+						<th>Field Name</th>
+						<th>Field Label</th>
+						<th>Field Type</th>
+						<th>Type Data</th>
+					</tr>
+				</thead>
+				
+			</table>
+                                </div>
+        </div>
+    </div>
+	  
+		
+        <div class="col-md-6 col-sm-6 col-xs-12" align="right"><button type="submit" class="btn btn-primary">Submit Request</button></div>
+        </form>
+</body>
+</html>
