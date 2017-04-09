@@ -6,42 +6,43 @@
 
 <script type="text/javascript" language="javascript" class="init">
     /*<![CDATA[*/
-    $(document).ready(function() {
-        var t = $('#mytab').DataTable({dom : 'rt',
-            select : {style:'single'},
-            ordering : false,
-            "language": {
-                "emptyTable": "Enter service request fields"
-            }
-        });
+$(document).ready(function() {
+	var t = $('#mytab').DataTable({dom : 'rt',
+                                    select : {style:'single'},
+                                   ordering : false,
+                                   "language": {
+                                            "emptyTable": "Enter service request fields"
+                                                }
+                                    });
+	
+    
+    
+   
+	$('#button_add').on( 'click', function (e) {
+        e.preventDefault();
+		t.row.add( [
+			'<input name="fname" class="form-control">',
+			'<input name="flabel" class="form-control">',
+			'<select name="ftype" class="form-control">\
+                            <option value"CODE">Code</option>\
+                            <option value"TEXT">Text</option>\
+                            <option value"ACCT">Account</option>\
+                            <option value"DATE">Date</option>\
+                            <option value"LIST">Fixed List</option></select>',
+            '<input name="fdata" class="form-control ">'
+		] ).draw( false );
+        
+	} );
 
-
-
-
-        $('#button_add').on( 'click', function (e) {
-            e.preventDefault();
-            t.row.add( [
-                '<input name="fname" class="form-control"/>',
-                '<input name="flabel" class="form-control"/>',
-                '<select name="ftype" class="form-control"/>\
-                                <option value"CODE">Code</option>\
-                                <option value"TEXT">Text</option>\
-                                <option value"ACCT">Account</option>\
-                                <option value"DATE">Date</option>\
-                                <option value"LIST">Fixed List</option></select>',
-                '<input name="fdata" class="form-control "/>'
-            ] ).draw( false );
-
-        } );
-
-        $('#button_del').click( function (e) {
-            e.preventDefault()
-            var dt = $('#mytab').DataTable();
-            dt.row('.selected').remove().draw( false );
-
-
-        } );
+	 $('#button_del').click( function (e) {
+         e.preventDefault()
+           var dt = $('#mytab').DataTable();
+       dt.row('.selected').remove().draw( false );
+       
+        
     } );
+} );
+  
     /*]]>*/
 
 </script>
@@ -74,8 +75,8 @@
                             <h5>Add Config</h5>
                         </div>
                         <div class="ibox-content">
-                            <form method="post" th:action="@{/admin/srconfig/new}" th:object="${serviceReqConfigDTO}" class="form-horizontal">
-                                <div class="form-group"><label class="col-sm-4 control-label">Service Request Name</label>
+                            <form method="post" th:action="@{/admin/srconfig}" th:object="${serviceReqConfigDTO}" class="form-horizontal">
+                                <div class="form-group"><label class="col-sm-3 control-label">Service Request Name</label>
 
                                     <div class="col-sm-6"><input type="text" class="form-control" name="requestName" placeholder="Service" /></div>
                                 </div>
@@ -87,7 +88,7 @@
                                         <br/>
                                         <br/>
                                         <button type="submit" id="button_add" class="btn-xs btn-success btn">Add Field</button>
-                                        <button type="submit" id="button_del btn-save" class="btn-xs btn-warning btn">Remove</button>
+                                        <button type="submit" id="button_del" class="btn-xs btn-warning btn">Remove</button>
                                     </div>
                                     <table id="mytab" class="table table-striped table-bordered table-hover" cellspacing="0" width="100%" >
                                         <thead>
