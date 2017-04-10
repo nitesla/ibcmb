@@ -66,7 +66,6 @@ public class AdmServiceReqConfigController {
         return "adm/serviceReqConfig/";
     }
 
-
     @PostMapping("/{userId}")
     public String updateConfig(@ModelAttribute("serviceRequestConfig") @Valid ServiceReqConfigDTO serviceReqConfigDTO, @PathVariable Long reqId, BindingResult result, Model model) throws Exception{
         if(result.hasErrors()) {

@@ -118,11 +118,12 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
     }
 
     private Iterable<ServiceReqConfigDTO> convertEntitiesToDTOs(Iterable<ServiceReqConfig> serviceReqConfigs){
-        List<ServiceReqConfigDTO> serviceReqConfigDTOs = new ArrayList<>();
+        List<ServiceReqConfigDTO> serviceReqConfigDTOList = new ArrayList<>();
         for(ServiceReqConfig serviceReqConfig: serviceReqConfigs){
-            ServiceReqConfigDTO serviceReqConfigDTO =  modelMapper.map(serviceReqConfig,ServiceReqConfigDTO.class);
+            ServiceReqConfigDTO ConfigDTo =  modelMapper.map(serviceReqConfig,ServiceReqConfigDTO.class);
+            serviceReqConfigDTOList.add(ConfigDTo);
         }
-        return serviceReqConfigDTOs;
+        return serviceReqConfigDTOList;
     }
 
 
