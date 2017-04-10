@@ -1,18 +1,24 @@
 package longbridge.services.implementations;
 
+import longbridge.dtos.CorporateUserDTO;
+import longbridge.dtos.RetailUserDTO;
 import longbridge.models.Corporate;
 import longbridge.models.CorporateUser;
+import longbridge.models.RetailUser;
 import longbridge.repositories.CorpLimitRepo;
 import longbridge.repositories.CorporateUserRepo;
 import longbridge.services.CorporateUserService;
 import longbridge.services.SecurityService;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Fortune on 4/4/2017.
@@ -28,6 +34,9 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
     private SecurityService securityService;
 
+    @Autowired
+    ModelMapper modelMapper;
+
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
@@ -38,13 +47,16 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     }
 
     @Override
-    public CorporateUser getUser(Long id) {
-        return corporateUserRepo.findOne(id);
+    public CorporateUserDTO getUser(Long id) {
+        CorporateUser corporateUser = corporateUserRepo.findOne(id);
+        return convertEntityToDTO(corporateUser);
     }
 
     @Override
-    public Iterable<CorporateUser> getUsers(Corporate corporate) {
-        return corporate.getUsers();
+    public Iterable<CorporateUserDTO> getUsers(Corporate corporate) {
+
+        Iterable<CorporateUser> corporateUserDTOList = corporateUserRepo.findAll();
+        return convertEntitiesToDTOs(corporateUserDTOList);
     }
 
     @Override
@@ -135,5 +147,21 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         }
     }
 
+
+    private CorporateUserDTO convertEntityToDTO(CorporateUser CorporateUser){
+        return  modelMapper.map(CorporateUser,CorporateUserDTO.class);
+    }
+
+    private CorporateUser convertDTOToEntity(CorporateUserDTO CorporateUserDTO){
+        return  modelMapper.map(CorporateUserDTO,CorporateUser.class);
+    }
+
+    private Iterable<CorporateUserDTO> convertEntitiesToDTOs(Iterable<CorporateUser> CorporateUsers){
+        List<CorporateUserDTO> CorporateUserDTOList = new ArrayList<>();
+        for(CorporateUser CorporateUser: CorporateUsers){
+            CorporateUserDTO corporateUserDTO =  modelMapper.map(CorporateUser,CorporateUserDTO.class);
+        }
+        return CorporateUserDTOList;
+    }
 
 }

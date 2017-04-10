@@ -8,6 +8,9 @@ import longbridge.repositories.ServiceReqConfigRepo;
 import longbridge.repositories.ServiceReqFormFieldRepo;
 import longbridge.services.ServiceReqConfigService;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,8 +30,11 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
     private ServiceReqFormFieldRepo serviceReqFormFieldRepo;
 
 
-    @Autowired
+
     private ModelMapper modelMapper;
+
+    private Logger logger= LoggerFactory.getLogger(this.getClass());
+
 
     public ServiceReqConfigServiceImpl(ServiceReqConfigRepo serviceReqConfigRepo, ServiceReqFormFieldRepo serviceReqFormFieldRepo) {
         this.serviceReqConfigRepo = serviceReqConfigRepo;
@@ -65,6 +71,9 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
     @Override
     public Iterable<ServiceReqConfigDTO> getServiceReqConfigs() {
         Iterable<ServiceReqConfig> serviceReqConfigs = serviceReqConfigRepo.findAll();
+
+        logger.info("Service Req list:{}",serviceReqConfigs);
+
         return convertEntitiesToDTOs(serviceReqConfigs);
     }
 
@@ -110,6 +119,14 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 
 
     private ServiceReqConfigDTO convertEntityToDTO(ServiceReqConfig serviceReqConfig){
+        PropertyMap<ServiceReqConfig,ServiceReqConfigDTO> mapperConfig = new PropertyMap<ServiceReqConfig, ServiceReqConfigDTO>() {
+            @Override
+            protected void configure() {
+                skip().setFormFields(null);
+            }
+        };
+        modelMapper = new ModelMapper();
+        modelMapper.addMappings(mapperConfig);
         return  modelMapper.map(serviceReqConfig,ServiceReqConfigDTO.class);
     }
 
@@ -120,8 +137,8 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
     private Iterable<ServiceReqConfigDTO> convertEntitiesToDTOs(Iterable<ServiceReqConfig> serviceReqConfigs){
         List<ServiceReqConfigDTO> serviceReqConfigDTOList = new ArrayList<>();
         for(ServiceReqConfig serviceReqConfig: serviceReqConfigs){
-            ServiceReqConfigDTO ConfigDTo =  modelMapper.map(serviceReqConfig,ServiceReqConfigDTO.class);
-            serviceReqConfigDTOList.add(ConfigDTo);
+            ServiceReqConfigDTO dto = convertEntityToDTO(serviceReqConfig);
+            serviceReqConfigDTOList.add(dto);
         }
         return serviceReqConfigDTOList;
     }

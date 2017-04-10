@@ -2,6 +2,7 @@ package longbridge.services;
 
 import java.util.Date;
 
+import longbridge.dtos.CorporateUserDTO;
 import longbridge.models.Corporate;
 import longbridge.models.CorporateUser;
 
@@ -17,14 +18,14 @@ public interface CorporateUserService {
      * @param id the corporate user's id
      * @return the user
      */
-    CorporateUser getUser(Long id);
+    CorporateUserDTO getUser(Long id);
 
     /**
      * Returns all the corporate users for the corporate customer
      * @param Corporate  the corporate customer
      * @return a list of the corporate users
      */
-    Iterable<CorporateUser> getUsers(Corporate Corporate);
+    Iterable<CorporateUserDTO> getUsers(Corporate Corporate);
 
     /**
      * Returns all the corporate users in the system
