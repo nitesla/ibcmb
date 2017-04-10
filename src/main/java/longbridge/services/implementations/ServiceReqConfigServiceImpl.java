@@ -12,6 +12,7 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
     @Override
     public void addSeviceReqConfig(ServiceReqConfigDTO serviceReqConfig) {
 
+        System.out.println(serviceReqConfig.toString());
     }
 
     @Override
