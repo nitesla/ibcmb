@@ -30,8 +30,6 @@ public class ServiceReqConfigDTO {
         this.version = version;
     }
 
-
-
     public String getRequestName() {
 		return requestName;
 	}
