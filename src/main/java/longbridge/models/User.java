@@ -6,7 +6,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 import java.util.Date;
 /**
- * Created by Showboy on 29/03/2017.
+ * Created by Wunmi on 29/03/2017.
  */
 @MappedSuperclass
 public class User extends AbstractEntity{

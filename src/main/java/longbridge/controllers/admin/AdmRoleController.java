@@ -5,6 +5,7 @@ import longbridge.models.Role;
 import longbridge.services.SecurityService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
  * Created by Fortune on 4/5/2017.
  */
 
-@RestController
+@Controller
 @RequestMapping("admin/roles")
 public class AdmRoleController {
 

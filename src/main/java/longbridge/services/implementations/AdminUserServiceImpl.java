@@ -5,8 +5,8 @@ import longbridge.models.AdminUser;
 import longbridge.repositories.AdminUserRepo;
 import longbridge.services.AdminUserService;
 import org.modelmapper.ModelMapper;
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -24,6 +24,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private AdminUserRepo adminUserRepo;
     private BCryptPasswordEncoder passwordEncoder;
+
     @Autowired
     private ModelMapper modelMapper;
 
@@ -195,24 +196,26 @@ public class AdminUserServiceImpl implements AdminUserService {
         return result;
     }
 
+
+
+    private Iterable<AdminUserDTO> convertEntitiesToDTOs(Iterable<AdminUser> adminUsers){
+        List<AdminUserDTO> adminUserDTOs = new ArrayList<>();
+        for(AdminUser adminUser: adminUsers){
+            convertEntityToDTO(adminUser);
+        }
+        return adminUserDTOs;
+    }
+
     private AdminUserDTO convertEntityToDTO(AdminUser adminUser){
+        AdminUserDTO adminUserDTO = new AdminUserDTO();
+        adminUserDTO.setFirstName(adminUser.getFirstName());
+        adminUserDTO.setLastName(adminUser.getLastName());
+        adminUserDTO.setRole(adminUser.getRole().getName());
         return  modelMapper.map(adminUser,AdminUserDTO.class);
     }
 
     private AdminUser convertDTOToEntity(AdminUserDTO adminUserDTO){
         return  modelMapper.map(adminUserDTO,AdminUser.class);
-    }
-
-    private Iterable<AdminUserDTO> convertEntitiesToDTOs(Iterable<AdminUser> adminUsers){
-        List<AdminUserDTO> adminUserDTOs = new ArrayList<>();
-        for(AdminUser adminUser: adminUsers){
-            AdminUserDTO adminUserDTO = new AdminUserDTO();
-            adminUserDTO.setFirstName(adminUser.getFirstName());
-            adminUserDTO.setLastName(adminUser.getLastName());
-            adminUserDTO.setRole(adminUser.getRole().getName());
-            adminUserDTOs.add(adminUserDTO);
-        }
-        return adminUserDTOs;
     }
 }
 

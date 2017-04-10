@@ -1,7 +1,6 @@
 package longbridge.models;
 
 
-
 import javax.persistence.*;
 import java.util.Date;
 
