@@ -1,9 +1,6 @@
 package longbridge.controllers.admin;
 
-import longbridge.dtos.AdminUserDTO;
 import longbridge.dtos.ServiceReqConfigDTO;
-import longbridge.models.AdminUser;
-import longbridge.models.ServiceReqConfig;
 import longbridge.services.ServiceReqConfigService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -20,7 +17,7 @@ import javax.validation.Valid;
  * Created by Showboy on 08/04/2017.
  */
 @Controller
-@RequestMapping("admin/srconfig")
+@RequestMapping("/admin/srconfig")
 public class AdmServiceReqConfigController {
 
     @Autowired
@@ -69,17 +66,6 @@ public class AdmServiceReqConfigController {
         return "adm/serviceReqConfig/";
     }
 
-<<<<<<< HEAD
-//    @PostMapping
-//    public String editConfig(@ModelAttribute("serviceRequestConfig") ServiceReqConfigDTO serviceReqConfigDTO, BindingResult result, Model model) throws Exception{
-//        if(result.hasErrors()){
-//            return "admin/srconfig/new";
-//        }
-//
-//        serviceReqConfigService.addSeviceReqConfig(serviceReqConfigDTO);
-//        model.addAttribute("success","Service Request Config  created successfully");
-//        return "redirect:/admin/srconfig";
-//    }
 
     @PostMapping("/{userId}")
     public String updateConfig(@ModelAttribute("serviceRequestConfig") @Valid ServiceReqConfigDTO serviceReqConfigDTO, @PathVariable Long reqId, BindingResult result, Model model) throws Exception{

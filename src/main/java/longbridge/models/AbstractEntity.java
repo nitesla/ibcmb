@@ -1,9 +1,10 @@
 package longbridge.models;
 
 
-import org.hibernate.annotations.ColumnDefault;
-
-import javax.persistence.*;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.Version;
 import java.io.Serializable;
 
 /**
@@ -22,8 +23,8 @@ public abstract class AbstractEntity implements Serializable{
 
     @Version
     protected int version;
-    @ColumnDefault("N")
-    protected String delFlag;
+
+    protected String delFlag = "N";
 
 //    protected Date lastModificationTime;
 //
