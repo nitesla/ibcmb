@@ -1,6 +1,9 @@
 package longbridge.controllers.admin;
 
+import longbridge.dtos.AdminUserDTO;
 import longbridge.dtos.ServiceReqConfigDTO;
+import longbridge.models.AdminUser;
+import longbridge.models.ServiceReqConfig;
 import longbridge.services.ServiceReqConfigService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +11,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 /**
  * Created by Showboy on 08/04/2017.
@@ -57,15 +62,18 @@ public class AdmServiceReqConfigController {
         return "adm/serviceReqConfig/";
     }
 
-    @PostMapping
-    public String editConfig(@ModelAttribute("serviceRequestConfig") ServiceReqConfigDTO serviceReqConfigDTO, BindingResult result, Model model) throws Exception{
-        if(result.hasErrors()){
-            return "admin/srconfig/new";
+    @PostMapping("/{userId}")
+    public String updateConfig(@ModelAttribute("serviceRequestConfig") @Valid ServiceReqConfigDTO serviceReqConfigDTO, @PathVariable Long reqId, BindingResult result, Model model) throws Exception{
+        if(result.hasErrors()) {
+            return "addUser";
         }
-
-        serviceReqConfigService.addSeviceReqConfig(serviceReqConfigDTO);
-        model.addAttribute("success","Service Request Config  created successfully");
-        return "redirect:/admin/srconfig";
+        serviceReqConfigDTO.setId(reqId);
+        ServiceReqConfig serviceReqConfig = modelMapper.map(serviceReqConfigDTO,ServiceReqConfig.class);
+        boolean updated = serviceReqConfigService.updateServiceReqConfig(serviceReqConfig);
+        if (updated) {
+            model.addAttribute("success", "Admin user updated successfully");
+        }
+        return "redirect:/admin/users";
     }
 
 }

@@ -9,10 +9,17 @@ import java.util.ArrayList;
  */
 public class ServiceReqConfigDTO {
 
+    private Long id;
     private String requestName;
     private ArrayList<ServiceReqFormFields> formFields;
 
-    
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getRequestName() {
 		return requestName;
