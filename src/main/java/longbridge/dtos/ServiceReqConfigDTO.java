@@ -14,7 +14,6 @@ public class ServiceReqConfigDTO {
     private String version;
     private ArrayList<ServiceReqFormField> formFields;
 
-
     public Long getId() {
         return id;
     }
@@ -30,6 +29,8 @@ public class ServiceReqConfigDTO {
     public void setVersion(String version) {
         this.version = version;
     }
+
+
 
     public String getRequestName() {
 		return requestName;
