@@ -1,6 +1,8 @@
 package longbridge.models;
 
 import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 /**
  * The {@code Code} class model represents unique data that can be used for system configurations.
@@ -13,6 +15,11 @@ import javax.persistence.Entity;
  */
 
 @Entity
+@Table(
+		name="code",
+		uniqueConstraints=
+		@UniqueConstraint(columnNames={"code", "type"})
+)
 public class Code extends AbstractEntity {
 
     private String code;

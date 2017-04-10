@@ -1,13 +1,18 @@
 package longbridge.services.implementations;
 
+import longbridge.dtos.OperationsUserDTO;
 import longbridge.models.OperationsUser;
 import longbridge.repositories.OperationsUserRepo;
 import longbridge.services.OperationsUserService;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by ayoade_farooq@yahoo.com on 3/29/2017.
@@ -18,6 +23,9 @@ public class OperationsUserServiceImpl implements OperationsUserService {
 
     private OperationsUserRepo opUserRepo;
     private BCryptPasswordEncoder passwordEncoder;
+
+    @Autowired
+    private ModelMapper modelMapper;
 
     public OperationsUserServiceImpl() {
 
@@ -117,6 +125,20 @@ public class OperationsUserServiceImpl implements OperationsUserService {
 
     }
 
+    private OperationsUserDTO convertEntityToDTO(OperationsUser operationsUser){
+        return  modelMapper.map(operationsUser,OperationsUserDTO.class);
+    }
 
+    private OperationsUser convertDTOToEntity(OperationsUserDTO operationsUserDTO){
+        return  modelMapper.map(operationsUserDTO,OperationsUser.class);
+    }
+
+    private Iterable<OperationsUserDTO> convertEntitiesToDTOs(Iterable<OperationsUser> operationsUsers){
+        List<OperationsUserDTO> operationsUserDTOs = new ArrayList<>();
+        for(OperationsUser operationsUser: operationsUsers){
+            OperationsUserDTO retailUserDTO =  modelMapper.map(operationsUser,OperationsUserDTO.class);
+        }
+        return operationsUserDTOs;
+    }
 
 }

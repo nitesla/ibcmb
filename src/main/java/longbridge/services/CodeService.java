@@ -1,6 +1,9 @@
 package longbridge.services;
 
+import longbridge.dtos.CodeDTO;
+import longbridge.models.AdminUser;
 import longbridge.models.Code;
+import longbridge.models.Verifiable;
 
 /**
  *This {@code CodeService} interface provides the methods for managing system codes
@@ -8,13 +11,19 @@ import longbridge.models.Code;
  * @see Code
  * @author Wunmi
  */
-public interface CodeService {
+public interface CodeService extends Verifiable<Code> {
 
     /**
      * Adds a new code to the syste
      * @param code the code
      */
-    boolean  addCode(Code code);
+    boolean addCode(CodeDTO code, AdminUser adminUser);
+
+    /**
+     * Modifies an existing code
+     * @param codeDTO the code
+     */
+    boolean updateCode(CodeDTO codeDTO, AdminUser adminUser);
 
     /**
      * Deletes a code from the system
@@ -27,19 +36,19 @@ public interface CodeService {
      * @param codeId the code's id
      * @return the code
      */
-    Code getCode(Long codeId);
+    CodeDTO getCode(Long codeId);
 
     /**
      * Returns a list of codes specified by the given type
      * @param codeType the code's type
      * @return a list of codes
      */
-    Iterable<Code> getCodesByType(String codeType);
+    Iterable<CodeDTO> getCodesByType(String codeType);
 
     /**
      * Returns all the codes in the system
      * @return a list of the codes
      */
-    Iterable<Code> getCodes();
+    Iterable<CodeDTO> getCodes();
 
 }

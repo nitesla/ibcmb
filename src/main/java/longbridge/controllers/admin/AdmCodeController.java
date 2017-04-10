@@ -1,14 +1,23 @@
 package longbridge.controllers.admin;
 
 import longbridge.dtos.CodeDTO;
+
+import longbridge.models.AdminUser;
 import longbridge.models.Code;
+import longbridge.models.Verification;
+import longbridge.repositories.AdminUserRepo;
+import longbridge.repositories.VerificationRepo;
 import longbridge.services.CodeService;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.io.IOException;
 
 /**
  * Created by Fortune on 4/5/2017.
@@ -17,69 +26,111 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("admin/codes")
 public class AdmCodeController {
 
+    private Logger logger= LoggerFactory.getLogger(this.getClass());
     @Autowired
     private CodeService codeService;
     @Autowired
     ModelMapper modelMapper;
 
+    @Autowired
+    private AdminUserRepo adminUserRepo;
+
+    @Autowired
+    private VerificationRepo verificationRepo;
+
     @GetMapping("/new")
     public String addCode(){
-        return "add-code";
+        return "code/add";
     }
 
     @PostMapping
-    public String createCode(@ModelAttribute("code") CodeDTO codeDTO, BindingResult result, Model model){
+    public String createCode(@ModelAttribute("code") CodeDTO codeDTO, BindingResult result, RedirectAttributes redirectAttributes){
         if(result.hasErrors()){
             //return "add";
         }
-        Code code = modelMapper.map(codeDTO,Code.class);
-        codeService.addCode(code);
-        model.addAttribute("success", "Code added successfully");
+
+        logger.info("Code {}", codeDTO.toString());
+        AdminUser adminUser = new AdminUser();
+        adminUser.setDelFlag("N");
+        adminUser.setEmail("nnasino2008@live.com");
+        adminUser.setUserName("nnasino");
+        adminUser.setFirstName("Chigozirim");
+        adminUser.setLastName("Torti");
+        adminUserRepo.save(adminUser);
+        codeService.addCode(codeDTO, adminUser);
+
+        redirectAttributes.addFlashAttribute("success", "Code added successfully");
         return "redirect:/admin/list";
     }
 
-    @GetMapping("/{codeId}/details")
-    public Code getCode(@PathVariable Long codeId, Model model){
-        Code code = codeService.getCode(codeId);
+    @PostMapping("/verify/{id}")
+    public String verify(@PathVariable Long id){
+        logger.info("id {}",id);
+
+        //todo check verifier role
+        AdminUser adminUser = adminUserRepo.findOne(1l);
+        Verification verification = verificationRepo.findOne(id);
+        try {
+            codeService.verify(verification, adminUser);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "code/add";
+    }
+
+    @PostMapping("/decline/{id}")
+    public String decline(@PathVariable Long id){
+        logger.info("id {}",id);
+
+        //todo check verifier role
+        AdminUser adminUser = adminUserRepo.findOne(1l);
+        Verification verification = verificationRepo.findOne(id);
+        codeService.decline(verification, adminUser, "todo get the  reason from the frontend");
+        return "code/add";
+    }
+
+    @GetMapping("/{codeId}")
+    public CodeDTO getCode(@PathVariable Long codeId, Model model){
+        CodeDTO code = codeService.getCode(codeId);
         model.addAttribute("code",code);
         return code;
     }
 
 
     @GetMapping
-    public Iterable<Code> getCodes(Model model){
-        Iterable<Code> codeList = codeService.getCodes();
+    public Iterable<CodeDTO> getCodes(Model model){
+        Iterable<CodeDTO> codeList = codeService.getCodes();
         model.addAttribute("codeList",codeList);
         return codeList;
 
     }
 
     @GetMapping("/{type}")
-    public Iterable<Code> getCodesByType(@PathVariable String type, Model model){
-        Iterable<Code> codeList = codeService.getCodesByType(type);
+    public Iterable<CodeDTO> getCodesByType(@PathVariable String type, Model model){
+        Iterable<CodeDTO> codeList = codeService.getCodesByType(type);
         model.addAttribute("codeList",codeList);
         return codeList;
 
     }
 
-
-
     @PostMapping("/{codeId}")
-    public String updateCode(@ModelAttribute("code") Code code, @PathVariable Long codeId, BindingResult result, Model model){
 
+    public String updateCode(@ModelAttribute("codeForm") CodeDTO codeDTO,  BindingResult result, @PathVariable Long codeId,RedirectAttributes redirectAttributes){
         if(result.hasErrors()){
-            return "add-code";
+            return "add";
         }
-        code.setId(codeId);
-        codeService.addCode(code);
-        model.addAttribute("success", "Code updated successfully");
-        return "/admin/codes";
+        AdminUser adminUser = adminUserRepo.findOne(1l);
+        logger.info("Code {}", codeDTO.toString());
+        codeDTO.setId(codeId);
+        codeService.updateCode(codeDTO, adminUser);
+        redirectAttributes.addFlashAttribute("success", "Code updated successfully");
+        return "redirect:/admin/codes";
     }
 
     @PostMapping("/{codeId}/delete")
-    public String deleteCode(@PathVariable Long codeId, Model model){
+    public String deleteCode(@PathVariable Long codeId, RedirectAttributes redirectAttributes){
         codeService.deleteCode(codeId);
-        model.addAttribute("success", "Code deleted successfully");
+        redirectAttributes.addFlashAttribute("success", "Code deleted successfully");
         return "redirect:/admin/codes";
     }
 }

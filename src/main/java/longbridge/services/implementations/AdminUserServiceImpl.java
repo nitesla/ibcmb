@@ -11,6 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * Created by SYLVESTER on 3/30/2017.
@@ -37,22 +40,34 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     @Override
     public AdminUser getUser(Long id) {
-        return   this.adminUserRepo.getOne(id);
+        return   this.adminUserRepo.findOne(id);
 
     }
 
     @Override
-    public Iterable<AdminUser> getUsers() {
+    public AdminUserDTO getAdminUser(Long userId) {
+        AdminUser adminUser = adminUserRepo.findOne(userId);
+        return convertEntityToDTO(adminUser);
+    }
 
-   return this.adminUserRepo.findAll();
-     }
+    @Override
+    public Iterable<AdminUserDTO> getUsers() {
+        Iterable<AdminUser> adminUsers =adminUserRepo.findAll();
+        return convertEntitiesToDTOs(adminUsers);
+    }
+
+//    @Override
+//    public Iterable<AdminUser> getAdminUsers() {
+//
+//        return this.adminUserRepo.findAll();
+//     }
 
     @Override
     public boolean setPassword(AdminUser user, String hashedPassword) {
         boolean ok = false;
         if (user != null) {
             user.setPassword(this.passwordEncoder.encode(user.getPassword()));
-            updateUser(user);
+            adminUserRepo.save(user);
         } else {
             throw new RuntimeException("NO USER FOUND");
         }
@@ -60,14 +75,13 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
     @Override
-    public boolean addUser(AdminUser user) {
+    public boolean addUser(AdminUserDTO user) {
         boolean ok = false;
-        /*Get the user's details from the model */
-
         if (user != null) {
             user.setPassword(this.passwordEncoder.encode(user.getPassword()));
-            this.adminUserRepo.save(user);
-            logger.info("USER {} HAS BEEN CREATED");
+            AdminUser adminUser = convertDTOToEntity(user);
+            this.adminUserRepo.save(adminUser);
+            logger.info("New admin user: {} created", adminUser.getUserName());
             ok=true;
         } else {
             logger.error("USER NOT FOUND");
@@ -109,7 +123,6 @@ public class AdminUserServiceImpl implements AdminUserService {
                     return ok;
                 }
 
-
                 if (this.passwordEncoder.matches(oldPassword, user.getPassword())) {
                     user.setPassword(this.passwordEncoder.encode(newPassword));
                     this.adminUserRepo.save(user);
@@ -144,8 +157,6 @@ public class AdminUserServiceImpl implements AdminUserService {
         try {
             String newPassword = generatePassword();
             setPassword(user, newPassword);
-            updateUser(user);
-
             sendPassword(user);
             logger.info("PASSWORD GENERATED AND SENT");
         } catch (Exception e) {
@@ -169,17 +180,39 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
     @Override
-    public boolean updateUser(AdminUser user) {
-        boolean ok = false;
+    public boolean updateUser(AdminUserDTO user) {
+        boolean result = false;
         try {
             if (user != null) {
-                this.adminUserRepo.save(user);
-                logger.info("USER SUCCESSFULLY UPDATED");
+                AdminUser adminUser = convertDTOToEntity(user);
+                this.adminUserRepo.save(adminUser);
+                logger.info("User {} successfully updated");
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.info("Could not update admin user",e);
+
         }
-        return ok;
+        return result;
+    }
+
+    private AdminUserDTO convertEntityToDTO(AdminUser adminUser){
+        return  modelMapper.map(adminUser,AdminUserDTO.class);
+    }
+
+    private AdminUser convertDTOToEntity(AdminUserDTO adminUserDTO){
+        return  modelMapper.map(adminUserDTO,AdminUser.class);
+    }
+
+    private Iterable<AdminUserDTO> convertEntitiesToDTOs(Iterable<AdminUser> adminUsers){
+        List<AdminUserDTO> adminUserDTOs = new ArrayList<>();
+        for(AdminUser adminUser: adminUsers){
+            AdminUserDTO adminUserDTO = new AdminUserDTO();
+            adminUserDTO.setFirstName(adminUser.getFirstName());
+            adminUserDTO.setLastName(adminUser.getLastName());
+            adminUserDTO.setRole(adminUser.getRole().getName());
+            adminUserDTOs.add(adminUserDTO);
+        }
+        return adminUserDTOs;
     }
 }
 

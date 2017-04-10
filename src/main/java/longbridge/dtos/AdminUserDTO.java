@@ -1,7 +1,8 @@
 package longbridge.dtos;
 
+import org.hibernate.validator.constraints.Email;
+
 import javax.validation.constraints.NotNull;
-import java.util.*;
 
 /**
  * Created by Fortune on 4/5/2017.
@@ -15,8 +16,11 @@ public class AdminUserDTO {
     private String firstName;
     @NotNull
     private String lastName;
+    @NotNull
+    @Email
     private String email;
     private String password;
+    private String role;
 
     public Long getId() {
         return id;
@@ -66,4 +70,11 @@ public class AdminUserDTO {
         this.password = password;
     }
 
-   }
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+}

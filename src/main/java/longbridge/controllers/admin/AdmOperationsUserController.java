@@ -1,6 +1,6 @@
 package longbridge.controllers.admin;
 
-import longbridge.dtos.ChangePassword;
+import longbridge.forms.ChangePassword;
 import longbridge.models.OperationsUser;
 import longbridge.services.OperationsUserService;
 import org.slf4j.Logger;
@@ -46,7 +46,7 @@ public class AdmOperationsUserController {
     public String getAllOperationsUsers(Model model){
         //Iterable<OperationsUser> operationsUserList= operationsUserService.getUsers();
         //model.addAttribute("operationsUserList",operationsUserList);
-        return "operation/view";
+        return "adm/operation/view";
     }
 
     @GetMapping(path="/all", produces = "application/json")

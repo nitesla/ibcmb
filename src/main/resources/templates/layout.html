@@ -157,7 +157,7 @@
 </div>
 
 
-<nav th:fragment="menu" class="navbar-default navbar-static-side" role="navigation">
+<nav th:fragment="admin-menu" class="navbar-default navbar-static-side" role="navigation">
 
     <div class="sidebar-collapse">
         <ul class="nav" id="side-menu">
@@ -176,23 +176,16 @@
                 </div>
             </li>
             <li>
-                <a href="form-index.html"><i class="fa fa-briefcase"></i><span class="nav-label">User Management</span></a>
+                <a href="form-index.html"><i class="fa fa-users"></i><span class="nav-label">User Management</span></a>
                 <ul class="nav nav-second-level">
                     <li><a href="/admin/users/">Administrators</a></li>
                     <li><a href="/admin/operations/users">Operations</a></li>
-
+                    <li><a href="/admin/corporates">Corporate</a></li>
+                    <li><a href="/admin/retail/users">Retail</a></li>
                 </ul>
             </li>
             <li>
-                <a href="form-index.html"><i class="fa fa-briefcase"></i><span class="nav-label">Corporates</span></a>
-                <ul class="nav nav-second-level">
-                    <li><a href="/admin/users/new">Corporate</a></li>
-                    <li><a href="add.html">Limits</a></li>
-
-                </ul>
-            </li>
-            <li>
-                <a href="form-index.html"><i class="fa fa-file"></i><span class="nav-label">Configurations</span></a>
+                <a href="form-index.html"><i class="fa fa-gears"></i><span class="nav-label">Configurations</span></a>
                 <ul class="nav nav-second-level">
                     <li><a href="/admin/codes">Codes</a></li>
                     <li><a href="add.html">System Settings</a></li>
@@ -230,6 +223,66 @@
     </div>
 </nav>
 
+<nav th:fragment="ops-menu" class="navbar-default navbar-static-side" role="navigation">
+
+    <div class="sidebar-collapse">
+        <ul class="nav" id="side-menu">
+            <li class="nav-header">
+                <div class="profile-element"> <span>
+
+                            <img alt="image" class="img" th:src="@{~/img/corologo.png}" src="static/img/corologo.png" width="150px" />
+
+                             </span>
+                </div>
+                <div class="logo-element">
+                        <span>
+
+                            <img alt="image" class="img" th:src="@{~/img/smalllogo.png}"  src="static/img/smalllogo.png" />
+                             </span>
+                </div>
+            </li>
+            <li>
+                <a href="form-index.html"><i class="fa fa-users"></i><span class="nav-label">Corporate</span></a>
+                <ul class="nav nav-second-level">
+                    <li><a href="/admin/corporate/users">Accounts</a></li>
+                    <li><a href="/admin/retail/users">Limit</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="form-index.html"><i class="fa fa-file"></i><span class="nav-label">Retail</span></a>
+                <ul class="nav nav-second-level">
+                    <li><a href="/admin/codes">Accounts</a></li>
+                    <li><a href="add.html">Limit</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="form-index.html"><i class="fa fa-file"></i><span class="nav-label">Service Requests</span></a>
+                <ul class="nav nav-second-level">
+                    <li><a href="view.html">Transfer</a></li>
+                    <li><a href="add.html">Transaction</a></li>
+                    <li><a href="edit.html">Edit FI</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="form-index.html"><i class="fa fa-file"></i><span class="nav-label">Mailbox</span></a>
+                <ul class="nav nav-second-level">
+                    <li><a href="view.html">Transfer</a></li>
+                    <li><a href="add.html">Transaction</a></li>
+                    <li><a href="edit.html">Edit FI</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="form-index.html"><i class="fa fa-file"></i><span class="nav-label">Reports</span></a>
+                <ul class="nav nav-second-level">
+                    <li><a href="view.html">Transfer</a></li>
+                    <li><a href="add.html">Transaction</a></li>
+                    <li><a href="edit.html">Edit FI</a></li>
+                </ul>
+            </li>
+        </ul>
+
+    </div>
+</nav>
 
 <!-- Main Footer -->
 <div th:fragment="main-footer" class="footer">

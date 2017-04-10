@@ -17,8 +17,8 @@ public class Role extends AbstractEntity{
     private UserType userType;
 
     @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "profile_permission", joinColumns =
-    @JoinColumn(name = "profile_id", referencedColumnName = "id"), inverseJoinColumns =
+    @JoinTable(name = "role_permission", joinColumns =
+    @JoinColumn(name = "role_id", referencedColumnName = "id"), inverseJoinColumns =
     @JoinColumn(name = "permission_id", referencedColumnName = "id"))
     private Collection<Permission> permissions;
 

@@ -68,7 +68,6 @@ public class CorporateServiceImpl implements CorporateService {
     }
 
 
-
     @Override
     public void enableCorporate(Corporate corporate) {
         corporate.setEnabled(true);

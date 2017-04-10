@@ -1,6 +1,6 @@
 package longbridge.controllers.admin;
 
-import longbridge.dtos.ChangePassword;
+import longbridge.forms.ChangePassword;
 import longbridge.dtos.CorporateUserDTO;
 import longbridge.models.CorporateUser;
 import longbridge.services.CorporateUserService;
@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpRequest;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;

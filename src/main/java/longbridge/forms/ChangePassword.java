@@ -1,4 +1,4 @@
-package longbridge.dtos;
+package longbridge.forms;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;

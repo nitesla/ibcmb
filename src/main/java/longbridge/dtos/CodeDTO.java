@@ -11,9 +11,19 @@ import javax.persistence.Entity;
 
 public class CodeDTO {
 
+    private Long id;
     private String code;
     private String type;
     private String description;
+    private String version;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getCode() {
         return code;
@@ -39,6 +49,22 @@ public class CodeDTO {
         this.description = description;
     }
 
+    public String getVersion() {
+        return version;
+    }
 
+    public void setVersion(String version) {
+        this.version = version;
+    }
 
+    @Override
+    public String toString() {
+        return "CodeDTO{" +
+                "id='" + id + '\'' +
+                ", code='" + code + '\'' +
+                ", type='" + type + '\'' +
+                ", description='" + description + '\'' +
+                ", version='" + version + '\'' +
+                '}';
+    }
 }

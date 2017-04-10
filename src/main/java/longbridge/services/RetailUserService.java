@@ -1,5 +1,6 @@
 package longbridge.services;
 
+import longbridge.dtos.RetailUserDTO;
 import longbridge.models.Account;
 import longbridge.models.RetailUser;
 
@@ -13,13 +14,13 @@ public interface RetailUserService {
      * @param id  the user's id
      */
 
-    RetailUser getUser(Long id);
+    RetailUserDTO getUser(Long id);
 
     /**
      *Returns a list of retail users
      * @return the list of retail users
      */
-    Iterable<RetailUser> getUsers();
+    Iterable<RetailUserDTO> getUsers();
 
     /**
      *Sets the password of the specified retail user
@@ -35,7 +36,7 @@ public interface RetailUserService {
      * @param user the retail user to be added
      */
 
-    boolean addUser(RetailUser user);
+    boolean addUser(RetailUserDTO user);
 
     /**
      * Deletes a retail user to the system
@@ -49,7 +50,7 @@ public interface RetailUserService {
      * @param user the retail user whose details are to be updated
      */
 
-    boolean updateUser(RetailUser user);
+    boolean updateUser(RetailUserDTO user);
 
     /**
      * Adds the specified account to the user's list of accounts

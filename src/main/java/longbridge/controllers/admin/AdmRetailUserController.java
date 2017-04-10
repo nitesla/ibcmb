@@ -1,8 +1,7 @@
 package longbridge.controllers.admin;
 
-import longbridge.dtos.ChangePassword;
+import longbridge.forms.ChangePassword;
 import longbridge.dtos.RetailUserDTO;
-import longbridge.models.RetailUser;
 import longbridge.services.RetailUserService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -13,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 import javax.validation.Valid;
@@ -40,13 +40,12 @@ public class AdmRetailUserController {
 
 
     @PostMapping
-    public String createUser(@ModelAttribute("retailUser") @Valid RetailUserDTO retailUserDTO, BindingResult result, Model model) throws Exception{
+    public String createUser(@ModelAttribute("retailUser") @Valid RetailUserDTO retailUser, BindingResult result, RedirectAttributes redirectAttributes) throws Exception{
         if(result.hasErrors()){
             return "addUser";
         }
-        RetailUser retailUser = modelMapper.map(retailUserDTO,RetailUser.class);
         retailUserService.addUser(retailUser);
-        model.addAttribute("success","Retail user created successfully");
+        redirectAttributes.addFlashAttribute("success","Retail user created successfully");
         return "redirect:/retail/users";
     }
 
@@ -56,34 +55,31 @@ public class AdmRetailUserController {
      */
     @GetMapping("/{userId}/edit")
     public String editUser(@PathVariable Long userId, Model model) {
-        RetailUser user = retailUserService.getUser(userId);
-        RetailUserDTO retailUserDTO = modelMapper.map(user,RetailUserDTO.class);
-        model.addAttribute("user", retailUserDTO);
+        RetailUserDTO retailUser = retailUserService.getUser(userId);
+        model.addAttribute("user", retailUser);
         return "addUser";
     }
 
     @GetMapping
-    public Iterable<RetailUser> getAllRetailUsers(Model model){
-        Iterable<RetailUser> retailUserList= retailUserService.getUsers();
+    public Iterable<RetailUserDTO> getAllRetailUsers(Model model){
+        Iterable<RetailUserDTO> retailUserList= retailUserService.getUsers();
         model.addAttribute("retailUserList",retailUserList);
         return retailUserList;
     }
 
     @GetMapping("/{userId}")
     public String getUser(@PathVariable  Long userId, Model model){
-        RetailUser user = retailUserService.getUser(userId);
-        RetailUserDTO retailUserDTO = modelMapper.map(user,RetailUserDTO.class);
-        model.addAttribute("user",retailUserDTO);
+        RetailUserDTO retailUser = retailUserService.getUser(userId);
+        model.addAttribute("user",retailUser);
         return "retailUserDetails";
     }
 
     @PostMapping("/{userId}")
-    public String UpdateUser(@ModelAttribute("retailUserForm") RetailUserDTO retailUserDTO, @PathVariable Long userId, BindingResult result, Model model) throws Exception{
+    public String UpdateUser(@ModelAttribute("retailUserForm") RetailUserDTO retailUser, @PathVariable Long userId, BindingResult result, Model model) throws Exception{
        if(result.hasErrors()){
            return "addUser";
        }
-        retailUserDTO.setId(userId);
-        RetailUser retailUser = modelMapper.map(retailUserDTO,RetailUser.class);
+        retailUser.setId(userId);
         boolean updated = retailUserService.updateUser(retailUser);
        if(updated) {
            model.addAttribute("success", "Retail user updated successfully");
@@ -107,7 +103,7 @@ public class AdmRetailUserController {
          if(result.hasErrors()){
              return "changePassword";
         }
-        RetailUser user= retailUserService.getUser(userId);
+        RetailUserDTO user= retailUserService.getUser(userId);
         String oldPassword=changePassword.getOldPassword();
         String newPassword=changePassword.getNewPassword();
         String confirmPassword=changePassword.getConfirmPassword();
@@ -121,7 +117,7 @@ public class AdmRetailUserController {
         }
 
         user.setPassword(newPassword);
-        retailUserService.addUser(user);
+        retailUserService.updateUser(user);
         logger.info("PASSWORD CHANGED SUCCESSFULLY");
         return "changePassword";
     }
