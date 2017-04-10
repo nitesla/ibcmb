@@ -46,4 +46,14 @@ public class ServiceReqConfigDTO {
     public void setFormFields(ArrayList<ServiceReqFormField> formFields) {
         this.formFields = formFields;
     }
+
+    @Override
+    public String toString() {
+        return "ServiceReqConfigDTO{" +
+                "id=" + id +
+                ", requestName='" + requestName + '\'' +
+                ", version='" + version + '\'' +
+                ", formFields=" + formFields +
+                '}';
+    }
 }

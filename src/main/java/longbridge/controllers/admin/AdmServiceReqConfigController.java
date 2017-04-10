@@ -3,6 +3,8 @@ package longbridge.controllers.admin;
 import longbridge.dtos.ServiceReqConfigDTO;
 import longbridge.services.ServiceReqConfigService;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,6 +23,9 @@ public class AdmServiceReqConfigController {
     @Autowired
     private ModelMapper modelMapper;
 
+    private Logger logger= LoggerFactory.getLogger(this.getClass());
+
+
     @GetMapping("/new")
     public String addConfig(){
         return "adm/serviceReqConfig/add";
@@ -31,6 +36,8 @@ public class AdmServiceReqConfigController {
         if(result.hasErrors()){
             return "admin/srconfig/new";
         }
+
+        logger.info("Received form post request: {}", serviceReqConfigDTO.toString());
 
         serviceReqConfigService.addSeviceReqConfig(serviceReqConfigDTO);
         model.addAttribute("success","Service Request Config  created successfully");

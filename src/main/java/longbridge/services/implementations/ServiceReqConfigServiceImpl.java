@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -38,13 +39,21 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
     @Transactional
     public void addSeviceReqConfig(ServiceReqConfigDTO serviceReqConfigDTO) {
         ServiceReqConfig serviceReqConfig = convertDTOToEntity(serviceReqConfigDTO);
-        ArrayList<ServiceReqFormField> formFields = serviceReqConfigDTO.getFormFields();
-        for (ServiceReqFormField field : formFields){
-            field.setServiceReqConfig(serviceReqConfig);
+        Iterator<ServiceReqFormField> serviceReqFormFieldIterator =  serviceReqConfig.getFormFields().iterator();
+
+        while (serviceReqFormFieldIterator.hasNext()){
+            ServiceReqFormField serviceReqFormField = serviceReqFormFieldIterator.next();
+            if(serviceReqFormField.getFieldName()==null){
+                serviceReqFormFieldIterator.remove();
+            }
+            else{
+                serviceReqFormField.setServiceReqConfig(serviceReqConfig);
+            }
         }
-       // ServiceReqConfig serviceReqConfig = convertDTOToEntity(serviceReqConfigDTO);
         serviceReqConfigRepo.save(serviceReqConfig);
+
     }
+
 
     @Override
     public ServiceReqConfigDTO getServiceReqConfig(Long id) {
