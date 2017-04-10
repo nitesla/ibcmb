@@ -69,7 +69,7 @@ public class AdmServiceReqConfigController {
         return "adm/serviceReqConfig/";
     }
 
-<<<<<<< HEAD
+
 //    @PostMapping
 //    public String editConfig(@ModelAttribute("serviceRequestConfig") ServiceReqConfigDTO serviceReqConfigDTO, BindingResult result, Model model) throws Exception{
 //        if(result.hasErrors()){

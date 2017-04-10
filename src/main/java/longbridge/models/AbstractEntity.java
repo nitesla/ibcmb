@@ -22,8 +22,8 @@ public abstract class AbstractEntity implements Serializable{
 
     @Version
     protected int version;
-    @ColumnDefault("N")
-    protected String delFlag;
+
+    protected String delFlag = "N";
 
 //    protected Date lastModificationTime;
 //

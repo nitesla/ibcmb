@@ -121,6 +121,7 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
         List<ServiceReqConfigDTO> serviceReqConfigDTOs = new ArrayList<>();
         for(ServiceReqConfig serviceReqConfig: serviceReqConfigs){
             ServiceReqConfigDTO serviceReqConfigDTO =  modelMapper.map(serviceReqConfig,ServiceReqConfigDTO.class);
+            serviceReqConfigDTOs.add(serviceReqConfigDTO);
         }
         return serviceReqConfigDTOs;
     }

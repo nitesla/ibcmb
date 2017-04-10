@@ -28,7 +28,6 @@ public class MessageServiceImpl implements MessageService {
         this.messageRepo = messageRepo;
     }
 
-
     /**
      * Returns a {@code Message} identified by the given {@code id}
      *
