@@ -50,4 +50,22 @@ public class AdmServiceReqConfigController {
         return configList;
     }
 
+    @GetMapping("/{reqId}/edit")
+    public String editConfig(@PathVariable Long reqId, Model model){
+        ServiceReqConfigDTO serviceReqConfig = serviceReqConfigService.getServiceReqConfig(reqId);
+        model.addAttribute("requestDetails", serviceReqConfig);
+        return "adm/serviceReqConfig/";
+    }
+
+    @PostMapping
+    public String editConfig(@ModelAttribute("serviceRequestConfig") ServiceReqConfigDTO serviceReqConfigDTO, BindingResult result, Model model) throws Exception{
+        if(result.hasErrors()){
+            return "admin/srconfig/new";
+        }
+
+        serviceReqConfigService.addSeviceReqConfig(serviceReqConfigDTO);
+        model.addAttribute("success","Service Request Config  created successfully");
+        return "redirect:/admin/srconfig";
+    }
+
 }
