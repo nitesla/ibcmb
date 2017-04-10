@@ -16,12 +16,12 @@ public class ServiceReqConfig extends AbstractEntity{
     @OneToMany(cascade = CascadeType.ALL)
     private Collection<ServiceReqFormField> formFields;
 
-    public String getName() {
+    public String getRequestName() {
         return requestName;
     }
 
-    public void setName(String name) {
-        this.requestName = name;
+    public void setRequestName(String requestName) {
+        this.requestName = requestName;
     }
 
     public Collection<ServiceReqFormField> getFormFields() {
