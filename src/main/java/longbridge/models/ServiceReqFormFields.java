@@ -48,4 +48,12 @@ public class ServiceReqFormFields extends AbstractEntity {
     public void setTypeData(String typeData) {
         this.typeData = typeData;
     }
+
+	@Override
+	public String toString() {
+		return "ServiceReqFormFields [fieldName=" + fieldName + ", fieldLabel=" + fieldLabel + ", fieldType="
+				+ fieldType + ", typeData=" + typeData + "]";
+	}
+    
+    
 }

@@ -2,7 +2,7 @@ package longbridge.dtos;
 
 import longbridge.models.ServiceReqFormFields;
 
-import java.util.Collection;
+import java.util.ArrayList;
 
 /**
  * Created by Showboy on 08/04/2017.
@@ -10,21 +10,23 @@ import java.util.Collection;
 public class ServiceReqConfigDTO {
 
     private String requestName;
-    private Collection<ServiceReqFormFields> formFields;
+    private ArrayList<ServiceReqFormFields> formFields;
 
-    public String getName() {
-        return requestName;
-    }
+    
 
-    public void setName(String name) {
-        this.requestName = name;
-    }
+    public String getRequestName() {
+		return requestName;
+	}
 
-    public Collection<ServiceReqFormFields> getFormFields() {
+	public void setRequestName(String requestName) {
+		this.requestName = requestName;
+	}
+
+	public ArrayList<ServiceReqFormFields> getFormFields() {
         return formFields;
     }
 
-    public void setFormFields(Collection<ServiceReqFormFields> formFields) {
+    public void setFormFields(ArrayList<ServiceReqFormFields> formFields) {
         this.formFields = formFields;
     }
 }
