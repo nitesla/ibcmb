@@ -11,7 +11,6 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -69,8 +68,8 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
     }
 
     @Override
-    public Iterable<ServiceReqConfigDTO> getServiceReqConfigs() {
-        Iterable<ServiceReqConfig> serviceReqConfigs = serviceReqConfigRepo.findAll();
+    public List<ServiceReqConfigDTO> getServiceReqConfigs() {
+        List<ServiceReqConfig> serviceReqConfigs = serviceReqConfigRepo.findAll();
 
         logger.info("Service Req list:{}",serviceReqConfigs);
 
@@ -136,7 +135,7 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
         return  modelMapper.map(serviceReqConfigDTO,ServiceReqConfig.class);
     }
 
-    private Iterable<ServiceReqConfigDTO> convertEntitiesToDTOs(Iterable<ServiceReqConfig> serviceReqConfigs){
+    private List<ServiceReqConfigDTO> convertEntitiesToDTOs(Iterable<ServiceReqConfig> serviceReqConfigs){
         List<ServiceReqConfigDTO> serviceReqConfigDTOList = new ArrayList<>();
         for(ServiceReqConfig serviceReqConfig: serviceReqConfigs){
             ServiceReqConfigDTO dto = convertEntityToDTO(serviceReqConfig);
