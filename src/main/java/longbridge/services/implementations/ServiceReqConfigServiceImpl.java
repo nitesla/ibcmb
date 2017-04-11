@@ -16,6 +16,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.datatables.repository.DataTablesRepositoryFactoryBean;
+import org.springframework.data.jpa.datatables.repository.DataTablesUtils;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -125,14 +127,18 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 	public Page<ServiceReqConfigDTO> getServiceReqConfigs(Pageable pageDetails) {
     	Page<ServiceReqConfig> page = serviceReqConfigRepo.findAll(pageDetails);
     	List<ServiceReqConfigDTO> dtOs = convertEntitiesToDTOs(page.getContent());
-        return  new PageImpl<ServiceReqConfigDTO>(dtOs,pageDetails,page.getNumberOfElements());
+    	long t = page.getTotalElements();
+    	
+       // return  new PageImpl<ServiceReqConfigDTO>(dtOs,pageDetails,page.getTotalElements());
+    	Page<ServiceReqConfigDTO> pageImpl = new PageImpl<ServiceReqConfigDTO>(dtOs,pageDetails,t);
+    	return pageImpl;
 	}
 
 	@Override
 	public Page<ServiceReqFormFieldDTO> getServiceReqFormFields(Pageable pageDetails) {
 		Page<ServiceReqFormField> page = serviceReqFormFieldRepo.findAll(pageDetails);
     	List<ServiceReqFormFieldDTO> dtOs = convertFormFieldEntitiesToDTOs(page.getContent());
-        return  new PageImpl<ServiceReqFormFieldDTO>(dtOs,pageDetails,page.getNumberOfElements());
+        return  new PageImpl<ServiceReqFormFieldDTO>(dtOs,pageDetails,page.getTotalElements());
 	}
 
 

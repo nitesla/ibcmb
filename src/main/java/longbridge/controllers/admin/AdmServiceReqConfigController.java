@@ -8,8 +8,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+import org.springframework.data.jpa.datatables.repository.DataTablesUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -58,13 +60,12 @@ public class AdmServiceReqConfigController {
     @GetMapping(path = "/all")
     public @ResponseBody DataTablesOutput<ServiceReqConfigDTO> getConfigs(DataTablesInput input){
 
-    	int record = input.getStart();
-    	int max = input.getLength();
-        Page<ServiceReqConfigDTO> serviceReqConfigs = serviceReqConfigService.getServiceReqConfigs(new PageRequest(record/max, max));
+    	Pageable pageable = DataTablesUtils.getPageable(input);
+        Page<ServiceReqConfigDTO> serviceReqConfigs = serviceReqConfigService.getServiceReqConfigs(pageable);
         DataTablesOutput<ServiceReqConfigDTO> out = new DataTablesOutput<ServiceReqConfigDTO>();
         out.setDraw(input.getDraw());
         out.setData(serviceReqConfigs.getContent());
-        out.setRecordsFiltered(serviceReqConfigs.getNumberOfElements());
+        out.setRecordsFiltered(serviceReqConfigs.getTotalElements());
         out.setRecordsTotal(serviceReqConfigs.getTotalElements());
         return out;
     }

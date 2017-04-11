@@ -83,6 +83,7 @@
 </div>
 <script th:src="@{~/bank/vendors/datatables.net/js/jquery.dataTables.js}"></script>
 <script th:src="@{~/bank/js/dataTables.select.js}"></script>
+<script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
 
 <!-- Page-Level Scripts -->
 <script>
@@ -91,8 +92,11 @@
         $('.srconfig').DataTable({
         	select:true,
             responsive: true,
+            "lengthMenu" : [ [ 5, 10, 50, -1 ],	[ 5, 10, 50, "All" ] ],
+			"pagingType" : "full_numbers",
             "searching": false,
             "paging": true,
+            "serverSide" : true,
             "ajax": "/admin/srconfig/all",
             "dom": 'T<"clear">lfrtip',
             "columns": [
