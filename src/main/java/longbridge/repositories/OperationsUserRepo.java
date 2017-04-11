@@ -7,4 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * Created by Fortune on 4/5/2017.
  */
 public interface OperationsUserRepo extends CommonRepo<OperationsUser, Long> {
+
+    OperationsUser findByUserName(String s);
 }
