@@ -75,9 +75,12 @@ public class CodeServiceImpl implements CodeService {
         return this.codeRepo.findByDelFlag("N");
     }
 
+    /**
+     * Adds a new code to the syste
+     * @param code the code
+     */
     @Override
-    public boolean addCode(Code code, AdminUser adminUser) {
-        boolean result= false;
+    public void add(Code code, AdminUser adminUser) {
 
         try {
             Verification verification = new Verification();
@@ -91,17 +94,19 @@ public class CodeServiceImpl implements CodeService {
             verificationRepo.save(verification);
 
             logger.info("Code creation request has been added ");
-            result=true;
         }
         catch (Exception e){
             logger.error("ERROR OCCURRED {}",e.getMessage());
         }
-        return result;
     }
 
-    public boolean modifyCode(Code code, AdminUser adminUser){
-         boolean result= false;
-         Code originalObject = codeRepo.findOne(code.getId());
+    /**
+     * Modifies an existing code
+     * @param code the code
+     */
+    @Override
+    public void modify(Code code, AdminUser adminUser){
+        Code originalObject = codeRepo.findOne(code.getId());
 
         try {
             Verification verification = new Verification();
@@ -115,12 +120,10 @@ public class CodeServiceImpl implements CodeService {
             verificationRepo.save(verification);
 
             logger.info("Code modification request has been added ");
-            result=true;
         }
         catch (Exception e){
-            logger.error("ERROR OCCURRED {}",e.getMessage());
+            logger.error("Error Occurred {}",e);
         }
-        return result;
     }
 
     @Override
@@ -145,7 +148,7 @@ public class CodeServiceImpl implements CodeService {
         Code afterCode = deserialize(verificationObject.getAfterObject());
 
         codeRepo.save(afterCode);
-        verificationObject.setVerifiedId(afterCode.getId());
+        verificationObject.setEntityId(afterCode.getId());
         verificationRepo.save(verificationObject);
     }
 

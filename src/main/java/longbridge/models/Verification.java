@@ -1,8 +1,5 @@
 package longbridge.models;
 
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
-
 import javax.persistence.*;
 import java.util.Date;
 
@@ -12,6 +9,9 @@ import java.util.Date;
  */
 @Entity
 public class Verification extends  AbstractEntity {
+    public static enum VerificationStatus {
+        VERIFIED, DECLINED,PENDING //EXPIRED
+    }
 
     @Column(columnDefinition = "TEXT")
     private String beforeObject; //json
@@ -20,9 +20,11 @@ public class Verification extends  AbstractEntity {
     @Column(columnDefinition = "TEXT")
     private String original; //json
 
-    private String description;
+    @Enumerated(value = EnumType.STRING)
+    private VerificationStatus status;
 
-    private Long verifiedId;
+    private String description;
+    private Long entityId;
     @Enumerated(value = EnumType.STRING)
     private OperationCode operationCode;
 
@@ -47,6 +49,13 @@ public class Verification extends  AbstractEntity {
         this.declinedBy = declinedBy;
     }
 
+    public VerificationStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(VerificationStatus status) {
+        this.status = status;
+    }
 
     public String getDeclineReason() {
         return declineReason;
@@ -88,12 +97,12 @@ public class Verification extends  AbstractEntity {
         this.original = original;
     }
 
-    public Long getVerifiedId() {
-        return verifiedId;
+    public Long getEntityId() {
+        return entityId;
     }
 
-    public void setVerifiedId(Long verifiedId) {
-        this.verifiedId = verifiedId;
+    public void setEntityId(Long entityId) {
+        this.entityId = entityId;
     }
 
     public OperationCode getOperationCode() {

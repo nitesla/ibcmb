@@ -57,7 +57,7 @@ public class AdmCodeController {
         adminUser.setLastName("Torti");
         adminUserRepo.save(adminUser);
         Code code = modelMapper.map(codeDTO, Code.class);
-        codeService.addCode(code, adminUser);
+        codeService.add(code, adminUser);
         model.addAttribute("success", "Code added successfully");
         return "/admin/list";
     }
@@ -124,7 +124,7 @@ public class AdmCodeController {
         logger.info("Code {}", codeDTO.toString());
         Code code = modelMapper.map(codeDTO, Code.class);
         code.setId(codeId);
-        codeService.modifyCode(code, adminUser);
+        codeService.modify(code, adminUser);
         model.addAttribute("success", "Code updated successfully");
 //        codeService.addCode(code);
         return "/admin/codes";

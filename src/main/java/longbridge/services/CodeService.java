@@ -13,18 +13,6 @@ import longbridge.models.Verifiable;
 public interface CodeService extends Verifiable<Code> {
 
     /**
-     * Adds a new code to the syste
-     * @param code the code
-     */
-    boolean addCode(Code code, AdminUser adminUser);
-
-    /**
-     * Modifies an existing code
-     * @param code the code
-     */
-    boolean modifyCode(Code code, AdminUser adminUser);
-
-    /**
      * Deletes a code from the system
      * @param codeId the oode's id
      */

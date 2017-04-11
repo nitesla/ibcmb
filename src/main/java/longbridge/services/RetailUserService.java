@@ -1,17 +1,18 @@
 package longbridge.services;
 
+import longbridge.models.Code;
 import longbridge.models.RetailUser;
+import longbridge.models.Verifiable;
 
 /**
  * The {@code RetailUserService} interface provides the methods for managing retails users
  */
-public interface RetailUserService {
+public interface RetailUserService  {
 
     /**
      *Returns the specified retail user
      * @param id  the user's id
      */
-
     RetailUser getUser(Long id);
 
     /**
@@ -73,4 +74,5 @@ public interface RetailUserService {
      * @param user the user
      */
     boolean generateAndSendPassword(RetailUser user);
+
 }

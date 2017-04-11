@@ -1,15 +1,25 @@
 package longbridge.services.implementations;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import longbridge.dtos.AdminUserDTO;
 import longbridge.models.AdminUser;
+import longbridge.models.Code;
+import longbridge.models.OperationCode;
+import longbridge.models.Verification;
 import longbridge.repositories.AdminUserRepo;
+import longbridge.repositories.VerificationRepo;
 import longbridge.services.AdminUserService;
+import longbridge.services.SecurityService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.io.IOException;
+import java.util.Date;
 
 
 /**
@@ -25,6 +35,12 @@ public class AdminUserServiceImpl implements AdminUserService {
     private ModelMapper modelMapper;
 
     @Autowired
+    private VerificationRepo verificationRepo;
+
+    @Autowired
+    private SecurityService securityService;
+
+    @Autowired
     public AdminUserServiceImpl(AdminUserRepo adminUserRepo, BCryptPasswordEncoder passwordEncoder) {
 
         this.adminUserRepo = adminUserRepo;
@@ -37,7 +53,7 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     @Override
     public AdminUser getUser(Long id) {
-        return   this.adminUserRepo.getOne(id);
+        return this.adminUserRepo.getOne(id);
 
     }
 
@@ -142,7 +158,7 @@ public class AdminUserServiceImpl implements AdminUserService {
         boolean ok = false;
 
         try {
-            String newPassword = generatePassword();
+            String newPassword = securityService.generatePassword();
             setPassword(user, newPassword);
             updateUser(user);
 
@@ -154,12 +170,6 @@ public class AdminUserServiceImpl implements AdminUserService {
 
 
         return ok;
-    }
-
-    public String generatePassword() {
-       /* String password=   RandomStringUtils.randomNumeric(10);
-        return password!=null? password: "";*/
-        return null;
     }
 
 
@@ -174,12 +184,96 @@ public class AdminUserServiceImpl implements AdminUserService {
         try {
             if (user != null) {
                 this.adminUserRepo.save(user);
-                logger.info("USER SUCCESSFULLY UPDATED");
+                logger.info("User Successfully Updated");
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
         return ok;
+    }
+
+    @Override
+    public void add(AdminUser adminUser, AdminUser initiator) {
+        try {
+            Verification verification = new Verification();
+            verification.setBeforeObject("");
+            verification.setAfterObject(serialize(adminUser));
+            verification.setOriginal("");
+            verification.setDescription("Added a new AdminUser");
+            verification.setOperationCode(OperationCode.ADD_CODE);
+            verification.setInitiatedBy(initiator);
+            verification.setInitiatedOn(new Date());
+            verificationRepo.save(verification);
+
+            logger.info("AdminUser creation request has been added. Before {}, After {} ",
+                    verification.getBeforeObject(), verification.getAfterObject());
+        }
+        catch (Exception e){
+            logger.error("Error Occurred {}",e);
+        }
+    }
+
+    @Override
+    public void modify(AdminUser adminUser, AdminUser initiator){
+        AdminUser originalObject = adminUserRepo.findOne(adminUser.getId());
+
+        try {
+            Verification verification = new Verification();
+            verification.setBeforeObject(serialize(originalObject));
+            verification.setAfterObject(serialize(adminUser));
+            verification.setOriginal(serialize(originalObject));
+            verification.setDescription("Modified an AdminUser");
+            verification.setOperationCode(OperationCode.MODIFY_CODE);
+            verification.setInitiatedBy(initiator);
+            verification.setInitiatedOn(new Date());
+            verificationRepo.save(verification);
+
+            logger.info("Admin modification request has been added. Before {}, After {} ",
+                    verification.getBeforeObject(), verification.getAfterObject());
+        }
+        catch (Exception e){
+            logger.error("Error Occurred {}",e);
+        }
+    }
+
+    @Override
+    public AdminUser deserialize(String data) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        AdminUser adminUser = mapper.readValue(data, AdminUser.class);
+        return adminUser;
+    }
+
+    @Override
+    public String serialize(AdminUser adminUser) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        String data = mapper.writeValueAsString(adminUser);
+        return data;
+    }
+
+    @Override
+    public void verify(Verification t, AdminUser verifier) throws IOException {
+        if(t.getVerifiedBy() != null){
+            //already verified
+            logger.debug("Already verified");
+            return ;
+        }
+        t.setVerifiedBy(verifier);
+        t.setVerifiedOn(new Date());
+
+        AdminUser afterAdminUser = deserialize(t.getAfterObject());
+
+        adminUserRepo.save(afterAdminUser);
+        t.setEntityId(afterAdminUser.getId());
+        verificationRepo.save(t);
+    }
+
+
+    @Override
+    public void decline(Verification verification, AdminUser decliner, String declineReason) {
+        verification.setDeclinedBy(decliner);
+        verification.setDeclinedOn(new Date());
+        verification.setDeclineReason(declineReason);
+        verificationRepo.save(verification);
     }
 }
 
