@@ -8,6 +8,11 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+import org.springframework.data.jpa.datatables.repository.DataTablesUtils;
 import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -77,13 +82,18 @@ public class AdminUserController {
     }
 
 
-    @GetMapping(path="/all")
-    public @ResponseBody Iterable<AdminUserDTO> getUsers(){
-        Iterable<AdminUserDTO> adminUserList=adminUserService.getUsers();
-        //model.addAttribute("adminUserList",adminUserList);
-        logger.info("Admin users : {}",adminUserList);
+    @GetMapping(path = "/all")
+    public @ResponseBody DataTablesOutput<AdminUserDTO> getUsers(DataTablesInput input){
 
-        return adminUserList;
+        Pageable pageable = DataTablesUtils.getPageable(input);
+        Page<AdminUserDTO> adminUsers = adminUserService.getUsers(pageable);
+        DataTablesOutput<AdminUserDTO> out = new DataTablesOutput<AdminUserDTO>();
+        out.setDraw(input.getDraw());
+        out.setData(adminUsers.getContent());
+        out.setRecordsFiltered(adminUsers.getTotalElements());
+        out.setRecordsTotal(adminUsers.getTotalElements());
+
+        return out;
     }
 
     /**
