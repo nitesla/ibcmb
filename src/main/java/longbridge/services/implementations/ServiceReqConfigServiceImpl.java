@@ -14,10 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.datatables.repository.DataTablesRepositoryFactoryBean;
-import org.springframework.data.jpa.datatables.repository.DataTablesUtils;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -72,9 +69,12 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
         return  modelMapper.map(serviceReqConfig,ServiceReqConfigDTO.class);
     }
 
+
+
     @Override
-    public Iterable<ServiceReqConfigDTO> getServiceReqConfigs() {
-        Iterable<ServiceReqConfig> serviceReqConfigs = serviceReqConfigRepo.findAll();
+    public List<ServiceReqConfigDTO> getServiceReqConfigs() {
+        List<ServiceReqConfig> serviceReqConfigs = serviceReqConfigRepo.findAll();
+
         return convertEntitiesToDTOs(serviceReqConfigs);
     }
 

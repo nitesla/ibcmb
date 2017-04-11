@@ -48,11 +48,17 @@
                             </div>
                             <div class="x_content">
 
-                            <table class="table table-striped table-bordered table-hover srconfig" >
+                            <table class="table table-striped table-bordered table-hover" id="srconfig">
                                 <thead>
                                 <tr>
+                                    <!--<th>Id</th>-->
                                     <th>Service Request Name</th>
+<<<<<<< HEAD
+                                    <th>Actions</th>
+=======
                                     <!--<th>Actions</th>-->
+
+>>>>>>> branch 'master' of https://longbridge_integration@bitbucket.org/longbridge_integration/ibcmb.git
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -61,8 +67,9 @@
                                 </tbody>
                                 <tfoot>
                                 <tr>
+                                    <!--<th>Id</th>-->
                                     <th>Service Request Name</th>
-                                    <!--<th>Actions</th>-->
+                                    <th>Actions</th>
                                 </tr>
                                 </tfoot>
                             </table>
@@ -89,8 +96,12 @@
 <script>
     /*<![CDATA[*/
     $(document).ready(function() {
+<<<<<<< HEAD
         $('.srconfig').DataTable({
+=======
+        $('#srconfig').DataTable({
         	select:true,
+>>>>>>> branch 'master' of https://longbridge_integration@bitbucket.org/longbridge_integration/ibcmb.git
             responsive: true,
             "lengthMenu" : [ [ 5, 10, 50, -1 ],	[ 5, 10, 50, "All" ] ],
 			"pagingType" : "full_numbers",
@@ -101,12 +112,30 @@
             "dom": 'T<"clear">lfrtip',
 
             "columns": [
-                { "data": "requestName", }
+<<<<<<< HEAD
+                { "data": "requestName" },
+                { "data": null }
+            ] ,"columnDefs" : [  {
+                "targets" : 1,
+                "render" : function(data, type, full, meta) {
+    					kk =  "<div class='col-md-6 col-sm-6 col-xs-12'><a  class='btn btn-default btn-xs' data-toggle='tooltip' title='Edit' data-placement='right' href='/admin/srconfig/edit?id="+ full.DT_RowId+ "'>"; 
+    					kk += "<i class='fa fa-edit'></i>"
+    					kk += "Edit</a>" ;
+    					
+    					kk  +=  "<a  class='btn btn-default btn-xs' data-toggle='tooltip' title='Delete' data-placement='right' href='/admin/srconfig/delete?id="+ full.DT_RowId+ "'>"; 
+    					kk += "<i class='fa fa-trash-o'></i>"
+    					kk += "Delete</a></div>";
+    					return kk;
+    			//	}
+    			//	return data;
+    			}
+                }
+=======
+                { "data": "requestName" }
+>>>>>>> branch 'master' of https://longbridge_integration@bitbucket.org/longbridge_integration/ibcmb.git
             ]
-        });
-
-
-    });
+        } );
+    } );
     /*]]>*/
 </script>
 

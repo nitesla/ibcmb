@@ -1,10 +1,13 @@
 package longbridge.models;
 
 
+import org.hibernate.envers.Audited;
+
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
 @Entity
+@Audited
 public class CorpLimit extends Limit {
 
 	@ManyToOne//TODO implement globallimit for corporate and for retail

@@ -1,5 +1,7 @@
 package longbridge.models;
 
+import org.hibernate.envers.Audited;
+
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -15,6 +17,7 @@ import javax.persistence.UniqueConstraint;
  */
 
 @Entity
+@Audited
 @Table(
 		name="code",
 		uniqueConstraints=

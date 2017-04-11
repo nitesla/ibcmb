@@ -1,5 +1,7 @@
 package longbridge.models;
 
+import org.hibernate.envers.Audited;
+
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import java.util.Collection;
@@ -12,6 +14,7 @@ import java.util.Date;
 
 
 @Entity
+@Audited
 public class RetailUser extends User{
 
 	private String customerId;
