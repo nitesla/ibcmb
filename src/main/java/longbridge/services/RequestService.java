@@ -1,5 +1,8 @@
 package longbridge.services;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import longbridge.models.RequestHistory;
 import longbridge.models.RetailUser;
 import longbridge.models.ServiceRequest;
@@ -32,6 +35,8 @@ public interface RequestService {
      * @param user the user
      */
     Iterable<ServiceRequest>getRequests(RetailUser user);
+    
+    Page<ServiceRequest>getRequests(RetailUser user, Pageable pageDetails);
 
 
     /**
@@ -46,5 +51,7 @@ public interface RequestService {
      * @param request the service request
      */
     Iterable<RequestHistory>getRequestHistories(ServiceRequest request);
+    
+    Page<RequestHistory>getRequestHistories(ServiceRequest request,Pageable pageDetails);
 
 }

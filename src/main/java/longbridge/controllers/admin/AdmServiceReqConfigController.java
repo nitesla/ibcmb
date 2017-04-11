@@ -1,11 +1,19 @@
 package longbridge.controllers.admin;
 
+import longbridge.dtos.CodeDTO;
 import longbridge.dtos.ServiceReqConfigDTO;
+import longbridge.services.CodeService;
 import longbridge.services.ServiceReqConfigService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+import org.springframework.data.jpa.datatables.repository.DataTablesUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -22,6 +30,9 @@ public class AdmServiceReqConfigController {
 
     @Autowired
     private ServiceReqConfigService serviceReqConfigService;
+    @Autowired
+    private CodeService codeService;
+
     @Autowired
     private ModelMapper modelMapper;
 
@@ -50,29 +61,37 @@ public class AdmServiceReqConfigController {
     }
 
     @GetMapping(path = "/all")
-    public @ResponseBody Iterable<ServiceReqConfigDTO> getConfigs(){
+    public @ResponseBody DataTablesOutput<ServiceReqConfigDTO> getConfigs(DataTablesInput input){
 
-        Iterable<ServiceReqConfigDTO> configList = serviceReqConfigService.getServiceReqConfigs();
-
-        return configList;
+    	Pageable pageable = DataTablesUtils.getPageable(input);
+        Page<ServiceReqConfigDTO> serviceReqConfigs = serviceReqConfigService.getServiceReqConfigs(pageable);
+        DataTablesOutput<ServiceReqConfigDTO> out = new DataTablesOutput<ServiceReqConfigDTO>();
+        out.setDraw(input.getDraw());
+        out.setData(serviceReqConfigs.getContent());
+        out.setRecordsFiltered(serviceReqConfigs.getTotalElements());
+        out.setRecordsTotal(serviceReqConfigs.getTotalElements());
+        return out;
     }
 
     @GetMapping("/{reqId}/edit")
     public String  editConfig(@PathVariable Long reqId, Model model){
         ServiceReqConfigDTO serviceReqConfig = serviceReqConfigService.getServiceReqConfig(reqId);
+        Iterable<CodeDTO> fieldTypes = codeService.getCodesByType("SERVICE_REQUEST");
         model.addAttribute("serviceReqConfig", serviceReqConfig);
+        model.addAttribute("requestFieldType",fieldTypes);
         //return "adm/serviceReqConfig/edit";
         return "/adm/serviceReqConfig/edit";
     }
 
-    @PostMapping("/{userId}")
-    public String updateConfig(@ModelAttribute("serviceRequestConfig") @Valid ServiceReqConfigDTO serviceReqConfigDTO, @PathVariable Long reqId, BindingResult result, Model model) throws Exception{
+    @PostMapping("/{reqId}/update")
+    public String updateConfig(@ModelAttribute("serviceReqConfig") ServiceReqConfigDTO serviceReqConfigDTO, BindingResult result,@PathVariable Long reqId, Model model) throws Exception{
         if(result.hasErrors()) {
-            return "addUser";
+            return "admin/srconfig/new";
         }
-        serviceReqConfigDTO.setId(reqId);
+       serviceReqConfigDTO.setId(reqId);
+        logger.info("My service req : {}",serviceReqConfigDTO.toString());
         serviceReqConfigService.updateServiceReqConfig(serviceReqConfigDTO);
-        model.addAttribute("success", "Admin user updated successfully");
-        return "redirect:/admin/users";
+        model.addAttribute("success", "Service Request Configuration updated successfully");
+        return "redirect:/admin/srconfig";
     }
 }
