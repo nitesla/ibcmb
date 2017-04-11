@@ -1,6 +1,7 @@
 package longbridge.models;
 
 import longbridge.utils.TransferType;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
@@ -11,6 +12,7 @@ import javax.persistence.ManyToOne;
  * Created on 3/30/2017.
  */
 @Entity
+@Audited
 public class TransferRequest extends AbstractEntity{
 
     @ManyToOne
@@ -133,7 +135,7 @@ public class TransferRequest extends AbstractEntity{
         return "Transfer{" +
                 "account=" + account +
                 ", transferType=" + transferType +
-                ", financialInstitution=" + financialInstitution +
+                ", financialinstitution=" + financialInstitution +
                 ", beneficiaryAccountNumber='" + beneficiaryAccountNumber + '\'' +
                 ", beneficiaryAccountName='" + beneficiaryAccountName + '\'' +
                 ", remarks='" + remarks + '\'' +

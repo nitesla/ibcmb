@@ -1,5 +1,7 @@
 package longbridge.models;
 
+import org.hibernate.envers.Audited;
+
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import java.util.Collection;
@@ -8,6 +10,7 @@ import java.util.Collection;
  * Created by Fortune on 3/29/2017.
  */
 @Entity
+@Audited
 public class Corporate extends AbstractEntity{
 
     private String rcNumber;

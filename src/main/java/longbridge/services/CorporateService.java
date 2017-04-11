@@ -4,6 +4,9 @@ import longbridge.models.*;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 
 /**
  *The {@code CorporateService} interface provides the method managing corporate operations
@@ -45,7 +48,10 @@ public interface CorporateService {
      *
      * @return a list of the corporate customers
      */
-    List<Corporate> getCorporates();
+    Iterable<Corporate> getCorporates();
+    
+    
+    Page<Corporate> getCorporates(Pageable pageDetails);
 
     /**
      * Sets the limit of transaction amount for the corporate customer

@@ -51,9 +51,9 @@
                             <table class="table table-striped table-bordered table-hover" id="srconfig">
                                 <thead>
                                 <tr>
-                                    <th>Id</th>
+                                    <!--<th>Id</th>-->
                                     <th>Service Request Name</th>
-                                    <th>Actions</th>
+                                    <!--<th>Actions</th>-->
 
                                 </tr>
                                 </thead>
@@ -63,9 +63,9 @@
                                 </tbody>
                                 <tfoot>
                                 <tr>
-                                    <th>Id</th>
+                                    <!--<th>Id</th>-->
                                     <th>Service Request Name</th>
-                                    <th>Actions</th>
+                                    <!--<th>Actions</th>-->
                                 </tr>
                                 </tfoot>
                             </table>
@@ -86,28 +86,24 @@
 </div>
 <script th:src="@{~/bank/vendors/datatables.net/js/jquery.dataTables.js}"></script>
 <script th:src="@{~/bank/js/dataTables.select.js}"></script>
+<script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
 
 <!-- Page-Level Scripts -->
 <script>
     /*<![CDATA[*/
     $(document).ready(function() {
-        $('#srconfig').DataTable( {
-            "processing": true,
-            "serverSide": true,
+        $('#srconfig').DataTable({
+        	select:true,
+            responsive: true,
+            "lengthMenu" : [ [ 5, 10, 50, -1 ],	[ 5, 10, 50, "All" ] ],
+			"pagingType" : "full_numbers",
+            "searching": false,
+            "paging": true,
+            "serverSide" : true,
             "ajax": "/admin/srconfig/all",
-            "processing": true,
-            "serverSide": true,
-            order : [[0, 'desc']],
-            "language": {
-                "processing": "Please wait"
-            },
-            "columnDefs": [
-
-                {
-                    "targets": [0],
-                    "searchable" : false,
-                    "visible" : false
-                }
+            "dom": 'T<"clear">lfrtip',
+            "columns": [
+                { "data": "requestName" }
             ]
         } );
     } );

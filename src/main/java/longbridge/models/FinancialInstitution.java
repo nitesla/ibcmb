@@ -1,5 +1,7 @@
 package longbridge.models;
 
+import org.hibernate.envers.Audited;
+
 import javax.persistence.Entity;
 
 /**
@@ -9,6 +11,7 @@ import javax.persistence.Entity;
  * Created on 3/30/2017.
  */
 @Entity
+@Audited
 public class FinancialInstitution extends AbstractEntity {
 
 

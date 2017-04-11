@@ -8,9 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import java.util.List;
 
 /**
  * Created by Showboy on 10/04/2017.
@@ -24,11 +23,11 @@ public class RetServiceRequestController {
 
     private Logger logger= LoggerFactory.getLogger(this.getClass());
 
-    @GetMapping("/new")
-    public String addConfig(Model model){
-        //List<ServiceReqConfigDTO> configList = serviceReqConfigService.getServiceReqConfigs();
-        List<ServiceReqConfigDTO> serviceReqConfig = serviceReqConfigService.getServiceReqConfigs();
+    @GetMapping("/{requestName}")
+    public String addConfig(@PathVariable String requestName, Model model){
+        Iterable<ServiceReqConfigDTO> serviceReqConfig = serviceReqConfigService.getServiceReqConfigs();
         model.addAttribute("requestList", serviceReqConfig);
+
         return "cust/servicerequest/add";
     }
 

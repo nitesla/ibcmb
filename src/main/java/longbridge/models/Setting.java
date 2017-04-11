@@ -1,5 +1,7 @@
 package longbridge.models;
 
+import org.hibernate.envers.Audited;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
@@ -7,6 +9,7 @@ import javax.persistence.Entity;
  * Created by LB-PRJ-020 on 4/5/2017.
  */
 @Entity
+@Audited
 public class Setting extends AbstractEntity{
 
     @Column(unique = true)
