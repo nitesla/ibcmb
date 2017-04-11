@@ -1,10 +1,8 @@
 package longbridge.services.implementations;
 
 import longbridge.dtos.CorporateUserDTO;
-import longbridge.dtos.RetailUserDTO;
 import longbridge.models.Corporate;
 import longbridge.models.CorporateUser;
-import longbridge.models.RetailUser;
 import longbridge.repositories.CorpLimitRepo;
 import longbridge.repositories.CorporateUserRepo;
 import longbridge.services.CorporateUserService;
@@ -14,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -158,7 +157,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         return  modelMapper.map(CorporateUserDTO,CorporateUser.class);
     }
 
-    private Iterable<CorporateUserDTO> convertEntitiesToDTOs(Iterable<CorporateUser> CorporateUsers){
+    private List<CorporateUserDTO> convertEntitiesToDTOs(Iterable<CorporateUser> CorporateUsers){
         List<CorporateUserDTO> CorporateUserDTOList = new ArrayList<>();
         for(CorporateUser CorporateUser: CorporateUsers){
             CorporateUserDTO corporateUserDTO =  modelMapper.map(CorporateUser,CorporateUserDTO.class);
@@ -175,7 +174,14 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 	@Override
 	public Page<CorporateUserDTO> getUsers(Pageable pageDetails) {
 		// TODO Auto-generated method stub
-		return null;
+
+        Page<CorporateUser> page = corporateUserRepo.findAll(pageDetails);
+        List<CorporateUserDTO> dtOs = convertEntitiesToDTOs(page.getContent());
+        long t = page.getTotalElements();
+
+        // return  new PageImpl<ServiceReqConfigDTO>(dtOs,pageDetails,page.getTotalElements());
+        Page<CorporateUserDTO> pageImpl = new PageImpl<CorporateUserDTO>(dtOs,pageDetails,t);
+        return pageImpl;
 	}
 
 }

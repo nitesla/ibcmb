@@ -14,8 +14,6 @@ public interface ServiceReqConfigService {
 
     ServiceReqConfigDTO getServiceReqConfig(Long id);
 
-    ServiceReqConfigDTO getServiceReqConfigs(String requestName);
-
     //List<ServiceReqConfigDTO> getServiceReqConfigs();
 
     Iterable<ServiceReqConfigDTO> getServiceReqConfigs();

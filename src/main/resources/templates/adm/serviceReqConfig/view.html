@@ -53,12 +53,7 @@
                                 <tr>
                                     <!--<th>Id</th>-->
                                     <th>Service Request Name</th>
-<<<<<<< HEAD
                                     <th>Actions</th>
-=======
-                                    <!--<th>Actions</th>-->
-
->>>>>>> branch 'master' of https://longbridge_integration@bitbucket.org/longbridge_integration/ibcmb.git
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -96,12 +91,8 @@
 <script>
     /*<![CDATA[*/
     $(document).ready(function() {
-<<<<<<< HEAD
-        $('.srconfig').DataTable({
-=======
         $('#srconfig').DataTable({
         	select:true,
->>>>>>> branch 'master' of https://longbridge_integration@bitbucket.org/longbridge_integration/ibcmb.git
             responsive: true,
             "lengthMenu" : [ [ 5, 10, 50, -1 ],	[ 5, 10, 50, "All" ] ],
 			"pagingType" : "full_numbers",
@@ -111,7 +102,6 @@
             "ajax": "/admin/srconfig/all",
             "dom": 'T<"clear">lfrtip',
             "columns": [
-<<<<<<< HEAD
                 { "data": "requestName" },
                 { "data": null }
             ] ,"columnDefs" : [  {
@@ -125,13 +115,8 @@
     					kk += "<i class='fa fa-trash-o'></i>"
     					kk += "Delete</a></div>";
     					return kk;
-    			//	}
-    			//	return data;
     			}
                 }
-=======
-                { "data": "requestName" }
->>>>>>> branch 'master' of https://longbridge_integration@bitbucket.org/longbridge_integration/ibcmb.git
             ]
         } );
     } );

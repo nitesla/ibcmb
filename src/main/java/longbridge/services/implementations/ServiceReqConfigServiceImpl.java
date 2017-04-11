@@ -71,12 +71,6 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
     }
 
     @Override
-    public ServiceReqConfigDTO getServiceReqConfigs(String requestName) {
-        ServiceReqConfig serviceReqConfig = serviceReqConfigRepo.findByRequestName(requestName);
-        return convertEntityToDTO(serviceReqConfig);
-    }
-
-    @Override
     public List<ServiceReqConfigDTO> getServiceReqConfigs() {
         List<ServiceReqConfig> serviceReqConfigs = serviceReqConfigRepo.findAll();
 
