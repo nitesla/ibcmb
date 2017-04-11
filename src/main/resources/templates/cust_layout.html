@@ -149,9 +149,10 @@
                             <ul class="dropdown-menu row">
                                 <li class="col-sm-3">
                                     <ul>
-                                        <p th:each="request : ${requestList}">
-                                            <li><a th:href="@{'/pub/servicerequest/' + ${request.requestName}}" th:text="${request.requestName}></a></li>
-                                        </p>
+                                        <li><a href="/pub/servicerequest/chequebook">Cheque Book</a></li>
+                                        <!--<p th:each="request : ${requestList}">-->
+                                            <!--<li><a th:href="@{'/pub/servicerequest/' + ${request.requestName}}" th:text="${request.requestName}></a></li>-->
+                                        <!--</p>-->
                                     </ul>
                                 </li>
                             </ul>

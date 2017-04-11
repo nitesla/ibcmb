@@ -26,19 +26,11 @@
                                 <h4 class="page-head-line">Make a Service Request</h4>
                             </div>
                             <div class="panel-body">
+                                <p th:text="${requestConfig.requestName}"></p>
                                 <form method="post">
-
-                                    <p th:if="${not #lists.isEmpty(requestList)}">
-                                        <div class="form-group">
-                                            <label for="requestType">Service Request Type</label>
-                                            <select name="requestType"  id="select">
-                                                <p th:each="request : ${requestList}">
-                                                <option th:text="${request.requestName}"></option>
-                                </p>
-                                            </select>
-                                        </div>
+                                    <p th:each="field : ${requestConfig.formFields}">
+                                        <p><input th:type="${field.fieldType}" th:name="${field.fieldName}"/></p>
                                     </p>
-
                                 </form>
                             </div>
                         </div>

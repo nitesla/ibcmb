@@ -25,9 +25,8 @@ public class RetServiceRequestController {
 
     @GetMapping("/{requestName}")
     public String addConfig(@PathVariable String requestName, Model model){
-        Iterable<ServiceReqConfigDTO> serviceReqConfig = serviceReqConfigService.getServiceReqConfigs();
-        model.addAttribute("requestList", serviceReqConfig);
-
+        ServiceReqConfigDTO serviceReqConfig = serviceReqConfigService.getServiceReqConfigs(requestName);
+        model.addAttribute("requestConfig", serviceReqConfig);
         return "cust/servicerequest/add";
     }
 
