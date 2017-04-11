@@ -6,6 +6,8 @@ import longbridge.repositories.TransferRequestRepo;
 import longbridge.services.IntegrationService;
 import longbridge.services.TransferService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 /**
@@ -52,5 +54,11 @@ public class TransferServiceImpl implements TransferService {
         transferRequest.setDelFlag("Y");
         transferRequestRepo.save(transferRequest);
     }
+
+	@Override
+	public Page<TransferRequest> getTransfers(User user, Pageable pageDetails) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

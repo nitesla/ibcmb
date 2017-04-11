@@ -1,5 +1,8 @@
 package longbridge.services;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import longbridge.dtos.ServiceReqConfigDTO;
 import longbridge.dtos.ServiceReqFormFieldDTO;
 
@@ -13,6 +16,8 @@ public interface ServiceReqConfigService {
     ServiceReqConfigDTO getServiceReqConfig(Long id);
 
     Iterable<ServiceReqConfigDTO> getServiceReqConfigs();
+    
+    Page<ServiceReqConfigDTO> getServiceReqConfigs(Pageable pageDetails);
 
     void updateServiceReqConfig(ServiceReqConfigDTO serviceReqFormField);
 
@@ -27,6 +32,8 @@ public interface ServiceReqConfigService {
 
     Iterable<ServiceReqFormFieldDTO> getServiceReqFormFields();
 
+    Page<ServiceReqFormFieldDTO> getServiceReqFormFields(Pageable pageDetails);
+    
     void updateServiceReqFormField(ServiceReqFormFieldDTO serviceReqFormField);
 
     void delServiceReqFormField(Long id);

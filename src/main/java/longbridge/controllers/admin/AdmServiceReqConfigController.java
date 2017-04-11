@@ -6,6 +6,12 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+import org.springframework.data.jpa.datatables.repository.DataTablesUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -52,11 +58,16 @@ public class AdmServiceReqConfigController {
     }
 
     @GetMapping(path = "/all")
-    public @ResponseBody Iterable<ServiceReqConfigDTO> getConfigs(){
+    public @ResponseBody DataTablesOutput<ServiceReqConfigDTO> getConfigs(DataTablesInput input){
 
-        Iterable<ServiceReqConfigDTO> configList = serviceReqConfigService.getServiceReqConfigs();
-
-        return configList;
+    	Pageable pageable = DataTablesUtils.getPageable(input);
+        Page<ServiceReqConfigDTO> serviceReqConfigs = serviceReqConfigService.getServiceReqConfigs(pageable);
+        DataTablesOutput<ServiceReqConfigDTO> out = new DataTablesOutput<ServiceReqConfigDTO>();
+        out.setDraw(input.getDraw());
+        out.setData(serviceReqConfigs.getContent());
+        out.setRecordsFiltered(serviceReqConfigs.getTotalElements());
+        out.setRecordsTotal(serviceReqConfigs.getTotalElements());
+        return out;
     }
 
     @GetMapping("/{reqId}/edit")

@@ -11,6 +11,8 @@ import longbridge.repositories.RoleRepo;
 import longbridge.services.SecurityService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -146,5 +148,19 @@ public class SecurityServiceImpl implements SecurityService {
         }
         return permissionDTOs;
     }
+
+
+	@Override
+	public Page<RoleDTO> getRoles(Pageable pageDetails) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public Page<PermissionDTO> getPermissions(Pageable pageDetails) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

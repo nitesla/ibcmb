@@ -52,7 +52,7 @@
                                 <thead>
                                 <tr>
                                     <th>Service Request Name</th>
-                                    <!--<th>Actions</th>-->
+                                    <th>Actions</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -62,7 +62,7 @@
                                 <tfoot>
                                 <tr>
                                     <th>Service Request Name</th>
-                                    <!--<th>Actions</th>-->
+                                    <th>Actions</th>
                                 </tr>
                                 </tfoot>
                             </table>
@@ -83,20 +83,39 @@
 </div>
 <script th:src="@{~/bank/vendors/datatables.net/js/jquery.dataTables.js}"></script>
 <script th:src="@{~/bank/js/dataTables.select.js}"></script>
+<script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
 
 <!-- Page-Level Scripts -->
 <script>
     /*<![CDATA[*/
     $(document).ready(function() {
-        $('.srconfig').dataTable({
+        $('.srconfig').DataTable({
             responsive: true,
+            "lengthMenu" : [ [ 5, 10, 50, -1 ],	[ 5, 10, 50, "All" ] ],
+			"pagingType" : "full_numbers",
             "searching": false,
             "paging": true,
-            "sAjaxSource": "/admin/srconfig/all",
-            "sAjaxDataProp": "",
+            "serverSide" : true,
+            "ajax": "/admin/srconfig/all",
             "dom": 'T<"clear">lfrtip',
-            "aoColumns": [
-                { "mData": "requestName", }
+            "columns": [
+                { "data": "requestName" },
+                { "data": null }
+            ] ,"columnDefs" : [  {
+                "targets" : 1,
+                "render" : function(data, type, full, meta) {
+    					kk =  "<div class='col-md-6 col-sm-6 col-xs-12'><a  class='btn btn-default btn-xs' data-toggle='tooltip' title='Edit' data-placement='right' href='/admin/srconfig/edit?id="+ full.DT_RowId+ "'>"; 
+    					kk += "<i class='fa fa-edit'></i>"
+    					kk += "Edit</a>" ;
+    					
+    					kk  +=  "<a  class='btn btn-default btn-xs' data-toggle='tooltip' title='Delete' data-placement='right' href='/admin/srconfig/delete?id="+ full.DT_RowId+ "'>"; 
+    					kk += "<i class='fa fa-trash-o'></i>"
+    					kk += "Delete</a></div>";
+    					return kk;
+    			//	}
+    			//	return data;
+    			}
+                }
             ]
         });
 
