@@ -14,9 +14,6 @@ import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
 /**
  * Created by ayoade_farooq@yahoo.com on 4/10/2017.
@@ -58,24 +55,12 @@ public class SecurityConfig {
         protected void configure(HttpSecurity http) throws Exception {
             // @formatter:off
             http
-           .antMatcher("/admin*").authorizeRequests().anyRequest().hasRole("ADMIN")
+           .antMatcher("/admin/**").authorizeRequests().anyRequest().hasRole("ADMIN")
                     // log in
-                    .and().formLogin().loginPage("/loginAdmin")
-                    .loginProcessingUrl("/admin_login").failureUrl("/loginAdmin?error=loginError").defaultSuccessUrl("/adminPage")
-//                    .successHandler(adminAuthenticationSuccessHandler)
-//                    .failureHandler(adminAuthenticationFailureHandler)
-                    .permitAll()
-                    .and()
-                    .sessionManagement()
-                    .invalidSessionUrl("/invalidSession.html")
-                    .maximumSessions(1).sessionRegistry(new SecurityConfig().sessionRegistry()).and()
-                    .sessionFixation().none()
-                    .and()
+                    .and().formLogin().loginPage("/loginAdmin").loginProcessingUrl("/admin_login").failureUrl("/loginAdmin?error=loginError").defaultSuccessUrl("/adminPage")
                     // logout
-                    .logout().logoutUrl("/admin_logout").logoutSuccessUrl("/protectedLinks").deleteCookies("JSESSIONID").
-                    invalidateHttpSession(false).
-                    //.logoutSuccessHandler(adminLogoutSuccessHandler).
-                    and().exceptionHandling().accessDeniedPage("/403");
+                    .and().logout().logoutUrl("/admin_logout").logoutSuccessUrl("/protectedLinks").deleteCookies("JSESSIONID").and().exceptionHandling().accessDeniedPage("/403").and().csrf().disable();
+
             // @formatter:on
 
 
