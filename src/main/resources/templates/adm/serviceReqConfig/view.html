@@ -88,15 +88,15 @@
 <script>
     /*<![CDATA[*/
     $(document).ready(function() {
-        $('.srconfig').dataTable({
+        $('.srconfig').DataTable({
+        	select:true,
             responsive: true,
             "searching": false,
             "paging": true,
-            "sAjaxSource": "/admin/srconfig/all",
-            "sAjaxDataProp": "",
+            "ajax": "/admin/srconfig/all",
             "dom": 'T<"clear">lfrtip',
-            "aoColumns": [
-                { "mData": "requestName", }
+            "columns": [
+                { "data": "requestName", }
             ]
         });
 
