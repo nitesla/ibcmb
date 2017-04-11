@@ -1,4 +1,4 @@
-package longbridge.security.adminuser;
+package longbridge.security;
 
 import longbridge.models.AdminUser;
 import longbridge.security.LoginAttemptService;
@@ -15,10 +15,10 @@ public class AdminAuthenticationFailureListener implements ApplicationListener<A
 
     @Override
     public void onApplicationEvent(final AuthenticationFailureBadCredentialsEvent e) {
-        final AdminUser user = (AdminUser) e.getAuthentication().getDetails();
-        if (user != null) {
-            loginAttemptService.loginFailed(user.getUserName(),user.getUserType().name());
-        }
-    }
+//        final AdminUser user = (AdminUser) e.getAuthentication().getDetails();
+//        if (user != null) {
+//            loginAttemptService.loginFailed(user.getUserName(),user.getUserType().name());
+//        }
+   }
 
 }

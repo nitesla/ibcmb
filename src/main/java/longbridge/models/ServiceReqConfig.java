@@ -1,5 +1,6 @@
 package longbridge.models;
 
+import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.CascadeType;
@@ -12,6 +13,7 @@ import java.util.Collection;
  */
 @Entity
 @Audited
+@Where(clause ="del_Flag='N'" )
 public class ServiceReqConfig extends AbstractEntity{
 
     private String requestName;

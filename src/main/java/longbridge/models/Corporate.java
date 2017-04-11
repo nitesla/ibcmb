@@ -1,5 +1,6 @@
 package longbridge.models;
 
+import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.Entity;
@@ -11,6 +12,7 @@ import java.util.Collection;
  */
 @Entity
 @Audited
+@Where(clause ="del_Flag='N'" )
 public class Corporate extends AbstractEntity{
 
     private String rcNumber;

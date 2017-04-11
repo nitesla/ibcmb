@@ -1,6 +1,7 @@
 package longbridge.models;
 
 
+import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -12,6 +13,7 @@ import java.util.Date;
  */
 @Entity
 @Audited
+@Where(clause ="del_Flag='N'" )
 public class Verification extends  AbstractEntity {
 
     @Column(columnDefinition = "TEXT")

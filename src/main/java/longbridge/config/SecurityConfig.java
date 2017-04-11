@@ -55,11 +55,14 @@ public class SecurityConfig {
         protected void configure(HttpSecurity http) throws Exception {
             // @formatter:off
             http
-           .antMatcher("/admin/**").authorizeRequests().anyRequest().hasRole("ADMIN")
+
+                    // log in
+                    .antMatcher("/admin*").authorizeRequests().anyRequest().hasRole("ADMIN")
                     // log in
                     .and().formLogin().loginPage("/loginAdmin").loginProcessingUrl("/admin_login").failureUrl("/loginAdmin?error=loginError").defaultSuccessUrl("/adminPage")
                     // logout
                     .and().logout().logoutUrl("/admin_logout").logoutSuccessUrl("/protectedLinks").deleteCookies("JSESSIONID").and().exceptionHandling().accessDeniedPage("/403").and().csrf().disable();
+
 
             // @formatter:on
 

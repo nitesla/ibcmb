@@ -1,6 +1,6 @@
-package longbridge.security.retailuser;
+package longbridge.security;
 
-import longbridge.models.RetailUser;
+import longbridge.models.AdminUser;
 import longbridge.models.User;
 import longbridge.security.LoginAttemptService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +10,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.stereotype.Component;
 
 @Component
-public class RetailAuthenticationSuccessEventListener implements ApplicationListener<AuthenticationSuccessEvent> {
+public class AdminAuthenticationSuccessEventListener implements ApplicationListener<AuthenticationSuccessEvent> {
 
     @Autowired
     private LoginAttemptService loginAttemptService;
@@ -18,12 +18,12 @@ public class RetailAuthenticationSuccessEventListener implements ApplicationList
     @Override
     public void onApplicationEvent(final AuthenticationSuccessEvent e) {
 
-       User user= (User) e.getAuthentication().getDetails();
-        final RetailUser auth = (RetailUser) e.getAuthentication().getDetails();
-        if (auth != null) {
-            //loginAttemptService.loginSucceeded(auth.getRemoteAddress());
-            loginAttemptService.loginSucceeded(auth.getUserName(),auth.getUserType().toString());
-        }
+
+//        final AdminUser user = (AdminUser) e.getAuthentication().getDetails();
+//        if (user != null) {
+//            //loginAttemptService.loginSucceeded(auth.getRemoteAddress());
+//            loginAttemptService.loginSucceeded(user.getUserName(),user.getUserType().name());
+//        }
     }
 
 }

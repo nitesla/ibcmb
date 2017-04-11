@@ -25,10 +25,13 @@ public class EntityRevisionListener/*<T extends RevisionsEntity>*/  implements E
     public String getUser(){
 
         //would use spring security later to get Principal.getName() or any other way
-
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth.getName();
-
+        String username="";
+        try {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+             username = auth.getName();
+        }catch (Exception e){
+            
+        }
         return username;
                 //principal.getName();
 
