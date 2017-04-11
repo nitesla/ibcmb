@@ -16,5 +16,5 @@ import java.util.List;
 @Repository
 
 public interface AdminUserRepo extends CommonRepo<AdminUser, Long>{
-
+    AdminUser findByUserName(String s);
 }

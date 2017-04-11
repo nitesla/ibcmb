@@ -124,12 +124,12 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     private Iterable<RoleDTO> convertRoleEntitiesToDTOs(Iterable<Role> roles){
-        List<RoleDTO> roleDTOs = new ArrayList<>();
+        List<RoleDTO> roleDTOList = new ArrayList<>();
         for(Role role: roles){
             RoleDTO roleDTO = modelMapper.map(role,RoleDTO.class);
-            roleDTOs.add(roleDTO);
+            roleDTOList.add(roleDTO);
         }
-        return roleDTOs;
+        return roleDTOList;
     }
 
     private PermissionDTO convertEntityToDTO(Permission permission){
@@ -141,12 +141,12 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     private Iterable<PermissionDTO> convertPermissionEntitiesToDTOs(Iterable<Permission> permissions){
-        List<PermissionDTO> permissionDTOs = new ArrayList<>();
+        List<PermissionDTO> permissionDTOList = new ArrayList<>();
         for(Permission permission: permissions){
             PermissionDTO permissionDTO = modelMapper.map(permission,PermissionDTO.class);
-            permissionDTOs.add(permissionDTO);
+            permissionDTOList.add(permissionDTO);
         }
-        return permissionDTOs;
+        return permissionDTOList;
     }
 
 

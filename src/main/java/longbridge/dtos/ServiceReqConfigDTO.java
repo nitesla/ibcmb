@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.ArrayList;
 
 /**
- * Created by Showboy on 08/04/2017.
+ * Created by Wunmi on 08/04/2017.
  */
 public class ServiceReqConfigDTO {
 

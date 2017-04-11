@@ -209,11 +209,12 @@ public class RetailUserServiceImpl implements RetailUserService {
     }
 
     private Iterable<RetailUserDTO> convertEntitiesToDTOs(Iterable<RetailUser> RetailUsers){
-        List<RetailUserDTO> RetailUserDTOs = new ArrayList<>();
-        for(RetailUser RetailUser: RetailUsers){
-          RetailUserDTO retailUserDTO =  modelMapper.map(RetailUser,RetailUserDTO.class);
+        List<RetailUserDTO> retailUserDTOList = new ArrayList<>();
+        for(RetailUser retailUser: RetailUsers){
+          RetailUserDTO userDTO =  convertEntityToDTO(retailUser);
+          retailUserDTOList.add(userDTO);
         }
-        return RetailUserDTOs;
+        return retailUserDTOList;
     }
 
 	@Override
