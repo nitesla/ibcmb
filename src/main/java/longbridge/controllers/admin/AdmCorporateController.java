@@ -21,7 +21,7 @@ public class AdmCorporateController {
 
     @GetMapping("/new")
     public String addCorporate(){
-        return "add-corporate";
+        return "adm/corporate/add";
     }
 
     @PostMapping

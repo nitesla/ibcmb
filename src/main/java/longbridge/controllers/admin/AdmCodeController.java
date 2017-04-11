@@ -40,7 +40,7 @@ public class AdmCodeController {
 
     @GetMapping("/new")
     public String addCode(){
-        return "code/add";
+        return "adm/code/add";
     }
 
     @PostMapping

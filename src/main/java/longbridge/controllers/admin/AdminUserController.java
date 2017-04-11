@@ -34,7 +34,8 @@ public class AdminUserController {
      * @return
      */
     @GetMapping("/new")
-    public String addUser(){
+    public String addUser(AdminUserDTO adminUserDTO)
+    {
         return "adm/admin/add";
     }
 
@@ -57,13 +58,13 @@ public class AdminUserController {
      * @return
      * @throws Exception
      */
-    @PostMapping
+    @PostMapping("/new")
     public String createUser(@ModelAttribute("user") AdminUserDTO adminUserDTO, BindingResult result, Model model) throws Exception{
         if(result.hasErrors()){
-            return "admin/add";
+            return "add/admin/add";
         }
 
-        AdminUser adminUser =modelMapper.map(adminUserDTO,AdminUser.class);
+       AdminUser adminUser =modelMapper.map(adminUserDTO,AdminUser.class);
         adminUserService.addUser(adminUser);
         model.addAttribute("success","Admin user created successfully");
         return "redirect:/admin/list";

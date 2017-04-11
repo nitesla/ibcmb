@@ -57,15 +57,15 @@ public class AdmServiceReqConfigController {
         return "adm/serviceReqConfig/";
     }
 
-    @PostMapping
-    public String editConfig(@ModelAttribute("serviceRequestConfig") ServiceReqConfigDTO serviceReqConfigDTO, BindingResult result, Model model) throws Exception{
-        if(result.hasErrors()){
-            return "admin/srconfig/new";
-        }
-
-        serviceReqConfigService.addSeviceReqConfig(serviceReqConfigDTO);
-        model.addAttribute("success","Service Request Config  created successfully");
-        return "redirect:/admin/srconfig";
-    }
+//    @PostMapping
+//    public String editConfig(@ModelAttribute("serviceRequestConfig") ServiceReqConfigDTO serviceReqConfigDTO, BindingResult result, Model model) throws Exception{
+//        if(result.hasErrors()){
+//            return "admin/srconfig/new";
+//        }
+//
+//        serviceReqConfigService.addSeviceReqConfig(serviceReqConfigDTO);
+//        model.addAttribute("success","Service Request Config  created successfully");
+//        return "redirect:/admin/srconfig";
+//    }
 
 }

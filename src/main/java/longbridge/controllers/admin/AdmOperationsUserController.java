@@ -29,7 +29,7 @@ public class AdmOperationsUserController {
 
     @GetMapping("/new")
     public String addUser(){
-        return "addUser";
+        return "adm/operation/add";
     }
 
     @PostMapping

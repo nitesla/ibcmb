@@ -2,6 +2,7 @@ package longbridge.controllers.admin;
 
 import longbridge.dtos.ChangePassword;
 import longbridge.dtos.RetailUserDTO;
+import longbridge.models.Corporate;
 import longbridge.models.RetailUser;
 import longbridge.services.RetailUserService;
 import org.modelmapper.ModelMapper;
@@ -34,7 +35,7 @@ public class AdmRetailUserController {
 
     @GetMapping("/new")
     public String addUser(){
-        return "addUser";
+        return "adm/retail/add";
     }
 
 
@@ -62,12 +63,15 @@ public class AdmRetailUserController {
         return "addUser";
     }
 
-    @GetMapping
-    public Iterable<RetailUser> getAllRetailUsers(Model model){
+
+    @GetMapping(path="/all")
+    public  @ResponseBody Iterable<RetailUser> getAllRetailUsers(){
         Iterable<RetailUser> retailUserList= retailUserService.getUsers();
-        model.addAttribute("retailUserList",retailUserList);
+       // model.addAttribute("retailUserList",retailUserList);
         return retailUserList;
     }
+
+
 
     @GetMapping("/{userId}")
     public String getUser(@PathVariable  Long userId, Model model){
@@ -125,5 +129,6 @@ public class AdmRetailUserController {
         logger.info("PASSWORD CHANGED SUCCESSFULLY");
         return "changePassword";
     }
+
 
 }
