@@ -1,13 +1,18 @@
 package longbridge.controllers.admin;
 
-import longbridge.forms.ChangePassword;
 import longbridge.dtos.CorporateUserDTO;
+import longbridge.forms.ChangePassword;
 import longbridge.models.CorporateUser;
 import longbridge.services.CorporateUserService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+import org.springframework.data.jpa.datatables.repository.DataTablesUtils;
 import org.springframework.http.HttpRequest;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -48,10 +53,22 @@ public class AdmCorporateUserController {
     }
 
     @GetMapping
-    public Iterable<CorporateUser> getRetailUsers(Model model){
-        Iterable<CorporateUser> corporateUserList= corporateUserService.getUsers();
-        model.addAttribute("corporateUserList",corporateUserList);
-        return corporateUserList;
+    public String getRetailUsers(Model model){
+
+        return "adm/corporate/view";
+    }
+
+    @GetMapping(path = "/all")
+    public @ResponseBody DataTablesOutput<CorporateUserDTO> getUsers(DataTablesInput input){
+
+        Pageable pageable = DataTablesUtils.getPageable(input);
+        Page<CorporateUserDTO> corpUsers = corporateUserService.getUsers(pageable);
+        DataTablesOutput<CorporateUserDTO> out = new DataTablesOutput<CorporateUserDTO>();
+        out.setDraw(input.getDraw());
+        out.setData(corpUsers.getContent());
+        out.setRecordsFiltered(corpUsers.getTotalElements());
+        out.setRecordsTotal(corpUsers.getTotalElements());
+        return out;
     }
 
     @GetMapping("/{userId}")

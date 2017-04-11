@@ -17,7 +17,7 @@ import java.security.Principal;
 public class EntityRevisionListener/*<T extends RevisionsEntity>*/  implements EntityTrackingRevisionListener {
 
 
-    private Principal principal;
+//    private Principal principal;
 
 
 
@@ -30,7 +30,7 @@ public class EntityRevisionListener/*<T extends RevisionsEntity>*/  implements E
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
              username = auth.getName();
         }catch (Exception e){
-            
+
         }
         return username;
                 //principal.getName();

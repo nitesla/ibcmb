@@ -1,9 +1,15 @@
 package longbridge.services.implementations;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import longbridge.dtos.AdminUserDTO;
 import longbridge.models.AdminUser;
+import longbridge.models.OperationCode;
+import longbridge.models.Verification;
 import longbridge.repositories.AdminUserRepo;
+import longbridge.repositories.VerificationRepo;
 import longbridge.services.AdminUserService;
+import longbridge.services.SecurityService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +19,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -31,6 +39,12 @@ public class AdminUserServiceImpl implements AdminUserService {
     private ModelMapper modelMapper;
 
     @Autowired
+    private VerificationRepo verificationRepo;
+
+    @Autowired
+    private SecurityService securityService;
+
+    @Autowired
     public AdminUserServiceImpl(AdminUserRepo adminUserRepo, BCryptPasswordEncoder passwordEncoder) {
 
         this.adminUserRepo = adminUserRepo;
@@ -43,8 +57,7 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     @Override
     public AdminUser getUser(Long id) {
-        return   this.adminUserRepo.findOne(id);
-
+        return this.adminUserRepo.findOne(id);
     }
 
     @Override
@@ -77,21 +90,20 @@ public class AdminUserServiceImpl implements AdminUserService {
         return ok;
     }
 
-    @Override
-    public boolean addUser(AdminUserDTO user) {
-        boolean ok = false;
-        if (user != null) {
-            user.setPassword(this.passwordEncoder.encode(user.getPassword()));
-            AdminUser adminUser = convertDTOToEntity(user);
-            this.adminUserRepo.save(adminUser);
-            logger.info("New admin user: {} created", adminUser.getUserName());
-            ok=true;
-        } else {
-            logger.error("USER NOT FOUND");
-        }
-
-        return ok;
-    }
+//    @Override
+//    public boolean addUser(AdminUserDTO user) {
+//        boolean ok = false;
+//        if (user != null) {
+//            user.setPassword(this.passwordEncoder.encode(user.getPassword()));
+//            AdminUser adminUser = convertDTOToEntity(user);
+//            this.adminUserRepo.save(adminUser);
+//            logger.info("New admin user: {} created", adminUser.getUserName());
+//            ok=true;
+//        } else {
+//            logger.error("USER NOT FOUND");
+//        }
+//        return ok;
+//    }
 
     @Override
     public void deleteUser(Long id) {
@@ -158,7 +170,7 @@ public class AdminUserServiceImpl implements AdminUserService {
         boolean ok = false;
 
         try {
-            String newPassword = generatePassword();
+            String newPassword = securityService.generatePassword();
             setPassword(user, newPassword);
             sendPassword(user);
             logger.info("PASSWORD GENERATED AND SENT");
@@ -170,33 +182,27 @@ public class AdminUserServiceImpl implements AdminUserService {
         return ok;
     }
 
-    public String generatePassword() {
-       /* String password=   RandomStringUtils.randomNumeric(10);
-        return password!=null? password: "";*/
-        return null;
-    }
-
 
     public boolean sendPassword(AdminUser user) {
         //TODO use an smtp server to send new password to user via mail
         return false;
     }
-
-    @Override
-    public boolean updateUser(AdminUserDTO user) {
-        boolean result = false;
-        try {
-            if (user != null) {
-                AdminUser adminUser = convertDTOToEntity(user);
-                this.adminUserRepo.save(adminUser);
-                logger.info("User {} successfully updated");
-            }
-        } catch (Exception e) {
-            logger.info("Could not update admin user",e);
-
-        }
-        return result;
-    }
+//
+//    @Override
+//    public boolean updateUser(AdminUserDTO user) {
+//        boolean result = false;
+//        try {
+//            if (user != null) {
+//                AdminUser adminUser = convertDTOToEntity(user);
+//                this.adminUserRepo.save(adminUser);
+//                logger.info("User Successfully Updated");
+//            }
+//        } catch (Exception e) {
+//            logger.info("Could not update admin user",e);
+//
+//        }
+//        return result;
+//    }
 
 
 
@@ -225,6 +231,92 @@ public class AdminUserServiceImpl implements AdminUserService {
 		// TODO Auto-generated method stub
 		return null;
 	}
+    @Override
+    public void add(AdminUserDTO adminUser, AdminUser initiator) {
+        try {
+            Verification verification = new Verification();
+            verification.setBeforeObject("");
+            verification.setAfterObject(serialize(adminUser));
+            verification.setOriginal("");
+            verification.setDescription("Added a new AdminUser");
+            verification.setOperationCode(OperationCode.ADD_CODE);
+            verification.setInitiatedBy(initiator);
+            verification.setInitiatedOn(new Date());
+            verificationRepo.save(verification);
+
+            logger.info("AdminUser creation request has been added. Before {}, After {} ",
+                    verification.getBeforeObject(), verification.getAfterObject());
+        }
+        catch (Exception e){
+            logger.error("Error Occurred {}",e);
+        }
+    }
+
+    @Override
+    public void modify(AdminUserDTO adminUser, AdminUser initiator){
+        AdminUser adminUserO = adminUserRepo.findOne(adminUser.getId());
+        AdminUserDTO originalObject = convertEntityToDTO(adminUserO);
+
+        try {
+            Verification verification = new Verification();
+            verification.setBeforeObject(serialize(originalObject));
+            verification.setAfterObject(serialize(adminUser));
+            verification.setOriginal(serialize(originalObject));
+            verification.setDescription("Modified an AdminUser");
+            verification.setOperationCode(OperationCode.MODIFY_CODE);
+            verification.setInitiatedBy(initiator);
+            verification.setInitiatedOn(new Date());
+            verificationRepo.save(verification);
+
+            logger.info("Admin modification request has been added. Before {}, After {} ",
+                    verification.getBeforeObject(), verification.getAfterObject());
+        }
+        catch (Exception e){
+            logger.error("Error Occurred {}",e);
+        }
+    }
+
+    @Override
+    public AdminUserDTO deserialize(String data) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        AdminUserDTO adminUser = mapper.readValue(data, AdminUserDTO.class);
+        return adminUser;
+    }
+
+    @Override
+    public String serialize(AdminUserDTO adminUser) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        String data = mapper.writeValueAsString(adminUser);
+        return data;
+    }
+
+    @Override
+    public void verify(Verification t, AdminUser verifier) throws IOException {
+        if(t.getVerifiedBy() != null){
+            //already verified
+            logger.debug("Already verified");
+            return ;
+        }
+        t.setVerifiedBy(verifier);
+        t.setVerifiedOn(new Date());
+
+        AdminUserDTO afterAdminUserDTO = deserialize(t.getAfterObject());
+        AdminUser afterAdminUser = convertDTOToEntity(afterAdminUserDTO);
+
+
+        adminUserRepo.save(afterAdminUser);
+        t.setEntityId(afterAdminUser.getId());
+        verificationRepo.save(t);
+    }
+
+
+    @Override
+    public void decline(Verification verification, AdminUser decliner, String declineReason) {
+        verification.setDeclinedBy(decliner);
+        verification.setDeclinedOn(new Date());
+        verification.setDeclineReason(declineReason);
+        verificationRepo.save(verification);
+    }
 }
 
 

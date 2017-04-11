@@ -83,15 +83,18 @@ public class CodeServiceImpl implements CodeService {
         Iterable<Code> codes = this.codeRepo.findAll();
         return convertEntitiesToDTOs(codes);    }
 
+    /**
+     * Adds a new code to the syste
+     * @param codeDTO the code
+     */
     @Override
-    public boolean addCode(CodeDTO codeDTO, AdminUser adminUser) {
-        boolean result= false;
+   public void add(CodeDTO codeDTO, AdminUser adminUser) {
 
-        Code code = convertDTOToEntity(codeDTO);
+//        Code code = convertDTOToEntity(codeDTO);
         try {
             Verification verification = new Verification();
             verification.setBeforeObject("");
-            verification.setAfterObject(serialize(code));
+            verification.setAfterObject(serialize(codeDTO));
             verification.setOriginal("");
             verification.setDescription("Added a new Code");
             verification.setOperationCode(OperationCode.ADD_CODE);
@@ -100,18 +103,24 @@ public class CodeServiceImpl implements CodeService {
             verificationRepo.save(verification);
 
             logger.info("Code creation request has been added ");
-            result=true;
         }
         catch (Exception e){
             logger.error("ERROR OCCURRED {}",e.getMessage());
         }
-        return result;
     }
-
-    public boolean updateCode(CodeDTO codeDTO, AdminUser adminUser){
-         boolean result= false;
-         Code code = convertDTOToEntity(codeDTO);
-         Code originalObject = codeRepo.findOne(code.getId());
+//
+//    public boolean updateCode(CodeDTO codeDTO, AdminUser adminUser){
+//         boolean result= false;
+//         Code code = convertDTOToEntity(codeDTO);
+//         Code originalObject = codeRepo.findOne(code.getId());
+    /**
+     * Modifies an existing code
+     * @param code the code
+     */
+    @Override
+    public void modify(CodeDTO code, AdminUser adminUser){
+        Code codeO = codeRepo.findOne(code.getId());
+        CodeDTO originalObject = convertEntityToDTO(codeO);
 
         try {
             Verification verification = new Verification();
@@ -125,23 +134,21 @@ public class CodeServiceImpl implements CodeService {
             verificationRepo.save(verification);
 
             logger.info("Code modification request has been added ");
-            result=true;
         }
         catch (Exception e){
-            logger.error("ERROR OCCURRED {}",e.getMessage());
+            logger.error("Error Occurred {}",e);
         }
-        return result;
     }
 
     @Override
-    public Code deserialize(String data) throws IOException {
+    public CodeDTO deserialize(String data) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
-        Code code = mapper.readValue(data, Code.class);
+        CodeDTO code = mapper.readValue(data, CodeDTO.class);
         return code;
     }
 
     @Override
-    public String serialize(Code code) throws JsonProcessingException {
+    public String serialize(CodeDTO code) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         String data = mapper.writeValueAsString(code);
         return data;
@@ -152,10 +159,11 @@ public class CodeServiceImpl implements CodeService {
         verificationObject.setVerifiedBy(verifier);
         verificationObject.setVerifiedOn(new Date());
 
-        Code afterCode = deserialize(verificationObject.getAfterObject());
+        CodeDTO afterCodeDTO = deserialize(verificationObject.getAfterObject());
+        Code afterCode = convertDTOToEntity(afterCodeDTO);
 
         codeRepo.save(afterCode);
-        verificationObject.setVerifiedId(afterCode.getId());
+        verificationObject.setEntityId(afterCode.getId());
         verificationRepo.save(verificationObject);
     }
 
@@ -177,12 +185,12 @@ public class CodeServiceImpl implements CodeService {
     }
 
     private Iterable<CodeDTO> convertEntitiesToDTOs(Iterable<Code> codes){
-        List<CodeDTO> codeDTOs = new ArrayList<>();
+        List<CodeDTO> codeDTOList = new ArrayList<>();
         for(Code code: codes){
-            CodeDTO codeDTO = modelMapper.map(code,CodeDTO.class);
-            codeDTOs.add(codeDTO);
+            CodeDTO codeDTO = convertEntityToDTO(code);
+            codeDTOList.add(codeDTO);
         }
-        return codeDTOs;
+        return codeDTOList;
     }
 
 

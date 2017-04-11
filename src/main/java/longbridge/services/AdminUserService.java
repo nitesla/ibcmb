@@ -5,13 +5,15 @@ import org.springframework.data.domain.Pageable;
 
 import longbridge.dtos.AdminUserDTO;
 import longbridge.models.AdminUser;
+import longbridge.models.RetailUser;
+import longbridge.models.Verifiable;
 
 /**The {@code AdminUserService} interface provides the methods for managing an Admin user
  * @author Fortunatus Ekenachi
  * @see AdminUser
  * Created on 3/28/2017.
  */
-public interface AdminUserService {
+public interface AdminUserService extends Verifiable<AdminUserDTO> {
 
     /**
      * Returns an {@code AdminUser} having the specified userId
@@ -49,12 +51,12 @@ public interface AdminUserService {
      * @param hashedPassword the hashed password
      */
     boolean setPassword(AdminUser user, String hashedPassword);
-
-    /**
-     * Creates an Admin user
-     * @param user the new admin user
-     */
-    boolean addUser(AdminUserDTO user);
+//
+//    /**
+//     * Creates an Admin user
+//     * @param user the new admin user
+//     */
+//    boolean addUser(AdminUserDTO user);
 
 
     /**
@@ -63,12 +65,12 @@ public interface AdminUserService {
      */
     void deleteUser(Long id);
 
-
-    /**
-     * Updates the details of the specified Admin user
-     * @param user the admin user whose details are to be updated
-     */
-    boolean updateUser(AdminUserDTO user);
+//
+//    /**
+//     * Updates the details of the specified Admin user
+//     * @param user the admin user whose details are to be updated
+//     */
+//    boolean updateUser(AdminUserDTO user);
 
     /**
      * Resets the password of the specified Admin user

@@ -23,9 +23,10 @@ public class RetServiceRequestController {
 
     private Logger logger= LoggerFactory.getLogger(this.getClass());
 
-    @GetMapping("/{requestName}")
-    public String addConfig(@PathVariable String requestName, Model model){
-        ServiceReqConfigDTO serviceReqConfig = serviceReqConfigService.getServiceReqConfigs(requestName);
+    @GetMapping("/{reqId}")
+    public String addConfig(@PathVariable Long reqId, Model model){
+        ServiceReqConfigDTO serviceReqConfig = serviceReqConfigService.getServiceReqConfig(reqId);
+        logger.info("Request Details {}", serviceReqConfig);
         model.addAttribute("requestConfig", serviceReqConfig);
         return "cust/servicerequest/add";
     }

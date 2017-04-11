@@ -47,17 +47,12 @@ public class AdmCodeController {
     public String createCode(@ModelAttribute("code") CodeDTO codeDTO, BindingResult result, RedirectAttributes redirectAttributes){
         if(result.hasErrors()){
             //return "add";
+            logger.error("Error occurred {}", result.toString());
         }
 
         logger.info("Code {}", codeDTO.toString());
-        AdminUser adminUser = new AdminUser();
-        adminUser.setDelFlag("N");
-        adminUser.setEmail("nnasino2008@live.com");
-        adminUser.setUserName("nnasino");
-        adminUser.setFirstName("Chigozirim");
-        adminUser.setLastName("Torti");
-        adminUserRepo.save(adminUser);
-        codeService.addCode(codeDTO, adminUser);
+        AdminUser adminUser = adminUserRepo.getOne(1l);
+        codeService.add(codeDTO, adminUser);
 
         redirectAttributes.addFlashAttribute("success", "Code added successfully");
         return "redirect:/admin/list";
@@ -122,9 +117,10 @@ public class AdmCodeController {
         AdminUser adminUser = adminUserRepo.findOne(1l);
         logger.info("Code {}", codeDTO.toString());
         codeDTO.setId(codeId);
-        codeService.updateCode(codeDTO, adminUser);
+        codeService.modify(codeDTO, adminUser);
         redirectAttributes.addFlashAttribute("success", "Code updated successfully");
         return "redirect:/admin/codes";
+//        codeService.addCode(code);
     }
 
     @PostMapping("/{codeId}/delete")

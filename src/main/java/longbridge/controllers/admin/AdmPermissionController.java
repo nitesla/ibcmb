@@ -2,7 +2,7 @@ package longbridge.controllers.admin;
 
 import longbridge.dtos.PermissionDTO;
 import longbridge.models.Permission;
-import longbridge.services.SecurityService;
+import longbridge.services.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 public class AdmPermissionController {
 
     @Autowired
-    private SecurityService securityService;
+    private RoleService roleService;
 
     @GetMapping("/new")
     public String addPermission(){
@@ -30,24 +30,23 @@ public class AdmPermissionController {
             return "add-permission";
         }
 
-        securityService.addPermission(permission);
+        roleService.addPermission(permission);
         model.addAttribute("success", "Permission added successfully");
         return "/admin/permissions";
     }
 
     @GetMapping("/{permissionId}")
     public PermissionDTO getPermission(@PathVariable Long permissionId, Model model){
-        PermissionDTO permission = securityService.getPermission(permissionId);
+        PermissionDTO permission = roleService.getPermission(permissionId);
         model.addAttribute("permission",permission);
         return permission;
     }
 
     @GetMapping
     public Iterable<PermissionDTO> getPermissions(Model model){
-        Iterable<PermissionDTO> permissionList = securityService.getPermissions();
+        Iterable<PermissionDTO> permissionList = roleService.getPermissions();
         model.addAttribute("permissionList",permissionList);
         return permissionList;
-
     }
 
     @PostMapping("/{permissionId}")
@@ -57,14 +56,15 @@ public class AdmPermissionController {
             return "add-permission";
         }
         permission.setId(permissionId);
-        securityService.addPermission(permission);
+        roleService.addPermission(permission);
         model.addAttribute("success", "Permission updated successfully");
         return "/admin/permissions";
     }
 
     @PostMapping("/{permissionId}/delete")
     public String deletePermission(@PathVariable Long permissionId, Model model){
-        securityService.deletePermission(permissionId);
+        PermissionDTO permission = roleService.getPermission(permissionId);
+        roleService.deletePermission(permissionId);
         model.addAttribute("success", "Permission deleted successfully");
         return "redirect:/admin/permissions";
     }
