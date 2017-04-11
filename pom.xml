@@ -114,7 +114,7 @@
 			<groupId>com.github.darrachequesne</groupId>
 			<artifactId>spring-data-jpa-datatables</artifactId>
 			<version>4.1</version>
-			<!--<scope>provided</scope>-->
+
 		</dependency>
 	</dependencies>
 

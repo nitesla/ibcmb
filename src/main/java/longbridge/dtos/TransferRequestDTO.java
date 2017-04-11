@@ -133,7 +133,7 @@ public class TransferRequestDTO extends AbstractEntity{
         return "Transfer{" +
                 "account=" + account +
                 ", transferType=" + transferType +
-                ", financialInstitution=" + financialInstitution +
+                ", financialinstitution=" + financialInstitution +
                 ", beneficiaryAccountNumber='" + beneficiaryAccountNumber + '\'' +
                 ", beneficiaryAccountName='" + beneficiaryAccountName + '\'' +
                 ", remarks='" + remarks + '\'' +

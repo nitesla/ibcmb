@@ -2,12 +2,10 @@ package longbridge.controllers.admin;
 
 import longbridge.dtos.ServiceReqConfigDTO;
 import longbridge.services.ServiceReqConfigService;
-import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
@@ -28,15 +26,13 @@ public class AdmServiceReqConfigController {
 
     @Autowired
     private ServiceReqConfigService serviceReqConfigService;
-    @Autowired
-    private ModelMapper modelMapper;
 
     private Logger logger= LoggerFactory.getLogger(this.getClass());
 
 
     @GetMapping("/new")
     public String addConfig(){
-        return "adm/serviceReqConfig/add";
+        return "adm/servicereqconfig/add";
     }
 
     @PostMapping
@@ -54,7 +50,8 @@ public class AdmServiceReqConfigController {
 
     @GetMapping
     public String getAllConfigs(Model model){
-        return "adm/serviceReqConfig/view";
+
+        return "adm/servicereqconfig/view";
     }
 
     @GetMapping(path = "/all")
@@ -67,6 +64,7 @@ public class AdmServiceReqConfigController {
         out.setData(serviceReqConfigs.getContent());
         out.setRecordsFiltered(serviceReqConfigs.getTotalElements());
         out.setRecordsTotal(serviceReqConfigs.getTotalElements());
+
         return out;
     }
 
@@ -74,7 +72,7 @@ public class AdmServiceReqConfigController {
     public String editConfig(@PathVariable Long reqId, Model model){
         ServiceReqConfigDTO serviceReqConfig = serviceReqConfigService.getServiceReqConfig(reqId);
         model.addAttribute("requestDetails", serviceReqConfig);
-        return "adm/serviceReqConfig/";
+        return "adm/servicereqconfig/edit";
     }
 
     @PostMapping("/{userId}")
@@ -86,6 +84,19 @@ public class AdmServiceReqConfigController {
         serviceReqConfigService.updateServiceReqConfig(serviceReqConfigDTO);
         model.addAttribute("success", "Admin user updated successfully");
         return "redirect:/admin/users";
+    }
+
+    @GetMapping("/{userId}")
+    public String getUser(@PathVariable  Long reqId, Model model){
+        ServiceReqConfigDTO serviceReq = serviceReqConfigService.getServiceReqConfig(reqId);
+        model.addAttribute("requestDetails",serviceReq);
+        return "adm/servicereqconfig/add";
+    }
+
+    @PostMapping("/{userId}/delete")
+    public String deleteUser(@PathVariable Long reqId) {
+        serviceReqConfigService.delServiceReqConfig(reqId);
+        return "redirect:/retail/users";
     }
 
 }
