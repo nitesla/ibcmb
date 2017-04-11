@@ -32,7 +32,7 @@ public class AdmServiceReqConfigController {
 
     @GetMapping("/new")
     public String addConfig(){
-        return "adm/serviceReqConfig/add";
+        return "adm/servicereqconfig/add";
     }
 
     @PostMapping
@@ -51,7 +51,7 @@ public class AdmServiceReqConfigController {
     @GetMapping
     public String getAllConfigs(Model model){
 
-        return "adm/serviceReqConfig/view";
+        return "adm/servicereqconfig/view";
     }
 
     @GetMapping(path = "/all")
@@ -70,7 +70,8 @@ public class AdmServiceReqConfigController {
             ObjectNode row = nodeFactory.objectNode();
             row.put("0", dto.getId());
             row.put("1", dto.getRequestName());
-            row.put("2", "<a href='/admin/srconfig/"+ dto.getId()+ "/edit' class='btn btn-sm btn-success'><i class='fa fa-edit'></i>Edit</a>");
+            row.put("2", "<a href='/admin/srconfig/"+ dto.getId()+ "/edit' class='btn btn-sm btn-success'><i class='fa fa-edit'></i> Edit</a>" +
+                    "<a href='/admin/srconfig/"+ dto.getId()+ "/delete' class='btn btn-sm btn-danger'><i class='fa fa-trash'></i> Delete</a>");
             an.add(row);
         }
         response.setContentType("application/json");
@@ -82,7 +83,7 @@ public class AdmServiceReqConfigController {
     public String editConfig(@PathVariable Long reqId, Model model){
         ServiceReqConfigDTO serviceReqConfig = serviceReqConfigService.getServiceReqConfig(reqId);
         model.addAttribute("requestDetails", serviceReqConfig);
-        return "adm/serviceReqConfig/";
+        return "adm/servicereqconfig/edit";
     }
 
     @PostMapping("/{userId}")
@@ -94,6 +95,19 @@ public class AdmServiceReqConfigController {
         serviceReqConfigService.updateServiceReqConfig(serviceReqConfigDTO);
         model.addAttribute("success", "Admin user updated successfully");
         return "redirect:/admin/users";
+    }
+
+    @GetMapping("/{userId}")
+    public String getUser(@PathVariable  Long reqId, Model model){
+        ServiceReqConfigDTO serviceReq = serviceReqConfigService.getServiceReqConfig(reqId);
+        model.addAttribute("requestDetails",serviceReq);
+        return "adm/servicereqconfig/add";
+    }
+
+    @PostMapping("/{userId}/delete")
+    public String deleteUser(@PathVariable Long reqId) {
+        serviceReqConfigService.delServiceReqConfig(reqId);
+        return "redirect:/retail/users";
     }
 
 }

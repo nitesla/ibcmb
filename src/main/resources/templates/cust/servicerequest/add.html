@@ -19,22 +19,22 @@
     <div class="container">
         <div class="row">
             <div class="col-md-8">
-                <h4 class="page-head-line">Make a Service Request</h4>
-
                 <div class="row">
                     <div class="col-md-12">
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                                BASIC  FORM ELEMENTS
+                                <h4 class="page-head-line">Make a Service Request</h4>
                             </div>
                             <div class="panel-body">
                                 <form method="post">
 
-                                    <p th:if="${not #lists.isEmpty(serviceReqConfig)}">
+                                    <p th:if="${not #lists.isEmpty(requestList)}">
                                         <div class="form-group">
                                             <label for="requestType">Service Request Type</label>
-                                            <select name="requestType" th:each="request  : ${serviceReqConfig}">
+                                            <select name="requestType"  id="select">
+                                                <p th:each="request : ${requestList}">
                                                 <option th:text="${request.requestName}"></option>
+                                </p>
                                             </select>
                                         </div>
                                     </p>
@@ -63,6 +63,14 @@
 <footer th:replace="cust_layout ::footer">
 
 </footer>
+<script>
+    /*<![CDATA[*/
+    $(document).ready(function() {
+        $('#select').click(function (){
 
+        });
+    } );
+    /*]]>*/
+</script>
 </body>
 </html>
