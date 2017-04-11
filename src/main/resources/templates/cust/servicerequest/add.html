@@ -28,8 +28,9 @@
                             <div class="panel-body">
                                 <p th:text="${requestConfig.requestName}"></p>
                                 <form method="post">
-                                    <p th:each="field : ${requestConfig.formFields}">
-                                        <p><input th:type="${field.fieldType}" th:name="${field.fieldName}"/></p>
+                                    <p th:each="req : ${requestConfig.formFields}">
+                                        <label th:text="${req.fieldLabel}"></label>
+                                        <p><input th:type="${req.fieldType}" th:name="${req.fieldName}"/></p>
                                     </p>
                                 </form>
                             </div>

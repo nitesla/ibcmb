@@ -1,10 +1,9 @@
 package longbridge.services;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-
 import longbridge.dtos.AdminUserDTO;
 import longbridge.models.AdminUser;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 /**The {@code AdminUserService} interface provides the methods for managing an Admin user
  * @author Fortunatus Ekenachi
