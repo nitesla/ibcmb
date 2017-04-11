@@ -7,6 +7,9 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Map;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 /**
  * The {@code AccountService} interface provides the methods for retrieving
  * a customer's account information
@@ -37,6 +40,8 @@ public interface AccountService {
      * @return a list of {@link Account}
      */
     Iterable<Account> getAccounts(String customerId);
+    
+    Page<Account> getAccounts(String customerId, Pageable pageDetails);
 
     /**
      * Returns the details of an account balance.

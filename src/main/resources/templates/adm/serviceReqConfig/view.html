@@ -83,20 +83,24 @@
 </div>
 <script th:src="@{~/bank/vendors/datatables.net/js/jquery.dataTables.js}"></script>
 <script th:src="@{~/bank/js/dataTables.select.js}"></script>
+<script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
 
 <!-- Page-Level Scripts -->
 <script>
     /*<![CDATA[*/
     $(document).ready(function() {
-        $('.srconfig').dataTable({
+        $('.srconfig').DataTable({
+        	select:true,
             responsive: true,
+            "lengthMenu" : [ [ 5, 10, 50, -1 ],	[ 5, 10, 50, "All" ] ],
+			"pagingType" : "full_numbers",
             "searching": false,
             "paging": true,
-            "sAjaxSource": "/admin/srconfig/all",
-            "sAjaxDataProp": "",
+            "serverSide" : true,
+            "ajax": "/admin/srconfig/all",
             "dom": 'T<"clear">lfrtip',
-            "aoColumns": [
-                { "mData": "requestName", }
+            "columns": [
+                { "data": "requestName", }
             ]
         });
 

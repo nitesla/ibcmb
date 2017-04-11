@@ -1,5 +1,8 @@
 package longbridge.services;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import longbridge.dtos.PermissionDTO;
 import longbridge.dtos.RoleDTO;
 
@@ -29,6 +32,8 @@ public interface SecurityService {
      * @return a list of roles
      */
     Iterable<RoleDTO> getRoles();
+    
+    Page<RoleDTO> getRoles(Pageable pageDetails);
 
     /**
      * Updates the details of the specified userType
@@ -60,6 +65,8 @@ public interface SecurityService {
      * @return a list of permissions
      */
     Iterable<PermissionDTO> getPermissions();
+    
+    Page<PermissionDTO> getPermissions(Pageable pageDetails);
 
     /**
      * Updates the details of the permission

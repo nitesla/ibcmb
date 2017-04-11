@@ -2,6 +2,10 @@ package longbridge.services;
 
 import java.util.Date;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+import longbridge.dtos.CorporateUserDTO;
 import longbridge.models.Corporate;
 import longbridge.models.CorporateUser;
 
@@ -17,14 +21,16 @@ public interface CorporateUserService {
      * @param id the corporate user's id
      * @return the user
      */
-    CorporateUser getUser(Long id);
+    CorporateUserDTO getUser(Long id);
 
     /**
      * Returns all the corporate users for the corporate customer
      * @param Corporate  the corporate customer
      * @return a list of the corporate users
      */
-    Iterable<CorporateUser> getUsers(Corporate Corporate);
+    Iterable<CorporateUserDTO> getUsers(Corporate Corporate);
+    
+    Page<CorporateUserDTO> getUsers(Corporate Corporate, Pageable pageDetails);
 
     /**
      * Returns all the corporate users in the system
@@ -32,6 +38,7 @@ public interface CorporateUserService {
      */
     Iterable<CorporateUser> getUsers();
 
+    Page<CorporateUserDTO> getUsers(Pageable pageDetails);
     /**
      * Sets the password for the specified corporate user
      * The password must meet the organisation's password policy if any one is defined

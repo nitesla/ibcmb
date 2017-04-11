@@ -1,5 +1,8 @@
 package longbridge.services;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import longbridge.dtos.RetailUserDTO;
 import longbridge.models.Account;
 import longbridge.models.RetailUser;
@@ -21,6 +24,8 @@ public interface RetailUserService {
      * @return the list of retail users
      */
     Iterable<RetailUserDTO> getUsers();
+    
+    Page<RetailUserDTO> getUsers(Pageable pageDetails);
 
     /**
      *Sets the password of the specified retail user
