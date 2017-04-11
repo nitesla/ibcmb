@@ -1,6 +1,6 @@
 package longbridge.controllers.operations;
 
-import longbridge.dtos.ChangePassword;
+import longbridge.forms.ChangePassword;
 import longbridge.models.OperationsUser;
 import longbridge.services.OperationsUserService;
 import org.slf4j.Logger;

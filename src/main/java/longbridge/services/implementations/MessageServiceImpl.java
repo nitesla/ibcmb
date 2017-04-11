@@ -9,6 +9,7 @@ import longbridge.services.MessageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.awt.print.Pageable;
@@ -27,7 +28,6 @@ public class MessageServiceImpl implements MessageService {
     public MessageServiceImpl(MessageRepo messageRepo) {
         this.messageRepo = messageRepo;
     }
-
 
     /**
      * Returns a {@code Message} identified by the given {@code id}
@@ -53,18 +53,7 @@ public class MessageServiceImpl implements MessageService {
         return this.messageRepo.getByMailBox(mailBox);
     }
 
-    /**
-     * Returns a page of messages specified by the {@code firstRecord} and {@code totalNumOfRecords}
-     *
-     * @param mailBox the user
-     * @param firstRecord       the firstRecord
-     * @param totalNumOfRecords the total Number of Records
-     * @return  a list of messages
-     */
-    @Override
-    public Pageable getMessages(MailBox mailBox, int firstRecord, int totalNumOfRecords) {
-        return null;
-    }
+   
 
     /**
      * Returns a list of messages on the given date
@@ -166,4 +155,22 @@ public class MessageServiceImpl implements MessageService {
     public void sendEmail(EmailDetail email){
         //todo  send email
     }
+
+	@Override
+	public Page<Message> getMessages(MailBox mailbox, Pageable pageDetails) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Page<Message> getMessages(MailBox mailbox, Date date, Pageable pageDetails) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Page<Message> getMessages(MailBox mailbox, Date fromDate, Date toDate, Pageable pageDetails) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

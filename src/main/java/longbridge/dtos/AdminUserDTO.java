@@ -1,6 +1,8 @@
 package longbridge.dtos;
 
-import java.util.*;
+import org.hibernate.validator.constraints.Email;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * Created by Fortune on 4/5/2017.
@@ -8,17 +10,17 @@ import java.util.*;
 public class AdminUserDTO {
 
     private Long id;
+    @NotNull
     private String userName;
+    @NotNull
     private String firstName;
+    @NotNull
     private String lastName;
+    @NotNull
+    @Email
     private String email;
     private String password;
-    private String status;
-    private Date expiryDate;
-    private Date lockedUntilDate;
-    private Date lastLoginDate;
-    private int noOfLoginAttempts;
-
+    private String role;
 
     public Long getId() {
         return id;
@@ -68,43 +70,11 @@ public class AdminUserDTO {
         this.password = password;
     }
 
-    public String getStatus() {
-        return status;
+    public String getRole() {
+        return role;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public Date getExpiryDate() {
-        return expiryDate;
-    }
-
-    public void setExpiryDate(Date expiryDate) {
-        this.expiryDate = expiryDate;
-    }
-
-    public Date getLockedUntilDate() {
-        return lockedUntilDate;
-    }
-
-    public void setLockedUntilDate(Date lockedUntilDate) {
-        this.lockedUntilDate = lockedUntilDate;
-    }
-
-    public Date getLastLoginDate() {
-        return lastLoginDate;
-    }
-
-    public void setLastLoginDate(Date lastLoginDate) {
-        this.lastLoginDate = lastLoginDate;
-    }
-
-    public int getNoOfLoginAttempts() {
-        return noOfLoginAttempts;
-    }
-
-    public void setNoOfLoginAttempts(int noOfLoginAttempts) {
-        this.noOfLoginAttempts = noOfLoginAttempts;
+    public void setRole(String role) {
+        this.role = role;
     }
 }

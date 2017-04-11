@@ -1,13 +1,17 @@
 package longbridge.models;
 
+import org.hibernate.envers.Audited;
+
 import javax.persistence.Entity;
 
 /**
  * Created by Wunmi on 27/03/2017.
  */
 @Entity
+@Audited
 public class Permission extends AbstractEntity{
 
+    private Long id;
     private String name;
     private String description;
     private String code;
@@ -15,6 +19,16 @@ public class Permission extends AbstractEntity{
 
     public Permission(){
 
+    }
+
+    @Override
+    public Long getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {

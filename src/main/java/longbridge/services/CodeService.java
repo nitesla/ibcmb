@@ -1,5 +1,9 @@
 package longbridge.services;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+import longbridge.dtos.CodeDTO;
 import longbridge.models.AdminUser;
 import longbridge.models.Code;
 import longbridge.models.Verifiable;
@@ -16,13 +20,13 @@ public interface CodeService extends Verifiable<Code> {
      * Adds a new code to the syste
      * @param code the code
      */
-    boolean addCode(Code code, AdminUser adminUser);
+    boolean addCode(CodeDTO code, AdminUser adminUser);
 
     /**
      * Modifies an existing code
-     * @param code the code
+     * @param codeDTO the code
      */
-    boolean modifyCode(Code code, AdminUser adminUser);
+    boolean updateCode(CodeDTO codeDTO, AdminUser adminUser);
 
     /**
      * Deletes a code from the system
@@ -35,19 +39,21 @@ public interface CodeService extends Verifiable<Code> {
      * @param codeId the code's id
      * @return the code
      */
-    Code getCode(Long codeId);
+    CodeDTO getCode(Long codeId);
 
     /**
      * Returns a list of codes specified by the given type
      * @param codeType the code's type
      * @return a list of codes
      */
-    Iterable<Code> getCodesofType(String codeType);
+    Iterable<CodeDTO> getCodesByType(String codeType);
+    
+    Page<CodeDTO> getCodesByType(String codeType, Pageable pageDetails);
 
     /**
      * Returns all the codes in the system
      * @return a list of the codes
      */
-    Iterable<Code> getCodes();
+    Iterable<CodeDTO> getCodes();
 
 }

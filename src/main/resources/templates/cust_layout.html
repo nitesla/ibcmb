@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="site-head">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <!--[if IE]>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <![endif]-->
+    <title>Coronation Merchant Bank</title>
+    <!-- BOOTSTRAP CORE STYLE  -->
+    <link th:href="@{~/customer/css/bootstrap.css}" rel="stylesheet" />
+    <!-- FONT AWESOME ICONS  -->
+    <link th:href="@{~/customer/css/font-awesome.css}" rel="stylesheet" />
+    <!-- CUSTOM STYLE  -->
+    <link th:href="@{~/customer/css/style.css}" rel="stylesheet" />
+
+    <link th:href="@{~/customer/css/mega-menu.css}" rel="stylesheet" />
+    <!-- HTML5 Shiv and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+<header th:fragment="header">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <strong><a href=""> Contact Us </a>&nbsp;</strong>
+                <span class="dem-bar">&nbsp;</span>
+                <strong><a href=""> Coronation Merchant Bank </a>&nbsp;</strong>
+                <span class="dem-bar">&nbsp;</span>
+                <strong><a href=""> Help </a>&nbsp;</strong>
+            </div>
+
+        </div>
+    </div>
+</header>
+<!-- HEADER END-->
+<div class="navbar navbar-inverse set-radius-zero" th:fragment="main-header">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <div class="Welcome">
+                <div class="bvn">
+                    <p>Your Bank verifiction number</p>
+                    <h4>BVN: 12345678911&nbsp;</h4>
+                </div>
+                <div class="welcome-text">
+                    <h4><span>Welcome, &nbsp;</span>Tolu James&nbsp; <i class="fa fa-envelope"></i></h4>
+                    <h6>FAQS</h6>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="logo">
+            <img th:src="@{/customer/img/cmb_logo.png}"/>
+        </div>
+
+    </div>
+</div>
+<!-- LOGO HEADER END-->
+<section class="menu-section" th:fragment="menu">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-9">
+                <div class="navbar-collapse collapse ">
+                    <ul id="menu-top" class="nav navbar-nav navbar-left">
+                        <li class="dropdown mega-dropdown"> <a href="#" class="dropdown-toggle" data-toggle="">Dashboard</a>
+                            <ul class="dropdown-menu mega-dropdown-menu row">
+
+
+                                <li class="col-sm-2">
+                                    <ul>
+                                        <li class="dropdown-header">Dresses</li>
+                                        <li class="divider"></li>
+                                        <li><a href="#">Unique Features</a></li>
+                                        <li><a href="#">Image Responsive</a></li>
+                                        <li><a href="#">Auto Carousel</a></li>
+                                        <li><a href="#">Newsletter Form</a></li>
+                                        <li><a href="#">Four columns</a></li>
+                                    </ul>
+                                </li>
+                                <li class="col-sm-2">
+                                    <ul>
+                                        <li class="dropdown-header">Dresses</li>
+                                        <li class="divider"></li>
+                                        <li><a href="#">Unique Features</a></li>
+                                        <li><a href="#">Image Responsive</a></li>
+                                        <li><a href="#">Auto Carousel</a></li>
+                                        <li><a href="#">Newsletter Form</a></li>
+                                        <li><a href="#">Four columns</a></li>
+                                    </ul>
+                                </li>
+                                <li class="col-sm-2">
+                                    <ul>
+                                        <li class="dropdown-header">Dresses</li>
+                                        <li class="divider"></li>
+                                        <li><a href="#">Unique Features</a></li>
+                                        <li><a href="#">Image Responsive</a></li>
+                                        <li><a href="#">Auto Carousel</a></li>
+                                        <li><a href="#">Newsletter Form</a></li>
+                                        <li><a href="#">Four columns</a></li>
+                                    </ul>
+                                </li>
+                                <li class="col-sm-2">
+                                    <ul>
+                                        <li class="dropdown-header">Dresses</li>
+                                        <li class="divider"></li>
+                                        <li><a href="#">Unique Features</a></li>
+                                        <li><a href="#">Image Responsive</a></li>
+                                        <li><a href="#">Auto Carousel</a></li>
+                                        <li><a href="#">Newsletter Form</a></li>
+                                        <li><a href="#">Four columns</a></li>
+                                    </ul>
+                                </li>
+                                <li class="col-sm-2">
+                                    <ul>
+                                        <li class="dropdown-header">Jackets</li>
+                                        <li class="divider"></li>
+                                        <li><a href="#">Easy to customize</a></li>
+                                        <li><a href="#">Glyphicons</a></li>
+                                        <li><a href="#">Pull Right Elements</a></li>
+                                    </ul>
+                                </li>
+                                <li class="col-sm-2">
+                                    <ul>
+                                        <li class="dropdown-header">Service Requests</li>
+                                        <li class="divider"></li>
+                                        <li><a href="#">Default Navbar</a></li>
+                                        <li><a href="#">Lovely Fonts</a></li>
+                                        <li><a href="#">Responsive Dropdown </a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+
+
+
+                        </li>
+                        <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="">Service Requests</a>
+                            <ul class="dropdown-menu row">
+                                <li class="col-sm-3">
+                                    <ul>
+                                        <li><a href="/pub/servicerequest/chequebook">Cheque Book</a></li>
+                                        <!--<p th:each="request : ${requestList}">-->
+                                            <!--<li><a th:href="@{'/pub/servicerequest/' + ${request.requestName}}" th:text="${request.requestName}></a></li>-->
+                                        <!--</p>-->
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li><a href="table.html">Data Tables</a></li>
+                        <li><a href="forms.html">Forms</a></li>
+                        <li><a href="retaillogin.html">Login Page</a></li>
+                        <li><a href="blank.html">Blank Page</a></li>
+                    </ul>
+
+                </div>
+            </div>
+            <ul id="menu-top" class="nav navbar-nav navbar-right">
+                <li><a  href="index.html">Log out <i class="fa fa-sign-out"></i></a></li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<!-- CONTENT-WRAPPER SECTION END-->
+<footer th:fragment="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                &copy; 2017 CoronationMB
+            </div>
+
+        </div>
+    </div>
+    <!-- FOOTER SECTION END-->
+    <!-- JAVASCRIPT AT THE BOTTOM TO REDUCE THE LOADING TIME  -->
+    <!-- CORE JQUERY SCRIPTS -->
+    <script th:src="@{/customer/js/jquery-1.11.1.js}"></script>
+    <!-- BOOTSTRAP SCRIPTS  -->
+    <script th:src="@{/customer/js/bootstrap.js}"></script>
+</footer>
+
+</body>
+</html>

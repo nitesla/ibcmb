@@ -1,5 +1,7 @@
 package longbridge.models;
 
+import org.hibernate.envers.Audited;
+
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import java.util.Date;
@@ -8,6 +10,7 @@ import java.util.Date;
  * Created by Wunmi on 27/03/2017.
  */
 @Entity
+@Audited
 public class RequestHistory extends AbstractEntity{
 
     @ManyToOne

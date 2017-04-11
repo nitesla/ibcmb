@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="cust_layout :: site-head">
+
+</head>
+<body>
+<header th:replace="cust_layout :: header">
+
+</header>
+<!-- HEADER END-->
+<div class="navbar navbar-inverse set-radius-zero" th:replace="cust_layout :: main-header">
+
+</div>
+<!-- LOGO HEADER END-->
+<section class="menu-section" th:replace="cust_layout :: menu">
+</section>
+<!-- MENU SECTION END-->
+<div class="content-wrapper">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4 class="page-head-line">Make a Service Request</h4>
+                            </div>
+                            <div class="panel-body">
+                                <p th:text="${requestConfig.requestName}"></p>
+                                <form method="post">
+                                    <p th:each="field : ${requestConfig.formFields}">
+                                        <p><input th:type="${field.fieldType}" th:name="${field.fieldName}"/></p>
+                                    </p>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="alert alert-warning">
+                    This is blank page for which you can customize for your project.
+                    Use this admin template 100% free to use for personal and commercial use which is crafted by
+                    <br />
+                    <a href="http://www.designbootstrap.com/" target="_blank">DesignBootstrap.com</a> . For more free templates and snippets keep looking <a href="http://www.designbootstrap.com/" target="_blank">DesignBootstrap.com</a> . Hope you will like our work
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- CONTENT-WRAPPER SECTION END-->
+<footer th:replace="cust_layout ::footer">
+
+</footer>
+<script>
+    /*<![CDATA[*/
+    $(document).ready(function() {
+        $('#select').click(function (){
+
+        });
+    } );
+    /*]]>*/
+</script>
+</body>
+</html>

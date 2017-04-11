@@ -7,6 +7,7 @@ package longbridge.dtos;
 
 public class PermissionDTO {
 
+    private Long id;
     private String name;
     private String description;
     private String code;
@@ -14,6 +15,14 @@ public class PermissionDTO {
 
     public PermissionDTO(){
 
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -42,8 +51,9 @@ public class PermissionDTO {
 
     @Override
     public String toString() {
-        return "Permission{" +
-                "name='" + name + '\'' +
+        return "PermissionDTO{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", code='" + code + '\'' +
                 '}';

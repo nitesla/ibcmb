@@ -1,6 +1,8 @@
 package longbridge.models;
 
 
+import org.hibernate.envers.Audited;
+
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import java.util.Date;
@@ -11,6 +13,7 @@ import java.util.Date;
  * Created on 3/28/2017.
  */
 @Entity
+@Audited
 public class Message extends AbstractEntity{
 
 

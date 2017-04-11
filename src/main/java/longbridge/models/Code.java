@@ -1,6 +1,10 @@
 package longbridge.models;
 
+import org.hibernate.envers.Audited;
+
 import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 /**
  * The {@code Code} class model represents unique data that can be used for system configurations.
@@ -13,6 +17,12 @@ import javax.persistence.Entity;
  */
 
 @Entity
+@Audited
+@Table(
+		name="code",
+		uniqueConstraints=
+		@UniqueConstraint(columnNames={"code", "type"})
+)
 public class Code extends AbstractEntity {
 
     private String code;

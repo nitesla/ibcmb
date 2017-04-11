@@ -1,5 +1,7 @@
 package longbridge.models;
 
+import org.hibernate.envers.Audited;
+
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -14,6 +16,7 @@ import java.util.Date;
  * Created on 3/28/2017.
  */
 @Entity
+@Audited
 public class ServiceRequest extends AbstractEntity {
 
     @ManyToOne
@@ -22,7 +25,7 @@ public class ServiceRequest extends AbstractEntity {
     private String serviceRequestType;
     private String subject;
     private String body;
-    private String recepient;
+    private String recipient;
     private String status;
     //private UserGroup userGroup;
     private Date requestTime;
@@ -55,12 +58,12 @@ public class ServiceRequest extends AbstractEntity {
         this.body = body;
     }
 
-    public String getRecepient() {
-        return recepient;
+    public String getRecipient() {
+        return recipient;
     }
 
-    public void setRecepient(String recepient) {
-        this.recepient = recepient;
+    public void setRecipient(String recipient) {
+        this.recipient = recipient;
     }
 
     public String getStatus() {
@@ -98,13 +101,13 @@ public class ServiceRequest extends AbstractEntity {
     public ServiceRequest() {
     }
 
-    public ServiceRequest(RetailUser user, String serviceRequestType, String subject, String body, String recepient, UserGroup userGroup, Date date) {
+    public ServiceRequest(RetailUser user, String serviceRequestType, String subject, String body, String recipient, UserGroup userGroup, Date date) {
 
         this.user = user;
         this.serviceRequestType = serviceRequestType;
         this.subject = subject;
         this.body = body;
-        this.recepient = recepient;
+        this.recipient = recipient;
         //this.userGroup = userGroup;
         this.requestTime = date;
     }
@@ -117,7 +120,7 @@ public class ServiceRequest extends AbstractEntity {
                 ", serviceRequestType='" + serviceRequestType + '\'' +
                 ", subject='" + subject + '\'' +
                 ", body='" + body + '\'' +
-                ", recepient='" + recepient + '\'' +
+                ", recipient='" + recipient + '\'' +
                 //", userGroup=" + userGroup +
                 ", requestTime=" + requestTime +
                 '}';

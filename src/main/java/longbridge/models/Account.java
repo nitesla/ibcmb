@@ -1,5 +1,7 @@
 package longbridge.models;
 
+import org.hibernate.envers.Audited;
+
 import javax.persistence.Entity;
 
 
@@ -10,6 +12,7 @@ import javax.persistence.Entity;
  * Created on 3/28/2017.
  */
 @Entity
+@Audited
 public class Account extends AbstractEntity{
 
 

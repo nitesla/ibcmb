@@ -33,23 +33,21 @@ public class AdmRoleController {
         if(result.hasErrors()){
             return "add-role";
         }
-        Role role = modelMapper.map(roleDTO,Role.class);
-        securityService.addRole(role);
+        securityService.addRole(roleDTO);
         model.addAttribute("success", "Role added successfully");
         return "/admin/roles";
     }
 
     @GetMapping("/{roleId}")
-    public Role getRole(@PathVariable Long roleId, Model model){
-        Role role = securityService.getRole(roleId);
-        RoleDTO roleDTO = modelMapper.map(role,RoleDTO.class);
-        model.addAttribute("role",roleDTO);
+    public RoleDTO getRole(@PathVariable Long roleId, Model model){
+        RoleDTO role = securityService.getRole(roleId);
+        model.addAttribute("role",role);
         return role;
     }
 
     @GetMapping
-    public Iterable<Role> getRoles(Model model){
-        Iterable<Role> roleList = securityService.getRoles();
+    public Iterable<RoleDTO> getRoles(Model model){
+        Iterable<RoleDTO> roleList = securityService.getRoles();
         model.addAttribute("roleList",roleList);
         return roleList;
 
@@ -62,16 +60,14 @@ public class AdmRoleController {
             return "add-role";
         }
         roleDTO.setId(roleId);
-        Role role = modelMapper.map(roleDTO,Role.class);
-        securityService.addRole(role);
+        securityService.addRole(roleDTO);
         model.addAttribute("success", "Role updated successfully");
         return "/admin/roles";
     }
 
     @PostMapping("/{roleId}/delete")
     public String deleteRole(@PathVariable Long roleId, Model model){
-        Role role = securityService.getRole(roleId);
-        securityService.deleteRole(role);
+        securityService.deleteRole(roleId);
         model.addAttribute("success", "Role deleted successfully");
         return "redirect:/admin/roles";
     }

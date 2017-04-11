@@ -1,5 +1,10 @@
 package longbridge.services;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+import longbridge.dtos.RetailUserDTO;
+import longbridge.models.Account;
 import longbridge.models.RetailUser;
 
 /**
@@ -12,13 +17,15 @@ public interface RetailUserService {
      * @param id  the user's id
      */
 
-    RetailUser getUser(Long id);
+    RetailUserDTO getUser(Long id);
 
     /**
      *Returns a list of retail users
      * @return the list of retail users
      */
-    Iterable<RetailUser> getUsers();
+    Iterable<RetailUserDTO> getUsers();
+    
+    Page<RetailUserDTO> getUsers(Pageable pageDetails);
 
     /**
      *Sets the password of the specified retail user
@@ -34,7 +41,7 @@ public interface RetailUserService {
      * @param user the retail user to be added
      */
 
-    boolean addUser(RetailUser user);
+    boolean addUser(RetailUserDTO user);
 
     /**
      * Deletes a retail user to the system
@@ -48,12 +55,22 @@ public interface RetailUserService {
      * @param user the retail user whose details are to be updated
      */
 
-    boolean updateUser(RetailUser user);
+    boolean updateUser(RetailUserDTO user);
+
+    /**
+     * Adds the specified account to the user's list of accounts
+     * @param user the specified user
+     * @param account the account to be added
+     * @return true if the account is successfully added for the customer
+     */
+    boolean AddAccount(RetailUser user, Account account);
+
 
     /**
      * Resets the password of the specified Retail user
      *@param user the retail user
      */
+
 
     boolean resetPassword(RetailUser user, String newPassword);
 

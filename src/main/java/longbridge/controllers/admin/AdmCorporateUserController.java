@@ -1,6 +1,6 @@
 package longbridge.controllers.admin;
 
-import longbridge.dtos.ChangePassword;
+import longbridge.forms.ChangePassword;
 import longbridge.dtos.CorporateUserDTO;
 import longbridge.models.CorporateUser;
 import longbridge.services.CorporateUserService;
@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpRequest;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -57,9 +56,9 @@ public class AdmCorporateUserController {
 
     @GetMapping("/{userId}")
     public String getUser(@PathVariable Long userId, Model model){
-        CorporateUser user = corporateUserService.getUser(userId);
-        CorporateUserDTO corporateUserDTO = modelMapper.map(user,CorporateUserDTO.class);
-        model.addAttribute("corporateUser",corporateUserDTO);
+        CorporateUserDTO user = corporateUserService.getUser(userId);
+
+        model.addAttribute("corporateUser",user);
         return "corporateUser";
     }
 
@@ -93,7 +92,7 @@ public class AdmCorporateUserController {
          if(result.hasErrors()){
              return "changePassword";
         }
-        CorporateUser user= corporateUserService.getUser(userId);
+        CorporateUserDTO user= corporateUserService.getUser(userId);
         String oldPassword=changePassword.getOldPassword();
         String newPassword=changePassword.getNewPassword();
         String confirmPassword=changePassword.getConfirmPassword();
@@ -107,7 +106,7 @@ public class AdmCorporateUserController {
         }
 
         user.setPassword(newPassword);
-        corporateUserService.addUser(user);
+        //corporateUserService.addUser(user);
         logger.info("PASSWORD CHANGED SUCCESSFULLY");
         return "changePassword";
     }

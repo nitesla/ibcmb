@@ -1,5 +1,7 @@
 package longbridge.services;
 
+import longbridge.dtos.CorporateUserDTO;
+import longbridge.models.Corporate;
 import longbridge.models.EmailDetail;
 import longbridge.models.MailBox;
 import longbridge.models.Message;
@@ -7,6 +9,8 @@ import longbridge.models.User;
 
 import java.awt.print.Pageable;
 import java.util.Date;
+
+import org.springframework.data.domain.Page;
 
 /**
  * The {@code MessagingService} interface provides a service for sending messages
@@ -30,16 +34,11 @@ public interface MessageService {
      * @return a list of messages
      */
     Iterable<Message> getMessages(MailBox mailbox);
+    
+    Page<Message> getMessages(MailBox mailbox, Pageable pageDetails);
+    
 
-    /**
-     * Returns a page of messages specified by the {@code firstRecord} and {@code totalNumOfRecords}
-     * @param firstRecord the firstRecord
-     * @param totalNumOfRecords the total Number of Records
-     * @return a list of messages
-     */
-
-    Pageable getMessages(MailBox mailBox, int firstRecord, int totalNumOfRecords);
-
+   
 
     /**
      * Returns a list of messages on the given date
@@ -47,6 +46,8 @@ public interface MessageService {
      * @return the list of messages
      */
    Iterable<Message> getMessages(MailBox mailBox, Date date);
+   
+   Page<Message> getMessages(MailBox mailbox, Date date, Pageable pageDetails);
 
     /**
      *Returns a list of messages within the given date range
@@ -55,6 +56,8 @@ public interface MessageService {
      * @return a list of messages
      */
     Iterable<Message> getMessage(MailBox mailBox, Date fromDate, Date toDate);
+    
+    Page<Message> getMessages(MailBox mailbox, Date fromDate, Date toDate, Pageable pageDetails);
 
     /**
      *Marks the message as READ or UNREAD

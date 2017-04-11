@@ -1,5 +1,7 @@
 package longbridge.models;
 
+import org.hibernate.envers.Audited;
+
 import javax.persistence.*;
 
 /**
@@ -8,6 +10,7 @@ import javax.persistence.*;
  * accounts.
  */
 @Entity
+@Audited
 public class CorporateUser extends User {
 
 	private boolean isEnabled;

@@ -7,6 +7,9 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Map;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 /**
  * The {@code AccountService} interface provides the methods for retrieving
  * a customer's account information
@@ -15,6 +18,14 @@ import java.util.Map;
  * Created on 3/28/2017.
  */
 public interface AccountService {
+
+    /**
+     * Adds the specified account to a customer's list of accounts
+     * @param customerId the customer's id
+     * @param account the account to be added
+     * @return an {@link Account} object
+     */
+    boolean AddAccount(String customerId, Account account);
 
     /**
      * Returns a particular account for a customer
@@ -29,6 +40,8 @@ public interface AccountService {
      * @return a list of {@link Account}
      */
     Iterable<Account> getAccounts(String customerId);
+    
+    Page<Account> getAccounts(String customerId, Pageable pageDetails);
 
     /**
      * Returns the details of an account balance.
@@ -49,4 +62,19 @@ public interface AccountService {
      * @return a {@link AccountStatement} containing details of the transactions
      */
     AccountStatement getAccountStatements(Account account, Date fromDate, Date toDate);
+
+    /**
+     * Returns a list of accounts owned by a particular customer for debit
+     * @param customerId the customer id of particular customer
+     * @return a list of {@link Account}
+     */
+    Iterable<Account> getAccountsForDebit(String customerId);
+
+    /**
+     * Returns a list of accounts owned by a particular customer for credit
+     * @param customerId the customer id of particular customer
+     * @return a list of {@link Account}
+     */
+    Iterable<Account> getAccountsForCredit(String customerId);
+
 }

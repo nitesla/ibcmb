@@ -9,4 +9,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ServiceReqConfigRepo extends CommonRepo<ServiceReqConfig, Long>{
 
+    ServiceReqConfig findByRequestName(String requestName);
 }

@@ -1,5 +1,7 @@
 package longbridge.models;
 
+import org.hibernate.envers.Audited;
+
 import javax.persistence.*;
 import java.util.Collection;
 
@@ -7,6 +9,7 @@ import java.util.Collection;
  * Created by Wunmi on 27/03/2017.
  */
 @Entity
+@Audited
 public class Role extends AbstractEntity{
 
     private String name;
@@ -17,8 +20,8 @@ public class Role extends AbstractEntity{
     private UserType userType;
 
     @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "profile_permission", joinColumns =
-    @JoinColumn(name = "profile_id", referencedColumnName = "id"), inverseJoinColumns =
+    @JoinTable(name = "role_permission", joinColumns =
+    @JoinColumn(name = "role_id", referencedColumnName = "id"), inverseJoinColumns =
     @JoinColumn(name = "permission_id", referencedColumnName = "id"))
     private Collection<Permission> permissions;
 

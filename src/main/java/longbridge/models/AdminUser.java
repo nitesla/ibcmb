@@ -1,5 +1,7 @@
 package longbridge.models;
 
+import org.hibernate.envers.Audited;
+
 import javax.persistence.Entity;
 
 /**
@@ -7,6 +9,7 @@ import javax.persistence.Entity;
  * and it configurations. They don't take part directly in transaction impacting activities
  */
 @Entity
+@Audited
 public class AdminUser extends User{
 
 	private String authenticateMethod;

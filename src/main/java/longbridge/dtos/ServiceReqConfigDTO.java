@@ -1,6 +1,7 @@
 package longbridge.dtos;
 
-import longbridge.models.ServiceReqFormFields;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import longbridge.models.ServiceReqFormField;
 
 import java.util.ArrayList;
 
@@ -9,10 +10,28 @@ import java.util.ArrayList;
  */
 public class ServiceReqConfigDTO {
 
+	@JsonProperty("DT_RowId")
+    private Long id;
     private String requestName;
-    private ArrayList<ServiceReqFormFields> formFields;
+    private String version;
+    private ArrayList<ServiceReqFormField> formFields;
 
-    
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
 
     public String getRequestName() {
 		return requestName;
@@ -22,11 +41,21 @@ public class ServiceReqConfigDTO {
 		this.requestName = requestName;
 	}
 
-	public ArrayList<ServiceReqFormFields> getFormFields() {
+	public ArrayList<ServiceReqFormField> getFormFields() {
         return formFields;
     }
 
-    public void setFormFields(ArrayList<ServiceReqFormFields> formFields) {
+    public void setFormFields(ArrayList<ServiceReqFormField> formFields) {
         this.formFields = formFields;
+    }
+
+    @Override
+    public String toString() {
+        return "ServiceReqConfigDTO{" +
+                "id=" + id +
+                ", requestName='" + requestName + '\'' +
+                ", version='" + version + '\'' +
+                ", formFields=" + formFields +
+                '}';
     }
 }

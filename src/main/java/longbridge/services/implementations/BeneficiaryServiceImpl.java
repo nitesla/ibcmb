@@ -34,11 +34,11 @@ public class BeneficiaryServiceImpl implements BeneficiaryService {
 
             beneficiary.setUser(user);
             this.localBeneficiaryRepo.save(beneficiary);
-            logger.trace("Beneficiary {} HAS BEEN ADDED ", this.localBeneficiaryRepo.toString());
+            logger.trace("Beneficiary {} has been added", this.localBeneficiaryRepo.toString());
             result=true;
         }
         catch (Exception e){
-            logger.error("Beneficiary was not created",e);
+            logger.error("Could not create beneficiary",e);
         }
         return result;
     }
@@ -52,11 +52,11 @@ public class BeneficiaryServiceImpl implements BeneficiaryService {
             LocalBeneficiary beneficiary = localBeneficiaryRepo.findOne(beneficiaryId);
             beneficiary.setDelFlag("Y");
             this.localBeneficiaryRepo.save(beneficiary);
-            logger.info("BENEFICIARY {} HAS BEEN DELETED ");
+            logger.info("Beneficiary {} has been deleted", beneficiary.toString());
             result=true;
         }
         catch (Exception e){
-            logger.error("ERROR OCCURRED {}",e.getMessage());
+            logger.error("Could not delete beneficiary",e.getMessage());
 
         }
         return result;

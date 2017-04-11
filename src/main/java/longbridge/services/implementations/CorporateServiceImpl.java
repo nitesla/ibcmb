@@ -1,15 +1,16 @@
 package longbridge.services.implementations;
 
-import longbridge.dtos.CorpLimitDTO;
 import longbridge.models.*;
 import longbridge.repositories.CorpLimitRepo;
-import longbridge.repositories.CorporateCustomerRepo;
+import longbridge.repositories.CorporateRepo;
 import longbridge.repositories.CorporateUserRepo;
+import longbridge.services.AccountService;
 import longbridge.services.CorporateService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -18,42 +19,67 @@ import java.util.List;
 @Service
 public class CorporateServiceImpl implements CorporateService {
 
-    private CorporateCustomerRepo corporateCustomerRepo;
-
+    private CorporateRepo corporateRepo;
+    private CorpLimitRepo corpLimitRepo;
     @Autowired
     private CorporateUserRepo corporateUserRepo;
-
-    private CorpLimitRepo corpLimitRepo;
+    @Autowired
+    private AccountService accountService;
 
 
     @Autowired
-    public CorporateServiceImpl(CorporateCustomerRepo corporateCustomerRepo, CorpLimitRepo corpLimitRepo){
-        this.corporateCustomerRepo = corporateCustomerRepo;
+    public CorporateServiceImpl(CorporateRepo corporateRepo, CorpLimitRepo corpLimitRepo){
+        this.corporateRepo = corporateRepo;
         this.corpLimitRepo = corpLimitRepo;
     }
     @Override
     public void addCorporate(Corporate corporate) {
-        corporateCustomerRepo.save(corporate);
+        corporateRepo.save(corporate);
     }
 
     @Override
     public void deleteCorporate(Long corporate) {
-        corporateCustomerRepo.delete(corporateCustomerRepo.findOne(corporate));
+        corporateRepo.delete(corporateRepo.findOne(corporate));
     }
 
     @Override
     public void updateCorporate(Corporate corporate) {
-        corporateCustomerRepo.save(corporate);
+        corporateRepo.save(corporate);
     }
 
     @Override
     public Corporate getCorporate(Long id) {
-        return corporateCustomerRepo.findOne(id);
+        return corporateRepo.findOne(id);
     }
 
     @Override
     public List<Corporate> getCorporates() {
-        return corporateCustomerRepo.findAll();
+        return corporateRepo.findAll();
+    }
+
+
+    @Override
+    public void addAccount(Corporate corporate, Account account) {
+        accountService.AddAccount(corporate.getCustomerId(),account);
+    }
+
+    @Override
+    public void addCorporateUser(Corporate corporate, CorporateUser corporateUser) {
+        corporate.getUsers().add(corporateUser);
+        corporateRepo.save(corporate);
+    }
+
+
+    @Override
+    public void enableCorporate(Corporate corporate) {
+        corporate.setEnabled(true);
+        corporateRepo.save(corporate);
+    }
+
+    @Override
+    public void disableCorporate(Corporate corporate) {
+        corporate.setEnabled(false);
+        corporateRepo.save(corporate);
     }
 
     @Override
@@ -78,70 +104,9 @@ public class CorporateServiceImpl implements CorporateService {
         limit.setDelFlag("Y");
         corpLimitRepo.save(limit);
     }
-
-    @Override
-    public void setCorporateUserLimit(CorporateUser corporateUser, double limitValue) {
-        Corporate corporate = corporateUser.getCorporate();
-        CorpLimit corpLimit = new CorpLimit();
-        corpLimit.setUpperLimit(limitValue);
-        corpLimit.setUpperLimit(0.0);
-        corpLimit.setCorporate(corporate);
-        corpLimitRepo.save(corpLimit);
-    }
-
-    @Override
-    public void updateCorporateUserLimit(CorporateUser corporateUser, double limitValue) {
-        Corporate corporate = corporateUser.getCorporate();
-        CorpLimit corpLimit = new CorpLimit();
-        corpLimit.setUpperLimit((limitValue));
-        corpLimit.setUpperLimit(0.0);
-        corpLimit.setCorporate(corporate);
-        corpLimitRepo.save(corpLimit);
-    }
-
-    @Override
-    public double getCorporateUserLimit(CorporateUser corporateUser) {
-        Corporate corporate = corporateUser.getCorporate();
-        List<CorpLimit> corpLimit = corpLimitRepo.findByCorporate(corporate);
-
-        if(corpLimit.isEmpty()){
-            return 0.0;
-        }
-        return (double) corpLimit.get(0).getUpperLimit();
-    }
-
-
-    @Override
-    public void deleteCorporateUserLimit(CorporateUser corporateUser) {
-        Corporate corporate = corporateUser.getCorporate();
-        List<CorpLimit> corpLimit = corpLimitRepo.findByCorporate(corporate);
-
-        if( corpLimit.isEmpty()){
-            return;
-        }
-        corpLimit.get(0).setDelFlag("Y");
-    }
-
-    @Override
-    public void addAccount(Corporate corporate, Account account) {
-        //todo
-    }
-
-    @Override
-    public void addCorporateUser(Corporate corporate, CorporateUser corporateUser) {
-        corporate.getUsers().add(corporateUser);
-        corporateCustomerRepo.save(corporate);
-    }
-
-    @Override
-    public void enableCorporate(Corporate corporate) {
-        corporate.setEnabled(true);
-        corporateCustomerRepo.save(corporate);
-    }
-
-    @Override
-    public void disableCorporate(Corporate corporate) {
-        corporate.setEnabled(false);
-        corporateCustomerRepo.save(corporate);
-    }
+	@Override
+	public Page<Corporate> getCorporates(Pageable pageDetails) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

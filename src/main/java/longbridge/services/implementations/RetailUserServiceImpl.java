@@ -1,16 +1,22 @@
 package longbridge.services.implementations;
 
+import longbridge.dtos.RetailUserDTO;
+import longbridge.models.Account;
 import longbridge.models.RetailUser;
 import longbridge.repositories.RetailUserRepo;
-import longbridge.repositories.UserRepo;
+import longbridge.services.AccountService;
 import longbridge.services.RetailUserService;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by SYLVESTER on 3/29/2017.
@@ -24,6 +30,12 @@ public class RetailUserServiceImpl implements RetailUserService {
     private RetailUserRepo retailUserRepo;
     private BCryptPasswordEncoder passwordEncoder;
 
+    @Autowired
+    AccountService accountService;
+
+    @Autowired
+    ModelMapper modelMapper;
+
     public RetailUserServiceImpl(){
 
     }
@@ -36,13 +48,15 @@ public class RetailUserServiceImpl implements RetailUserService {
 
 
     @Override
-    public RetailUser getUser(Long id) {
-        return this.retailUserRepo.findOne(id) ;
+    public RetailUserDTO getUser(Long id) {
+        RetailUser retailUser =this.retailUserRepo.findOne(id) ;
+        return convertEntityToDTO(retailUser);
     }
 
     @Override
-    public Collection<RetailUser> getUsers() {
-        return this.retailUserRepo.findAll();
+    public Iterable<RetailUserDTO> getUsers() {
+        Iterable<RetailUser> retailUsers =retailUserRepo.findAll();
+         return convertEntitiesToDTOs(retailUsers);
     }
 
     @Override
@@ -51,20 +65,20 @@ public class RetailUserServiceImpl implements RetailUserService {
         if(user!=null) {
             user.setPassword(this.passwordEncoder.encode(user.getPassword()));
         }
-        else{throw new RuntimeException("NO USER FOUND");}
+        else{throw new RuntimeException("Null user provided");}
         return ok;
 
     }
 
     @Override
-
-    public boolean addUser(RetailUser user)
+    public boolean addUser(RetailUserDTO user)
     {
         boolean ok=false;
         /*Get the user's details from the model */
         if(user!=null){
             user.setPassword(this.passwordEncoder.encode(user.getPassword()));
-            this.retailUserRepo.save(user);
+            RetailUser retailUser = convertDTOToEntity(user);
+            this.retailUserRepo.save(retailUser);
             logger.info("USER {} HAS BEEN CREATED");
         }
         else{logger.error("USER NOT FOUND");}
@@ -105,7 +119,6 @@ public class RetailUserServiceImpl implements RetailUserService {
                     return ok;
                 }
 
-
                 if (this.passwordEncoder.matches(oldPassword, user.getPassword())) {
                     user.setPassword(this.passwordEncoder.encode(newPassword));
                     this.retailUserRepo.save(user);
@@ -124,7 +137,6 @@ public class RetailUserServiceImpl implements RetailUserService {
 
                     }
 
-
                 }
             }
         }
@@ -136,16 +148,22 @@ public class RetailUserServiceImpl implements RetailUserService {
     }
 
     @Override
-    public boolean updateUser(RetailUser user) {
+    public boolean updateUser(RetailUserDTO user) {
         boolean ok=false;
         try {
             if(user!=null) {
-                this.retailUserRepo.save(user);
+                RetailUser retailUser = convertDTOToEntity(user);
+                this.retailUserRepo.save(retailUser);
                 logger.info("USER SUCCESSFULLY UPDATED");
             }
         }
         catch(Exception e){e.printStackTrace();}
         return ok;
+    }
+
+    @Override
+    public boolean AddAccount(RetailUser user, Account account) {
+       return accountService.AddAccount(user.getCustomerId(),account);
     }
 
     @Override
@@ -155,7 +173,7 @@ public class RetailUserServiceImpl implements RetailUserService {
         try {
             String newPassword = generatePassword();
             setPassword(user, newPassword);
-            updateUser(user);
+            retailUserRepo.save(user);
 
             sendPassword(user);
             logger.info("PASSWORD GENERATED AND SENT");
@@ -181,4 +199,26 @@ public class RetailUserServiceImpl implements RetailUserService {
         //TODO use an smtp server to send new password to user via mail
         return false;
     }
+
+    private RetailUserDTO convertEntityToDTO(RetailUser RetailUser){
+        return  modelMapper.map(RetailUser,RetailUserDTO.class);
+    }
+
+    private RetailUser convertDTOToEntity(RetailUserDTO RetailUserDTO){
+        return  modelMapper.map(RetailUserDTO,RetailUser.class);
+    }
+
+    private Iterable<RetailUserDTO> convertEntitiesToDTOs(Iterable<RetailUser> RetailUsers){
+        List<RetailUserDTO> RetailUserDTOs = new ArrayList<>();
+        for(RetailUser RetailUser: RetailUsers){
+          RetailUserDTO retailUserDTO =  modelMapper.map(RetailUser,RetailUserDTO.class);
+        }
+        return RetailUserDTOs;
+    }
+
+	@Override
+	public Page<RetailUserDTO> getUsers(Pageable pageDetails) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

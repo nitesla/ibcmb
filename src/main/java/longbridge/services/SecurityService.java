@@ -1,10 +1,10 @@
 package longbridge.services;
 
-import longbridge.models.Permission;
-import longbridge.models.Role;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-import java.math.BigInteger;
-import java.security.SecureRandom;
+import longbridge.dtos.PermissionDTO;
+import longbridge.dtos.RoleDTO;
 
 /**
  * The {@code SecurityService} interface provides the methods for managing roles, profiles and permissions
@@ -19,61 +19,66 @@ public interface SecurityService {
      * Adds a new role to the system
      * @param  role the role to be added to the system
      */
-    void addRole(Role role);
+    void addRole(RoleDTO role);
 
     /**
      * Returns a role
      * @return the role id
      */
-    Role getRole(Long id);
+    RoleDTO getRole(Long id);
 
     /**
      * Returns all  the roles in the system
      * @return a list of roles
      */
-    Iterable<Role> getRoles();
+    Iterable<RoleDTO> getRoles();
+    
+    Page<RoleDTO> getRoles(Pageable pageDetails);
 
     /**
      * Updates the details of the specified userType
      * @param role the role to be updated
      */
-    void updateRole(Role role);
+    void updateRole(RoleDTO role);
 
     /**
      * Deletes a role
      * This is a logical deletion because the data is not removed from the database
+     * @param id
      */
-    void deleteRole(Role role);
+    void deleteRole(Long id);
 
     /**
      * Adds a new permission to the system
      * @param permission  the permission to be deleted
      */
-    void addPermission(Permission permission);
+    void addPermission(PermissionDTO permission);
 
     /**
      * Returns the given  permission
      * @return the permission's id
      */
-    Permission getPermission(Long id);
+    PermissionDTO getPermission(Long id);
 
     /**
      * Returns all  the permissions in the system
      * @return a list of permissions
      */
-    Iterable<Permission> getPermissions();
+    Iterable<PermissionDTO> getPermissions();
+    
+    Page<PermissionDTO> getPermissions(Pageable pageDetails);
 
     /**
      * Updates the details of the permission
      * @param permission the permission to be deleted
      */
-    void updatePermission(Permission permission);
+    void updatePermission(PermissionDTO permission);
 
     /**
      * Deletes the permissiont
-     * @param permission the permission
+     * @param id the permission
      */
-    void deletePermission(Permission permission);
+    void deletePermission(Long id);
 
     /** Generates a random password of 12 characters
      *

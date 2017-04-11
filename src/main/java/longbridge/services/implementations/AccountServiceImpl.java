@@ -6,6 +6,8 @@ import longbridge.services.AccountService;
 import longbridge.services.IntegrationService;
 import longbridge.utils.AccountStatement;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -30,6 +32,15 @@ public class AccountServiceImpl implements AccountService{
     }
 
     @Override
+    public boolean AddAccount(String customerId, Account account) {
+        if (!customerId.equals(account.getCustomerId())) {
+            return false;
+        }
+        accountRepo.save(account);
+        return true;
+    }
+
+    @Override
     public Account getAccount(Long accId) {
         return accountRepo.findById(accId);
     }
@@ -49,6 +60,22 @@ public class AccountServiceImpl implements AccountService{
     public AccountStatement getAccountStatements(Account account, Date fromDate, Date toDate) {
         return integrationService.getAccountStatements(account.getAccountId(), fromDate, toDate);
     }
+
+    @Override
+    public Iterable<Account> getAccountsForDebit(String customerId) {
+        return null;
+    }
+
+    @Override
+    public Iterable<Account> getAccountsForCredit(String customerId) {
+        return null;
+    }
+
+	@Override
+	public Page<Account> getAccounts(String customerId, Pageable pageDetails) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 
 //    private Account mockAccount;

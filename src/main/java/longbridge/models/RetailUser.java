@@ -1,5 +1,7 @@
 package longbridge.models;
 
+import org.hibernate.envers.Audited;
+
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import java.util.Collection;
@@ -12,8 +14,10 @@ import java.util.Date;
 
 
 @Entity
+@Audited
 public class RetailUser extends User{
 
+	private String customerId;
 	private Date birthDate;
 
 	@OneToMany
@@ -39,10 +43,47 @@ public class RetailUser extends User{
 		this.userType = (UserType.RETAIL);
 	}
 
+	public String getCustomerId() {
+		return customerId;
+	}
+
+	public void setCustomerId(String customerId) {
+		this.customerId = customerId;
+	}
+
+	public Date getBirthDate() {
+		return birthDate;
+	}
+
+	public void setBirthDate(Date birthDate) {
+		this.birthDate = birthDate;
+	}
+
+	public Collection<RetailCustLimit> getRetailCustLimits() {
+		return retailCustLimits;
+	}
+
+	public void setRetailCustLimits(Collection<RetailCustLimit> retailCustLimits) {
+		this.retailCustLimits = retailCustLimits;
+	}
+
+	public Collection<LocalBeneficiary> getBeneficiaries() {
+		return beneficiaries;
+	}
+
+	public void setBeneficiaries(Collection<LocalBeneficiary> beneficiaries) {
+		this.beneficiaries = beneficiaries;
+	}
+
+
 
 	@Override
 	public String toString() {
-		return "RetailUser ["+super.toString()+"]";
+		return "RetailUser ["+super.toString()+"]" +
+				"customerId='" + customerId + '\'' +
+				", birthDate=" + birthDate +
+				", retailCustLimits=" + retailCustLimits +
+				", beneficiaries=" + beneficiaries +
+				'}';
 	}
-
 }

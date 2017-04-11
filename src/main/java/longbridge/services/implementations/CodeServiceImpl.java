@@ -1,10 +1,8 @@
 package longbridge.services.implementations;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import longbridge.dtos.CodeDTO;
 import longbridge.models.AdminUser;
 import longbridge.models.Code;
 
@@ -14,13 +12,18 @@ import longbridge.repositories.CodeRepo;
 
 import longbridge.repositories.VerificationRepo;
 import longbridge.services.CodeService;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Wunmi on 29/03/2017.
@@ -33,6 +36,9 @@ public class CodeServiceImpl implements CodeService {
     private CodeRepo codeRepo;
 
     private VerificationRepo verificationRepo;
+
+    @Autowired
+    ModelMapper modelMapper;
 
     @Autowired
     public CodeServiceImpl(CodeRepo codeRepository, VerificationRepo verificationRepo) {
@@ -61,24 +67,27 @@ public class CodeServiceImpl implements CodeService {
     }
 
     @Override
-    public Code getCode(Long id) {
-        return this.codeRepo.findOne(id);
+    public CodeDTO getCode(Long id) {
+        Code code = this.codeRepo.findOne(id);
+        return convertEntityToDTO(code);
     }
 
     @Override
-    public Iterable<Code> getCodesofType(String codeType) {
-        return this.codeRepo.findByTypeAndDelFlag(codeType, "N");
+    public Iterable<CodeDTO> getCodesByType(String codeType) {
+        Iterable<Code> codes = this.codeRepo.findByType(codeType);
+        return convertEntitiesToDTOs(codes);
     }
 
     @Override
-    public Iterable<Code> getCodes() {
-        return this.codeRepo.findByDelFlag("N");
-    }
+    public Iterable<CodeDTO> getCodes() {
+        Iterable<Code> codes = this.codeRepo.findAll();
+        return convertEntitiesToDTOs(codes);    }
 
     @Override
-    public boolean addCode(Code code, AdminUser adminUser) {
+    public boolean addCode(CodeDTO codeDTO, AdminUser adminUser) {
         boolean result= false;
 
+        Code code = convertDTOToEntity(codeDTO);
         try {
             Verification verification = new Verification();
             verification.setBeforeObject("");
@@ -99,8 +108,9 @@ public class CodeServiceImpl implements CodeService {
         return result;
     }
 
-    public boolean modifyCode(Code code, AdminUser adminUser){
+    public boolean updateCode(CodeDTO codeDTO, AdminUser adminUser){
          boolean result= false;
+         Code code = convertDTOToEntity(codeDTO);
          Code originalObject = codeRepo.findOne(code.getId());
 
         try {
@@ -157,4 +167,28 @@ public class CodeServiceImpl implements CodeService {
         //save verification
         verificationRepo.save(verificationObject);
     }
+
+    private CodeDTO convertEntityToDTO(Code code){
+        return  modelMapper.map(code,CodeDTO.class);
+    }
+
+    private Code convertDTOToEntity(CodeDTO codeDTO){
+        return  modelMapper.map(codeDTO,Code.class);
+    }
+
+    private Iterable<CodeDTO> convertEntitiesToDTOs(Iterable<Code> codes){
+        List<CodeDTO> codeDTOs = new ArrayList<>();
+        for(Code code: codes){
+            CodeDTO codeDTO = modelMapper.map(code,CodeDTO.class);
+            codeDTOs.add(codeDTO);
+        }
+        return codeDTOs;
+    }
+
+
+	@Override
+	public Page<CodeDTO> getCodesByType(String codeType, Pageable pageDetails) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
