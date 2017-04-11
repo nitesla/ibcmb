@@ -1,6 +1,8 @@
 package longbridge.models;
 
 
+import org.hibernate.envers.Audited;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -9,6 +11,7 @@ import java.util.Date;
  * Created by LB-PRJ-020 on 4/7/2017.
  */
 @Entity
+@Audited
 public class Verification extends  AbstractEntity {
 
     @Column(columnDefinition = "TEXT")

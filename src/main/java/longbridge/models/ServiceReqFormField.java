@@ -1,5 +1,7 @@
 package longbridge.models;
 
+import org.hibernate.envers.Audited;
+
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
@@ -7,6 +9,7 @@ import javax.persistence.ManyToOne;
  * Created by Wunmi on 08/04/2017.
  */
 @Entity
+@Audited
 public class ServiceReqFormField extends AbstractEntity {
 
     @ManyToOne
