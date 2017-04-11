@@ -20,14 +20,14 @@ public class AdmCorporateController {
     private CorporateService corporateService;
 
     @GetMapping("/new")
-    public String addCorporate(){
+    public String addCorporate(Corporate corporate){
         return "adm/corporate/add";
     }
 
-    @PostMapping
+    @PostMapping("/new")
     public String createCorporate(@ModelAttribute("corporateForm") Corporate corporate, BindingResult result, Model model){
         if(result.hasErrors()){
-            return "add-corporate";
+            return "adm/corporate/add";
         }
         corporateService.addCorporate(corporate);
         model.addAttribute("success", "Corporate added successfully");

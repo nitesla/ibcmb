@@ -28,18 +28,18 @@ public class AdmOperationsUserController {
 
 
     @GetMapping("/new")
-    public String addUser(){
+    public String addUser(OperationsUser operationsUser){
         return "adm/operation/add";
     }
 
-    @PostMapping
+    @PostMapping("/new")
     public String createUser(@ModelAttribute("operationsUserForm") OperationsUser operationsUser, BindingResult result, Model model) throws Exception{
         if(result.hasErrors()){
-            return "addUser";
+            return "adm/operation/add";
         }
         operationsUserService.addUser(operationsUser);
         model.addAttribute("success","Retail user created successfully");
-        return "redirect:/operations/users";
+        return "redirect:/admin/operations/users";
     }
 
     @GetMapping

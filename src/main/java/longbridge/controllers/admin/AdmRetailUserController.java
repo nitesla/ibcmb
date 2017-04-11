@@ -40,10 +40,10 @@ public class AdmRetailUserController {
 
 
 
-    @PostMapping
+    @PostMapping("/new")
     public String createUser(@ModelAttribute("retailUser") @Valid RetailUserDTO retailUserDTO, BindingResult result, Model model) throws Exception{
         if(result.hasErrors()){
-            return "addUser";
+            return "adm/retail/add";
         }
         RetailUser retailUser = modelMapper.map(retailUserDTO,RetailUser.class);
         retailUserService.addUser(retailUser);

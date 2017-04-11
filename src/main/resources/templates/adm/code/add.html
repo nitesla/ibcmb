@@ -46,12 +46,12 @@
                                         </ul>
                                         <div class="clearfix"></div>
                                     </div>
-                                    <form method="get" class="form-horizontal">
+                                    <form method="get" class="form-horizontal" th:action="@{/admin/codes/new}" th:object="${codeDTO}">
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">Code:</label>
 
                                             <div class="col-sm-4">
-                                                <input type="text" id="code" name="code" class="form-control" />
+                                                <input type="text" id="code" name="code" class="form-control" th:field="*{code}" />
                                             </div>
 
 
@@ -61,7 +61,7 @@
                                             <label class="col-sm-2 control-label">Description</label>
 
                                             <div class="col-sm-4">
-                                                <input type="text" id="description" name="description" class="form-control" />
+                                                <input type="text" id="description" name="description" class="form-control" th:field="*{description}" />
                                             </div>
 
                                         </div>
@@ -69,7 +69,7 @@
                                             <label class="col-sm-2 control-label">Type</label>
 
                                             <div class="col-sm-4">
-                                                <input type="text" id="codeType" name="codeType" class="form-control" />
+                                                <input type="text" id="codeType" name="codeType" class="form-control" th:field="*{type}" />
                                             </div>
 
                                         </div>

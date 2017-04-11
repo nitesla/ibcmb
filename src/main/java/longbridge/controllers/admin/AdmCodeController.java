@@ -39,14 +39,14 @@ public class AdmCodeController {
     private ModelMapper modelMapper;
 
     @GetMapping("/new")
-    public String addCode(){
+    public String addCode(CodeDTO codeDTO){
         return "adm/code/add";
     }
 
-    @PostMapping
+    @PostMapping("/new")
     public String createCode(@ModelAttribute("code") CodeDTO codeDTO, BindingResult result, Model model){
         if(result.hasErrors()){
-            return "add";
+            return "adm/code/add";
         }
         logger.info("Code {}", codeDTO.toString());
         AdminUser adminUser = new AdminUser();

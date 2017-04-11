@@ -65,7 +65,7 @@ public class AdminUserServiceImpl implements AdminUserService {
         /*Get the user's details from the model */
 
         if (user != null) {
-            user.setPassword(this.passwordEncoder.encode(user.getPassword()));
+
             this.adminUserRepo.save(user);
             logger.info("USER {} HAS BEEN CREATED");
             ok=true;

@@ -27,7 +27,7 @@
             <div class="">
                 <div class="page-title">
                     <div class="title_left">
-                        <h3>Create Admin User</h3>
+                        <h3>Create Operation User</h3>
                     </div>
 
                 </div>
@@ -44,7 +44,7 @@
                             </div>
                             <div class="x_content">
                                 <div class="ibox-content">
-                                    <form method="get" class="form-horizontal">
+                                    <form method="post" class="form-horizontal" th:action="@{/admin/operations/users/new}" th:object="${operationsUser}">
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">CifId:</label>
 
