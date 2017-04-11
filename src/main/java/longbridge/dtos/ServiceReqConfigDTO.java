@@ -4,11 +4,14 @@ import longbridge.models.ServiceReqFormField;
 
 import java.util.ArrayList;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * Created by Showboy on 08/04/2017.
  */
 public class ServiceReqConfigDTO {
 
+	@JsonProperty("DT_RowId")
     private Long id;
     private String requestName;
     private String version;
