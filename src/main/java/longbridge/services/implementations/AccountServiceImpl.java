@@ -6,6 +6,8 @@ import longbridge.services.AccountService;
 import longbridge.services.IntegrationService;
 import longbridge.utils.AccountStatement;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -68,6 +70,12 @@ public class AccountServiceImpl implements AccountService{
     public Iterable<Account> getAccountsForCredit(String customerId) {
         return null;
     }
+
+	@Override
+	public Page<Account> getAccounts(String customerId, Pageable pageDetails) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 
 //    private Account mockAccount;

@@ -7,6 +7,8 @@ import longbridge.repositories.RequestHistoryRepo;
 import longbridge.repositories.ServiceRequestRepo;
 import longbridge.services.RequestService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 /**
@@ -50,4 +52,16 @@ public class RequestServiceImpl implements RequestService {
     public Iterable<RequestHistory> getRequestHistories(ServiceRequest request) {
         return serviceRequestRepo.findOne(request.getId()).getRequestHistories();
     }
+
+	@Override
+	public Page<ServiceRequest> getRequests(RetailUser user, Pageable pageDetails) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Page<RequestHistory> getRequestHistories(ServiceRequest request, Pageable pageDetails) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

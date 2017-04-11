@@ -1,5 +1,8 @@
 package longbridge.services;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import longbridge.dtos.CodeDTO;
 import longbridge.models.AdminUser;
 import longbridge.models.Code;
@@ -44,6 +47,8 @@ public interface CodeService extends Verifiable<Code> {
      * @return a list of codes
      */
     Iterable<CodeDTO> getCodesByType(String codeType);
+    
+    Page<CodeDTO> getCodesByType(String codeType, Pageable pageDetails);
 
     /**
      * Returns all the codes in the system

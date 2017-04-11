@@ -1,5 +1,8 @@
 package longbridge.services;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import longbridge.models.TransferRequest;
 import longbridge.models.User;
 
@@ -19,6 +22,8 @@ public interface TransferService {
     TransferRequest getTransfer(Long id);
 
     Iterable<TransferRequest> getTransfers(User user);
+    
+    Page<TransferRequest> getTransfers(User user, Pageable pageDetails);
 
     void saveTransfer(TransferRequest transferRequest);
 

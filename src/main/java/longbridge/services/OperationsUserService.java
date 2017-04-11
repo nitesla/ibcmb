@@ -1,5 +1,8 @@
 package longbridge.services;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import longbridge.models.OperationsUser;
 
 /**
@@ -22,6 +25,8 @@ public interface OperationsUserService {
      * @return list of user
      */
     Iterable<OperationsUser> getUsers();
+    
+    Page<OperationsUser> getUsers(Pageable pageDetails);
 
 
     /**
