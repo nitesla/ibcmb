@@ -97,9 +97,8 @@ public class AdminUserController {
      */
     @GetMapping("/{userId}/details")
     public String getAdminUser(@PathVariable  Long userId, Model model){
-       AdminUser user =adminUserService.getUser(userId);
-       AdminUserDTO adminUserDTO = modelMapper.map(user,AdminUserDTO.class);
-       model.addAttribute("user",adminUserDTO);
+       AdminUserDTO user =adminUserService.getAdminUser(userId);
+       model.addAttribute("user",user);
        return "adm/admin/details";
     }
 

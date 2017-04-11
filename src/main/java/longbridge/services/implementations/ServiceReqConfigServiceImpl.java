@@ -11,10 +11,12 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.awt.print.Pageable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -43,7 +45,7 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 
     @Override
     @Transactional
-    public void addSeviceReqConfig(ServiceReqConfigDTO serviceReqConfigDTO) {
+    public void addServiceReqConfig(ServiceReqConfigDTO serviceReqConfigDTO) {
         ServiceReqConfig serviceReqConfig = convertDTOToEntity(serviceReqConfigDTO);
         Iterator<ServiceReqFormField> serviceReqFormFieldIterator =  serviceReqConfig.getFormFields().iterator();
 
@@ -57,24 +59,26 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
             }
         }
         serviceReqConfigRepo.save(serviceReqConfig);
-
     }
-
 
     @Override
     public ServiceReqConfigDTO getServiceReqConfig(Long id) {
         ServiceReqConfig serviceReqConfig =serviceReqConfigRepo.findOne(id);
-
-        return  convertEntityToDTO(serviceReqConfig);
+        modelMapper  = new ModelMapper();
+        return  modelMapper.map(serviceReqConfig,ServiceReqConfigDTO.class);
     }
 
     @Override
     public Iterable<ServiceReqConfigDTO> getServiceReqConfigs() {
         Iterable<ServiceReqConfig> serviceReqConfigs = serviceReqConfigRepo.findAll();
-
-        logger.info("Service Req list:{}",serviceReqConfigs);
-
         return convertEntitiesToDTOs(serviceReqConfigs);
+    }
+
+    @Override
+    public Iterable<ServiceReqConfigDTO> gerServiceReqConfigsPage(Integer pageNum, Integer pageSize) {
+        PageRequest pageRequest = new PageRequest(pageNum,pageSize);
+        Iterable<ServiceReqConfig> serviceReqConfigs = serviceReqConfigRepo.findAll(pageRequest);
+        return  convertEntitiesToDTOs(serviceReqConfigs);
     }
 
     @Override
@@ -101,6 +105,12 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
     }
 
     @Override
+    public Iterable<ServiceReqFormFieldDTO> getServiceReqFormFields(Long serviceReqConfigId) {
+        Iterable<ServiceReqFormField> serviceReqFormFieldList = serviceReqConfigRepo.findOne(serviceReqConfigId).getFormFields();
+        return convertFormFieldEntitiesToDTOs(serviceReqFormFieldList);
+    }
+
+    @Override
     public Iterable<ServiceReqFormFieldDTO> getServiceReqFormFields() {
         Iterable<ServiceReqFormField> serviceReqFormFields = serviceReqFormFieldRepo.findAll();
         return convertFormFieldEntitiesToDTOs(serviceReqFormFields);
@@ -123,8 +133,6 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
             @Override
             protected void configure() {
                 skip().setFormFields(null);
-
-
             }
         };
         modelMapper = new ModelMapper();
@@ -145,6 +153,14 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
         return serviceReqConfigDTOList;
     }
 
+    private Iterable<ServiceReqConfigDTO> convertEntitiesToDTOs(Page<ServiceReqConfig> serviceReqConfigs){
+        List<ServiceReqConfigDTO> serviceReqConfigDTOList = new ArrayList<>();
+        for(ServiceReqConfig serviceReqConfig: serviceReqConfigs){
+            ServiceReqConfigDTO dto = convertEntityToDTO(serviceReqConfig);
+            serviceReqConfigDTOList.add(dto);
+        }
+        return serviceReqConfigDTOList;
+    }
 
     private ServiceReqFormFieldDTO convertFormFieldEntityToDTO(ServiceReqFormField serviceReqFormField){
         return  modelMapper.map(serviceReqFormField,ServiceReqFormFieldDTO.class);
@@ -155,12 +171,14 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
     }
 
     private Iterable<ServiceReqFormFieldDTO> convertFormFieldEntitiesToDTOs(Iterable<ServiceReqFormField> serviceReqFormFields){
-        List<ServiceReqFormFieldDTO> serviceReqFormFieldDTOs = new ArrayList<>();
+        List<ServiceReqFormFieldDTO> serviceReqFormFieldDTOList = new ArrayList<>();
         for(ServiceReqFormField serviceReqFormField: serviceReqFormFields){
             convertFormFieldEntityToDTO(serviceReqFormField);
         }
-        return serviceReqFormFieldDTOs;
+        return serviceReqFormFieldDTOList;
     }
+
+
 
 
 }

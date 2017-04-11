@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 /**
- * Created by Showboy on 08/04/2017.
+ * Created by Wunmi on 08/04/2017.
  */
 @Controller
 @RequestMapping("/admin/srconfig")
@@ -39,9 +39,7 @@ public class AdmServiceReqConfigController {
             return "admin/srconfig/new";
         }
 
-        logger.info("Received form post request: {}", serviceReqConfigDTO.toString());
-
-        serviceReqConfigService.addSeviceReqConfig(serviceReqConfigDTO);
+        serviceReqConfigService.addServiceReqConfig(serviceReqConfigDTO);
         model.addAttribute("success","Service Request Config  created successfully");
         return "redirect:/admin/srconfig";
     }
@@ -60,10 +58,11 @@ public class AdmServiceReqConfigController {
     }
 
     @GetMapping("/{reqId}/edit")
-    public String editConfig(@PathVariable Long reqId, Model model){
+    public String  editConfig(@PathVariable Long reqId, Model model){
         ServiceReqConfigDTO serviceReqConfig = serviceReqConfigService.getServiceReqConfig(reqId);
-        model.addAttribute("requestDetails", serviceReqConfig);
-        return "adm/serviceReqConfig/";
+        model.addAttribute("serviceReqConfig", serviceReqConfig);
+        //return "adm/serviceReqConfig/edit";
+        return "/adm/serviceReqConfig/edit";
     }
 
     @PostMapping("/{userId}")
@@ -76,5 +75,4 @@ public class AdmServiceReqConfigController {
         model.addAttribute("success", "Admin user updated successfully");
         return "redirect:/admin/users";
     }
-
 }

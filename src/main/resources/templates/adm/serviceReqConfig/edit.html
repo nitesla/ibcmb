@@ -47,7 +47,7 @@
                                 <div class="clearfix"></div>
                             </div>
                             <div class="x_content">
-                                <form method="post" th:action="@{/admin/srconfig}" th:object="${serviceReqConfigDTO}" class="form-horizontal">
+                                <form method="post" th:action="@{/admin/srconfig}" th:object="${serviceReqConfig}" class="form-horizontal">
                                     <div class="x_content">
                                         <br />
 
@@ -55,7 +55,7 @@
                                             <label class="control-label col-md-2 col-sm-2 col-xs-12">Request Name <span class="required">*</span>
                                             </label>
                                             <div class="col-md-4 col-sm-4 col-xs-12">
-                                                <input class="form-control col-md-7 col-xs-12" name="requestName" placeholder="Service" />
+                                                <input class="form-control col-md-7 col-xs-12" name="requestName" placeholder="Service" th:field="*{requestName}"/>
                                             </div>
                                         </div><br/><br/>
                                         <div class="col-md-6 col-sm-6 col-xs-12">
@@ -73,6 +73,14 @@
                                                         <th>Type Data</th>
                                                     </tr>
                                                     </thead>
+                                                    <tbody>
+                                                        <tr th:each="${req : serviceReqConfig}">
+                                                            <td>th:field="*{user.}"</td>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td></td>
+                                                        </tr>
+                                                    </tbody>
 
                                                 </table>
                                             </div>

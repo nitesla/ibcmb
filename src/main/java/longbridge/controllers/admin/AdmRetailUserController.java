@@ -26,8 +26,6 @@ import javax.validation.Valid;
 public class AdmRetailUserController {
     @Autowired
     private RetailUserService retailUserService;
-    @Autowired
-    private ModelMapper modelMapper;
 
     private Logger logger= LoggerFactory.getLogger(this.getClass());
 

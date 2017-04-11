@@ -1,13 +1,9 @@
 package longbridge.dtos;
 
-import longbridge.models.AbstractEntity;
-import longbridge.models.ServiceReqConfig;
 
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
 
 /**
- * Created by Wunmi on 08/04/2017.
+ * Created by Fortune on 08/04/2017.
  */
 
 public class ServiceReqFormFieldDTO{
@@ -68,11 +64,17 @@ public class ServiceReqFormFieldDTO{
         this.typeData = typeData;
     }
 
-	@Override
-	public String toString() {
-		return "ServiceReqFormFields [fieldName=" + fieldName + ", fieldLabel=" + fieldLabel + ", fieldType="
-				+ fieldType + ", typeData=" + typeData + "]";
-	}
-    
-    
+    @Override
+    public String toString() {
+        return "ServiceReqFormFieldDTO{" +
+                "id='" + id + '\'' +
+                ", version=" + version +
+                ", fieldName='" + fieldName + '\'' +
+                ", fieldLabel='" + fieldLabel + '\'' +
+                ", fieldType='" + fieldType + '\'' +
+                ", typeData='" + typeData + '\'' +
+                '}';
+    }
+
+
 }

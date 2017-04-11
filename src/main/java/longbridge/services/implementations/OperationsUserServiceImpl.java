@@ -134,11 +134,12 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     }
 
     private Iterable<OperationsUserDTO> convertEntitiesToDTOs(Iterable<OperationsUser> operationsUsers){
-        List<OperationsUserDTO> operationsUserDTOs = new ArrayList<>();
+        List<OperationsUserDTO> operationsUserDTOList = new ArrayList<>();
         for(OperationsUser operationsUser: operationsUsers){
-            OperationsUserDTO retailUserDTO =  modelMapper.map(operationsUser,OperationsUserDTO.class);
+            OperationsUserDTO userDTO =  convertEntityToDTO(operationsUser);
+            operationsUserDTOList.add(userDTO);
         }
-        return operationsUserDTOs;
+        return operationsUserDTOList;
     }
 
 }

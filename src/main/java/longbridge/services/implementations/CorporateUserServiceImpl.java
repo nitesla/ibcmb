@@ -156,12 +156,13 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         return  modelMapper.map(CorporateUserDTO,CorporateUser.class);
     }
 
-    private Iterable<CorporateUserDTO> convertEntitiesToDTOs(Iterable<CorporateUser> CorporateUsers){
-        List<CorporateUserDTO> CorporateUserDTOList = new ArrayList<>();
-        for(CorporateUser CorporateUser: CorporateUsers){
-            CorporateUserDTO corporateUserDTO =  modelMapper.map(CorporateUser,CorporateUserDTO.class);
+    private Iterable<CorporateUserDTO> convertEntitiesToDTOs(Iterable<CorporateUser> corporateUsers){
+        List<CorporateUserDTO> corporateUserDTOList = new ArrayList<>();
+        for(CorporateUser corporateUser: corporateUsers){
+            CorporateUserDTO corporateUserDTO =  convertEntityToDTO(corporateUser);
+            corporateUserDTOList.add(corporateUserDTO);
         }
-        return CorporateUserDTOList;
+        return corporateUserDTOList;
     }
 
 }
