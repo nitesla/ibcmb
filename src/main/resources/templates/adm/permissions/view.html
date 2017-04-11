@@ -54,7 +54,7 @@
                                     <li >
                                         <div class="col-lg-4">
                                             <div class="title-action">
-                                                <a href="/admin/users/new" class="btn btn-primary"><i class="fa fa-print"></i> Add new user </a>
+                                                <a href="/admin/permissions/new" class="btn btn-primary"><i class="fa fa-print"></i> Add new user </a>
                                             </div>
                                         </div>
                                     </li>
@@ -68,13 +68,13 @@
                             </div>
                             <div class="x_content">
 
-                                <table class="table table-striped table-bordered table-hover" id="admin-user">
+                                <table class="table table-striped table-bordered table-hover" id="permission">
                                     <thead>
                                     <tr>
-                                        <th>First Name</th>
-                                        <th>Last Name</th>
-                                        <th>Email</th>
-                                        <th>Actions</th>
+                                        <th>Code</th>
+                                        <th>Type</th>
+                                        <th>Description</th>
+                                        <th></th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -83,10 +83,10 @@
                                     </tbody>
                                     <tfoot>
                                     <tr>
-                                        <th>First Name</th>
-                                        <th>Last Name</th>
-                                        <th>Email</th>
-                                        <th>Actions</th>
+                                        <th>Code</th>
+                                        <th>Type</th>
+                                        <th>Description</th>
+                                        <th></th>
                                     </tr>
                                     </tfoot>
                                 </table>
@@ -116,7 +116,7 @@
 <script>
     /*<![CDATA[*/
     $(document).ready(function() {
-        $('#admin-user').DataTable({
+        $('#permission').DataTable({
             select:true,
             responsive: true,
             "lengthMenu" : [ [ 5, 10, 50, -1 ],	[ 5, 10, 50, "All" ] ],
@@ -135,11 +135,11 @@
             "columnDefs" : [  {
                 "targets" : 1,
                 "render" : function(data, type, full, meta) {
-                    kk =  "<div class='col-md-6 col-sm-6 col-xs-12'><a  class='btn btn-default btn-xs' data-toggle='tooltip' title='Edit' data-placement='right' href='/admin/users/"+ full.DT_RowId+ "/edit'>";
+                    kk =  "<div class='col-md-6 col-sm-6 col-xs-12'><a  class='btn btn-default btn-xs' data-toggle='tooltip' title='Edit' data-placement='right' href='/admin/srconfig/"+ full.DT_RowId+ "/edit'>";
                     kk += "<i class='fa fa-edit'></i>"
                     kk += "Edit</a>" ;
 
-                    kk  +=  "<a  class='btn btn-default btn-xs' data-toggle='tooltip' title='Delete' data-placement='right' href='/admin/users/"+ full.DT_RowId+ "/delete'>";
+                    kk  +=  "<a  class='btn btn-default btn-xs' data-toggle='tooltip' title='Delete' data-placement='right' href='/admin/srconfig/"+ full.DT_RowId+ "/delete'>";
                     kk += "<i class='fa fa-trash-o'></i>"
                     kk += "Delete</a></div>";
                     return kk;

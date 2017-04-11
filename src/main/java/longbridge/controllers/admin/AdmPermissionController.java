@@ -21,13 +21,13 @@ public class AdmPermissionController {
 
     @GetMapping("/new")
     public String addPermission(){
-        return "add-permission";
+        return "adm/permissions/add";
     }
 
-    @PostMapping
+    @PostMapping("/new")
     public String createPermission(@ModelAttribute("permission") PermissionDTO permission, BindingResult result, Model model){
         if(result.hasErrors()){
-            return "add-permission";
+            return "adm/permissions/add";
         }
 
         securityService.addPermission(permission);
