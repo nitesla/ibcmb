@@ -11,13 +11,9 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.datatables.repository.DataTablesRepositoryFactoryBean;
-import org.springframework.data.jpa.datatables.repository.DataTablesUtils;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -75,8 +71,14 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
     }
 
     @Override
-    public Iterable<ServiceReqConfigDTO> getServiceReqConfigs() {
-        Iterable<ServiceReqConfig> serviceReqConfigs = serviceReqConfigRepo.findAll();
+    public ServiceReqConfigDTO getServiceReqConfigs(String requestName) {
+        ServiceReqConfig serviceReqConfig = serviceReqConfigRepo.findByRequestName(requestName);
+        return convertEntityToDTO(serviceReqConfig);
+    }
+
+    @Override
+    public List<ServiceReqConfigDTO> getServiceReqConfigs() {
+        List<ServiceReqConfig> serviceReqConfigs = serviceReqConfigRepo.findAll();
 
         logger.info("Service Req list:{}",serviceReqConfigs);
 

@@ -1,10 +1,9 @@
 package longbridge.dtos;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import longbridge.models.ServiceReqFormField;
 
 import java.util.ArrayList;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Created by Showboy on 08/04/2017.
@@ -16,6 +15,7 @@ public class ServiceReqConfigDTO {
     private String requestName;
     private String version;
     private ArrayList<ServiceReqFormField> formFields;
+
 
     public Long getId() {
         return id;

@@ -48,11 +48,17 @@
                             </div>
                             <div class="x_content">
 
-                            <table class="table table-striped table-bordered table-hover srconfig" >
+                            <table class="table table-striped table-bordered table-hover" id="srconfig">
                                 <thead>
                                 <tr>
+                                    <!--<th>Id</th>-->
                                     <th>Service Request Name</th>
+<<<<<<< HEAD
                                     <th>Actions</th>
+=======
+                                    <!--<th>Actions</th>-->
+
+>>>>>>> branch 'master' of https://longbridge_integration@bitbucket.org/longbridge_integration/ibcmb.git
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -61,6 +67,7 @@
                                 </tbody>
                                 <tfoot>
                                 <tr>
+                                    <!--<th>Id</th>-->
                                     <th>Service Request Name</th>
                                     <th>Actions</th>
                                 </tr>
@@ -89,7 +96,12 @@
 <script>
     /*<![CDATA[*/
     $(document).ready(function() {
+<<<<<<< HEAD
         $('.srconfig').DataTable({
+=======
+        $('#srconfig').DataTable({
+        	select:true,
+>>>>>>> branch 'master' of https://longbridge_integration@bitbucket.org/longbridge_integration/ibcmb.git
             responsive: true,
             "lengthMenu" : [ [ 5, 10, 50, -1 ],	[ 5, 10, 50, "All" ] ],
 			"pagingType" : "full_numbers",
@@ -99,6 +111,7 @@
             "ajax": "/admin/srconfig/all",
             "dom": 'T<"clear">lfrtip',
             "columns": [
+<<<<<<< HEAD
                 { "data": "requestName" },
                 { "data": null }
             ] ,"columnDefs" : [  {
@@ -116,11 +129,12 @@
     			//	return data;
     			}
                 }
+=======
+                { "data": "requestName" }
+>>>>>>> branch 'master' of https://longbridge_integration@bitbucket.org/longbridge_integration/ibcmb.git
             ]
-        });
-
-
-    });
+        } );
+    } );
     /*]]>*/
 </script>
 
