@@ -1,9 +1,9 @@
 package longbridge.services;
 
+import longbridge.dtos.OperationsUserDTO;
+import longbridge.models.OperationsUser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
-import longbridge.models.OperationsUser;
 
 /**
  * The {@code OperationsUserService} provides the methods for managing operations users
@@ -26,7 +26,7 @@ public interface OperationsUserService {
      */
     Iterable<OperationsUser> getUsers();
     
-    Page<OperationsUser> getUsers(Pageable pageDetails);
+    Page<OperationsUserDTO> getUsers(Pageable pageDetails);
 
 
     /**

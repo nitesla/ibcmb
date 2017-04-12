@@ -1,11 +1,14 @@
 package longbridge.services;
 
-import longbridge.models.*;
-
-import java.util.List;
-
+import longbridge.dtos.CorporateDTO;
+import longbridge.models.Account;
+import longbridge.models.CorpLimit;
+import longbridge.models.Corporate;
+import longbridge.models.CorporateUser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import java.util.List;
 
 
 /**
@@ -51,7 +54,7 @@ public interface CorporateService {
     Iterable<Corporate> getCorporates();
     
     
-    Page<Corporate> getCorporates(Pageable pageDetails);
+    Page<CorporateDTO> getCorporates(Pageable pageDetails);
 
     /**
      * Sets the limit of transaction amount for the corporate customer

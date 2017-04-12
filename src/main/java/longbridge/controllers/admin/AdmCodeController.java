@@ -1,9 +1,7 @@
 package longbridge.controllers.admin;
 
 import longbridge.dtos.CodeDTO;
-
 import longbridge.models.AdminUser;
-import longbridge.models.Code;
 import longbridge.models.Verification;
 import longbridge.repositories.AdminUserRepo;
 import longbridge.repositories.VerificationRepo;
@@ -12,6 +10,12 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+import org.springframework.data.jpa.datatables.repository.DataTablesUtils;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +26,7 @@ import java.io.IOException;
 /**
  * Created by Fortune on 4/5/2017.
  */
-@RestController
+@Controller
 @RequestMapping("admin/codes")
 public class AdmCodeController {
 
@@ -98,11 +102,23 @@ public class AdmCodeController {
 
 
     @GetMapping
-    public Iterable<CodeDTO> getCodes(Model model){
-        Iterable<CodeDTO> codeList = codeService.getCodes();
-        model.addAttribute("codeList",codeList);
-        return codeList;
+    public String getCodes(){
 
+        return "adm/code/view";
+
+    }
+
+    @GetMapping(path = "/all")
+    public @ResponseBody DataTablesOutput<CodeDTO> getAllCodes(DataTablesInput input){
+
+        Pageable pageable = DataTablesUtils.getPageable(input);
+        Page<CodeDTO> codes = codeService.getCodes(pageable);
+        DataTablesOutput<CodeDTO> out = new DataTablesOutput<CodeDTO>();
+        out.setDraw(input.getDraw());
+        out.setData(codes.getContent());
+        out.setRecordsFiltered(codes.getTotalElements());
+        out.setRecordsTotal(codes.getTotalElements());
+        return out;
     }
 
     @GetMapping("/{type}")
@@ -114,7 +130,6 @@ public class AdmCodeController {
     }
 
     @PostMapping("/{codeId}")
-
     public String updateCode(@ModelAttribute("codeForm") CodeDTO codeDTO,  BindingResult result, @PathVariable Long codeId,RedirectAttributes redirectAttributes){
         if(result.hasErrors()){
             return "add";

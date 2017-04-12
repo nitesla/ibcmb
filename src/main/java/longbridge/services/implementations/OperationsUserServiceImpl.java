@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -135,7 +136,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
         return  modelMapper.map(operationsUserDTO,OperationsUser.class);
     }
 
-    private Iterable<OperationsUserDTO> convertEntitiesToDTOs(Iterable<OperationsUser> operationsUsers){
+    private List<OperationsUserDTO> convertEntitiesToDTOs(Iterable<OperationsUser> operationsUsers){
         List<OperationsUserDTO> operationsUserDTOList = new ArrayList<>();
         for(OperationsUser operationsUser: operationsUsers){
             OperationsUserDTO userDTO =  convertEntityToDTO(operationsUser);
@@ -145,9 +146,14 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     }
 
 	@Override
-	public Page<OperationsUser> getUsers(Pageable pageDetails) {
-		// TODO Auto-generated method stub
-		return null;
+	public Page<OperationsUserDTO> getUsers(Pageable pageDetails) {
+        Page<OperationsUser> page = opUserRepo.findAll(pageDetails);
+        List<OperationsUserDTO> dtOs = convertEntitiesToDTOs(page.getContent());
+        long t = page.getTotalElements();
+
+        // return  new PageImpl<ServiceReqConfigDTO>(dtOs,pageDetails,page.getTotalElements());
+        Page<OperationsUserDTO> pageImpl = new PageImpl<OperationsUserDTO>(dtOs,pageDetails,t);
+        return pageImpl;
 	}
 
 }
