@@ -90,20 +90,20 @@ public class AdminUserServiceImpl implements AdminUserService {
         return ok;
     }
 
-//    @Override
-//    public boolean addUser(AdminUserDTO user) {
-//        boolean ok = false;
-//        if (user != null) {
-//            user.setPassword(this.passwordEncoder.encode(user.getPassword()));
-//            AdminUser adminUser = convertDTOToEntity(user);
-//            this.adminUserRepo.save(adminUser);
-//            logger.info("New admin user: {} created", adminUser.getUserName());
-//            ok=true;
-//        } else {
-//            logger.error("USER NOT FOUND");
-//        }
-//        return ok;
-//    }
+    @Override
+    public boolean addUser(AdminUserDTO user) {
+        boolean ok = false;
+        if (user != null) {
+            user.setPassword(this.passwordEncoder.encode(user.getPassword()));
+            AdminUser adminUser = convertDTOToEntity(user);
+            this.adminUserRepo.save(adminUser);
+            logger.info("New admin user: {} created", adminUser.getUserName());
+            ok=true;
+        } else {
+            logger.error("USER NOT FOUND");
+        }
+        return ok;
+    }
 
     @Override
     public void deleteUser(Long id) {
@@ -188,21 +188,21 @@ public class AdminUserServiceImpl implements AdminUserService {
         return false;
     }
 //
-//    @Override
-//    public boolean updateUser(AdminUserDTO user) {
-//        boolean result = false;
-//        try {
-//            if (user != null) {
-//                AdminUser adminUser = convertDTOToEntity(user);
-//                this.adminUserRepo.save(adminUser);
-//                logger.info("User Successfully Updated");
-//            }
-//        } catch (Exception e) {
-//            logger.info("Could not update admin user",e);
-//
-//        }
-//        return result;
-//    }
+    @Override
+    public boolean updateUser(AdminUserDTO user) {
+        boolean result = false;
+        try {
+            if (user != null) {
+                AdminUser adminUser = convertDTOToEntity(user);
+                this.adminUserRepo.save(adminUser);
+                logger.info("User Successfully Updated");
+            }
+        } catch (Exception e) {
+            logger.info("Could not update admin user",e);
+
+        }
+        return result;
+    }
 
 
 

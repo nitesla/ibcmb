@@ -15,6 +15,7 @@ import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+
 /**
  * Created by ayoade_farooq@yahoo.com on 4/10/2017.
  */
@@ -57,7 +58,7 @@ public class SecurityConfig {
             http
 
                     // log in
-                    .antMatcher("/admin*").authorizeRequests().anyRequest().hasRole("ADMIN")
+                    .antMatcher("/admin/**").authorizeRequests().anyRequest().hasRole("ADMIN")
                     // log in
                     .and().formLogin().loginPage("/loginAdmin").loginProcessingUrl("/admin_login").failureUrl("/loginAdmin?error=loginError").defaultSuccessUrl("/adminPage")
                     // logout
@@ -103,7 +104,7 @@ public class SecurityConfig {
         }
 
         protected void configure(HttpSecurity http) throws Exception {
-            http.antMatcher("/user/**").authorizeRequests().anyRequest().hasRole("USER")
+            http.antMatcher("/operations/**").authorizeRequests().anyRequest().hasRole("RETAIL")
                     // log in
                     .and().formLogin().loginPage("/loginUser").loginProcessingUrl("/user_login").failureUrl("/loginUser?error=loginError").defaultSuccessUrl("/userPage")
                     // logout
@@ -139,7 +140,7 @@ public class SecurityConfig {
         }
 
         protected void configure(HttpSecurity http) throws Exception {
-            http.antMatcher("/user/**").authorizeRequests().anyRequest().hasRole("USER")
+            http.antMatcher("/retail//**").authorizeRequests().anyRequest().hasRole("RETAIL")
                     // log in
                     .and().formLogin().loginPage("/loginUser").loginProcessingUrl("/user_login").failureUrl("/loginUser?error=loginError").defaultSuccessUrl("/userPage")
                     // logout

@@ -70,7 +70,7 @@ public interface AdminUserService extends Verifiable<AdminUserDTO> {
 //     * Updates the details of the specified Admin user
 //     * @param user the admin user whose details are to be updated
 //     */
-//    boolean updateUser(AdminUserDTO user);
+   boolean updateUser(AdminUserDTO user);
 
     /**
      * Resets the password of the specified Admin user
@@ -93,5 +93,5 @@ public interface AdminUserService extends Verifiable<AdminUserDTO> {
      */
     boolean generateAndSendPassword(AdminUser user);
 
-
+   boolean addUser(AdminUserDTO user);
 }
