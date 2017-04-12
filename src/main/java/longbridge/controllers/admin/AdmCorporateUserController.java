@@ -14,6 +14,7 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.data.jpa.datatables.repository.DataTablesUtils;
 import org.springframework.http.HttpRequest;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +25,7 @@ import javax.validation.Valid;
  * Created by Fortune on 4/3/2017.
  */
 
-@RestController
+@Controller
 @RequestMapping("/admin/corporate/users")
 public class AdmCorporateUserController {
     @Autowired
@@ -53,7 +54,7 @@ public class AdmCorporateUserController {
     }
 
     @GetMapping
-    public String getRetailUsers(Model model){
+    public String getRetailUsers(){
 
         return "adm/corporate/view";
     }
