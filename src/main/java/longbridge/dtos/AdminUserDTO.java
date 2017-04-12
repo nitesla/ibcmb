@@ -21,6 +21,8 @@ public class AdminUserDTO {
     private String email;
     private String password;
     private String role;
+    private String userType;
+
 
     public Long getId() {
         return id;
@@ -76,5 +78,13 @@ public class AdminUserDTO {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public String getUserType() {
+        return userType;
+    }
+
+    public void setUserType(String userType) {
+        this.userType = userType;
     }
 }

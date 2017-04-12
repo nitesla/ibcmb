@@ -24,14 +24,14 @@ public class AdmRoleController {
     private ModelMapper modelMapper;
 
     @GetMapping("/new")
-    public String addRole(){
-        return "add-role";
+    public String addRole(RoleDTO roleDTO){
+        return "adm/role/add";
     }
 
-    @PostMapping
+    @PostMapping("/new")
     public String createRole(@ModelAttribute("roleForm") RoleDTO roleDTO, BindingResult result, Model model){
         if(result.hasErrors()){
-            return "add-role";
+            return "adm/role/add";
         }
         securityService.addRole(roleDTO);
         model.addAttribute("success", "Role added successfully");

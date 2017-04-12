@@ -20,7 +20,7 @@ public class AdmPermissionController {
     private SecurityService securityService;
 
     @GetMapping("/new")
-    public String addPermission(){
+    public String addPermission(PermissionDTO permission){
         return "adm/permissions/add";
     }
 
