@@ -20,8 +20,7 @@ public class ServiceRequestController {
 
     @Autowired
     private RequestService requestService;
-    @Autowired
-    private ModelMapper modelMapper;
+
 
     private RetailUser retailUser = new RetailUser();//TODO user must be authenticated
 
@@ -35,23 +34,21 @@ public class ServiceRequestController {
         if(result.hasErrors()){
             return "add";
         }
-        ServiceRequest request = modelMapper.map(requestDTO,ServiceRequest.class);
-        requestService.addRequest(request);
+        requestService.addRequest(requestDTO);
         model.addAttribute("success", "Request added successfully");
         return "/retail/requests";
     }
 
     @GetMapping("/{requestId}")
-    public ServiceRequest getServiceRequest(@PathVariable Long requestId, Model model){
-        ServiceRequest request = requestService.getRequest(requestId);
-        ServiceRequestDTO requestDTO = modelMapper.map(request,ServiceRequestDTO.class);
-        model.addAttribute("request",requestDTO);
+    public ServiceRequestDTO getServiceRequest(@PathVariable Long requestId, Model model){
+        ServiceRequestDTO request = requestService.getRequest(requestId);
+        model.addAttribute("request",request);
         return request;
     }
 
     @GetMapping
-    public Iterable<ServiceRequest> getServiceRequests(Model model){
-        Iterable<ServiceRequest> requestList = requestService.getRequests(retailUser);
+    public Iterable<ServiceRequestDTO> getServiceRequests(Model model){
+        Iterable<ServiceRequestDTO> requestList = requestService.getRequests(retailUser);
         model.addAttribute("requestList",requestList);
         return requestList;
 
