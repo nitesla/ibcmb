@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 
 /**
  * The {@code OperationsUserService} provides the methods for managing operations users
- * @see OperationsUser
+ * @see OperationsUserDTO
  * Created on 3/29/2017.
  */
 public interface OperationsUserService {
@@ -17,14 +17,14 @@ public interface OperationsUserService {
      * @param id the user's id
      * @return the Operations User
      */
-    OperationsUser getUser(Long id);
+    OperationsUserDTO getUser(Long id);
 
 
     /**
      * Returns all Operations users present in th system
      * @return list of user
      */
-    Iterable<OperationsUser> getUsers();
+    Iterable<OperationsUserDTO> getUsers();
     
     Page<OperationsUserDTO> getUsers(Pageable pageDetails);
 
@@ -40,15 +40,15 @@ public interface OperationsUserService {
 
     /**
      * Creates an Operations User
-     * @param user the new OperationsUser
+     * @param user the new OperationsUserDTO
      */
-    boolean addUser(OperationsUser user);
+    boolean addUser(OperationsUserDTO user);
 
     /**
      * Update the details of the Operations User
      * @param user the Operations User
      */
-    boolean updateUser(OperationsUser user);
+    boolean updateUser(OperationsUserDTO user);
 
 
 
@@ -72,7 +72,8 @@ public interface OperationsUserService {
      * @param oldPassword the old password
      * @param newPassword the new Password
      */
-    boolean changePassword(OperationsUser User, String oldPassword, String newPassword);
-
+    boolean changePassword(OperationsUserDTO User, String oldPassword, String newPassword);
+     
+        
     void generateAndSendPassword();
 }
