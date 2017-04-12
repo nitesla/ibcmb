@@ -38,6 +38,8 @@ public interface CodeService extends Verifiable<CodeDTO> {
     
     Page<CodeDTO> getCodesByType(String codeType, Pageable pageDetails);
 
+    Page<CodeDTO> getCodes(Pageable pageDetails);
+
     /**
      * Returns all the codes in the system
      * @return a list of the codes

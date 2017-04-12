@@ -5,11 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import longbridge.dtos.CodeDTO;
 import longbridge.models.AdminUser;
 import longbridge.models.Code;
-
 import longbridge.models.OperationCode;
 import longbridge.models.Verification;
 import longbridge.repositories.CodeRepo;
-
 import longbridge.repositories.VerificationRepo;
 import longbridge.services.CodeService;
 import org.modelmapper.ModelMapper;
@@ -17,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -184,7 +183,7 @@ public class CodeServiceImpl implements CodeService {
         return  modelMapper.map(codeDTO,Code.class);
     }
 
-    private Iterable<CodeDTO> convertEntitiesToDTOs(Iterable<Code> codes){
+    private List<CodeDTO> convertEntitiesToDTOs(Iterable<Code> codes){
         List<CodeDTO> codeDTOList = new ArrayList<>();
         for(Code code: codes){
             CodeDTO codeDTO = convertEntityToDTO(code);
@@ -199,4 +198,15 @@ public class CodeServiceImpl implements CodeService {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+    @Override
+    public Page<CodeDTO> getCodes(Pageable pageDetails) {
+        Page<Code> page = codeRepo.findAll(pageDetails);
+        List<CodeDTO> dtOs = convertEntitiesToDTOs(page.getContent());
+        long t = page.getTotalElements();
+
+        // return  new PageImpl<ServiceReqConfigDTO>(dtOs,pageDetails,page.getTotalElements());
+        Page<CodeDTO> pageImpl = new PageImpl<CodeDTO>(dtOs,pageDetails,t);
+        return pageImpl;
+    }
 }

@@ -1,16 +1,23 @@
 package longbridge.services.implementations;
 
-import longbridge.models.*;
+import longbridge.dtos.CorporateDTO;
+import longbridge.models.Account;
+import longbridge.models.CorpLimit;
+import longbridge.models.Corporate;
+import longbridge.models.CorporateUser;
 import longbridge.repositories.CorpLimitRepo;
 import longbridge.repositories.CorporateRepo;
 import longbridge.repositories.CorporateUserRepo;
 import longbridge.services.AccountService;
 import longbridge.services.CorporateService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,6 +33,8 @@ public class CorporateServiceImpl implements CorporateService {
     @Autowired
     private AccountService accountService;
 
+    @Autowired
+    ModelMapper modelMapper;
 
     @Autowired
     public CorporateServiceImpl(CorporateRepo corporateRepo, CorpLimitRepo corpLimitRepo){
@@ -104,9 +113,32 @@ public class CorporateServiceImpl implements CorporateService {
         limit.setDelFlag("Y");
         corpLimitRepo.save(limit);
     }
+
 	@Override
-	public Page<Corporate> getCorporates(Pageable pageDetails) {
-		// TODO Auto-generated method stub
-		return null;
+	public Page<CorporateDTO> getCorporates(Pageable pageDetails) {
+        Page<Corporate> page = corporateRepo.findAll(pageDetails);
+        List<CorporateDTO> dtOs = convertEntitiesToDTOs(page.getContent());
+        long t = page.getTotalElements();
+
+        // return  new PageImpl<ServiceReqConfigDTO>(dtOs,pageDetails,page.getTotalElements());
+        Page<CorporateDTO> pageImpl = new PageImpl<CorporateDTO>(dtOs,pageDetails,t);
+        return pageImpl;
 	}
+
+    private CorporateDTO convertEntityToDTO(Corporate corporate){
+        return  modelMapper.map(corporate,CorporateDTO.class);
+    }
+
+    private Corporate convertDTOToEntity(CorporateDTO corporateDTO){
+        return  modelMapper.map(corporateDTO,Corporate.class);
+    }
+
+    private List<CorporateDTO> convertEntitiesToDTOs(Iterable<Corporate> corporates){
+        List<CorporateDTO> corporateDTOList = new ArrayList<>();
+        for(Corporate corporate: corporates){
+            CorporateDTO corporateDTO = convertEntityToDTO(corporate);
+            corporateDTOList.add(corporateDTO);
+        }
+        return corporateDTOList;
+    }
 }
