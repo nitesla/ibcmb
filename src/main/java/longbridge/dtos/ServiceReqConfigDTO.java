@@ -12,7 +12,7 @@ public class ServiceReqConfigDTO {
 	@JsonProperty("DT_RowId")
     private Long id;
     private String requestName;
-    private String version;
+    private int version;
     private ArrayList<ServiceReqFormFieldDTO> formFields;
 
 
@@ -24,11 +24,11 @@ public class ServiceReqConfigDTO {
         this.id = id;
     }
 
-    public String getVersion() {
+    public int getVersion() {
         return version;
     }
 
-    public void setVersion(String version) {
+    public void setVersion(int version) {
         this.version = version;
     }
 

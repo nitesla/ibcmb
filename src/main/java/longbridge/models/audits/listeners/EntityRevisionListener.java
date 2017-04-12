@@ -1,8 +1,5 @@
 package longbridge.models.audits.listeners;
 
-
-
-
 import longbridge.models.audits.CustomRevisionEntity;
 import org.hibernate.envers.EntityTrackingRevisionListener;
 import org.hibernate.envers.RevisionType;
@@ -11,6 +8,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.io.Serializable;
 import java.security.Principal;
+
 /**
  * Created by ayoade_farooq@yahoo.com on 4/8/2017.
  */
@@ -22,39 +20,37 @@ public class EntityRevisionListener/*<T extends RevisionsEntity>*/  implements E
 
 
 
-    public String getUser(){
-
-        //would use spring security later to get Principal.getName() or any other way
-        String username="";
-        try {
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-             username = auth.getName();
-        }catch (Exception e){
-
-        }
-        return username;
-                //principal.getName();
 
 
 
-    }
+	public String getUser() {
 
-    @Override
-    public void newRevision(Object o) {
-      //  System.out.println("New revision is created: " + o);
+		// would use spring security later to get Principal.getName() or any
+		// other way
 
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (auth != null)
 
-        CustomRevisionEntity revision = (CustomRevisionEntity)o;
+			return auth.getName();
 
+		return "Unknown";
+		// principal.getName();
 
+	}
 
-            revision.setLastChangedBy(getUser());
+	@Override
+	public void newRevision(Object o) {
+		// System.out.println("New revision is created: " + o);
 
-    }
+		CustomRevisionEntity revision = (CustomRevisionEntity) o;
 
-    @Override
-    public void entityChanged(Class aClass, String s, Serializable serializable, RevisionType revisionType, Object o) {
-        String type = aClass.getName();
-        ((CustomRevisionEntity)o).addModifiedEntityType(type);
-    }
+		revision.setLastChangedBy(getUser());
+
+	}
+
+	@Override
+	public void entityChanged(Class aClass, String s, Serializable serializable, RevisionType revisionType, Object o) {
+		String type = aClass.getName();
+		((CustomRevisionEntity) o).addModifiedEntityType(type);
+	}
 }
