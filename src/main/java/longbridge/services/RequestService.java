@@ -1,5 +1,7 @@
 package longbridge.services;
 
+import longbridge.dtos.RequestHistoryDTO;
+import longbridge.dtos.ServiceRequestDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -20,7 +22,7 @@ public interface RequestService {
      * Adds a new request to the system
      * @param request the request
      */
-    void addRequest(ServiceRequest request);
+    void addRequest(ServiceRequestDTO request);
 
 
     /**
@@ -28,22 +30,25 @@ public interface RequestService {
      * @param id the request's id
      * @return a service request
      */
-    ServiceRequest getRequest(Long id);
+    ServiceRequestDTO getRequest(Long id);
 
     /**
      *Returns a list of requests made by the specified user
      * @param user the user
      */
-    Iterable<ServiceRequest>getRequests(RetailUser user);
+    Iterable<ServiceRequestDTO>getRequests(RetailUser user);
     
-    Page<ServiceRequest>getRequests(RetailUser user, Pageable pageDetails);
+    Page<ServiceRequestDTO>getRequests(RetailUser user, Pageable pageDetails);
 
 
-    /**
-     * Creates and adds a new history for a request
-     * @param requestHistory the request history
-     */
-    void addRequestHistory(RequestHistory requestHistory);
+    public Page<ServiceRequestDTO> getRequests(ServiceRequestDTO request, Pageable pageDetails);
+
+
+        /**
+         * Creates and adds a new history for a request
+         * @param requestHistory the request history
+         */
+    void addRequestHistory(RequestHistoryDTO requestHistory);
 
 
     /**
