@@ -1,6 +1,8 @@
 package longbridge.controllers.retail;
 
+import longbridge.dtos.CodeDTO;
 import longbridge.dtos.ServiceReqConfigDTO;
+import longbridge.services.CodeService;
 import longbridge.services.ServiceReqConfigService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,11 +23,16 @@ public class RetServiceRequestController {
     @Autowired
     private ServiceReqConfigService serviceReqConfigService;
 
+    @Autowired
+    private CodeService codeService;
+
     private Logger logger= LoggerFactory.getLogger(this.getClass());
 
-    @GetMapping("/{requestName}")
-    public String addConfig(@PathVariable String requestName, Model model){
-        ServiceReqConfigDTO serviceReqConfig = serviceReqConfigService.getServiceReqConfigs(requestName);
+    @GetMapping("/{reqId}")
+    public String addConfig(@PathVariable Long reqId, Model model){
+        ServiceReqConfigDTO serviceReqConfig = serviceReqConfigService.getServiceReqConfig(reqId);
+        Iterable<CodeDTO> fieldTypes = codeService.getCodesByType("SERVICE_REQUEST");
+        model.addAttribute("requestFieldType",fieldTypes);
         model.addAttribute("requestConfig", serviceReqConfig);
         return "cust/servicerequest/add";
     }

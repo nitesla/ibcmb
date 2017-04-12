@@ -2,15 +2,17 @@ package longbridge.controllers.admin;
 
 import longbridge.forms.ChangePassword;
 import longbridge.dtos.RetailUserDTO;
-
-import longbridge.models.Corporate;
-import longbridge.models.RetailUser;
-
+import longbridge.forms.ChangePassword;
 import longbridge.services.RetailUserService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+import org.springframework.data.jpa.datatables.repository.DataTablesUtils;
 import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,12 +28,10 @@ import javax.validation.Valid;
  */
 
 @Controller
-@RequestMapping("/retail/users")
+@RequestMapping("admin/retail/users")
 public class AdmRetailUserController {
     @Autowired
     private RetailUserService retailUserService;
-    @Autowired
-    private ModelMapper modelMapper;
 
     private Logger logger= LoggerFactory.getLogger(this.getClass());
 
@@ -65,17 +65,24 @@ public class AdmRetailUserController {
         return "addUser";
     }
 
-
-
-    @GetMapping(path="/all")
-    public  @ResponseBody Iterable<RetailUserDTO> getAllRetailUsers(){
-        Iterable<RetailUserDTO> retailUserList= retailUserService.getUsers();
-       // model.addAttribute("retailUserList",retailUserList);
-
-        return retailUserList;
+    @GetMapping
+    public String getAllRetailUsers(Model model){
+        return "adm/retail/view";
     }
 
+    @GetMapping(path = "/all")
+    public @ResponseBody
+    DataTablesOutput<RetailUserDTO> getRetailUsers(DataTablesInput input){
 
+        Pageable pageable = DataTablesUtils.getPageable(input);
+        Page<RetailUserDTO> retailUsers = retailUserService.getUsers(pageable);
+        DataTablesOutput<RetailUserDTO> out = new DataTablesOutput<RetailUserDTO>();
+        out.setDraw(input.getDraw());
+        out.setData(retailUsers.getContent());
+        out.setRecordsFiltered(retailUsers.getTotalElements());
+        out.setRecordsTotal(retailUsers.getTotalElements());
+        return out;
+    }
 
     @GetMapping("/{userId}")
     public String getUser(@PathVariable  Long userId, Model model){
@@ -131,6 +138,5 @@ public class AdmRetailUserController {
         logger.info("PASSWORD CHANGED SUCCESSFULLY");
         return "changePassword";
     }
-
 
 }

@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 /**
- * Created by Showboy on 08/04/2017.
+ * Created by Wunmi on 08/04/2017.
  */
 @Controller
 @RequestMapping("/admin/srconfig")
@@ -26,6 +26,13 @@ public class AdmServiceReqConfigController {
 
     @Autowired
     private ServiceReqConfigService serviceReqConfigService;
+
+    @Autowired
+    private CodeService codeService;
+
+    @Autowired
+    private ModelMapper modelMapper;
+
 
     private Logger logger= LoggerFactory.getLogger(this.getClass());
 
@@ -41,9 +48,7 @@ public class AdmServiceReqConfigController {
             return "admin/srconfig/new";
         }
 
-        logger.info("Received form post request: {}", serviceReqConfigDTO.toString());
-
-        serviceReqConfigService.addSeviceReqConfig(serviceReqConfigDTO);
+        serviceReqConfigService.addServiceReqConfig(serviceReqConfigDTO);
         model.addAttribute("success","Service Request Config  created successfully");
         return "redirect:/admin/srconfig";
     }
@@ -69,22 +74,26 @@ public class AdmServiceReqConfigController {
     }
 
     @GetMapping("/{reqId}/edit")
-    public String editConfig(@PathVariable Long reqId, Model model){
+    public String  editConfig(@PathVariable Long reqId, Model model){
         ServiceReqConfigDTO serviceReqConfig = serviceReqConfigService.getServiceReqConfig(reqId);
-        model.addAttribute("requestDetails", serviceReqConfig);
-        return "adm/servicereqconfig/edit";
+        Iterable<CodeDTO> fieldTypes = codeService.getCodesByType("SERVICE_REQUEST");
+        model.addAttribute("serviceReqConfig", serviceReqConfig);
+        model.addAttribute("requestFieldType",fieldTypes);
+        //return "adm/serviceReqConfig/edit";
+        return "/adm/serviceReqConfig/edit";
+
     }
 
-
-    @PostMapping("/{userId}")
-    public String updateConfig(@ModelAttribute("serviceRequestConfig") @Valid ServiceReqConfigDTO serviceReqConfigDTO, @PathVariable Long reqId, BindingResult result, Model model) throws Exception{
+    @PostMapping("/{reqId}/update")
+    public String updateConfig(@ModelAttribute("serviceReqConfig") ServiceReqConfigDTO serviceReqConfigDTO, BindingResult result,@PathVariable Long reqId, Model model) throws Exception{
         if(result.hasErrors()) {
-            return "addUser";
+            return "admin/srconfig/new";
         }
-        serviceReqConfigDTO.setId(reqId);
+       serviceReqConfigDTO.setId(reqId);
+        logger.info("My service req : {}",serviceReqConfigDTO.toString());
         serviceReqConfigService.updateServiceReqConfig(serviceReqConfigDTO);
-        model.addAttribute("success", "Admin user updated successfully");
-        return "redirect:/admin/users";
+        model.addAttribute("success", "Service Request Configuration updated successfully");
+        return "redirect:/admin/srconfig";
     }
 
     @GetMapping("/{userId}")
@@ -99,6 +108,5 @@ public class AdmServiceReqConfigController {
         serviceReqConfigService.delServiceReqConfig(reqId);
         return "redirect:/retail/users";
     }
-
 
 }

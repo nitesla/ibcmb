@@ -177,12 +177,12 @@ public class CodeServiceImpl implements CodeService {
     }
 
     private Iterable<CodeDTO> convertEntitiesToDTOs(Iterable<Code> codes){
-        List<CodeDTO> codeDTOs = new ArrayList<>();
+        List<CodeDTO> codeDTOList = new ArrayList<>();
         for(Code code: codes){
-            CodeDTO codeDTO = modelMapper.map(code,CodeDTO.class);
-            codeDTOs.add(codeDTO);
+            CodeDTO codeDTO = convertEntityToDTO(code);
+            codeDTOList.add(codeDTO);
         }
-        return codeDTOs;
+        return codeDTOList;
     }
 
 

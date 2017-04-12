@@ -41,6 +41,15 @@
                         <div class="x_panel">
                             <div class="x_title">
                                 <ul class="nav navbar-right panel_toolbox">
+                                    <li >
+                                        <div class="col-lg-4">
+                                            <div class="title-action">
+                                                <a th:href="@{/admin/srconfig/new}" class="btn btn-primary"><i class="fa fa-plus"></i> Add new Config </a>
+                                            </div>
+                                        </div>
+                                    </li>
+
+
                                     <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                                     </li>
                                 </ul>
@@ -52,6 +61,7 @@
                                 <thead>
                                 <tr>
                                     <th>Service Request Name</th>
+<<<<<<< HEAD
                                     <th>Actions</th>
                                 </tr>
                                 </thead>
@@ -97,27 +107,29 @@
             "searching": false,
             "paging": true,
             "serverSide" : true,
-            "ajax": "/admin/users/all",
+            "ajax": "/admin/srconfig/all",
             "dom": 'T<"clear">lfrtip',
             "columns": [
                 { "data": "requestName" },
                 { "data": null }
-            ] ,
-            "columnDefs" : [  {
+            ] ,"columnDefs" : [  {
                 "targets" : 1,
                 "render" : function(data, type, full, meta) {
     					kk =  "<div class='col-md-6 col-sm-6 col-xs-12'><a  class='btn btn-default btn-xs' data-toggle='tooltip' title='Edit' data-placement='right' href='/admin/srconfig/"+ full.DT_RowId+ "/edit'>";
     					kk += "<i class='fa fa-edit'></i>"
     					kk += "Edit</a>" ;
     					
-    					kk  +=  "<a  class='btn btn-default btn-xs' data-toggle='tooltip' title='Delete' data-placement='right' href='/admin/srconfig/"+ full.DT_RowId+ "/delete'>";
+    					kk +=  "<a  class='btn btn-default btn-xs' data-toggle='tooltip' title='Delete' data-placement='right' href='/admin/srconfig/"+ full.DT_RowId+ "/delete'>";
     					kk += "<i class='fa fa-trash-o'></i>"
     					kk += "Delete</a></div>";
     					return kk;
     			}
-            }]
-        } );
-    } );
+                }
+            ]
+        });
+
+
+    });
     /*]]>*/
 </script>
 
