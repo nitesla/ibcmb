@@ -53,6 +53,7 @@
                                 <tr>
                                     <!--<th>Id</th>-->
                                     <th>Service Request Name</th>
+
                                     <th>Actions</th>
                                 </tr>
                                 </thead>
@@ -62,7 +63,6 @@
                                 </tbody>
                                 <tfoot>
                                 <tr>
-                                    <!--<th>Id</th>-->
                                     <th>Service Request Name</th>
                                     <th>Actions</th>
                                 </tr>
@@ -91,8 +91,7 @@
 <script>
     /*<![CDATA[*/
     $(document).ready(function() {
-        $('#srconfig').DataTable({
-        	select:true,
+        $('.srconfig').DataTable({
             responsive: true,
             "lengthMenu" : [ [ 5, 10, 50, -1 ],	[ 5, 10, 50, "All" ] ],
 			"pagingType" : "full_numbers",
@@ -116,6 +115,8 @@
     					kk += "<i class='fa fa-trash-o'></i>"
     					kk += "Delete</a></div>";
     					return kk;
+    			//	}
+    			//	return data;
     			}
                 }
             ]
