@@ -27,7 +27,10 @@ public class AdminUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
 
         AdminUser user= adminUserRepo.findByUserName(s);
-        return new CustomUserPrincipal(user);
+        if(user!=null) {
+            return new CustomUserPrincipal(user);
+        }
+        throw new UsernameNotFoundException(s);
     }
 
 
