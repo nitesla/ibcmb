@@ -1,9 +1,7 @@
 package longbridge.controllers.admin;
 
 import longbridge.dtos.CodeDTO;
-
 import longbridge.models.AdminUser;
-import longbridge.models.Code;
 import longbridge.models.Verification;
 import longbridge.repositories.AdminUserRepo;
 import longbridge.repositories.VerificationRepo;
@@ -53,19 +51,15 @@ public class AdmCodeController {
     @PostMapping("/new")
     public String createCode(@ModelAttribute("code") CodeDTO codeDTO, BindingResult result, Model model, RedirectAttributes redirectAttributes){
         if(result.hasErrors()){
+            //return "add";
+            logger.error("Error occurred {}", result.toString());
             return "adm/code/add";
 
         }
 
         logger.info("Code {}", codeDTO.toString());
-        AdminUser adminUser = new AdminUser();
-        adminUser.setDelFlag("N");
-        adminUser.setEmail("nnasino2008@live.com");
-        adminUser.setUserName("nnasino");
-        adminUser.setFirstName("Chigozirim");
-        adminUser.setLastName("Torti");
-        adminUserRepo.save(adminUser);
-        codeService.addCode(codeDTO, adminUser);
+        AdminUser adminUser = adminUserRepo.getOne(1l);
+        codeService.add(codeDTO, adminUser);
 
         redirectAttributes.addFlashAttribute("success", "Code added successfully");
         return "redirect:/admin/list";
@@ -141,7 +135,7 @@ public class AdmCodeController {
         AdminUser adminUser = adminUserRepo.findOne(1l);
         logger.info("Code {}", codeDTO.toString());
         codeDTO.setId(codeId);
-        codeService.updateCode(codeDTO, adminUser);
+        codeService.modify(codeDTO, adminUser);
         redirectAttributes.addFlashAttribute("success", "Code updated successfully");
         return "redirect:/admin/codes";
     }

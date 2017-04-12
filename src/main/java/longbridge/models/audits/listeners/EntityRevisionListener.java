@@ -12,9 +12,16 @@ import java.security.Principal;
 /**
  * Created by ayoade_farooq@yahoo.com on 4/8/2017.
  */
-public class EntityRevisionListener/* <T extends RevisionsEntity> */ implements EntityTrackingRevisionListener {
+public class EntityRevisionListener/*<T extends RevisionsEntity>*/  implements EntityTrackingRevisionListener {
 
-	private Principal principal;
+
+//    private Principal principal;
+
+
+
+
+
+
 
 	public String getUser() {
 

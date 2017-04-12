@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -24,7 +23,7 @@ import java.util.List;
 public class OperationsUserServiceImpl implements OperationsUserService {
     private Logger logger= LoggerFactory.getLogger(this.getClass());
 
-    private OperationsUserRepo opUserRepo;
+    private OperationsUserRepo operationsUserRepo;
     private BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
@@ -35,55 +34,58 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     }
 
     @Autowired
-    public OperationsUserServiceImpl(OperationsUserRepo opUserRepo, BCryptPasswordEncoder passwordEncoder) {
-        this.opUserRepo = opUserRepo;
+    public OperationsUserServiceImpl(OperationsUserRepo operationsUserRepo, BCryptPasswordEncoder passwordEncoder) {
+        this.operationsUserRepo = operationsUserRepo;
         this.passwordEncoder=passwordEncoder;
     }
 
     @Override
-    public OperationsUser getUser(Long id)
-    {
-        return this.opUserRepo.findOne(id);
+    public OperationsUserDTO getUser(Long id) {
+        OperationsUser user = operationsUserRepo.findOne(id);
+        return convertEntityToDTO(user);
     }
 
     @Override
-    public Iterable<OperationsUser> getUsers()
-    {
-        return this.opUserRepo.findAll();
+    public Iterable<OperationsUserDTO> getUsers() {
+        Iterable<OperationsUser> operationsUsers = operationsUserRepo.findAll();
+        return convertEntitiesToDTOs(operationsUsers);
     }
 
     @Override
-    public void setPassword(OperationsUser User, String password) {
+    public void setPassword(OperationsUser user, String password) {
 
     }
 
     @Override
-    public boolean addUser(OperationsUser User) {
+    public boolean addUser(OperationsUserDTO userDTO) {
      boolean ok= false;
-
      try {
-
-//         User.setPassword(this.passwordEncoder.encode(User.getPassword()));
-
-         this.opUserRepo.save(User);
-         logger.info("USER {} HAS BEEN ADDED ",User.getId());
+         OperationsUser user = convertDTOToEntity(userDTO);
+         user.setPassword(this.passwordEncoder.encode(user.getPassword()));
+         this.operationsUserRepo.save(user);
+         logger.info("Created Operation User: {}",user.getUserName());
          ok=true;
      }
      catch (Exception e){
-         logger.error("ERROR OCCURRED {}",e.getMessage());
+         logger.error("Could not create the  {}",e.getMessage());
 
      }
      return ok;
     }
 
     @Override
-    public boolean updateUser(OperationsUser user) {
-        return false;
+    public boolean updateUser(OperationsUserDTO userDTO) {
+        boolean ok= false;
+        OperationsUser user = convertDTOToEntity(userDTO);
+        operationsUserRepo.save(user);
+        ok=true;
+
+        return ok;
     }
 
     @Override
     public void deleteUser(Long userId) {
-
+        operationsUserRepo.delete(userId);
     }
 
     @Override
@@ -92,25 +94,24 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     }
 
     @Override
-    public boolean changePassword(OperationsUser User, String oldPassword, String newPassword) {
+    public boolean changePassword(OperationsUserDTO userDTO, String oldPassword, String newPassword) {
       boolean ok=false;
 
-
       try {
-          if (getUser(User.getId()) == null) {
+          if (getUser(userDTO.getId()) == null) {
               logger.error("USER DOES NOT EXIST");
               return ok;
           }
 
-          if (this.passwordEncoder.matches(oldPassword,User.getPassword())){
-             User.setPassword( this.passwordEncoder.encode(newPassword));
-              this.opUserRepo.save(User);
-              logger.info("USER {}'s password has been updated",User.getId());
+          if (this.passwordEncoder.matches(oldPassword,userDTO.getPassword())){
+              OperationsUser user = convertDTOToEntity(userDTO);
+             user.setPassword( this.passwordEncoder.encode(newPassword));
+              this.operationsUserRepo.save(user);
+              logger.info("USER {}'s password has been updated",user.getId());
               ok=true;
           }else{
-             logger.error("INVALID CURRENT PASSWORD FOR USER {}",User.getId());
+             logger.error("INVALID CURRENT PASSWORD FOR USER {}",userDTO.getId());
           }
-
 
       }catch (Exception e){
               e.printStackTrace();
@@ -120,10 +121,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     }
 
     @Override
-    public void generateAndSendPassword()
-    {
-
-
+    public void generateAndSendPassword() {
   //TODO
 
     }
@@ -136,7 +134,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
         return  modelMapper.map(operationsUserDTO,OperationsUser.class);
     }
 
-    private List<OperationsUserDTO> convertEntitiesToDTOs(Iterable<OperationsUser> operationsUsers){
+    private Iterable<OperationsUserDTO> convertEntitiesToDTOs(Iterable<OperationsUser> operationsUsers){
         List<OperationsUserDTO> operationsUserDTOList = new ArrayList<>();
         for(OperationsUser operationsUser: operationsUsers){
             OperationsUserDTO userDTO =  convertEntityToDTO(operationsUser);
@@ -147,13 +145,8 @@ public class OperationsUserServiceImpl implements OperationsUserService {
 
 	@Override
 	public Page<OperationsUserDTO> getUsers(Pageable pageDetails) {
-        Page<OperationsUser> page = opUserRepo.findAll(pageDetails);
-        List<OperationsUserDTO> dtOs = convertEntitiesToDTOs(page.getContent());
-        long t = page.getTotalElements();
-
-        // return  new PageImpl<ServiceReqConfigDTO>(dtOs,pageDetails,page.getTotalElements());
-        Page<OperationsUserDTO> pageImpl = new PageImpl<OperationsUserDTO>(dtOs,pageDetails,t);
-        return pageImpl;
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

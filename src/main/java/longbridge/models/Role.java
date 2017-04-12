@@ -1,6 +1,8 @@
 package longbridge.models;
 
+import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.Collection;
@@ -10,6 +12,7 @@ import java.util.Collection;
  */
 @Entity
 @Audited
+@Where(clause ="del_Flag='N'" )
 public class Role extends AbstractEntity{
 
     private String name;
