@@ -28,8 +28,14 @@ import java.util.List;
 @Service
 public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 
-	private ServiceReqConfigRepo serviceReqConfigRepo;
-	private ServiceReqFormFieldRepo serviceReqFormFieldRepo;
+
+
+    private ServiceReqConfigRepo serviceReqConfigRepo;
+    private ServiceReqFormFieldRepo serviceReqFormFieldRepo;
+
+
+
+
 
 	private ModelMapper modelMapper;
 
@@ -150,6 +156,7 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 	}
 
 	@Override
+
 	public Page<ServiceReqConfigDTO> getServiceReqConfigs(Pageable pageDetails) {
 		Page<ServiceReqConfig> page = serviceReqConfigRepo.findAll(pageDetails);
 		List<ServiceReqConfigDTO> dtOs = convertEntitiesToDTOs(page.getContent());

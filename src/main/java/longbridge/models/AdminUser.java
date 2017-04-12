@@ -1,5 +1,6 @@
 package longbridge.models;
 
+import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.Entity;
@@ -10,6 +11,7 @@ import javax.persistence.Entity;
  */
 @Entity
 @Audited
+@Where(clause ="del_Flag='N'" )
 public class AdminUser extends User{
 
 	private String authenticateMethod;

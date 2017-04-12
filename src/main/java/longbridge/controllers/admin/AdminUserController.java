@@ -3,6 +3,9 @@ package longbridge.controllers.admin;
 import longbridge.dtos.AdminUserDTO;
 import longbridge.forms.ChangePassword;
 import longbridge.models.AdminUser;
+import longbridge.models.Verification;
+import longbridge.repositories.AdminUserRepo;
+import longbridge.repositories.VerificationRepo;
 import longbridge.services.AdminUserService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import java.io.IOException;
 
 /**
  * Created by SYLVESTER on 31/03/2017.
@@ -29,6 +33,10 @@ public class AdminUserController {
     private  AdminUserService adminUserService;
     @Autowired
     private ModelMapper modelMapper;
+    @Autowired
+    private AdminUserRepo adminUserRepo;
+    @Autowired
+    private VerificationRepo verificationRepo;
 
     /**
      * Page for adding a new user
@@ -153,5 +161,39 @@ public class AdminUserController {
         logger.trace("Password for user {} changed successfully",user.getUserName());
         return "changePassword";
     }
+
+    @PostMapping("/{id}/verify")
+    public String verify(@PathVariable Long id){
+        logger.info("id {}", id);
+
+        //todo check verifier role
+        AdminUser adminUser = adminUserRepo.findOne(1l);
+        Verification verification = verificationRepo.findOne(id);
+
+        if (verification == null || Verification.VerificationStatus.PENDING != verification.getStatus())
+            return "Verification not found";
+
+        try {
+            adminUserService.verify(verification, adminUser);
+        } catch (IOException e) {
+            logger.error("Error occurred", e);
+        }
+        return "role/add";
+    }
+
+    @PostMapping("/{id}/decline")
+    public String decline(@PathVariable Long id){
+
+        //todo check verifier role
+        AdminUser adminUser = adminUserRepo.findOne(1l);
+        Verification verification = verificationRepo.findOne(id);
+
+        if (verification == null || Verification.VerificationStatus.PENDING != verification.getStatus())
+            return "Verification not found";
+
+        adminUserService.decline(verification, adminUser, "todo get the  reason from the frontend");
+        return "role/add";
+    }
+
 
 }

@@ -1,5 +1,6 @@
 package longbridge.models;
 
+import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.Column;
@@ -10,6 +11,7 @@ import javax.persistence.Entity;
  */
 @Entity
 @Audited
+@Where(clause ="del_Flag='N'" )
 public class Setting extends AbstractEntity{
 
     @Column(unique = true)
