@@ -1,12 +1,7 @@
 package longbridge.controllers.admin;
 
-import longbridge.models.Role;
-import longbridge.services.SecurityService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * Created by Fortune on 4/3/2017.
@@ -16,4 +11,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/admin/settings")
 public class AdmConfigurationController {
 
+//    @Autowired
+//    private Configutation
 }
