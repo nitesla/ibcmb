@@ -2,7 +2,7 @@ package longbridge.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.Collection;
+import java.util.ArrayList;
 
 /**
  * Created by Wunmi on 08/04/2017.
@@ -13,7 +13,7 @@ public class ServiceReqConfigDTO {
     private Long id;
     private String requestName;
     private int version;
-    private Collection<ServiceReqFormFieldDTO> formFields;
+    private ArrayList<ServiceReqFormFieldDTO> formFields;
 
 
     public Long getId() {
@@ -40,11 +40,11 @@ public class ServiceReqConfigDTO {
 		this.requestName = requestName;
 	}
 
-    public Collection<ServiceReqFormFieldDTO> getFormFields() {
+	public ArrayList<ServiceReqFormFieldDTO> getFormFields() {
         return formFields;
     }
 
-    public void setFormFields(Collection<ServiceReqFormFieldDTO> formFields) {
+    public void setFormFields(ArrayList<ServiceReqFormFieldDTO> formFields) {
         this.formFields = formFields;
     }
 

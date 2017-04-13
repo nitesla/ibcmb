@@ -1,10 +1,12 @@
 package longbridge.controllers.retail;
 
+import longbridge.dtos.ServiceReqConfigDTO;
+import longbridge.dtos.ServiceReqFormFieldDTO;
 import longbridge.dtos.ServiceRequestDTO;
 import longbridge.models.RetailUser;
-import longbridge.models.ServiceRequest;
+import longbridge.services.CodeService;
 import longbridge.services.RequestService;
-import org.modelmapper.ModelMapper;
+import longbridge.services.ServiceReqConfigService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -21,13 +23,13 @@ public class ServiceRequestController {
     @Autowired
     private RequestService requestService;
 
+    @Autowired
+    private ServiceReqConfigService serviceReqConfigService;
+
+    @Autowired
+    private CodeService codeService;
 
     private RetailUser retailUser = new RetailUser();//TODO user must be authenticated
-
-    @GetMapping("/new")
-    public String addServiceRequest(){
-        return "add";
-    }
 
     @PostMapping
     public String createServiceRequest(@ModelAttribute("requestForm") ServiceRequestDTO requestDTO, BindingResult result, Model model){
@@ -39,11 +41,19 @@ public class ServiceRequestController {
         return "/retail/requests";
     }
 
-    @GetMapping("/{requestId}")
-    public ServiceRequestDTO getServiceRequest(@PathVariable Long requestId, Model model){
-        ServiceRequestDTO request = requestService.getRequest(requestId);
-        model.addAttribute("request",request);
-        return request;
+    @GetMapping("/{reqId}")
+    public String makeRequest(@PathVariable Long reqId, Model model){
+        ServiceReqConfigDTO serviceReqConfig = serviceReqConfigService.getServiceReqConfig(reqId);
+        for (ServiceReqFormFieldDTO field : serviceReqConfig.getFormFields()){
+            if(field.getFieldType() != null && field.getFieldType().equals("Code")){
+                //System.out.println(field.getTypeData());
+                //System.out.println(codeService.getCodesByType(field.getTypeData()));
+                field.setCodeDTOs(codeService.getCodesByType(field.getTypeData()));
+            }
+        }
+        //System.out.println(serviceReqConfig);
+        model.addAttribute("requestConfig", serviceReqConfig);
+        return "cust/servicerequest/add";
     }
 
     @GetMapping
