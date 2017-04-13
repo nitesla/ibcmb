@@ -1,6 +1,8 @@
 package longbridge.models;
 
 
+import org.hibernate.annotations.Where;
+
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.MappedSuperclass;

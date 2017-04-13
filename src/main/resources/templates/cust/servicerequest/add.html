@@ -23,14 +23,29 @@
                     <div class="col-md-12">
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                                <h4 class="page-head-line">Make a Service Request</h4>
+                                <h4 class="page-head-line" th:text="${'Make a ' + requestConfig.requestName + ' Request'}"></h4>
                             </div>
                             <div class="panel-body">
-                                <p th:text="${requestConfig.requestName}"></p>
-                                <form method="post">
+                                <form method="post" th:action="@{/retail/requests}" th:object="${serviceReqConfigDTO}">
                                     <p th:each="field : ${requestConfig.formFields}">
-                                        <p><input th:type="${field.fieldType}" th:name="${field.fieldName}"/></p>
+                                        <label th:text="${field.fieldLabel}"></label>
+                                        <p th:if="${field.fieldType} == 'Text'"><input class="form-control" th:type="${field.fieldType}" th:name="${field.fieldName}"/></p>
+                                        <p th:if="${field.fieldType} == 'Code'">
+                                            <select class="form-control" th:name="${field.fieldName}">
+                                                <option th:each="type : ${field.codeDTOs}" th:value="${type.code}" th:text="${type.description}"></option>
+                                            </select>
+                                        </p>
+                                        <p th:if="${field.fieldType} == 'Account'">
+                                            <select class="form-control" th:name="${field.fieldName}">
+                                                <option th:each="type : ${requestFieldType}" th:value="${type.code}" th:text="${type.description}"></option>
+                                            </select>
+                                        </p>
+                                        <p th:if="${field.fieldType} == 'List'}">
+
+                                        </p>
+                                        <!--<p><input class="form-control" th:type="${field.fieldType}" th:name="${field.fieldName}"/></p>-->
                                     </p>
+                                    <button type="submit" class="btn btn-default">Submit</button>
                                 </form>
                             </div>
                         </div>

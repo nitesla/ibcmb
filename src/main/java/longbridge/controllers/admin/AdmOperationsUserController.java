@@ -1,11 +1,17 @@
 package longbridge.controllers.admin;
 
+import longbridge.dtos.OperationsUserDTO;
 import longbridge.forms.ChangePassword;
 import longbridge.models.OperationsUser;
 import longbridge.services.OperationsUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+import org.springframework.data.jpa.datatables.repository.DataTablesUtils;
 import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,7 +39,7 @@ public class AdmOperationsUserController {
     }
 
     @PostMapping
-    public String createUser(@ModelAttribute("operationsUserForm") OperationsUser operationsUser, BindingResult result, Model model) throws Exception{
+    public String createUser(@ModelAttribute("operationsUserForm") OperationsUserDTO operationsUser, BindingResult result, Model model) throws Exception{
         if(result.hasErrors()){
             return "addUser";
         }
@@ -49,42 +55,28 @@ public class AdmOperationsUserController {
         return "adm/operation/view";
     }
 
-    @GetMapping(path="/all", produces = "application/json")
-    public @ResponseBody Iterable<OperationsUser> listAllUsers() {
-        Iterable<OperationsUser> operationsUserList= operationsUserService.getUsers();
+    @GetMapping(path = "/all")
+    public @ResponseBody DataTablesOutput<OperationsUserDTO> getOpsUsers(DataTablesInput input){
 
-//        /**
-//         * Construct the JSON to return
-//         */
-//        JsonNodeFactory factory = new JsonNodeFactory(false);
-//        com.fasterxml.jackson.databind.node.ObjectNode result = factory.objectNode();
-//
-//        result.put("recordsTotal", 100);
-//        result.put("recordsFiltered", 100);
-//
-//        ArrayNode an = result.putArray("data");
-//
-//        for (OperationsUser t : operationsUserList) {
-//            ObjectNode row = factory.objectNode();
-//            row.put("0", t.getId());
-//            row.put("1", t.getFirstName());
-//            row.put("2", t.getLastName());
-//            row.put("3", (t.getRole()==null)? "No role": t.getRole().getName());
-//            an.add(row);
-//        }
-//        return result.toString();
-        return operationsUserList;
+        Pageable pageable = DataTablesUtils.getPageable(input);
+        Page<OperationsUserDTO> opsUsers = operationsUserService.getUsers(pageable);
+        DataTablesOutput<OperationsUserDTO> out = new DataTablesOutput<OperationsUserDTO>();
+        out.setDraw(input.getDraw());
+        out.setData(opsUsers.getContent());
+        out.setRecordsFiltered(opsUsers.getTotalElements());
+        out.setRecordsTotal(opsUsers.getTotalElements());
+        return out;
     }
 
     @GetMapping("/{userId}")
     public String getUser(@PathVariable Long userId, Model model){
-        OperationsUser user = operationsUserService.getUser(userId);
+        OperationsUserDTO user = operationsUserService.getUser(userId);
         model.addAttribute("operationsUser",user);
         return "operationsUserDetails";
     }
 
     @PostMapping("/{userId}")
-    public String UpdateUser(@ModelAttribute("operationsUserForm") OperationsUser user, @PathVariable Long userId, BindingResult result,Model model) throws Exception{
+    public String UpdateUser(@ModelAttribute("operationsUserForm") OperationsUserDTO user, @PathVariable Long userId, BindingResult result,Model model) throws Exception{
         if(result.hasErrors()){
             return "addUser";
         }
@@ -111,7 +103,7 @@ public class AdmOperationsUserController {
     public String changePassword(@Valid ChangePassword changePassword, Long userId, BindingResult result, HttpRequest request, Model model){
         /* if(result.hasError()){
         }*/
-        OperationsUser user= operationsUserService.getUser(userId);
+        OperationsUserDTO user= operationsUserService.getUser(userId);
         String oldPassword=changePassword.getOldPassword();
         String newPassword=changePassword.getNewPassword();
         String confirmPassword=changePassword.getConfirmPassword();

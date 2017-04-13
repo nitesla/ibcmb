@@ -4,6 +4,7 @@ import longbridge.models.Beneficiary;
 import longbridge.models.RetailUser;
 
 import javax.persistence.Entity;
+import javax.validation.constraints.NotNull;
 
 /**
  * Created by Fortune on 4/5/2017.
@@ -12,8 +13,11 @@ import javax.persistence.Entity;
 public class LocalBeneficiaryDTO{
 
     private RetailUser user;
+    @NotNull
     private String name;
+    @NotNull
     private String accountNo;
+    @NotNull
     private String beneficiaryBank;
 
     public RetailUser getUser() {

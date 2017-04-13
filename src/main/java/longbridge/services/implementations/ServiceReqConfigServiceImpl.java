@@ -12,14 +12,13 @@ import org.modelmapper.PropertyMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -29,9 +28,8 @@ import java.util.List;
 @Service
 public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 
-	private ServiceReqConfigRepo serviceReqConfigRepo;
-	private ServiceReqFormFieldRepo serviceReqFormFieldRepo;
-
+    private ServiceReqConfigRepo serviceReqConfigRepo;
+    private ServiceReqFormFieldRepo serviceReqFormFieldRepo;
 	private ModelMapper modelMapper;
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -147,10 +145,12 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 
 	@Override
 	public void delServiceReqFormField(Long id) {
+
 		serviceReqFormFieldRepo.delete(id);
 	}
 
 	@Override
+
 	public Page<ServiceReqConfigDTO> getServiceReqConfigs(Pageable pageDetails) {
 		Page<ServiceReqConfig> page = serviceReqConfigRepo.findAll(pageDetails);
 		List<ServiceReqConfigDTO> dtOs = convertEntitiesToDTOs(page.getContent());

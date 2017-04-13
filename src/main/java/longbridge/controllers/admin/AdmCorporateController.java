@@ -1,8 +1,14 @@
 package longbridge.controllers.admin;
 
+import longbridge.dtos.CorporateDTO;
 import longbridge.models.Corporate;
 import longbridge.services.CorporateService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+import org.springframework.data.jpa.datatables.repository.DataTablesUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -42,22 +48,25 @@ public class AdmCorporateController {
     }
 
     @GetMapping
-    public String getAllCorporates(Model model){
-        //Iterable<OperationsUser> operationsUserList= operationsUserService.getUsers();
-        //model.addAttribute("operationsUserList",operationsUserList);
+    public String getAllCorporates(){
         return "adm/corporate/view";
     }
 
-    @GetMapping(path="/all")
-    public @ResponseBody Iterable<Corporate> getCorporates(){
-        Iterable<Corporate> corporateList= corporateService.getCorporates();
-        //model.addAttribute("adminUserList",adminUserList);
-        return corporateList;
+    @GetMapping(path = "/all")
+    public @ResponseBody DataTablesOutput<CorporateDTO> getOpsUsers(DataTablesInput input){
+
+        Pageable pageable = DataTablesUtils.getPageable(input);
+        Page<CorporateDTO> corps = corporateService.getCorporates(pageable);
+        DataTablesOutput<CorporateDTO> out = new DataTablesOutput<CorporateDTO>();
+        out.setDraw(input.getDraw());
+        out.setData(corps.getContent());
+        out.setRecordsFiltered(corps.getTotalElements());
+        out.setRecordsTotal(corps.getTotalElements());
+        return out;
     }
 
     @PostMapping("/{corporateId}")
     public String updateCorporate(@ModelAttribute("corporateForm") Corporate corporate, @PathVariable Long corporateId, BindingResult result, Model model){
-
         if(result.hasErrors()){
             return "add-corporate";
         }

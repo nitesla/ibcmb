@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -208,7 +209,7 @@ public class RetailUserServiceImpl implements RetailUserService {
         return  modelMapper.map(RetailUserDTO,RetailUser.class);
     }
 
-    private Iterable<RetailUserDTO> convertEntitiesToDTOs(Iterable<RetailUser> RetailUsers){
+    private List<RetailUserDTO> convertEntitiesToDTOs(Iterable<RetailUser> RetailUsers){
         List<RetailUserDTO> retailUserDTOList = new ArrayList<>();
         for(RetailUser retailUser: RetailUsers){
           RetailUserDTO userDTO =  convertEntityToDTO(retailUser);
@@ -220,6 +221,12 @@ public class RetailUserServiceImpl implements RetailUserService {
 	@Override
 	public Page<RetailUserDTO> getUsers(Pageable pageDetails) {
 		// TODO Auto-generated method stub
-		return null;
+        Page<RetailUser> page = retailUserRepo.findAll(pageDetails);
+        List<RetailUserDTO> dtOs = convertEntitiesToDTOs(page.getContent());
+        long t = page.getTotalElements();
+
+        // return  new PageImpl<ServiceReqConfigDTO>(dtOs,pageDetails,page.getTotalElements());
+        Page<RetailUserDTO> pageImpl = new PageImpl<RetailUserDTO>(dtOs,pageDetails,t);
+        return pageImpl;
 	}
 }

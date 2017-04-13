@@ -23,7 +23,7 @@ import java.util.List;
 public class OperationsUserServiceImpl implements OperationsUserService {
     private Logger logger= LoggerFactory.getLogger(this.getClass());
 
-    private OperationsUserRepo opUserRepo;
+    private OperationsUserRepo operationsUserRepo;
     private BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
@@ -34,55 +34,58 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     }
 
     @Autowired
-    public OperationsUserServiceImpl(OperationsUserRepo opUserRepo, BCryptPasswordEncoder passwordEncoder) {
-        this.opUserRepo = opUserRepo;
+    public OperationsUserServiceImpl(OperationsUserRepo operationsUserRepo, BCryptPasswordEncoder passwordEncoder) {
+        this.operationsUserRepo = operationsUserRepo;
         this.passwordEncoder=passwordEncoder;
     }
 
     @Override
-    public OperationsUser getUser(Long id)
-    {
-        return this.opUserRepo.findOne(id);
+    public OperationsUserDTO getUser(Long id) {
+        OperationsUser user = operationsUserRepo.findOne(id);
+        return convertEntityToDTO(user);
     }
 
     @Override
-    public Iterable<OperationsUser> getUsers()
-    {
-        return this.opUserRepo.findAll();
+    public Iterable<OperationsUserDTO> getUsers() {
+        Iterable<OperationsUser> operationsUsers = operationsUserRepo.findAll();
+        return convertEntitiesToDTOs(operationsUsers);
     }
 
     @Override
-    public void setPassword(OperationsUser User, String password) {
+    public void setPassword(OperationsUser user, String password) {
 
     }
 
     @Override
-    public boolean addUser(OperationsUser User) {
+    public boolean addUser(OperationsUserDTO userDTO) {
      boolean ok= false;
-
      try {
-
-//         User.setPassword(this.passwordEncoder.encode(User.getPassword()));
-
-         this.opUserRepo.save(User);
-         logger.info("USER {} HAS BEEN ADDED ",User.getId());
+         OperationsUser user = convertDTOToEntity(userDTO);
+         user.setPassword(this.passwordEncoder.encode(user.getPassword()));
+         this.operationsUserRepo.save(user);
+         logger.info("Created Operation User: {}",user.getUserName());
          ok=true;
      }
      catch (Exception e){
-         logger.error("ERROR OCCURRED {}",e.getMessage());
+         logger.error("Could not create the  {}",e.getMessage());
 
      }
      return ok;
     }
 
     @Override
-    public boolean updateUser(OperationsUser user) {
-        return false;
+    public boolean updateUser(OperationsUserDTO userDTO) {
+        boolean ok= false;
+        OperationsUser user = convertDTOToEntity(userDTO);
+        operationsUserRepo.save(user);
+        ok=true;
+
+        return ok;
     }
 
     @Override
     public void deleteUser(Long userId) {
-
+        operationsUserRepo.delete(userId);
     }
 
     @Override
@@ -91,25 +94,24 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     }
 
     @Override
-    public boolean changePassword(OperationsUser User, String oldPassword, String newPassword) {
+    public boolean changePassword(OperationsUserDTO userDTO, String oldPassword, String newPassword) {
       boolean ok=false;
 
-
       try {
-          if (getUser(User.getId()) == null) {
+          if (getUser(userDTO.getId()) == null) {
               logger.error("USER DOES NOT EXIST");
               return ok;
           }
 
-          if (this.passwordEncoder.matches(oldPassword,User.getPassword())){
-             User.setPassword( this.passwordEncoder.encode(newPassword));
-              this.opUserRepo.save(User);
-              logger.info("USER {}'s password has been updated",User.getId());
+          if (this.passwordEncoder.matches(oldPassword,userDTO.getPassword())){
+              OperationsUser user = convertDTOToEntity(userDTO);
+             user.setPassword( this.passwordEncoder.encode(newPassword));
+              this.operationsUserRepo.save(user);
+              logger.info("USER {}'s password has been updated",user.getId());
               ok=true;
           }else{
-             logger.error("INVALID CURRENT PASSWORD FOR USER {}",User.getId());
+             logger.error("INVALID CURRENT PASSWORD FOR USER {}",userDTO.getId());
           }
-
 
       }catch (Exception e){
               e.printStackTrace();
@@ -119,10 +121,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     }
 
     @Override
-    public void generateAndSendPassword()
-    {
-
-
+    public void generateAndSendPassword() {
   //TODO
 
     }
@@ -145,7 +144,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     }
 
 	@Override
-	public Page<OperationsUser> getUsers(Pageable pageDetails) {
+	public Page<OperationsUserDTO> getUsers(Pageable pageDetails) {
 		// TODO Auto-generated method stub
 		return null;
 	}

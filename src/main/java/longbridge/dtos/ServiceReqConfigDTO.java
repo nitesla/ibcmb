@@ -1,7 +1,6 @@
 package longbridge.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import longbridge.models.ServiceReqFormField;
 
 import java.util.ArrayList;
 

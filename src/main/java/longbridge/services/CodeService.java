@@ -14,19 +14,7 @@ import longbridge.models.Verifiable;
  * @see Code
  * @author Wunmi
  */
-public interface CodeService extends Verifiable<Code> {
-
-    /**
-     * Adds a new code to the syste
-     * @param code the code
-     */
-    boolean addCode(CodeDTO code, AdminUser adminUser);
-
-    /**
-     * Modifies an existing code
-     * @param codeDTO the code
-     */
-    boolean updateCode(CodeDTO codeDTO, AdminUser adminUser);
+public interface CodeService extends Verifiable<CodeDTO> {
 
     /**
      * Deletes a code from the system
@@ -49,6 +37,8 @@ public interface CodeService extends Verifiable<Code> {
     Iterable<CodeDTO> getCodesByType(String codeType);
     
     Page<CodeDTO> getCodesByType(String codeType, Pageable pageDetails);
+
+    Page<CodeDTO> getCodes(Pageable pageDetails);
 
     /**
      * Returns all the codes in the system

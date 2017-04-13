@@ -1,7 +1,6 @@
 package longbridge.dtos;
 
 
-
 /**
  * Created by Fortune on 08/04/2017.
  */
@@ -15,6 +14,8 @@ public class ServiceReqFormFieldDTO{
     private String fieldLabel;
     private String fieldType;
     private String typeData;
+
+    private Iterable<CodeDTO> codeDTOs;
 
     public Long getId() {
         return id;
@@ -62,6 +63,14 @@ public class ServiceReqFormFieldDTO{
 
     public void setTypeData(String typeData) {
         this.typeData = typeData;
+    }
+
+    public Iterable<CodeDTO> getCodeDTOs() {
+        return codeDTOs;
+    }
+
+    public void setCodeDTOs(Iterable<CodeDTO> codeDTOs) {
+        this.codeDTOs = codeDTOs;
     }
 
     @Override
