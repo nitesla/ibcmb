@@ -1,5 +1,6 @@
 package longbridge.controllers.operations;
 
+import longbridge.dtos.OperationsUserDTO;
 import longbridge.forms.ChangePassword;
 import longbridge.models.OperationsUser;
 import longbridge.services.OperationsUserService;
@@ -32,7 +33,7 @@ public class OperationsUserController {
     }
 
     @PostMapping
-    public String createUser(@ModelAttribute("operationsUserForm") OperationsUser operationsUser, BindingResult result, Model model) throws Exception{
+    public String createUser(@ModelAttribute("operationsUserForm") OperationsUserDTO operationsUser, BindingResult result, Model model) throws Exception{
         if(result.hasErrors()){
             return "addUser";
         }
@@ -42,21 +43,21 @@ public class OperationsUserController {
     }
 
     @GetMapping
-    public Iterable<OperationsUser> getAllOperationsUsers(Model model){
-        Iterable<OperationsUser> operationsUserList= operationsUserService.getUsers();
+    public Iterable<OperationsUserDTO> getAllOperationsUsers(Model model){
+        Iterable<OperationsUserDTO> operationsUserList= operationsUserService.getUsers();
         model.addAttribute("operationsUserList",operationsUserList);
         return operationsUserList;
     }
 
     @GetMapping("/{userId}")
     public String getUser(@PathVariable Long userId, Model model){
-        OperationsUser user = operationsUserService.getUser(userId);
+        OperationsUserDTO user = operationsUserService.getUser(userId);
         model.addAttribute("operationsUser",user);
         return "operationsUserDetails";
     }
 
     @PostMapping("/{userId}")
-    public String UpdateUser(@ModelAttribute("operationsUserForm") OperationsUser user, @PathVariable Long userId, BindingResult result,Model model) throws Exception{
+    public String UpdateUser(@ModelAttribute("operationsUserForm") OperationsUserDTO user, @PathVariable Long userId, BindingResult result,Model model) throws Exception{
         if(result.hasErrors()){
             return "addUser";
         }
@@ -83,7 +84,7 @@ public class OperationsUserController {
     public String changePassword(@Valid ChangePassword changePassword, Long userId, BindingResult result, HttpRequest request, Model model){
         /* if(result.hasError()){
         }*/
-        OperationsUser user= operationsUserService.getUser(userId);
+        OperationsUserDTO user= operationsUserService.getUser(userId);
         String oldPassword=changePassword.getOldPassword();
         String newPassword=changePassword.getNewPassword();
         String confirmPassword=changePassword.getConfirmPassword();

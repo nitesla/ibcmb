@@ -15,7 +15,7 @@ public class AuthenticationSuccessEventListener implements ApplicationListener<A
     public void onApplicationEvent(final AuthenticationSuccessEvent e) {
         final String auth = (String) e.getAuthentication().getPrincipal();
         if (auth != null) {
-           //loginAttemptService.loginSucceeded(auth);
+           // loginAttemptService.loginSucceeded(auth);
         }
     }
 

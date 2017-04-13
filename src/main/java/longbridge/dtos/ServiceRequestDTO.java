@@ -11,7 +11,6 @@ import java.util.Date;
 
 public class ServiceRequestDTO {
 
-    private RetailUser user;
 
     private String serviceRequestType;
     private String subject;
@@ -21,9 +20,6 @@ public class ServiceRequestDTO {
     //private UserGroup userGroup;
     private Date requestTime;
 
-    public RetailUser getUser() {
-        return user;
-    }
 
     public String getServiceRequestType() {
         return serviceRequestType;
@@ -74,17 +70,13 @@ public class ServiceRequestDTO {
     }
 
 
-    public void setUser(RetailUser user) {
-        this.user = user;
-    }
 
 
     public ServiceRequestDTO() {
     }
 
-    public ServiceRequestDTO(RetailUser user, String serviceRequestType, String subject, String body, String recepient, UserGroup userGroup, Date date) {
+    public ServiceRequestDTO(String serviceRequestType, String subject, String body, String recepient, UserGroup userGroup, Date date) {
 
-        this.user = user;
         this.serviceRequestType = serviceRequestType;
         this.subject = subject;
         this.body = body;
@@ -97,7 +89,6 @@ public class ServiceRequestDTO {
     @Override
     public String toString() {
         return "ServiceRequest{" +
-                "user=" + user +
                 ", serviceRequestType='" + serviceRequestType + '\'' +
                 ", subject='" + subject + '\'' +
                 ", body='" + body + '\'' +
