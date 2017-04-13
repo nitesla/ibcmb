@@ -81,7 +81,7 @@
                                                             <td><input  th:name="${'formFields['+stat.index+'].fieldLabel'}" type="text" class="form-control" th:value="${req.fieldLabel}"/></td>
                                                             <td>
                                                                 <select class="form-control" th:name="${'formFields['+stat.index+'].fieldType'}">
-                                                                    <option th:each="type : ${requestFieldType}" th:value="${type.code}" th:text="${type.description}" th:selected="${req.fieldType==type.description}"></option>
+                                                                    <option th:each="type : ${requestFieldType}" th:value="${type.code}" th:text="${type.description}" th:selected="${req.fieldType==type.code}"></option>
                                                                 </select>
                                                             </td>
                                                             <td><input th:name="${'formFields['+stat.index+'].typeData'}" type="text" class="form-control" th:value="${req.typeData}"/></td>
