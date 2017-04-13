@@ -28,15 +28,8 @@ import java.util.List;
 @Service
 public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 
-
-
     private ServiceReqConfigRepo serviceReqConfigRepo;
     private ServiceReqFormFieldRepo serviceReqFormFieldRepo;
-
-
-
-
-
 	private ModelMapper modelMapper;
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -152,6 +145,7 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 
 	@Override
 	public void delServiceReqFormField(Long id) {
+
 		serviceReqFormFieldRepo.delete(id);
 	}
 

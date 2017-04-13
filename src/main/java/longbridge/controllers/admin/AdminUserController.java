@@ -96,7 +96,6 @@ public class AdminUserController {
 //        model.addAttribute("adminUserList",adminUserList);
         return "adm/admin/view";
     }
-
     /**
      * Returns user
      * @param userId
