@@ -7,6 +7,8 @@ import longbridge.models.RetailUser;
 import longbridge.services.CodeService;
 import longbridge.services.RequestService;
 import longbridge.services.ServiceReqConfigService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,6 +35,8 @@ public class ServiceRequestController {
     @Autowired
     private CodeService codeService;
 
+    private Logger logger= LoggerFactory.getLogger(this.getClass());
+
     private RetailUser retailUser = new RetailUser();//TODO user must be authenticated
 
     @PostMapping
@@ -58,8 +62,10 @@ public class ServiceRequestController {
             if(field.getFieldType() != null && field.getFieldType().equals("List")){
                 String list = field.getTypeData();
                 String myList [] =list.split(",");
+                System.out.println(myList);
+                logger.info("myList", myList);
                 List<String> fieldList = Arrays.asList(myList);
-                System.out.println(fieldList);
+                logger.info("fieldList", fieldList);
                 model.addAttribute("fixedList", fieldList);
             }
         }

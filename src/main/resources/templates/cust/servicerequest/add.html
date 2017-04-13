@@ -29,18 +29,18 @@
                                 <form method="post" th:action="@{/retail/requests}" th:object="${serviceReqConfigDTO}">
                                     <p th:each="field : ${requestConfig.formFields}">
                                         <label th:text="${field.fieldLabel}"></label>
-                                        <p th:if="${field.fieldType} == 'Text'"><input class="form-control" th:type="${field.fieldType}" th:name="${field.fieldName}"/></p>
-                                        <p th:if="${field.fieldType} == 'Code'">
+                                        <p th:if="${field.fieldType} == 'TEXT'"><input class="form-control" th:type="${field.fieldType}" th:name="${field.fieldName}"/></p>
+                                        <p th:if="${field.fieldType} == 'CODE'">
                                             <select class="form-control" th:name="${field.fieldName}">
                                                 <option th:each="type : ${field.codeDTOs}" th:value="${type.code}" th:text="${type.description}"></option>
                                             </select>
                                         </p>
-                                        <p th:if="${field.fieldType} == 'Account'">
+                                        <p th:if="${field.fieldType} == 'ACCOUNT'">
                                             <select class="form-control" th:name="${field.fieldName}">
                                                 <option th:each="type : ${requestFieldType}" th:value="${type.code}" th:text="${type.description}"></option>
                                             </select>
                                         </p>
-                                        <p th:if="${field.fieldType} == 'List'">
+                                        <p th:if="${field.fieldType} == 'LIST'">
                                             <select class="form-control" th:name="${field.fieldName}">
                                                 <option th:each="type : ${fixedList}" th:value="${type}" th:text="${type}"></option>
                                             </select>
