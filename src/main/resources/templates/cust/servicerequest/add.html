@@ -40,8 +40,10 @@
                                                 <option th:each="type : ${requestFieldType}" th:value="${type.code}" th:text="${type.description}"></option>
                                             </select>
                                         </p>
-                                        <p th:if="${field.fieldType} == 'List'}">
-
+                                        <p th:if="${field.fieldType} == 'List'">
+                                            <select class="form-control" th:name="${field.fieldName}">
+                                                <option th:each="type : ${fixedList}" th:value="${type}" th:text="${type}"></option>
+                                            </select>
                                         </p>
                                         <!--<p><input class="form-control" th:type="${field.fieldType}" th:name="${field.fieldName}"/></p>-->
                                     </p>
