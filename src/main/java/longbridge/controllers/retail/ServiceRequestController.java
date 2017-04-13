@@ -15,9 +15,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
-import java.util.List;
-
 /**
  * Created by Fortune on 4/5/2017.
  */
@@ -53,20 +50,14 @@ public class ServiceRequestController {
     public String makeRequest(@PathVariable Long reqId, Model model){
         ServiceReqConfigDTO serviceReqConfig = serviceReqConfigService.getServiceReqConfig(reqId);
         for (ServiceReqFormFieldDTO field : serviceReqConfig.getFormFields()){
-            if(field.getFieldType() != null && field.getFieldType().equals("Code")){
-                //System.out.println(field.getTypeData());
-                //System.out.println(codeService.getCodesByType(field.getTypeData()));
+            if(field.getFieldType() != null && field.getFieldType().equals("CODE")){
                 field.setCodeDTOs(codeService.getCodesByType(field.getTypeData()));
             }
 
-            if(field.getFieldType() != null && field.getFieldType().equals("List")){
+            if(field.getFieldType() != null && field.getFieldType().equals("LIST")){
                 String list = field.getTypeData();
                 String myList [] =list.split(",");
-                System.out.println(myList);
-                logger.info("myList", myList);
-                List<String> fieldList = Arrays.asList(myList);
-                logger.info("fieldList", fieldList);
-                model.addAttribute("fixedList", fieldList);
+                model.addAttribute("fixedList", myList);
             }
         }
         //System.out.println(serviceReqConfig);
