@@ -2,6 +2,7 @@ package longbridge.dtos;
 
 import longbridge.models.Corporate;
 
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 /**
  * Created by Fortune on 4/5/2017.
@@ -10,8 +11,11 @@ public class CorporateUserDTO {
 
     private Long id;
     private Corporate corporate;
+    @NotNull
     private String userName;
+    @NotNull
     private String firstName;
+    @NotNull
     private String lastName;
     private String email;
     private String password;

@@ -1,11 +1,16 @@
 package longbridge.controllers.retail;
 
+import longbridge.dtos.ServiceReqConfigDTO;
+import longbridge.dtos.ServiceReqFormFieldDTO;
 import longbridge.dtos.ServiceRequestDTO;
 import longbridge.models.RetailUser;
-import longbridge.models.ServiceRequest;
+import longbridge.services.CodeService;
 import longbridge.services.RequestService;
-import org.modelmapper.ModelMapper;
+import longbridge.services.ServiceReqConfigService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -14,20 +19,22 @@ import org.springframework.web.bind.annotation.*;
  * Created by Fortune on 4/5/2017.
  */
 
-@RestController
+@Controller
 @RequestMapping("retail/requests")
 public class ServiceRequestController {
 
     @Autowired
     private RequestService requestService;
 
+    @Autowired
+    private ServiceReqConfigService serviceReqConfigService;
+
+    @Autowired
+    private CodeService codeService;
+
+    private Logger logger= LoggerFactory.getLogger(this.getClass());
 
     private RetailUser retailUser = new RetailUser();//TODO user must be authenticated
-
-    @GetMapping("/new")
-    public String addServiceRequest(){
-        return "add";
-    }
 
     @PostMapping
     public String createServiceRequest(@ModelAttribute("requestForm") ServiceRequestDTO requestDTO, BindingResult result, Model model){
@@ -39,11 +46,23 @@ public class ServiceRequestController {
         return "/retail/requests";
     }
 
-    @GetMapping("/{requestId}")
-    public ServiceRequestDTO getServiceRequest(@PathVariable Long requestId, Model model){
-        ServiceRequestDTO request = requestService.getRequest(requestId);
-        model.addAttribute("request",request);
-        return request;
+    @GetMapping("/{reqId}")
+    public String makeRequest(@PathVariable Long reqId, Model model){
+        ServiceReqConfigDTO serviceReqConfig = serviceReqConfigService.getServiceReqConfig(reqId);
+        for (ServiceReqFormFieldDTO field : serviceReqConfig.getFormFields()){
+            if(field.getFieldType() != null && field.getFieldType().equals("CODE")){
+                field.setCodeDTOs(codeService.getCodesByType(field.getTypeData()));
+            }
+
+            if(field.getFieldType() != null && field.getFieldType().equals("LIST")){
+                String list = field.getTypeData();
+                String myList [] =list.split(",");
+                model.addAttribute("fixedList", myList);
+            }
+        }
+        //System.out.println(serviceReqConfig);
+        model.addAttribute("requestConfig", serviceReqConfig);
+        return "cust/servicerequest/add";
     }
 
     @GetMapping

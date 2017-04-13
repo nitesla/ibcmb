@@ -4,6 +4,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
@@ -22,7 +24,7 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
 		return new ServletListenerRegistrationBean<>(new HttpSessionEventPublisher());
 	}
 
-	@Bean
+	@Bean()
 	public ModelMapper modelMapper() {
 		return new ModelMapper();
 	}

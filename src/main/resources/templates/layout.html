@@ -22,7 +22,7 @@
 
 <body>
 
-<!-- sidebar menu -->
+<!-- admin menu -->
 <div th:fragment="admin-menu" id="sidebar-menu" class="main_menu_side hidden-print main_menu">
     <div class="menu_section">
         <h3>General</h3>
@@ -70,7 +70,41 @@
     </div>
 
 </div>
-<!-- /sidebar menu -->
+<!-- /admin menu -->
+
+
+<!-- ops menu -->
+<div th:fragment="ops-menu" id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+
+    <div class="menu_section">
+        <h3>General</h3>
+        <ul class="nav side-menu">
+            <li><a><i class="fa fa-users"></i> Corporates <span class="fa fa-chevron-down"></span></a>
+                <ul class="nav child_menu">
+                    <li><a href="ops/corporate/">Accounts</a></li>
+                    <li><a href="/customer/ops">Limits</a></li>
+                </ul>
+            </li>
+            <li><a><i class="fa fa-users"></i> Retail <span class="fa fa-chevron-down"></span></a>
+                <ul class="nav child_menu">
+                    <li><a href="/admin/codes">Account</a></li>
+                    <li><a href="/admin/policies">Limits</a></li>
+                </ul>
+            </li>
+            <li><a><i class="fa fa-tasks"></i> Service Request <span class="fa fa-chevron-down"></span></a>
+                <ul class="nav child_menu"></ul>
+            </li>
+            <li><a><i class="fa fa-mail-reply-all"></i> Mailbox<span class="fa fa-chevron-down"></span></a>
+                <ul class="nav child_menu"></ul>
+            </li>
+            <li><a><i class="fa fa-bar-chart-o"></i> Reports <span class="fa fa-chevron-down"></span></a>
+                <ul class="nav child_menu"></ul>
+            </li>
+        </ul>
+    </div>
+</div>
+<!-- /ops menu -->
+
 
 <!-- /menu footer buttons -->
 <div th:fragment="menu-footer" class="sidebar-footer hidden-small">
@@ -203,8 +237,6 @@
 
         <!-- Custom Theme Scripts -->
         <script th:src="@{~/bank/js/custom.js}"></script>
-
-    <script th:src="@{~/bank/js/custom.js}"></script>
     </footer>
 <!-- /footer content -->
 

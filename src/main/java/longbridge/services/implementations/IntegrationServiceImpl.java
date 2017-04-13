@@ -16,6 +16,7 @@ import java.util.Map;
 
 @Service
 public class IntegrationServiceImpl implements IntegrationService {
+
     @Override
     public Iterable<Account> fetchAccounts(String cifid) {
         return null;
