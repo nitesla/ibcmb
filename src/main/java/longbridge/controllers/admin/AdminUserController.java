@@ -21,7 +21,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.io.IOException;
@@ -48,10 +47,7 @@ public class AdminUserController {
      * @return
      */
     @GetMapping("/new")
-
-    public String addUser(AdminUserDTO adminUserDTO)
-    {
-
+    public String addUser(Model model){
         return "adm/admin/add";
     }
 
@@ -70,28 +66,27 @@ public class AdminUserController {
     /**
      * Creates a new user
      * @param adminUserDTO
+     * @param model
      * @return
      * @throws Exception
      */
-
-    @PostMapping("/new")
-    public String createUser(@ModelAttribute("user") AdminUserDTO adminUserDTO, BindingResult result, Model model, RedirectAttributes redirectAttributes) throws Exception{
-
+    @PostMapping
+    public String createUser(@ModelAttribute("user") AdminUserDTO adminUserDTO, BindingResult result, Model model) throws Exception{
         if(result.hasErrors()){
             return "add/admin/add";
         }
 
-      //  return "redirect:/admin/users/";
-
-        adminUserService.addUser(adminUserDTO);
-        redirectAttributes.addFlashAttribute("success","Admin user created successfully");
-        return "redirect:adm/admin/view";
-
+        AdminUser adminUser =modelMapper.map(adminUserDTO,AdminUser.class);
+        adminUserService.addUser(adminUser);
+        model.addAttribute("success","Admin user created successfully");
+        return "redirect:/admin/list";
     }
 
 
     @GetMapping(path = "/all")
-    public @ResponseBody DataTablesOutput<AdminUserDTO> getUsers(DataTablesInput input){
+    public @ResponseBody
+    DataTablesOutput<AdminUserDTO> getUsers(DataTablesInput input){
+
 
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<AdminUserDTO> adminUsers = adminUserService.getUsers(pageable);
@@ -122,10 +117,11 @@ public class AdminUserController {
      * @return
      */
     @GetMapping("/{userId}/details")
-    public String getAdminUser(@PathVariable  Long userId, Model model){
-       AdminUserDTO user =adminUserService.getAdminUser(userId);
-       model.addAttribute("user",user);
-       return "adm/admin/details";
+    public String getAdminUser(@PathVariable  String userId, Model model){
+       AdminUser user =adminUserService.getUser(Long.parseLong(userId));
+       AdminUserDTO adminUserDTO = modelMapper.map(user,AdminUserDTO.class);
+       model.addAttribute("user",adminUserDTO);
+       return "admin/details";
     }
 
     /**
@@ -136,14 +132,15 @@ public class AdminUserController {
      * @throws Exception
      */
     @PostMapping("/{userId}")
-    public String updateUser(@ModelAttribute("user") @Valid AdminUserDTO adminUserDTO, BindingResult result, @PathVariable Long userId, RedirectAttributes redirectAttributes) throws Exception{
+    public String updateUser(@ModelAttribute("user") @Valid AdminUserDTO adminUserDTO, @PathVariable Long userId, BindingResult result, Model model) throws Exception{
       if(result.hasErrors()) {
-          return "adm/admin/add";
+          return "addUser";
       }
          adminUserDTO.setId(userId);
-          boolean updated = adminUserService.updateUser(adminUserDTO);
+         AdminUser adminUser = modelMapper.map(adminUserDTO,AdminUser.class);
+          boolean updated = adminUserService.updateUser(adminUser);
           if (updated) {
-              redirectAttributes.addFlashAttribute("success", "Admin user updated successfully");
+              model.addAttribute("success", "Admin user updated successfully");
           }
         return "redirect:/admin/users";
     }
@@ -161,7 +158,7 @@ public class AdminUserController {
 
     @PostMapping("/password")
     public String changePassword(@Valid ChangePassword changePassword,Long userId, BindingResult result, HttpRequest request, Model model){
-       if(result.hasErrors()){
+        if(result.hasErrors()){
             return "password";
         }
         AdminUser user=adminUserService.getUser(userId);
@@ -175,7 +172,9 @@ public class AdminUserController {
         if(!newPassword.equals(confirmPassword)){
             logger.info("PASSWORD MISMATCH");
         }
-        adminUserService.setPassword(user,newPassword);
+
+        user.setPassword(newPassword);
+        adminUserService.addUser(user);
         logger.trace("Password for user {} changed successfully",user.getUserName());
         return "changePassword";
     }

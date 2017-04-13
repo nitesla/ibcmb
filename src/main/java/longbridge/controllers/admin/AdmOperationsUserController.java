@@ -39,7 +39,7 @@ public class AdmOperationsUserController {
     }
 
     @PostMapping("/new")
-    public String createUser(@ModelAttribute("operationsUserForm") OperationsUser operationsUser, BindingResult result, Model model) throws Exception{
+    public String createUser(@ModelAttribute("operationsUserForm") OperationsUserDTO operationsUser, BindingResult result, Model model) throws Exception{
         if(result.hasErrors()){
             return "adm/operation/add";
         }

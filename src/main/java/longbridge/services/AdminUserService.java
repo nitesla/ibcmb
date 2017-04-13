@@ -1,8 +1,5 @@
 package longbridge.services;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-
 import longbridge.dtos.AdminUserDTO;
 import longbridge.models.AdminUser;
 import longbridge.models.RetailUser;
@@ -13,7 +10,7 @@ import longbridge.models.Verifiable;
  * @see AdminUser
  * Created on 3/28/2017.
  */
-public interface AdminUserService {
+public interface AdminUserService extends Verifiable<AdminUser> {
 
     /**
      * Returns an {@code AdminUser} having the specified userId
@@ -23,25 +20,10 @@ public interface AdminUserService {
     AdminUser getUser(Long userId);
 
     /**
-     * Returns a DTO of {@code AdminUserDTO} having the specified userId
-     * @param userId the user's Id
-     * @return the admin user
-     */
-    AdminUserDTO getAdminUser(Long userId);
-
-    /**
-     * Returns DTOs of admin users existing in the system
+     * Returns all admin users existing in the system
      * @return a list of the admin users
      */
-    Iterable<AdminUserDTO> getUsers();
-    
-    Page<AdminUserDTO> getUsers(Pageable pageDetails);
-
-//    /**
-//     * Returns all admin users existing in the system
-//     * @return a list of the admin users
-//     */
-//    Iterable<AdminUser> getAdminUsers();
+    Iterable<AdminUser> getUsers();
 
     /**
      * Sets the password for the specified admin user.
@@ -56,7 +38,7 @@ public interface AdminUserService {
      * Creates an Admin user
      * @param user the new admin user
      */
-    boolean addUser(AdminUserDTO user);
+    boolean addUser(AdminUser user);
 
 
     /**
@@ -70,7 +52,7 @@ public interface AdminUserService {
      * Updates the details of the specified Admin user
      * @param user the admin user whose details are to be updated
      */
-    boolean updateUser(AdminUserDTO user);
+    boolean updateUser(AdminUser user);
 
     /**
      * Resets the password of the specified Admin user

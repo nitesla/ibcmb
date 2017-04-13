@@ -15,7 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -95,11 +94,10 @@ public class AdminUserServiceImpl implements AdminUserService {
     public boolean addUser(AdminUserDTO user) {
         boolean ok = false;
         if (user != null) {
-       //user.setPassword(this.passwordEncoder.encode(user.getPassword()));
+            user.setPassword(this.passwordEncoder.encode(user.getPassword()));
             AdminUser adminUser = convertDTOToEntity(user);
             this.adminUserRepo.save(adminUser);
             logger.info("New admin user: {} created", adminUser.getUserName());
-
             ok=true;
         } else {
             logger.error("USER NOT FOUND");
@@ -208,7 +206,7 @@ public class AdminUserServiceImpl implements AdminUserService {
 
 
 
-    private List<AdminUserDTO> convertEntitiesToDTOs(Iterable<AdminUser> adminUsers){
+    private Iterable<AdminUserDTO> convertEntitiesToDTOs(Iterable<AdminUser> adminUsers){
         List<AdminUserDTO> adminUserDTOs = new ArrayList<>();
         for(AdminUser adminUser: adminUsers){
             convertEntityToDTO(adminUser);
@@ -230,13 +228,8 @@ public class AdminUserServiceImpl implements AdminUserService {
 
 	@Override
 	public Page<AdminUserDTO> getUsers(Pageable pageDetails) {
-        Page<AdminUser> page = adminUserRepo.findAll(pageDetails);
-        List<AdminUserDTO> dtOs = convertEntitiesToDTOs(page.getContent());
-        long t = page.getTotalElements();
-
-        // return  new PageImpl<ServiceReqConfigDTO>(dtOs,pageDetails,page.getTotalElements());
-        Page<AdminUserDTO> pageImpl = new PageImpl<AdminUserDTO>(dtOs,pageDetails,t);
-        return pageImpl;
+		// TODO Auto-generated method stub
+		return null;
 	}
     @Override
     public void add(AdminUserDTO adminUser, AdminUser initiator) {
