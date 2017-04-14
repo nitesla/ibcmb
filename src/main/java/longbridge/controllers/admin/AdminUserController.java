@@ -36,8 +36,6 @@ public class AdminUserController {
     @Autowired
     private  AdminUserService adminUserService;
     @Autowired
-    private ModelMapper modelMapper;
-    @Autowired
     private AdminUserRepo adminUserRepo;
     @Autowired
     private VerificationRepo verificationRepo;

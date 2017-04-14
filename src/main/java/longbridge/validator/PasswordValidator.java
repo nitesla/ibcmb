@@ -115,4 +115,84 @@ public class PasswordValidator {
         }
         return errorMessage.toString();
     }
+
+    public Setting getNumOfPasswordDigits() {
+        return numOfPasswordDigits;
+    }
+
+    public void setNumOfPasswordDigits(Setting numOfPasswordDigits) {
+        this.numOfPasswordDigits = numOfPasswordDigits;
+    }
+
+    public Setting getMinLengthOfPassword() {
+        return minLengthOfPassword;
+    }
+
+    public void setMinLengthOfPassword(Setting minLengthOfPassword) {
+        this.minLengthOfPassword = minLengthOfPassword;
+    }
+
+    public Setting getMaxLengthOfPassword() {
+        return maxLengthOfPassword;
+    }
+
+    public void setMaxLengthOfPassword(Setting maxLengthOfPassword) {
+        this.maxLengthOfPassword = maxLengthOfPassword;
+    }
+
+    public Setting getNoSpecialChar() {
+        return noSpecialChar;
+    }
+
+    public void setNoSpecialChar(Setting noSpecialChar) {
+        this.noSpecialChar = noSpecialChar;
+    }
+
+    public Setting getSpecialChars() {
+        return specialChars;
+    }
+
+    public void setSpecialChars(Setting specialChars) {
+        this.specialChars = specialChars;
+    }
+
+    public int getNumOfDigits() {
+        return numOfDigits;
+    }
+
+    public void setNumOfDigits(int numOfDigits) {
+        this.numOfDigits = numOfDigits;
+    }
+
+    public int getNoOfSpecial() {
+        return noOfSpecial;
+    }
+
+    public void setNoOfSpecial(int noOfSpecial) {
+        this.noOfSpecial = noOfSpecial;
+    }
+
+    public int getMinLength() {
+        return minLength;
+    }
+
+    public void setMinLength(int minLength) {
+        this.minLength = minLength;
+    }
+
+    public int getMaxLength() {
+        return maxLength;
+    }
+
+    public void setMaxLength(int maxLength) {
+        this.maxLength = maxLength;
+    }
+
+    public String getSpecialCharacters() {
+        return specialCharacters;
+    }
+
+    public void setSpecialCharacters(String specialCharacters) {
+        this.specialCharacters = specialCharacters;
+    }
 }

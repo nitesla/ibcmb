@@ -1,10 +1,8 @@
 package longbridge.controllers.admin;
 
-import longbridge.forms.ChangePassword;
 import longbridge.dtos.RetailUserDTO;
 import longbridge.forms.ChangePassword;
 import longbridge.services.RetailUserService;
-import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,11 +39,8 @@ public class AdmRetailUserController {
         return "adm/retail/add";
     }
 
-
-
     @PostMapping("/new")
     public String createUser(@ModelAttribute("retailUser") @Valid RetailUserDTO retailUser, BindingResult result, Model model, RedirectAttributes redirectAttributes) throws Exception{
-
         if(result.hasErrors()){
             return "adm/retail/add";
         }

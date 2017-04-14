@@ -5,7 +5,6 @@ import longbridge.dtos.ServiceRequestDTO;
 import longbridge.models.RequestHistory;
 import longbridge.models.RetailUser;
 import longbridge.models.ServiceRequest;
-import longbridge.models.ServiceRequest;
 import longbridge.repositories.RequestHistoryRepo;
 import longbridge.repositories.ServiceRequestRepo;
 import longbridge.services.RequestService;

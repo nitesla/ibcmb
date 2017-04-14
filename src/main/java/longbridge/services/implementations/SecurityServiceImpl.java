@@ -27,8 +27,6 @@ public class SecurityServiceImpl implements SecurityService {
 
     private BCryptPasswordEncoder passwordEncoder;
 
-
-
     @Autowired
     public SecurityServiceImpl(BCryptPasswordEncoder passwordEncoder) {
         this.passwordEncoder = passwordEncoder;

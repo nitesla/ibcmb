@@ -8,19 +8,28 @@ import java.util.Date;
  */
 public class RequestHistoryDTO {
 
-
-    private ServiceRequestDTO serviceRequestDTO;
+    private Long id;
+    private String serviceRequest;
     private String status;
     private String comment;
-    private OperationsUser createdBy;
+    private String createdBy;
     private Date createdOn;
 
-    public ServiceRequestDTO getServiceRequestDTO() {
-        return serviceRequestDTO;
+
+    public Long getId() {
+        return id;
     }
 
-    public void setServiceRequestDTO(ServiceRequestDTO serviceRequestDTO) {
-        this.serviceRequestDTO = serviceRequestDTO;
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getServiceRequest() {
+        return serviceRequest;
+    }
+
+    public void setServiceRequest(String serviceRequest) {
+        this.serviceRequest = serviceRequest;
     }
 
     public String getStatus() {
@@ -39,22 +48,12 @@ public class RequestHistoryDTO {
         this.comment = comment;
     }
 
-    public OperationsUser getCreatedBy() {
+    public String getCreatedBy() {
         return createdBy;
     }
 
-    @Override
-    public String toString() {
-        return "RequestHistory{" +
-                "serviceRequest=" + serviceRequestDTO +
-                ", status='" + status + '\'' +
-                ", comment='" + comment + '\'' +
-                ", createdBy=" + createdBy +
-                ", createdOn=" + createdOn +
-                '}';
-    }
 
-    public void setCreatedBy(OperationsUser createdBy) {
+    public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
     }
 
@@ -66,4 +65,15 @@ public class RequestHistoryDTO {
         this.createdOn = createdOn;
     }
 
+    @Override
+    public String toString() {
+        return "RequestHistoryDTO{" +
+                "id=" + id +
+                ", serviceRequest='" + serviceRequest + '\'' +
+                ", status='" + status + '\'' +
+                ", comment='" + comment + '\'' +
+                ", createdBy='" + createdBy + '\'' +
+                ", createdOn=" + createdOn +
+                '}';
+    }
 }

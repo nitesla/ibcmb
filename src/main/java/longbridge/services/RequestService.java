@@ -43,7 +43,6 @@ public interface RequestService {
 
     public Page<ServiceRequestDTO> getRequests(ServiceRequestDTO request, Pageable pageDetails);
 
-
         /**
          * Creates and adds a new history for a request
          * @param requestHistory the request history
