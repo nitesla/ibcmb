@@ -1,7 +1,5 @@
 package longbridge.controllers.admin;
 
-import longbridge.models.Setting;
-import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,12 +11,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * Created by LB-PRJ-020 on 4/5/2017.
  */
 @Controller
-@RequestMapping("/setting")
+@RequestMapping("/admin/setting")
 public class AdmSettingController {
 
     @GetMapping()
     public String listSettings(Model model){
-        return "setting/view";
+        return "adm/setting/settings";
     }
 
     @GetMapping("/{settingId}")
