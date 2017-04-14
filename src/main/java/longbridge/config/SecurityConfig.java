@@ -59,7 +59,7 @@ public class SecurityConfig {
             http
 
                     // log in
-                    .antMatcher("/ad/**").authorizeRequests().anyRequest().hasRole("ADMIN")
+                    .antMatcher("/admin/**").authorizeRequests().anyRequest().hasRole("ADMIN")
                     // log in
                     .and().formLogin().loginPage("/loginAdmin").loginProcessingUrl("/admin_login").failureUrl("/loginAdmin?error=loginError").defaultSuccessUrl("/adminPage")
                     // logout
