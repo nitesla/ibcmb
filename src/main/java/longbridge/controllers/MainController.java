@@ -25,7 +25,6 @@ public class MainController {
         return new ModelAndView("login", "error", error);
     }
 
-
     @RequestMapping("/dashboard")
     public String getDashboard() {
         return "dashboard";
