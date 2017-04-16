@@ -76,7 +76,7 @@ public class AdminUserController {
             return "add/admin/add";
         }
 
-        AdminUser adminUser =modelMapper.map(adminUserDTO,AdminUser.class);
+        AdminUser adminUser =modelMapper.map(adminUser,AdminUser.class);
         adminUserService.addUser(adminUser);
         model.addAttribute("success","Admin user created successfully");
         return "redirect:/admin/list";

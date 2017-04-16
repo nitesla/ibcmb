@@ -105,9 +105,16 @@ public class AdminUserServiceImpl implements AdminUserService {
         return ok;
     }
 
+
+
     @Override
     public void deleteUser(Long id) {
         //adminUserRepo.delete(id); //TODO implement logical delete
+    }
+
+    @Override
+    public boolean updateUser(AdminUser user) {
+        return false;
     }
 
     @Override
@@ -188,21 +195,21 @@ public class AdminUserServiceImpl implements AdminUserService {
         return false;
     }
 //
-    @Override
-    public boolean updateUser(AdminUserDTO user) {
-        boolean result = false;
-        try {
-            if (user != null) {
-                AdminUser adminUser = convertDTOToEntity(user);
-                this.adminUserRepo.save(adminUser);
-                logger.info("User Successfully Updated");
-            }
-        } catch (Exception e) {
-            logger.info("Could not update admin user",e);
-
-        }
-        return result;
-    }
+//    @Override
+//    public boolean updateUser(AdminUserDTO user) {
+//        boolean result = false;
+//        try {
+//            if (user != null) {
+//                AdminUser adminUser = convertDTOToEntity(user);
+//                this.adminUserRepo.save(adminUser);
+//                logger.info("User Successfully Updated");
+//            }
+//        } catch (Exception e) {
+//            logger.info("Could not update admin user",e);
+//
+//        }
+//        return result;
+//    }
 
 
 
