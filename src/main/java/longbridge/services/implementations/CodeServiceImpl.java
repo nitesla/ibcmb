@@ -36,13 +36,13 @@ public class CodeServiceImpl implements CodeService {
 
     private VerificationRepo verificationRepo;
 
-    @Autowired
-    ModelMapper modelMapper;
+    private ModelMapper modelMapper;
 
     @Autowired
-    public CodeServiceImpl(CodeRepo codeRepository, VerificationRepo verificationRepo) {
+    public CodeServiceImpl(CodeRepo codeRepository, VerificationRepo verificationRepo, ModelMapper modelMapper) {
         codeRepo = codeRepository;
         this.verificationRepo = verificationRepo;
+        this.modelMapper = modelMapper;
     }
 
 

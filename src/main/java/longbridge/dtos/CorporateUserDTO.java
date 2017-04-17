@@ -1,6 +1,7 @@
 package longbridge.dtos;
 
 import longbridge.models.Corporate;
+import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.NotNull;
 import java.util.Date;
@@ -11,12 +12,13 @@ public class CorporateUserDTO {
 
     private Long id;
     private Corporate corporate;
-    @NotNull
+    @NotEmpty
     private String userName;
-    @NotNull
+    @NotEmpty
     private String firstName;
-    @NotNull
+    @NotEmpty
     private String lastName;
+    @NotEmpty
     private String email;
     private String password;
     private String status;

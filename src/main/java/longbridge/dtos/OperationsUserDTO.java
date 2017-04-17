@@ -1,6 +1,8 @@
 package longbridge.dtos;
 
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 import java.util.Date;
 
 /**
@@ -9,8 +11,11 @@ import java.util.Date;
 public class OperationsUserDTO {
 
     private Long id;
+    @NotEmpty
     private String userName;
+    @NotEmpty
     private String firstName;
+    @NotEmpty
     private String lastName;
     private String email;
     private String password;

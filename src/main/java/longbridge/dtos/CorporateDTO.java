@@ -1,6 +1,8 @@
 package longbridge.dtos;
 
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 /**
  * Created by Fortune on 4/5/2017.
  */
@@ -9,6 +11,7 @@ public class CorporateDTO {
 
     private Long id;
     private String rcNumber;
+    @NotEmpty
     private String customerId;
     private String companyName;
     private String email;

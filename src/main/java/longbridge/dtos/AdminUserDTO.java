@@ -1,6 +1,7 @@
 package longbridge.dtos;
 
 import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.NotNull;
 
@@ -10,13 +11,13 @@ import javax.validation.constraints.NotNull;
 public class AdminUserDTO {
 
     private Long id;
-    @NotNull
+    @NotEmpty
     private String userName;
-    @NotNull
+    @NotEmpty
     private String firstName;
-    @NotNull
+    @NotEmpty
     private String lastName;
-    @NotNull
+    @NotEmpty
     @Email
     private String email;
     private String password;

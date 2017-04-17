@@ -1,6 +1,7 @@
 package longbridge.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.hibernate.validator.constraints.NotEmpty;
 
 import java.util.ArrayList;
 
@@ -11,6 +12,7 @@ public class ServiceReqConfigDTO {
 
 	@JsonProperty("DT_RowId")
     private Long id;
+	@NotEmpty
     private String requestName;
     private int version;
     private ArrayList<ServiceReqFormFieldDTO> formFields;

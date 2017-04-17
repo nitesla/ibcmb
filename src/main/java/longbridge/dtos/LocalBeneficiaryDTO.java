@@ -2,6 +2,7 @@ package longbridge.dtos;
 
 import longbridge.models.Beneficiary;
 import longbridge.models.RetailUser;
+import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
@@ -13,11 +14,11 @@ import javax.validation.constraints.NotNull;
 public class LocalBeneficiaryDTO{
 
     private RetailUser user;
-    @NotNull
+    @NotEmpty
     private String name;
-    @NotNull
+    @NotEmpty
     private String accountNo;
-    @NotNull
+    @NotEmpty
     private String beneficiaryBank;
 
     public RetailUser getUser() {

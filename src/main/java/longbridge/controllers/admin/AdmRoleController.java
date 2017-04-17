@@ -17,7 +17,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -44,42 +46,42 @@ public class AdmRoleController {
 
 
     @GetMapping("/new")
-    public String addRole(RoleDTO roleDTO){
+    public String addRole(Model model){
+        model.addAttribute("role", new RoleDTO());
         return "adm/role/add";
     }
 
-    @PostMapping("/new")
-    public String createRole(@ModelAttribute("roleForm") RoleDTO roleDTO, BindingResult result, Model model){
+    @PostMapping
+    public String createRole(@ModelAttribute("role") @Valid RoleDTO roleDTO, BindingResult result, RedirectAttributes redirectAttributes){
         if(result.hasErrors()){
             return "adm/role/add";
         }
         logger.info("Role {}", roleDTO.toString());
-        AdminUser adminUser = adminUserRepo.findOne(1l);
-        roleService.add(roleDTO, adminUser);
-        model.addAttribute("success", "Role added successfully");
-        return "/admin/roles";
+        roleService.addRole(roleDTO);
+        redirectAttributes.addFlashAttribute("success", "Role added successfully");
+        return "redirect:/admin/roles";
     }
 
     @GetMapping("/{roleId}")
-    public RoleDTO getRole(@PathVariable Long roleId, Model model){
+    public String getRole(@PathVariable Long roleId, Model model){
         RoleDTO role = roleService.getRole(roleId);
         model.addAttribute("role",role);
-        return role;
+        return "adm/role/edit";
     }
 
     @GetMapping
-    public Iterable<RoleDTO> getRoles(Model model){
+    public String getRoles(Model model){
         Iterable<RoleDTO> roleList = roleService.getRoles();
         model.addAttribute("roleList",roleList);
-        return roleList;
+        return "adm/role/view";
 
     }
 
-    @PostMapping("/{roleId}")
+    @PostMapping("/{roleId}/update")
     public String updateRole(@ModelAttribute("role") RoleDTO roleDTO, @PathVariable Long roleId, BindingResult result, Model model) {
 
         if (result.hasErrors()) {
-            return "add-role";
+            return "adm/role/add";
         }
         roleDTO.setId(roleId);
 
