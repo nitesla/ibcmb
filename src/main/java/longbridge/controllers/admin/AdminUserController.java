@@ -21,6 +21,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.io.IOException;
@@ -63,18 +64,17 @@ public class AdminUserController {
 
     /**
      * Creates a new user
-     * @param adminUserDTO
+     * @param adminUser
      * @param model
      * @return
      * @throws Exception
      */
     @PostMapping
-    public String createUser(@ModelAttribute("user") AdminUserDTO adminUserDTO, BindingResult result, Model model) throws Exception{
+    public String createUser(@ModelAttribute("user") AdminUserDTO adminUser, BindingResult result, Model model) throws Exception{
         if(result.hasErrors()){
             return "add/admin/add";
         }
 
-        AdminUser adminUser =modelMapper.map(adminUser,AdminUser.class);
         adminUserService.addUser(adminUser);
         model.addAttribute("success","Admin user created successfully");
         return "redirect:/admin/list";
@@ -116,29 +116,27 @@ public class AdminUserController {
      */
     @GetMapping("/{userId}/details")
     public String getAdminUser(@PathVariable  String userId, Model model){
-       AdminUser user =adminUserService.getUser(Long.parseLong(userId));
-       AdminUserDTO adminUserDTO = modelMapper.map(user,AdminUserDTO.class);
-       model.addAttribute("user",adminUserDTO);
+       AdminUser adminUser =adminUserService.getUser(Long.parseLong(userId));
+       model.addAttribute("user",adminUser);
        return "admin/details";
     }
 
     /**
      * Updates the user
-     * @param adminUserDTO
+     * @param adminUser
      * @param redirectAttributes
      * @return
      * @throws Exception
      */
     @PostMapping("/{userId}")
-    public String updateUser(@ModelAttribute("user") @Valid AdminUserDTO adminUserDTO, @PathVariable Long userId, BindingResult result, Model model) throws Exception{
+    public String updateUser(@ModelAttribute("user") @Valid AdminUserDTO adminUser, @PathVariable Long userId, BindingResult result, RedirectAttributes redirectAttributes) throws Exception{
       if(result.hasErrors()) {
           return "addUser";
       }
-         adminUserDTO.setId(userId);
-         AdminUser adminUser = modelMapper.map(adminUserDTO,AdminUser.class);
+         adminUser.setId(userId);
           boolean updated = adminUserService.updateUser(adminUser);
           if (updated) {
-              model.addAttribute("success", "Admin user updated successfully");
+              redirectAttributes.addFlashAttribute("success", "Admin user updated successfully");
           }
         return "redirect:/admin/users";
     }
@@ -159,7 +157,7 @@ public class AdminUserController {
         if(result.hasErrors()){
             return "password";
         }
-        AdminUser user=adminUserService.getUser(userId);
+        AdminUserDTO user=adminUserService.getAdminUser(userId);
         String oldPassword=changePassword.getOldPassword();
         String newPassword=changePassword.getNewPassword();
         String confirmPassword=changePassword.getConfirmPassword();

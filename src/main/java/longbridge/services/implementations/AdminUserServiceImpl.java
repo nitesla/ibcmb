@@ -113,8 +113,17 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
     @Override
-    public boolean updateUser(AdminUser user) {
-        return false;
+    public boolean updateUser(AdminUserDTO user) {
+        boolean ok = false;
+        if (user != null) {
+            AdminUser adminUser = convertDTOToEntity(user);
+            this.adminUserRepo.save(adminUser);
+            logger.info("Admin user {} updated", adminUser.getUserName());
+            ok=true;
+        } else {
+            logger.error("Null user provided");
+        }
+        return ok;
     }
 
     @Override
