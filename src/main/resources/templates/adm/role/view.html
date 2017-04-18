@@ -135,13 +135,13 @@
             "columnDefs" : [  {
                 "targets" : 3,
                 "render" : function(data, type, full, meta) {
-                    kk =  "<div class='col-md-6 col-sm-6 col-xs-12'><a  class='btn btn-default btn-xs' data-toggle='tooltip' title='Edit' data-placement='right' href='/admin/roles/"+ full.DT_RowId+ "/edit'>";
+                    kk =  "<a  class='btn btn-default btn-xs' data-toggle='tooltip' title='Edit' data-placement='right' href='/admin/roles/"+ full.DT_RowId+ "/edit'>";
                     kk += "<i class='fa fa-edit'></i>"
                     kk += "Edit</a>" ;
 
                     kk  +=  "<a  class='btn btn-default btn-xs' data-toggle='tooltip' title='Delete' data-placement='right' href='/admin/roles/"+ full.DT_RowId+ "/delete'>";
                     kk += "<i class='fa fa-trash-o'></i>"
-                    kk += "Delete</a></div>";
+                    kk += "Delete</a>";
                     return kk;
                 }
             }]

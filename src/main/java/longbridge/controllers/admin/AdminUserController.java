@@ -1,12 +1,14 @@
 package longbridge.controllers.admin;
 
 import longbridge.dtos.AdminUserDTO;
+import longbridge.dtos.RoleDTO;
 import longbridge.forms.ChangePassword;
 import longbridge.models.AdminUser;
 import longbridge.models.Verification;
 import longbridge.repositories.AdminUserRepo;
 import longbridge.repositories.VerificationRepo;
 import longbridge.services.AdminUserService;
+import longbridge.services.RoleService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +42,8 @@ public class AdminUserController {
     private AdminUserRepo adminUserRepo;
     @Autowired
     private VerificationRepo verificationRepo;
+    @Autowired
+    private RoleService roleService;
 
     /**
      * Page for adding a new user
@@ -47,6 +51,9 @@ public class AdminUserController {
      */
     @GetMapping("/new")
     public String addUser(Model model){
+        Iterable<RoleDTO> roles = roleService.getRoles();
+        model.addAttribute("adminUser", new AdminUserDTO());
+        model.addAttribute("roles",roles);
         return "adm/admin/add";
     }
 
@@ -65,19 +72,19 @@ public class AdminUserController {
     /**
      * Creates a new user
      * @param adminUser
-     * @param model
+     * @param redirectAttributes
      * @return
      * @throws Exception
      */
     @PostMapping
-    public String createUser(@ModelAttribute("user") AdminUserDTO adminUser, BindingResult result, Model model) throws Exception{
+    public String createUser(@ModelAttribute("user") AdminUserDTO adminUser, BindingResult result, RedirectAttributes redirectAttributes) throws Exception{
         if(result.hasErrors()){
             return "add/admin/add";
         }
 
         adminUserService.addUser(adminUser);
-        model.addAttribute("success","Admin user created successfully");
-        return "redirect:/admin/list";
+        redirectAttributes.addFlashAttribute("success","Admin user created successfully");
+        return "redirect:/admin/users";
     }
 
 

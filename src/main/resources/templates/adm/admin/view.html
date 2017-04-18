@@ -68,12 +68,12 @@
                             </div>
                             <div class="x_content">
 
-                                <table class="table table-striped table-bordered table-hover" id="admin-user">
+                                <table class="table table-striped table-bordered table-hover" id="admin">
                                     <thead>
                                     <tr>
                                         <th>First Name</th>
                                         <th>Last Name</th>
-                                        <th>Email</th>
+                                        <th>Role</th>
                                         <th>Actions</th>
                                     </tr>
                                     </thead>
@@ -85,7 +85,7 @@
                                     <tr>
                                         <th>First Name</th>
                                         <th>Last Name</th>
-                                        <th>Email</th>
+                                        <th>Role</th>
                                         <th>Actions</th>
                                     </tr>
                                     </tfoot>
@@ -116,7 +116,7 @@
 <script>
     /*<![CDATA[*/
     $(document).ready(function() {
-        $('#admin-user').DataTable({
+        $('#admin').DataTable({
             select:true,
             responsive: true,
             "lengthMenu" : [ [ 5, 10, 50, -1 ],	[ 5, 10, 50, "All" ] ],
@@ -129,11 +129,11 @@
             "columns": [
                 { "data": "firstName" },
                 { "data": "lastName" },
-                { "data": "email" },
+                { "data": "role" },
                 { "data": null }
             ] ,
             "columnDefs" : [  {
-                "targets" : 1,
+                "targets" : 3,
                 "render" : function(data, type, full, meta) {
                     kk =  "<div class='col-md-6 col-sm-6 col-xs-12'><a  class='btn btn-default btn-xs' data-toggle='tooltip' title='Edit' data-placement='right' href='/admin/usersy/"+ full.DT_RowId+ "/edit'>";
                     kk += "<i class='fa fa-edit'></i>"

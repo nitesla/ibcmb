@@ -105,10 +105,10 @@ public class AdmServiceReqConfigController {
         return "adm/servicereqconfig/add";
     }
 
-    @PostMapping("/{userId}/delete")
+    @GetMapping("/{reqId}/delete")
     public String deleteUser(@PathVariable Long reqId) {
         serviceReqConfigService.delServiceReqConfig(reqId);
-        return "redirect:/retail/users";
+        return "redirect:/admin/srconfig";
     }
 
 }
