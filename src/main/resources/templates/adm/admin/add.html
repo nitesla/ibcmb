@@ -45,7 +45,7 @@
 
                             <div class="x_content">
                                 <div class="ibox-content">
-                                    <form method="post" class="form-horizontal" th:action="@{/admin/users/new}" th:object="${adminUser}">
+                                    <form method="post" class="form-horizontal" th:action="@{/admin/users/}" th:object="${adminUser}">
 
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">CIFID:</label>
@@ -72,7 +72,7 @@
                                             <label class="col-sm-2 control-label">Last Name</label>
 
                                             <div class="col-sm-6">
-                                                <input type="text" class="form-control" th:feild="*{lastName}" />
+                                                <input type="text" class="form-control" th:field="*{lastName}" />
                                             </div>
 
                                         </div>
@@ -96,7 +96,7 @@
 
                                                 <!--</select>-->
 
-                                                <select class="form-control" name="role">
+                                                <select class="form-control" name="roleId">
                                                     <option value="" name="select">Select..</option>
                                                     <option th:each="role : ${roles}" th:value="${role.id}" th:text="${role.name}" th:selected="${role.id==adminUser.roleId}"></option>
                                                 </select>
@@ -108,7 +108,7 @@
                                         <div class="form-group">
                                             <div class="col-sm-4 col-sm-offset-2">
                                                 <button class="btn btn-white" type="reset">Cancel</button>
-                                                <button class="btn btn-primary" type="submit">Save</button>
+                                                <button class="btn btn-primary" type="submit">Submit</button>
                                             </div>
                                         </div>
 

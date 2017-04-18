@@ -63,9 +63,10 @@ public class AdminUserController {
      */
     @GetMapping("/{userId}/edit")
     public String editUser(@PathVariable Long userId, Model model) {
-
-        AdminUser user = adminUserService.getUser(userId);
-        model.addAttribute("user", user);
+        AdminUserDTO user = adminUserService.getAdminUser(userId);
+        Iterable<RoleDTO> roles = roleService.getRoles();
+        model.addAttribute("adminUser", user);
+        model.addAttribute("roles",roles);
         return "adm/admin/edit";
     }
 
@@ -77,11 +78,10 @@ public class AdminUserController {
      * @throws Exception
      */
     @PostMapping
-    public String createUser(@ModelAttribute("user") AdminUserDTO adminUser, BindingResult result, RedirectAttributes redirectAttributes) throws Exception{
+    public String createUser(@ModelAttribute("adminUser") AdminUserDTO adminUser, BindingResult result, RedirectAttributes redirectAttributes) throws Exception{
         if(result.hasErrors()){
-            return "add/admin/add";
+            return "adm/admin/add";
         }
-
         adminUserService.addUser(adminUser);
         redirectAttributes.addFlashAttribute("success","Admin user created successfully");
         return "redirect:/admin/users";
@@ -133,12 +133,11 @@ public class AdminUserController {
      * @return
      * @throws Exception
      */
-    @PostMapping("/{userId}")
-    public String updateUser(@ModelAttribute("user") @Valid AdminUserDTO adminUser, @PathVariable Long userId, BindingResult result, RedirectAttributes redirectAttributes) throws Exception{
+    @PostMapping("/update")
+    public String updateUser(@ModelAttribute("user") AdminUserDTO adminUser, BindingResult result, RedirectAttributes redirectAttributes) throws Exception{
       if(result.hasErrors()) {
-          return "addUser";
+          return "adm/admin/add";
       }
-         adminUser.setId(userId);
           boolean updated = adminUserService.updateUser(adminUser);
           if (updated) {
               redirectAttributes.addFlashAttribute("success", "Admin user updated successfully");
@@ -146,10 +145,10 @@ public class AdminUserController {
         return "redirect:/admin/users";
     }
 
-    @PostMapping("/{userId}/delete")
+    @GetMapping("/{userId}/delete")
     public String deleteUser(@PathVariable Long userId){
         adminUserService.deleteUser(userId);
-        return "redirect:admin/users";
+        return "redirect:/admin/users";
     }
 
     @GetMapping("/password")

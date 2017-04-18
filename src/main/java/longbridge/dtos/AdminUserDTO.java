@@ -1,5 +1,6 @@
 package longbridge.dtos;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -10,18 +11,21 @@ import javax.validation.constraints.NotNull;
  */
 public class AdminUserDTO {
 
+    @JsonProperty("DT_RowId")
     private Long id;
-    @NotEmpty
+    private  int version;
+  //  @NotEmpty
     private String userName;
-    @NotEmpty
+  //  @NotEmpty
     private String firstName;
-    @NotEmpty
+   // @NotEmpty
     private String lastName;
-    @NotEmpty
-    @Email
+   // @NotEmpty
+    //@Email
     private String email;
     private String password;
-    private String roleId;
+    private Long roleId;
+    private String role;
     private String userType;
 
 
@@ -31,6 +35,14 @@ public class AdminUserDTO {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
     }
 
     public String getUserName() {
@@ -73,12 +85,20 @@ public class AdminUserDTO {
         this.password = password;
     }
 
-    public String getRoleId() {
+    public Long getRoleId() {
         return roleId;
     }
 
-    public void setRoleId(String roleId) {
+    public void setRoleId(Long roleId) {
         this.roleId = roleId;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public String getUserType() {
