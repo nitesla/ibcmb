@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
  */
 
 @Controller
-@RequestMapping("retail/requests")
+@RequestMapping("/retail/requests")
 public class ServiceRequestController {
 
     @Autowired
@@ -36,14 +36,22 @@ public class ServiceRequestController {
 
     private RetailUser retailUser = new RetailUser();//TODO user must be authenticated
 
+    @GetMapping
+    public Iterable<ServiceRequestDTO> getServiceRequests(Model model){
+        Iterable<ServiceRequestDTO> requestList = requestService.getRequests(retailUser);
+        model.addAttribute("requestList",requestList);
+        return requestList;
+    }
+
     @PostMapping
     public String createServiceRequest(@ModelAttribute("requestForm") ServiceRequestDTO requestDTO, BindingResult result, Model model){
         if(result.hasErrors()){
-            return "add";
+            return "cust/servicerequest/add";
         }
+
         requestService.addRequest(requestDTO);
         model.addAttribute("success", "Request added successfully");
-        return "/retail/requests";
+        return "redirect: /retail/requests";
     }
 
     @GetMapping("/{reqId}")
@@ -63,14 +71,6 @@ public class ServiceRequestController {
         //System.out.println(serviceReqConfig);
         model.addAttribute("requestConfig", serviceReqConfig);
         return "cust/servicerequest/add";
-    }
-
-    @GetMapping
-    public Iterable<ServiceRequestDTO> getServiceRequests(Model model){
-        Iterable<ServiceRequestDTO> requestList = requestService.getRequests(retailUser);
-        model.addAttribute("requestList",requestList);
-        return requestList;
-
     }
 
 }

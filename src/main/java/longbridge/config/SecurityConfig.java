@@ -65,7 +65,7 @@ public class SecurityConfig {
                     .antMatcher("/admin/**").authorizeRequests()
                     .anyRequest().hasRole("ADMIN")
                     // log in
-                    .and().formLogin().loginPage("/loginAdmin").loginProcessingUrl("/admin/login").failureUrl("/loginAdmin?error=loginError").defaultSuccessUrl("/admin/codes/new")
+                    .and().formLogin().loginPage("/loginAdmin").loginProcessingUrl("/admin/login").failureUrl("/loginAdmin?error=loginError").defaultSuccessUrl("/dashboard")
 
 
                     .and()
