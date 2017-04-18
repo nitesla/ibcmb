@@ -252,6 +252,7 @@ public class AdminUserServiceImpl implements AdminUserService {
         Page<AdminUserDTO> pageImpl = new PageImpl<AdminUserDTO>(dtOs,pageDetails,t);
         return pageImpl;
 	}
+
     @Override
     public void add(AdminUserDTO adminUser, AdminUser initiator) {
         try {

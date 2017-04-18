@@ -4,6 +4,7 @@ import longbridge.dtos.ServiceReqConfigDTO;
 import longbridge.dtos.ServiceReqFormFieldDTO;
 import longbridge.dtos.ServiceRequestDTO;
 import longbridge.models.RetailUser;
+import longbridge.repositories.RetailUserRepo;
 import longbridge.services.CodeService;
 import longbridge.services.RequestService;
 import longbridge.services.ServiceReqConfigService;
@@ -14,6 +15,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Date;
 
 /**
  * Created by Fortune on 4/5/2017.
@@ -34,13 +37,16 @@ public class ServiceRequestController {
 
     private Logger logger= LoggerFactory.getLogger(this.getClass());
 
+    @Autowired
+    private RetailUserRepo userRepo;
+
     private RetailUser retailUser = new RetailUser();//TODO user must be authenticated
 
     @GetMapping
-    public Iterable<ServiceRequestDTO> getServiceRequests(Model model){
-        Iterable<ServiceRequestDTO> requestList = requestService.getRequests(retailUser);
+    public String getServiceRequests(Model model){
+        Iterable<ServiceReqConfigDTO> requestList = serviceReqConfigService.getServiceReqConfigs();
         model.addAttribute("requestList",requestList);
-        return requestList;
+        return "cust/servicerequest/list";
     }
 
     @PostMapping
@@ -49,9 +55,14 @@ public class ServiceRequestController {
             return "cust/servicerequest/add";
         }
 
+            retailUser = userRepo.findOne(1l);
+
+        logger.info(requestDTO.toString());
+        requestDTO.setUser(retailUser);
+        requestDTO.setRequestTime(new Date());
         requestService.addRequest(requestDTO);
         model.addAttribute("success", "Request added successfully");
-        return "redirect: /retail/requests";
+        return "redirect:/retail/requests";
     }
 
     @GetMapping("/{reqId}")

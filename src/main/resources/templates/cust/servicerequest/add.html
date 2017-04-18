@@ -15,7 +15,10 @@
                 <div class="row">
                     <div class="col-md-6 col-sm-6">
                         <h5 class="page_header" th:text="${requestConfig.requestName + ' Service Request'}"></h5>
-                        <form method="post" th:action="@{/retail/requests}" th:object="${serviceReqConfigDTO}">
+                        <!--<form method="post" th:action="" id="reqForm">-->
+                        <form method="post" th:action="@{/retail/requests}" th:object="${requestDTO}" id="reqForm">
+                            <p><input class="form-control" type="hidden" id="requestName" name="requestName" th:value="${requestConfig.requestName}"/></p>
+                            <input type="hidden" name="body" id="body"/>
                             <p th:each="field : ${requestConfig.formFields}">
                                 <div class="form-group">
                                     <label th:text="${field.fieldLabel}"></label>
@@ -67,6 +70,26 @@
             { dateformat : 'dd/mm/yy'}
         );
     } );
+</script>
+<script>
+    $('#reqForm').submit(function() {
+//        var formData = JSON.stringify($("#reqForm").serializeArray());
+        var arrays = [];
+        $('.form-group').each(function(index, element){
+            var select = $(element).find('select');
+            arrays.push({"name": select.prop('name'), "value": select.prop("value")});
+        });
+
+//        alert(arrays);
+
+        var formData = {
+            requestName: $('#requestName').val(),
+            body: arrays
+        }
+
+        alert(formData);
+        $('#body').val(JSON.stringify(formData));
+    });
 </script>
 </body>
 </html>

@@ -1,7 +1,6 @@
 package longbridge.dtos;
 
 import longbridge.models.RetailUser;
-import longbridge.models.UserGroup;
 
 import java.util.Date;
 
@@ -11,30 +10,25 @@ import java.util.Date;
 
 public class ServiceRequestDTO {
 
-
-    private String serviceRequestType;
-    private String subject;
+    private RetailUser user;
+    private String requestName;
     private String body;
-    private String recepient;
-    private String status;
-    //private UserGroup userGroup;
     private Date requestTime;
 
-
-    public String getServiceRequestType() {
-        return serviceRequestType;
+    public RetailUser getUser() {
+        return user;
     }
 
-    public void setServiceRequestType(String serviceRequestType) {
-        this.serviceRequestType = serviceRequestType;
+    public void setUser(RetailUser user) {
+        this.user = user;
     }
 
-    public String getSubject() {
-        return subject;
+    public String getRequestName() {
+        return requestName;
     }
 
-    public void setSubject(String subject) {
-        this.subject = subject;
+    public void setRequestName(String requestName) {
+        this.requestName = requestName;
     }
 
     public String getBody() {
@@ -45,22 +39,6 @@ public class ServiceRequestDTO {
         this.body = body;
     }
 
-    public String getRecepient() {
-        return recepient;
-    }
-
-    public void setRecepient(String recepient) {
-        this.recepient = recepient;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
     public Date getRequestTime() {
         return requestTime;
     }
@@ -69,31 +47,11 @@ public class ServiceRequestDTO {
         this.requestTime = requestTime;
     }
 
-
-
-
-    public ServiceRequestDTO() {
-    }
-
-    public ServiceRequestDTO(String serviceRequestType, String subject, String body, String recepient, UserGroup userGroup, Date date) {
-
-        this.serviceRequestType = serviceRequestType;
-        this.subject = subject;
-        this.body = body;
-        this.recepient = recepient;
-        //this.userGroup = userGroup;
-        this.requestTime = date;
-    }
-
-
     @Override
     public String toString() {
-        return "ServiceRequest{" +
-                ", serviceRequestType='" + serviceRequestType + '\'' +
-                ", subject='" + subject + '\'' +
+        return "ServiceRequestDTO{" +
+                "requestName='" + requestName + '\'' +
                 ", body='" + body + '\'' +
-                ", recepient='" + recepient + '\'' +
-                //", userGroup=" + userGroup +
                 ", requestTime=" + requestTime +
                 '}';
     }
