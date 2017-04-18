@@ -1,112 +1,137 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-
 <head th:replace="layout :: site-head">
 </head>
 
-<body>
-<div id="wrapper">
+<body class="nav-md">
+<div class="container body">
+    <div class="main_container">
+        <div class="col-md-3 left_col">
+            <div class="left_col scroll-view">
+                <div class="navbar nav_title" style="border: 0;">
+                    <!--<a href="index.html"><img th:src="@{~/images/cmb_logo.png}"/></a>-->
+                </div>
 
-    <nav th:replace="layout :: admin" role="navigation">
+                <div class="clearfix"></div>
+                <div class="clearfix"></div>
 
-    </nav>
-
-    <div id="page-wrapper" class="gray-bg">
-        <div th:replace="layout :: header">
-
-        </div>
-        <div class="row wrapper border-bottom white-bg page-heading">
-            <div class="col-lg-10">
-                <h2>Admin console</h2>
-            </div>
-            <div class="col-lg-2">
+                <div th:replace="layout :: admin-menu"></div>
+                <div th:replace="layout :: menu-footer"></div>
 
             </div>
         </div>
-        <div class="wrapper wrapper-content animated fadeInRight">
-        <div class="row">
-            <div class="col-lg-8">
-                <div class="ibox float-e-margins">
-                    <div class="ibox-title">
-                        <h5>Create Admin User</h5>
+        <div th:replace="layout :: top-nav"></div>
+
+        <!-- page content -->
+        <div class="right_col" role="main">
+            <div class="">
+                <div class="page-title">
+                    <div class="title_left">
+                        <h3>Edit Admin User</h3>
                     </div>
-                    <div class="ibox-content">
-                        <div class="row">
-                            <div class="ibox-content">
-                                <form method="get" class="form-horizontal" th:action="">
-                                    <div class="form-group">
-                                        <label class="col-sm-2 control-label">CifId:</label>
 
-                                        <div class="col-sm-4">
-                                            <input type="text" class="form-control" />
-                                        </div>
-                                        <button class="btn btn-primary col-sm-2" type="submit">Browse</button>
+                </div>
 
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-sm-2 control-label">FirstName</label>
+                <div class="clearfix"></div>
 
-                                        <div class="col-sm-6">
-                                            <input type="text" class="form-control" />
-                                        </div>
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h2>Add user</h2>
 
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-sm-2 control-label">LastName</label>
-
-                                        <div class="col-sm-6">
-                                            <input type="text" class="form-control" />
-                                        </div>
-
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-sm-2 control-label">Email</label>
-
-                                        <div class="col-sm-6">
-                                            <input type="text" class="form-control" />
-                                        </div>
-
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label class="col-sm-2 control-label">Role</label>
-                                        <div class="col-sm-6">
-                                            <select class="form-control m-b " name="account">
-                                                <option>--Select role--</option>
-                                                <option>Initializer</option>
-                                                <option>Verifier</option>
-                                                <option>Audit</option>
-                                                <option>Admin</option>
-
-                                            </select>
-                                        </div>
-                                    </div>
-
-
-                                    <div class="form-group">
-                                        <div class="col-sm-4 col-sm-offset-2">
-                                            <button class="btn btn-white" type="submit">Cancel</button>
-                                            <button class="btn btn-primary" type="submit">Update</button>
-                                        </div>
-                                    </div>
-
-
-                                </form>
+                                <div class="clearfix"></div>
                             </div>
 
+                            <div class="x_content">
+                                <div class="ibox-content">
+                                    <form method="post" class="form-horizontal" th:action="@{/admin/users/update}" th:object="${adminUser}">
+
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">CIFID:</label>
+
+                                            <div class="col-sm-4">
+                                                <input type="hidden" class="form-control" th:field="*{id}"/>
+
+                                                <input type="hidden" class="form-control" th:field="*{version}"/>
+
+                                                <input type="text" class="form-control" th:field="*{userName}"/>
+                                            </div>
+
+                                            <button class="btn btn-primary col-sm-2" type="submit">Browse</button>
+
+                                        </div>
+
+
+
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">First Name</label>
+
+                                            <div class="col-sm-6">
+                                                <input type="text" class="form-control" th:field="*{firstName}" />
+                                            </div>
+
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">Last Name</label>
+
+                                            <div class="col-sm-6">
+                                                <input type="text" class="form-control" th:field="*{lastName}" />
+                                            </div>
+
+                                        </div>
+
+
+
+                                        <div class="form-group">
+
+
+
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">Role</label>
+                                            <div class="col-sm-6">
+                                                <!--<select class="form-control m-b " name="account">-->
+                                                <!--<option>&#45;&#45;Select role&#45;&#45;</option>-->
+                                                <!--<option>Initializer</option>-->
+                                                <!--<option>Verifier</option>-->
+                                                <!--<option>Audit</option>-->
+                                                <!--<option>Admin</option>-->
+
+                                                <!--</select>-->
+
+                                                <select class="form-control" th:field="*{roleId}">
+                                                    <!--<option value="" name="select">Select..</option>-->
+                                                    <option th:each="role : ${roles}" th:value="${role.id}" th:text="${role.name}" th:selected="${role.id==adminUser.roleId}"></option>
+                                                </select>
+
+
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="col-sm-4 col-sm-offset-2">
+                                                <button class="btn btn-white" type="reset">Cancel</button>
+                                                <button class="btn btn-primary" type="submit">Save</button>
+                                            </div>
+                                        </div>
+
+
+
+                                    </form>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        <!-- /page content -->
 
-        </div>
-
-
-        <div th:replace="layout :: main-footer">
-
-        </div>
-
+        <!-- footer content -->
+        <footer th:replace="layout :: footer">
+        </footer>
+        <!-- /footer content -->
     </div>
 </div>
 
