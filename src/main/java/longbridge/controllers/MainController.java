@@ -17,14 +17,13 @@ public class MainController {
 
     @RequestMapping(value = {"/", "/home"})
     public String getHomePage() {
-        return "redirect:/login";
+        return "index";
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public ModelAndView getLoginPage(@RequestParam Optional<String> error) {
-        return new ModelAndView("login", "error", error);
+        return new ModelAndView("retaillogin", "error", error);
     }
-
 
     @RequestMapping("/dashboard")
     public String getDashboard() {

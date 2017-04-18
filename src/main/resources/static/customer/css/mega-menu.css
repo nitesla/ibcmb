@@ -1,7 +1,7 @@
 .navbar.navbar-default {
-  width: 90%;
+  width: 100%;
   margin: 0 auto;
-  background: #000;
+  background: transparent;
   border: 0;
   border-radius: 0;
 }
@@ -13,7 +13,7 @@
 
 .navbar-default .navbar-nav>li>a {
   width: 200px;
-  font-weight: bold;
+  font-weight: normal;
 }
 
 .mega-dropdown { position: static !important;/*width:100%;*/
@@ -63,7 +63,7 @@
 
 .dropdown.mega-dropdown:hover > .dropdown-menu.mega-dropdown-menu.row { display: block; }
 
-.navbar-default .navbar-nav>li>a { color: #fff; }
+.navbar-default .navbar-nav>li>a { color: #F2F2F1; }
 
 .navbar-default .navbar-nav>li>a:hover {
   color: #000;

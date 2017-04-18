@@ -67,6 +67,7 @@ public class SecurityConfig {
                     // log in
                     .and().formLogin().loginPage("/loginAdmin").loginProcessingUrl("/admin/login").failureUrl("/loginAdmin?error=loginError").defaultSuccessUrl("/admin/codes/new")
 
+
                     .and()
                     // logout
                     .logout().logoutUrl("/admin_logout").logoutSuccessUrl("/protectedLinks").deleteCookies("JSESSIONID").and().exceptionHandling().accessDeniedPage("/403").and().csrf().disable()
