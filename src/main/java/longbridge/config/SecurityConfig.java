@@ -15,6 +15,8 @@ import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
+import org.springframework.security.config.http.SessionCreationPolicy;
 
 
 /**
@@ -47,35 +49,42 @@ public class SecurityConfig {
             super();
         }
 
-        @Override
-        protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-            auth
-                    .userDetailsService(adminDetails).passwordEncoder(bCryptPasswordEncoder);
-        }
-
+//        @Override
+//        protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+//            auth
+//                    .userDetailsService(adminDetails).passwordEncoder(bCryptPasswordEncoder);
+//        }
+   @Override
+     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+    auth.inMemoryAuthentication().withUser("admin").password("admin").roles("ADMIN");
+    }
         @Override
         protected void configure(HttpSecurity http) throws Exception {
-            // @formatter:off
             http
 
+                    .antMatcher("/admin/**").authorizeRequests()
+                    .anyRequest().hasRole("ADMIN")
                     // log in
-                    .antMatcher("/admin/**").authorizeRequests().anyRequest().hasRole("ADMIN")
-                    // log in
-                    .and().formLogin().loginPage("/loginAdmin").loginProcessingUrl("/admin_login").failureUrl("/loginAdmin?error=loginError").defaultSuccessUrl("/adminPage")
+                    .and().formLogin().loginPage("/loginAdmin").loginProcessingUrl("/admin/login").failureUrl("/loginAdmin?error=loginError").defaultSuccessUrl("/admin/codes/new")
+
+                    .and()
                     // logout
-                    .and().logout().logoutUrl("/admin_logout").logoutSuccessUrl("/protectedLinks").deleteCookies("JSESSIONID").and().exceptionHandling().accessDeniedPage("/403").and().csrf().disable();
+                    .logout().logoutUrl("/admin_logout").logoutSuccessUrl("/protectedLinks").deleteCookies("JSESSIONID").and().exceptionHandling().accessDeniedPage("/403").and().csrf().disable()
+                    .sessionManagement()
+                   .sessionFixation().migrateSession()
+                    .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                    .invalidSessionUrl("/loginAdmin")
+                    .maximumSessions(1)
+                    .expiredUrl("/loginAdmin");
 
 
-            // @formatter:on
-
-
-
-                   }
+        }
 
         @Override
         public void configure(WebSecurity web) throws Exception {
            new SecurityConfig(). customConfig(web);
         }
+
     }
 
 
@@ -106,10 +115,21 @@ public class SecurityConfig {
 
         protected void configure(HttpSecurity http) throws Exception {
             http.antMatcher("/operations/**").authorizeRequests().anyRequest().hasRole("RETAIL")
+
                     // log in
-                    .and().formLogin().loginPage("/loginUser").loginProcessingUrl("/user_login").failureUrl("/loginUser?error=loginError").defaultSuccessUrl("/userPage")
+                    .and().formLogin().loginPage("/loginOps").loginProcessingUrl("/operations/login").failureUrl("/loginOps?error=true").defaultSuccessUrl("/opsPage")//TODO LANDING PAGE
+                    .and()
+
+
                     // logout
-                    .and().logout().logoutUrl("/user_logout").logoutSuccessUrl("/protectedLinks").deleteCookies("JSESSIONID").and().exceptionHandling().accessDeniedPage("/403").and().csrf().disable();
+                    .logout().logoutUrl("/ops_logout").logoutSuccessUrl("/loginOps").deleteCookies("JSESSIONID").and().exceptionHandling().accessDeniedPage("/403").and().csrf().disable()
+
+                   .sessionManagement()
+                    .sessionFixation().migrateSession()
+                    .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                    .invalidSessionUrl("/loginOps")
+                    .maximumSessions(1)
+                    .expiredUrl("/loginOps");
         }
         @Override
         public void configure(WebSecurity web) throws Exception {
@@ -141,22 +161,33 @@ public class SecurityConfig {
         }
 
         protected void configure(HttpSecurity http) throws Exception {
-            http.antMatcher("/retail//**").authorizeRequests().anyRequest().hasRole("RETAIL")
+            http.antMatcher("/user/**").authorizeRequests().anyRequest().hasRole("RETAIL")
                     // log in
-                    .and().formLogin().loginPage("/loginUser").loginProcessingUrl("/user_login").failureUrl("/loginUser?error=loginError").defaultSuccessUrl("/userPage")
+                    .and().formLogin().loginPage("/login").loginProcessingUrl("/user/login").failureUrl("/loginUser?error=true").defaultSuccessUrl("/userPage")
+                    .and()
+
                     // logout
-                    .and().logout().logoutUrl("/user_logout").logoutSuccessUrl("/protectedLinks").deleteCookies("JSESSIONID").and().exceptionHandling().accessDeniedPage("/403").and().csrf().disable();
+                   .logout().logoutUrl("/user_logout").logoutSuccessUrl("/protectedLinks").deleteCookies("JSESSIONID").and().exceptionHandling().accessDeniedPage("/403").and().csrf().disable()
+
+                    .sessionManagement()
+                    .sessionFixation().migrateSession()
+                    .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                    .invalidSessionUrl("/login")
+                    .maximumSessions(1)
+                    .expiredUrl("/login");
+
         }
         @Override
         public void configure(WebSecurity web) throws Exception {
             new SecurityConfig(). customConfig(web);
         }
+
     }
 
 
     @Bean
-    public SessionRegistry sessionRegistry() {
-        return new SessionRegistryImpl();
+    public HttpSessionEventPublisher httpSessionEventPublisher() {
+        return new HttpSessionEventPublisher();
     }
 }
 

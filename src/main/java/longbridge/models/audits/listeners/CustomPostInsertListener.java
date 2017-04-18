@@ -27,7 +27,7 @@ public class CustomPostInsertListener extends EnversPostInsertEventListenerImpl 
            // super.onPostInsert(event);
         }else{
             System.out.println("BABA NA BEANS O");
-            super.onPostInsert(event);
+           // super.onPostInsert(event);
         }
 
     }

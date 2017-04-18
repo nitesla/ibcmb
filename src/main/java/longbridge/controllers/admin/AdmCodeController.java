@@ -138,6 +138,7 @@ public class AdmCodeController {
         codeService.modify(codeDTO, adminUser);
         redirectAttributes.addFlashAttribute("success", "Code updated successfully");
         return "redirect:/admin/codes";
+//        codeService.addCode(code);
     }
 
     @PostMapping("/{codeId}/delete")

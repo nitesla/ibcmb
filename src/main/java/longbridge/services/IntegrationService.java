@@ -1,5 +1,6 @@
 package longbridge.services;
 
+import longbridge.api.AccountDetails;
 import longbridge.models.Account;
 import longbridge.models.TransferRequest;
 import longbridge.utils.AccountStatement;
@@ -43,4 +44,5 @@ public interface IntegrationService {
      */
     void makeTransfer(TransferRequest transferRequest);
 
+    AccountDetails viewAccountDetails(String acctNo);
 }

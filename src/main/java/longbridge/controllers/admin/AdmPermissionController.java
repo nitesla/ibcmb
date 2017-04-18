@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
  * Created by Fortune on 4/5/2017.
  */
 @Controller
-@RequestMapping("admin/permissions")
+@RequestMapping("/admin/permissions")
 public class AdmPermissionController {
 
     @Autowired

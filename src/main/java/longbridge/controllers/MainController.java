@@ -32,9 +32,20 @@ public class MainController {
     }
 
     @GetMapping(value = "/loginAdmin")
-    public String  helloAdmin()
-    {
-        return "admlogin";
+    public ModelAndView adminLogin(){
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("admlogin");
+        return modelAndView;
     }
+
+
+
+    @GetMapping(value = "/loginOps")
+    public ModelAndView opsLogin(){
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("opslogin");
+        return modelAndView;
+    }
+
 
 }
