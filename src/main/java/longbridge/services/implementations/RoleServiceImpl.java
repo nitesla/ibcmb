@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import longbridge.dtos.PermissionDTO;
 import longbridge.dtos.RoleDTO;
+import longbridge.dtos.ServiceReqConfigDTO;
 import longbridge.models.*;
 import longbridge.repositories.PermissionRepo;
 import longbridge.repositories.RoleRepo;
@@ -14,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -251,6 +253,25 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+
+    public Page<RoleDTO> getRoles(Pageable pageDetails) {
+        Page<Role> page = roleRepo.findAll(pageDetails);
+        List<RoleDTO> dtOs = convertRoleEntitiesToDTOs(page.getContent());
+        long t = page.getTotalElements();
+        Page<RoleDTO> pageImpl = new PageImpl<RoleDTO>(dtOs, pageDetails, t);
+        return pageImpl;
+    }
+
+    @Override
+    public Page<PermissionDTO> getPermissions(Pageable pageDetails) {
+        Page<Permission> page = permissionRepo.findAll(pageDetails);
+        List<PermissionDTO> dtOs = convertPermissionEntitiesToDTOs(page.getContent());
+        long t = page.getTotalElements();
+        Page<PermissionDTO> pageImpl = new PageImpl<PermissionDTO>(dtOs, pageDetails, t);
+        return pageImpl;
+    }
+
+    @Override
     public void updatePermission(PermissionDTO permissionDTO) {
         Permission permission =convertDTOToEntity(permissionDTO);
         permissionRepo.save(permission);
@@ -273,7 +294,7 @@ public class RoleServiceImpl implements RoleService {
         return modelMapper.map(roleDTO,Role.class);
     }
 
-    private Iterable<RoleDTO> convertRoleEntitiesToDTOs(Iterable<Role> roles){
+    private List<RoleDTO> convertRoleEntitiesToDTOs(Iterable<Role> roles){
         List<RoleDTO> roleDTOList = new ArrayList<>();
         for(Role role: roles){
             RoleDTO roleDTO = modelMapper.map(role,RoleDTO.class);
@@ -290,7 +311,7 @@ public class RoleServiceImpl implements RoleService {
         return modelMapper.map(permissionDTO,Permission.class);
     }
 
-    private Iterable<PermissionDTO> convertPermissionEntitiesToDTOs(Iterable<Permission> permissions){
+    private List<PermissionDTO> convertPermissionEntitiesToDTOs(Iterable<Permission> permissions){
         List<PermissionDTO> permissionDTOList = new ArrayList<>();
         for(Permission permission: permissions){
             PermissionDTO permissionDTO = modelMapper.map(permission,PermissionDTO.class);
@@ -300,17 +321,8 @@ public class RoleServiceImpl implements RoleService {
     }
 
 
-	@Override
-	public Page<RoleDTO> getRoles(Pageable pageDetails) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 
-	@Override
-	public Page<PermissionDTO> getPermissions(Pageable pageDetails) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+
 
 }

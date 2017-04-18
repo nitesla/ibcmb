@@ -235,7 +235,7 @@ public class AdminUserServiceImpl implements AdminUserService {
         AdminUserDTO adminUserDTO = new AdminUserDTO();
         adminUserDTO.setFirstName(adminUser.getFirstName());
         adminUserDTO.setLastName(adminUser.getLastName());
-        adminUserDTO.setRole(adminUser.getRole().getName());
+        adminUserDTO.setRoleId(adminUser.getRole().getId().toString());
         return  modelMapper.map(adminUser,AdminUserDTO.class);
     }
 

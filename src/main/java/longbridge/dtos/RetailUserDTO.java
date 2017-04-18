@@ -1,6 +1,7 @@
 package longbridge.dtos;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import java.util.Date;
@@ -10,15 +11,19 @@ import java.util.Date;
  */
 public class RetailUserDTO {
 
+    @JsonProperty("DT_RowId")
     private Long id;
     @NotEmpty
     private String userName;
+    private String customerId;
+    private String version;
     private String firstName;
     private String lastName;
     private String email;
     private Date birthDate;
     private String password;
     private String status;
+    private Date dateRegistered;
     private Date expiryDate;
     private Date lockedUntilDate;
     private Date lastLoginDate;
@@ -32,12 +37,28 @@ public class RetailUserDTO {
         this.id = id;
     }
 
+    public String getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(String customerId) {
+        this.customerId = customerId;
+    }
+
     public String getUserName() {
         return userName;
     }
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
     }
 
     public String getFirstName() {
@@ -88,6 +109,14 @@ public class RetailUserDTO {
         this.status = status;
     }
 
+    public Date getDateRegistered() {
+        return dateRegistered;
+    }
+
+    public void setDateRegistered(Date dateRegistered) {
+        this.dateRegistered = dateRegistered;
+    }
+
     public Date getExpiryDate() {
         return expiryDate;
     }
@@ -118,5 +147,26 @@ public class RetailUserDTO {
 
     public void setNoOfLoginAttempts(int noOfLoginAttempts) {
         this.noOfLoginAttempts = noOfLoginAttempts;
+    }
+
+    @Override
+    public String toString() {
+        return "RetailUserDTO{" +
+                "id=" + id +
+                ", userName='" + userName + '\'' +
+                ", customerId='" + customerId + '\'' +
+                ", version='" + version + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", birthDate=" + birthDate +
+                ", password='" + password + '\'' +
+                ", status='" + status + '\'' +
+                ", dateRegistered=" + dateRegistered +
+                ", expiryDate=" + expiryDate +
+                ", lockedUntilDate=" + lockedUntilDate +
+                ", lastLoginDate=" + lastLoginDate +
+                ", noOfLoginAttempts=" + noOfLoginAttempts +
+                '}';
     }
 }
