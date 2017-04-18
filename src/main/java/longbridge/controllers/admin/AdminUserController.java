@@ -82,9 +82,7 @@ public class AdminUserController {
 
 
     @GetMapping(path = "/all")
-    public @ResponseBody
-    DataTablesOutput<AdminUserDTO> getUsers(DataTablesInput input){
-
+    public @ResponseBody DataTablesOutput<AdminUserDTO> getUsers(DataTablesInput input){
 
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<AdminUserDTO> adminUsers = adminUserService.getUsers(pageable);

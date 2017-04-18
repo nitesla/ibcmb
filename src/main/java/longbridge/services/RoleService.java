@@ -36,6 +36,8 @@ public interface RoleService extends Verifiable<RoleDTO> {
 
     Page<RoleDTO> getRoles(Pageable pageDetails);
 
+
+
     /**
      * Updates the details of the specified userType
      * @param role the role to be updated

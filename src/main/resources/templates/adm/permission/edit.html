@@ -27,7 +27,7 @@
             <div class="">
                 <div class="page-title">
                     <div class="title_left">
-                        <h3>Edit Role</h3>
+                        <h3>Edit Permission</h3>
                     </div>
 
                 </div>
@@ -38,14 +38,14 @@
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="x_panel">
                             <div class="x_title">
-                                <h2>Add new role</h2>
+                                <h2>Add new permission</h2>
 
                                 <div class="clearfix"></div>
                             </div>
 
                             <div class="x_content">
                                 <div class="ibox-content">
-                                    <form method="post" th:action="@{/admin/roles/update}" class="form-horizontal"  th:object="${role}" >
+                                    <form method="post" th:action="@{/admin/permissions/update}" class="form-horizontal"  th:object="${permission}" >
 
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">Name</label>
@@ -61,10 +61,10 @@
                                         </div>
 
                                         <div class="form-group">
-                                            <label class="col-sm-2 control-label">Email</label>
+                                            <label class="col-sm-2 control-label">Code</label>
 
                                             <div class="col-sm-4">
-                                                <input type="text" class="form-control" th:field="*{email}" />
+                                                <input type="text" class="form-control" th:field="*{code}" />
                                             </div>
 
                                         </div>

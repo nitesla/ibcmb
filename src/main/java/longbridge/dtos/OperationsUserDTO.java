@@ -1,6 +1,7 @@
 package longbridge.dtos;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import java.util.Date;
@@ -9,7 +10,7 @@ import java.util.Date;
  * Created by Fortune on 4/5/2017.
  */
 public class OperationsUserDTO {
-
+    @JsonProperty("DT_RowId")
     private Long id;
     @NotEmpty
     private String userName;

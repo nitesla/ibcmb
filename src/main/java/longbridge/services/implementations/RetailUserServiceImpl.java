@@ -57,6 +57,7 @@ public class RetailUserServiceImpl implements RetailUserService {
     @Override
     public Iterable<RetailUserDTO> getUsers() {
         Iterable<RetailUser> retailUsers =retailUserRepo.findAll();
+        logger.info("RetailUsers {}",retailUsers.toString());
          return convertEntitiesToDTOs(retailUsers);
     }
 
@@ -220,12 +221,9 @@ public class RetailUserServiceImpl implements RetailUserService {
 
 	@Override
 	public Page<RetailUserDTO> getUsers(Pageable pageDetails) {
-		// TODO Auto-generated method stub
         Page<RetailUser> page = retailUserRepo.findAll(pageDetails);
         List<RetailUserDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
-
-        // return  new PageImpl<ServiceReqConfigDTO>(dtOs,pageDetails,page.getTotalElements());
         Page<RetailUserDTO> pageImpl = new PageImpl<RetailUserDTO>(dtOs,pageDetails,t);
         return pageImpl;
 	}

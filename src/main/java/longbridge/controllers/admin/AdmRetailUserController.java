@@ -26,7 +26,7 @@ import javax.validation.Valid;
  */
 
 @Controller
-@RequestMapping("admin/retail/users")
+@RequestMapping("/admin/retail/users")
 public class AdmRetailUserController {
     @Autowired
     private RetailUserService retailUserService;
@@ -65,7 +65,7 @@ public class AdmRetailUserController {
         return "adm/retail/view";
     }
 
-    @GetMapping(path = "/all")
+    @GetMapping("/all")
     public @ResponseBody
     DataTablesOutput<RetailUserDTO> getRetailUsers(DataTablesInput input){
 
@@ -77,6 +77,15 @@ public class AdmRetailUserController {
         out.setRecordsFiltered(retailUsers.getTotalElements());
         out.setRecordsTotal(retailUsers.getTotalElements());
         return out;
+    }
+
+    @GetMapping(path = "/list")
+    public @ResponseBody
+    Iterable<RetailUserDTO> getRetailUsers(){
+
+        Iterable<RetailUserDTO> retailUsers = retailUserService.getUsers();
+
+        return retailUsers;
     }
 
     @GetMapping("/{userId}")
