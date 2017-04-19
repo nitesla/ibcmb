@@ -82,7 +82,7 @@ public class SecurityConfig {
 
                     .and()
                     // logout
-                    .logout().logoutUrl("/admin/logout").logoutSuccessUrl("/loginAdmin").deleteCookies("JSESSIONID").and().exceptionHandling().accessDeniedPage("/403").and().csrf().disable()
+                    .logout().logoutUrl("/admin/logout").logoutSuccessUrl("/loginAdmin").deleteCookies("JSESSIONID").and().exceptionHandling().and().csrf().disable()
                     .sessionManagement()
                    .sessionFixation().migrateSession()
                     .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
@@ -144,7 +144,7 @@ public class SecurityConfig {
 
 
                     // logout
-                    .logout().logoutUrl("/ops_logout").logoutSuccessUrl("/loginOps").deleteCookies("JSESSIONID").and().exceptionHandling().accessDeniedPage("/403").and().csrf().disable()
+                    .logout().logoutUrl("/operations/logout").logoutSuccessUrl("/operations/login").deleteCookies("JSESSIONID").and().exceptionHandling().and().csrf().disable()
 
                    .sessionManagement()
                     .sessionFixation().migrateSession()
@@ -183,13 +183,13 @@ public class SecurityConfig {
         }
 
         protected void configure(HttpSecurity http) throws Exception {
-            http.antMatcher("/user/**").authorizeRequests().anyRequest().authenticated()
+            http.antMatcher("/retail/**").authorizeRequests().anyRequest().authenticated()
                     // log in
-                    .and().formLogin().loginPage("/login").loginProcessingUrl("/user/login").failureUrl("/loginUser?error=true").defaultSuccessUrl("/userPage")
+                    .and().formLogin().loginPage("/login").loginProcessingUrl("/retail/login").failureUrl("/login?error=true").defaultSuccessUrl("/retail/requests")
                     .and()
 
                     // logout
-                   .logout().logoutUrl("/user_logout").logoutSuccessUrl("/protectedLinks").deleteCookies("JSESSIONID").and().exceptionHandling().accessDeniedPage("/403").and().csrf().disable()
+                   .logout().logoutUrl("/retail/logout").logoutSuccessUrl("/login").deleteCookies("JSESSIONID").and().exceptionHandling().accessDeniedPage("/403").and().csrf().disable()
 
                     .sessionManagement()
                     .sessionFixation().migrateSession()

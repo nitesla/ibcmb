@@ -18,7 +18,7 @@ import java.util.Date;
 
 @SpringBootApplication
 @EnableJpaRepositories(repositoryFactoryBeanClass = CustomJpaRepositoryFactoryBean.class)
-public class InternetbankingApplication {
+public class InternetbankingApplication implements CommandLineRunner {
 
 
 	@Autowired

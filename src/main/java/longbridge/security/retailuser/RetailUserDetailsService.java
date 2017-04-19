@@ -28,7 +28,10 @@ public class RetailUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
 
         RetailUser user= retailUserRepo.findByUserName(s);
-        return new CustomUserPrincipal(user);
+        if(user!=null && user.getUserType()== UserType.RETAIL) {
+            return new CustomUserPrincipal(user);
+        }
+        throw new UsernameNotFoundException(s);
     }
 
 
