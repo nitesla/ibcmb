@@ -1,13 +1,11 @@
 package longbridge.validator;
 
-import longbridge.models.Setting;
+import longbridge.dtos.SettingDTO;
 import longbridge.services.ConfigurationService;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 
-import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,11 +20,11 @@ public class PasswordValidator {
     private Pattern specialCharsPattern;
 
 
-    private Setting numOfPasswordDigits;
-    private Setting minLengthOfPassword;
-    private Setting maxLengthOfPassword;
-    private Setting noSpecialChar;
-    private Setting specialChars;
+    private SettingDTO numOfPasswordDigits;
+    private SettingDTO minLengthOfPassword;
+    private SettingDTO maxLengthOfPassword;
+    private SettingDTO noSpecialChar;
+    private SettingDTO specialChars;
 
     private int numOfDigits = 0;
     private int noOfSpecial = 0;
@@ -116,43 +114,43 @@ public class PasswordValidator {
         return errorMessage.toString();
     }
 
-    public Setting getNumOfPasswordDigits() {
+    public SettingDTO getNumOfPasswordDigits() {
         return numOfPasswordDigits;
     }
 
-    public void setNumOfPasswordDigits(Setting numOfPasswordDigits) {
+    public void setNumOfPasswordDigits(SettingDTO numOfPasswordDigits) {
         this.numOfPasswordDigits = numOfPasswordDigits;
     }
 
-    public Setting getMinLengthOfPassword() {
+    public SettingDTO getMinLengthOfPassword() {
         return minLengthOfPassword;
     }
 
-    public void setMinLengthOfPassword(Setting minLengthOfPassword) {
+    public void setMinLengthOfPassword(SettingDTO minLengthOfPassword) {
         this.minLengthOfPassword = minLengthOfPassword;
     }
 
-    public Setting getMaxLengthOfPassword() {
+    public SettingDTO getMaxLengthOfPassword() {
         return maxLengthOfPassword;
     }
 
-    public void setMaxLengthOfPassword(Setting maxLengthOfPassword) {
+    public void setMaxLengthOfPassword(SettingDTO maxLengthOfPassword) {
         this.maxLengthOfPassword = maxLengthOfPassword;
     }
 
-    public Setting getNoSpecialChar() {
+    public SettingDTO getNoSpecialChar() {
         return noSpecialChar;
     }
 
-    public void setNoSpecialChar(Setting noSpecialChar) {
+    public void setNoSpecialChar(SettingDTO noSpecialChar) {
         this.noSpecialChar = noSpecialChar;
     }
 
-    public Setting getSpecialChars() {
+    public SettingDTO getSpecialChars() {
         return specialChars;
     }
 
-    public void setSpecialChars(Setting specialChars) {
+    public void setSpecialChars(SettingDTO specialChars) {
         this.specialChars = specialChars;
     }
 

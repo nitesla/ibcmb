@@ -267,6 +267,13 @@ button, input, optgroup, select, textarea {
 	margin: 100px 0 0 380px;
 }
 
+.mid-form{
+    padding: 20px;
+    text-align: center;
+    width: 100%;
+    margin: 50px 0 0 300px;
+}
+
 .btn{
 	color: #fff;
 	background-color: #032A4F;
@@ -306,7 +313,6 @@ button, input, optgroup, select, textarea {
 }
 
 
-
 @media screen and (max-width: 992px) and (min-width: 760px){
 	.logo {
     right: 45px;
@@ -326,6 +332,13 @@ button, input, optgroup, select, textarea {
 	text-align: center;
 	max-width: 400px;
 }
+
+    .mid-form{
+        padding: 10px;
+        margin: 30px 200px 0 200px;
+        text-align: center;
+        max-width: 600px;
+    }
 
 }
 
@@ -364,6 +377,13 @@ button, input, optgroup, select, textarea {
 	text-align: center;
 	max-width: 400px;
 }
+
+    .mid-form{
+        padding: 50px 20px;
+        margin: 0 auto;
+        text-align: center;
+        max-width: 400px;
+    }
 
 .top_bar {
     clear: both;
