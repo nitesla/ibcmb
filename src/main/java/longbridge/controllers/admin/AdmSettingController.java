@@ -19,12 +19,13 @@ public class AdmSettingController {
 
     @GetMapping()
     public String listSettings(Model model){
+
+
         return "adm/setting/settings";
     }
 
     @GetMapping(path = "/fiad")
     public @ResponseBody SettingDTO getSetting(){
-
         SettingDTO fiad = configurationService.getSettingByName("FI_ADDRESS");
         return fiad;
     }

@@ -1,9 +1,14 @@
 package longbridge.controllers.admin;
 
 import longbridge.dtos.OperationsUserDTO;
+import longbridge.dtos.RoleDTO;
 import longbridge.forms.ChangePassword;
 import longbridge.models.OperationsUser;
+import longbridge.models.Verification;
+import longbridge.repositories.OperationsUserRepo;
+import longbridge.repositories.VerificationRepo;
 import longbridge.services.OperationsUserService;
+import longbridge.services.RoleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,93 +22,146 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 
 /**
- * Created by Wunmi on 31/03/2017.
+ * Created by SYLVESTER on 31/03/2017.
  */
-
 @Controller
-@RequestMapping("/admin/operations/users")
+@RequestMapping("admin/operations/users")
 public class AdmOperationsUserController {
-    @Autowired
-    OperationsUserService operationsUserService;
 
     private Logger logger= LoggerFactory.getLogger(this.getClass());
+    @Autowired
+    private  OperationsUserService operationsUserService;
+    @Autowired
+    private OperationsUserRepo operationsUserRepo;
+    @Autowired
+    private VerificationRepo verificationRepo;
+    @Autowired
+    private RoleService roleService;
 
-
+    /**
+     * Page for adding a new user
+     * @return
+     */
     @GetMapping("/new")
-    public String addUser(OperationsUser operationsUser){
+    public String addUser(Model model){
+        Iterable<RoleDTO> roles = roleService.getRoles();
+        model.addAttribute("operationsUser", new OperationsUserDTO());
+        model.addAttribute("roles",roles);
         return "adm/operation/add";
     }
 
-    @PostMapping("/new")
-    public String createUser(@ModelAttribute("operationsUserForm") OperationsUserDTO operationsUser, BindingResult result, Model model) throws Exception{
+    /**
+     * Edit an existing user
+     * @return
+     */
+    @GetMapping("/{userId}/edit")
+    public String editUser(@PathVariable Long userId, Model model) {
+        OperationsUserDTO user = operationsUserService.getUser(userId);
+        Iterable<RoleDTO> roles = roleService.getRoles();
+        model.addAttribute("operationsUser", user);
+        model.addAttribute("roles",roles);
+        return "adm/operation/edit";
+    }
+
+    /**
+     * Creates a new user
+     * @param operationsUser
+     * @param redirectAttributes
+     * @return
+     * @throws Exception
+     */
+    @PostMapping
+    public String createUser(@ModelAttribute("operationsUser") OperationsUserDTO operationsUser, BindingResult result, RedirectAttributes redirectAttributes) throws Exception{
         if(result.hasErrors()){
             return "adm/operation/add";
         }
         operationsUserService.addUser(operationsUser);
-        model.addAttribute("success","Retail user created successfully");
+        redirectAttributes.addFlashAttribute("success","Operations user created successfully");
         return "redirect:/admin/operations/users";
     }
 
-    @GetMapping
-    public String getAllOperationsUsers(Model model){
-        //Iterable<OperationsUser> operationsUserList= operationsUserService.getUsers();
-        //model.addAttribute("operationsUserList",operationsUserList);
-        return "adm/operation/view";
-    }
 
     @GetMapping(path = "/all")
-    public @ResponseBody DataTablesOutput<OperationsUserDTO> getOpsUsers(DataTablesInput input){
+    public @ResponseBody DataTablesOutput<OperationsUserDTO> getUsers(DataTablesInput input){
 
         Pageable pageable = DataTablesUtils.getPageable(input);
-        Page<OperationsUserDTO> opsUsers = operationsUserService.getUsers(pageable);
+        Page<OperationsUserDTO> operationsUsers = operationsUserService.getUsers(pageable);
         DataTablesOutput<OperationsUserDTO> out = new DataTablesOutput<OperationsUserDTO>();
         out.setDraw(input.getDraw());
-        out.setData(opsUsers.getContent());
-        out.setRecordsFiltered(opsUsers.getTotalElements());
-        out.setRecordsTotal(opsUsers.getTotalElements());
+        out.setData(operationsUsers.getContent());
+        out.setRecordsFiltered(operationsUsers.getTotalElements());
+        out.setRecordsTotal(operationsUsers.getTotalElements());
+
         return out;
     }
 
-    @GetMapping("/{userId}")
-    public String getUser(@PathVariable Long userId, Model model){
-        OperationsUserDTO user = operationsUserService.getUser(userId);
-        model.addAttribute("operationsUser",user);
-        return "operationsUserDetails";
+
+
+    /**
+     * Returns all users
+     * @param model
+     * @return
+     */
+    @GetMapping
+    public String getUsers(Model model){
+//        Iterable<OperationsUser> operationsUserList=operationsUserService.getUsers();
+//        model.addAttribute("operationsUserList",operationsUserList);
+        return "adm/operation/view";
+    }
+    /**
+     * Returns user
+     * @param userId
+     * @param model
+     * @return
+     */
+    @GetMapping("/{userId}/details")
+    public String getOperationsUser(@PathVariable  Long userId, Model model){
+        OperationsUserDTO operationsUser =operationsUserService.getUser(userId);
+        model.addAttribute("user",operationsUser);
+        return "operation/details";
     }
 
-    @PostMapping("/{userId}")
-    public String UpdateUser(@ModelAttribute("operationsUserForm") OperationsUserDTO user, @PathVariable Long userId, BindingResult result,Model model) throws Exception{
-        if(result.hasErrors()){
-            return "addUser";
+    /**
+     * Updates the user
+     * @param operationsUser
+     * @param redirectAttributes
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("/update")
+    public String updateUser(@ModelAttribute("user") OperationsUserDTO operationsUser, BindingResult result, RedirectAttributes redirectAttributes) throws Exception{
+        if(result.hasErrors()) {
+            return "adm/operation/add";
         }
-        user.setId(userId);
-        boolean updated = operationsUserService.updateUser(user);
-        if(updated) {
-            model.addAttribute("success", "Operations user updated successfully");
+        boolean updated = operationsUserService.updateUser(operationsUser);
+        if (updated) {
+            redirectAttributes.addFlashAttribute("success", "Operations user updated successfully");
         }
-        return "updateUser";
+        return "redirect:/admin/operations/users";
     }
 
-    @PostMapping("/{userId}/delete")
-    public String deleteUser(@PathVariable Long userId) {
+    @GetMapping("/{userId}/delete")
+    public String deleteUser(@PathVariable Long userId){
         operationsUserService.deleteUser(userId);
-        return "redirect:/operations/users";
+        return "redirect:/admin/operations/users";
     }
 
-    @GetMapping("/changePassword")
+    @GetMapping("/password")
     public String changePassword(){
         return "changePassword";
     }
 
-    @PostMapping("/changePassword")
-    public String changePassword(@Valid ChangePassword changePassword, Long userId, BindingResult result, HttpRequest request, Model model){
-        /* if(result.hasError()){
-        }*/
-        OperationsUserDTO user= operationsUserService.getUser(userId);
+    @PostMapping("/password")
+    public String changePassword(@Valid ChangePassword changePassword,Long userId, BindingResult result, HttpRequest request, Model model){
+        if(result.hasErrors()){
+            return "password";
+        }
+        OperationsUserDTO user=operationsUserService.getUser(userId);
         String oldPassword=changePassword.getOldPassword();
         String newPassword=changePassword.getNewPassword();
         String confirmPassword=changePassword.getConfirmPassword();
@@ -111,16 +169,48 @@ public class AdmOperationsUserController {
         //TODO validate password according to the defined password policy
         //The validations can be done on the ChangePassword class
 
-
         if(!newPassword.equals(confirmPassword)){
             logger.info("PASSWORD MISMATCH");
         }
 
         user.setPassword(newPassword);
         operationsUserService.addUser(user);
-        logger.info("PASSWORD CHANGED SUCCESSFULLY");
+        logger.trace("Password for user {} changed successfully",user.getUserName());
         return "changePassword";
     }
 
-}
+    @PostMapping("/{id}/verify")
+    public String verify(@PathVariable Long id){
+        logger.info("id {}", id);
 
+        //todo check verifier role
+        OperationsUser operationsUser = operationsUserRepo.findOne(1l);
+        Verification verification = verificationRepo.findOne(id);
+
+        if (verification == null || Verification.VerificationStatus.PENDING != verification.getStatus())
+            return "Verification not found";
+
+//        try {
+//            operationsUserService.verify(verification, operationsUser);
+//        } catch (IOException e) {
+//            logger.error("Error occurred", e);
+//        }
+        return "role/add";
+    }
+
+    @PostMapping("/{id}/decline")
+    public String decline(@PathVariable Long id){
+
+        //todo check verifier role
+        OperationsUser operationsUser = operationsUserRepo.findOne(1l);
+        Verification verification = verificationRepo.findOne(id);
+
+        if (verification == null || Verification.VerificationStatus.PENDING != verification.getStatus())
+            return "Verification not found";
+
+       // operationsUserService.decline(verification, operationsUser, "todo get the  reason from the frontend");
+        return "role/add";
+    }
+
+
+}

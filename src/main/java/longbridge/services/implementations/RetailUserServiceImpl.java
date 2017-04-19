@@ -78,7 +78,7 @@ public class RetailUserServiceImpl implements RetailUserService {
         boolean ok=false;
         /*Get the user's details from the model */
         if(user!=null){
-            user.setPassword(this.passwordEncoder.encode(user.getPassword()));
+//            user.setPassword(this.passwordEncoder.encode(user.getPassword()));
             RetailUser retailUser = convertDTOToEntity(user);
             this.retailUserRepo.save(retailUser);
             logger.info("USER {} HAS BEEN CREATED");

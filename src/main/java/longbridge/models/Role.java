@@ -22,10 +22,10 @@ public class Role extends AbstractEntity{
     @Enumerated(value = EnumType.STRING)
     private UserType userType;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     @JoinTable(name = "role_permission", joinColumns =
     @JoinColumn(name = "role_id", referencedColumnName = "id"), inverseJoinColumns =
-    @JoinColumn(name = "permission_id", referencedColumnName = "id"))
+    @JoinColumn(name = "permission_id", referencedColumnName = "id") )
     private Collection<Permission> permissions;
 
     public UserType getUserType() {

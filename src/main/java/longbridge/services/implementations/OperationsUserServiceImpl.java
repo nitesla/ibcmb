@@ -1,7 +1,9 @@
 package longbridge.services.implementations;
 
 import longbridge.dtos.OperationsUserDTO;
+import longbridge.models.AdminUser;
 import longbridge.models.OperationsUser;
+import longbridge.models.Role;
 import longbridge.repositories.OperationsUserRepo;
 import longbridge.services.OperationsUserService;
 import org.modelmapper.ModelMapper;
@@ -61,10 +63,16 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     public boolean addUser(OperationsUserDTO userDTO) {
      boolean ok= false;
      try {
-         OperationsUser user = convertDTOToEntity(userDTO);
-         user.setPassword(this.passwordEncoder.encode(user.getPassword()));
-         this.operationsUserRepo.save(user);
-         logger.info("Created Operation User: {}",user.getUserName());
+         OperationsUser operationsUser = new OperationsUser();
+         operationsUser.setFirstName(userDTO.getFirstName());
+         operationsUser.setLastName(userDTO.getLastName());
+         operationsUser.setUserName(userDTO.getUserName());
+         Role role = new Role();
+         role.setId(userDTO.getRoleId());
+         operationsUser.setRole(role);
+        // user.setPassword(this.passwordEncoder.encode(user.getPassword()));
+         this.operationsUserRepo.save(operationsUser);
+         logger.info("Created Operation User: {}",operationsUser.getUserName());
          ok=true;
      }
      catch (Exception e){
@@ -77,8 +85,16 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     @Override
     public boolean updateUser(OperationsUserDTO userDTO) {
         boolean ok= false;
-        OperationsUser user = convertDTOToEntity(userDTO);
-        operationsUserRepo.save(user);
+        OperationsUser operationsUser = new OperationsUser();
+        operationsUser.setId(userDTO.getId());
+        operationsUser.setVersion(userDTO.getVersion());
+        operationsUser.setFirstName(userDTO.getFirstName());
+        operationsUser.setLastName(userDTO.getLastName());
+        operationsUser.setUserName(userDTO.getUserName());
+        Role role = new Role();
+        role.setId(userDTO.getRoleId());
+        operationsUser.setRole(role);
+        operationsUserRepo.save(operationsUser);
         ok=true;
 
         return ok;
@@ -138,7 +154,8 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     private List<OperationsUserDTO> convertEntitiesToDTOs(Iterable<OperationsUser> operationsUsers){
         List<OperationsUserDTO> operationsUserDTOList = new ArrayList<>();
         for(OperationsUser operationsUser: operationsUsers){
-            OperationsUserDTO userDTO =  convertEntityToDTO(operationsUser);
+            OperationsUserDTO userDTO = convertEntityToDTO(operationsUser);
+            userDTO.setRole(operationsUser.getRole().getName());
             operationsUserDTOList.add(userDTO);
         }
         return operationsUserDTOList;

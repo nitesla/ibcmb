@@ -29,6 +29,7 @@ public class EntityRevisionListener/*<T extends RevisionsEntity>*/  implements E
 		// other way
 
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
 		if (auth != null)
 
 			return auth.getName();

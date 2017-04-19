@@ -35,8 +35,11 @@ public interface CodeService extends Verifiable<CodeDTO> {
      * @return a list of codes
      */
     Iterable<CodeDTO> getCodesByType(String codeType);
-    
-    Page<CodeDTO> getCodesByType(String codeType, Pageable pageDetails);
+
+    public boolean updateCode(CodeDTO codeDTO, AdminUser adminUser);
+
+
+        Page<CodeDTO> getCodesByType(String codeType, Pageable pageDetails);
 
     Page<CodeDTO> getCodes(Pageable pageDetails);
 

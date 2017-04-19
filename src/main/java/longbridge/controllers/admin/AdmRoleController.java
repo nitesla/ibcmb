@@ -1,5 +1,6 @@
 package longbridge.controllers.admin;
 
+import longbridge.dtos.PermissionDTO;
 import longbridge.dtos.RoleDTO;
 import longbridge.dtos.ServiceReqConfigDTO;
 import longbridge.models.AdminUser;
@@ -27,8 +28,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.LinkedList;
+import java.util.*;
 
 /**
  * Created by Fortune on 4/5/2017.
@@ -50,7 +50,13 @@ public class AdmRoleController {
 
     @GetMapping("/new")
     public String addRole(Model model){
+        RoleDTO roleDTO = new RoleDTO();
+        roleDTO.setPermissions(new ArrayList<>());
         model.addAttribute("role", new RoleDTO());
+        Iterable<PermissionDTO> permissions=roleService.getPermissions();
+//        List<PermissionDTO> getArrayList=new ArrayList<>();
+        model.addAttribute("permissions",permissions);
+//        model.addAttribute("getArrayList",getArrayList);
         return "adm/role/add";
     }
 
@@ -80,7 +86,10 @@ public class AdmRoleController {
     @GetMapping("/{reqId}/edit")
     public String  editConfig(@PathVariable Long reqId, Model model){
         RoleDTO role = roleService.getRole(reqId);
+        Iterable<PermissionDTO> permissionDTOs =roleService.getRole(reqId).getPermissions();
         model.addAttribute("role",role);
+        model.addAttribute("permissions",role);
+
         return "/adm/role/edit";
     }
 

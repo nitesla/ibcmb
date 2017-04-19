@@ -22,7 +22,7 @@ public interface CorporateService {
      *
      * @param corporate the corporate customer
      */
-    void addCorporate(Corporate corporate);
+    void addCorporate(CorporateDTO corporate);
 
     /**
      * Deletes the given corporate customer
@@ -36,7 +36,7 @@ public interface CorporateService {
      *
      * @param corporate the corporate customer
      */
-    void updateCorporate(Corporate corporate);
+    void updateCorporate(CorporateDTO corporate);
 
     /**
      * Returns a {@code Corporate} object that has the details of the customer
@@ -44,14 +44,14 @@ public interface CorporateService {
      * @param id the id of the corporate customer
      * @return the corporate customer
      */
-    Corporate getCorporate(Long id);
+    CorporateDTO getCorporate(Long id);
 
     /**
      * Returns a list of all the corporate customers
      *
      * @return a list of the corporate customers
      */
-    Iterable<Corporate> getCorporates();
+    Iterable<CorporateDTO> getCorporates();
     
     
     Page<CorporateDTO> getCorporates(Pageable pageDetails);

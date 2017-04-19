@@ -18,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -42,28 +43,33 @@ public class CorporateServiceImpl implements CorporateService {
         this.corpLimitRepo = corpLimitRepo;
     }
     @Override
-    public void addCorporate(Corporate corporate) {
+    public void addCorporate(CorporateDTO corporateDTO) {
+        corporateDTO.setDateCreated(new Date());
+        Corporate corporate = convertDTOToEntity(corporateDTO);
         corporateRepo.save(corporate);
     }
 
     @Override
-    public void deleteCorporate(Long corporate) {
-        corporateRepo.delete(corporateRepo.findOne(corporate));
+    public void deleteCorporate(Long id) {
+        corporateRepo.delete(id);
     }
 
     @Override
-    public void updateCorporate(Corporate corporate) {
+    public void updateCorporate(CorporateDTO corporateDTO) {
+        Corporate corporate = convertDTOToEntity(corporateDTO);
         corporateRepo.save(corporate);
     }
 
     @Override
-    public Corporate getCorporate(Long id) {
-        return corporateRepo.findOne(id);
+    public CorporateDTO getCorporate(Long id) {
+        Corporate corporate = corporateRepo.findOne(id);
+        return convertEntityToDTO(corporate);
     }
 
     @Override
-    public List<Corporate> getCorporates() {
-        return corporateRepo.findAll();
+    public List<CorporateDTO> getCorporates() {
+        Iterable<Corporate> corporateDTOS = corporateRepo.findAll();
+        return convertEntitiesToDTOs(corporateDTOS);
     }
 
 

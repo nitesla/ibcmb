@@ -1,5 +1,6 @@
 package longbridge.controllers.admin;
 
+import longbridge.dtos.CorporateDTO;
 import longbridge.dtos.CorporateUserDTO;
 import longbridge.forms.ChangePassword;
 import longbridge.models.CorporateUser;
@@ -79,6 +80,8 @@ public class AdmCorporateUserController {
         model.addAttribute("corporateUser",user);
         return "corporateUser";
     }
+
+
 
     @PostMapping("/{userId}")
     public String UpdateUser(@ModelAttribute("corporateUser") CorporateUserDTO corporateUserDTO, @PathVariable Long userId, BindingResult result,Model model) throws Exception{

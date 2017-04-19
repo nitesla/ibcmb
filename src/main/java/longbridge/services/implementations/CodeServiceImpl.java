@@ -52,10 +52,9 @@ public class CodeServiceImpl implements CodeService {
 
         try {
 
-            Code code = codeRepo.findOne(codeId);
-            code.setDelFlag("Y");
-            this.codeRepo.save(code);
-            logger.info("Code {} HAS BEEN DELETED ",code.toString());
+
+            this.codeRepo.delete(codeId);
+            logger.info("Code {} HAS BEEN DELETED ",codeId.toString());
             result=true;
         }
         catch (Exception e){
@@ -107,11 +106,14 @@ public class CodeServiceImpl implements CodeService {
             logger.error("ERROR OCCURRED {}",e.getMessage());
         }
     }
-//
-//    public boolean updateCode(CodeDTO codeDTO, AdminUser adminUser){
-//         boolean result= false;
-//         Code code = convertDTOToEntity(codeDTO);
-//         Code originalObject = codeRepo.findOne(code.getId());
+
+    public boolean updateCode(CodeDTO codeDTO, AdminUser adminUser) {
+        boolean result = false;
+        Code code = convertDTOToEntity(codeDTO);
+        codeRepo.save(code);
+        return  result;
+       // Code originalObject = codeRepo.findOne(code.getId());
+    }
     /**
      * Modifies an existing code
      * @param code the code

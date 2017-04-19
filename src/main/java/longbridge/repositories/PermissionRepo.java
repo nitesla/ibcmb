@@ -10,4 +10,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PermissionRepo extends CommonRepo<Permission, Long> {
+
+    Iterable<Permission> findByIdNotIn(Long[] permissions);
 }

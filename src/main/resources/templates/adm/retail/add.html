@@ -44,12 +44,12 @@
                             </div>
                             <div class="x_content">
                                 <div class="ibox-content">
-                                    <form method="get" class="form-horizontal">
+                                    <form method="post" class="form-horizontal" th:action="@{/admin/retail/users}" th:object="${retailUser}">
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">CifId:</label>
 
                                             <div class="col-sm-4">
-                                                <input type="text" class="form-control" />
+                                                <input type="text" class="form-control" th:field="*{userName}" />
                                             </div>
 
                                             <button class="btn btn-primary col-sm-2" type="submit">Browse</button>
@@ -59,7 +59,7 @@
                                             <label class="col-sm-2 control-label">FirstName</label>
 
                                             <div class="col-sm-6">
-                                                <input type="text" class="form-control" />
+                                                <input type="text" class="form-control" th:field="*{firstName}" />
                                             </div>
 
                                         </div>
@@ -67,7 +67,7 @@
                                             <label class="col-sm-2 control-label">LastName</label>
 
                                             <div class="col-sm-6">
-                                                <input type="text" class="form-control" />
+                                                <input type="text" class="form-control" th:field="*{lastName}" />
                                             </div>
 
                                         </div>
@@ -75,7 +75,7 @@
                                             <label class="col-sm-2 control-label">Email</label>
 
                                             <div class="col-sm-6">
-                                                <input type="text" class="form-control" />
+                                                <input type="text" class="form-control" th:field="*{email}" />
                                             </div>
 
                                         </div>
