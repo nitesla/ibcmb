@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="layout :: site-head">
+  
 </head>
 
 
@@ -40,6 +41,23 @@
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="x_panel">
                             <div class="x_title">
+                            <ul class="nav navbar-left panel_toolbox">
+                                    <li >
+                                        <div class="col-lg-4">
+                                            <div class="title-action">
+                                                <a  class="btn btn-primary bt-select bt-link-act" href="/admin/srconfig/index/edit" disabled="disabled" ><i class="fa fa-pencil"></i> Edit Config </a>
+                                            </div>
+                                        </div>
+                                    </li>
+                                <li >
+                                    <div class="col-lg-4">
+                                        <div class="title-action">
+                                            <a  class="btn btn-danger bt-select bt-link-act" href="/admin/srconfig/index/delete" disabled="disabled" ><i class="fa fa-trash"></i> Delete Config </a>
+                                        </div>
+                                    </div>
+                                </li>
+
+                                </ul>
                                 <ul class="nav navbar-right panel_toolbox">
                                     <li >
                                         <div class="col-lg-4">
@@ -57,11 +75,10 @@
                             </div>
                             <div class="x_content">
 
-                            <table class="table table-striped table-bordered table-hover" id="srconfig">
+                            <table class="table table-striped table-bordered table-hover" id="srconfig" >
                                 <thead>
                                 <tr>
                                     <th>Service Request Name</th>
-                                    <th>Actions</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -71,7 +88,6 @@
                                 <tfoot>
                                 <tr>
                                     <th>Service Request Name</th>
-                                    <th>Actions</th>
                                 </tr>
                                 </tfoot>
                             </table>
@@ -91,6 +107,7 @@
     </div>
 </div>
 <script th:src="@{~/bank/vendors/datatables.net/js/jquery.dataTables.js}"></script>
+<script th:src="@{~/bank/js/dataTables.bootstrap.js}"></script>
 <script th:src="@{~/bank/js/dataTables.select.js}"></script>
 <script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
 
@@ -99,39 +116,56 @@
     /*<![CDATA[*/
     $(document).ready(function() {
 
-
-
-        $('#srconfig').DataTable({
-        	select:true,
-
+    	var table = $('#srconfig').DataTable({
+        	"pagingType" : "simple_numbers",
+        	select: true,
             responsive: true,
-            "lengthMenu" : [ [ 5, 10, 50, -1 ],	[ 5, 10, 50, "All" ] ],
-			"pagingType" : "full_numbers",
+            "lengthMenu" : [ [ 5, 10, 20 ],	[ 5, 10, 20 ] ],
             "searching": false,
             "paging": true,
             "serverSide" : true,
             "ajax": "/admin/srconfig/all",
-            "dom": 'T<"clear">lfrtip',
+            "dom": 'T<"clear">frtlp',
             "columns": [
-                { "data": "requestName" },
-                { "data": null }
-            ] ,"columnDefs" : [  {
-                "targets" : 1,
-                "render" : function(data, type, full, meta) {
-    					kk =  "<div class='col-md-6 col-sm-6 col-xs-12'><a  class='btn btn-default btn-xs' data-toggle='tooltip' title='Edit' data-placement='right' href='/admin/srconfig/"+ full.DT_RowId+ "/edit'>";
-    					kk += "<i class='fa fa-edit'></i>"
-    					kk += "Edit</a>" ;
-    					
-    					kk +=  "<a  class='btn btn-default btn-xs' data-toggle='tooltip' title='Delete' data-placement='right' href='/admin/srconfig/"+ full.DT_RowId+ "/delete'>";
-    					kk += "<i class='fa fa-trash-o'></i>"
-    					kk += "Delete</a></div>";
-    					return kk;
-    			}
-                }
-            ]
+                { "data": "requestName" }
+            ] 
         });
 
+        table.on('select', function() {
+    		if (table.rows({
+    			selected : true
+    		}).indexes().length === 0) {
+    			$('.bt-select').attr("disabled", true);
+    		} else {
+    			$('.bt-select').removeAttr("disabled");
+    		}
 
+    	});
+
+    	table.on('deselect', function() {
+    		if (table.rows({
+    			selected : true
+    		}).indexes().length === 0) {
+    			$('.bt-select').attr("disabled", true);
+    		} else {
+    			$('.bt-select').removeAttr("disabled");
+    		}
+    	});
+    	
+    });
+    
+    $("a.bt-link-act").on("click", function(e) {
+    	e.preventDefault();
+        var link = $(e.currentTarget);
+        var dt = $('#srconfig').DataTable();
+        var id = $(dt.row({
+            selected: true
+        }).node()).attr("id");
+        //window.location.href = link.attr("formaction") + '?id=' + id;
+        //replace {id} with id
+        var ooo = link.attr("href").replace("index",id);
+        window.location.assign(ooo);
+        //goto url
     });
     /*]]>*/
 </script>

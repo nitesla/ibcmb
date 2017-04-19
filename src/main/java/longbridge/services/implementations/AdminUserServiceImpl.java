@@ -5,10 +5,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import longbridge.dtos.AdminUserDTO;
 import longbridge.models.AdminUser;
 import longbridge.models.OperationCode;
+import longbridge.models.Role;
 import longbridge.models.Verification;
 import longbridge.repositories.AdminUserRepo;
 import longbridge.repositories.VerificationRepo;
 import longbridge.services.AdminUserService;
+import longbridge.services.RoleService;
 import longbridge.services.SecurityService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -44,6 +46,9 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     @Autowired
     private SecurityService securityService;
+
+    @Autowired
+    RoleService roleService;
 
     @Autowired
     public AdminUserServiceImpl(AdminUserRepo adminUserRepo, BCryptPasswordEncoder passwordEncoder) {
@@ -95,8 +100,14 @@ public class AdminUserServiceImpl implements AdminUserService {
     public boolean addUser(AdminUserDTO user) {
         boolean ok = false;
         if (user != null) {
-            user.setPassword(this.passwordEncoder.encode(user.getPassword()));
-            AdminUser adminUser = convertDTOToEntity(user);
+           // user.setPassword(this.passwordEncoder.encode(user.getPassword()));
+            AdminUser adminUser = new AdminUser();
+            adminUser.setFirstName(user.getFirstName());
+            adminUser.setLastName(user.getLastName());
+            adminUser.setUserName(user.getUserName());
+            Role role = new Role();
+            role.setId(user.getRoleId());
+            adminUser.setRole(role);
             this.adminUserRepo.save(adminUser);
             logger.info("New admin user: {} created", adminUser.getUserName());
             ok=true;
@@ -110,14 +121,22 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     @Override
     public void deleteUser(Long id) {
-        //adminUserRepo.delete(id); //TODO implement logical delete
+        adminUserRepo.delete(id);
     }
 
     @Override
     public boolean updateUser(AdminUserDTO user) {
         boolean ok = false;
         if (user != null) {
-            AdminUser adminUser = convertDTOToEntity(user);
+            AdminUser adminUser = new AdminUser();
+            adminUser.setId((user.getId()));
+            adminUser.setVersion(user.getVersion());
+            adminUser.setFirstName(user.getFirstName());
+            adminUser.setLastName(user.getLastName());
+            adminUser.setUserName(user.getUserName());
+            Role role = new Role();
+            role.setId(user.getRoleId());
+            adminUser.setRole(role);
             this.adminUserRepo.save(adminUser);
             logger.info("Admin user {} updated", adminUser.getUserName());
             ok=true;
@@ -224,18 +243,20 @@ public class AdminUserServiceImpl implements AdminUserService {
 
 
     private List<AdminUserDTO> convertEntitiesToDTOs(Iterable<AdminUser> adminUsers){
-        List<AdminUserDTO> adminUserDTOs = new ArrayList<>();
+        List<AdminUserDTO> adminUserDTOList = new ArrayList<>();
         for(AdminUser adminUser: adminUsers){
-            convertEntityToDTO(adminUser);
+            AdminUserDTO userDTO = convertEntityToDTO(adminUser);
+            userDTO.setRole(adminUser.getRole().getName());
+            adminUserDTOList.add(userDTO);
         }
-        return adminUserDTOs;
+        return adminUserDTOList;
     }
 
     private AdminUserDTO convertEntityToDTO(AdminUser adminUser){
         AdminUserDTO adminUserDTO = new AdminUserDTO();
         adminUserDTO.setFirstName(adminUser.getFirstName());
         adminUserDTO.setLastName(adminUser.getLastName());
-        adminUserDTO.setRole(adminUser.getRole().getName());
+        adminUserDTO.setRoleId(adminUser.getRole().getId());
         return  modelMapper.map(adminUser,AdminUserDTO.class);
     }
 
@@ -252,6 +273,7 @@ public class AdminUserServiceImpl implements AdminUserService {
         Page<AdminUserDTO> pageImpl = new PageImpl<AdminUserDTO>(dtOs,pageDetails,t);
         return pageImpl;
 	}
+
     @Override
     public void add(AdminUserDTO adminUser, AdminUser initiator) {
         try {
@@ -275,7 +297,7 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     @Override
     public void modify(AdminUserDTO adminUser, AdminUser initiator){
-        AdminUser adminUserO = adminUserRepo.findOne(adminUser.getId());
+        AdminUser adminUserO = adminUserRepo.findOne((adminUser.getId()));
         AdminUserDTO originalObject = convertEntityToDTO(adminUserO);
 
         try {

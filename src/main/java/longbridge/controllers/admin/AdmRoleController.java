@@ -1,6 +1,8 @@
 package longbridge.controllers.admin;
 
+import longbridge.dtos.PermissionDTO;
 import longbridge.dtos.RoleDTO;
+import longbridge.dtos.ServiceReqConfigDTO;
 import longbridge.models.AdminUser;
 import longbridge.models.Permission;
 import longbridge.models.Role;
@@ -13,6 +15,11 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+import org.springframework.data.jpa.datatables.repository.DataTablesUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -21,8 +28,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.LinkedList;
+import java.util.*;
 
 /**
  * Created by Fortune on 4/5/2017.
@@ -36,18 +42,21 @@ public class AdmRoleController {
     @Autowired
     private RoleService roleService;
     @Autowired
-    private ModelMapper modelMapper;
-    @Autowired
     private AdminUserRepo adminUserRepo;
-    @Autowired
-    private RoleRepo roleRepo;
+
     @Autowired
     private VerificationRepo verificationRepo;
 
 
     @GetMapping("/new")
     public String addRole(Model model){
+        RoleDTO roleDTO = new RoleDTO();
+        roleDTO.setPermissions(new ArrayList<>());
         model.addAttribute("role", new RoleDTO());
+        Iterable<PermissionDTO> permissions=roleService.getPermissions();
+//        List<PermissionDTO> getArrayList=new ArrayList<>();
+        model.addAttribute("permissions",permissions);
+//        model.addAttribute("getArrayList",getArrayList);
         return "adm/role/add";
     }
 
@@ -71,31 +80,51 @@ public class AdmRoleController {
 
     @GetMapping
     public String getRoles(Model model){
-        Iterable<RoleDTO> roleList = roleService.getRoles();
-        model.addAttribute("roleList",roleList);
         return "adm/role/view";
-
     }
 
-    @PostMapping("/{roleId}/update")
-    public String updateRole(@ModelAttribute("role") RoleDTO roleDTO, @PathVariable Long roleId, BindingResult result, Model model) {
+    @GetMapping("/{reqId}/edit")
+    public String  editConfig(@PathVariable Long reqId, Model model){
+        RoleDTO role = roleService.getRole(reqId);
+        Iterable<PermissionDTO> permissionDTOs =roleService.getRole(reqId).getPermissions();
+        model.addAttribute("role",role);
+        model.addAttribute("permissions",role);
 
+        return "/adm/role/edit";
+    }
+
+    @GetMapping(path = "/all")
+    public @ResponseBody
+    DataTablesOutput<RoleDTO> getRoles(DataTablesInput input){
+
+        Pageable pageable = DataTablesUtils.getPageable(input);
+        Page<RoleDTO> roles = roleService.getRoles(pageable);
+        DataTablesOutput<RoleDTO> out = new DataTablesOutput<RoleDTO>();
+        out.setDraw(input.getDraw());
+        out.setData(roles.getContent());
+        out.setRecordsFiltered(roles.getTotalElements());
+        out.setRecordsTotal(roles.getTotalElements());
+        return out;
+    }
+
+    @PostMapping("/update")
+    public String updateRole(@ModelAttribute("role") RoleDTO roleDTO, BindingResult result, RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
             return "adm/role/add";
         }
-        roleDTO.setId(roleId);
-
-        AdminUser adminUser = adminUserRepo.findOne(1l);
-        logger.info("Code {}", roleDTO.toString());
-        roleService.modify(roleDTO, adminUser);
-        model.addAttribute("success", "Role updated successfully");
-        return "/admin/roles";
+        //roleDTO.setId(roleId);
+        roleService.addRole(roleDTO);
+//        AdminUser adminUser = adminUserRepo.findOne(1l);
+//        logger.info("Code {}", roleDTO.toString());
+//        roleService.modify(roleDTO, adminUser);
+         redirectAttributes.addFlashAttribute("success", "Role updated successfully");
+        return "redirect:/admin/roles";
     }
 
-    @PostMapping("/{roleId}/delete")
-    public String deleteRole(@PathVariable Long roleId, Model model){
+    @GetMapping("/{roleId}/delete")
+    public String deleteRole(@PathVariable Long roleId, RedirectAttributes redirectAttributes){
         roleService.deleteRole(roleId);
-        model.addAttribute("success", "Role deleted successfully");
+        redirectAttributes.addFlashAttribute("success", "Role deleted successfully");
         return "redirect:/admin/roles";
     }
 
@@ -113,7 +142,7 @@ public class AdmRoleController {
         try {
             roleService.verify(verification, adminUser);
         } catch (IOException e) {
-            logger.error("Error occurred", e);
+            logger.error("Error occurred verifying Role", e);
         }
         return "role/add";
     }

@@ -1,5 +1,6 @@
 package longbridge.dtos;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import longbridge.models.AbstractEntity;
 import longbridge.models.Permission;
 import longbridge.models.UserType;
@@ -14,7 +15,9 @@ import java.util.Collection;
  */
 public class RoleDTO{
 
+    @JsonProperty("DT_RowId")
     private Long id;
+    private int version;
    @NotEmpty
     private String name;
    @NotEmpty
@@ -39,6 +42,14 @@ public class RoleDTO{
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
     }
 
     public String getName() {

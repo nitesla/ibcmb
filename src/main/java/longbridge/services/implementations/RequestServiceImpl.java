@@ -6,6 +6,7 @@ import longbridge.models.RequestHistory;
 import longbridge.models.RetailUser;
 import longbridge.models.ServiceRequest;
 import longbridge.repositories.RequestHistoryRepo;
+import longbridge.repositories.RetailUserRepo;
 import longbridge.repositories.ServiceRequestRepo;
 import longbridge.services.RequestService;
 import org.modelmapper.ModelMapper;
@@ -27,6 +28,9 @@ public class RequestServiceImpl implements RequestService {
 
     private ServiceRequestRepo serviceRequestRepo;
     private RequestHistoryRepo requestHistoryRepo;
+
+    @Autowired
+    private RetailUserRepo retailUserRepo;
     
     @Autowired
     private ModelMapper modelMapper;
@@ -41,8 +45,10 @@ public class RequestServiceImpl implements RequestService {
     @Override
     public void addRequest(ServiceRequestDTO request) {
         ServiceRequest serviceRequest = convertDTOToEntity(request);
+        serviceRequest.setUser(retailUserRepo.findOne(serviceRequest.getUser().getId()));
         serviceRequestRepo.save(serviceRequest);
     }
+
 
     @Override
     public ServiceRequestDTO getRequest(Long id) {
@@ -85,6 +91,8 @@ public class RequestServiceImpl implements RequestService {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+
 
     private ServiceRequestDTO convertEntityToDTO(ServiceRequest ServiceRequest){
         return  modelMapper.map(ServiceRequest,ServiceRequestDTO.class);

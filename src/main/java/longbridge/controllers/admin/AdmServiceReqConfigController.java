@@ -72,7 +72,6 @@ public class AdmServiceReqConfigController {
         out.setData(serviceReqConfigs.getContent());
         out.setRecordsFiltered(serviceReqConfigs.getTotalElements());
         out.setRecordsTotal(serviceReqConfigs.getTotalElements());
-
         return out;
     }
 
@@ -87,12 +86,12 @@ public class AdmServiceReqConfigController {
 
     }
 
-    @PostMapping("/{reqId}/update")
-    public String updateConfig(@ModelAttribute("serviceReqConfig") ServiceReqConfigDTO serviceReqConfigDTO, BindingResult result,@PathVariable Long reqId, Model model) throws Exception{
+    @PostMapping("/update")
+    public String updateConfig(@ModelAttribute("serviceReqConfig") ServiceReqConfigDTO serviceReqConfigDTO, BindingResult result, Model model) throws Exception{
         if(result.hasErrors()) {
             return "admin/srconfig/new";
         }
-       serviceReqConfigDTO.setId(reqId);
+      // serviceReqConfigDTO.setId(reqId);
         logger.info("My service req : {}",serviceReqConfigDTO.toString());
         serviceReqConfigService.updateServiceReqConfig(serviceReqConfigDTO);
         model.addAttribute("success", "Service Request Configuration updated successfully");
@@ -106,10 +105,10 @@ public class AdmServiceReqConfigController {
         return "adm/servicereqconfig/add";
     }
 
-    @PostMapping("/{userId}/delete")
+    @GetMapping("/{reqId}/delete")
     public String deleteUser(@PathVariable Long reqId) {
         serviceReqConfigService.delServiceReqConfig(reqId);
-        return "redirect:/retail/users";
+        return "redirect:/admin/srconfig";
     }
 
 }

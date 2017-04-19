@@ -27,7 +27,7 @@
             <div class="">
                 <div class="page-title">
                     <div class="title_left">
-                        <h3>Create Retail User</h3>
+                        <h3>Edit Permission</h3>
                     </div>
 
                 </div>
@@ -38,67 +38,45 @@
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="x_panel">
                             <div class="x_title">
-                                <h2>Add user</h2>
+                                <h2>Add new permission</h2>
 
                                 <div class="clearfix"></div>
                             </div>
+
                             <div class="x_content">
                                 <div class="ibox-content">
-                                    <form method="post" class="form-horizontal" th:action="@{/admin/retail/users}" th:object="${retailUser}">
+                                    <form method="post" th:action="@{/admin/permissions/update}" class="form-horizontal"  th:object="${permission}" >
+
                                         <div class="form-group">
-                                            <label class="col-sm-2 control-label">CifId:</label>
+                                            <label class="col-sm-2 control-label">Name</label>
 
                                             <div class="col-sm-4">
-                                                <input type="text" class="form-control" th:field="*{userName}" />
-                                            </div>
+                                                <input type="hidden"  class="form-control"  th:field="*{id}"/>
+                                                <input type="hidden"  class="form-control"  th:field="*{version}"/>
 
-                                            <button class="btn btn-primary col-sm-2" type="submit">Browse</button>
 
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="col-sm-2 control-label">FirstName</label>
-
-                                            <div class="col-sm-6">
-                                                <input type="text" class="form-control" th:field="*{firstName}" />
-                                            </div>
-
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="col-sm-2 control-label">LastName</label>
-
-                                            <div class="col-sm-6">
-                                                <input type="text" class="form-control" th:field="*{lastName}" />
-                                            </div>
-
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="col-sm-2 control-label">Email</label>
-
-                                            <div class="col-sm-6">
-                                                <input type="text" class="form-control" th:field="*{email}" />
+                                                <input type="text"  class="form-control"  th:field="*{name}"/>
                                             </div>
 
                                         </div>
 
-
                                         <div class="form-group">
+                                            <label class="col-sm-2 control-label">Code</label>
 
-
-
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="col-sm-2 control-label">Role</label>
-                                            <div class="col-sm-6">
-                                                <select class="form-control m-b " name="account">
-                                                    <option>--Select role--</option>
-                                                    <option>Initializer</option>
-                                                    <option>Verifier</option>
-                                                    <option>Audit</option>
-                                                    <option>Admin</option>
-
-                                                </select>
+                                            <div class="col-sm-4">
+                                                <input type="text" class="form-control" th:field="*{code}" />
                                             </div>
+
                                         </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">Description</label>
+
+                                            <div class="col-sm-4">
+                                                <input type="text" class="form-control"  th:field="*{description}"/>
+                                            </div>
+
+                                        </div>
+
 
                                         <div class="form-group">
                                             <div class="col-sm-4 col-sm-offset-2">
@@ -106,7 +84,6 @@
                                                 <button class="btn btn-primary" type="submit">Save</button>
                                             </div>
                                         </div>
-
 
 
                                     </form>

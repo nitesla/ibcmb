@@ -1,6 +1,7 @@
 package longbridge.dtos;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import java.util.Date;
@@ -9,14 +10,21 @@ import java.util.Date;
  * Created by Fortune on 4/5/2017.
  */
 public class OperationsUserDTO {
-
+    @JsonProperty("DT_RowId")
     private Long id;
-    @NotEmpty
+
+    private int version;
+  //  @NotEmpty
     private String userName;
-    @NotEmpty
+  //  @NotEmpty
     private String firstName;
-    @NotEmpty
+   // @NotEmpty
     private String lastName;
+
+    private Long roleId;
+
+    private String role;
+
     private String email;
     private String password;
     private String status;
@@ -31,6 +39,30 @@ public class OperationsUserDTO {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
+    }
+
+    public Long getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(Long roleId) {
+        this.roleId = roleId;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public String getUserName() {

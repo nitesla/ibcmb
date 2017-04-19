@@ -77,7 +77,7 @@ public class SecurityConfig {
                   // .hasRole("ADMIN")
                 // .hasAuthority("ADMIN")
                     // log in
-                    .and().formLogin().loginPage("/loginAdmin").loginProcessingUrl("/admin/login").failureUrl("/loginAdmin?error=loginError").defaultSuccessUrl("/admin/codes/new")
+                    .and().formLogin().loginPage("/loginAdmin").loginProcessingUrl("/admin/login").failureUrl("/loginAdmin?error=loginError").defaultSuccessUrl("/dashboard")
 
 
                     .and()

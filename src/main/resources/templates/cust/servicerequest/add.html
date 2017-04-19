@@ -5,81 +5,91 @@
 </head>
 <body>
 <header th:replace="cust_layout :: header">
-
 </header>
-<!-- HEADER END-->
-<div class="navbar navbar-inverse set-radius-zero" th:replace="cust_layout :: main-header">
 
-</div>
-<!-- LOGO HEADER END-->
-<section class="menu-section" th:replace="cust_layout :: menu">
-</section>
-<!-- MENU SECTION END-->
-<div class="content-wrapper">
+<section class="content-wrapper">
     <div class="container">
         <div class="row">
-            <div class="col-md-8">
+            <div class="col-md-1"></div>
+            <div class="col-md-8 col-sm-8">
                 <div class="row">
-                    <div class="col-md-12">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h4 class="page-head-line" th:text="${'Make a ' + requestConfig.requestName + ' Request'}"></h4>
-                            </div>
-                            <div class="panel-body">
-                                <form method="post" th:action="@{/retail/requests}" th:object="${serviceReqConfigDTO}">
-                                    <p th:each="field : ${requestConfig.formFields}">
-                                        <label th:text="${field.fieldLabel}"></label>
-                                        <p th:if="${field.fieldType} == 'TEXT'"><input class="form-control" th:type="${field.fieldType}" th:name="${field.fieldName}"/></p>
-                                        <p th:if="${field.fieldType} == 'CODE'">
-                                            <select class="form-control" th:name="${field.fieldName}">
-                                                <option th:each="type : ${field.codeDTOs}" th:value="${type.code}" th:text="${type.description}"></option>
-                                            </select>
-                                        </p>
-                                        <p th:if="${field.fieldType} == 'ACCOUNT'">
-                                            <select class="form-control" th:name="${field.fieldName}">
-                                                <option th:each="type : ${requestFieldType}" th:value="${type.code}" th:text="${type.description}"></option>
-                                            </select>
-                                        </p>
-                                        <p th:if="${field.fieldType} == 'LIST'">
-                                            <select class="form-control" th:name="${field.fieldName}">
-                                                <option th:each="type : ${fixedList}" th:value="${type}" th:text="${type}"></option>
-                                            </select>
-                                        </p>
-                                        <!--<p><input class="form-control" th:type="${field.fieldType}" th:name="${field.fieldName}"/></p>-->
+                    <div class="col-md-6 col-sm-6">
+                        <h5 class="page_header" th:text="${requestConfig.requestName + ' Service Request'}"></h5>
+                        <!--<form method="post" th:action="" id="reqForm">-->
+                        <form method="post" th:action="@{/retail/requests}" th:object="${requestDTO}" id="reqForm">
+                            <p><input class="form-control" type="hidden" id="requestName" name="requestName" th:value="${requestConfig.requestName}"/></p>
+                            <input type="hidden" name="body" id="body"/>
+                            <p th:each="field : ${requestConfig.formFields}">
+                                <div class="form-group">
+                                    <label th:text="${field.fieldLabel}"></label>
+                                    <p th:if="${field.fieldType} == 'TEXT'"><input class="form-control" th:type="${field.fieldType}" th:name="${field.fieldName}"/></p>
+
+                                    <p th:if="${field.fieldType} == 'DATE'"><input class="form-control" id="datepicker" type="text" th:name="${field.fieldName}"/></p>
+
+                                    <p th:if="${field.fieldType} == 'CODE'">
+                                        <select class="form-control" th:name="${field.fieldName}">
+                                            <option th:each="type : ${field.codeDTOs}" th:value="${type.code}" th:text="${type.description}"></option>
+                                        </select>
                                     </p>
-                                    <button type="submit" class="btn btn-default">Submit</button>
-                                </form>
-                            </div>
-                        </div>
+                                    <p th:if="${field.fieldType} == 'ACCOUNT'">
+                                        <select class="form-control" th:name="${field.fieldName}">
+                                            <option th:each="type : ${requestFieldType}" th:value="${type.code}" th:text="${type.description}"></option>
+                                        </select>
+                                    </p>
+                                    <p th:if="${field.fieldType} == 'LIST'">
+                                        <select class="form-control" th:name="${field.fieldName}">
+                                            <option th:each="type : ${fixedList}" th:value="${type}" th:text="${type}"></option>
+                                        </select>
+                                    </p>
+                                </div>
+                            </p>
+                            <button type="submit" class="btn btn-default">Submit</button>
+                        </form>
+                    </div>
+                    <div class="col-md-2 col-sm-2">
+
                     </div>
                 </div>
-            </div>
 
-            <div class="col-md-4">
+            </div>
+            <div class="col-md-3 col-sm-3">
                 <div class="alert alert-warning">
-                    This is blank page for which you can customize for your project.
-                    Use this admin template 100% free to use for personal and commercial use which is crafted by
-                    <br />
-                    <a href="http://www.designbootstrap.com/" target="_blank">DesignBootstrap.com</a> . For more free templates and snippets keep looking <a href="http://www.designbootstrap.com/" target="_blank">DesignBootstrap.com</a> . Hope you will like our work
 
                 </div>
             </div>
-
         </div>
     </div>
-</div>
+</section>
+
 <!-- CONTENT-WRAPPER SECTION END-->
 <footer th:replace="cust_layout ::footer">
-
 </footer>
 <script>
-    /*<![CDATA[*/
-    $(document).ready(function() {
-        $('#select').click(function (){
-
-        });
+    $( function() {
+        $( "#datepicker" ).datepicker(
+            { dateformat : 'dd/mm/yy'}
+        );
     } );
-    /*]]>*/
+</script>
+<script>
+    $('#reqForm').submit(function() {
+//        var formData = JSON.stringify($("#reqForm").serializeArray());
+        var arrays = [];
+        $('.form-group').each(function(index, element){
+            var select = $(element).find('select');
+            arrays.push({"name": select.prop('name'), "value": select.prop("value")});
+        });
+
+//        alert(arrays);
+
+        var formData = {
+            requestName: $('#requestName').val(),
+            body: arrays
+        }
+
+        alert(formData);
+        $('#body').val(JSON.stringify(formData));
+    });
 </script>
 </body>
 </html>

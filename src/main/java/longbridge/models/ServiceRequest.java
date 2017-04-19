@@ -3,6 +3,7 @@ package longbridge.models;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -24,32 +25,24 @@ public class ServiceRequest extends AbstractEntity {
     @ManyToOne
     private RetailUser user;
 
-    private String serviceRequestType;
-    private String subject;
+    private String requestName;
+    @Column(columnDefinition = "TEXT")
     private String body;
-    private String recipient;
-    private String status;
-    //private UserGroup userGroup;
     private Date requestTime;
+
+    @OneToMany
+    private Collection<RequestHistory> requestHistories;
 
     public RetailUser getUser() {
         return user;
     }
 
-    public String getServiceRequestType() {
-        return serviceRequestType;
+    public String getRequestName() {
+        return requestName;
     }
 
-    public void setServiceRequestType(String serviceRequestType) {
-        this.serviceRequestType = serviceRequestType;
-    }
-
-    public String getSubject() {
-        return subject;
-    }
-
-    public void setSubject(String subject) {
-        this.subject = subject;
+    public void setRequestName(String requestName) {
+        this.requestName = requestName;
     }
 
     public String getBody() {
@@ -58,22 +51,6 @@ public class ServiceRequest extends AbstractEntity {
 
     public void setBody(String body) {
         this.body = body;
-    }
-
-    public String getRecipient() {
-        return recipient;
-    }
-
-    public void setRecipient(String recipient) {
-        this.recipient = recipient;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 
     public Date getRequestTime() {
@@ -96,35 +73,14 @@ public class ServiceRequest extends AbstractEntity {
         this.user = user;
     }
 
-    @OneToMany
-    private Collection<RequestHistory> requestHistories;
-
-
-    public ServiceRequest() {
-    }
-
-    public ServiceRequest(RetailUser user, String serviceRequestType, String subject, String body, String recipient, UserGroup userGroup, Date date) {
-
-        this.user = user;
-        this.serviceRequestType = serviceRequestType;
-        this.subject = subject;
-        this.body = body;
-        this.recipient = recipient;
-        //this.userGroup = userGroup;
-        this.requestTime = date;
-    }
-
-
     @Override
     public String toString() {
         return "ServiceRequest{" +
                 "user=" + user +
-                ", serviceRequestType='" + serviceRequestType + '\'' +
-                ", subject='" + subject + '\'' +
+                ", requestName='" + requestName + '\'' +
                 ", body='" + body + '\'' +
-                ", recipient='" + recipient + '\'' +
-                //", userGroup=" + userGroup +
                 ", requestTime=" + requestTime +
+                ", requestHistories=" + requestHistories +
                 '}';
     }
 }

@@ -1,104 +1,64 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-
 <head th:replace="layout :: site-head">
 </head>
 
-<body>
-<div id="wrapper">
+<body class="nav-md">
+<div class="container body">
+    <div class="main_container">
+        <div class="col-md-3 left_col">
+            <div class="left_col scroll-view">
+                <div class="navbar nav_title" style="border: 0;">
+                    <!--<a href="index.html"><img th:src="@{~/images/cmb_logo.png}"/></a>-->
+                </div>
 
-    <nav th:replace="layout ::menu" role="navigation"></nav>
+                <div class="clearfix"></div>
+                <div class="clearfix"></div>
 
+                <div th:replace="layout :: admin-menu"></div>
+                <div th:replace="layout :: menu-footer"></div>
 
-    <!--<nav th:if="${'currentUser' == 'TRADE'}" th:replace="layout :: main-sidebar" role="navigation"></nav>-->
-
-    <div id="page-wrapper" class="gray-bg">
-        <div th:replace="layout :: header">
-
-        </div>
-        <div class="row wrapper border-bottom white-bg page-heading">
-            <div class="col-sm-4">
-                <h2>Welcome</h2>
             </div>
         </div>
+        <div th:replace="layout :: top-nav"></div>
 
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="ibox float-e-margins">
-                    <div class="ibox-title">
-                        <h5>Recent activities </h5>
+        <!-- page content -->
+        <div class="right_col" role="main">
+            <div class="">
+                <div class="page-title">
+                    <div class="title_left">
+                        <h3>Dashboard</h3>
                     </div>
-                    <div class="ibox-content">
-                        <div class="row">
-                            <div class="col-sm-5 m-b-xs"><select class="input-sm form-control input-s-sm inline">
-                                <option value="0">Forms</option>
-                                <option value="1">LC</option>
-                                <option value="2">PAAR</option>
-                                <option value="3">BILLS</option>
-                            </select>
-                            </div>
-                        </div>
-                        <div class="table-responsive">
-                            <table class="table table-striped">
-                                <thead>
-                                <tr>
-                                    <th>Form Detail</th>
-                                    <th>Category</th>
-                                    <th>Status</th>
-                                    <th>Date of Initial Issue</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                    <td><a>AA006U</a></td>
-                                    <td>LC</td>
-                                    <td><small>Issued</small></td>
-                                    <td>Jul 14, 2013</td>
-                                </tr>
-                                <tr>
-                                    <td><a>AA006U</a></td>
-                                    <td>BILLs</td>
-                                    <td><small>Issued</small></td>
-                                    <td>Jul 14, 2013</td>
-                                </tr>
-                                <tr>
-                                    <td><a>AA006U</a></td>
-                                    <td>LC</td>
-                                    <td><small>Issued</small></td>
-                                    <td>Jul 14, 2013</td>
-                                </tr>
-                                <tr>
-                                    <td><a>AA006U</a></td>
-                                    <td>FORM</td>
-                                    <td><small>Issued</small></td>
-                                    <td>Jul 14, 2013</td>
-                                </tr>
-                                <tr>
-                                    <td><a>AA006U</a></td>
-                                    <td>LC</td>
-                                    <td><small>Issued</small></td>
-                                    <td>Jul 14, 2013</td>
-                                </tr>
-                                <tr>
-                                    <td><a>AA006U</a></td>
-                                    <td>PAAR</td>
-                                    <td><small>Issued</small></td>
-                                    <td>Jul 14, 2013</td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
 
+                </div>
+
+                <div class="clearfix"></div>
+
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="x_panel">
+                            <!--<div class="x_title">-->
+                                <!--<h2>Add user</h2>-->
+
+                                <!--<div class="clearfix"></div>-->
+                            <!--</div>-->
+
+                            <!--<div class="x_content">-->
+                                <!--<div class="ibox-content">-->
+                                    <!---->
+                                <!--</div>-->
+                            <!--</div>-->
+                        </div>
                     </div>
                 </div>
             </div>
-
         </div>
+        <!-- /page content -->
 
-        <div th:replace="layout :: main-footer">
-
-        </div>
-
+        <!-- footer content -->
+        <footer th:replace="layout :: footer">
+        </footer>
+        <!-- /footer content -->
     </div>
 </div>
 

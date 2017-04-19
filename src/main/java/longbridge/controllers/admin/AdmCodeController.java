@@ -48,21 +48,29 @@ public class AdmCodeController {
     }
 
 
-    @PostMapping("/new")
-    public String createCode(@ModelAttribute("code") CodeDTO codeDTO, BindingResult result, Model model, RedirectAttributes redirectAttributes){
+    @PostMapping
+    public String createCode(@ModelAttribute("codeDTO") CodeDTO codeDTO, BindingResult result,  RedirectAttributes redirectAttributes){
         if(result.hasErrors()){
             //return "add";
-            logger.error("Error occurred {}", result.toString());
+            logger.error("Error occurred creating code{}", result.toString());
             return "adm/code/add";
 
         }
 
         logger.info("Code {}", codeDTO.toString());
         AdminUser adminUser = adminUserRepo.getOne(1l);
-        codeService.add(codeDTO, adminUser);
+        codeService.updateCode(codeDTO,adminUser);//
+       // codeService.add(codeDTO, adminUser);
 
         redirectAttributes.addFlashAttribute("success", "Code added successfully");
-        return "redirect:/admin/list";
+        return "redirect:/admin/codes";
+    }
+
+    @GetMapping("/{id}/edit")
+    public String editCode(@PathVariable Long id, Model model) {
+        CodeDTO code = codeService.getCode(id);
+        model.addAttribute("code", code);
+        return "adm/code/edit";
     }
 
     @PostMapping("/verify/{id}")
@@ -127,21 +135,21 @@ public class AdmCodeController {
 
     }
 
-    @PostMapping("/{codeId}")
-    public String updateCode(@ModelAttribute("codeForm") CodeDTO codeDTO,  BindingResult result, @PathVariable Long codeId,RedirectAttributes redirectAttributes){
+    @PostMapping("/update")
+    public String updateCode(@ModelAttribute("code") CodeDTO codeDTO,  BindingResult result, RedirectAttributes redirectAttributes){
         if(result.hasErrors()){
             return "add";
         }
         AdminUser adminUser = adminUserRepo.findOne(1l);
         logger.info("Code {}", codeDTO.toString());
-        codeDTO.setId(codeId);
-        codeService.modify(codeDTO, adminUser);
+        codeService.updateCode(codeDTO,adminUser);
+        //codeService.modify(codeDTO, adminUser);
         redirectAttributes.addFlashAttribute("success", "Code updated successfully");
         return "redirect:/admin/codes";
 //        codeService.addCode(code);
     }
 
-    @PostMapping("/{codeId}/delete")
+    @GetMapping("/{codeId}/delete")
     public String deleteCode(@PathVariable Long codeId, RedirectAttributes redirectAttributes){
         codeService.deleteCode(codeId);
         redirectAttributes.addFlashAttribute("success", "Code deleted successfully");

@@ -23,10 +23,11 @@ public interface RoleService extends Verifiable<RoleDTO> {
     void addRole(RoleDTO role);
 
     /**
-     * Returns a role
+     * Returns a roleDTO
      * @return the role id
      */
     RoleDTO getRole(Long id);
+
 
     /**
      * Returns all  the roles in the system
@@ -35,6 +36,8 @@ public interface RoleService extends Verifiable<RoleDTO> {
     Iterable<RoleDTO> getRoles();
 
     Page<RoleDTO> getRoles(Pageable pageDetails);
+
+
 
     /**
      * Updates the details of the specified userType

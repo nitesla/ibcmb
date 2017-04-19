@@ -1,5 +1,7 @@
 package longbridge.forms;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -8,13 +10,13 @@ import javax.validation.constraints.Size;
  * Created by Fortune on 4/3/2017.
  */
 public class ChangePassword {
-    @NotNull
+    @NotEmpty
     @Min(8)
     private String oldPassword;
-    @NotNull
+    @NotEmpty
     @Size(min=8)
     private String newPassword;
-    @NotNull
+    @NotEmpty
     @Size(min=8)
     private String confirmPassword;
 

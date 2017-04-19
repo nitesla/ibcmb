@@ -6,6 +6,7 @@ import org.hibernate.envers.Audited;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import java.util.Collection;
+import java.util.Date;
 
 /**
  * Created by Fortune on 3/29/2017.
@@ -17,10 +18,13 @@ public class Corporate extends AbstractEntity{
 
     private String rcNumber;
     private String customerId;
+    private  String corporateType;
     private String companyName;
     private String email;
     private String address;
     private boolean isEnabled;
+    private Date dateCreated;
+
 
     public boolean isEnabled() {
         return isEnabled;
@@ -61,6 +65,14 @@ public class Corporate extends AbstractEntity{
 
     public void setRcNumber(String rcNumber) {
         this.rcNumber = rcNumber;
+    }
+
+    public String getCorporateType() {
+        return corporateType;
+    }
+
+    public void setCorporateType(String corporateType) {
+        this.corporateType = corporateType;
     }
 
     public String getCompanyName() {
@@ -105,12 +117,29 @@ public class Corporate extends AbstractEntity{
 //		this.beneficiaries = beneficiaries;
 //	}
 
-	@Override
-	public String toString() {
-		return "Corporate [rcNumber=" + rcNumber + ", companyName=" + companyName + ", email=" + email + ", address="
-				+ address + "]";
-	}
 
-   
+    public Date getDateCreated() {
+        return dateCreated;
+    }
 
+    public void setDateCreated(Date dateCreated) {
+        this.dateCreated = dateCreated;
+    }
+
+
+    @Override
+    public String toString() {
+        return "Corporate{" +
+                "rcNumber='" + rcNumber + '\'' +
+                ", customerId='" + customerId + '\'' +
+                ", corporateType='" + corporateType + '\'' +
+                ", companyName='" + companyName + '\'' +
+                ", email='" + email + '\'' +
+                ", address='" + address + '\'' +
+                ", isEnabled=" + isEnabled +
+                ", dateCreated=" + dateCreated +
+                ", users=" + users +
+                ", corpLimits=" + corpLimits +
+                '}';
+    }
 }
