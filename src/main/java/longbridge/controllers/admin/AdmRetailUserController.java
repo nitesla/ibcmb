@@ -35,18 +35,19 @@ public class AdmRetailUserController {
 
 
     @GetMapping("/new")
-    public String addUser(){
+    public String addUser(Model model){
+        model.addAttribute("retailUser",new RetailUserDTO());
         return "adm/retail/add";
     }
 
-    @PostMapping("/new")
-    public String createUser(@ModelAttribute("retailUser") @Valid RetailUserDTO retailUser, BindingResult result, Model model, RedirectAttributes redirectAttributes) throws Exception{
+    @PostMapping
+    public String createUser(@ModelAttribute("retailUser") RetailUserDTO retailUser, BindingResult result, RedirectAttributes redirectAttributes) throws Exception{
         if(result.hasErrors()){
             return "adm/retail/add";
         }
         retailUserService.addUser(retailUser);
         redirectAttributes.addFlashAttribute("success","Retail user created successfully");
-        return "redirect:/retail/users";
+        return "redirect:/admin/retail/users";
     }
 
     /**
@@ -57,7 +58,7 @@ public class AdmRetailUserController {
     public String editUser(@PathVariable Long userId, Model model) {
         RetailUserDTO retailUser = retailUserService.getUser(userId);
         model.addAttribute("user", retailUser);
-        return "addUser";
+        return "/adm/retail/edit";
     }
 
     @GetMapping
@@ -95,20 +96,18 @@ public class AdmRetailUserController {
         return "retailUserDetails";
     }
 
-    @PostMapping("/{userId}")
-    public String UpdateUser(@ModelAttribute("retailUserForm") RetailUserDTO retailUser, @PathVariable Long userId, BindingResult result, Model model) throws Exception{
+
+    @PostMapping("/update")
+    public String UpdateUser(@ModelAttribute("retailUser") RetailUserDTO retailUser, BindingResult result, RedirectAttributes redirectAttributes) throws Exception{
        if(result.hasErrors()){
-           return "addUser";
+           return "adm/retail/add";
        }
-        retailUser.setId(userId);
-        boolean updated = retailUserService.updateUser(retailUser);
-       if(updated) {
-           model.addAttribute("success", "Retail user updated successfully");
-       }
-        return "redirect:/retail/users";
+        retailUserService.updateUser(retailUser);
+        redirectAttributes.addFlashAttribute("success", "Retail user updated successfully");
+        return "redirect:/admin/retail/users";
     }
 
-    @PostMapping("/{userId}/delete")
+    @GetMapping("/{userId}/delete")
     public String deleteUser(@PathVariable Long userId) {
         retailUserService.deleteUser(userId);
         return "redirect:/retail/users";

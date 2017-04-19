@@ -38,54 +38,75 @@
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="x_panel">
                             <div class="x_title">
-                                <h2>Add new role</h2>
+                                <!--<h2>Add new role</h2>-->
 
                                 <div class="clearfix"></div>
                             </div>
 
                             <div class="x_content">
-                                <div class="ibox-content">
-                                    <form method="post" th:action="@{/admin/roles}" class="form-horizontal"  th:object="${role}" >
+                                    <form method="post" th:action="@{/admin/roles}" class="form-horizontal"  th:object="${role}" id="form-save">
+                                        <div class="panel panel-default">
+                                        <div class="panel-body">
+                                            <fieldset>
+                                                <div class="form-group col-lg-6">
+                                                    <label>Name</label> <input class="form-control" type="text" th:field="*{name}" />
+                                                </div>
 
-                                        <div class="form-group">
-                                            <label class="col-sm-2 control-label">Name</label>
+                                                <div class="form-group col-lg-6">
+                                                    <label>Email</label> <input class="form-control" type="text" th:field="*{email}" />
+                                                </div>
 
-                                            <div class="col-sm-4">
-                                                <input type="text"  class="form-control"  th:field="*{name}"/>
+                                                <div class="form-group col-lg-6">
+                                                    <label>Description</label> <textarea class="form-control" rows="2" th:field="*{description}" />
+                                                </div>
+
+
+
+                                        </fieldset>
+
+
+
+                                            <fieldset>
+                                                <legend>Permissions</legend>
+                                                <div class="row">
+
+                                                    <div class="form-group text-left col-lg-5">
+                                                        <select multiple="multiple" class="form-control left-selector" >
+                                                            <!--<s:iterator value="optionsList" var="p">-->
+                                                                <!--<option value="${p.id}"}>${p.description}</option>-->
+                                                            <!--</s:iterator>-->
+                                                            <option th:each="permission: ${permissions}" th:value="${permission.id}" th:text="${permission.name}" ></option>
+
+                                                        </select>
+                                                    </div>
+
+                                                    <div class="btn-group-vertical col-xs-2 ">
+                                                        <button type="button" class="btn btn-default text- btn-circle btn-default right-btn"><i class="fa fa-long-arrow-right"></i>
+                                                        </button>
+                                                        <button type="button" class="btn btn-default text-center btn-circle left-btn" ><i class="fa fa-long-arrow-left"></i>
+                                                        </button>
+
+                                                    </div>
+                                                    <div class="form-group text-right col-lg-5">
+                                                        <select multiple="multiple" class="form-control right-selector" th:field="*{permissions}" >
+                                                            <!--<s:iterator value="profile.options" var="op">-->
+                                                                <!--<option value="${op.id}"}>${op.description}</option>-->
+                                                            <!--</s:iterator>-->
+                                                            <option th:each="p: ${role.permissions}" th:value="${p.id}" th:text="${p.name}" ></option>
+
+                                                        </select>
+                                                    </div>
+
+                                                    </div>
+                                            </fieldset>
+</div>
+                                            <div class="panel-footer text-right">
+                                            <button class="btn btn-white" type="submit">Cancel</button>
+                                            <button class="btn btn-primary" id="btn-save" type="submit">Submit</button>
                                             </div>
 
-
-
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label class="col-sm-2 control-label">Email</label>
-
-                                            <div class="col-sm-4">
-                                                <input type="text" class="form-control" th:field="*{email}" />
-                                            </div>
-
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="col-sm-2 control-label">Description</label>
-
-                                            <div class="col-sm-4">
-                                                <input type="text" class="form-control"  th:field="*{description}"/>
-                                            </div>
-
-                                        </div>
-
-
-                                        <div class="form-group">
-                                            <div class="col-sm-4 col-sm-offset-2">
-                                                <button class="btn btn-white" type="submit">Cancel</button>
-                                                <button class="btn btn-primary" type="submit">Submit</button>
-                                            </div>
-                                        </div>
-
-
+                               </div>
                                     </form>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -100,6 +121,27 @@
         <!-- /footer content -->
     </div>
 </div>
+
+<script type="text/javascript">
+
+    $().ready(function() {
+        $('.left-btn').click(
+                function() {
+                    return !$('.right-selector option:selected').remove()
+                            .appendTo('.left-selector');
+                });
+        $('.right-btn').click(
+                function() {
+                    return !$('.left-selector option:selected').remove()
+                            .appendTo('.right-selector');
+                });
+    });
+    $("#btn-save").on("click", function(e) {
+        $('.right-selector option').prop("selected", true);
+        $("#form-save").submit();
+    });
+
+</script>
 
 </body>
 </html>
