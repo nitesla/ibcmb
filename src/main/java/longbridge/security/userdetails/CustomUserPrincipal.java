@@ -5,12 +5,16 @@ import longbridge.models.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.transaction.annotation.Transactional;
+
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+@Transactional
 public class CustomUserPrincipal implements UserDetails {
+
 
     private static final long serialVersionUID = 1L;
 
@@ -22,6 +26,7 @@ public class CustomUserPrincipal implements UserDetails {
 
     public CustomUserPrincipal(User user) {
         this.user = user;
+
     }
 
     //
@@ -33,13 +38,17 @@ public class CustomUserPrincipal implements UserDetails {
 
 
     @Override
+    @Transactional
     public Collection<? extends GrantedAuthority> getAuthorities() {
         final List<GrantedAuthority> authorities = new ArrayList<>();
 //        for (final Permission privilege : user.getPrivileges()) {
 //            authorities.add(new SimpleGrantedAuthority(privilege.getName()));
 //        }
 
+
+        System.out.println(user.getRole().getName());
        getPrivileges(user.getRole())
+
                .forEach(i-> authorities.add(new SimpleGrantedAuthority(i)));
 
         return authorities;

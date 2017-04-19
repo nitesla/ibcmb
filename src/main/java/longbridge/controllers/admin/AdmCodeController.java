@@ -27,7 +27,7 @@ import java.io.IOException;
  * Created by Fortune on 4/5/2017.
  */
 @Controller
-@RequestMapping("admin/codes")
+@RequestMapping("/admin/codes")
 public class AdmCodeController {
 
     private Logger logger= LoggerFactory.getLogger(this.getClass());

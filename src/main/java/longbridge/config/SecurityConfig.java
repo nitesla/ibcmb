@@ -1,20 +1,26 @@
 
 package longbridge.config;
 
+import longbridge.models.UserType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.access.expression.SecurityExpressionOperations;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.FilterInvocation;
+import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
+import org.springframework.security.web.access.expression.WebSecurityExpressionRoot;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.security.config.http.SessionCreationPolicy;
 
@@ -49,28 +55,34 @@ public class SecurityConfig {
             super();
         }
 
-//        @Override
-//        protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-//            auth
-//                    .userDetailsService(adminDetails).passwordEncoder(bCryptPasswordEncoder);
-//        }
-   @Override
-     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-    auth.inMemoryAuthentication().withUser("admin").password("admin").roles("ADMIN");
-    }
+        @Override
+        protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+            auth
+                    .userDetailsService(adminDetails).passwordEncoder(bCryptPasswordEncoder);
+        }
+//   @Override
+//     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+//    auth.inMemoryAuthentication().withUser("admin").password("admin").roles("ADMIN");
+
         @Override
         protected void configure(HttpSecurity http) throws Exception {
+
+
+
+
             http
 
-                    .antMatcher("/admin/**").authorizeRequests()
-                    .anyRequest().hasRole("ADMIN")
+                    .antMatcher("/admin/**").authorizeRequests().anyRequest().authenticated()
+                    //.hasRole(UserType.ADMIN.toString())
+                  // .hasRole("ADMIN")
+                // .hasAuthority("ADMIN")
                     // log in
                     .and().formLogin().loginPage("/loginAdmin").loginProcessingUrl("/admin/login").failureUrl("/loginAdmin?error=loginError").defaultSuccessUrl("/admin/codes/new")
 
 
                     .and()
                     // logout
-                    .logout().logoutUrl("/admin_logout").logoutSuccessUrl("/protectedLinks").deleteCookies("JSESSIONID").and().exceptionHandling().accessDeniedPage("/403").and().csrf().disable()
+                    .logout().logoutUrl("/admin/logout").logoutSuccessUrl("/loginAdmin").deleteCookies("JSESSIONID").and().exceptionHandling().accessDeniedPage("/403").and().csrf().disable()
                     .sessionManagement()
                    .sessionFixation().migrateSession()
                     .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
@@ -84,6 +96,15 @@ public class SecurityConfig {
         @Override
         public void configure(WebSecurity web) throws Exception {
            new SecurityConfig(). customConfig(web);
+
+//            web.expressionHandler(new DefaultWebSecurityExpressionHandler() {
+//                @Override
+//                protected SecurityExpressionOperations createSecurityExpressionRoot(Authentication authentication, FilterInvocation fi) {
+//                    WebSecurityExpressionRoot root = (WebSecurityExpressionRoot) super.createSecurityExpressionRoot(authentication, fi);
+//                    root.setDefaultRolePrefix(""); //remove the prefix ROLE_
+//                    return root;
+//                }
+//            });
         }
 
     }
@@ -115,7 +136,7 @@ public class SecurityConfig {
         }
 
         protected void configure(HttpSecurity http) throws Exception {
-            http.antMatcher("/operations/**").authorizeRequests().anyRequest().hasRole("RETAIL")
+            http.antMatcher("/operations/**").authorizeRequests().anyRequest().authenticated()
 
                     // log in
                     .and().formLogin().loginPage("/loginOps").loginProcessingUrl("/operations/login").failureUrl("/loginOps?error=true").defaultSuccessUrl("/opsPage")//TODO LANDING PAGE
@@ -162,7 +183,7 @@ public class SecurityConfig {
         }
 
         protected void configure(HttpSecurity http) throws Exception {
-            http.antMatcher("/user/**").authorizeRequests().anyRequest().hasRole("RETAIL")
+            http.antMatcher("/user/**").authorizeRequests().anyRequest().authenticated()
                     // log in
                     .and().formLogin().loginPage("/login").loginProcessingUrl("/user/login").failureUrl("/loginUser?error=true").defaultSuccessUrl("/userPage")
                     .and()

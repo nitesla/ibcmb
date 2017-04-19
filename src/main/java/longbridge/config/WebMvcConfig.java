@@ -1,5 +1,7 @@
 package longbridge.config;
 
+import org.hibernate.envers.boot.internal.EnversService;
+import org.hibernate.envers.boot.internal.EnversServiceImpl;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -23,4 +25,8 @@ public class WebMvcConfig   extends WebMvcConfigurerAdapter {
 	public ModelMapper modelMapper() {
 		return new ModelMapper();
 	}
+//	@Bean
+//	EnversService enversService(){
+//		return new EnversServiceImpl();
+//	}
 }
