@@ -14,6 +14,8 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -23,6 +25,9 @@ import org.springframework.security.web.access.expression.DefaultWebSecurityExpr
 import org.springframework.security.web.access.expression.WebSecurityExpressionRoot;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.security.config.http.SessionCreationPolicy;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -72,10 +77,11 @@ public class SecurityConfig {
 
             http
 
-                    .antMatcher("/admin/**").authorizeRequests().anyRequest().authenticated()
+                    .antMatcher("/admin/**").authorizeRequests().anyRequest()
+                    //.authenticated()
                     //.hasRole(UserType.ADMIN.toString())
                   // .hasRole("ADMIN")
-                // .hasAuthority("ADMIN")
+                  .hasAuthority(UserType.ADMIN.toString())
                     // log in
                     .and().formLogin().loginPage("/loginAdmin").loginProcessingUrl("/admin/login").failureUrl("/loginAdmin?error=loginError").defaultSuccessUrl("/dashboard")
 
@@ -136,8 +142,9 @@ public class SecurityConfig {
         }
 
         protected void configure(HttpSecurity http) throws Exception {
-            http.antMatcher("/operations/**").authorizeRequests().anyRequest().authenticated()
-
+            http.antMatcher("/operations/**").authorizeRequests().anyRequest()
+                    //.authenticated()
+                    .hasAuthority(UserType.OPERATIONS.toString())
                     // log in
                     .and().formLogin().loginPage("/loginOps").loginProcessingUrl("/operations/login").failureUrl("/loginOps?error=true").defaultSuccessUrl("/opsPage")//TODO LANDING PAGE
                     .and()
@@ -175,6 +182,12 @@ public class SecurityConfig {
         public RetailUserConfigurationAdapter() {
             super();
         }
+//          @Override
+//     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+//              List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+//              grantedAuthorities.add(new SimpleGrantedAuthority(UserType.RETAIL.toString()));
+//              auth.inMemoryAuthentication().withUser("admin").password("admin").authorities(grantedAuthorities);
+//          }
 
         @Override
         protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -183,13 +196,15 @@ public class SecurityConfig {
         }
 
         protected void configure(HttpSecurity http) throws Exception {
-            http.antMatcher("/retail/**").authorizeRequests().anyRequest().authenticated()
+            http.antMatcher("/retail/**").authorizeRequests().anyRequest()
+                    //.authenticated()
+                    .hasAuthority(UserType.RETAIL.toString())
                     // log in
                     .and().formLogin().loginPage("/login").loginProcessingUrl("/retail/login").failureUrl("/login?error=true").defaultSuccessUrl("/retail/requests")
                     .and()
 
                     // logout
-                   .logout().logoutUrl("/retail/logout").logoutSuccessUrl("/login").deleteCookies("JSESSIONID").and().exceptionHandling().accessDeniedPage("/403").and().csrf().disable()
+                   .logout().logoutUrl("/retail/logout").logoutSuccessUrl("/login").deleteCookies("JSESSIONID").and().exceptionHandling().and().csrf().disable()
 
                     .sessionManagement()
                     .sessionFixation().migrateSession()

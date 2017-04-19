@@ -95,7 +95,7 @@ code.setDescription("hello");
         codeRepo.save(code);
 
 */
-
+        System.out.println("****************  "  +UserType.RETAIL.toString());
     }
 
 }
