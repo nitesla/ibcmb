@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  * Created by Fortune on 4/3/2017.
@@ -26,25 +27,37 @@ public class AdmCorporateController {
     private CorporateService corporateService;
 
     @GetMapping("/new")
-    public String addCorporate(Corporate corporate){
+    public String addCorporate(Model model){
+        model.addAttribute("corporate", new CorporateDTO());
         return "adm/corporate/add";
     }
 
-    @PostMapping("/new")
-    public String createCorporate(@ModelAttribute("corporateForm") Corporate corporate, BindingResult result, Model model){
+    @PostMapping
+    public String createCorporate(@ModelAttribute("corporate") CorporateDTO corporate, BindingResult result, RedirectAttributes redirectAttributes){
         if(result.hasErrors()){
             return "adm/corporate/add";
         }
         corporateService.addCorporate(corporate);
-        model.addAttribute("success", "Corporate added successfully");
-        return "/admin/corporates";
+        redirectAttributes.addFlashAttribute("success", "Corporate added successfully");
+        return "redirect:/admin/corporates";
+    }
+
+    /**
+     * Edit an existing user
+     * @return
+     */
+    @GetMapping("/{id}/edit")
+    public String editUser(@PathVariable Long id, Model model) {
+        CorporateDTO corporate = corporateService.getCorporate(id);
+        model.addAttribute("corporate", corporate);
+        return "adm/corporate/edit";
     }
 
     @GetMapping("/{corporateId}")
-    public Corporate getCorporate(@PathVariable Long corporateId, Model model){
-        Corporate corporate = corporateService.getCorporate(corporateId);
+    public String getCorporate(@PathVariable Long corporateId, Model model){
+        CorporateDTO corporate = corporateService.getCorporate(corporateId);
         model.addAttribute("corporate",corporate);
-        return corporate;
+        return "adm/corporates/details";
     }
 
     @GetMapping
@@ -53,7 +66,7 @@ public class AdmCorporateController {
     }
 
     @GetMapping(path = "/all")
-    public @ResponseBody DataTablesOutput<CorporateDTO> getOpsUsers(DataTablesInput input){
+    public @ResponseBody DataTablesOutput<CorporateDTO> getCorporates(DataTablesInput input){
 
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<CorporateDTO> corps = corporateService.getCorporates(pageable);
@@ -65,21 +78,20 @@ public class AdmCorporateController {
         return out;
     }
 
-    @PostMapping("/{corporateId}")
-    public String updateCorporate(@ModelAttribute("corporateForm") Corporate corporate, @PathVariable Long corporateId, BindingResult result, Model model){
+    @PostMapping("/update")
+    public String updateCorporate(@ModelAttribute("corporate") CorporateDTO corporate, BindingResult result,RedirectAttributes redirectAttributes){
         if(result.hasErrors()){
-            return "add-corporate";
+            return "adm/corporate/new";
         }
-        corporate.setId(corporateId);
         corporateService.addCorporate(corporate);
-        model.addAttribute("success", "Corporate updated successfully");
-        return "/admin/corporates";
+        redirectAttributes.addFlashAttribute("success", "Corporate updated successfully");
+        return "redirect:/admin/corporates";
     }
 
-    @PostMapping("/{corporateId}/delete")
-    public String deleteCorporate(@PathVariable Long corporateId, Model model){
+    @GetMapping("/{corporateId}/delete")
+    public String deleteCorporate(@PathVariable Long corporateId, RedirectAttributes redirectAttributes){
         corporateService.deleteCorporate(corporateId);
-        model.addAttribute("success", "Corporate deleted successfully");
+        redirectAttributes.addFlashAttribute("success", "Corporate deleted successfully");
         return "redirect:/admin/corporates";
     }
 }

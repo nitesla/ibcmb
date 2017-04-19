@@ -17,7 +17,7 @@ public class User extends AbstractEntity{
     private String email;
     private String password;
     private String status;
-    private Date dateRegistered;
+    private Date dateCreated;
     private Date expiryDate;
     private Date lockedUntilDate;
     private Date lastLoginDate;
@@ -103,12 +103,12 @@ public class User extends AbstractEntity{
 //	}
 
 
-    public Date getDateRegistered() {
-        return dateRegistered;
+    public Date getDateCreated() {
+        return dateCreated;
     }
 
-    public void setDateRegistered(Date dateRegistered) {
-        this.dateRegistered = dateRegistered;
+    public void setDateCreated(Date dateCreated) {
+        this.dateCreated = dateCreated;
     }
 
     public Date getExpiryDate() {return expiryDate;}
@@ -148,7 +148,7 @@ public class User extends AbstractEntity{
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", status='" + status + '\'' +
-                ", dateRegistered=" + dateRegistered +
+                ", dateCreated=" + dateCreated +
                 ", expiryDate=" + expiryDate +
                 ", lockedUntilDate=" + lockedUntilDate +
                 ", lastLoginDate=" + lastLoginDate +

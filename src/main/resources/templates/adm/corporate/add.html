@@ -38,15 +38,25 @@
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="x_panel">
                             <div class="x_title">
-                                <h2>Add user</h2>
 
                                 <div class="clearfix"></div>
                             </div>
                             <div class="x_content">
                                 <div class="ibox-content">
-                                    <form method="get" class="form-horizontal" th:action="@{/admin/corporates/new}" th:object="${corporate}">
+                                    <form method="post" class="form-horizontal" th:action="@{/admin/corporates/}" th:object="${corporate}">
+
                                         <div class="form-group">
-                                            <label class="col-sm-2 control-label">Customer Id:</label>
+                                            <label class="col-sm-2 control-label">Corporate Type</label>
+
+                                            <div class="col-sm-4">
+                                                <select class="form-control" name="corporateType">
+                                                    <option value="sole" >Sole User</option>
+                                                    <option value="multi" >Multi User</option>
+
+                                                </select>
+                                            </div> </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">Customer Id</label>
 
                                             <div class="col-sm-4">
                                                 <input type="text" class="form-control" th:field="*{customerId}" />
@@ -57,7 +67,7 @@
 
 
                                         <div class="form-group">
-                                            <label class="col-sm-2 control-label">Company Name:</label>
+                                            <label class="col-sm-2 control-label">Company Name</label>
 
                                             <div class="col-sm-6">
                                                 <input type="text" class="form-control" th:field="*{companyName}" />
@@ -66,7 +76,16 @@
                                         </div>
 
                                         <div class="form-group">
-                                            <label class="col-sm-2 control-label">Address:</label>
+                                            <label class="col-sm-2 control-label">Email</label>
+
+                                            <div class="col-sm-6">
+                                                <input type="text" class="form-control" th:field="*{email}" />
+                                            </div>
+
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">Address</label>
 
                                             <div class="col-sm-6">
                                                 <input type="text" class="form-control" th:field="*{address}" />
@@ -74,20 +93,11 @@
 
                                         </div>
 
-                                        <div class="form-group">
-                                            <label class="col-sm-2 control-label">Email:</label>
-
-                                            <div class="col-sm-6">
-                                                <input type="text" class="form-control" th:field="*{email}" />
-                                            </div>
-
-
-                                        </div>
 
                                         <div class="form-group">
                                             <div class="col-sm-4 col-sm-offset-2">
-                                                <button class="btn btn-white" type="submit">Cancel</button>
-                                                <button class="btn btn-primary" type="submit">Save</button>
+                                                <button class="btn btn-white" type="reset">Cancel</button>
+                                                <button class="btn btn-primary" type="submit">Submit</button>
                                             </div>
                                         </div>
                                     </form>

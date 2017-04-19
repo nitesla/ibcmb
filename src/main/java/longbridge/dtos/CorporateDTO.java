@@ -1,7 +1,9 @@
 package longbridge.dtos;
 
 
-import org.hibernate.validator.constraints.NotEmpty;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.util.Date;
 
 /**
  * Created by Fortune on 4/5/2017.
@@ -9,18 +11,29 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 public class CorporateDTO {
 
+    @JsonProperty("DT_RowId")
     private Long id;
+    private int version;
     private String rcNumber;
-    @NotEmpty
+    private String corporateType;
     private String customerId;
     private String companyName;
     private String email;
     private String address;
+    private Date dateCreated;
 
 
     public Long getId() {return id;}
 
     public void setId(Long id) {this.id = id;}
+
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
+    }
 
     public String getCustomerId() {
         return customerId;
@@ -36,6 +49,14 @@ public class CorporateDTO {
 
     public void setRcNumber(String rcNumber) {
         this.rcNumber = rcNumber;
+    }
+
+    public String getCorporateType() {
+        return corporateType;
+    }
+
+    public void setCorporateType(String corporateType) {
+        this.corporateType = corporateType;
     }
 
     public String getCompanyName() {
@@ -62,5 +83,11 @@ public class CorporateDTO {
         this.address = address;
     }
 
+    public Date getDateCreated() {
+        return dateCreated;
+    }
 
+    public void setDateCreated(Date dateCreated) {
+        this.dateCreated = dateCreated;
+    }
 }
