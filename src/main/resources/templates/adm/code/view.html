@@ -40,10 +40,23 @@
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="x_panel">
                             <div class="x_title">
-                                <div class="row wrapper border-bottom white-bg page-heading">
+                                <ul class="nav navbar-left panel_toolbox">
+                                    <li >
+                                        <div class="col-lg-4">
+                                            <div class="title-action">
+                                                <a  class="btn btn-primary bt-select bt-link-act" href="/admin/codes/index/edit" disabled="disabled" ><i class="fa fa-pencil"></i> Edit Code </a>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li >
+                                        <div class="col-lg-4">
+                                            <div class="title-action">
+                                                <a  class="btn btn-danger bt-select bt-link-act" href="/admin/codes/index/delete" disabled="disabled" ><i class="fa fa-trash"></i> Delete Code</a>
+                                            </div>
+                                        </div>
+                                    </li>
 
-
-                                </div>
+                                </ul>
                                 <ul class="nav navbar-right panel_toolbox">
 
                                     <!-- <li>
@@ -74,7 +87,6 @@
                                         <th>Code</th>
                                         <th>Type</th>
                                         <th>Description</th>
-                                        <th></th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -86,7 +98,6 @@
                                         <th>Code</th>
                                         <th>Type</th>
                                         <th>Description</th>
-                                        <th></th>
                                     </tr>
                                     </tfoot>
                                 </table>
@@ -116,10 +127,10 @@
 <script>
     /*<![CDATA[*/
     $(document).ready(function() {
-        $('#codes').DataTable({
+        var table = $('#codes').DataTable({
             select:true,
             responsive: true,
-            "lengthMenu" : [ [ 5, 10, 50, -1 ],	[ 5, 10, 50, "All" ] ],
+            "lengthMenu" : [ [ 5, 10, 20],	[ 5, 10, 20 ] ],
             "pagingType" : "full_numbers",
             "searching": false,
             "paging": true,
@@ -129,26 +140,48 @@
             "columns": [
                 { "data": "code" },
                 { "data": "type" },
-                { "data": "description" },
-                { "data": null }
-            ] ,
-            "columnDefs" : [  {
-                "targets" : 3,
-                "render" : function(data, type, full, meta) {
-                    kk =  "<div class='col-md-6 col-sm-6 col-xs-12'><a  class='btn btn-default btn-xs' data-toggle='tooltip' title='Edit' data-placement='right' href='/admin/codes/"+ full.DT_RowId+ "/edit'>";
-                    kk += "<i class='fa fa-edit'></i>"
-                    kk += "Edit</a>" ;
+                { "data": "description" }
+            ] });
 
-                    kk  +=  "<a  class='btn btn-default btn-xs' data-toggle='tooltip' title='Delete' data-placement='right' href='/admin/codes/"+ full.DT_RowId+ "/delete'>";
-                    kk += "<i class='fa fa-trash-o'></i>"
-                    kk += "Delete</a></div>";
-                    return kk;
-                }
-            }]
-        } );
+        table.on('select', function() {
+            if (table.rows({
+                    selected : true
+                }).indexes().length === 0) {
+                $('.bt-select').attr("disabled", true);
+            } else {
+                $('.bt-select').removeAttr("disabled");
+            }
+
+        });
+
+        table.on('deselect', function() {
+            if (table.rows({
+                    selected : true
+                }).indexes().length === 0) {
+                $('.bt-select').attr("disabled", true);
+            } else {
+                $('.bt-select').removeAttr("disabled");
+            }
+        });
+
+    });
+
+    $("a.bt-link-act").on("click", function(e) {
+        e.preventDefault();
+        var link = $(e.currentTarget);
+        var dt = $('#codes').DataTable();
+        var id = $(dt.row({
+            selected: true
+        }).node()).attr("id");
+        //window.location.href = link.attr("formaction") + '?id=' + id;
+        //replace {id} with id
+        var ooo = link.attr("href").replace("index",id);
+        window.location.assign(ooo);
+
     } );
     /*]]>*/
 </script>
+
 
 
 </body>

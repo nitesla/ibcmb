@@ -1,5 +1,6 @@
 package longbridge.dtos;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import longbridge.models.AbstractEntity;
 
 import javax.persistence.Entity;
@@ -11,11 +12,12 @@ import javax.persistence.Entity;
 
 public class CodeDTO {
 
+    @JsonProperty("DT_RowId")
     private Long id;
     private String code;
     private String type;
     private String description;
-    private String version;
+    private int version;
 
     public Long getId() {
         return id;
@@ -49,11 +51,11 @@ public class CodeDTO {
         this.description = description;
     }
 
-    public String getVersion() {
+    public int getVersion() {
         return version;
     }
 
-    public void setVersion(String version) {
+    public void setVersion(int version) {
         this.version = version;
     }
 
