@@ -6,8 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
-    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/bootstrap.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/jquery-ui.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/bootstrap.css}"/>
     <!-- <link rel="stylesheet" type="text/css" href="assets/css/mega-menu.css"/> -->
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/custom.css}"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
@@ -17,8 +17,7 @@
 
 <body>
 
-<header class="header" th:fragment="header">
-    <div class="container">
+    <div class="container" th:fragment="header">
         <div class="top_bar">
             <ul class="list_group">
                 <li><a href="#"> Coronation merchnat bank</a></li>
@@ -43,17 +42,18 @@
                 </div>
                 <div class="collapse navbar-collapse" id="navbar-collapse-1">
                     <ul class="nav navbar-nav">
-                        <li class="dropdown mega-dropdown">
-                            <a href="/" class="dropdown-toggle">Dashboard</a>
-                        </li>
+                        <li><a href="/">Dashboard</a></li>
                         <li><a href="/">Transfers</a></li>
                         <li><a href="/">Bill Payments</a></li>
                         <li><a href="/">Transaction Support</a></li>
                         <li><a href="/">Services</a></li>
                         <li><a href="/">Settings</a></li>
+                        <li class="pull-right"><a href="#"> Log out <i class="fa fa-power-off"></i></a></li>
                     </ul>
-                    <ul class="stb navbar-right">
+
+                    <ul class="nav navbar-right">
                         <li><a href="@{/retail/logout}"> Log out <i class="fa fa-power-off"></i></a></li>
+
                     </ul>
                 </div>
             </div>
@@ -62,7 +62,6 @@
             <img th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
         </a>
     </div>
-</header>
 
 
 

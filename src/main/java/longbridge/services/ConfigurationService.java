@@ -1,5 +1,6 @@
 package longbridge.services;
 
+import longbridge.dtos.SettingDTO;
 import longbridge.models.Setting;
 
 /**
@@ -13,7 +14,7 @@ public interface ConfigurationService {
 
     Setting getSetting(Long id);
 
-    Setting getSettingByName(String name);
+    SettingDTO getSettingByName(String name);
 
     Iterable<Setting> getSettings();
 

@@ -1,8 +1,10 @@
 package longbridge.services.implementations;
 
+import longbridge.dtos.SettingDTO;
 import longbridge.models.Setting;
 import longbridge.repositories.SettingRepo;
 import longbridge.services.ConfigurationService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,9 @@ public class ConfigurationServiceImpl implements ConfigurationService {
     @Autowired
     SettingRepo settingRepo;
 
+    @Autowired
+    ModelMapper modelMapper;
+
     @Override
     public void addSetting(Setting setting) {
       settingRepo.save(setting);
@@ -27,8 +32,9 @@ public class ConfigurationServiceImpl implements ConfigurationService {
     }
 
     @Override
-    public Setting getSettingByName(String name) {
-        return settingRepo.findByName(name);
+    public SettingDTO getSettingByName(String name) {
+
+        return convertEntityToDTO(settingRepo.findByName(name));
     }
 
     @Override
@@ -44,5 +50,9 @@ public class ConfigurationServiceImpl implements ConfigurationService {
     @Override
     public void deleteSetting(Long id) {
         settingRepo.delete(id);
+    }
+
+    private SettingDTO convertEntityToDTO(Setting setting){
+        return  modelMapper.map(setting,SettingDTO.class);
     }
 }
