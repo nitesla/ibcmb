@@ -9,6 +9,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Created by Fortune on 4/5/2017.
@@ -26,13 +27,13 @@ public class RoleDTO{
 
     private UserType userType;
 
-    private Collection<PermissionDTO> permissions;
+    private List<PermissionDTO> permissions;
 
-    public Collection<PermissionDTO> getPermissions() {
+    public List<PermissionDTO> getPermissions() {
         return permissions;
     }
 
-    public void setPermissions(Collection<PermissionDTO> permissions) {
+    public void setPermissions(List<PermissionDTO> permissions) {
         this.permissions = permissions;
     }
 

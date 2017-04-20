@@ -10,19 +10,22 @@ import javax.persistence.Entity;
  */
 
 @Entity
-@Where(clause ="del_Flag='N'" )
+@Where(clause ="del_flag='N'" )
 public class AuditConfig extends AbstractEntity
 {
     @Column(name = "table_name")
     private String entityName;
-
-
-    public String getEntityName() {
-        return entityName;
-    }
-
-    public void setEntityName(String entityName) {
-        this.entityName = entityName;
-    }
-
+    private String enabled;
+	public String getEntityName() {
+		return entityName;
+	}
+	public void setEntityName(String entityName) {
+		this.entityName = entityName;
+	}
+	public String getEnabled() {
+		return enabled;
+	}
+	public void setEnabled(String enabled) {
+		this.enabled = enabled;
+	}
 }

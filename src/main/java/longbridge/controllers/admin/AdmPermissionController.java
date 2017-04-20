@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
@@ -31,7 +32,7 @@ public class AdmPermissionController {
         model.addAttribute("permission", new PermissionDTO());
         return "adm/permission/add";
     }
-
+//org.springframework.web.context.request.WebRequest
     @PostMapping
     public String createPermission(@ModelAttribute("permission") PermissionDTO permission, BindingResult result, RedirectAttributes redirectAttributes){
         if(result.hasErrors()){
@@ -41,6 +42,8 @@ public class AdmPermissionController {
         redirectAttributes.addFlashAttribute("success", "Permission added successfully");
         return "redirect:/admin/permissions";
     }
+    
+   
 
     @GetMapping("/{permissionId}")
     public PermissionDTO getPermission(@PathVariable Long permissionId, Model model){
