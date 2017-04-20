@@ -10,16 +10,14 @@ import org.springframework.stereotype.Component;
 public class AuthenticationFailureListener implements ApplicationListener<AuthenticationFailureBadCredentialsEvent> {
 
     @Autowired
-    private LoginAttemptService loginAttemptService;
+    private CustomBruteForceService loginAttemptService;
 
     @Override
     public void onApplicationEvent(final AuthenticationFailureBadCredentialsEvent e) {
-//        final String auth = (String) e.getAuthentication().getPrincipal();
-//
-//        if (auth != null) {
-//
-//          //  loginAttemptService.loginFailed(auth);
-//        }
+        final WebAuthenticationDetails auth = (WebAuthenticationDetails) e.getAuthentication().getDetails();
+        if (auth != null) {
+            loginAttemptService.loginFailed(auth.getRemoteAddress());
+        }
     }
 
 }

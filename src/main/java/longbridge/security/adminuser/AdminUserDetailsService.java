@@ -3,7 +3,12 @@ package longbridge.security.adminuser;
 import longbridge.models.AdminUser;
 import longbridge.models.UserType;
 import longbridge.repositories.AdminUserRepo;
+import longbridge.security.CustomBruteForceService;
+import longbridge.security.IpAddressUtils;
 import longbridge.security.userdetails.CustomUserPrincipal;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -19,23 +24,44 @@ import org.springframework.transaction.annotation.Transactional;
 public class AdminUserDetailsService implements UserDetailsService {
 
     private AdminUserRepo adminUserRepo;
+    private CustomBruteForceService bruteForceService;
+    private IpAddressUtils addressUtils;
+    private Logger logger= LoggerFactory.getLogger(this.getClass());
 
-    public AdminUserDetailsService(AdminUserRepo adminUserRepo) {
+    @Autowired
+    public AdminUserDetailsService(AdminUserRepo adminUserRepo,CustomBruteForceService bruteForceService,IpAddressUtils addressUtils) {
         this.adminUserRepo = adminUserRepo;
+       this.addressUtils=addressUtils;
+        this.bruteForceService=bruteForceService;
     }
 
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
+        final String ip = addressUtils.getClientIP();
+        logger.trace("User with IP Address {} trying to login",ip);
 
-        AdminUser user= adminUserRepo.findByUserName(s);
-
-        if(user!=null && user.getUserType()== UserType.ADMIN) {
-            return new CustomUserPrincipal(user);
+        //CHECK IF THE IP HAS BEEN BLOCKED BY THE CUSTOM BRUTE FORCE SERVICE
+        if (bruteForceService.isBlocked(ip)) {
+            logger.trace("IP -> {} has been blocked" ,ip);
+            throw new RuntimeException("blocked");
         }
-        throw new UsernameNotFoundException(s);
-    }
 
+        try{
+
+            AdminUser user= adminUserRepo.findFirstByUserName(s);
+
+            if(user!=null && user.getUserType()== UserType.ADMIN) {
+                return new CustomUserPrincipal(user);
+            }
+            throw new UsernameNotFoundException(s);
+        }
+        catch (Exception e){
+            logger.error("An exception occurred {}",e.getMessage());
+            throw new RuntimeException(e);
+        }
+
+    }
 
 
 }

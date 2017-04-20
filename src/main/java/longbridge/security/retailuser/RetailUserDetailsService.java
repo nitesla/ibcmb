@@ -3,7 +3,12 @@ package longbridge.security.retailuser;
 
 import longbridge.models.*;
 import longbridge.repositories.*;
+import longbridge.security.CustomBruteForceService;
+import longbridge.security.IpAddressUtils;
 import longbridge.security.userdetails.CustomUserPrincipal;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -18,20 +23,39 @@ import org.springframework.transaction.annotation.Transactional;
 public class RetailUserDetailsService implements UserDetailsService {
 
     private RetailUserRepo retailUserRepo;
+    private CustomBruteForceService bruteForceService;
+    private IpAddressUtils addressUtils;
+    private Logger logger= LoggerFactory.getLogger(this.getClass());
 
-    public RetailUserDetailsService(RetailUserRepo retailUserRepo) {
+
+
+    @Autowired
+    public RetailUserDetailsService(RetailUserRepo retailUserRepo, CustomBruteForceService bruteForceService, IpAddressUtils addressUtils) {
         this.retailUserRepo = retailUserRepo;
+        this.bruteForceService = bruteForceService;
+        this.addressUtils = addressUtils;
     }
 
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-
-        RetailUser user= retailUserRepo.findByUserName(s);
-        if(user!=null && user.getUserType()== UserType.RETAIL) {
-            return new CustomUserPrincipal(user);
+        final String ip = addressUtils.getClientIP();
+        logger.trace("User with IP Address {} trying to login",ip);
+        //CHECK IF THE IP HAS BEEN BLOCKED BY THE CUSTOM BRUTE FORCE SERVICE
+        if (bruteForceService.isBlocked(ip)) {
+            logger.trace("IP -> {} has been blocked" ,ip);
+            throw new RuntimeException("blocked");
         }
-        throw new UsernameNotFoundException(s);
+        try {
+            RetailUser user = retailUserRepo.findFirstByUserName(s);
+            if (user != null && user.getUserType() == UserType.RETAIL) {
+                return new CustomUserPrincipal(user);
+            }
+            throw new UsernameNotFoundException(s);
+        }catch (Exception e){
+            logger.error("An exception occurred {}",e.getMessage());
+            throw new RuntimeException(e);
+        }
     }
 
 

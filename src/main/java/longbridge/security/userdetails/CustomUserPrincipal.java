@@ -2,6 +2,7 @@ package longbridge.security.userdetails;
 
 import longbridge.models.Role;
 import longbridge.models.User;
+import org.joda.time.LocalDate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,6 +20,7 @@ public class CustomUserPrincipal implements UserDetails {
     private static final long serialVersionUID = 1L;
 
     private final User user;
+    private LocalDate today= LocalDate.now();
 
 
 
@@ -64,12 +66,30 @@ public class CustomUserPrincipal implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return true;
+        boolean result = false;
+        LocalDate date= new LocalDate(user.getExpiryDate());
+
+
+        if (date==null){
+            result= true;
+        }
+        else if (today.isBefore(date)){
+            result= true;
+        }
+        return result ;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        boolean result = false;
+        LocalDate date= new LocalDate(user.getLockedUntilDate());
+        if (date==null){
+            result = true;
+        }else if ( today.isAfter(date) || today.equals(date)){
+            result= true;
+        }
+
+        return result;
     }
 
     @Override
@@ -79,10 +99,10 @@ public class CustomUserPrincipal implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return user.getStatus().equalsIgnoreCase("ACTIVE");
     }
 
-    //TODO we will create a new constructor to factor out new things
+
 
     public User getUser() {
         return user;

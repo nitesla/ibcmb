@@ -12,6 +12,6 @@ import org.springframework.stereotype.Repository;
 
 public interface RetailUserRepo extends CommonRepo<RetailUser, Long> {
 
-    RetailUser findByUserName(String s);
+    RetailUser findFirstByUserName(String s);
 
 }

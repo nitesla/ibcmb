@@ -25,7 +25,7 @@ public class MainController {
         return new ModelAndView("retaillogin", "error", error);
     }
 
-    @RequestMapping("/dashboard")
+    @RequestMapping("/admin/dashboard")
     public String getDashboard() {
         return "dashboard";
     }

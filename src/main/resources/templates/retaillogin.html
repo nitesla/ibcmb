@@ -62,9 +62,10 @@
                             <button class="btn form-control">Submit</button>
                         </div>
 
-                        <div align="center" th:if="${param.error}">
-                            <p style="font-size: 20; color: #FF1C19;">Username or Password invalid, please verify</p>
-                        </div>
+                        <div th:if="${param.message != null}" class="alert alert-info" th:text="${param.message[0]}">message</div>
+
+
+                        <div th:if="${param.error != null}" class="alert alert-danger" th:text="${session[SPRING_SECURITY_LAST_EXCEPTION]}">error</div>
                     </form>
                 </div>
             </div>

@@ -7,27 +7,17 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-import org.springframework.security.access.expression.SecurityExpressionOperations;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.session.SessionRegistry;
-import org.springframework.security.core.session.SessionRegistryImpl;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.FilterInvocation;
-import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
-import org.springframework.security.web.access.expression.WebSecurityExpressionRoot;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
-import org.springframework.security.config.http.SessionCreationPolicy;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -54,6 +44,12 @@ public class SecurityConfig {
         UserDetailsService adminDetails;
         @Autowired
         BCryptPasswordEncoder bCryptPasswordEncoder;
+        @Autowired
+        @Qualifier("adminAuthenticationSuccessHandler")
+        private AuthenticationSuccessHandler adminAuthenticationSuccessHandler;
+        @Autowired
+        @Qualifier("adminAuthenticationFailureHandler")
+        private AuthenticationFailureHandler adminAuthenticationFailureHandler;
 
 
         public AdminUserConfigurationAdapter() {
@@ -78,13 +74,11 @@ public class SecurityConfig {
             http
 
                     .antMatcher("/admin/**").authorizeRequests().anyRequest()
-                    //.authenticated()
-                    //.hasRole(UserType.ADMIN.toString())
-                  // .hasRole("ADMIN")
                   .hasAuthority(UserType.ADMIN.toString())
                     // log in
-                    .and().formLogin().loginPage("/loginAdmin").loginProcessingUrl("/admin/login").failureUrl("/loginAdmin?error=loginError").defaultSuccessUrl("/dashboard")
-
+                    .and().formLogin().loginPage("/loginAdmin").loginProcessingUrl("/admin/login").failureUrl("/loginAdmin?error=loginError").defaultSuccessUrl("/admin/dashboard")
+                    .successHandler(adminAuthenticationSuccessHandler)
+                    .failureHandler(adminAuthenticationFailureHandler)
 
                     .and()
                     // logout
@@ -179,15 +173,18 @@ public class SecurityConfig {
         UserDetailsService retDetails;
         @Autowired
         BCryptPasswordEncoder bCryptPasswordEncoder;
+        @Autowired
+        @Qualifier("retailAuthenticationSuccessHandler")
+        private AuthenticationSuccessHandler retailAuthenticationSuccessHandler;
+        @Autowired
+        @Qualifier("retailAuthenticationFailureHandler")
+        private AuthenticationFailureHandler retailAuthenticationFailureHandler;
+
+
         public RetailUserConfigurationAdapter() {
             super();
         }
-//          @Override
-//     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-//              List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-//              grantedAuthorities.add(new SimpleGrantedAuthority(UserType.RETAIL.toString()));
-//              auth.inMemoryAuthentication().withUser("admin").password("admin").authorities(grantedAuthorities);
-//          }
+
 
         @Override
         protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -201,6 +198,9 @@ public class SecurityConfig {
                     .hasAuthority(UserType.RETAIL.toString())
                     // log in
                     .and().formLogin().loginPage("/login").loginProcessingUrl("/retail/login").failureUrl("/login?error=true").defaultSuccessUrl("/retail/requests")
+                    .successHandler(retailAuthenticationSuccessHandler)
+                    .failureHandler(retailAuthenticationFailureHandler)
+
                     .and()
 
                     // logout

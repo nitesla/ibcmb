@@ -8,5 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface OperationsUserRepo extends CommonRepo<OperationsUser, Long> {
 
-    OperationsUser findByUserName(String s);
+    OperationsUser findFirstByUserName(String s);
 }
