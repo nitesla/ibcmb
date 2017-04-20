@@ -94,12 +94,16 @@ public class CustomUserPrincipal implements UserDetails {
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return true;
+        return isEnabled();
     }
 
     @Override
     public boolean isEnabled() {
-        return user.getStatus().equalsIgnoreCase("ACTIVE");
+        try {
+            return user.getStatus().equalsIgnoreCase("ACTIVE");
+        }catch (Exception e){
+            return  false;
+        }
     }
 
 
