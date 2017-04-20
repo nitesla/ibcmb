@@ -1,0 +1,105 @@
+package longbridge.controllers.admin;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import longbridge.models.AdminUser;
+import longbridge.models.Verification;
+import longbridge.repositories.VerificationRepo;
+import longbridge.services.AdminUserService;
+import longbridge.services.CodeService;
+import longbridge.services.RoleService;
+import longbridge.services.VerificationService;
+
+@Controller
+@RequestMapping("/admin/verifications")
+public class VerificationController {
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
+	@Autowired
+	private VerificationService verificationService;
+	@Autowired
+	private VerificationRepo verificationRepo;
+
+	@Autowired 
+	private AdminUserService adminUserService;
+	
+	@Autowired
+	private CodeService codeService; 
+	
+    @PersistenceContext
+    EntityManager eman;
+    
+	@Autowired
+	private RoleService roleService;
+	
+	
+	@GetMapping("/")
+	public String getVerifications(Model model){
+		return "adm/admin/verification/view";
+	}
+	
+	@PostMapping("/{id}/verify")
+	public String verify(@PathVariable Long id) {
+		
+
+		logger.info("id {}", id); 
+        //TODO check verifier role
+        AdminUser adminUser = adminUserService.getUser(1l);
+        Verification verification = verificationRepo.findOne(id);
+        logger.info("log {}", verification);
+
+        if (verification == null || Verification.VerificationStatus.PENDING != verification.getStatus())
+            return "Verification not found";
+
+        //TODO check if this verification has a dependency
+        if(verification.getDependency() != null){
+        	return "Verification has a dependency";
+        }
+        
+        verificationService.verify(verification, adminUser);
+
+		return "adm/admin/verification/confirm";
+	}
+	
+	@PostMapping("/{id}/decline")
+	public String decline(@PathVariable Long verificationId){
+		//TODO check verifier role
+        AdminUser adminUser = adminUserService.getUser(1l);
+        Verification verification = verificationService.getVerification(verificationId);
+
+        if (verification == null || Verification.VerificationStatus.PENDING != verification.getStatus())
+            return "Verification not found";
+
+        //TODO check if this verification has a dependency
+        if(verification.getDependency() != null){
+        	return "Verification has a dependency";
+        }
+        
+        switch(verification.getOperationCode()){
+        	case ADD_CODE:
+        		codeService.decline(verification, adminUser, "todo get the reason from the frontend");
+        	case MODIFY_CODE:
+        		codeService.decline(verification, adminUser, "todo get the reason from the frontend");
+        	case ADD_ROLE:
+        		roleService.decline(verification, adminUser, "todo get the reason from the frontend");
+        	case MODIFY_ROLE:
+        		roleService.decline(verification, adminUser, "todo get the reason from the frontend");
+        	case ADD_ADMIN_USER:
+        		adminUserService.decline(verification, adminUser, "todo get the reason from the frontend");
+        	case MODIFY_ADMIN_USER:
+        		adminUserService.decline(verification, adminUser, "todo get the reason from the frontend");
+        	}
+		return "adm/admin/verification/decline";
+	}
+
+}

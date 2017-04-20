@@ -75,7 +75,7 @@
                                     <tr class="gradeA" th:each="t : ${tables}">
                                         <td th:text="${t}"></td>
                                         <td >
-                                          <input type="checkbox" value="" th:id="${t}"    th:onchange="'persistAudit(\'' + ${t} + '\');'"/>
+ 										<input type="checkbox"  th:value="${t}" th:id="${t}"/>
 
                                         </td>
                                     </tr>
@@ -131,18 +131,30 @@
     /*]]>*/
 </script>
 <script>
-    function persistAudit(var1 ) {
-//        if ( document.getElementById("var1").checked){
-//            alert(var1);
-//        }
 
-       $("#var1").attr("checked") ?   alert("Checked") : alert("Unchecked");
-//        alert(var1);
 
-        return true;
-
-    }
-
+    $("input[type=checkbox]").on("change", function(e) {
+    	var updateUrl ;
+    	var cb = $(e.currentTarget);
+    	var nm = cb.val();
+    	var enabled  ;
+    	if(cb.is(':checked')){
+    		enabled = true;
+    	}else{
+    		enabled = false;
+    	}
+    	$.post(updateUrl ,{'name' : nm , 'enabled' : enabled }).done(function( data ) {
+    	        if(data['error'] == false ) {
+    	        	
+    	        }else if(data['error'] == true ){
+    	        	
+    	        }else{
+    	        	
+    	        }
+    	    });;
+       
+        //goto url
+    });
 </script>
 
 

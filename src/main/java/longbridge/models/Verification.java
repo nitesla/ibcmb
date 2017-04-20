@@ -32,6 +32,7 @@ public class Verification extends  AbstractEntity {
 
     private String description;
     private Long entityId;
+    private String entityName;
     @Enumerated(value = EnumType.STRING)
     private OperationCode operationCode;
 
@@ -47,12 +48,31 @@ public class Verification extends  AbstractEntity {
     @ManyToOne
     private AdminUser verifiedBy;
     private Date verifiedOn;
+    
+    @OneToOne
+    private Verification dependency;
 
-    public AdminUser getDeclinedBy() {
+    public Verification getDependency() {
+		return dependency;
+	}
+
+	public void setDependency(Verification dependency) {
+		this.dependency = dependency;
+	}
+
+	public AdminUser getDeclinedBy() {
         return declinedBy;
     }
 
-    public void setDeclinedBy(AdminUser declinedBy) {
+    public String getEntityName() {
+		return entityName;
+	}
+
+	public void setEntityName(String entityName) {
+		this.entityName = entityName;
+	}
+
+	public void setDeclinedBy(AdminUser declinedBy) {
         this.declinedBy = declinedBy;
     }
 
@@ -159,5 +179,23 @@ public class Verification extends  AbstractEntity {
     public void setVerifiedBy(AdminUser verifiedBy) {
         this.verifiedBy = verifiedBy;
     }
+
+	@Override
+	public String toString() {
+		return "Verification [" + (beforeObject != null ? "beforeObject=" + beforeObject + ", " : "")
+				+ (afterObject != null ? "afterObject=" + afterObject + ", " : "")
+				+ (original != null ? "original=" + original + ", " : "")
+				+ (status != null ? "status=" + status + ", " : "")
+				+ (description != null ? "description=" + description + ", " : "")
+				+ (entityId != null ? "entityId=" + entityId + ", " : "")
+				+ (operationCode != null ? "operationCode=" + operationCode + ", " : "")
+				+ (initiatedBy != null ? "initiatedBy=" + initiatedBy + ", " : "")
+				+ (initiatedOn != null ? "initiatedOn=" + initiatedOn + ", " : "")
+				+ (declinedBy != null ? "declinedBy=" + declinedBy + ", " : "")
+				+ (declinedOn != null ? "declinedOn=" + declinedOn + ", " : "")
+				+ (declineReason != null ? "declineReason=" + declineReason + ", " : "")
+				+ (verifiedBy != null ? "verifiedBy=" + verifiedBy + ", " : "")
+				+ (verifiedOn != null ? "verifiedOn=" + verifiedOn : "") + "]";
+	}
 
 }
