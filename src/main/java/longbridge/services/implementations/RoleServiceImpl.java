@@ -72,7 +72,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public void modify(RoleDTO role, AdminUser initiator) {
-        Role roleO = roleRepo.findOne(role.getId());
+        Role roleO = roleRepo.findOne(1l);//role.getId());
         RoleDTO originalObject = convertEntityToDTO(roleO);
 
         try {
@@ -210,6 +210,10 @@ public class RoleServiceImpl implements RoleService {
         roleRepo.save(role);
     }
 
+    public void addRole(Role roleDTO) {
+        roleRepo.save(roleDTO);
+    }
+
     @Override
     public RoleDTO getRole(Long id) {
         Role role = roleRepo.findOne(id);
@@ -286,7 +290,7 @@ public class RoleServiceImpl implements RoleService {
 
 
 
-    private RoleDTO convertEntityToDTO(Role role){
+    public RoleDTO convertEntityToDTO(Role role){
         return modelMapper.map(role,RoleDTO.class);
     }
 

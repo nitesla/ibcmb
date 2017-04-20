@@ -31,7 +31,6 @@ public class BeneficiaryServiceImpl implements BeneficiaryService {
         boolean result= false;
 
         try {
-
             beneficiary.setUser(user);
             this.localBeneficiaryRepo.save(beneficiary);
             logger.trace("Beneficiary {} has been added", this.localBeneficiaryRepo.toString());
@@ -81,11 +80,11 @@ public class BeneficiaryServiceImpl implements BeneficiaryService {
 
             beneficiary.setUser(user);
             this.internationalBeneficiaryRepo.save(beneficiary);
-            logger.info("BENEFICIARY {} HAS BEEN ADDED ");
+            logger.info("International beneficiary {} has been added for user {}", beneficiary.getName(), user.getUserName());
             result=true;
         }
         catch (Exception e){
-            logger.error("ERROR OCCURRED {}",e.getMessage());
+            logger.error("Could not add beneficiary",e.getMessage());
 
         }
         return result;
@@ -96,15 +95,14 @@ public class BeneficiaryServiceImpl implements BeneficiaryService {
         boolean result= false;
 
         try {
-
             InternationalBeneficiary beneficiary = internationalBeneficiaryRepo.findOne(beneficiaryId);
             beneficiary.setDelFlag("Y");
             this.internationalBeneficiaryRepo.save(beneficiary);
-            logger.info("BENEFICIARY {} HAS BEEN DELETED ");
+            logger.info("Deleted beneficiary {}",beneficiary.getName());
             result=true;
         }
         catch (Exception e){
-            logger.error("ERROR OCCURRED {}",e.getMessage());
+            logger.error("Could not create beneficiary {}",e.getMessage());
 
         }
         return result;

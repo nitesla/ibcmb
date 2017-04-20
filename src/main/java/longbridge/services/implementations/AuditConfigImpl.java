@@ -2,15 +2,6 @@ package longbridge.services.implementations;
 
 import longbridge.models.AuditConfig;
 import longbridge.repositories.AuditConfigRepo;
-import longbridge.services.AuditConfigService;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.persistence.EntityManager;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,13 +9,10 @@ import org.springframework.stereotype.Service;
  * Created by ayoade_farooq@yahoo.com on 4/19/2017.
  */
 @Service
-public class AuditConfigImpl implements AuditConfigService {
+public class AuditConfigImpl {
 
-	@Autowired
-	EntityManager entityManager;
-
-	@Autowired
-	private AuditConfigRepo configRepo;
+    @Autowired
+    private AuditConfigRepo configRepo;
 
 	public AuditConfig findEntity(String s) {
 		return configRepo.findFirstByEntityName(s);

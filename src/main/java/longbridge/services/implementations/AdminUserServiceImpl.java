@@ -106,7 +106,7 @@ public class AdminUserServiceImpl implements AdminUserService {
             adminUser.setLastName(user.getLastName());
             adminUser.setUserName(user.getUserName());
             Role role = new Role();
-            role.setId(user.getRoleId());
+            role.setId(Long.parseLong(user.getRoleId()));
             adminUser.setRole(role);
             this.adminUserRepo.save(adminUser);
             logger.info("New admin user: {} created", adminUser.getUserName());
@@ -135,7 +135,7 @@ public class AdminUserServiceImpl implements AdminUserService {
             adminUser.setLastName(user.getLastName());
             adminUser.setUserName(user.getUserName());
             Role role = new Role();
-            role.setId(user.getRoleId());
+            role.setId(Long.parseLong(user.getRoleId()));
             adminUser.setRole(role);
             this.adminUserRepo.save(adminUser);
             logger.info("Admin user {} updated", adminUser.getUserName());
@@ -256,7 +256,7 @@ public class AdminUserServiceImpl implements AdminUserService {
         AdminUserDTO adminUserDTO = new AdminUserDTO();
         adminUserDTO.setFirstName(adminUser.getFirstName());
         adminUserDTO.setLastName(adminUser.getLastName());
-        adminUserDTO.setRoleId(adminUser.getRole().getId());
+        adminUserDTO.setRoleId(adminUser.getRole().getId().toString());
         return  modelMapper.map(adminUser,AdminUserDTO.class);
     }
 

@@ -21,6 +21,7 @@ public interface RoleService extends Verifiable<RoleDTO> {
      * @param  role the role to be added to the system
      */
     void addRole(RoleDTO role);
+    void addRole(Role role);
 
     /**
      * Returns a roleDTO

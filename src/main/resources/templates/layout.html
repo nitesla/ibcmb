@@ -18,11 +18,17 @@
       <link th:href="@{~/bank/vendors/switchery/switchery.css}" rel="stylesheet" type="text/css" />
     <link th:href="@{~/bank/css/custom.css}" rel="stylesheet"/>
     <link th:href="@{~/bank/css/coronation.css}" rel="stylesheet"/>
-    <title>Coronation Trade Portal</title>
+    <link th:href="@{~/bank/css/bootstrap-switch.min.css}" rel="stylesheet"/>
+    <title>Coronation Internet Banking</title>
 
 </head>
 
 <body>
+
+
+
+
+
 
 <!-- admin menu -->
 <div th:fragment="admin-menu" id="sidebar-menu" class="main_menu_side hidden-print main_menu">
@@ -32,7 +38,7 @@
             <li><a><i class="fa fa-users"></i> User Management <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
                     <li><a href="/admin/users/">Administrators</a></li>
-                    <li><a href="/admin/operations/users">Operations</a></li>
+                    <li><a href="/admin/operations/users">Operators</a></li>
                     <li><a href="/admin/corporates/">Corporate</a></li>
                     <li><a href="/admin/retail/users/">Retail</a></li>
                     <li><a href="/admin/permissions/">Permission</a></li>
@@ -106,6 +112,8 @@
     </div>
 </div>
 <!-- /ops menu -->
+
+
 
 
 <!-- /menu footer buttons -->
@@ -242,7 +250,12 @@
         <script th:src="@{~/bank/js/bootstrap-editable-custom.js}"></script>
         <!-- Custom Theme Scripts -->
         <script th:src="@{~/bank/js/custom.js}"></script>
-    </footer>
+        <script th:src="@{~/bank/js/bootstrap-switch.min.js}"></script>
+        <script th:src="@{~/bank/js/notify.min.js}"></script>
+
+
+
+</footer>
 <!-- /footer content -->
 
 </body>

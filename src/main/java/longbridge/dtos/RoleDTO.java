@@ -18,7 +18,6 @@ public class RoleDTO{
 
     @JsonProperty("DT_RowId")
     private Long id;
-    private int version;
    @NotEmpty
     private String name;
    @NotEmpty
@@ -43,14 +42,6 @@ public class RoleDTO{
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public int getVersion() {
-        return version;
-    }
-
-    public void setVersion(int version) {
-        this.version = version;
     }
 
     public String getName() {

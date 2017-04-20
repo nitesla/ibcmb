@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 
-import javax.validation.constraints.NotNull;
-
 /**
  * Created by Fortune on 4/5/2017.
  */
@@ -14,17 +12,23 @@ public class AdminUserDTO {
     @JsonProperty("DT_RowId")
     private Long id;
     private  int version;
-  //  @NotEmpty
+
+    @NotEmpty(message = "cifId")
+    private String cifId;
+    @NotEmpty(message = "userName")
     private String userName;
-  //  @NotEmpty
+    @NotEmpty(message = "firstName")
     private String firstName;
-   // @NotEmpty
+    @NotEmpty(message = "lastName")
     private String lastName;
-   // @NotEmpty
-    //@Email
+    @NotEmpty(message = "email")
+    @Email(message = "email")
     private String email;
     private String password;
-    private Long roleId;
+    private String dateCreated;
+    private String lastLogin;
+    @NotEmpty(message = "roleId")
+    private String roleId;
     private String role;
     private String userType;
 
@@ -43,6 +47,14 @@ public class AdminUserDTO {
 
     public void setVersion(int version) {
         this.version = version;
+    }
+
+    public String getCifId() {
+        return cifId;
+    }
+
+    public void setCifId(String cifId) {
+        this.cifId = cifId;
     }
 
     public String getUserName() {
@@ -85,11 +97,27 @@ public class AdminUserDTO {
         this.password = password;
     }
 
-    public Long getRoleId() {
+    public String getDateCreated() {
+        return dateCreated;
+    }
+
+    public void setDateCreated(String dateCreated) {
+        this.dateCreated = dateCreated;
+    }
+
+    public String getLastLogin() {
+        return lastLogin;
+    }
+
+    public void setLastLogin(String lastLogin) {
+        this.lastLogin = lastLogin;
+    }
+
+    public String getRoleId() {
         return roleId;
     }
 
-    public void setRoleId(Long roleId) {
+    public void setRoleId(String roleId) {
         this.roleId = roleId;
     }
 

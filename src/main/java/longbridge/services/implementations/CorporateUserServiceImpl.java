@@ -120,7 +120,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             if (this.passwordEncoder.matches(oldPassword, user.getPassword())) {
                 user.setPassword(this.passwordEncoder.encode(newPassword));
                 corporateUserRepo.save(user);
-                logger.info("USER {}'s password has been updated", user.getUserName());
+                logger.info("User {}'s password has been updated", user.getUserName());
                 return;
             } else {
                 logger.error("Invalid current password supplied for {}", user.getUserName());

@@ -78,19 +78,22 @@ public class AdminUserController {
      * @throws Exception
      */
     @PostMapping
-    public String createUser(@ModelAttribute("adminUser") AdminUserDTO adminUser, BindingResult result, RedirectAttributes redirectAttributes) throws Exception{
+    public String createUser(@ModelAttribute("adminUser") @Valid AdminUserDTO adminUser, BindingResult result, Model model, RedirectAttributes redirectAttributes) throws Exception{
         if(result.hasErrors()){
+            Iterable<RoleDTO> roles = roleService.getRoles();
+            model.addAttribute("roles",roles);
+            model.addAttribute("message","Pls correct the errors");
+
             return "adm/admin/add";
         }
         adminUserService.addUser(adminUser);
-        redirectAttributes.addFlashAttribute("success","Admin user created successfully");
+        redirectAttributes.addFlashAttribute("message","Admin user created successfully");
         return "redirect:/admin/users";
     }
 
 
     @GetMapping(path = "/all")
     public @ResponseBody DataTablesOutput<AdminUserDTO> getUsers(DataTablesInput input){
-
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<AdminUserDTO> adminUsers = adminUserService.getUsers(pageable);
         DataTablesOutput<AdminUserDTO> out = new DataTablesOutput<AdminUserDTO>();
@@ -98,7 +101,6 @@ public class AdminUserController {
         out.setData(adminUsers.getContent());
         out.setRecordsFiltered(adminUsers.getTotalElements());
         out.setRecordsTotal(adminUsers.getTotalElements());
-
         return out;
     }
 

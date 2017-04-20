@@ -2,6 +2,7 @@ package longbridge.dtos;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import java.util.Date;
@@ -14,17 +15,19 @@ public class OperationsUserDTO {
     private Long id;
 
     private int version;
-  //  @NotEmpty
+    @NotEmpty(message = "userName")
     private String userName;
-  //  @NotEmpty
+    @NotEmpty(message = "firstName")
     private String firstName;
-   // @NotEmpty
+    @NotEmpty(message = "lastName")
     private String lastName;
 
     private Long roleId;
 
     private String role;
 
+    @NotEmpty(message = "email")
+    @Email(message = "email")
     private String email;
     private String password;
     private String status;
