@@ -72,10 +72,10 @@
                                     </thead>
                                     <tbody>
 
-                                    <tr class="gradeA" th:each="t : ${tables}">
-                                        <td th:text="${t}"></td>
+                                    <tr class="gradeA" th:each="auditEntry : ${tables}">
+                                        <td th:text="${auditEntry.entityName}"></td>
                                         <td >
- 										<input type="checkbox"  th:value="${t}" th:id="${t}"/>
+ 										<input type="checkbox" data-switchery="true" th:class="js-switch" th:checked="${auditEntry.enabled eq 'Y'}" th:value="${auditEntry.entityName}" th:id="${auditEntry.entityName}"/>
 
                                         </td>
                                     </tr>
@@ -134,25 +134,39 @@
 
 
     $("input[type=checkbox]").on("change", function(e) {
-    	var updateUrl ;
+    	var updateUrl = "/admin/audit";
     	var cb = $(e.currentTarget);
     	var nm = cb.val();
-    	var enabled  ;
+    	var isEnabled  ;
     	if(cb.is(':checked')){
-    		enabled = true;
+    		isEnabled = 'Y';
     	}else{
-    		enabled = false;
+    		isEnabled = 'N';
     	}
-    	$.post(updateUrl ,{'name' : nm , 'enabled' : enabled }).done(function( data ) {
-    	        if(data['error'] == false ) {
-    	        	
-    	        }else if(data['error'] == true ){
-    	        	
-    	        }else{
-    	        	
-    	        }
-    	    });;
-       
+    	var objectData = 
+    		{
+    			entityName : nm,
+    			enabled : isEnabled
+    		};
+    	var objectDataString = JSON.stringify(objectData);
+    	    $.ajax({
+    			type : "POST",
+    			contentType : "application/json",
+    			url : updateUrl,
+    			data: objectDataString,
+                dataType : 'json',
+    			timeout : 100000,
+    			success : function(data) {
+    				console.log("SUCCESS: ", data);
+    			},
+    			error : function(e) {
+    				console.log("ERROR: ", e);
+    			},
+    			done : function(e) {
+    				console.log("DONE");
+    			}
+    		});
+
         //goto url
     });
 </script>

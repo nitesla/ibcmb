@@ -2,16 +2,13 @@ package longbridge.controllers.admin;
 
 import longbridge.dtos.PermissionDTO;
 import longbridge.dtos.RoleDTO;
-import longbridge.dtos.ServiceReqConfigDTO;
 import longbridge.models.AdminUser;
-import longbridge.models.Permission;
-import longbridge.models.Role;
 import longbridge.models.Verification;
 import longbridge.repositories.AdminUserRepo;
-import longbridge.repositories.RoleRepo;
 import longbridge.repositories.VerificationRepo;
 import longbridge.services.RoleService;
-import org.modelmapper.ModelMapper;
+
+import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +21,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
@@ -61,11 +59,17 @@ public class AdmRoleController {
     }
 
     @PostMapping
-    public String createRole(@ModelAttribute("role") @Valid RoleDTO roleDTO, BindingResult result, RedirectAttributes redirectAttributes){
+    public String createRole(@ModelAttribute("role") @Valid RoleDTO roleDTO, BindingResult result,WebRequest request, RedirectAttributes redirectAttributes){
         if(result.hasErrors()){
             return "adm/role/add";
         }
         logger.info("Role {}", roleDTO.toString());
+        String[] parameterValues = request.getParameterValues("permissions");
+    	for (String param  : parameterValues){
+    		PermissionDTO pdto = new PermissionDTO();
+    		pdto.setId(NumberUtils.createLong(param));
+    		roleDTO.getPermissions().add(pdto);
+    	}
         roleService.addRole(roleDTO);
         redirectAttributes.addFlashAttribute("success", "Role added successfully");
         return "redirect:/admin/roles";
