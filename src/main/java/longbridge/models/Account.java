@@ -3,6 +3,9 @@ package longbridge.models;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import javax.persistence.Entity;
 
 
@@ -135,6 +138,5 @@ public class Account extends AbstractEntity{
                 + "}";
     }
 
-
-
+    
 }

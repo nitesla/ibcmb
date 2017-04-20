@@ -1,11 +1,18 @@
 package longbridge.models;
 
-import org.hibernate.annotations.Where;
-import org.hibernate.envers.Audited;
+import java.io.IOException;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+
+import org.hibernate.annotations.Where;
+import org.hibernate.envers.Audited;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import longbridge.dtos.CodeDTO;
 
 /**
  * The {@code Code} class model represents unique data that can be used for system configurations.
@@ -63,6 +70,19 @@ public class Code extends AbstractEntity {
 		result = prime * result + ((type == null) ? 0 : type.hashCode());
 		return result;
 	}
+
+    public static Code deserialize(String data) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        Code code = mapper.readValue(data, Code.class);
+        return code;
+    }
+
+    public static String serialize(Code code) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        String data = mapper.writeValueAsString(code);
+        return data;
+    }
+
 
 	@Override
 	public boolean equals(Object obj) {
