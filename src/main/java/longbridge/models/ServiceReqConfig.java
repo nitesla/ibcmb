@@ -17,6 +17,8 @@ import java.util.Collection;
 public class ServiceReqConfig extends AbstractEntity{
 
     private String requestName;
+    private String requestType;
+    private String requestUnit;
 
     @OneToMany(cascade = CascadeType.ALL)
     private Collection<ServiceReqFormField> formFields;
@@ -27,6 +29,22 @@ public class ServiceReqConfig extends AbstractEntity{
 
     public void setRequestName(String requestName) {
         this.requestName = requestName;
+    }
+
+    public String getRequestType() {
+        return requestType;
+    }
+
+    public void setRequestType(String requestType) {
+        this.requestType = requestType;
+    }
+
+    public String getRequestUnit() {
+        return requestUnit;
+    }
+
+    public void setRequestUnit(String requestUnit) {
+        this.requestUnit = requestUnit;
     }
 
     public Collection<ServiceReqFormField> getFormFields() {

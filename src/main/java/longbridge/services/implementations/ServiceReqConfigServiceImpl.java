@@ -182,6 +182,7 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 	}
 
 	private ServiceReqConfig convertDTOToEntity(ServiceReqConfigDTO serviceReqConfigDTO) {
+		modelMapper = new ModelMapper();
 		return modelMapper.map(serviceReqConfigDTO, ServiceReqConfig.class);
 	}
 
