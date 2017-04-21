@@ -54,13 +54,38 @@
                                         <div class="form-group">
                                             <label class="control-label col-md-2 col-sm-2 col-xs-12">Request Name <span class="required">*</span>
                                             </label>
-                                            <div class="col-md-4 col-sm-4 col-xs-12">
-                                                <input class="form-control col-md-7 col-xs-12" name="requestName" placeholder="Service" th:field="*{requestName}"/>
+                                            <div class="col-md-4 col-sm-6 col-xs-12">
+                                                <input class="form-control col-md-7 col-xs-12" th:field="*{requestName}"/>
                                                 <input  type="hidden"  name="version" th:value="*{version}" />
                                                 <input  type="hidden"  name="id" th:value="*{id}" />
 
                                             </div>
-                                        </div><br/><br/>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">Request Type <span class="required">*</span></label>
+                                            <div class="col-md-4 col-sm-6 col-xs-12">
+
+                                                <select class="form-control" th:field="*{requestType}" required="required">
+                                                    <option value="" name="select">Select..</option>
+                                                    <option th:each="requestType : ${requestTypes}" th:value="${requestType.code}" th:text="${requestType.description}" th:selected="${requestType.code==serviceReqConfig.requestType}"></option>
+                                                </select>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">Request Unit<span class="required">*</span></label>
+                                            <div class="col-md-4 col-sm-6 col-xs-12">
+
+                                                <select class="form-control" th:field="*{requestUnit}" required="required">
+                                                    <option value="" name="select">Select..</option>
+                                                    <option th:each="requestUnit : ${requestUnits}" th:value="${requestUnit.code}" th:text="${requestUnit.description}" th:selected="${requestUnit.code==serviceReqConfig.requestUnit}"></option>
+                                                </select>
+
+                                            </div>
+                                        </div>
+
+                                        <br/><br/>
                                         <div class="col-md-6 col-sm-6 col-xs-12">
                                             <button type="submit" id="button_add" class="btn-xs btn-default btn">Add Field</button>
                                             <button type="submit" id="button_del" class="btn-xs btn-default btn">Remove</button>
@@ -82,7 +107,7 @@
                                                             <td><input  th:name="${'formFields['+stat.index+'].fieldLabel'}" type="text" class="form-control" th:value="${req.fieldLabel}"/></td>
                                                             <td>
                                                                 <select class="form-control" th:name="${'formFields['+stat.index+'].fieldType'}">
-                                                                    <option th:each="type : ${requestFieldType}" th:value="${type.code}" th:text="${type.description}" th:selected="${req.fieldType==type.code}"></option>
+                                                                    <option th:each="type : ${requestFieldTypes}" th:value="${type.code}" th:text="${type.description}" th:selected="${req.fieldType==type.code}"></option>
                                                                 </select>
                                                             </td>
                                                             <td><input th:name="${'formFields['+stat.index+'].typeData'}" type="text" class="form-control" th:value="${req.typeData}"/></td>

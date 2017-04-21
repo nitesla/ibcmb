@@ -14,6 +14,8 @@ public class ServiceReqConfigDTO {
     private Long id;
 	@NotEmpty
     private String requestName;
+    private String requestType;
+    private String requestUnit;
     private int version;
     private ArrayList<ServiceReqFormFieldDTO> formFields;
 
@@ -38,7 +40,23 @@ public class ServiceReqConfigDTO {
 		return requestName;
 	}
 
-	public void setRequestName(String requestName) {
+    public String getRequestType() {
+        return requestType;
+    }
+
+    public void setRequestType(String requestType) {
+        this.requestType = requestType;
+    }
+
+    public String getRequestUnit() {
+        return requestUnit;
+    }
+
+    public void setRequestUnit(String requestUnit) {
+        this.requestUnit = requestUnit;
+    }
+
+    public void setRequestName(String requestName) {
 		this.requestName = requestName;
 	}
 
@@ -55,7 +73,9 @@ public class ServiceReqConfigDTO {
         return "ServiceReqConfigDTO{" +
                 "id=" + id +
                 ", requestName='" + requestName + '\'' +
-                ", version='" + version + '\'' +
+                ", requestType='" + requestType + '\'' +
+                ", requestUnit='" + requestUnit + '\'' +
+                ", version=" + version +
                 ", formFields=" + formFields +
                 '}';
     }
