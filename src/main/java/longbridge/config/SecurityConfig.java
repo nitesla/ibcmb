@@ -66,15 +66,15 @@ public class SecurityConfig {
 
 			http.antMatcher("/admin/**").authorizeRequests().anyRequest().hasAuthority(UserType.ADMIN.toString())
 					// log in
-					.and().formLogin().loginPage("/loginAdmin").loginProcessingUrl("/admin/login")
-					.failureUrl("/loginAdmin?error=loginError").defaultSuccessUrl("/admin/dashboard")
+					.and().formLogin().loginPage("/login_admin").loginProcessingUrl("/login/admin")
+					.failureUrl("/login_admin?error=login_error").defaultSuccessUrl("/admin/dashboard")
 					.successHandler(adminAuthenticationSuccessHandler).failureHandler(adminAuthenticationFailureHandler)
 					.and()
 					// logout
-					.logout().logoutUrl("/admin/logout").logoutSuccessUrl("/loginAdmin").deleteCookies("JSESSIONID")
+					.logout().logoutUrl("/admin/logout").logoutSuccessUrl("/login_admin").deleteCookies("JSESSIONID")
 					.and().exceptionHandling().and().csrf().disable().sessionManagement().sessionFixation()
 					.migrateSession().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-					.invalidSessionUrl("/loginAdmin").maximumSessions(1).expiredUrl("/loginAdmin");
+					.invalidSessionUrl("/login_admin").maximumSessions(1).expiredUrl("/login_admin");
 
         }
 
@@ -121,23 +121,23 @@ public class SecurityConfig {
         }
 
         protected void configure(HttpSecurity http) throws Exception {
-            http.antMatcher("/operations/**").authorizeRequests().anyRequest()
+            http.antMatcher("/ops/**").authorizeRequests().anyRequest()
                     //.authenticated()
                     .hasAuthority(UserType.OPERATIONS.toString())
                     // log in
-                    .and().formLogin().loginPage("/loginOps").loginProcessingUrl("/operations/login").failureUrl("/loginOps?error=true").defaultSuccessUrl("/opsPage")//TODO LANDING PAGE
+                    .and().formLogin().loginPage("/login_ops").loginProcessingUrl("/login/ops").failureUrl("/login_ops?error=true").defaultSuccessUrl("/ops/dashboard")//TODO LANDING PAGE
                     .and()
 
 
                     // logout
-                    .logout().logoutUrl("/operations/logout").logoutSuccessUrl("/operations/login").deleteCookies("JSESSIONID").and().exceptionHandling().and().csrf().disable()
+                    .logout().logoutUrl("/ops/logout").logoutSuccessUrl("/login_ops").deleteCookies("JSESSIONID").and().exceptionHandling().and().csrf().disable()
 
                    .sessionManagement()
                     .sessionFixation().migrateSession()
                     .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                    .invalidSessionUrl("/loginOps")
+                    .invalidSessionUrl("/login_ops")
                     .maximumSessions(1)
-                    .expiredUrl("/loginOps");
+                    .expiredUrl("/login_ops");
         }
         @Override
         public void configure(WebSecurity web) throws Exception {
@@ -182,7 +182,7 @@ public class SecurityConfig {
                     //.authenticated()
                     .hasAuthority(UserType.RETAIL.toString())
                     // log in
-                    .and().formLogin().loginPage("/login").loginProcessingUrl("/retail/login").failureUrl("/login?error=true").defaultSuccessUrl("/retail/requests")
+                    .and().formLogin().loginPage("/login").loginProcessingUrl("/login/retail").failureUrl("/login?error=true").defaultSuccessUrl("/retail/requests")
                     .successHandler(retailAuthenticationSuccessHandler)
                     .failureHandler(retailAuthenticationFailureHandler)
 

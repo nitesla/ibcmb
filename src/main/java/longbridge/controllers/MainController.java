@@ -20,31 +20,33 @@ public class MainController {
         return "index";
     }
 
-    @RequestMapping(value = "/login", method = RequestMethod.GET)
+    @RequestMapping(value = "/login/retail", method = RequestMethod.GET)
     public ModelAndView getLoginPage(@RequestParam Optional<String> error) {
         return new ModelAndView("retaillogin", "error", error);
     }
 
-    @RequestMapping("/admin/dashboard")
-    public String getDashboard() {
-        return "dashboard";
-    }
-
-    @GetMapping(value = "/loginAdmin")
+    @GetMapping(value = "/login/admin")
     public ModelAndView adminLogin(){
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("admlogin");
         return modelAndView;
     }
 
-
-
-    @GetMapping(value = "/loginOps")
+    @GetMapping(value = "/login/ops")
     public ModelAndView opsLogin(){
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("opslogin");
         return modelAndView;
     }
 
+    @RequestMapping("/admin/dashboard")
+    public String getDashboard() {
+        return "adm/dashboard";
+    }
+
+    @RequestMapping("/retail/dashboard")
+    public String getRetailDashboard() {
+        return "cust/dashboard";
+    }
 
 }

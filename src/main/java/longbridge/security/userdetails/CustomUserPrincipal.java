@@ -8,7 +8,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
 
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -67,7 +66,7 @@ public class CustomUserPrincipal implements UserDetails {
     @Override
     public boolean isAccountNonExpired() {
         boolean result = false;
-        LocalDate date= new LocalDate(user.getExpiryDate());
+        LocalDate date = new LocalDate(user.getExpiryDate());
 
 
         if (date==null){
