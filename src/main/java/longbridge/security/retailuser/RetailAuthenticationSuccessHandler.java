@@ -56,7 +56,7 @@ public class RetailAuthenticationSuccessHandler implements AuthenticationSuccess
           boolean isUser= retailUserRepo.findFirstByUserName(userDetails.getUsername()).getUserType().equals(UserType.RETAIL);
 
         if (isUser) {
-            return "/retail/requests";
+            return "/retail/dashboard";
         }  else {
             throw new IllegalStateException();
         }

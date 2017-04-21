@@ -66,15 +66,15 @@ public class SecurityConfig {
 
 			http.antMatcher("/admin/**").authorizeRequests().anyRequest().hasAuthority(UserType.ADMIN.toString())
 					// log in
-					.and().formLogin().loginPage("/login_admin").loginProcessingUrl("/login/admin")
-					.failureUrl("/login_admin?error=login_error").defaultSuccessUrl("/admin/dashboard")
+					.and().formLogin().loginPage("/login/admin").loginProcessingUrl("/admin/login")
+					.failureUrl("/login/admin?error=login_error").defaultSuccessUrl("/admin/dashboard")
 					.successHandler(adminAuthenticationSuccessHandler).failureHandler(adminAuthenticationFailureHandler)
 					.and()
 					// logout
-					.logout().logoutUrl("/admin/logout").logoutSuccessUrl("/login_admin").deleteCookies("JSESSIONID")
+					.logout().logoutUrl("/admin/logout").logoutSuccessUrl("/login/admin").deleteCookies("JSESSIONID")
 					.and().exceptionHandling().and().csrf().disable().sessionManagement().sessionFixation()
 					.migrateSession().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-					.invalidSessionUrl("/login_admin").maximumSessions(1).expiredUrl("/login_admin");
+					.invalidSessionUrl("/login/admin").maximumSessions(1).expiredUrl("/login/admin");
 
         }
 
@@ -125,19 +125,19 @@ public class SecurityConfig {
                     //.authenticated()
                     .hasAuthority(UserType.OPERATIONS.toString())
                     // log in
-                    .and().formLogin().loginPage("/login_ops").loginProcessingUrl("/login/ops").failureUrl("/login_ops?error=true").defaultSuccessUrl("/ops/dashboard")//TODO LANDING PAGE
+                    .and().formLogin().loginPage("/login/ops").loginProcessingUrl("/ops/login").failureUrl("/login/ops?error=true").defaultSuccessUrl("/ops/dashboard")//TODO LANDING PAGE
                     .and()
 
 
                     // logout
-                    .logout().logoutUrl("/ops/logout").logoutSuccessUrl("/login_ops").deleteCookies("JSESSIONID").and().exceptionHandling().and().csrf().disable()
+                    .logout().logoutUrl("/ops/logout").logoutSuccessUrl("/login/ops").deleteCookies("JSESSIONID").and().exceptionHandling().and().csrf().disable()
 
                    .sessionManagement()
                     .sessionFixation().migrateSession()
                     .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                    .invalidSessionUrl("/login_ops")
+                    .invalidSessionUrl("/login/ops")
                     .maximumSessions(1)
-                    .expiredUrl("/login_ops");
+                    .expiredUrl("/login/ops");
         }
         @Override
         public void configure(WebSecurity web) throws Exception {
@@ -182,21 +182,21 @@ public class SecurityConfig {
                     //.authenticated()
                     .hasAuthority(UserType.RETAIL.toString())
                     // log in
-                    .and().formLogin().loginPage("/login").loginProcessingUrl("/login/retail").failureUrl("/login?error=true").defaultSuccessUrl("/retail/dashboard")
+                    .and().formLogin().loginPage("/login/retail").loginProcessingUrl("/retail/login").failureUrl("/login/retail?error=true").defaultSuccessUrl("/retail/dashboard")
                     .successHandler(retailAuthenticationSuccessHandler)
                     .failureHandler(retailAuthenticationFailureHandler)
 
                     .and()
 
                     // logout
-                   .logout().logoutUrl("/retail/logout").logoutSuccessUrl("/login").deleteCookies("JSESSIONID").and().exceptionHandling().and().csrf().disable()
+                   .logout().logoutUrl("/retail/logout").logoutSuccessUrl("/login/retail").deleteCookies("JSESSIONID").and().exceptionHandling().and().csrf().disable()
 
                     .sessionManagement()
                     .sessionFixation().migrateSession()
                     .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                    .invalidSessionUrl("/login")
+                    .invalidSessionUrl("/login/retail")
                     .maximumSessions(1)
-                    .expiredUrl("/login");
+                    .expiredUrl("/login/retail");
 
         }
         @Override

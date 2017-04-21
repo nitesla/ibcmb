@@ -20,7 +20,7 @@ public class AdminAuthenticationFailureHandler extends SimpleUrlAuthenticationFa
 
     @Override
     public void onAuthenticationFailure(final HttpServletRequest request, final HttpServletResponse response, final AuthenticationException exception) throws IOException, ServletException {
-        setDefaultFailureUrl("/login_admin?error=login_error");
+        setDefaultFailureUrl("/login/admin?error=login_error");
 
         super.onAuthenticationFailure(request, response, exception);
 
