@@ -182,7 +182,7 @@ public class SecurityConfig {
                     //.authenticated()
                     .hasAuthority(UserType.RETAIL.toString())
                     // log in
-                    .and().formLogin().loginPage("/login").loginProcessingUrl("/login/retail").failureUrl("/login?error=true").defaultSuccessUrl("/retail/requests")
+                    .and().formLogin().loginPage("/login").loginProcessingUrl("/login/retail").failureUrl("/login?error=true").defaultSuccessUrl("/retail/dashboard")
                     .successHandler(retailAuthenticationSuccessHandler)
                     .failureHandler(retailAuthenticationFailureHandler)
 

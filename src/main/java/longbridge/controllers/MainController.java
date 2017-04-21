@@ -44,6 +44,11 @@ public class MainController {
         return "adm/dashboard";
     }
 
+    @RequestMapping("/ops/dashboard")
+    public String getOpsDashboard() {
+        return "ops/dashboard";
+    }
+
     @RequestMapping("/retail/dashboard")
     public String getRetailDashboard() {
         return "cust/dashboard";
