@@ -133,6 +133,7 @@
     </div>
 </div>
 <script th:src="@{~/bank/vendors/datatables.net/js/jquery.dataTables.js}"></script>
+<script th:src="@{~/bank/js/dataTables.bootstrap.js}"></script>
 <script th:src="@{~/bank/js/dataTables.select.js}"></script>
 <script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
 
@@ -144,12 +145,12 @@
             select:true,
             responsive: true,
             "lengthMenu" : [ [ 5, 10, 20],	[ 5, 10, 20 ] ],
-            "pagingType" : "full_numbers",
+            "pagingType" : "simple_numbers",
             "searching": false,
             "paging": true,
             "serverSide" : true,
             "ajax": "/admin/corporates/all",
-            "dom": 'T<"clear">lfrtip',
+            "dom": 'T<"clear">frtlp',
             "columns": [
                 { "data": "customerId" },
                 { "data": "companyName" },

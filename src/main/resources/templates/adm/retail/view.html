@@ -42,14 +42,14 @@
                                     <li >
                                         <div class="col-lg-4">
                                             <div class="title-action">
-                                                <a  class="btn btn-primary bt-select bt-link-act" href="/admin/retail/users/index/edit" disabled="disabled" ><i class="fa fa-pencil"></i> Edit Retail </a>
+                                                <a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/retail/users/index/edit" disabled="disabled" ><i class="fa fa-pencil"></i> Edit Retail </a>
                                             </div>
                                         </div>
                                     </li>
                                     <li >
                                         <div class="col-lg-4">
                                             <div class="title-action">
-                                                <a  class="btn btn-danger bt-select bt-link-act" href="/admin/retail/users/index/delete" disabled="disabled" ><i class="fa fa-trash"></i> Delete Retail </a>
+                                                <a  class="btn btn-danger btn-sm bt-select bt-link-act" href="/admin/retail/users/index/delete" disabled="disabled" ><i class="fa fa-trash"></i> Delete Retail </a>
                                             </div>
                                         </div>
                                     </li>
@@ -140,6 +140,7 @@
     </div>
 </div>
 <script th:src="@{~/bank/vendors/datatables.net/js/jquery.dataTables.js}"></script>
+<script th:src="@{~/bank/js/dataTables.bootstrap.js}"></script>
 <script th:src="@{~/bank/js/dataTables.select.js}"></script>
 <script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
 
@@ -151,7 +152,7 @@
             "pagingType": "simple_numbers",
             select:true,
             responsive: true,
-            "lengthMenu": [[5, 10, 20], [5, 10, 20]],  "pagingType" : "full_numbers",
+            "lengthMenu": [[5, 10, 20], [5, 10, 20]],  "pagingType" : "simple_numbers",
             "searching": false,
             "paging": true,
             "serverSide" : true,

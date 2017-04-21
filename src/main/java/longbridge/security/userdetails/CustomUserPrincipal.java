@@ -113,21 +113,15 @@ public class CustomUserPrincipal implements UserDetails {
     }
 
 
+	private List<String> getPrivileges(Role roles) {
 
+		List<String> privileges = new ArrayList<>();
+		roles.getPermissions().forEach(i -> privileges.add(i.getName()));
 
+		privileges.add(roles.getUserType().toString());
 
-    private List<String>  getPrivileges(Role roles) {
-
-        List<String> privileges = new ArrayList<>();
-        roles.getPermissions()
-                .forEach(i -> privileges.add(i.getName()));
-
-    privileges.add(roles.getUserType().toString());
-
-
-        return privileges;
-    }
-
+		return privileges;
+	}
 
 
 }

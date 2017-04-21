@@ -58,38 +58,23 @@ public class SecurityConfig {
 
         @Override
         protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-            auth
-                    .userDetailsService(adminDetails).passwordEncoder(bCryptPasswordEncoder);
+            auth.userDetailsService(adminDetails).passwordEncoder(bCryptPasswordEncoder);
         }
-//   @Override
-//     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-//    auth.inMemoryAuthentication().withUser("admin").password("admin").roles("ADMIN");
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
 
-
-
-
-            http
-
-                    .antMatcher("/admin/**").authorizeRequests().anyRequest()
-                  .hasAuthority(UserType.ADMIN.toString())
-                    // log in
-                    .and().formLogin().loginPage("/loginAdmin").loginProcessingUrl("/admin/login").failureUrl("/loginAdmin?error=loginError").defaultSuccessUrl("/admin/dashboard")
-                    .successHandler(adminAuthenticationSuccessHandler)
-                    .failureHandler(adminAuthenticationFailureHandler)
-
-                    .and()
-                    // logout
-                    .logout().logoutUrl("/admin/logout").logoutSuccessUrl("/loginAdmin").deleteCookies("JSESSIONID").and().exceptionHandling().and().csrf().disable()
-                    .sessionManagement()
-                   .sessionFixation().migrateSession()
-                    .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                    .invalidSessionUrl("/loginAdmin")
-                    .maximumSessions(1)
-                    .expiredUrl("/loginAdmin");
-
+			http.antMatcher("/admin/**").authorizeRequests().anyRequest().hasAuthority(UserType.ADMIN.toString())
+					// log in
+					.and().formLogin().loginPage("/loginAdmin").loginProcessingUrl("/admin/login")
+					.failureUrl("/loginAdmin?error=loginError").defaultSuccessUrl("/admin/dashboard")
+					.successHandler(adminAuthenticationSuccessHandler).failureHandler(adminAuthenticationFailureHandler)
+					.and()
+					// logout
+					.logout().logoutUrl("/admin/logout").logoutSuccessUrl("/loginAdmin").deleteCookies("JSESSIONID")
+					.and().exceptionHandling().and().csrf().disable().sessionManagement().sessionFixation()
+					.migrateSession().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+					.invalidSessionUrl("/loginAdmin").maximumSessions(1).expiredUrl("/loginAdmin");
 
         }
 

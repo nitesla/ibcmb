@@ -75,7 +75,7 @@
                                     <tr class="gradeA" th:each="auditEntry : ${tables}">
                                         <td th:text="${auditEntry.entityName}"></td>
                                         <td >
- 										<input type="checkbox" data-switchery="true" th:class="js-switch" th:checked="${auditEntry.enabled eq 'Y'}" th:value="${auditEntry.entityName}" th:id="${auditEntry.entityName}"/>
+ 										<input type="checkbox" th:attr="data-pk=${auditEntry.id}, data-version=${auditEntry.version}" data-switchery="true" th:class="js-switch" th:checked="${auditEntry.enabled eq 'Y'}" th:value="${auditEntry.entityName}" th:id="${auditEntry.entityName}"/>
 
                                         </td>
                                     </tr>
@@ -107,6 +107,7 @@
 
 
 <script th:src="@{~/bank/vendors/datatables.net/js/jquery.dataTables.js}"></script>
+<script th:src="@{~/bank/js/dataTables.bootstrap.js}"></script>
 <script th:src="@{~/bank/js/dataTables.select.js}"></script>
 <script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
 
@@ -119,11 +120,11 @@
         $('#audit-table').DataTable({
             responsive: true,
             "lengthMenu" : [ [ 5, 10, 50, -1 ],	[ 5, 10, 50, "All" ] ],
-            "pagingType" : "full_numbers",
+            "pagingType" : "simple_numbers",
             "searching": false,
             "paging": true,
             "serverSide" : false,
-            "dom": 'T<"clear">lfrtip'
+            "dom": 'T<"clear">frtlp',
         } );
 
 
@@ -137,6 +138,8 @@
     	var updateUrl = "/admin/audit";
     	var cb = $(e.currentTarget);
     	var nm = cb.val();
+    	var pk = cb.attr("data-pk");
+    	var vers = cb.attr("data-version");
     	var isEnabled  ;
     	if(cb.is(':checked')){
     		isEnabled = 'Y';
@@ -146,7 +149,9 @@
     	var objectData = 
     		{
     			entityName : nm,
-    			enabled : isEnabled
+    			enabled : isEnabled,
+    			version : vers,
+    			id : pk
     		};
     	var objectDataString = JSON.stringify(objectData);
     	    $.ajax({

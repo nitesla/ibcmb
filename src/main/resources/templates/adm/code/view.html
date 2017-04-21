@@ -44,14 +44,14 @@
                                     <li >
                                         <div class="col-lg-4">
                                             <div class="title-action">
-                                                <a  class="btn btn-primary bt-select bt-link-act" href="/admin/codes/index/edit" disabled="disabled" ><i class="fa fa-pencil"></i> Edit Code </a>
+                                                <a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/codes/index/edit" disabled="disabled" ><i class="fa fa-pencil"></i> Edit Code </a>
                                             </div>
                                         </div>
                                     </li>
                                     <li >
                                         <div class="col-lg-4">
                                             <div class="title-action">
-                                                <a  class="btn btn-danger bt-select bt-link-act" href="/admin/codes/index/delete" disabled="disabled" ><i class="fa fa-trash"></i> Delete Code</a>
+                                                <a  class="btn btn-danger btn-sm bt-select bt-link-act" href="/admin/codes/index/delete" disabled="disabled" ><i class="fa fa-trash"></i> Delete Code</a>
                                             </div>
                                         </div>
                                     </li>
@@ -67,7 +67,7 @@
                                     <li >
                                         <div class="col-lg-4">
                                             <div class="title-action">
-                                                <a href="/admin/codes/new" class="btn btn-primary"><i class="fa fa-print"></i> Add new code </a>
+                                                <a href="/admin/codes/new" class="btn btn-sm btn-primary"><i class="fa fa-print"></i> Add new code </a>
                                             </div>
                                         </div>
                                     </li>
@@ -121,6 +121,7 @@
 
 <script th:src="@{~/bank/vendors/datatables.net/js/jquery.dataTables.js}"></script>
 <script th:src="@{~/bank/js/dataTables.select.js}"></script>
+<script th:src="@{~/bank/js/dataTables.bootstrap.js}"></script>
 <script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
 
 <!-- Page-Level Scripts -->
@@ -131,12 +132,12 @@
             select:true,
             responsive: true,
             "lengthMenu" : [ [ 5, 10, 20],	[ 5, 10, 20 ] ],
-            "pagingType" : "full_numbers",
+            "pagingType" : "simple_numbers",
             "searching": false,
             "paging": true,
             "serverSide" : true,
             "ajax": "/admin/codes/all",
-            "dom": 'T<"clear">lfrtip',
+            "dom": 'T<"clear">frtlp',
             "columns": [
                 { "data": "code" },
                 { "data": "type" },
