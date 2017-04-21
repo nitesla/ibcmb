@@ -21,7 +21,7 @@ public interface RoleService extends Verifiable<RoleDTO> {
      * @param  role the role to be added to the system
      */
     void addRole(RoleDTO role);
-    void addRole(Role role);
+   // void addRole(Role role);
 
     /**
      * Returns a roleDTO
@@ -85,35 +85,5 @@ public interface RoleService extends Verifiable<RoleDTO> {
      */
     void deletePermission(Long id);
 
-    /**
-     * Updates the details of the specified userType
-     * @param role the role to be updated
-     */
-    void updateRole(Role role);
-
-    /**
-     * Deletes a role
-     * This is a logical deletion because the data is not removed from the database
-     */
-    void deleteRole(Role role);
-
-    /**
-     * Adds a new permission to the system
-     * @param permission  the permission to be deleted
-     */
-    void addPermission(Permission permission);
-
-
-
-    /**
-     * Updates the details of the permission
-     * @param permission the permission to be deleted
-     */
-    void updatePermission(Permission permission);
-
-    /**
-     * Deletes the permissiont
-     * @param permission the permission
-     */
-    void deletePermission(Permission permission);
+ 
 }

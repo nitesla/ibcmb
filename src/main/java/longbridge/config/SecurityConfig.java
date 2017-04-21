@@ -19,7 +19,6 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 
-
 /**
  * Created by ayoade_farooq@yahoo.com on 4/10/2017.
  */
@@ -27,42 +26,37 @@ import org.springframework.security.web.session.HttpSessionEventPublisher;
 @EnableWebSecurity
 public class SecurityConfig {
 
+	public void customConfig(WebSecurity web) throws Exception {
+		web.ignoring().antMatchers("/resources/**", "/static/**", "/css/**", "/js/**", "/images/**");
+	}
 
-    public void customConfig(WebSecurity web) throws Exception {
-        web
-                .ignoring()
-                .antMatchers("/resources/**", "/static/**", "/css/**", "/js/**", "/images/**");
-    }
+	@Configuration
+	@Order(1)
+	public static class AdminUserConfigurationAdapter extends WebSecurityConfigurerAdapter {
 
+		@Autowired
+		@Qualifier("adminUserDetails")
+		UserDetailsService adminDetails;
+		@Autowired
+		BCryptPasswordEncoder bCryptPasswordEncoder;
+		@Autowired
+		@Qualifier("adminAuthenticationSuccessHandler")
+		private AuthenticationSuccessHandler adminAuthenticationSuccessHandler;
+		@Autowired
+		@Qualifier("adminAuthenticationFailureHandler")
+		private AuthenticationFailureHandler adminAuthenticationFailureHandler;
 
-    @Configuration
-    @Order(1)
-    public static class AdminUserConfigurationAdapter extends WebSecurityConfigurerAdapter {
+		public AdminUserConfigurationAdapter() {
+			super();
+		}
 
-        @Autowired
-        @Qualifier("adminUserDetails")
-        UserDetailsService adminDetails;
-        @Autowired
-        BCryptPasswordEncoder bCryptPasswordEncoder;
-        @Autowired
-        @Qualifier("adminAuthenticationSuccessHandler")
-        private AuthenticationSuccessHandler adminAuthenticationSuccessHandler;
-        @Autowired
-        @Qualifier("adminAuthenticationFailureHandler")
-        private AuthenticationFailureHandler adminAuthenticationFailureHandler;
+		@Override
+		protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+			auth.userDetailsService(adminDetails).passwordEncoder(bCryptPasswordEncoder);
+		}
 
-
-        public AdminUserConfigurationAdapter() {
-            super();
-        }
-
-        @Override
-        protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-            auth.userDetailsService(adminDetails).passwordEncoder(bCryptPasswordEncoder);
-        }
-
-        @Override
-        protected void configure(HttpSecurity http) throws Exception {
+		@Override
+		protected void configure(HttpSecurity http) throws Exception {
 
 			http.antMatcher("/admin/**").authorizeRequests().anyRequest().hasAuthority(UserType.ADMIN.toString())
 					// log in
@@ -76,140 +70,132 @@ public class SecurityConfig {
 					.migrateSession().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
 					.invalidSessionUrl("/loginAdmin").maximumSessions(1).expiredUrl("/loginAdmin");
 
-        }
+		}
 
-        @Override
-        public void configure(WebSecurity web) throws Exception {
-           new SecurityConfig(). customConfig(web);
+		@Override
+		public void configure(WebSecurity web) throws Exception {
+			new SecurityConfig().customConfig(web);
 
-//            web.expressionHandler(new DefaultWebSecurityExpressionHandler() {
-//                @Override
-//                protected SecurityExpressionOperations createSecurityExpressionRoot(Authentication authentication, FilterInvocation fi) {
-//                    WebSecurityExpressionRoot root = (WebSecurityExpressionRoot) super.createSecurityExpressionRoot(authentication, fi);
-//                    root.setDefaultRolePrefix(""); //remove the prefix ROLE_
-//                    return root;
-//                }
-//            });
-        }
+			// web.expressionHandler(new DefaultWebSecurityExpressionHandler() {
+			// @Override
+			// protected SecurityExpressionOperations
+			// createSecurityExpressionRoot(Authentication authentication,
+			// FilterInvocation fi) {
+			// WebSecurityExpressionRoot root = (WebSecurityExpressionRoot)
+			// super.createSecurityExpressionRoot(authentication, fi);
+			// root.setDefaultRolePrefix(""); //remove the prefix ROLE_
+			// return root;
+			// }
+			// });
+		}
 
-    }
+	}
 
+	// #########################OPERATIONS USER SECURITY
+	// CONFIGURATION########################################
 
+	@Configuration
+	@Order(2)
+	public static class OperationsUserConfigurationAdapter extends WebSecurityConfigurerAdapter {
+		@Autowired
+		@Qualifier("operationUserDetails")
+		UserDetailsService opsDetails;
+		@Autowired
+		BCryptPasswordEncoder bCryptPasswordEncoder;
 
+		public OperationsUserConfigurationAdapter() {
+			super();
+		}
 
+		@Override
+		protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+			auth.userDetailsService(opsDetails).passwordEncoder(bCryptPasswordEncoder);
+		}
 
+		protected void configure(HttpSecurity http) throws Exception {
+			http.antMatcher("/operations/**").authorizeRequests().anyRequest()
+					// .authenticated()
+					.hasAuthority(UserType.OPERATIONS.toString())
+					// log in
+					.and().formLogin().loginPage("/loginOps").loginProcessingUrl("/operations/login")
+					.failureUrl("/loginOps?error=true").defaultSuccessUrl("/opsPage")// TODO
+																						// LANDING
+																						// PAGE
+					.and()
 
-    //#########################OPERATIONS USER SECURITY CONFIGURATION########################################
+					// logout
+					.logout().logoutUrl("/operations/logout").logoutSuccessUrl("/operations/login")
+					.deleteCookies("JSESSIONID").and().exceptionHandling().and().csrf().disable()
 
+					.sessionManagement().sessionFixation().migrateSession()
+					.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED).invalidSessionUrl("/loginOps")
+					.maximumSessions(1).expiredUrl("/loginOps");
+		}
 
-    @Configuration
-    @Order(2)
-    public static class OperationsUserConfigurationAdapter extends WebSecurityConfigurerAdapter {
-        @Autowired
-        @Qualifier("operationUserDetails")
-        UserDetailsService opsDetails;
-        @Autowired
-        BCryptPasswordEncoder bCryptPasswordEncoder;
-        public OperationsUserConfigurationAdapter() {
-            super();
-        }
+		@Override
+		public void configure(WebSecurity web) throws Exception {
+			new SecurityConfig().customConfig(web);
+		}
+	}
 
-        @Override
-        protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-            auth
-                    .userDetailsService(opsDetails).passwordEncoder(bCryptPasswordEncoder);
-        }
+	// #########################RETAIL USER SECURITY
+	// CONFIGURATION########################################
 
-        protected void configure(HttpSecurity http) throws Exception {
-            http.antMatcher("/operations/**").authorizeRequests().anyRequest()
-                    //.authenticated()
-                    .hasAuthority(UserType.OPERATIONS.toString())
-                    // log in
-                    .and().formLogin().loginPage("/loginOps").loginProcessingUrl("/operations/login").failureUrl("/loginOps?error=true").defaultSuccessUrl("/opsPage")//TODO LANDING PAGE
-                    .and()
+	@Configuration
+	@Order(3)
+	public static class RetailUserConfigurationAdapter extends WebSecurityConfigurerAdapter {
+		@Autowired
+		@Qualifier("retailUserDetails")
+		UserDetailsService retDetails;
+		@Autowired
+		BCryptPasswordEncoder bCryptPasswordEncoder;
+		@Autowired
+		@Qualifier("retailAuthenticationSuccessHandler")
+		private AuthenticationSuccessHandler retailAuthenticationSuccessHandler;
+		@Autowired
+		@Qualifier("retailAuthenticationFailureHandler")
+		private AuthenticationFailureHandler retailAuthenticationFailureHandler;
 
+		public RetailUserConfigurationAdapter() {
+			super();
+		}
 
-                    // logout
-                    .logout().logoutUrl("/operations/logout").logoutSuccessUrl("/operations/login").deleteCookies("JSESSIONID").and().exceptionHandling().and().csrf().disable()
+		@Override
+		protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+			auth.userDetailsService(retDetails).passwordEncoder(bCryptPasswordEncoder);
+		}
 
-                   .sessionManagement()
-                    .sessionFixation().migrateSession()
-                    .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                    .invalidSessionUrl("/loginOps")
-                    .maximumSessions(1)
-                    .expiredUrl("/loginOps");
-        }
-        @Override
-        public void configure(WebSecurity web) throws Exception {
-            new SecurityConfig(). customConfig(web);
-        }
-    }
+		protected void configure(HttpSecurity http) throws Exception {
+			http.antMatcher("/retail/**").authorizeRequests().anyRequest()
+					// .authenticated()
+					.hasAuthority(UserType.RETAIL.toString())
+					// log in
+					.and().formLogin().loginPage("/login").loginProcessingUrl("/retail/login")
+					.failureUrl("/login?error=true").defaultSuccessUrl("/retail/requests")
+					.successHandler(retailAuthenticationSuccessHandler)
+					.failureHandler(retailAuthenticationFailureHandler)
 
+					.and()
 
+					// logout
+					.logout().logoutUrl("/retail/logout").logoutSuccessUrl("/login").deleteCookies("JSESSIONID").and()
+					.exceptionHandling().and().csrf().disable()
 
-    //#########################RETAIL USER SECURITY CONFIGURATION########################################
+					.sessionManagement().sessionFixation().migrateSession()
+					.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED).invalidSessionUrl("/login")
+					.maximumSessions(1).expiredUrl("/login");
 
+		}
 
-    @Configuration
-    @Order(3)
-    public static class RetailUserConfigurationAdapter extends WebSecurityConfigurerAdapter {
-        @Autowired
-        @Qualifier("retailUserDetails")
-        UserDetailsService retDetails;
-        @Autowired
-        BCryptPasswordEncoder bCryptPasswordEncoder;
-        @Autowired
-        @Qualifier("retailAuthenticationSuccessHandler")
-        private AuthenticationSuccessHandler retailAuthenticationSuccessHandler;
-        @Autowired
-        @Qualifier("retailAuthenticationFailureHandler")
-        private AuthenticationFailureHandler retailAuthenticationFailureHandler;
+		@Override
+		public void configure(WebSecurity web) throws Exception {
+			new SecurityConfig().customConfig(web);
+		}
 
+	}
 
-        public RetailUserConfigurationAdapter() {
-            super();
-        }
-
-
-        @Override
-        protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-            auth
-                    .userDetailsService(retDetails).passwordEncoder(bCryptPasswordEncoder);
-        }
-
-        protected void configure(HttpSecurity http) throws Exception {
-            http.antMatcher("/retail/**").authorizeRequests().anyRequest()
-                    //.authenticated()
-                    .hasAuthority(UserType.RETAIL.toString())
-                    // log in
-                    .and().formLogin().loginPage("/login").loginProcessingUrl("/retail/login").failureUrl("/login?error=true").defaultSuccessUrl("/retail/requests")
-                    .successHandler(retailAuthenticationSuccessHandler)
-                    .failureHandler(retailAuthenticationFailureHandler)
-
-                    .and()
-
-                    // logout
-                   .logout().logoutUrl("/retail/logout").logoutSuccessUrl("/login").deleteCookies("JSESSIONID").and().exceptionHandling().and().csrf().disable()
-
-                    .sessionManagement()
-                    .sessionFixation().migrateSession()
-                    .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                    .invalidSessionUrl("/login")
-                    .maximumSessions(1)
-                    .expiredUrl("/login");
-
-        }
-        @Override
-        public void configure(WebSecurity web) throws Exception {
-            new SecurityConfig(). customConfig(web);
-        }
-
-    }
-
-
-    @Bean
-    public HttpSessionEventPublisher httpSessionEventPublisher() {
-        return new HttpSessionEventPublisher();
-    }
+	@Bean
+	public HttpSessionEventPublisher httpSessionEventPublisher() {
+		return new HttpSessionEventPublisher();
+	}
 }
-
