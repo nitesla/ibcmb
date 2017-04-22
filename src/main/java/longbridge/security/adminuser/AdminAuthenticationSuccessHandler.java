@@ -12,6 +12,7 @@ import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -31,11 +32,13 @@ public class AdminAuthenticationSuccessHandler extends SavedRequestAwareAuthenti
 
 
     @Override
+    @Transactional
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws ServletException, IOException {
         HttpSession session = request.getSession();
         if (session != null) {
         	session.setMaxInactiveInterval(30 * 60); //TODO this cannot be static
         } 
+        adminUserRepo.updateUserAfterLogin(authentication.getName());
         super.onAuthenticationSuccess(request, response, authentication);
     }
 
