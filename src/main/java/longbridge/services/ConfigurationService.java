@@ -1,5 +1,9 @@
 package longbridge.services;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+import longbridge.dtos.CodeDTO;
 import longbridge.dtos.SettingDTO;
 import longbridge.models.Setting;
 
@@ -10,15 +14,17 @@ import longbridge.models.Setting;
 
 public interface ConfigurationService {
 
-    void addSetting( Setting setting);
+    void addSetting( SettingDTO setting);
 
-    Setting getSetting(Long id);
+    SettingDTO getSetting(Long id);
 
     SettingDTO getSettingByName(String name);
 
-    Iterable<Setting> getSettings();
+    Iterable<SettingDTO> getSettings();
 
-    void updateSetting(Setting setting);
+    Page<SettingDTO> getSettings(Pageable pageDetails);
+
+    void updateSetting(SettingDTO setting);
 
     void deleteSetting(Long id);
 

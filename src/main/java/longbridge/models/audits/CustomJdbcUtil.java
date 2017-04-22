@@ -15,10 +15,11 @@ public class CustomJdbcUtil {
 	Logger logger = LoggerFactory.getLogger(getClass());
 	
 	public static boolean auditEntity(String s) {
-		ApplicationContext context = SpringContext.getApplicationContext();
-		AuditConfigRepo auditConfigRepo = context.getBean(AuditConfigRepo.class);
-		boolean ok = auditConfigRepo.existsByEntityNameAndEnabled(s,"Y");
-		return ok;
+//		ApplicationContext context = SpringContext.getApplicationContext();
+//		AuditConfigRepo auditConfigRepo = context.getBean(AuditConfigRepo.class);
+//		boolean ok = auditConfigRepo.existsByEntityNameAndEnabled(s,"Y");
+		//TODO: Finish up audit
+		return true;
 	}
 
 }

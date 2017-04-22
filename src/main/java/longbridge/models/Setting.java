@@ -18,9 +18,10 @@ public class Setting extends AbstractEntity{
     @Column(unique = true)
     private String name;
 
+    private String type;
     private String description;
     private String value;
-    private boolean isEnabled = true;
+    private boolean enabled ;
 
     @ManyToOne
     private AdminUser modifiedBy;
@@ -34,7 +35,15 @@ public class Setting extends AbstractEntity{
         this.name = name;
     }
 
-    public String getDescription() {
+    public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
+
+	public String getDescription() {
         return description;
     }
 
@@ -42,7 +51,15 @@ public class Setting extends AbstractEntity{
         this.description = description;
     }
 
-    public String getValue() {
+    public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public String getValue() {
         return value;
     }
 
@@ -50,15 +67,8 @@ public class Setting extends AbstractEntity{
         this.value = value;
     }
 
-    public boolean isEnabled() {
-        return isEnabled;
-    }
 
-    public void setEnabled(boolean enabled) {
-        isEnabled = enabled;
-    }
-
-    public AdminUser getModifiedBy() {
+	public AdminUser getModifiedBy() {
         return modifiedBy;
     }
 
@@ -72,7 +82,7 @@ public class Setting extends AbstractEntity{
                 "name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", value='" + value + '\'' +
-                ", isEnabled=" + isEnabled +
+                ", enabled=" + enabled +
                 ", modifiedBy=" + modifiedBy +
                 '}';
     }

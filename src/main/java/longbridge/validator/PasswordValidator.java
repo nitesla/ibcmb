@@ -45,7 +45,7 @@ public class PasswordValidator {
         maxLengthOfPassword = configService.getSettingByName("PASSWORD_MAX_LEN");
         specialChars = configService.getSettingByName("PASSWORD_SPECIAL_CHARS");
 
-        if (numOfPasswordDigits != null && numOfPasswordDigits.isEnabled()) {
+        if (numOfPasswordDigits != null && numOfPasswordDigits.isEnabled() ){
             numOfDigits = NumberUtils.toInt(numOfPasswordDigits.getValue());
         }
         if (noSpecialChar != null && noSpecialChar.isEnabled()) {
