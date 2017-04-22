@@ -11,6 +11,8 @@ import longbridge.repositories.AdminUserRepo;
 import longbridge.repositories.RoleRepo;
 import longbridge.repositories.VerificationRepo;
 import longbridge.services.RoleService;
+
+import org.apache.commons.lang3.math.NumberUtils;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,11 +64,22 @@ public class AdmRoleController {
     }
 
     @PostMapping
-    public String createRole(@ModelAttribute("role") @Valid Role roleDTO, BindingResult result,WebRequest request, RedirectAttributes redirectAttributes){
+    public String createRole(@ModelAttribute("role") @Valid RoleDTO roleDTO, BindingResult result,WebRequest request, RedirectAttributes redirectAttributes){
         if(result.hasErrors()){
+        	 Iterable<PermissionDTO> permissions=roleService.getPermissions();
+        	 result.getModel().put("permissions",permissions);
             return "adm/role/add";
         }
         logger.info("Role {}", roleDTO.toString());
+        List<PermissionDTO> permissionList = new ArrayList<>();
+        
+        String[] permissions = request.getParameterValues("permissionsList");
+        for(String perm : permissions){
+        	PermissionDTO pdto = new PermissionDTO();
+        	pdto.setId(NumberUtils.toLong(perm));
+        	permissionList.add(pdto);
+        }
+        roleDTO.setPermissions(permissionList);
         roleService.addRole(roleDTO);
         redirectAttributes.addFlashAttribute("success", "Role added successfully");
         return "redirect:/admin/roles";

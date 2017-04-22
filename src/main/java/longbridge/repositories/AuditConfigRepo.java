@@ -13,5 +13,7 @@ public interface AuditConfigRepo extends JpaRepository<AuditConfig, Long>
 
 
     AuditConfig findFirstByEntityName(String name);
+    boolean existsByEntityName(String name);
+    boolean existsByEntityNameAndEnabled(String name, String enabled);
 
 }

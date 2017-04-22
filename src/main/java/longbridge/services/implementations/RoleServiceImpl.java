@@ -177,32 +177,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
 
-    @Override
-    public void updateRole(Role role) {
-        roleRepo.save(role);
-    }
 
-    @Override
-    public void deleteRole(Role role) {
-        role.setDelFlag("Y");
-        roleRepo.save(role);
-    }
-
-    @Override
-    public void addPermission(Permission permission) {
-        permissionRepo.save(permission);
-    }
-
-    @Override
-    public void updatePermission(Permission permission) {
-        permissionRepo.save(permission);
-    }
-
-    @Override
-    public void deletePermission(Permission permission) {
-        permission.setDelFlag("Y");
-        permissionRepo.save(permission);
-    }
 
     @Override
     public void addRole(RoleDTO roleDTO) {
@@ -210,9 +185,7 @@ public class RoleServiceImpl implements RoleService {
         roleRepo.save(role);
     }
 
-    public void addRole(Role roleDTO) {
-        roleRepo.save(roleDTO);
-    }
+    
 
     @Override
     public RoleDTO getRole(Long id) {
@@ -323,6 +296,8 @@ public class RoleServiceImpl implements RoleService {
         }
         return permissionDTOList;
     }
+    
+    
 
 
 

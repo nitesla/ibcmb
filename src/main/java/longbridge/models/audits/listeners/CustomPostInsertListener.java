@@ -18,51 +18,26 @@ import java.sql.ResultSet;
  * Created by ayoade_farooq@yahoo.com on 4/8/2017.
  */
 
-
 public class CustomPostInsertListener extends EnversPostInsertEventListenerImpl {
-//    @Autowired
-//private AuditConfigImpl auditConfig;
 
-//    @Autowired
-//    private AuditConfigRepo configRepo;
+	public CustomPostInsertListener(EnversService enversService) {
+		super(enversService);
+	}
 
+	@Override
 
+	public void onPostInsert(PostInsertEvent event) {
+		String s = event.getEntity().getClass().getSimpleName();
+		System.out.println(s + "ok na");
 
+		if (CustomJdbcUtil.auditEntity(s)) {
+			System.out.println("Meaning i can control it?");
 
-    public CustomPostInsertListener(EnversService enversService) {
+			super.onPostInsert(event);
+		} else {
 
-     super(enversService);
+		}
 
-    }
-
-
-
-
-    @Override
-
-    public void onPostInsert(PostInsertEvent event) {
-   String  s=event.getEntity().getClass().getSimpleName();
-        System.out.println(s + "ok na");
-
-
-
-
-
-
-
-
-        if (CustomJdbcUtil.auditEntity(s)){
-            System.out.println("Meaning i can control it?");
-
-           super.onPostInsert(event);
-        }else{
-
-        }
-
-    }
-
-
-
-
+	}
 
 }

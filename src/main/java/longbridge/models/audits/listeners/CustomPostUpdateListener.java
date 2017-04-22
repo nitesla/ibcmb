@@ -13,9 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class CustomPostUpdateListener extends EnversPostUpdateEventListenerImpl {
 
 
-
-
-
     public CustomPostUpdateListener(EnversService enversService) {
         super(enversService);
     }
