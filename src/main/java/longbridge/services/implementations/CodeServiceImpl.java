@@ -18,6 +18,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -107,6 +108,7 @@ public class CodeServiceImpl implements CodeService {
         }
     }
 
+    @Transactional
     public boolean updateCode(CodeDTO codeDTO, AdminUser adminUser) {
         boolean result = false;
         Code code = convertDTOToEntity(codeDTO);
@@ -118,6 +120,7 @@ public class CodeServiceImpl implements CodeService {
      * Modifies an existing code
      * @param code the code
      */
+    @Transactional
     @Override
     public void modify(CodeDTO code, AdminUser adminUser){
         Code codeO = codeRepo.findOne(code.getId());

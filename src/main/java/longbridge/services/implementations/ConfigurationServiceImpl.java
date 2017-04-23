@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Created by Fortune on 4/13/2017.
@@ -28,6 +29,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 	@Autowired
 	ModelMapper modelMapper;
 
+	@Transactional
 	@Override
 	public void addSetting(SettingDTO dto) {
 		ModelMapper mapper = new ModelMapper();
@@ -44,7 +46,6 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 
 	@Override
 	public SettingDTO getSettingByName(String name) {
-
 		return convertEntityToDTO(settingRepo.findByName(name));
 	}
 
@@ -54,6 +55,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 		return convertEntitiesToDTOs(all);
 	}
 
+	
 	@Override
 	public Page<SettingDTO> getSettings(Pageable pageDetails) {
 		Page<Setting> page = settingRepo.findAll(pageDetails);
@@ -73,6 +75,8 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 		return allDto;
 	}
 
+	
+	@Transactional
 	@Override
 	public void updateSetting(SettingDTO dto) {
 		Setting setting = settingRepo.findOne(dto.getId());

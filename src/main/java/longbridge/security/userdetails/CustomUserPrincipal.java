@@ -18,6 +18,7 @@ public class CustomUserPrincipal implements UserDetails {
 	private static final long serialVersionUID = 1L;
 
 	private final User user;
+	private String ipAddress;
 	private LocalDate today = LocalDate.now();
 
 	public CustomUserPrincipal(User user) {
@@ -25,6 +26,13 @@ public class CustomUserPrincipal implements UserDetails {
 
 	}
 
+	public String getIpAddress() {
+		return ipAddress;
+	}
+
+	public void setIpAddress(String ipAddress) {
+		this.ipAddress = ipAddress;
+	}
 
 	@Override
 	public String getUsername() {

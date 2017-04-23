@@ -19,15 +19,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import longbridge.dtos.CodeDTO;
 import longbridge.dtos.SettingDTO;
 import longbridge.services.ConfigurationService;
-
-import javax.persistence.EntityManager;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Controller for maintaining application {@link longbridge.models.Setting}

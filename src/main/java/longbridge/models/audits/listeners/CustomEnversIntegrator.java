@@ -32,7 +32,6 @@ public class CustomEnversIntegrator extends EnversIntegrator {
            listenerRegistry.appendListeners( EventType.POST_UPDATE, new PostUpdateEventListener[]{new CustomPostUpdateListener(enversService)});
 			listenerRegistry.appendListeners(EventType.POST_INSERT,
 					new PostInsertEventListener[] { new CustomPostInsertListener(enversService)});
-
            // listenerRegistry.appendListeners( EventType.POST_DELETE, new PostDeleteListenerLog( enversService ) );
         }
     }

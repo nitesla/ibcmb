@@ -72,13 +72,7 @@
                                     </thead>
                                     <tbody>
 
-                                    <tr class="gradeA" th:each="auditEntry : ${tables}">
-                                        <td th:text="${auditEntry.entityName}"></td>
-                                        <td >
- 										<input type="checkbox" th:attr="data-pk=${auditEntry.id}, data-version=${auditEntry.version}" data-switchery="true" th:class="js-switch" th:checked="${auditEntry.enabled eq 'Y'}" th:value="${auditEntry.entityName}" th:id="${auditEntry.entityName}"/>
-
-                                        </td>
-                                    </tr>
+                                  
 
                                     </tbody>
                                     <tfoot>
@@ -123,9 +117,36 @@
             "pagingType" : "simple_numbers",
             "searching": false,
             "paging": true,
-            "serverSide" : false,
+			"processing" : true,
+            "serverSide" : true,
+            "ajax": "/admin/audit/all",
             "dom": 'T<"clear">frtlp',
-        } );
+            "drawCallback": function( settings ) {
+            	var elems = Array.prototype.slice.call(document.querySelectorAll('.js-switch'));
+            	elems.forEach(function(html) {
+            	    var switchery = new Switchery(html, { size: 'small' ,color: '#2A3F54'});
+            	});
+            },
+            "columns": [
+                { "data": "entityName" },
+                { "data": "enabled" },
+            ] ,
+            "columnDefs" : [ {
+				"targets" : 1,
+				"data" : "enabled",
+				"render" : function(data, type,full, meta) {
+					if (type === 'display') {
+						if (data == 'Y') {
+							return "<input type='checkbox' data-pk='"+full.id+"' data-version='"+full.version+"' data-switchery='true' class='js-switch' checked value='"+full.entityName+"' />";
+						} else if (data == 'N') {
+							return "<input type='checkbox' data-pk='"+full.id+"' data-version='"+full.version+"' data-switchery='true' class='js-switch' value='"+full.entityName+"' />";
+						} 
+					}
+					return data;
+				}
+            
+			} ]
+        });
 
 
     } );
@@ -134,7 +155,7 @@
 <script>
 
 
-    $("input[type=checkbox]").on("change", function(e) {
+	$(document).on("change","input[type=checkbox]", function(e) {
     	var updateUrl = "/admin/audit";
     	var cb = $(e.currentTarget);
     	var nm = cb.val();
@@ -163,6 +184,9 @@
     			timeout : 100000,
     			success : function(data) {
     				console.log("SUCCESS: ", data);
+    				var tab = $('#audit-table').DataTable();
+    				tab.ajax.reload();
+    				//tab.draw();
     			},
     			error : function(e) {
     				console.log("ERROR: ", e);

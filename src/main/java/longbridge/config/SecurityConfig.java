@@ -60,6 +60,8 @@ public class SecurityConfig {
 
 			http.antMatcher("/admin/**").authorizeRequests().anyRequest().hasAuthority(UserType.ADMIN.toString())
 					// log in
+			//IP address check
+			//.anyRequest().hasIpAddress("")
 					.and().formLogin().loginPage("/login/admin").loginProcessingUrl("/admin/login")
 					.failureUrl("/login/admin?error=login_error").defaultSuccessUrl("/admin/dashboard")
 					.successHandler(adminAuthenticationSuccessHandler).failureHandler(adminAuthenticationFailureHandler)

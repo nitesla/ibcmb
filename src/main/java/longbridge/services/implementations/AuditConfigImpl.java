@@ -4,6 +4,8 @@ import longbridge.models.AuditConfig;
 import longbridge.repositories.AuditConfigRepo;
 import longbridge.services.AuditConfigService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
@@ -29,32 +31,17 @@ public class AuditConfigImpl implements AuditConfigService {
 
 	@Override
 	public Iterable<AuditConfig> getAllEntities() {
-		List<String> tables = new ArrayList<>();
-		entityManager.getEntityManagerFactory().getMetamodel().getEntities().stream()
-				.filter(i -> !i.getName().endsWith("AUD")).filter(i -> !i.getName().endsWith("Entity"))
-				.filter(i -> !i.getName().equalsIgnoreCase("AuditConfig")).map(i -> i.getName())
-				.collect(Collectors.toList()).forEach(e -> tables.add(e));
-
-		// .forEach(i ->tables.add(i.getName()));
-
-		Collections.sort(tables);
-		List<AuditConfig> configs = new ArrayList<AuditConfig>();
-		for(String s : tables){
-			AuditConfig entity = configRepo.findFirstByEntityName(s);
-			if(entity == null){
-				//not existing
-				entity = new AuditConfig();
-				entity.setEnabled("N");
-				entity.setEntityName(s);
-			}
-			configs.add(entity);
-		}
-		return configs;
+		return configRepo.findAll();
 	}
 
 	@Override
 	public boolean saveAuditConfig(AuditConfig cfg) {
 		configRepo.save(cfg);
 		return true;
+	}
+
+	@Override
+	public Page<AuditConfig> getEntities(Pageable pageDetails) {
+		return configRepo.findAll(pageDetails);
 	}
 }

@@ -6,6 +6,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.data.jpa.datatables.repository.DataTablesUtils;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,20 +30,29 @@ public class AdmAuditController {
     @Autowired
     AuditConfigService auditCfgService;
 
+    
     @GetMapping()
-    public String listAudit(Model model){
-    	
-    	Iterable<AuditConfig> entities = auditCfgService.getAllEntities();
-        model.addAttribute("tables",entities);
-        return "adm/setting/audit";
+	public String listSettings(Model model) {
+		return "adm/setting/audit";
+	}
+    
+    @GetMapping(path = "/all")
+    public @ResponseBody DataTablesOutput<AuditConfig> getAllCodes(DataTablesInput input){
+        Pageable pageable = DataTablesUtils.getPageable(input);
+        Page<AuditConfig> auditConf = auditCfgService.getEntities(pageable);
+        DataTablesOutput<AuditConfig> out = new DataTablesOutput<AuditConfig>();
+        out.setDraw(input.getDraw());
+        out.setData(auditConf.getContent());
+        out.setRecordsFiltered(auditConf.getTotalElements());
+        out.setRecordsTotal(auditConf.getTotalElements());
+        return out;
     }
-    
-    
     
     @PostMapping
     @ResponseBody
-    public String changeAuditEntry(@RequestBody AuditConfig auditEntry) {
+    public ResponseEntity<HttpStatus> changeAuditEntry(@RequestBody AuditConfig auditEntry) {
        auditCfgService.saveAuditConfig(auditEntry);
-       return "success";
+       ResponseEntity<HttpStatus> resp = new ResponseEntity<>(HttpStatus.NO_CONTENT);
+       return resp;
     }
 }

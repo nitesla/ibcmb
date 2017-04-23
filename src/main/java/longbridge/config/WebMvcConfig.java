@@ -3,6 +3,7 @@ package longbridge.config;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.CommonAnnotationBeanPostProcessor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -24,7 +25,10 @@ public class WebMvcConfig   extends WebMvcConfigurerAdapter {
 		return bCryptPasswordEncoder;
 	}
 
-
+	@Bean
+	public CommonAnnotationBeanPostProcessor initCommonAnnotationBeanPostProcessor(){
+		return new CommonAnnotationBeanPostProcessor();
+	}
 
 	@Bean()
 	public ModelMapper modelMapper() {
@@ -62,6 +66,7 @@ public class WebMvcConfig   extends WebMvcConfigurerAdapter {
 		lci.setParamName("lang");
 		return lci;
 	}
+	
 	@Bean
 	@ConditionalOnMissingBean(RequestContextListener.class)
 	public RequestContextListener requestContextListener() {

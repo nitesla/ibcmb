@@ -48,11 +48,11 @@ public class AdminUserDetailsService implements UserDetailsService {
         }
 
         try{
-
             AdminUser user= adminUserRepo.findFirstByUserName(s);
-
             if(user!=null && user.getUserType()== UserType.ADMIN) {
-                return new CustomUserPrincipal(user);
+            	CustomUserPrincipal userPrincipal = new CustomUserPrincipal(user);
+            	userPrincipal.setIpAddress(ip);
+                return userPrincipal;
             }
             throw new UsernameNotFoundException(s);
         }
