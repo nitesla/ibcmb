@@ -113,8 +113,6 @@ public class RetailUserServiceImpl implements RetailUserService {
 
         try {
 
-            if (getUser(user.getId()) == null) {
-
                 if (getUser(user.getId()) == null) {
 
                     logger.error("USER DOES NOT EXIST");
@@ -129,18 +127,7 @@ public class RetailUserServiceImpl implements RetailUserService {
                 } else {
                     logger.error("INVALID CURRENT PASSWORD FOR USER {}", user.getId());
 
-                    if (this.passwordEncoder.matches(oldPassword, user.getPassword())) {
-                        user.setPassword(this.passwordEncoder.encode(newPassword));
-                        this.retailUserRepo.save(user);
-                        logger.info("USER {}'s password has been updated", user.getId());
-                        ok = true;
-                    } else {
-                        logger.error("INVALID CURRENT PASSWORD FOR USER {}", user.getId());
-
-                    }
-
                 }
-            }
         }
             catch (Exception e){
                     e.printStackTrace();

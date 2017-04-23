@@ -30,7 +30,10 @@
     <div class="login_wrapper">
         <div class="animate form login_form">
             <section class="login_content">
-                <form th:action="@{/operations/login}" method="POST"           >
+                <img th:src="@{/bank/images/cmb_logo.png}" alt="Coronation Merchant Bank" />
+                <br/>
+                <form th:action="@{/operations/login}" method="POST">
+
                     <h1>Operations Login Form</h1>
                     <div>
                         <input type="text" class="form-control" placeholder="Username" required="" />
@@ -42,8 +45,6 @@
                         <a class="btn btn-default submit" href="index.html">Log in</a>
                         <a class="reset_pass" href="#">Lost your password?</a>
                     </div>
-
-                    <div class="clearfix"></div>
 
                 </form>
             </section>

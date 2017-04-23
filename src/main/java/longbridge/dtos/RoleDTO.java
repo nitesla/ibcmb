@@ -1,14 +1,9 @@
 package longbridge.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import longbridge.models.AbstractEntity;
-import longbridge.models.Permission;
 import longbridge.models.UserType;
 import org.hibernate.validator.constraints.NotEmpty;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -18,9 +13,9 @@ public class RoleDTO{
 
     @JsonProperty("DT_RowId")
     private Long id;
-   @NotEmpty
+    @NotEmpty
     private String name;
-   @NotEmpty
+    @NotEmpty
     private String description;
     private String email;
 

@@ -91,13 +91,14 @@ body {
 }
 
 .header_info h5{
-    color: #02223A;
+
+    color: #8A6659;
     font-size: 24px;
     font-weight: normal;
 }
 
 .header_info h5>span{
-    color: #8A6659;
+    color: #02223A;
 }
 
 .page_header{
