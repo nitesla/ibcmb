@@ -8,9 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface CodeRepo extends CommonRepo<Code, Long>{
 
-    Iterable<Code> findByTypeAndDelFlag(String type, String delFlag);
-
-    Iterable<Code> findByDelFlag(String delFlag);
 
     Iterable<Code> findByType(String type);
 

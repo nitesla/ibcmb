@@ -40,7 +40,7 @@ public class MainController {
     }
 
     @RequestMapping("/admin/dashboard")
-    public String getDashboard() {
+    public String getAdminDashboard() {
         return "adm/dashboard";
     }
 

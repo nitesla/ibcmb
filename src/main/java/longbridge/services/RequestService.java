@@ -58,4 +58,9 @@ public interface RequestService {
     
     Page<RequestHistory>getRequestHistories(ServiceRequest request,Pageable pageDetails);
 
+    Page<RequestHistoryDTO>getRequestHistories(Long serviceRequestId, Pageable pageDetails);
+
+
+
+
 }

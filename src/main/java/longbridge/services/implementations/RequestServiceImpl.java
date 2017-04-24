@@ -1,9 +1,11 @@
 package longbridge.services.implementations;
 
 import longbridge.dtos.RequestHistoryDTO;
+import longbridge.dtos.ServiceReqConfigDTO;
 import longbridge.dtos.ServiceRequestDTO;
 import longbridge.models.RequestHistory;
 import longbridge.models.RetailUser;
+import longbridge.models.ServiceReqConfig;
 import longbridge.models.ServiceRequest;
 import longbridge.repositories.RequestHistoryRepo;
 import longbridge.repositories.RetailUserRepo;
@@ -12,6 +14,7 @@ import longbridge.services.RequestService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -75,8 +78,11 @@ public class RequestServiceImpl implements RequestService {
     }
 
     public Page<ServiceRequestDTO>getRequests(RetailUser user, Pageable pageDetails){
-        // TODO Auto-generated method stub
-        return null;
+        Page<ServiceRequest> page = serviceRequestRepo.findAll(pageDetails);
+        List<ServiceRequestDTO> dtOs = convertEntitiesToDTOs(page.getContent());
+        long t = page.getTotalElements();
+        Page<ServiceRequestDTO> pageImpl = new PageImpl<>(dtOs, pageDetails, t);
+        return pageImpl;
     }
 
 
@@ -87,11 +93,20 @@ public class RequestServiceImpl implements RequestService {
 	}
 
 	@Override
-	public Page<RequestHistory> getRequestHistories(ServiceRequest request, Pageable pageDetails) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public Page<RequestHistory> getRequestHistories(ServiceRequest serviceRequest, Pageable pageDetails) {
+        Page<RequestHistory> page = this.getRequestHistories(serviceRequest,pageDetails);
+       return page;
+    }
 
+    @Override
+    public Page<RequestHistoryDTO> getRequestHistories(Long serviceRequestId, Pageable pageDetails) {
+        ServiceRequest serviceRequest = serviceRequestRepo.findOne(serviceRequestId);
+        Page<RequestHistory> page = this.getRequestHistories(serviceRequest,pageDetails);
+        List<RequestHistoryDTO> dtOs = convertRequestHistoryEntitiesToDTOs(page.getContent());
+        long t = page.getTotalElements();
+        Page<RequestHistoryDTO> pageImpl = new PageImpl<>(dtOs, pageDetails, t);
+        return pageImpl;
+    }
 
 
     private ServiceRequestDTO convertEntityToDTO(ServiceRequest ServiceRequest){

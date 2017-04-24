@@ -19,6 +19,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * Created by Wunmi on 08/04/2017.
@@ -41,7 +42,12 @@ public class AdmServiceReqConfigController {
 
 
     @GetMapping("/new")
-    public String addConfig(){
+    public String addConfig( Model model){
+        model.addAttribute("serviceReqConfig", new ServiceReqConfigDTO());
+        Iterable<CodeDTO> requestTypes = codeService.getCodesByType("REQUEST_TYPE");
+        Iterable<CodeDTO> requestUnits = codeService.getCodesByType("UNIT");
+        model.addAttribute("requestTypes",requestTypes);
+        model.addAttribute("requestUnits",requestUnits);
         return "adm/servicereqconfig/add";
     }
 
@@ -79,9 +85,12 @@ public class AdmServiceReqConfigController {
     public String  editConfig(@PathVariable Long reqId, Model model){
         ServiceReqConfigDTO serviceReqConfig = serviceReqConfigService.getServiceReqConfig(reqId);
         Iterable<CodeDTO> fieldTypes = codeService.getCodesByType("SERVICE_REQUEST");
+        Iterable<CodeDTO> requestTypes = codeService.getCodesByType("REQUEST_TYPE");
+        Iterable<CodeDTO> requestUnits = codeService.getCodesByType("UNIT");
         model.addAttribute("serviceReqConfig", serviceReqConfig);
-        model.addAttribute("requestFieldType",fieldTypes);
-        //return "adm/serviceReqConfig/edit";
+        model.addAttribute("requestFieldTypes",fieldTypes);
+        model.addAttribute("requestTypes",requestTypes);
+        model.addAttribute("requestUnits",requestUnits);
         return "/adm/serviceReqConfig/edit";
 
     }
@@ -91,10 +100,9 @@ public class AdmServiceReqConfigController {
         if(result.hasErrors()) {
             return "admin/srconfig/new";
         }
-      // serviceReqConfigDTO.setId(reqId);
-        logger.info("My service req : {}",serviceReqConfigDTO.toString());
+
         serviceReqConfigService.updateServiceReqConfig(serviceReqConfigDTO);
-        model.addAttribute("success", "Service Request Configuration updated successfully");
+        model.addAttribute("success", "Service Request configuration updated successfully");
         return "redirect:/admin/srconfig";
     }
 

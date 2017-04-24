@@ -7,8 +7,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -28,10 +28,11 @@ public class ServiceRequest extends AbstractEntity {
     private String requestName;
     @Column(columnDefinition = "TEXT")
     private String body;
-    private Date requestTime;
+    private String requestStatus;
+    private Date dateRequested;
 
     @OneToMany
-    private Collection<RequestHistory> requestHistories;
+    private List<RequestHistory> requestHistories;
 
     public RetailUser getUser() {
         return user;
@@ -53,19 +54,27 @@ public class ServiceRequest extends AbstractEntity {
         this.body = body;
     }
 
-    public Date getRequestTime() {
-        return requestTime;
+    public String getRequestStatus() {
+        return requestStatus;
     }
 
-    public void setRequestTime(Date requestTime) {
-        this.requestTime = requestTime;
+    public void setRequestStatus(String requestStatus) {
+        this.requestStatus = requestStatus;
     }
 
-    public Collection<RequestHistory> getRequestHistories() {
+    public Date getDateRequested() {
+        return dateRequested;
+    }
+
+    public void setDateRequested(Date dateRequested) {
+        this.dateRequested = dateRequested;
+    }
+
+    public List<RequestHistory> getRequestHistories() {
         return requestHistories;
     }
 
-    public void setRequestHistories(Collection<RequestHistory> requestHistories) {
+    public void setRequestHistories(List<RequestHistory> requestHistories) {
         this.requestHistories = requestHistories;
     }
 
@@ -79,7 +88,8 @@ public class ServiceRequest extends AbstractEntity {
                 "user=" + user +
                 ", requestName='" + requestName + '\'' +
                 ", body='" + body + '\'' +
-                ", requestTime=" + requestTime +
+                ", requestStatus='" + requestStatus + '\'' +
+                ", dateRequested=" + dateRequested +
                 ", requestHistories=" + requestHistories +
                 '}';
     }

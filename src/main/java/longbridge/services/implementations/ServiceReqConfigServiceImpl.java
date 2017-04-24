@@ -101,8 +101,10 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 			
 		}
 		serviceReqConfig.setId(serviceReqConfigDTO.getId());
-		serviceReqConfig.setRequestName(serviceReqConfigDTO.getRequestName());
 		serviceReqConfig.setVersion(serviceReqConfigDTO.getVersion());
+		serviceReqConfig.setRequestName(serviceReqConfigDTO.getRequestName());
+		serviceReqConfig.setRequestType(serviceReqConfigDTO.getRequestType());
+		serviceReqConfig.setRequestUnit(serviceReqConfigDTO.getRequestUnit());
 		serviceReqConfig.setFormFields(fields);
 		serviceReqConfigRepo.save(serviceReqConfig);
 	}
@@ -155,9 +157,6 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 		Page<ServiceReqConfig> page = serviceReqConfigRepo.findAll(pageDetails);
 		List<ServiceReqConfigDTO> dtOs = convertEntitiesToDTOs(page.getContent());
 		long t = page.getTotalElements();
-
-		// return new
-		// PageImpl<ServiceReqConfigDTO>(dtOs,pageDetails,page.getTotalElements());
 		Page<ServiceReqConfigDTO> pageImpl = new PageImpl<ServiceReqConfigDTO>(dtOs, pageDetails, t);
 		return pageImpl;
 	}

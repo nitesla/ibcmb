@@ -18,7 +18,7 @@
                         <!--<form method="post" th:action="" id="reqForm">-->
                         <form method="post" th:action="@{/retail/requests}" th:object="${requestDTO}" id="reqForm">
                             <p><input class="form-control" type="hidden" id="requestName" name="requestName" th:value="${requestConfig.requestName}"/></p>
-                            <input type="hidden" name="body" id="body"/>
+                            <!--<input type="hidden" name="body" id="body"/>-->
                             <p th:each="field : ${requestConfig.formFields}">
                                 <div class="form-group">
                                     <label th:text="${field.fieldLabel}"></label>
@@ -54,7 +54,9 @@
             </div>
             <div class="col-md-3 col-sm-3">
                 <div class="alert alert-warning">
-
+<form id="submitform" action="/retail/requests" method="post">
+    <input type="hidden" id="body" name="requestName"/>
+</form>
                 </div>
             </div>
         </div>
@@ -72,23 +74,48 @@
     } );
 </script>
 <script>
-    $('#reqForm').submit(function() {
+    $('#reqForm').submit(function(event) {
+        event.preventDefault();
 //        var formData = JSON.stringify($("#reqForm").serializeArray());
         var arrays = [];
-        $('.form-group').each(function(index, element){
-            var select = $(element).find('select');
-            arrays.push({"name": select.prop('name'), "value": select.prop("value")});
-        });
+//        $('.form-group').each(function(index, element){
+//            var select = $(element).find('select');
+//            arrays.push({"name": select.prop('name'), "value": select.prop("value")});
+//        });
+//
+//        $('.form-group').each(function(index, element){
+//            var input = $(element).find('input');
+//            arrays.push({"name": input.prop('name'), "value": input.prop("value")});
+//        });
 
-//        alert(arrays);
+//       var formData = $('#reqForm').serialize();
+//
+////        alert(arrays);
+//
 
-        var formData = {
-            requestName: $('#requestName').val(),
-            body: arrays
-        }
 
-        alert(formData);
-        $('#body').val(JSON.stringify(formData));
+//        alert(formData);
+
+
+        var form = $('#reqForm').serializeArray();
+        var formData =  JSON.stringify(form);
+        $('#body').val(formData);
+        $('#submitform').submit();
+
+
+
+//        var s = '';
+//        var data = {};
+//        for(s in form){
+//            data[form[s]['name']] = form[s]['value']
+//        }
+
+
+//            var formData = {
+//            requestName: $('#requestName').val(),
+//            body: data
+//        }
+
     });
 </script>
 </body>
