@@ -33,14 +33,9 @@ public class VerificationController {
 	@Autowired 
 	private AdminUserService adminUserService;
 	
-	@Autowired
-	private CodeService codeService; 
-	
     @PersistenceContext
-    EntityManager eman;
-    
-	@Autowired
-	private RoleService roleService;
+    private EntityManager eman;
+
 	
 	
 	@GetMapping("/")
