@@ -73,13 +73,11 @@ public class Card extends AbstractEntity{
 
 
 
-	@Override
-	public OperationCode getAddCode() {
+	public static OperationCode getAddCode() {
 		return OperationCode.ADD_CODE;
 	}
 
-	@Override
-	public OperationCode getModifyCode() {
+	public static OperationCode getModifyCode() {
 		return OperationCode.MODIFY_CODE;
 	}
 }

@@ -50,7 +50,6 @@ public class VerificationController {
 	
 	@PostMapping("/{id}/verify")
 	public String verify(@PathVariable Long id) {
-		
 
 		logger.info("id {}", id); 
         //TODO check verifier role
