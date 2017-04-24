@@ -124,14 +124,11 @@ public class Code extends AbstractEntity {
         this.version = code.version;
 	}
 
-	@Override
-	public OperationCode getAddCode() {
-        return null;
+	public static OperationCode getAddCode() {
+        return OperationCode.ADD_CODE;
 	}
 
-	@Override
-	public OperationCode getModifyCode() {
-		// TODO Auto-generated method stub
-		return null;
+	public static OperationCode getModifyCode() {
+		return OperationCode.MODIFY_CODE;
 	}
 }

@@ -18,7 +18,4 @@ public interface SerializableEntity<T> {
 	
 	void deserialize(String data) throws JsonParseException, JsonMappingException, IOException;
 	
-	OperationCode getAddCode();
-	
-	OperationCode getModifyCode();
 }

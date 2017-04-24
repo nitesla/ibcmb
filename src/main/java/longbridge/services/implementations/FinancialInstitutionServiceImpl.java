@@ -34,7 +34,8 @@ public class FinancialInstitutionServiceImpl implements FinancialInstitutionServ
         this.financialInstitutionRepo = financialInstitutionRepo;
     }
 
-    private List<FinancialInstitutionDTO> convertEntitiesToDTOs(Iterable<FinancialInstitution> financialInstitutions){
+    @Override
+    public List<FinancialInstitutionDTO> convertEntitiesToDTOs(Iterable<FinancialInstitution> financialInstitutions){
         List<FinancialInstitutionDTO> financialInstitutionDTOList = new ArrayList<>();
         for(FinancialInstitution financialInstitution: financialInstitutions){
             FinancialInstitutionDTO fiDTO = convertEntityToDTO(financialInstitution);
@@ -43,15 +44,52 @@ public class FinancialInstitutionServiceImpl implements FinancialInstitutionServ
         return financialInstitutionDTOList;
     }
 
-    private FinancialInstitutionDTO convertEntityToDTO(FinancialInstitution financialInstitution){
+    @Override
+    public FinancialInstitutionDTO convertEntityToDTO(FinancialInstitution financialInstitution){
         FinancialInstitutionDTO financialInstitutionDTO = new FinancialInstitutionDTO();
         financialInstitutionDTO.setInstitutionCode(financialInstitution.getInstitutionCode());
         financialInstitutionDTO.setInstitutionName(financialInstitution.getInstitutionName());
         return  modelMapper.map(financialInstitution,FinancialInstitutionDTO.class);
     }
 
-    private FinancialInstitution convertDTOToEntity(FinancialInstitutionDTO financialInstitutionDTO){
+    @Override
+    public FinancialInstitution convertDTOToEntity(FinancialInstitutionDTO financialInstitutionDTO){
         return  modelMapper.map(financialInstitutionDTO,FinancialInstitution.class);
+    }
+
+    @Override
+    public boolean addFinancialInstitution(FinancialInstitutionDTO financialInstitutionDTO) {
+        boolean ok = false;
+        if (financialInstitutionDTO != null) {
+            FinancialInstitution financialInstitution = new FinancialInstitution();
+            financialInstitution.setInstitutionCode(financialInstitutionDTO.getInstitutionCode());
+            financialInstitution.setInstitutionName(financialInstitutionDTO.getInstitutionName());
+            this.financialInstitutionRepo.save(financialInstitution
+            );
+            logger.info("New financial institution: {} created", financialInstitution.getInstitutionName());
+            ok=true;
+        } else {
+            logger.error("FINANCIAL INSTITUTION NOT FOUND");
+        }
+        return ok;
+    }
+
+    @Override
+    public boolean updateFinancialInstitution(FinancialInstitutionDTO financialInstitutionDTO) {
+            boolean ok = false;
+            if (financialInstitutionDTO != null) {
+                FinancialInstitution financialInstitution = new FinancialInstitution();
+                financialInstitution.setId((financialInstitutionDTO.getId()));
+                financialInstitution.setVersion(financialInstitutionDTO.getVersion());
+                financialInstitution.setInstitutionCode(financialInstitutionDTO.getInstitutionCode());
+                financialInstitution.setInstitutionName(financialInstitutionDTO.getInstitutionName());
+                this.financialInstitutionRepo.save(financialInstitution);
+                logger.info("Financial Institution {} updated", financialInstitution.getInstitutionName());
+                ok=true;
+            } else {
+                logger.error("Null Fi provided");
+            }
+            return ok;
     }
 
     @Override
@@ -59,6 +97,29 @@ public class FinancialInstitutionServiceImpl implements FinancialInstitutionServ
         Iterable<FinancialInstitution> fis =financialInstitutionRepo.findAll();
         logger.info("FinancialInstitutions {}",fis.toString());
         return convertEntitiesToDTOs(fis);
+    }
+
+    @Override
+    public FinancialInstitutionDTO getFinancialInstitution(Long id) {
+        return convertEntityToDTO(financialInstitutionRepo.findOne(id));
+    }
+
+    @Override
+    public boolean deleteFi(Long id) {
+        boolean result= false;
+
+        try {
+            FinancialInstitution financialInstitution = financialInstitutionRepo.findOne(id);
+            financialInstitution.setDelFlag("Y");
+            this.financialInstitutionRepo.save(financialInstitution);
+            logger.info("Fi {} HAS BEEN DELETED ",id.toString());
+            result=true;
+        }
+        catch (Exception e){
+            logger.error("ERROR OCCURRED {}",e.getMessage());
+
+        }
+        return result;
     }
 
     @Override

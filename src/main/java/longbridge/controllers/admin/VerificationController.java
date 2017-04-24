@@ -33,14 +33,9 @@ public class VerificationController {
 	@Autowired 
 	private AdminUserService adminUserService;
 	
-	@Autowired
-	private CodeService codeService; 
-	
     @PersistenceContext
-    EntityManager eman;
-    
-	@Autowired
-	private RoleService roleService;
+    private EntityManager eman;
+
 	
 	
 	@GetMapping("/")
@@ -50,7 +45,6 @@ public class VerificationController {
 	
 	@PostMapping("/{id}/verify")
 	public String verify(@PathVariable Long id) {
-		
 
 		logger.info("id {}", id); 
         //TODO check verifier role

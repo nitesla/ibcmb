@@ -13,12 +13,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import longbridge.dtos.CodeDTO;
 import longbridge.models.AdminUser;
 import longbridge.models.Code;
 import longbridge.repositories.CodeRepo;
 import longbridge.repositories.VerificationRepo;
 import longbridge.services.CodeService;
+import longbridge.services.VerificationService;
 
 /**
  * Created by Wunmi on 29/03/2017.
@@ -30,14 +33,14 @@ public class CodeServiceImpl implements CodeService {
 
     private CodeRepo codeRepo;
 
-    private VerificationRepo verificationRepo;
+    private VerificationService verificationService;
 
     private ModelMapper modelMapper;
 
     @Autowired
-    public CodeServiceImpl(CodeRepo codeRepository, VerificationRepo verificationRepo, ModelMapper modelMapper) {
+    public CodeServiceImpl(CodeRepo codeRepository, VerificationService verificationService, ModelMapper modelMapper) {
         codeRepo = codeRepository;
-        this.verificationRepo = verificationRepo;
+        this.verificationService = verificationService;
         this.modelMapper = modelMapper;
     }
 
@@ -78,14 +81,14 @@ public class CodeServiceImpl implements CodeService {
   
 
     @Transactional
-    public boolean updateCode(CodeDTO codeDTO, AdminUser adminUser) {
+    public String updateCode(CodeDTO codeDTO, AdminUser adminUser) {
         boolean result = false;
         Code code = convertDTOToEntity(codeDTO);
         //check if maker checker is enabled
         
         codeRepo.save(code);
         
-        return  result;
+        return  "" + result;
        // Code originalObject = codeRepo.findOne(code.getId());
         
         
@@ -129,6 +132,16 @@ public class CodeServiceImpl implements CodeService {
     }
 
 
-
+	@Override
+	public String addCode(CodeDTO codeDTO) {
+		Code code = convertDTOToEntity(codeDTO);
+        try {
+			return verificationService.addNewVerificationRequest(code);
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			logger.error("Error", e);
+			return "Error adding Code " + e.getMessage();
+		}
+	}
 
 }

@@ -153,14 +153,12 @@ public class TransferRequestDTO extends AbstractEntity{
 
 	
 
-	@Override
-	public OperationCode getAddCode() {
+	public static OperationCode getAddCode() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
-	public OperationCode getModifyCode() {
+	public static OperationCode getModifyCode() {
 		// TODO Auto-generated method stub
 		return null;
 	}

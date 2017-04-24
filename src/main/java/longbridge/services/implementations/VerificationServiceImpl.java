@@ -20,6 +20,7 @@ import longbridge.models.OperationCode;
 import longbridge.models.Role;
 import longbridge.models.SerializableEntity;
 import longbridge.models.Verification;
+import longbridge.models.Verification.VerificationStatus;
 import longbridge.repositories.VerificationRepo;
 import longbridge.services.VerificationService;
 
@@ -60,14 +61,18 @@ public class VerificationServiceImpl implements VerificationService {
 
 		try {
 			cc = Class.forName(PACKAGE_NAME + t.getEntityName());
+			logger.info("Class {}", cc.getName());
 			method = cc.getMethod("deserialize", String.class);
 
-			Object returned = method.invoke(null, t.getAfterObject());
-			logger.debug("Class {} ", cc.cast(returned).toString() );
+			Object returned = cc.newInstance();
+			method.invoke(returned, t.getAfterObject());
+			logger.info("Object returned {}", returned.toString());
+			logger.debug("Class {} ", returned.toString() );
 			eman.persist(cc.cast(returned));
 
 			AbstractEntity entity = (AbstractEntity) returned;
 			t.setEntityId(entity.getId());
+			t.setStatus(VerificationStatus.VERIFIED);
 			verificationRepo.save(t);
 
 		} catch (NoSuchMethodException | SecurityException | ClassNotFoundException e1) {
@@ -77,6 +82,9 @@ public class VerificationServiceImpl implements VerificationService {
 		} catch (IllegalArgumentException e) {
 			logger.error("Error", e);
 		} catch (InvocationTargetException e) {
+			logger.error("Error", e);
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
 			logger.error("Error", e);
 		}
 	
@@ -96,8 +104,10 @@ public class VerificationServiceImpl implements VerificationService {
         verification.setAfterObject(entity.serialize());
         verification.setOriginal("");
         verification.setDescription("Added " + classSimpleName);
-        verification.setOperationCode(entity.getAddCode());
+        //TODO get the Operation Code
+//        verification.setOperationCode(entity.getAddCode());
         verification.setEntityName(classSimpleName);
+        verification.setStatus(VerificationStatus.PENDING);
         //TODO use the current user as the initiator
         //verification.setInitiatedBy(initiator);
         verification.setInitiatedOn(new Date());
@@ -114,7 +124,9 @@ public class VerificationServiceImpl implements VerificationService {
 		verification.setAfterObject(entity.serialize());       
 		verification.setOriginal(originalEntity.serialize());
 		verification.setDescription("Modified " + classSimpleName);
-		verification.setOperationCode(entity.getModifyCode());
+		//TODO get the Operation Code
+//		verification.setOperationCode(entity.getModifyCode());
+		verification.setStatus(VerificationStatus.PENDING);
         //TODO use the current user as the initiator
         //verification.setInitiatedBy(initiator);
         verification.setInitiatedOn(new Date());
