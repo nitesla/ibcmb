@@ -16,6 +16,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.transaction.Transactional;
 import java.io.IOException;
 
 @Component("adminAuthenticationSuccessHandler")
@@ -32,6 +33,7 @@ public class AdminAuthenticationSuccessHandler extends SavedRequestAwareAuthenti
 
 
     @Override
+    @Transactional
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws ServletException, IOException {
         HttpSession session = request.getSession();
         if (session != null) {
@@ -41,6 +43,7 @@ public class AdminAuthenticationSuccessHandler extends SavedRequestAwareAuthenti
 
         super.onAuthenticationSuccess(request, response, authentication);
     }
+
     @Override
     protected void handle(final HttpServletRequest request, final HttpServletResponse response, final Authentication authentication) throws IOException {
 

@@ -2,13 +2,15 @@ package longbridge.services.implementations;
 
 import longbridge.dtos.FinancialInstitutionDTO;
 import longbridge.models.FinancialInstitution;
-import longbridge.models.RetailUser;
 import longbridge.repositories.FinancialInstitutionRepo;
 import longbridge.services.FinancialInstitutionService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -57,6 +59,17 @@ public class FinancialInstitutionServiceImpl implements FinancialInstitutionServ
         Iterable<FinancialInstitution> fis =financialInstitutionRepo.findAll();
         logger.info("FinancialInstitutions {}",fis.toString());
         return convertEntitiesToDTOs(fis);
+    }
+
+    @Override
+    public Page<FinancialInstitutionDTO> getFinancialInstitutions(Pageable pageDetails) {
+        Page<FinancialInstitution> page = financialInstitutionRepo.findAll(pageDetails);
+        List<FinancialInstitutionDTO> dtOs = convertEntitiesToDTOs(page.getContent());
+        long t = page.getTotalElements();
+
+        // return  new PageImpl<ServiceReqConfigDTO>(dtOs,pageDetails,page.getTotalElements());
+        Page<FinancialInstitutionDTO> pageImpl = new PageImpl<FinancialInstitutionDTO>(dtOs,pageDetails,t);
+        return pageImpl;
     }
 
 }

@@ -54,12 +54,6 @@ public class BeneficiaryController {
         return localBeneficiary;
     }
 
-    @GetMapping
-    public Iterable<LocalBeneficiary> getLocalBeneficiaries(Model model){
-        Iterable<LocalBeneficiary> localBeneficiaries = beneficiaryService.getLocalBeneficiaries(user);
-        model.addAttribute("beneficiaries",localBeneficiaries);
-        return localBeneficiaries;
-    }
 
 //    @GetMapping
 //    public Iterable<Beneficiary> getLocalBeneficiaries(Model model){
