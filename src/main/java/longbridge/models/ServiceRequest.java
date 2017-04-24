@@ -93,4 +93,16 @@ public class ServiceRequest extends AbstractEntity {
                 ", requestHistories=" + requestHistories +
                 '}';
     }
+
+	@Override
+	public OperationCode getAddCode() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public OperationCode getModifyCode() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

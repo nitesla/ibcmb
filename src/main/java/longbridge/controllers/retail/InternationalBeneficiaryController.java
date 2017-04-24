@@ -1,17 +1,21 @@
 package longbridge.controllers.retail;
 
-import longbridge.models.Beneficiary;
-import longbridge.models.InternationalBeneficiary;
-import longbridge.models.LocalBeneficiary;
-import longbridge.models.RetailUser;
-import longbridge.services.BeneficiaryService;
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
+import longbridge.models.Beneficiary;
+import longbridge.models.InternationalBeneficiary;
+import longbridge.models.RetailUser;
+import longbridge.services.InternationalBeneficiaryService;
 
 /**
  * Created by Fortune on 4/3/2017.
@@ -22,7 +26,7 @@ import javax.validation.Valid;
 public class InternationalBeneficiaryController {
 
     @Autowired
-    private BeneficiaryService beneficiaryService;
+    private InternationalBeneficiaryService beneficiaryService;
 
     private RetailUser user  = new RetailUser();//TODO the current user must be authenticated
 
@@ -51,8 +55,8 @@ public class InternationalBeneficiaryController {
     }
 
     @GetMapping
-    public Iterable<Beneficiary> getInternationalBeneficiaries(Model model){
-        Iterable<Beneficiary> internationalBeneficiaries = beneficiaryService.getInternationalBeneficiaries(user);
+    public Iterable<InternationalBeneficiary> getInternationalBeneficiaries(Model model){
+        Iterable<InternationalBeneficiary> internationalBeneficiaries = beneficiaryService.getInternationalBeneficiaries(user);
         model.addAttribute("beneficiaries",internationalBeneficiaries);
         return internationalBeneficiaries;
     }

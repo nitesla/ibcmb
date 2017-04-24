@@ -147,4 +147,16 @@ public class TransferRequest extends AbstractEntity{
                 ", sessionId='" + sessionId + '\'' +
                 '}';
     }
+
+	@Override
+	public OperationCode getAddCode() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public OperationCode getModifyCode() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

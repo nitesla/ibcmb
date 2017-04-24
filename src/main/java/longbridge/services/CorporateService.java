@@ -1,21 +1,22 @@
 package longbridge.services;
 
+import java.util.List;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import longbridge.dtos.CorporateDTO;
 import longbridge.models.Account;
 import longbridge.models.CorpLimit;
 import longbridge.models.Corporate;
 import longbridge.models.CorporateUser;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-
-import java.util.List;
 
 
 /**
  *The {@code CorporateService} interface provides the method managing corporate operations
  *These operations include adding corporate customer, setting corporate rules and transfer limits.
  */
-public interface CorporateService {
+public interface CorporateService{
 
     /**
      * Adds a new corporate customer to the system

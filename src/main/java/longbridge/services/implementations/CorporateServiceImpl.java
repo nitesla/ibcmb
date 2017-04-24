@@ -147,4 +147,5 @@ public class CorporateServiceImpl implements CorporateService {
         }
         return corporateDTOList;
     }
+
 }

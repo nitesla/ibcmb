@@ -1,7 +1,13 @@
 package longbridge.models;
 
+import java.io.IOException;
+
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 
 /**
  * Created by Wunmi on 27/03/2017.
@@ -57,4 +63,16 @@ public class Beneficiary extends AbstractEntity{
                 ", beneficiaryBank='" + beneficiaryBank + '\'' +
                 '}';
     }
+
+	@Override
+	public OperationCode getAddCode() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public OperationCode getModifyCode() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

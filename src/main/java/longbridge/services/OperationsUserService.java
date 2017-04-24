@@ -1,16 +1,17 @@
 package longbridge.services;
 
-import longbridge.dtos.OperationsUserDTO;
-import longbridge.models.OperationsUser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import longbridge.dtos.OperationsUserDTO;
+import longbridge.models.OperationsUser;
 
 /**
  * The {@code OperationsUserService} provides the methods for managing operations users
  * @see OperationsUserDTO
  * Created on 3/29/2017.
  */
-public interface OperationsUserService {
+public interface OperationsUserService{
 
     /**
      *Returns the specified operations user

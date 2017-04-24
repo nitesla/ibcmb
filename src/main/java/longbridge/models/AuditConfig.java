@@ -2,6 +2,12 @@ package longbridge.models;
 
 import org.hibernate.annotations.Where;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+
+import java.io.IOException;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
@@ -27,5 +33,25 @@ public class AuditConfig extends AbstractEntity
 	}
 	public void setEnabled(String enabled) {
 		this.enabled = enabled;
+	}
+//	@Override
+//	public String serialize() throws JsonProcessingException {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
+//	@Override
+//	public AbstractEntity deserialize(String data) throws JsonParseException, JsonMappingException, IOException {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
+	@Override
+	public OperationCode getAddCode() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public OperationCode getModifyCode() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

@@ -67,6 +67,18 @@ public class ServiceReqFormField extends AbstractEntity {
 		return "ServiceReqFormFields [fieldName=" + fieldName + ", fieldLabel=" + fieldLabel + ", fieldType="
 				+ fieldType + ", typeData=" + typeData + "]";
 	}
+
+	@Override
+	public OperationCode getAddCode() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public OperationCode getModifyCode() {
+		// TODO Auto-generated method stub
+		return null;
+	}
     
     
 }

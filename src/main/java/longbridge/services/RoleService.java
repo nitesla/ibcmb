@@ -13,7 +13,7 @@ import java.util.Date;
 /**
  * Created by LB-PRJ-020 on 4/11/2017.
  */
-public interface RoleService extends Verifiable<RoleDTO> {
+public interface RoleService {
 
 
     /**

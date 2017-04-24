@@ -9,7 +9,9 @@ import javax.persistence.UniqueConstraint;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import longbridge.dtos.CodeDTO;
@@ -71,17 +73,6 @@ public class Code extends AbstractEntity {
 		return result;
 	}
 
-    public static Code deserialize(String data) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        Code code = mapper.readValue(data, Code.class);
-        return code;
-    }
-
-    public static String serialize(Code code) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        String data = mapper.writeValueAsString(code);
-        return data;
-    }
 
 
 	@Override
@@ -113,5 +104,34 @@ public class Code extends AbstractEntity {
 				", type='" + type + '\'' +
 				", description='" + description + '\'' +
 				'}';
+	}
+
+	@Override
+	public String serialize() throws JsonProcessingException {
+		ObjectMapper mapper = new ObjectMapper();
+        String data = mapper.writeValueAsString(this);
+        return data;
+	}
+
+	@Override
+	public void deserialize(String data) throws JsonParseException, JsonMappingException, IOException {
+		ObjectMapper mapper = new ObjectMapper();
+        Code code = mapper.readValue(data, Code.class);
+        this.code = code.code;
+        this.delFlag = code.delFlag;
+        this.description = code.description;
+        this.type = code.type;
+        this.version = code.version;
+	}
+
+	@Override
+	public OperationCode getAddCode() {
+        return null;
+	}
+
+	@Override
+	public OperationCode getModifyCode() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

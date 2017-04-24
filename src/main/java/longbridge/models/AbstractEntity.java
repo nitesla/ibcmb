@@ -2,11 +2,19 @@ package longbridge.models;
 
 
 import org.hibernate.annotations.Where;
+import org.modelmapper.ModelMapper;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Version;
+
+import java.io.IOException;
 import java.io.Serializable;
 
 /**
@@ -17,7 +25,7 @@ import java.io.Serializable;
 
 
 @MappedSuperclass
-public abstract class AbstractEntity implements Serializable{
+public abstract class AbstractEntity implements Serializable, SerializableEntity<AbstractEntity>{
 
     @javax.persistence.Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -85,4 +93,20 @@ public abstract class AbstractEntity implements Serializable{
             return false;
         return true;
     }
+    
+	@Override
+	public String serialize() throws JsonProcessingException {
+		ObjectMapper mapper = new ObjectMapper();
+        String data = mapper.writeValueAsString(this);
+        return data;
+	}
+
+	@Override
+	public void deserialize(String data) throws JsonParseException, JsonMappingException, IOException {
+		ObjectMapper mapper = new ObjectMapper();
+         AbstractEntity readValue = mapper.readValue(data, this.getClass());
+         ModelMapper modelMapper = new ModelMapper();
+         modelMapper.map(readValue, this);
+         
+	}
 }

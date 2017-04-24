@@ -26,6 +26,18 @@ public class UserGroup extends AbstractEntity {
         this.name = name;
     }
 
+	@Override
+	public OperationCode getAddCode() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public OperationCode getModifyCode() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 //    @ManyToMany(cascade = CascadeType.ALL)
 //    @JoinTable(name = "user_userGroup", joinColumns =
 //    @JoinColumn(name = "user_id", referencedColumnName = "Id"), inverseJoinColumns =

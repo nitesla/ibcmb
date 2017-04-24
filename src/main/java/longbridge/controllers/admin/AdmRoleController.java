@@ -141,37 +141,4 @@ public class AdmRoleController {
         redirectAttributes.addFlashAttribute("success", "Role deleted successfully");
         return "redirect:/admin/roles";
     }
-
-    @PostMapping("/{id}/verify")
-    public String verify(@PathVariable Long id) {
-        logger.info("id {}", id);
-
-        //todo check verifier role
-        AdminUser adminUser = adminUserRepo.findOne(1l);
-        Verification verification = verificationRepo.findOne(id);
-
-        if (verification == null || Verification.VerificationStatus.PENDING != verification.getStatus())
-            return "Verification not found";
-
-        try {
-            roleService.verify(verification, adminUser);
-        } catch (IOException e) {
-            logger.error("Error occurred verifying Role", e);
-        }
-        return "role/add";
-    }
-
-    @PostMapping("/{id}/decline")
-    public String decline(@PathVariable Long id) {
-        //todo check verifier role
-        AdminUser adminUser = adminUserRepo.findOne(1l);
-        Verification verification = verificationRepo.findOne(id);
-
-        if (verification == null || Verification.VerificationStatus.PENDING != verification.getStatus())
-            return "Verification not found";
-
-        roleService.decline(verification, adminUser, "todo get the  reason from the frontend");
-        return "role/add";
-    }
-
 }
