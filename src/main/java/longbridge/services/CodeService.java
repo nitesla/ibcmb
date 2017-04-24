@@ -1,14 +1,12 @@
 package longbridge.services;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-
 import longbridge.dtos.CodeDTO;
 import longbridge.models.AdminUser;
 import longbridge.models.Code;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+import java.util.List;
 
 /**
  *This {@code CodeService} interface provides the methods for managing system codes
@@ -41,7 +39,7 @@ public interface CodeService {
     public boolean updateCode(CodeDTO codeDTO, AdminUser adminUser);
 
 
-        Page<CodeDTO> getCodesByType(String codeType, Pageable pageDetails);
+    Page<CodeDTO> getCodesByType(String codeType, Pageable pageDetails);
 
     Page<CodeDTO> getCodes(Pageable pageDetails);
 

@@ -14,6 +14,15 @@ public class FinancialInstitutionDTO {
     private String institutionCode;
     @NotEmpty
     private String institutionName;
+    private int version;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getInstitutionCode() {
         return institutionCode;
@@ -29,5 +38,13 @@ public class FinancialInstitutionDTO {
 
     public void setInstitutionName(String institutionName) {
         this.institutionName = institutionName;
+    }
+
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
     }
 }
