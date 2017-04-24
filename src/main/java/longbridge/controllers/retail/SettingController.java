@@ -1,8 +1,7 @@
 package longbridge.controllers.retail;
 
+import longbridge.dtos.RetailUserDTO;
 import longbridge.forms.ChangePassword;
-import longbridge.models.RetailUser;
-import longbridge.repositories.RetailUserRepo;
 import longbridge.services.RetailUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,8 +29,6 @@ public class SettingController {
     private BCryptPasswordEncoder passwordEncoder;
     @Autowired
     private RetailUserService retailUserService;
-    @Autowired
-    private RetailUserRepo retailUserRepo;
 
     @GetMapping("/change_password")
     public String ChangePaswordPage(ChangePassword changePassword){
@@ -50,11 +47,11 @@ public class SettingController {
             return "redirect:/retail/change_password";
         }
 
-        RetailUser user = retailUserRepo.findFirstByUserName(principal.getName());
+        RetailUserDTO user = retailUserService.getUserByName(principal.getName());
 
         retailUserService.changePassword(user, changePassword.getOldPassword(), changePassword.getNewPassword());
 
-
+        redirectAttributes.addFlashAttribute("message","Password change successful");
         return "redirect:/retail/change_password";
     }
 }

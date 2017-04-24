@@ -55,6 +55,12 @@ public class RetailUserServiceImpl implements RetailUserService {
     }
 
     @Override
+    public RetailUserDTO getUserByName(String name){
+        RetailUser retailUser =this.retailUserRepo.findFirstByUserName(name) ;
+        return convertEntityToDTO(retailUser);
+    }
+
+    @Override
     public Iterable<RetailUserDTO> getUsers() {
         Iterable<RetailUser> retailUsers =retailUserRepo.findAll();
         logger.info("RetailUsers {}",retailUsers.toString());
@@ -108,7 +114,7 @@ public class RetailUserServiceImpl implements RetailUserService {
     }
 
     @Override
-    public boolean changePassword(RetailUser user,String oldPassword, String newPassword) {
+    public boolean changePassword(RetailUserDTO user,String oldPassword, String newPassword) {
         boolean ok=false;
 
         try {
@@ -120,8 +126,10 @@ public class RetailUserServiceImpl implements RetailUserService {
                 }
 
                 if (this.passwordEncoder.matches(oldPassword, user.getPassword())) {
-                    user.setPassword(this.passwordEncoder.encode(newPassword));
-                    this.retailUserRepo.save(user);
+                    RetailUser retailUser = convertDTOToEntity(user);
+//                    retailUser.setRole(user.getRole());
+                    retailUser.setPassword(this.passwordEncoder.encode(newPassword));
+                    this.retailUserRepo.save(retailUser);
                     logger.info("USER {}'s password has been updated", user.getId());
                     ok = true;
                 } else {

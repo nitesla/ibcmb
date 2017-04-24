@@ -16,18 +16,23 @@ import javax.validation.Valid;
  * Created by Fortune on 4/3/2017.
  */
 
-@RestController
-@RequestMapping("/retail/local/beneficiaries")
-public class LocalBeneficiaryController {
+@Controller
+@RequestMapping("/retail/beneficiary")
+public class BeneficiaryController {
 
     @Autowired
     private LocalBeneficiaryService beneficiaryService;
 
     private RetailUser user  = new RetailUser();//TODO the current user must be authenticated
 
+    @GetMapping
+    public String getBeneficiaries(){
+        return "cust/beneficiary/view";
+    }
+
     @GetMapping("/new")
-    public String addLocalBeneficiary(){
-        return "add-local";
+    public String addBeneficiary(){
+        return "cust/beneficiary/add";
     }
 
     @PostMapping
@@ -56,7 +61,14 @@ public class LocalBeneficiaryController {
         return localBeneficiaries;
     }
 
-    @PostMapping("/{beneficiaryId}/delete")
+//    @GetMapping
+//    public Iterable<Beneficiary> getLocalBeneficiaries(Model model){
+//        Iterable<Beneficiary> localBeneficiaries = beneficiaryService.getLocalBeneficiaries(user);
+//        model.addAttribute("beneficiaries",localBeneficiaries);
+//        return localBeneficiaries;
+//    }
+
+    @GetMapping("/{beneficiaryId}/delete")
     public String deleteBeneficiary(@PathVariable Long beneficiaryId, Model model){
         beneficiaryService.deleteLocalBeneficiary(beneficiaryId);
         model.addAttribute("success","Beneficiary deleted successfully");

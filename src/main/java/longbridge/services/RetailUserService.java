@@ -1,12 +1,11 @@
 package longbridge.services;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-
 import longbridge.dtos.RetailUserDTO;
 import longbridge.models.Account;
-import longbridge.models.Code;
 import longbridge.models.RetailUser;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 /**
  * The {@code RetailUserService} interface provides the methods for managing retails users
@@ -18,6 +17,8 @@ public interface RetailUserService {
      * @param id  the user's id
      */
     RetailUserDTO getUser(Long id);
+
+    RetailUserDTO getUserByName(String name);
 
     /**
      *Returns a list of retail users
@@ -82,7 +83,7 @@ public interface RetailUserService {
      * @param oldPassword the old password
      * @param newPassword the new password
      */
-    boolean changePassword(RetailUser retailUser, String oldPassword, String newPassword);
+    boolean changePassword(RetailUserDTO retailUser, String oldPassword, String newPassword);
 
 
     /**

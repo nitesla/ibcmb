@@ -2,6 +2,7 @@ package longbridge.dtos;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import longbridge.models.Role;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import java.util.Date;
@@ -28,6 +29,7 @@ public class RetailUserDTO {
     private Date lockedUntilDate;
     private Date lastLoginDate;
     private int noOfLoginAttempts;
+    private Role role;
 
     public Long getId() {
         return id;
@@ -147,6 +149,14 @@ public class RetailUserDTO {
 
     public void setNoOfLoginAttempts(int noOfLoginAttempts) {
         this.noOfLoginAttempts = noOfLoginAttempts;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     @Override
