@@ -3,7 +3,7 @@ package longbridge.controllers.retail;
 import longbridge.models.Beneficiary;
 import longbridge.models.LocalBeneficiary;
 import longbridge.models.RetailUser;
-import longbridge.services.BeneficiaryService;
+import longbridge.services.LocalBeneficiaryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,7 +21,7 @@ import javax.validation.Valid;
 public class LocalBeneficiaryController {
 
     @Autowired
-    private BeneficiaryService beneficiaryService;
+    private LocalBeneficiaryService beneficiaryService;
 
     private RetailUser user  = new RetailUser();//TODO the current user must be authenticated
 
@@ -50,8 +50,8 @@ public class LocalBeneficiaryController {
     }
 
     @GetMapping
-    public Iterable<Beneficiary> getLocalBeneficiaries(Model model){
-        Iterable<Beneficiary> localBeneficiaries = beneficiaryService.getLocalBeneficiaries(user);
+    public Iterable<LocalBeneficiary> getLocalBeneficiaries(Model model){
+        Iterable<LocalBeneficiary> localBeneficiaries = beneficiaryService.getLocalBeneficiaries(user);
         model.addAttribute("beneficiaries",localBeneficiaries);
         return localBeneficiaries;
     }

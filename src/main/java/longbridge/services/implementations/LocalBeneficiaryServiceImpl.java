@@ -3,7 +3,7 @@ package longbridge.services.implementations;
 import longbridge.models.*;
 import longbridge.repositories.InternationalBeneficiaryRepo;
 import longbridge.repositories.LocalBeneficiaryRepo;
-import longbridge.services.BeneficiaryService;
+import longbridge.services.LocalBeneficiaryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
  * Created by Wunmi on 29/03/2017.
  */
 @Service
-public class BeneficiaryServiceImpl implements BeneficiaryService {
+public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
 
     private Logger logger= LoggerFactory.getLogger(this.getClass());
 
@@ -21,7 +21,7 @@ public class BeneficiaryServiceImpl implements BeneficiaryService {
     private InternationalBeneficiaryRepo internationalBeneficiaryRepo;
 
     @Autowired
-    public BeneficiaryServiceImpl(LocalBeneficiaryRepo localBeneficiaryRepo, InternationalBeneficiaryRepo internationalBeneficiaryRepo) {
+    public LocalBeneficiaryServiceImpl(LocalBeneficiaryRepo localBeneficiaryRepo, InternationalBeneficiaryRepo internationalBeneficiaryRepo) {
         this.localBeneficiaryRepo = localBeneficiaryRepo;
         this.internationalBeneficiaryRepo = internationalBeneficiaryRepo;
     }
@@ -62,60 +62,17 @@ public class BeneficiaryServiceImpl implements BeneficiaryService {
     }
 
     @Override
-    public Beneficiary getLocalBeneficiary(Long id) {
+    public LocalBeneficiary getLocalBeneficiary(Long id) {
         return localBeneficiaryRepo.findOne(id);
     }
 
     @Override
-    public Iterable<Beneficiary> getLocalBeneficiaries(User user) {
+    public Iterable<LocalBeneficiary> getLocalBeneficiaries(User user) {
         //return localBeneficiaryRepo.findByUserAndDelFlag(user, "N");
         return null;
     }
 
-    @Override
-    public boolean addInternationalBeneficiary(RetailUser user, InternationalBeneficiary beneficiary) {
-        boolean result= false;
-
-        try {
-
-            beneficiary.setUser(user);
-            this.internationalBeneficiaryRepo.save(beneficiary);
-            logger.info("International beneficiary {} has been added for user {}", beneficiary.getName(), user.getUserName());
-            result=true;
-        }
-        catch (Exception e){
-            logger.error("Could not add beneficiary",e.getMessage());
-
-        }
-        return result;
-    }
-
-    @Override
-    public boolean deleteInternationalBeneficiary(Long beneficiaryId) {
-        boolean result= false;
-
-        try {
-            InternationalBeneficiary beneficiary = internationalBeneficiaryRepo.findOne(beneficiaryId);
-            beneficiary.setDelFlag("Y");
-            this.internationalBeneficiaryRepo.save(beneficiary);
-            logger.info("Deleted beneficiary {}",beneficiary.getName());
-            result=true;
-        }
-        catch (Exception e){
-            logger.error("Could not create beneficiary {}",e.getMessage());
-
-        }
-        return result;
-    }
-
-    @Override
-    public Beneficiary getInternationalBeneficiary(Long id) {
-        return internationalBeneficiaryRepo.findOne(id);
-    }
-
-    @Override
-    public Iterable<Beneficiary> getInternationalBeneficiaries(User user) {
-        //return internationalBeneficiaryRepo.findByUserAndDelFlag(user, "N");
-        return null;
-    }
+    
+	
+	
 }

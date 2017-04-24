@@ -1,11 +1,5 @@
 package longbridge.controllers.admin;
 
-import longbridge.dtos.CodeDTO;
-import longbridge.models.AdminUser;
-import longbridge.models.Verification;
-import longbridge.repositories.AdminUserRepo;
-import longbridge.repositories.VerificationRepo;
-import longbridge.services.CodeService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,10 +12,22 @@ import org.springframework.data.jpa.datatables.repository.DataTablesUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.io.IOException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+
+import longbridge.dtos.CodeDTO;
+import longbridge.models.AdminUser;
+import longbridge.models.Code;
+import longbridge.repositories.AdminUserRepo;
+import longbridge.services.CodeService;
+import longbridge.services.VerificationService;
 
 /**
  * Created by Fortune on 4/5/2017.
@@ -30,25 +36,23 @@ import java.io.IOException;
 @RequestMapping("/admin/codes")
 public class AdmCodeController {
 
-    private Logger logger= LoggerFactory.getLogger(this.getClass());
-    @Autowired
-    private CodeService codeService;
-    @Autowired
-    ModelMapper modelMapper;
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
+	@Autowired
+	private CodeService codeService;
+	@Autowired
+	private VerificationService verificationService;
+	@Autowired
+	ModelMapper modelMapper;
 
-    @Autowired
-    private AdminUserRepo adminUserRepo;
+	@Autowired
+	private AdminUserRepo adminUserRepo;
 
-    @Autowired
-    private VerificationRepo verificationRepo;
+	@GetMapping("/new")
+	public String addCode(CodeDTO codeDTO) {
+		return "adm/code/add";
+	}
 
-    @GetMapping("/new")
-    public String addCode(CodeDTO codeDTO){
-        return "adm/code/add";
-    }
-
-
-    @PostMapping
+	@PostMapping
     public String createCode(@ModelAttribute("codeDTO") CodeDTO codeDTO, BindingResult result,  RedirectAttributes redirectAttributes){
         if(result.hasErrors()){
             //return "add";
@@ -58,101 +62,82 @@ public class AdmCodeController {
         }
 
         logger.info("Code {}", codeDTO.toString());
-        AdminUser adminUser = adminUserRepo.getOne(1l);
-        codeService.updateCode(codeDTO,adminUser);//
+        Code code = codeService.convertDTOToEntity(codeDTO);
+        try {
+			verificationService.addNewVerificationRequest(code);
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			logger.error("Error", e);
+		}
+//        codeService.updateCode(codeDTO,adminUser);//
+//        codeService.addObject(code);
        // codeService.add(codeDTO, adminUser);
 
         redirectAttributes.addFlashAttribute("success", "Code added successfully");
         return "redirect:/admin/codes";
     }
 
-    @GetMapping("/{id}/edit")
-    public String editCode(@PathVariable Long id, Model model) {
-        CodeDTO code = codeService.getCode(id);
-        model.addAttribute("code", code);
-        return "adm/code/edit";
-    }
+	@GetMapping("/{id}/edit")
+	public String editCode(@PathVariable Long id, Model model) {
+		CodeDTO code = codeService.getCode(id);
+		model.addAttribute("code", code);
+		return "adm/code/edit";
+	}
 
-    @PostMapping("/verify/{id}")
-    public String verify(@PathVariable Long id){
-        logger.info("id {}",id);
+	@GetMapping("/{codeId}")
+	public CodeDTO getCode(@PathVariable Long codeId, Model model) {
+		CodeDTO code = codeService.getCode(codeId);
+		model.addAttribute("code", code);
+		return code;
+	}
 
-        //todo check verifier role
-        AdminUser adminUser = adminUserRepo.findOne(1l);
-        Verification verification = verificationRepo.findOne(id);
-        try {
-            codeService.verify(verification, adminUser);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return "code/add";
-    }
+	@GetMapping
+	public String getCodes() {
 
-    @PostMapping("/decline/{id}")
-    public String decline(@PathVariable Long id){
-        logger.info("id {}",id);
+		return "adm/code/view";
 
-        //todo check verifier role
-        AdminUser adminUser = adminUserRepo.findOne(1l);
-        Verification verification = verificationRepo.findOne(id);
-        codeService.decline(verification, adminUser, "todo get the  reason from the frontend");
-        return "code/add";
-    }
+	}
 
-    @GetMapping("/{codeId}")
-    public CodeDTO getCode(@PathVariable Long codeId, Model model){
-        CodeDTO code = codeService.getCode(codeId);
-        model.addAttribute("code",code);
-        return code;
-    }
+	@GetMapping(path = "/all")
+	public @ResponseBody DataTablesOutput<CodeDTO> getAllCodes(DataTablesInput input) {
 
+		Pageable pageable = DataTablesUtils.getPageable(input);
+		Page<CodeDTO> codes = codeService.getCodes(pageable);
+		DataTablesOutput<CodeDTO> out = new DataTablesOutput<CodeDTO>();
+		out.setDraw(input.getDraw());
+		out.setData(codes.getContent());
+		out.setRecordsFiltered(codes.getTotalElements());
+		out.setRecordsTotal(codes.getTotalElements());
+		return out;
+	}
 
-    @GetMapping
-    public String getCodes(){
+	@GetMapping("/{type}")
+	public Iterable<CodeDTO> getCodesByType(@PathVariable String type, Model model) {
+		Iterable<CodeDTO> codeList = codeService.getCodesByType(type);
+		model.addAttribute("codeList", codeList);
+		return codeList;
 
-        return "adm/code/view";
+	}
 
-    }
+	@PostMapping("/update")
+	public String updateCode(@ModelAttribute("code") CodeDTO codeDTO, BindingResult result,
+			RedirectAttributes redirectAttributes) {
+		if (result.hasErrors()) {
+			return "add";
+		}
+		AdminUser adminUser = adminUserRepo.findOne(1l);
+		logger.info("Code {}", codeDTO.toString());
+		codeService.updateCode(codeDTO, adminUser);
+		// codeService.modify(codeDTO, adminUser);
+		redirectAttributes.addFlashAttribute("success", "Code updated successfully");
+		return "redirect:/admin/codes";
+		// codeService.addCode(code);
+	}
 
-    @GetMapping(path = "/all")
-    public @ResponseBody DataTablesOutput<CodeDTO> getAllCodes(DataTablesInput input){
-
-        Pageable pageable = DataTablesUtils.getPageable(input);
-        Page<CodeDTO> codes = codeService.getCodes(pageable);
-        DataTablesOutput<CodeDTO> out = new DataTablesOutput<CodeDTO>();
-        out.setDraw(input.getDraw());
-        out.setData(codes.getContent());
-        out.setRecordsFiltered(codes.getTotalElements());
-        out.setRecordsTotal(codes.getTotalElements());
-        return out;
-    }
-
-    @GetMapping("/{type}")
-    public Iterable<CodeDTO> getCodesByType(@PathVariable String type, Model model){
-        Iterable<CodeDTO> codeList = codeService.getCodesByType(type);
-        model.addAttribute("codeList",codeList);
-        return codeList;
-
-    }
-
-    @PostMapping("/update")
-    public String updateCode(@ModelAttribute("code") CodeDTO codeDTO,  BindingResult result, RedirectAttributes redirectAttributes){
-        if(result.hasErrors()){
-            return "add";
-        }
-        AdminUser adminUser = adminUserRepo.findOne(1l);
-        logger.info("Code {}", codeDTO.toString());
-        codeService.updateCode(codeDTO,adminUser);
-        //codeService.modify(codeDTO, adminUser);
-        redirectAttributes.addFlashAttribute("success", "Code updated successfully");
-        return "redirect:/admin/codes";
-//        codeService.addCode(code);
-    }
-
-    @GetMapping("/{codeId}/delete")
-    public String deleteCode(@PathVariable Long codeId, RedirectAttributes redirectAttributes){
-        codeService.deleteCode(codeId);
-        redirectAttributes.addFlashAttribute("success", "Code deleted successfully");
-        return "redirect:/admin/codes";
-    }
+	@GetMapping("/{codeId}/delete")
+	public String deleteCode(@PathVariable Long codeId, RedirectAttributes redirectAttributes) {
+		codeService.deleteCode(codeId);
+		redirectAttributes.addFlashAttribute("success", "Code deleted successfully");
+		return "redirect:/admin/codes";
+	}
 }

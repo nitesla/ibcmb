@@ -2,7 +2,6 @@ package longbridge.services;
 
 import longbridge.dtos.AdminUserDTO;
 import longbridge.models.AdminUser;
-import longbridge.models.Verifiable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -11,7 +10,7 @@ import org.springframework.data.domain.Pageable;
  * @see AdminUser
  * Created on 3/28/2017.
  */
-public interface AdminUserService extends Verifiable<AdminUserDTO> {
+public interface AdminUserService {
 
     /**
      * Returns an {@code AdminUser} having the specified userId

@@ -3,6 +3,12 @@ package longbridge.models;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+
+import java.io.IOException;
+
 import javax.persistence.*;
 
 /**
@@ -64,4 +70,16 @@ public class Card extends AbstractEntity{
                 ", cardType=" + cardType +
                 '}';
     }
+
+
+
+	@Override
+	public OperationCode getAddCode() {
+		return OperationCode.ADD_CODE;
+	}
+
+	@Override
+	public OperationCode getModifyCode() {
+		return OperationCode.MODIFY_CODE;
+	}
 }

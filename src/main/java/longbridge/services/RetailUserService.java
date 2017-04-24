@@ -7,12 +7,11 @@ import longbridge.dtos.RetailUserDTO;
 import longbridge.models.Account;
 import longbridge.models.Code;
 import longbridge.models.RetailUser;
-import longbridge.models.Verifiable;
 
 /**
  * The {@code RetailUserService} interface provides the methods for managing retails users
  */
-public interface RetailUserService  {
+public interface RetailUserService {
 
     /**
      *Returns the specified retail user

@@ -227,4 +227,5 @@ public class RetailUserServiceImpl implements RetailUserService {
         Page<RetailUserDTO> pageImpl = new PageImpl<RetailUserDTO>(dtOs,pageDetails,t);
         return pageImpl;
 	}
+
 }

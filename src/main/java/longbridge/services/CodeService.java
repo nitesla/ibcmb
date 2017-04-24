@@ -1,12 +1,14 @@
 package longbridge.services;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import longbridge.dtos.CodeDTO;
 import longbridge.models.AdminUser;
 import longbridge.models.Code;
-import longbridge.models.Verifiable;
 
 /**
  *This {@code CodeService} interface provides the methods for managing system codes
@@ -14,7 +16,7 @@ import longbridge.models.Verifiable;
  * @see Code
  * @author Wunmi
  */
-public interface CodeService extends Verifiable<CodeDTO> {
+public interface CodeService {
 
     /**
      * Deletes a code from the system
@@ -49,4 +51,10 @@ public interface CodeService extends Verifiable<CodeDTO> {
      */
     Iterable<CodeDTO> getCodes();
 
+    CodeDTO convertEntityToDTO(Code code);
+
+    Code convertDTOToEntity(CodeDTO codeDTO);
+
+    List<CodeDTO> convertEntitiesToDTOs(Iterable<Code> codes);
+    
 }

@@ -14,7 +14,7 @@ import longbridge.models.CorporateUser;
  * @author Fortunatus Ekenachi
  * @see CorporateUser
  */
-public interface CorporateUserService {
+public interface CorporateUserService{
 
     /**
      * Returns a corporate user specified by the {@code id}

@@ -3,8 +3,12 @@ package longbridge.models;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.io.IOException;
 
 import javax.persistence.Entity;
 
@@ -137,6 +141,30 @@ public class Account extends AbstractEntity{
                 + ",                         \"solId\":\"" + solId + "\""
                 + "}";
     }
+
+//	@Override
+//	public String serialize() throws JsonProcessingException {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
+//
+//	@Override
+//	public AbstractEntity deserialize(String data) throws JsonParseException, JsonMappingException, IOException {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
+
+	@Override
+	public OperationCode getAddCode() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public OperationCode getModifyCode() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
     
 }

@@ -12,7 +12,7 @@ import longbridge.models.Setting;
  *@author Fortunatus Ekenachi
  */
 
-public interface ConfigurationService {
+public interface ConfigurationService{
 
     void addSetting( SettingDTO setting);
 

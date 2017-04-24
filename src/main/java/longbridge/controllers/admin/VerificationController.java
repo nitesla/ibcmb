@@ -66,7 +66,7 @@ public class VerificationController {
         	return "Verification has a dependency";
         }
         
-        verificationService.verify(verification, adminUser);
+        verificationService.verify(verification);
 
 		return "adm/admin/verification/confirm";
 	}
@@ -85,20 +85,7 @@ public class VerificationController {
         	return "Verification has a dependency";
         }
         
-        switch(verification.getOperationCode()){
-        	case ADD_CODE:
-        		codeService.decline(verification, adminUser, "todo get the reason from the frontend");
-        	case MODIFY_CODE:
-        		codeService.decline(verification, adminUser, "todo get the reason from the frontend");
-        	case ADD_ROLE:
-        		roleService.decline(verification, adminUser, "todo get the reason from the frontend");
-        	case MODIFY_ROLE:
-        		roleService.decline(verification, adminUser, "todo get the reason from the frontend");
-        	case ADD_ADMIN_USER:
-        		adminUserService.decline(verification, adminUser, "todo get the reason from the frontend");
-        	case MODIFY_ADMIN_USER:
-        		adminUserService.decline(verification, adminUser, "todo get the reason from the frontend");
-        	}
+        verificationService.verify(verification);
 		return "adm/admin/verification/decline";
 	}
 
