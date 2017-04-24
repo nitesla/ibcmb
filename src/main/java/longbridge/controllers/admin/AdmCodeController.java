@@ -62,16 +62,9 @@ public class AdmCodeController {
         }
 
         logger.info("Code {}", codeDTO.toString());
-        Code code = codeService.convertDTOToEntity(codeDTO);
-        try {
-			verificationService.addNewVerificationRequest(code);
-		} catch (JsonProcessingException e) {
-			// TODO Auto-generated catch block
-			logger.error("Error", e);
-		}
 //        codeService.updateCode(codeDTO,adminUser);//
 //        codeService.addObject(code);
-       // codeService.add(codeDTO, adminUser);
+        codeService.addCode(codeDTO);
 
         redirectAttributes.addFlashAttribute("success", "Code added successfully");
         return "redirect:/admin/codes";
