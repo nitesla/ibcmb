@@ -4,12 +4,10 @@ import longbridge.dtos.AdminUserDTO;
 import longbridge.dtos.RoleDTO;
 import longbridge.forms.ChangePassword;
 import longbridge.models.AdminUser;
-import longbridge.models.Verification;
 import longbridge.repositories.AdminUserRepo;
 import longbridge.repositories.VerificationRepo;
 import longbridge.services.AdminUserService;
 import longbridge.services.RoleService;
-import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +24,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
-import java.io.IOException;
 
 /**
  * Created by SYLVESTER on 31/03/2017.
@@ -38,10 +35,6 @@ public class AdminUserController {
     private Logger logger= LoggerFactory.getLogger(this.getClass());
     @Autowired
     private  AdminUserService adminUserService;
-    @Autowired
-    private AdminUserRepo adminUserRepo;
-    @Autowired
-    private VerificationRepo verificationRepo;
     @Autowired
     private RoleService roleService;
 
