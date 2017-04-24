@@ -5,11 +5,14 @@ import longbridge.models.Account;
 import longbridge.models.TransferRequest;
 import longbridge.services.IntegrationService;
 import longbridge.utils.AccountStatement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,19 +24,23 @@ import java.util.Map;
 @Service
 public class IntegrationServiceImpl implements IntegrationService {
 
+    private Logger  logger= LoggerFactory.getLogger(getClass());
+    private  final String URI="http://localhost:1759";   //TODO URI for the account details class
+
     private RestTemplate template;
 
 
     public IntegrationServiceImpl() {
     }
 
-//     @Autowired
-//    public IntegrationServiceImpl(RestTemplate template) {
-//        this.template = template;
-//    }
+     @Autowired
+    public IntegrationServiceImpl(RestTemplate template) {
+        this.template = template;
+    }
 
     @Override
-    public Iterable<Account> fetchAccounts(String cifid) {
+    public Collection<Account> fetchAccounts(String cifid)
+    {
         return null;
     }
 
@@ -43,8 +50,24 @@ public class IntegrationServiceImpl implements IntegrationService {
     }
 
     @Override
-    public Map<String, BigDecimal> getBalance(String accountId) {
-        return null;
+    public  Map<String, BigDecimal> getBalance(String accountId) {
+        String uri=URI +"/account/{acctId}";
+        Map<String, String> params = new HashMap<>();
+        params.put("acctId",accountId );
+        Map<String, BigDecimal> response= new HashMap<>();
+        try{
+            AccountDetails details= template.getForObject(uri,AccountDetails.class,params);
+
+            BigDecimal availBal= new BigDecimal(details.getAvailableBalance());
+            BigDecimal ledgBal= new BigDecimal(details.getLedgerBalAmt());
+            response.put("AvailableBalance",availBal);
+            response.put("LedgerBalance",ledgBal);
+
+
+            return response;
+        }catch (Exception e){
+            return null;
+        }
     }
 
     @Override
@@ -55,7 +78,8 @@ public class IntegrationServiceImpl implements IntegrationService {
 
     @Override
     public AccountDetails viewAccountDetails(String acctNo) {
-        String uri="";//TODO URI for the account details class
+       //TODO URI for the account details class
+        String uri=URI +"/account/{acctId}";
         Map<String, String> params = new HashMap<>();
         params.put("acctId",acctNo );
         try{
@@ -66,5 +90,28 @@ public class IntegrationServiceImpl implements IntegrationService {
         }
 
 
+    }
+
+    @Override
+    public Boolean isAccountValid(String accNo,String email,String dob) {
+       boolean result=false;
+        String uri=URI +"/account/verification";
+        Map<String, String> params = new HashMap<>();
+
+
+
+        params.put("accountNumber",accNo );
+        params.put("email",email );
+        params.put("dateOfBirth",dob );
+        try {
+           result = template.postForObject(uri,params,Boolean.class);
+
+        }
+        catch (Exception e){
+
+            e.printStackTrace();
+        }
+
+        return result;
     }
 }

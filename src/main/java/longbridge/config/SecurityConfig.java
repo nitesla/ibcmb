@@ -40,7 +40,8 @@ public class SecurityConfig {
 		@Autowired
 		BCryptPasswordEncoder bCryptPasswordEncoder;
 		@Autowired
-		@Qualifier("adminAuthenticationSuccessHandler")
+		@Qualifier("opAuthenticationSuccessHandler")
+		//@Qualifier("adminAuthenticationSuccessHandler")
 		private AuthenticationSuccessHandler adminAuthenticationSuccessHandler;
 		@Autowired
 		@Qualifier("adminAuthenticationFailureHandler")

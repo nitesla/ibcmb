@@ -1,8 +1,7 @@
 package longbridge.security.adminuser;
 
-import longbridge.models.AdminUser;
 import longbridge.models.UserType;
-import longbridge.repositories.*;
+import longbridge.repositories.AdminUserRepo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,17 +29,22 @@ public class AdminAuthenticationSuccessHandler extends SavedRequestAwareAuthenti
 
 
 
+
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws ServletException, IOException {
         HttpSession session = request.getSession();
         if (session != null) {
-        	session.setMaxInactiveInterval(30 * 60); //TODO this cannot be static
+        	session.setMaxInactiveInterval(30 *60); //TODO this cannot be static
         }
+        adminUserRepo.updateUserAfterLogin(authentication.getName());
+
         super.onAuthenticationSuccess(request, response, authentication);
     }
-
+    @Override
     protected void handle(final HttpServletRequest request, final HttpServletResponse response, final Authentication authentication) throws IOException {
-        final String targetUrl = determineTargetUrl(authentication);
+
+         String targetUrl = determineTargetUrl(authentication);
 
         if (response.isCommitted()) {
             logger.debug("Response has already been committed. Unable to redirect to " + targetUrl);
@@ -49,6 +53,8 @@ public class AdminAuthenticationSuccessHandler extends SavedRequestAwareAuthenti
 
         redirectStrategy.sendRedirect(request, response, targetUrl);
     }
+
+
 
     protected String determineTargetUrl(final Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();

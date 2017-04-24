@@ -45,4 +45,5 @@ public interface IntegrationService {
     void makeTransfer(TransferRequest transferRequest);
 
     AccountDetails viewAccountDetails(String acctNo);
+    Boolean isAccountValid(String accNo,String email,String dob);
 }

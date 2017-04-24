@@ -18,6 +18,8 @@ public class AdminAuthenticationFailureHandler extends SimpleUrlAuthenticationFa
    @Autowired
    AuthenticationErrorService errorService;
 
+
+
     @Override
     public void onAuthenticationFailure(final HttpServletRequest request, final HttpServletResponse response, final AuthenticationException exception) throws IOException, ServletException {
         setDefaultFailureUrl("/login/admin?error=login_error");
