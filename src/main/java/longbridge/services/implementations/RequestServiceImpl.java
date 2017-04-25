@@ -1,17 +1,19 @@
 package longbridge.services.implementations;
 
 import longbridge.dtos.RequestHistoryDTO;
-import longbridge.dtos.ServiceReqConfigDTO;
 import longbridge.dtos.ServiceRequestDTO;
+import longbridge.models.OperationsUser;
 import longbridge.models.RequestHistory;
 import longbridge.models.RetailUser;
-import longbridge.models.ServiceReqConfig;
 import longbridge.models.ServiceRequest;
 import longbridge.repositories.RequestHistoryRepo;
 import longbridge.repositories.RetailUserRepo;
 import longbridge.repositories.ServiceRequestRepo;
+import longbridge.services.CodeService;
 import longbridge.services.RequestService;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -20,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -34,9 +37,16 @@ public class RequestServiceImpl implements RequestService {
 
     @Autowired
     private RetailUserRepo retailUserRepo;
+
+    @Autowired
+    private CodeService codeService;
     
     @Autowired
     private ModelMapper modelMapper;
+
+    private Logger logger= LoggerFactory.getLogger(this.getClass());
+
+
 
 
     @Autowired
@@ -68,13 +78,23 @@ public class RequestServiceImpl implements RequestService {
     @Override
     public void addRequestHistory(RequestHistoryDTO requestHistoryDTO) {
         RequestHistory requestHistory =convertRequestHistoryDTOToEntity(requestHistoryDTO);
-         requestHistoryRepo.save(requestHistory);
+        ServiceRequest serviceRequest = requestHistory.getServiceRequest();
+        serviceRequest.setRequestStatus(requestHistory.getStatus());
+        serviceRequestRepo.save(serviceRequest);
+        requestHistoryRepo.save(requestHistory);
     }
 
     @Override
     @Transactional
     public Iterable<RequestHistory> getRequestHistories(ServiceRequest request) {
         return serviceRequestRepo.findOne(request.getId()).getRequestHistories();
+    }
+
+    @Override
+    @Transactional
+    public Iterable<RequestHistoryDTO> getRequestHistories(Long serviceRequestId) {
+        Iterable<RequestHistory> requestHistories  = serviceRequestRepo.findOne(serviceRequestId).getRequestHistories();
+        return convertRequestHistoryEntitiesToDTOs(requestHistories);
     }
 
     public Page<ServiceRequestDTO>getRequests(RetailUser user, Pageable pageDetails){
@@ -109,8 +129,11 @@ public class RequestServiceImpl implements RequestService {
     }
 
 
-    private ServiceRequestDTO convertEntityToDTO(ServiceRequest ServiceRequest){
-        return  modelMapper.map(ServiceRequest,ServiceRequestDTO.class);
+    private ServiceRequestDTO convertEntityToDTO(ServiceRequest serviceRequest){
+        ServiceRequestDTO requestDTO = modelMapper.map(serviceRequest,ServiceRequestDTO.class);
+        requestDTO.setUsername(serviceRequest.getUser().getUserName());
+        return requestDTO;
+
     }
 
     private ServiceRequest convertDTOToEntity(ServiceRequestDTO ServiceRequestDTO){
@@ -119,8 +142,12 @@ public class RequestServiceImpl implements RequestService {
 
     private List<ServiceRequestDTO> convertEntitiesToDTOs(Iterable<ServiceRequest> serviceRequests){
         List<ServiceRequestDTO> serviceRequestDTOList = new ArrayList<>();
-        for(ServiceRequest retailUser: serviceRequests){
-            ServiceRequestDTO requestDTO =  convertEntityToDTO(retailUser);
+        for(ServiceRequest serviceRequest: serviceRequests){
+            ServiceRequestDTO requestDTO =  convertEntityToDTO(serviceRequest);
+            requestDTO.setUsername(serviceRequest.getUser().getUserName());
+            requestDTO.setDate(serviceRequest.getDateRequested().toString());
+            String status = codeService.getByTypeAndCode("REQUEST_STATUS",serviceRequest.getRequestStatus()).getDescription();
+            requestDTO.setRequestStatus(status);
             serviceRequestDTOList.add(requestDTO);
         }
         return serviceRequestDTOList;
@@ -132,13 +159,27 @@ public class RequestServiceImpl implements RequestService {
     }
 
     private RequestHistory convertRequestHistoryDTOToEntity(RequestHistoryDTO requestHistoryDTO){
-        return  modelMapper.map(requestHistoryDTO,RequestHistory.class);
+        RequestHistory requestHistory = new RequestHistory();
+        requestHistory.setServiceRequest(serviceRequestRepo.findOne(Long.parseLong(requestHistoryDTO.getServiceRequestId())));
+        requestHistory.setComment(requestHistoryDTO.getComment());
+        requestHistory.setStatus(requestHistoryDTO.getStatus());
+        OperationsUser user = new OperationsUser();
+        user.setId(1L);
+        requestHistory.setCreatedBy(user);
+        requestHistory.setCreatedOn(new Date());
+        return requestHistory;
     }
 
     private List<RequestHistoryDTO> convertRequestHistoryEntitiesToDTOs(Iterable<RequestHistory> requestHistories){
         List<RequestHistoryDTO> requestHistoryList = new ArrayList<>();
         for(RequestHistory requestHistory: requestHistories){
-            RequestHistoryDTO requestDTO =  convertRequestHistoryEntityToDTO(requestHistory);
+            RequestHistoryDTO requestDTO =  new RequestHistoryDTO();
+            requestDTO.setId(requestHistory.getId());
+            requestDTO.setStatus(requestHistory.getStatus());
+            requestDTO.setComment(requestHistory.getComment());
+            requestDTO.setCreatedBy(requestHistory.getCreatedBy().getUserName());
+            requestDTO.setCreatedOn(requestHistory.getCreatedOn().toString());
+            requestDTO.setServiceRequestId(requestHistory.getServiceRequest().getId().toString());
             requestHistoryList.add(requestDTO);
         }
         return requestHistoryList;

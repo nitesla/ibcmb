@@ -9,11 +9,11 @@ import java.util.Date;
 public class RequestHistoryDTO {
 
     private Long id;
-    private String serviceRequest;
+    private String serviceRequestId;
     private String status;
     private String comment;
     private String createdBy;
-    private Date createdOn;
+    private String createdOn;
 
 
     public Long getId() {
@@ -24,12 +24,12 @@ public class RequestHistoryDTO {
         this.id = id;
     }
 
-    public String getServiceRequest() {
-        return serviceRequest;
+    public String getServiceRequestId() {
+        return serviceRequestId;
     }
 
-    public void setServiceRequest(String serviceRequest) {
-        this.serviceRequest = serviceRequest;
+    public void setServiceRequestId(String serviceRequestId) {
+        this.serviceRequestId = serviceRequestId;
     }
 
     public String getStatus() {
@@ -57,11 +57,11 @@ public class RequestHistoryDTO {
         this.createdBy = createdBy;
     }
 
-    public Date getCreatedOn() {
+    public String getCreatedOn() {
         return createdOn;
     }
 
-    public void setCreatedOn(Date createdOn) {
+    public void setCreatedOn(String createdOn) {
         this.createdOn = createdOn;
     }
 
@@ -69,7 +69,7 @@ public class RequestHistoryDTO {
     public String toString() {
         return "RequestHistoryDTO{" +
                 "id=" + id +
-                ", serviceRequest='" + serviceRequest + '\'' +
+                ", serviceRequestId='" + serviceRequestId + '\'' +
                 ", status='" + status + '\'' +
                 ", comment='" + comment + '\'' +
                 ", createdBy='" + createdBy + '\'' +

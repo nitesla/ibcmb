@@ -31,7 +31,7 @@ public class ServiceRequest extends AbstractEntity {
     private String requestStatus;
     private Date dateRequested;
 
-    @OneToMany
+    @OneToMany(mappedBy = "serviceRequest")
     private List<RequestHistory> requestHistories;
 
     public RetailUser getUser() {

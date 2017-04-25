@@ -1,7 +1,9 @@
 package longbridge.controllers.retail;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import longbridge.dtos.ServiceReqConfigDTO;
 import longbridge.dtos.ServiceReqFormFieldDTO;
 import longbridge.dtos.ServiceRequestDTO;
@@ -10,6 +12,7 @@ import longbridge.repositories.RetailUserRepo;
 import longbridge.services.CodeService;
 import longbridge.services.RequestService;
 import longbridge.services.ServiceReqConfigService;
+import longbridge.utils.NameValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +25,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.Date;
-import java.util.HashMap;
+import java.util.*;
 
 /**
  * Created by Fortune on 4/5/2017.
@@ -42,7 +44,7 @@ public class ServiceRequestController {
     @Autowired
     private CodeService codeService;
 
-    private Logger logger= LoggerFactory.getLogger(this.getClass());
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private RetailUserRepo userRepo;
@@ -50,9 +52,9 @@ public class ServiceRequestController {
     private RetailUser retailUser = new RetailUser();//TODO user must be authenticated
 
     @GetMapping
-    public String getServiceRequests(Model model){
+    public String getServiceRequests(Model model) {
         Iterable<ServiceReqConfigDTO> requestList = serviceReqConfigService.getServiceReqConfigs();
-        model.addAttribute("requestList",requestList);
+        model.addAttribute("requestList", requestList);
         return "cust/servicerequest/list";
     }
 
@@ -62,10 +64,35 @@ public class ServiceRequestController {
 
         String requestBody = requestDTO.getRequestName();
         ObjectMapper objectMapper = new ObjectMapper();
+        ServiceRequestDTO serviceRequestDTO = new ServiceRequestDTO();
+        try {
+//            JsonNode jsonNode =objectMapper.readTree(requestBody);
+            List<NameValue> myObjects = objectMapper.readValue(requestBody, new TypeReference<List<NameValue>>() {
+            });
+            Iterator<NameValue> iterator = myObjects.iterator();
+            while (iterator.hasNext()) {
+                String name = iterator.next().getName();
+                String value = iterator.next().getValue();
+                if (name.equals("requestName")) {
+                    serviceRequestDTO.setRequestName(value);
+                    iterator.remove();
+                }
+            }
+            retailUser = userRepo.findOne(1L);
+            serviceRequestDTO.setBody(requestBody);
+            serviceRequestDTO.setRequestStatus("S");
+            serviceRequestDTO.setUser(retailUser);
+            serviceRequestDTO.setDateRequested(new Date());
+            requestService.addRequest(serviceRequestDTO);
+//             String reqBody =  objectMapper.writeValueAsString(list);
+//            logger.info("The request body: {}",reqBody );
+        } catch (Exception e) {
+            throw new RuntimeException("Error adding request");
+        }
 
 
         redirectAttributes.addFlashAttribute("message", "Request sent successfully");
-        logger.info("The received data: {}",requestDTO.getRequestName());
+        logger.info("The received data: {}", requestDTO.getRequestName());
         return "redirect:/ops/request/history/view";
 
     }
@@ -87,16 +114,16 @@ public class ServiceRequestController {
 //    }
 
     @GetMapping("/{reqId}")
-    public String makeRequest(@PathVariable Long reqId, Model model){
+    public String makeRequest(@PathVariable Long reqId, Model model) {
         ServiceReqConfigDTO serviceReqConfig = serviceReqConfigService.getServiceReqConfig(reqId);
-        for (ServiceReqFormFieldDTO field : serviceReqConfig.getFormFields()){
-            if(field.getFieldType() != null && field.getFieldType().equals("CODE")){
+        for (ServiceReqFormFieldDTO field : serviceReqConfig.getFormFields()) {
+            if (field.getFieldType() != null && field.getFieldType().equals("CODE")) {
                 field.setCodeDTOs(codeService.getCodesByType(field.getTypeData()));
             }
 
-            if(field.getFieldType() != null && field.getFieldType().equals("LIST")){
+            if (field.getFieldType() != null && field.getFieldType().equals("LIST")) {
                 String list = field.getTypeData();
-                String myList [] =list.split(",");
+                String myList[] = list.split(",");
                 model.addAttribute("fixedList", myList);
             }
         }
