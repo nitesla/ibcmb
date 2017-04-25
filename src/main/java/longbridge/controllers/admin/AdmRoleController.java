@@ -26,9 +26,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.*;
@@ -55,31 +58,20 @@ public class AdmRoleController {
     }
 
     @ModelAttribute("permissions")
-    Iterable<PermissionDTO> getPermissions(){
-    	 Iterable<PermissionDTO> permissions=roleService.getPermissions();
+    public Iterable<PermissionDTO> getPermissions(NativeWebRequest request){
+    	 HttpServletRequest httpServletRequest = request.getNativeRequest(HttpServletRequest.class);
+    	 Map<String,String> map = (Map<String, String>) httpServletRequest.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
+    	Long reqId = NumberUtils.createLong(map.get("reqId"));
+    	Iterable<PermissionDTO> permissions;
+    	if(reqId != null){
+    		RoleDTO role = roleService.getRole(reqId);
+    		permissions = roleService.getPermissionsNotInRole(role);
+    	}else
+    		permissions = roleService.getPermissions();
     	 return permissions ;
     }
     
-    @PostMapping
-    public String createRole(@ModelAttribute("role") @Valid RoleDTO roleDTO, BindingResult result,WebRequest request, RedirectAttributes redirectAttributes){
-        if(result.hasErrors()){
-            return "adm/role/add";
-        }
-        logger.info("Role {}", roleDTO.toString());
-        List<PermissionDTO> permissionList = new ArrayList<>();
-        
-        String[] permissions = request.getParameterValues("permissionsList");
-        for(String perm : permissions){
-        	PermissionDTO pdto = new PermissionDTO();
-        	pdto.setId(NumberUtils.toLong(perm));
-        	permissionList.add(pdto);
-        }
-        roleDTO.setPermissions(permissionList);
-        roleService.addRole(roleDTO);
-        redirectAttributes.addFlashAttribute("success", "Role added successfully");
-        return "redirect:/admin/roles";
-    }
-
+    
     @GetMapping("/{roleId}")
     public String getRole(@PathVariable Long roleId, Model model){
         RoleDTO role = roleService.getRole(roleId);
@@ -116,15 +108,44 @@ public class AdmRoleController {
         return out;
     }
 
-    @PostMapping("/update")
-    public String updateRole(@ModelAttribute("role") RoleDTO roleDTO, BindingResult result, RedirectAttributes redirectAttributes) {
-        if (result.hasErrors()) {
+    @PostMapping
+    public String createRole(@ModelAttribute("role") @Valid RoleDTO roleDTO, BindingResult result,WebRequest request, RedirectAttributes redirectAttributes){
+        if(result.hasErrors()){
             return "adm/role/add";
         }
-        //roleDTO.setId(roleId);
+        logger.info("Role {}", roleDTO.toString());
+        List<PermissionDTO> permissionList = new ArrayList<>();
+        
+        String[] permissions = request.getParameterValues("permissionsList");
+        for(String perm : permissions){
+        	PermissionDTO pdto = new PermissionDTO();
+        	pdto.setId(NumberUtils.toLong(perm));
+        	permissionList.add(pdto);
+        }
+        roleDTO.setPermissions(permissionList);
         roleService.addRole(roleDTO);
-        redirectAttributes.addFlashAttribute("success", "Role updated successfully");
+        redirectAttributes.addFlashAttribute("success", "Role added successfully");
         return "redirect:/admin/roles";
+    }
+
+    @PostMapping("/update")
+    public String updateRole(@ModelAttribute("role") RoleDTO roleDTO, BindingResult result,WebRequest request, RedirectAttributes redirectAttributes) {
+    	 if(result.hasErrors()){
+             return "adm/role/add";
+         }
+         logger.info("Role {}", roleDTO.toString());
+         List<PermissionDTO> permissionList = new ArrayList<>();
+         
+         String[] permissions = request.getParameterValues("permissionsList");
+         for(String perm : permissions){
+         	PermissionDTO pdto = new PermissionDTO();
+         	pdto.setId(NumberUtils.toLong(perm));
+         	permissionList.add(pdto);
+         }
+         roleDTO.setPermissions(permissionList);
+         roleService.updateRole(roleDTO);
+         redirectAttributes.addFlashAttribute("success", "Role updated successfully");
+         return "redirect:/admin/roles";
     }
 
     @GetMapping("/{roleId}/delete")
