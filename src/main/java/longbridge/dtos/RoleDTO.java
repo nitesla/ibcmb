@@ -18,6 +18,7 @@ public class RoleDTO{
     @NotEmpty
     private String description;
     private String email;
+    private int version;
 
     private UserType userType;
 
@@ -71,7 +72,16 @@ public class RoleDTO{
         this.userType = userType;
     }
 
-    @Override
+    
+    public int getVersion() {
+		return version;
+	}
+
+	public void setVersion(int version) {
+		this.version = version;
+	}
+
+	@Override
     public String toString() {
         return "RoleDTO{" +
                 "id=" + id +

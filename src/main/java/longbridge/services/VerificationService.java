@@ -2,6 +2,7 @@ package longbridge.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
+import longbridge.models.AbstractEntity;
 import longbridge.models.AdminUser;
 import longbridge.models.SerializableEntity;
 import longbridge.models.Verification;
@@ -33,7 +34,7 @@ public interface VerificationService {
       * @param entity The entity to verify
       * @throws JsonProcessingException if there is an error in serializing the entity
       */
-     <T extends SerializableEntity<T>> String addNewVerificationRequest(T entity) throws JsonProcessingException;
+     String addNewVerificationRequest(AbstractEntity entity) throws JsonProcessingException;
      
      /** Create a new <b>modify</b> {@link Verification} request
       * 
@@ -41,5 +42,5 @@ public interface VerificationService {
       * @param entity The modified entity
      * @throws JsonProcessingException if there is an error in serializing the entity
       */
-     <T extends SerializableEntity<T>> void addModifyVerificationRequest(T originalEntity, T entity) throws JsonProcessingException;
+      void addModifyVerificationRequest(AbstractEntity originalEntity, AbstractEntity entity) throws JsonProcessingException;
 }
