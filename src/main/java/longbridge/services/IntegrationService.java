@@ -1,11 +1,13 @@
 package longbridge.services;
 
 import longbridge.api.AccountDetails;
+import longbridge.api.AccountInfo;
 import longbridge.models.Account;
 import longbridge.models.TransferRequest;
 import longbridge.utils.AccountStatement;
 
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
 
@@ -19,7 +21,7 @@ public interface IntegrationService {
      * @param cifid the customer's id
      * @return  a list of accounts
      */
-    Iterable<Account> fetchAccounts(String cifid);
+    Collection<AccountInfo> fetchAccounts(String cifid);
 
 
     /** Fetches the {@link longbridge.utils.AccountStatement} of the account identified by
@@ -47,5 +49,5 @@ public interface IntegrationService {
     AccountDetails viewAccountDetails(String acctNo);
     Boolean isAccountValid(String accNo,String email,String dob);
     BigDecimal getDailyDebitTransaction(String acctNo);
-    BigDecimal getDailyAccountLimit(String accNo);
+    BigDecimal getDailyAccountLimit(String accNo,String channel);
 }
