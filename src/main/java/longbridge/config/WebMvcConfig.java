@@ -21,6 +21,7 @@ import java.util.Locale;
 @Configuration
 public class WebMvcConfig   extends WebMvcConfigurerAdapter {
 
+
 	@Bean
 	public BCryptPasswordEncoder passwordEncoder() {
 		BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();

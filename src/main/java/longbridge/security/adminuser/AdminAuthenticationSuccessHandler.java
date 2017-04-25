@@ -39,9 +39,10 @@ public class AdminAuthenticationSuccessHandler extends SavedRequestAwareAuthenti
         if (session != null) {
         	session.setMaxInactiveInterval(30 *60); //TODO this cannot be static
         }
+        setUseReferer(true);
         adminUserRepo.updateUserAfterLogin(authentication.getName());
-
         super.onAuthenticationSuccess(request, response, authentication);
+
     }
 
     @Override

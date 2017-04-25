@@ -55,6 +55,8 @@ public interface RequestService {
      * @param request the service request
      */
     Iterable<RequestHistory>getRequestHistories(ServiceRequest request);
+
+    Iterable<RequestHistoryDTO>getRequestHistories(Long requestId);
     
     Page<RequestHistory>getRequestHistories(ServiceRequest request,Pageable pageDetails);
 

@@ -1,11 +1,19 @@
 package longbridge.controllers.operations;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import longbridge.dtos.AdminUserDTO;
+import longbridge.dtos.CodeDTO;
 import longbridge.dtos.RequestHistoryDTO;
 import longbridge.dtos.ServiceRequestDTO;
+import longbridge.models.Code;
 import longbridge.models.RetailUser;
 import longbridge.models.ServiceRequest;
+import longbridge.repositories.RetailUserRepo;
+import longbridge.services.CodeService;
 import longbridge.services.RequestService;
+import longbridge.services.RetailUserService;
+import longbridge.utils.NameValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +32,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by Fortune on 4/3/2017.
@@ -34,23 +43,33 @@ import java.util.HashMap;
 @RequestMapping("/ops/requests")
 public class OpsServiceRequestController {
 
+    @Autowired
+    RetailUserService retailUserService;
 
-    private Logger logger= LoggerFactory.getLogger(this.getClass());
+    @Autowired
+    CodeService codeService;
+
+    @Autowired
+    RetailUserRepo retailUserRepo;
+
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
     @Autowired
     RequestService requestService;
 
     @GetMapping
-    public  String getRequests(){
+    public String getRequests() {
         return "/ops/request/view";
     }
 
     @GetMapping(path = "/all")
-    public @ResponseBody
-    DataTablesOutput<ServiceRequestDTO> getRequests(DataTablesInput input){
+    public
+    @ResponseBody
+    DataTablesOutput<ServiceRequestDTO> getRequests(DataTablesInput input) {
         Pageable pageable = DataTablesUtils.getPageable(input);
-        Page<ServiceRequestDTO> serviceRequests = requestService.getRequests(new RetailUser(),pageable);
+        RetailUser retailUser = retailUserRepo.findOne(1l);
+        Page<ServiceRequestDTO> serviceRequests = requestService.getRequests(retailUser, pageable);
         DataTablesOutput<ServiceRequestDTO> out = new DataTablesOutput<ServiceRequestDTO>();
         out.setDraw(input.getDraw());
         out.setData(serviceRequests.getContent());
@@ -61,24 +80,39 @@ public class OpsServiceRequestController {
 
 
     @GetMapping("/{reqId}/details")
-    public String getRequest(Model model, @PathVariable Long reqId){
+    public String getRequest(Model model, @PathVariable Long reqId) {
         ServiceRequestDTO requestDTO = requestService.getRequest(reqId);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<NameValue> requestBody = null;
+        try {
+            requestBody = objectMapper.readValue(requestDTO.getBody(), new TypeReference<List<NameValue>>() {
+            });
+        } catch (Exception e) {
+        }
+        Iterable<CodeDTO> statusCodes = codeService.getCodesByType("REQUEST_STATUS");
+        Iterable<RequestHistoryDTO> requestHistories = requestService.getRequestHistories(reqId);
         model.addAttribute("serviceRequest", requestDTO);
+        model.addAttribute("histories",requestHistories);
+        model.addAttribute("requestBody", requestBody);
+        model.addAttribute("statuses", statusCodes);
+        model.addAttribute("requestHistory",new RequestHistoryDTO());
+        logger.info("Request Histories :{}",requestHistories.toString());
         return "/ops/request/details";
 
     }
 
 
     @GetMapping("/history")
-    public String getRequestHistory(Model model){
+    public String getRequestHistory(Model model) {
         return "/ops/request/history/view";
 
     }
 
     @GetMapping("/{reqId}/history/all")
-    public DataTablesOutput<RequestHistoryDTO> getRequestHistory(DataTablesInput input,@PathVariable Long reqId){
+    public DataTablesOutput<RequestHistoryDTO> getRequestHistory(DataTablesInput input, @PathVariable Long reqId) {
         Pageable pageable = DataTablesUtils.getPageable(input);
-        Page<RequestHistoryDTO> requestHistories = requestService.getRequestHistories(reqId,pageable);
+        Page<RequestHistoryDTO> requestHistories = requestService.getRequestHistories(reqId, pageable);
         DataTablesOutput<RequestHistoryDTO> out = new DataTablesOutput<RequestHistoryDTO>();
         out.setDraw(input.getDraw());
         out.setData(requestHistories.getContent());
@@ -89,16 +123,30 @@ public class OpsServiceRequestController {
 
 
     @GetMapping("/history/new")
-    public  String addRequestHistory(Model model){
+    public String addRequestHistory(Model model) {
         return "/ops/request/history/add";
     }
 
+
+    @PostMapping("/history")
+    public String createRequestHistory(@ModelAttribute("requestHistory") RequestHistoryDTO requestHistoryDTO, BindingResult result,RedirectAttributes redirectAttributes){
+
+        if(result.hasErrors()){
+            return "";
+        }
+
+        logger.info("RequestHistoryDTO received: {}",requestHistoryDTO);
+        requestService.addRequestHistory(requestHistoryDTO);
+
+        redirectAttributes.addFlashAttribute("message","Request updated successfully");
+        return "redirect:/ops/requests/"+requestHistoryDTO.getServiceRequestId()+"/details";
+    }
 
     @PostMapping
     @ResponseBody
     public String processRequest(@RequestParam String jsonData) {
 
-        logger.info("The received data: {}",jsonData);
+        logger.info("The received data: {}", jsonData);
         return "redirect:/ops/request/history/view";
 
     }

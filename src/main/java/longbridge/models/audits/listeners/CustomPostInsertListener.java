@@ -32,7 +32,7 @@ public class CustomPostInsertListener extends EnversPostInsertEventListenerImpl 
 		if (CustomJdbcUtil.auditEntity(s)) {
 			System.out.println("Meaning i can control it?");
 			super.onPostInsert(event);
-		} 
+		}
 	}
 
 }

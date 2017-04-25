@@ -1,5 +1,6 @@
 package longbridge.dtos;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import longbridge.models.RetailUser;
 
 import java.util.Date;
@@ -10,10 +11,24 @@ import java.util.Date;
 
 public class ServiceRequestDTO {
 
+    @JsonProperty("DT_RowId")
+    private  Long id;
     private RetailUser user;
+    private String username;
     private String requestName;
+    private  String requestStatus;
     private String body;
-    private Date requestTime;
+    private Date dateRequested;
+    private String date;
+
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public RetailUser getUser() {
         return user;
@@ -31,6 +46,14 @@ public class ServiceRequestDTO {
         this.requestName = requestName;
     }
 
+    public String getRequestStatus() {
+        return requestStatus;
+    }
+
+    public void setRequestStatus(String requestStatus) {
+        this.requestStatus = requestStatus;
+    }
+
     public String getBody() {
         return body;
     }
@@ -39,20 +62,42 @@ public class ServiceRequestDTO {
         this.body = body;
     }
 
-    public Date getRequestTime() {
-        return requestTime;
+    public Date getDateRequested() {
+        return dateRequested;
     }
 
-    public void setRequestTime(Date requestTime) {
-        this.requestTime = requestTime;
+
+
+    public void setDateRequested(Date dateRequested) {
+        this.dateRequested = dateRequested;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 
     @Override
     public String toString() {
         return "ServiceRequestDTO{" +
-                "requestName='" + requestName + '\'' +
+                "user=" + user +
+                ", username='" + username + '\'' +
+                ", requestName='" + requestName + '\'' +
+                ", requestStatus='" + requestStatus + '\'' +
                 ", body='" + body + '\'' +
-                ", requestTime=" + requestTime +
+                ", dateRequested=" + dateRequested +
+                ", date='" + date + '\'' +
                 '}';
     }
 }

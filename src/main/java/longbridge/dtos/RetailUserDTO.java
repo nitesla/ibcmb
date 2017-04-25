@@ -2,6 +2,7 @@ package longbridge.dtos;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import longbridge.models.AlertPreference;
 import longbridge.models.Role;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -30,6 +31,7 @@ public class RetailUserDTO {
     private Date lastLoginDate;
     private int noOfLoginAttempts;
     private Role role;
+    private AlertPreference alertPreference;
 
     public Long getId() {
         return id;
@@ -157,6 +159,14 @@ public class RetailUserDTO {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public AlertPreference getAlertPreference() {
+        return alertPreference;
+    }
+
+    public void setAlertPreference(AlertPreference alertPreference) {
+        this.alertPreference = alertPreference;
     }
 
     @Override

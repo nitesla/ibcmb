@@ -1,7 +1,9 @@
 package longbridge.controllers.retail;
 
 import longbridge.dtos.RetailUserDTO;
+import longbridge.forms.AlertPref;
 import longbridge.forms.ChangePassword;
+import longbridge.models.AlertPreference;
 import longbridge.services.RetailUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,5 +55,26 @@ public class SettingController {
 
         redirectAttributes.addFlashAttribute("message","Password change successful");
         return "redirect:/retail/change_password";
+    }
+
+    @GetMapping("/alert_preference")
+    public String AlertPreferencePage(AlertPref alertPref, Model model){
+        model.addAttribute("prefs", AlertPreference.values());
+        return "cust/settings/alertpref";
+    }
+
+    @PostMapping("/alert_preference")
+    public String ChangeAlertPreference(@Valid AlertPref alertPref, Principal principal, BindingResult result, Model model, RedirectAttributes redirectAttributes) throws Exception{
+        if(result.hasErrors()){
+            model.addAttribute("message","Pls correct the errors");
+            return "redirect:/retail/alert_preference";
+        }
+
+        RetailUserDTO user = retailUserService.getUserByName(principal.getName());
+
+        retailUserService.changeAlertPreference(user, alertPref.getPreference());
+
+        redirectAttributes.addFlashAttribute("message","Preference Change Successful successful");
+        return "redirect:/retail/alert_preference";
     }
 }
