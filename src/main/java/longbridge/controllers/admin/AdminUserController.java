@@ -4,8 +4,6 @@ import longbridge.dtos.AdminUserDTO;
 import longbridge.dtos.RoleDTO;
 import longbridge.forms.ChangePassword;
 import longbridge.models.AdminUser;
-import longbridge.repositories.AdminUserRepo;
-import longbridge.repositories.VerificationRepo;
 import longbridge.services.AdminUserService;
 import longbridge.services.RoleService;
 import org.slf4j.Logger;
@@ -16,7 +14,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.data.jpa.datatables.repository.DataTablesUtils;
-import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -24,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import java.security.Principal;
 
 /**
  * Created by SYLVESTER on 31/03/2017.
@@ -147,31 +145,30 @@ public class AdminUserController {
     }
 
     @GetMapping("/password")
-    public String changePassword(){
-        return "changePassword";
+    public String changePassword(ChangePassword changePassword){
+        return "adm/admin/pword";
     }
 
     @PostMapping("/password")
-    public String changePassword(@Valid ChangePassword changePassword,Long userId, BindingResult result, HttpRequest request, Model model){
+    public String changePassword(@Valid ChangePassword changePassword, Principal principal, BindingResult result, Model model, RedirectAttributes redirectAttributes){
+
         if(result.hasErrors()){
-            return "password";
+            redirectAttributes.addFlashAttribute("message","Please fix errors");
+            return "redirect:/admin/users/password";
         }
-        AdminUserDTO user=adminUserService.getAdminUser(userId);
-        String oldPassword=changePassword.getOldPassword();
-        String newPassword=changePassword.getNewPassword();
-        String confirmPassword=changePassword.getConfirmPassword();
 
-        //TODO validate password according to the defined password policy
-        //The validations can be done on the ChangePassword class
-
-        if(!newPassword.equals(confirmPassword)){
+        if(!changePassword.getNewPassword().equals(changePassword.getConfirmPassword())){
             logger.info("PASSWORD MISMATCH");
+            redirectAttributes.addFlashAttribute("message","Passwords don't match");
+            return "redirect:/admin/users/password";
         }
 
-        user.setPassword(newPassword);
-        adminUserService.addUser(user);
-        logger.trace("Password for user {} changed successfully",user.getUserName());
-        return "changePassword";
+        AdminUserDTO user = adminUserService.getUserByName(principal.getName());
+
+        adminUserService.changePassword(user, changePassword.getOldPassword(), changePassword.getNewPassword());
+
+        redirectAttributes.addFlashAttribute("message","Password change successful");
+        return "redirect:/admin/users/password";
     }
 
 }

@@ -1,34 +1,28 @@
 package longbridge.services.implementations;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.Date;
-
-import javax.persistence.EntityManager;
-import javax.transaction.Transactional;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
-
 import longbridge.models.AbstractEntity;
-import longbridge.models.AdminUser;
-import longbridge.models.OperationCode;
-import longbridge.models.Role;
 import longbridge.models.SerializableEntity;
 import longbridge.models.Verification;
 import longbridge.models.Verification.VerificationStatus;
 import longbridge.repositories.VerificationRepo;
 import longbridge.services.VerificationService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Date;
 
 @Service
 @Transactional
 public class VerificationServiceImpl implements VerificationService {
-	
-	private static final String PACKAGE_NAME = "longbridge.models."; 
+
+	private static final String PACKAGE_NAME = "longbridge.models.";
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 	@Autowired
 	private VerificationRepo verificationRepo;
@@ -55,7 +49,7 @@ public class VerificationServiceImpl implements VerificationService {
 //        t.setVerifiedBy(verifier);
         t.setVerifiedOn(new Date());
 //        logger.info("Verified by: "+ verifier.getUserName());
-        
+
 		Class<?> cc = null;
 		Method method = null;
 
@@ -87,7 +81,7 @@ public class VerificationServiceImpl implements VerificationService {
 			// TODO Auto-generated catch block
 			logger.error("Error", e);
 		}
-	
+
 	}
 
 
@@ -96,8 +90,9 @@ public class VerificationServiceImpl implements VerificationService {
 		return verificationRepo.findOne(id);
 	}
 
+
 	@Override
-	public <T extends SerializableEntity<T>> void addNewVerificationRequest(T entity) throws JsonProcessingException {
+	public <T extends SerializableEntity<T>> String addNewVerificationRequest(T entity) throws JsonProcessingException {
 		String classSimpleName = entity.getClass().getSimpleName();
 		Verification verification = new Verification();
         verification.setBeforeObject("");
@@ -113,6 +108,7 @@ public class VerificationServiceImpl implements VerificationService {
         verification.setInitiatedOn(new Date());
         verificationRepo.save(verification);
         logger.info(classSimpleName + " creation request has been added. Before {}, After {}", verification.getBeforeObject(), verification.getAfterObject());
+		return classSimpleName + " creation request has been added";
 	}
 
 
@@ -121,7 +117,7 @@ public class VerificationServiceImpl implements VerificationService {
 		String classSimpleName = entity.getClass().getSimpleName();
 		Verification verification = new Verification();
 		verification.setBeforeObject(originalEntity.serialize());
-		verification.setAfterObject(entity.serialize());       
+		verification.setAfterObject(entity.serialize());
 		verification.setOriginal(originalEntity.serialize());
 		verification.setDescription("Modified " + classSimpleName);
 		//TODO get the Operation Code

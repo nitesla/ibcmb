@@ -3,6 +3,7 @@ package longbridge.controllers.retail;
 import longbridge.models.Beneficiary;
 import longbridge.models.LocalBeneficiary;
 import longbridge.models.RetailUser;
+import longbridge.services.FinancialInstitutionService;
 import longbridge.services.LocalBeneficiaryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,6 +23,8 @@ public class BeneficiaryController {
 
     @Autowired
     private LocalBeneficiaryService beneficiaryService;
+    @Autowired
+    private FinancialInstitutionService financialInstitutionService;
 
     private RetailUser user  = new RetailUser();//TODO the current user must be authenticated
 
@@ -31,7 +34,9 @@ public class BeneficiaryController {
     }
 
     @GetMapping("/new")
-    public String addBeneficiary(){
+    public String addBeneficiary(Model model){
+
+        model.addAttribute("banks", financialInstitutionService.getFinancialInstitutions());
         return "cust/beneficiary/add";
     }
 
