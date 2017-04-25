@@ -45,10 +45,6 @@ public class IntegrationServiceImpl implements IntegrationService {
         try{
             String uri=URI +"/customer/{acctId}/accounts";
             List<AccountInfo> details= template.getForObject(uri, ArrayList.class,cifid);
-
-
-
-
             return details;
         }catch (Exception e){
             return null;
