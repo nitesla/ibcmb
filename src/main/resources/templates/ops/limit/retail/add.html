@@ -43,15 +43,9 @@
                                 <ul class="nav navbar-left panel_toolbox">
 
 
-                                    <li >
-                                        <div class="col-lg-4">
-                                            <div class="title-action">
-                                                <a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/ops/requests/index/details" disabled="disabled" ><i class="fa fa-eye"></i> Review</a>
-                                            </div>
-                                        </div>
-                                    </li>
 
-                                   </ul>
+
+                                </ul>
                                 <ul class="nav navbar-right panel_toolbox">
 
 
@@ -64,33 +58,36 @@
                                 <div class="clearfix"></div>
                             </div>
 
-                            <div th:replace="layout :: message"></div>
                             <div class="x_content">
 
-                                <table class="table table-striped table-bordered table-hover" id="request">
-                                    <thead>
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>status</th>
-                                        <th>Username</th>
-                                        <th>Date</th>
+                                <form method="post" th:action="@{/ops/limits/retail/new}" th:object="${retailLimit}">
 
-                                    </tr>
-                                    </thead>
-                                    <tbody>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">Limit Type</label>
 
+                                        <div class="col-sm-6">
+                                            <select class="form-control" th:field="*{name}">
+                                                <option value="NIP">NIP</option>
+                                                <option value="RTGS">RTGS</option>
+                                                <option value="NAPS">NAPS</option>
+                                            </select>
+                                        </div>
 
-                                    </tbody>
-                                    <tfoot>
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>status</th>
-                                        <th>Username</th>
-                                        <th>Date</th>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">Description</label>
 
-                                    </tr>
-                                    </tfoot>
-                                </table>
+                                        <div class="col-sm-6">
+                                            <input class="form-control" th:field="*{name}">
+                                                <option value="NIP">NIP</option>
+                                                <option value="RTGS">RTGS</option>
+                                                <option value="NAPS">NAPS</option>
+                                            </input>
+                                        </div>
+
+                                    </div>
+
+                                </form>
 
                             </div>
                         </div>
@@ -118,7 +115,7 @@
 <script>
     /*<![CDATA[*/
     $(document).ready(function() {
-      var table = $('#request').DataTable({
+        var table = $('#request').DataTable({
             select:true,
             responsive: true,
             "lengthMenu" : [ [ 5, 10, 20],	[ 5, 10, 20 ] ],
@@ -137,7 +134,7 @@
 
             ] });
 
-            table.on('select', function() {
+        table.on('select', function() {
             if (table.rows({
                     selected : true
                 }).indexes().length === 0) {
@@ -160,17 +157,17 @@
 
     });
 
-        $("a.bt-link-act").on("click", function(e) {
-            e.preventDefault();
-            var link = $(e.currentTarget);
-            var dt = $('#request').DataTable();
-            var id = $(dt.row({
-                selected: true
-            }).node()).attr("id");
-            //window.location.href = link.attr("formaction") + '?id=' + id;
-            //replace {id} with id
-            var ooo = link.attr("href").replace("index",id);
-            window.location.assign(ooo);
+    $("a.bt-link-act").on("click", function(e) {
+        e.preventDefault();
+        var link = $(e.currentTarget);
+        var dt = $('#request').DataTable();
+        var id = $(dt.row({
+            selected: true
+        }).node()).attr("id");
+        //window.location.href = link.attr("formaction") + '?id=' + id;
+        //replace {id} with id
+        var ooo = link.attr("href").replace("index",id);
+        window.location.assign(ooo);
 
     } );
     /*]]>*/
