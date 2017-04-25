@@ -1,3 +1,4 @@
+/*
 
 package longbridge.config;
 
@@ -19,15 +20,22 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 
+*/
 /**
  * Created by ayoade_farooq@yahoo.com on 4/10/2017.
- */
+ *//*
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
 	public void customConfig(WebSecurity web) throws Exception {
-		web.ignoring().antMatchers("/resources/**", "/static/**", "/css/**", "/js/**", "/images/**");
+		web.ignoring().antMatchers("/resources*/
+/**", "/static*/
+/**", "/css*/
+/**", "/js*/
+/**", "/images*/
+/**");
 	}
 
 	@Configuration
@@ -59,7 +67,8 @@ public class SecurityConfig {
 		@Override
 		protected void configure(HttpSecurity http) throws Exception {
 
-			http.antMatcher("/admin/**").authorizeRequests().anyRequest().hasAuthority(UserType.ADMIN.toString())
+			http.antMatcher("/admin*/
+/**").authorizeRequests().anyRequest().hasAuthority(UserType.ADMIN.toString())
 					// log in
 			//IP address check
 			//.anyRequest().hasIpAddress("")
@@ -119,7 +128,8 @@ public class SecurityConfig {
         }
 
         protected void configure(HttpSecurity http) throws Exception {
-            http.antMatcher("/ops/**").authorizeRequests().anyRequest()
+            http.antMatcher("/ops*/
+/**").authorizeRequests().anyRequest()
                     //.authenticated()
                     .hasAuthority(UserType.OPERATIONS.toString())
                     // log in
@@ -175,7 +185,8 @@ public class SecurityConfig {
 		}
 
 		protected void configure(HttpSecurity http) throws Exception {
-			http.antMatcher("/retail/**").authorizeRequests().anyRequest()
+			http.antMatcher("/retail*/
+/**").authorizeRequests().anyRequest()
 					// .authenticated()
 					.hasAuthority(UserType.RETAIL.toString())
 					// log in
@@ -207,3 +218,4 @@ public class SecurityConfig {
         return new HttpSessionEventPublisher();
     }
 }
+*/
