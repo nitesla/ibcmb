@@ -24,10 +24,9 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label>Beneficiary Type</label>
-                                <select name="beneficiaryType" class="form-control">
-                                    <option th:value="local">Local</option>
-                                    <option th:value="foreign">Foreign</option>
+                                <label>Bank Details</label>
+                                <select name="financialInstitution" class="form-control" >
+                                    <option th:each="bank : ${banks}" th:value="${bank.institutionCode}" th:text="${bank.institutionName}"></option>
                                 </select>
                             </div>
                             <div class="form-group">

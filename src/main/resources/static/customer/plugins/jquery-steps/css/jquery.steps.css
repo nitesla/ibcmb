@@ -377,3 +377,8 @@
 {
     display: list-item;
 }
+
+@media screen and (max-width: 759px) and (min-width: 0){
+
+
+}
