@@ -46,4 +46,6 @@ public interface IntegrationService {
 
     AccountDetails viewAccountDetails(String acctNo);
     Boolean isAccountValid(String accNo,String email,String dob);
+    BigDecimal getDailyDebitTransaction(String acctNo);
+    BigDecimal getDailyAccountLimit(String accNo);
 }

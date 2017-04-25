@@ -8,6 +8,7 @@ import longbridge.utils.AccountStatement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -25,7 +26,8 @@ import java.util.Map;
 public class IntegrationServiceImpl implements IntegrationService {
 
     private Logger  logger= LoggerFactory.getLogger(getClass());
-    private  final String URI="http://localhost:1759";   //TODO URI for the account details class
+    @Value("${ebank.service.uri}")
+    private   String URI;   //TODO URI for the account details class
 
     private RestTemplate template;
 
@@ -78,7 +80,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 
     @Override
     public AccountDetails viewAccountDetails(String acctNo) {
-       //TODO URI for the account details class
+
         String uri=URI +"/account/{acctId}";
         Map<String, String> params = new HashMap<>();
         params.put("acctId",acctNo );
@@ -97,9 +99,6 @@ public class IntegrationServiceImpl implements IntegrationService {
        boolean result=false;
         String uri=URI +"/account/verification";
         Map<String, String> params = new HashMap<>();
-
-
-
         params.put("accountNumber",accNo );
         params.put("email",email );
         params.put("dateOfBirth",dob );
@@ -113,5 +112,15 @@ public class IntegrationServiceImpl implements IntegrationService {
         }
 
         return result;
+    }
+
+    @Override
+    public BigDecimal getDailyDebitTransaction(String acctNo) {
+        return null;
+    }
+
+    @Override
+    public BigDecimal getDailyAccountLimit(String accNo) {
+        return null;
     }
 }
