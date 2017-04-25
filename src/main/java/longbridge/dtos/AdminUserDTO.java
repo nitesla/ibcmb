@@ -1,8 +1,11 @@
 package longbridge.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import longbridge.models.UserType;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
+
+import java.util.Date;
 
 /**
  * Created by Fortune on 4/5/2017.
@@ -26,11 +29,13 @@ public class AdminUserDTO {
     private String email;
     private String password;
     private String dateCreated;
+    private Date expiryDate;
     private String lastLogin;
+    private String status;
     @NotEmpty(message = "roleId")
     private String roleId;
     private String role;
-    private String userType;
+    private UserType userType;
 
 
     public Long getId() {
@@ -113,6 +118,14 @@ public class AdminUserDTO {
         this.lastLogin = lastLogin;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     public String getRoleId() {
         return roleId;
     }
@@ -129,11 +142,19 @@ public class AdminUserDTO {
         this.role = role;
     }
 
-    public String getUserType() {
+    public UserType getUserType() {
         return userType;
     }
 
-    public void setUserType(String userType) {
+    public void setUserType(UserType userType) {
         this.userType = userType;
+    }
+
+    public Date getExpiryDate() {
+        return expiryDate;
+    }
+
+    public void setExpiryDate(Date expiryDate) {
+        this.expiryDate = expiryDate;
     }
 }
