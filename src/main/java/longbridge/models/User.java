@@ -26,6 +26,8 @@ public class User extends AbstractEntity{
     //@Enumerated(value = EnumType.STRING)
     protected UserType userType;
 
+    protected AlertPreference alertPreference;
+
 
     @ManyToOne
     private Role role;
@@ -102,6 +104,14 @@ public class User extends AbstractEntity{
 //		this.groups = groups;
 //	}
 
+
+    public AlertPreference getAlertPreference() {
+        return alertPreference;
+    }
+
+    public void setAlertPreference(AlertPreference alertPreference) {
+        this.alertPreference = alertPreference;
+    }
 
     public Date getDateCreated() {
         return dateCreated;

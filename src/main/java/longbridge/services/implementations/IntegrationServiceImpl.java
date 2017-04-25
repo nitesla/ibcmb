@@ -2,7 +2,6 @@ package longbridge.services.implementations;
 
 import longbridge.api.AccountDetails;
 import longbridge.api.AccountInfo;
-import longbridge.models.Account;
 import longbridge.models.TransferRequest;
 import longbridge.services.IntegrationService;
 import longbridge.utils.AccountStatement;
@@ -25,6 +24,7 @@ import java.util.*;
 public class IntegrationServiceImpl implements IntegrationService {
 
     private Logger  logger= LoggerFactory.getLogger(getClass());
+
     @Value("${ebank.service.uri}")
     private   String URI;   //TODO URI for the account details class
 
