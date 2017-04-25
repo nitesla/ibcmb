@@ -44,11 +44,6 @@ public class AdmRoleController {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     private RoleService roleService;
-    @Autowired
-    private AdminUserRepo adminUserRepo;
-
-    @Autowired
-    private VerificationRepo verificationRepo;
 
 
     @GetMapping("/new")
@@ -56,18 +51,18 @@ public class AdmRoleController {
         RoleDTO roleDTO = new RoleDTO();
         roleDTO.setPermissions(new ArrayList<>());
         model.addAttribute("role", new RoleDTO());
-        Iterable<PermissionDTO> permissions=roleService.getPermissions();
-//        List<PermissionDTO> getArrayList=new ArrayList<>();
-        model.addAttribute("permissions",permissions);
-//        model.addAttribute("getArrayList",getArrayList);
         return "adm/role/add";
     }
 
+    @ModelAttribute("permissions")
+    Iterable<PermissionDTO> getPermissions(){
+    	 Iterable<PermissionDTO> permissions=roleService.getPermissions();
+    	 return permissions ;
+    }
+    
     @PostMapping
     public String createRole(@ModelAttribute("role") @Valid RoleDTO roleDTO, BindingResult result,WebRequest request, RedirectAttributes redirectAttributes){
         if(result.hasErrors()){
-        	 Iterable<PermissionDTO> permissions=roleService.getPermissions();
-        	 result.getModel().put("permissions",permissions);
             return "adm/role/add";
         }
         logger.info("Role {}", roleDTO.toString());
@@ -98,11 +93,11 @@ public class AdmRoleController {
     }
 
     @GetMapping("/{reqId}/edit")
-    public String  editConfig(@PathVariable Long reqId, Model model){
+    public String  editRole(@PathVariable Long reqId, Model model){
         RoleDTO role = roleService.getRole(reqId);
         Iterable<PermissionDTO> permissionDTOs =roleService.getRole(reqId).getPermissions();
         model.addAttribute("role",role);
-        model.addAttribute("permissions",role);
+//        model.addAttribute("permissions",role);
 
         return "/adm/role/edit";
     }
@@ -128,10 +123,7 @@ public class AdmRoleController {
         }
         //roleDTO.setId(roleId);
         roleService.addRole(roleDTO);
-//        AdminUser adminUser = adminUserRepo.findOne(1l);
-//        logger.info("Code {}", roleDTO.toString());
-//        roleService.modify(roleDTO, adminUser);
-         redirectAttributes.addFlashAttribute("success", "Role updated successfully");
+        redirectAttributes.addFlashAttribute("success", "Role updated successfully");
         return "redirect:/admin/roles";
     }
 

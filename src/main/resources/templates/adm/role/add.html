@@ -57,7 +57,7 @@
                                                 </div>
 
                                                 <div class="form-group col-lg-6">
-                                                    <label>Description</label> <textarea class="form-control" rows="2" th:field="*{description}" />
+                                                    <label>Description</label> <textarea class="form-control" rows="2" th:field="*{description}" ></textarea>
                                                 </div>
 
 
@@ -72,9 +72,6 @@
 
                                                     <div class="form-group text-left col-lg-5">
                                                         <select multiple="multiple" class="form-control left-selector" >
-                                                            <!--<s:iterator value="optionsList" var="p">-->
-                                                                <!--<option value="${p.id}"}>${p.description}</option>-->
-                                                            <!--</s:iterator>-->
                                                             <option th:each="permission: ${permissions}" th:value="${permission.id}" th:text="${permission.name}" ></option>
 
                                                         </select>
@@ -89,9 +86,6 @@
                                                     </div>
                                                     <div class="form-group text-right col-lg-5">
                                                         <select multiple="multiple" class="form-control right-selector" name="permissionsList" >
-                                                            <!--<s:iterator value="profile.options" var="op">-->
-                                                                <!--<option value="${op.id}"}>${op.description}</option>-->
-                                                            <!--</s:iterator>-->
                                                             <option th:each="p: ${role.permissions}"  th:value="${p.id}" th:text="${p.name}" ></option>
 
                                                         </select>

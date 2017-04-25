@@ -72,15 +72,4 @@ public class Permission extends AbstractEntity{
                 '}';
     }
 
-
-
-	public static OperationCode getAddCode() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public static OperationCode getModifyCode() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }
