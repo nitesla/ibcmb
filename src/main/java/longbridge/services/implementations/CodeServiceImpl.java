@@ -147,4 +147,8 @@ public class CodeServiceImpl implements CodeService {
 		}
 	}
 
+    @Override
+    public Code getByTypeAndCode(String type, String code) {
+        return codeRepo.findByTypeAndCode(type,code);
+    }
 }

@@ -67,4 +67,5 @@ public interface CodeService {
 
 	List<CodeDTO> convertEntitiesToDTOs(Iterable<Code> codes);
 
+	public Code getByTypeAndCode(String type, String code);
 }
