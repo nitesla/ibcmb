@@ -19,6 +19,8 @@ public interface AdminUserService {
      */
     AdminUser getUser(Long userId);
 
+    AdminUserDTO getUserByName(String name);
+
     /**
      * Returns a DTO of {@code AdminUserDTO} having the specified userId
      * @param userId the user's Id
@@ -82,7 +84,7 @@ public interface AdminUserService {
      * @param oldPassword the old password
      * @param newPassword the new password
      */
-    boolean changePassword(AdminUser user, String oldPassword, String newPassword);
+    boolean changePassword(AdminUserDTO user, String oldPassword, String newPassword);
 
     /**
      * Generates and sends password to an admin user
