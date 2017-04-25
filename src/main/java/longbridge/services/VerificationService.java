@@ -34,6 +34,7 @@ public interface VerificationService {
       */
 
 
+
      <T extends SerializableEntity<T>> String addNewVerificationRequest(T entity) throws JsonProcessingException;
 
 
@@ -45,6 +46,11 @@ public interface VerificationService {
 
     /** Create a new <b>modify</b> {@link Verification} request
 >>>>>>> aa75c4f1b1b43d0288ab885772740645505e989f
+=======
+    <T extends SerializableEntity<T>> String addNewVerificationRequest(T entity) throws JsonProcessingException;
+
+    /** Create a new <b>modify</b> {@link Verification} request
+>>>>>>> bdba7def7446c70658712e26251f45b9ba58ed31
       * 
       * @param originalEntity The existing entity
       * @param entity The modified entity

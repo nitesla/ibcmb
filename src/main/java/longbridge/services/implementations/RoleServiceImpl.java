@@ -241,4 +241,24 @@ public class RoleServiceImpl implements RoleService {
 		}
 		return permissionDTOList;
 	}
+
+
+
+
+	@Override
+	public Iterable<PermissionDTO> getPermissionsNotInRole(RoleDTO role) {
+		// TODO Auto-generated method stub
+		Long[]  permissionArray = new Long[role.getPermissions().size()];
+		int idx = 0;
+		for(PermissionDTO perm : role.getPermissions()){
+			permissionArray[idx]=perm.getId();
+			idx++;
+		}
+		//not in NULL check
+		if (permissionArray.length == 0)
+			permissionArray = new Long[]{-1L};
+		Iterable<Permission> permissionsNotInRole = permissionRepo.findByIdNotIn(permissionArray);
+		
+		return convertPermissionEntitiesToDTOs(permissionsNotInRole);
+	}
 }

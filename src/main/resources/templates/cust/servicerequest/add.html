@@ -75,7 +75,7 @@
 </script>
 <script>
     $('#reqForm').submit(function(event) {
-        event.preventDefault();
+//        event.preventDefault();
 //        var formData = JSON.stringify($("#reqForm").serializeArray());
         var arrays = [];
 //        $('.form-group').each(function(index, element){
@@ -99,7 +99,7 @@
 
         var form = $('#reqForm').serializeArray();
         var formData =  JSON.stringify(form);
-        $('#body').val(formData);
+        $('#requestName').val(formData);
         $('#submitform').submit();
 
 

@@ -70,6 +70,13 @@ public interface RoleService {
      * @return a list of permissions
      */
     Iterable<PermissionDTO> getPermissions();
+    
+    /**
+     * Returns all  the permissions not in the role
+     * @return a list of permissions
+     */
+    Iterable<PermissionDTO> getPermissionsNotInRole(RoleDTO role);
+
 
     Page<PermissionDTO> getPermissions(Pageable pageDetails);
 

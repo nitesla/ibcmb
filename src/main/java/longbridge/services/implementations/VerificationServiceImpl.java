@@ -113,7 +113,6 @@ public class VerificationServiceImpl implements VerificationService {
 
 		return classSimpleName + " creation request has been added";
 
-
 	}
 
 
