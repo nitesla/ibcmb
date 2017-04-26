@@ -1,10 +1,193 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout :: site-head">
 </head>
-<body>
+
+
+<body class="nav-md">
+<div class="container body">
+    <div class="main_container">
+        <div class="col-md-3 left_col">
+            <div class="left_col scroll-view">
+                <div class="navbar nav_title" style="border: 0;">
+                    <!--<a href="index.html"><img th:src="@{~/images/cmb_logo.png}"/></a>-->
+                </div>
+
+                <div class="clearfix"></div>
+                <div class="clearfix"></div>
+
+                <div th:replace="layout :: ops-menu"></div>
+                <div th:replace="layout :: menu-footer"></div>
+
+            </div>
+        </div>
+        <div th:replace="layout :: top-nav"></div>
+
+        <!-- page content -->
+        <div class="right_col" role="main">
+            <div class="">
+                <div class="page-title">
+                    <div class="title_left">
+                        <h3>Service Requests</h3>
+                    </div>
+
+                </div>
+
+                <div class="clearfix"></div>
+
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <ul class="nav navbar-left panel_toolbox">
+                                    <li>
+                                        <div class="col-lg-4">
+                                            <div class="title-action">
+
+                                            </div>
+                                        </div>
+                                    </li>
+
+                                </ul>
+                                <ul class="nav navbar-right panel_toolbox">
+
+
+                                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                    </li>
+
+                                </ul>
+                                <div class="clearfix"></div>
+                            </div>
+
+                            <div th:replace="layout :: message"></div>
+                            <div class="x_content">
+
+                                <div class="col-md-6">
+
+                                    <form method="post" th:action="@{/ops/requests/history}" th:object="${requestHistory}">
+                                        <table class="table table-striped table-bordered table-hover" id="request">
+                                            <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Value</th>
+
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr>
+                                                <td>Username</td>
+                                                <td th:text="${serviceRequest.username}"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Date Requested</td>
+                                                <td th:text="${serviceRequest.date}"></td>
+                                            </tr>
+
+                                            <tr th:each="req: ${requestBody}">
+                                                <td th:text="${req.name}"></td>
+                                                <td th:text="${req.value}"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Status</td>
+                                                <td><select name ="status" id="status" class="form-control">
+                                                    <option th:each="status : ${statuses}" th:value="${status.code}"
+                                                            th:text="${status.description}"
+                                                            th:selected="${status.code==serviceRequest.requestStatus}"></option>
+                                                </select></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Comment</td>
+                                                <td><textarea name ="comment" rows="2" class="form-control" th:value="*{comment}"></textarea>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="2">
+                                                    <button type="submit" class="btn btn-primary">Update</button>
+                                                </td>
+                                            </tr>
+
+                                            </tbody>
+
+                                        </table>
+                                        <input type="hidden" name="serviceRequestId" th:value="${serviceRequest.id}"/>
+                                    </form>
+                                </div>
+
+
+                                <!-->
+
+                                <div class="col-md-6">
+
+                                    <div class="x_title">
+                                        <h2>Request History
+
+                                        </h2>
+                                        <ul class="nav navbar-right panel_toolbox">
+                                            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                            </li>
+                                            <li class="dropdown">
+                                                <a href="#" class="dropdown-toggle" data-toggle="dropdown"
+                                                   role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                                                <ul class="dropdown-menu" role="menu">
+
+                                                </ul>
+                                            </li>
+
+                                        </ul>
+                                        <div class="clearfix"></div>
+                                    </div>
+                                    <div class="x_content">
+                                        <table>
+                                            <tr th:each="history: ${requestHistories}">
+                                                <td th:text="${history.createdOn}"></td><td th:text="${history.comment}"></td>
+                                        </table>
+                                        <ul class="list-unstyled msg_list">
+
+                                            <li th:each="history: ${requestHistories}" >
+                                                <a>
+                                                      <span th:text="${history.createdBy}"></span>
+                                                      <span class="time" th:text="${h.createdOn}"></span>
+
+                                                    <p class="message" th:text="${history.comment}">
+                                                      Film festivals used to be do-or-die moments for movie makers. They were where you met the producers that
+                                                    </p>
+                                                </a>
+                                            </li>
+
+
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <!-->
+
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- footer content -->
+<footer th:replace="layout :: footer">
+</footer>
+<!-- /footer content -->
+<!--</div>-->
+<!--</div>-->
+
+
+<script th:src="@{~/bank/vendors/datatables.net/js/jquery.dataTables.js}"></script>
+<script th:src="@{~/bank/js/dataTables.bootstrap.js}"></script>
+<script th:src="@{~/bank/js/dataTables.select.js}"></script>
+<script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
+
+<!-- Page-Level Scripts -->
+
 
 </body>
 </html>

@@ -29,7 +29,7 @@
             <div class="">
                 <div class="page-title">
                     <div class="title_left">
-                        <h3>Service Requests</h3>
+                        <h3>Corporate Global Limits</h3>
                     </div>
 
                 </div>
@@ -46,12 +46,21 @@
                                     <li >
                                         <div class="col-lg-4">
                                             <div class="title-action">
-                                                <a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/ops/requests/index/details" disabled="disabled" ><i class="fa fa-eye"></i> Review</a>
+                                                <a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/ops/limits/corporate/global/index/edit" disabled="disabled" ><i class="fa fa-pencil"></i> Edit</a>
                                             </div>
                                         </div>
                                     </li>
 
-                                   </ul>
+                                </ul>
+                                <ul class="nav navbar-right panel_toolbox">
+                                    <li >
+                                        <div class="col-lg-4">
+                                            <div class="title-action">
+                                                <a href="/ops/limits/corporate/global/new" class="btn btn-sm btn-primary"><i class="fa fa-plus"></i> Add</a>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
                                 <ul class="nav navbar-right panel_toolbox">
 
 
@@ -64,16 +73,17 @@
                                 <div class="clearfix"></div>
                             </div>
 
-                            <div th:replace="layout :: message"></div>
                             <div class="x_content">
 
-                                <table class="table table-striped table-bordered table-hover" id="request">
+                                <table class="table table-striped table-bordered table-hover" id="limit">
                                     <thead>
                                     <tr>
-                                        <th>Name</th>
-                                        <th>status</th>
-                                        <th>Username</th>
-                                        <th>Date</th>
+                                        <th>Channel</th>
+                                        <th>Lower Limit</th>
+                                        <th>Upper Limit</th>
+                                        <th>Currency</th>
+                                        <th>Effective Date</th>
+                                        <th>Frequency</th>
 
                                     </tr>
                                     </thead>
@@ -83,10 +93,12 @@
                                     </tbody>
                                     <tfoot>
                                     <tr>
-                                        <th>Name</th>
-                                        <th>status</th>
-                                        <th>Username</th>
-                                        <th>Date</th>
+                                        <th>Channel</th>
+                                        <th>Lower Limit</th>
+                                        <th>Upper Limit</th>
+                                        <th>Currency</th>
+                                        <th>Effective Date</th>
+                                        <th>Frequency</th>
 
                                     </tr>
                                     </tfoot>
@@ -117,8 +129,9 @@
 <!-- Page-Level Scripts -->
 <script>
     /*<![CDATA[*/
+
     $(document).ready(function() {
-      var table = $('#request').DataTable({
+        var table = $('#limit').DataTable({
             select:true,
             responsive: true,
             "lengthMenu" : [ [ 5, 10, 20],	[ 5, 10, 20 ] ],
@@ -126,18 +139,23 @@
             "searching": false,
             "paging": true,
             "serverSide" : true,
-            "ajax": "/ops/requests/all",
+            "ajax": "/ops/limits/corporate/global/all",
             "dom": 'T<"clear">frtlp',
+
             "columns": [
-                { "data": "requestName" },
-                { "data": "requestStatus" },
-                { "data": "username" },
-                { "data": "date" }
+                { "data": "channel" },
+                { "data": "lowerLimit" },
+                { "data": "upperLimit" },
+                { "data": "currency" },
+                { "data": "startDate" },
+                { "data": "frequency" }
+
+
 
 
             ] });
 
-            table.on('select', function() {
+        table.on('select', function() {
             if (table.rows({
                     selected : true
                 }).indexes().length === 0) {
@@ -160,17 +178,17 @@
 
     });
 
-        $("a.bt-link-act").on("click", function(e) {
-            e.preventDefault();
-            var link = $(e.currentTarget);
-            var dt = $('#request').DataTable();
-            var id = $(dt.row({
-                selected: true
-            }).node()).attr("id");
-            //window.location.href = link.attr("formaction") + '?id=' + id;
-            //replace {id} with id
-            var ooo = link.attr("href").replace("index",id);
-            window.location.assign(ooo);
+    $("a.bt-link-act").on("click", function(e) {
+        e.preventDefault();
+        var link = $(e.currentTarget);
+        var dt = $('#limit').DataTable();
+        var id = $(dt.row({
+            selected: true
+        }).node()).attr("id");
+        //window.location.href = link.attr("formaction") + '?id=' + id;
+        //replace {id} with id
+        var ooo = link.attr("href").replace("index",id);
+        window.location.assign(ooo);
 
     } );
     /*]]>*/

@@ -20,10 +20,8 @@ public class InternetbankingApplication implements CommandLineRunner {
 	}
 
 	@Override
-	public void run(String... strings) throws Exception
-	{
-		//System.out.println(service.viewAccountDetails("CC109"));
-		//System.out.println(service.isAccountValid("08166851634","yahoo.com","23-09-08"));
-	}
+	public void run(String... strings) throws Exception {
+
+    }
 
 }

@@ -2,13 +2,10 @@ package longbridge.controllers.operations;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import longbridge.dtos.AdminUserDTO;
 import longbridge.dtos.CodeDTO;
 import longbridge.dtos.RequestHistoryDTO;
 import longbridge.dtos.ServiceRequestDTO;
-import longbridge.models.Code;
 import longbridge.models.RetailUser;
-import longbridge.models.ServiceRequest;
 import longbridge.repositories.RetailUserRepo;
 import longbridge.services.CodeService;
 import longbridge.services.RequestService;
@@ -22,17 +19,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.data.jpa.datatables.repository.DataTablesUtils;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.MultiValueMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
 import java.util.List;
+
 
 /**
  * Created by Fortune on 4/3/2017.

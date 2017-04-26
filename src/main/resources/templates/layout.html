@@ -27,15 +27,6 @@
 
 
 
-<div th:fragment="message">
-    <div th:if="${message}">
-        <div hidden="hidden">
-            <ul class="actionMessage">
-                <li th:each="msg : ${message}" th:text="${msg}">Message</li>
-            </ul>
-        </div>
-    </div>
-</div>
 
 
 <!-- admin menu -->
@@ -98,24 +89,47 @@
             <li><a><i class="fa fa-users"></i> Corporates <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
                     <li><a href="#">Accounts</a></li>
-                    <li><a href="#">Limits</a></li>
-                </ul>
+                    <li><a> Limits <span class="fa fa-chevron-down"></span></a>
+                        <ul class="nav child_menu">
+                            <li class="sub_menu"><a href="/ops/limits/corporate/global">Global Level</a></li>
+                            <li class="sub_menu"><a href="/ops/limits/corporate/class">Class Level</a></li>
+                            <li class="sub_menu"><a href="/ops/limits/corporate/account">Account Level</a></li>
+
+                        </ul>
+                    </li>                </ul>
             </li>
             <li><a><i class="fa fa-users"></i> Retail <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
                     <li><a href="#">Account</a></li>
-                    <li><a href="#">Limits</a></li>
+                    <li><a> Limits <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                        <li class="sub_menu"><a href="/ops/limits/retail/global">Global Level</a></li>
+                        <li class="sub_menu"><a href="/ops/limits/retail/class">Class Level</a></li>
+                        <li class="sub_menu"><a href="/ops/limits/retail/account">Account Level</a></li>
+
+                    </ul>
+                    </li>
                 </ul>
             </li>
             <li><a><i class="fa fa-tasks"></i> Service Request <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
                     <li><a href="/ops/requests/">Requests</a></li>
-                    <li><a href="#">Issues</a></li>
+
                     </ul>
 
             </li>
+
+            <li><a><i class="fa fa-tasks"></i> Settings <span class="fa fa-cog"></span></a>
+                <ul class="nav child_menu">
+                    <li><a href="/ops/settings/fees">Transaction Fees</a></li>
+                    <li><a href="/ops/contacts/">Contacts Details</a></li>
+                </ul>
+
+            </li>
             <li><a><i class="fa fa-mail-reply-all"></i> Mailbox<span class="fa fa-chevron-down"></span></a>
-                <ul class="nav child_menu"></ul>
+                <ul class="nav child_menu">
+                    <li><a href="/ops/messages/">Inbox</a></li>
+                </ul>
             </li>
             <li><a><i class="fa fa-bar-chart-o"></i> Reports <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu"></ul>
@@ -330,7 +344,17 @@
 
 <!-- footer content -->
 <footer th:fragment="footer">
-        <div class="pull-right">
+
+        <div th:if="${message}">
+            <div hidden="hidden">
+                <ul class="actionMessage">
+                    <li th:each="msg : ${message}" th:text="${msg}">Message</li>
+                </ul>
+            </div>
+        </div>
+
+
+    <div class="pull-right">
             Coronation Merchant Bank
         </div>
         <div class="clearfix"></div>

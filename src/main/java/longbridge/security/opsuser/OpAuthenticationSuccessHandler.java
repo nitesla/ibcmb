@@ -1,7 +1,8 @@
-package longbridge.security.adminuser;
+package longbridge.security.opsuser;
 
 import longbridge.models.UserType;
 import longbridge.repositories.AdminUserRepo;
+import longbridge.repositories.OperationsUserRepo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,19 +20,19 @@ import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 import java.io.IOException;
 
-@Component("adminAuthenticationSuccessHandler")
-public class AdminAuthenticationSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
+@Component("opAuthenticationSuccessHandler")
+public class OpAuthenticationSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
 
-    public AdminAuthenticationSuccessHandler() {
+    public OpAuthenticationSuccessHandler() {
         setUseReferer(true);
     }
 
     private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
     @Autowired
-    private  AdminUserRepo adminUserRepo;
+    private OperationsUserRepo operationsUserRepo;
 
 
 
@@ -42,10 +43,11 @@ public class AdminAuthenticationSuccessHandler extends SavedRequestAwareAuthenti
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws ServletException, IOException {
         HttpSession session = request.getSession();
         if (session != null) {
-        	session.setMaxInactiveInterval(30 *60); //TODO this cannot be static
+            setUseReferer(true);
+        	session.setMaxInactiveInterval(30 *60);
         }
-        setUseReferer(true);
-        adminUserRepo.updateUserAfterLogin(authentication.getName());
+
+        operationsUserRepo.updateUserAfterLogin(authentication.getName());
         super.onAuthenticationSuccess(request, response, authentication);
 
     }
@@ -67,9 +69,9 @@ public class AdminAuthenticationSuccessHandler extends SavedRequestAwareAuthenti
 
     protected String determineTargetUrl(final Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-          boolean isAdmin= adminUserRepo.findFirstByUserName(userDetails.getUsername()).getUserType().equals(UserType.ADMIN);
-        if (isAdmin) {
-            return "/admin/dashboard";
+          boolean isOp= operationsUserRepo.findFirstByUserName(userDetails.getUsername()).getUserType().equals(UserType.OPERATIONS);
+        if (isOp) {
+            return "/ops/dashboard";
         }  else {
             throw new IllegalStateException();
         }
