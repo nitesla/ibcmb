@@ -1,6 +1,7 @@
 package longbridge.dtos;
 
 import longbridge.models.*;
+import longbridge.utils.TransferType;
 
 /** *
  * Created by Fortune on 4/5/2017.

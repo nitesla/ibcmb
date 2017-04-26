@@ -2,10 +2,7 @@ package longbridge.services.implementations;
 
 import longbridge.api.AccountDetails;
 import longbridge.api.AccountInfo;
-<<<<<<< HEAD
-import longbridge.models.Account;
-=======
->>>>>>> 96b9c55575dcf6b3509672520e23b8660691f137
+
 import longbridge.models.TransferRequest;
 import longbridge.services.IntegrationService;
 import longbridge.utils.AccountStatement;
@@ -28,10 +25,7 @@ import java.util.*;
 public class IntegrationServiceImpl implements IntegrationService {
 
     private Logger  logger= LoggerFactory.getLogger(getClass());
-<<<<<<< HEAD
-=======
 
->>>>>>> 96b9c55575dcf6b3509672520e23b8660691f137
     @Value("${ebank.service.uri}")
     private   String URI;   //TODO URI for the account details class
 
@@ -50,11 +44,9 @@ public class IntegrationServiceImpl implements IntegrationService {
     public Collection<AccountInfo> fetchAccounts(String cifid)
     {
         try{
-<<<<<<< HEAD
-            String uri=URI +"/customer/{cifId}/accounts";
-=======
+
             String uri=URI +"/customer/{acctId}/accounts";
->>>>>>> 96b9c55575dcf6b3509672520e23b8660691f137
+
             List<AccountInfo> details= template.getForObject(uri, ArrayList.class,cifid);
             return details;
         }catch (Exception e){
