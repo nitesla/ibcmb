@@ -68,7 +68,10 @@ public class SecurityConfig {
 					.successHandler(adminAuthenticationSuccessHandler).failureHandler(adminAuthenticationFailureHandler)
 					.and()
 					// logout
+
+
 					.logout().logoutUrl("/admin/logout").logoutSuccessUrl("/login/admin").deleteCookies("JSESSIONID")
+					.and().requestCache()
 					.and().exceptionHandling().and().csrf().disable().sessionManagement().sessionFixation()
 					.migrateSession().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
 					.invalidSessionUrl("/login/admin").maximumSessions(1).expiredUrl("/login/admin");

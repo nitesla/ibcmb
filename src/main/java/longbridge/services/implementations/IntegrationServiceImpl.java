@@ -43,7 +43,7 @@ public class IntegrationServiceImpl implements IntegrationService {
     public Collection<AccountInfo> fetchAccounts(String cifid)
     {
         try{
-            String uri=URI +"/customer/{acctId}/accounts";
+            String uri=URI +"/customer/{cifId}/accounts";
             List<AccountInfo> details= template.getForObject(uri, ArrayList.class,cifid);
             return details;
         }catch (Exception e){
