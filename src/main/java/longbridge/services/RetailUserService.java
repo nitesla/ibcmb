@@ -2,8 +2,8 @@ package longbridge.services;
 
 import longbridge.dtos.RetailUserDTO;
 import longbridge.models.Account;
+import longbridge.models.AlertPreference;
 import longbridge.models.RetailUser;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -91,5 +91,7 @@ public interface RetailUserService {
      * @param user the user
      */
     boolean generateAndSendPassword(RetailUser user);
+
+    boolean changeAlertPreference(RetailUserDTO retailUser, AlertPreference alertPreference);
 
 }

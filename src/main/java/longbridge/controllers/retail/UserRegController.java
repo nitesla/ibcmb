@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
- * Created by Showboy on 18/04/2017.
+ * Created by Wunmi Sowunmi on 18/04/2017.
  */
 @Controller
 @RequestMapping("/register")

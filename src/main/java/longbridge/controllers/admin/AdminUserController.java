@@ -74,10 +74,10 @@ public class AdminUserController {
             Iterable<RoleDTO> roles = roleService.getRoles();
             model.addAttribute("roles",roles);
             model.addAttribute("message","Pls correct the errors");
-
             return "adm/admin/add";
         }
         adminUserService.addUser(adminUser);
+
         redirectAttributes.addFlashAttribute("message","Admin user created successfully");
         return "redirect:/admin/users";
     }

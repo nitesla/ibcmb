@@ -11,5 +11,7 @@ public interface CodeRepo extends CommonRepo<Code, Long>{
 
     Iterable<Code> findByType(String type);
 
+    Code findByTypeAndCode(String type, String code);
+
 
 }

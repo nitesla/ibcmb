@@ -50,6 +50,8 @@ public interface CodeService {
 
     Page<CodeDTO> getCodesByType(String codeType, Pageable pageDetails);
 
+	public Code getByTypeAndCode(String type, String code);
+
 	Page<CodeDTO> getCodes(Pageable pageDetails);
 
 	/**

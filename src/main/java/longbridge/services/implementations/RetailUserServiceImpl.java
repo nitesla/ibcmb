@@ -2,6 +2,7 @@ package longbridge.services.implementations;
 
 import longbridge.dtos.RetailUserDTO;
 import longbridge.models.Account;
+import longbridge.models.AlertPreference;
 import longbridge.models.RetailUser;
 import longbridge.repositories.RetailUserRepo;
 import longbridge.services.AccountService;
@@ -184,6 +185,29 @@ public class RetailUserServiceImpl implements RetailUserService {
         return ok;
 
     }
+
+    @Override
+    public boolean changeAlertPreference(RetailUserDTO user, AlertPreference alertPreference) {
+        boolean ok=false;
+        try {
+            if (getUser(user.getId()) == null) {
+                logger.error("USER DOES NOT EXIST");
+                return ok;
+            }
+
+                RetailUser retailUser = convertDTOToEntity(user);
+                retailUser.setAlertPreference(alertPreference);
+                this.retailUserRepo.save(retailUser);
+                logger.info("USER {}'s alert preference set", user.getId());
+                ok = true;
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            logger.error("ERROR OCCURRED {}",e.getMessage());
+        }
+        return ok;
+    }
+
     public String generatePassword(){
         /*String password=   RandomStringUtils.randomNumeric(10);
         return password!=null? password: "";*/

@@ -2,6 +2,7 @@ package longbridge.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import longbridge.models.AbstractEntity;
+import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.Entity;
 

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.validator.constraints.NotEmpty;
 
 /**
- * Created by Showboy on 24/04/2017.
+ * Created by Wunmi Sowunmi on 24/04/2017.
  */
 public class FinancialInstitutionDTO {
 

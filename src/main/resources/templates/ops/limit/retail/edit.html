@@ -29,11 +29,7 @@
             <div class="">
                 <div class="page-title">
                     <div class="title_left">
-<<<<<<< HEAD
-                        <h3>Service Requests</h3>
-=======
                         <h3>Retail Global Transaction Limit</h3>
->>>>>>> 96b9c55575dcf6b3509672520e23b8660691f137
                     </div>
 
                 </div>
@@ -64,55 +60,29 @@
 
                             <div class="x_content">
 
-<<<<<<< HEAD
-                                <form method="post" th:action="@{/ops/limits/retail/new}" th:object="${retailLimit}">
-
-                                    <div class="form-group">
-                                        <label class="col-sm-2 control-label">Limit Type</label>
-
-                                        <div class="col-sm-6">
-                                            <select class="form-control" th:field="*{name}">
-                                                <option value="NIP">NIP</option>
-                                                <option value="RTGS">RTGS</option>
-                                                <option value="NAPS">NAPS</option>
-=======
-                                <form method="post" class="form-horizontal" th:action="@{/ops/limits/retail/}" th:object="${globalLimit}">
+                                <form method="post" class="form-horizontal" th:action="@{/ops/limits/retail/update}" th:object="${globalLimit}">
                                     <div class="form-group">
                                         <label class="col-sm-2 control-label">Transfer Channel</label>
 
                                         <div class="col-sm-6">
                                             <select class="form-control" th:field="*{channel}">
-                                                <option th:each="channel: ${transferChannels}" th:value="${channel.code}" th:text="${channel.description}"></option>
+                                                <option th:each="channel: ${transferChannels}" th:value="${channel.code}" th:text="${channel.description}" th:selected="${channel.code==globalLimit.channel}"></option>
 
->>>>>>> 96b9c55575dcf6b3509672520e23b8660691f137
                                             </select>
                                         </div>
 
                                     </div>
-<<<<<<< HEAD
-=======
 
 
->>>>>>> 96b9c55575dcf6b3509672520e23b8660691f137
                                     <div class="form-group">
                                         <label class="col-sm-2 control-label">Description</label>
 
                                         <div class="col-sm-6">
-<<<<<<< HEAD
-                                            <input class="form-control" th:field="*{name}">
-                                                <option value="NIP">NIP</option>
-                                                <option value="RTGS">RTGS</option>
-                                                <option value="NAPS">NAPS</option>
-                                            </input>
-=======
                                             <input class="form-control" th:field="*{description}"/>
->>>>>>> 96b9c55575dcf6b3509672520e23b8660691f137
                                         </div>
 
                                     </div>
 
-<<<<<<< HEAD
-=======
                                     <div class="form-group">
                                         <label class="col-sm-2 control-label">Lower Limit</label>
 
@@ -136,7 +106,7 @@
 
                                         <div class="col-sm-6">
                                             <select class="form-control" th:field="*{currency}">
-                                                <option th:each="currency: ${currencies}" th:value="${currency.code}" th:text="${currency.description}"></option>
+                                                <option th:each="currency: ${currencies}" th:value="${currency.code}" th:text="${currency.description}" th:selected="${currency.code==globalLimit.currency}"></option>
 
                                             </select>
                                         </div>
@@ -148,7 +118,7 @@
 
                                         <div class="col-sm-6">
                                             <select class="form-control" th:field="*{frequency}">
-                                                <option th:each="frequency: ${frequencies}" th:value="${frequency.code}" th:text="${frequency.description}"></option>
+                                                <option th:each="frequency: ${frequencies}" th:value="${frequency.code}" th:text="${frequency.description}" th:selected="${frequency.code==globalLimit.frequency}"></option>
 
                                             </select>
                                         </div>
@@ -164,15 +134,19 @@
 
                                     </div>
 
+                                    <input type="hidden" name="id" th:value="*{id}"/>
+                                    <input type="hidden" name="version" th:value="*{version}"/>
+                                    <input type="hidden" name="customerType" th:value="*{customerType}"/>
+
+
 
                                     <div class="form-group">
                                         <div class="col-sm-4 col-sm-offset-2">
                                             <button class="btn btn-white" type="reset">Cancel</button>
-                                            <button class="btn btn-primary" type="submit">Submit</button>
+                                            <button class="btn btn-primary" type="submit">Save</button>
                                         </div>
                                     </div>
 
->>>>>>> 96b9c55575dcf6b3509672520e23b8660691f137
                                 </form>
 
                             </div>
@@ -192,84 +166,17 @@
 </div>
 
 
-<<<<<<< HEAD
-<script th:src="@{~/bank/vendors/datatables.net/js/jquery.dataTables.js}"></script>
-<script th:src="@{~/bank/js/dataTables.bootstrap.js}"></script>
-<script th:src="@{~/bank/js/dataTables.select.js}"></script>
-<script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
 
 <!-- Page-Level Scripts -->
 <script>
-    /*<![CDATA[*/
-    $(document).ready(function() {
-        var table = $('#request').DataTable({
-            select:true,
-            responsive: true,
-            "lengthMenu" : [ [ 5, 10, 20],	[ 5, 10, 20 ] ],
-            "pagingType" : "simple_numbers",
-            "searching": false,
-            "paging": true,
-            "serverSide" : true,
-            "ajax": "/ops/requests/all",
-            "dom": 'T<"clear">frtlp',
-            "columns": [
-                { "data": "requestName" },
-                { "data": "requestStatus" },
-                { "data": "username" },
-                { "data": "date" }
 
-
-            ] });
-
-        table.on('select', function() {
-            if (table.rows({
-                    selected : true
-                }).indexes().length === 0) {
-                $('.bt-select').attr("disabled", true);
-            } else {
-                $('.bt-select').removeAttr("disabled");
-            }
-
-        });
-
-        table.on('deselect', function() {
-            if (table.rows({
-                    selected : true
-                }).indexes().length === 0) {
-                $('.bt-select').attr("disabled", true);
-            } else {
-                $('.bt-select').removeAttr("disabled");
-            }
-        });
-
-    });
-
-    $("a.bt-link-act").on("click", function(e) {
-        e.preventDefault();
-        var link = $(e.currentTarget);
-        var dt = $('#request').DataTable();
-        var id = $(dt.row({
-            selected: true
-        }).node()).attr("id");
-        //window.location.href = link.attr("formaction") + '?id=' + id;
-        //replace {id} with id
-        var ooo = link.attr("href").replace("index",id);
-        window.location.assign(ooo);
-
-    } );
-    /*]]>*/
-=======
-
-<!-- Page-Level Scripts -->
-<script>
 
     $( function() {
         $( "#datepicker" ).datepicker(
-            { dateformat : 'dd/mm/yyyy'}
+            { dateformat : 'dd-mm-yyyy'}
         );
     } );
 
->>>>>>> 96b9c55575dcf6b3509672520e23b8660691f137
 </script>
 
 

@@ -3,7 +3,7 @@ package longbridge.dtos;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * Created by Showboy on 19/04/2017.
+ * Created by Wunmi Sowunmi on 19/04/2017.
  */
 public class SettingDTO {
 

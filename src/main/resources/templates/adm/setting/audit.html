@@ -185,8 +185,8 @@
     			success : function(data) {
     				console.log("SUCCESS: ", data);
     				var tab = $('#audit-table').DataTable();
-    				tab.ajax.reload();
-    				//tab.draw();
+    				/* tab.ajax.reload(); */
+    				tab.draw();
     			},
     			error : function(e) {
     				console.log("ERROR: ", e);

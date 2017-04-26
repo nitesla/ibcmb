@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
- * Created by Showboy on 24/04/2017.
+ * Created by Wunmi Sowunmi on 24/04/2017.
  */
 @Controller
 @RequestMapping("/admin/finst")

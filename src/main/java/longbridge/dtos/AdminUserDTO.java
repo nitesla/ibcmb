@@ -1,6 +1,7 @@
 package longbridge.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import longbridge.models.AlertPreference;
 import longbridge.models.UserType;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -36,6 +37,7 @@ public class AdminUserDTO {
     private String roleId;
     private String role;
     private UserType userType;
+    private AlertPreference alertPreference;
 
 
     public Long getId() {
@@ -148,6 +150,14 @@ public class AdminUserDTO {
 
     public void setUserType(UserType userType) {
         this.userType = userType;
+    }
+
+    public AlertPreference getAlertPreference() {
+        return alertPreference;
+    }
+
+    public void setAlertPreference(AlertPreference alertPreference) {
+        this.alertPreference = alertPreference;
     }
 
     public Date getExpiryDate() {

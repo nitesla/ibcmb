@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 /**
- * Created by Showboy on 24/04/2017.
+ * Created by Wunmi Sowunmi on 24/04/2017.
  */
 public interface FinancialInstitutionService {
 
@@ -16,7 +16,7 @@ public interface FinancialInstitutionService {
 
     boolean updateFinancialInstitution(FinancialInstitutionDTO financialInstitutionDTO);
 
-    Iterable<FinancialInstitutionDTO> getFinancialInstitutions();
+    List<FinancialInstitutionDTO> getFinancialInstitutions();
 
     FinancialInstitutionDTO getFinancialInstitution(Long id);
 

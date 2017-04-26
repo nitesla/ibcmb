@@ -1,8 +1,12 @@
 package longbridge.services.implementations;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import longbridge.dtos.CodeDTO;
+import longbridge.models.AdminUser;
+import longbridge.models.Code;
+import longbridge.repositories.CodeRepo;
+import longbridge.services.CodeService;
+import longbridge.services.VerificationService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,15 +17,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-
-import longbridge.dtos.CodeDTO;
-import longbridge.models.AdminUser;
-import longbridge.models.Code;
-import longbridge.repositories.CodeRepo;
-import longbridge.repositories.VerificationRepo;
-import longbridge.services.CodeService;
-import longbridge.services.VerificationService;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Wunmi on 29/03/2017.
@@ -65,6 +62,11 @@ public class CodeServiceImpl implements CodeService {
     public CodeDTO getCode(Long id) {
         Code code = this.codeRepo.findOne(id);
         return convertEntityToDTO(code);
+    }
+
+    @Override
+    public Code getByTypeAndCode(String type, String code) {
+        return codeRepo.findByTypeAndCode(type,code);
     }
 
     @Override
@@ -112,6 +114,7 @@ public class CodeServiceImpl implements CodeService {
         }
         return codeDTOList;
     }
+
 
 
 	@Override

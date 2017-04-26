@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Showboy on 24/04/2017.
+ * Created by Wunmi Sowunmi on 24/04/2017.
  */
 @Service
 public class FinancialInstitutionServiceImpl implements FinancialInstitutionService {
@@ -93,7 +93,7 @@ public class FinancialInstitutionServiceImpl implements FinancialInstitutionServ
     }
 
     @Override
-    public Iterable<FinancialInstitutionDTO> getFinancialInstitutions() {
+    public List<FinancialInstitutionDTO> getFinancialInstitutions() {
         Iterable<FinancialInstitution> fis =financialInstitutionRepo.findAll();
         logger.info("FinancialInstitutions {}",fis.toString());
         return convertEntitiesToDTOs(fis);
