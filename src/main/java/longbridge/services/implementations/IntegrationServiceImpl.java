@@ -134,6 +134,15 @@ public class IntegrationServiceImpl implements IntegrationService {
     }
 
     @Override
+    public String getAccountName(String accountNumber) {
+    	logger.info(accountNumber + "account number");
+        if("0021424028".equals(accountNumber.trim())){
+            return "Torti Chigozirim David";
+        }
+        return accountNumber;
+    }
+
+    @Override
     public BigDecimal getDailyDebitTransaction(String acctNo) {
 
         BigDecimal result =null;

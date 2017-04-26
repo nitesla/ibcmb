@@ -2,7 +2,6 @@ package longbridge.services;
 
 import longbridge.api.AccountDetails;
 import longbridge.api.AccountInfo;
-import longbridge.models.Account;
 import longbridge.models.TransferRequest;
 import longbridge.utils.AccountStatement;
 
@@ -48,6 +47,14 @@ public interface IntegrationService {
 
     AccountDetails viewAccountDetails(String acctNo);
     Boolean isAccountValid(String accNo,String email,String dob);
+
+    /** This fetches the full name of the customer connected to the
+     * specified account number
+     * @param accountNumber
+     * @return The full name of the customer or null
+     */
+    String getAccountName(String accountNumber);
+
     BigDecimal getDailyDebitTransaction(String acctNo);
     BigDecimal getDailyAccountLimit(String accNo,String channel);
 }
