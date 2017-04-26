@@ -1,19 +1,6 @@
 package longbridge.dtos;
 
-import longbridge.models.AbstractEntity;
-import longbridge.models.Account;
-import longbridge.models.FinancialInstitution;
-import longbridge.models.OperationCode;
-import longbridge.utils.TransferType;
-
-import java.io.IOException;
-
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
+import longbridge.models.*;
 
 /** *
  * Created by Fortune on 4/5/2017.

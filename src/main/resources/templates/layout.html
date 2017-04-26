@@ -27,15 +27,6 @@
 
 
 
-<div th:fragment="message">
-    <div th:if="${message}">
-        <div hidden="hidden">
-            <ul class="actionMessage">
-                <li th:each="msg : ${message}" th:text="${msg}">Message</li>
-            </ul>
-        </div>
-    </div>
-</div>
 
 
 <!-- admin menu -->
@@ -340,7 +331,17 @@
 
 <!-- footer content -->
 <footer th:fragment="footer">
-        <div class="pull-right">
+
+        <div th:if="${message}">
+            <div hidden="hidden">
+                <ul class="actionMessage">
+                    <li th:each="msg : ${message}" th:text="${msg}">Message</li>
+                </ul>
+            </div>
+        </div>
+
+
+    <div class="pull-right">
             Coronation Merchant Bank
         </div>
         <div class="clearfix"></div>

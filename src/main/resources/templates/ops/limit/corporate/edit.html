@@ -29,7 +29,7 @@
             <div class="">
                 <div class="page-title">
                     <div class="title_left">
-                        <h3>Retail Global Transaction Limit</h3>
+                        <h3>Corporate Global Transaction Limit</h3>
                     </div>
 
                 </div>
@@ -60,13 +60,13 @@
 
                             <div class="x_content">
 
-                                <form method="post" class="form-horizontal" th:action="@{/ops/limits/retail/}" th:object="${globalLimit}">
+                                <form method="post" class="form-horizontal" th:action="@{/ops/limits/corporate/update}" th:object="${globalLimit}">
                                     <div class="form-group">
                                         <label class="col-sm-2 control-label">Transfer Channel</label>
 
                                         <div class="col-sm-6">
                                             <select class="form-control" th:field="*{channel}">
-                                                <option th:each="channel: ${transferChannels}" th:value="${channel.code}" th:text="${channel.description}"></option>
+                                                <option th:each="channel: ${transferChannels}" th:value="${channel.code}" th:text="${channel.description}" th:selected="${channel.code==globalLimit.channel}"></option>
 
                                             </select>
                                         </div>
@@ -106,7 +106,7 @@
 
                                         <div class="col-sm-6">
                                             <select class="form-control" th:field="*{currency}">
-                                                <option th:each="currency: ${currencies}" th:value="${currency.code}" th:text="${currency.description}"></option>
+                                                <option th:each="currency: ${currencies}" th:value="${currency.code}" th:text="${currency.description}" th:selected="${currency.code==globalLimit.currency}"></option>
 
                                             </select>
                                         </div>
@@ -118,7 +118,7 @@
 
                                         <div class="col-sm-6">
                                             <select class="form-control" th:field="*{frequency}">
-                                                <option th:each="frequency: ${frequencies}" th:value="${frequency.code}" th:text="${frequency.description}"></option>
+                                                <option th:each="frequency: ${frequencies}" th:value="${frequency.code}" th:text="${frequency.description}" th:selected="${frequency.code==globalLimit.frequency}"></option>
 
                                             </select>
                                         </div>
@@ -134,11 +134,14 @@
 
                                     </div>
 
+                                    <input type="hidden" name="id" th:value="*{id}"/>
+                                    <input type="hidden" name="version" th:value="*{version}"/>
+
 
                                     <div class="form-group">
                                         <div class="col-sm-4 col-sm-offset-2">
                                             <button class="btn btn-white" type="reset">Cancel</button>
-                                            <button class="btn btn-primary" type="submit">Submit</button>
+                                            <button class="btn btn-primary" type="submit">Save</button>
                                         </div>
                                     </div>
 
@@ -165,9 +168,10 @@
 <!-- Page-Level Scripts -->
 <script>
 
+
     $( function() {
         $( "#datepicker" ).datepicker(
-            { dateformat : 'dd/mm/yyyy'}
+            { dateformat : 'dd/mm/yy'}
         );
     } );
 
