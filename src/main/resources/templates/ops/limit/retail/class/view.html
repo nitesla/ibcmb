@@ -1,15 +1,4 @@
 <!DOCTYPE html>
-<<<<<<< HEAD
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-
-</body>
-</html>
-=======
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="layout :: site-head">
 </head>
@@ -40,7 +29,7 @@
             <div class="">
                 <div class="page-title">
                     <div class="title_left">
-                        <h3>Retail Global Limits</h3>
+                        <h3>Retail Class Limits</h3>
                     </div>
 
                 </div>
@@ -57,7 +46,7 @@
                                     <li >
                                         <div class="col-lg-4">
                                             <div class="title-action">
-                                                <a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/ops/limits/retail/index/edit" disabled="disabled" ><i class="fa fa-pencil"></i> Edit</a>
+                                                <a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/ops/limits/retail/class/index/edit" disabled="disabled" ><i class="fa fa-pencil"></i> Edit</a>
                                             </div>
                                         </div>
                                     </li>
@@ -67,7 +56,7 @@
                                     <li >
                                         <div class="col-lg-4">
                                             <div class="title-action">
-                                                <a href="/ops/limits/retail/new" class="btn btn-sm btn-primary"><i class="fa fa-plus"></i> Add</a>
+                                                <a href="/ops/limits/retail/class/new" class="btn btn-sm btn-primary"><i class="fa fa-plus"></i> Add</a>
                                             </div>
                                         </div>
                                     </li>
@@ -89,6 +78,7 @@
                                 <table class="table table-striped table-bordered table-hover" id="limit">
                                     <thead>
                                     <tr>
+                                        <th>Account Class</th>
                                         <th>Channel</th>
                                         <th>Lower Limit</th>
                                         <th>Upper Limit</th>
@@ -104,6 +94,7 @@
                                     </tbody>
                                     <tfoot>
                                     <tr>
+                                        <th>Account Class</th>
                                         <th>Channel</th>
                                         <th>Lower Limit</th>
                                         <th>Upper Limit</th>
@@ -152,9 +143,10 @@
             "searching": false,
             "paging": true,
             "serverSide" : true,
-            "ajax": "/ops/limits/retail/all",
+            "ajax": "/ops/limits/retail/class/all",
             "dom": 'T<"clear">frtlp',
             "columns": [
+                { "data": "accountClass" },
                 { "data": "channel" },
                 { "data": "lowerLimit" },
                 { "data": "upperLimit" },
@@ -208,4 +200,3 @@
 
 </body>
 </html>
->>>>>>> 96b9c55575dcf6b3509672520e23b8660691f137

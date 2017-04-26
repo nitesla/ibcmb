@@ -16,10 +16,12 @@ import java.util.Date;
 @Entity
 @Audited
 @Where(clause ="del_Flag='N'" )
-public class GlobalLimit extends  AbstractEntity {
+//@Table(uniqueConstraints=@UniqueConstraint(columnNames="channel"))
+public class ClassLimit extends  AbstractEntity {
 
     private String customerType;
     private String description;
+    private String accountClass;
     private String channel;
     private double lowerLimit;
     private double upperLimit;
@@ -47,6 +49,14 @@ public class GlobalLimit extends  AbstractEntity {
 
     public String getDescription() {
         return description;
+    }
+
+    public String getAccountClass() {
+        return accountClass;
+    }
+
+    public void setAccountClass(String accountClass) {
+        this.accountClass = accountClass;
     }
 
     public void setDescription(String description) {

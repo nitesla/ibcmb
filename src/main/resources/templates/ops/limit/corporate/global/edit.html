@@ -1,4 +1,15 @@
 <!DOCTYPE html>
+<<<<<<< HEAD
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+</body>
+</html>
+=======
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="layout :: site-head">
 </head>
@@ -48,9 +59,6 @@
                                 </ul>
                                 <ul class="nav navbar-right panel_toolbox">
 
-
-
-
                                     <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                                     </li>
 
@@ -60,7 +68,7 @@
 
                             <div class="x_content">
 
-                                <form method="post" class="form-horizontal" th:action="@{/ops/limits/corporate/update}" th:object="${globalLimit}">
+                                <form method="post" class="form-horizontal" th:action="@{/ops/limits/corporate/global/update}" th:object="${globalLimit}">
                                     <div class="form-group">
                                         <label class="col-sm-2 control-label">Transfer Channel</label>
 
@@ -128,7 +136,7 @@
                                     <div class="form-group">
                                         <label class="col-sm-2 control-label">Effective Date</label>
                                         <div class="col-sm-6">
-                                            <input class="form-control" id="datepicker" type="text" th:field="*{startDate}"/>
+                                            <input class="form-control" id="datepicker" type="text" th:field="*{startDate}" required="required"/>
 
                                         </div>
 
@@ -136,13 +144,27 @@
 
                                     <input type="hidden" name="id" th:value="*{id}"/>
                                     <input type="hidden" name="version" th:value="*{version}"/>
+                                    <input type="hidden" name="customerType" th:value="*{customerType}"/>
+
 
 
                                     <div class="form-group">
                                         <div class="col-sm-4 col-sm-offset-2">
-                                            <button class="btn btn-white" type="reset">Cancel</button>
+                                            <button class="btn btn-white" type="reset" id="cancel">Cancel</button>
                                             <button class="btn btn-primary" type="submit">Save</button>
                                         </div>
+                                    </div>
+
+                                    <div th:if="${#fields.hasErrors('*')}">
+                                        <div hidden="hidden" >
+                                            <ul id="fielderrors">
+                                                <li th:each="err : ${#fields.errors('*')}" th:text="${err}">Input is incorrect</li>
+                                            </ul>
+                                        </div></div>
+                                    <div hidden="hidden">
+                                        <ul class="actionError" th:if="${#fields.hasErrors('global')}">
+                                            <li th:each="err : ${#fields.errors('global')}" th:text="${err}">Global error message</li>
+                                        </ul>
                                     </div>
 
                                 </form>
@@ -175,8 +197,13 @@
         );
     } );
 
+    document.getElementById("cancel").onclick = function () {
+        location.href = "/ops/limits/corporate/global";
+    }
+
 </script>
 
 
 </body>
 </html>
+>>>>>>> 96b9c55575dcf6b3509672520e23b8660691f137
