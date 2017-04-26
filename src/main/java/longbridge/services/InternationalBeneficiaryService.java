@@ -1,9 +1,11 @@
 package longbridge.services;
 
-import longbridge.models.Beneficiary;
+import longbridge.dtos.InternationalBeneficiaryDTO;
 import longbridge.models.InternationalBeneficiary;
 import longbridge.models.RetailUser;
 import longbridge.models.User;
+
+import java.util.List;
 
 public interface InternationalBeneficiaryService {
 	   /**
@@ -11,7 +13,7 @@ public interface InternationalBeneficiaryService {
      * @param user the customer
      * @param  beneficiary  the beneficiary
      */
-    boolean addInternationalBeneficiary(RetailUser user, InternationalBeneficiary beneficiary);
+    boolean addInternationalBeneficiary(RetailUser user, InternationalBeneficiaryDTO beneficiary);
 
     /**
      * Deletes a beneficiary
@@ -33,4 +35,9 @@ public interface InternationalBeneficiaryService {
      */
     Iterable<InternationalBeneficiary> getInternationalBeneficiaries(User user);
 
+    List<InternationalBeneficiaryDTO> convertEntitiesToDTOs(Iterable<InternationalBeneficiary> internationalBeneficiaries);
+
+    InternationalBeneficiaryDTO convertEntityToDTO(InternationalBeneficiary internationalBeneficiary);
+
+    InternationalBeneficiary convertDTOToEntity(InternationalBeneficiaryDTO internationalBeneficiaryDTO);
 }

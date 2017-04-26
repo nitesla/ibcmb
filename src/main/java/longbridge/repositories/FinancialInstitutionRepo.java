@@ -1,6 +1,7 @@
 package longbridge.repositories;
 
 import longbridge.models.FinancialInstitution;
+import longbridge.models.FinancialInstitutionType;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -8,4 +9,6 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface FinancialInstitutionRepo extends CommonRepo<FinancialInstitution, Long>{
+
+    Iterable<FinancialInstitution> findByInstitutionType(FinancialInstitutionType institutionType);
 }

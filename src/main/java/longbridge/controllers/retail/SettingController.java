@@ -49,7 +49,7 @@ public class SettingController {
             return "redirect:/retail/change_password";
         }
 
-        RetailUserDTO user = retailUserService.getUserByName(principal.getName());
+        RetailUserDTO user = retailUserService.getUserDTOByName(principal.getName());
 
         retailUserService.changePassword(user, changePassword.getOldPassword(), changePassword.getNewPassword());
 
@@ -70,7 +70,7 @@ public class SettingController {
             return "redirect:/retail/alert_preference";
         }
 
-        RetailUserDTO user = retailUserService.getUserByName(principal.getName());
+        RetailUserDTO user = retailUserService.getUserDTOByName(principal.getName());
 
         retailUserService.changeAlertPreference(user, alertPref.getPreference());
 

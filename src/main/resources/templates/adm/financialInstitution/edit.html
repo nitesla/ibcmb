@@ -57,6 +57,14 @@
                                             </div>
                                         </div>
                                         <div class="form-group">
+                                            <label class="col-sm-2 control-label">Institution Type</label>
+                                            <div class="col-sm-4">
+                                                <select name="institutionType" class="form-control">
+                                                    <option th:each="type : ${types}" th:value="${type}" th:text="${type}"></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
                                             <label class="col-sm-2 control-label">Name</label>
 
                                             <div class="col-sm-4">
