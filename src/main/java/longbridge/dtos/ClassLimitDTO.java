@@ -1,24 +1,20 @@
-package longbridge.models;
+package longbridge.dtos;
 
-import org.hibernate.annotations.Where;
-import org.hibernate.envers.Audited;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import org.hibernate.validator.constraints.NotEmpty;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 import java.util.Date;
 
 /**
  * Created by Fortune on 4/25/2017.
  */
+public class ClassLimitDTO {
 
-@Entity
-@Audited
-@Where(clause ="del_Flag='N'" )
-public class GlobalLimit extends  AbstractEntity {
-
+    @JsonProperty("DT_RowId")
+    private Long id;
+    private int version;
     private String customerType;
+    private String accountClass;
     private String description;
     private String channel;
     private double lowerLimit;
@@ -27,6 +23,8 @@ public class GlobalLimit extends  AbstractEntity {
     private String status;
     private String frequency;
     private Date effectiveDate;
+    @NotEmpty(message = "startDate")
+    private String startDate; //same as effectiveDate
 
 
     public Long getId() {
@@ -37,8 +35,24 @@ public class GlobalLimit extends  AbstractEntity {
         this.id = id;
     }
 
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
+    }
+
     public String getCustomerType() {
         return customerType;
+    }
+
+    public String getAccountClass() {
+        return accountClass;
+    }
+
+    public void setAccountClass(String accountClass) {
+        this.accountClass = accountClass;
     }
 
     public void setCustomerType(String customerType) {
@@ -60,6 +74,7 @@ public class GlobalLimit extends  AbstractEntity {
     public void setFrequency(String frequency) {
         this.frequency = frequency;
     }
+
 
     public String getChannel() {
         return channel;
@@ -101,11 +116,42 @@ public class GlobalLimit extends  AbstractEntity {
         this.status = status;
     }
 
+
     public Date getEffectiveDate() {
         return effectiveDate;
     }
 
     public void setEffectiveDate(Date effectiveDate) {
         this.effectiveDate = effectiveDate;
+    }
+
+
+
+    public String getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
+    }
+
+
+    @Override
+    public String toString() {
+        return "ClassLimitDTO{" +
+                "id=" + id +
+                ", version=" + version +
+                ", customerType='" + customerType + '\'' +
+                ", accountClass='" + accountClass + '\'' +
+                ", description='" + description + '\'' +
+                ", channel='" + channel + '\'' +
+                ", lowerLimit=" + lowerLimit +
+                ", upperLimit=" + upperLimit +
+                ", currency='" + currency + '\'' +
+                ", status='" + status + '\'' +
+                ", frequency='" + frequency + '\'' +
+                ", effectiveDate=" + effectiveDate +
+                ", startDate='" + startDate + '\'' +
+                '}';
     }
 }

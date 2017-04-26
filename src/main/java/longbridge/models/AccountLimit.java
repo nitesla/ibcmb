@@ -16,10 +16,12 @@ import java.util.Date;
 @Entity
 @Audited
 @Where(clause ="del_Flag='N'" )
-public class GlobalLimit extends  AbstractEntity {
+//@Table(uniqueConstraints=@UniqueConstraint(columnNames="channel"))
+public class AccountLimit extends  AbstractEntity {
 
     private String customerType;
     private String description;
+    private String accountNumber;
     private String channel;
     private double lowerLimit;
     private double upperLimit;
@@ -47,6 +49,14 @@ public class GlobalLimit extends  AbstractEntity {
 
     public String getDescription() {
         return description;
+    }
+
+    public String getAccountNumber() {
+        return accountNumber;
+    }
+
+    public void setAccountNumber(String accountNumber) {
+        this.accountNumber = accountNumber;
     }
 
     public void setDescription(String description) {
@@ -107,5 +117,21 @@ public class GlobalLimit extends  AbstractEntity {
 
     public void setEffectiveDate(Date effectiveDate) {
         this.effectiveDate = effectiveDate;
+    }
+
+    @Override
+    public String toString() {
+        return "AccountLimit{" +
+                "customerType='" + customerType + '\'' +
+                ", description='" + description + '\'' +
+                ", accountNumber='" + accountNumber + '\'' +
+                ", channel='" + channel + '\'' +
+                ", lowerLimit=" + lowerLimit +
+                ", upperLimit=" + upperLimit +
+                ", currency='" + currency + '\'' +
+                ", status='" + status + '\'' +
+                ", frequency='" + frequency + '\'' +
+                ", effectiveDate=" + effectiveDate +
+                '}';
     }
 }

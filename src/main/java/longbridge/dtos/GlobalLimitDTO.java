@@ -1,6 +1,7 @@
 package longbridge.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.hibernate.validator.constraints.NotEmpty;
 
 import java.util.Date;
 
@@ -21,6 +22,7 @@ public class GlobalLimitDTO {
     private String status;
     private String frequency;
     private Date effectiveDate;
+    @NotEmpty(message = "startDate")
     private String startDate; //same as effectiveDate
 
 
