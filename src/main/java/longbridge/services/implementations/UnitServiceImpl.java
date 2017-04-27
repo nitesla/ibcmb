@@ -45,7 +45,10 @@ public class UnitServiceImpl implements UnitService {
         Iterator<PersonnelContact> personnelIterator = unit.getPersonnel().iterator();
         while (personnelIterator.hasNext()){
             PersonnelContact personnel = personnelIterator.next();
-            if(personnel.getName()==null){
+            if(personnel.getName()==null||personnel.getEmail()==null||personnel.getUsername()==null){
+                personnelIterator.remove();
+            }
+            if(personnel.getEmail().equals("")&personnel.getUsername().equals("")){
                 personnelIterator.remove();
             }
             else {
@@ -64,7 +67,7 @@ public class UnitServiceImpl implements UnitService {
 
         for(UnitPersonnelDTO personnel: unitDTO.getPersonnel()){
             PersonnelContact personnelContact;
-            if(personnel.getName()==null){
+            if(personnel.getName()==null||personnel.getEmail()==null||personnel.getUsername()==null){
                 continue;
             }
             if(personnel.getId()==null){
@@ -79,7 +82,6 @@ public class UnitServiceImpl implements UnitService {
         }
         unit.setId(unitDTO.getId());
         unit.setVersion(unitDTO.getVersion());
-        unit.setCode(unitDTO.getCode());
         unit.setName(unitDTO.getName());
         unit.setPersonnel(personnelList);
         unitRepo.save(unit);

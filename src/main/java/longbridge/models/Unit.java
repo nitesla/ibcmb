@@ -4,6 +4,7 @@ import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import java.util.Collection;
@@ -17,19 +18,12 @@ import java.util.Collection;
 @Where(clause ="del_Flag='N'" )
 public class Unit extends AbstractEntity{
 
-    private String code;
+    @Column(unique = true)
     private String name;
+
 
     @OneToMany(cascade = CascadeType.ALL)
     private Collection<PersonnelContact> personnel;
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
 
     public String getName() {
         return name;
@@ -50,7 +44,6 @@ public class Unit extends AbstractEntity{
     @Override
     public String toString() {
         return "Unit{" +
-                "code='" + code + '\'' +
                 ", name='" + name + '\'' +
                 ", personnel=" + personnel +
                 '}';

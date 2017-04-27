@@ -12,6 +12,7 @@ public class UnitPersonnelDTO{
     private int version;
     private String name;
     private String email;
+    private String username;
 
 
     public Long getId() {
@@ -46,6 +47,15 @@ public class UnitPersonnelDTO{
         this.email = email;
     }
 
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     @Override
     public String toString() {
         return "UnitPersonnelDTO{" +
@@ -53,6 +63,7 @@ public class UnitPersonnelDTO{
                 ", version=" + version +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
+                ", username='" + username + '\'' +
                 '}';
     }
 }

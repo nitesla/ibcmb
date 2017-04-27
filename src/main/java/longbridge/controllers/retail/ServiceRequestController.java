@@ -59,14 +59,13 @@ public class ServiceRequestController {
     }
 
     @PostMapping
-    public String processRequest(@ModelAttribute("requestDTO") ServiceRequestDTO requestDTO, WebRequest httpRequest, RedirectAttributes redirectAttributes) {
+    public String processRequest(@ModelAttribute("requestDTO") ServiceRequestDTO requestDTO, BindingResult result, RedirectAttributes redirectAttributes) {
 
         String requestBody = requestDTO.getRequestName();
-        Long serviceReqConfigId =0L;
+        Long serviceReqConfigId = 0L;
         ObjectMapper objectMapper = new ObjectMapper();
         ServiceRequestDTO serviceRequestDTO = new ServiceRequestDTO();
         try {
-//            JsonNode jsonNode =objectMapper.readTree(requestBody);
             ArrayList<NameValue> myFormObjects = objectMapper.readValue(requestBody, new TypeReference<ArrayList<NameValue>>() {
             });
             Iterator<NameValue> iterator = myFormObjects.iterator();
@@ -78,7 +77,7 @@ public class ServiceRequestController {
                     serviceRequestDTO.setRequestName(value);
                     iterator.remove();
                 }
-                if(name.equals("serviceReqConfigId")){
+                if (name.equals("serviceReqConfigId")) {
                     serviceReqConfigId = Long.parseLong(nameValue.getValue());
                     iterator.remove();
                 }
@@ -86,23 +85,17 @@ public class ServiceRequestController {
             ServiceReqConfigDTO serviceReqConfigDTO = serviceReqConfigService.getServiceReqConfig(serviceReqConfigId);
             List<ServiceReqFormFieldDTO> formFieldDTOs = serviceReqConfigDTO.getFormFields();
 
+            if (myFormObjects.size() == formFieldDTOs.size()) {
+                int num = myFormObjects.size();
 
-            logger.info("My form size {}, fieldDTOs size {}",myFormObjects.size(),formFieldDTOs.size());
-
-
-            if(myFormObjects.size()==formFieldDTOs.size()){
-                int num=myFormObjects.size();
-
-                logger.info("The form fields are equal with size {}",num);
-
-                for(int i=0;i<num;i++){
-                  if(myFormObjects.get(i).getName().equals(formFieldDTOs.get(i).getFieldName())){
-                      myFormObjects.get(i).setName(formFieldDTOs.get(i).getFieldLabel());
-                  }
-              }
+                for (int i = 0; i < num; i++) {
+                    if (myFormObjects.get(i).getName().equals(formFieldDTOs.get(i).getFieldName())) {
+                        myFormObjects.get(i).setName(formFieldDTOs.get(i).getFieldLabel());
+                    }
+                }
             }
 
-            requestBody =  objectMapper.writeValueAsString(myFormObjects);
+            requestBody = objectMapper.writeValueAsString(myFormObjects);
 
             retailUser = userRepo.findOne(1L);
             serviceRequestDTO.setBody(requestBody);
@@ -111,14 +104,10 @@ public class ServiceRequestController {
             serviceRequestDTO.setDateRequested(new Date());
             requestService.addRequest(serviceRequestDTO);
 
-           logger.info("The request body: {}",requestBody );
         } catch (Exception e) {
-            throw new RuntimeException("Error adding request");
+            logger.error("Could not process the request: {}",e.toString());
         }
-
-
         redirectAttributes.addFlashAttribute("message", "Request sent successfully");
-//        logger.info("The received data: {}", requestDTO.getRequestName());
         return "redirect:/retail/requests";
 
     }

@@ -3,7 +3,6 @@ package longbridge.dtos;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Fortune on 4/26/2017.
@@ -14,7 +13,6 @@ public class UnitDTO {
     private Long id;
     private int version;
     private String name;
-    private String code;
     private ArrayList<UnitPersonnelDTO> personnel;
 
     public Long getId() {
@@ -42,13 +40,6 @@ public class UnitDTO {
         this.name = name;
     }
 
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
 
     public ArrayList<UnitPersonnelDTO> getPersonnel() {
         return personnel;

@@ -44,21 +44,19 @@
                                     <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                                     </li>
                                 </ul>
-                                <div class="clearfix"></div>
+
                             </div>
                             <div class="x_content">
-                                <form method="post" th:action="@{/ops/units}" th:object="${unit}" class="form-horizontal">
+                                <form method="post" th:action="@{/ops/units}" th:object="${unit}"  class="form-horizontal">
                                     <div class="x_content">
-                                        <br />
+
 
                                         <div class="form-group">
-                                            <label class="control-label col-md-2 col-sm-2 col-xs-12">Unit Name
+                                            <label class="control-label col-md-2 col-sm-2 col-xs-12">Unit Name <span class="required">*</span>
                                             </label>
                                             <div class="col-md-4 col-sm-6 col-xs-12">
-                                                <select class="form-control" th:field="*{code}">
-                                                    <option th:each="u: ${units}" th:value="${u.code}" th:text="${u.description}" th:selected="${u.code==unit.name}"></option>
-
-                                                </select> </div>
+                                                <input class="form-control col-md-7 col-xs-12" th:field="*{name}" required="required"/>
+                                            </div>
                                         </div>
 
 
@@ -74,6 +72,9 @@
                                                     <tr>
                                                         <th>Full Name</th>
                                                         <th>Email Address</th>
+                                                        <th>Username</th>
+
+
                                                     </tr>
                                                     </thead>
 
@@ -114,7 +115,7 @@
             select : {style:'single'},
             ordering : false,
             "language": {
-                "emptyTable": "No contacts added"
+                "emptyTable": "No contacts added. Click Add"
             }
         });
 
@@ -122,8 +123,10 @@
         $('#button_add').on( 'click', function (e) {
             e.preventDefault();
             t.row.add( [
-                '<div class="container-fluid"><input name="personnel['+counter+'].name" class="form-control" required="required"></div>',
-                '<input name="personnel['+counter+'].email" class="form-control" required="required">'
+                '<div class="container-fluid"><input name="personnel['+counter+'].name" class="form-control"></div>',
+                '<input name="personnel['+counter+'].email" class="form-control">',
+                '<input name="personnel['+counter+'].username" class="form-control">'
+
 
             ] ).draw( false );
             counter++;

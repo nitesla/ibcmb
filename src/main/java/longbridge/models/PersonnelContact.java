@@ -17,6 +17,7 @@ public class PersonnelContact extends AbstractEntity{
 
     private String name;
     private String email;
+    private  String username;
 
     @ManyToOne
     private Unit unit;
@@ -37,6 +38,14 @@ public class PersonnelContact extends AbstractEntity{
         this.email = email;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     public Unit getUnit() {
         return unit;
     }
@@ -45,12 +54,14 @@ public class PersonnelContact extends AbstractEntity{
         this.unit = unit;
     }
 
+
     @Override
     public String toString() {
-        return "UnitPersonnel{" +
+        return "PersonnelContact{" +
                 "name='" + name + '\'' +
                 ", email='" + email + '\'' +
-                ", unit='" + unit + '\'' +
+                ", username='" + username + '\'' +
+                ", unit=" + unit +
                 '}';
     }
 }

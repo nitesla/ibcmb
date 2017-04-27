@@ -53,8 +53,7 @@ public class OpsUnitController {
         if(result.hasErrors()){
             return "ops/unit/add";
         }
-        String unitName = codeService.getByTypeAndCode("UNIT",unit.getCode()).getDescription();
-        unit.setName(unitName);
+
         unitService.addUnit(unit);
         redirectAttributes.addFlashAttribute("message","Unit personnel created successfully");
         return "redirect:/ops/units";
@@ -93,8 +92,6 @@ public class OpsUnitController {
             return "ops/unit/new";
         }
 
-        String unitName = codeService.getByTypeAndCode("UNIT",unit.getCode()).getDescription();
-        unit.setName(unitName);
         unitService.updateUnit(unit);
         logger.info("Units received at server: {]",unit.toString());
         redirectAttributes.addFlashAttribute("message", "Unit updated successfully");
