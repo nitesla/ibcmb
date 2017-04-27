@@ -87,11 +87,11 @@ public class OpsServiceRequestController {
         Iterable<CodeDTO> statusCodes = codeService.getCodesByType("REQUEST_STATUS");
         Iterable<RequestHistoryDTO> requestHistories = requestService.getRequestHistories(reqId);
         model.addAttribute("serviceRequest", requestDTO);
-        model.addAttribute("histories",requestHistories);
+        model.addAttribute("histories", requestHistories);
         model.addAttribute("requestBody", requestBody);
         model.addAttribute("statuses", statusCodes);
-        model.addAttribute("requestHistory",new RequestHistoryDTO());
-        logger.info("Request Histories :{}",requestHistories.toString());
+        model.addAttribute("requestHistory", new RequestHistoryDTO());
+        logger.info("Request Histories :{}", requestHistories.toString());
         return "/ops/request/details";
 
     }
@@ -103,17 +103,11 @@ public class OpsServiceRequestController {
 
     }
 
-    @GetMapping("/{reqId}/history/all")
-    public DataTablesOutput<RequestHistoryDTO> getRequestHistory(DataTablesInput input, @PathVariable Long reqId) {
-        Pageable pageable = DataTablesUtils.getPageable(input);
-        Page<RequestHistoryDTO> requestHistories = requestService.getRequestHistories(reqId, pageable);
-        DataTablesOutput<RequestHistoryDTO> out = new DataTablesOutput<RequestHistoryDTO>();
-        out.setDraw(input.getDraw());
-        out.setData(requestHistories.getContent());
-        out.setRecordsFiltered(requestHistories.getTotalElements());
-        out.setRecordsTotal(requestHistories.getTotalElements());
-        return out;
-    }
+//    @GetMapping("/{reqId}/history/all")
+////    public DataTablesOutput<RequestHistoryDTO> getRequestHistory(DataTablesInput input, @PathVariable Long reqId) {
+////
+////        return null;
+////    }
 
 
     @GetMapping("/history/new")
@@ -123,17 +117,17 @@ public class OpsServiceRequestController {
 
 
     @PostMapping("/history")
-    public String createRequestHistory(@ModelAttribute("requestHistory") RequestHistoryDTO requestHistoryDTO, BindingResult result,RedirectAttributes redirectAttributes){
+    public String createRequestHistory(@ModelAttribute("requestHistory") RequestHistoryDTO requestHistoryDTO, BindingResult result, RedirectAttributes redirectAttributes) {
 
-        if(result.hasErrors()){
+        if (result.hasErrors()) {
             return "";
         }
 
-        logger.info("RequestHistoryDTO received: {}",requestHistoryDTO);
+        logger.info("RequestHistoryDTO received: {}", requestHistoryDTO);
         requestService.addRequestHistory(requestHistoryDTO);
 
-        redirectAttributes.addFlashAttribute("message","Request updated successfully");
-        return "redirect:/ops/requests/"+requestHistoryDTO.getServiceRequestId()+"/details";
+        redirectAttributes.addFlashAttribute("message", "Request updated successfully");
+        return "redirect:/ops/requests/" + requestHistoryDTO.getServiceRequestId() + "/details";
     }
 
     @PostMapping
@@ -145,14 +139,5 @@ public class OpsServiceRequestController {
 
     }
 
-//    @PostMapping
-//    public String createRequestHistory(@ModelAttribute("requestHistory")RequestHistoryDTO requestHistoryDTO, BindingResult result, RedirectAttributes redirectAttributes){
-//
-//        if(result.hasErrors()){
-//            return "/ops/request/history/add";
-//        }
-//        requestService.addRequestHistory(requestHistoryDTO);
-//        redirectAttributes.addFlashAttribute("message","Request updated successfully");
-//        return "redirect:/ops/request/history/view";
-//    }
+
 }

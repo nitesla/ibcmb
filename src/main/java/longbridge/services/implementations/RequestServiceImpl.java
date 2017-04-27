@@ -106,27 +106,19 @@ public class RequestServiceImpl implements RequestService {
     }
 
 
-    @Override
-	public Page<ServiceRequestDTO> getRequests(ServiceRequestDTO request, Pageable pageDetails) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Page<RequestHistory> getRequestHistories(ServiceRequest serviceRequest, Pageable pageDetails) {
-        Page<RequestHistory> page = this.getRequestHistories(serviceRequest,pageDetails);
-       return page;
-    }
-
-    @Override
-    public Page<RequestHistoryDTO> getRequestHistories(Long serviceRequestId, Pageable pageDetails) {
-        ServiceRequest serviceRequest = serviceRequestRepo.findOne(serviceRequestId);
-        Page<RequestHistory> page = this.getRequestHistories(serviceRequest,pageDetails);
-        List<RequestHistoryDTO> dtOs = convertRequestHistoryEntitiesToDTOs(page.getContent());
-        long t = page.getTotalElements();
-        Page<RequestHistoryDTO> pageImpl = new PageImpl<>(dtOs, pageDetails, t);
-        return pageImpl;
-    }
+//    @Override
+//	public Page<ServiceRequestDTO> getRequests(ServiceRequestDTO request, Pageable pageDetails) {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
+//
+//
+//
+//    @Override
+//    public Page<RequestHistoryDTO> getRequestHistories(Long serviceRequestId, Pageable pageDetails) {
+//      //TODO will be implemented later
+//        return
+//    }
 
 
     private ServiceRequestDTO convertEntityToDTO(ServiceRequest serviceRequest){
