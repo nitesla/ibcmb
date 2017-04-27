@@ -163,8 +163,8 @@ public class RequestServiceImpl implements RequestService {
         requestHistory.setServiceRequest(serviceRequestRepo.findOne(Long.parseLong(requestHistoryDTO.getServiceRequestId())));
         requestHistory.setComment(requestHistoryDTO.getComment());
         requestHistory.setStatus(requestHistoryDTO.getStatus());
-        OperationsUser user = new OperationsUser();
-        user.setId(1L);
+        OperationsUser user = new OperationsUser();//todo get current operations user
+        user.setId(1L);//todo get actual details
         requestHistory.setCreatedBy(user);
         requestHistory.setCreatedOn(new Date());
         return requestHistory;
@@ -175,7 +175,8 @@ public class RequestServiceImpl implements RequestService {
         for(RequestHistory requestHistory: requestHistories){
             RequestHistoryDTO requestDTO =  new RequestHistoryDTO();
             requestDTO.setId(requestHistory.getId());
-            requestDTO.setStatus(requestHistory.getStatus());
+            String status = codeService.getByTypeAndCode("REQUEST_STATUS",requestHistory.getStatus()).getDescription();
+            requestDTO.setStatus(status);
             requestDTO.setComment(requestHistory.getComment());
             requestDTO.setCreatedBy(requestHistory.getCreatedBy().getUserName());
             requestDTO.setCreatedOn(requestHistory.getCreatedOn().toString());

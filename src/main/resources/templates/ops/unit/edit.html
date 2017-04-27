@@ -84,8 +84,8 @@
 
                                                     <tbody>
                                                         <tr th:each="p,stat : ${unit.personnel}">
-                                                            <td><input  th:name="${'personnel['+stat.index+'].name'}" type="text" class="form-control" th:value="${p.name}"/></td>
-                                                            <td><input  th:name="${'personnel['+stat.index+'].email'}" type="text" class="form-control" th:value="${p.email}"/></td>
+                                                            <td><input  th:name="${'personnel['+stat.index+'].name'}" type="text" class="form-control" th:value="${p.name}" required="required"/></td>
+                                                            <td><input  th:name="${'personnel['+stat.index+'].email'}" type="text" class="form-control" th:value="${p.email}" required="required"/></td>
 
                                                             <input type="hidden" th:name="${'personnel['+stat.index+'].id'}" th:value="${p.id}"/>
                                                             <input type="hidden" th:name="${'personnel['+stat.index+'].version'}" th:value="${p.version}"/>
