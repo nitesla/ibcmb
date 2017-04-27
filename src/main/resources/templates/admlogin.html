@@ -45,12 +45,11 @@
                     <div>
                         <input name="submit" type="submit" value="submit" />
                         <a class="reset_pass" href="#">Lost your password?</a>
-                        <div th:if="${param.message != null}" class="alert alert-info" th:text="${param.message[0]}">message</div>
-
-
-                        <div th:if="${param.error != null}" class="alert alert-danger" th:text="${session[SPRING_SECURITY_LAST_EXCEPTION]}">error</div>
                     </div>
+                    <div th:if="${param.message != null}" class="alert alert-info" th:text="${param.message[0]}">message</div>
 
+
+                    <div th:if="${param.error != null}" class="alert alert-danger" th:text="${session[SPRING_SECURITY_LAST_EXCEPTION]}">error</div>
                     <div class="clearfix"></div>
 
                 </form>

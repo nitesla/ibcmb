@@ -59,41 +59,56 @@ public class ServiceRequestController {
     }
 
     @PostMapping
-    @ResponseBody
-    public String processRequest(@RequestBody String body, @ModelAttribute("requestDTO") ServiceRequestDTO requestDTO, WebRequest httpRequest, RedirectAttributes redirectAttributes) {
+    public String processRequest(@ModelAttribute("requestDTO") ServiceRequestDTO requestDTO, BindingResult result, RedirectAttributes redirectAttributes) {
 
         String requestBody = requestDTO.getRequestName();
+        Long serviceReqConfigId = 0L;
         ObjectMapper objectMapper = new ObjectMapper();
         ServiceRequestDTO serviceRequestDTO = new ServiceRequestDTO();
         try {
-//            JsonNode jsonNode =objectMapper.readTree(requestBody);
-            List<NameValue> myObjects = objectMapper.readValue(requestBody, new TypeReference<List<NameValue>>() {
+            ArrayList<NameValue> myFormObjects = objectMapper.readValue(requestBody, new TypeReference<ArrayList<NameValue>>() {
             });
-            Iterator<NameValue> iterator = myObjects.iterator();
+            Iterator<NameValue> iterator = myFormObjects.iterator();
             while (iterator.hasNext()) {
-                String name = iterator.next().getName();
-                String value = iterator.next().getValue();
+                NameValue nameValue = iterator.next();
+                String name = nameValue.getName();
+                String value = nameValue.getValue();
                 if (name.equals("requestName")) {
                     serviceRequestDTO.setRequestName(value);
                     iterator.remove();
                 }
+                if (name.equals("serviceReqConfigId")) {
+                    serviceReqConfigId = Long.parseLong(nameValue.getValue());
+                    iterator.remove();
+                }
             }
+            ServiceReqConfigDTO serviceReqConfigDTO = serviceReqConfigService.getServiceReqConfig(serviceReqConfigId);
+            List<ServiceReqFormFieldDTO> formFieldDTOs = serviceReqConfigDTO.getFormFields();
+
+            if (myFormObjects.size() == formFieldDTOs.size()) {
+                int num = myFormObjects.size();
+
+                for (int i = 0; i < num; i++) {
+                    if (myFormObjects.get(i).getName().equals(formFieldDTOs.get(i).getFieldName())) {
+                        myFormObjects.get(i).setName(formFieldDTOs.get(i).getFieldLabel());
+                    }
+                }
+            }
+
+            requestBody = objectMapper.writeValueAsString(myFormObjects);
+
             retailUser = userRepo.findOne(1L);
             serviceRequestDTO.setBody(requestBody);
             serviceRequestDTO.setRequestStatus("S");
             serviceRequestDTO.setUser(retailUser);
             serviceRequestDTO.setDateRequested(new Date());
             requestService.addRequest(serviceRequestDTO);
-//             String reqBody =  objectMapper.writeValueAsString(list);
-//            logger.info("The request body: {}",reqBody );
+
         } catch (Exception e) {
-            throw new RuntimeException("Error adding request");
+            logger.error("Could not process the request: {}",e.toString());
         }
-
-
         redirectAttributes.addFlashAttribute("message", "Request sent successfully");
-        logger.info("The received data: {}", requestDTO.getRequestName());
-        return "redirect:/ops/request/history/view";
+        return "redirect:/retail/requests";
 
     }
 
