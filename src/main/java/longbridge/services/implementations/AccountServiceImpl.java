@@ -1,16 +1,21 @@
 package longbridge.services.implementations;
 
+import longbridge.dtos.AccountDTO;
 import longbridge.models.Account;
 import longbridge.repositories.AccountRepo;
 import longbridge.services.AccountService;
 import longbridge.services.IntegrationService;
 import longbridge.utils.AccountStatement;
+import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -21,9 +26,14 @@ import java.util.Map;
 
 @Service
 public class AccountServiceImpl implements AccountService{
+
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
     private AccountRepo accountRepo;
 
     private IntegrationService integrationService;
+
+    @Autowired
+    private ModelMapper modelMapper;
 
     @Autowired
     public AccountServiceImpl(AccountRepo accountRepo, IntegrationService integrationService){
@@ -41,8 +51,25 @@ public class AccountServiceImpl implements AccountService{
     }
 
     @Override
-    public Account getAccount(Long accId) {
-        return accountRepo.findById(accId);
+    public boolean customizeAccount(Long id, String name) {
+        boolean result= false;
+
+        try {
+            Account account = accountRepo.findFirstById(id);
+            account.setAccountName(name);
+            this.accountRepo.save(account);
+            logger.trace("Customization successful {}", account.toString());
+            result=true;
+        }
+        catch (Exception e){
+            logger.error("Could not customize account",e);
+        }
+        return result;
+    }
+
+    @Override
+    public AccountDTO getAccount(Long accId) {
+        return convertEntityToDTO(accountRepo.findById(accId));
     }
 
     @Override
@@ -77,6 +104,23 @@ public class AccountServiceImpl implements AccountService{
 		return null;
 	}
 
+    public AccountDTO convertEntityToDTO(Account account){
+        return  this.modelMapper.map(account,AccountDTO.class);
+    }
+
+
+    public Account convertDTOToEntity(AccountDTO accountDTO){
+        return this.modelMapper.map(accountDTO,Account.class);
+    }
+
+    public List<AccountDTO> convertEntitiesToDTOs(Iterable<Account> accounts){
+        List<AccountDTO> accountDTOList = new ArrayList<>();
+        for(Account account: accounts){
+            AccountDTO accountDTO = convertEntityToDTO(account);
+            accountDTOList.add(accountDTO);
+        }
+        return accountDTOList;
+    }
 
 //    private Account mockAccount;
 //

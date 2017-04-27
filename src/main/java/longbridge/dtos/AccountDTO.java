@@ -1,11 +1,5 @@
 package longbridge.dtos;
 
-import longbridge.models.AbstractEntity;
-
-import javax.persistence.Entity;
-
-
-
 public class AccountDTO{
 
     private Long id;
@@ -30,6 +24,13 @@ public class AccountDTO{
         this.solId = solId;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getAccountId() {
         return accountId;

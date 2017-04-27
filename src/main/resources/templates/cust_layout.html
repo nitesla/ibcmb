@@ -42,7 +42,14 @@
                 </div>
                 <div class="collapse navbar-collapse" id="navbar-collapse-1">
                     <ul class="nav navbar-nav">
-                        <li><a th:href="@{/retail/dashboard}">Dashboard</a></li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> My Accounts</a>
+                            <ul class="dropdown-menu">
+                                <li><a th:href="@{/retail/account/customize}">Customise Accounts</a></li>
+                                <li><a href="#">Account Settings</a></li>
+                                <li><a th:href="@{'#'}">Create New Acoount</a></li>
+                            </ul>
+                        </li>
                         <li><a href="/">Transfers</a></li>
                         <li><a href="/">Bill Payments</a></li>
                         <li><a href="/">Transaction Support</a></li>
@@ -51,8 +58,7 @@
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> Settings <span class="caret"></span></a>
                             <ul class="dropdown-menu">
-                                <li><a href="#">Notification Alerts</a></li>
-                                <li><a href="#">Acoount Preference</a></li>
+                                <li><a th:href="@{/retail/alert_preference}">Alert Preference</a></li>
                                 <li><a th:href="@{/retail/change_password}">Change Password</a></li>
                             </ul>
                         </li>
