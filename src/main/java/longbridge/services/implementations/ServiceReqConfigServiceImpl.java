@@ -52,6 +52,7 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 				serviceReqFormFieldIterator.remove();
 			} else {
 				serviceReqFormField.setServiceReqConfig(serviceReqConfig);
+
 			}
 		}
 		serviceReqConfigRepo.save(serviceReqConfig);
@@ -147,7 +148,6 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 
 	@Override
 	public void delServiceReqFormField(Long id) {
-
 		serviceReqFormFieldRepo.delete(id);
 	}
 
