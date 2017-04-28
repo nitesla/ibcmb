@@ -35,6 +35,11 @@ public class SettingController {
     @Autowired
     private RetailUserService retailUserService;
 
+    @RequestMapping("/retail/dashboard")
+    public String getRetailDashboard() {
+        return "cust/dashboard";
+    }
+
     @GetMapping("/change_password")
     public String ChangePaswordPage(ChangePassword changePassword){
         return "cust/settings/pword";

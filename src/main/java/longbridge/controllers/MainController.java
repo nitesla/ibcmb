@@ -54,10 +54,7 @@ public class MainController {
         return "ops/dashboard";
     }
 
-    @RequestMapping("/retail/dashboard")
-    public String getRetailDashboard() {
-        return "cust/dashboard";
-    }
+
 
     @GetMapping("/retail/forgot/username")
     public String showForgotUsername(){
