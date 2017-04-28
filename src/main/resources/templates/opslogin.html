@@ -32,19 +32,24 @@
             <section class="login_content">
                 <img th:src="@{/bank/images/cmb_logo.png}" alt="Coronation Merchant Bank" />
                 <br/>
-                <form th:action="@{/operations/login}" method="POST">
+                <form th:action="@{/ops/login}" method="POST">
 
-                    <h1>Operations Login Form</h1>
+                    <h1>Operations Login</h1>
                     <div>
-                        <input type="text" class="form-control" placeholder="Username" required="" />
+                        <input type="text" class="form-control" placeholder="Username" name="username" required="" />
                     </div>
                     <div>
-                        <input type="password" class="form-control" placeholder="Password" required="" />
+                        <input type="password" class="form-control" placeholder="Password" name="password" required="" />
                     </div>
                     <div>
-                        <a class="btn btn-default submit" href="index.html">Log in</a>
+                        <input name="submit" type="submit" value="submit" />
                         <a class="reset_pass" href="#">Lost your password?</a>
                     </div>
+                    <div th:if="${param.message != null}" class="alert alert-info" th:text="${param.message[0]}">message</div>
+
+
+                    <div th:if="${param.error != null}" class="alert alert-danger" th:text="${session[SPRING_SECURITY_LAST_EXCEPTION]}">error</div>
+
 
                 </form>
             </section>

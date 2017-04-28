@@ -41,7 +41,7 @@ public interface RequestService {
     Page<ServiceRequestDTO>getRequests(RetailUser user, Pageable pageDetails);
 
 
-    public Page<ServiceRequestDTO> getRequests(ServiceRequestDTO request, Pageable pageDetails);
+//    public Page<ServiceRequestDTO> getRequests(ServiceRequestDTO request, Pageable pageDetails);
 
         /**
          * Creates and adds a new history for a request
@@ -58,9 +58,9 @@ public interface RequestService {
 
     Iterable<RequestHistoryDTO>getRequestHistories(Long requestId);
     
-    Page<RequestHistory>getRequestHistories(ServiceRequest request,Pageable pageDetails);
 
-    Page<RequestHistoryDTO>getRequestHistories(Long serviceRequestId, Pageable pageDetails);
+
+//    Page<RequestHistoryDTO>getRequestHistories(Long serviceRequestId, Pageable pageDetails);
 
 
 

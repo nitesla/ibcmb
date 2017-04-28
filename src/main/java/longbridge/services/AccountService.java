@@ -1,14 +1,14 @@
 package longbridge.services;
 
+import longbridge.dtos.AccountDTO;
 import longbridge.models.Account;
 import longbridge.utils.AccountStatement;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Map;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 /**
  * The {@code AccountService} interface provides the methods for retrieving
@@ -27,12 +27,15 @@ public interface AccountService {
      */
     boolean AddAccount(String customerId, Account account);
 
+
+
+    boolean customizeAccount(Long id, String name);
     /**
      * Returns a particular account for a customer
      * @param accId the account id
      * @return an {@link Account} object
      */
-    Account getAccount(Long accId);
+    AccountDTO getAccount(Long accId);
 
     /**
      * Returns a list of accounts owned by a particular customer

@@ -1,9 +1,6 @@
 package longbridge.dtos;
 
-import longbridge.models.Beneficiary;
-import longbridge.models.RetailUser;
-
-import javax.persistence.Entity;
+import org.hibernate.validator.constraints.NotEmpty;
 
 /**
  Created by Fortune on 4/5/2017.
@@ -13,11 +10,15 @@ import javax.persistence.Entity;
 public class InternationalBeneficiaryDTO {
 
     private Long id;
-    private RetailUser user;
-    private String name;
-    private String accountNo;
+    @NotEmpty
+    private String accountName;
+    @NotEmpty
+    private String accountNumber;
+    @NotEmpty
     private String beneficiaryBank;
+    @NotEmpty
     private String swiftCode;
+    @NotEmpty
     private String sortCode;
     private String beneficiaryAddress;
     private String intermediaryBankName;
@@ -31,28 +32,20 @@ public class InternationalBeneficiaryDTO {
         this.id = id;
     }
 
-    public RetailUser getUser() {
-        return user;
+    public String getAccountName() {
+        return accountName;
     }
 
-    public void setUser(RetailUser user) {
-        this.user = user;
+    public void setAccountName(String name) {
+        this.accountName = name;
     }
 
-    public String getName() {
-        return name;
+    public String getAccountNumber() {
+        return accountNumber;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getAccountNo() {
-        return accountNo;
-    }
-
-    public void setAccountNo(String accountNo) {
-        this.accountNo = accountNo;
+    public void setAccountNumber(String accountNumber) {
+        this.accountNumber = accountNumber;
     }
 
     public String getBeneficiaryBank() {

@@ -18,7 +18,9 @@ public interface RetailUserService {
      */
     RetailUserDTO getUser(Long id);
 
-    RetailUserDTO getUserByName(String name);
+    RetailUser getUserByName(String name);
+
+    RetailUserDTO getUserDTOByName(String name);
 
     /**
      *Returns a list of retail users

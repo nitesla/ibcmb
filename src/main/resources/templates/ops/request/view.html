@@ -41,18 +41,12 @@
                         <div class="x_panel">
                             <div class="x_title">
                                 <ul class="nav navbar-left panel_toolbox">
-                                    <li >
-                                        <div class="col-lg-4">
-                                            <div class="title-action">
-                                                <a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/ops/requests/index/update" disabled="disabled" ><i class="fa fa-pencil"></i> Update</a>
-                                            </div>
-                                        </div>
-                                    </li>
+
 
                                     <li >
                                         <div class="col-lg-4">
                                             <div class="title-action">
-                                                <a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/ops/requests/index/view" disabled="disabled" ><i class="fa fa-lock"></i> View</a>
+                                                <a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/ops/requests/index/details" disabled="disabled" ><i class="fa fa-eye"></i> Review</a>
                                             </div>
                                         </div>
                                     </li>
@@ -77,7 +71,6 @@
                                     <thead>
                                     <tr>
                                         <th>Name</th>
-                                        <th>Content</th>
                                         <th>status</th>
                                         <th>Username</th>
                                         <th>Date</th>
@@ -91,7 +84,6 @@
                                     <tfoot>
                                     <tr>
                                         <th>Name</th>
-                                        <th>Content</th>
                                         <th>status</th>
                                         <th>Username</th>
                                         <th>Date</th>
@@ -137,11 +129,11 @@
             "ajax": "/ops/requests/all",
             "dom": 'T<"clear">frtlp',
             "columns": [
-                { "data": "user" },
                 { "data": "requestName" },
-                { "data": "content" },
                 { "data": "requestStatus" },
-                { "data": "dateRequested" }
+                { "data": "username" },
+                { "data": "date" }
+
 
             ] });
 

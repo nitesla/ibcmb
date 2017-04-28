@@ -45,7 +45,20 @@ public interface IntegrationService {
      */
     void makeTransfer(TransferRequest transferRequest);
 
+    /**Fetches the account Name, Balance , Type from the account table specified by account Number
+     *
+     * @param acctNo account number of the account
+     * @return Map containing the available details of the account
+     */
     AccountDetails viewAccountDetails(String acctNo);
+
+    /** Validate the account, with a valid account number, email and dob
+     *
+     * @param accNo account number of the account
+     * @param email email of the account
+     * @param dob date of birth specified in the account
+     * @return Map that returns false of the details doesnt correspond or exist
+     */
     Boolean isAccountValid(String accNo,String email,String dob);
 
     /** This fetches the full name of the customer connected to the
@@ -55,6 +68,18 @@ public interface IntegrationService {
      */
     String getAccountName(String accountNumber);
 
+    /** This method make an API that fetches the daily transactions with accountNo
+     *
+     * @param acctNo account number
+     * @return map containing the total transaction amount
+     */
     BigDecimal getDailyDebitTransaction(String acctNo);
+
+    /** This method make an API that fetches the Daily Account Limit with accountNo and Channel
+     *
+     * @param accNo the account number
+     * @param channel the transaction channel
+     * @return map containing the total transaction limit
+     */
     BigDecimal getDailyAccountLimit(String accNo,String channel);
 }

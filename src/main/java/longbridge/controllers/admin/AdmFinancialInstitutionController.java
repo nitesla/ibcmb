@@ -1,6 +1,7 @@
 package longbridge.controllers.admin;
 
 import longbridge.dtos.FinancialInstitutionDTO;
+import longbridge.models.FinancialInstitutionType;
 import longbridge.services.FinancialInstitutionService;
 import longbridge.services.VerificationService;
 import org.slf4j.Logger;
@@ -49,7 +50,8 @@ public class AdmFinancialInstitutionController {
     }
 
     @GetMapping("/new")
-    public String addFi(FinancialInstitutionDTO financialInstitutionDTO) {
+    public String addFi(FinancialInstitutionDTO financialInstitutionDTO, Model model) {
+        model.addAttribute("types", FinancialInstitutionType.values());
         return "adm/financialinstitution/add";
     }
 
@@ -75,6 +77,7 @@ public class AdmFinancialInstitutionController {
     public String editFi(@PathVariable Long id, Model model) {
         FinancialInstitutionDTO fi = financialInstitutionService.getFinancialInstitution(id);
         model.addAttribute("fi", fi);
+        model.addAttribute("types", FinancialInstitutionType.values());
         return "adm/financialinstitution/edit";
     }
 

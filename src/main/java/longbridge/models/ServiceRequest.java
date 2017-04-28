@@ -12,7 +12,7 @@ import java.util.List;
 
 
 /**
- * The {@code Message} class is a model that shows
+ * The {@code ServiceRequest} class is a model that shows
  * a service request
  * @author ayoade_farooq@yahoo.com
  * Created on 3/28/2017.

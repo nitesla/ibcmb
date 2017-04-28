@@ -23,6 +23,11 @@ import java.io.IOException;
 public class AdminAuthenticationSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
+
+    public AdminAuthenticationSuccessHandler() {
+        setUseReferer(true);
+    }
+
     private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
     @Autowired

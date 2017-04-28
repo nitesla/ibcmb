@@ -64,6 +64,7 @@ public class CodeServiceImpl implements CodeService {
         return convertEntityToDTO(code);
     }
 
+
     @Override
     public Iterable<CodeDTO> getCodesByType(String codeType) {
         Iterable<Code> codes = this.codeRepo.findByType(codeType);
@@ -110,10 +111,7 @@ public class CodeServiceImpl implements CodeService {
         return codeDTOList;
     }
 
-    @Override
-    public Code getByTypeAndCode(String type, String code) {
-        return codeRepo.findByTypeAndCode(type,code);
-    }
+
 
 	@Override
 	public Page<CodeDTO> getCodesByType(String codeType, Pageable pageDetails) {
@@ -145,4 +143,8 @@ public class CodeServiceImpl implements CodeService {
 		}
 	}
 
+    @Override
+    public Code getByTypeAndCode(String type, String code) {
+        return codeRepo.findByTypeAndCode(type,code);
+    }
 }

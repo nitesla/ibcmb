@@ -1,3 +1,4 @@
+/*
 
 package longbridge.config;
 
@@ -19,15 +20,22 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 
+*/
 /**
  * Created by ayoade_farooq@yahoo.com on 4/10/2017.
- */
+ *//*
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
 	public void customConfig(WebSecurity web) throws Exception {
-		web.ignoring().antMatchers("/resources/**", "/static/**", "/css/**", "/js/**", "/images/**");
+		web.ignoring().antMatchers("/resources*/
+/**", "/static*/
+/**", "/css*/
+/**", "/js*/
+/**", "/images*/
+/**");
 	}
 
 	@Configuration
@@ -59,7 +67,8 @@ public class SecurityConfig {
 		@Override
 		protected void configure(HttpSecurity http) throws Exception {
 
-			http.antMatcher("/admin/**").authorizeRequests().anyRequest().hasAuthority(UserType.ADMIN.toString())
+			http.antMatcher("/admin*/
+/**").authorizeRequests().anyRequest().hasAuthority(UserType.ADMIN.toString())
 					// log in
 			//IP address check
 			//.anyRequest().hasIpAddress("")
@@ -68,7 +77,10 @@ public class SecurityConfig {
 					.successHandler(adminAuthenticationSuccessHandler).failureHandler(adminAuthenticationFailureHandler)
 					.and()
 					// logout
+
+
 					.logout().logoutUrl("/admin/logout").logoutSuccessUrl("/login/admin").deleteCookies("JSESSIONID")
+					.and().requestCache()
 					.and().exceptionHandling().and().csrf().disable().sessionManagement().sessionFixation()
 					.migrateSession().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
 					.invalidSessionUrl("/login/admin").maximumSessions(1).expiredUrl("/login/admin");
@@ -99,6 +111,12 @@ public class SecurityConfig {
         UserDetailsService opsDetails;
         @Autowired
         BCryptPasswordEncoder bCryptPasswordEncoder;
+		@Autowired
+		@Qualifier("opAuthenticationSuccessHandler")
+		private AuthenticationSuccessHandler opAuthenticationSuccessHandler;
+		@Autowired
+		@Qualifier("opAuthenticationFailureHandler")
+		private AuthenticationFailureHandler opAuthenticationFailureHandler;
         public OperationsUserConfigurationAdapter() {
             super();
         }
@@ -110,12 +128,16 @@ public class SecurityConfig {
         }
 
         protected void configure(HttpSecurity http) throws Exception {
-            http.antMatcher("/ops/**").authorizeRequests().anyRequest()
+            http.antMatcher("/ops*/
+/**").authorizeRequests().anyRequest()
                     //.authenticated()
                     .hasAuthority(UserType.OPERATIONS.toString())
                     // log in
-                    .and().formLogin().loginPage("/login/ops").loginProcessingUrl("/ops/login").failureUrl("/login/ops?error=true").defaultSuccessUrl("/ops/dashboard")//TODO LANDING PAGE
-                    .and()
+                    .and().formLogin().loginPage("/login/ops").loginProcessingUrl("/ops/login").failureUrl("/login/ops?error=true").defaultSuccessUrl("/ops/dashboard")
+					.successHandler(opAuthenticationSuccessHandler)
+					.failureHandler(opAuthenticationFailureHandler)
+
+					.and()
 
 
                     // logout
@@ -163,7 +185,8 @@ public class SecurityConfig {
 		}
 
 		protected void configure(HttpSecurity http) throws Exception {
-			http.antMatcher("/retail/**").authorizeRequests().anyRequest()
+			http.antMatcher("/retail*/
+/**").authorizeRequests().anyRequest()
 					// .authenticated()
 					.hasAuthority(UserType.RETAIL.toString())
 					// log in
@@ -195,3 +218,4 @@ public class SecurityConfig {
         return new HttpSessionEventPublisher();
     }
 }
+*/

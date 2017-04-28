@@ -1,7 +1,6 @@
 package longbridge.repositories;
 
 import longbridge.models.Account;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -13,6 +12,9 @@ import java.util.List;
 public interface AccountRepo extends CommonRepo<Account, Long> {
 
     Account findById(Long id);
+
+    Account findFirstById(Long id);
+
     Account findByAccountNumber(String acctNumber);
 
     Account findByAccountId(String accountId);

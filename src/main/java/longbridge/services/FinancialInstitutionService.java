@@ -2,6 +2,7 @@ package longbridge.services;
 
 import longbridge.dtos.FinancialInstitutionDTO;
 import longbridge.models.FinancialInstitution;
+import longbridge.models.FinancialInstitutionType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -17,6 +18,8 @@ public interface FinancialInstitutionService {
     boolean updateFinancialInstitution(FinancialInstitutionDTO financialInstitutionDTO);
 
     List<FinancialInstitutionDTO> getFinancialInstitutions();
+
+    List<FinancialInstitutionDTO> getFinancialInstitutionsByType(FinancialInstitutionType institutionType);
 
     FinancialInstitutionDTO getFinancialInstitution(Long id);
 

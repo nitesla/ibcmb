@@ -2,6 +2,7 @@ package longbridge.services.implementations;
 
 import longbridge.api.AccountDetails;
 import longbridge.api.AccountInfo;
+
 import longbridge.models.TransferRequest;
 import longbridge.services.IntegrationService;
 import longbridge.utils.AccountStatement;
@@ -43,7 +44,9 @@ public class IntegrationServiceImpl implements IntegrationService {
     public Collection<AccountInfo> fetchAccounts(String cifid)
     {
         try{
+
             String uri=URI +"/customer/{acctId}/accounts";
+
             List<AccountInfo> details= template.getForObject(uri, ArrayList.class,cifid);
             return details;
         }catch (Exception e){

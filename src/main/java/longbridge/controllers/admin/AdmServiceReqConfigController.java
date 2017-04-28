@@ -107,14 +107,14 @@ public class AdmServiceReqConfigController {
     }
 
     @GetMapping("/{userId}")
-    public String getUser(@PathVariable  Long reqId, Model model){
+    public String getRequest(@PathVariable  Long reqId, Model model){
         ServiceReqConfigDTO serviceReq = serviceReqConfigService.getServiceReqConfig(reqId);
         model.addAttribute("requestDetails",serviceReq);
         return "adm/servicereqconfig/add";
     }
 
     @GetMapping("/{reqId}/delete")
-    public String deleteUser(@PathVariable Long reqId) {
+    public String deleteRequest(@PathVariable Long reqId) {
         serviceReqConfigService.delServiceReqConfig(reqId);
         return "redirect:/admin/srconfig";
     }
