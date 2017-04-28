@@ -35,7 +35,7 @@ public class SettingController {
     @Autowired
     private RetailUserService retailUserService;
 
-    @RequestMapping("/retail/dashboard")
+    @RequestMapping("/dashboard")
     public String getRetailDashboard() {
         return "cust/dashboard";
     }

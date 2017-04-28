@@ -20,9 +20,18 @@ public class RetailControllerAdvice {
         private RetailUserService retailUserService;
 
         @ModelAttribute
-        public void globalAttributes(Model model, Principal principal) {
+        public String globalAttributes(Model model, Principal principal) {
             String greeting = "";
+
+            if (principal.getName() == null){
+                return "redirect:/login/retail";
+            }
+
+
             RetailUser user = retailUserService.getUserByName(principal.getName());
+
+
+
             model.addAttribute("bvn", user.getBvn());
 
 
@@ -41,6 +50,6 @@ public class RetailControllerAdvice {
 
 
             //System.out.println( new SimpleDateFormat("HH:mm:ss").format(Calendar.getInstance().getTime()) );
-
+            return "";
         }
 }
