@@ -28,6 +28,7 @@ import java.util.Map;
 public class AccountServiceImpl implements AccountService{
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
+    
     private AccountRepo accountRepo;
 
     private IntegrationService integrationService;
@@ -121,6 +122,11 @@ public class AccountServiceImpl implements AccountService{
         }
         return accountDTOList;
     }
+
+	@Override
+	public Account getAccountByAccountNumber(String accountNumber) {
+		return accountRepo.findByAccountNumber(accountNumber);
+	}
 
 //    private Account mockAccount;
 //

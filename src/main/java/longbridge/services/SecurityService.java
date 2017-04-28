@@ -1,5 +1,9 @@
 package longbridge.services;
 
+import java.util.List;
+
+import longbridge.models.RetailUser;
+
 /**
  * The {@code SecurityService} interface provides the methods for managing roles, profiles and permissions
  * @author Fortunatus Ekenachi
@@ -14,5 +18,16 @@ public interface SecurityService {
      */
     String generatePassword();
 
-
+   /** 
+    * Fetches the list of security questions available
+    * to users
+    */
+    List<String> getSecurityQuestions();
+    
+    
+    /**
+     * This validates the answer provided for a 
+     * security question for the specified user
+     */
+    boolean validateSecurityQuestion(RetailUser retailUser,String securityQuestion,String securityAnswer);
 }

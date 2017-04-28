@@ -80,4 +80,12 @@ public interface AccountService {
      */
     Iterable<Account> getAccountsForCredit(String customerId);
 
+    /**  Fetches the details of an {@link Account} using the 
+     * account number
+     * @param accountNumber The account number
+     * @return an {@link Account} object containing the details of the account or null if the account
+     * was not found 
+     */
+    Account getAccountByAccountNumber(String accountNumber);
+   
 }

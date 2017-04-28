@@ -13,5 +13,7 @@ import org.springframework.stereotype.Repository;
 public interface RetailUserRepo extends CommonRepo<RetailUser, Long> {
 
     RetailUser findFirstByUserName(String s);
+    
+    RetailUser findFirstByCustomerId(String customerId);
 
 }
