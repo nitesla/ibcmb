@@ -1,5 +1,6 @@
 package longbridge.services.implementations;
 
+
 import longbridge.dtos.RetailUserDTO;
 import longbridge.forms.AlertPref;
 import longbridge.models.Account;
@@ -9,6 +10,9 @@ import longbridge.repositories.RetailUserRepo;
 import longbridge.services.AccountService;
 import longbridge.services.CodeService;
 import longbridge.services.RetailUserService;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,8 +23,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import longbridge.services.SecurityService;
 
 /**
  * Created by SYLVESTER on 3/29/2017.
@@ -40,6 +43,9 @@ public class RetailUserServiceImpl implements RetailUserService {
 
     @Autowired
     ModelMapper modelMapper;
+    
+    @Autowired
+    SecurityService securityService;
 
     public RetailUserServiceImpl(){
 
@@ -255,6 +261,32 @@ public class RetailUserServiceImpl implements RetailUserService {
         long t = page.getTotalElements();
         Page<RetailUserDTO> pageImpl = new PageImpl<RetailUserDTO>(dtOs,pageDetails,t);
         return pageImpl;
+	}
+	
+
+	@Override
+	public String retrieveUsername(String accountNumber, String securityQuestion, String securityAnswer) {
+		Account account = accountService.getAccountByAccountNumber(accountNumber);
+		if(account == null){
+			//invalid account number
+			return "Invalid Account NUmber";
+		}
+		logger.info("Account: {}", account.toString());
+		String customerId = account.getCustomerId();
+		
+		RetailUser retailUser = retailUserRepo.findFirstByCustomerId(customerId);
+		if(retailUser == null){
+			//customer doesn't have a user
+			return "User not found";
+		}
+		logger.info("Retail user: {}", retailUser);
+		
+		//TODO confirm security question
+		if(!securityService.validateSecurityQuestion(retailUser, securityQuestion, securityAnswer)){
+			return "Invalid Security Question or Answer";
+		}
+		
+		return retailUser.getUserName();
 	}
 
 }

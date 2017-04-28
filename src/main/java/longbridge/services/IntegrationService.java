@@ -2,7 +2,6 @@ package longbridge.services;
 
 import longbridge.api.AccountDetails;
 import longbridge.api.AccountInfo;
-import longbridge.models.Account;
 import longbridge.models.TransferRequest;
 import longbridge.utils.AccountStatement;
 
@@ -61,6 +60,13 @@ public interface IntegrationService {
      * @return Map that returns false of the details doesnt correspond or exist
      */
     Boolean isAccountValid(String accNo,String email,String dob);
+
+    /** This fetches the full name of the customer connected to the
+     * specified account number
+     * @param accountNumber
+     * @return The full name of the customer or null
+     */
+    String getAccountName(String accountNumber);
 
     /** This method make an API that fetches the daily transactions with accountNo
      *

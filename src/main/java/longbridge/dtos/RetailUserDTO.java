@@ -31,6 +31,7 @@ public class RetailUserDTO {
     private Date lockedUntilDate;
     private Date lastLoginDate;
     private int noOfLoginAttempts;
+    private String antiPhishingImage;
     private Role role;
     private Code alertPreference;
 
@@ -51,14 +52,22 @@ public class RetailUserDTO {
     }
 
     public String getUserName() {
-        return userName;
-    }
+		return userName;
+	}
 
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
+	public void setUserName(String username) {
+		this.userName = username;
+	}
 
-    public String getVersion() {
+	public String getAntiPhishingImage() {
+		return antiPhishingImage;
+	}
+
+	public void setAntiPhishingImage(String antiPhishingImage) {
+		this.antiPhishingImage = antiPhishingImage;
+	}
+
+	public String getVersion() {
         return version;
     }
 

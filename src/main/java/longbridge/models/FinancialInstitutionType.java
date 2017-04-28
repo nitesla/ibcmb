@@ -1,7 +1,7 @@
 package longbridge.models;
 
 /**
- * Created by Showboy on 25/04/2017.
+ * Created by Wunmi Sowunmi on 25/04/2017.
  */
 public enum FinancialInstitutionType {
 

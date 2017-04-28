@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="cust_layout :: site-head">
+
+</head>
+<body>
+<header th:replace="cust_layout :: header">
+</header>
+
+<section class="content-wrapper">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-8 col-sm-8">
+            <form method="POST" action="/retail/forgot/username">
+                <input class="form-control" name="accountNumber" value="Account Number"/><br/>
+                <select name="securityQuestion" class="form-control">
+                	<option>What is the name of your spouse?</option>
+                	<option>What is the name of the first car you owned?</option>
+                </select><br/>
+                <input class="form-control" name="securityAnswer" /><br/>
+                <button class="btn"> Submit</button>
+            </form>
+            </div>
+            <div class="col-md-3 col-sm-3">
+                <div class="alert alert-warning">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CONTENT-WRAPPER SECTION END-->
+<footer th:replace="cust_layout ::footer">
+</footer>
+</body>
+</html>

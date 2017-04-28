@@ -168,4 +168,13 @@ public class AdminUserDTO {
     public void setExpiryDate(Date expiryDate) {
         this.expiryDate = expiryDate;
     }
+
+	@Override
+	public String toString() {
+		return "AdminUserDTO [id=" + id + ", version=" + version + ", cifId=" + cifId + ", userName=" + userName
+				+ ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email + ", status=" + status
+				+ ", role=" + role + ", userType=" + userType + "]";
+	}
+    
+    
 }
