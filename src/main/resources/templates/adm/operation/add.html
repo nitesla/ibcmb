@@ -51,7 +51,7 @@
                                             <label class="col-sm-2 control-label">CIFID:</label>
 
                                             <div class="col-sm-4">
-                                                <input type="text" class="form-control" th:field="*{user}"/>
+                                                <input type="text" class="form-control" th:field="*{userName}"/>
                                             </div>
 
                                             <button class="btn btn-primary col-sm-2" type="submit">Browse</button>
@@ -91,7 +91,7 @@
 
                                                 <select class="form-control" name="roleId">
                                                     <option value="" name="select">Select..</option>
-                                                    <option th:each="role : ${roles}" th:value="${role.id}" th:text="${role.name}" th:selected="${role.id==operationsUser.roleId}"></option>
+                                                    <option th:each="role : ${roles.?[#strings.equalsIgnoreCase(userType, 'OPERATIONS')]}" th:value="${role.id}" th:text="${role.name}" th:selected="${role.id==operationsUser.roleId}"></option>
                                                 </select>
 
 

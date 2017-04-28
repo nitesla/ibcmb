@@ -107,7 +107,7 @@
 
                                                 <select class="form-control" th:field="*{roleId}">
                                                     <!--<option value="" name="select">Select..</option>-->
-                                                    <option th:each="role : ${roles}" th:value="${role.id}" th:text="${role.name}" th:selected="${role.id==adminUser.roleId}"></option>
+                                                    <option th:each="role : ${roles.?[#strings.equalsIgnoreCase(userType, 'admin')]}" th:value="${role.id}" th:text="${role.name}" th:selected="${role.id==adminUser.roleId}"></option>
                                                 </select>
 
                                          </div>
