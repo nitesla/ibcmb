@@ -1,5 +1,6 @@
 package longbridge.services;
 
+import longbridge.dtos.GlobalLimitDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -27,5 +28,11 @@ public interface ConfigurationService{
     void updateSetting(SettingDTO setting);
 
     void deleteSetting(Long id);
+
+
+
+
+
+
 
 }

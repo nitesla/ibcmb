@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @Controller
 @RequestMapping("/ops/fees")
-public class TransactionLimitController {
+public class OpsTransactionFeesController {
 
     @GetMapping
     public String getTransFees(Model model){

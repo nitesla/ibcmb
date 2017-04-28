@@ -8,6 +8,8 @@ import longbridge.repositories.GlobalLimitRepo;
 import longbridge.services.CodeService;
 import longbridge.services.LimitService;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -40,6 +42,9 @@ public class LimitServiceImpl implements LimitService{
     ModelMapper modelMapper;
 
     SimpleDateFormat dateFormatter = new SimpleDateFormat("MM/dd/yyyy");
+
+
+    Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
     public void addGlobalLimit(GlobalLimitDTO globalLimitDTO) throws Exception{
@@ -157,7 +162,7 @@ public class LimitServiceImpl implements LimitService{
         try {
             globalLimit.setEffectiveDate(dateFormatter.parse(limit.getStartDate()));
         } catch (ParseException e) {
-            e.printStackTrace();
+            logger.error("Could not parse date {}",e.toString());
         }
         return globalLimit;
     }
@@ -176,7 +181,6 @@ public class LimitServiceImpl implements LimitService{
         ClassLimitDTO classLimitDTO = modelMapper.map(limit, ClassLimitDTO.class);
         classLimitDTO.setStartDate(dateFormatter.format(limit.getEffectiveDate()));
         classLimitDTO.setEffectiveDate(limit.getEffectiveDate());
-        classLimitDTO.setFrequency(codeService.getByTypeAndCode("FREQUENCY",limit.getFrequency()).getDescription());
         return classLimitDTO;
     }
 
@@ -185,7 +189,7 @@ public class LimitServiceImpl implements LimitService{
         try {
             classLimit.setEffectiveDate(dateFormatter.parse(limit.getStartDate()));
         } catch (ParseException e) {
-            e.printStackTrace();
+            logger.error("Could not parse date {}",e.toString());
         }
         return classLimit;
     }
@@ -195,6 +199,7 @@ public class LimitServiceImpl implements LimitService{
         List<ClassLimitDTO> limitDTOList = new ArrayList<>();
         for(ClassLimit classLimit: classLimits){
             ClassLimitDTO limitDTO = convertClassLimitEntityToDTO(classLimit);
+            limitDTO.setFrequency(codeService.getByTypeAndCode("FREQUENCY",classLimit.getFrequency()).getDescription());
             limitDTOList.add(limitDTO);
         }
         return limitDTOList;
@@ -205,7 +210,6 @@ public class LimitServiceImpl implements LimitService{
         AccountLimitDTO accountLimitDTO = modelMapper.map(limit, AccountLimitDTO.class);
         accountLimitDTO.setStartDate(dateFormatter.format(limit.getEffectiveDate()));
         accountLimitDTO.setEffectiveDate(limit.getEffectiveDate());
-        accountLimitDTO.setFrequency(codeService.getByTypeAndCode("FREQUENCY",limit.getFrequency()).getDescription());
         return accountLimitDTO;
     }
 
@@ -214,7 +218,7 @@ public class LimitServiceImpl implements LimitService{
         try {
             accountLimit.setEffectiveDate(dateFormatter.parse(limit.getStartDate()));
         } catch (ParseException e) {
-            e.printStackTrace();
+            logger.error("Could not parse date {}",e.toString());
         }
         return accountLimit;
     }
@@ -224,6 +228,7 @@ public class LimitServiceImpl implements LimitService{
         List<AccountLimitDTO> limitDTOList = new ArrayList<>();
         for(AccountLimit accountLimit: accountLimits){
             AccountLimitDTO limitDTO = convertAccountLimitEntityToDTO(accountLimit);
+            limitDTO.setFrequency(codeService.getByTypeAndCode("FREQUENCY",accountLimit.getFrequency()).getDescription());
             limitDTOList.add(limitDTO);
         }
         return limitDTOList;

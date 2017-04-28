@@ -1,8 +1,12 @@
 package longbridge.services.implementations;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import longbridge.dtos.AdminUserDTO;
 import longbridge.models.AdminUser;
+import longbridge.models.OperationCode;
 import longbridge.models.Role;
+import longbridge.models.Verification;
 import longbridge.repositories.AdminUserRepo;
 import longbridge.repositories.VerificationRepo;
 import longbridge.services.AdminUserService;
@@ -20,7 +24,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -54,7 +60,6 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
     public AdminUserServiceImpl() {
-
     }
 
     @Override
@@ -190,7 +195,7 @@ public class AdminUserServiceImpl implements AdminUserService {
         }
         catch (Exception e){
             e.printStackTrace();
-            logger.error("ERROR OCCURRED {}",e.getMessage());
+            logger.error("ERROR OCCURRED {}", e.getMessage());
         }
         return ok;
     }
