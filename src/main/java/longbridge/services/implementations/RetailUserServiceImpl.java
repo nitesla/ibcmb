@@ -1,11 +1,13 @@
 package longbridge.services.implementations;
 
 import longbridge.dtos.RetailUserDTO;
+import longbridge.forms.AlertPref;
 import longbridge.models.Account;
-import longbridge.models.AlertPreference;
+import longbridge.models.Code;
 import longbridge.models.RetailUser;
 import longbridge.repositories.RetailUserRepo;
 import longbridge.services.AccountService;
+import longbridge.services.CodeService;
 import longbridge.services.RetailUserService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -28,7 +30,8 @@ import java.util.List;
 public class RetailUserServiceImpl implements RetailUserService {
 
     private Logger logger= LoggerFactory.getLogger(this.getClass());
-
+    @Autowired
+    private CodeService codeService;
     private RetailUserRepo retailUserRepo;
     private BCryptPasswordEncoder passwordEncoder;
 
@@ -193,7 +196,7 @@ public class RetailUserServiceImpl implements RetailUserService {
     }
 
     @Override
-    public boolean changeAlertPreference(RetailUserDTO user, AlertPreference alertPreference) {
+    public boolean changeAlertPreference(RetailUserDTO user, AlertPref alertPreference) {
         boolean ok=false;
         try {
             if (getUser(user.getId()) == null) {
@@ -202,7 +205,8 @@ public class RetailUserServiceImpl implements RetailUserService {
             }
 
                 RetailUser retailUser = convertDTOToEntity(user);
-                retailUser.setAlertPreference(alertPreference);
+                Code code = codeService.getByTypeAndCode("ALERT_PREFERENCE", alertPreference.getPreference());
+                retailUser.setAlertPreference(code);
                 this.retailUserRepo.save(retailUser);
                 logger.info("USER {}'s alert preference set", user.getId());
                 ok = true;

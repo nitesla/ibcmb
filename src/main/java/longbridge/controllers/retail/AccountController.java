@@ -34,7 +34,10 @@ public class AccountController {
     private Long customizeAccountId;
 
     @GetMapping("/customize")
-    public String CustomizeAccountHome(Model model){
+    public String CustomizeAccountHome(Model model, Principal principal){
+        RetailUser user = retailUserService.getUserByName(principal.getName());
+        Iterable<AccountDTO> accounts = accountService.getAccounts(user.getCustomerId());
+        model.addAttribute("accounts", accounts);
         return "cust/account/customizehome";
     }
 
@@ -63,6 +66,6 @@ public class AccountController {
 
         accountService.customizeAccount(this.customizeAccountId, customizeAccount.getAccountName());
 
-        return "cust/account/customize";
+        return "redirect:/retail/account/customize";
     }
 }

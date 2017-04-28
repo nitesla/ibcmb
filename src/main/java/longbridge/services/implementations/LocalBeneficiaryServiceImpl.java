@@ -3,7 +3,6 @@ package longbridge.services.implementations;
 import longbridge.dtos.LocalBeneficiaryDTO;
 import longbridge.models.LocalBeneficiary;
 import longbridge.models.RetailUser;
-import longbridge.models.User;
 import longbridge.repositories.LocalBeneficiaryRepo;
 import longbridge.services.LocalBeneficiaryService;
 import org.modelmapper.ModelMapper;
@@ -74,9 +73,8 @@ public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
     }
 
     @Override
-    public Iterable<LocalBeneficiary> getLocalBeneficiaries(User user) {
-        //return localBeneficiaryRepo.findByUserAndDelFlag(user, "N");
-        return null;
+    public Iterable<LocalBeneficiary> getLocalBeneficiaries(RetailUser user) {
+        return localBeneficiaryRepo.findByUser(user);
     }
 
     @Override

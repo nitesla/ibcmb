@@ -43,7 +43,7 @@ public interface LocalBeneficiaryService {
      * @param user the customer
      * @return a list of the beneficiaries
      */
-    Iterable<LocalBeneficiary> getLocalBeneficiaries(User user);
+    Iterable<LocalBeneficiary> getLocalBeneficiaries(RetailUser user);
 
 
     List<LocalBeneficiaryDTO> convertEntitiesToDTOs(Iterable<LocalBeneficiary> localBeneficiaries);

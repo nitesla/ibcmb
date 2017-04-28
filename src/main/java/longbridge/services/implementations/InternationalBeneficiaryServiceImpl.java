@@ -3,7 +3,6 @@ package longbridge.services.implementations;
 import longbridge.dtos.InternationalBeneficiaryDTO;
 import longbridge.models.InternationalBeneficiary;
 import longbridge.models.RetailUser;
-import longbridge.models.User;
 import longbridge.repositories.InternationalBeneficiaryRepo;
 import longbridge.services.InternationalBeneficiaryService;
 import org.modelmapper.ModelMapper;
@@ -71,9 +70,8 @@ public class InternationalBeneficiaryServiceImpl implements InternationalBenefic
 	}
 
 	@Override
-	public Iterable<InternationalBeneficiary> getInternationalBeneficiaries(User user) {
-		// return internationalBeneficiaryRepo.findByUserAndDelFlag(user, "N");
-		return null;
+	public Iterable<InternationalBeneficiary> getInternationalBeneficiaries(RetailUser user) {
+		return internationalBeneficiaryRepo.findByUser(user);
 	}
 
 	@Override

@@ -1,22 +1,21 @@
 package longbridge.forms;
 
-import longbridge.models.AlertPreference;
-
-import javax.validation.constraints.NotNull;
+import org.hibernate.validator.constraints.NotEmpty;
 
 /**
  * Created by Wunmi Sowunmi on 25/04/2017.
  */
 public class AlertPref {
 
-    @NotNull
-    private AlertPreference preference;
+    @NotEmpty
+    private String preference;
 
-    public AlertPreference getPreference() {
+
+    public String getPreference() {
         return preference;
     }
 
-    public void setPreference(AlertPreference preference) {
+    public void setPreference(String preference) {
         this.preference = preference;
     }
 }

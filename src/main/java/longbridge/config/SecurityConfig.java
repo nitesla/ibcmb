@@ -1,5 +1,3 @@
-/*
-
 package longbridge.config;
 
 import longbridge.models.UserType;
@@ -20,22 +18,15 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 
-*/
 /**
  * Created by ayoade_farooq@yahoo.com on 4/10/2017.
- *//*
-
+ */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
 	public void customConfig(WebSecurity web) throws Exception {
-		web.ignoring().antMatchers("/resources*/
-/**", "/static*/
-/**", "/css*/
-/**", "/js*/
-/**", "/images*/
-/**");
+		web.ignoring().antMatchers("/resources/**", "/static/**", "/css/**", "/js/**", "/images/**");
 	}
 
 	@Configuration
@@ -67,11 +58,10 @@ public class SecurityConfig {
 		@Override
 		protected void configure(HttpSecurity http) throws Exception {
 
-			http.antMatcher("/admin*/
-/**").authorizeRequests().anyRequest().hasAuthority(UserType.ADMIN.toString())
+			http.antMatcher("/admin/**").authorizeRequests().anyRequest().hasAuthority(UserType.ADMIN.toString())
 					// log in
-			//IP address check
-			//.anyRequest().hasIpAddress("")
+					//IP address check
+					//.anyRequest().hasIpAddress("")
 					.and().formLogin().loginPage("/login/admin").loginProcessingUrl("/admin/login")
 					.failureUrl("/login/admin?error=login_error").defaultSuccessUrl("/admin/dashboard")
 					.successHandler(adminAuthenticationSuccessHandler).failureHandler(adminAuthenticationFailureHandler)
@@ -84,11 +74,11 @@ public class SecurityConfig {
 					.and().exceptionHandling().and().csrf().disable().sessionManagement().sessionFixation()
 					.migrateSession().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
 					.invalidSessionUrl("/login/admin").maximumSessions(1).expiredUrl("/login/admin");
-        }
+		}
 
-        @Override
-        public void configure(WebSecurity web) throws Exception {
-           new SecurityConfig(). customConfig(web);
+		@Override
+		public void configure(WebSecurity web) throws Exception {
+			new SecurityConfig(). customConfig(web);
 
 //            web.expressionHandler(new DefaultWebSecurityExpressionHandler() {
 //                @Override
@@ -98,63 +88,62 @@ public class SecurityConfig {
 //                    return root;
 //                }
 //            });
-        }
+		}
 
-    }
+	}
 
-    //#########################OPERATIONS USER SECURITY CONFIGURATION########################################
-    @Configuration
-    @Order(2)
-    public static class OperationsUserConfigurationAdapter extends WebSecurityConfigurerAdapter {
-        @Autowired
-        @Qualifier("operationUserDetails")
-        UserDetailsService opsDetails;
-        @Autowired
-        BCryptPasswordEncoder bCryptPasswordEncoder;
+	//#########################OPERATIONS USER SECURITY CONFIGURATION########################################
+	@Configuration
+	@Order(2)
+	public static class OperationsUserConfigurationAdapter extends WebSecurityConfigurerAdapter {
+		@Autowired
+		@Qualifier("operationUserDetails")
+		UserDetailsService opsDetails;
+		@Autowired
+		BCryptPasswordEncoder bCryptPasswordEncoder;
 		@Autowired
 		@Qualifier("opAuthenticationSuccessHandler")
 		private AuthenticationSuccessHandler opAuthenticationSuccessHandler;
 		@Autowired
 		@Qualifier("opAuthenticationFailureHandler")
 		private AuthenticationFailureHandler opAuthenticationFailureHandler;
-        public OperationsUserConfigurationAdapter() {
-            super();
-        }
+		public OperationsUserConfigurationAdapter() {
+			super();
+		}
 
-        @Override
-        protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-            auth
-                    .userDetailsService(opsDetails).passwordEncoder(bCryptPasswordEncoder);
-        }
+		@Override
+		protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+			auth
+					.userDetailsService(opsDetails).passwordEncoder(bCryptPasswordEncoder);
+		}
 
-        protected void configure(HttpSecurity http) throws Exception {
-            http.antMatcher("/ops*/
-/**").authorizeRequests().anyRequest()
-                    //.authenticated()
-                    .hasAuthority(UserType.OPERATIONS.toString())
-                    // log in
-                    .and().formLogin().loginPage("/login/ops").loginProcessingUrl("/ops/login").failureUrl("/login/ops?error=true").defaultSuccessUrl("/ops/dashboard")
+		protected void configure(HttpSecurity http) throws Exception {
+			http.antMatcher("/ops/**").authorizeRequests().anyRequest()
+					//.authenticated()
+					.hasAuthority(UserType.OPERATIONS.toString())
+					// log in
+					.and().formLogin().loginPage("/login/ops").loginProcessingUrl("/ops/login").failureUrl("/login/ops?error=true").defaultSuccessUrl("/ops/dashboard")
 					.successHandler(opAuthenticationSuccessHandler)
 					.failureHandler(opAuthenticationFailureHandler)
 
 					.and()
 
 
-                    // logout
-                    .logout().logoutUrl("/ops/logout").logoutSuccessUrl("/login/ops").deleteCookies("JSESSIONID").and().exceptionHandling().and().csrf().disable()
+					// logout
+					.logout().logoutUrl("/ops/logout").logoutSuccessUrl("/login/ops").deleteCookies("JSESSIONID").and().exceptionHandling().and().csrf().disable()
 
-                   .sessionManagement()
-                    .sessionFixation().migrateSession()
-                    .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                    .invalidSessionUrl("/login/ops")
-                    .maximumSessions(1)
-                    .expiredUrl("/login/ops");
-        }
-        @Override
-        public void configure(WebSecurity web) throws Exception {
-            new SecurityConfig(). customConfig(web);
-        }
-    }
+					.sessionManagement()
+					.sessionFixation().migrateSession()
+					.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+					.invalidSessionUrl("/login/ops")
+					.maximumSessions(1)
+					.expiredUrl("/login/ops");
+		}
+		@Override
+		public void configure(WebSecurity web) throws Exception {
+			new SecurityConfig(). customConfig(web);
+		}
+	}
 
 
 	// #########################RETAIL USER SECURITY
@@ -185,8 +174,7 @@ public class SecurityConfig {
 		}
 
 		protected void configure(HttpSecurity http) throws Exception {
-			http.antMatcher("/retail*/
-/**").authorizeRequests().anyRequest()
+			http.antMatcher("/retail/**").authorizeRequests().anyRequest()
 					// .authenticated()
 					.hasAuthority(UserType.RETAIL.toString())
 					// log in
@@ -198,24 +186,23 @@ public class SecurityConfig {
 					.and()
 
 					// logout
-					.logout().logoutUrl("/retail/logout").logoutSuccessUrl("/login/retail").deleteCookies("JSESSIONID").and().exceptionHandling().and().csrf().disable()
+					.logout().logoutUrl("/retail/logout").logoutSuccessUrl("/login/retail").deleteCookies("JSESSIONID").invalidateHttpSession(true).and().exceptionHandling().and().csrf().disable()
 
 					.sessionManagement().sessionFixation().migrateSession()
 					.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED).invalidSessionUrl("/login/retail")
 					.maximumSessions(1).expiredUrl("/login/retail");
 		}
 
-        @Override
-        public void configure(WebSecurity web) throws Exception {
-            new SecurityConfig(). customConfig(web);
-        }
+		@Override
+		public void configure(WebSecurity web) throws Exception {
+			new SecurityConfig(). customConfig(web);
+		}
 
-    }
+	}
 
 
-    @Bean
-    public HttpSessionEventPublisher httpSessionEventPublisher() {
-        return new HttpSessionEventPublisher();
-    }
+	@Bean
+	public HttpSessionEventPublisher httpSessionEventPublisher() {
+		return new HttpSessionEventPublisher();
+	}
 }
-*/

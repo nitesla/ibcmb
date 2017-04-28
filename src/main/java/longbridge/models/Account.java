@@ -14,16 +14,17 @@ import javax.persistence.Entity;
  */
 @Entity
 @Audited
-@Where(clause ="del_flag='N', hidden_flag='N")
+@Where(clause ="del_flag='N'")
 public class Account extends AbstractEntity{
 
     private String accountId;
     private String accountNumber;
     private String accountName;
-    private  String customerId;
+    private String customerId;
     private String schemeType;
-    private  String schemeCode;
-    private  String solId;
+    private String schemeCode;
+    private String solId;
+    private String primary_flag;
     private String hidden_flag;
 
     public Account() {

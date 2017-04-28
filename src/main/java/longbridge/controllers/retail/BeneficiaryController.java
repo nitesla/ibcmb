@@ -9,6 +9,8 @@ import longbridge.services.FinancialInstitutionService;
 import longbridge.services.InternationalBeneficiaryService;
 import longbridge.services.LocalBeneficiaryService;
 import longbridge.services.RetailUserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,6 +28,7 @@ import java.security.Principal;
 @RequestMapping("/retail/beneficiary")
 public class BeneficiaryController {
 
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     private LocalBeneficiaryService localBeneficiaryService;
     @Autowired
@@ -37,7 +40,11 @@ public class BeneficiaryController {
     private RetailUserService retailUserService;
 
     @GetMapping
-    public String getBeneficiaries(LocalBeneficiaryDTO localBeneficiaryDTO, InternationalBeneficiaryDTO internationalBeneficiaryDTO){
+    public String getBeneficiaries(Model model, Principal principal){
+        RetailUser retailUser = retailUserService.getUserByName(principal.getName());
+        logger.info("local BEN {}", localBeneficiaryService.getLocalBeneficiaries(retailUser));
+        model.addAttribute("localBen", localBeneficiaryService.getLocalBeneficiaries(retailUser));
+        model.addAttribute("intBen", internationalBeneficiaryService.getInternationalBeneficiaries(retailUser));
         return "cust/beneficiary/view";
     }
 
@@ -89,11 +96,18 @@ public class BeneficiaryController {
 //        return localBeneficiaries;
 //    }
 
-    @GetMapping("/{beneficiaryId}/delete")
-    public String deleteBeneficiary(@PathVariable Long beneficiaryId, Model model){
+    @GetMapping("/{beneficiaryId}/loc/delete")
+    public String deleteLocBeneficiary(@PathVariable Long beneficiaryId, Model model){
         localBeneficiaryService.deleteLocalBeneficiary(beneficiaryId);
         model.addAttribute("success","Beneficiary deleted successfully");
-        return "redirect:/retail/beneficiaries";
+        return "redirect:/retail/beneficiary";
+    }
+
+    @GetMapping("/{beneficiaryId}/int/delete")
+    public String deleteIncBeneficiary(@PathVariable Long beneficiaryId, Model model){
+        internationalBeneficiaryService.deleteInternationalBeneficiary(beneficiaryId);
+        model.addAttribute("success","Beneficiary deleted successfully");
+        return "redirect:/retail/beneficiary";
     }
 
 }

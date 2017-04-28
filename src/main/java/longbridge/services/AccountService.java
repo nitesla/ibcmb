@@ -42,7 +42,7 @@ public interface AccountService {
      * @param customerId the customer id of particular customer
      * @return a list of {@link Account}
      */
-    Iterable<Account> getAccounts(String customerId);
+    Iterable<AccountDTO> getAccounts(String customerId);
     
     Page<Account> getAccounts(String customerId, Pageable pageDetails);
 

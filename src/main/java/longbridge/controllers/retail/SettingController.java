@@ -1,14 +1,14 @@
 package longbridge.controllers.retail;
 
+import longbridge.dtos.CodeDTO;
 import longbridge.dtos.RetailUserDTO;
 import longbridge.forms.AlertPref;
 import longbridge.forms.ChangePassword;
-import longbridge.models.AlertPreference;
+import longbridge.services.CodeService;
 import longbridge.services.RetailUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -28,7 +28,10 @@ import java.security.Principal;
 public class SettingController {
 
     private Logger logger= LoggerFactory.getLogger(this.getClass());
-    private BCryptPasswordEncoder passwordEncoder;
+
+    @Autowired
+    private CodeService codeService;
+
     @Autowired
     private RetailUserService retailUserService;
 
@@ -59,7 +62,8 @@ public class SettingController {
 
     @GetMapping("/alert_preference")
     public String AlertPreferencePage(AlertPref alertPref, Model model){
-        model.addAttribute("prefs", AlertPreference.values());
+        Iterable<CodeDTO> pref = codeService.getCodesByType("ALERT_PREFERENCE");
+        model.addAttribute("prefs", pref);
         return "cust/settings/alertpref";
     }
 
@@ -72,9 +76,15 @@ public class SettingController {
 
         RetailUserDTO user = retailUserService.getUserDTOByName(principal.getName());
 
-        retailUserService.changeAlertPreference(user, alertPref.getPreference());
+        retailUserService.changeAlertPreference(user, alertPref);
 
         redirectAttributes.addFlashAttribute("message","Preference Change Successful successful");
         return "redirect:/retail/alert_preference";
+    }
+
+
+    @GetMapping("/bvn")
+    public String linkBVN(){
+        return "abc";
     }
 }

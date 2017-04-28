@@ -20,7 +20,7 @@
                             <div class="form-group">
                                 <label>Select Preference</label>
                                 <select name="preference" class="form-control">
-                                    <option th:each="pref : ${prefs}" th:value="${pref}" th:text="${pref}"></option>
+                                    <option th:each="pref : ${prefs}" th:value="${pref.code}" th:text="${pref.description}"></option>
                                 </select>
                             </div>
 

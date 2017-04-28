@@ -19,6 +19,7 @@ import java.util.Date;
 @Where(clause ="del_Flag='N'" )
 public class RetailUser extends User{
 
+	private String bvn;
 	private String customerId;
 	private Date birthDate;
 
@@ -40,6 +41,14 @@ public class RetailUser extends User{
 //		this.beneficiaries = beneficiaries;
 //	}
 
+
+	public String getBvn() {
+		return bvn;
+	}
+
+	public void setBvn(String bvn) {
+		this.bvn = bvn;
+	}
 
 	public RetailUser(){
 		this.userType = (UserType.RETAIL);

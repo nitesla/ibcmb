@@ -3,7 +3,6 @@ package longbridge.services;
 import longbridge.dtos.InternationalBeneficiaryDTO;
 import longbridge.models.InternationalBeneficiary;
 import longbridge.models.RetailUser;
-import longbridge.models.User;
 
 import java.util.List;
 
@@ -33,7 +32,7 @@ public interface InternationalBeneficiaryService {
      * @param user the customer
      * @return a list of the beneficiaries
      */
-    Iterable<InternationalBeneficiary> getInternationalBeneficiaries(User user);
+    Iterable<InternationalBeneficiary> getInternationalBeneficiaries(RetailUser user);
 
     List<InternationalBeneficiaryDTO> convertEntitiesToDTOs(Iterable<InternationalBeneficiary> internationalBeneficiaries);
 

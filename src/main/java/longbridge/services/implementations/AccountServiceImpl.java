@@ -73,9 +73,9 @@ public class AccountServiceImpl implements AccountService{
     }
 
     @Override
-    public Iterable<Account> getAccounts(String customerId) {
+    public Iterable<AccountDTO> getAccounts(String customerId) {
         List<Account> accountList = accountRepo.findByCustomerId(customerId);
-        return accountList;
+        return convertEntitiesToDTOs(accountList);
     }
 
     @Override
