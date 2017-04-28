@@ -3,6 +3,7 @@ package longbridge.services.implementations;
 import longbridge.dtos.PermissionDTO;
 import longbridge.dtos.RoleDTO;
 import longbridge.models.Permission;
+import longbridge.models.RetailUser;
 import longbridge.models.Role;
 import longbridge.repositories.PermissionRepo;
 import longbridge.repositories.RoleRepo;
@@ -37,4 +38,16 @@ public class SecurityServiceImpl implements SecurityService {
         SecureRandom random = new SecureRandom();
         return new BigInteger(130, random).toString(32).substring(0, 12);
     }
+
+	@Override
+	public List<String> getSecurityQuestions() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean validateSecurityQuestion(RetailUser retailUser, String securityQuestion, String securityAnswer) {
+		//TODO implement this through entrust
+		return true;
+	}
 }

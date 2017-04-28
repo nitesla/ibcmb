@@ -94,6 +94,22 @@ public interface RetailUserService {
      */
     boolean generateAndSendPassword(RetailUser user);
 
+    /** This sets the Alert preference of the specified user. Alert preference may
+     * be SMS, EMAIL or BOTH
+     * @param retailUser
+     * @param alertPreference
+     * @return
+     */
     boolean changeAlertPreference(RetailUserDTO retailUser, AlertPreference alertPreference);
 
+    /** This tries to retrieve the username of a {@link RetailUser} using the specified information
+     * 
+     * @param accountNumber a valid accountNumber representing one of the user's accounts
+     * @param securityQuestion the user's security question
+     * @param securityAnswer the answer to the user's security question
+     * @return the username if the inputs are valid or an error message if the invalid
+     */
+    String retrieveUsername(String accountNumber, String securityQuestion, String securityAnswer);;
+    
+    
 }
