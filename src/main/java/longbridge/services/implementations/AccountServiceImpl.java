@@ -6,8 +6,11 @@ import longbridge.dtos.AccountRestrictionDTO;
 import longbridge.models.Account;
 import longbridge.models.AccountClassRestriction;
 import longbridge.models.AccountRestriction;
+import longbridge.repositories.AccountClassRestrictionRepo;
 import longbridge.repositories.AccountRepo;
+import longbridge.repositories.AccountRestrictionRepo;
 import longbridge.services.AccountService;
+import longbridge.services.CodeService;
 import longbridge.services.IntegrationService;
 import longbridge.utils.AccountStatement;
 import org.modelmapper.ModelMapper;
@@ -34,15 +37,21 @@ public class AccountServiceImpl implements AccountService{
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private AccountRepo accountRepo;
+    private AccountRestrictionRepo accountRestrictionRepo;
+    private AccountClassRestrictionRepo accountClassRestrictionRepo;
 
     private IntegrationService integrationService;
+    @Autowired
+    private CodeService codeService;
 
     @Autowired
     private ModelMapper modelMapper;
 
-    @Autowired
-    public AccountServiceImpl(AccountRepo accountRepo, IntegrationService integrationService){
+
+    public AccountServiceImpl(AccountRepo accountRepo, AccountRestrictionRepo accountRestrictionRepo, AccountClassRestrictionRepo accountClassRestrictionRepo, IntegrationService integrationService) {
         this.accountRepo = accountRepo;
+        this.accountRestrictionRepo = accountRestrictionRepo;
+        this.accountClassRestrictionRepo = accountClassRestrictionRepo;
         this.integrationService = integrationService;
     }
 

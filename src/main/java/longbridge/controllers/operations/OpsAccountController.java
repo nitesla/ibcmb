@@ -132,7 +132,7 @@ return restrictionTypes;
     public String removeAccountRestriction(@PathVariable Long id,RedirectAttributes redirectAttributes) {
         accountService.removeAccountRestriction(id);
         redirectAttributes.addFlashAttribute("message","Account restriction removed successfully");
-        return "redirect:/ops/account/restriction/account/remove";
+        return "redirect:/ops/accounts/restriction/account";
     }
 
     @GetMapping("/restriction/class/new")
@@ -211,7 +211,7 @@ return restrictionTypes;
     public String removeAccountClassRestriction(@PathVariable Long id,RedirectAttributes redirectAttributes) {
         accountService.removeAccountClassRestriction(id);
         redirectAttributes.addFlashAttribute("message","Account Class restriction removed successfully");
-        return "redirect:/ops/accounts/restriction/class/remove";
+        return "redirect:/ops/accounts/restriction/class";
     }
 
 }
