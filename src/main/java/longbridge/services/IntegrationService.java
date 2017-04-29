@@ -2,6 +2,7 @@ package longbridge.services;
 
 import longbridge.api.AccountDetails;
 import longbridge.api.AccountInfo;
+import longbridge.api.CustomerDetails;
 import longbridge.models.Account;
 import longbridge.models.TransferRequest;
 import longbridge.utils.AccountStatement;
@@ -47,7 +48,7 @@ public interface IntegrationService {
     void makeTransfer(TransferRequest transferRequest);
 
     AccountDetails viewAccountDetails(String acctNo);
-    Boolean isAccountValid(String accNo,String email,String dob);
+    CustomerDetails isAccountValid(String accNo, String email, String dob);
     BigDecimal getDailyDebitTransaction(String acctNo);
     BigDecimal getDailyAccountLimit(String accNo,String channel);
 }

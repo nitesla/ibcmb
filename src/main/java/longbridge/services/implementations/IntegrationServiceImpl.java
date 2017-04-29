@@ -3,6 +3,7 @@ package longbridge.services.implementations;
 import longbridge.api.AccountDetails;
 import longbridge.api.AccountInfo;
 
+import longbridge.api.CustomerDetails;
 import longbridge.models.TransferRequest;
 import longbridge.services.IntegrationService;
 import longbridge.utils.AccountStatement;
@@ -27,7 +28,7 @@ public class IntegrationServiceImpl implements IntegrationService {
     private Logger  logger= LoggerFactory.getLogger(getClass());
 
     @Value("${ebank.service.uri}")
-    private   String URI;   //TODO URI for the account details class
+    private   String URI;
 
     private RestTemplate template;
 
@@ -46,7 +47,6 @@ public class IntegrationServiceImpl implements IntegrationService {
         try{
 
             String uri=URI +"/customer/{acctId}/accounts";
-
             List<AccountInfo> details= template.getForObject(uri, ArrayList.class,cifid);
             return details;
         }catch (Exception e){
@@ -91,10 +91,21 @@ public class IntegrationServiceImpl implements IntegrationService {
      {
 //template.postForObject();
      }
+     case INTER_BANK_TRANSFER:{
 
+     }
+     case INTERNATIONAL_TRANSFER:{
 
+     }
+     case NAPS:{
 
+     }
+     case OWN_ACCOUNT_TRANSFER:{
 
+     }
+     case RTGS:{
+
+     }
  }
 
 
@@ -117,15 +128,15 @@ public class IntegrationServiceImpl implements IntegrationService {
     }
 
     @Override
-    public Boolean isAccountValid(String accNo,String email,String dob) {
-       boolean result=false;
+    public CustomerDetails isAccountValid(String accNo, String email, String dob) {
+        CustomerDetails result=null;
         String uri=URI +"/account/verification";
         Map<String, String> params = new HashMap<>();
         params.put("accountNumber",accNo );
         params.put("email",email );
         params.put("dateOfBirth",dob );
         try {
-           result = template.postForObject(uri,params,Boolean.class);
+           result = template.postForObject(uri,params,CustomerDetails.class);
 
         }
         catch (Exception e){

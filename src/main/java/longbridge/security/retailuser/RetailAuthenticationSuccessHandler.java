@@ -35,6 +35,7 @@ public class RetailAuthenticationSuccessHandler implements AuthenticationSuccess
         final HttpSession session = request.getSession(false);
         if (session != null) {
             session.setMaxInactiveInterval(30 * 60); //TODO this cannot be static
+            session.setAttribute("user",retailUserRepo.findFirstByUserName(authentication.getName()));
 
         }
         clearAuthenticationAttributes(request);

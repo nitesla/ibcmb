@@ -47,12 +47,11 @@ public class TransferServiceImpl implements TransferService {
     @Override
     public void deleteTransfer(Long id) {
         TransferRequest transferRequest = transferRequestRepo.findById(id);
-        if(transferRequest ==null){
- // todo           throw new Exception("No Transfer found");
-            return;
+        if(transferRequest !=null){
+            transferRequestRepo.delete(transferRequest);
         }
-        transferRequest.setDelFlag("Y");
-        transferRequestRepo.save(transferRequest);
+
+
     }
 
 	@Override

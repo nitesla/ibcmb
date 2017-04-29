@@ -187,7 +187,7 @@ public class SecurityConfig {
 					.and()
 
 					// logout
-					.logout().logoutUrl("/retail/logout").logoutSuccessUrl("/login/retail").deleteCookies("JSESSIONID").and().exceptionHandling().and().csrf().disable()
+					.logout().logoutUrl("/retail/logout").logoutSuccessUrl("/login/retail").deleteCookies("JSESSIONID").invalidateHttpSession(true).and().exceptionHandling().and().csrf().disable()
 
 					.sessionManagement().sessionFixation().migrateSession()
 					.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED).invalidSessionUrl("/login/retail")

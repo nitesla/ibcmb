@@ -8,6 +8,8 @@ import org.springframework.context.annotation.CommonAnnotationBeanPostProcessor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.request.RequestContextListener;
 import org.springframework.web.servlet.LocaleResolver;
@@ -84,5 +86,15 @@ public class WebMvcConfig   extends WebMvcConfigurerAdapter {
 		return source;
 	}
 
+
+
+//
+//	@Bean
+//	public AuthenticationSuccessHandler successHandler() {
+//		SimpleUrlAuthenticationSuccessHandler handler = new SimpleUrlAuthenticationSuccessHandler();
+//		handler.setUseReferer(true);
+//		handler.setDefaultTargetUrl();
+//		return handler;
+//	}
 
 }
