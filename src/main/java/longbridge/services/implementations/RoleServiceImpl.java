@@ -19,14 +19,26 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import longbridge.dtos.CodeDTO;
 import longbridge.dtos.PermissionDTO;
 import longbridge.dtos.RoleDTO;
 import longbridge.models.AdminUser;
+import longbridge.models.Code;
+import longbridge.models.CorporateUser;
 import longbridge.models.OperationCode;
+import longbridge.models.OperationsUser;
 import longbridge.models.Permission;
+import longbridge.models.RetailUser;
 import longbridge.models.Role;
+import longbridge.models.User;
+import longbridge.models.UserType;
 import longbridge.models.Verification;
+import longbridge.repositories.AdminUserRepo;
+import longbridge.repositories.CorporateRepo;
+import longbridge.repositories.CorporateUserRepo;
+import longbridge.repositories.OperationsUserRepo;
 import longbridge.repositories.PermissionRepo;
+import longbridge.repositories.RetailUserRepo;
 import longbridge.repositories.RoleRepo;
 import longbridge.services.RoleService;
 import longbridge.services.VerificationService;
@@ -260,5 +272,60 @@ public class RoleServiceImpl implements RoleService {
 		Iterable<Permission> permissionsNotInRole = permissionRepo.findByIdNotIn(permissionArray);
 		
 		return convertPermissionEntitiesToDTOs(permissionsNotInRole);
+	}
+
+
+	@Autowired
+	AdminUserRepo adminRepo;
+	@Autowired
+	RetailUserRepo retailRepo;
+	@Autowired
+	OperationsUserRepo opRepo;
+	@Autowired
+	CorporateUserRepo corpRepo;
+
+
+	@Override
+	public Page<User> getUsers(RoleDTO roledto, Pageable pageDetails) {
+		Role role = roleRepo.findOne(roledto.getId());
+		Page<User> pageImpl = null;
+		switch(role.getUserType()){
+		 case ADMIN: 
+		 {
+			  Page<AdminUser> users = adminRepo.findByRole(role, pageDetails);
+			  long elements = users.getTotalElements();
+			  List<User> userList =  (List<User>)(List<?>) users.getContent();
+			  pageImpl = new PageImpl<User>(userList,pageDetails,elements);
+		 }
+			 ;
+         break;
+		 case OPERATIONS:
+		 {
+			  Page<OperationsUser> users = opRepo.findByRole(role, pageDetails);
+			  long elements = users.getTotalElements();
+			  List<User> userList =  (List<User>)(List<?>) users.getContent();
+			  pageImpl = new PageImpl<User>(userList,pageDetails,elements);
+		 }
+			 break;
+			 
+		 case RETAIL:
+		 {
+			  Page<RetailUser> users = retailRepo.findByRole(role, pageDetails);
+			  long elements = users.getTotalElements();
+			  List<User> userList =  (List<User>)(List<?>) users.getContent();
+			  pageImpl = new PageImpl<User>(userList,pageDetails,elements);
+		 }
+			 break;
+		 case CORPORATE :
+		 {
+			  Page<CorporateUser> users = corpRepo.findByRole(role, pageDetails);
+			  long elements = users.getTotalElements();
+			  List<User> userList =  (List<User>)(List<?>) users.getContent();
+			  pageImpl = new PageImpl<User>(userList,pageDetails,elements);
+		 }
+			 break;
+		}
+		
+		return pageImpl;
 	}
 }
