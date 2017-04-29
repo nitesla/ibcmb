@@ -2,6 +2,7 @@ package longbridge.services.implementations;
 
 import longbridge.dtos.FinancialInstitutionDTO;
 import longbridge.models.FinancialInstitution;
+import longbridge.models.FinancialInstitutionType;
 import longbridge.repositories.FinancialInstitutionRepo;
 import longbridge.services.FinancialInstitutionService;
 import org.modelmapper.ModelMapper;
@@ -48,6 +49,7 @@ public class FinancialInstitutionServiceImpl implements FinancialInstitutionServ
     public FinancialInstitutionDTO convertEntityToDTO(FinancialInstitution financialInstitution){
         FinancialInstitutionDTO financialInstitutionDTO = new FinancialInstitutionDTO();
         financialInstitutionDTO.setInstitutionCode(financialInstitution.getInstitutionCode());
+        financialInstitutionDTO.setInstitutionType(financialInstitution.getInstitutionType());
         financialInstitutionDTO.setInstitutionName(financialInstitution.getInstitutionName());
         return  modelMapper.map(financialInstitution,FinancialInstitutionDTO.class);
     }
@@ -63,6 +65,7 @@ public class FinancialInstitutionServiceImpl implements FinancialInstitutionServ
         if (financialInstitutionDTO != null) {
             FinancialInstitution financialInstitution = new FinancialInstitution();
             financialInstitution.setInstitutionCode(financialInstitutionDTO.getInstitutionCode());
+            financialInstitution.setInstitutionType(financialInstitutionDTO.getInstitutionType());
             financialInstitution.setInstitutionName(financialInstitutionDTO.getInstitutionName());
             this.financialInstitutionRepo.save(financialInstitution
             );
@@ -82,6 +85,7 @@ public class FinancialInstitutionServiceImpl implements FinancialInstitutionServ
                 financialInstitution.setId((financialInstitutionDTO.getId()));
                 financialInstitution.setVersion(financialInstitutionDTO.getVersion());
                 financialInstitution.setInstitutionCode(financialInstitutionDTO.getInstitutionCode());
+                financialInstitution.setInstitutionType(financialInstitutionDTO.getInstitutionType());
                 financialInstitution.setInstitutionName(financialInstitutionDTO.getInstitutionName());
                 this.financialInstitutionRepo.save(financialInstitution);
                 logger.info("Financial Institution {} updated", financialInstitution.getInstitutionName());
@@ -95,6 +99,13 @@ public class FinancialInstitutionServiceImpl implements FinancialInstitutionServ
     @Override
     public List<FinancialInstitutionDTO> getFinancialInstitutions() {
         Iterable<FinancialInstitution> fis =financialInstitutionRepo.findAll();
+        logger.info("FinancialInstitutions {}",fis.toString());
+        return convertEntitiesToDTOs(fis);
+    }
+
+    @Override
+    public List<FinancialInstitutionDTO> getFinancialInstitutionsByType(FinancialInstitutionType institutionType) {
+        Iterable<FinancialInstitution> fis =financialInstitutionRepo.findByInstitutionType(institutionType);
         logger.info("FinancialInstitutions {}",fis.toString());
         return convertEntitiesToDTOs(fis);
     }

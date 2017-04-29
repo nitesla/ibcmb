@@ -26,7 +26,9 @@ public class User extends AbstractEntity{
     //@Enumerated(value = EnumType.STRING)
     protected UserType userType;
 
-    protected AlertPreference alertPreference;
+
+    @ManyToOne
+    private Code alertPreference;
 
 
     @ManyToOne
@@ -105,11 +107,11 @@ public class User extends AbstractEntity{
 //	}
 
 
-    public AlertPreference getAlertPreference() {
+    public Code getAlertPreference() {
         return alertPreference;
     }
 
-    public void setAlertPreference(AlertPreference alertPreference) {
+    public void setAlertPreference(Code alertPreference) {
         this.alertPreference = alertPreference;
     }
 

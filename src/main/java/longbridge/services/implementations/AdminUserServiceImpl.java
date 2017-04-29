@@ -1,13 +1,19 @@
 package longbridge.services.implementations;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import longbridge.dtos.AdminUserDTO;
 import longbridge.models.AdminUser;
+import longbridge.models.OperationCode;
 import longbridge.models.Role;
+import longbridge.models.Verification;
 import longbridge.repositories.AdminUserRepo;
 import longbridge.repositories.VerificationRepo;
 import longbridge.services.AdminUserService;
 import longbridge.services.RoleService;
 import longbridge.services.SecurityService;
+//import longbridge.utils.Verifiable;
+
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +24,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -52,7 +60,6 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
     public AdminUserServiceImpl() {
-
     }
 
     @Override
@@ -97,6 +104,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
     @Override
+//    @Verifiable(operation="Add Admin",description="Adding a new User")
     public boolean addUser(AdminUserDTO user) {
         boolean ok = false;
         if (user != null) {
@@ -125,6 +133,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
     @Override
+//    @Verifiable(operation="Updating an Existing User")
     public boolean updateUser(AdminUserDTO user) {
         boolean ok = false;
         if (user != null) {
@@ -186,7 +195,7 @@ public class AdminUserServiceImpl implements AdminUserService {
         }
         catch (Exception e){
             e.printStackTrace();
-            logger.error("ERROR OCCURRED {}",e.getMessage());
+            logger.error("ERROR OCCURRED {}", e.getMessage());
         }
         return ok;
     }

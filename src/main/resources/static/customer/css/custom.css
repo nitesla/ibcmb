@@ -142,6 +142,10 @@ body {
     color: #77777a;
 }
 
+.border-round{
+    background-color: #77777a;
+}
+
 .navbar {
     background: none;
     border: 0;

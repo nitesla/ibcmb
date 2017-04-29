@@ -2,7 +2,7 @@ package longbridge.dtos;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import longbridge.models.AlertPreference;
+import longbridge.models.Code;
 import longbridge.models.Role;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -25,13 +25,15 @@ public class RetailUserDTO {
     private Date birthDate;
     private String password;
     private String status;
+    private String bvn;
     private Date dateRegistered;
     private Date expiryDate;
     private Date lockedUntilDate;
     private Date lastLoginDate;
     private int noOfLoginAttempts;
+    private String antiPhishingImage;
     private Role role;
-    private AlertPreference alertPreference;
+    private Code alertPreference;
 
     public Long getId() {
         return id;
@@ -50,14 +52,22 @@ public class RetailUserDTO {
     }
 
     public String getUserName() {
-        return userName;
-    }
+		return userName;
+	}
 
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
+	public void setUserName(String username) {
+		this.userName = username;
+	}
 
-    public String getVersion() {
+	public String getAntiPhishingImage() {
+		return antiPhishingImage;
+	}
+
+	public void setAntiPhishingImage(String antiPhishingImage) {
+		this.antiPhishingImage = antiPhishingImage;
+	}
+
+	public String getVersion() {
         return version;
     }
 
@@ -161,11 +171,19 @@ public class RetailUserDTO {
         this.role = role;
     }
 
-    public AlertPreference getAlertPreference() {
+    public String getBvn() {
+        return bvn;
+    }
+
+    public void setBvn(String bvn) {
+        this.bvn = bvn;
+    }
+
+    public Code getAlertPreference() {
         return alertPreference;
     }
 
-    public void setAlertPreference(AlertPreference alertPreference) {
+    public void setAlertPreference(Code alertPreference) {
         this.alertPreference = alertPreference;
     }
 

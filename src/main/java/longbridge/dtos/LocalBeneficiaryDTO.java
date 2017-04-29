@@ -1,11 +1,6 @@
 package longbridge.dtos;
 
-import longbridge.models.Beneficiary;
-import longbridge.models.RetailUser;
 import org.hibernate.validator.constraints.NotEmpty;
-
-import javax.persistence.Entity;
-import javax.validation.constraints.NotNull;
 
 /**
  * Created by Fortune on 4/5/2017.
@@ -13,38 +8,39 @@ import javax.validation.constraints.NotNull;
 
 public class LocalBeneficiaryDTO{
 
-    private RetailUser user;
+    private Long id;
     @NotEmpty
-    private String name;
+    private String accountName;
     @NotEmpty
-    private String accountNo;
+    private String accountNumber;
     @NotEmpty
     private String beneficiaryBank;
+    private String preferredName;
 
-    public RetailUser getUser() {
-        return user;
+
+    public Long getId() {
+        return id;
     }
 
-    public void setUser(RetailUser user) {
-        this.user = user;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getAccountName() {
+        return accountName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setAccountName(String accountName) {
+        this.accountName = accountName;
     }
 
-    public String getAccountNo() {
-        return accountNo;
+    public String getAccountNumber() {
+        return accountNumber;
     }
 
-    public void setAccountNo(String accountNo) {
-        this.accountNo = accountNo;
+    public void setAccountNumber(String accountNumber) {
+        this.accountNumber = accountNumber;
     }
-
 
     public String getBeneficiaryBank() {
         return beneficiaryBank;
@@ -52,5 +48,13 @@ public class LocalBeneficiaryDTO{
 
     public void setBeneficiaryBank(String beneficiaryBank) {
         this.beneficiaryBank = beneficiaryBank;
+    }
+
+    public String getPreferredName() {
+        return preferredName;
+    }
+
+    public void setPreferredName(String preferredName) {
+        this.preferredName = preferredName;
     }
 }

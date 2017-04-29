@@ -1,8 +1,8 @@
 package longbridge.services;
 
 import longbridge.dtos.RetailUserDTO;
+import longbridge.forms.AlertPref;
 import longbridge.models.Account;
-import longbridge.models.AlertPreference;
 import longbridge.models.RetailUser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,7 +18,9 @@ public interface RetailUserService {
      */
     RetailUserDTO getUser(Long id);
 
-    RetailUserDTO getUserByName(String name);
+    RetailUser getUserByName(String name);
+
+    RetailUserDTO getUserDTOByName(String name);
 
     /**
      *Returns a list of retail users
@@ -92,6 +94,22 @@ public interface RetailUserService {
      */
     boolean generateAndSendPassword(RetailUser user);
 
-    boolean changeAlertPreference(RetailUserDTO retailUser, AlertPreference alertPreference);
+    /** This sets the Alert preference of the specified user. Alert preference may
+     * be SMS, EMAIL or BOTH
+     * @param retailUser
+     * @param alertPreference
+     * @return
+     */
+    boolean changeAlertPreference(RetailUserDTO retailUser, AlertPref alertPreference);
 
+    /** This tries to retrieve the username of a {@link RetailUser} using the specified information
+     * 
+     * @param accountNumber a valid accountNumber representing one of the user's accounts
+     * @param securityQuestion the user's security question
+     * @param securityAnswer the answer to the user's security question
+     * @return the username if the inputs are valid or an error message if the invalid
+     */
+    String retrieveUsername(String accountNumber, String securityQuestion, String securityAnswer);;
+    
+    
 }

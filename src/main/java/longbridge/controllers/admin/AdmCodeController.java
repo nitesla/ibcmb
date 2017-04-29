@@ -16,13 +16,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import longbridge.dtos.CodeDTO;
+import longbridge.dtos.CodeTypeDTO;
 import longbridge.models.AdminUser;
 import longbridge.models.Code;
 import longbridge.repositories.AdminUserRepo;
@@ -62,9 +65,16 @@ public class AdmCodeController {
         }
 
         logger.info("Code {}", codeDTO.toString());
+        Code code = codeService.convertDTOToEntity(codeDTO);
+        try {
+			verificationService.addNewVerificationRequest(code);
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			logger.error("Error", e);
+		}
 //        codeService.updateCode(codeDTO,adminUser);//
 //        codeService.addObject(code);
-        codeService.addCode(codeDTO);
+//        codeService.addCode(codeDTO);
 
         redirectAttributes.addFlashAttribute("success", "Code added successfully");
         return "redirect:/admin/codes";
@@ -86,9 +96,42 @@ public class AdmCodeController {
 
 	@GetMapping
 	public String getCodes() {
-
 		return "adm/code/view";
+	}
+	
+	@GetMapping("/alltypes")
+	public String getCodeTypes() {
+		return "adm/code/type-view";
+	}
+	
+	@GetMapping("/type/{type}/edit")
+	public String getCodeType(@PathVariable String type, Model model) {
+		model.addAttribute("codeType", type);
+		return "adm/code/type-code-view";
+	}
 
+	
+	@GetMapping("/type/{type}/new")
+	public String addCode(@PathVariable String type, Model model) {
+		CodeDTO code = new CodeDTO();
+		code.setType(type);
+		model.addAttribute("codeType", type);
+		model.addAttribute("codeDTO", code);
+		return addCode(code);
+	}
+	
+	
+	@GetMapping(path = "/type")
+	public @ResponseBody DataTablesOutput<CodeTypeDTO> getAllCodeTypes(DataTablesInput input) {
+
+		Pageable pageable = DataTablesUtils.getPageable(input);
+		Page<CodeTypeDTO> codeTypes = codeService.getCodeTypes(pageable);
+		DataTablesOutput<CodeTypeDTO> out = new DataTablesOutput<CodeTypeDTO>();
+		out.setDraw(input.getDraw());
+		out.setData(codeTypes.getContent());
+		out.setRecordsFiltered(codeTypes.getTotalElements());
+		out.setRecordsTotal(codeTypes.getTotalElements());
+		return out;
 	}
 
 	@GetMapping(path = "/all")
@@ -103,13 +146,25 @@ public class AdmCodeController {
 		out.setRecordsTotal(codes.getTotalElements());
 		return out;
 	}
+	
+	@GetMapping(path = "/alltype")
+	public @ResponseBody DataTablesOutput<CodeDTO> getAllCodesOfType(@RequestParam(name="codeType") String codeType,DataTablesInput input) {
+
+		Pageable pageable = DataTablesUtils.getPageable(input);
+		Page<CodeDTO> codes = codeService.getCodesByType(codeType, pageable);
+		DataTablesOutput<CodeDTO> out = new DataTablesOutput<CodeDTO>();
+		out.setDraw(input.getDraw());
+		out.setData(codes.getContent());
+		out.setRecordsFiltered(codes.getTotalElements());
+		out.setRecordsTotal(codes.getTotalElements());
+		return out;
+	}
 
 	@GetMapping("/{type}")
 	public Iterable<CodeDTO> getCodesByType(@PathVariable String type, Model model) {
 		Iterable<CodeDTO> codeList = codeService.getCodesByType(type);
 		model.addAttribute("codeList", codeList);
 		return codeList;
-
 	}
 
 	@PostMapping("/update")

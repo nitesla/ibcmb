@@ -1,10 +1,16 @@
 package longbridge.controllers.retail;
 
+import longbridge.dtos.InternationalBeneficiaryDTO;
+import longbridge.dtos.LocalBeneficiaryDTO;
 import longbridge.models.Beneficiary;
-import longbridge.models.LocalBeneficiary;
+import longbridge.models.FinancialInstitutionType;
 import longbridge.models.RetailUser;
 import longbridge.services.FinancialInstitutionService;
+import longbridge.services.InternationalBeneficiaryService;
 import longbridge.services.LocalBeneficiaryService;
+import longbridge.services.RetailUserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,6 +18,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.security.Principal;
 
 /**
  * Created by Fortune on 4/3/2017.
@@ -21,40 +28,62 @@ import javax.validation.Valid;
 @RequestMapping("/retail/beneficiary")
 public class BeneficiaryController {
 
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
-    private LocalBeneficiaryService beneficiaryService;
+    private LocalBeneficiaryService localBeneficiaryService;
+    @Autowired
+    private InternationalBeneficiaryService internationalBeneficiaryService;
     @Autowired
     private FinancialInstitutionService financialInstitutionService;
 
-    private RetailUser user  = new RetailUser();//TODO the current user must be authenticated
+    @Autowired
+    private RetailUserService retailUserService;
 
     @GetMapping
-    public String getBeneficiaries(){
+    public String getBeneficiaries(Model model, Principal principal){
+        RetailUser retailUser = retailUserService.getUserByName(principal.getName());
+        logger.info("local BEN {}", localBeneficiaryService.getLocalBeneficiaries(retailUser));
+        model.addAttribute("localBen", localBeneficiaryService.getLocalBeneficiaries(retailUser));
+        model.addAttribute("intBen", internationalBeneficiaryService.getInternationalBeneficiaries(retailUser));
         return "cust/beneficiary/view";
     }
 
     @GetMapping("/new")
     public String addBeneficiary(Model model){
-
-        model.addAttribute("banks", financialInstitutionService.getFinancialInstitutions());
+        model.addAttribute("foreignBanks", financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.FOREIGN));
+        model.addAttribute("localBanks", financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.LOCAL));
         return "cust/beneficiary/add";
     }
 
-    @PostMapping
-    public String createLocalBeneficiary(@ModelAttribute("beneficiary") @Valid  LocalBeneficiary localBeneficiary, BindingResult result, Model model){
+    @PostMapping("/local")
+    public String createLocalBeneficiary(@ModelAttribute("localBeneficiary") @Valid  LocalBeneficiaryDTO localBeneficiaryDTO, Principal principal, BindingResult result, Model model){
 
         if(result.hasErrors()){
-            return "add";
+            return "cust/beneficiary/add";
         }
-        beneficiaryService.addLocalBeneficiary(user,localBeneficiary);
+
+        RetailUser user = retailUserService.getUserByName(principal.getName());
+        localBeneficiaryService.addLocalBeneficiary(user,localBeneficiaryDTO);
         model.addAttribute("success","Beneficiary added successfully");
-        return "redirect:/retail/beneficiaries";
+        return "redirect:/retail/beneficiary";
+    }
+
+    @PostMapping("/foreign")
+    public String createForeignBeneficiary(@ModelAttribute("internationalBeneficiary") @Valid  InternationalBeneficiaryDTO internationalBeneficiaryDTO, Principal principal, BindingResult result, Model model){
+        if(result.hasErrors()){
+            return "cust/beneficiary/add";
+        }
+
+        RetailUser user = retailUserService.getUserByName(principal.getName());
+        internationalBeneficiaryService.addInternationalBeneficiary(user,internationalBeneficiaryDTO);
+        model.addAttribute("success","Beneficiary added successfully");
+        return "redirect:/retail/beneficiary";
     }
 
 
     @GetMapping("/{beneficiaryId}")
     public Beneficiary getBeneficiary(@PathVariable Long beneficiaryId, Model model){
-        Beneficiary localBeneficiary = beneficiaryService.getLocalBeneficiary(beneficiaryId);
+        Beneficiary localBeneficiary = localBeneficiaryService.getLocalBeneficiary(beneficiaryId);
         model.addAttribute("beneficiary",localBeneficiary);
         return localBeneficiary;
     }
@@ -67,11 +96,18 @@ public class BeneficiaryController {
 //        return localBeneficiaries;
 //    }
 
-    @GetMapping("/{beneficiaryId}/delete")
-    public String deleteBeneficiary(@PathVariable Long beneficiaryId, Model model){
-        beneficiaryService.deleteLocalBeneficiary(beneficiaryId);
+    @GetMapping("/{beneficiaryId}/loc/delete")
+    public String deleteLocBeneficiary(@PathVariable Long beneficiaryId, Model model){
+        localBeneficiaryService.deleteLocalBeneficiary(beneficiaryId);
         model.addAttribute("success","Beneficiary deleted successfully");
-        return "redirect:/retail/beneficiaries";
+        return "redirect:/retail/beneficiary";
+    }
+
+    @GetMapping("/{beneficiaryId}/int/delete")
+    public String deleteIncBeneficiary(@PathVariable Long beneficiaryId, Model model){
+        internationalBeneficiaryService.deleteInternationalBeneficiary(beneficiaryId);
+        model.addAttribute("success","Beneficiary deleted successfully");
+        return "redirect:/retail/beneficiary";
     }
 
 }

@@ -12,7 +12,43 @@
         <div class="row">
             <div class="col-md-1"></div>
             <div class="col-md-8 col-sm-8">
-                <a th:href="@{/retail/beneficiary/new}" class="btn pull-right">Add New Beneficiary</a>
+                <a th:href="@{/retail/beneficiary/new}" class="btn">Add New Beneficiary</a>
+
+                <p>Local Beneficiaries</p>
+                <table>
+                    <thead>
+                        <td>Name</td>
+                        <td>Account Number</td>
+                        <td>Bank</td>
+                        <td>Delete</td>
+                    </thead>
+                    <tbody>
+                        <tr th:each="loc : ${localBen}">
+                            <td th:text="${loc.accountName}"></td>
+                            <td th:text="${loc.accountNumber}"></td>
+                            <td></td>
+                            <td><a th:href="@{'/retail/beneficiary/' + ${loc.id} + '/loc/delete'}">Delete</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <p>International Beneficiaries</p>
+                <table>
+                    <thead>
+                    <td>Name</td>
+                    <td>Account Number</td>
+                    <td>Bank</td>
+                    <td>Delete</td>
+                    </thead>
+                    <tbody>
+                    <tr th:each="int : ${intBen}">
+                        <td th:text="${int.accountName}"></td>
+                        <td th:text="${int.accountNumber}"></td>
+                        <td></td>
+                        <td><a th:href="@{'/retail/beneficiary/' + ${int.id} + '/int/delete'}">Delete</a></td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
             <div class="col-md-3 col-sm-3">
                 <div class="alert alert-warning">

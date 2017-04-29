@@ -1,6 +1,12 @@
 package longbridge.services;
 
-import longbridge.models.*;
+import longbridge.dtos.LocalBeneficiaryDTO;
+import longbridge.models.Beneficiary;
+import longbridge.models.LocalBeneficiary;
+import longbridge.models.RetailUser;
+import longbridge.models.User;
+
+import java.util.List;
 
 /**
  * The {@code BeneficiaryService} interface provides the methods to manage the customer's beneficiaries
@@ -17,7 +23,7 @@ public interface LocalBeneficiaryService {
      * @param user the customer
      * @param  beneficiary  the beneficiary
      */
-    boolean addLocalBeneficiary(RetailUser user, LocalBeneficiary beneficiary);
+    boolean addLocalBeneficiary(RetailUser user, LocalBeneficiaryDTO beneficiary);
 
     /**
      * Deletes a beneficiary that has been created by the user
@@ -37,8 +43,12 @@ public interface LocalBeneficiaryService {
      * @param user the customer
      * @return a list of the beneficiaries
      */
-    Iterable<LocalBeneficiary> getLocalBeneficiaries(User user);
+    Iterable<LocalBeneficiary> getLocalBeneficiaries(RetailUser user);
 
- 
 
+    List<LocalBeneficiaryDTO> convertEntitiesToDTOs(Iterable<LocalBeneficiary> localBeneficiaries);
+
+    LocalBeneficiaryDTO convertEntityToDTO(LocalBeneficiary localBeneficiary);
+
+    LocalBeneficiary convertDTOToEntity(LocalBeneficiaryDTO localBeneficiaryDTO);
 }

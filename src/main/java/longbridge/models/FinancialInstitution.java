@@ -3,12 +3,6 @@ package longbridge.models;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-
-import java.io.IOException;
-
 import javax.persistence.Entity;
 
 /**
@@ -25,6 +19,8 @@ public class FinancialInstitution extends AbstractEntity {
 
     private String institutionCode;
 
+    private FinancialInstitutionType institutionType;
+
     private String institutionName;
 
     public String getInstitutionCode() {
@@ -33,6 +29,14 @@ public class FinancialInstitution extends AbstractEntity {
 
     public void setInstitutionCode(String institutionCode) {
         this.institutionCode = institutionCode;
+    }
+
+    public FinancialInstitutionType getInstitutionType() {
+        return institutionType;
+    }
+
+    public void setInstitutionType(FinancialInstitutionType institutionType) {
+        this.institutionType = institutionType;
     }
 
     public String getInstitutionName() {
@@ -47,6 +51,7 @@ public class FinancialInstitution extends AbstractEntity {
     public String toString() {
         return "FinancialInstitution{" +
                 "institutionCode='" + institutionCode + '\'' +
+                ", institutionType='" + institutionType + '\'' +
                 ", institutionName='" + institutionName + '\'' +
                 '}';
     }

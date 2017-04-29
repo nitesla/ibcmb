@@ -3,13 +3,6 @@ package longbridge.models;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import java.io.IOException;
-
 import javax.persistence.Entity;
 
 
@@ -21,17 +14,18 @@ import javax.persistence.Entity;
  */
 @Entity
 @Audited
-@Where(clause ="del_Flag='N'" )
+@Where(clause ="del_flag='N'")
 public class Account extends AbstractEntity{
-
 
     private String accountId;
     private String accountNumber;
     private String accountName;
-    private  String customerId;
+    private String customerId;
     private String schemeType;
-    private  String schemeCode;
-    private  String solId;
+    private String schemeCode;
+    private String solId;
+    private String primary_flag;
+    private String hidden_flag;
 
     public Account() {
     }
@@ -101,6 +95,14 @@ public class Account extends AbstractEntity{
 
     public void setSolId(String solId) {
         this.solId = solId;
+    }
+
+    public String getHidden_flag() {
+        return hidden_flag;
+    }
+
+    public void setHidden_flag(String hidden_flag) {
+        this.hidden_flag = hidden_flag;
     }
 
     @Override

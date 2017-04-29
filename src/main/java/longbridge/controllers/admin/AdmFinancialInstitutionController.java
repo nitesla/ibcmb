@@ -1,8 +1,5 @@
 package longbridge.controllers.admin;
 
-import longbridge.dtos.FinancialInstitutionDTO;
-import longbridge.services.FinancialInstitutionService;
-import longbridge.services.VerificationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +11,18 @@ import org.springframework.data.jpa.datatables.repository.DataTablesUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import longbridge.dtos.FinancialInstitutionDTO;
+import longbridge.models.FinancialInstitutionType;
+import longbridge.services.FinancialInstitutionService;
+import longbridge.services.VerificationService;
 
 /**
  * Created by Wunmi Sowunmi on 24/04/2017.
@@ -49,7 +56,8 @@ public class AdmFinancialInstitutionController {
     }
 
     @GetMapping("/new")
-    public String addFi(FinancialInstitutionDTO financialInstitutionDTO) {
+    public String addFi(FinancialInstitutionDTO financialInstitutionDTO, Model model) {
+        model.addAttribute("types", FinancialInstitutionType.values());
         return "adm/financialinstitution/add";
     }
 
@@ -75,6 +83,7 @@ public class AdmFinancialInstitutionController {
     public String editFi(@PathVariable Long id, Model model) {
         FinancialInstitutionDTO fi = financialInstitutionService.getFinancialInstitution(id);
         model.addAttribute("fi", fi);
+        model.addAttribute("types", FinancialInstitutionType.values());
         return "adm/financialinstitution/edit";
     }
 

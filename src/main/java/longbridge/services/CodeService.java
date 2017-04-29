@@ -1,6 +1,7 @@
 package longbridge.services;
 
 import longbridge.dtos.CodeDTO;
+import longbridge.dtos.CodeTypeDTO;
 import longbridge.models.AdminUser;
 import longbridge.models.Code;
 import org.springframework.data.domain.Page;
@@ -49,6 +50,8 @@ public interface CodeService {
 	public String updateCode(CodeDTO codeDTO, AdminUser adminUser);
 
     Page<CodeDTO> getCodesByType(String codeType, Pageable pageDetails);
+    
+    Page<CodeTypeDTO> getCodeTypes(Pageable pageDetails);
 
 	public Code getByTypeAndCode(String type, String code);
 
@@ -66,5 +69,6 @@ public interface CodeService {
 	Code convertDTOToEntity(CodeDTO codeDTO);
 
 	List<CodeDTO> convertEntitiesToDTOs(Iterable<Code> codes);
+
 
 }

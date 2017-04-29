@@ -119,7 +119,7 @@ public class VerificationServiceImpl implements VerificationService {
 
 
 	@Override
-	public void addModifyVerificationRequest(AbstractEntity originalEntity, AbstractEntity entity) throws JsonProcessingException {
+	public <T extends SerializableEntity<T>> String addModifyVerificationRequest(T originalEntity, T entity) throws JsonProcessingException {
 		String classSimpleName = entity.getClass().getSimpleName();
 		Verification verification = new Verification();
 		verification.setBeforeObject(originalEntity.serialize());
@@ -134,5 +134,6 @@ public class VerificationServiceImpl implements VerificationService {
         verification.setInitiatedOn(new Date());
         verificationRepo.save(verification);
         logger.info(classSimpleName + " Modification request has been added. Before {}, After {}", verification.getBeforeObject(), verification.getAfterObject());
+        return classSimpleName + " Modification request has been added";
 	}
 }

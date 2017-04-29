@@ -1,13 +1,18 @@
 package longbridge.services.implementations;
 
-import longbridge.models.*;
-import longbridge.repositories.InternationalBeneficiaryRepo;
+import longbridge.dtos.LocalBeneficiaryDTO;
+import longbridge.models.LocalBeneficiary;
+import longbridge.models.RetailUser;
 import longbridge.repositories.LocalBeneficiaryRepo;
 import longbridge.services.LocalBeneficiaryService;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Wunmi on 29/03/2017.
@@ -15,25 +20,26 @@ import org.springframework.stereotype.Service;
 @Service
 public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
 
-    private Logger logger= LoggerFactory.getLogger(this.getClass());
-
     private LocalBeneficiaryRepo localBeneficiaryRepo;
-    private InternationalBeneficiaryRepo internationalBeneficiaryRepo;
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    public LocalBeneficiaryServiceImpl(LocalBeneficiaryRepo localBeneficiaryRepo, InternationalBeneficiaryRepo internationalBeneficiaryRepo) {
+    ModelMapper modelMapper;
+
+    @Autowired
+    public LocalBeneficiaryServiceImpl(LocalBeneficiaryRepo localBeneficiaryRepo) {
         this.localBeneficiaryRepo = localBeneficiaryRepo;
-        this.internationalBeneficiaryRepo = internationalBeneficiaryRepo;
     }
 
     @Override
-    public boolean addLocalBeneficiary(RetailUser user, LocalBeneficiary beneficiary) {
+    public boolean addLocalBeneficiary(RetailUser user, LocalBeneficiaryDTO beneficiary) {
         boolean result= false;
 
         try {
-            beneficiary.setUser(user);
-            this.localBeneficiaryRepo.save(beneficiary);
-            logger.trace("Beneficiary {} has been added", this.localBeneficiaryRepo.toString());
+            LocalBeneficiary localBeneficiary = convertDTOToEntity(beneficiary);
+            localBeneficiary.setUser(user);
+            this.localBeneficiaryRepo.save(localBeneficiary);
+            logger.trace("Beneficiary {} has been added", localBeneficiary.toString());
             result=true;
         }
         catch (Exception e){
@@ -67,12 +73,34 @@ public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
     }
 
     @Override
-    public Iterable<LocalBeneficiary> getLocalBeneficiaries(User user) {
-        //return localBeneficiaryRepo.findByUserAndDelFlag(user, "N");
-        return null;
+    public Iterable<LocalBeneficiary> getLocalBeneficiaries(RetailUser user) {
+        return localBeneficiaryRepo.findByUser(user);
     }
 
-    
+    @Override
+    public List<LocalBeneficiaryDTO> convertEntitiesToDTOs(Iterable<LocalBeneficiary> localBeneficiaries){
+        List<LocalBeneficiaryDTO> localBeneficiaryDTOList = new ArrayList<>();
+        for(LocalBeneficiary localBeneficiary: localBeneficiaries){
+            LocalBeneficiaryDTO benDTO = convertEntityToDTO(localBeneficiary);
+            localBeneficiaryDTOList.add(benDTO);
+        }
+        return localBeneficiaryDTOList;
+    }
+
+    @Override
+    public LocalBeneficiaryDTO convertEntityToDTO(LocalBeneficiary localBeneficiary){
+        LocalBeneficiaryDTO localBeneficiaryDTO = new LocalBeneficiaryDTO();
+        localBeneficiaryDTO.setAccountName(localBeneficiary.getAccountName());
+        localBeneficiaryDTO.setAccountNumber(localBeneficiary.getAccountNumber());
+        localBeneficiaryDTO.setBeneficiaryBank(localBeneficiary.getBeneficiaryBank());
+        localBeneficiaryDTO.setPreferredName(localBeneficiary.getPreferredName());
+        return  modelMapper.map(localBeneficiary,LocalBeneficiaryDTO.class);
+    }
+
+    @Override
+    public LocalBeneficiary convertDTOToEntity(LocalBeneficiaryDTO localBeneficiaryDTO){
+        return  modelMapper.map(localBeneficiaryDTO,LocalBeneficiary.class);
+    }
 	
 	
 }

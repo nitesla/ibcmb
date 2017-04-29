@@ -18,7 +18,7 @@
     <link th:href="@{~/bank/css/custom.css}" rel="stylesheet"/>
     <link th:href="@{~/bank/css/coronation.css}" rel="stylesheet"/>
     <link th:href="@{~/bank/css/bootstrap-switch.min.css}" rel="stylesheet"/>
-      <link th:href="@{~/bank/vendors/switchery/switchery.css}" rel="stylesheet" type="text/css" />
+    <link th:href="@{~/bank/vendors/switchery/switchery.css}" rel="stylesheet" type="text/css" />
     <title>Coronation Internet Banking</title>
 
 </head>
@@ -32,7 +32,7 @@
 <!-- admin menu -->
 <div th:fragment="admin-menu" id="sidebar-menu" class="main_menu_side hidden-print main_menu">
     <div class="menu_section">
-        <h3>General</h3>
+        <h3>Admin Console</h3>
         <ul class="nav side-menu">
             <li><a><i class="fa fa-users"></i> User Management <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
@@ -46,28 +46,28 @@
             </li>
             <li><a><i class="fa fa-gears"></i> Configurations <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
-                    <li><a href="/admin/codes">Codes</a></li>
+                    <li><a href="/admin/codes/alltypes">Codes</a></li>
                     <li><a href="/admin/srconfig">Service Requests</a></li>
                     <li><a href="/admin/settings">System Settings</a></li>
                     <li><a href="/admin/finst">Financial Institutions</a></li>
                     <li><a href="/admin/audit">Audit</a></li>
                 </ul>
             </li>
-            <li><a><i class="fa fa-desktop"></i> Reports <span class="fa fa-chevron-down"></span></a>
+            <li><a><i class="fa fa-bar-chart-o"></i> Reports <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
                     <li><a href="view.html">Transfer</a></li>
                     <li><a href="add.html">Transaction</a></li>
                     <li><a href="edit.html">Edit FI</a></li>
                 </ul>
             </li>
-            <li><a><i class="fa fa-table"></i> Token Management <span class="fa fa-chevron-down"></span></a>
+            <li><a><i class="fa fa-key"></i> Token Management <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
                     <li><a href="view.html">View TR</a></li>
                     <li><a href="add.html">Add TR</a></li>
                     <li><a href="edit.html">Edit TR</a></li>
                 </ul>
             </li>
-            <li><a><i class="fa fa-bar-chart-o"></i> Approvals <span class="fa fa-chevron-down"></span></a>
+            <li><a><i class="fa fa-check"></i> Approvals <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
                     <li><a href="view.html">View TR</a></li>
                     <li><a href="add.html">Add TR</a></li>
@@ -84,11 +84,11 @@
 <div th:fragment="ops-menu" id="sidebar-menu" class="main_menu_side hidden-print main_menu">
 
     <div class="menu_section">
-        <h3>General</h3>
+        <h3>Operations Console</h3>
         <ul class="nav side-menu">
-            <li><a><i class="fa fa-users"></i> Corporates <span class="fa fa-chevron-down"></span></a>
+            <li><a><i class="fa fa-building-o"></i> Corporates <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
-                    <li><a href="#">Accounts</a></li>
+                    <!--<li><a href="#">Accounts</a></li>-->
                     <li><a> Limits <span class="fa fa-chevron-down"></span></a>
                         <ul class="nav child_menu">
                             <li class="sub_menu"><a href="/ops/limits/corporate/global">Global Level</a></li>
@@ -100,7 +100,7 @@
             </li>
             <li><a><i class="fa fa-users"></i> Retail <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
-                    <li><a href="#">Account</a></li>
+                    <!--<li><a href="#">Account</a></li>-->
                     <li><a> Limits <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
                         <li class="sub_menu"><a href="/ops/limits/retail/global">Global Level</a></li>
@@ -111,7 +111,7 @@
                     </li>
                 </ul>
             </li>
-            <li><a><i class="fa fa-tasks"></i> Service Request <span class="fa fa-chevron-down"></span></a>
+            <li><a><i class="fa fa-question-circle"></i> Service Request <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
                     <li><a href="/ops/requests/">Requests</a></li>
 
@@ -119,14 +119,22 @@
 
             </li>
 
-            <li><a><i class="fa fa-tasks"></i> Settings <span class="fa fa-cog"></span></a>
+            <li><a><i class="fa fa-cog"></i> Settings <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
-                    <li><a href="/ops/settings/fees">Transaction Fees</a></li>
-                    <li><a href="/ops/contacts/">Contacts Details</a></li>
+
+                    <li><a href="/ops/fees">Transaction Fees</a></li>
+                    <li><a href="/ops/units/">Unit Contacts</a></li>
+                    <li><a> Account Restriction <span class="fa fa-chevron-down"></span></a>
+                        <ul class="nav child_menu">
+                            <li class="sub_menu"><a href="/ops/accounts/restriction/account">Account</a></li>
+                            <li class="sub_menu"><a href="/ops/accounts/restriction/class">Account Class</a></li>
+
+                        </ul>
+                    </li>
                 </ul>
 
             </li>
-            <li><a><i class="fa fa-mail-reply-all"></i> Mailbox<span class="fa fa-chevron-down"></span></a>
+            <li><a><i class="fa fa-inbox"></i> Mailbox<span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
                     <li><a href="/ops/messages/">Inbox</a></li>
                 </ul>

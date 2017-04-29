@@ -1,10 +1,12 @@
 package longbridge.controllers;
 
+import longbridge.services.RetailUserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.Optional;
@@ -14,6 +16,10 @@ import java.util.Optional;
  */
 @Controller
 public class MainController {
+
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    @Autowired
+    private RetailUserService retailUserService;
 
     @RequestMapping(value = {"/", "/home"})
     public String getHomePage() {
@@ -31,8 +37,6 @@ public class MainController {
         modelAndView.setViewName("admlogin");
         return modelAndView;
     }
-
-    
     @GetMapping(value = "/login/ops")
     public ModelAndView opsLogin(){
         ModelAndView modelAndView = new ModelAndView();
@@ -50,9 +54,22 @@ public class MainController {
         return "ops/dashboard";
     }
 
-    @RequestMapping("/retail/dashboard")
-    public String getRetailDashboard() {
-        return "cust/dashboard";
+
+
+    @GetMapping("/retail/forgot/username")
+    public String showForgotUsername(){
+        return "cust/forgotusername";
+    }
+
+    @PostMapping("/retail/forgot/username")
+    public @ResponseBody String forgotUsername(WebRequest webRequest){
+        String accountNumber = webRequest.getParameter("accountNumber");
+        String securityQuestion = webRequest.getParameter("securityQuestion");
+        String securityAnswer = webRequest.getParameter("securityAnswer");
+        
+        String username = retailUserService.retrieveUsername(accountNumber, securityQuestion, securityAnswer);
+        logger.info("Username is: {}", username);
+        return "Result";
     }
 
 }

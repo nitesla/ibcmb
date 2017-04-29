@@ -32,10 +32,6 @@ public class IntegrationServiceImpl implements IntegrationService {
 
     private RestTemplate template;
 
-
-    public IntegrationServiceImpl() {
-    }
-
      @Autowired
     public IntegrationServiceImpl(RestTemplate template) {
         this.template = template;
@@ -145,6 +141,15 @@ public class IntegrationServiceImpl implements IntegrationService {
         }
 
         return result;
+    }
+
+    @Override
+    public String getAccountName(String accountNumber) {
+    	logger.info(accountNumber + "account number");
+        if("0021424028".equals(accountNumber.trim())){
+            return "Torti Chigozirim David";
+        }
+        return accountNumber;
     }
 
     @Override

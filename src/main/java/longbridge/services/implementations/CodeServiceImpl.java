@@ -2,6 +2,7 @@ package longbridge.services.implementations;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import longbridge.dtos.CodeDTO;
+import longbridge.dtos.CodeTypeDTO;
 import longbridge.models.AdminUser;
 import longbridge.models.Code;
 import longbridge.repositories.CodeRepo;
@@ -64,10 +65,6 @@ public class CodeServiceImpl implements CodeService {
         return convertEntityToDTO(code);
     }
 
-    @Override
-    public Code getByTypeAndCode(String type, String code) {
-        return codeRepo.findByTypeAndCode(type,code);
-    }
 
     @Override
     public Iterable<CodeDTO> getCodesByType(String codeType) {
@@ -120,7 +117,11 @@ public class CodeServiceImpl implements CodeService {
 	@Override
 	public Page<CodeDTO> getCodesByType(String codeType, Pageable pageDetails) {
 		// TODO Auto-generated method stub
-		return null;
+		Page<Code> page = codeRepo.findByType(codeType, pageDetails);
+		List<CodeDTO> dtOs = convertEntitiesToDTOs(page);
+		long t = page.getTotalElements();
+        Page<CodeDTO> pageImpl = new PageImpl<CodeDTO>(dtOs,pageDetails,t);
+        return pageImpl;
 	}
 
     @Override
@@ -147,4 +148,22 @@ public class CodeServiceImpl implements CodeService {
 		}
 	}
 
+    @Override
+    public Code getByTypeAndCode(String type, String code) {
+        return codeRepo.findByTypeAndCode(type,code);
+    }
+
+
+	@Override
+	public Page<CodeTypeDTO> getCodeTypes(Pageable pageDetails) {
+
+		Page<String> allTypes = codeRepo.findAllTypes(pageDetails);
+		long t = allTypes.getTotalElements();
+		List<CodeTypeDTO> list = new ArrayList<CodeTypeDTO>();
+		for(String s :allTypes){
+			list.add(new CodeTypeDTO(s));
+		}
+		return new PageImpl<CodeTypeDTO>(list,pageDetails,t);
+		
+	}
 }

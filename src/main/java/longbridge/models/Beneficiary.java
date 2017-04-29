@@ -1,13 +1,6 @@
 package longbridge.models;
 
-import java.io.IOException;
-
-import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
-
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 
 /**
  * Created by Wunmi on 27/03/2017.
@@ -15,36 +8,16 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 @MappedSuperclass
 public class Beneficiary extends AbstractEntity{
 
-    @ManyToOne
-    private RetailUser user;
-    private String name;
-    private String accountNo;
+    private String accountName;
+    private String accountNumber;
     private String beneficiaryBank;
 
-
-
-    public User getUser() {
-        return user;
+    public String getAccountName() {
+        return accountName;
     }
 
-    public void setUser(RetailUser user) {
-        this.user = user;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getAccountNo() {
-        return accountNo;
-    }
-
-    public void setAccountNo(String accountNo) {
-        this.accountNo = accountNo;
+    public void setAccountName(String accountName) {
+        this.accountName = accountName;
     }
 
     public String getBeneficiaryBank() {
@@ -55,11 +28,19 @@ public class Beneficiary extends AbstractEntity{
         this.beneficiaryBank = beneficiaryBank;
     }
 
+    public String getAccountNumber() {
+        return accountNumber;
+    }
+
+    public void setAccountNumber(String accountNo) {
+        this.accountNumber = accountNo;
+    }
+
     @Override
     public String toString() {
         return "Beneficiary{" +
-                ", name='" + name + '\'' +
-                ", accountNo='" + accountNo + '\'' +
+                ", accountName='" + accountName + '\'' +
+                ", accountNumber='" + accountNumber + '\'' +
                 ", beneficiaryBank='" + beneficiaryBank + '\'' +
                 '}';
     }

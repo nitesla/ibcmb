@@ -10,6 +10,7 @@ import longbridge.services.LimitService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
@@ -67,12 +68,21 @@ public class OpsLimitController {
             return "/ops/limit/retail/global/add";
         }
         globalLimitDTO.setCustomerType(UserType.RETAIL.name());
+
+
         try {
             limitService.addGlobalLimit(globalLimitDTO);
-        } catch (Exception e) {
-            logger.error("Exception while adding global limit: {}",e.toString());
-            result.addError(new ObjectError("exception","Could not create global retail limit"));
-            return "/ops/limit/retail/global/add";        }
+        }
+        catch (DataAccessException exc){
+            logger.error("Could not add global limit: {}",exc.toString());
+            result.addError(new ObjectError("exception",String.format("The global limit for %s already exists",globalLimitDTO.getChannel())));
+            return "/ops/limit/retail/global/add";
+        }
+        catch (Exception e) {
+            logger.error("Exception while adding global limit");
+            result.addError(new ObjectError("exception","Could not create global retail limit: "+e.getMessage()));
+            return "/ops/limit/retail/global/add";
+        }
         redirectAttributes.addFlashAttribute("message", "Retail Global limit created successfully");
         return "redirect:/ops/limits/retail/global";
     }
@@ -131,7 +141,13 @@ public class OpsLimitController {
         globalLimitDTO.setCustomerType(UserType.CORPORATE.name());
         try {
             limitService.addGlobalLimit(globalLimitDTO);
-        } catch (Exception e) {
+        }
+        catch (DataAccessException exc){
+            logger.error("Could not add global limit: {}",exc.toString());
+            result.addError(new ObjectError("exception",String.format("The global limit for %s already exists",globalLimitDTO.getChannel())));
+            return "/ops/limit/corporate/global/add";
+        }
+        catch (Exception e) {
             logger.error("Exception while adding global limit: {}",e.toString());
             result.addError(new ObjectError("exception","Could not create global corporate limit"));
             return "/ops/limit/corporate/global/add";
@@ -159,7 +175,8 @@ public class OpsLimitController {
 
         try {
             limitService.addGlobalLimit(globalLimitDTO);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             logger.error("Exception while updating global limit: {}",e.toString());
             result.addError(new ObjectError("exception","Could not update global corporate limit"));
             return "/ops/limit/corporate/global/edit";
@@ -209,7 +226,13 @@ public class OpsLimitController {
         classLimitDTO.setCustomerType(UserType.RETAIL.name());
         try {
             limitService.addClassLimit(classLimitDTO);
-        } catch (Exception e) {
+        }
+        catch (DataAccessException exc){
+            logger.error("Could not add class limit: {}",exc.toString());
+            result.addError(new ObjectError("exception",String.format("The class limit for %s already exists",classLimitDTO.getChannel())));
+            return "/ops/limit/retail/class/add";
+        }
+        catch (Exception e) {
             logger.error("Exception while adding class limit: {}",e.toString());
             result.addError(new ObjectError("exception","Could not create class retail limit"));
             return "/ops/limit/retail/class/add";        }
@@ -271,7 +294,13 @@ public class OpsLimitController {
         classLimitDTO.setCustomerType(UserType.CORPORATE.name());
         try {
             limitService.addClassLimit(classLimitDTO);
-        } catch (Exception e) {
+        }
+        catch (DataAccessException exc){
+            logger.error("Could not add class limit: {}",exc.toString());
+            result.addError(new ObjectError("exception",String.format("The class limit for %s already exists",classLimitDTO.getChannel())));
+            return "/ops/limit/corporate/class/add";
+        }
+        catch (Exception e) {
             logger.error("Exception while adding class limit: {}",e.toString());
             result.addError(new ObjectError("exception","Could not create class corporate limit"));
             return "/ops/limit/corporate/class/add";
@@ -347,7 +376,13 @@ public class OpsLimitController {
         accountLimitDTO.setCustomerType(UserType.RETAIL.name());
         try {
             limitService.addAccountLimit(accountLimitDTO);
-        } catch (Exception e) {
+        }
+        catch (DataAccessException exc){
+            logger.error("Could not add account limit: {}",exc.toString());
+            result.addError(new ObjectError("exception",String.format("The account limit for %s already exists",accountLimitDTO.getChannel())));
+            return "/ops/limit/retail/account/add";
+        }
+        catch (Exception e) {
             logger.error("Exception while adding account limit: {}",e.toString());
             result.addError(new ObjectError("exception","Could not create account retail limit"));
             return "/ops/limit/retail/account/add";        }
@@ -409,7 +444,13 @@ public class OpsLimitController {
         accountLimitDTO.setCustomerType(UserType.CORPORATE.name());
         try {
             limitService.addAccountLimit(accountLimitDTO);
-        } catch (Exception e) {
+        }
+        catch (DataAccessException exc){
+            logger.error("Could not add global limit: {}",exc.toString());
+            result.addError(new ObjectError("exception",String.format("The account limit for %s already exists",accountLimitDTO.getChannel())));
+            return "/ops/limit/corporate/account/add";
+        }
+        catch (Exception e) {
             logger.error("Exception while adding account limit: {}",e.toString());
             result.addError(new ObjectError("exception","Could not create account corporate limit"));
             return "/ops/limit/corporate/account/add";
