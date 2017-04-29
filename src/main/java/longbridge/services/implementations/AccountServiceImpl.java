@@ -121,7 +121,10 @@ public class AccountServiceImpl implements AccountService{
 
     @Override
     public void updateAccountRestriction(AccountRestrictionDTO accountRestrictionDTO) throws Exception {
-        AccountRestriction accountRestriction = convertAccountRestrictionDTOToEntity(accountRestrictionDTO);
+        AccountRestriction accountRestriction = accountRestrictionRepo.findOne(accountRestrictionDTO.getId());
+        accountRestriction.setVersion(accountRestrictionDTO.getVersion());
+        accountRestriction.setAccountNumber(accountRestrictionDTO.getAccountNumber());
+        accountRestriction.setRestrictionType(accountRestrictionDTO.getRestrictionType());
         accountRestrictionRepo.save(accountRestriction);
     }
 
@@ -152,11 +155,15 @@ public class AccountServiceImpl implements AccountService{
 
     @Override
     public void updateAccountClassRestriction(AccountClassRestrictionDTO accountClassRestrictionDTO) throws Exception {
-        AccountClassRestriction accountClassRestriction = convertAccountClassRestrictionDTOToEntity(accountClassRestrictionDTO);
+        AccountClassRestriction accountClassRestriction = accountClassRestrictionRepo.findOne(accountClassRestrictionDTO.getId());
+        accountClassRestriction.setVersion(accountClassRestrictionDTO.getVersion());
+        accountClassRestriction.setAccountClass(accountClassRestrictionDTO.getAccountClass());
+        accountClassRestriction.setRestrictionType(accountClassRestrictionDTO.getRestrictionType());
         accountClassRestrictionRepo.save(accountClassRestriction);
     }
 
     @Override
+
     public void removeAccountClassRestriction(Long id) {
         accountClassRestrictionRepo.delete(id);
     }
