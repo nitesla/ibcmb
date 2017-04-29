@@ -12,7 +12,7 @@ import longbridge.repositories.VerificationRepo;
 import longbridge.services.AdminUserService;
 import longbridge.services.RoleService;
 import longbridge.services.SecurityService;
-import longbridge.utils.Verifiable;
+//import longbridge.utils.Verifiable;
 
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -104,7 +104,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
     @Override
-    @Verifiable(operation="Add Admin",description="Adding a new User")
+//    @Verifiable(operation="Add Admin",description="Adding a new User")
     public boolean addUser(AdminUserDTO user) {
         boolean ok = false;
         if (user != null) {
@@ -133,7 +133,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
     @Override
-    @Verifiable(operation="Updating an Existing User")
+//    @Verifiable(operation="Updating an Existing User")
     public boolean updateUser(AdminUserDTO user) {
         boolean ok = false;
         if (user != null) {

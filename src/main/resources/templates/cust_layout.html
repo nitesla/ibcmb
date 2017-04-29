@@ -50,7 +50,19 @@
                                 <li><a th:href="@{'#'}">Create New Acoount</a></li>
                             </ul>
                         </li>
-                        <li><a href="/">Transfers</a></li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> Transfers</a>
+                            <ul class="dropdown-menu">
+                                <li><a th:href="@{/retail/transfer/ownaccounttransfer}">Own account transfers </a></li>
+                                <li><a th:href="@{/retail/transfer/coronationbanktransfer}">Transfer to Coronation account </a></li>
+                                <li><a th:href="@{/retail/transfer/interbanktransfer}">Transfer to other banks</a></li>
+                                <li><a th:href="@{/retail/transfer}">International transfer</a></li>
+
+                                <li><a th:href="@{/retail/transfer/settransferlimit}">Set transfer limit</a></li>
+                                <li><a th:href="@{'#'}">Standing order</a></li>
+
+                                  </ul>
+                        </li>
                         <li><a href="/">Bill Payments</a></li>
                         <li><a href="/">Transaction Support</a></li>
                         <li><a th:href="@{/retail/beneficiary}">Beneficiaries</a></li>
