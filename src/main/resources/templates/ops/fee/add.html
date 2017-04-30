@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout :: site-head">
+</head>
+
+<body class="nav-md">
+<div class="container body">
+    <div class="main_container">
+        <div class="col-md-3 left_col">
+            <div class="left_col scroll-view">
+                <div class="navbar nav_title" style="border: 0;">
+                    <!--<a href="index.html"><img th:src="@{~/images/cmb_logo.png}"/></a>-->
+                </div>
+
+                <div class="clearfix"></div>
+                <div class="clearfix"></div>
+
+                <div th:replace="layout :: ops-menu"></div>
+                <div th:replace="layout :: menu-footer"></div>
+
+            </div>
+        </div>
+        <div th:replace="layout :: top-nav"></div>
+
+        <!-- page content -->
+        <div class="right_col" role="main">
+            <div class="">
+                <div class="page-title">
+                    <div class="title_left">
+                        <h3>Transaction Fees</h3>
+                    </div>
+
+                </div>
+
+                <div class="clearfix"></div>
+
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h2>Add New Fee </h2>
+
+                                <div class="clearfix"></div>
+                            </div>
+
+                            <div class="x_content">
+                                <form method="post"  class="form-horizontal" th:action="@{/ops/fees}" th:object="${transactionFee}">
+
+
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">Transaction type</label>
+                                        <div class="col-sm-6 input-group">
+                                            <select class="form-control" th:field="*{transactionType}">
+                                                <option value="">--Select--</option>
+                                                <option th:each="type: ${transactionTypes}" th:value="${type.code}" th:text="${type.description}" th:selected="${type.code==transactionFee.transactionType}"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">Currency</label>
+                                        <div class="col-sm-6 input-group">
+                                            <select class="form-control" th:field="*{currency}">
+                                                <option value="">--Select--</option>
+                                                <option th:each="currency: ${currencies}" th:value="${currency.code}" th:text="${currency.description}" th:selected="${currency.code==transactionFee.currency}"></option>
+
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">Fixed</label>
+                                        <div class="col-sm-6 input-group" >
+                                            <input class="form-control" type="number" placeholder="Flat amount for the transaction" th:field="*{fixed}"/>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">Percentage</label>
+                                        <div class="col-sm-6 input-group">
+                                            <input class="form-control" type="number" placeholder="Percentage of transaction mount" min="0" max="100" th:field="*{percentage}"/><span class="input-group-addon">%</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">Enabled</label>
+
+                                        <div class="col-sm-4 input-group">
+                                            <input type="checkbox" class="form-control"  data-switchery="true" th:class="js-switch" th:field="*{enabled}" />
+                                        </div>
+
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-sm-4 col-sm-offset-2" >
+                                            <button class="btn btn-white" id="cancel" type="submit">Cancel</button>
+                                            <button class="btn btn-primary" id="btn-save" type="submit">Submit</button>
+                                        </div>
+                                    </div>
+                                    <div th:replace="layout::form-validation"></div>
+
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /page content -->
+
+        <!-- footer content -->
+        <footer th:replace="layout :: footer">
+        </footer>
+        <!-- /footer content -->
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    $().ready(function () {
+        $('.left-btn').click(
+            function () {
+                return !$('.right-selector option:selected').remove()
+                    .appendTo('.left-selector');
+            });
+        $('.right-btn').click(
+            function () {
+                return !$('.left-selector option:selected').remove()
+                    .appendTo('.right-selector');
+            });
+    });
+    $("#btn-save").on("click", function (e) {
+        $('.right-selector option').prop("selected", true);
+        $("#form-save").submit();
+    });
+
+    document.getElementById("cancel").onclick = function () {
+        location.href = "/ops/fees";
+    }
+</script>
+
+</body>
+</html>

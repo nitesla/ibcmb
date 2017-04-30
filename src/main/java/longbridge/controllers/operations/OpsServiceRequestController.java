@@ -104,12 +104,6 @@ public class OpsServiceRequestController {
 
     }
 
-//    @GetMapping("/{reqId}/history/all")
-////    public DataTablesOutput<RequestHistoryDTO> getRequestHistory(DataTablesInput input, @PathVariable Long reqId) {
-////
-////        return null;
-////    }
-
 
     @GetMapping("/history/new")
     public String addRequestHistory(Model model) {

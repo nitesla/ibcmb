@@ -16,6 +16,7 @@ import java.util.Date;
 @Entity
 @Audited
 @Where(clause ="del_Flag='N'" )
+@Table(uniqueConstraints=@UniqueConstraint(columnNames={"channel","customerType"}))
 public class GlobalLimit extends  AbstractEntity {
 
     private String customerType;

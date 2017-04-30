@@ -19,6 +19,11 @@ public interface AdminUserService {
      */
     AdminUser getUser(Long userId);
 
+    /**
+     * Returns an {@code AdminUser} having the specified name
+     * @param name the name of the user
+     * @return
+     */
     AdminUserDTO getUserByName(String name);
 
     /**

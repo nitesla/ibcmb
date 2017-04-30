@@ -13,22 +13,22 @@ import java.util.List;
 /**
  * Created by Fortune on 4/25/2017.
  */
-public interface LimitService  {
+public interface TransactionLimitService {
 
-    void addGlobalLimit(GlobalLimitDTO globalLimit)throws  Exception;
+    void addGlobalLimit(GlobalLimitDTO globalLimit) throws Exception;
 
-    void addClassLimit(ClassLimitDTO classLimit) throws  Exception;
+    void addClassLimit(ClassLimitDTO classLimit) throws Exception;
 
-    void addAccountLimit(AccountLimitDTO accountLimit)throws  Exception;
+    void addAccountLimit(AccountLimitDTO accountLimit) throws Exception;
 
 
-     GlobalLimitDTO getCorporateGlobalLimit(Long id);
+    GlobalLimitDTO getCorporateGlobalLimit(Long id);
 
-     ClassLimitDTO getCorporateClassLimit(Long id);
+    ClassLimitDTO getCorporateClassLimit(Long id);
 
-     AccountLimitDTO getCorporateAccountLimit(Long id);
+    AccountLimitDTO getCorporateAccountLimit(Long id);
 
-     GlobalLimitDTO getRetailGlobalLimit(Long id);
+    GlobalLimitDTO getRetailGlobalLimit(Long id);
 
     ClassLimitDTO getRetailClassLimit(Long id);
 
@@ -40,7 +40,6 @@ public interface LimitService  {
     List<ClassLimitDTO> getCorporateClassLimits();
 
     List<AccountLimitDTO> getCorporateAccountLimits();
-
 
 
     List<GlobalLimitDTO> getRetailGlobalLimits();
