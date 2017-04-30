@@ -179,7 +179,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 	public void synchronizeToken(String username) {
 		// TODO send request to entrust
 		// send request to entrust
-		String uri = URI + "token/synchronize";
+		String uri = URI + "/token/synchronize";
 		Map<String, String> params = new HashMap<>();
 		params.put("username", username);
 
@@ -195,7 +195,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 	public boolean performTokenValidation(String username, String tokenString) {
 		// TODO to be implemented
 		// send request to entrust
-		String uri = URI + "token/authenticate";
+		String uri = URI + "/token/authenticate";
 		Map<String, String> params = new HashMap<>();
 		params.put("username", username);
 		params.put("token", tokenString);

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import longbridge.services.RetailUserService;
 import longbridge.services.SecurityService;
@@ -85,15 +86,28 @@ public class MainController {
         
         String username = retailUserService.retrieveUsername(accountNumber, securityQuestion, securityAnswer);
         logger.info("Username is: {}", username);
-        return "Result";
+        return username;
     }
     
+   
+    
+    @GetMapping("/token/synchronize")
+    public String synchronizeTokenView(){
+    	return "cust/settings/synchronizetoken"; 
+	}	
+    
     @PostMapping("/token/synchronize")
-    public String synchronizeToken(WebRequest webRequest){
+    public String synchronizeToken(WebRequest webRequest, RedirectAttributes redirectAttributes){
     	String username = webRequest.getParameter("username");
     	//TODO
-    	securityService.synchronizeToken(username);
-    	return "";
+    	try{
+    		securityService.synchronizeToken(username);
+        	redirectAttributes.addFlashAttribute("message","Synchronize Token successful");
+    	}catch(Exception exc){
+    		logger.error("Error", exc);
+    		redirectAttributes.addFlashAttribute("message", "Synchronize Token failed");
+    	}
+    	return "redirect:/token/synchronize";
     }
     
     @PostMapping("/token/authenticate")
@@ -105,5 +119,10 @@ public class MainController {
     	webResponse.addHeader("contentType", "application/json");
     	return "{'success': "+ result + "}";
     }
+    
+    @GetMapping("/retail/faqs")
+    public String viewFAQs(){		
+    	return "cust/faqs"; //TODO
+    } 
 
 }

@@ -14,25 +14,15 @@
             <div class="col-md-8 col-sm-8">
                 <div class="row">
                     <div class="col-md-6 col-sm-6">
-                        <h5 class="page_header"> Change Password</h5>
-                        <!--<form method="post" th:action="" id="reqForm">-->
-                        <form method="post" th:action="@{/retail/change_password}" th:object="${changePassword}">
-                            <div class="form-group">
-                                <label>Old Password</label>
-                                <input type="password" name="oldPassword" class="form-control"/>
-                            </div>
-                            <div class="form-group">
-                                <label>New Password</label>
-                                <input type="password" name="newPassword" class="form-control"/>
-                            </div>
-                            <div class="form-group">
-                                <label>Confirm New Password</label>
-                                <input type="password" name="confirmPassword" class="form-control"/>
-                            </div>
-
-                            <button type="submit" class="btn btn-default">Submit</button>
+                        <h5 class="page_header">Synchronize Token</h5>
+                        <form id="local" method="post" th:action="@{/token/synchronize}" th:object="${localBeneficiaryDTO}">
+                            <input type="hidden" th:value="todousername" name="username" class="form-control"/>
+                            <button class="btn btn-primary">Synchronize</button>
                         </form>
                     </div>
+                </div>
+                <div class="col-md-2 col-sm-2">
+
                 </div>
             </div>
             <div class="col-md-3 col-sm-3">
@@ -47,5 +37,9 @@
 <!-- CONTENT-WRAPPER SECTION END-->
 <footer th:replace="cust_layout ::footer">
 </footer>
+
+<script>
+   
+</script>
 </body>
 </html>
