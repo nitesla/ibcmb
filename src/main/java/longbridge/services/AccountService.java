@@ -43,6 +43,8 @@ public interface AccountService {
      * @return a list of {@link Account}
      */
     Iterable<AccountDTO> getAccounts(String customerId);
+
+    Iterable<Account> getCustomerAccounts(String customerId);
     
     Page<Account> getAccounts(String customerId, Pageable pageDetails);
 
@@ -87,5 +89,11 @@ public interface AccountService {
      * was not found 
      */
     Account getAccountByAccountNumber(String accountNumber);
-   
+
+
+    boolean hideAccount(Long id);
+
+    boolean unhideAccount(Long id);
+
+    boolean makePrimaryAccount(Long id, Iterable<Account> accounts);
 }

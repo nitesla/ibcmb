@@ -80,6 +80,12 @@ public class AccountServiceImpl implements AccountService{
     }
 
     @Override
+    public Iterable<Account> getCustomerAccounts(String customerId) {
+        List<Account> accountList = accountRepo.findByCustomerId(customerId);
+        return accountList;
+    }
+
+    @Override
     public Map<String, BigDecimal> getBalance(Account account) {
        return integrationService.getBalance(account.getAccountId());
     }
@@ -127,6 +133,49 @@ public class AccountServiceImpl implements AccountService{
 	public Account getAccountByAccountNumber(String accountNumber) {
 		return accountRepo.findByAccountNumber(accountNumber);
 	}
+
+    @Override
+    public boolean hideAccount(Long id) {
+        try {
+            Account account = accountRepo.findFirstById(id);
+            account.setHiddenFlag("Y");
+            accountRepo.save(account);
+            return true;
+        }catch (Exception e){
+            logger.info("Error in hiding account");
+        }
+        return false;
+    }
+
+    @Override
+    public boolean unhideAccount(Long id) {
+        try {
+            Account account = accountRepo.findFirstById(id);
+            account.setHiddenFlag("N");
+            accountRepo.save(account);
+            return true;
+        }catch (Exception e){
+            logger.info("Error unhiding account");
+        }
+        return false;
+    }
+
+    @Override
+    public boolean makePrimaryAccount(Long acctId, Iterable<Account> accounts) {
+        try {
+            for (Account account : accounts){
+                    account.setPrimaryFlag("N");
+                    accountRepo.save(account);
+            }
+            Account account = accountRepo.findFirstById(acctId);
+            account.setPrimaryFlag("Y");
+            accountRepo.save(account);
+            return true;
+        }catch (Exception e){
+            logger.info("Error setting primary account");
+        }
+        return false;
+    }
 
 //    private Account mockAccount;
 //

@@ -10,18 +10,23 @@ public class AccountDTO{
     private String schemeType;
     private String schemeCode;
     private String solId;
+    private String primaryFlag;
+    private String hiddenFlag;
 
     public AccountDTO() {
     }
 
-    public AccountDTO(String accountId, String accountNumber, String accountName, String customerId, String schemeType, String schmCode, String solId) {
+    public AccountDTO(Long id, String accountId, String accountNumber, String accountName, String customerId, String schemeType, String schemeCode, String solId, String primaryFlag, String hiddenFlag) {
+        this.id = id;
         this.accountId = accountId;
         this.accountNumber = accountNumber;
         this.accountName = accountName;
         this.customerId = customerId;
         this.schemeType = schemeType;
-        this.schemeCode = schmCode;
+        this.schemeCode = schemeCode;
         this.solId = solId;
+        this.primaryFlag = primaryFlag;
+        this.hiddenFlag = hiddenFlag;
     }
 
     public Long getId() {
@@ -88,22 +93,38 @@ public class AccountDTO{
         this.solId = solId;
     }
 
+    public String getPrimaryFlag() {
+        return primaryFlag;
+    }
 
+    public void setPrimaryFlag(String primaryFlag) {
+        this.primaryFlag = primaryFlag;
+    }
+
+    public String getHiddenFlag() {
+        return hiddenFlag;
+    }
+
+    public void setHiddenFlag(String hiddenFlag) {
+        this.hiddenFlag = hiddenFlag;
+    }
 
     @Override
     public String toString() {
-        return "{\"Account\":"
-                + super.toString()
-                + ",                         \"accountId\":\"" + accountId + "\""
-                + ",                         \"accountNumber\":\"" + accountNumber + "\""
-                + ",                         \"accountName\":\"" + accountName + "\""
-                + ",                         \"customerId\":\"" + customerId + "\""
-                + ",                         \"schemeType\":\"" + schemeType + "\""
-                + ",                         \"schmCode\":\"" + schemeCode + "\""
-                + ",                         \"solId\":\"" + solId + "\""
-                + "}";
+        return "AccountDTO{"
+                + super.toString() +
+                "id=" + id +
+                ", accountId='" + accountId + '\'' +
+                ", accountNumber='" + accountNumber + '\'' +
+                ", accountName='" + accountName + '\'' +
+                ", customerId='" + customerId + '\'' +
+                ", schemeType='" + schemeType + '\'' +
+                ", schemeCode='" + schemeCode + '\'' +
+                ", solId='" + solId + '\'' +
+                ", primaryFlag='" + primaryFlag + '\'' +
+                ", hiddenFlag='" + hiddenFlag + '\'' +
+                '}';
     }
 
-
-
+    //
 }

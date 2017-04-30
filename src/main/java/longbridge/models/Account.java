@@ -24,22 +24,23 @@ public class Account extends AbstractEntity{
     private String schemeType;
     private String schemeCode;
     private String solId;
-    private String primary_flag;
-    private String hidden_flag;
+    private String primaryFlag;
+    private String hiddenFlag;
 
     public Account() {
     }
 
-    public Account(String accountId, String accountNumber, String accountName, String customerId, String schemeType, String schmCode, String solId) {
+    public Account(String accountId, String accountNumber, String accountName, String customerId, String schemeType, String schemeCode, String solId, String primaryFlag, String hiddenFlag) {
         this.accountId = accountId;
         this.accountNumber = accountNumber;
         this.accountName = accountName;
         this.customerId = customerId;
         this.schemeType = schemeType;
-        this.schemeCode = schmCode;
+        this.schemeCode = schemeCode;
         this.solId = solId;
+        this.primaryFlag = primaryFlag;
+        this.hiddenFlag = hiddenFlag;
     }
-
 
     public String getAccountId() {
         return accountId;
@@ -97,12 +98,20 @@ public class Account extends AbstractEntity{
         this.solId = solId;
     }
 
-    public String getHidden_flag() {
-        return hidden_flag;
+    public String getPrimaryFlag() {
+        return primaryFlag;
     }
 
-    public void setHidden_flag(String hidden_flag) {
-        this.hidden_flag = hidden_flag;
+    public void setPrimaryFlag(String primaryFlag) {
+        this.primaryFlag = primaryFlag;
+    }
+
+    public String getHiddenFlag() {
+        return hiddenFlag;
+    }
+
+    public void setHiddenFlag(String hiddenFlag) {
+        this.hiddenFlag = hiddenFlag;
     }
 
     @Override
