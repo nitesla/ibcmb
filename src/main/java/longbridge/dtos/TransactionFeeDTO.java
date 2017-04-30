@@ -1,25 +1,49 @@
-package longbridge.models;
+package longbridge.dtos;
 
-import org.hibernate.annotations.Where;
-import org.hibernate.envers.Audited;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import org.hibernate.validator.constraints.NotEmpty;
 
-import javax.persistence.Entity;
-import java.util.Date;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 
 /**
- * Created by SYLVESTER on 4/26/2017.
+ * Created by Fortune on 4/29/2017.
  */
-@Entity
-@Audited
-@Where(clause ="del_Flag='N'" )
-public class TransactionFee extends AbstractEntity{
 
+
+public class TransactionFeeDTO  {
+
+    @JsonProperty("DT_RowId")
+    private  Long id;
+    private int version;
+    @NotEmpty(message = "transactionType")
     private String transactionType;
-    private double percentage;
-    private  double fixed;
+    @NotEmpty(message = "currency")
     private String currency;
-    private Date dateCreated;
+    @Min(message = "fixed",value = 0)
+    private  double fixed;
+    @Min(message = "percentage",value = 0)
+    @Max(message = "percentage",value = 100)
+    private double percentage;
+    private String dateCreated;
     private boolean enabled;
+
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
+    }
 
     public String getTransactionType() {
         return transactionType;
@@ -53,13 +77,14 @@ public class TransactionFee extends AbstractEntity{
         this.currency = currency;
     }
 
-    public Date getDateCreated() {
+    public String getDateCreated() {
         return dateCreated;
     }
 
-    public void setDateCreated(Date dateCreated) {
+    public void setDateCreated(String dateCreated) {
         this.dateCreated = dateCreated;
     }
+
 
     public boolean isEnabled() {
         return enabled;
@@ -71,11 +96,13 @@ public class TransactionFee extends AbstractEntity{
 
     @Override
     public String toString() {
-        return "TransactionFee{" +
-                "transactionType='" + transactionType + '\'' +
+        return "TransactionFeeDTO{" +
+                "id=" + id +
+                ", version=" + version +
+                ", transactionType='" + transactionType + '\'' +
                 ", percentage=" + percentage +
-                ", fixed=" + fixed +
                 ", currency='" + currency + '\'' +
+                ", fixed=" + fixed +
                 ", dateCreated=" + dateCreated +
                 ", enabled=" + enabled +
                 '}';

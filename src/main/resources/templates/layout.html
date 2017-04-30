@@ -7,27 +7,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
     <!-- Bootstrap -->
-    <link th:href="@{~/bank/css/bootstrap.min.css}"  rel="stylesheet"/>
+    <link th:href="@{~/bank/css/bootstrap.min.css}" rel="stylesheet"/>
     <!-- Font Awesome -->
     <link th:href="@{~/bank/font-awesome/font-awesome.min.css}" rel="stylesheet"/>
     <!-- NProgress -->
     <link th:href="@{~/bank/vendors/nprogress/nprogress.css}" rel="stylesheet"/>
     <link th:href="@{~/bank/css/select.bootstrap.css}" rel="stylesheet"/>
     <!-- Custom Theme Style -->
-    <link th:href="@{~/bank/vendors/bootstrap-editable/css/bootstrap-editable.css}" rel="stylesheet" type="text/css" />
+    <link th:href="@{~/bank/vendors/bootstrap-editable/css/bootstrap-editable.css}" rel="stylesheet" type="text/css"/>
     <link th:href="@{~/bank/css/custom.css}" rel="stylesheet"/>
     <link th:href="@{~/bank/css/coronation.css}" rel="stylesheet"/>
     <link th:href="@{~/bank/css/bootstrap-switch.min.css}" rel="stylesheet"/>
-    <link th:href="@{~/bank/vendors/switchery/switchery.css}" rel="stylesheet" type="text/css" />
-    <link th:href="@{~/bank/vendors/bootstrap-dialog/css/bootstrap-dialog.css}" rel="stylesheet" type="text/css" />
+    <link th:href="@{~/bank/vendors/switchery/switchery.css}" rel="stylesheet" type="text/css"/>
+    <link th:href="@{~/bank/vendors/bootstrap-dialog/css/bootstrap-dialog.css}" rel="stylesheet" type="text/css"/>
     <title>Coronation Internet Banking</title>
 
 </head>
 
 <body>
-
-
-
 
 
 <!-- admin menu -->
@@ -97,18 +94,19 @@
                             <li class="sub_menu"><a href="/ops/limits/corporate/account">Account Level</a></li>
 
                         </ul>
-                    </li>                </ul>
+                    </li>
+                </ul>
             </li>
             <li><a><i class="fa fa-users"></i> Retail <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
                     <!--<li><a href="#">Account</a></li>-->
                     <li><a> Limits <span class="fa fa-chevron-down"></span></a>
-                    <ul class="nav child_menu">
-                        <li class="sub_menu"><a href="/ops/limits/retail/global">Global Level</a></li>
-                        <li class="sub_menu"><a href="/ops/limits/retail/class">Class Level</a></li>
-                        <li class="sub_menu"><a href="/ops/limits/retail/account">Account Level</a></li>
+                        <ul class="nav child_menu">
+                            <li class="sub_menu"><a href="/ops/limits/retail/global">Global Level</a></li>
+                            <li class="sub_menu"><a href="/ops/limits/retail/class">Class Level</a></li>
+                            <li class="sub_menu"><a href="/ops/limits/retail/account">Account Level</a></li>
 
-                    </ul>
+                        </ul>
                     </li>
                 </ul>
             </li>
@@ -116,7 +114,7 @@
                 <ul class="nav child_menu">
                     <li><a href="/ops/requests/">Requests</a></li>
 
-                    </ul>
+                </ul>
 
             </li>
 
@@ -176,7 +174,8 @@
 
             <ul class="nav navbar-nav navbar-right">
                 <li class="">
-                    <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                    <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown"
+                       aria-expanded="false">
                         <span sec:authentication="name">Bob</span>
                         <span class=" fa fa-angle-down"></span>
                     </a>
@@ -189,14 +188,15 @@
                 </li>
 
                 <li role="presentation" class="dropdown">
-                    <a href="javascript:;" class="dropdown-toggle info-number" data-toggle="dropdown" aria-expanded="false">
+                    <a href="javascript:;" class="dropdown-toggle info-number" data-toggle="dropdown"
+                       aria-expanded="false">
                         <i class="fa fa-envelope-o"></i>
                         <span class="badge bg-green">6</span>
                     </a>
                     <ul id="menu1" class="dropdown-menu list-unstyled msg_list" role="menu">
                         <li>
                             <a>
-                                <span class="image"><img src="images/img.jpg" alt="Profile Image" /></span>
+                                <span class="image"><img src="images/img.jpg" alt="Profile Image"/></span>
                                 <span>
                           <span>John Smith</span>
                           <span class="time">3 mins ago</span>
@@ -208,7 +208,7 @@
                         </li>
                         <li>
                             <a>
-                                <span class="image"><img src="images/img.jpg" alt="Profile Image" /></span>
+                                <span class="image"><img src="images/img.jpg" alt="Profile Image"/></span>
                                 <span>
                           <span>John Smith</span>
                           <span class="time">3 mins ago</span>
@@ -220,7 +220,7 @@
                         </li>
                         <li>
                             <a>
-                                <span class="image"><img src="images/img.jpg" alt="Profile Image" /></span>
+                                <span class="image"><img src="images/img.jpg" alt="Profile Image"/></span>
                                 <span>
                           <span>John Smith</span>
                           <span class="time">3 mins ago</span>
@@ -232,7 +232,7 @@
                         </li>
                         <li>
                             <a>
-                                <span class="image"><img src="images/img.jpg" alt="Profile Image" /></span>
+                                <span class="image"><img src="images/img.jpg" alt="Profile Image"/></span>
                                 <span>
                           <span>John Smith</span>
                           <span class="time">3 mins ago</span>
@@ -256,6 +256,22 @@
         </nav>
     </div>
 </div>
+
+<div th:fragment="form-validation">
+    <div th:if="${#fields.hasErrors('*')}">
+        <div hidden="hidden">
+            <ul id="fielderrors">
+                <li th:each="err : ${#fields.errors('*')}" th:text="${err}">Input is incorrect</li>
+            </ul>
+        </div>
+    </div>
+    <div hidden="hidden">
+        <ul class="actionError" th:if="${#fields.hasErrors('global')}">
+            <li th:each="err : ${#fields.errors('global')}" th:text="${err}">Global error message</li>
+        </ul>
+    </div>
+</div>
+
 <!-- /top navigation -->
 
 <!-- top navigation -->
@@ -268,7 +284,8 @@
 
             <ul class="nav navbar-nav navbar-right">
                 <li class="">
-                    <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                    <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown"
+                       aria-expanded="false">
                         <span sec:authentication="name">Bob</span>
                         <span class=" fa fa-angle-down"></span>
                     </a>
@@ -282,14 +299,15 @@
                 </li>
 
                 <li role="presentation" class="dropdown">
-                    <a href="javascript:;" class="dropdown-toggle info-number" data-toggle="dropdown" aria-expanded="false">
+                    <a href="javascript:;" class="dropdown-toggle info-number" data-toggle="dropdown"
+                       aria-expanded="false">
                         <i class="fa fa-envelope-o"></i>
                         <span class="badge bg-green">6</span>
                     </a>
                     <ul id="menu1" class="dropdown-menu list-unstyled msg_list" role="menu">
                         <li>
                             <a>
-                                <span class="image"><img src="images/img.jpg" alt="Profile Image" /></span>
+                                <span class="image"><img src="images/img.jpg" alt="Profile Image"/></span>
                                 <span>
                           <span>John Smith</span>
                           <span class="time">3 mins ago</span>
@@ -301,7 +319,7 @@
                         </li>
                         <li>
                             <a>
-                                <span class="image"><img src="images/img.jpg" alt="Profile Image" /></span>
+                                <span class="image"><img src="images/img.jpg" alt="Profile Image"/></span>
                                 <span>
                           <span>John Smith</span>
                           <span class="time">3 mins ago</span>
@@ -313,7 +331,7 @@
                         </li>
                         <li>
                             <a>
-                                <span class="image"><img src="images/img.jpg" alt="Profile Image" /></span>
+                                <span class="image"><img src="images/img.jpg" alt="Profile Image"/></span>
                                 <span>
                           <span>John Smith</span>
                           <span class="time">3 mins ago</span>
@@ -325,7 +343,7 @@
                         </li>
                         <li>
                             <a>
-                                <span class="image"><img src="images/img.jpg" alt="Profile Image" /></span>
+                                <span class="image"><img src="images/img.jpg" alt="Profile Image"/></span>
                                 <span>
                           <span>John Smith</span>
                           <span class="time">3 mins ago</span>
@@ -354,41 +372,41 @@
 <!-- footer content -->
 <footer th:fragment="footer">
 
-        <div th:if="${message}">
-            <div hidden="hidden">
-                <ul class="actionMessage">
-                    <li th:each="msg : ${message}" th:text="${msg}">Message</li>
-                </ul>
-            </div>
+    <div th:if="${message}">
+        <div hidden="hidden">
+            <ul class="actionMessage">
+                <li th:each="msg : ${message}" th:text="${msg}">Message</li>
+            </ul>
         </div>
+    </div>
 
 
     <div class="pull-right">
-            Coronation Merchant Bank
-        </div>
-        <div class="clearfix"></div>
-        <!-- jQuery -->
-        <script th:src="@{~/bank/vendors/jquery/jquery.js}"></script>
-        <!-- Bootstrap -->
-        <script th:src="@{~/bank/vendors/bootstrap/js/bootstrap.min.js}"></script>
-        <!-- FastClick -->
-        <script th:src="@{~/bank/vendors/fastclick/lib/fastclick.js}"></script>
-        <!-- NProgress -->
-        <script th:src="@{~/bank/vendors/nprogress/nprogress.js}"></script>
+        Coronation Merchant Bank
+    </div>
+    <div class="clearfix"></div>
+    <!-- jQuery -->
+    <script th:src="@{~/bank/vendors/jquery/jquery.js}"></script>
+    <!-- Bootstrap -->
+    <script th:src="@{~/bank/vendors/bootstrap/js/bootstrap.min.js}"></script>
+    <!-- FastClick -->
+    <script th:src="@{~/bank/vendors/fastclick/lib/fastclick.js}"></script>
+    <!-- NProgress -->
+    <script th:src="@{~/bank/vendors/nprogress/nprogress.js}"></script>
 
-        <script th:src="@{~/bank/vendors/bootstrap-editable/js/bootstrap-editable.min.js}"></script>
-         <script th:src="@{~/bank/vendors/switchery/switchery.min.js}"></script>
-        <script th:src="@{~/bank/js/bootstrap-editable-custom.js}"></script>
-        <!-- Custom Theme Scripts -->
-        <script th:src="@{~/bank/js/custom.js}"></script>
-        <script th:src="@{~/bank/js/bootstrap-switch.min.js}"></script>
-         <script th:src="@{~/bank/vendors/bootstrap-notify/bootstrap-notify.js}"></script>
-          <script th:src="@{~/bank/js/coronation.js}"></script>
-<script th:src="@{~/bank/vendors/datatables.net/js/jquery.dataTables.js}"></script>
-<script th:src="@{~/bank/js/dataTables.select.js}"></script>
-<script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
-<script th:src="@{~/bank/vendors/bootstrap-dialog/js/bootstrap-dialog.js}"></script>
-<script th:src="@{~/bank/js/dataTables.bootstrap.js}"></script>
+    <script th:src="@{~/bank/vendors/bootstrap-editable/js/bootstrap-editable.min.js}"></script>
+    <script th:src="@{~/bank/vendors/switchery/switchery.min.js}"></script>
+    <script th:src="@{~/bank/js/bootstrap-editable-custom.js}"></script>
+    <!-- Custom Theme Scripts -->
+    <script th:src="@{~/bank/js/custom.js}"></script>
+    <script th:src="@{~/bank/js/bootstrap-switch.min.js}"></script>
+    <script th:src="@{~/bank/vendors/bootstrap-notify/bootstrap-notify.js}"></script>
+    <script th:src="@{~/bank/js/coronation.js}"></script>
+    <script th:src="@{~/bank/vendors/datatables.net/js/jquery.dataTables.js}"></script>
+    <script th:src="@{~/bank/js/dataTables.select.js}"></script>
+    <script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
+    <script th:src="@{~/bank/vendors/bootstrap-dialog/js/bootstrap-dialog.js}"></script>
+    <script th:src="@{~/bank/js/dataTables.bootstrap.js}"></script>
 
 </footer>
 <!-- /footer content -->

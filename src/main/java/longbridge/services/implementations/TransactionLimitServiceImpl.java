@@ -6,27 +6,23 @@ import longbridge.repositories.AccountLimitRepo;
 import longbridge.repositories.ClassLimitRepo;
 import longbridge.repositories.GlobalLimitRepo;
 import longbridge.services.CodeService;
-import longbridge.services.LimitService;
+import longbridge.services.TransactionLimitService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 
-import java.awt.print.Pageable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
  * Created by Fortune on 4/25/2017.
  */
 @Service
-public class LimitServiceImpl implements LimitService{
+public class TransactionLimitServiceImpl implements TransactionLimitService {
 
     @Autowired
     GlobalLimitRepo globalLimitRepo;

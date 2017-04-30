@@ -41,7 +41,7 @@
                         <div class="x_panel">
                             <div class="x_title">
                                 <ul class="nav navbar-left panel_toolbox">
-                                    <h3>Create Restriction</h3>
+                                    <h2>Add  New Restriction</h2>
                                 </ul>
                                 <ul class="nav navbar-right panel_toolbox">
 
@@ -92,18 +92,8 @@
                                         </div>
                                     </div>
 
+                                    <div th:replace="layout::form-validation"></div>
 
-                                    <div th:if="${#fields.hasErrors('*')}">
-                                        <div hidden="hidden" >
-                                            <ul id="fielderrors">
-                                                <li th:each="err : ${#fields.errors('*')}" th:text="${err}">Input is incorrect</li>
-                                            </ul>
-                                        </div></div>
-                                    <div hidden="hidden">
-                                        <ul class="actionError" th:if="${#fields.hasErrors('global')}">
-                                            <li th:each="err : ${#fields.errors('global')}" th:text="${err}">Global error message</li>
-                                        </ul>
-                                    </div>
 
                                 </form>
 

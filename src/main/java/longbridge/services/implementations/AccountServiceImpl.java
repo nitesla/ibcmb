@@ -262,9 +262,6 @@ public class AccountServiceImpl implements AccountService{
         return  isRestricted;
     }
 
-
-
-
     @Override
     public Iterable<AccountRestrictionDTO> getRestrictedAccounts() {
         Iterable<AccountRestriction> accountRestrictions = accountRestrictionRepo.findAll();

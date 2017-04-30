@@ -11,7 +11,7 @@ import java.util.List;
 
 /**
  * This {@code CodeService} interface provides the methods for managing system
- * codes A {@code Code}can be used add new items to the system which can be
+ * codes. A {@code Code}can be used add new items to the system which can be
  * displayed in list or in drop down menus
  * 
  * @see Code

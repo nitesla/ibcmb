@@ -5,7 +5,6 @@ import longbridge.dtos.AccountRestrictionDTO;
 import longbridge.dtos.CodeDTO;
 import longbridge.services.AccountService;
 import longbridge.services.CodeService;
-import org.apache.tomcat.jni.Local;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,7 +72,7 @@ return restrictionTypes;
     @PostMapping("/restriction/account")
     public  String CreateAccountRestriction(@ModelAttribute("accountRestriction") @Valid AccountRestrictionDTO accountRestrictionDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes, Locale locale){
         if(bindingResult.hasErrors()){
-            bindingResult.addError(new ObjectError("invalid",messageSource.getMessage("field.required",null,locale)));
+            bindingResult.addError(new ObjectError("invalid",messageSource.getMessage("form.fields.required",null,locale)));
             return "ops/account/restriction/account/add";
         }
         try {
@@ -104,7 +103,7 @@ return restrictionTypes;
     @PostMapping("/restriction/account/update")
     public  String updateAccountRestriction(@ModelAttribute("accountRestriction") @Valid AccountRestrictionDTO accountRestrictionDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes,Locale locale){
         if(bindingResult.hasErrors()){
-            bindingResult.addError(new ObjectError("invalid",messageSource.getMessage("field.required",null,locale)));
+            bindingResult.addError(new ObjectError("invalid",messageSource.getMessage("form.fields.required",null,locale)));
             return "ops/account/restriction/account/edit";
         }
         try {
@@ -154,7 +153,7 @@ return restrictionTypes;
     @PostMapping("/restriction/class")
     public  String CreateAccountClassRestriction(@ModelAttribute("accountClassRestriction") @Valid  AccountClassRestrictionDTO accountClassRestrictionDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes,Locale locale){
         if(bindingResult.hasErrors()){
-            bindingResult.addError(new ObjectError("invalid",messageSource.getMessage("field.required",null,locale)));
+            bindingResult.addError(new ObjectError("invalid",messageSource.getMessage("form.fields.required",null,locale)));
             return "ops/account/restriction/class/add";
         }
         try {
@@ -185,7 +184,7 @@ return restrictionTypes;
     @PostMapping("/restriction/class/update")
     public  String updateAccountClassRestriction(@ModelAttribute("accountClassRestriction") @Valid AccountClassRestrictionDTO accountClassRestrictionDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes,Locale locale){
         if(bindingResult.hasErrors()){
-            bindingResult.addError(new ObjectError("invalid",messageSource.getMessage("field.required",null,locale)));
+            bindingResult.addError(new ObjectError("invalid",messageSource.getMessage("form.fields.required",null,locale)));
             return "ops/account/restriction/class/edit";
         }
         try {

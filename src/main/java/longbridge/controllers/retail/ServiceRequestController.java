@@ -97,7 +97,7 @@ public class ServiceRequestController {
 
             requestBody = objectMapper.writeValueAsString(myFormObjects);
 
-            retailUser = userRepo.findOne(1L);
+            retailUser = userRepo.findOne(1L);//TOdO replace with current session user
             serviceRequestDTO.setBody(requestBody);
             serviceRequestDTO.setRequestStatus("S");
             serviceRequestDTO.setUser(retailUser);
