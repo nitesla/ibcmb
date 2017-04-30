@@ -82,4 +82,20 @@ public interface IntegrationService {
      * @return map containing the total transaction limit
      */
     BigDecimal getDailyAccountLimit(String accNo,String channel);
+    
+    /** This sends a request to synchronize the token attached to the user
+     * with the specified username
+     * @param username the username of the required user
+     */
+    void synchronizeToken(String username);
+    
+    
+     /** This validates the token string passed in.
+     * 
+     * @param username The username of the user
+     * @param tokenString the inputted token string
+     * @return true if the validation was true and false if not
+     */
+    boolean performTokenValidation(String username, String tokenString);
+    
 }

@@ -1,7 +1,8 @@
 package longbridge.controllers;
 
-import java.util.Iterator;
 import java.util.Optional;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +18,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import longbridge.services.RetailUserService;
+import longbridge.services.SecurityService;
 
 /**
  * Created by Wunmi on 27/03/2017.
@@ -27,6 +29,9 @@ public class MainController {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     private RetailUserService retailUserService;
+    
+    @Autowired
+    private SecurityService securityService;
 
     @RequestMapping(value = {"/", "/home"})
     public String getHomePage() {
@@ -81,6 +86,24 @@ public class MainController {
         String username = retailUserService.retrieveUsername(accountNumber, securityQuestion, securityAnswer);
         logger.info("Username is: {}", username);
         return "Result";
+    }
+    
+    @PostMapping("/token/synchronize")
+    public String synchronizeToken(WebRequest webRequest){
+    	String username = webRequest.getParameter("username");
+    	//TODO
+    	securityService.synchronizeToken(username);
+    	return "";
+    }
+    
+    @PostMapping("/token/authenticate")
+    public @ResponseBody String performTokenAuthentication(WebRequest webRequest, HttpServletResponse webResponse){
+    	String username = webRequest.getParameter("username");
+    	String tokenString = webRequest.getParameter("tokenString");
+    	//TODO
+    	boolean result = securityService.performTokenValidation(username, tokenString);
+    	webResponse.addHeader("contentType", "application/json");
+    	return "{'success': "+ result + "}";
     }
 
 }

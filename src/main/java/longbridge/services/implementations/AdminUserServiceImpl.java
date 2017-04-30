@@ -1,14 +1,7 @@
 package longbridge.services.implementations;
 
-import longbridge.dtos.AdminUserDTO;
-import longbridge.models.AdminUser;
-import longbridge.models.Role;
-import longbridge.repositories.AdminUserRepo;
-import longbridge.repositories.VerificationRepo;
-import longbridge.services.AdminUserService;
-import longbridge.services.RoleService;
-import longbridge.services.SecurityService;
-import longbridge.utils.Verifiable;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -20,8 +13,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import longbridge.dtos.AdminUserDTO;
+import longbridge.models.AdminUser;
+import longbridge.models.Role;
+import longbridge.repositories.AdminUserRepo;
+import longbridge.repositories.VerificationRepo;
+import longbridge.services.AdminUserService;
+import longbridge.services.RoleService;
+import longbridge.services.SecurityService;
 
 
 /**
@@ -99,7 +98,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
     @Override
-    @Verifiable(operation="Add Admin",description="Adding a new User")
+//    @Verifiable(operation="Add Admin",description="Adding a new User")
     public boolean addUser(AdminUserDTO user) {
         boolean ok = false;
         if (user != null) {
@@ -128,7 +127,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
     @Override
-    @Verifiable(operation="Updating an Existing User")
+//    @Verifiable(operation="Updating an Existing User")
     public boolean updateUser(AdminUserDTO user) {
         boolean ok = false;
         if (user != null) {

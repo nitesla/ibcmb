@@ -70,7 +70,9 @@ public class AccountServiceImpl implements AccountService{
 
     @Override
     public AccountDTO getAccount(Long accId) {
-        return convertEntityToDTO(accountRepo.findById(accId));
+        AccountDTO account =  convertEntityToDTO(accountRepo.findById(accId));
+        //TODO fetch account Balance and account type
+        return account;
     }
 
     @Override

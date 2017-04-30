@@ -10,7 +10,10 @@ public class AccountDTO{
     private String schemeType;
     private String schemeCode;
     private String solId;
-
+    
+    private String accountType;
+    private String accountBalance;
+    
     public AccountDTO() {
     }
 
@@ -23,6 +26,24 @@ public class AccountDTO{
         this.schemeCode = schmCode;
         this.solId = solId;
     }
+
+    public String getAccountType() {
+		return accountType;
+	}
+
+	public void setAccountType(String accountType) {
+		this.accountType = accountType;
+	}
+
+	public String getAccountBalance() {
+		return accountBalance;
+	}
+
+	public void setAccountBalance(String accountBalance) {
+		this.accountBalance = accountBalance;
+	}
+
+	
 
     public Long getId() {
         return id;

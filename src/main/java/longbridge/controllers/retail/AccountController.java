@@ -1,10 +1,9 @@
 package longbridge.controllers.retail;
 
-import longbridge.dtos.AccountDTO;
-import longbridge.forms.CustomizeAccount;
-import longbridge.models.RetailUser;
-import longbridge.services.AccountService;
-import longbridge.services.RetailUserService;
+import java.security.Principal;
+
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,8 +14,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.validation.Valid;
-import java.security.Principal;
+import longbridge.api.AccountDetails;
+import longbridge.dtos.AccountDTO;
+import longbridge.forms.CustomizeAccount;
+import longbridge.models.RetailUser;
+import longbridge.services.AccountService;
+import longbridge.services.IntegrationService;
+import longbridge.services.RetailUserService;
 
 /**
  * Created by Fortune on 4/3/2017.
@@ -30,13 +34,36 @@ public class AccountController {
 
     @Autowired
     private RetailUserService retailUserService;
+    
+    @Autowired
+    private IntegrationService integrationService;
 
     private Long customizeAccountId;
+
+    @GetMapping
+    public String listAccounts(){
+        return "cust/account/index";
+    }
+    @GetMapping("{id}/view")
+    public String viewAccount(@PathVariable Long id, Model model){
+        //fetch account details from Account Service
+    	AccountDTO accountDTO = accountService.getAccount(id);
+        AccountDetails account = integrationService.viewAccountDetails(accountDTO.getAccountNumber());
+
+        if(account == null){
+        	//account not found
+        	return "redirect:/retail/account";
+        }
+        //send account to frontend
+        model.addAttribute("account", account);
+        return "cust/account/details";
+    }
+
 
     @GetMapping("/customize")
     public String CustomizeAccountHome(Model model){
         return "cust/account/customizehome";
-    }
+    } 
 
     @GetMapping("/{id}/customize")
     public String CustomizeAccount(@PathVariable Long id, CustomizeAccount customizeAccount, Principal principal, Model model, RedirectAttributes redirectAttributes){
