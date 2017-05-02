@@ -87,6 +87,11 @@ public class AccountServiceImpl implements AccountService{
     }
 
     @Override
+    public Account getAccountByCustomerId(String customerId) {
+        return accountRepo.findAccountByCustomerId(customerId);
+    }
+
+    @Override
     public Iterable<AccountDTO> getAccounts(String customerId) {
         List<Account> accountList = accountRepo.findByCustomerId(customerId);
         return convertEntitiesToDTOs(accountList);
@@ -395,12 +400,17 @@ public class AccountServiceImpl implements AccountService{
     }
 
     @Override
-    public boolean makePrimaryAccount(Long acctId, Iterable<Account> accounts) {
+    public boolean makePrimaryAccount(Long acctId, String customerId) {
         try {
-            for (Account account : accounts){
-                    account.setPrimaryFlag("N");
-                    accountRepo.save(account);
-            }
+            accountRepo.unsetPrimaryAccount(customerId);
+
+
+//            for (Account account : accounts){
+//                    account.setPrimaryFlag("N");
+//                    accountRepo.save(account);
+//            }
+
+
             Account account = accountRepo.findFirstById(acctId);
             account.setPrimaryFlag("Y");
             accountRepo.save(account);
@@ -410,6 +420,7 @@ public class AccountServiceImpl implements AccountService{
         }
         return false;
     }
+
 
 //    private Account mockAccount;
 //

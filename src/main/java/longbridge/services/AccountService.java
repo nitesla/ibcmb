@@ -39,6 +39,8 @@ public interface AccountService {
      */
     AccountDTO getAccount(Long accId);
 
+    Account getAccountByCustomerId(String customerId);
+
     /**
      * Returns a list of accounts owned by a particular customer
      * @param customerId the customer id of particular customer
@@ -109,10 +111,10 @@ public interface AccountService {
     /**
      * makes account the customers primary acoount
      * @param id
-     * @param accounts
+     * @param customerId
      * @return
      */
-    boolean makePrimaryAccount(Long id, Iterable<Account> accounts);
+    boolean makePrimaryAccount(Long id, String customerId);
 
     /**
      * Adds an account to a list of restricted accounts

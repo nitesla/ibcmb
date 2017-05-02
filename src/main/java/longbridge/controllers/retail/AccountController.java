@@ -107,7 +107,8 @@ public class AccountController {
 
         RetailUser user = retailUserService.getUserByName(principal.getName());
         Iterable<Account> accounts = accountService.getCustomerAccounts(user.getCustomerId());
-        accountService.makePrimaryAccount(id, accounts);
+        //Account accounts = accountService.getAccountByCustomerId(user.getCustomerId());
+        accountService.makePrimaryAccount(id, user.getCustomerId());
 
 
         model.addAttribute("accounts", accounts);

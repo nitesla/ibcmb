@@ -8,39 +8,44 @@
 
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/jquery-ui.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/bootstrap.css}"/>
-    <!-- <link rel="stylesheet" type="text/css" href="assets/css/mega-menu.css"/> -->
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/custom.css}"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/font-awesome/font-awesome.min.css}"/>
+    <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>-->
     <title>Coronation Merchant Bank</title>
 
 </head>
 
 <body>
 
-    <div class="container" th:fragment="header">
-        <div class="top_bar">
-            <ul class="list_group">
-                <li><a href="#"> CORONATION MERCHANT BANK</a></li>
-            </ul>
-        </div>
-        <nav class="navbar navbar-default">
-            <div class="container-fluid">
-                <div class="navbar-header navbar-left">
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
-                        <span class="sr-only">MENU</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="#" data-toggle="collapse" data-target="#navbar-collapse-1">Menu</a>
-                </div>
-                <div class="row ">
-                    <div class="col-md-3 col-sm-4 header_info bvn"><p>Your Bank verifiction number</p>
-                        <h5>BVN: &nbsp; <span th:text="${bvn}"></span></h5></div>
-                    <div class="col-md-4 col-sm-4 header_info"><h5 th:text="*{greeting}"><span th:text="*{greeting}"></span> &nbsp; <i class="fa fa-envelope"></i></h5>
-                        <h6>FAQS</h6></div>
-                </div>
-                <div class="collapse navbar-collapse" id="navbar-collapse-1">
+    <header class="header" th:fragment="header">
+        <div class="container">
+            <div class="top_bar">
+                <ul class="list_group">
+                    <li><a href="#"> Contact Us&nbsp;</a></li>
+                    <li><a href="#"> Coronation merchnat bank&nbsp;</a></li>
+                    <li><a href="#"> Help&nbsp;</a></li>
+                </ul>
+            </div>
+            <nav class="navbar navbar-default links">
+                <div class="container-fluid">
+                    <div class="navbar-header navbar-left">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
+                            <span class="sr-only">MENU</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand" href="#" data-toggle="collapse" data-target="#navbar-collapse-1">Menu</a>
+                    </div>
+                    <div class="row ">
+                        <div class="col-md-3 col-sm-4 header_info bvn"><p>Your Bank verification number</p>
+                            <h5 th:text="'BVN: ' + ${bvn}"></h5></div>
+                        <div class="col-md-5 col-sm-4 header_info"><h5><span th:text="*{greeting}"></span><br class="break"/><b th:text="*{name}"></b> &nbsp; <i class="fa fa-envelope"></i></h5>
+
+                            <div class="hide-faq"><h6>FAQS &nbsp; &nbsp;<i class="fa fa-question-circle"></i><span class="date2 lorem">&nbsp; &nbsp;Login History:&nbsp;</span>&nbsp;
+                                <span class="lorem">21st March 2017 10:30am</span></h6></div></div>
+                    </div>
+                <div class="collapse navbar-collapse links" id="navbar-collapse-1">
                     <ul class="nav navbar-nav">
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> My Accounts</a>
@@ -64,7 +69,12 @@
                                   </ul>
                         </li>
                         <li><a href="/">Bill Payments</a></li>
-                        <li><a href="/">Transaction Support</a></li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> Cheques <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a th:href="@{/retail/cheque/confirm}">Confirm Cheque</a></li>
+                                <li><a th:href="@{/retail/cheque/stop}">Stop Cheque</a></li>
+                            </ul></li>
                         <li><a th:href="@{/retail/beneficiary}">Beneficiaries</a></li>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> Service Requests <span class="caret"></span></a>
@@ -82,17 +92,20 @@
                         </li>
                     </ul>
 
-                    <ul class="nav navbar-right">
-                        <li><a th:href="@{/retail/logout}"> Log out <i class="fa fa-power-off"></i></a></li>
-
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a th:href="@{/retail/logout}"> Log out <span class="fa-stack fa-lg">
+                                  <i class="fa fa-square fa-stack-1x fa-lg"></i>
+                                  <i class="fa fa-power-off fa-stack-1x fa-inverse"></i>
+                                </span></a></li>
                     </ul>
                 </div>
-            </div>
-        </nav>
+                </div>
+            </nav>
+        </div>
         <a href="#" class="logo">
             <img th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
         </a>
-    </div>
+    </header>
 
 
 
