@@ -3,7 +3,7 @@ package longbridge.controllers.operations;
 import longbridge.dtos.AccountClassRestrictionDTO;
 import longbridge.dtos.AccountRestrictionDTO;
 import longbridge.dtos.CodeDTO;
-import longbridge.services.AccountService;
+import longbridge.services.AccountConfigurationService;
 import longbridge.services.CodeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +38,7 @@ public class OpsAccountController {
     CodeService codeService;
 
     @Autowired
-    AccountService accountService;
+    AccountConfigurationService accountConfigService;
 
     @Autowired
     MessageSource messageSource;
@@ -76,7 +76,7 @@ return restrictionTypes;
             return "ops/account/restriction/account/add";
         }
         try {
-            accountService.addAccountRestriction(accountRestrictionDTO);
+            accountConfigService.addAccountRestriction(accountRestrictionDTO);
         }
         catch (DataAccessException exc){
             logger.error("Could not create account restriction: {}",exc.toString());
@@ -95,7 +95,7 @@ return restrictionTypes;
 
     @GetMapping("/restriction/account/{id}/edit")
     public String editAccountRestriction(Model model, @PathVariable Long id) {
-        AccountRestrictionDTO accountRestrictionDTO = accountService.getAccountRestriction(id);
+        AccountRestrictionDTO accountRestrictionDTO = accountConfigService.getAccountRestriction(id);
         model.addAttribute("accountRestriction",accountRestrictionDTO);
         return "/ops/account/restriction/account/edit";
     }
@@ -107,7 +107,7 @@ return restrictionTypes;
             return "ops/account/restriction/account/edit";
         }
         try {
-            accountService.updateAccountRestriction(accountRestrictionDTO);
+            accountConfigService.updateAccountRestriction(accountRestrictionDTO);
         }
         catch (Exception e) {
             logger.error("Could not update account restriction: {}",e.toString());
@@ -127,7 +127,7 @@ return restrictionTypes;
     public @ResponseBody
     DataTablesOutput<AccountRestrictionDTO> getAccountRestrictions(DataTablesInput input){
         Pageable pageable = DataTablesUtils.getPageable(input);
-        Page<AccountRestrictionDTO> accountRestrictions = accountService.getRestrictedAccounts(pageable);
+        Page<AccountRestrictionDTO> accountRestrictions = accountConfigService.getRestrictedAccounts(pageable);
         DataTablesOutput<AccountRestrictionDTO> out = new DataTablesOutput<AccountRestrictionDTO>();
         out.setDraw(input.getDraw());
         out.setData(accountRestrictions.getContent());
@@ -138,7 +138,7 @@ return restrictionTypes;
 
     @GetMapping("/restriction/account/{id}/remove")
     public String removeAccountRestriction(@PathVariable Long id, RedirectAttributes redirectAttributes, Locale locale) {
-        accountService.removeAccountRestriction(id);
+        accountConfigService.removeAccountRestriction(id);
         redirectAttributes.addFlashAttribute("message",messageSource.getMessage("account.restriction.remove",null,locale));
         return "redirect:/ops/accounts/restriction/account";
     }
@@ -157,7 +157,7 @@ return restrictionTypes;
             return "ops/account/restriction/class/add";
         }
         try {
-            accountService.addAccountClassRestriction(accountClassRestrictionDTO);
+            accountConfigService.addAccountClassRestriction(accountClassRestrictionDTO);
         }
         catch (DataAccessException exc){
             logger.error("Could not create account restriction: {}",exc.toString());
@@ -176,7 +176,7 @@ return restrictionTypes;
 
     @GetMapping("/restriction/class/{id}/edit")
     public String editAccountClassRestriction(Model model, @PathVariable Long id) {
-        AccountClassRestrictionDTO accountClassRestrictionDTO = accountService.getAccountClassRestriction(id);
+        AccountClassRestrictionDTO accountClassRestrictionDTO = accountConfigService.getAccountClassRestriction(id);
         model.addAttribute("accountClassRestriction",accountClassRestrictionDTO);
         return "/ops/account/restriction/class/edit";
     }
@@ -188,7 +188,7 @@ return restrictionTypes;
             return "ops/account/restriction/class/edit";
         }
         try {
-            accountService.updateAccountClassRestriction(accountClassRestrictionDTO);
+            accountConfigService.updateAccountClassRestriction(accountClassRestrictionDTO);
         }
         catch (Exception e) {
             logger.error("Could not update account class restriction: {}",e.toString());
@@ -208,7 +208,7 @@ return restrictionTypes;
     public @ResponseBody
     DataTablesOutput<AccountClassRestrictionDTO> getAccountClassRestrictions(DataTablesInput input){
         Pageable pageable = DataTablesUtils.getPageable(input);
-        Page<AccountClassRestrictionDTO> accountClassRestrictions = accountService.getRestrictedAccountClasses(pageable);
+        Page<AccountClassRestrictionDTO> accountClassRestrictions = accountConfigService.getRestrictedAccountClasses(pageable);
         DataTablesOutput<AccountClassRestrictionDTO> out = new DataTablesOutput<AccountClassRestrictionDTO>();
         out.setDraw(input.getDraw());
         out.setData(accountClassRestrictions.getContent());
@@ -219,7 +219,7 @@ return restrictionTypes;
 
     @GetMapping("/restriction/class/{id}/remove")
     public String removeAccountClassRestriction(@PathVariable Long id,RedirectAttributes redirectAttributes,Locale locale) {
-        accountService.removeAccountClassRestriction(id);
+        accountConfigService.removeAccountClassRestriction(id);
         redirectAttributes.addFlashAttribute("message",messageSource.getMessage("account.class.restriction.remove",null,locale));
         return "redirect:/ops/accounts/restriction/class";
     }
