@@ -5,6 +5,7 @@ import longbridge.services.ConfigurationService;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -12,6 +13,7 @@ import java.util.regex.Pattern;
 /**
  * Created by Fortune on 4/13/2017.
  */
+@Component
 @Scope("singleton")
 public class PasswordValidator {
 

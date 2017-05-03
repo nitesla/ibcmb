@@ -2,6 +2,7 @@ package longbridge.dtos;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import longbridge.models.UserType;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -35,6 +36,16 @@ public class OperationsUserDTO {
     private Date lockedUntilDate;
     private Date lastLoginDate;
     private int noOfLoginAttempts;
+
+    private UserType userType;
+
+    public UserType getUserType() {
+        return userType;
+    }
+
+    public void setUserType(UserType userType) {
+        this.userType = userType;
+    }
 
     public Long getId() {
         return id;

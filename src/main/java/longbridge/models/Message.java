@@ -29,7 +29,7 @@ public class Message extends AbstractEntity{
     private String recipient;
     private String subject;
     private String body;
-    private Date sentTime;
+    private Date dateCreated;
     private String status;
     @ManyToOne
     private MailBox mailBox;
@@ -41,12 +41,13 @@ public class Message extends AbstractEntity{
     }
 
 
-    public Message(String sender, String recipient, String subject, String body, Date Date, String status ) {
+
+    public Message(String sender, String recipient, String subject, String body, Date dateCreated, String status) {
         this.sender = sender;
         this.recipient = recipient;
         this.subject = subject;
         this.body = body;
-        this.sentTime = Date;
+        this.dateCreated = dateCreated;
         this.status = status;
     }
 
@@ -82,6 +83,30 @@ public class Message extends AbstractEntity{
         this.body = body;
     }
 
+    public Date getDateCreated() {
+        return dateCreated;
+    }
+
+    public void setDateCreated(Date dateCreated) {
+        this.dateCreated = dateCreated;
+    }
+
+    public MailBox getMailBox() {
+        return mailBox;
+    }
+
+    public void setMailBox(MailBox mailBox) {
+        this.mailBox = mailBox;
+    }
+
+    public String getTag() {
+        return tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
+
     public String getStatus() {
         return status;
     }
@@ -90,29 +115,9 @@ public class Message extends AbstractEntity{
         this.status = status;
     }
 
-    public Date getSentTime() {
-        return sentTime;
-    }
-
-    public void setSentTime(Date sentTime) {
-        this.sentTime = sentTime;
-    }
-
-    @Override
-    public String toString() {
-        return "Message{" +
-                "sender=" + sender +
-                ", recipient='" + recipient + '\'' +
-                ", subject='" + subject + '\'' +
-                ", body='" + body + '\'' +
-                ", sentTime=" + sentTime +
-                ", status='" + status + '\'' +
-                '}';
-    }
 
 
-
-	public static OperationCode getAddCode() {
+    public static OperationCode getAddCode() {
 		// TODO Auto-generated method stub
 		return null;
 	}

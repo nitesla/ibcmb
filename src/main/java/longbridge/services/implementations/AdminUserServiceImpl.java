@@ -10,10 +10,12 @@ import longbridge.models.Verification;
 import longbridge.repositories.AdminUserRepo;
 import longbridge.repositories.VerificationRepo;
 import longbridge.services.AdminUserService;
+import longbridge.services.MailService;
 import longbridge.services.RoleService;
 import longbridge.services.SecurityService;
 //import longbridge.utils.Verifiable;
 
+import longbridge.utils.Verifiable;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +26,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.mail.MailSessionDefinition;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -51,6 +54,19 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     @Autowired
     RoleService roleService;
+
+    @Autowired
+    MailService mailService;
+
+    @Override
+    public boolean isValidUsername(String username) {
+        boolean isValid = false;
+        AdminUser  adminUser = adminUserRepo.findFirstByUserName(username);
+        if(adminUser==null){
+            isValid = true;
+        }
+        return isValid;
+    }
 
     @Autowired
     public AdminUserServiceImpl(AdminUserRepo adminUserRepo, BCryptPasswordEncoder passwordEncoder) {
@@ -108,15 +124,19 @@ public class AdminUserServiceImpl implements AdminUserService {
     public boolean addUser(AdminUserDTO user) {
         boolean ok = false;
         if (user != null) {
-           // user.setPassword(this.passwordEncoder.encode(user.getPassword()));
             AdminUser adminUser = new AdminUser();
             adminUser.setFirstName(user.getFirstName());
             adminUser.setLastName(user.getLastName());
             adminUser.setUserName(user.getUserName());
+            adminUser.setDateCreated(new Date());
+            adminUser.setStatus("ACTIVE");
+            String password =  this.passwordEncoder.encode("password123");
+            adminUser.setPassword(password);
             Role role = new Role();
             role.setId(Long.parseLong(user.getRoleId()));
             adminUser.setRole(role);
             this.adminUserRepo.save(adminUser);
+            mailService.send(user.getEmail(),String.format("Your username is %s and password is %s", user.getUserName(),"password123"));
             logger.info("New admin user: {} created", adminUser.getUserName());
             ok=true;
         } else {
@@ -176,13 +196,9 @@ public class AdminUserServiceImpl implements AdminUserService {
 
         try {
 
-            if (getUser(user.getId()) == null) {
-                logger.error("USER DOES NOT EXIST");
-                return ok;
-            }
 
             if (this.passwordEncoder.matches(oldPassword, user.getPassword())) {
-                AdminUser adminUser = convertDTOToEntity(user);
+                AdminUser adminUser = adminUserRepo.findOne(user.getId());
 //                    adminUser.setRole(user.getRole());
                 adminUser.setPassword(this.passwordEncoder.encode(newPassword));
                 this.adminUserRepo.save(adminUser);

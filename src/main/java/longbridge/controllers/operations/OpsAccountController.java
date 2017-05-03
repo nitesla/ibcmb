@@ -127,7 +127,7 @@ return restrictionTypes;
     public @ResponseBody
     DataTablesOutput<AccountRestrictionDTO> getAccountRestrictions(DataTablesInput input){
         Pageable pageable = DataTablesUtils.getPageable(input);
-        Page<AccountRestrictionDTO> accountRestrictions = accountConfigService.getRestrictedAccounts(pageable);
+        Page<AccountRestrictionDTO> accountRestrictions = accountConfigService.getAccountRestrictions(pageable);
         DataTablesOutput<AccountRestrictionDTO> out = new DataTablesOutput<AccountRestrictionDTO>();
         out.setDraw(input.getDraw());
         out.setData(accountRestrictions.getContent());
@@ -208,7 +208,7 @@ return restrictionTypes;
     public @ResponseBody
     DataTablesOutput<AccountClassRestrictionDTO> getAccountClassRestrictions(DataTablesInput input){
         Pageable pageable = DataTablesUtils.getPageable(input);
-        Page<AccountClassRestrictionDTO> accountClassRestrictions = accountConfigService.getRestrictedAccountClasses(pageable);
+        Page<AccountClassRestrictionDTO> accountClassRestrictions = accountConfigService.getdAccountClassRestrictions(pageable);
         DataTablesOutput<AccountClassRestrictionDTO> out = new DataTablesOutput<AccountClassRestrictionDTO>();
         out.setDraw(input.getDraw());
         out.setData(accountClassRestrictions.getContent());

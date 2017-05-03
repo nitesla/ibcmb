@@ -56,6 +56,11 @@ public interface AdminUserService {
      */
     boolean setPassword(AdminUser user, String hashedPassword);
 
+
+    boolean isValidUsername(String username);
+
+
+
     /**
      * Creates an Admin user
      * @param user the new admin user

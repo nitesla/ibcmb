@@ -17,7 +17,6 @@ public class AdminUserDTO {
     private Long id;
     private  int version;
 
-    @NotEmpty(message = "cifId")
     private String cifId;
     @NotEmpty(message = "userName")
     private String userName;

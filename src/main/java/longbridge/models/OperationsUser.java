@@ -4,6 +4,7 @@ import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 
 /**
  * Created by Wunmi on 3/28/2017.
@@ -18,6 +19,18 @@ public class OperationsUser extends User {
 	public OperationsUser(){
 		this.userType = (UserType.OPERATIONS);
 	}
+
+	@ManyToOne
+	private UserGroup userGroup;
+
+	public UserGroup getUserGroup() {
+		return userGroup;
+	}
+
+	public void setUserGroup(UserGroup userGroup) {
+		this.userGroup = userGroup;
+	}
+
 	@Override
 	public String toString() {
 		return "OperationsUser{"+super.toString()+"}";

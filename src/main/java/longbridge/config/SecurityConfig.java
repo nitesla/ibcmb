@@ -59,7 +59,7 @@ public class SecurityConfig {
 		@Override
 		protected void configure(HttpSecurity http) throws Exception {
 
-			http.antMatcher("/admin *").authorizeRequests().anyRequest().hasAuthority(UserType.ADMIN.toString())
+			http.antMatcher("/admin/**").authorizeRequests().anyRequest().hasAuthority(UserType.ADMIN.toString())
 					// log in
 					//IP address check
 					//.anyRequest().hasIpAddress("")
@@ -119,7 +119,7 @@ public class SecurityConfig {
 		}
 
 		protected void configure(HttpSecurity http) throws Exception {
-			http.antMatcher("/ops *").authorizeRequests().anyRequest()
+			http.antMatcher("/ops/**").authorizeRequests().anyRequest()
 					//.authenticated()
 					.hasAuthority(UserType.OPERATIONS.toString())
 					// log in
@@ -175,7 +175,7 @@ public class SecurityConfig {
 		}
 
 		protected void configure(HttpSecurity http) throws Exception {
-			http.antMatcher("/retail *").authorizeRequests().anyRequest()
+			http.antMatcher("/retail/**").authorizeRequests().anyRequest()
 					// .authenticated()
 					.hasAuthority(UserType.RETAIL.toString())
 					// log in

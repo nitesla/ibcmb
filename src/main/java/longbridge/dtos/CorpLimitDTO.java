@@ -8,9 +8,6 @@ import java.math.BigDecimal;
  * Created by Fortune on 4/5/2017.
  *
  */
-
-
-
 public class CorpLimitDTO {
 
 	private CorporateDTO corporateDTO;

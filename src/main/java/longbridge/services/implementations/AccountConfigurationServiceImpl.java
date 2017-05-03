@@ -107,114 +107,21 @@ public class AccountConfigurationServiceImpl implements AccountConfigurationServ
         accountClassRestrictionRepo.delete(id);
     }
 
-    @Override
-    public boolean isAccountRestrictedForDebit(String accountNumber) {
-        boolean isRestricted = false;
-        AccountRestriction accountRestriction = accountRestrictionRepo.findByAccountNumber(accountNumber);
-        if(accountRestriction!=null){
-            if(accountRestriction.getRestrictionType().equals("D")){
-                isRestricted =true;
-            }
-        }
-        return  isRestricted;
-    }
 
     @Override
-    public boolean isAccountRestrictedForCredit(String accountNumber) {
-        boolean isRestricted = false;
-        AccountRestriction accountRestriction = accountRestrictionRepo.findByAccountNumber(accountNumber);
-        if(accountRestriction!=null){
-            if(accountRestriction.getRestrictionType().equals("C")){
-                isRestricted =true;
-            }
-        }
-        return  isRestricted;
-    }
-
-    @Override
-    public boolean isAccountRestrictedForDebitAndCredit(String accountNumber) {
-        boolean isRestricted = false;
-        AccountRestriction accountRestriction = accountRestrictionRepo.findByAccountNumber(accountNumber);
-        if(accountRestriction!=null){
-            if(accountRestriction.getRestrictionType().equals("CD")){
-                isRestricted =true;
-            }
-        }
-        return  isRestricted;       }
-
-    @Override
-    public boolean isAccountRestrictedForView(String accountNumber) {
-        boolean isRestricted = false;
-        AccountRestriction accountRestriction = accountRestrictionRepo.findByAccountNumber(accountNumber);
-        if(accountRestriction!=null){
-            if(accountRestriction.getRestrictionType().equals("V")){
-                isRestricted =true;
-            }
-        }
-        return  isRestricted;
-    }
-
-    @Override
-    public boolean isAccountClassRestrictedForDebit(String accountClass) {
-        boolean isRestricted = false;
-        AccountClassRestriction accountClassRestriction = accountClassRestrictionRepo.findByAccountClass(accountClass);
-        if(accountClassRestriction!=null){
-            if(accountClassRestriction.getRestrictionType().equals("D")){
-                isRestricted =true;
-            }
-        }
-        return  isRestricted;
-    }
-
-    @Override
-    public boolean isAccountClassRestrictedForCredit(String accountClass) {
-        boolean isRestricted = false;
-        AccountClassRestriction accountClassRestriction = accountClassRestrictionRepo.findByAccountClass(accountClass);
-        if(accountClassRestriction!=null){
-            if(accountClassRestriction.getRestrictionType().equals("C")){
-                isRestricted =true;
-            }
-        }
-        return  isRestricted;
-    }
-
-    @Override
-    public boolean isAccountClassRestrictedForDebitAndCredit(String accountClass) {
-        boolean isRestricted = false;
-        AccountClassRestriction accountClassRestriction = accountClassRestrictionRepo.findByAccountClass(accountClass);
-        if(accountClassRestriction!=null){
-            if(accountClassRestriction.getRestrictionType().equals("CD")){
-                isRestricted =true;
-            }
-        }
-        return  isRestricted;       }
-
-    @Override
-    public boolean isAccountClassRestrictedForView(String accountClass) {
-        boolean isRestricted = false;
-        AccountClassRestriction accountClassRestriction = accountClassRestrictionRepo.findByAccountClass(accountClass);
-        if(accountClassRestriction!=null){
-            if(accountClassRestriction.getRestrictionType().equals("V")){
-                isRestricted =true;
-            }
-        }
-        return  isRestricted;
-    }
-
-    @Override
-    public Iterable<AccountRestrictionDTO> getRestrictedAccounts() {
+    public Iterable<AccountRestrictionDTO> getAccountRestrictions() {
         Iterable<AccountRestriction> accountRestrictions = accountRestrictionRepo.findAll();
         return convertAccountRestrictionEntitiesToDTOs(accountRestrictions);
     }
 
     @Override
-    public Iterable<AccountClassRestrictionDTO> getRestrictedAccountClasses() {
+    public Iterable<AccountClassRestrictionDTO> getdAccountClassRestrictions() {
         Iterable<AccountClassRestriction> accountClassRestrictions = accountClassRestrictionRepo.findAll();
         return convertAccountClassRestrictionEntitiesToDTOs(accountClassRestrictions);
     }
 
     @Override
-    public Page<AccountRestrictionDTO> getRestrictedAccounts(Pageable pageable) {
+    public Page<AccountRestrictionDTO> getAccountRestrictions(Pageable pageable) {
         Page<AccountRestriction> accountRestrictionPageable = accountRestrictionRepo.findAll(pageable);
         List<AccountRestrictionDTO> dtos = convertAccountRestrictionEntitiesToDTOs(accountRestrictionPageable.getContent());
         long t = accountRestrictionPageable.getTotalElements();
@@ -224,7 +131,7 @@ public class AccountConfigurationServiceImpl implements AccountConfigurationServ
     }
 
     @Override
-    public Page<AccountClassRestrictionDTO> getRestrictedAccountClasses(Pageable pageable) {
+    public Page<AccountClassRestrictionDTO> getdAccountClassRestrictions(Pageable pageable) {
         Page<AccountClassRestriction> accountClassRestrictionPageable = accountClassRestrictionRepo.findAll(pageable);
         List<AccountClassRestrictionDTO> dtos = convertAccountClassRestrictionEntitiesToDTOs(accountClassRestrictionPageable.getContent());
         long t = accountClassRestrictionPageable.getTotalElements();

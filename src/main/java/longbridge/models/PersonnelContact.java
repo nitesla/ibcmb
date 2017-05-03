@@ -15,9 +15,15 @@ import javax.persistence.ManyToOne;
 @Where(clause ="del_Flag='N'" )
 public class PersonnelContact extends AbstractEntity{
 
+    private String firstName;
+    private String lastName;
+    private String organization;
     private String name;
     private String email;
-    private  String username;
+    private String username;
+
+    @ManyToOne
+    private UserGroup userGroup;
 
     @ManyToOne
     private Unit unit;
@@ -55,13 +61,5 @@ public class PersonnelContact extends AbstractEntity{
     }
 
 
-    @Override
-    public String toString() {
-        return "PersonnelContact{" +
-                "name='" + name + '\'' +
-                ", email='" + email + '\'' +
-                ", username='" + username + '\'' +
-                ", unit=" + unit +
-                '}';
-    }
+
 }
