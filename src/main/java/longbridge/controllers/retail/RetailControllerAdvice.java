@@ -1,3 +1,4 @@
+/*
 package longbridge.controllers.retail;
 
 import longbridge.models.RetailUser;
@@ -10,9 +11,11 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import java.security.Principal;
 import java.util.Calendar;
 
+*/
 /**
  * Created by Wunmi Sowunmi on 28/04/2017.
- */
+ *//*
+
 
 @ControllerAdvice(basePackages = {"longbridge.controllers.retail"})
 public class RetailControllerAdvice {
@@ -55,3 +58,4 @@ public class RetailControllerAdvice {
             return "";
         }
 }
+*/
