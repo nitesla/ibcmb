@@ -10,32 +10,36 @@
 <section class="content-wrapper">
     <div class="container">
         <div class="row">
-            <div class="col-md-1"></div>
-            <div class="col-md-8 col-sm-8">
-                <div class="row">
-                    <div class="col-md-6 col-sm-6">
-                        <h5 class="page_header"> Account List</h5>
-                        <table>
+            <div class="col-md-4 col-sm-4">
+                <h5 class="page_header"> Account Settings</h5>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-8 content-bg">
+                <div class="row spacing">
+                    <div class="col-md-10">
+                        <table class="table-hover">
                             <thead>
-                                <td>Account Name</td>
-                                <td>Account Number</td>
-                                <td>Action</td>
+                            <tr>
+                                <th>Account Name</th>
+                                <th>Account Number</th>
+                                <th>Action</th>
+                            </tr>
                             </thead>
                             <tbody>
-                                <tr th:each="acct : ${accounts}">
-                                    <td th:text="${acct.accountName}"></td>
-                                    <td th:text="${acct.accountNumber}"></td>
-                                    <td><a th:href="@{'/retail/account/' + ${acct.id} + '/customize'}">Customise</a></td>
-                                </tr>
+                            <tr th:each="acct : ${accounts}">
+                                <td th:text="${acct.accountName}"></td>
+                                <td th:text="${acct.accountNumber}"></td>
+                                <td><a th:href="@{'/retail/account/' + ${acct.id} + '/customize'}">Customise</a></td>
+                            </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3 col-sm-3">
-                <div class="alert alert-warning">
-
-                </div>
+            <div class="col-md-3 sidebar">
+                <div class="sidebar-bg">hfdhgk</div>
+                <div class="sidebar-bg">jgjgjk</div>
             </div>
         </div>
     </div>
