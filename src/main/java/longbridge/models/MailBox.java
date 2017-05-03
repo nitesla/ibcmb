@@ -18,12 +18,38 @@ import java.util.Collection;
 @Entity
 @Audited
 @Where(clause ="del_Flag='N'" )
+@Table(uniqueConstraints=@UniqueConstraint(columnNames={"userId", "userType"}))
 public class MailBox extends AbstractEntity{
     private Long userId;
     private UserType userType;
 
-    @OneToMany(mappedBy = "mailBox")
+    @OneToMany(mappedBy = "mailBox", cascade = CascadeType.ALL)
     private Collection<Message> messages;
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
+	public UserType getUserType() {
+		return userType;
+	}
+
+	public void setUserType(UserType userType) {
+		this.userType = userType;
+	}
+
+	public Collection<Message> getMessages() {
+		return messages;
+	}
+
+	public void setMessages(Collection<Message> messages) {
+		this.messages = messages;
+	}
+
 
 	@Override
 	public String serialize() throws JsonProcessingException {

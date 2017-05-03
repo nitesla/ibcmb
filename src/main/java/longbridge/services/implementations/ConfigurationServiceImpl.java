@@ -91,7 +91,10 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 	}
 
 	private SettingDTO convertEntityToDTO(Setting setting) {
-		return modelMapper.map(setting, SettingDTO.class);
+		if(setting!=null) {
+			return modelMapper.map(setting, SettingDTO.class);
+		}
+		return null;
 	}
 
 }

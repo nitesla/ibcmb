@@ -1,6 +1,7 @@
 package longbridge.repositories;
 
 import longbridge.models.MailBox;
+import longbridge.models.UserType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -10,4 +11,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface MailBoxRepo extends CommonRepo<MailBox, Long> {
+
+    MailBox findByUserIdAndUserType(Long userId, UserType userType);
 }

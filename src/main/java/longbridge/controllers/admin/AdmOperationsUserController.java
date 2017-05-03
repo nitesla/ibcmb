@@ -21,6 +21,7 @@ import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -76,12 +77,16 @@ public class AdmOperationsUserController {
      * @throws Exception
      */
     @PostMapping
-    public String createUser(@ModelAttribute("operationsUser") OperationsUserDTO operationsUser, BindingResult result, RedirectAttributes redirectAttributes) throws Exception{
+    public String createUser(@ModelAttribute("operationsUser") OperationsUserDTO operationsUser, BindingResult result, Model model, RedirectAttributes redirectAttributes) throws Exception{
         if(result.hasErrors()){
-            return "adm/operation/add";
+            Iterable<RoleDTO> roles = roleService.getRoles();
+            model.addAttribute("roles",roles);
+            result.addError(new ObjectError("invalid","Please fill in the required fields"));
+            return "adm/admin/add";
         }
         operationsUserService.addUser(operationsUser);
-        redirectAttributes.addFlashAttribute("success","Operations user created successfully");
+
+        redirectAttributes.addFlashAttribute("message","Operations user created successfully");
         return "redirect:/admin/operations/users";
     }
 
@@ -99,9 +104,6 @@ public class AdmOperationsUserController {
 
         return out;
     }
-
-
-
     /**
      * Returns all users
      * @param model

@@ -49,66 +49,91 @@
 
 
 <section class="content-wrapper">
+    <div class="container">
+
+        <!--<div class="row bod">-->
+            <!--<div class="col-md-12">-->
+                <!--<h2 class="header-title"> Self Registration</h2>-->
+                <!--<form id="reg-form" >-->
+                    <!--<div>-->
+                        <!--<h3>Account Details</h3>-->
+                        <!--<section>-->
+                            <!--<span class="form-reg">-->
+                                <!--<div>-->
+                                    <!--<input type="text"/>-->
+                                <!--</div>-->
+                            <!--</span>-->
+                        <!--</section>-->
+                        <!--<h3>Account Details</h3>-->
+                        <!--<section>-->
+                            <!--<div class="form-reg">-->
+                                <!--<div class="form-group">-->
+                                    <!--<label>Enter</label>-->
+                                    <!--<input type="text" class="form-control"/>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                        <!--</section>-->
+
+                    <!--</div>-->
+
+                <!--</form>-->
+            <!--</div>-->
+        <!--</div>-->
     <!-- Start row-->
     <div class="row">
         <div class="col-sm-12">
             <div class="white-box">
                 <h2 class="header-title"> Self Registration</h2>
-                <form id="reg-form" action="/register" method="post">
+                <form id="reg-form"  action="/register" method="post">
                 <div>
                     <h3>Account Details</h3>
                     <section>
                         <div class="row">
-                            <div class="col-lg-8 col-md-8 col-sm-8">
-                        <div class="mid-form">
-                                <div class="form-group">
+                        <div class="col-md-offset-4 col-md-4">
+                                <div class="form-group clearfix">
                                     <label>Account Number</label>
                                     <input type="text" name="acct" class="form-control required" placeholder="Account Number"/>
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group clearfix">
                                     <label>Email</label>
                                     <input type="email" name="email" class="form-control required" placeholder="Email"/>
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group clearfix">
                                     <label>Date of Birth</label>
                                     <input id="datepicker" type="text" name="birthDate" class="form-control required"/>
                                 </div>
                                 <input id="customerId" name="customerId" type="hidden"/>
                         </div>
-                            </div>
                         </div>
                     </section>
                     <h3>Profile Details</h3>
                     <section>
                         <div class="row">
-                            <div class="col-lg-8 col-md-8 col-sm-8">
-                                <div class="mid-form">
-                                        <div class="form-group">
+                            <div class="col-md-offset-4 col-md-4">
+                                        <div class="form-group clearfix">
                                             <label>Username</label>
-                                            <input type="text" name="username" class="form-control required" placeholder="Username"/>
+                                            <input type="text" name="userName" class="form-control required" placeholder="Username"/>
                                         </div>
-                                        <div class="form-group">
+                                        <div class="form-group clearfix">
                                             <label>Password</label>
                                             <input type="password" id="password" name="password" class="form-control required" placeholder="Password"/>
                                         </div>
-                                        <div class="form-group">
+                                        <div class="form-group clearfix">
                                             <label>Confirm Password</label>
                                             <input type="password" id="confirm" name="confirm" class="form-control required" placeholder="Confirm Password"/>
                                         </div>
-                                        <div class="form-group">
+                                        <div class="form-group clearfix">
                                             <label>Registration Code</label>
                                             <input type="text" id="code" name="code" class="form-control required" placeholder="Registration Code"/>
                                         </div>
                                 </div>
-                            </div>
-                        </div>
+                                </div>
                     </section>
                     <h3>Security Questions</h3>
                     <section>
                         <div class="row">
-                            <div class="col-lg-10 col-md-10 col-sm-10">
-                                <div class="mid-form">
-                                        <div class="form-group">
+                            <div class="col-md-offset-4 col-md-4">
+                                        <div class="form-group clearfix">
                                             <label>Question</label>
                                             <select class="form-control">
                                                 <option>First Car?</option>
@@ -118,15 +143,13 @@
                                             <input type="text" name="ques" class="form-control required" placeholder="Answer"/>
                                         </div>
                                 </div>
-                            </div>
-                        </div>
+                                </div>
                     </section>
 
                     <h3>Finish</h3>
                     <section>
                         <div class="row">
-                            <div class="col-lg-10 col-md-10 col-sm-10">
-                                <div class="mid-form">
+                            <div class="col-md-offset-4 col-md-4">
                                     <div class="form-group">
                                         <label>Question</label>
                                         <select id="phishing" name="antiPhishingImage" class="form-control">
@@ -137,8 +160,7 @@
                                         <br/>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
+                                </div>
                     </section>
                 </div>
                 </form>
@@ -146,6 +168,8 @@
         </div>
     </div>
     <!-- End row-->
+
+    </div>
 </section>
 
 

@@ -8,11 +8,12 @@ import java.util.Date;
 public class MessageDTO {
 
 
+    private Long id;
     private String sender;
     private String recipient;
     private String subject;
     private String body;
-    private Date sentTime;
+    private Date dateCreated;
     private String status;
     private String tag; //a comma separated list of keywords to identify a message
 
@@ -20,14 +21,23 @@ public class MessageDTO {
     public MessageDTO() {
     }
 
-
-    public MessageDTO(String sender, String recipient, String subject, String body, Date Date, String status ) {
+    public MessageDTO(Long id, String sender, String recipient, String subject, String body, Date dateCreated, String status, String tag) {
+        this.id = id;
         this.sender = sender;
         this.recipient = recipient;
         this.subject = subject;
         this.body = body;
-        this.sentTime = Date;
+        this.dateCreated = dateCreated;
         this.status = status;
+        this.tag = tag;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getSender() {
@@ -54,6 +64,22 @@ public class MessageDTO {
         this.subject = subject;
     }
 
+    public Date getDateCreated() {
+        return dateCreated;
+    }
+
+    public void setDateCreated(Date dateCreated) {
+        this.dateCreated = dateCreated;
+    }
+
+    public String getTag() {
+        return tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
+
     public String getBody() {
         return body;
     }
@@ -70,23 +96,16 @@ public class MessageDTO {
         this.status = status;
     }
 
-    public Date getSentTime() {
-        return sentTime;
-    }
-
-    public void setSentTime(Date sentTime) {
-        this.sentTime = sentTime;
-    }
-
     @Override
     public String toString() {
-        return "Message{" +
-                "sender=" + sender +
+        return "MessageDTO{" +
+                "sender='" + sender + '\'' +
                 ", recipient='" + recipient + '\'' +
                 ", subject='" + subject + '\'' +
                 ", body='" + body + '\'' +
-                ", sentTime=" + sentTime +
+                ", dateCreated=" + dateCreated +
                 ", status='" + status + '\'' +
+                ", tag='" + tag + '\'' +
                 '}';
     }
 }

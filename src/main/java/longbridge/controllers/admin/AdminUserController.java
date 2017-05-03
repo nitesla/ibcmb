@@ -5,6 +5,7 @@ import longbridge.dtos.RoleDTO;
 import longbridge.forms.ChangePassword;
 import longbridge.models.AdminUser;
 import longbridge.services.AdminUserService;
+import longbridge.services.PasswordService;
 import longbridge.services.RoleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,9 +15,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.data.jpa.datatables.repository.DataTablesUtils;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -35,6 +38,13 @@ public class AdminUserController {
     private  AdminUserService adminUserService;
     @Autowired
     private RoleService roleService;
+
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+
+    @Autowired
+    PasswordService passwordService;
+
 
     /**
      * Page for adding a new user
@@ -71,11 +81,15 @@ public class AdminUserController {
     @PostMapping
     public String createUser(@ModelAttribute("adminUser") @Valid AdminUserDTO adminUser, BindingResult result, Model model, RedirectAttributes redirectAttributes) throws Exception{
         if(result.hasErrors()){
-            Iterable<RoleDTO> roles = roleService.getRoles();
-            model.addAttribute("roles",roles);
-            model.addAttribute("message","Pls correct the errors");
+
+            result.addError(new ObjectError("invalid","Please fill in the required fields"));
             return "adm/admin/add";
         }
+        if(!adminUserService.isValidUsername(adminUser.getUserName())){
+            result.addError(new ObjectError("invalid","Username already exists"));
+            return "adm/admin/add";
+        }
+
         adminUserService.addUser(adminUser);
 
         redirectAttributes.addFlashAttribute("message","Admin user created successfully");
@@ -144,31 +158,63 @@ public class AdminUserController {
         return "redirect:/admin/users";
     }
 
+    @ModelAttribute
+    public void init(Model model){
+        model.addAttribute("passwordRules",passwordService.getPasswordRules());
+        Iterable<RoleDTO> roles = roleService.getRoles();
+        model.addAttribute("roles",roles);
+
+    }
+
     @GetMapping("/password")
-    public String changePassword(ChangePassword changePassword){
+    public String changePassword(Model model){
+
+        ChangePassword changePassword = new ChangePassword();
+        model.addAttribute("changePassword", changePassword);
+        model.addAttribute("passwordRules",passwordService.getPasswordRules());
         return "adm/admin/pword";
     }
 
     @PostMapping("/password")
-    public String changePassword(@Valid ChangePassword changePassword, Principal principal, BindingResult result, Model model, RedirectAttributes redirectAttributes){
+    public String changePassword(@ModelAttribute("changePassword") @Valid ChangePassword changePassword,BindingResult result, Principal principal,   RedirectAttributes redirectAttributes){
 
         if(result.hasErrors()){
-            redirectAttributes.addFlashAttribute("message","Please fix errors");
-            return "redirect:/admin/users/password";
-        }
-
-        if(!changePassword.getNewPassword().equals(changePassword.getConfirmPassword())){
-            logger.info("PASSWORD MISMATCH");
-            redirectAttributes.addFlashAttribute("message","Passwords don't match");
-            return "redirect:/admin/users/password";
+            result.addError(new ObjectError("invalid", "Please provide valid password"));
+            return "/adm/admin/pword";
         }
 
         AdminUserDTO user = adminUserService.getUserByName(principal.getName());
 
+        if(!this.passwordEncoder.matches(changePassword.getOldPassword(),user.getPassword())){
+            logger.trace("Invalid old password provided for change");
+            result.addError(new ObjectError("invalid", "Incorrect Old Password"));
+            return "/adm/admin/pword";
+        }
+
+        String errorMsg = passwordService.validate(changePassword.getNewPassword());
+        if(!errorMsg.equals("")){
+            result.addError(new ObjectError("invalid", errorMsg));
+            return "/adm/admin/pword";
+        }
+
+        if(!changePassword.getNewPassword().equals(changePassword.getConfirmPassword())){
+            logger.trace("PASSWORD MISMATCH");
+            result.addError(new ObjectError("invalid", "Passwords do not match"));
+            return "/adm/admin/pword";
+        }
+
+
+        if(!this.passwordEncoder.matches(changePassword.getOldPassword(),user.getPassword())){
+            logger.trace("Invalid old password provided for change");
+            result.addError(new ObjectError("invalid", "Incorrect Old Password"));
+            return "/adm/admin/pword";
+        }
+
+
         adminUserService.changePassword(user, changePassword.getOldPassword(), changePassword.getNewPassword());
 
-        redirectAttributes.addFlashAttribute("message","Password change successful");
-        return "redirect:/admin/users/password";
+        redirectAttributes.addFlashAttribute("message","Password changed successfully");
+        return "redirect:/admin/logout";
     }
 
 }

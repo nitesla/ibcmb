@@ -13,12 +13,20 @@ import java.util.Date;
 @Repository
 public interface MessageRepo extends CommonRepo<Message, Long> {
 
-    Iterable<Message> getByMailBox(MailBox mailBox);
+//   Message findFirstBySenderOrderByIdDesc(String sender);
+//
+//    Message findFirstByRecipientOrderByIdDesc(String recipient);
 
-    Iterable<Message> getByMailBoxAndSentTime(MailBox mailBox, Date sentTime);
 
-    Iterable<Message> getByMailBoxAndSentTimeBetween(MailBox mailBox, Date startTime, Date endTime);
+    Iterable<Message> findByMailBox(MailBox mailBox);
 
-    Iterable<Message> getBySentTimeBetween(Date startTime, Date endTime);
+    Iterable<Message> findByMailBoxOrderByIdDesc(MailBox mailBox);
+
+
+    Iterable<Message> findByMailBoxAndDateCreated(MailBox mailBox, Date date);
+
+    Iterable<Message> findByMailBoxAndDateCreatedBetween(MailBox mailBox, Date startDate, Date endDate);
+
+    Iterable<Message> findByDateCreatedBetween(Date startDate, Date endDate);
 
 }

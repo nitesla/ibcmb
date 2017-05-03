@@ -38,6 +38,8 @@ public interface CodeService {
 	 */
 	CodeDTO getCode(Long codeId);
 
+	Code getCodeById(Long codeId);
+
 	/**
 	 * Returns a list of codes specified by the given type
 	 * 

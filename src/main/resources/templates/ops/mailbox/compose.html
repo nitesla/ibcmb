@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout :: site-head">
+</head>
+
+
+
+<body class="nav-md">
+<div class="container body">
+    <div class="main_container">
+        <div class="col-md-3 left_col">
+            <div class="left_col scroll-view">
+                <div class="navbar nav_title" style="border: 0;">
+                    <!--<a href="index.html"><img th:src="@{~/images/cmb_logo.png}"/></a>-->
+                </div>
+
+                <div class="clearfix"></div>
+                <div class="clearfix"></div>
+
+                <div th:replace="layout :: ops-menu"></div>
+                <div th:replace="layout :: menu-footer"></div>
+
+            </div>
+        </div>
+        <div th:replace="layout :: ops-top-nav"></div>
+
+        <!-- page content -->
+        <div class="right_col" role="main">
+            <div class="">
+
+                <div class="page-title">
+                    <div class="title_left">
+                        <h3>
+                            Compose Message
+                            <small>
+
+                            </small>
+                        </h3>
+                    </div>
+
+
+                </div>
+
+                <div class="clearfix"></div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h2></h2>
+                                <ul class="nav navbar-right panel_toolbox">
+                                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                    </li>
+
+                                </ul>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                                <div class="row">
+
+                                    <!-- /MAIL LIST -->
+
+                                    <form method="post" th:action="@{/ops/mailbox}" th:object="${message}">
+
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">From:</label>
+                                            <div class="col-sm-6 input-group" >
+                                                <input class="form-control" type="text"  th:field="*{sender}" readonly="readonly"/>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">To:</label>
+                                            <div class="col-sm-6 input-group" >
+                                                <input class="form-control" type="text"  th:field="*{recipient}"/>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">Subject:</label>
+                                            <div class="col-sm-6 input-group">
+                                                <input class="form-control" type="text"  th:field="*{subject}"/>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">Content:</label>
+                                            <div class="col-sm-6 input-group" >
+                                                <textarea rows="5" class="form-control" th:field="*{body}"></textarea>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="col-sm-4 col-sm-offset-2" >
+                                                <button class="btn btn-white" id="cancel" type="reset">Cancel</button>
+                                                <button class="btn btn-primary" id="btn-save" type="submit">Send Message</button>
+                                            </div>
+                                        </div>
+
+                                    </form>
+                                    <!-- /CONTENT MAIL -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /page content -->
+
+        <!-- footer content -->
+        <footer th:replace="layout :: footer">
+        </footer>
+        <!-- /footer content -->
+    </div>
+</div>
+
+
+
+<!-- /compose -->
+
+
+<script th:src="@{~/bank/js/jquery.min.js}"></script>
+<script th:src="@{~/bank/js/bootstrap.min.js}"></script>
+<script th:src="@{~/bank/vendors/fastclick/lib/fastclick.js}"></script>
+<script th:src="@{~/bank/vendors/nprogress/nprogress.js}"></script>
+<!--<script th:src="@{~/bank/js/bootstrap-wysiwyg.min.js}"></script>-->
+<script th:src="@{~/bank/js/jquery.hotkeys.js}"></script>
+<script th:src="@{~/bank/js/prettify.js}"></script>
+<script th:src="@{~/bank/js/custom.js}"></script>
+
+<!-- bootstrap-wysiwyg -->
+<script>
+
+    document.getElementById("cancel").onclick = function () {
+        location.href = "/ops/mailbox/inbox";
+    }
+</script>>
+<!-- /compose -->
+
+
+</body>
+</html>

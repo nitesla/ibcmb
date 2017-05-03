@@ -26,9 +26,9 @@
         <div class="right_col" role="main">
             <div class="">
                 <!--<div class="page-title">-->
-                    <!--<div class="title_left">-->
-                        <!--<h3>Create Admin User</h3>-->
-                    <!--</div>-->
+                <!--<div class="title_left">-->
+                <!--<h3>Create Admin User</h3>-->
+                <!--</div>-->
 
                 <!--</div>-->
 
@@ -49,33 +49,45 @@
                                 <div class="ibox-content">
                                     <form method="post" class="form-horizontal" th:action="@{/admin/users/password}" th:object="${changePassword}">
 
-                                        <div class="form-group">
+                                        <div >
                                             <ul id="">
                                                 <li th:each="rule : ${passwordRules}" th:text="${rule}">Input is incorrect</li>
                                             </ul>
                                         </div>
 
-                                        <div th:replace="layout :: message"></div>
-                                            <div th:replace="layout :: form-validation">
+                                        <div th:if="${#fields.hasErrors('*')}">
+                                            <div hidden="hidden" >
+                                                <ul id="fielderrors">
+                                                    <li th:each="err : ${#fields.errors('*')}" th:text="${err}">Input is incorrect</li>
+                                                </ul>
+                                            </div></div>
 
-                                            </div>
+                                        <div hidden="hidden">
+                                            <ul class="actionError" th:if="${#fields.hasErrors('global')}">
+                                                <li th:each="err : ${#fields.errors('global')}" th:text="${err}">Global error message</li>
+                                            </ul>
+                                        </div>
+                                        <div th:replace="layout :: message"></div>
+                                        <div th:replace="layout :: form-validation">
+
+                                        </div>
 
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">Old Password</label>
                                             <div class="col-sm-4">
-                                            <input type="password" name="oldPassword" class="form-control"/>
+                                                <input type="password" name="oldPassword" class="form-control"/>
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">New Password</label>
                                             <div class="col-sm-4">
-                                            <input type="password" name="newPassword" class="form-control"/>
+                                                <input type="password" name="newPassword" class="form-control"/>
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">Confirm New Password</label>
                                             <div class="col-sm-4">
-                                            <input type="password" name="confirmPassword" class="form-control"/>
+                                                <input type="password" name="confirmPassword" class="form-control"/>
                                             </div>
                                         </div>
 

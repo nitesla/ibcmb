@@ -1,5 +1,6 @@
 package longbridge.services.implementations;
 
+import longbridge.dtos.AdminUserDTO;
 import longbridge.dtos.OperationsUserDTO;
 import longbridge.models.AdminUser;
 import longbridge.models.OperationsUser;
@@ -59,6 +60,13 @@ public class OperationsUserServiceImpl implements OperationsUserService {
 
     }
 
+
+    @Override
+    public OperationsUserDTO getUserByName(String name) {
+        OperationsUser opsUser =this.operationsUserRepo.findFirstByUserName(name) ;
+        return convertEntityToDTO(opsUser);
+    }
+
     @Override
     public boolean addUser(OperationsUserDTO userDTO) {
      boolean ok= false;
@@ -111,30 +119,28 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     }
 
     @Override
-    public boolean changePassword(OperationsUserDTO userDTO, String oldPassword, String newPassword) {
-      boolean ok=false;
+    public boolean changePassword(OperationsUserDTO user, String oldPassword, String newPassword) {
+        boolean ok=false;
 
-      try {
-          if (getUser(userDTO.getId()) == null) {
-              logger.error("USER DOES NOT EXIST");
-              return ok;
-          }
+        try {
 
-          if (this.passwordEncoder.matches(oldPassword,userDTO.getPassword())){
-              OperationsUser user = convertDTOToEntity(userDTO);
-             user.setPassword( this.passwordEncoder.encode(newPassword));
-              this.operationsUserRepo.save(user);
-              logger.info("USER {}'s password has been updated",user.getId());
-              ok=true;
-          }else{
-             logger.error("INVALID CURRENT PASSWORD FOR USER {}",userDTO.getId());
-          }
 
-      }catch (Exception e){
-              e.printStackTrace();
-          logger.error("ERROR OCCURRED {}",e.getMessage());
-      }
-      return ok;
+            if (this.passwordEncoder.matches(oldPassword, user.getPassword())) {
+                OperationsUser opsUser = operationsUserRepo.findOne(user.getId());
+                opsUser.setPassword(this.passwordEncoder.encode(newPassword));
+                this.operationsUserRepo.save(opsUser);
+                logger.info("User {}'s password has been updated", user.getId());
+                ok = true;
+            } else {
+                logger.error("INVALID CURRENT PASSWORD FOR USER {}", user.getId());
+
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            logger.error("ERROR OCCURRED {}", e.getMessage());
+        }
+        return ok;
     }
 
     @Override

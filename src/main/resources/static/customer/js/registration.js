@@ -59,7 +59,7 @@
     });
     var ACCOUNT_DETAILS_STEP = 0;
     var PROFILE_DETAILS_STEP = 1;
-    form.children("div").steps({
+    form.children(".form-reg").steps({
         headerTag: "h3",
         bodyTag: "section",
         transitionEffect: "slideLeft",

@@ -4,8 +4,13 @@ import longbridge.dtos.AccountClassRestrictionDTO;
 import longbridge.dtos.AccountDTO;
 import longbridge.dtos.AccountRestrictionDTO;
 import longbridge.models.Account;
+import longbridge.models.AccountClassRestriction;
+import longbridge.models.AccountRestriction;
+import longbridge.repositories.AccountClassRestrictionRepo;
 import longbridge.repositories.AccountRepo;
+import longbridge.repositories.AccountRestrictionRepo;
 import longbridge.services.AccountService;
+import longbridge.services.CodeService;
 import longbridge.services.IntegrationService;
 import longbridge.utils.AccountStatement;
 import org.modelmapper.ModelMapper;
@@ -13,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -179,106 +185,6 @@ public class AccountServiceImpl implements AccountService{
             logger.info("Error setting primary account");
         }
         return false;
-    }
-
-    @Override
-    public void addAccountRestriction(AccountRestrictionDTO accountRestrictionDTO) throws Exception {
-
-    }
-
-    @Override
-    public void updateAccountRestriction(AccountRestrictionDTO accountRestrictionDTO) throws Exception {
-
-    }
-
-    @Override
-    public AccountRestrictionDTO getAccountRestriction(Long id) {
-        return null;
-    }
-
-    @Override
-    public AccountClassRestrictionDTO getAccountClassRestriction(Long id) {
-        return null;
-    }
-
-    @Override
-    public void removeAccountRestriction(Long id) {
-
-    }
-
-    @Override
-    public void addAccountClassRestriction(AccountClassRestrictionDTO accountClassRestrictionDTO) throws Exception {
-
-    }
-
-    @Override
-    public void updateAccountClassRestriction(AccountClassRestrictionDTO accountClassRestrictionDTO) throws Exception {
-
-    }
-
-    @Override
-    public void removeAccountClassRestriction(Long id) {
-
-    }
-
-    @Override
-    public boolean isAccountRestrictedForDebit(String accountNumber) {
-        return false;
-    }
-
-    @Override
-    public boolean isAccountRestrictedForCredit(String accountNumber) {
-        return false;
-    }
-
-    @Override
-    public boolean isAccountRestrictedForDebitAndCredit(String accountNumber) {
-        return false;
-    }
-
-    @Override
-    public boolean isAccountRestrictedForView(String accountNumber) {
-        return false;
-    }
-
-    @Override
-    public boolean isAccountClassRestrictedForDebit(String accountClass) {
-        return false;
-    }
-
-    @Override
-    public boolean isAccountClassRestrictedForCredit(String accountClass) {
-        return false;
-    }
-
-    @Override
-    public boolean isAccountClassRestrictedForDebitAndCredit(String accountClass) {
-        return false;
-    }
-
-    @Override
-    public boolean isAccountClassRestrictedForView(String accountClass) {
-        return false;
-    }
-
-    @Override
-    public Iterable<AccountRestrictionDTO> getRestrictedAccounts() {
-        return null;
-    }
-
-    @Override
-    public Iterable<AccountClassRestrictionDTO> getRestrictedAccountClasses() {
-        return null;
-    }
-
-    @Override
-    public Page<AccountRestrictionDTO> getRestrictedAccounts(Pageable pageable) {
-        return null;
-    }
-
-    @Override
-    public Page<AccountClassRestrictionDTO> getRestrictedAccountClasses(Pageable pageable) {
-        return null;
     }
 
 

@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 
 /**
  * Created by Fortune on 4/4/2017.
+ * Modified by Farooq
  */
 
 @Service
@@ -164,11 +165,12 @@ return false;
         params.put("email",email );
         params.put("dateOfBirth",dob );
         try {
+
            result = template.postForObject(uri,params,CustomerDetails.class);
+
 
         }
         catch (Exception e){
-
             e.printStackTrace();
         }
 
@@ -204,8 +206,6 @@ return false;
         return result;
 
     }
-
-
 
 
 

@@ -352,7 +352,8 @@
 {
     position: relative;
     display: inline-block;
-    width: 100%;
+    margin: 0 auto;
+    width: 200px;
     height: 35em;
     overflow: hidden;
     border-top: 1px solid #bbb;
@@ -361,7 +362,7 @@
 
 .tabcontrol > .content > .body
 {
-    float: left;
+    /*float: left;*/
     position: absolute;
     width: 95%;
     height: 95%;

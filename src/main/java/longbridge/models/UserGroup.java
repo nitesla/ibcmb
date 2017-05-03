@@ -4,6 +4,9 @@ import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Wunmi on 27/03/2017.
@@ -14,9 +17,15 @@ import javax.persistence.Entity;
 public class UserGroup extends AbstractEntity {
 
     private String name;
+    private String description;
+    private Date dateCreated;
 
-//    @ManyToMany(mappedBy = "user")
-//    private Collection<User> users;
+    @OneToMany(mappedBy = "userGroup")
+    private List<OperationsUser> operationsUsers;
+
+    @OneToMany(mappedBy = "userGroup")
+    private List<PersonnelContact> personnelContacts;
+
 
     public String getName() {
         return name;
@@ -26,7 +35,39 @@ public class UserGroup extends AbstractEntity {
         this.name = name;
     }
 
-	public static OperationCode getAddCode() {
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Date getDateCreated() {
+        return dateCreated;
+    }
+
+    public void setDateCreated(Date dateCreated) {
+        this.dateCreated = dateCreated;
+    }
+
+    public List<OperationsUser> getOperationsUsers() {
+        return operationsUsers;
+    }
+
+    public void setOperationsUser(List<OperationsUser> operationsUsers) {
+        this.operationsUsers = operationsUsers;
+    }
+
+    public List<PersonnelContact> getPersonnelContacts() {
+        return personnelContacts;
+    }
+
+    public void setPersonnelContacts(List<PersonnelContact> personnelContacts) {
+        this.personnelContacts = personnelContacts;
+    }
+
+    public static OperationCode getAddCode() {
 		// TODO Auto-generated method stub
 		return null;
 	}
