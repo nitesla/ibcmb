@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="cust_layout :: site-head">
+
+</head>
+<body>
+<header th:replace="cust_layout :: header">
+</header>
+
+<section class="content-wrapper">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 col-sm-4">
+                <h5 class="page_header"> New Beneficiary</h5>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-8 content-bg">
+                <div class="row form-spacing">
+                    <div class="col-md-6 col-sm-6">
+                        <form id="local" method="post" th:action="@{/retail/transfer/coronationbank/new}" th:object="${localBeneficiaryDTO}">
+                             <div class="form-group">
+                                <label>Beneficiary Bank</label>
+                                <select name="beneficiaryBank" class="form-control" th:field="*{beneficiaryBank}" >
+                                    <option value="Coronation">Coronation Merchant Bank</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Account Number</label>
+                                <input type="text" class="form-control" name="accountNumber" th:field="*{accountNumber}" placeholder="Account Number"/>
+                            </div>
+
+                            <div class="form-group">
+                                <input type="text" class="form-control" name="accountName" placeholder="Beneficiary Name"/>
+                            </div>
+                            <button class="btn btn-primary">Save</button>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 sidebar">
+                <div class="sidebar-bg">hfdhgk</div>
+                <div class="sidebar-bg">jgjgjk</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- CONTENT-WRAPPER SECTION END-->
+<footer th:replace="cust_layout ::footer">
+</footer>
+
+<script>
+</script>
+</body>
+</html>

@@ -28,35 +28,41 @@
                         <form method="post" >
 
 
-                                    <table class="table" >
-                                        <thead>
-                                            <td>Beneficiary name</td>
-                                            <td>Currency</td>
-                                            <td>Account balance</td>
-                                        </thead>
-                                        <tbody>
-                                        <tr>
+                            <table class="table-hover" >
+                                <thead>
+                                <tr>
+                                <th>Beneficiary name</th>
+                                <th>Account Number</th>
+                                </tr>
+                                </thead>
+                                <tbody>
 
-                                            <td>Simeon Okeya</td>
-                                            <td>NGN</td>
-                                            <td>N 7,000.38</td>
-                                        </tr>
-                                        <tr>
 
-                                            <td>Oladapo Ayo</td>
-                                            <td>NGN</td>
-                                            <td>N 7,000.38</td>
-                                        </tr>
-                                        <tr>
+                                <tr th:each="loc : ${localBen}">
+                                    <td th:text="${loc.accountName}"></td>
+                                     <td th:text="${loc.accountNumber}"></td>
+                                    <td>
+                                        <li class="dropdown">
+                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" style="font-size:20px;" aria-haspopup="true"><i class=" fa fa-angle-right"></i></a>
+                                        <ul class="dropdown-menu">
+                                            <li><a th:href="@{'/retail/transfer/' + ${loc.id} + '/coronation/maketransfer'}">make a transfer</a>
+                                            </li>
+                                            <li><a href="#">view details</a>
+                                            </li>
+                                            <li><a href="#">edit</a>
+                                            </li>
+                                        </ul>
+                                        </li>
+                                    </td>
+                                </tr>
 
-                                            <td>Sharon tobi</td>
-                                            <td>NGN</td>
-                                            <td>N 7,000.38</td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                            <button type="submit" class="btn btn-default" style="float: right">Add beneficiary</button>
-                        </form>
+                                </tbody>
+                            </table>
+                            <br/>
+                            <a th:href="@{/retail/transfer/coronationbank/new}" class="btn">Add Beneficiary</a>
+
+                           <!-- <button type="submit" class="btn btn-default" style="float: right">Add beneficiary</button>
+                       --> </form>
                     </div>
                 </div>
             </div>

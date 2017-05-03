@@ -42,15 +42,21 @@ private TransferService transferService;
 private AccountService accountService;
 private MessageSource messages;
     private LocaleResolver localeResolver;
+    private LocalBeneficiaryService localBeneficiaryService;
+    private FinancialInstitutionService financialInstitutionService;
+
+
 
     @Autowired
-    public TransferController(RetailUserService retailUserService, IntegrationService integrationService, TransferService transferService, AccountService accountService, MessageSource messages, LocaleResolver localeResolver) {
+    public TransferController(RetailUserService retailUserService, IntegrationService integrationService, TransferService transferService, AccountService accountService, MessageSource messages, LocaleResolver localeResolver,LocalBeneficiaryService localBeneficiaryService,FinancialInstitutionService financialInstitutionService) {
         this.retailUserService = retailUserService;
         this.integrationService = integrationService;
         this.transferService = transferService;
         this.accountService = accountService;
         this.messages = messages;
         this.localeResolver = localeResolver;
+        this.localBeneficiaryService=localBeneficiaryService;
+        this.financialInstitutionService=financialInstitutionService;
     }
 
 
@@ -65,10 +71,37 @@ private MessageSource messages;
     }
 
     @GetMapping("/coronationbanktransfer")
-    public String getCoronationBankTransfer(Model model) throws Exception{
+    public String getCoronationBankTransfer(Model model,Principal principal) throws Exception{
+        RetailUser retailUser = retailUserService.getUserByName(principal.getName());
+        model.addAttribute("localBen", localBeneficiaryService.getLocalBeneficiaries(retailUser));
 
         return "cust/transfer/coronationbanktransfer/add";
     }
+    @GetMapping("/{id}/coronation/maketransfer")
+    public String makeCoronationtransfer(@PathVariable Long id, Model model, Principal principal) throws Exception {
+        RetailUser retailUser = retailUserService.getUserByName(principal.getName());
+        return "maketransfer";
+    }
+
+        @GetMapping("/coronationbank/new")
+    public String addCoronationBeneficiary(Model model,LocalBeneficiaryDTO localBeneficiaryDTO) throws Exception{
+        model.addAttribute("localBanks", financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.LOCAL));
+
+        return "cust/transfer/coronationbanktransfer/addbeneficiary";
+    }
+    @PostMapping("/coronationbank/new")
+    public String createCoronationBeneficiary(@ModelAttribute("localBeneficiary") @Valid LocalBeneficiaryDTO localBeneficiaryDTO, Principal principal, BindingResult result, Model model) throws Exception{
+        if(result.hasErrors()){
+            return "cust/transfer/coronationbanktransfer/addbeneficiary";
+        }
+
+        RetailUser user = retailUserService.getUserByName(principal.getName());
+        localBeneficiaryService.addLocalBeneficiary(user,localBeneficiaryDTO);
+        model.addAttribute("success","Beneficiary added successfully");
+
+        return "redirect:/retail/transfer/coronationbanktransfer";
+    }
+
     @GetMapping("/interbanktransfer")
     public String getInterBank(Model model) throws Exception{
         return "cust/transfer/interbanktransfer/add";

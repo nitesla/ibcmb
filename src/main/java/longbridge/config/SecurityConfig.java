@@ -1,4 +1,3 @@
-/*
 package longbridge.config;
 
 import longbridge.models.UserType;
@@ -19,10 +18,9 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 
-*/
 /**
  * Created by ayoade_farooq@yahoo.com on 4/10/2017.
- *//*
+ */
 
 
 @Configuration
@@ -210,4 +208,3 @@ public class SecurityConfig {
 		return new HttpSessionEventPublisher();
 	}
 }
-*/
