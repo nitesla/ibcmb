@@ -2,21 +2,18 @@ package longbridge.controllers.retail;
 
 
 
+import longbridge.dtos.LocalBeneficiaryDTO;
 import longbridge.dtos.TransferRequestDTO;
+import longbridge.models.FinancialInstitutionType;
 import longbridge.models.RetailUser;
-import longbridge.services.AccountService;
-import longbridge.services.IntegrationService;
-import longbridge.services.RetailUserService;
-import longbridge.services.TransferService;
+import longbridge.services.*;
 import longbridge.utils.TransferType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -80,7 +77,7 @@ private MessageSource messages;
     @GetMapping("/{id}/coronation/maketransfer")
     public String makeCoronationtransfer(@PathVariable Long id, Model model, Principal principal) throws Exception {
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
-        return "maketransfer";
+        return "cust/transfer/coronationbanktransfer/transfer";
     }
 
         @GetMapping("/coronationbank/new")
