@@ -3,6 +3,8 @@ package longbridge.dtos;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.validator.constraints.NotEmpty;
 
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.Min;
 import java.util.Date;
 
 /**
@@ -14,13 +16,19 @@ public class AccountLimitDTO {
     private Long id;
     private int version;
     private String customerType;
+    @NotEmpty
     private String accountNumber;
     private String description;
+    @NotEmpty
     private String channel;
+    @Min(0)
     private double lowerLimit;
+    @Min(0)
     private double upperLimit;
+    @NotEmpty
     private String currency;
     private String status;
+    @NotEmpty
     private String frequency;
     private Date effectiveDate;
     @NotEmpty(message = "startDate")

@@ -6,10 +6,11 @@ import longbridge.dtos.CodeDTO;
 import longbridge.dtos.GlobalLimitDTO;
 import longbridge.models.UserType;
 import longbridge.services.CodeService;
-import longbridge.services.LimitService;
+import longbridge.services.TransactionLimitService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
@@ -24,6 +25,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by Fortune on 4/25/2017.
@@ -40,7 +42,10 @@ public class OpsLimitController {
     CodeService codeService;
 
     @Autowired
-    LimitService limitService;
+    TransactionLimitService transactionLimitService;
+
+    @Autowired
+    MessageSource messageSource;
 
 
     @ModelAttribute
@@ -63,15 +68,17 @@ public class OpsLimitController {
     }
 
     @PostMapping("/retail/global")
-    public String createRetailGlobalLimit(@ModelAttribute("globalLimit") @Valid GlobalLimitDTO globalLimitDTO, BindingResult result, RedirectAttributes redirectAttributes) {
+    public String createRetailGlobalLimit(@ModelAttribute("globalLimit") @Valid GlobalLimitDTO globalLimitDTO, BindingResult result, RedirectAttributes redirectAttributes,Locale locale) {
         if (result.hasErrors()) {
+            result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
+
             return "/ops/limit/retail/global/add";
         }
         globalLimitDTO.setCustomerType(UserType.RETAIL.name());
 
 
         try {
-            limitService.addGlobalLimit(globalLimitDTO);
+            transactionLimitService.addGlobalLimit(globalLimitDTO);
         }
         catch (DataAccessException exc){
             logger.error("Could not add global limit: {}",exc.toString());
@@ -97,8 +104,7 @@ public class OpsLimitController {
     public
     @ResponseBody
     DataTablesOutput<GlobalLimitDTO> getRetailGlobalLimits(DataTablesInput input) {
-        Pageable pageable = DataTablesUtils.getPageable(input);
-        List<GlobalLimitDTO> globalLimits = limitService.getRetailGlobalLimits();
+        List<GlobalLimitDTO> globalLimits = transactionLimitService.getRetailGlobalLimits();
         DataTablesOutput<GlobalLimitDTO> out = new DataTablesOutput<GlobalLimitDTO>();
         out.setDraw(input.getDraw());
         out.setData(globalLimits);
@@ -116,8 +122,7 @@ public class OpsLimitController {
     public
     @ResponseBody
     DataTablesOutput<GlobalLimitDTO> getCorporateGlobalLimits(DataTablesInput input) {
-        Pageable pageable = DataTablesUtils.getPageable(input);
-        List<GlobalLimitDTO> globalLimits = limitService.getCorporateGlobalLimits();
+        List<GlobalLimitDTO> globalLimits = transactionLimitService.getCorporateGlobalLimits();
         DataTablesOutput<GlobalLimitDTO> out = new DataTablesOutput<GlobalLimitDTO>();
         out.setDraw(input.getDraw());
         out.setData(globalLimits);
@@ -134,13 +139,14 @@ public class OpsLimitController {
     }
 
     @PostMapping("/corporate/global")
-    public String createCorporateGlobalLimit(@ModelAttribute("globalLimit") GlobalLimitDTO globalLimitDTO, BindingResult result, RedirectAttributes redirectAttributes) {
+    public String createCorporateGlobalLimit(@ModelAttribute("globalLimit") @Valid  GlobalLimitDTO globalLimitDTO, BindingResult result, RedirectAttributes redirectAttributes, Locale locale) {
         if (result.hasErrors()) {
+            result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
             return "/ops/limits/corporate/global/add";
         }
         globalLimitDTO.setCustomerType(UserType.CORPORATE.name());
         try {
-            limitService.addGlobalLimit(globalLimitDTO);
+            transactionLimitService.addGlobalLimit(globalLimitDTO);
         }
         catch (DataAccessException exc){
             logger.error("Could not add global limit: {}",exc.toString());
@@ -159,22 +165,22 @@ public class OpsLimitController {
 
     @GetMapping("/corporate/global/{id}/edit")
     public String editCorporateGlobalLimit(Model model, @PathVariable Long id){
-        GlobalLimitDTO globalLimit = limitService.getCorporateGlobalLimit(id);
+        GlobalLimitDTO globalLimit = transactionLimitService.getCorporateGlobalLimit(id);
          model.addAttribute("globalLimit",globalLimit);
 
         return "/ops/limit/corporate/global/edit";
     }
 
     @PostMapping("/corporate/global/update")
-    public String updateCorporateGlobalLimit(@ModelAttribute("globalLimit") GlobalLimitDTO globalLimitDTO, BindingResult result, RedirectAttributes redirectAttributes){
+    public String updateCorporateGlobalLimit(@ModelAttribute("globalLimit") @Valid GlobalLimitDTO globalLimitDTO, BindingResult result, RedirectAttributes redirectAttributes, Locale locale){
 
         if (result.hasErrors()) {
-
+            result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
             return "/ops/limit/corporate/global/edit";
         }
 
         try {
-            limitService.addGlobalLimit(globalLimitDTO);
+            transactionLimitService.addGlobalLimit(globalLimitDTO);
         }
         catch (Exception e) {
             logger.error("Exception while updating global limit: {}",e.toString());
@@ -187,24 +193,24 @@ public class OpsLimitController {
 
     @GetMapping("/retail/global/{id}/edit")
     public String editRetailGlobalLimit(Model model, @PathVariable Long id){
-        GlobalLimitDTO globalLimit = limitService.getCorporateGlobalLimit(id);
+        GlobalLimitDTO globalLimit = transactionLimitService.getCorporateGlobalLimit(id);
         model.addAttribute("globalLimit",globalLimit);
         return "ops/limit/retail/global/edit";
     }
 
     @PostMapping("/retail/global/update")
-    public String updateRetailGlobalLimit(@ModelAttribute("globalLimit") GlobalLimitDTO globalLimitDTO, BindingResult result, RedirectAttributes redirectAttributes){
+    public String updateRetailGlobalLimit(@ModelAttribute("globalLimit") @Valid GlobalLimitDTO globalLimitDTO, BindingResult result, RedirectAttributes redirectAttributes,Locale locale){
 
         if (result.hasErrors()) {
+            result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
             return "/ops/limit/retail/global/edit";
         }
         try {
-            limitService.addGlobalLimit(globalLimitDTO);
+            transactionLimitService.addGlobalLimit(globalLimitDTO);
         } catch (Exception e) {
             logger.error("Exception while updating global limit: {}",e.toString());
             result.addError(new ObjectError("exception","Could not update global retail limit"));
             return "/ops/limit/retail/global/edit";        }
-
 
         redirectAttributes.addFlashAttribute("message", "Retail global limit updated successfully");
         return "redirect:/ops/limits/retail/global";
@@ -219,13 +225,14 @@ public class OpsLimitController {
     }
 
     @PostMapping("/retail/class")
-    public String createRetailClassLimit(@ModelAttribute("classLimit") @Valid ClassLimitDTO classLimitDTO, BindingResult result, RedirectAttributes redirectAttributes) {
+    public String createRetailClassLimit(@ModelAttribute("classLimit") @Valid ClassLimitDTO classLimitDTO, BindingResult result, RedirectAttributes redirectAttributes,Locale locale) {
         if (result.hasErrors()) {
+            result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
             return "/ops/limit/retail/class/add";
         }
         classLimitDTO.setCustomerType(UserType.RETAIL.name());
         try {
-            limitService.addClassLimit(classLimitDTO);
+            transactionLimitService.addClassLimit(classLimitDTO);
         }
         catch (DataAccessException exc){
             logger.error("Could not add class limit: {}",exc.toString());
@@ -251,7 +258,7 @@ public class OpsLimitController {
     @ResponseBody
     DataTablesOutput<ClassLimitDTO> getRetailClassLimits(DataTablesInput input) {
         Pageable pageable = DataTablesUtils.getPageable(input);
-        List<ClassLimitDTO> classLimits = limitService.getRetailClassLimits();
+        List<ClassLimitDTO> classLimits = transactionLimitService.getRetailClassLimits();
         DataTablesOutput<ClassLimitDTO> out = new DataTablesOutput<ClassLimitDTO>();
         out.setDraw(input.getDraw());
         out.setData(classLimits);
@@ -269,8 +276,7 @@ public class OpsLimitController {
     public
     @ResponseBody
     DataTablesOutput<ClassLimitDTO> getCorporateClassLimits(DataTablesInput input) {
-        Pageable pageable = DataTablesUtils.getPageable(input);
-        List<ClassLimitDTO> classLimits = limitService.getCorporateClassLimits();
+        List<ClassLimitDTO> classLimits = transactionLimitService.getCorporateClassLimits();
         DataTablesOutput<ClassLimitDTO> out = new DataTablesOutput<ClassLimitDTO>();
         out.setDraw(input.getDraw());
         out.setData(classLimits);
@@ -287,13 +293,14 @@ public class OpsLimitController {
     }
 
     @PostMapping("/corporate/class")
-    public String createCorporateClassLimit(@ModelAttribute("classLimit") ClassLimitDTO classLimitDTO, BindingResult result, RedirectAttributes redirectAttributes) {
+    public String createCorporateClassLimit(@ModelAttribute("classLimit") @Valid ClassLimitDTO classLimitDTO, BindingResult result, RedirectAttributes redirectAttributes,Locale locale) {
         if (result.hasErrors()) {
+            result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
             return "/ops/limits/corporate/class/add";
         }
         classLimitDTO.setCustomerType(UserType.CORPORATE.name());
         try {
-            limitService.addClassLimit(classLimitDTO);
+            transactionLimitService.addClassLimit(classLimitDTO);
         }
         catch (DataAccessException exc){
             logger.error("Could not add class limit: {}",exc.toString());
@@ -312,22 +319,23 @@ public class OpsLimitController {
 
     @GetMapping("/corporate/class/{id}/edit")
     public String editCorporateClassLimit(Model model, @PathVariable Long id){
-        ClassLimitDTO classLimit = limitService.getCorporateClassLimit(id);
+        ClassLimitDTO classLimit = transactionLimitService.getCorporateClassLimit(id);
         model.addAttribute("classLimit",classLimit);
 
         return "/ops/limit/corporate/class/edit";
     }
 
     @PostMapping("/corporate/class/update")
-    public String updateCorporateClassLimit(@ModelAttribute("classLimit") ClassLimitDTO classLimitDTO, BindingResult result, RedirectAttributes redirectAttributes){
+    public String updateCorporateClassLimit(@ModelAttribute("classLimit") @Valid ClassLimitDTO classLimitDTO, BindingResult result, RedirectAttributes redirectAttributes,Locale locale){
 
         if (result.hasErrors()) {
+            result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
 
             return "/ops/limit/corporate/class/edit";
         }
 
         try {
-            limitService.addClassLimit(classLimitDTO);
+            transactionLimitService.addClassLimit(classLimitDTO);
         } catch (Exception e) {
             logger.error("Exception while updating class limit: {}",e.toString());
             result.addError(new ObjectError("exception","Could not update class corporate limit"));
@@ -339,24 +347,25 @@ public class OpsLimitController {
 
     @GetMapping("/retail/class/{id}/edit")
     public String editRetailClassLimit(Model model, @PathVariable Long id){
-        ClassLimitDTO classLimit = limitService.getCorporateClassLimit(id);
+        ClassLimitDTO classLimit = transactionLimitService.getCorporateClassLimit(id);
         model.addAttribute("classLimit",classLimit);
         return "ops/limit/retail/class/edit";
     }
 
     @PostMapping("/retail/class/update")
-    public String updateRetailClassLimit(@ModelAttribute("classLimit") ClassLimitDTO classLimitDTO, BindingResult result, RedirectAttributes redirectAttributes){
+    public String updateRetailClassLimit(@ModelAttribute("classLimit") @Valid ClassLimitDTO classLimitDTO, BindingResult result, RedirectAttributes redirectAttributes,Locale locale){
 
         if (result.hasErrors()) {
+            result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
             return "/ops/limit/retail/class/edit";
         }
         try {
-            limitService.addClassLimit(classLimitDTO);
+            transactionLimitService.addClassLimit(classLimitDTO);
         } catch (Exception e) {
             logger.error("Exception while updating class limit: {}",e.toString());
             result.addError(new ObjectError("exception","Could not update class retail limit"));
-            return "/ops/limit/retail/class/edit";        }
-
+            return "/ops/limit/retail/class/edit";
+        }
 
         redirectAttributes.addFlashAttribute("message", "Retail class limit updated successfully");
         return "redirect:/ops/limits/retail/class";
@@ -369,13 +378,14 @@ public class OpsLimitController {
     }
 
     @PostMapping("/retail/account")
-    public String createRetailAccountLimit(@ModelAttribute("accountLimit") @Valid AccountLimitDTO accountLimitDTO, BindingResult result, RedirectAttributes redirectAttributes) {
+    public String createRetailAccountLimit(@ModelAttribute("accountLimit") @Valid AccountLimitDTO accountLimitDTO, BindingResult result, RedirectAttributes redirectAttributes,Locale locale) {
         if (result.hasErrors()) {
+            result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
             return "/ops/limit/retail/account/add";
         }
         accountLimitDTO.setCustomerType(UserType.RETAIL.name());
         try {
-            limitService.addAccountLimit(accountLimitDTO);
+            transactionLimitService.addAccountLimit(accountLimitDTO);
         }
         catch (DataAccessException exc){
             logger.error("Could not add account limit: {}",exc.toString());
@@ -400,8 +410,7 @@ public class OpsLimitController {
     public
     @ResponseBody
     DataTablesOutput<AccountLimitDTO> getRetailAccountLimits(DataTablesInput input) {
-        Pageable pageable = DataTablesUtils.getPageable(input);
-        List<AccountLimitDTO> accountLimits = limitService.getRetailAccountLimits();
+        List<AccountLimitDTO> accountLimits = transactionLimitService.getRetailAccountLimits();
         DataTablesOutput<AccountLimitDTO> out = new DataTablesOutput<AccountLimitDTO>();
         out.setDraw(input.getDraw());
         out.setData(accountLimits);
@@ -419,8 +428,7 @@ public class OpsLimitController {
     public
     @ResponseBody
     DataTablesOutput<AccountLimitDTO> getCorporateAccountLimits(DataTablesInput input) {
-        Pageable pageable = DataTablesUtils.getPageable(input);
-        List<AccountLimitDTO> accountLimits = limitService.getCorporateAccountLimits();
+        List<AccountLimitDTO> accountLimits = transactionLimitService.getCorporateAccountLimits();
         DataTablesOutput<AccountLimitDTO> out = new DataTablesOutput<AccountLimitDTO>();
         out.setDraw(input.getDraw());
         out.setData(accountLimits);
@@ -437,13 +445,14 @@ public class OpsLimitController {
     }
 
     @PostMapping("/corporate/account")
-    public String createCorporateAccountLimit(@ModelAttribute("accountLimit") AccountLimitDTO accountLimitDTO, BindingResult result, RedirectAttributes redirectAttributes) {
+    public String createCorporateAccountLimit(@ModelAttribute("accountLimit") @Valid AccountLimitDTO accountLimitDTO, BindingResult result, RedirectAttributes redirectAttributes,Locale locale) {
         if (result.hasErrors()) {
+            result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
             return "/ops/limits/corporate/account/add";
         }
         accountLimitDTO.setCustomerType(UserType.CORPORATE.name());
         try {
-            limitService.addAccountLimit(accountLimitDTO);
+            transactionLimitService.addAccountLimit(accountLimitDTO);
         }
         catch (DataAccessException exc){
             logger.error("Could not add global limit: {}",exc.toString());
@@ -462,22 +471,22 @@ public class OpsLimitController {
 
     @GetMapping("/corporate/account/{id}/edit")
     public String editCorporateAccountLimit(Model model, @PathVariable Long id){
-        AccountLimitDTO accountLimit = limitService.getCorporateAccountLimit(id);
+        AccountLimitDTO accountLimit = transactionLimitService.getCorporateAccountLimit(id);
         model.addAttribute("accountLimit",accountLimit);
 
         return "/ops/limit/corporate/account/edit";
     }
 
     @PostMapping("/corporate/account/update")
-    public String updateCorporateAccountLimit(@ModelAttribute("accountLimit") AccountLimitDTO accountLimitDTO, BindingResult result, RedirectAttributes redirectAttributes){
+    public String updateCorporateAccountLimit(@ModelAttribute("accountLimit") @Valid AccountLimitDTO accountLimitDTO, BindingResult result, RedirectAttributes redirectAttributes,Locale locale){
 
         if (result.hasErrors()) {
-
+            result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
             return "/ops/limit/corporate/account/edit";
         }
 
         try {
-            limitService.addAccountLimit(accountLimitDTO);
+            transactionLimitService.addAccountLimit(accountLimitDTO);
         } catch (Exception e) {
             logger.error("Exception while updating account limit: {}",e.toString());
             result.addError(new ObjectError("exception","Could not update account corporate limit"));
@@ -489,19 +498,20 @@ public class OpsLimitController {
 
     @GetMapping("/retail/account/{id}/edit")
     public String editRetailAccountLimit(Model model, @PathVariable Long id){
-        AccountLimitDTO accountLimit = limitService.getCorporateAccountLimit(id);
+        AccountLimitDTO accountLimit = transactionLimitService.getCorporateAccountLimit(id);
         model.addAttribute("accountLimit",accountLimit);
         return "ops/limit/retail/account/edit";
     }
 
     @PostMapping("/retail/account/update")
-    public String updateRetailAccountLimit(@ModelAttribute("accountLimit") AccountLimitDTO accountLimitDTO, BindingResult result, RedirectAttributes redirectAttributes){
+    public String updateRetailAccountLimit(@ModelAttribute("accountLimit") @Valid AccountLimitDTO accountLimitDTO, BindingResult result, RedirectAttributes redirectAttributes,Locale locale){
 
         if (result.hasErrors()) {
+            result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
             return "/ops/limit/retail/account/edit";
         }
         try {
-            limitService.addAccountLimit(accountLimitDTO);
+            transactionLimitService.addAccountLimit(accountLimitDTO);
         } catch (Exception e) {
             logger.error("Exception while updating account limit: {}",e.toString());
             result.addError(new ObjectError("exception","Could not update account retail limit"));

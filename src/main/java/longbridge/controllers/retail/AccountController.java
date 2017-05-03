@@ -2,6 +2,7 @@ package longbridge.controllers.retail;
 
 import longbridge.dtos.AccountDTO;
 import longbridge.forms.CustomizeAccount;
+import longbridge.models.Account;
 import longbridge.models.RetailUser;
 import longbridge.services.AccountService;
 import longbridge.services.RetailUserService;
@@ -67,5 +68,50 @@ public class AccountController {
         accountService.customizeAccount(this.customizeAccountId, customizeAccount.getAccountName());
 
         return "redirect:/retail/account/customize";
+    }
+
+    @GetMapping("/settings")
+    public String settingsPage(Model model, Principal principal){
+        RetailUser user = retailUserService.getUserByName(principal.getName());
+        Iterable<AccountDTO> accounts = accountService.getAccounts(user.getCustomerId());
+        model.addAttribute("accounts", accounts);
+        return "cust/account/setting";
+    }
+
+    @GetMapping("/{id}/hide")
+    public String hide(@PathVariable Long id, Model model, Principal principal){
+
+        accountService.hideAccount(id);
+
+
+        RetailUser user = retailUserService.getUserByName(principal.getName());
+        Iterable<AccountDTO> account = accountService.getAccounts(user.getCustomerId());
+        model.addAttribute("accounts", account);
+        return "redirect:/retail/account/settings";
+    }
+
+    @GetMapping("/{id}/unhide")
+    public String unhide(@PathVariable Long id, Model model, Principal principal){
+
+        accountService.unhideAccount(id);
+
+
+        RetailUser user = retailUserService.getUserByName(principal.getName());
+        Iterable<AccountDTO> accounts = accountService.getAccounts(user.getCustomerId());
+        model.addAttribute("accounts", accounts);
+        return "redirect:/retail/account/settings";
+    }
+
+    @GetMapping("/{id}/primary")
+    public String makePrimary(@PathVariable Long id, Model model, Principal principal){
+
+        RetailUser user = retailUserService.getUserByName(principal.getName());
+        Iterable<Account> accounts = accountService.getCustomerAccounts(user.getCustomerId());
+        //Account accounts = accountService.getAccountByCustomerId(user.getCustomerId());
+        accountService.makePrimaryAccount(id, user.getCustomerId());
+
+
+        model.addAttribute("accounts", accounts);
+        return "redirect:/retail/account/settings";
     }
 }

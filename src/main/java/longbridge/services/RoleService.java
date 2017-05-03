@@ -38,7 +38,7 @@ public interface RoleService {
 
     Page<RoleDTO> getRoles(Pageable pageDetails);
 
-
+    Page<User> getUsers(RoleDTO role, Pageable pageDetails);
 
     /**
      * Updates the details of the specified userType

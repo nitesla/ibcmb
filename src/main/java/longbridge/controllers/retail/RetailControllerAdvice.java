@@ -30,8 +30,6 @@ public class RetailControllerAdvice {
 
             RetailUser user = retailUserService.getUserByName(principal.getName());
 
-
-
             model.addAttribute("bvn", user.getBvn());
 
 
@@ -40,13 +38,16 @@ public class RetailControllerAdvice {
             int timeOfDay = c.get(Calendar.HOUR_OF_DAY);
 
             if(timeOfDay >= 0 && timeOfDay < 12){
-                greeting = "Good morning, " + user.getFirstName() + " " + user.getLastName();
+                greeting = "Good morning, ";
             }else if(timeOfDay >= 12 && timeOfDay < 16){
-                greeting = "Good afternoon, " + user.getFirstName() + " " + user.getLastName();
+                greeting = "Good afternoon, ";
             }else if(timeOfDay >= 16 && timeOfDay < 24){
-                greeting = "Good evening, " + user.getFirstName() + " " + user.getLastName();
+                greeting = "Good evening, ";
             }
             model.addAttribute("greeting", greeting);
+
+            String name = user.getFirstName() + ' ' + user.getLastName();
+            model.addAttribute("name", name);
 
 
             //System.out.println( new SimpleDateFormat("HH:mm:ss").format(Calendar.getInstance().getTime()) );

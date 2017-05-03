@@ -62,7 +62,11 @@ INSERT INTO `code` (`id`, `del_flag`, `version`, `code`, `description`, `type`) 
 	(35, 'N', 0, 'B', 'Bi-Annually', 'FREQUENCY'),
 	(36, 'N', 0, 'A', 'Annually', 'FREQUENCY'),
 	(37, 'N', 0, 'SBA', 'SBA', 'ACCOUNT_CLASS'),
-	(38, 'N', 0, 'ODA', 'ODA', 'ACCOUNT_CLASS');
+	(38, 'N', 0, 'ODA', 'ODA', 'ACCOUNT_CLASS'),
+	(39, 'N', 0, 'BOTH', 'SMS and Email', 'ALERT_PREFERENCE'),
+	(40, 'N', 0, 'SMS', 'SMS only', 'ALERT_PREFERENCE'),
+	(41, 'N', 0, 'EMAIL', 'Email only', 'ALERT_PREFERENCE'),
+	(42, 'N', 0, 'NONE', 'No alerts', 'ALERT_PREFERENCE');
 /*!40000 ALTER TABLE `code` ENABLE KEYS */;
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

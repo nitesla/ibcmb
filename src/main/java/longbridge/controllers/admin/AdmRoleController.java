@@ -6,6 +6,7 @@ import longbridge.dtos.ServiceReqConfigDTO;
 import longbridge.models.AdminUser;
 import longbridge.models.Permission;
 import longbridge.models.Role;
+import longbridge.models.User;
 import longbridge.models.Verification;
 import longbridge.repositories.AdminUserRepo;
 import longbridge.repositories.RoleRepo;
@@ -92,6 +93,27 @@ public class AdmRoleController {
 //        model.addAttribute("permissions",role);
 
         return "/adm/role/edit";
+    }
+    
+    @GetMapping("/{reqId}/view")
+    public String  viewRole(@PathVariable Long reqId, Model model){
+        RoleDTO role = roleService.getRole(reqId);
+        model.addAttribute("role",role);
+        return "/adm/role/details";
+    }
+    
+    @GetMapping(path = "/{roleId}/users")
+    public @ResponseBody
+    DataTablesOutput<User> getUsers(@PathVariable Long roleId, DataTablesInput input){
+    	RoleDTO role = roleService.getRole(roleId);
+        Pageable pageable = DataTablesUtils.getPageable(input);
+        Page<User> users = roleService.getUsers(role, pageable);
+        DataTablesOutput<User> out = new DataTablesOutput<User>();
+        out.setDraw(input.getDraw());
+        out.setData(users.getContent());
+        out.setRecordsFiltered(users.getTotalElements());
+        out.setRecordsTotal(users.getTotalElements());
+        return out;
     }
 
     @GetMapping(path = "/all")
