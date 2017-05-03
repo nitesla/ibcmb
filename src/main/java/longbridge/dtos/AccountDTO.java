@@ -12,11 +12,12 @@ public class AccountDTO{
     private String solId;
     private String primaryFlag;
     private String hiddenFlag;
+    private String currencyCode;
 
     public AccountDTO() {
     }
 
-    public AccountDTO(Long id, String accountId, String accountNumber, String accountName, String customerId, String schemeType, String schemeCode, String solId, String primaryFlag, String hiddenFlag) {
+    public AccountDTO(Long id, String accountId, String accountNumber, String accountName, String customerId, String schemeType, String schemeCode, String solId, String primaryFlag, String hiddenFlag, String currencyCode) {
         this.id = id;
         this.accountId = accountId;
         this.accountNumber = accountNumber;
@@ -27,6 +28,7 @@ public class AccountDTO{
         this.solId = solId;
         this.primaryFlag = primaryFlag;
         this.hiddenFlag = hiddenFlag;
+        this.currencyCode=currencyCode;
     }
 
     public Long getId() {
@@ -109,6 +111,14 @@ public class AccountDTO{
         this.hiddenFlag = hiddenFlag;
     }
 
+    public String getCurrencyCode() {
+        return currencyCode;
+    }
+
+    public void setCurrencyCode(String currencyCode) {
+        this.currencyCode = currencyCode;
+    }
+
     @Override
     public String toString() {
         return "AccountDTO{"
@@ -123,6 +133,7 @@ public class AccountDTO{
                 ", solId='" + solId + '\'' +
                 ", primaryFlag='" + primaryFlag + '\'' +
                 ", hiddenFlag='" + hiddenFlag + '\'' +
+                ", currencyCode='" + currencyCode + '\'' +
                 '}';
     }
 

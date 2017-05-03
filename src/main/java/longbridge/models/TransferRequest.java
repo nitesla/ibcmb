@@ -6,6 +6,7 @@ import org.hibernate.envers.Audited;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import java.math.BigDecimal;
 
 /**The {@code Transfer} class model represents a single transfer transaction.
  * This model can be used to represent intra-bank and inter-bank transfers
@@ -39,7 +40,12 @@ public class TransferRequest extends AbstractEntity{
 
     private String sessionId;
 
-    public TransferRequest(Account account, TransferType transferType, FinancialInstitution financialInstitution, String beneficiaryAccountNumber, String beneficiaryAccountName, String remarks, String referenceNumber, String userReferenceNumber, String narration, String sessionId) {
+    private BigDecimal amount;
+
+    public TransferRequest() {
+    }
+
+    public TransferRequest(Account account, TransferType transferType, FinancialInstitution financialInstitution, String beneficiaryAccountNumber, String beneficiaryAccountName, String remarks, String referenceNumber, String userReferenceNumber, String narration, String sessionId, BigDecimal amount) {
         this.account = account;
         this.transferType = transferType;
         this.financialInstitution = financialInstitution;
@@ -50,6 +56,7 @@ public class TransferRequest extends AbstractEntity{
         this.userReferenceNumber = userReferenceNumber;
         this.narration = narration;
         this.sessionId = sessionId;
+        this.amount=amount;
     }
 
     public Account getAccount() {
@@ -132,6 +139,14 @@ public class TransferRequest extends AbstractEntity{
         this.sessionId = sessionId;
     }
 
+    public BigDecimal getAmount() {
+        return amount;
+    }
+
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
+    }
+
     @Override
     public String toString() {
         return "Transfer{" +
@@ -145,6 +160,7 @@ public class TransferRequest extends AbstractEntity{
                 ", userReferenceNumber='" + userReferenceNumber + '\'' +
                 ", narration='" + narration + '\'' +
                 ", sessionId='" + sessionId + '\'' +
+                ", amount='" + amount + '\'' +
                 '}';
     }
 

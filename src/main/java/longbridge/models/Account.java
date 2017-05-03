@@ -26,11 +26,12 @@ public class Account extends AbstractEntity{
     private String solId;
     private String primaryFlag;
     private String hiddenFlag;
+    private String currencyCode;
 
     public Account() {
     }
 
-    public Account(String accountId, String accountNumber, String accountName, String customerId, String schemeType, String schemeCode, String solId, String primaryFlag, String hiddenFlag) {
+    public Account(String accountId, String accountNumber, String accountName, String customerId, String schemeType, String schemeCode, String solId, String primaryFlag, String hiddenFlag, String currencyCode) {
         this.accountId = accountId;
         this.accountNumber = accountNumber;
         this.accountName = accountName;
@@ -40,6 +41,7 @@ public class Account extends AbstractEntity{
         this.solId = solId;
         this.primaryFlag = primaryFlag;
         this.hiddenFlag = hiddenFlag;
+        this.currencyCode=currencyCode;
     }
 
     public String getAccountId() {
@@ -114,6 +116,14 @@ public class Account extends AbstractEntity{
         this.hiddenFlag = hiddenFlag;
     }
 
+    public String getCurrencyCode() {
+        return currencyCode;
+    }
+
+    public void setCurrencyCode(String currencyCode) {
+        this.currencyCode = currencyCode;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -150,6 +160,7 @@ public class Account extends AbstractEntity{
                 + ",                         \"schemeType\":\"" + schemeType + "\""
                 + ",                         \"schmCode\":\"" + schemeCode + "\""
                 + ",                         \"solId\":\"" + solId + "\""
+                + ",                         \"currencyCode\":\"" + currencyCode + "\""
                 + "}";
     }
 

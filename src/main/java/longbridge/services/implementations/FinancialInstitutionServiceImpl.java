@@ -144,4 +144,8 @@ public class FinancialInstitutionServiceImpl implements FinancialInstitutionServ
         return pageImpl;
     }
 
+    @Override
+    public FinancialInstitution getFinancialInstitutionByCode(String institutionCode) {
+        return financialInstitutionRepo.findByInstitutionCode(institutionCode);
+    }
 }

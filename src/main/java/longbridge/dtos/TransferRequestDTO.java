@@ -3,6 +3,8 @@ package longbridge.dtos;
 import longbridge.models.*;
 import longbridge.utils.TransferType;
 
+import java.math.BigDecimal;
+
 /** *
  * Created by Fortune on 4/5/2017.
  *
@@ -10,8 +12,7 @@ import longbridge.utils.TransferType;
 
 public class TransferRequestDTO extends AbstractEntity{
 
-    private  Account account;
-
+    private String source;
     private TransferType transferType;
 
     private FinancialInstitution financialInstitution;
@@ -30,8 +31,13 @@ public class TransferRequestDTO extends AbstractEntity{
 
     private String sessionId;
 
-    public TransferRequestDTO(Account account, TransferType transferType, FinancialInstitution financialInstitution, String beneficiaryAccountNumber, String beneficiaryAccountName, String remarks, String referenceNumber, String userReferenceNumber, String narration, String sessionId) {
-        this.account = account;
+    private BigDecimal amount;
+
+    public TransferRequestDTO() {
+    }
+
+    public TransferRequestDTO(String source, TransferType transferType, FinancialInstitution financialInstitution, String beneficiaryAccountNumber, String beneficiaryAccountName, String remarks, String referenceNumber, String userReferenceNumber, String narration, String sessionId, BigDecimal amount) {
+        this.source = source;
         this.transferType = transferType;
         this.financialInstitution = financialInstitution;
         this.beneficiaryAccountNumber = beneficiaryAccountNumber;
@@ -41,14 +47,15 @@ public class TransferRequestDTO extends AbstractEntity{
         this.userReferenceNumber = userReferenceNumber;
         this.narration = narration;
         this.sessionId = sessionId;
+        this.amount=amount;
     }
 
-    public Account getAccount() {
-        return account;
+    public String getSource() {
+        return source;
     }
 
-    public void setAccount(Account account) {
-        this.account = account;
+    public void setSource(String source) {
+        this.source = source;
     }
 
     public TransferType getTransferType() {
@@ -123,10 +130,18 @@ public class TransferRequestDTO extends AbstractEntity{
         this.sessionId = sessionId;
     }
 
+    public BigDecimal getAmount() {
+        return amount;
+    }
+
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
+    }
+
     @Override
     public String toString() {
         return "Transfer{" +
-                "account=" + account +
+                "source=" + source +
                 ", transferType=" + transferType +
                 ", financialinstitution=" + financialInstitution +
                 ", beneficiaryAccountNumber='" + beneficiaryAccountNumber + '\'' +
@@ -136,6 +151,7 @@ public class TransferRequestDTO extends AbstractEntity{
                 ", userReferenceNumber='" + userReferenceNumber + '\'' +
                 ", narration='" + narration + '\'' +
                 ", sessionId='" + sessionId + '\'' +
+                ", amount='" + amount + '\'' +
                 '}';
     }
 

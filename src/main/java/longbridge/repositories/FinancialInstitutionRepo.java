@@ -11,4 +11,5 @@ import org.springframework.stereotype.Repository;
 public interface FinancialInstitutionRepo extends CommonRepo<FinancialInstitution, Long>{
 
     Iterable<FinancialInstitution> findByInstitutionType(FinancialInstitutionType institutionType);
+  FinancialInstitution findByInstitutionCode(String institutionCode);
 }
