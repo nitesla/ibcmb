@@ -122,10 +122,8 @@ public class IntegrationServiceImpl implements IntegrationService {
         params.put("dateOfBirth",dob );
         try {
            result = template.postForObject(uri,params,Boolean.class);
-
         }
         catch (Exception e){
-
             e.printStackTrace();
         }
 

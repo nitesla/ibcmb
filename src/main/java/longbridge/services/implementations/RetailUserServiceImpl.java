@@ -10,9 +10,7 @@ import longbridge.repositories.RetailUserRepo;
 import longbridge.services.AccountService;
 import longbridge.services.CodeService;
 import longbridge.services.RetailUserService;
-import java.util.ArrayList;
-import java.util.List;
-
+import longbridge.services.SecurityService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +21,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import longbridge.services.SecurityService;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by SYLVESTER on 3/29/2017.
@@ -101,7 +101,14 @@ public class RetailUserServiceImpl implements RetailUserService {
         /*Get the user's details from the model */
         if(user!=null){
 //            user.setPassword(this.passwordEncoder.encode(user.getPassword()));
-            RetailUser retailUser = convertDTOToEntity(user);
+            RetailUser retailUser = new RetailUser();
+            retailUser.setUserName(user.getUserName());
+            retailUser.setEmail(user.getEmail());
+            retailUser.setDateCreated(new Date());
+            retailUser.setBirthDate(user.getBirthDate());
+            retailUser.setStatus("ACTIVE");
+            retailUser.setAlertPreference(codeService.getCodeById(39L));
+            retailUser.setPassword(this.passwordEncoder.encode(user.getPassword()));
             this.retailUserRepo.save(retailUser);
             logger.info("USER {} HAS BEEN CREATED");
         }

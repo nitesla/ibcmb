@@ -47,12 +47,10 @@
     </div>
 
 <section class="content-wrapper">
-    <div class="bg">
-        <div class="row">
-            <div class="col-lg-4 col-md-5 col-sm-6">
-                <div class="login-form">
-                    <form  th:action="@{/retail/login}" method="POST">
-                        <h5>Enter Login Details</h5>
+    <div class="container">
+        <div class="bg">
+                    <form  th:action="@{/retail/login}" method="POST" class="form-signin">
+                        <h5 class="form-signin-heading">Enter Login Details</h5>
                         <br/>
                         <div th:if="${param.message != null}" class="alert alert-info" th:text="${param.message[0]}">message</div>
 
@@ -70,11 +68,7 @@
                             <!--<input name="submit" type="submit" value="submit" />-->
                             <button class="btn form-control">Submit</button>
                         </div>
-
-
                     </form>
-                </div>
-            </div>
         </div>
     </div>
 </section>

@@ -65,6 +65,11 @@ public class CodeServiceImpl implements CodeService {
         return convertEntityToDTO(code);
     }
 
+    @Override
+    public Code getCodeById(Long id) {
+        Code code = this.codeRepo.findOne(id);
+        return code;
+    }
 
     @Override
     public Iterable<CodeDTO> getCodesByType(String codeType) {

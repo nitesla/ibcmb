@@ -56,12 +56,12 @@ public class MainController {
 
 
 
-    @GetMapping("/retail/forgot/username")
+    @GetMapping("/forgot/username")
     public String showForgotUsername(){
         return "cust/forgotusername";
     }
 
-    @PostMapping("/retail/forgot/username")
+    @PostMapping("/forgot/username")
     public @ResponseBody String forgotUsername(WebRequest webRequest){
         String accountNumber = webRequest.getParameter("accountNumber");
         String securityQuestion = webRequest.getParameter("securityQuestion");
