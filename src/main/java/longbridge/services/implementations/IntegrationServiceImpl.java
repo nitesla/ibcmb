@@ -4,6 +4,7 @@ import longbridge.api.AccountDetails;
 import longbridge.api.AccountInfo;
 
 import longbridge.api.CustomerDetails;
+import longbridge.api.LocalTransferResponse;
 import longbridge.models.TransferRequest;
 import longbridge.services.IntegrationService;
 import longbridge.utils.AccountStatement;
@@ -85,7 +86,7 @@ public class IntegrationServiceImpl implements IntegrationService {
     }
 
     @Override
-    public void makeTransfer(TransferRequest transferRequest) {
+    public boolean makeTransfer(TransferRequest transferRequest) {
 
         TransferType type;
         type = TransferType.INTER_BANK_TRANSFER;
@@ -106,13 +107,36 @@ public class IntegrationServiceImpl implements IntegrationService {
      }
      case OWN_ACCOUNT_TRANSFER:{
 
+         LocalTransferResponse response=null;
+         String uri=URI +"/transfer/local";
+         Map<String, String> params = new HashMap<>();
+         params.put("debitAccountNumber",transferRequest.getCustomerAccountNumber() );
+         params.put("creditAccountNumber",transferRequest.getBeneficiaryAccountNumber());
+         params.put("tranAmount",transferRequest.getAmount().toString());
+         params.put("naration",transferRequest.getNarration());
+
+         try {
+             response   = template.postForObject(uri,params,LocalTransferResponse.class);
+
+             if (response.getResponseCode().equalsIgnoreCase("000")){
+                 return true;
+             }
+
+         }
+         catch (Exception e){
+
+             e.printStackTrace();
+         }
+     return false;
+
      }
+
      case RTGS:{
 
      }
  }
 
-
+return false;
     }
 
     @Override
@@ -204,4 +228,32 @@ public class IntegrationServiceImpl implements IntegrationService {
         return result;
 
     }
+
+//    @Override
+//    public boolean makeLocalTransfer(TransferRequest transferRequest) {
+//      if (transferRequest.getTransferType().equals(TransferType.OWN_ACCOUNT_TRANSFER)){
+//          LocalTransferResponse response=null;
+//          String uri=URI +"/transfer/local";
+//          Map<String, String> params = new HashMap<>();
+//          params.put("debitAccountNumber",transferRequest.getAccount() );
+//          params.put("creditAccountNumber",transferRequest.getBeneficiaryAccountNumber());
+//          params.put("tranAmount",transferRequest.getAmount().toString());
+//          params.put("naration",transferRequest.getNarration());
+//
+//          try {
+//              response   = template.postForObject(uri,params,LocalTransferResponse.class);
+//
+//              if (response.getResponseCode().equalsIgnoreCase("000")){
+//                  return true;
+//              }
+//
+//          }
+//          catch (Exception e){
+//
+//              e.printStackTrace();
+//          }
+//
+//      }
+//      return false;
+//    }
 }

@@ -6,6 +6,7 @@ import org.hibernate.envers.Audited;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import java.math.BigDecimal;
 
 /**The {@code Transfer} class model represents a single transfer transaction.
  * This model can be used to represent intra-bank and inter-bank transfers
@@ -17,8 +18,8 @@ import javax.persistence.ManyToOne;
 @Where(clause ="del_Flag='N'" )
 public class TransferRequest extends AbstractEntity{
 
-    @ManyToOne
-    private  Account account;
+
+    private  String customerAccountNumber;
 
     private TransferType transferType;
 
@@ -39,8 +40,13 @@ public class TransferRequest extends AbstractEntity{
 
     private String sessionId;
 
-    public TransferRequest(Account account, TransferType transferType, FinancialInstitution financialInstitution, String beneficiaryAccountNumber, String beneficiaryAccountName, String remarks, String referenceNumber, String userReferenceNumber, String narration, String sessionId) {
-        this.account = account;
+    private BigDecimal amount;
+
+    public TransferRequest() {
+    }
+
+    public TransferRequest(String account, TransferType transferType, FinancialInstitution financialInstitution, String beneficiaryAccountNumber, String beneficiaryAccountName, String remarks, String referenceNumber, String userReferenceNumber, String narration, String sessionId, BigDecimal amount) {
+        this.customerAccountNumber = account;
         this.transferType = transferType;
         this.financialInstitution = financialInstitution;
         this.beneficiaryAccountNumber = beneficiaryAccountNumber;
@@ -50,14 +56,15 @@ public class TransferRequest extends AbstractEntity{
         this.userReferenceNumber = userReferenceNumber;
         this.narration = narration;
         this.sessionId = sessionId;
+        this.amount=amount;
     }
 
-    public Account getAccount() {
-        return account;
+    public String getCustomerAccountNumber() {
+        return customerAccountNumber;
     }
 
-    public void setAccount(Account account) {
-        this.account = account;
+    public void setCustomerAccountNumber(String customerAccountNumber) {
+        this.customerAccountNumber = customerAccountNumber;
     }
 
     public TransferType getTransferType() {
@@ -132,10 +139,18 @@ public class TransferRequest extends AbstractEntity{
         this.sessionId = sessionId;
     }
 
+    public BigDecimal getAmount() {
+        return amount;
+    }
+
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
+    }
+
     @Override
     public String toString() {
         return "Transfer{" +
-                "account=" + account +
+                "account=" + customerAccountNumber +
                 ", transferType=" + transferType +
                 ", financialinstitution=" + financialInstitution +
                 ", beneficiaryAccountNumber='" + beneficiaryAccountNumber + '\'' +
@@ -145,6 +160,7 @@ public class TransferRequest extends AbstractEntity{
                 ", userReferenceNumber='" + userReferenceNumber + '\'' +
                 ", narration='" + narration + '\'' +
                 ", sessionId='" + sessionId + '\'' +
+                ", amount='" + amount + '\'' +
                 '}';
     }
 

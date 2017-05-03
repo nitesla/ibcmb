@@ -21,12 +21,13 @@ import org.springframework.security.web.session.HttpSessionEventPublisher;
 /**
  * Created by ayoade_farooq@yahoo.com on 4/10/2017.
  */
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
 	public void customConfig(WebSecurity web) throws Exception {
-		web.ignoring().antMatchers("/resources/**", "/static/**", "/css/**", "/js/**", "/images/**");
+		web.ignoring().antMatchers("/resources *", "/static *", "/css ", "/js *", "/images *");
 	}
 
 	@Configuration

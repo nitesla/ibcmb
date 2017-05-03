@@ -1,14 +1,21 @@
 package longbridge.services.implementations;
 
+import longbridge.dtos.TransferRequestDTO;
 import longbridge.models.TransferRequest;
 import longbridge.models.User;
 import longbridge.repositories.TransferRequestRepo;
+import longbridge.services.AccountService;
+import longbridge.services.FinancialInstitutionService;
 import longbridge.services.IntegrationService;
 import longbridge.services.TransferService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Fortune on 3/30/2017.
@@ -16,15 +23,32 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class TransferServiceImpl implements TransferService {
-    @Autowired
-    TransferRequestRepo transferRequestRepo;
 
-    @Autowired
-    IntegrationService integrationService;
+    private TransferRequestRepo transferRequestRepo;
+    private IntegrationService integrationService;
+
+    private ModelMapper modelMapper;
+
+    private AccountService accountService;
+
+    private FinancialInstitutionService financialInstitutionService;
+
+     @Autowired
+    public TransferServiceImpl(TransferRequestRepo transferRequestRepo, IntegrationService integrationService, ModelMapper modelMapper, AccountService accountService, FinancialInstitutionService financialInstitutionService) {
+        this.transferRequestRepo = transferRequestRepo;
+        this.integrationService = integrationService;
+        this.modelMapper = modelMapper;
+        this.accountService = accountService;
+        this.financialInstitutionService = financialInstitutionService;
+    }
 
     @Override
-    public void makeTransfer(TransferRequest transferRequest) {
-        integrationService.makeTransfer(transferRequest);
+    public boolean makeTransfer(TransferRequestDTO transferRequestDTO) {
+        TransferRequest transferRequest = convertDTOToEntity(transferRequestDTO);
+        boolean ok =integrationService.makeTransfer(transferRequest);
+        return ok;
+
+
     }
 
     @Override
@@ -34,29 +58,57 @@ public class TransferServiceImpl implements TransferService {
 
     @Override
     public Iterable<TransferRequest> getTransfers(User user) {
-       // return transferRepo.getTransactions(user.getId());
-        return  null;
+        // return transferRepo.getTransactions(user.getId());
+        return null;
     }
 
     @Override
-    public void saveTransfer(TransferRequest transferRequest) {
-        transferRequestRepo.save(transferRequest);
+    public boolean saveTransfer(TransferRequestDTO transferRequestDTO) {
+       boolean result=false;
+
+       try{
+           TransferRequest transferRequest = convertDTOToEntity(transferRequestDTO);
+            transferRequestRepo.save(transferRequest);
+            result=true;
+
+       }catch (Exception e){
+
+       }
+       return  result;
     }
 
     @Override
     public void deleteTransfer(Long id) {
         TransferRequest transferRequest = transferRequestRepo.findById(id);
-        if(transferRequest !=null){
+        if (transferRequest != null) {
             transferRequestRepo.delete(transferRequest);
         }
 
 
     }
 
-	@Override
-	public Page<TransferRequest> getTransfers(User user, Pageable pageDetails) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public Page<TransferRequest> getTransfers(User user, Pageable pageDetails) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public TransferRequestDTO convertEntityToDTO(TransferRequest transferRequest) {
+        return modelMapper.map(transferRequest, TransferRequestDTO.class);
+    }
+
+
+    public TransferRequest convertDTOToEntity(TransferRequestDTO transferRequestDTO) {
+        return modelMapper.map(transferRequestDTO, TransferRequest.class);
+    }
+
+    public List<TransferRequestDTO> convertEntitiesToDTOs(Iterable<TransferRequest> transferRequests) {
+        List<TransferRequestDTO> transferRequestDTOList = new ArrayList<>();
+        for (TransferRequest transferRequest : transferRequests) {
+            TransferRequestDTO transferRequestDTO = convertEntityToDTO(transferRequest);
+            transferRequestDTOList.add(transferRequestDTO);
+        }
+        return transferRequestDTOList;
+    }
 
 }

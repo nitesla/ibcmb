@@ -10,83 +10,67 @@
 <section class="content-wrapper">
     <div class="container">
         <div class="row">
-            <div class="col-md-1"></div>
-            <div class="col-md-8 col-sm-8">
-                <div class="row">
+            <div class="col-md-4 col-sm-4">
+                <h5 class="page_header"> Transfer to other bank</h5>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-8 content-bg">
+                <div class="row form-spacing">
                     <div class="col-md-6 col-sm-6">
-                        <h5 class="page_header"> Transfers to other bank </h5>
-                        <!--<form method="post" th:action="" id="reqForm">-->
-                        <div class="container  header_info bvn" style="width: 800px">
-                            <div class="row">
-                                <div class="col-md-1"></div>
-                                <div class="col-md-8 col-sm-8">
-                                    <div class="row">
-                                        <div class="col-md-6 col-sm-6">
-                                            <form method="post">
-                                                <div class="form-group">
+                        <form method="post">
 
+                            <div class="form-group">
+                                <label>Source account</label>
+                                <select name="source" class="form-control" >
+                                    <option value=""> select an account</option>
+                                    <!--<option th:each="s: ${source}" th:value="${s.accountNumber}" th:text="${s.accountNumber}" ></option>-->
 
-                                                    <label>Source account</label>
-                                                    <select type="password" name="oldPassword" class="form-control">
-                                                        <option> select an account</option>
-                                                    </select>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label>Destination account</label>
-                                                    <select type="password" name="oldPassword" class="form-control">
-                                                        <option> select an account</option>
-                                                    </select>  </div>
-                                                <div class="form-group">
-                                                    <label>Amount</label>
-                                                    <input type="text" name="textname" placeholder="Enter an amount" class="form-control"/>
-                                                </div>
-
-                                                <div class="form-group">
-                                                    <label>Remark</label>
-                                                    <input type="text" name="textname" placeholder="" class="form-control"/>
-                                                </div>
-
-                                                <div class="form-group" id="rate">
-                                                    <label>Rate</label>
-                                                    <input type="text" name="textname" placeholder="" class="form-control"/>
-                                                </div>
-
-                                                <!--<button type="submit" class="btn btn-default" style="float: right;">Submit</button>-->
-                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                                &nbsp;&nbsp;&nbsp;&nbsp;
-                                                <a href="#" type="submit" class="button" >Submit</a>
-                                                &nbsp;&nbsp;
-                                                <a href="#" type="reset" class="button" >Cancel</a>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
+                                </select>
                             </div>
-                        </div>
+                            <div class="form-group">
+                                <label>Destination account</label>
+                                <select type="password" name="destination" class="form-control" >
+                                    <option value=""> select an account</option>
+                                    <!--<option th:each="d: ${destination}" th:value="${d.accountNumber}" th:text="${d.accountNumber}" ></option>-->
+
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Amount</label>
+                                <input type="text" name="textname" placeholder="Enter an amount"  class="form-control"/>
+                            </div>
+                            <div class="form-group">
+                                <label>Remark</label>
+                                <input type="text" name="textname" placeholder=""   class="form-control"/>
+                            </div>
+
+
+
+                            <button class="btn btn-primary" type="submit">Submit</button>
+                        </form>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3 col-sm-3">
-                <div class="alert alert-warning">
-
-                </div>
+            <div class="col-md-3 sidebar">
+                <div class="sidebar-bg">hfdhgk</div>
+                <div class="sidebar-bg">jgjgjk</div>
             </div>
         </div>
     </div>
 </section>
 
+
 <!-- CONTENT-WRAPPER SECTION END-->
 <footer th:replace="cust_layout ::footer">
 </footer>
 <script>
-    /*<![CDATA[*/
-    $(document).ready(function() {
-
-        $('#rate').hide();
+    //datepicker
+    $( function() {
+        $( "#datepicker" ).datepicker(
+                { dateformat : 'dd/mm/yy'}
+        );
     } );
-    /*]]>*/
 </script>
 </body>
 </html>

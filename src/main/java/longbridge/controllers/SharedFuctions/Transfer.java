@@ -47,5 +47,17 @@ public class Transfer
     }
 
 
+    @GetMapping("/{accountId}/currency")
+
+    public String getAccountCurrency(@PathVariable String accountId)
+    {
+        return integrationService.viewAccountDetails(accountId).getAcctCrncyCode();
+    }
+
+
+
+
+
+
 
 }

@@ -84,6 +84,7 @@ body {
 
 .footer_bar .list_group a {
     color: #77777a;
+    font-size: 10px;
 }
 .header_info{
     display: block;
@@ -131,7 +132,7 @@ body {
     font-size: 16px;
     font-weight: 100;
     margin-top: 40px;
-    margin-bottom: 20px;
+    margin-bottom: 5px;
     text-align: left;
 }
 
@@ -329,7 +330,7 @@ nav li a {
 
 .footer_bar p {
     color: #77777a;
-    font-size: 14px;
+    font-size: 10px;
     line-height: 14px;
     text-align: right;
     margin: 0 6px 6px 0;
@@ -384,8 +385,9 @@ button, input, optgroup, select, textarea {
 }
 
 .content-bg{
-    margin: 15px 10px 10px 0;
+    margin: 20px 10px 10px 0;
     background-color: #F2F2F1;
+    min-height: 350px;
 }
 
 .sidebar-bg{
@@ -489,21 +491,16 @@ button, input, optgroup, select, textarea {
     height: 200px;
 }
 
-table{
-    border-collapse: collapse;
-}
-
+/*table{*/
+    /*border-collapse:separate;*/
+    /*border-spacing:0 5px;*/
+/*}*/
 tbody tr{
     background-color: #fff;
-    border-top: 2px solid black;
+    border-top: 2px solid #032A4F;
 }
-/*tr{
-    border-top: 2px solid black;
-    margin-top: 3px;
-    background-color: #fff;
-}*/
-th,td{
-    padding: 17px 20px 15px 20px;
+th, td{
+    padding: 15px;
     width: inherit;
 }
 
@@ -666,10 +663,10 @@ th,td{
         display: none;
     }
     .spacing{
-        padding: 0px;
+        padding: 10px 0px;
     }
     .form-spacing{
-        padding: 0px;
+        padding: 10px 0px;
     }
     .hide-faq{
         display: none;

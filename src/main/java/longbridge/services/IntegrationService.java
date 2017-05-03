@@ -3,6 +3,7 @@ package longbridge.services;
 import longbridge.api.AccountDetails;
 import longbridge.api.AccountInfo;
 import longbridge.api.CustomerDetails;
+import longbridge.api.LocalTransferResponse;
 import longbridge.models.TransferRequest;
 import longbridge.utils.AccountStatement;
 
@@ -44,7 +45,7 @@ public interface IntegrationService {
     /** Initiates a transfer request to the relevant Transfer service.
      *
      */
-    void makeTransfer(TransferRequest transferRequest);
+    boolean makeTransfer(TransferRequest transferRequest);
 
     /**Fetches the account Name, Balance , Type from the account table specified by account Number
      *
@@ -87,4 +88,7 @@ public interface IntegrationService {
      * @return map containing the total transaction limit
      */
     BigDecimal getDailyAccountLimit(String accNo,String channel);
+
+
+
 }

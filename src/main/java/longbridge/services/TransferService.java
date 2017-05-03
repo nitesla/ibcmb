@@ -1,5 +1,6 @@
 package longbridge.services;
 
+import longbridge.dtos.TransferRequestDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -17,7 +18,8 @@ import longbridge.models.User;
  */
 public interface TransferService {
 
-    void makeTransfer(TransferRequest transferRequest);
+//    boolean makeLocalTransfer(TransferRequestDTO transferRequest);
+    boolean makeTransfer(TransferRequestDTO transferRequest);
 
     TransferRequest getTransfer(Long id);
 
@@ -25,7 +27,7 @@ public interface TransferService {
     
     Page<TransferRequest> getTransfers(User user, Pageable pageDetails);
 
-    void saveTransfer(TransferRequest transferRequest);
+    boolean saveTransfer(TransferRequestDTO transferRequestDTO);
 
     void deleteTransfer(Long id);
 
