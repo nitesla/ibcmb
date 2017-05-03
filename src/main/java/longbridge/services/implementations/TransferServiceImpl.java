@@ -24,7 +24,6 @@ public class TransferServiceImpl implements TransferService {
 
     @Override
     public void makeTransfer(TransferRequest transferRequest) {
-//        transfer.getAccount();
         integrationService.makeTransfer(transferRequest);
     }
 

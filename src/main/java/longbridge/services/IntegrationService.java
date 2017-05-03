@@ -2,10 +2,7 @@ package longbridge.services;
 
 import longbridge.api.AccountDetails;
 import longbridge.api.AccountInfo;
-
 import longbridge.api.CustomerDetails;
-import longbridge.models.Account;
-
 import longbridge.models.TransferRequest;
 import longbridge.utils.AccountStatement;
 

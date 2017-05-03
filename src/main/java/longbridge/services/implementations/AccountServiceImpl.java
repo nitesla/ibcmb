@@ -187,6 +187,106 @@ public class AccountServiceImpl implements AccountService{
         return false;
     }
 
+    @Override
+    public void addAccountRestriction(AccountRestrictionDTO accountRestrictionDTO) throws Exception {
+
+    }
+
+    @Override
+    public void updateAccountRestriction(AccountRestrictionDTO accountRestrictionDTO) throws Exception {
+
+    }
+
+    @Override
+    public AccountRestrictionDTO getAccountRestriction(Long id) {
+        return null;
+    }
+
+    @Override
+    public AccountClassRestrictionDTO getAccountClassRestriction(Long id) {
+        return null;
+    }
+
+    @Override
+    public void removeAccountRestriction(Long id) {
+
+    }
+
+    @Override
+    public void addAccountClassRestriction(AccountClassRestrictionDTO accountClassRestrictionDTO) throws Exception {
+
+    }
+
+    @Override
+    public void updateAccountClassRestriction(AccountClassRestrictionDTO accountClassRestrictionDTO) throws Exception {
+
+    }
+
+    @Override
+    public void removeAccountClassRestriction(Long id) {
+
+    }
+
+    @Override
+    public boolean isAccountRestrictedForDebit(String accountNumber) {
+        return false;
+    }
+
+    @Override
+    public boolean isAccountRestrictedForCredit(String accountNumber) {
+        return false;
+    }
+
+    @Override
+    public boolean isAccountRestrictedForDebitAndCredit(String accountNumber) {
+        return false;
+    }
+
+    @Override
+    public boolean isAccountRestrictedForView(String accountNumber) {
+        return false;
+    }
+
+    @Override
+    public boolean isAccountClassRestrictedForDebit(String accountClass) {
+        return false;
+    }
+
+    @Override
+    public boolean isAccountClassRestrictedForCredit(String accountClass) {
+        return false;
+    }
+
+    @Override
+    public boolean isAccountClassRestrictedForDebitAndCredit(String accountClass) {
+        return false;
+    }
+
+    @Override
+    public boolean isAccountClassRestrictedForView(String accountClass) {
+        return false;
+    }
+
+    @Override
+    public Iterable<AccountRestrictionDTO> getRestrictedAccounts() {
+        return null;
+    }
+
+    @Override
+    public Iterable<AccountClassRestrictionDTO> getRestrictedAccountClasses() {
+        return null;
+    }
+
+    @Override
+    public Page<AccountRestrictionDTO> getRestrictedAccounts(Pageable pageable) {
+        return null;
+    }
+
+    @Override
+    public Page<AccountClassRestrictionDTO> getRestrictedAccountClasses(Pageable pageable) {
+        return null;
+    }
+
 
 //    private Account mockAccount;
 //

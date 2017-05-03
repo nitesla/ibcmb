@@ -43,9 +43,7 @@ public class CustomUserPrincipal implements UserDetails {
 	@Transactional
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		final List<GrantedAuthority> authorities = new ArrayList<>();
-		// for (final Permission privilege : user.getPrivileges()) {
-		// authorities.add(new SimpleGrantedAuthority(privilege.getName()));
-		// }
+
 
 		System.out.println(user.getRole().getName());
 		getPrivileges(user.getRole()).forEach(i -> authorities.add(new SimpleGrantedAuthority(i)));

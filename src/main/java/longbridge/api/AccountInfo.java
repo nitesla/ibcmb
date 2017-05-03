@@ -1,8 +1,11 @@
 package longbridge.api;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /**
  * Created by ayoade_farooq@yahoo.com on 4/25/2017.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class AccountInfo
 {
     private String accountId;
@@ -71,5 +74,18 @@ public class AccountInfo
 
     public void setSolId(String solId) {
         this.solId = solId;
+    }
+
+    @Override
+    public String toString() {
+        return "{\"AccountInfo\":{"
+                + "                        \"accountId\":\"" + accountId + "\""
+                + ",                         \"accountNumber\":\"" + accountNumber + "\""
+                + ",                         \"accountName\":\"" + accountName + "\""
+                + ",                         \"customerId\":\"" + customerId + "\""
+                + ",                         \"schemeType\":\"" + schemeType + "\""
+                + ",                         \"schemeCode\":\"" + schemeCode + "\""
+                + ",                         \"solId\":\"" + solId + "\""
+                + "}}";
     }
 }

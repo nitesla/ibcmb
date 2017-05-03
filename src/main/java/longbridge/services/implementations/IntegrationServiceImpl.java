@@ -17,6 +17,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by Fortune on 4/4/2017.
@@ -43,8 +44,15 @@ public class IntegrationServiceImpl implements IntegrationService {
         try{
 
             String uri=URI +"/customer/{acctId}/accounts";
-            List<AccountInfo> details= template.getForObject(uri, ArrayList.class,cifid);
-            return details;
+
+
+            return Arrays.stream(template.getForObject(uri, AccountInfo[].class,cifid)).collect(Collectors.toList());
+//            List list= template.getForObject(uri, ArrayList.class,cifid);
+//
+//            ArrayList<AccountInfo>  details= new ArrayList<>();
+//            details.add((AccountInfo)list);
+//            logger.info("details {}",details);
+//            return details;
         }catch (Exception e){
             return null;
         }

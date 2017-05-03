@@ -27,14 +27,17 @@
 
 
                                 <label>Source account</label>
-                                <select type="password" name="oldPassword" class="form-control">
-                                    <option> select an account</option>
+                                <select name="source" class="form-control" id="source">
+                                    <option value=""> select an account</option>
+                                    <option th:each="s: ${accounts}" th:value="${s}" th:text="${s}" ></option>
+
                                 </select>
                             </div>
                             <div class="form-group">
                                 <label>Destination account</label>
-                                <select type="password" name="oldPassword" class="form-control">
-                                    <option> select an account</option>
+                                <select  name="destination" class="form-control" id="destination">
+                                    <!--<option> select an account</option>-->
+                                    <!--<option th:each="s: ${accounts}" th:value="${s}" th:text="${s}" ></option>-->
                                 </select>  </div>
                             <div class="form-group">
                                 <label>Amount</label>
@@ -81,12 +84,34 @@
 <footer th:replace="cust_layout ::footer">
 </footer>
 <script>
-    /*<![CDATA[*/
-    $(document).ready(function() {
+    $('#source').on('change',function(){
+        var acct = $('#source').val();
 
-$('#rate').hide();
-    } );
-    /*]]>*/
+        getDestAccounts(acct);
+    });
+
+
+
+    function getDestAccounts(acct) {
+
+        $.get("/dest/"+acct+"/accounts", function( data ) {
+            $("#destination").empty();
+            data.forEach(function(item, i) {
+                $("#destination").get(0).options[0] = new Option("Select Account", "-1");
+                var option = "<option value = " + item + ">" + item +  "</option>";
+                $("#destination").append(option);
+            });
+        });
+
+    }
+
+
+
+
+
+
+
+
 </script>
 </body>
 </html>
