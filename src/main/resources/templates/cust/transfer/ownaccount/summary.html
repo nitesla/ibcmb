@@ -46,19 +46,16 @@
 
                             </tr>
                         </table>
-
-
-                        <form method="post" th:action="@{/retail/transfer/ownaccount}" th:object="${transferRequest}">
-
-
-
-
-                            <div class="form-group">
-                                <button type="button" class="btn btn-default">Modify</button>
+                    <div class="form-group">
+                    <form method="post" th:action="@{/retail/transfer/ownaccount/edit}" th:object="${transferRequest}">
+                   <button type="button" class="btn btn-default">Modify</button>
+                    </form>
+                                <form method="post" th:action="@{/retail/transfer/ownaccount}" th:object="${transferRequest}">
                                 <button type="submit" class="btn btn-default">Proceed</button>
+                                </form>
                                 <button type="button" class="btn btn-default">Cancel</button>
                             </div>
-                        </form>
+
                     <!--</div>-->
                 </div>
             </div>

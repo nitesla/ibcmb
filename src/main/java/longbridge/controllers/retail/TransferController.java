@@ -1,10 +1,10 @@
 package longbridge.controllers.retail;
 
 
-
 import longbridge.dtos.LocalBeneficiaryDTO;
 import longbridge.dtos.TransferRequestDTO;
 import longbridge.models.FinancialInstitutionType;
+import longbridge.models.LocalBeneficiary;
 import longbridge.models.RetailUser;
 import longbridge.services.*;
 import longbridge.utils.TransferType;
@@ -19,10 +19,12 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * Created by Fortune on 4/3/2017.
@@ -32,154 +34,171 @@ import java.util.Locale;
 public class TransferController {
 
 
-
-private RetailUserService retailUserService;
-private IntegrationService integrationService;
-private TransferService transferService;
-private AccountService accountService;
-private MessageSource messages;
+    private RetailUserService retailUserService;
+    private IntegrationService integrationService;
+    private TransferService transferService;
+    private AccountService accountService;
+    private MessageSource messages;
     private LocaleResolver localeResolver;
     private LocalBeneficiaryService localBeneficiaryService;
     private FinancialInstitutionService financialInstitutionService;
 
 
-
     @Autowired
-    public TransferController(RetailUserService retailUserService, IntegrationService integrationService, TransferService transferService, AccountService accountService, MessageSource messages, LocaleResolver localeResolver,LocalBeneficiaryService localBeneficiaryService,FinancialInstitutionService financialInstitutionService) {
+    public TransferController(RetailUserService retailUserService, IntegrationService integrationService, TransferService transferService, AccountService accountService, MessageSource messages, LocaleResolver localeResolver, LocalBeneficiaryService localBeneficiaryService, FinancialInstitutionService financialInstitutionService) {
         this.retailUserService = retailUserService;
         this.integrationService = integrationService;
         this.transferService = transferService;
         this.accountService = accountService;
         this.messages = messages;
         this.localeResolver = localeResolver;
-        this.localBeneficiaryService=localBeneficiaryService;
-        this.financialInstitutionService=financialInstitutionService;
+        this.localBeneficiaryService = localBeneficiaryService;
+        this.financialInstitutionService = financialInstitutionService;
     }
-
-
-
-
 
 
     @GetMapping
-    public String getInternationalTransfer( Principal principal) throws Exception{
-    return "cust/transfer/internationaltransfer/view";
+    public String makeInternationalTransfer(Principal principal) throws Exception {
+        return "cust/transfer/internationaltransfer/view";
 
     }
 
-    @GetMapping("/coronationbanktransfer")
-    public String getCoronationBankTransfer(Model model,Principal principal) throws Exception{
+    @GetMapping("/local")
+    public String bankTransfer(Model model, Principal principal) throws Exception {
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
         model.addAttribute("localBen", localBeneficiaryService.getLocalBeneficiaries(retailUser));
 
-        return "cust/transfer/coronationbanktransfer/add";
-    }
-    @GetMapping("/{id}/coronation/maketransfer")
-    public String makeCoronationtransfer(@PathVariable Long id, Model model, Principal principal) throws Exception {
-        RetailUser retailUser = retailUserService.getUserByName(principal.getName());
-        return "cust/transfer/coronationbanktransfer/transfer";
+        return "cust/transfer/local/add";
     }
 
-        @GetMapping("/coronationbank/new")
-    public String addCoronationBeneficiary(Model model,LocalBeneficiaryDTO localBeneficiaryDTO) throws Exception{
+    @PostMapping("/local")
+    public String bankTransfer(@ModelAttribute("transferRequest") @Valid TransferRequestDTO transferRequestDTO, Model model, RedirectAttributes redirectAttributes, Locale locale) throws Exception {
+
+
+        boolean ok = transferService.makeTransfer(transferRequestDTO);
+        if (ok) {
+            transferService.saveTransfer(transferRequestDTO);
+        }
+        redirectAttributes.addFlashAttribute("message", messages.getMessage("transaction.success", null, locale));
+
+
+        return "redirect:/retail/transfer/local";
+    }
+
+    @PostMapping("/local/summary")
+    public String bankTransferSummary(@ModelAttribute("transferRequest") @Valid TransferRequestDTO transferRequestDTO, Model model) throws Exception {
+        model.addAttribute("transferRequest", transferRequestDTO);
+
+
+        return "cust/transfer/local/summary";
+    }
+
+
+    @GetMapping("/{id}/local")
+    public String makeLocaltransfer(@PathVariable Long id, Model model) throws Exception {
+        LocalBeneficiary beneficiary = localBeneficiaryService.getLocalBeneficiary(id);
+        TransferRequestDTO transferRequestDTO = new TransferRequestDTO();
+        transferRequestDTO.setBeneficiaryAccountName(beneficiary.getAccountName());
+        transferRequestDTO.setBeneficiaryAccountNumber(beneficiary.getAccountNumber());
+
+        model.addAttribute("transferRequest", transferRequestDTO);
+        model.addAttribute("beneficiary", beneficiary);
+        return "cust/transfer/local/transfer";
+    }
+
+    @GetMapping("/local/new")
+    public String addCoronationBeneficiary(Model model, LocalBeneficiaryDTO localBeneficiaryDTO) throws Exception {
         model.addAttribute("localBanks", financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.LOCAL));
 
-        return "cust/transfer/coronationbanktransfer/addbeneficiary";
+        return "cust/transfer/local/addbeneficiary";
     }
-    @PostMapping("/coronationbank/new")
-    public String createCoronationBeneficiary(@ModelAttribute("localBeneficiary") @Valid LocalBeneficiaryDTO localBeneficiaryDTO, Principal principal, BindingResult result, Model model) throws Exception{
-        if(result.hasErrors()){
-            return "cust/transfer/coronationbanktransfer/addbeneficiary";
+
+    @PostMapping("/local/new")
+    public String createCoronationBeneficiary(@ModelAttribute("localBeneficiary") @Valid LocalBeneficiaryDTO localBeneficiaryDTO, Principal principal, BindingResult result, Model model) throws Exception {
+        if (result.hasErrors()) {
+            return "cust/transfer/local/addbeneficiary";
         }
 
         RetailUser user = retailUserService.getUserByName(principal.getName());
-        localBeneficiaryService.addLocalBeneficiary(user,localBeneficiaryDTO);
-        model.addAttribute("success","Beneficiary added successfully");
+        localBeneficiaryService.addLocalBeneficiary(user, localBeneficiaryDTO);
+        model.addAttribute("success", "Beneficiary added successfully");
 
-        return "redirect:/retail/transfer/coronationbanktransfer";
+        return "redirect:/retail/transfer/local";
     }
 
     @GetMapping("/interbanktransfer")
-    public String getInterBank(Model model) throws Exception{
+    public String getInterBank(Model model) throws Exception {
         return "cust/transfer/interbanktransfer/add";
     }
 
     @GetMapping("/ownaccount")
-    public ModelAndView getOwnAccount(Principal principal) throws Exception {
+    public ModelAndView getOwnAccount() throws Exception {
 
-        RetailUser user = retailUserService.getUserByName(principal.getName());
-        if (user != null) {
-            List<String> accountList = new ArrayList<>();
+        ModelAndView view = new ModelAndView();
 
-            integrationService.fetchAccounts(user.getCustomerId())
+        TransferRequestDTO transferRequestDTO = new TransferRequestDTO();
+        view.addObject("transferRequest", transferRequestDTO);
+        view.setViewName("cust/transfer/ownaccount/transfer");
+        return view;
 
-                    .stream()
-                    .forEach(i -> accountList.add(i.getAccountNumber()));
-
-
-            ModelAndView view = new ModelAndView();
-            view.addObject("accounts", accountList);
-          TransferRequestDTO  transferRequestDTO = new TransferRequestDTO();
-            view.addObject("transferRequest",transferRequestDTO);
-            view.setViewName("cust/transfer/ownaccount/transfer");
-            return view;
-        }
-
-
-        throw new IllegalAccessException("");
 
     }
 
 
     @PostMapping("/ownaccount")
-    public String makeOwnAccountTransfer(@ModelAttribute("transferRequestDTO") @Valid TransferRequestDTO transferRequestDTO, RedirectAttributes redirectAttributes,Locale locale) throws Exception{
+    public String makeOwnAccountTransfer(@ModelAttribute("transferRequestDTO") @Valid TransferRequestDTO transferRequestDTO, RedirectAttributes redirectAttributes, Locale locale) throws Exception {
 
 
-       // boolean ok =transferService.makeTransfer(transferRequestDTO);
-        boolean ok =true;
+        // boolean ok =transferService.makeTransfer(transferRequestDTO);
+        boolean ok = true;
 
-        if(ok)
-        {
-          // transferService.saveTransfer(transferRequestDTO);
-          //  view.addObject("msg",messages.getMessage("transaction.success", null, locale));
+        if (ok) {
+            // transferService.saveTransfer(transferRequestDTO);
+            //  view.addObject("msg",messages.getMessage("transaction.success", null, locale));
 
 
         }
 
 
-
-           redirectAttributes.addFlashAttribute("message",messages.getMessage("transaction.success", null, locale));
+        redirectAttributes.addFlashAttribute("message", messages.getMessage("transaction.success", null, locale));
 
         return "redirect:/retail/transfer/ownaccount";
 
     }
 
     @GetMapping("/settransferlimit")
-    public String getTransferLimit(Model model) throws Exception{
+    public String getTransferLimit(Model model) throws Exception {
         return "cust/transfer/settransferlimit/view";
     }
 
-         @PostMapping("/own/summary")
-        public ModelAndView  ownTransferSummary(@ModelAttribute("transferRequest") @Valid TransferRequestDTO request){
+    @PostMapping("/own/summary")
+    public ModelAndView ownTransferSummary(@ModelAttribute("transferRequest") @Valid TransferRequestDTO request, Locale locale) {
+        ModelAndView view = new ModelAndView();
+        boolean balanceOk = transferService.validateBalance(request);
+        if (!balanceOk) {
+            view.addObject("transferRequest", request);
+            view.addObject("error", messages.getMessage("insufficient.balance", null, locale));
+            view.setViewName("cust/transfer/ownaccount/transfer");
 
-            ModelAndView view= new ModelAndView();
-            request.setBeneficiaryAccountName(integrationService.viewAccountDetails(request.getBeneficiaryAccountNumber()).getAcctName());
-            request.setNarration("");//TODO A GENERIC WAY OF GENERATING THIS
-             request.setReferenceNumber("");
-             request.setDelFlag("N");
-             request.setSessionId("");
-             request.setTransferType(TransferType.OWN_ACCOUNT_TRANSFER);
-
-
-
-            view.addObject("transferRequest",request);
-
-
-            view.setViewName("cust/transfer/ownaccount/summary");
-
-
-
-    return view;
+            return view;
         }
+
+
+        request.setBeneficiaryAccountName(integrationService.viewAccountDetails(request.getBeneficiaryAccountNumber()).getAcctName());
+        request.setNarration("");//TODO A GENERIC WAY OF GENERATING THIS
+        request.setReferenceNumber("");
+        request.setDelFlag("N");
+        request.setSessionId("");
+        request.setTransferType(TransferType.OWN_ACCOUNT_TRANSFER);
+
+
+        view.addObject("transferRequest", request);
+
+
+        view.setViewName("cust/transfer/ownaccount/summary");
+
+
+        return view;
+    }
 
 }
