@@ -1,11 +1,8 @@
 package longbridge.controllers;
 
+import longbridge.models.RetailUser;
 import longbridge.services.RetailUserService;
-import java.util.Iterator;
-import java.util.Optional;
-
-import javax.servlet.http.HttpServletResponse;
-
+import longbridge.services.SecurityService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +12,9 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletResponse;
+import java.util.Iterator;
 import java.util.Optional;
-import longbridge.models.RetailUser;
-import longbridge.services.RetailUserService;
-import longbridge.services.SecurityService;
 
 /**
  * Created by Wunmi on 27/03/2017.
@@ -115,17 +111,17 @@ public class MainController {
     	return "{'success': "+ result + "}";
     }
     
-    @GetMapping("/retail/faqs")
+    @GetMapping("/faqs")
     public String viewFAQs(){		
     	return "cust/faqs"; //TODO
     } 
     
-    @GetMapping("/retail/forgot/password")
+    @GetMapping("/forgot/password")
     public String showResetPassword(){
     	return "cust/passwordreset";
     }
     
-    @PostMapping("retail/forgot/password")
+    @PostMapping("/forgot/password")
     public String resetPassword(WebRequest webRequest,  RedirectAttributes redirectAttributes){
     	Iterator<String> iterator = webRequest.getParameterNames();
     	
