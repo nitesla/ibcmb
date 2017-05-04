@@ -1,31 +1,29 @@
 package longbridge.controllers.retail;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
+import longbridge.dtos.FinancialInstitutionDTO;
 import longbridge.dtos.ServiceReqConfigDTO;
 import longbridge.dtos.ServiceReqFormFieldDTO;
 import longbridge.dtos.ServiceRequestDTO;
+import longbridge.models.FinancialInstitutionType;
 import longbridge.models.RetailUser;
-import longbridge.repositories.RetailUserRepo;
-import longbridge.services.CodeService;
-import longbridge.services.RequestService;
-import longbridge.services.ServiceReqConfigService;
+import longbridge.services.*;
 import longbridge.utils.NameValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpRequest;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.*;
+import java.security.Principal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by Fortune on 4/5/2017.
@@ -42,24 +40,27 @@ public class ServiceRequestController {
     private ServiceReqConfigService serviceReqConfigService;
 
     @Autowired
+    private FinancialInstitutionService financialInstitutionService;
+
+    @Autowired
     private CodeService codeService;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    private RetailUserRepo userRepo;
+    private RetailUserService userService;
 
-    private RetailUser retailUser = new RetailUser();//TODO user must be authenticated
+    //private RetailUser retailUser = new RetailUser();//TODO user must be authenticated
 
     @GetMapping
     public String getServiceRequests(Model model) {
-        Iterable<ServiceReqConfigDTO> requestList = serviceReqConfigService.getServiceReqConfigs();
-        model.addAttribute("requestList", requestList);
+//        Iterable<ServiceReqConfigDTO> requestList = serviceReqConfigService.getServiceReqConfigs();
+//        model.addAttribute("requestList", requestList);
         return "cust/servicerequest/list";
     }
 
     @PostMapping
-    public String processRequest(@ModelAttribute("requestDTO") ServiceRequestDTO requestDTO, BindingResult result, RedirectAttributes redirectAttributes) {
+    public String processRequest(@ModelAttribute("requestDTO") ServiceRequestDTO requestDTO, BindingResult result, Principal principal, RedirectAttributes redirectAttributes) {
 
         String requestBody = requestDTO.getRequestName();
         Long serviceReqConfigId = 0L;
@@ -97,10 +98,10 @@ public class ServiceRequestController {
 
             requestBody = objectMapper.writeValueAsString(myFormObjects);
 
-            retailUser = userRepo.findOne(1L);//TOdO replace with current session user
+            RetailUser user = userService.getUserByName(principal.getName());
             serviceRequestDTO.setBody(requestBody);
             serviceRequestDTO.setRequestStatus("S");
-            serviceRequestDTO.setUser(retailUser);
+            serviceRequestDTO.setUser(user);
             serviceRequestDTO.setDateRequested(new Date());
             requestService.addRequest(serviceRequestDTO);
 
@@ -134,6 +135,11 @@ public class ServiceRequestController {
         for (ServiceReqFormFieldDTO field : serviceReqConfig.getFormFields()) {
             if (field.getFieldType() != null && field.getFieldType().equals("CODE")) {
                 field.setCodeDTOs(codeService.getCodesByType(field.getTypeData()));
+            }
+
+            if (field.getFieldType() != null && field.getFieldType().equals("FI")) {
+                List<FinancialInstitutionDTO> fiList = financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.LOCAL);
+                model.addAttribute("banks", fiList);
             }
 
             if (field.getFieldType() != null && field.getFieldType().equals("LIST")) {

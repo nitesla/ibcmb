@@ -7,6 +7,8 @@ import longbridge.dtos.ServiceReqConfigDTO;
 import longbridge.dtos.ServiceReqFormFieldDTO;
 import longbridge.models.ServiceReqConfig;
 
+import java.util.List;
+
 /**
  * Created by Wunmi on 08/04/2017.
  */
@@ -21,6 +23,8 @@ public interface ServiceReqConfigService{
     Iterable<ServiceReqConfigDTO> getServiceReqConfigs();
     
     Page<ServiceReqConfigDTO> getServiceReqConfigs(Pageable pageDetails);
+
+    List<ServiceReqConfig> getServiceReqConfs();
 
     Iterable<ServiceReqConfigDTO> gerServiceReqConfigsPage(Integer pageNum, Integer pageSize);
 

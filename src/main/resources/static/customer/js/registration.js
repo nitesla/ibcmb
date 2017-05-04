@@ -57,6 +57,7 @@
             }
         }
     });
+
     var ACCOUNT_DETAILS_STEP = 0;
     var PROFILE_DETAILS_STEP = 1;
     form.children(".form-reg").steps({

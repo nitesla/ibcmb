@@ -32,6 +32,7 @@ INSERT INTO `code` (`id`, `del_flag`, `version`, `code`, `description`, `type`) 
 	(1, 'N', 0, 'TEXT', 'Text', 'SERVICE_REQUEST'),
 	(2, 'N', 1, 'ACC', 'Account', 'SERVICE_REQUEST'),
 	(3, 'N', 0, 'DATE', 'Date', 'SERVICE_REQUEST'),
+	(4, 'N', 0, 'FI', 'Financial Institutions', 'SERVICE_REQUEST'),
 	(5, 'N', 0, 'LIST', 'Fixed List', 'SERVICE_REQUEST'),
 	(6, 'N', 0, 'US', 'United States of America', 'USA'),
 	(7, 'Y', 1, 'NG', 'Nigeria', 'Nigeria'),
@@ -67,6 +68,8 @@ INSERT INTO `code` (`id`, `del_flag`, `version`, `code`, `description`, `type`) 
 	(40, 'N', 0, 'SMS', 'SMS only', 'ALERT_PREFERENCE'),
 	(41, 'N', 0, 'EMAIL', 'Email only', 'ALERT_PREFERENCE'),
 	(42, 'N', 0, 'NONE', 'No alerts', 'ALERT_PREFERENCE');
+	(43, 'N', 0, 'TEXTAREA', 'Text Area', 'SERVICE_REQUEST'),
+	(44, 'N', 0, 'CODE', 'Codes', 'SERVICE_REQUEST'),
 /*!40000 ALTER TABLE `code` ENABLE KEYS */;
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
