@@ -53,7 +53,7 @@
                                     <li >
                                         <div class="col-lg-4">
                                             <div class="title-action">
-                                                <a  class="btn btn-danger btn-sm bt-select bt-link-act" href="/ops/accounts/restriction/account/index/remove" disabled="disabled" ><i class="fa fa-trash"></i> Remove</a>
+                                                <a id="delete-btn" class="btn btn-danger btn-sm bt-select" href="/ops/accounts/restriction/account/index/remove" disabled="disabled" ><i class="fa fa-trash"></i> Remove</a>
                                             </div>
                                         </div>
                                     </li>
@@ -189,6 +189,36 @@
         window.location.assign(ooo);
 
     } );
+
+    $("#delete-btn").on("click", function(e) {
+        e.preventDefault();
+        var link = $(e.currentTarget);
+        var dt = $('#codes').DataTable();
+        var id = $(dt.row({
+            selected: true
+        }).node()).attr("id");
+        //window.location.href = link.attr("formaction") + '?id=' + id;
+        //replace {id} with id
+        var ooo = link.attr("href").replace("index",id);
+
+        //goto url
+        warnBeforeRedirect(ooo);
+    });
+
+    function warnBeforeRedirect(ooo) {
+        swal({
+            title: "Are you sure?",
+            text: "Are you sure that you want to remove the restriction on this account?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes, delete it!",
+            closeOnConfirm: false
+        }, function() {
+            // Redirect the user
+            window.location.assign(ooo);
+        });
+    }
     /*]]>*/
 </script>
 
