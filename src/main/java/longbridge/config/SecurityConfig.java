@@ -1,6 +1,9 @@
 package longbridge.config;
 
+import longbridge.dtos.SettingDTO;
 import longbridge.models.UserType;
+import longbridge.services.ConfigurationService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -47,10 +50,17 @@ public class SecurityConfig {
 		@Autowired
 		@Qualifier("adminAuthenticationFailureHandler")
 		private AuthenticationFailureHandler adminAuthenticationFailureHandler;
+		@Autowired
+		private ConfigurationService configService;
+		
+		
 
 		public AdminUserConfigurationAdapter() {
 			super();
+			
 		}
+		
+		
 
 		@Override
 		protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -59,11 +69,18 @@ public class SecurityConfig {
 
 		@Override
 		protected void configure(HttpSecurity http) throws Exception {
-
-			http.antMatcher("/admin/**").authorizeRequests().anyRequest().hasAuthority(UserType.ADMIN.toString())
+			boolean ipRestricted = false;
+			String ipRange = "0.0.0.0./1";
+			//Takes a specific IP address or a range using 
+			//the IP/Netmask (e.g. 192.168.1.0/24 or 202.24.0.0/14).
+			SettingDTO dto = configService.getSettingByName("ADMIN_IP_WHITELIST");
+			if(dto != null && dto.isEnabled()){
+				ipRestricted = true;
+				ipRange = dto.getValue();
+			}
+			http.antMatcher("/admin/**").authorizeRequests().anyRequest().hasIpAddress(ipRange)
+			.anyRequest().hasAuthority(UserType.ADMIN.toString())
 					// log in
-					//IP address check
-					//.anyRequest().hasIpAddress("")
 					.and().formLogin().loginPage("/login/admin").loginProcessingUrl("/admin/login")
 					.failureUrl("/login/admin?error=login_error").defaultSuccessUrl("/admin/dashboard")
 					.successHandler(adminAuthenticationSuccessHandler).failureHandler(adminAuthenticationFailureHandler)
