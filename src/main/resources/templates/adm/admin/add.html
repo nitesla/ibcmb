@@ -50,20 +50,7 @@
                                     <form method="post" class="form-horizontal" th:action="@{/admin/users/}" th:object="${adminUser}">
 
 
-                                        <div th:if="${#fields.hasErrors('*')}">
-                                        <div hidden="hidden" >
-                                            <ul id="fielderrors">
-                                                <li th:each="err : ${#fields.errors('*')}" th:text="${err}">Input is incorrect</li>
-                                            </ul>
-                                        </div></div>
-
-                                        <div hidden="hidden">
-                                            <ul class="actionError" th:if="${#fields.hasErrors('global')}">
-                                                <li th:each="err : ${#fields.errors('global')}" th:text="${err}">Global error message</li>
-                                            </ul>
-                                        </div>
-
-
+                                        <div th:replace="layout::form-validation"></div>
 
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">Username</label>
@@ -74,7 +61,6 @@
 
 
                                         </div>
-
 
 
 
@@ -118,8 +104,8 @@
                                             <label class="col-sm-2 control-label">Role</label>
                                             <div class="col-sm-6">
 
-                                                <select class="form-control" name="roleId">
-                                                    <option value="" name="select">Select..</option>
+                                                <select class="form-control" th:field="*{roleId}">
+                                                    <option value="">Select..</option>
                                                     <option th:each="role : ${roles.?[#strings.equalsIgnoreCase(userType, 'admin')]}" th:value="${role.id}" th:text="${role.name}" th:selected="${role.id==adminUser.roleId}"></option>
                                                 </select>
 
@@ -129,7 +115,7 @@
 
                                         <div class="form-group">
                                             <div class="col-sm-4 col-sm-offset-2">
-                                                <button class="btn btn-white" type="reset">Cancel</button>
+                                                <button class="btn btn-white" type="reset" id="cancel">Cancel</button>
                                                 <button class="btn btn-primary" type="submit">Submit</button>
                                             </div>
                                         </div>
@@ -153,5 +139,11 @@
     </div>
 </div>
 
+<script>
+
+
+    document.getElementById("cancel").onclick = function () {
+        location.href = "/admin/users";}
+</script>
 </body>
 </html>

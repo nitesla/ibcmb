@@ -99,10 +99,22 @@ public class OperationsUserController {
     }
 
     @PostMapping("/password")
-    public String changePassword(@ModelAttribute("changePassword") @Valid ChangePassword changePassword, Principal principal, BindingResult result,  RedirectAttributes redirectAttributes){
-
+    public String changePassword(@ModelAttribute("changePassword") @Valid ChangePassword changePassword, BindingResult result, Principal principal, RedirectAttributes redirectAttributes){
         if(result.hasErrors()){
             result.addError(new ObjectError("invalid", "Please provide valid password"));
+            return "/ops/pword";
+        }
+        OperationsUserDTO user = operationsUserService.getUserByName(principal.getName());
+
+        if(!this.passwordEncoder.matches(changePassword.getOldPassword(),user.getPassword())){
+            logger.trace("Invalid old password provided for change");
+            result.addError(new ObjectError("invalid", "Incorrect Old Password"));
+            return "/ops/pword";
+        }
+
+        String errorMsg = passwordService.validate(changePassword.getNewPassword());
+        if(!errorMsg.equals("")){
+            result.addError(new ObjectError("invalid", errorMsg));
             return "/ops/pword";
         }
 
@@ -112,7 +124,6 @@ public class OperationsUserController {
             return "/ops/pword";
         }
 
-        OperationsUserDTO user = operationsUserService.getUserByName(principal.getName());
 
         if(!this.passwordEncoder.matches(changePassword.getOldPassword(),user.getPassword())){
             logger.trace("Invalid old password provided for change");
@@ -120,11 +131,12 @@ public class OperationsUserController {
             return "/ops/pword";
         }
 
-
         operationsUserService.changePassword(user, changePassword.getOldPassword(), changePassword.getNewPassword());
 
         redirectAttributes.addFlashAttribute("message","Password changed successfully");
         return "redirect:/ops/logout";
+
     }
+
 }
 

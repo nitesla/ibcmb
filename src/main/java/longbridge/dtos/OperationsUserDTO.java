@@ -22,8 +22,8 @@ public class OperationsUserDTO {
     private String firstName;
     @NotEmpty(message = "lastName")
     private String lastName;
-
-    private Long roleId;
+    @NotEmpty(message = "roleId")
+    private String roleId;
 
     private String role;
 
@@ -63,11 +63,11 @@ public class OperationsUserDTO {
         this.version = version;
     }
 
-    public Long getRoleId() {
+    public String getRoleId() {
         return roleId;
     }
 
-    public void setRoleId(Long roleId) {
+    public void setRoleId(String roleId) {
         this.roleId = roleId;
     }
 

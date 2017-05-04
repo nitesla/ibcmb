@@ -9,13 +9,10 @@ import javax.validation.constraints.Size;
  */
 public class ChangePassword {
     @NotEmpty(message = "oldPassword")
-    @Size(message = "oldPassword",min=8)
     private String oldPassword;
     @NotEmpty(message = "newPassword")
-    @Size(message = "oldPassword",min=8)
     private String newPassword;
     @NotEmpty(message = "confirmPassword")
-    @Size(message = "oldPassword",min=8)
     private String confirmPassword;
 
     public String getOldPassword() {

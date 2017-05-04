@@ -29,6 +29,7 @@ import org.springframework.stereotype.Service;
 import javax.mail.MailSessionDefinition;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -128,6 +129,7 @@ public class AdminUserServiceImpl implements AdminUserService {
             adminUser.setFirstName(user.getFirstName());
             adminUser.setLastName(user.getLastName());
             adminUser.setUserName(user.getUserName());
+            adminUser.setEmail(user.getEmail());
             adminUser.setDateCreated(new Date());
             adminUser.setStatus("ACTIVE");
             String password =  this.passwordEncoder.encode("password123");
@@ -135,6 +137,9 @@ public class AdminUserServiceImpl implements AdminUserService {
             Role role = new Role();
             role.setId(Long.parseLong(user.getRoleId()));
             adminUser.setRole(role);
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) + 2);
+            adminUser.setExpiryDate(calendar.getTime());
             this.adminUserRepo.save(adminUser);
             mailService.send(user.getEmail(),String.format("Your username is %s and password is %s", user.getUserName(),"password123"));
             logger.info("New admin user: {} created", adminUser.getUserName());
