@@ -11,7 +11,7 @@
     <div class="container">
         <div class="row">
             <div class="col-md-4 col-sm-4">
-                <h5 class="page_header"> Transfer to</h5>
+                <h5 class="page_header"> Transfer to <span th:text="${beneficiary.preferredName}"></span></h5>
             </div>
         </div>
         <div class="row">
@@ -20,7 +20,7 @@
                     <div class="col-md-6 col-sm-6">
 
                         <div th:if="${message != null}" class="alert alert-info" th:text="${message}">message</div>
-                        <form method="post">
+                        <form method="post" th:action="@{/retail/transfer/local/summary}" th:object="${transferRequest}">
 
 
                             <div class="form-group">
@@ -28,20 +28,21 @@
 
 
                                 <span id="scurency"></span>
-                                <select name="source" class="form-control" id="source">
+                                <select name="source" class="form-control" id="source" th:field="*{customerAccountNumber}">
                                     <option value=""> select an account</option>
-
+                                    <option th:each="s: ${accounts}" th:value="${s}" th:text="${s}" ></option>
                                 </select>
-
+                                <input type="hidden" name="textname" placeholder=""  class="form-control" th:field="*{beneficiaryAccountNumber}"/>
+                                <input type="hidden" name="textname" placeholder=""  class="form-control" th:field="*{beneficiaryAccountName}"/>
                             </div>
 
                             <div class="form-group">
                                 <label>Amount</label>
-                                <input type="number" name="textname" step="any" placeholder="Enter an amount"  class="form-control"/>
+                                <input type="number" name="textname" step="any" placeholder="Enter an amount" th:field="*{amount}" class="form-control"/>
                             </div>
                             <div class="form-group">
                                 <label>Remark</label>
-                                <input type="text" name="textname" placeholder=""  class="form-control"/>
+                                <input type="text" name="textname" placeholder=""  class="form-control" th:field="*{remarks}"/>
                             </div>
 
 

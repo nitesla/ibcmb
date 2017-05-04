@@ -229,7 +229,7 @@ public class AdminUserController {
 
         adminUserService.changePassword(user, changePassword.getOldPassword(), changePassword.getNewPassword());
         redirectAttributes.addFlashAttribute("message","Password changed successfully");
-        return "redirect:/admin/logout";
+        return "redirect:/admin/dashboard";
     }
 
 }

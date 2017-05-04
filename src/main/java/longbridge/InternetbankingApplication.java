@@ -1,16 +1,33 @@
 package longbridge;
 
+import longbridge.dtos.OperationsUserDTO;
+import longbridge.models.MailBox;
+import longbridge.models.Message;
+import longbridge.models.OperationsUser;
+import longbridge.models.UserType;
 import longbridge.repositories.CustomJpaRepositoryFactoryBean;
+import longbridge.services.MessageService;
+import longbridge.services.OperationsUserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+
+import javax.transaction.Transactional;
 
 
 @SpringBootApplication
 @EnableJpaRepositories(repositoryFactoryBeanClass = CustomJpaRepositoryFactoryBean.class)
 public class InternetbankingApplication implements CommandLineRunner {
 
+	@Autowired
+	OperationsUserService operationsUserService;
+	@Autowired
+	MessageService messageService;
+	Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	//	@Autowired
 	//	IntegrationService service;
@@ -20,8 +37,14 @@ public class InternetbankingApplication implements CommandLineRunner {
 	}
 
 	@Override
+	@Transactional
 	public void run(String... strings) throws Exception {
+//		OperationsUserDTO opsUser = operationsUserService.getUser(1L);//TODO get current user
+//		MailBox mailBox= messageService.getMailBox(opsUser.getId(), UserType.OPERATIONS);
+//		Iterable<Message> sent = messageService.getSentMessages(mailBox);
+//		logger.info("Mailbox is {}",sent);
 
-    }
+
+	}
 
 }

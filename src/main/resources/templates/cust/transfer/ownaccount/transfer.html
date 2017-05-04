@@ -18,9 +18,9 @@
             <div class="col-md-8 content-bg">
                 <div class="row form-spacing">
                     <div class="col-md-6 col-sm-6">
-
                         <div th:if="${message != null}" class="alert alert-info" th:text="${message}">message</div>
-                        <form method="post" th:action="@{/retail/transfer/own/summary}" th:object="${transferRequest}">
+                        <div th:if="${error != null}" class="alert alert-info" th:text="${error}">message</div>
+                        <form method="post" th:action="@{/retail/transfer/ownaccount/summary}" th:object="${transferRequest}">
 
 
                             <div class="form-group">

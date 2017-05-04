@@ -114,6 +114,10 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             opsUser.setEmail(user.getEmail());
             opsUser.setDateCreated(new Date());
             opsUser.setStatus("ACTIVE");
+<<<<<<< HEAD
+
+=======
+>>>>>>> 2118906330afc95f49863a5beb4dc252835c7c71
             Calendar calendar = Calendar.getInstance();
             calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) + 2);
             opsUser.setExpiryDate(calendar.getTime());
@@ -123,6 +127,10 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             String password = passwordService.generatePassword();
             opsUser.setPassword(passwordEncoder.encode(password));
             this.operationsUserRepo.save(opsUser);
+<<<<<<< HEAD
+            logger.info("Your new password is {}",password);
+=======
+>>>>>>> 2118906330afc95f49863a5beb4dc252835c7c71
             mailService.send(user.getEmail(), String.format("Your username is %s and password is %s", user.getUserName(), password));
             logger.info("New operations user: {} created", opsUser.getUserName());
             ok = true;

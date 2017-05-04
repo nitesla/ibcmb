@@ -94,11 +94,13 @@ public class AdmOperationsUserController {
 
             result.addError(new ObjectError("invalid","Please fill in the required fields"));
             return "adm/operation/add";
+
         }
         if(!operationsUserService.isValidUsername(operationsUser.getUserName())){
             result.addError(new ObjectError("invalid","Username already exists"));
             return "adm/operation/add";
         }
+
 
         operationsUserService.addUser(operationsUser);
 
@@ -106,6 +108,13 @@ public class AdmOperationsUserController {
         return "redirect:/admin/operations/users";
     }
 
+
+    @GetMapping("/{id}/activation")
+    public String changeActivationStatus(@PathVariable Long id, RedirectAttributes redirectAttributes){
+        operationsUserService.changeActivationStatus(id);
+        redirectAttributes.addFlashAttribute("message", "User activation status changed successfully");
+        return "redirect:/admin/operations/users";
+    }
 
     @GetMapping(path = "/all")
     public @ResponseBody DataTablesOutput<OperationsUserDTO> getUsers(DataTablesInput input){
@@ -195,6 +204,7 @@ public class AdmOperationsUserController {
         if(result.hasErrors()){
             result.addError(new ObjectError("invalid", "Please provide valid password"));
             return "/ops/pword";
+<<<<<<< HEAD
         }
         OperationsUserDTO user = operationsUserService.getUserByName(principal.getName());
 
@@ -216,6 +226,29 @@ public class AdmOperationsUserController {
             return "/ops/pword";
         }
 
+=======
+        }
+        OperationsUserDTO user = operationsUserService.getUserByName(principal.getName());
+
+        if(!this.passwordEncoder.matches(changePassword.getOldPassword(),user.getPassword())){
+            logger.trace("Invalid old password provided for change");
+            result.addError(new ObjectError("invalid", "Incorrect Old Password"));
+            return "/ops/pword";
+        }
+
+        String errorMsg = passwordService.validate(changePassword.getNewPassword());
+        if(!errorMsg.equals("")){
+            result.addError(new ObjectError("invalid", errorMsg));
+            return "/ops/pword";
+        }
+
+        if(!changePassword.getNewPassword().equals(changePassword.getConfirmPassword())){
+            logger.trace("PASSWORD MISMATCH");
+            result.addError(new ObjectError("invalid", "Passwords do not match"));
+            return "/ops/pword";
+        }
+
+>>>>>>> 2118906330afc95f49863a5beb4dc252835c7c71
 
         if(!this.passwordEncoder.matches(changePassword.getOldPassword(),user.getPassword())){
             logger.trace("Invalid old password provided for change");
@@ -226,7 +259,11 @@ public class AdmOperationsUserController {
         operationsUserService.changePassword(user, changePassword.getOldPassword(), changePassword.getNewPassword());
 
         redirectAttributes.addFlashAttribute("message","Password changed successfully");
+<<<<<<< HEAD
         return "redirect:/ops/logout";
+=======
+        return "redirect:/ops/dashboard";
+>>>>>>> 2118906330afc95f49863a5beb4dc252835c7c71
 
     }
 

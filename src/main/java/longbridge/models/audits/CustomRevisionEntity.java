@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -28,6 +29,9 @@ public class CustomRevisionEntity extends DefaultRevisionEntity implements Seria
 	private String lastChangedBy;
 	private String ipAddress;
 
+    public CustomRevisionEntity() {
+        super();
+    }
 
     public String getLastChangedBy() {
         return lastChangedBy;

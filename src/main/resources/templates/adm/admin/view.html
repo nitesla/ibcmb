@@ -148,7 +148,7 @@
       var table = $('#admin').DataTable({
             select:true,
             responsive: true,
-            "lengthMenu" : [ [ 5, 10, 20],	[ 5, 10, 20 ] ],
+            "lengthMenu" : [ [ 5, 10, 50, -1 ],	[ 5, 10, 50, "All" ] ],
             "pagingType" : "simple_numbers",
             "searching": false,
             "paging": true,
@@ -163,7 +163,24 @@
                 { "data": "enabled" },
                 { "data": "lastLogin" }
 
-            ] });
+            ] ,
+          "columnDefs" : [ {
+              "targets" : 4,
+              "data" : "enabled",
+              "render" : function(data, type,full, meta) {
+                  if (type === 'display') {
+                      if (data == true) {
+                          return "<i class='fa fa-check' style='color:green'></i>";
+                      } else if (data == false) {
+                          return "<i class='fa fa-times' style='color:red'></i>";
+                      }
+                  }
+                  return data;
+              }
+
+          } ]
+
+      });
 
             table.on('select', function() {
             if (table.rows({

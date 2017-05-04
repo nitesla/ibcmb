@@ -35,6 +35,7 @@ public class OperationsUserDTO {
     private boolean enabled;
     private Date expiryDate;
     private Date lockedUntilDate;
+    private String lastLogin;
     private Date lastLoginDate;
     private int noOfLoginAttempts;
 
@@ -64,6 +65,8 @@ public class OperationsUserDTO {
         this.version = version;
     }
 
+<<<<<<< HEAD
+=======
     public boolean isEnabled() {
         return enabled;
     }
@@ -72,6 +75,15 @@ public class OperationsUserDTO {
         this.enabled = enabled;
     }
 
+    public String getLastLogin() {
+        return lastLogin;
+    }
+
+    public void setLastLogin(String lastLogin) {
+        this.lastLogin = lastLogin;
+    }
+
+>>>>>>> 2118906330afc95f49863a5beb4dc252835c7c71
     public String getRoleId() {
         return roleId;
     }

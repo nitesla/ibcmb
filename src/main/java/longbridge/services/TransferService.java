@@ -30,6 +30,7 @@ public interface TransferService {
     boolean saveTransfer(TransferRequestDTO transferRequestDTO);
 
     void deleteTransfer(Long id);
+    boolean validateBalance(TransferRequestDTO transferRequest);
 
 
 }
