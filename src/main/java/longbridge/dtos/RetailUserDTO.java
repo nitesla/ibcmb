@@ -26,7 +26,7 @@ public class RetailUserDTO {
     private String password;
     private String status;
     private String bvn;
-    private Date dateRegistered;
+    private Date dateCreated;
     private Date expiryDate;
     private Date lockedUntilDate;
     private Date lastLoginDate;
@@ -123,12 +123,12 @@ public class RetailUserDTO {
         this.status = status;
     }
 
-    public Date getDateRegistered() {
-        return dateRegistered;
+    public Date getDateCreated() {
+        return dateCreated;
     }
 
-    public void setDateRegistered(Date dateRegistered) {
-        this.dateRegistered = dateRegistered;
+    public void setDateCreated(Date dateCreated) {
+        this.dateCreated = dateCreated;
     }
 
     public Date getExpiryDate() {
@@ -200,7 +200,7 @@ public class RetailUserDTO {
                 ", birthDate=" + birthDate +
                 ", password='" + password + '\'' +
                 ", status='" + status + '\'' +
-                ", dateRegistered=" + dateRegistered +
+                ", dateCreated=" + dateCreated +
                 ", expiryDate=" + expiryDate +
                 ", lockedUntilDate=" + lockedUntilDate +
                 ", lastLoginDate=" + lastLoginDate +
