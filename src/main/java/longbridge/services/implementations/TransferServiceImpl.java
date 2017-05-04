@@ -14,8 +14,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Fortune on 3/30/2017.
@@ -85,6 +87,19 @@ public class TransferServiceImpl implements TransferService {
         }
 
 
+    }
+
+    @Override
+    public boolean validateBalance(TransferRequestDTO transferRequest) {
+       boolean ok =false;
+        Map<String, BigDecimal> balanceDetails=integrationService.getBalance(transferRequest.getCustomerAccountNumber());
+        BigDecimal balance = balanceDetails.get("AvailableBalance");
+        if(balance!=null){
+            if(balance.compareTo(transferRequest.getAmount())==0  ||(balance.compareTo(transferRequest.getAmount())==1)){
+                ok=true;
+            }
+        }
+   return ok;
     }
 
     @Override

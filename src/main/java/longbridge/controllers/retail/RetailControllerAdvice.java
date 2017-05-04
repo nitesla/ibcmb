@@ -1,14 +1,21 @@
 package longbridge.controllers.retail;
 
+import longbridge.dtos.TransferRequestDTO;
 import longbridge.models.RetailUser;
+import longbridge.services.AccountService;
+import longbridge.services.IntegrationService;
 import longbridge.services.RetailUserService;
+import longbridge.services.TransferService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 /**
  * Created by Wunmi Sowunmi on 28/04/2017.
@@ -17,11 +24,20 @@ import java.util.Calendar;
 
 @ControllerAdvice(basePackages = {"longbridge.controllers.retail"})
 public class RetailControllerAdvice {
+    private RetailUserService retailUserService;
+    private IntegrationService integrationService;
+    private TransferService transferService;
+    private AccountService accountService;
 
-        @Autowired
-        private RetailUserService retailUserService;
+    @Autowired
+    public RetailControllerAdvice(RetailUserService retailUserService, IntegrationService integrationService, TransferService transferService, AccountService accountService) {
+        this.retailUserService = retailUserService;
+        this.integrationService = integrationService;
+        this.transferService = transferService;
+        this.accountService = accountService;
+    }
 
-        @ModelAttribute
+    @ModelAttribute
         public String globalAttributes(Model model, Principal principal) {
             String greeting = "";
 
@@ -53,6 +69,29 @@ public class RetailControllerAdvice {
 
 
             //System.out.println( new SimpleDateFormat("HH:mm:ss").format(Calendar.getInstance().getTime()) );
+            return "";
+        }
+
+        @ModelAttribute
+           public  String getCustmerAccounts(Model model,Principal principal){
+
+            if (principal.getName() == null){
+                return "redirect:/login/retail";
+            }
+            RetailUser user = retailUserService.getUserByName(principal.getName());
+            if (user != null) {
+                List<String> accountList = new ArrayList<>();
+
+                integrationService.fetchAccounts(user.getCustomerId())
+                        .stream()
+                        .forEach(i -> accountList.add(i.getAccountNumber()));
+                  model.addAttribute("accounts", accountList);
+
+
+
+
+            }
+
             return "";
         }
 }
