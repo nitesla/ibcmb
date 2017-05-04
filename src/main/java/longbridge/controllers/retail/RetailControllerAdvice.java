@@ -1,22 +1,12 @@
 package longbridge.controllers.retail;
 
-import longbridge.dtos.TransferRequestDTO;
 import longbridge.models.RetailUser;
-<<<<<<< HEAD
-import longbridge.services.AccountService;
-import longbridge.services.IntegrationService;
-import longbridge.services.RetailUserService;
-import longbridge.services.TransferService;
-=======
 import longbridge.models.ServiceReqConfig;
-import longbridge.services.RetailUserService;
-import longbridge.services.ServiceReqConfigService;
->>>>>>> 2118906330afc95f49863a5beb4dc252835c7c71
+import longbridge.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.servlet.ModelAndView;
 
 import java.security.Principal;
 import java.util.ArrayList;
@@ -30,11 +20,13 @@ import java.util.List;
 
 @ControllerAdvice(basePackages = {"longbridge.controllers.retail"})
 public class RetailControllerAdvice {
-<<<<<<< HEAD
+
     private RetailUserService retailUserService;
     private IntegrationService integrationService;
     private TransferService transferService;
     private AccountService accountService;
+    @Autowired
+    private ServiceReqConfigService reqConfigService;
 
     @Autowired
     public RetailControllerAdvice(RetailUserService retailUserService, IntegrationService integrationService, TransferService transferService, AccountService accountService) {
@@ -45,16 +37,6 @@ public class RetailControllerAdvice {
     }
 
     @ModelAttribute
-=======
-
-        @Autowired
-        private RetailUserService retailUserService;
-
-        @Autowired
-        private ServiceReqConfigService reqConfigService;
-
-        @ModelAttribute
->>>>>>> 2118906330afc95f49863a5beb4dc252835c7c71
         public String globalAttributes(Model model, Principal principal) {
             String greeting = "";
 

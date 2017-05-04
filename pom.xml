@@ -141,10 +141,6 @@
 			<artifactId>passay</artifactId>
 			<version>1.2.0</version>
 		</dependency>
-<<<<<<< HEAD
-
-	</dependencies>
-=======
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
@@ -152,7 +148,6 @@
         </dependency>
 
     </dependencies>
->>>>>>> 2118906330afc95f49863a5beb4dc252835c7c71
 
 	<build>
 		<plugins>

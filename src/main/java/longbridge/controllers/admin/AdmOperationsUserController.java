@@ -18,7 +18,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.data.jpa.datatables.repository.DataTablesUtils;
-import org.springframework.http.HttpRequest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -204,7 +203,6 @@ public class AdmOperationsUserController {
         if(result.hasErrors()){
             result.addError(new ObjectError("invalid", "Please provide valid password"));
             return "/ops/pword";
-<<<<<<< HEAD
         }
         OperationsUserDTO user = operationsUserService.getUserByName(principal.getName());
 
@@ -226,29 +224,6 @@ public class AdmOperationsUserController {
             return "/ops/pword";
         }
 
-=======
-        }
-        OperationsUserDTO user = operationsUserService.getUserByName(principal.getName());
-
-        if(!this.passwordEncoder.matches(changePassword.getOldPassword(),user.getPassword())){
-            logger.trace("Invalid old password provided for change");
-            result.addError(new ObjectError("invalid", "Incorrect Old Password"));
-            return "/ops/pword";
-        }
-
-        String errorMsg = passwordService.validate(changePassword.getNewPassword());
-        if(!errorMsg.equals("")){
-            result.addError(new ObjectError("invalid", errorMsg));
-            return "/ops/pword";
-        }
-
-        if(!changePassword.getNewPassword().equals(changePassword.getConfirmPassword())){
-            logger.trace("PASSWORD MISMATCH");
-            result.addError(new ObjectError("invalid", "Passwords do not match"));
-            return "/ops/pword";
-        }
-
->>>>>>> 2118906330afc95f49863a5beb4dc252835c7c71
 
         if(!this.passwordEncoder.matches(changePassword.getOldPassword(),user.getPassword())){
             logger.trace("Invalid old password provided for change");
@@ -259,11 +234,7 @@ public class AdmOperationsUserController {
         operationsUserService.changePassword(user, changePassword.getOldPassword(), changePassword.getNewPassword());
 
         redirectAttributes.addFlashAttribute("message","Password changed successfully");
-<<<<<<< HEAD
-        return "redirect:/ops/logout";
-=======
         return "redirect:/ops/dashboard";
->>>>>>> 2118906330afc95f49863a5beb4dc252835c7c71
 
     }
 

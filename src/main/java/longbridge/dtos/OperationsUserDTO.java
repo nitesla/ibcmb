@@ -65,8 +65,6 @@ public class OperationsUserDTO {
         this.version = version;
     }
 
-<<<<<<< HEAD
-=======
     public boolean isEnabled() {
         return enabled;
     }
@@ -83,7 +81,6 @@ public class OperationsUserDTO {
         this.lastLogin = lastLogin;
     }
 
->>>>>>> 2118906330afc95f49863a5beb4dc252835c7c71
     public String getRoleId() {
         return roleId;
     }

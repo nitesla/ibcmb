@@ -4,10 +4,8 @@ import longbridge.dtos.SettingDTO;
 import longbridge.utils.PasswordCreator;
 import longbridge.validator.PasswordValidator;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.passay.CharacterData;
 import org.passay.CharacterRule;
 import org.passay.EnglishCharacterData;
-import org.passay.PasswordGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -65,22 +63,14 @@ public class PasswordService {
 
         if (numOfPasswordDigits != null && numOfPasswordDigits.isEnabled()) {
             numOfDigits = NumberUtils.toInt(numOfPasswordDigits.getValue());
-<<<<<<< HEAD
-            ruleMessage = String.format("Number of password must not be less than %d", numOfDigits);
-=======
             ruleMessage = String.format("Number of digits in password must be up to %d", numOfDigits);
->>>>>>> 2118906330afc95f49863a5beb4dc252835c7c71
             passwordRules.add(ruleMessage);
             characterRules.add(new CharacterRule(EnglishCharacterData.Digit, numOfDigits));
 
         }
         if (noSpecialChar != null && noSpecialChar.isEnabled()) {
             noOfSpecial = NumberUtils.toInt(noSpecialChar.getValue());
-<<<<<<< HEAD
-            ruleMessage = String.format("Number of special characters allowed is %d", noOfSpecial);
-=======
             ruleMessage = String.format("Minimum number of special characters allowed is %d", noOfSpecial);
->>>>>>> 2118906330afc95f49863a5beb4dc252835c7c71
             passwordRules.add(ruleMessage);
             characterRules.add(new CharacterRule(EnglishCharacterData.Special, noOfSpecial));
 
