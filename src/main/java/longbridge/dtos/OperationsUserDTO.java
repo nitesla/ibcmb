@@ -35,6 +35,7 @@ public class OperationsUserDTO {
     private boolean enabled;
     private Date expiryDate;
     private Date lockedUntilDate;
+    private String lastLogin;
     private Date lastLoginDate;
     private int noOfLoginAttempts;
 
@@ -70,6 +71,14 @@ public class OperationsUserDTO {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public String getLastLogin() {
+        return lastLogin;
+    }
+
+    public void setLastLogin(String lastLogin) {
+        this.lastLogin = lastLogin;
     }
 
     public String getRoleId() {

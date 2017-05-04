@@ -107,6 +107,13 @@ public class AdmOperationsUserController {
     }
 
 
+    @GetMapping("/{id}/activation")
+    public String changeActivationStatus(@PathVariable Long id, RedirectAttributes redirectAttributes){
+        operationsUserService.changeActivationStatus(id);
+        redirectAttributes.addFlashAttribute("message", "User activation status changed successfully");
+        return "redirect:/admin/operations/users";
+    }
+
     @GetMapping(path = "/all")
     public @ResponseBody DataTablesOutput<OperationsUserDTO> getUsers(DataTablesInput input){
 
@@ -226,7 +233,7 @@ public class AdmOperationsUserController {
         operationsUserService.changePassword(user, changePassword.getOldPassword(), changePassword.getNewPassword());
 
         redirectAttributes.addFlashAttribute("message","Password changed successfully");
-        return "redirect:/ops/logout";
+        return "redirect:/ops/dashboard";
 
     }
 
