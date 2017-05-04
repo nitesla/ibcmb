@@ -58,6 +58,8 @@ public interface OperationsUserService{
 
 
 
+    void changeActivationStatus(Long userId);
+
     /**
      * Deletes an Operations User
      * @param userId the  Operations user's id
@@ -66,10 +68,10 @@ public interface OperationsUserService{
 
     /**
      * Resets the password of the specified Operations user
-     * @param user the user
+     * @param id of the user
      */
 
-    void resetPassword(OperationsUser user);
+    boolean resetPassword(Long id);
 
     /**
      * Replaces the old password with the new password

@@ -9,6 +9,7 @@ import longbridge.models.AccountRestriction;
 import longbridge.repositories.AccountClassRestrictionRepo;
 import longbridge.repositories.AccountRepo;
 import longbridge.repositories.AccountRestrictionRepo;
+import longbridge.services.AccountConfigurationService;
 import longbridge.services.AccountService;
 import longbridge.services.CodeService;
 import longbridge.services.IntegrationService;
@@ -33,7 +34,7 @@ import java.util.Map;
  */
 
 @Service
-public class AccountServiceImpl implements AccountService{
+public class AccountServiceImpl implements AccountService {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private AccountRepo accountRepo;
@@ -42,12 +43,14 @@ public class AccountServiceImpl implements AccountService{
 
     private ModelMapper modelMapper;
 
+    private AccountConfigurationService accountConfigService;
 
     @Autowired
-    public AccountServiceImpl(AccountRepo accountRepo, IntegrationService integrationService, ModelMapper modelMapper) {
+    public AccountServiceImpl(AccountRepo accountRepo, IntegrationService integrationService, ModelMapper modelMapper, AccountConfigurationService accountConfigService) {
         this.accountRepo = accountRepo;
         this.integrationService = integrationService;
         this.modelMapper = modelMapper;
+        this.accountConfigService = accountConfigService;
     }
 
     @Override
@@ -61,17 +64,16 @@ public class AccountServiceImpl implements AccountService{
 
     @Override
     public boolean customizeAccount(Long id, String name) {
-        boolean result= false;
+        boolean result = false;
 
         try {
             Account account = accountRepo.findFirstById(id);
             account.setAccountName(name);
             this.accountRepo.save(account);
             logger.trace("Customization successful {}", account.toString());
-            result=true;
-        }
-        catch (Exception e){
-            logger.error("Could not customize account",e);
+            result = true;
+        } catch (Exception e) {
+            logger.error("Could not customize account", e);
         }
         return result;
     }
@@ -101,8 +103,20 @@ public class AccountServiceImpl implements AccountService{
     }
 
     @Override
+    public List<Account> getCustomerAccounts(String customerId, String currencyCode) {
+        List<Account> accounts = new ArrayList<Account>();
+        List<Account> accountList = accountRepo.findByCustomerId(customerId);
+        for (Account account : accountList) {
+            if (account.getCurrencyCode().equals(currencyCode)) {
+                accounts.add(account);
+            }
+        }
+        return accounts;
+    }
+
+    @Override
     public Map<String, BigDecimal> getBalance(Account account) {
-       return integrationService.getBalance(account.getAccountId());
+        return integrationService.getBalance(account.getAccountId());
     }
 
     @Override
@@ -112,23 +126,23 @@ public class AccountServiceImpl implements AccountService{
 
 
     @Override
-	public Page<Account> getAccounts(String customerId, Pageable pageDetails) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public Page<Account> getAccounts(String customerId, Pageable pageDetails) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-    private AccountDTO convertEntityToDTO(Account account){
-        return  this.modelMapper.map(account,AccountDTO.class);
+    private AccountDTO convertEntityToDTO(Account account) {
+        return this.modelMapper.map(account, AccountDTO.class);
     }
 
 
-    private Account convertDTOToEntity(AccountDTO accountDTO){
-        return this.modelMapper.map(accountDTO,Account.class);
+    private Account convertDTOToEntity(AccountDTO accountDTO) {
+        return this.modelMapper.map(accountDTO, Account.class);
     }
 
-    private List<AccountDTO> convertEntitiesToDTOs(Iterable<Account> accounts){
+    private List<AccountDTO> convertEntitiesToDTOs(Iterable<Account> accounts) {
         List<AccountDTO> accountDTOList = new ArrayList<>();
-        for(Account account: accounts){
+        for (Account account : accounts) {
             AccountDTO accountDTO = convertEntityToDTO(account);
             accountDTOList.add(accountDTO);
         }
@@ -136,10 +150,10 @@ public class AccountServiceImpl implements AccountService{
     }
 
 
-	@Override
-	public Account getAccountByAccountNumber(String accountNumber) {
-		return accountRepo.findByAccountNumber(accountNumber);
-	}
+    @Override
+    public Account getAccountByAccountNumber(String accountNumber) {
+        return accountRepo.findByAccountNumber(accountNumber);
+    }
 
     @Override
     public boolean hideAccount(Long id) {
@@ -148,7 +162,7 @@ public class AccountServiceImpl implements AccountService{
             account.setHiddenFlag("Y");
             accountRepo.save(account);
             return true;
-        }catch (Exception e){
+        } catch (Exception e) {
             logger.info("Error in hiding account");
         }
         return false;
@@ -161,7 +175,7 @@ public class AccountServiceImpl implements AccountService{
             account.setHiddenFlag("N");
             accountRepo.save(account);
             return true;
-        }catch (Exception e){
+        } catch (Exception e) {
             logger.info("Error unhiding account");
         }
         return false;
@@ -183,11 +197,56 @@ public class AccountServiceImpl implements AccountService{
             account.setPrimaryFlag("Y");
             accountRepo.save(account);
             return true;
-        }catch (Exception e){
+        } catch (Exception e) {
             logger.info("Error setting primary account");
         }
         return false;
     }
+
+
+    @Override
+    public List<Account> getAccountsForDebit(String customerId, String currencyCode) {
+        List<Account> accountsForDebit = new ArrayList<Account>();
+        List<Account> accounts = this.getCustomerAccounts(customerId, currencyCode);
+        for (Account account : accounts) {
+            if (!accountConfigService.isAccountHidden(account.getAccountNumber())
+                    && (!accountConfigService.isAccountRestrictedForView(account.getAccountNumber())) && !accountConfigService.isAccountRestrictedForDebit(account.getAccountNumber()) && (!accountConfigService.isAccountClassRestrictedForView(account.getSchemeCode()) && (!accountConfigService.isAccountClassRestrictedForDebit(account.getSchemeCode())))) {
+                accountsForDebit.add(account);
+            }
+
+        }
+        return accountsForDebit;
+    }
+
+    @Override
+    public Iterable<Account> getAccountsForDebitAndCredit(String customerId) {
+        List<Account> accountsForDebitAndCredit = new ArrayList<Account>();
+        Iterable<Account> accounts = this.getCustomerAccounts(customerId);
+        for (Account account : accounts) {
+            if (!accountConfigService.isAccountHidden(account.getAccountNumber())
+                    && (!accountConfigService.isAccountRestrictedForView(account.getAccountNumber())) && !accountConfigService.isAccountRestrictedForDebitAndCredit(account.getAccountNumber()) && (!accountConfigService.isAccountClassRestrictedForView(account.getSchemeCode()) && (!accountConfigService.isAccountClassRestrictedForDebitAndCredit(account.getSchemeCode())))) {
+                accountsForDebitAndCredit.add(account);
+            }
+
+        }
+        return accountsForDebitAndCredit;
+    }
+
+    @Override
+    public Iterable<Account> getAccountsForCredit(String customerId, String currencyCode) {
+        List<Account> accountsForCredit = new ArrayList<Account>();
+        List<Account> accounts = this.getCustomerAccounts(customerId, currencyCode);
+        for (Account account : accounts) {
+            if (!accountConfigService.isAccountHidden(account.getAccountNumber())
+                    && (!accountConfigService.isAccountRestrictedForView(account.getAccountNumber())) && !accountConfigService.isAccountRestrictedForCredit(account.getAccountNumber()) && (!accountConfigService.isAccountClassRestrictedForView(account.getSchemeCode()) && (!accountConfigService.isAccountClassRestrictedForCredit(account.getSchemeCode())))) {
+                accountsForCredit.add(account);
+            }
+
+        }
+        return accountsForCredit;
+    }
+
+
 
 
 //    private Account mockAccount;

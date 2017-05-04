@@ -65,14 +65,14 @@ public class PasswordService {
 
         if (numOfPasswordDigits != null && numOfPasswordDigits.isEnabled()) {
             numOfDigits = NumberUtils.toInt(numOfPasswordDigits.getValue());
-            ruleMessage = String.format("Number of password must not be less than %d", numOfDigits);
+            ruleMessage = String.format("Number of digits in password must be up to %d", numOfDigits);
             passwordRules.add(ruleMessage);
             characterRules.add(new CharacterRule(EnglishCharacterData.Digit, numOfDigits));
 
         }
         if (noSpecialChar != null && noSpecialChar.isEnabled()) {
             noOfSpecial = NumberUtils.toInt(noSpecialChar.getValue());
-            ruleMessage = String.format("Number of special characters allowed is %d", noOfSpecial);
+            ruleMessage = String.format("Minimum number of special characters allowed is %d", noOfSpecial);
             passwordRules.add(ruleMessage);
             characterRules.add(new CharacterRule(EnglishCharacterData.Special, noOfSpecial));
 

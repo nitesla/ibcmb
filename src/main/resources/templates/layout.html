@@ -383,6 +383,14 @@
         </div>
     </div>
 
+    <div th:if="${error}">
+        <div hidden="hidden">
+            <ul class="actionError">
+                <li th:each="msg : ${message}" th:text="${msg}">Message</li>
+            </ul>
+        </div>
+    </div>
+
 
     <div class="pull-right">
         Coronation Merchant Bank

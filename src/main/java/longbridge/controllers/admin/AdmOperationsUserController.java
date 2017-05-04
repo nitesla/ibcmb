@@ -158,7 +158,15 @@ public class AdmOperationsUserController {
         }
         boolean updated = operationsUserService.updateUser(operationsUser);
         if (updated) {
-            redirectAttributes.addFlashAttribute("success", "Operations user updated successfully");
+            redirectAttributes.addFlashAttribute("message", "Operations user updated successfully");
+        }
+        return "redirect:/admin/operations/users";
+    }
+
+    @GetMapping("/{id}/password/reset")
+    public String resetPassword(@PathVariable Long id, RedirectAttributes redirectAttributes){
+        if(operationsUserService.resetPassword(id)) {
+            redirectAttributes.addFlashAttribute("message", "Password reset successfully");
         }
         return "redirect:/admin/operations/users";
     }

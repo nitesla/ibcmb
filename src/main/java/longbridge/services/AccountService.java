@@ -79,6 +79,30 @@ public interface AccountService {
 
 
 
+    public Iterable<Account> getCustomerAccounts(String customerId, String currencyCode);
+
+
+        /**
+         * Returns a list of accounts owned by a particular customer for debit
+         *
+         * @param customerId the customer id of particular customer
+         * @return a list of {@link Account}
+         */
+    Iterable<Account> getAccountsForDebit(String customerId, String currency);
+
+
+    Iterable<Account> getAccountsForDebitAndCredit(String customerId);
+
+
+    /**
+     * Returns a list of accounts owned by a particular customer for credit
+     *
+     * @param customerId the customer id of particular customer
+     * @return a list of {@link Account}
+     */
+    Iterable<Account> getAccountsForCredit(String customerId, String currency);
+
+
     /**
      * Fetches the details of an {@link Account} using the
      * account number

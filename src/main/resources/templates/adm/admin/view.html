@@ -52,14 +52,14 @@
                                     <li >
                                         <div class="col-lg-4">
                                             <div class="title-action">
-                                                <a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/users/index/reset" disabled="disabled" ><i class="fa fa-lock"></i> Reset Password</a>
+                                                <a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/users/index/password/reset" disabled="disabled" ><i class="fa fa-lock"></i> Reset Password</a>
                                             </div>
                                         </div>
                                     </li>
                                     <li >
                                         <div class="col-lg-4">
                                             <div class="title-action">
-                                                <a  class="btn btn-danger btn-sm bt-select bt-link-act" href="/admin/users/index/deactivate" disabled="disabled" ><i class="fa fa-user"></i> Deactivate</a>
+                                                <a  class="btn btn-danger btn-sm bt-select bt-link-act" href="/admin/users/index/activation" disabled="disabled" ><i class="fa fa-user"></i> Activate/Deactivate</a>
                                             </div>
                                         </div>
                                     </li>
@@ -97,7 +97,7 @@
                                         <th>First Name</th>
                                         <th>Last Name</th>
                                         <th>Role</th>
-                                        <th>Date Created</th>
+                                        <th>Status</th>
                                         <th>Last Login</th>
 
                                     </tr>
@@ -112,7 +112,7 @@
                                         <th>First Name</th>
                                         <th>Last Name</th>
                                         <th>Role</th>
-                                        <th>Date Created</th>
+                                        <th>Status</th>
                                         <th>Last Login</th>
 
                                     </tr>
@@ -160,7 +160,7 @@
                 { "data": "firstName" },
                 { "data": "lastName" },
                 { "data": "role" },
-                { "data": "dateCreated" },
+                { "data": "enabled" },
                 { "data": "lastLogin" }
 
             ] });
@@ -173,6 +173,7 @@
             } else {
                 $('.bt-select').removeAttr("disabled");
             }
+
 
         });
 

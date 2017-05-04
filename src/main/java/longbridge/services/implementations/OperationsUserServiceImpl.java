@@ -82,6 +82,20 @@ public class OperationsUserServiceImpl implements OperationsUserService {
 
     }
 
+    public void changeActivationStatus(Long userId){
+        OperationsUser user = operationsUserRepo.findOne(userId);
+        boolean newStatus = user.isEnabled()?false:true;
+        user.setEnabled(newStatus);
+        operationsUserRepo.save(user);
+        if(newStatus){
+            String password = passwordService.generatePassword();
+            user.setPassword(passwordEncoder.encode(password));
+            mailService.send(user.getEmail(),String.format("Your new password to Admin console is %s and your current username is %s",password,user.getUserName()));
+        }
+
+
+    }
+
 
     @Override
     public OperationsUserDTO getUserByName(String name) {
@@ -100,7 +114,6 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             opsUser.setEmail(user.getEmail());
             opsUser.setDateCreated(new Date());
             opsUser.setStatus("ACTIVE");
-
             Calendar calendar = Calendar.getInstance();
             calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) + 2);
             opsUser.setExpiryDate(calendar.getTime());
@@ -110,7 +123,6 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             String password = passwordService.generatePassword();
             opsUser.setPassword(passwordEncoder.encode(password));
             this.operationsUserRepo.save(opsUser);
-            logger.info("Your new password is {}",password);
             mailService.send(user.getEmail(), String.format("Your username is %s and password is %s", user.getUserName(), password));
             logger.info("New operations user: {} created", opsUser.getUserName());
             ok = true;
@@ -145,8 +157,20 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     }
 
     @Override
-    public void resetPassword(OperationsUser user) {
+    public boolean resetPassword(Long id) {
+        boolean ok = false;
+        OperationsUser user = operationsUserRepo.findOne(id);
 
+        if (user != null) {
+            String newPassword = passwordService.generatePassword();
+            user.setPassword(passwordEncoder.encode(newPassword));
+            user.setExpiryDate(new Date());
+            operationsUserRepo.save(user);
+            mailService.send(user.getEmail(),"Your new password to Internet banking is "+newPassword);
+            logger.info("PASSWORD RESET SUCCESSFULLY");
+            ok=true;
+        }
+        return ok;
     }
 
     @Override
@@ -154,8 +178,6 @@ public class OperationsUserServiceImpl implements OperationsUserService {
         boolean ok = false;
 
         try {
-
-
             if (this.passwordEncoder.matches(oldPassword, user.getPassword())) {
                 OperationsUser opsUser = operationsUserRepo.findOne(user.getId());
                 opsUser.setPassword(this.passwordEncoder.encode(newPassword));

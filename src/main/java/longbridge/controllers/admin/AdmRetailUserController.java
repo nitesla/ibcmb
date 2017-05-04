@@ -57,7 +57,7 @@ public class AdmRetailUserController {
     @GetMapping("/{userId}/edit")
     public String editUser(@PathVariable Long userId, Model model) {
         RetailUserDTO retailUser = retailUserService.getUser(userId);
-        model.addAttribute("user", retailUser);
+        model.addAttribute("retailUser", retailUser);
         return "/adm/retail/edit";
     }
 
