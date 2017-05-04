@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="cust_layout :: site-head">
+
+</head>
+<body>
+<header th:replace="cust_layout :: header">
+</header>
+
+<section class="content-wrapper">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-8 col-sm-8">
+                <div class="row">
+                    <div class="col-md-6 col-sm-6">
+                        <h5 class="page_header">Synchronize Token</h5>
+                        <form id="local" method="post" th:action="@{/token/synchronize}" th:object="${localBeneficiaryDTO}">
+                            <input type="hidden" th:value="todousername" name="username" class="form-control"/>
+                            <button class="btn btn-primary">Synchronize</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-md-2 col-sm-2">
+
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-3">
+                <div class="alert alert-warning">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CONTENT-WRAPPER SECTION END-->
+<footer th:replace="cust_layout ::footer">
+</footer>
+
+<script>
+   
+</script>
+</body>
+</html>

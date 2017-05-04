@@ -1,23 +1,16 @@
 package longbridge.services.implementations;
 
-import longbridge.dtos.PermissionDTO;
-import longbridge.dtos.RoleDTO;
-import longbridge.models.Permission;
-import longbridge.models.RetailUser;
-import longbridge.models.Role;
-import longbridge.repositories.PermissionRepo;
-import longbridge.repositories.RoleRepo;
-import longbridge.services.SecurityService;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Service;
-
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import longbridge.models.RetailUser;
+import longbridge.services.IntegrationService;
+import longbridge.services.SecurityService;
 
 /**
  * Created by ayoade_farooq@yahoo.com on 3/29/2017.
@@ -27,6 +20,9 @@ import java.util.List;
 public class SecurityServiceImpl implements SecurityService {
 
     private BCryptPasswordEncoder passwordEncoder;
+    
+    @Autowired
+    private IntegrationService integrationService;
 
     @Autowired
     public SecurityServiceImpl(BCryptPasswordEncoder passwordEncoder) {
@@ -50,4 +46,17 @@ public class SecurityServiceImpl implements SecurityService {
 		//TODO implement this through entrust
 		return true;
 	}
+
+	@Override
+	public boolean performTokenValidation(String username, String tokenString) {
+		return integrationService.performTokenValidation(username, tokenString);
+	}
+
+	@Override
+	public void synchronizeToken(String username) {
+		integrationService.synchronizeToken(username);
+	}
+	
+	
+	
 }
