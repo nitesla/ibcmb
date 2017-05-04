@@ -1,5 +1,6 @@
 package longbridge.controllers;
 
+import java.util.Iterator;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletResponse;
@@ -18,6 +19,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import longbridge.models.RetailUser;
 import longbridge.services.RetailUserService;
 import longbridge.services.SecurityService;
 
@@ -124,5 +126,46 @@ public class MainController {
     public String viewFAQs(){		
     	return "cust/faqs"; //TODO
     } 
+    
+    @GetMapping("/retail/forgot/password")
+    public String showResetPassword(){
+    	return "cust/passwordreset";
+    }
+    
+    @PostMapping("retail/forgot/password")
+    public String resetPassword(WebRequest webRequest,  RedirectAttributes redirectAttributes){
+    	Iterator<String> iterator = webRequest.getParameterNames();
+    	
+    	while(iterator.hasNext()){
+    		logger.info(iterator.next());
+    	}
+    	
+    	String accountNumber = webRequest.getParameter("acct");
+    	String securityQuestion = webRequest.getParameter("securityQuestion");
+    	String securityAnswer = webRequest.getParameter("securityAnswer");
+    	String password= webRequest.getParameter("password");
+    	String confirmPassword = webRequest.getParameter("confirm");
+    	
+    	//confirm passwords are the same
+    	boolean isValid = password.equals(confirmPassword);
+    	
+    	if(isValid){
+    		logger.error("Passwords do not match");
+    	}
+    	
+    	String username = retailUserService.retrieveUsername(accountNumber, securityQuestion, securityAnswer);
+        RetailUser retailUser = retailUserService.getUserByName(username);
+
+        //confirm security question is correct
+    	isValid &= securityService.validateSecurityQuestion(retailUser, securityQuestion, securityAnswer);
+    	if(isValid){
+    		logger.error("Invalid security question / answer");
+    	}
+    	//change password	
+    	retailUserService.resetPassword(retailUser, password);
+    	redirectAttributes.addAttribute("success", true);
+    	
+    	return "cust/passwordreset";
+    }
 
 }
