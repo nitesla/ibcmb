@@ -28,7 +28,7 @@
                         <form method="post" >
 
 
-                            <table class="table-hover" >
+                            <table class="table">
                                 <thead>
                                 <tr>
                                 <th>Beneficiary name</th>
@@ -45,12 +45,12 @@
                                         <li class="dropdown" style="list-style: none">
                                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" style="font-size:20px;" aria-haspopup="true"><i class=" fa fa-angle-right"></i></a>
                                         <ul class="dropdown-menu">
-                                            <li><a th:href="@{'/retail/transfer/' + ${loc.id} + '/local'}">make a transfer</a>
+                                            <li><a th:href="@{'/retail/transfer/local/' + ${loc.id} }">make a transfer</a>
                                             </li>
-                                            <li><a href="#">view details</a>
-                                            </li>
-                                            <li><a href="#">edit</a>
-                                            </li>
+                                            <!--<li><a href="#">view details</a>-->
+                                            <!--</li>-->
+                                            <!--<li><a href="#">edit</a>-->
+                                            <!--</li>-->
                                         </ul>
                                         </li>
                                     </td>

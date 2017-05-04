@@ -34,7 +34,8 @@ public class PasswordValidator {
     private int maxLength = 255;
     private String specialCharacters = "!@#$%^)(&";
     private boolean initialized = false;
-    private StringBuilder errorMessage = new StringBuilder();
+    private StringBuilder errorMessage;
+
 
 
     @Autowired
@@ -53,6 +54,7 @@ public class PasswordValidator {
         if (noSpecialChar != null && noSpecialChar.isEnabled()) {
             noOfSpecial = NumberUtils.toInt(noSpecialChar.getValue());
         }
+
         if (minLengthOfPassword != null && minLengthOfPassword.isEnabled()) {
             minLength = NumberUtils.toInt(minLengthOfPassword.getValue());
         }
@@ -71,6 +73,8 @@ public class PasswordValidator {
         if (!initialized) {
             init();
         }
+
+       errorMessage = new StringBuilder();
 
         Matcher digitMatcher = digitPattern.matcher(password);
         boolean digitOK = false;

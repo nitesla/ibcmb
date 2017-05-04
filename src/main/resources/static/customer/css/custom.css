@@ -190,6 +190,14 @@ body {
     padding-left: 0;
 }
 
+.navbar-nav li.dropdown:hover > ul.dropdown-menu {
+    display: block;
+}
+
+.lft li.dropdown:hover > ul.dropdown-menu {
+    display: block;
+}
+
 .body-texts{
     text-align: center;
     margin: 0 auto;

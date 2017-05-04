@@ -1,4 +1,4 @@
-package longbridge.controllers.SharedFuctions;
+package longbridge.controllers;
 
 import longbridge.services.IntegrationService;
 import org.springframework.beans.factory.annotation.Autowired;

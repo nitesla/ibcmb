@@ -21,7 +21,10 @@ public interface OperationsUserService{
     OperationsUserDTO getUser(Long id);
 
 
-    public OperationsUserDTO getUserByName(String name);
+    boolean isValidUsername(String username);
+
+
+    OperationsUserDTO getUserByName(String name);
 
     /**
      * Returns all Operations users present in th system

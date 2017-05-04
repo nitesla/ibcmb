@@ -14,6 +14,10 @@ public class AccountDTO{
     private String hiddenFlag;
     private String currencyCode;
 
+    
+    private String accountType;
+    private String accountBalance;
+    
     public AccountDTO() {
     }
 
@@ -30,6 +34,24 @@ public class AccountDTO{
         this.hiddenFlag = hiddenFlag;
         this.currencyCode=currencyCode;
     }
+
+    public String getAccountType() {
+		return accountType;
+	}
+
+	public void setAccountType(String accountType) {
+		this.accountType = accountType;
+	}
+
+	public String getAccountBalance() {
+		return accountBalance;
+	}
+
+	public void setAccountBalance(String accountBalance) {
+		this.accountBalance = accountBalance;
+	}
+
+	
 
     public Long getId() {
         return id;

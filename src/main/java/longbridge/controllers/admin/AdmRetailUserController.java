@@ -46,7 +46,7 @@ public class AdmRetailUserController {
             return "adm/retail/add";
         }
         retailUserService.addUser(retailUser);
-        redirectAttributes.addFlashAttribute("success","Retail user created successfully");
+        redirectAttributes.addFlashAttribute("message","Retail user created successfully");
         return "redirect:/admin/retail/users";
     }
 
@@ -103,7 +103,7 @@ public class AdmRetailUserController {
            return "adm/retail/add";
        }
         retailUserService.updateUser(retailUser);
-        redirectAttributes.addFlashAttribute("success", "Retail user updated successfully");
+        redirectAttributes.addFlashAttribute("message", "Retail user updated successfully");
         return "redirect:/admin/retail/users";
     }
 

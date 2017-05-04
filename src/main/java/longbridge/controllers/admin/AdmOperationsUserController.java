@@ -8,6 +8,7 @@ import longbridge.models.Verification;
 import longbridge.repositories.OperationsUserRepo;
 import longbridge.repositories.VerificationRepo;
 import longbridge.services.OperationsUserService;
+import longbridge.services.PasswordService;
 import longbridge.services.RoleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +19,7 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.data.jpa.datatables.repository.DataTablesUtils;
 import org.springframework.http.HttpRequest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -26,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import java.security.Principal;
 
 /**
  * Created by SYLVESTER on 31/03/2017.
@@ -43,6 +46,15 @@ public class AdmOperationsUserController {
     private VerificationRepo verificationRepo;
     @Autowired
     private RoleService roleService;
+
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+
+    @Autowired
+    PasswordService passwordService;
+
+
+
 
     /**
      * Page for adding a new user
@@ -77,16 +89,20 @@ public class AdmOperationsUserController {
      * @throws Exception
      */
     @PostMapping
-    public String createUser(@ModelAttribute("operationsUser") OperationsUserDTO operationsUser, BindingResult result, Model model, RedirectAttributes redirectAttributes) throws Exception{
+    public String createUser(@ModelAttribute("operationsUser") @Valid OperationsUserDTO operationsUser, BindingResult result, RedirectAttributes redirectAttributes) throws Exception{
         if(result.hasErrors()){
-            Iterable<RoleDTO> roles = roleService.getRoles();
-            model.addAttribute("roles",roles);
+
             result.addError(new ObjectError("invalid","Please fill in the required fields"));
-            return "adm/admin/add";
+            return "adm/operation/add";
         }
+        if(!operationsUserService.isValidUsername(operationsUser.getUserName())){
+            result.addError(new ObjectError("invalid","Username already exists"));
+            return "adm/operation/add";
+        }
+
         operationsUserService.addUser(operationsUser);
 
-        redirectAttributes.addFlashAttribute("message","Operations user created successfully");
+        redirectAttributes.addFlashAttribute("message","Operation user created successfully");
         return "redirect:/admin/operations/users";
     }
 
@@ -153,32 +169,57 @@ public class AdmOperationsUserController {
         return "redirect:/admin/operations/users";
     }
 
+    @ModelAttribute
+    public void init(Model model){
+        model.addAttribute("passwordRules",passwordService.getPasswordRules());
+        Iterable<RoleDTO> roles = roleService.getRoles();
+        model.addAttribute("roles",roles);
+
+    }
+
     @GetMapping("/password")
     public String changePassword(){
         return "changePassword";
     }
 
     @PostMapping("/password")
-    public String changePassword(@Valid ChangePassword changePassword,Long userId, BindingResult result, HttpRequest request, Model model){
+    public String changePassword(@Valid ChangePassword changePassword, BindingResult result, Principal principal, RedirectAttributes redirectAttributes){
         if(result.hasErrors()){
-            return "password";
+            result.addError(new ObjectError("invalid", "Please provide valid password"));
+            return "/ops/pword";
         }
-        OperationsUserDTO user=operationsUserService.getUser(userId);
-        String oldPassword=changePassword.getOldPassword();
-        String newPassword=changePassword.getNewPassword();
-        String confirmPassword=changePassword.getConfirmPassword();
+        OperationsUserDTO user = operationsUserService.getUserByName(principal.getName());
 
-        //TODO validate password according to the defined password policy
-        //The validations can be done on the ChangePassword class
-
-        if(!newPassword.equals(confirmPassword)){
-            logger.info("PASSWORD MISMATCH");
+        if(!this.passwordEncoder.matches(changePassword.getOldPassword(),user.getPassword())){
+            logger.trace("Invalid old password provided for change");
+            result.addError(new ObjectError("invalid", "Incorrect Old Password"));
+            return "/ops/pword";
         }
 
-        user.setPassword(newPassword);
-        operationsUserService.addUser(user);
-        logger.trace("Password for user {} changed successfully",user.getUserName());
-        return "changePassword";
+        String errorMsg = passwordService.validate(changePassword.getNewPassword());
+        if(!errorMsg.equals("")){
+            result.addError(new ObjectError("invalid", errorMsg));
+            return "/ops/pword";
+        }
+
+        if(!changePassword.getNewPassword().equals(changePassword.getConfirmPassword())){
+            logger.trace("PASSWORD MISMATCH");
+            result.addError(new ObjectError("invalid", "Passwords do not match"));
+            return "/ops/pword";
+        }
+
+
+        if(!this.passwordEncoder.matches(changePassword.getOldPassword(),user.getPassword())){
+            logger.trace("Invalid old password provided for change");
+            result.addError(new ObjectError("invalid", "Incorrect Old Password"));
+            return "/ops/pword";
+        }
+
+        operationsUserService.changePassword(user, changePassword.getOldPassword(), changePassword.getNewPassword());
+
+        redirectAttributes.addFlashAttribute("message","Password changed successfully");
+        return "redirect:/ops/logout";
+
     }
 
     @PostMapping("/{id}/verify")

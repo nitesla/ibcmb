@@ -30,4 +30,19 @@ public interface SecurityService {
      * security question for the specified user
      */
     boolean validateSecurityQuestion(RetailUser retailUser,String securityQuestion,String securityAnswer);
+    
+    
+    /** This validates the token string passed in.
+     * 
+     * @param username The username of the user
+     * @param tokenString the inputted token string
+     */
+    boolean performTokenValidation(String username, String tokenString);
+    
+    
+    /** This sends a request to synchronize the token attached to the user
+     * with the specified username.
+     * @param username the username of the required user
+     */
+    void synchronizeToken(String username);
 }

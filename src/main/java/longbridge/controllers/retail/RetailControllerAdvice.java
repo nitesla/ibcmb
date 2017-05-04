@@ -72,12 +72,13 @@ public class RetailControllerAdvice {
             return "";
         }
 
-        @ModelAttribute
+            @ModelAttribute
            public  String getCustmerAccounts(Model model,Principal principal){
 
-            if (principal.getName() == null){
+            if (principal ==null||principal.getName() == null){
                 return "redirect:/login/retail";
             }
+
             RetailUser user = retailUserService.getUserByName(principal.getName());
             if (user != null) {
                 List<String> accountList = new ArrayList<>();

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="layout :: site-head">
-
+  
 </head>
 
 
@@ -23,14 +23,14 @@
 
             </div>
         </div>
-        <div th:replace="layout :: top-nav"></div>
+        <div th:replace="layout :: ops-top-nav"></div>
 
         <!-- page content -->
         <div class="right_col" role="main">
             <div class="">
                 <div class="page-title">
                     <div class="title_left">
-                        <h3>Organizational Units</h3>
+                        <h3>View Account</h3>
                     </div>
 
                 </div>
@@ -41,28 +41,28 @@
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="x_panel">
                             <div class="x_title">
-                                <ul class="nav navbar-left panel_toolbox">
+                            <ul class="nav navbar-left panel_toolbox">
                                     <li >
                                         <div class="col-lg-4">
                                             <div class="title-action">
-                                                <a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/ops/units/index/edit" disabled="disabled" ><i class="fa fa-pencil"></i> Edit</a>
+                                                <a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/srconfig/index/edit" disabled="disabled" ><i class="fa fa-pencil"></i> Edit</a>
                                             </div>
                                         </div>
                                     </li>
-                                    <li >
-                                        <div class="col-lg-4">
-                                            <div class="title-action">
-                                                <a id="delete-btn" class="btn btn-danger bt-select btn-sm" href="/ops/units/index/delete" disabled="disabled" ><i class="fa fa-trash"></i> Delete</a>
-                                            </div>
+                                <li >
+                                    <div class="col-lg-4">
+                                        <div class="title-action">
+                                            <a  class="btn btn-danger bt-select btn-sm bt-link-act" href="/admin/srconfig/index/delete" disabled="disabled" ><i class="fa fa-trash"></i> Delete</a>
                                         </div>
-                                    </li>
+                                    </div>
+                                </li>
 
                                 </ul>
                                 <ul class="nav navbar-right panel_toolbox">
                                     <li >
                                         <div class="col-lg-4">
                                             <div class="title-action">
-                                                <a th:href="@{/ops/units/new}" class="btn btn-sm btn-primary"><i class="fa fa-plus"></i> Add</a>
+                                                <a th:href="@{/admin/srconfig/new}" class="btn btn-sm btn-primary"><i class="fa fa-plus"></i> Add</a>
                                             </div>
                                         </div>
                                     </li>
@@ -74,23 +74,10 @@
                                 <div class="clearfix"></div>
                             </div>
                             <div class="x_content">
-
-                                <table class="table table-striped table-bordered table-hover" id="unit" >
-                                    <thead>
-                                    <tr>
-                                        <th>Name</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-
-
-                                    </tbody>
-                                    <tfoot>
-                                    <tr>
-                                        <th>Name</th>
-                                    </tr>
-                                    </tfoot>
-                                </table>
+                                <p th:text="${account.getAccountNumber()}"></p>
+                                <p th:text="${account.getAccountType()}"></p>
+                                <p th:text="${account.getAccountBalance()}"></p>
+                                <p th:text="${account.getAccountName()}"></p>
                             </div>
                         </div>
                     </div>
@@ -116,48 +103,48 @@
     /*<![CDATA[*/
     $(document).ready(function() {
 
-        var table = $('#unit').DataTable({
-            "pagingType" : "simple_numbers",
-            select: true,
+    	var table = $('#srconfig').DataTable({
+        	"pagingType" : "simple_numbers",
+        	select: true,
             responsive: true,
             "lengthMenu" : [ [ 5, 10, 20 ],	[ 5, 10, 20 ] ],
             "searching": false,
             "paging": true,
             "serverSide" : true,
-            "ajax": "/ops/units/all",
+            "ajax": "/admin/srconfig/all",
             "dom": 'T<"clear">frtlp',
             "columns": [
-                { "data": "name" }
-            ]
+                { "data": "requestName" }
+            ] 
         });
 
         table.on('select', function() {
-            if (table.rows({
-                    selected : true
-                }).indexes().length === 0) {
-                $('.bt-select').attr("disabled", true);
-            } else {
-                $('.bt-select').removeAttr("disabled");
-            }
+    		if (table.rows({
+    			selected : true
+    		}).indexes().length === 0) {
+    			$('.bt-select').attr("disabled", true);
+    		} else {
+    			$('.bt-select').removeAttr("disabled");
+    		}
 
-        });
+    	});
 
-        table.on('deselect', function() {
-            if (table.rows({
-                    selected : true
-                }).indexes().length === 0) {
-                $('.bt-select').attr("disabled", true);
-            } else {
-                $('.bt-select').removeAttr("disabled");
-            }
-        });
-
+    	table.on('deselect', function() {
+    		if (table.rows({
+    			selected : true
+    		}).indexes().length === 0) {
+    			$('.bt-select').attr("disabled", true);
+    		} else {
+    			$('.bt-select').removeAttr("disabled");
+    		}
+    	});
+    	
     });
-
+    
     $("a.bt-link-act").on("click", function(e) {
-        e.preventDefault();
+    	e.preventDefault();
         var link = $(e.currentTarget);
-        var dt = $('#unit').DataTable();
+        var dt = $('#srconfig').DataTable();
         var id = $(dt.row({
             selected: true
         }).node()).attr("id");
@@ -167,36 +154,6 @@
         window.location.assign(ooo);
         //goto url
     });
-
-    $("#delete-btn").on("click", function(e) {
-        e.preventDefault();
-        var link = $(e.currentTarget);
-        var dt = $('#codes').DataTable();
-        var id = $(dt.row({
-            selected: true
-        }).node()).attr("id");
-        //window.location.href = link.attr("formaction") + '?id=' + id;
-        //replace {id} with id
-        var ooo = link.attr("href").replace("index",id);
-
-        //goto url
-        warnBeforeRedirect(ooo);
-    });
-
-    function warnBeforeRedirect(ooo) {
-        swal({
-            title: "Are you sure?",
-            text: "Are you sure that you want to delete this unit contact list?",
-            type: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#DD6B55",
-            confirmButtonText: "Yes, delete it!",
-            closeOnConfirm: false
-        }, function() {
-            // Redirect the user
-            window.location.assign(ooo);
-        });
-    }
     /*]]>*/
 </script>
 

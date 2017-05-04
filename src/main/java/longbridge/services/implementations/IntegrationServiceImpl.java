@@ -256,4 +256,39 @@ return false;
 //      }
 //      return false;
 //    }
+
+
+	@Override
+	public void synchronizeToken(String username) {
+		// TODO send request to entrust
+		// send request to entrust
+		String uri = URI + "/token/synchronize";
+		Map<String, String> params = new HashMap<>();
+		params.put("username", username);
+
+		try {
+			String response = template.postForObject(uri, params, String.class);
+		} catch (Exception exc) {
+			logger.error("Error", exc);
+		}
+		// TODO to be implemented
+	}
+
+	@Override
+	public boolean performTokenValidation(String username, String tokenString) {
+		// TODO to be implemented
+		// send request to entrust
+		String uri = URI + "/token/authenticate";
+		Map<String, String> params = new HashMap<>();
+		params.put("username", username);
+		params.put("token", tokenString);
+
+		try {
+			String response = template.postForObject(uri, params, String.class);
+		} catch (Exception exc) {
+			logger.error("Error", exc);
+		}
+		// TODO to be implemented
+		return true;
+	}
 }
