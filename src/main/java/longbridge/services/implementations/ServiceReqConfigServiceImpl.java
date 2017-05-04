@@ -68,8 +68,13 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 	@Override
 	public List<ServiceReqConfigDTO> getServiceReqConfigs() {
 		List<ServiceReqConfig> serviceReqConfigs = serviceReqConfigRepo.findAll();
-
 		return convertEntitiesToDTOs(serviceReqConfigs);
+	}
+
+	@Override
+	public List<ServiceReqConfig> getServiceReqConfs() {
+		List<ServiceReqConfig> serviceReqConfigs = serviceReqConfigRepo.findAll();
+		return serviceReqConfigs;
 	}
 
 	@Override
@@ -152,7 +157,6 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 	}
 
 	@Override
-
 	public Page<ServiceReqConfigDTO> getServiceReqConfigs(Pageable pageDetails) {
 		Page<ServiceReqConfig> page = serviceReqConfigRepo.findAll(pageDetails);
 		List<ServiceReqConfigDTO> dtOs = convertEntitiesToDTOs(page.getContent());

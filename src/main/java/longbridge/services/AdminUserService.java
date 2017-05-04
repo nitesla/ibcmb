@@ -47,14 +47,6 @@ public interface AdminUserService {
 //     */
 //    Iterable<AdminUser> getAdminUsers();
 
-    /**
-     * Sets the password for the specified admin user.
-     * Also, the password must meet the organization's password policy if any one has been defined
-     * It is important that the password is hashed before storing it in the database.
-     * @param user the admin user
-     * @param hashedPassword the hashed password
-     */
-    boolean setPassword(AdminUser user, String hashedPassword);
 
 
     boolean isValidUsername(String username);
@@ -75,6 +67,9 @@ public interface AdminUserService {
     void deleteUser(Long id);
 
 
+   void changeActivationStatus(Long userId);
+
+
     /**
      * Updates the details of the specified Admin user
      * @param user the admin user whose details are to be updated
@@ -85,7 +80,7 @@ public interface AdminUserService {
      * Resets the password of the specified Admin user
      * @param userId the admin user
      */
-    boolean resetPassword(Long userId, String newPassword);
+    boolean resetPassword(Long userId);
 
     /**
      * Replaces the old password of the admin user with the new password.

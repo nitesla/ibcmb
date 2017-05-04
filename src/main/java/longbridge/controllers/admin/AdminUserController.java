@@ -147,7 +147,7 @@ public class AdminUserController {
       }
           boolean updated = adminUserService.updateUser(adminUser);
           if (updated) {
-              redirectAttributes.addFlashAttribute("success", "Admin user updated successfully");
+              redirectAttributes.addFlashAttribute("message", "Admin user updated successfully");
           }
         return "redirect:/admin/users";
     }
@@ -165,6 +165,22 @@ public class AdminUserController {
         model.addAttribute("roles",roles);
 
     }
+
+    @GetMapping("/{id}/activation")
+    public String changeActivationStatus(@PathVariable Long id, RedirectAttributes redirectAttributes){
+        adminUserService.changeActivationStatus(id);
+        redirectAttributes.addFlashAttribute("message", "User activation status changed successfully");
+        return "redirect:/admin/users";
+    }
+
+
+    @GetMapping("/{id}/password/reset")
+        public String resetPassword(@PathVariable Long id, RedirectAttributes redirectAttributes){
+        if(adminUserService.resetPassword(id)) {
+            redirectAttributes.addFlashAttribute("message", "Password reset successfully");
+        }
+        return "redirect:/admin/users";
+        }
 
     @GetMapping("/password")
     public String changePassword(Model model){
@@ -212,9 +228,8 @@ public class AdminUserController {
 
 
         adminUserService.changePassword(user, changePassword.getOldPassword(), changePassword.getNewPassword());
-
         redirectAttributes.addFlashAttribute("message","Password changed successfully");
-        return "redirect:/admin/logout";
+        return "redirect:/admin/dashboard";
     }
 
 }

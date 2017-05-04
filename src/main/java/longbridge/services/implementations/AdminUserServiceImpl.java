@@ -9,10 +9,7 @@ import longbridge.models.Role;
 import longbridge.models.Verification;
 import longbridge.repositories.AdminUserRepo;
 import longbridge.repositories.VerificationRepo;
-import longbridge.services.AdminUserService;
-import longbridge.services.MailService;
-import longbridge.services.RoleService;
-import longbridge.services.SecurityService;
+import longbridge.services.*;
 //import longbridge.utils.Verifiable;
 import java.util.ArrayList;
 import java.util.List;
@@ -69,6 +66,9 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Autowired
     MailService mailService;
 
+    @Autowired
+    PasswordService passwordService;
+
     @Override
     public boolean isValidUsername(String username) {
         boolean isValid = false;
@@ -118,17 +118,6 @@ public class AdminUserServiceImpl implements AdminUserService {
 //        return this.adminUserRepo.findAll();
 //     }
 
-    @Override
-    public boolean setPassword(AdminUser user, String hashedPassword) {
-        boolean ok = false;
-        if (user != null) {
-            user.setPassword(this.passwordEncoder.encode(user.getPassword()));
-            adminUserRepo.save(user);
-        } else {
-            throw new RuntimeException("NO USER FOUND");
-        }
-        return ok;
-    }
 
     @Override
 //    @Verifiable(operation="Add Admin",description="Adding a new User")
@@ -142,8 +131,8 @@ public class AdminUserServiceImpl implements AdminUserService {
             adminUser.setEmail(user.getEmail());
             adminUser.setDateCreated(new Date());
             adminUser.setStatus("ACTIVE");
-            String password =  this.passwordEncoder.encode("password123");
-            adminUser.setPassword(password);
+            String password = passwordService.generatePassword();
+            adminUser.setPassword(passwordEncoder.encode(password));
             Role role = new Role();
             role.setId(Long.parseLong(user.getRoleId()));
             adminUser.setRole(role);
@@ -151,15 +140,28 @@ public class AdminUserServiceImpl implements AdminUserService {
             calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) + 2);
             adminUser.setExpiryDate(calendar.getTime());
             this.adminUserRepo.save(adminUser);
-            mailService.send(user.getEmail(),String.format("Your username is %s and password is %s", user.getUserName(),"password123"));
+            mailService.send(user.getEmail(),String.format("Your username is %s and password is %s", user.getUserName(),password));
             logger.info("New admin user: {} created", adminUser.getUserName());
             ok=true;
         } else {
-            logger.error("USER NOT FOUND");
+            logger.error("User cannot be null");
         }
         return ok;
     }
 
+    public void changeActivationStatus(Long userId){
+        AdminUser user = adminUserRepo.findOne(userId);
+        boolean newStatus = user.isEnabled()?false:true;
+        user.setEnabled(newStatus);
+        adminUserRepo.save(user);
+        if(newStatus){
+            String password = passwordService.generatePassword();
+            user.setPassword(passwordEncoder.encode(password));
+            mailService.send(user.getEmail(),String.format("Your new password to Admin console is %s and your current username is %s",password,user.getUserName()));
+        }
+
+
+    }
 
 
     @Override
@@ -191,14 +193,16 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
     @Override
-    public boolean resetPassword(Long userId, String newPassword) {
+    public boolean resetPassword(Long userId) {
         boolean ok = false;
         AdminUser user = getUser(userId);
 
         if (user != null) {
-            setPassword(user, newPassword);
+            String newPassword = passwordService.generatePassword();
+            user.setPassword(passwordEncoder.encode(newPassword));
+            user.setExpiryDate(new Date());
             this.adminUserRepo.save(user);
-
+            mailService.send(user.getEmail(),"Your new password to Internet banking is "+newPassword);
             logger.info("PASSWORD RESET SUCCESSFULLY");
             ok=true;
         }
@@ -238,7 +242,6 @@ public class AdminUserServiceImpl implements AdminUserService {
 
         try {
             String newPassword = securityService.generatePassword();
-            setPassword(user, newPassword);
             sendPassword(user);
             logger.info("PASSWORD GENERATED AND SENT");
         } catch (Exception e) {

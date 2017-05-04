@@ -12,21 +12,7 @@ import org.springframework.data.domain.Pageable;
 public interface AccountConfigurationService {
 
 
-    /**
-     * Returns a list of accounts owned by a particular customer for debit
-     *
-     * @param customerId the customer id of particular customer
-     * @return a list of {@link Account}
-     */
-    Iterable<Account> getAccountsForDebit(String customerId, String currency);
-
-    /**
-     * Returns a list of accounts owned by a particular customer for credit
-     *
-     * @param customerId the customer id of particular customer
-     * @return a list of {@link Account}
-     */
-    Iterable<Account> getAccountsForCredit(String customerId, String currency);
+      boolean isAccountHidden(String accountNumber);
 
     /**
      * Adds an account to a list of restricted accounts
@@ -80,6 +66,66 @@ public interface AccountConfigurationService {
      * @param id the id
      */
     void removeAccountClassRestriction(Long id);
+
+
+    /**
+     * Checks if the specified account is restricted for debit
+     * @param accountNumber the account number
+     * @return true if the account cannot be debited
+     */
+    boolean isAccountRestrictedForDebit(String accountNumber);
+
+    /**
+     * Checks if the specified account is restricted for credit
+     * @param accountNumber the account number
+     * @return true if the account cannot be credited
+     */
+    boolean isAccountRestrictedForCredit(String accountNumber);
+
+    /**
+     * Checks if the specified account is restricted for both debit and credit
+     * @param accountNumber the account number
+     * @return true if the account cannot be debited or credited
+     */
+    boolean isAccountRestrictedForDebitAndCredit(String accountNumber);
+
+
+    /**
+     * Checks if the specified account is restricted from being viewed by the user
+     * @param accountNumber the account number
+     * @return true if the account not be viewed from the platform
+     */
+    boolean isAccountRestrictedForView(String accountNumber);
+
+
+    /**
+     * Checks if the specified account class is restricted for debit
+     * @param accountClass the account class
+     * @return true if the account class cannot be debited
+     */
+    boolean isAccountClassRestrictedForDebit(String accountClass);
+
+    /**
+     * Checks if the specified account class is restricted for credit
+     * @param accountClass the account class
+     * @return true if the account class cannot be credited
+     */
+    boolean isAccountClassRestrictedForCredit(String accountClass);
+
+    /**
+     * Checks if the specified account class is restricted for both debit and credit
+     * @param accountClass the account class
+     * @return true if the account class cannot be debited or credited
+     */
+    boolean isAccountClassRestrictedForDebitAndCredit(String accountClass);
+
+
+    /**
+     * Checks if the specified account class is restricted from being viewed by the user
+     * @param accountClass the account class
+     * @return true if the account class not be viewed from the platform
+     */
+    boolean isAccountClassRestrictedForView(String accountClass);
 
 
     /**

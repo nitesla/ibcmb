@@ -142,6 +142,15 @@ body {
     text-align: left;
 }
 
+.sub_header{
+    color: #02223A;
+    font-size: 14px;
+    font-weight: 100;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    text-align: left;
+}
+
 .bvn{
     background-color: #F2F2F1;
 }
@@ -406,6 +415,7 @@ button, input, optgroup, select, textarea {
 
 .sidebar-bg{
     margin: 15px 0 10px 10px;
+    padding: 10px;
     background-color: #F2F2F1;
 }
 

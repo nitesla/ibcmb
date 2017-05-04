@@ -1,6 +1,13 @@
 package longbridge.config;
 
+import longbridge.dtos.SettingDTO;
 import longbridge.models.UserType;
+import longbridge.services.ConfigurationService;
+
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -34,7 +41,7 @@ public class SecurityConfig {
 	@Configuration
 	@Order(1)
 	public static class AdminUserConfigurationAdapter extends WebSecurityConfigurerAdapter {
-
+		
 		@Autowired
 		@Qualifier("adminUserDetails")
 		UserDetailsService adminDetails;
@@ -47,10 +54,17 @@ public class SecurityConfig {
 		@Autowired
 		@Qualifier("adminAuthenticationFailureHandler")
 		private AuthenticationFailureHandler adminAuthenticationFailureHandler;
+		@Autowired
+		private ConfigurationService configService;
+		
+		private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 		public AdminUserConfigurationAdapter() {
 			super();
+			
 		}
+		
+		
 
 		@Override
 		protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -59,11 +73,22 @@ public class SecurityConfig {
 
 		@Override
 		protected void configure(HttpSecurity http) throws Exception {
-
-			http.antMatcher("/admin/**").authorizeRequests().anyRequest().hasAuthority(UserType.ADMIN.toString())
+			boolean ipRestricted = false;
+			StringBuilder ipRange = new StringBuilder("hasIpAddress('::1')");
+			//Takes a specific IP address or a range using 
+			//the IP/Netmask (e.g. 192.168.1.0/24 or 202.24.0.0/14).
+			SettingDTO dto = configService.getSettingByName("ADMIN_IP_WHITELIST");
+			if(dto != null && dto.isEnabled()){
+				ipRestricted = true;
+				String temp = dto.getValue();
+				 ipRange.append(String.format(" or hasIpAddress('%s')", temp));
+				 logger.info("IP address whitelist " + ipRange.toString());
+			}
+			http.antMatcher("/admin/**").authorizeRequests().anyRequest().
+			hasAuthority(UserType.ADMIN.toString())
+			//.and().authorizeRequests().anyRequest().hasIpAddress(ipRange.toString())
+			.and().authorizeRequests().anyRequest().access(ipRange.toString())
 					// log in
-					//IP address check
-					//.anyRequest().hasIpAddress("")
 					.and().formLogin().loginPage("/login/admin").loginProcessingUrl("/admin/login")
 					.failureUrl("/login/admin?error=login_error").defaultSuccessUrl("/admin/dashboard")
 					.successHandler(adminAuthenticationSuccessHandler).failureHandler(adminAuthenticationFailureHandler)

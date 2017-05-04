@@ -24,11 +24,13 @@ public class RetailUserDTO {
     private String email;
     private Date birthDate;
     private String password;
+    private boolean enabled;
     private String status;
     private String bvn;
     private Date dateCreated;
     private Date expiryDate;
     private Date lockedUntilDate;
+    private String lastLogin;
     private Date lastLoginDate;
     private int noOfLoginAttempts;
     private String antiPhishingImage;
@@ -73,6 +75,22 @@ public class RetailUserDTO {
 
     public void setVersion(String version) {
         this.version = version;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public String getLastLogin() {
+        return lastLogin;
+    }
+
+    public void setLastLogin(String lastLogin) {
+        this.lastLogin = lastLogin;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     public String getFirstName() {

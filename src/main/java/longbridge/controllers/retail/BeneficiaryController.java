@@ -2,9 +2,7 @@ package longbridge.controllers.retail;
 
 import longbridge.dtos.InternationalBeneficiaryDTO;
 import longbridge.dtos.LocalBeneficiaryDTO;
-import longbridge.models.Beneficiary;
-import longbridge.models.FinancialInstitutionType;
-import longbridge.models.RetailUser;
+import longbridge.models.*;
 import longbridge.services.FinancialInstitutionService;
 import longbridge.services.InternationalBeneficiaryService;
 import longbridge.services.LocalBeneficiaryService;
@@ -43,8 +41,17 @@ public class BeneficiaryController {
     public String getBeneficiaries(Model model, Principal principal){
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
         logger.info("local BEN {}", localBeneficiaryService.getLocalBeneficiaries(retailUser));
-        model.addAttribute("localBen", localBeneficiaryService.getLocalBeneficiaries(retailUser));
-        model.addAttribute("intBen", internationalBeneficiaryService.getInternationalBeneficiaries(retailUser));
+        Iterable<LocalBeneficiary> localBeneficiary = localBeneficiaryService.getLocalBeneficiaries(retailUser);
+        for (LocalBeneficiary localBenef : localBeneficiary){
+            localBenef.setBeneficiaryBank(financialInstitutionService.getFinancialInstitutionByCode(localBenef.getBeneficiaryBank()).getInstitutionName());
+        }
+        model.addAttribute("localBen", localBeneficiary);
+
+        Iterable<InternationalBeneficiary> intBeneficiary = internationalBeneficiaryService.getInternationalBeneficiaries(retailUser);
+        for (InternationalBeneficiary intBenef : intBeneficiary){
+            intBenef.setBeneficiaryBank(financialInstitutionService.getFinancialInstitutionByCode(intBenef.getBeneficiaryBank()).getInstitutionName());
+        }
+        model.addAttribute("intBen", intBeneficiary);
         return "cust/beneficiary/view";
     }
 

@@ -4,6 +4,7 @@ import longbridge.dtos.CodeDTO;
 import longbridge.dtos.RetailUserDTO;
 import longbridge.forms.AlertPref;
 import longbridge.forms.ChangePassword;
+import longbridge.services.AccountService;
 import longbridge.services.CodeService;
 import longbridge.services.RetailUserService;
 import org.slf4j.Logger;
@@ -35,8 +36,13 @@ public class SettingController {
     @Autowired
     private RetailUserService retailUserService;
 
+    @Autowired
+    private AccountService accountService;
+
     @RequestMapping("/dashboard")
-    public String getRetailDashboard() {
+    public String getRetailDashboard(Model model) {
+//        List<AccountDTO> accountList = accountService.get
+//        model.addAttribute()
         return "cust/dashboard";
     }
 

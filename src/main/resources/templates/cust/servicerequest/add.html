@@ -10,11 +10,15 @@
 <section class="content-wrapper">
     <div class="container">
         <div class="row">
-            <div class="col-md-1"></div>
-            <div class="col-md-8 col-sm-8">
-                <div class="row">
+            <div class="col-md-4 col-sm-4">
+                <h5 class="page_header"> Service Requests</h5>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-8 content-bg">
+                <div class="row form-spacing">
                     <div class="col-md-6 col-sm-6">
-                        <h5 class="page_header" th:text="${requestConfig.requestName + ' Service Request'}"></h5>
+                        <h5 class="page_header" th:text="${requestConfig.requestName}"></h5>
                         <!--<form method="post" th:action="" id="reqForm">-->
                         <form method="post" th:action="@{/retail/requests}" th:object="${requestDTO}" id="reqForm">
                             <p><input class="form-control" type="hidden" id="requestName" name="requestName" th:value="${requestConfig.requestName}"/></p>
@@ -24,6 +28,11 @@
                                     <label th:text="${field.fieldLabel}"></label>
                                     <p th:if="${field.fieldType} == 'TEXT'"><input class="form-control" th:type="${field.fieldType}" th:name="${field.fieldName}"/></p>
 
+                                    <p th:if="${field.fieldType} == 'TEXTAREA'">
+                                        <textarea class="form-control" th:name="${field.fieldName}">
+                                        </textarea>
+                                    </p>
+
                                     <p th:if="${field.fieldType} == 'DATE'"><input class="form-control" id="datepicker" type="text" th:name="${field.fieldName}"/></p>
 
                                     <p th:if="${field.fieldType} == 'CODE'">
@@ -31,6 +40,13 @@
                                             <option th:each="type : ${field.codeDTOs}" th:value="${type.code}" th:text="${type.description}"></option>
                                         </select>
                                     </p>
+
+                                    <p th:if="${field.fieldType} == 'FI'">
+                                        <select class="form-control" th:name="${field.fieldName}">
+                                            <option th:each="bank : ${banks}" th:value="${bank.institutionCode}" th:text="${bank.institutionName}"></option>
+                                        </select>
+                                    </p>
+
                                     <p th:if="${field.fieldType} == 'ACCOUNT'">
                                         <select class="form-control" th:name="${field.fieldName}">
                                             <option th:each="type : ${requestFieldType}" th:value="${type.code}" th:text="${type.description}"></option>
@@ -42,26 +58,19 @@
                                         </select>
                                     </p>
                                 </div>
-
                             </p>
 
                             <button type="submit" class="btn btn-default">Submit</button>
                         </form>
-                    </div>
-                    <div class="col-md-2 col-sm-2">
-
-                    </div>
-                </div>
-
-            </div>
-            <div class="col-md-3 col-sm-3">
-                <div class="alert alert-warning">
-<form id="submitform" action="/retail/requests" method="post">
-    <input type="hidden" id="body" name="requestName"/>
-</form>
                 </div>
             </div>
         </div>
+        <div th:replace="cust_layout :: sidebar" class="col-md-3 sidebar">
+        </div>
+        <form id="submitform" action="/retail/requests" method="post">
+            <input type="hidden" id="body" name="requestName"/>
+        </form>
+    </div>
     </div>
 </section>
 

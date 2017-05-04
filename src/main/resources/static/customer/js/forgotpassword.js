@@ -2,10 +2,13 @@
 
 	var accountName = "null";
 
+<<<<<<< HEAD
 	/** This validates the input account number.
 	 * 
 	 * @param accountNumber the account number to check
 	 */
+=======
+>>>>>>> 2118906330afc95f49863a5beb4dc252835c7c71
 	function validateAccountNumber(accountNumber){
 		var accountName;
 		$.ajax({
@@ -29,7 +32,10 @@
         }else{
         	return true;
         }
+<<<<<<< HEAD
         
+=======
+>>>>>>> 2118906330afc95f49863a5beb4dc252835c7c71
 	}
 	
 
@@ -49,9 +55,14 @@
     
     var ACCOUNT_DETAILS_STEP = 0;
     var CONFIRM_PASSWORD_STEP = 2;
+<<<<<<< HEAD
     var condition = [[${success}]];
     
 //    $("#wizard-t-2").get(0).click();
+=======
+    // var condition = [[${success}]];
+
+>>>>>>> 2118906330afc95f49863a5beb4dc252835c7c71
     form.children("div").steps({
         headerTag: "h3",
         bodyTag: "section",

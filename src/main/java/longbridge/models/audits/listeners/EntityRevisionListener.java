@@ -1,6 +1,9 @@
 package longbridge.models.audits.listeners;
 
+import longbridge.models.User;
 import longbridge.models.audits.CustomRevisionEntity;
+import longbridge.security.userdetails.CustomUserPrincipal;
+
 import org.hibernate.envers.EntityTrackingRevisionListener;
 import org.hibernate.envers.RevisionType;
 import org.springframework.security.core.Authentication;
@@ -16,21 +19,24 @@ public class EntityRevisionListener/*<T extends RevisionsEntity>*/  implements E
 
 
 	private String getUser() {
-
 		// would use spring security later to get Principal.getName() or any
 		// other way
-
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
 		if (auth != null)
-
 			return auth.getName();
-
 		return "Unknown";
-		// principal.getName();
-
 	}
 
+	private String getIP() {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (auth != null){
+			CustomUserPrincipal principal = (CustomUserPrincipal)auth.getPrincipal();
+			return principal.getIpAddress();
+		}
+		return "Unknown";
+	}
+
+	
 	@Override
 	public void newRevision(Object o) {
 		// System.out.println("New revision is created: " + o);
@@ -38,6 +44,7 @@ public class EntityRevisionListener/*<T extends RevisionsEntity>*/  implements E
 		CustomRevisionEntity revision = (CustomRevisionEntity) o;
 
 		revision.setLastChangedBy(getUser());
+		revision.setIpAddress(getIP());
 
 	}
 
