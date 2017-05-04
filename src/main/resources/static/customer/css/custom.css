@@ -449,7 +449,7 @@ button, input, optgroup, select, textarea {
 
 .form-signin{
     max-width: 330px;
-    padding: 50px 15px 30px;
+    padding: 100px 15px 30px;
     margin: 0 auto;
     text-align: center;
 }
@@ -661,13 +661,6 @@ button, input, optgroup, select, textarea {
         height: 75px;
     }
 
-    .login-form{
-        padding: 100px 20px;
-        margin: 0 auto;
-        text-align: center;
-        max-width: 400px;
-    }
-
     .top_bar {
         clear: both;
         display: block;
@@ -741,7 +734,11 @@ button, input, optgroup, select, textarea {
         padding-bottom: 50px;
         height: 110px;
         max-width: 700px;
-
     }
 
+    .fom-signin{
+        max-width: 330px;
+        margin: 0 auto;
+        text-align: center;
+    }
 }
