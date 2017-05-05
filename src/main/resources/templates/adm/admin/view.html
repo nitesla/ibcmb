@@ -214,12 +214,14 @@
         $("a.bt-link-act").on("click", function(e) {
             e.preventDefault();
             var link = $(e.currentTarget);
+            if($(link).attr("disabled")){
+            	return;
+            }
+            
             var dt = $('#admin').DataTable();
             var id = $(dt.row({
                 selected: true
             }).node()).attr("id");
-            //window.location.href = link.attr("formaction") + '?id=' + id;
-            //replace {id} with id
             var ooo = link.attr("href").replace("index",id);
             window.location.assign(ooo);
 
@@ -229,6 +231,9 @@
     $("#delete-btn").on("click", function(e) {
         e.preventDefault();
         var link = $(e.currentTarget);
+        if($(link).attr("disabled")){
+        	return;
+        }
         var dt = $('#role').DataTable();
         var id = $(dt.row({
             selected: true

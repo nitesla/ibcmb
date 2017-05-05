@@ -29,15 +29,15 @@ public class EntityRevisionRepo {
 
 
 
-    public List<EntityWithRevision<CustomRevisionEntity>> listEmployeeRevisions(Long empCode) {
+    public List<EntityWithRevision<CustomRevisionEntity>> listRevisions(Long id) {
         AuditReader auditReader = AuditReaderFactory.get(entityManager);
 
 
-        List<Number> revisions = auditReader.getRevisions(CustomRevisionEntity.class, empCode);
+        List<Number> revisions = auditReader.getRevisions(CustomRevisionEntity.class, id);
 
         List<EntityWithRevision<CustomRevisionEntity>> empRevisions = new ArrayList<>();
         for (Number revision : revisions) {
-            CustomRevisionEntity empRevision = auditReader.find(CustomRevisionEntity.class, empCode, revision);
+            CustomRevisionEntity empRevision = auditReader.find(CustomRevisionEntity.class, id, revision);
             Date revisionDate = auditReader.getRevisionDate(revision);
 
             empRevisions.add(

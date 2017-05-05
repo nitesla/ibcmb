@@ -15,7 +15,9 @@ function calculator(){
 	data.forEach(function(el){
 		print(el['name']);
 		if(el['name'].equals('Database')){
-			rs = 34.78;; 
+//			rs = 34.78;; 
+			
+			rs = {main : 89 , vat : 27};
 		}
 		
 	}

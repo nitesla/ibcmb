@@ -152,10 +152,10 @@ public class AdminUserServiceImpl implements AdminUserService {
     public void changeActivationStatus(Long userId){
         AdminUser user = adminUserRepo.findOne(userId);
         String oldStatus = user.getStatus();
-        String newStatus = oldStatus.equals("ACTIVE")?"INACTIVE":"ACTIVE";
+        String newStatus = "ACTIVE".equals(oldStatus)?"INACTIVE":"ACTIVE";
         user.setStatus(newStatus);
         adminUserRepo.save(user);
-        if(oldStatus.equals("INACTIVE")&&newStatus.equals("ACTIVE")){
+        if("INACTIVE".equals(oldStatus) && "ACTIVE".equals(newStatus)){
             String password = passwordService.generatePassword();
             user.setPassword(passwordEncoder.encode(password));
             mailService.send(user.getEmail(),String.format("Your new password to Admin console is %s and your current username is %s",password,user.getUserName()));
