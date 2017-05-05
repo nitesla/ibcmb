@@ -46,7 +46,7 @@
                                         </ul>
                                         <div class="clearfix"></div>
                                     </div>
-                                    <form method="post" class="form-horizontal" th:action="@{/admin/finst}" th:object="${financialInstitutionDTO}">
+                                    <form method="post" class="form-horizontal" th:action="@{/admin/finst}" th:object="${financialInstitution}">
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label"> Institution Code</label>
 
@@ -74,11 +74,11 @@
 
                                         <div class="form-group">
                                             <div class="col-sm-4 col-sm-offset-2">
-                                                <button class="btn btn-white" type="submit">Cancel</button>
+                                                <button class="btn btn-white" type="reset" id="cancel">Cancel</button>
                                                 <button class="btn btn-primary" type="submit">Submit</button>
                                             </div>
                                         </div>
-
+                                <div th:replace="layout::form-validation"></div>
                                     </form>
                                 </div>
                             </div>
@@ -95,6 +95,12 @@
         <!-- /footer content -->
     </div>
 </div>
+
+<script>
+
+    document.getElementById("cancel").onclick = function () {
+        location.href = "/admin/finst";}
+</script>
 
 </body>
 </html>

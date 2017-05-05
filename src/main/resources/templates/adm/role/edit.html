@@ -126,7 +126,7 @@
 												</fieldset>
 											</div>
 											<div class="panel-footer text-right">
-												<button class="btn btn-white" type="submit">Cancel</button>
+												<button class="btn btn-white" type="reset" id="cancel">Cancel</button>
 												<button class="btn btn-primary" id="btn-save" type="submit">Submit</button>
 											</div>
 										</div>
@@ -162,6 +162,11 @@
 			$('.right-selector option').prop("selected", true);
 			$("#form-save").submit();
 		});
+
+
+        document.getElementById("cancel").onclick = function () {
+            location.href = "/admin/roles";}
+
 	</script>
 </body>
 </html>

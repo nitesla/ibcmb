@@ -12,6 +12,7 @@ import org.springframework.data.jpa.datatables.repository.DataTablesUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,6 +32,8 @@ import longbridge.models.Code;
 import longbridge.repositories.AdminUserRepo;
 import longbridge.services.CodeService;
 import longbridge.services.VerificationService;
+
+import javax.validation.Valid;
 
 /**
  * Created by Fortune on 4/5/2017.
@@ -56,27 +59,32 @@ public class AdmCodeController {
 	}
 
 	@PostMapping
-    public String createCode(@ModelAttribute("codeDTO") CodeDTO codeDTO, BindingResult result,  RedirectAttributes redirectAttributes){
+    public String createCode(@ModelAttribute("codeDTO") @Valid CodeDTO codeDTO, BindingResult result, RedirectAttributes redirectAttributes){
         if(result.hasErrors()){
             //return "add";
             logger.error("Error occurred creating code{}", result.toString());
+            result.addError(new ObjectError("invalid","Please fill in the required fields"));
             return "adm/code/add";
 
         }
 
         logger.info("Code {}", codeDTO.toString());
-        Code code = codeService.convertDTOToEntity(codeDTO);
-        try {
-			verificationService.addNewVerificationRequest(code);
-		} catch (JsonProcessingException e) {
-			// TODO Auto-generated catch block
-			logger.error("Error", e);
-		}
+
+		AdminUser adminUser = adminUserRepo.findOne(1l);
+//		logger.info("Code {}", codeDTO.toString());
+		codeService.updateCode(codeDTO, adminUser);
+//        Code code = codeService.convertDTOToEntity(codeDTO);
+//        try {
+//			verificationService.addNewVerificationRequest(code);
+//		} catch (JsonProcessingException e) {
+//			// TODO Auto-generated catch block
+//			logger.error("Error", e);
+//		}
 //        codeService.updateCode(codeDTO,adminUser);//
 //        codeService.addObject(code);
 //        codeService.addCode(codeDTO);
 
-        redirectAttributes.addFlashAttribute("success", "Code added successfully");
+        redirectAttributes.addFlashAttribute("message", "Code added successfully");
         return "redirect:/admin/codes";
     }
 
@@ -168,24 +176,30 @@ public class AdmCodeController {
 	}
 
 	@PostMapping("/update")
-	public String updateCode(@ModelAttribute("code") CodeDTO codeDTO, BindingResult result,
+	public String updateCode(@ModelAttribute("code") @Valid CodeDTO codeDTO, BindingResult result,
 			RedirectAttributes redirectAttributes) {
-		if (result.hasErrors()) {
-			return "add";
+		if(result.hasErrors()){
+			//return "add";
+			logger.error("Error occurred creating code{}", result.toString());
+			result.addError(new ObjectError("invalid","Please fill in the required fields"));
+			return "adm/code/add";
+
 		}
+
+//		codeService.addCode(codeDTO);
+
 		AdminUser adminUser = adminUserRepo.findOne(1l);
-		logger.info("Code {}", codeDTO.toString());
+//		logger.info("Code {}", codeDTO.toString());
 		codeService.updateCode(codeDTO, adminUser);
-		// codeService.modify(codeDTO, adminUser);
-		redirectAttributes.addFlashAttribute("success", "Code updated successfully");
+//		// codeService.modify(codeDTO, adminUser);
+		redirectAttributes.addFlashAttribute("message", "Code updated successfully");
 		return "redirect:/admin/codes";
-		// codeService.addCode(code);
 	}
 
 	@GetMapping("/{codeId}/delete")
 	public String deleteCode(@PathVariable Long codeId, RedirectAttributes redirectAttributes) {
 		codeService.deleteCode(codeId);
-		redirectAttributes.addFlashAttribute("success", "Code deleted successfully");
+		redirectAttributes.addFlashAttribute("message", "Code deleted successfully");
 		return "redirect:/admin/codes";
 	}
 }

@@ -106,9 +106,11 @@ public class AdmRetailUserController {
     }
 
     @GetMapping("/{userId}/delete")
-    public String deleteUser(@PathVariable Long userId) {
+    public String deleteUser(@PathVariable Long userId, RedirectAttributes redirectAttributes) {
         retailUserService.deleteUser(userId);
-        return "redirect:/retail/users";
+        redirectAttributes.addFlashAttribute("message", "Retail user deleted successfully");
+
+        return "redirect:/admin/retail/users";
     }
 
     @GetMapping("/password")

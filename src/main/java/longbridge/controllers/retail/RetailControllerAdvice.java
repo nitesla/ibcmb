@@ -1,5 +1,6 @@
 package longbridge.controllers.retail;
 
+import longbridge.models.Account;
 import longbridge.models.RetailUser;
 import longbridge.models.ServiceReqConfig;
 import longbridge.services.*;
@@ -93,9 +94,13 @@ public class RetailControllerAdvice {
             if (user != null) {
                 List<String> accountList = new ArrayList<>();
 
-                integrationService.fetchAccounts(user.getCustomerId())
-                        .stream()
-                        .forEach(i -> accountList.add(i.getAccountNumber()));
+                //integrationService.fetchAccounts(user.getCustomerId())
+               Iterable<Account> accounts = accountService.getAccountsForDebit(user.getCustomerId());
+//                        .stream()
+//                        .forEach(i -> accountList.add(i.getAccountNumber()));
+                for(Account account: accounts){
+                    accountList.add(account.getAccountNumber());
+                }
                   model.addAttribute("accounts", accountList);
 
 

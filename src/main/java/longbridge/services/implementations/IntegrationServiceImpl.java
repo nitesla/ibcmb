@@ -179,7 +179,7 @@ return false;
     @Override
     public String getAccountName(String accountNumber) {
     	logger.info(accountNumber + "account number");
-        if("08166851634".equals(accountNumber.trim())){
+        if("0021424028".equals(accountNumber.trim())){
             return "Torti Chigozirim David";
         }
         return accountNumber;
