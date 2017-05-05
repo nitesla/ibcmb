@@ -111,11 +111,12 @@ public class RetailUserServiceImpl implements RetailUserService {
             retailUser.setEmail(details.getEmail());
             retailUser.setDateCreated(new Date());
             retailUser.setBirthDate(user.getBirthDate());
-            retailUser.setRole(roleService.getTheRole(2L));
+            retailUser.setRole(roleService.getTheRole(34L));
             retailUser.setStatus("ACTIVE");
-            Calendar c = Calendar.getInstance();
-            c.set(Calendar.YEAR, c.get(Calendar.YEAR),+2);
-            retailUser.setExpiryDate(c.getTime());
+            retailUser.setBvn("58478457841");
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) + 2);
+            retailUser.setExpiryDate(calendar.getTime());
             retailUser.setAlertPreference(codeService.getCodeById(39L));
             retailUser.setPassword(this.passwordEncoder.encode(user.getPassword()));
             this.retailUserRepo.save(retailUser);
