@@ -22,16 +22,12 @@
 
                     <table>
                         <tr>
-
                             <th>Source account</th>
                             <td th:text="${transferRequest.customerAccountNumber}"></td>
-
                         </tr>
                         <tr>
-
                             <th>Destination account</th>
                             <td th:text="${transferRequest.beneficiaryAccountNumber}"></td>
-
                         </tr>
                         <tr>
 
@@ -71,11 +67,8 @@
                     <!--</div>-->
                 </div>
             </div>
-            <div class="col-md-3 sidebar">
-                <div class="sidebar-bg">hfdhgk</div>
-                <div class="sidebar-bg">jgjgjk</div>
+            <div th:replace="cust_layout :: sidebar" class="col-md-3 sidebar">
             </div>
-        </div>
     </div>
 </section>
 

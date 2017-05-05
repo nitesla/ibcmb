@@ -19,8 +19,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.validation.Valid;
-
 /**
  * Created by Fortune on 4/3/2017.
  */
@@ -34,21 +32,21 @@ public class AdmRetailUserController {
     private Logger logger= LoggerFactory.getLogger(this.getClass());
 
 
-    @GetMapping("/new")
-    public String addUser(Model model){
-        model.addAttribute("retailUser",new RetailUserDTO());
-        return "adm/retail/add";
-    }
+//    @GetMapping("/new")
+//    public String addUser(Model model){
+//        model.addAttribute("retailUser",new RetailUserDTO());
+//        return "adm/retail/add";
+//    }
 
-    @PostMapping
-    public String createUser(@ModelAttribute("retailUser") RetailUserDTO retailUser, BindingResult result, RedirectAttributes redirectAttributes) throws Exception{
-        if(result.hasErrors()){
-            return "adm/retail/add";
-        }
-        retailUserService.addUser(retailUser);
-        redirectAttributes.addFlashAttribute("message","Retail user created successfully");
-        return "redirect:/admin/retail/users";
-    }
+//    @PostMapping
+//    public String createUser(@ModelAttribute("retailUser") RetailUserDTO retailUser, BindingResult result, RedirectAttributes redirectAttributes) throws Exception{
+//        if(result.hasErrors()){
+//            return "adm/retail/add";
+//        }
+//        retailUserService.addUser(retailUser);
+//        redirectAttributes.addFlashAttribute("message","Retail user created successfully");
+//        return "redirect:/admin/retail/users";
+//    }
 
     /**
      * Edit an existing user

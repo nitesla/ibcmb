@@ -1,17 +1,11 @@
 package longbridge.services.implementations;
 
-import longbridge.dtos.AccountClassRestrictionDTO;
+import longbridge.api.AccountInfo;
 import longbridge.dtos.AccountDTO;
-import longbridge.dtos.AccountRestrictionDTO;
 import longbridge.models.Account;
-import longbridge.models.AccountClassRestriction;
-import longbridge.models.AccountRestriction;
-import longbridge.repositories.AccountClassRestrictionRepo;
 import longbridge.repositories.AccountRepo;
-import longbridge.repositories.AccountRestrictionRepo;
 import longbridge.services.AccountConfigurationService;
 import longbridge.services.AccountService;
-import longbridge.services.CodeService;
 import longbridge.services.IntegrationService;
 import longbridge.utils.AccountStatement;
 import org.modelmapper.ModelMapper;
@@ -19,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -51,6 +44,25 @@ public class AccountServiceImpl implements AccountService {
         this.integrationService = integrationService;
         this.modelMapper = modelMapper;
         this.accountConfigService = accountConfigService;
+    }
+
+    @Override
+    public boolean AddFIAccount(String customerId, AccountInfo acct) {
+        if (!customerId.equals(acct.getCustomerId())) {
+            return false;
+        }
+        Account account = new Account();
+        account.setPrimaryFlag("N");
+        account.setHiddenFlag("N");
+        account.setCustomerId(acct.getCustomerId());
+        account.setAccountName(acct.getAccountName());
+        account.setAccountNumber(acct.getAccountNumber());
+        account.setSolId(acct.getSolId());
+        account.setSchemeCode(acct.getSchemeCode());
+        account.setSchemeType(acct.getSchemeType());
+        account.setAccountId(acct.getAccountId());
+        accountRepo.save(account);
+        return true;
     }
 
     @Override

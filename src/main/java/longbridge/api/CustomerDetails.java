@@ -6,9 +6,9 @@ package longbridge.api;
 public class CustomerDetails {
 
 private String cifId;
-private String  customerName;
-private String   dateOfBirth;
-private String   email;
+private String customerName;
+private String dateOfBirth;
+private String email;
 private String phone;
 
 
