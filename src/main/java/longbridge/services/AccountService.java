@@ -92,6 +92,8 @@ public interface AccountService {
          */
     Iterable<Account> getAccountsForDebit(String customerId, String currency);
 
+    Iterable<Account> getAccountsForDebit(String customerId);
+
 
     Iterable<Account> getAccountsForDebitAndCredit(String customerId);
 
@@ -104,6 +106,7 @@ public interface AccountService {
      */
     Iterable<Account> getAccountsForCredit(String customerId, String currency);
 
+    public Iterable<Account> getAccountsForCredit(String customerId);
 
     /**
      * Fetches the details of an {@link Account} using the

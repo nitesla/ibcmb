@@ -1,5 +1,7 @@
 package longbridge.controllers;
 
+import longbridge.models.Account;
+import longbridge.services.AccountService;
 import longbridge.services.IntegrationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +21,8 @@ public class Transfer
 
 
     private IntegrationService integrationService;
+    @Autowired
+    private AccountService accountService;
 
      @Autowired
     public Transfer(IntegrationService integrationService) {
@@ -33,15 +37,23 @@ public class Transfer
  public List<String>  getDestinationAccounts(@PathVariable String accountId){
 
 
-        List<String> accounts= new ArrayList<>();
+        List<String> accountList= new ArrayList<>();
 
-        integrationService.fetchAccounts(integrationService.viewAccountDetails(accountId).getCustId())
-                .stream()
-                .filter(i -> !i.getAccountNumber().equalsIgnoreCase(accountId))
-                .collect(Collectors.toList())
-                .forEach(i-> accounts.add(i.getAccountNumber()));
+//        integrationService.fetchAccounts(integrationService.viewAccountDetails(accountId).getCustId())
+//                .stream()
+//                .filter(i -> !i.getAccountNumber().equalsIgnoreCase(accountId))
+//                .collect(Collectors.toList())
+//                .forEach(i-> accounts.add(i.getAccountNumber()));
 
-              return accounts;
+        Iterable<Account> accounts = accountService.getAccountsForCredit(accountService.getAccountByAccountNumber(accountId).getCustomerId());
+//                        .stream()
+//                        .forEach(i -> accountList.add(i.getAccountNumber()));
+        for(Account account: accounts){
+            if(!accountId.equals(account.getAccountNumber())) {
+                accountList.add(account.getAccountNumber());
+            }
+        }
+              return accountList;
 
 
     }
@@ -51,7 +63,7 @@ public class Transfer
 
     public String getAccountCurrency(@PathVariable String accountId)
     {
-        return integrationService.viewAccountDetails(accountId).getAcctCrncyCode();
+        return accountService.getAccountByAccountNumber(accountId).getCurrencyCode();
     }
 
 

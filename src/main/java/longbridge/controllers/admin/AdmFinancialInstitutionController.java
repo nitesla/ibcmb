@@ -11,6 +11,7 @@ import org.springframework.data.jpa.datatables.repository.DataTablesUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,6 +24,8 @@ import longbridge.dtos.FinancialInstitutionDTO;
 import longbridge.models.FinancialInstitutionType;
 import longbridge.services.FinancialInstitutionService;
 import longbridge.services.VerificationService;
+
+import javax.validation.Valid;
 
 /**
  * Created by Wunmi Sowunmi on 24/04/2017.
@@ -55,16 +58,21 @@ public class AdmFinancialInstitutionController {
         return out;
     }
 
-    @GetMapping("/new")
-    public String addFi(FinancialInstitutionDTO financialInstitutionDTO, Model model) {
+    @ModelAttribute
+    public  void init(Model model){
         model.addAttribute("types", FinancialInstitutionType.values());
+    }
+
+    @GetMapping("/new")
+    public String addFi( Model model) {
+        model.addAttribute("financialInstitution",new FinancialInstitutionDTO());
         return "adm/financialinstitution/add";
     }
 
     @PostMapping
-    public String createFi(@ModelAttribute("financialInstitutionDTO") FinancialInstitutionDTO financialInstitutionDTO, BindingResult result, RedirectAttributes redirectAttributes){
+    public String createFi(@ModelAttribute("financialInstitution") @Valid FinancialInstitutionDTO financialInstitutionDTO, BindingResult result, RedirectAttributes redirectAttributes){
         if(result.hasErrors()){
-            //return "add";
+            result.addError(new ObjectError("invalid", "Please fill in the required fields"));
             logger.error("Error occurred creating code{}", result.toString());
             return "adm/financialinstitution/add";
         }
@@ -75,23 +83,24 @@ public class AdmFinancialInstitutionController {
             return "adm/financialinstitution/add";
         }
 
-        redirectAttributes.addFlashAttribute("success", "Financial Institution added successfully");
+        redirectAttributes.addFlashAttribute("message", "Financial Institution added successfully");
         return "redirect:/admin/finst";
     }
 
     @GetMapping("/{id}/edit")
     public String editFi(@PathVariable Long id, Model model) {
         FinancialInstitutionDTO fi = financialInstitutionService.getFinancialInstitution(id);
-        model.addAttribute("fi", fi);
-        model.addAttribute("types", FinancialInstitutionType.values());
+        model.addAttribute("financialInstitution", fi);
         return "adm/financialinstitution/edit";
     }
 
     @PostMapping("/update")
-    public String updateFi(@ModelAttribute("financialInstitution") FinancialInstitutionDTO financialInstitutionDTO, BindingResult result,
+    public String updateFi(@ModelAttribute("financialInstitution") @Valid FinancialInstitutionDTO financialInstitutionDTO, BindingResult result,
                              RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
-            return "add";
+            result.addError(new ObjectError("invalid", "Please fill in the required fields"));
+
+            return "adm/financialinstitution/edit";
         }
 
         boolean response = financialInstitutionService.updateFinancialInstitution(financialInstitutionDTO);
@@ -101,7 +110,7 @@ public class AdmFinancialInstitutionController {
             return "adm/financialinstitution/add";
         }
 
-        redirectAttributes.addFlashAttribute("success", "Financial Institution updated successfully");
+        redirectAttributes.addFlashAttribute("message", "Financial Institution updated successfully");
         return "redirect:/admin/finst";
     }
 
@@ -113,7 +122,7 @@ public class AdmFinancialInstitutionController {
             return "adm/financialinstitution/view";
         }
 
-        redirectAttributes.addFlashAttribute("success", "Financial Institution deleted successfully");
+        redirectAttributes.addFlashAttribute("message", "Financial Institution deleted successfully");
         return "redirect:/admin/finst";
     }
 }

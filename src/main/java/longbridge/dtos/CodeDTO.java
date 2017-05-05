@@ -15,8 +15,11 @@ public class CodeDTO {
 
     @JsonProperty("DT_RowId")
     private Long id;
+    @NotEmpty(message = "code")
     private String code;
+    @NotEmpty(message = "type")
     private String type;
+    @NotEmpty(message = "description")
     private String description;
     private int version;
 

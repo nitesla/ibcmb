@@ -231,6 +231,20 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    public List<Account> getAccountsForDebit(String customerId) {
+        List<Account> accountsForDebit = new ArrayList<Account>();
+        Iterable<Account> accounts = this.getCustomerAccounts(customerId);
+        for (Account account : accounts) {
+            if (!accountConfigService.isAccountHidden(account.getAccountNumber())
+                    && (!accountConfigService.isAccountRestrictedForView(account.getAccountNumber())) && !accountConfigService.isAccountRestrictedForDebit(account.getAccountNumber()) && (!accountConfigService.isAccountClassRestrictedForView(account.getSchemeCode()) && (!accountConfigService.isAccountClassRestrictedForDebit(account.getSchemeCode())))) {
+                accountsForDebit.add(account);
+            }
+
+        }
+        return accountsForDebit;
+    }
+
+    @Override
     public Iterable<Account> getAccountsForDebitAndCredit(String customerId) {
         List<Account> accountsForDebitAndCredit = new ArrayList<Account>();
         Iterable<Account> accounts = this.getCustomerAccounts(customerId);
@@ -248,6 +262,20 @@ public class AccountServiceImpl implements AccountService {
     public Iterable<Account> getAccountsForCredit(String customerId, String currencyCode) {
         List<Account> accountsForCredit = new ArrayList<Account>();
         List<Account> accounts = this.getCustomerAccounts(customerId, currencyCode);
+        for (Account account : accounts) {
+            if (!accountConfigService.isAccountHidden(account.getAccountNumber())
+                    && (!accountConfigService.isAccountRestrictedForView(account.getAccountNumber())) && !accountConfigService.isAccountRestrictedForCredit(account.getAccountNumber()) && (!accountConfigService.isAccountClassRestrictedForView(account.getSchemeCode()) && (!accountConfigService.isAccountClassRestrictedForCredit(account.getSchemeCode())))) {
+                accountsForCredit.add(account);
+            }
+
+        }
+        return accountsForCredit;
+    }
+
+    @Override
+    public Iterable<Account> getAccountsForCredit(String customerId) {
+        List<Account> accountsForCredit = new ArrayList<Account>();
+        Iterable<Account> accounts = this.getCustomerAccounts(customerId);
         for (Account account : accounts) {
             if (!accountConfigService.isAccountHidden(account.getAccountNumber())
                     && (!accountConfigService.isAccountRestrictedForView(account.getAccountNumber())) && !accountConfigService.isAccountRestrictedForCredit(account.getAccountNumber()) && (!accountConfigService.isAccountClassRestrictedForView(account.getSchemeCode()) && (!accountConfigService.isAccountClassRestrictedForCredit(account.getSchemeCode())))) {
