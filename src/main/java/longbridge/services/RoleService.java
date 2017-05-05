@@ -30,6 +30,8 @@ public interface RoleService {
     RoleDTO getRole(Long id);
 
 
+    Role getTheRole(Long id);
+
     /**
      * Returns all  the roles in the system
      * @return a list of roles

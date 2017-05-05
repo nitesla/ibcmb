@@ -168,7 +168,6 @@ return false;
 
            result = template.postForObject(uri,params,CustomerDetails.class);
 
-
         }
         catch (Exception e){
             e.printStackTrace();
@@ -180,7 +179,7 @@ return false;
     @Override
     public String getAccountName(String accountNumber) {
     	logger.info(accountNumber + "account number");
-        if("0021424028".equals(accountNumber.trim())){
+        if("08166851634".equals(accountNumber.trim())){
             return "Torti Chigozirim David";
         }
         return accountNumber;

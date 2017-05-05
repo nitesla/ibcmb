@@ -48,6 +48,8 @@ public class RetailControllerAdvice {
             RetailUser user = retailUserService.getUserByName(principal.getName());
             model.addAttribute("bvn", user.getBvn());
 
+            model.addAttribute("lastLogin", user.getLastLoginDate());
+
             Calendar c = Calendar.getInstance();
             int timeOfDay = c.get(Calendar.HOUR_OF_DAY);
 
@@ -60,7 +62,17 @@ public class RetailControllerAdvice {
             }
             model.addAttribute("greeting", greeting);
 
-            String name = user.getFirstName() + ' ' + user.getLastName();
+
+            String firstName = user.getFirstName();
+            String lastName = "";
+            if (user.getLastName() == null){
+                lastName = "";
+
+            }else{
+                lastName = user.getLastName();
+            }
+
+            String name = firstName + ' ' + lastName;
             model.addAttribute("name", name);
 
             List<ServiceReqConfig> requestList = reqConfigService.getServiceReqConfs();
