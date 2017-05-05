@@ -19,11 +19,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Fortune on 4/5/2017.
@@ -38,9 +34,6 @@ public class ServiceRequestController {
 
     @Autowired
     private ServiceReqConfigService serviceReqConfigService;
-
-    @Autowired
-    private FinancialInstitutionService financialInstitutionService;
 
     @Autowired
     private CodeService codeService;
