@@ -82,10 +82,11 @@ public class OperationsUserServiceImpl implements OperationsUserService {
 
     public void changeActivationStatus(Long userId){
         OperationsUser user = operationsUserRepo.findOne(userId);
-        boolean newStatus = user.isEnabled()?false:true;
-        user.setEnabled(newStatus);
+        String oldStatus = user.getStatus();
+        String newStatus = oldStatus.equals("ACTIVE")?"INACTIVE":"ACTIVE";
+        user.setStatus(newStatus);
         operationsUserRepo.save(user);
-        if(newStatus){
+        if(oldStatus.equals("INACTIVE")&&newStatus.equals("ACTIVE")){
             String password = passwordService.generatePassword();
             user.setPassword(passwordEncoder.encode(password));
             mailService.send(user.getEmail(),String.format("Your new password to Admin console is %s and your current username is %s",password,user.getUserName()));

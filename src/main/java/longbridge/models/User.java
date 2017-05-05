@@ -16,7 +16,6 @@ public class User extends AbstractEntity{
     private String lastName;
     private String email;
     private String password;
-    private boolean enabled;
     private String status;
     private Date dateCreated;
     private Date expiryDate;
@@ -42,13 +41,6 @@ public class User extends AbstractEntity{
 //    private Collection<UserGroup> groups;
 
 
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
 
     public String getUserName() {
         return userName;

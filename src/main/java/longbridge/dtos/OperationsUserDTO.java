@@ -32,7 +32,6 @@ public class OperationsUserDTO {
     private String email;
     private String password;
     private String status;
-    private boolean enabled;
     private Date expiryDate;
     private Date lockedUntilDate;
     private String lastLogin;
@@ -65,13 +64,6 @@ public class OperationsUserDTO {
         this.version = version;
     }
 
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
 
     public String getLastLogin() {
         return lastLogin;

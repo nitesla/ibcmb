@@ -140,7 +140,9 @@
 </div>
 
 
+
 <script th:src="@{~/bank/vendors/datatables.net/js/jquery.dataTables.js}"></script>
+<script th:src="@{~/bank/js/dataTables.bootstrap.js}"></script>
 <script th:src="@{~/bank/js/dataTables.select.js}"></script>
 <script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
 
@@ -152,7 +154,7 @@
             select:true,
             responsive: true,
             "lengthMenu" : [ [ 5, 10, 20],	[ 5, 10, 20 ] ],
-            "pagingType" : "full_numbers",
+            "pagingType" : "simple_numbers",
             "searching": false,
             "paging": true,
             "serverSide" : true,
@@ -163,7 +165,7 @@
                 { "data": "firstName" },
                 { "data": "lastName" },
                 { "data": "role" },
-                { "data": "enabled" },
+                { "data": "status" },
                 { "data": "lastLogin" }
             ] ,
             "columnDefs" : [ {
@@ -171,10 +173,13 @@
                 "data" : "enabled",
                 "render" : function(data, type,full, meta) {
                     if (type === 'display') {
-                        if (data == true) {
+                        if (data == "ACTIVE") {
                             return "<i class='fa fa-check' style='color:green'></i>";
-                        } else if (data == false) {
+                        } else if (data == "INACTIVE") {
                             return "<i class='fa fa-times' style='color:red'></i>";
+                        }
+                        else if (data == "LOCKED") {
+                            return "<i class='fa fa-lock' style='color:red'></i>";
                         }
                     }
                     return data;

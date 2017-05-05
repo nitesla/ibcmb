@@ -18,7 +18,6 @@ public class CorporateDTO {
     private String corporateType;
     private String customerId;
     private String companyName;
-    private boolean enabled;
     private String email;
     private String address;
     private Date dateCreated;
@@ -56,13 +55,6 @@ public class CorporateDTO {
         return corporateType;
     }
 
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
 
     public void setCorporateType(String corporateType) {
         this.corporateType = corporateType;

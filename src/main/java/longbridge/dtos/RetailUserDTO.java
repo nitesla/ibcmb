@@ -24,7 +24,6 @@ public class RetailUserDTO {
     private String email;
     private Date birthDate;
     private String password;
-    private boolean enabled;
     private String status;
     private String bvn;
     private Date dateCreated;
@@ -77,9 +76,6 @@ public class RetailUserDTO {
         this.version = version;
     }
 
-    public boolean isEnabled() {
-        return enabled;
-    }
 
     public String getLastLogin() {
         return lastLogin;
@@ -89,9 +85,6 @@ public class RetailUserDTO {
         this.lastLogin = lastLogin;
     }
 
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
 
     public String getFirstName() {
         return firstName;
