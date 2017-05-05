@@ -172,14 +172,16 @@
                 "targets" : 4,
                 "data" : "enabled",
                 "render" : function(data, type,full, meta) {
-                    if (type === 'display') {
+                	if (type === 'display') {
                         if (data == "ACTIVE") {
-                            return "<i class='fa fa-check' style='color:green'></i>";
+                            return "<i class='fa fa-check dt-body-center' style='color:green;display:block; text-align:center; margin:0 auto;'></i>";
                         } else if (data == "INACTIVE") {
-                            return "<i class='fa fa-times' style='color:red'></i>";
+                            return "<i class='fa fa-ban  dt-body-center' style='color:red;display:block; text-align:center; margin:0 auto;'></i>";
                         }
                         else if (data == "LOCKED") {
-                            return "<i class='fa fa-lock' style='color:red'></i>";
+                            return "<i class='fa fa-lock  dt-body-center' style='color:red;display:block; text-align:center; margin:0 auto;'></i>";
+                        }else {
+                            return "<i class='fa fa-question  dt-body-center' style='color:red;display:block; text-align:center; margin:0 auto;'></i>";
                         }
                     }
                     return data;
