@@ -101,12 +101,14 @@
 
                                                     </div>
                                             </fieldset>
-</div>
-                                            <div class="panel-footer text-right">
-                                            <button class="btn btn-white" type="reset" id="cancel">Cancel</button>
-                                            <button class="btn btn-primary" id="btn-save" type="submit">Submit</button>
+                                              <div class="form-group">
+                                              <p/>
+                                            <div class="col-sm-4">
+                                                <button class="btn btn-white" type="reset" id="cancel">Cancel</button>
+                                                <button class="btn btn-primary" id="btn-save" type="submit">Submit</button>
                                             </div>
-
+                                        </div>
+</div>
                                </div>
                                     </form>
                             </div>
@@ -146,7 +148,8 @@
 
 
     document.getElementById("cancel").onclick = function () {
-        location.href = "/admin/roles";}
+        location.href = "/admin/roles";
+        }
 </script>
 
 </body>

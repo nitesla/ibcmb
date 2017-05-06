@@ -91,14 +91,7 @@
 
                                         </div>
 
-
-
-
-
                                         <div class="form-group">
-
-
-
                                         </div>
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">Role</label>
@@ -108,8 +101,6 @@
                                                     <option value="">Select..</option>
                                                     <option th:each="role : ${roles.?[#strings.equalsIgnoreCase(userType, 'admin')]}" th:value="${role.id}" th:text="${role.name}" th:selected="${role.id==adminUser.roleId}"></option>
                                                 </select>
-
-
                                             </div>
                                         </div>
 
