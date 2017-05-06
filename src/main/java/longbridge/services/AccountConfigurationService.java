@@ -46,7 +46,7 @@ public interface AccountConfigurationService {
      * Removes removes an account from the list of restricted accounts
      * @param id the id
      */
-    void removeAccountRestriction(Long id);
+    void deleteAccountRestriction(Long id);
 
     /**
      * Adds an account to a list of restricted accounts
@@ -65,7 +65,7 @@ public interface AccountConfigurationService {
      * Removes removes an account class from the list of restricted account classes
      * @param id the id
      */
-    void removeAccountClassRestriction(Long id);
+    void deleteAccountClassRestriction(Long id);
 
 
     /**

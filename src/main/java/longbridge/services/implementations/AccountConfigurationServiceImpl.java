@@ -84,7 +84,7 @@ public class AccountConfigurationServiceImpl implements AccountConfigurationServ
     }
 
     @Override
-    public void removeAccountRestriction(Long id) {
+    public void deleteAccountRestriction(Long id) {
         accountRestrictionRepo.delete(id);
 
     }
@@ -107,7 +107,7 @@ public class AccountConfigurationServiceImpl implements AccountConfigurationServ
 
     @Override
 
-    public void removeAccountClassRestriction(Long id) {
+    public void deleteAccountClassRestriction(Long id) {
         accountClassRestrictionRepo.delete(id);
     }
 

@@ -191,6 +191,9 @@
     $("a.bt-link-act").on("click", function(e) {
         e.preventDefault();
         var link = $(e.currentTarget);
+        if($(link).attr("disabled")){
+            return;
+        }
         var dt = $('#retail').DataTable();
         var id = $(dt.row({
             selected: true
@@ -201,6 +204,7 @@
         window.location.assign(ooo);
         //goto url
     });
+
 
     /*]]>*/
 </script>

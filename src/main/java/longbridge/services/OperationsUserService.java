@@ -1,5 +1,6 @@
 package longbridge.services;
 
+import longbridge.models.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -9,6 +10,8 @@ import longbridge.models.OperationsUser;
 /**
  * The {@code OperationsUserService} provides the methods for managing operations users
  * @see OperationsUserDTO
+ * @see OperationsUser
+ * @author Fortunatus Ekenachi
  * Created on 3/29/2017.
  */
 public interface OperationsUserService{
@@ -20,7 +23,11 @@ public interface OperationsUserService{
      */
     OperationsUserDTO getUser(Long id);
 
-
+    /**Checks that the provided username is valid for use as any username already
+     * existing will not be valid for another user
+     * @param username the username
+     * @return true if the username does not exist
+     */
     boolean isValidUsername(String username);
 
 
@@ -31,7 +38,12 @@ public interface OperationsUserService{
      * @return list of user
      */
     Iterable<OperationsUserDTO> getUsers();
-    
+
+    /**
+     * Returns a paginated list of users
+     * @param pageDetails the page details
+     * @return list of users
+     */
     Page<OperationsUserDTO> getUsers(Pageable pageDetails);
 
 
@@ -46,7 +58,7 @@ public interface OperationsUserService{
 
     /**
      * Creates an Operations User
-     * @param user the new OperationsUserDTO
+     * @param user the new OperationsUser
      */
     boolean addUser(OperationsUserDTO user);
 
@@ -56,8 +68,12 @@ public interface OperationsUserService{
      */
     boolean updateUser(OperationsUserDTO user);
 
-
-
+    /**
+     * Changes the activation status of the user
+     * The user can have different status such as ACTIVE, INACTIVE and LOCK
+     * On creation, the user has a null status until activated by the Admin
+     * @param userId the user's Id
+     */
     void changeActivationStatus(Long userId);
 
     /**
@@ -76,12 +92,16 @@ public interface OperationsUserService{
     /**
      * Replaces the old password with the new password
      * Also, the password must meet the organization's password policy if any one has been defined
-     * It is important that the password is hashed before storing it in the database.     * @param oldPassword the oldPassword
+     * It is important that the password is hashed before storing it in the database.
+     * * @param oldPassword the oldPassword
      * @param oldPassword the old password
      * @param newPassword the new Password
      */
     boolean changePassword(OperationsUserDTO User, String oldPassword, String newPassword);
-     
-        
-    void generateAndSendPassword();
+
+    /**
+     * Generates and sends a password to the specified user
+      * @param user the use that will receive the new pasword
+     */
+    void generateAndSendPassword(OperationsUser user);
 }

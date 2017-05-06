@@ -26,11 +26,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MailSessionDefinition;
+import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+
 import longbridge.dtos.AdminUserDTO;
 import longbridge.models.AdminUser;
 import longbridge.models.Role;
@@ -43,6 +45,7 @@ import longbridge.services.SecurityService;
 
 /**
  * Created by SYLVESTER on 3/30/2017.
+ * Modified by Fortune
  */
 @Service
 public class AdminUserServiceImpl implements AdminUserService {
@@ -72,8 +75,8 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Override
     public boolean isValidUsername(String username) {
         boolean isValid = false;
-        AdminUser  adminUser = adminUserRepo.findFirstByUserName(username);
-        if(adminUser==null){
+        AdminUser adminUser = adminUserRepo.findFirstByUserName(username);
+        if (adminUser == null) {
             isValid = true;
         }
         return isValid;
@@ -96,7 +99,7 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     @Override
     public AdminUserDTO getUserByName(String name) {
-        AdminUser adminUser =this.adminUserRepo.findFirstByUserName(name) ;
+        AdminUser adminUser = this.adminUserRepo.findFirstByUserName(name);
         return convertEntityToDTO(adminUser);
     }
 
@@ -108,18 +111,14 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     @Override
     public Iterable<AdminUserDTO> getUsers() {
-        Iterable<AdminUser> adminUsers =adminUserRepo.findAll();
+        Iterable<AdminUser> adminUsers = adminUserRepo.findAll();
         return convertEntitiesToDTOs(adminUsers);
     }
 
-//    @Override
-//    public Iterable<AdminUser> getAdminUsers() {
-//
-//        return this.adminUserRepo.findAll();
-//     }
 
 
     @Override
+    @Transactional
 //    @Verifiable(operation="Add Admin",description="Adding a new User")
     public boolean addUser(AdminUserDTO user) {
         boolean ok = false;
@@ -130,7 +129,6 @@ public class AdminUserServiceImpl implements AdminUserService {
             adminUser.setUserName(user.getUserName());
             adminUser.setEmail(user.getEmail());
             adminUser.setDateCreated(new Date());
-            adminUser.setStatus("ACTIVE");
             String password = passwordService.generatePassword();
             adminUser.setPassword(passwordEncoder.encode(password));
             Role role = new Role();
@@ -140,26 +138,30 @@ public class AdminUserServiceImpl implements AdminUserService {
             calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) + 2);
             adminUser.setExpiryDate(calendar.getTime());
             this.adminUserRepo.save(adminUser);
-            mailService.send(user.getEmail(),String.format("Your username is %s and password is %s", user.getUserName(),password));
+            mailService.send(user.getEmail(), String.format("Your username is %s and password is %s", user.getUserName(), password));
+            ok = true;
             logger.info("New admin user: {} created", adminUser.getUserName());
-            ok=true;
+
         } else {
-            logger.error("User cannot be null");
+            logger.error("Aborted Admin user creation. NULL user supplied");
         }
         return ok;
     }
 
-    public void changeActivationStatus(Long userId){
+    @Override
+    @Transactional
+    public void changeActivationStatus(Long userId) {
         AdminUser user = adminUserRepo.findOne(userId);
         String oldStatus = user.getStatus();
-        String newStatus = "ACTIVE".equals(oldStatus)?"INACTIVE":"ACTIVE";
+        String newStatus = "ACTIVE".equals(oldStatus) ? "INACTIVE" : "ACTIVE";
         user.setStatus(newStatus);
         adminUserRepo.save(user);
-        if("INACTIVE".equals(oldStatus) && "ACTIVE".equals(newStatus)){
+        if ("INACTIVE".equals(oldStatus) && "ACTIVE".equals(newStatus)) {
             String password = passwordService.generatePassword();
             user.setPassword(passwordEncoder.encode(password));
-            mailService.send(user.getEmail(),String.format("Your new password to Admin console is %s and your current username is %s",password,user.getUserName()));
+            mailService.send(user.getEmail(), String.format("Your new password to Admin console is %s and your current username is %s", password, user.getUserName()));
         }
+        logger.info("Admin user {} status changed from {} to {}", user.getUserName(), oldStatus, newStatus);
 
 
     }
@@ -168,9 +170,11 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Override
     public void deleteUser(Long id) {
         adminUserRepo.delete(id);
+        logger.warn("Admin user with Id {} deleted",id);
     }
 
     @Override
+    @Transactional
 //    @Verifiable(operation="Updating an Existing User")
     public boolean updateUser(AdminUserDTO user) {
         boolean ok = false;
@@ -185,15 +189,17 @@ public class AdminUserServiceImpl implements AdminUserService {
             role.setId(Long.parseLong(user.getRoleId()));
             adminUser.setRole(role);
             this.adminUserRepo.save(adminUser);
+            ok = true;
             logger.info("Admin user {} updated", adminUser.getUserName());
-            ok=true;
+
         } else {
-            logger.error("Null user provided");
+            logger.error("Aborted Admin user update. NULL user supplied");
         }
         return ok;
     }
 
     @Override
+    @Transactional
     public boolean resetPassword(Long userId) {
         boolean ok = false;
         AdminUser user = getUser(userId);
@@ -203,35 +209,33 @@ public class AdminUserServiceImpl implements AdminUserService {
             user.setPassword(passwordEncoder.encode(newPassword));
             user.setExpiryDate(new Date());
             this.adminUserRepo.save(user);
-            mailService.send(user.getEmail(),"Your new password to Internet banking is "+newPassword);
-            logger.info("PASSWORD RESET SUCCESSFULLY");
-            ok=true;
+            mailService.send(user.getEmail(), "Your new password to Internet banking is " + newPassword);
+            ok = true;
+            logger.info("Admin user {} password reset successfully", user.getUserName());
+
         }
         return ok;
     }
 
     @Override
+    @Transactional
     public boolean changePassword(AdminUserDTO user, String oldPassword, String newPassword) {
-        boolean ok=false;
+        boolean ok = false;
 
         try {
 
-
             if (this.passwordEncoder.matches(oldPassword, user.getPassword())) {
                 AdminUser adminUser = adminUserRepo.findOne(user.getId());
-//                    adminUser.setRole(user.getRole());
                 adminUser.setPassword(this.passwordEncoder.encode(newPassword));
                 this.adminUserRepo.save(adminUser);
-                logger.info("USER {}'s password has been updated", user.getId());
                 ok = true;
-            } else {
-                logger.error("INVALID CURRENT PASSWORD FOR USER {}", user.getId());
+                logger.info("User {}'s password has been updated", user.getId());
 
+            } else {
+                logger.error("Could not change password for admin user {} due to incorrect old password", user.getUserName());
             }
-        }
-        catch (Exception e){
-            e.printStackTrace();
-            logger.error("ERROR OCCURRED {}", e.getMessage());
+        } catch (Exception e) {
+            logger.error("Aborted password change{}", e.toString());
         }
         return ok;
     }
@@ -239,18 +243,7 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     @Override
     public boolean generateAndSendPassword(AdminUser user) {
-        boolean ok = false;
-
-        try {
-            String newPassword = securityService.generatePassword();
-            sendPassword(user);
-            logger.info("PASSWORD GENERATED AND SENT");
-        } catch (Exception e) {
-            logger.error("ERROR OCCURRED {}", e.getMessage());
-        }
-
-
-        return ok;
+        return false;// TODO
     }
 
 
@@ -258,28 +251,11 @@ public class AdminUserServiceImpl implements AdminUserService {
         //TODO use an smtp server to send new password to user via mail
         return false;
     }
-//
-//    @Override
-//    public boolean updateUser(AdminUserDTO user) {
-//        boolean result = false;
-//        try {
-//            if (user != null) {
-//                AdminUser adminUser = convertDTOToEntity(user);
-//                this.adminUserRepo.save(adminUser);
-//                logger.info("User Successfully Updated");
-//            }
-//        } catch (Exception e) {
-//            logger.info("Could not update admin user",e);
-//
-//        }
-//        return result;
-//    }
 
 
-
-    private List<AdminUserDTO> convertEntitiesToDTOs(Iterable<AdminUser> adminUsers){
+    private List<AdminUserDTO> convertEntitiesToDTOs(Iterable<AdminUser> adminUsers) {
         List<AdminUserDTO> adminUserDTOList = new ArrayList<>();
-        for(AdminUser adminUser: adminUsers){
+        for (AdminUser adminUser : adminUsers) {
             AdminUserDTO userDTO = convertEntityToDTO(adminUser);
             userDTO.setRole(adminUser.getRole().getName());
             adminUserDTOList.add(userDTO);
@@ -287,29 +263,29 @@ public class AdminUserServiceImpl implements AdminUserService {
         return adminUserDTOList;
     }
 
-    private AdminUserDTO convertEntityToDTO(AdminUser adminUser){
+    private AdminUserDTO convertEntityToDTO(AdminUser adminUser) {
         AdminUserDTO adminUserDTO = new AdminUserDTO();
         adminUserDTO.setFirstName(adminUser.getFirstName());
         adminUserDTO.setLastName(adminUser.getLastName());
         adminUserDTO.setRoleId(adminUser.getRole().getId().toString());
-        return  modelMapper.map(adminUser,AdminUserDTO.class);
+        return modelMapper.map(adminUser, AdminUserDTO.class);
     }
 
-    private AdminUser convertDTOToEntity(AdminUserDTO adminUserDTO){
-        return  modelMapper.map(adminUserDTO,AdminUser.class);
+    private AdminUser convertDTOToEntity(AdminUserDTO adminUserDTO) {
+        return modelMapper.map(adminUserDTO, AdminUser.class);
     }
 
-	@Override
-	public Page<AdminUserDTO> getUsers(Pageable pageDetails) {
+    @Override
+    public Page<AdminUserDTO> getUsers(Pageable pageDetails) {
         Page<AdminUser> page = adminUserRepo.findAll(pageDetails);
         List<AdminUserDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
         // return  new PageImpl<ServiceReqConfigDTO>(dtOs,pageDetails,page.getTotalElements());
-        Page<AdminUserDTO> pageImpl = new PageImpl<AdminUserDTO>(dtOs,pageDetails,t);
+        Page<AdminUserDTO> pageImpl = new PageImpl<AdminUserDTO>(dtOs, pageDetails, t);
         return pageImpl;
-	}
+    }
 
-  
+
 }
 
 
