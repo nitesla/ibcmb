@@ -83,11 +83,6 @@ public class RetailControllerAdvice {
             if (user != null) {
                 List<String> accountList = new ArrayList<>();
 
-                integrationService.fetchAccounts(user.getCustomerId())
-                        .stream()
-                        .forEach(i -> accountList.add(i.getAccountNumber()));
-                  model.addAttribute("accounts", accountList);
-
 
 
 
