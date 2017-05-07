@@ -163,6 +163,9 @@
         $("a.bt-link-act").on("click", function(e) {
             e.preventDefault();
             var link = $(e.currentTarget);
+            if($(link).attr("disabled")){
+                return;
+            }
             var dt = $('#request').DataTable();
             var id = $(dt.row({
                 selected: true

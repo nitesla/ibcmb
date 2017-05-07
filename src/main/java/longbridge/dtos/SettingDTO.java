@@ -1,6 +1,7 @@
 package longbridge.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.hibernate.validator.constraints.NotEmpty;
 
 /**
  * Created by Wunmi Sowunmi on 19/04/2017.
@@ -10,8 +11,11 @@ public class SettingDTO {
 	@JsonProperty("DT_RowId")
 	private Long id;
 	private int version;
+	@NotEmpty(message = "name")
 	private String name;
+	@NotEmpty(message = "description")
 	private String description;
+	@NotEmpty(message = "value")
 	private String value;
 	private String type;
 	private boolean enabled;

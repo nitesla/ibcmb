@@ -1,17 +1,11 @@
 package longbridge.services.implementations;
 
-import longbridge.dtos.AccountClassRestrictionDTO;
+import longbridge.api.AccountInfo;
 import longbridge.dtos.AccountDTO;
-import longbridge.dtos.AccountRestrictionDTO;
 import longbridge.models.Account;
-import longbridge.models.AccountClassRestriction;
-import longbridge.models.AccountRestriction;
-import longbridge.repositories.AccountClassRestrictionRepo;
 import longbridge.repositories.AccountRepo;
-import longbridge.repositories.AccountRestrictionRepo;
 import longbridge.services.AccountConfigurationService;
 import longbridge.services.AccountService;
-import longbridge.services.CodeService;
 import longbridge.services.IntegrationService;
 import longbridge.utils.AccountStatement;
 import org.modelmapper.ModelMapper;
@@ -19,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -51,6 +44,25 @@ public class AccountServiceImpl implements AccountService {
         this.integrationService = integrationService;
         this.modelMapper = modelMapper;
         this.accountConfigService = accountConfigService;
+    }
+
+    @Override
+    public boolean AddFIAccount(String customerId, AccountInfo acct) {
+        if (!customerId.equals(acct.getCustomerId())) {
+            return false;
+        }
+        Account account = new Account();
+        account.setPrimaryFlag("N");
+        account.setHiddenFlag("N");
+        account.setCustomerId(acct.getCustomerId());
+        account.setAccountName(acct.getAccountName());
+        account.setAccountNumber(acct.getAccountNumber());
+        account.setSolId(acct.getSolId());
+        account.setSchemeCode(acct.getSchemeCode());
+        account.setSchemeType(acct.getSchemeType());
+        account.setAccountId(acct.getAccountId());
+        accountRepo.save(account);
+        return true;
     }
 
     @Override
@@ -219,6 +231,20 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    public List<Account> getAccountsForDebit(String customerId) {
+        List<Account> accountsForDebit = new ArrayList<Account>();
+        Iterable<Account> accounts = this.getCustomerAccounts(customerId);
+        for (Account account : accounts) {
+            if (!accountConfigService.isAccountHidden(account.getAccountNumber())
+                    && (!accountConfigService.isAccountRestrictedForView(account.getAccountNumber())) && !accountConfigService.isAccountRestrictedForDebit(account.getAccountNumber()) && (!accountConfigService.isAccountClassRestrictedForView(account.getSchemeCode()) && (!accountConfigService.isAccountClassRestrictedForDebit(account.getSchemeCode())))) {
+                accountsForDebit.add(account);
+            }
+
+        }
+        return accountsForDebit;
+    }
+
+    @Override
     public Iterable<Account> getAccountsForDebitAndCredit(String customerId) {
         List<Account> accountsForDebitAndCredit = new ArrayList<Account>();
         Iterable<Account> accounts = this.getCustomerAccounts(customerId);
@@ -236,6 +262,20 @@ public class AccountServiceImpl implements AccountService {
     public Iterable<Account> getAccountsForCredit(String customerId, String currencyCode) {
         List<Account> accountsForCredit = new ArrayList<Account>();
         List<Account> accounts = this.getCustomerAccounts(customerId, currencyCode);
+        for (Account account : accounts) {
+            if (!accountConfigService.isAccountHidden(account.getAccountNumber())
+                    && (!accountConfigService.isAccountRestrictedForView(account.getAccountNumber())) && !accountConfigService.isAccountRestrictedForCredit(account.getAccountNumber()) && (!accountConfigService.isAccountClassRestrictedForView(account.getSchemeCode()) && (!accountConfigService.isAccountClassRestrictedForCredit(account.getSchemeCode())))) {
+                accountsForCredit.add(account);
+            }
+
+        }
+        return accountsForCredit;
+    }
+
+    @Override
+    public Iterable<Account> getAccountsForCredit(String customerId) {
+        List<Account> accountsForCredit = new ArrayList<Account>();
+        Iterable<Account> accounts = this.getCustomerAccounts(customerId);
         for (Account account : accounts) {
             if (!accountConfigService.isAccountHidden(account.getAccountNumber())
                     && (!accountConfigService.isAccountRestrictedForView(account.getAccountNumber())) && !accountConfigService.isAccountRestrictedForCredit(account.getAccountNumber()) && (!accountConfigService.isAccountClassRestrictedForView(account.getSchemeCode()) && (!accountConfigService.isAccountClassRestrictedForCredit(account.getSchemeCode())))) {

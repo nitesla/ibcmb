@@ -20,7 +20,9 @@
                     <div class="col-md-6 col-sm-6">
                         <div th:if="${message != null}" class="alert alert-info" th:text="${message}">message</div>
                         <div th:if="${error != null}" class="alert alert-info" th:text="${error}">message</div>
-                        <form method="post" th:action="@{/retail/transfer/own/summary}" th:object="${transferRequest}">
+
+                        <form method="post" th:action="@{/retail/transfer/ownaccount/summary}" th:object="${transferRequest}">
+
 
 
                             <div class="form-group">
@@ -58,12 +60,11 @@
 
                             <button class="btn btn-primary" type="submit">Submit</button>
                         </form>
+
                     </div>
                 </div>
             </div>
-            <div class="col-md-3 sidebar">
-                <div class="sidebar-bg">hfdhgk</div>
-                <div class="sidebar-bg">jgjgjk</div>
+            <div th:replace="cust_layout :: sidebar" class="col-md-3 sidebar">
             </div>
         </div>
     </div>
@@ -88,7 +89,7 @@
 
     function getDestAccounts(acct) {
 
-        $.get("/dest/"+acct+"/accounts", function( data ) {
+        $.get("/retail/transfer/dest/"+acct+"/accounts", function( data ) {
             $("#destination").empty();
             data.forEach(function(item, i) {
                 $("#destination").get(0).options[0] = new Option("Select Account", "-1");
@@ -102,7 +103,7 @@
 
     function getSourceCurrency(acct) {
 
-        $.get("/" + acct + "/currency", function (data) {
+        $.get("/retail/transfer" + acct + "/currency", function (data) {
             document.getElementById("scurency").innerHTML = data;
 
         });

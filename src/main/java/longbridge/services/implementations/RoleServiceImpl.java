@@ -1,12 +1,11 @@
 package longbridge.services.implementations;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-
+import longbridge.dtos.PermissionDTO;
+import longbridge.dtos.RoleDTO;
+import longbridge.models.*;
+import longbridge.repositories.*;
+import longbridge.services.RoleService;
+import longbridge.services.VerificationService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,32 +15,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import longbridge.dtos.CodeDTO;
-import longbridge.dtos.PermissionDTO;
-import longbridge.dtos.RoleDTO;
-import longbridge.models.AdminUser;
-import longbridge.models.Code;
-import longbridge.models.CorporateUser;
-import longbridge.models.OperationCode;
-import longbridge.models.OperationsUser;
-import longbridge.models.Permission;
-import longbridge.models.RetailUser;
-import longbridge.models.Role;
-import longbridge.models.User;
-import longbridge.models.UserType;
-import longbridge.models.Verification;
-import longbridge.repositories.AdminUserRepo;
-import longbridge.repositories.CorporateRepo;
-import longbridge.repositories.CorporateUserRepo;
-import longbridge.repositories.OperationsUserRepo;
-import longbridge.repositories.PermissionRepo;
-import longbridge.repositories.RetailUserRepo;
-import longbridge.repositories.RoleRepo;
-import longbridge.services.RoleService;
-import longbridge.services.VerificationService;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by LB-PRJ-020 on 4/11/2017.
@@ -142,14 +117,17 @@ public class RoleServiceImpl implements RoleService {
 		roleRepo.save(role);
 	}
 
-	public void addRole(Role roleDTO) {
-		roleRepo.save(roleDTO);
-	}
 
 	@Override
 	public RoleDTO getRole(Long id) {
 		Role role = roleRepo.findOne(id);
 		return convertEntityToDTO(role);
+	}
+
+	@Override
+	public Role getTheRole(Long id) {
+		Role role = roleRepo.findOne(id);
+		return role;
 	}
 
 	@Override

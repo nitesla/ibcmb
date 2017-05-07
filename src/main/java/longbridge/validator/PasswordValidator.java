@@ -100,13 +100,13 @@ public class PasswordValidator {
         boolean noOK = password.length() >= minLength && password.length() <= maxLength;
 
         if (!digitOK) {
-            String message = String.format("Your password must include, %d digits",
+            String message = String.format("Your password must include at least %d digits",
                     numOfDigits);
             errorMessage.append(message);
             errorMessage.append('\n');
         } else if (!specOK) {
             String msg = String.format(
-                    "Your password must include, %d special characters from %s", numOfDigits,
+                    "Your password must include at least %d special characters from %s", noOfSpecial,
                     specialCharacters);
             errorMessage.append(msg);
             errorMessage.append('\n');

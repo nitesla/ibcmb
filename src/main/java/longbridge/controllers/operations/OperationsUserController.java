@@ -134,7 +134,7 @@ public class OperationsUserController {
         operationsUserService.changePassword(user, changePassword.getOldPassword(), changePassword.getNewPassword());
 
         redirectAttributes.addFlashAttribute("message","Password changed successfully");
-        return "redirect:/ops/logout";
+        return "redirect:/ops/dashboard";
 
     }
 

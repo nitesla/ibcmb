@@ -92,7 +92,7 @@ public class TransferServiceImpl implements TransferService {
     @Override
     public boolean validateBalance(TransferRequestDTO transferRequest) {
        boolean ok =false;
-        Map<String, BigDecimal> balanceDetails=integrationService.getBalance(transferRequest.getCustomerAccountNumber());
+        Map<String, BigDecimal> balanceDetails= integrationService.getBalance(transferRequest.getCustomerAccountNumber());
         BigDecimal balance = balanceDetails.get("AvailableBalance");
         if(balance!=null){
             if(balance.compareTo(transferRequest.getAmount())==0  ||(balance.compareTo(transferRequest.getAmount())==1)){

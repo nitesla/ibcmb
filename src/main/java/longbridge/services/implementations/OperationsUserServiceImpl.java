@@ -1,10 +1,9 @@
 package longbridge.services.implementations;
 
-import longbridge.dtos.AdminUserDTO;
 import longbridge.dtos.OperationsUserDTO;
-import longbridge.models.AdminUser;
 import longbridge.models.OperationsUser;
 import longbridge.models.Role;
+import longbridge.models.User;
 import longbridge.repositories.OperationsUserRepo;
 import longbridge.services.MailService;
 import longbridge.services.OperationsUserService;
@@ -19,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -26,6 +26,7 @@ import java.util.List;
 
 /**
  * Created by ayoade_farooq@yahoo.com on 3/29/2017.
+ * Modified by Fortune
  */
 @Service
 public class OperationsUserServiceImpl implements OperationsUserService {
@@ -82,18 +83,20 @@ public class OperationsUserServiceImpl implements OperationsUserService {
 
     }
 
-    public void changeActivationStatus(Long userId){
+    @Override
+    @Transactional
+    public void changeActivationStatus(Long userId) {
         OperationsUser user = operationsUserRepo.findOne(userId);
-        boolean newStatus = user.isEnabled()?false:true;
-        user.setEnabled(newStatus);
+        String oldStatus = user.getStatus();
+        String newStatus = "ACTIVE".equals(oldStatus) ? "INACTIVE" : "ACTIVE";
+        user.setStatus(newStatus);
         operationsUserRepo.save(user);
-        if(newStatus){
+        if ("INACTIVE".equals(oldStatus) && "ACTIVE".equals(newStatus)) {
             String password = passwordService.generatePassword();
             user.setPassword(passwordEncoder.encode(password));
-            mailService.send(user.getEmail(),String.format("Your new password to Admin console is %s and your current username is %s",password,user.getUserName()));
+            mailService.send(user.getEmail(), String.format("Your new password to Operations console is %s and your current username is %s", password, user.getUserName()));
         }
-
-
+        logger.info("Operations user {} status changed from {} to {}", user.getUserName(), oldStatus, newStatus);
     }
 
 
@@ -104,6 +107,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     }
 
     @Override
+    @Transactional
     public boolean addUser(OperationsUserDTO user) {
         boolean ok = false;
         if (user != null) {
@@ -113,7 +117,6 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             opsUser.setUserName(user.getUserName());
             opsUser.setEmail(user.getEmail());
             opsUser.setDateCreated(new Date());
-            opsUser.setStatus("ACTIVE");
             Calendar calendar = Calendar.getInstance();
             calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) + 2);
             opsUser.setExpiryDate(calendar.getTime());
@@ -124,39 +127,50 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             opsUser.setPassword(passwordEncoder.encode(password));
             this.operationsUserRepo.save(opsUser);
             mailService.send(user.getEmail(), String.format("Your username is %s and password is %s", user.getUserName(), password));
-            logger.info("New operations user: {} created", opsUser.getUserName());
             ok = true;
+            logger.info("New operations user: {} created", opsUser.getUserName());
+
         } else {
-            logger.error("USER NOT FOUND");
+            logger.error("Aborted Operations user creation. NULL user supplied");
         }
         return ok;
 
     }
 
     @Override
+    @Transactional
     public boolean updateUser(OperationsUserDTO userDTO) {
         boolean ok = false;
-        OperationsUser operationsUser = new OperationsUser();
-        operationsUser.setId(userDTO.getId());
-        operationsUser.setVersion(userDTO.getVersion());
-        operationsUser.setFirstName(userDTO.getFirstName());
-        operationsUser.setLastName(userDTO.getLastName());
-        operationsUser.setUserName(userDTO.getUserName());
-        Role role = new Role();
-        role.setId(Long.parseLong(userDTO.getRoleId()));
-        operationsUser.setRole(role);
-        operationsUserRepo.save(operationsUser);
-        ok = true;
+        if (userDTO != null) {
+            OperationsUser operationsUser = new OperationsUser();
+            operationsUser.setId(userDTO.getId());
+            operationsUser.setVersion(userDTO.getVersion());
+            operationsUser.setFirstName(userDTO.getFirstName());
+            operationsUser.setLastName(userDTO.getLastName());
+            operationsUser.setUserName(userDTO.getUserName());
+            Role role = new Role();
+            role.setId(Long.parseLong(userDTO.getRoleId()));
+            operationsUser.setRole(role);
+            operationsUserRepo.save(operationsUser);
+            ok = true;
+            logger.info("Operations user {} updated", operationsUser.getUserName());
 
+        } else {
+            logger.error("Aborted Operations user update. NULL user supplied");
+        }
         return ok;
     }
+
 
     @Override
     public void deleteUser(Long userId) {
         operationsUserRepo.delete(userId);
+        logger.warn("Operations user with Id {} deleted", userId);
+
     }
 
     @Override
+    @Transactional
     public boolean resetPassword(Long id) {
         boolean ok = false;
         OperationsUser user = operationsUserRepo.findOne(id);
@@ -166,14 +180,16 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             user.setPassword(passwordEncoder.encode(newPassword));
             user.setExpiryDate(new Date());
             operationsUserRepo.save(user);
-            mailService.send(user.getEmail(),"Your new password to Internet banking is "+newPassword);
-            logger.info("PASSWORD RESET SUCCESSFULLY");
-            ok=true;
+            mailService.send(user.getEmail(), "Your new password to Internet Banking is " + newPassword);
+            ok = true;
+            logger.info("Operations user {} password reset successfully", user.getUserName());
+
         }
         return ok;
     }
 
     @Override
+    @Transactional
     public boolean changePassword(OperationsUserDTO user, String oldPassword, String newPassword) {
         boolean ok = false;
 
@@ -185,18 +201,16 @@ public class OperationsUserServiceImpl implements OperationsUserService {
                 logger.info("User {}'s password has been updated", user.getId());
                 ok = true;
             } else {
-                logger.error("INVALID CURRENT PASSWORD FOR USER {}", user.getId());
-
+                logger.error("Could not change password for operations user {} due to incorrect old password", user.getUserName());
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            logger.error("ERROR OCCURRED {}", e.getMessage());
+            logger.error("Aborted password change{}", e.toString());
         }
         return ok;
     }
 
     @Override
-    public void generateAndSendPassword() {
+    public void generateAndSendPassword(OperationsUser user) {
         //TODO
 
     }
@@ -224,7 +238,6 @@ public class OperationsUserServiceImpl implements OperationsUserService {
         Page<OperationsUser> page = operationsUserRepo.findAll(pageDetails);
         List<OperationsUserDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
-        // return  new PageImpl<ServiceReqConfigDTO>(dtOs,pageDetails,page.getTotalElements());
         Page<OperationsUserDTO> pageImpl = new PageImpl<OperationsUserDTO>(dtOs, pageDetails, t);
         return pageImpl;
     }

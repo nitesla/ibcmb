@@ -146,7 +146,7 @@ public class AdmRoleController {
         }
         roleDTO.setPermissions(permissionList);
         roleService.addRole(roleDTO);
-        redirectAttributes.addFlashAttribute("success", "Role added successfully");
+        redirectAttributes.addFlashAttribute("message", "Role added successfully");
         return "redirect:/admin/roles";
     }
 
@@ -166,14 +166,14 @@ public class AdmRoleController {
          }
          roleDTO.setPermissions(permissionList);
          roleService.updateRole(roleDTO);
-         redirectAttributes.addFlashAttribute("success", "Role updated successfully");
+         redirectAttributes.addFlashAttribute("message", "Role updated successfully");
          return "redirect:/admin/roles";
     }
 
     @GetMapping("/{roleId}/delete")
     public String deleteRole(@PathVariable Long roleId, RedirectAttributes redirectAttributes){
         roleService.deleteRole(roleId);
-        redirectAttributes.addFlashAttribute("success", "Role deleted successfully");
+        redirectAttributes.addFlashAttribute("message", "Role deleted successfully");
         return "redirect:/admin/roles";
     }
 }

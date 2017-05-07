@@ -109,7 +109,7 @@ public class ServiceRequestController {
             logger.error("Could not process the request: {}",e.toString());
         }
         redirectAttributes.addFlashAttribute("message", "Request sent successfully");
-        return "redirect:/retail/requests";
+        return "redirect:/retail/dashboard";
 
     }
 

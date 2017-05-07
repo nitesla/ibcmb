@@ -168,7 +168,6 @@ return false;
 
            result = template.postForObject(uri,params,CustomerDetails.class);
 
-
         }
         catch (Exception e){
             e.printStackTrace();

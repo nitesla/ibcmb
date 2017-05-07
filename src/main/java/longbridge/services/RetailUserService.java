@@ -1,5 +1,6 @@
 package longbridge.services;
 
+import longbridge.api.CustomerDetails;
 import longbridge.dtos.RetailUserDTO;
 import longbridge.forms.AlertPref;
 import longbridge.models.Account;
@@ -44,7 +45,7 @@ public interface RetailUserService {
      * @param user the retail user to be added
      */
 
-    boolean addUser(RetailUserDTO user);
+    boolean addUser(RetailUserDTO user, CustomerDetails details);
 
     /**
      * Deletes a retail user to the system

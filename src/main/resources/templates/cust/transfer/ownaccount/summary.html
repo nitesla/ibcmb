@@ -46,22 +46,31 @@
 
                             </tr>
                         </table>
-                    <div class="form-group">
-                    <form method="post" th:action="@{/retail/transfer/ownaccount/edit}" th:object="${transferRequest}">
-                   <button type="button" class="btn btn-default">Modify</button>
-                    </form>
-                                <form method="post" th:action="@{/retail/transfer/ownaccount}" th:object="${transferRequest}">
-                                <button type="submit" class="btn btn-default">Proceed</button>
-                                </form>
-                                <button type="button" class="btn btn-default">Cancel</button>
-                            </div>
 
-                    <!--</div>-->
-                </div>
+                    <form method="post" th:action="@{/retail/transfer/ownaccount/auth}" th:object="${transferRequest}">
+                        <input type="hidden" th:field="*{customerAccountNumber}"/>
+                             <input type="hidden" th:field="*{beneficiaryAccountNumber}"/>
+                        <input type="hidden" th:field="*{beneficiaryAccountName}"/>
+                             <input type="hidden" th:field="*{amount}"/>
+                        <input type="hidden" th:field="*{remarks}"/>
+
+
+
+
+
+
+                            <div class="form-group">
+                                <button onclick="goBack()" class="btn btn-default">Modify</button>
+                                <button type="submit" class="btn btn-default">Proceed</button>
+                                <a th:href="@{/retail/transfer/ownaccount}" class="btn btn-default">Cancel</a>
+
+                            </div>
+                    </form>
+
+
+
             </div>
-            <div class="col-md-3 sidebar">
-                <div class="sidebar-bg">hfdhgk</div>
-                <div class="sidebar-bg">jgjgjk</div>
+            <div th:replace="cust_layout :: sidebar" class="col-md-3 sidebar">
             </div>
         </div>
     </div>
@@ -71,5 +80,10 @@
 <!-- CONTENT-WRAPPER SECTION END-->
 <footer th:replace="cust_layout ::footer">
 </footer>
+<script>
+    function goBack() {
+        window.history.back();
+    }
+</script>
 </body>
 </html>

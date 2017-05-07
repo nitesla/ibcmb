@@ -38,7 +38,9 @@ public interface RequestService {
      */
     Iterable<ServiceRequestDTO>getRequests(RetailUser user);
     
-    Page<ServiceRequestDTO>getRequests(RetailUser user, Pageable pageDetails);
+    Page<ServiceRequestDTO>getRequests(Pageable pageDetails);
+
+
 
 
 //    public Page<ServiceRequestDTO> getRequests(ServiceRequestDTO request, Pageable pageDetails);

@@ -54,7 +54,7 @@
                                     <li >
                                         <div class="col-lg-4">
                                             <div class="title-action">
-                                                <a id="delete-btn" class="btn btn-danger btn-sm bt-select" href="/ops/accounts/restriction/class/index/remove" disabled="disabled" ><i class="fa fa-trash"></i> Remove</a>
+                                                <a id="delete-btn" class="btn btn-danger btn-sm bt-select" href="/ops/accounts/restriction/class/index/delete" disabled="disabled" ><i class="fa fa-trash"></i> Delete</a>
                                             </div>
                                         </div>
                                     </li>
@@ -177,6 +177,9 @@
     $("a.bt-link-act").on("click", function(e) {
         e.preventDefault();
         var link = $(e.currentTarget);
+        if($(link).attr("disabled")){
+            return;
+        }
         var dt = $('#restriction').DataTable();
         var id = $(dt.row({
             selected: true
@@ -191,7 +194,10 @@
     $("#delete-btn").on("click", function(e) {
         e.preventDefault();
         var link = $(e.currentTarget);
-        var dt = $('#codes').DataTable();
+        if($(link).attr("disabled")){
+            return;
+        }
+        var dt = $('#restriction').DataTable();
         var id = $(dt.row({
             selected: true
         }).node()).attr("id");

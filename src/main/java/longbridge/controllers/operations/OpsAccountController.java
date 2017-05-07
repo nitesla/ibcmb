@@ -136,9 +136,9 @@ return restrictionTypes;
         return out;
     }
 
-    @GetMapping("/restriction/account/{id}/remove")
-    public String removeAccountRestriction(@PathVariable Long id, RedirectAttributes redirectAttributes, Locale locale) {
-        accountConfigService.removeAccountRestriction(id);
+    @GetMapping("/restriction/account/{id}/delete")
+    public String deleteAccountRestriction(@PathVariable Long id, RedirectAttributes redirectAttributes, Locale locale) {
+        accountConfigService.deleteAccountRestriction(id);
         redirectAttributes.addFlashAttribute("message",messageSource.getMessage("account.restriction.remove",null,locale));
         return "redirect:/ops/accounts/restriction/account";
     }
@@ -217,9 +217,9 @@ return restrictionTypes;
         return out;
     }
 
-    @GetMapping("/restriction/class/{id}/remove")
-    public String removeAccountClassRestriction(@PathVariable Long id,RedirectAttributes redirectAttributes,Locale locale) {
-        accountConfigService.removeAccountClassRestriction(id);
+    @GetMapping("/restriction/class/{id}/delete")
+    public String deleteAccountClassRestriction(@PathVariable Long id,RedirectAttributes redirectAttributes,Locale locale) {
+        accountConfigService.deleteAccountClassRestriction(id);
         redirectAttributes.addFlashAttribute("message",messageSource.getMessage("account.class.restriction.remove",null,locale));
         return "redirect:/ops/accounts/restriction/class";
     }

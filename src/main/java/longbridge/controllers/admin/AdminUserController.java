@@ -81,7 +81,6 @@ public class AdminUserController {
     @PostMapping
     public String createUser(@ModelAttribute("adminUser") @Valid AdminUserDTO adminUser, BindingResult result, Model model, RedirectAttributes redirectAttributes) throws Exception{
         if(result.hasErrors()){
-
             result.addError(new ObjectError("invalid","Please fill in the required fields"));
             return "adm/admin/add";
         }
@@ -91,7 +90,6 @@ public class AdminUserController {
         }
 
         adminUserService.addUser(adminUser);
-
         redirectAttributes.addFlashAttribute("message","Admin user created successfully");
         return "redirect:/admin/users";
     }

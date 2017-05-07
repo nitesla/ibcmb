@@ -180,6 +180,9 @@
         $("a.bt-link-act").on("click", function(e) {
             e.preventDefault();
             var link = $(e.currentTarget);
+            if($(link).attr("disabled")){
+                return;
+            }
             var dt = $('#fee').DataTable();
             var id = $(dt.row({
                 selected: true
@@ -194,7 +197,10 @@
     $("#delete-btn").on("click", function(e) {
         e.preventDefault();
         var link = $(e.currentTarget);
-        var dt = $('#codes').DataTable();
+        if($(link).attr("disabled")){
+            return;
+        }
+        var dt = $('#fee').DataTable();
         var id = $(dt.row({
             selected: true
         }).node()).attr("id");

@@ -18,7 +18,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.data.jpa.datatables.repository.DataTablesUtils;
-import org.springframework.http.HttpRequest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -94,11 +93,13 @@ public class AdmOperationsUserController {
 
             result.addError(new ObjectError("invalid","Please fill in the required fields"));
             return "adm/operation/add";
+
         }
         if(!operationsUserService.isValidUsername(operationsUser.getUserName())){
             result.addError(new ObjectError("invalid","Username already exists"));
             return "adm/operation/add";
         }
+
 
         operationsUserService.addUser(operationsUser);
 

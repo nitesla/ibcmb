@@ -31,7 +31,6 @@ public class AdminUserDTO {
     private String dateCreated;
     private Date expiryDate;
     private String lastLogin;
-    private boolean enabled;
     private String status;
     @NotEmpty(message = "roleId")
     private String roleId;
@@ -56,13 +55,6 @@ public class AdminUserDTO {
         this.version = version;
     }
 
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
 
     public String getCifId() {
         return cifId;

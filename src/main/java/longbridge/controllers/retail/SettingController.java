@@ -23,6 +23,7 @@ import java.security.Principal;
 
 /**
  * Created by Fortune on 4/5/2017.
+ * Modified by Wunmi
  */
 @Controller
 @RequestMapping("/retail")
@@ -41,7 +42,7 @@ public class SettingController {
 
     @RequestMapping("/dashboard")
     public String getRetailDashboard(Model model) {
-//        List<AccountDTO> accountList = accountService.get
+//        List<AccountDTO> accountList = accountService.getAccountsForDebitAndCredit()
 //        model.addAttribute()
         return "cust/dashboard";
     }

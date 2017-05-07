@@ -1,16 +1,15 @@
 package longbridge.services.implementations;
 
 
+import longbridge.api.AccountInfo;
+import longbridge.api.CustomerDetails;
 import longbridge.dtos.RetailUserDTO;
 import longbridge.forms.AlertPref;
 import longbridge.models.Account;
 import longbridge.models.Code;
 import longbridge.models.RetailUser;
 import longbridge.repositories.RetailUserRepo;
-import longbridge.services.AccountService;
-import longbridge.services.CodeService;
-import longbridge.services.RetailUserService;
-import longbridge.services.SecurityService;
+import longbridge.services.*;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,9 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by SYLVESTER on 3/29/2017.
@@ -46,6 +43,12 @@ public class RetailUserServiceImpl implements RetailUserService {
     
     @Autowired
     SecurityService securityService;
+
+    @Autowired
+    private RoleService roleService;
+
+    @Autowired
+    private IntegrationService integrationService;
 
     public RetailUserServiceImpl(){
 
@@ -95,7 +98,7 @@ public class RetailUserServiceImpl implements RetailUserService {
     }
 
     @Override
-    public boolean addUser(RetailUserDTO user)
+    public boolean addUser(RetailUserDTO user, CustomerDetails details)
     {
         boolean ok=false;
         /*Get the user's details from the model */
@@ -103,13 +106,24 @@ public class RetailUserServiceImpl implements RetailUserService {
 //            user.setPassword(this.passwordEncoder.encode(user.getPassword()));
             RetailUser retailUser = new RetailUser();
             retailUser.setUserName(user.getUserName());
-            retailUser.setEmail(user.getEmail());
+            retailUser.setCustomerId(details.getCifId());
+            retailUser.setFirstName(details.getCustomerName());
+            retailUser.setEmail(details.getEmail());
             retailUser.setDateCreated(new Date());
             retailUser.setBirthDate(user.getBirthDate());
+            retailUser.setRole(roleService.getTheRole(34L));
             retailUser.setStatus("ACTIVE");
+            retailUser.setBvn("58478457841");
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) + 2);
+            retailUser.setExpiryDate(calendar.getTime());
             retailUser.setAlertPreference(codeService.getCodeById(39L));
             retailUser.setPassword(this.passwordEncoder.encode(user.getPassword()));
             this.retailUserRepo.save(retailUser);
+            Collection<AccountInfo> accounts = integrationService.fetchAccounts(details.getCifId());
+            for (AccountInfo acct : accounts){
+                accountService.AddFIAccount(details.getCifId(), acct);
+            }
             logger.info("USER {} HAS BEEN CREATED");
         }
         else{logger.error("USER NOT FOUND");}
@@ -286,6 +300,7 @@ public class RetailUserServiceImpl implements RetailUserService {
 			//customer doesn't have a user
 			return "User not found";
 		}
+
 		logger.info("Retail user: {}", retailUser);
 		
 		//TODO confirm security question

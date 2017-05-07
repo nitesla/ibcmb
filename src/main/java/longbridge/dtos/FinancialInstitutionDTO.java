@@ -13,11 +13,10 @@ public class FinancialInstitutionDTO {
 
     @JsonProperty("DT_RowId")
     private Long id;
-    @NotEmpty
+    @NotEmpty(message = "institutionCode")
     private String institutionCode;
-    @NotNull
     private FinancialInstitutionType institutionType;
-    @NotEmpty
+    @NotEmpty(message = "institutionName")
     private String institutionName;
     private int version;
 

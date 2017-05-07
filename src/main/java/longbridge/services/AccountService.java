@@ -1,8 +1,7 @@
 package longbridge.services;
 
-import longbridge.dtos.AccountClassRestrictionDTO;
+import longbridge.api.AccountInfo;
 import longbridge.dtos.AccountDTO;
-import longbridge.dtos.AccountRestrictionDTO;
 import longbridge.models.Account;
 import longbridge.utils.AccountStatement;
 import org.springframework.data.domain.Page;
@@ -20,6 +19,9 @@ import java.util.Map;
  * Created on 3/28/2017.
  */
 public interface AccountService {
+
+
+    boolean AddFIAccount(String customerId, AccountInfo account);
 
     /**
      * Adds the specified account to a customer's list of accounts
@@ -90,6 +92,8 @@ public interface AccountService {
          */
     Iterable<Account> getAccountsForDebit(String customerId, String currency);
 
+    Iterable<Account> getAccountsForDebit(String customerId);
+
 
     Iterable<Account> getAccountsForDebitAndCredit(String customerId);
 
@@ -102,6 +106,7 @@ public interface AccountService {
      */
     Iterable<Account> getAccountsForCredit(String customerId, String currency);
 
+    public Iterable<Account> getAccountsForCredit(String customerId);
 
     /**
      * Fetches the details of an {@link Account} using the

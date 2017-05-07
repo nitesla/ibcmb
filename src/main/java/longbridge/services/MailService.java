@@ -1,9 +1,9 @@
 package longbridge.services;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
-import org.springframework.mail.MailSender;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
@@ -14,6 +14,8 @@ public class MailService {
 
     private JavaMailSender mailSender;
 
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+
     @Autowired
     public MailService(JavaMailSender mailSender) {
         this.mailSender = mailSender;
@@ -23,15 +25,16 @@ public class MailService {
     public void send(String recipient, String message) {
         MimeMessagePreparator messagePreparator = mimeMessage -> {
             MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
-            messageHelper.setFrom("fortech91@gmail.com");
+            messageHelper.setFrom("ibanking@coronationmb.com");
             messageHelper.setTo(recipient);
-            messageHelper.setSubject("Email from Ibanking");
+            messageHelper.setSubject("Email from Coronation Internet Banking");
             messageHelper.setText(message);
         };
         try {
             mailSender.send(messagePreparator);
+            logger.info("Email successfully sent to user {}",recipient);
         } catch (MailException e) {
-            // runtime exception; compiler will not force you to handle it
+            logger.error("Failed to send email to user {} : {}",recipient,e.toString());
         }
     }
 }

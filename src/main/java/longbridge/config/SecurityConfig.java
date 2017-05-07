@@ -74,7 +74,7 @@ public class SecurityConfig {
 		@Override
 		protected void configure(HttpSecurity http) throws Exception {
 			boolean ipRestricted = false;
-			StringBuilder ipRange = new StringBuilder("hasIpAddress('::1')");
+			StringBuilder ipRange = new StringBuilder("hasIpAddress('::1') or hasIpAddress('127.0.0.1')");
 			//Takes a specific IP address or a range using 
 			//the IP/Netmask (e.g. 192.168.1.0/24 or 202.24.0.0/14).
 			SettingDTO dto = configService.getSettingByName("ADMIN_IP_WHITELIST");
@@ -86,7 +86,6 @@ public class SecurityConfig {
 			}
 			http.antMatcher("/admin/**").authorizeRequests().anyRequest().
 			hasAuthority(UserType.ADMIN.toString())
-			//.and().authorizeRequests().anyRequest().hasIpAddress(ipRange.toString())
 			.and().authorizeRequests().anyRequest().access(ipRange.toString())
 					// log in
 					.and().formLogin().loginPage("/login/admin").loginProcessingUrl("/admin/login")

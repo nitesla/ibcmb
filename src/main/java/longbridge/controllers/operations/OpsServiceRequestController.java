@@ -63,8 +63,7 @@ public class OpsServiceRequestController {
     @ResponseBody
     DataTablesOutput<ServiceRequestDTO> getRequests(DataTablesInput input) {
         Pageable pageable = DataTablesUtils.getPageable(input);
-        RetailUser retailUser = retailUserRepo.findOne(1l);
-        Page<ServiceRequestDTO> serviceRequests = requestService.getRequests(retailUser, pageable);
+        Page<ServiceRequestDTO> serviceRequests = requestService.getRequests(pageable);
         DataTablesOutput<ServiceRequestDTO> out = new DataTablesOutput<ServiceRequestDTO>();
         out.setDraw(input.getDraw());
         out.setData(serviceRequests.getContent());

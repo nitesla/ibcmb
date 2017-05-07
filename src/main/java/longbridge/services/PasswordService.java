@@ -4,10 +4,8 @@ import longbridge.dtos.SettingDTO;
 import longbridge.utils.PasswordCreator;
 import longbridge.validator.PasswordValidator;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.passay.CharacterData;
 import org.passay.CharacterRule;
 import org.passay.EnglishCharacterData;
-import org.passay.PasswordGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -46,7 +44,7 @@ public class PasswordService {
     private int noOfSpecial = 0;
     private int minLength = 8;
     private int maxLength = 255;
-    private String specialCharacters = "!@#$%^)(&";
+    private String specialCharacters = "~!@#$%^&*()+{};'?.";
     private boolean initialized = false;
 
 
@@ -65,28 +63,30 @@ public class PasswordService {
 
         if (numOfPasswordDigits != null && numOfPasswordDigits.isEnabled()) {
             numOfDigits = NumberUtils.toInt(numOfPasswordDigits.getValue());
-            ruleMessage = String.format("Number of digits in password must be up to %d", numOfDigits);
+            ruleMessage = String.format("Number of digits in password must be at least %d", numOfDigits);
             passwordRules.add(ruleMessage);
             characterRules.add(new CharacterRule(EnglishCharacterData.Digit, numOfDigits));
 
         }
         if (noSpecialChar != null && noSpecialChar.isEnabled()) {
             noOfSpecial = NumberUtils.toInt(noSpecialChar.getValue());
-            ruleMessage = String.format("Minimum number of special characters allowed is %d", noOfSpecial);
-            passwordRules.add(ruleMessage);
-            characterRules.add(new CharacterRule(EnglishCharacterData.Special, noOfSpecial));
+            if(noOfSpecial>0) {
+                ruleMessage = String.format("Minimum number of special characters allowed is %d", noOfSpecial);
+                passwordRules.add(ruleMessage);
+                characterRules.add(new CharacterRule(EnglishCharacterData.Special, noOfSpecial));
+            }
 
 
         }
         if (minLengthOfPassword != null && minLengthOfPassword.isEnabled()) {
             minLength = NumberUtils.toInt(minLengthOfPassword.getValue());
-            ruleMessage = String.format("Password length must not be less than %d", minLength);
+            ruleMessage = String.format("Minimum length of password required is %d", minLength);
             passwordRules.add(ruleMessage);
 
         }
         if (maxLengthOfPassword != null && maxLengthOfPassword.isEnabled()) {
             maxLength = NumberUtils.toInt(maxLengthOfPassword.getValue());
-            ruleMessage = String.format("Password length must not be greater than %d", maxLength);
+            ruleMessage = String.format("Maximum length of password required is %d", maxLength);
             passwordRules.add(ruleMessage);
         }
         if (specialChars != null && specialChars.isEnabled()) {
