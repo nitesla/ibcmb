@@ -2,10 +2,8 @@ package longbridge.controllers.retail;
 
 
 import longbridge.dtos.LocalBeneficiaryDTO;
-import longbridge.dtos.TransferRequestDTO;
 import longbridge.models.Account;
 import longbridge.models.FinancialInstitutionType;
-import longbridge.models.LocalBeneficiary;
 import longbridge.models.RetailUser;
 import longbridge.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,16 +13,14 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.LocaleResolver;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.security.Principal;
-<<<<<<< HEAD
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.StreamSupport;
-=======
-import java.util.Locale;
->>>>>>> LAST PUSH FROM FAROOQ TODAY
+
 
 /**
  * Created by Fortune on 4/3/2017.
@@ -57,16 +53,7 @@ public class TransferController {
     }
 
 
-<<<<<<< HEAD
-=======
-    @GetMapping
-    public String makeInternationalTransfer(Principal principal) throws Exception {
-        return "cust/transfer/internationaltransfer/view";
 
-    }
-
-
->>>>>>> LAST PUSH FROM FAROOQ TODAY
     @GetMapping("/local/new")
     public String addCoronationBeneficiary(Model model, LocalBeneficiaryDTO localBeneficiaryDTO) throws Exception {
         model.addAttribute("localBanks", financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.LOCAL));
@@ -87,7 +74,7 @@ public class TransferController {
         return "redirect:/retail/transfer/local";
     }
 
-<<<<<<< HEAD
+
 
     @GetMapping("/dest/{accountId}/accounts")
     public
@@ -116,23 +103,13 @@ public class TransferController {
     public String getAccountCurrency(@PathVariable String accountId) {
         return accountService.getAccountByAccountNumber(accountId).getCurrencyCode();
     }
-=======
-    @GetMapping("/interbanktransfer")
-    public String getInterBank(Model model) throws Exception {
-        return "cust/transfer/interbanktransfer/add";
-    }
 
 
 
 
 
 
-    @GetMapping("/settransferlimit")
-    public String getTransferLimit(Model model) throws Exception {
-        return "cust/transfer/settransferlimit/view";
-    }
 
->>>>>>> LAST PUSH FROM FAROOQ TODAY
 
 
 }

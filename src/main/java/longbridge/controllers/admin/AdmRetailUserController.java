@@ -38,7 +38,7 @@ public class AdmRetailUserController {
 //        return "adm/retail/add";
 //    }
 
-<<<<<<< HEAD
+
 //    @PostMapping
 //    public String createUser(@ModelAttribute("retailUser") RetailUserDTO retailUser, BindingResult result, RedirectAttributes redirectAttributes) throws Exception{
 //        if(result.hasErrors()){
@@ -48,17 +48,16 @@ public class AdmRetailUserController {
 //        redirectAttributes.addFlashAttribute("message","Retail user created successfully");
 //        return "redirect:/admin/retail/users";
 //    }
-=======
     @PostMapping
     public String createUser(@ModelAttribute("retailUser") RetailUserDTO retailUser, BindingResult result, RedirectAttributes redirectAttributes) throws Exception{
         if(result.hasErrors()){
             return "adm/retail/add";
         }
-        retailUserService.addUser(retailUser);
+       // retailUserService.addUser(retailUser);
         redirectAttributes.addFlashAttribute("message","Retail user created successfully");
         return "redirect:/admin/retail/users";
     }
->>>>>>> LAST PUSH FROM FAROOQ TODAY
+
 
     /**
      * Edit an existing user

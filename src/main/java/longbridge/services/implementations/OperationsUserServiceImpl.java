@@ -107,10 +107,9 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     }
 
     @Override
-<<<<<<< HEAD
+
     @Transactional
-=======
->>>>>>> LAST PUSH FROM FAROOQ TODAY
+
     public boolean addUser(OperationsUserDTO user) {
         boolean ok = false;
         if (user != null) {
@@ -120,11 +119,11 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             opsUser.setUserName(user.getUserName());
             opsUser.setEmail(user.getEmail());
             opsUser.setDateCreated(new Date());
-<<<<<<< HEAD
-=======
+
+
             opsUser.setStatus("ACTIVE");
 
->>>>>>> LAST PUSH FROM FAROOQ TODAY
+
             Calendar calendar = Calendar.getInstance();
             calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) + 2);
             opsUser.setExpiryDate(calendar.getTime());
@@ -134,21 +133,21 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             String password = passwordService.generatePassword();
             opsUser.setPassword(passwordEncoder.encode(password));
             this.operationsUserRepo.save(opsUser);
-<<<<<<< HEAD
+
             mailService.send(user.getEmail(), String.format("Your username is %s and password is %s", user.getUserName(), password));
             ok = true;
             logger.info("New operations user: {} created", opsUser.getUserName());
 
         } else {
             logger.error("Aborted Operations user creation. NULL user supplied");
-=======
+
             logger.info("Your new password is {}",password);
             mailService.send(user.getEmail(), String.format("Your username is %s and password is %s", user.getUserName(), password));
             logger.info("New operations user: {} created", opsUser.getUserName());
             ok = true;
         } else {
             logger.error("USER NOT FOUND");
->>>>>>> LAST PUSH FROM FAROOQ TODAY
+
         }
         return ok;
 

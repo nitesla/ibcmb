@@ -155,7 +155,7 @@
 			<artifactId>passay</artifactId>
 			<version>1.2.0</version>
 		</dependency>
-<<<<<<< HEAD
+
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
@@ -163,10 +163,6 @@
         </dependency>
 
     </dependencies>
-=======
-
-	</dependencies>
->>>>>>> LAST PUSH FROM FAROOQ TODAY
 
 	<build>
 		<plugins>
