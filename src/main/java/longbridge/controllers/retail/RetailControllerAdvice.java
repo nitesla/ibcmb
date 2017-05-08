@@ -30,7 +30,7 @@ public class RetailControllerAdvice {
     private AccountService accountService;
     private ServiceReqConfigService reqConfigService;
 
-  @Autowired
+    @Autowired
     public RetailControllerAdvice(RetailUserService retailUserService, IntegrationService integrationService, TransferService transferService, AccountService accountService, ServiceReqConfigService reqConfigService) {
         this.retailUserService = retailUserService;
         this.integrationService = integrationService;
@@ -89,17 +89,17 @@ public class RetailControllerAdvice {
 
 
 
-            @ModelAttribute
-           public  String getCustmerAccounts(Model model,Principal principal){
 
-            if (principal ==null||principal.getName() == null){
-                return "redirect:/login/retail";
-            }
+    @ModelAttribute
+    public  String getCustmerAccounts(Model model,Principal principal){
 
-            RetailUser user = retailUserService.getUserByName(principal.getName());
-            if (user != null) {
-                List<String> accountList = new ArrayList<>();
+        if (principal ==null||principal.getName() == null){
+            return "redirect:/login/retail";
+        }
 
+        RetailUser user = retailUserService.getUserByName(principal.getName());
+        if (user != null) {
+            List<String> accountList = new ArrayList<>();
 
             Iterable<Account> accounts = accountService.getAccountsForDebit(user.getCustomerId());
 
@@ -109,10 +109,7 @@ public class RetailControllerAdvice {
 
 
             model.addAttribute("accounts", accountList);
-
-
         }
-
 
         return "";
     }
