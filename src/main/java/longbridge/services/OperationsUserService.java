@@ -31,6 +31,12 @@ public interface OperationsUserService{
     boolean isValidUsername(String username);
 
 
+<<<<<<< HEAD
+=======
+    boolean isValidUsername(String username);
+
+
+>>>>>>> LAST PUSH FROM FAROOQ TODAY
     OperationsUserDTO getUserByName(String name);
 
     /**

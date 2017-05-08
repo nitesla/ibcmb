@@ -29,6 +29,7 @@ public class EntityRevisionRepo {
 
 
 
+<<<<<<< HEAD
     public List<EntityWithRevision<CustomRevisionEntity>> listRevisions(Long id) {
         AuditReader auditReader = AuditReaderFactory.get(entityManager);
 
@@ -38,6 +39,17 @@ public class EntityRevisionRepo {
         List<EntityWithRevision<CustomRevisionEntity>> empRevisions = new ArrayList<>();
         for (Number revision : revisions) {
             CustomRevisionEntity empRevision = auditReader.find(CustomRevisionEntity.class, id, revision);
+=======
+    public List<EntityWithRevision<CustomRevisionEntity>> listEmployeeRevisions(Long empCode) {
+        AuditReader auditReader = AuditReaderFactory.get(entityManager);
+
+
+        List<Number> revisions = auditReader.getRevisions(CustomRevisionEntity.class, empCode);
+
+        List<EntityWithRevision<CustomRevisionEntity>> empRevisions = new ArrayList<>();
+        for (Number revision : revisions) {
+            CustomRevisionEntity empRevision = auditReader.find(CustomRevisionEntity.class, empCode, revision);
+>>>>>>> LAST PUSH FROM FAROOQ TODAY
             Date revisionDate = auditReader.getRevisionDate(revision);
 
             empRevisions.add(

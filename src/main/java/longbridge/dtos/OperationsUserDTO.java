@@ -64,6 +64,7 @@ public class OperationsUserDTO {
         this.version = version;
     }
 
+<<<<<<< HEAD
 
     public String getLastLogin() {
         return lastLogin;
@@ -73,6 +74,8 @@ public class OperationsUserDTO {
         this.lastLogin = lastLogin;
     }
 
+=======
+>>>>>>> LAST PUSH FROM FAROOQ TODAY
     public String getRoleId() {
         return roleId;
     }

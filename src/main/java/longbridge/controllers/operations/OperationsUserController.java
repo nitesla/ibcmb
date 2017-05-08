@@ -134,7 +134,11 @@ public class OperationsUserController {
         operationsUserService.changePassword(user, changePassword.getOldPassword(), changePassword.getNewPassword());
 
         redirectAttributes.addFlashAttribute("message","Password changed successfully");
+<<<<<<< HEAD
         return "redirect:/ops/dashboard";
+=======
+        return "redirect:/ops/logout";
+>>>>>>> LAST PUSH FROM FAROOQ TODAY
 
     }
 

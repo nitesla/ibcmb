@@ -93,11 +93,24 @@ public class RetailControllerAdvice {
             return "redirect:/login/retail";
         }
 
+<<<<<<< HEAD
 
         RetailUser user = retailUserService.getUserByName(principal.getName());
         if (user != null) {
             List<String> accountList = new ArrayList<>();
 
+=======
+            @ModelAttribute
+           public  String getCustmerAccounts(Model model,Principal principal){
+
+            if (principal ==null||principal.getName() == null){
+                return "redirect:/login/retail";
+            }
+
+            RetailUser user = retailUserService.getUserByName(principal.getName());
+            if (user != null) {
+                List<String> accountList = new ArrayList<>();
+>>>>>>> LAST PUSH FROM FAROOQ TODAY
 
             Iterable<Account> accounts = accountService.getAccountsForDebit(user.getCustomerId());
 

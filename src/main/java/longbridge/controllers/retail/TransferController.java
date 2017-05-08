@@ -18,10 +18,13 @@ import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
-import java.math.BigDecimal;
 import java.security.Principal;
+<<<<<<< HEAD
 import java.util.*;
 import java.util.stream.StreamSupport;
+=======
+import java.util.Locale;
+>>>>>>> LAST PUSH FROM FAROOQ TODAY
 
 /**
  * Created by Fortune on 4/3/2017.
@@ -54,6 +57,16 @@ public class TransferController {
     }
 
 
+<<<<<<< HEAD
+=======
+    @GetMapping
+    public String makeInternationalTransfer(Principal principal) throws Exception {
+        return "cust/transfer/internationaltransfer/view";
+
+    }
+
+
+>>>>>>> LAST PUSH FROM FAROOQ TODAY
     @GetMapping("/local/new")
     public String addCoronationBeneficiary(Model model, LocalBeneficiaryDTO localBeneficiaryDTO) throws Exception {
         model.addAttribute("localBanks", financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.LOCAL));
@@ -74,6 +87,7 @@ public class TransferController {
         return "redirect:/retail/transfer/local";
     }
 
+<<<<<<< HEAD
 
     @GetMapping("/dest/{accountId}/accounts")
     public
@@ -102,6 +116,23 @@ public class TransferController {
     public String getAccountCurrency(@PathVariable String accountId) {
         return accountService.getAccountByAccountNumber(accountId).getCurrencyCode();
     }
+=======
+    @GetMapping("/interbanktransfer")
+    public String getInterBank(Model model) throws Exception {
+        return "cust/transfer/interbanktransfer/add";
+    }
+
+
+
+
+
+
+    @GetMapping("/settransferlimit")
+    public String getTransferLimit(Model model) throws Exception {
+        return "cust/transfer/settransferlimit/view";
+    }
+
+>>>>>>> LAST PUSH FROM FAROOQ TODAY
 
 
 }

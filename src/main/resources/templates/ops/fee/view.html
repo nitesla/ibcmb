@@ -197,10 +197,14 @@
     $("#delete-btn").on("click", function(e) {
         e.preventDefault();
         var link = $(e.currentTarget);
+<<<<<<< HEAD
         if($(link).attr("disabled")){
             return;
         }
         var dt = $('#fee').DataTable();
+=======
+        var dt = $('#codes').DataTable();
+>>>>>>> LAST PUSH FROM FAROOQ TODAY
         var id = $(dt.row({
             selected: true
         }).node()).attr("id");

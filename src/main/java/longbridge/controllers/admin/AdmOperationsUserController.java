@@ -18,6 +18,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.data.jpa.datatables.repository.DataTablesUtils;
+<<<<<<< HEAD
+=======
+import org.springframework.http.HttpRequest;
+>>>>>>> LAST PUSH FROM FAROOQ TODAY
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -93,14 +97,20 @@ public class AdmOperationsUserController {
 
             result.addError(new ObjectError("invalid","Please fill in the required fields"));
             return "adm/operation/add";
+<<<<<<< HEAD
 
+=======
+>>>>>>> LAST PUSH FROM FAROOQ TODAY
         }
         if(!operationsUserService.isValidUsername(operationsUser.getUserName())){
             result.addError(new ObjectError("invalid","Username already exists"));
             return "adm/operation/add";
         }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> LAST PUSH FROM FAROOQ TODAY
         operationsUserService.addUser(operationsUser);
 
         redirectAttributes.addFlashAttribute("message","Operation user created successfully");
@@ -234,7 +244,11 @@ public class AdmOperationsUserController {
         operationsUserService.changePassword(user, changePassword.getOldPassword(), changePassword.getNewPassword());
 
         redirectAttributes.addFlashAttribute("message","Password changed successfully");
+<<<<<<< HEAD
         return "redirect:/ops/dashboard";
+=======
+        return "redirect:/ops/logout";
+>>>>>>> LAST PUSH FROM FAROOQ TODAY
 
     }
 

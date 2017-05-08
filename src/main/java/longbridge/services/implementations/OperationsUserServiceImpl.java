@@ -107,7 +107,10 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     }
 
     @Override
+<<<<<<< HEAD
     @Transactional
+=======
+>>>>>>> LAST PUSH FROM FAROOQ TODAY
     public boolean addUser(OperationsUserDTO user) {
         boolean ok = false;
         if (user != null) {
@@ -117,6 +120,11 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             opsUser.setUserName(user.getUserName());
             opsUser.setEmail(user.getEmail());
             opsUser.setDateCreated(new Date());
+<<<<<<< HEAD
+=======
+            opsUser.setStatus("ACTIVE");
+
+>>>>>>> LAST PUSH FROM FAROOQ TODAY
             Calendar calendar = Calendar.getInstance();
             calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) + 2);
             opsUser.setExpiryDate(calendar.getTime());
@@ -126,12 +134,21 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             String password = passwordService.generatePassword();
             opsUser.setPassword(passwordEncoder.encode(password));
             this.operationsUserRepo.save(opsUser);
+<<<<<<< HEAD
             mailService.send(user.getEmail(), String.format("Your username is %s and password is %s", user.getUserName(), password));
             ok = true;
             logger.info("New operations user: {} created", opsUser.getUserName());
 
         } else {
             logger.error("Aborted Operations user creation. NULL user supplied");
+=======
+            logger.info("Your new password is {}",password);
+            mailService.send(user.getEmail(), String.format("Your username is %s and password is %s", user.getUserName(), password));
+            logger.info("New operations user: {} created", opsUser.getUserName());
+            ok = true;
+        } else {
+            logger.error("USER NOT FOUND");
+>>>>>>> LAST PUSH FROM FAROOQ TODAY
         }
         return ok;
 
@@ -141,6 +158,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     @Transactional
     public boolean updateUser(OperationsUserDTO userDTO) {
         boolean ok = false;
+<<<<<<< HEAD
         if (userDTO != null) {
             OperationsUser operationsUser = new OperationsUser();
             operationsUser.setId(userDTO.getId());
@@ -158,6 +176,20 @@ public class OperationsUserServiceImpl implements OperationsUserService {
         } else {
             logger.error("Aborted Operations user update. NULL user supplied");
         }
+=======
+        OperationsUser operationsUser = new OperationsUser();
+        operationsUser.setId(userDTO.getId());
+        operationsUser.setVersion(userDTO.getVersion());
+        operationsUser.setFirstName(userDTO.getFirstName());
+        operationsUser.setLastName(userDTO.getLastName());
+        operationsUser.setUserName(userDTO.getUserName());
+        Role role = new Role();
+        role.setId(Long.parseLong(userDTO.getRoleId()));
+        operationsUser.setRole(role);
+        operationsUserRepo.save(operationsUser);
+        ok = true;
+
+>>>>>>> LAST PUSH FROM FAROOQ TODAY
         return ok;
     }
 
@@ -204,13 +236,22 @@ public class OperationsUserServiceImpl implements OperationsUserService {
                 logger.error("Could not change password for operations user {} due to incorrect old password", user.getUserName());
             }
         } catch (Exception e) {
+<<<<<<< HEAD
             logger.error("Aborted password change{}", e.toString());
+=======
+            e.printStackTrace();
+            logger.error("ERROR OCCURRED {}", e.getMessage());
+>>>>>>> LAST PUSH FROM FAROOQ TODAY
         }
         return ok;
     }
 
     @Override
+<<<<<<< HEAD
     public void generateAndSendPassword(OperationsUser user) {
+=======
+    public void generateAndSendPassword() {
+>>>>>>> LAST PUSH FROM FAROOQ TODAY
         //TODO
 
     }
@@ -238,6 +279,10 @@ public class OperationsUserServiceImpl implements OperationsUserService {
         Page<OperationsUser> page = operationsUserRepo.findAll(pageDetails);
         List<OperationsUserDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
+<<<<<<< HEAD
+=======
+        // return  new PageImpl<ServiceReqConfigDTO>(dtOs,pageDetails,page.getTotalElements());
+>>>>>>> LAST PUSH FROM FAROOQ TODAY
         Page<OperationsUserDTO> pageImpl = new PageImpl<OperationsUserDTO>(dtOs, pageDetails, t);
         return pageImpl;
     }
