@@ -3,6 +3,7 @@
  */
 $('#source').on('change',function(){
     var acct = $('#source').val();
+    alert('YAHOO YAHOO');
     getDestAccounts(acct)
     getSourceCurrency(acct);
 });
@@ -28,14 +29,14 @@ function getDestAccounts(acct) {
 
 function getSourceCurrency(acct) {
 
-    $.get("/retail/transfer" + acct + "/currency", function (data) {
+    $.get("/retail/transfer/" + acct + "/currency", function (data) {
         document.getElementById("scurency").innerHTML = data;
 
     });
 }
 function getDestCurrency(acct) {
 
-    $.get("/" + acct + "/currency", function (data) {
+    $.get("/retail/transfer/" + acct + "/currency", function (data) {
         document.getElementById("dcurency").innerHTML = data;
 
     });
