@@ -31,10 +31,8 @@ public interface OperationsUserService{
     boolean isValidUsername(String username);
 
 
+    OperationsUser getUserByName(String name);
 
-
-
-    OperationsUserDTO getUserByName(String name);
 
     /**
      * Returns all Operations users present in th system

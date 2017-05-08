@@ -1,5 +1,8 @@
 package longbridge.dtos;
 
+import longbridge.models.UserType;
+import org.hibernate.validator.constraints.NotEmpty;
+
 import java.util.Date;
 
 /**
@@ -9,9 +12,15 @@ public class MessageDTO {
 
 
     private Long id;
+    private int version;
+    @NotEmpty(message = "sender")
     private String sender;
+    @NotEmpty(message = "recipient")
     private String recipient;
+    private UserType recipientType;
+    @NotEmpty(message = "subject")
     private String subject;
+    @NotEmpty(message = "body")
     private String body;
     private Date dateCreated;
     private String status;
@@ -21,16 +30,6 @@ public class MessageDTO {
     public MessageDTO() {
     }
 
-    public MessageDTO(Long id, String sender, String recipient, String subject, String body, Date dateCreated, String status, String tag) {
-        this.id = id;
-        this.sender = sender;
-        this.recipient = recipient;
-        this.subject = subject;
-        this.body = body;
-        this.dateCreated = dateCreated;
-        this.status = status;
-        this.tag = tag;
-    }
 
     public Long getId() {
         return id;
@@ -56,8 +55,25 @@ public class MessageDTO {
         this.recipient = recipient;
     }
 
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
+    }
+
+
     public String getSubject() {
         return subject;
+    }
+
+    public UserType getRecipientType() {
+        return recipientType;
+    }
+
+    public void setRecipientType(UserType recipientType) {
+        this.recipientType = recipientType;
     }
 
     public void setSubject(String subject) {

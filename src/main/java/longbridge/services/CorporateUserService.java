@@ -23,6 +23,9 @@ public interface CorporateUserService{
      */
     CorporateUserDTO getUser(Long id);
 
+
+    CorporateUser getUserByName(String username);
+
     /**
      * Returns all the corporate users for the corporate customer
      * @param Corporate  the corporate customer

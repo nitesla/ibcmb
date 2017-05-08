@@ -104,7 +104,7 @@ public class OperationsUserController {
             result.addError(new ObjectError("invalid", "Please provide valid password"));
             return "/ops/pword";
         }
-        OperationsUserDTO user = operationsUserService.getUserByName(principal.getName());
+        OperationsUser user = operationsUserService.getUserByName(principal.getName());
 
         if(!this.passwordEncoder.matches(changePassword.getOldPassword(),user.getPassword())){
             logger.trace("Invalid old password provided for change");

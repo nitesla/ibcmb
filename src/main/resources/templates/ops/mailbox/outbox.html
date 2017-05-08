@@ -58,11 +58,11 @@
                             <div class="x_content">
                                 <div class="row">
                                     <div class="col-sm-3 mail_list_column">
-                                        <button id="compose" class="btn btn-sm btn-success btn-block" type="button">COMPOSE</button>
+                                        <button id="compose" class="btn btn-sm btn-primary btn-block" type="button"><i class="fa fa-edit"></i> COMPOSE</button>
                                         <a th:each="message: ${sentMessages}" th:href="@{/ops/mailbox/sent/{id}/details(id=${message.id})}">
                                             <div class="mail_list">
                                                 <div class="left">
-                                                    <i class="fa fa-circle"></i> <i class="fa fa-edit"></i>
+                                                    <i class="fa fa-user"></i> <i class="fa fa-envelope"></i>
                                                 </div>
                                                 <div class="right">
                                                     <h3 th:text="${message.sender}">Dennis Mugo <small th:text="${message.dateCreated}"> 3.00 PM</small></h3>
@@ -74,40 +74,40 @@
                                     <!-- /MAIL LIST -->
 
                                     <!-- CONTENT MAIL -->
-                                    <div class="col-sm-9 mail_view">
+                                    <div class="col-sm-9 mail_view" th:if="${messageDTO}">
                                         <div class="inbox-body">
                                             <div class="mail_heading row">
                                                 <div class="col-md-8">
-                                                    <div class="btn-group">
-                                                        <button class="btn btn-sm btn-primary" type="button"><i class="fa fa-reply"></i> Reply</button>
-                                                        <button class="btn btn-sm btn-default" type="button"  data-placement="top" data-toggle="tooltip" data-original-title="Forward"><i class="fa fa-share"></i></button>
-                                                        <button class="btn btn-sm btn-default" type="button" data-placement="top" data-toggle="tooltip" data-original-title="Trash"><i class="fa fa-trash-o"></i></button>
+                                                    <div>
+                                                        <a class="btn btn-sm btn-primary" th:href="@{/ops/mailbox/{id}/forward(id=${messageDTO.id})}"><i class="fa fa-share"></i> Forward</a>
+                                                        <a class="btn btn-sm btn-danger" th:href="@{/ops/mailbox/outbox/{id}/delete(id=${messageDTO.id})}"><i class="fa fa-trash-o"></i> Delete</a>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4 text-right">
-                                                    <p class="date" th:text="${message.dateCreated}"></p>
+                                                    <p class="date" th:text="${messageDTO.dateCreated}"></p>
                                                 </div>
                                                 <div class="col-md-12">
-                                                    <h4 th:text="${message.subject}"> </h4>
+                                                    <h4 th:text="${messageDTO.subject}"> </h4>
                                                 </div>
                                             </div>
                                             <div class="sender-info">
                                                 <div class="row">
                                                     <div class="col-md-12">
-                                                        <strong th:text="${message.sender}"></strong>
-                                                        <span>(jon.doe@gmail.com)</span> to
-                                                        <strong th:text="${message.recipient}"></strong>
+                                                        <strong th:text="${messageDTO.sender}"></strong>
+                                                        <span></span> to
+                                                        <strong th:text="${messageDTO.recipient}"></strong>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="view-mail">
-                                                <p th:text="${message.body}"></p>
+                                                <p th:text="${messageDTO.body}"></p>
                                             </div>
 
 
                                         </div>
 
                                     </div>
+                                    <div th:unless="${messageDTO}"><p align="center"> No Sent Messages</p></div>
                                     <!-- /CONTENT MAIL -->
                                 </div>
                             </div>
@@ -125,15 +125,6 @@
     </div>
 </div>
 
-
-<script th:src="@{~/bank/js/jquery.min.js}"></script>
-<script th:src="@{~/bank/js/bootstrap.min.js}"></script>
-<script th:src="@{~/bank/vendors/fastclick/lib/fastclick.js}"></script>
-<script th:src="@{~/bank/vendors/nprogress/nprogress.js}"></script>
-<script th:src="@{~/bank/js/bootstrap-wysiwyg.min.js}"></script>
-<script th:src="@{~/bank/js/jquery.hotkeys.js}"></script>
-<script th:src="@{~/bank/js/prettify.js}"></script>
-<script th:src="@{~/bank/js/custom.js}"></script>
 
 
 <script>

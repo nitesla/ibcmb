@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+
 import javax.transaction.Transactional;
 import java.awt.print.Pageable;
 import java.util.ArrayList;
@@ -54,8 +55,8 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     @Transactional
-    public MailBox getMailBox(Long userId, UserType userType) {
-        return mailBoxRepo.findByUserIdAndUserType(userId,userType);
+    public MailBox getMailBox(User user) {
+        return mailBoxRepo.findByUserIdAndUserType(user.getId(), user.getUserType());
     }
 
     @Override
@@ -70,38 +71,45 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public void addMessage(MailBox mailBox,MessageDTO messageDTO) {
+    @Transactional
+    public void addMessage(User sender, User recipient, MessageDTO messageDTO) {
+
         Message message = convertDTOToEntity(messageDTO);
         message.setDateCreated(new Date());
-        message.setStatus("SENT");
-        message.setMailBox(mailBox);
+        message.setStatus("Unread");
+        MailBox senderMailBox = mailBoxRepo.findByUserIdAndUserType(sender.getId(), sender.getUserType());
+        if (senderMailBox == null) {
+            senderMailBox = new MailBox(sender.getId(), sender.getUserType());
+        }
+        message.setMailBox(senderMailBox);
+        senderMailBox.getMessages().add(message);
+        mailBoxRepo.save(senderMailBox);
 
-
-
-        mailBox.getMessages().add(message);
-        mailBoxRepo.save(mailBox);
     }
 
-    public Iterable<MessageDTO> getMessages(){
+    public Iterable<MessageDTO> getMessages() {
         return convertEntitiesToDTOs(messageRepo.findAll());
     }
 
     @Override
     @Transactional
-    public Iterable<MessageDTO> getMessages(MailBox mailBox) {
-        return convertEntitiesToDTOs(messageRepo.findByMailBox(mailBox));
+    public Iterable<MessageDTO> getMessages(User user) {
+        MailBox mailBox = mailBoxRepo.findByUserIdAndUserType(user.getId(), user.getUserType());
+        return convertEntitiesToDTOs(mailBox.getMessages());
     }
 
 
     @Override
-    public Iterable<Message> getMessages(MailBox mailBox, Date date) {
-        return this.messageRepo.findByMailBoxAndDateCreated(mailBox, date);
+    public Iterable<Message> getMessages(User user, Date date) {
+//
+        return null;
     }
 
 
     @Override
-    public Iterable<Message> getMessage(MailBox mailBox, Date fromDate, Date toDate) {
-        return this.messageRepo.findByMailBoxAndDateCreatedBetween(mailBox, fromDate, toDate);
+    public Iterable<Message> getMessages(User user, Date fromDate, Date toDate) {
+//        return this.messageRepo.findByMailBoxAndDateCreatedBetween(mailBox, fromDate, toDate);
+        return null;
     }
 
     public Iterable<Message> getMessage(Date fromDate, Date toDate) {
@@ -116,7 +124,16 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public void deleteMessage(Long id) {
+    public void deleteSentMessage(User user,Long id) {
+        Message message = new Message();
+        message.setId(id);
+        MailBox mailBox = mailBoxRepo.findByUserIdAndUserType(user.getId(),user.getUserType());
+        mailBox.getMessages().remove(message);
+        mailBoxRepo.save(mailBox);
+    }
+
+    @Override
+    public void deleteReceivedMessage(Long id) {
         this.messageRepo.delete(id);
     }
 
@@ -127,66 +144,21 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     @Transactional
-    public List<MessageDTO> getSentMessages(MailBox mailBox) {
-        Iterable<Message> messages =  messageRepo.findByMailBoxOrderByIdDesc(mailBox);
-        UserType userType = mailBox.getUserType();
-        String username = null;
-        switch (userType) {
-            case ADMIN:
-                username = adminUserService.getAdminUser(mailBox.getUserId()).getUserName();
-                break;
-            case OPERATIONS:
-                username = operationsUserService.getUser(mailBox.getId()).getUserName();
-                break;
-            case RETAIL:
-                username = retailUserService.getUser(mailBox.getId()).getUserName();
-                break;
-            case CORPORATE:
-                username = corporateUserService.getUser(mailBox.getId()).getUserName();
-                break;
-            default:
-                break;
-        }
+    public List<MessageDTO> getSentMessages(User user) {
+        MailBox mailBox = mailBoxRepo.findByUserIdAndUserType(user.getId(), user.getUserType());
         List<MessageDTO> sentMessages = new ArrayList<MessageDTO>();
-
-        for(Message message: messages){
-            if(message.getSender().equals(username)){
-                sentMessages.add(convertEntityToDTO(message));
-            }
+        if (mailBox == null) {
+            return sentMessages;
         }
-        return sentMessages;
+        sentMessages = convertEntitiesToDTOs(mailBox.getMessages());
+        return reverse(sentMessages);
     }
 
     @Override
     @Transactional
-    public List<MessageDTO> getReceivedMessages(MailBox mailBox) {
-        Iterable<Message> messages =  messageRepo.findByMailBoxOrderByIdDesc(mailBox);
-        UserType userType = mailBox.getUserType();
-        String username = null;
-        switch (userType) {
-            case ADMIN:
-                username = adminUserService.getAdminUser(mailBox.getUserId()).getUserName();
-                break;
-            case OPERATIONS:
-                username = operationsUserService.getUser(mailBox.getId()).getUserName();
-                break;
-            case RETAIL:
-                username = retailUserService.getUser(mailBox.getId()).getUserName();
-                break;
-            case CORPORATE:
-                username = corporateUserService.getUser(mailBox.getId()).getUserName();
-                break;
-            default:
-                break;
-        }
-        List<MessageDTO> receivedMessages = new ArrayList<MessageDTO>();
-
-        for(Message message: messages){
-            if(message.getRecipient().equals(username)){
-                receivedMessages.add(convertEntityToDTO(message));
-            }
-        }
-        return receivedMessages;
+    public List<MessageDTO> getReceivedMessages(User user) {
+        List<Message> receivedMessages = messageRepo.findByRecipientAndRecipientTypeOrderByIdDesc(user.getUserName(),user.getUserType());
+        return convertEntitiesToDTOs(receivedMessages);
     }
 
     @Override
@@ -198,45 +170,52 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public void sendMessage(User sender, User recipient, Message message) {
+    public void sendMessage(User sender, User recipient, MessageDTO message) {
 
     }
 
     @Override
-    public void sendEmail(EmailDetail email){
+    public void sendEmail(EmailDetail email) {
         //todo  send email
     }
 
-	@Override
-	public Page<Message> getMessages(MailBox mailbox, Pageable pageDetails) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public Page<Message> getMessages(User user, Pageable pageDetails) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public Page<Message> getMessages(MailBox mailbox, Date date, Pageable pageDetails) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public Page<Message> getMessages(User user, Date date, Pageable pageDetails) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public Page<Message> getMessages(MailBox mailbox, Date fromDate, Date toDate, Pageable pageDetails) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public Page<Message> getMessages(User user, Date fromDate, Date toDate, Pageable pageDetails) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-    private MessageDTO convertEntityToDTO(Message message){
-        return  this.modelMapper.map(message,MessageDTO.class);
+    private List<MessageDTO> reverse(List<MessageDTO> list) {
+        for(int i = 0, j = list.size() - 1; i < j; i++) {
+            list.add(i, list.remove(j));
+        }
+        return list;
+    }
+
+    private MessageDTO convertEntityToDTO(Message message) {
+        return this.modelMapper.map(message, MessageDTO.class);
     }
 
 
-    private Message convertDTOToEntity(MessageDTO messageDTO){
-        return this.modelMapper.map(messageDTO,Message.class);
+    private Message convertDTOToEntity(MessageDTO messageDTO) {
+        return this.modelMapper.map(messageDTO, Message.class);
     }
 
-    private List<MessageDTO> convertEntitiesToDTOs(Iterable<Message> messages){
+    private List<MessageDTO> convertEntitiesToDTOs(Iterable<Message> messages) {
         List<MessageDTO> messageDTOList = new ArrayList<>();
-        for(Message message: messages){
+        for (Message message : messages) {
             MessageDTO messageDTO = convertEntityToDTO(message);
             messageDTOList.add(messageDTO);
         }
