@@ -50,11 +50,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 
             return Arrays.stream(template.getForObject(uri, AccountInfo[].class,cifid)).collect(Collectors.toList());
                                                                                                                                                                                                                                                                                                                                                                         //            List list= template.getForObject(uri, ArrayList.class,cifid);
-//
-//            ArrayList<AccountInfo>  details= new ArrayList<>();
-//            details.add((AccountInfo)list);
-//            logger.info("details {}",details);
-//            return details;
+
         }catch (Exception e){
             return null;
         }
