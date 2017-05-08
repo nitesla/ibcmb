@@ -98,7 +98,9 @@ public interface OperationsUserService{
      * @param oldPassword the old password
      * @param newPassword the new Password
      */
+
     boolean changePassword(OperationsUser user, String oldPassword, String newPassword);
+
 
     /**
      * Generates and sends a password to the specified user
