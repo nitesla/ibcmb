@@ -53,7 +53,6 @@ public class TransferController {
     }
 
 
-
     @GetMapping("/local/new")
     public String addCoronationBeneficiary(Model model, LocalBeneficiaryDTO localBeneficiaryDTO) throws Exception {
         model.addAttribute("localBanks", financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.LOCAL));
@@ -75,7 +74,6 @@ public class TransferController {
     }
 
 
-
     @GetMapping("/dest/{accountId}/accounts")
     public
     @ResponseBody
@@ -91,7 +89,7 @@ public class TransferController {
                 .filter(Objects::nonNull)
                 .filter(i -> !i.getAccountNumber().equalsIgnoreCase(accountId))
                 .forEach(i -> accountList.add(i.getAccountNumber()))
-                ;
+        ;
         return accountList;
 
 
@@ -99,17 +97,11 @@ public class TransferController {
 
 
     @GetMapping("/{accountId}/currency")
-
-    public String getAccountCurrency(@PathVariable String accountId) {
+    public
+    @ResponseBody
+    String getAccountCurrency(@PathVariable String accountId) {
         return accountService.getAccountByAccountNumber(accountId).getCurrencyCode();
     }
-
-
-
-
-
-
-
 
 
 }
