@@ -1,9 +1,7 @@
 package longbridge.controllers.operations;
 
 import longbridge.dtos.MessageDTO;
-import longbridge.dtos.OperationsUserDTO;
 import longbridge.models.*;
-import longbridge.repositories.OperationsUserRepo;
 import longbridge.services.CorporateUserService;
 import longbridge.services.MessageService;
 import longbridge.services.OperationsUserService;
@@ -17,12 +15,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import javax.validation.Valid;
 import java.security.Principal;
 import java.util.List;
-
-import static longbridge.models.UserType.OPERATIONS;
 
 /**
  * Created by Fortune on 5/1/2017.
@@ -40,9 +35,6 @@ public class OpsMailboxController {
     CorporateUserService corporateUserService;
     @Autowired
     RetailUserService retailUserService;
-
-    @Autowired
-    OperationsUserRepo userRepo;
 
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -197,7 +189,7 @@ public class OpsMailboxController {
     @GetMapping("/sent/all")
     @ResponseBody
     public Iterable<MessageDTO> getSentMessages(Principal principal) {
-        OperationsUser opsUser = operationsUserService.getUserByName(principal.getName());//TODO get current user
+        OperationsUser opsUser = operationsUserService.getUserByName(principal.getName());
         Iterable<MessageDTO> sentMessages = messageService.getSentMessages(opsUser);
         return sentMessages;
 

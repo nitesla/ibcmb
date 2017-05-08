@@ -1,7 +1,7 @@
 package longbridge.services.implementations;
 
+import com.sun.xml.internal.bind.v2.TODO;
 import longbridge.dtos.MessageDTO;
-import longbridge.dtos.OperationsUserDTO;
 import longbridge.models.*;
 import longbridge.repositories.MailBoxRepo;
 import longbridge.repositories.MessageRepo;
@@ -105,11 +105,10 @@ public class MessageServiceImpl implements MessageService {
         return null;
     }
 
-
     @Override
     public Iterable<Message> getMessages(User user, Date fromDate, Date toDate) {
 //        return this.messageRepo.findByMailBoxAndDateCreatedBetween(mailBox, fromDate, toDate);
-        return null;
+        return null; //TODO
     }
 
     public Iterable<Message> getMessage(Date fromDate, Date toDate) {
@@ -118,9 +117,9 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public void setStatus(Long id, String status) {
-        Message mes = this.messageRepo.getOne(id);
-        mes.setStatus(status);
-        this.messageRepo.save(mes);
+        Message message = this.messageRepo.getOne(id);
+        message.setStatus(status);
+        this.messageRepo.save(message);
     }
 
     @Override
