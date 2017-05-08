@@ -65,7 +65,7 @@ public class AdmFinancialInstitutionController {
 
     @GetMapping("/new")
     public String addFi( Model model) {
-        model.addAttribute("financialInstitution",new FinancialInstitutionDTO());
+        model.addAttribute("financialInstitution", new FinancialInstitutionDTO());
         return "adm/financialinstitution/add";
     }
 

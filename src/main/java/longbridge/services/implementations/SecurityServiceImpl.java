@@ -57,6 +57,6 @@ public class SecurityServiceImpl implements SecurityService {
 		integrationService.synchronizeToken(username);
 	}
 	
-	
+
 	
 }
