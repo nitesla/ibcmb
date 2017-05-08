@@ -2,9 +2,11 @@ package longbridge.repositories;
 
 import longbridge.models.MailBox;
 import longbridge.models.Message;
+import longbridge.models.UserType;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Wunmi on 27/03/2017.
@@ -17,6 +19,7 @@ public interface MessageRepo extends CommonRepo<Message, Long> {
 //
 //    Message findFirstByRecipientOrderByIdDesc(String recipient);
 
+    List<Message> findByRecipientAndRecipientTypeOrderByIdDesc(String recipient, UserType recipientTye);
 
     Iterable<Message> findByMailBox(MailBox mailBox);
 

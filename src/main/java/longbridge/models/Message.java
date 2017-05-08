@@ -27,6 +27,7 @@ public class Message extends AbstractEntity{
 
     private String sender;
     private String recipient;
+    private UserType recipientType;
     private String subject;
     private String body;
     private Date dateCreated;
@@ -65,6 +66,14 @@ public class Message extends AbstractEntity{
 
     public void setRecipient(String recipient) {
         this.recipient = recipient;
+    }
+
+    public UserType getRecipientType() {
+        return recipientType;
+    }
+
+    public void setRecipientType(UserType recipientType) {
+        this.recipientType = recipientType;
     }
 
     public String getSubject() {

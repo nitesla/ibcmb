@@ -144,9 +144,7 @@ public class RoleServiceImpl implements RoleService {
 
 	@Override
 	public void deleteRole(Long id) {
-		Role role = roleRepo.findOne(id);
-		role.setDelFlag("Y");
-		roleRepo.save(role);
+	roleRepo.delete(id);
 	}
 
 	public void addPermission(PermissionDTO permissionDTO) {

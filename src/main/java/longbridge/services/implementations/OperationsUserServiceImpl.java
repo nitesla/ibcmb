@@ -101,9 +101,9 @@ public class OperationsUserServiceImpl implements OperationsUserService {
 
 
     @Override
-    public OperationsUserDTO getUserByName(String name) {
+    public OperationsUser getUserByName(String name) {
         OperationsUser opsUser = this.operationsUserRepo.findFirstByUserName(name);
-        return convertEntityToDTO(opsUser);
+        return opsUser;
     }
 
     @Override
@@ -190,7 +190,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
 
     @Override
     @Transactional
-    public boolean changePassword(OperationsUserDTO user, String oldPassword, String newPassword) {
+    public boolean changePassword(OperationsUser user, String oldPassword, String newPassword) {
         boolean ok = false;
 
         try {

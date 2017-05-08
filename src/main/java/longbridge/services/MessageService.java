@@ -10,6 +10,8 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 
+import javax.jws.soap.SOAPBinding;
+
 /**
  * The {@code MessagingService} interface provides a service for sending messages
  * @author Fortunatus Ekenachi
@@ -19,25 +21,21 @@ import org.springframework.data.domain.Page;
  */
 public interface MessageService {
 
-
-
     Iterable<MessageDTO> getMessages();
 
-
-        /**
-         * Returns a mailbox of the given id
-         * @param id the id
-         * @return the mailbox
+    /**
+     * Returns a mailbox of the given id
+     * @param id the id
+     * @return the mailbox
          */
     MailBox getMailBox(Long id);
 
     /**
      * Returns the mailbox of the user identified by the userId and userType
-     * @param userId the user's id
-     * @param userType the type of user
+     * @param user the user
      * @return the mailbox
      */
-    MailBox getMailBox(Long userId, UserType userType);
+    MailBox getMailBox(User user);
 
     /**
      *Returns a {@code Message} identified by the given {@code id}
@@ -47,22 +45,28 @@ public interface MessageService {
     MessageDTO getMessage(Long id);
 
 
-    void addMessage(MailBox mailBox, MessageDTO messageDTO);
+    /**
+     * Adds the message created by the specified user
+     * @param sender the sender of the message
+     * @param recipient the recipient of the message
+     * @param message the message object
+     */
+    void addMessage(User sender, User recipient, MessageDTO message);
 
     /**
-     * Returns a list of messages on the specified mailbox
-     * @param mailbox the mailbox
+     * Returns a list of messages of the specified user
+     * @param user the user
      * @return a list of messages
      */
-    Iterable<MessageDTO> getMessages(MailBox mailbox);
+    Iterable<MessageDTO> getMessages(User user);
 
     /**
      * Returns a page list of messages on the specified mailboz
-     * @param mailbox the mailbox
+     * @param user the user
      * @param pageDetails the page details
      * @return a list of messages
      */
-    Page<Message> getMessages(MailBox mailbox, Pageable pageDetails);
+    Page<Message> getMessages(User user, Pageable pageDetails);
     
 
     /**
@@ -70,16 +74,16 @@ public interface MessageService {
      * @param date the date on the messages
      * @return a list of messages
      */
-   Iterable<Message> getMessages(MailBox mailBox, Date date);
+   Iterable<Message> getMessages(User user, Date date);
 
     /**
      * Returns a page list of messages identified by the mailbox on the given date
-     * @param mailbox the mailbox
+     * @param user the user
      * @param date the date to look for
      * @param pageDetails the page details for pagination
      * @return a list of messages
      */
-   Page<Message> getMessages(MailBox mailbox, Date date, Pageable pageDetails);
+   Page<Message> getMessages(User user, Date date, Pageable pageDetails);
 
 
 //    MessageDTO getLastSentMessage(String sender);
@@ -88,51 +92,58 @@ public interface MessageService {
 
 
     /**
-     *Returns a list of messages within the given date range
+     *Returns a list of messages of the specified user within the given date range
      * @param fromDate the start date
      * @param toDate the end date
      * @return a list of messages
      *
      */
-    Iterable<Message> getMessage(MailBox mailBox, Date fromDate, Date toDate);
+    Iterable<Message> getMessages(User user, Date fromDate, Date toDate);
 
     /**
-     * Returns a list of sent messages from the given mailbox
-     * @param mailBox the mailbox
+     * Returns a list of messages sent by the specified user
+     * @param user the user
      * @return a list of messages
      */
-    List<MessageDTO> getSentMessages(MailBox mailBox);
+    List<MessageDTO> getSentMessages(User user);
 
     /**
-     * Returns a list of received messages from the given mailbox
-     * @param mailBox the mailbox
-     * @return a  list of  messages
+     * Returns a list of messages received by the specified user
+     * @param user the user
+     * @return a list of  messages
      */
-    List<MessageDTO> getReceivedMessages(MailBox mailBox);
+    List<MessageDTO> getReceivedMessages(User user);
 
     /**
-     * Returns a page list of messages within the given date range
-     * @param mailbox the mailbox
+     * Returns a page list of messages of the specified user within the given date range
+     * @param user the user
      * @param fromDate the start date
      * @param toDate the end date
      * @param pageDetails the page details for pagination
      * @return a list of messages
      */
-    Page<Message> getMessages(MailBox mailbox, Date fromDate, Date toDate, Pageable pageDetails);
+    Page<Message> getMessages(User user, Date fromDate, Date toDate, Pageable pageDetails);
 
     /**
-     *Sets the status of the message
+     *Sets the status of the message as Read or Unread
      * @param id the id of the message
-     * @param status the status (SENT,SAVED)
+     * @param status the status (READ OR UNREAD)
      * @return the message as read and unread
      */
     void setStatus(Long id,String status); //Read or Unread
 
     /**
-     * Deletes the message identified by the given {@code id}
+     * Deletes the sent message identified by the given {@code id}
      * @param id the message id
      */
-    void deleteMessage(Long id);
+    void deleteSentMessage(User user, Long id);
+
+
+    /**
+     * Deletes the received message identified by the given {@code id}
+     * @param id the message id
+     */
+    void deleteReceivedMessage(Long id);
 
     /**
      *Purges the messages after the specified days
@@ -150,10 +161,10 @@ public interface MessageService {
     /**
      * Creates and sends the message from the sender to the recipient
      * @param sender the user that sends the message
-     * @param recipient the user the recieves the message
+     * @param recipient the user the receives the message
      * @param message  the message
      */
-    void sendMessage(User sender, User recipient, Message message);
+    void sendMessage(User sender, User recipient, MessageDTO message);
 
     /** Makes a request to send an email to using the details
      * in the {@link EmailDetail} object

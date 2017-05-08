@@ -54,6 +54,11 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     }
 
     @Override
+    public CorporateUser getUserByName(String username) {
+        return corporateUserRepo.findByUserName(username);
+    }
+
+    @Override
     public Iterable<CorporateUserDTO> getUsers(Corporate corporate) {
 
         Iterable<CorporateUser> corporateUserDTOList = corporateUserRepo.findAll();

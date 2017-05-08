@@ -31,7 +31,8 @@ public interface OperationsUserService{
     boolean isValidUsername(String username);
 
 
-    OperationsUserDTO getUserByName(String name);
+    OperationsUser getUserByName(String name);
+
 
     /**
      * Returns all Operations users present in th system
@@ -97,7 +98,7 @@ public interface OperationsUserService{
      * @param oldPassword the old password
      * @param newPassword the new Password
      */
-    boolean changePassword(OperationsUserDTO User, String oldPassword, String newPassword);
+    boolean changePassword(OperationsUser User, String oldPassword, String newPassword);
 
     /**
      * Generates and sends a password to the specified user

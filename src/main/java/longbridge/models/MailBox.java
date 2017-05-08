@@ -10,11 +10,15 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import javax.persistence.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Created by Wunmi on 27/03/2017.
  */
+
+
 @Entity
 @Audited
 @Where(clause ="del_Flag='N'" )
@@ -23,8 +27,16 @@ public class MailBox extends AbstractEntity{
     private Long userId;
     private UserType userType;
 
-    @OneToMany(mappedBy = "mailBox", cascade = CascadeType.ALL)
-    private Collection<Message> messages;
+
+    public  MailBox(){}
+
+    public  MailBox(Long userId, UserType userType){
+    	this.userId=userId;
+    	this.userType=userType;
+    }
+
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Message> messages = new ArrayList<Message>();
 
 	public Long getUserId() {
 		return userId;
@@ -42,14 +54,13 @@ public class MailBox extends AbstractEntity{
 		this.userType = userType;
 	}
 
-	public Collection<Message> getMessages() {
+	public List<Message> getMessages() {
 		return messages;
 	}
 
-	public void setMessages(Collection<Message> messages) {
+	public void setMessages(List<Message> messages) {
 		this.messages = messages;
 	}
-
 
 	@Override
 	public String serialize() throws JsonProcessingException {
