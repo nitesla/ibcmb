@@ -1,10 +1,5 @@
 package longbridge;
 
-import longbridge.dtos.OperationsUserDTO;
-import longbridge.models.MailBox;
-import longbridge.models.Message;
-import longbridge.models.OperationsUser;
-import longbridge.models.UserType;
 import longbridge.repositories.CustomJpaRepositoryFactoryBean;
 import longbridge.services.MessageService;
 import longbridge.services.OperationsUserService;
@@ -43,8 +38,6 @@ public class InternetbankingApplication implements CommandLineRunner {
 //		MailBox mailBox= messageService.getMailBox(opsUser.getId(), UserType.OPERATIONS);
 //		Iterable<Message> sent = messageService.getSentMessages(mailBox);
 //		logger.info("Mailbox is {}",sent);
-
-
 	}
 
 }

@@ -49,31 +49,31 @@
                 <div class="collapse navbar-collapse links" id="navbar-collapse-1">
                     <ul class="nav navbar-nav">
                         <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> My Accounts</a>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.account}"> My Accounts</a>
                             <ul class="dropdown-menu">
-                                <li><a th:href="@{/retail/account/customize}">Customise Accounts</a></li>
-                                <li><a th:href="@{/retail/account/settings}">Account Settings</a></li>
-                                <li><a th:href="@{'#'}">Create New Acoount</a></li>
+                                <li><a th:href="@{/retail/account/customize}" th:text="#{menu.account.customize}">Customise Accounts</a></li>
+                                <li><a th:href="@{/retail/account/settings}" th:text="#{menu.account.settings}">Account Settings</a></li>
+                                <li><a th:href="@{'#'}" th:text="#{menu.account.create}">Create New Acoount</a></li>
                             </ul>
                         </li>
                         <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> Transfers</a>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.transfer}"> Transfers</a>
                             <ul class="dropdown-menu">
-                                <li><a th:href="@{/retail/transfer/ownaccount}">Own account transfers </a></li>
-                                <li><a th:href="@{/retail/transfer/local}">Transfer to Coronation account </a></li>
-                                <li><a th:href="@{/retail/transfer/interbanktransfer}">Transfer to other banks</a></li>
-                                <li><a th:href="@{/retail/transfer}">International transfer</a></li>
-                                <li><a th:href="@{/retail/transfer/settransferlimit}">Set transfer limit</a></li>
-                                <li><a th:href="@{'#'}">Standing order</a></li>
+                                <li><a th:href="@{/retail/transfer/ownaccount}" th:text="#{menu.transfer.own}">Own account transfers </a></li>
+                                <li><a th:href="@{/retail/transfer/local}" th:text="#{menu.transfer.cmb}">Transfer to Coronation account </a></li>
+                                <li><a th:href="@{/retail/transfer/interbanktransfer}" th:text="#{menu.transfer.other}">Transfer to other banks</a></li>
+                                <li><a th:href="@{/retail/transfer}" th:text="#{menu.transfer.int}">International transfer</a></li>
+                                <li><a th:href="@{/retail/transfer/settransferlimit}" th:text="#{menu.transfer.limit}">Set transfer limit</a></li>
+                                <li><a th:href="@{'#'}" th:text="#{menu.transfer.order}">Standing order</a></li>
 
                                   </ul>
                         </li>
-                        <li><a href="#">Bill Payments</a></li>
-                        <li><a th:href="@{/retail/beneficiary}">Beneficiaries</a></li>
+                        <li><a href="#" th:text="#{menu.bill}">Bill Payments</a></li>
+                        <li><a th:href="@{/retail/beneficiary}" th:text="#{menu.beneficiary}">Beneficiaries</a></li>
                         <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> Service Requests </a>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.servreq}"> Service Requests </a>
                             <ul class="dropdown-menu">
-                                <li><a th:href="@{/retail/service_requests}">Track Requests</a></li>
+                                <li><a th:href="@{/retail/service_requests}" th:text="#{menu.servreq.track}">Track Requests</a></li>
                                 <p th:each="requests : ${serviceRequests}">
                                 <li><a th:href="@{/retail/requests/} + ${requests.id}" th:text="${requests.requestName}"></a></li>
                                 </p>
@@ -81,10 +81,10 @@
 
                             </ul></li>
                         <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> Settings </a>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.settings}"> Settings </a>
                             <ul class="dropdown-menu">
-                                <li><a th:href="@{/retail/alert_preference}">Alert Preference</a></li>
-                                <li><a th:href="@{/retail/change_password}">Change Password</a></li>
+                                <li><a th:href="@{/retail/alert_preference}" th:text="#{menu.settings.alert}">Alert Preference</a></li>
+                                <li><a th:href="@{/retail/change_password}" th:text="#{menu.settings.password}">Change Password</a></li>
                             </ul>
                         </li>
                     </ul>
