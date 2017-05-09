@@ -52,17 +52,15 @@ public class MainController {
         return modelAndView;
     }
 
-    @RequestMapping("/admin/dashboard")
+    @RequestMapping(value = {"/admin/dashboard", "/admin"})
     public String getAdminDashboard() {
         return "adm/dashboard";
     }
 
-    @RequestMapping("/ops/dashboard")
+    @RequestMapping(value = {"/ops/dashboard", "/ops"})
     public String getOpsDashboard() {
         return "ops/dashboard";
     }
-
-
 
     @GetMapping("/forgot/username")
     public String showForgotUsername(){

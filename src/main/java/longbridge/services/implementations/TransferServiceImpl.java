@@ -1,6 +1,8 @@
 package longbridge.services.implementations;
 
 import longbridge.dtos.TransferRequestDTO;
+import longbridge.exception.InternetBankingException;
+import longbridge.exception.InternetBankingTransferException;
 import longbridge.models.TransferRequest;
 import longbridge.models.User;
 import longbridge.repositories.TransferRequestRepo;
@@ -45,10 +47,10 @@ public class TransferServiceImpl implements TransferService {
     }
 
     @Override
-    public boolean makeTransfer(TransferRequestDTO transferRequestDTO) {
+    public boolean makeTransfer(TransferRequestDTO transferRequestDTO) throws InternetBankingTransferException {
         TransferRequest transferRequest = convertDTOToEntity(transferRequestDTO);
         boolean ok =integrationService.makeTransfer(transferRequest);
-        return ok;
+        return  ok;
 
 
     }
@@ -65,7 +67,7 @@ public class TransferServiceImpl implements TransferService {
     }
 
     @Override
-    public boolean saveTransfer(TransferRequestDTO transferRequestDTO) {
+    public boolean saveTransfer(TransferRequestDTO transferRequestDTO) throws InternetBankingTransferException {
        boolean result=false;
 
        try{
@@ -80,7 +82,7 @@ public class TransferServiceImpl implements TransferService {
     }
 
     @Override
-    public void deleteTransfer(Long id) {
+    public void deleteTransfer(Long id) throws InternetBankingException {
         TransferRequest transferRequest = transferRequestRepo.findById(id);
         if (transferRequest != null) {
             transferRequestRepo.delete(transferRequest);

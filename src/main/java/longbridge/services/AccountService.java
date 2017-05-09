@@ -2,6 +2,7 @@ package longbridge.services;
 
 import longbridge.api.AccountInfo;
 import longbridge.dtos.AccountDTO;
+import longbridge.exception.InternetBankingException;
 import longbridge.models.Account;
 import longbridge.utils.AccountStatement;
 import org.springframework.data.domain.Page;
@@ -21,7 +22,7 @@ import java.util.Map;
 public interface AccountService {
 
 
-    boolean AddFIAccount(String customerId, AccountInfo account);
+    boolean AddFIAccount(String customerId, AccountInfo account) throws InternetBankingException;
 
     /**
      * Adds the specified account to a customer's list of accounts
@@ -30,10 +31,10 @@ public interface AccountService {
      * @param account    the account to be added
      * @return an {@link Account} object
      */
-    boolean AddAccount(String customerId, Account account);
+    boolean AddAccount(String customerId, Account account) throws InternetBankingException;
 
 
-    boolean customizeAccount(Long id, String name);
+    String customizeAccount(Long id, String name) throws InternetBankingException;
 
     /**
      * Returns a particular account for a customer
@@ -124,7 +125,7 @@ public interface AccountService {
      * @param id
      * @return
      */
-    boolean hideAccount(Long id);
+    boolean hideAccount(Long id) throws InternetBankingException;
 
     /**
      * unhides the customers acoount from the platform
@@ -132,7 +133,7 @@ public interface AccountService {
      * @param id
      * @return
      */
-    boolean unhideAccount(Long id);
+    boolean unhideAccount(Long id) throws InternetBankingException;
 
     /**
      * makes account the customers primary acoount
@@ -141,8 +142,6 @@ public interface AccountService {
      * @param customerId
      * @return
      */
-    boolean makePrimaryAccount(Long id, String customerId);
-
-
+    boolean makePrimaryAccount(Long id, String customerId) throws InternetBankingException;
 
    }

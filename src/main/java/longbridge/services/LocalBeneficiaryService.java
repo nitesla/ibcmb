@@ -23,13 +23,13 @@ public interface LocalBeneficiaryService {
      * @param user the customer
      * @param  beneficiary  the beneficiary
      */
-    boolean addLocalBeneficiary(RetailUser user, LocalBeneficiaryDTO beneficiary);
+    String addLocalBeneficiary(RetailUser user, LocalBeneficiaryDTO beneficiary);
 
     /**
      * Deletes a beneficiary that has been created by the user
      * @param beneficiaryId the beneficiary's id
      */
-    boolean deleteLocalBeneficiary(Long beneficiaryId);
+    String deleteLocalBeneficiary(Long beneficiaryId);
 
     /**
      * Returns a beneficiary

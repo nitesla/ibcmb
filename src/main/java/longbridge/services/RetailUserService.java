@@ -2,6 +2,7 @@ package longbridge.services;
 
 import longbridge.api.CustomerDetails;
 import longbridge.dtos.RetailUserDTO;
+import longbridge.exception.InternetBankingPasswordException;
 import longbridge.forms.AlertPref;
 import longbridge.models.Account;
 import longbridge.models.RetailUser;
@@ -38,7 +39,7 @@ public interface RetailUserService {
      * @param user the user
      * @param password the password
      */
-    boolean setPassword(RetailUser user, String password);
+    String setPassword(RetailUser user, String password) throws InternetBankingPasswordException;
 
     /**
      * Adds a new retail user to the system

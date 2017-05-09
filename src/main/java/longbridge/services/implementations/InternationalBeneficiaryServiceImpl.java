@@ -1,6 +1,7 @@
 package longbridge.services.implementations;
 
 import longbridge.dtos.InternationalBeneficiaryDTO;
+import longbridge.exception.InternetBankingException;
 import longbridge.models.InternationalBeneficiary;
 import longbridge.models.RetailUser;
 import longbridge.repositories.InternationalBeneficiaryRepo;
@@ -9,10 +10,13 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 @Service
 public class InternationalBeneficiaryServiceImpl implements InternationalBeneficiaryService {
@@ -25,43 +29,30 @@ public class InternationalBeneficiaryServiceImpl implements InternationalBenefic
 	ModelMapper modelMapper;
 
 	@Autowired
+	MessageSource messageSource;
+
+	Locale locale = LocaleContextHolder.getLocale();
+
+	@Autowired
 	public InternationalBeneficiaryServiceImpl(InternationalBeneficiaryRepo internationalBeneficiaryRepo) {
 		this.internationalBeneficiaryRepo = internationalBeneficiaryRepo;
 	}
 
 	@Override
-	public boolean addInternationalBeneficiary(RetailUser user, InternationalBeneficiaryDTO beneficiary) {
-		boolean result = false;
-
-		try {
+	public String addInternationalBeneficiary(RetailUser user, InternationalBeneficiaryDTO beneficiary) throws InternetBankingException {
 			InternationalBeneficiary internationalBeneficiary = convertDTOToEntity(beneficiary);
 			internationalBeneficiary.setUser(user);
 			this.internationalBeneficiaryRepo.save(internationalBeneficiary);
-			logger.info("International beneficiary {} has been added for user {}",
-					user.getUserName());
-			result = true;
-		} catch (Exception e) {
-			logger.error("Could not add beneficiary", e.getMessage());
-
-		}
-		return result;
+			logger.info("International beneficiary {} has been added for user {}", internationalBeneficiary.toString(),user.getUserName());
+			return messageSource.getMessage("beneficiary.add.success",null,locale);
 	}
 
 	@Override
-	public boolean deleteInternationalBeneficiary(Long beneficiaryId) {
-		boolean result = false;
+	public String deleteInternationalBeneficiary(Long beneficiaryId) throws InternetBankingException{
 
-		try {
-			InternationalBeneficiary beneficiary = internationalBeneficiaryRepo.findOne(beneficiaryId);
-			beneficiary.setDelFlag("Y");
-			this.internationalBeneficiaryRepo.save(beneficiary);
-			logger.info("Deleted beneficiary {}", beneficiary.getAccountName());
-			result = true;
-		} catch (Exception e) {
-			logger.error("Could not create beneficiary {}", e.getMessage());
-
-		}
-		return result;
+			internationalBeneficiaryRepo.delete(beneficiaryId);
+			logger.info("Deleted beneficiary with Id{}", beneficiaryId);
+			return messageSource.getMessage("beneficiary.delete.success",null,locale);
 	}
 
 	@Override

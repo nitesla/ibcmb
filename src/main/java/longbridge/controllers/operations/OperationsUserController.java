@@ -1,6 +1,5 @@
 package longbridge.controllers.operations;
 
-import longbridge.dtos.AdminUserDTO;
 import longbridge.dtos.OperationsUserDTO;
 import longbridge.forms.ChangePassword;
 import longbridge.models.OperationsUser;
@@ -9,7 +8,6 @@ import longbridge.services.PasswordService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpRequest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -75,10 +73,10 @@ public class OperationsUserController {
             return "addUser";
         }
         user.setId(userId);
-        boolean updated = operationsUserService.updateUser(user);
-        if(updated) {
+        String message = operationsUserService.updateUser(user);
+
             model.addAttribute("success", "Operations user updated successfully");
-        }
+
         return "updateUser";
     }
 

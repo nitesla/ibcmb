@@ -4,6 +4,7 @@ package longbridge.services.implementations;
 import longbridge.api.AccountInfo;
 import longbridge.api.CustomerDetails;
 import longbridge.dtos.RetailUserDTO;
+import longbridge.exception.InternetBankingPasswordException;
 import longbridge.forms.AlertPref;
 import longbridge.models.Account;
 import longbridge.models.Code;
@@ -14,6 +15,8 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -30,36 +33,36 @@ import java.util.*;
 public class RetailUserServiceImpl implements RetailUserService {
 
     private Logger logger= LoggerFactory.getLogger(this.getClass());
+
     @Autowired
-    private CodeService codeService;
     private RetailUserRepo retailUserRepo;
+    @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
-    AccountService accountService;
+    private ModelMapper modelMapper;
 
     @Autowired
-    ModelMapper modelMapper;
-    
-    @Autowired
-    SecurityService securityService;
+    MessageSource messageSource;
 
-    @Autowired
+    Locale locale = LocaleContextHolder.getLocale();
+
+    private CodeService codeService;
+    private AccountService accountService;
+    private SecurityService securityService;
     private RoleService roleService;
-
-    @Autowired
     private IntegrationService integrationService;
 
-    public RetailUserServiceImpl(){
-
-    }
+    public RetailUserServiceImpl(){}
 
     @Autowired
-    public  RetailUserServiceImpl(RetailUserRepo retailUserRepo, BCryptPasswordEncoder passwordEncoder) {
-        this.retailUserRepo = retailUserRepo;
-        this.passwordEncoder=passwordEncoder;
+    public RetailUserServiceImpl(CodeService codeService, AccountService accountService, SecurityService securityService, RoleService roleService, IntegrationService integrationService) {
+        this.codeService = codeService;
+        this.accountService = accountService;
+        this.securityService = securityService;
+        this.roleService = roleService;
+        this.integrationService = integrationService;
     }
-
 
     @Override
     public RetailUserDTO getUser(Long id) {
@@ -87,13 +90,13 @@ public class RetailUserServiceImpl implements RetailUserService {
     }
 
     @Override
-    public boolean setPassword(RetailUser user, String password) {
+    public String setPassword(RetailUser user, String password) throws InternetBankingPasswordException {
         boolean ok=false;
         if(user!=null) {
             user.setPassword(this.passwordEncoder.encode(user.getPassword()));
         }
         else{throw new RuntimeException("Null user provided");}
-        return ok;
+        return null;
 
     }
 

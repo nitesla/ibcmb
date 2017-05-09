@@ -22,12 +22,12 @@ public class MailService {
     }
 
 
-    public void send(String recipient, String message) {
+    public void send(String recipient, String subject, String message) {
         MimeMessagePreparator messagePreparator = mimeMessage -> {
             MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
             messageHelper.setFrom("ibanking@coronationmb.com");
             messageHelper.setTo(recipient);
-            messageHelper.setSubject("Email from Coronation Internet Banking");
+            messageHelper.setSubject(subject);
             messageHelper.setText(message);
         };
         try {

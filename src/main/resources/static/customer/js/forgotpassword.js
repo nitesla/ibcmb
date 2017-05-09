@@ -1,13 +1,9 @@
-
-
-	var accountName = "null";
-
+    var accountName = "null";
 
 	/** This validates the input account number.
 	 * 
 	 * @param accountNumber the account number to check
 	 */
-
 	function validateAccountNumber(accountNumber){
 		var accountName;
 		$.ajax({
@@ -31,7 +27,6 @@
         }else{
         	return true;
         }
-
 	}
 	
 
@@ -51,8 +46,10 @@
     
     var ACCOUNT_DETAILS_STEP = 0;
     var CONFIRM_PASSWORD_STEP = 2;
-    var condition = [[${success}]];
 
+    //var condition = [[${success}]];
+    
+//    $("#wizard-t-2").get(0).click();
     form.children("div").steps({
         headerTag: "h3",
         bodyTag: "section",

@@ -3,6 +3,7 @@ package longbridge.controllers.operations;
 import longbridge.dtos.AccountClassRestrictionDTO;
 import longbridge.dtos.AccountRestrictionDTO;
 import longbridge.dtos.CodeDTO;
+import longbridge.exception.InternetBankingException;
 import longbridge.services.AccountConfigurationService;
 import longbridge.services.CodeService;
 import org.slf4j.Logger;
@@ -138,7 +139,11 @@ return restrictionTypes;
 
     @GetMapping("/restriction/account/{id}/delete")
     public String deleteAccountRestriction(@PathVariable Long id, RedirectAttributes redirectAttributes, Locale locale) {
-        accountConfigService.deleteAccountRestriction(id);
+        try {
+            accountConfigService.deleteAccountRestriction(id);
+        } catch (InternetBankingException ibe) {
+            logger.error("Could not delete account restriction {}",ibe.toString());
+        }
         redirectAttributes.addFlashAttribute("message",messageSource.getMessage("account.restriction.remove",null,locale));
         return "redirect:/ops/accounts/restriction/account";
     }
@@ -161,15 +166,15 @@ return restrictionTypes;
         }
         catch (DataAccessException exc){
             logger.error("Could not create account restriction: {}",exc.toString());
-            bindingResult.addError(new ObjectError("exception", String.format(messageSource.getMessage("account.class.restriction.exists",null,locale),accountClassRestrictionDTO.getAccountClass())));
+            bindingResult.addError(new ObjectError("exception", String.format(messageSource.getMessage("class.restriction.exists",null,locale),accountClassRestrictionDTO.getAccountClass())));
             return "ops/account/restriction/class/add";
         }
         catch (Exception e) {
             logger.error("Could not create account class restriction: {}",e.toString());
-            bindingResult.addError(new ObjectError("exception", messageSource.getMessage("account.class.restriction.failure",null,locale)));
+            bindingResult.addError(new ObjectError("exception", messageSource.getMessage("class.restriction.failure",null,locale)));
             return "ops/account/restriction/class/add";
         }
-        redirectAttributes.addFlashAttribute("message",messageSource.getMessage("account.class.restriction.success",null,locale));
+        redirectAttributes.addFlashAttribute("message",messageSource.getMessage("class.restriction.success",null,locale));
         return "redirect:/ops/accounts/restriction/class";
     }
 
@@ -192,10 +197,10 @@ return restrictionTypes;
         }
         catch (Exception e) {
             logger.error("Could not update account class restriction: {}",e.toString());
-            bindingResult.addError(new ObjectError("exception", messageSource.getMessage("account.class.restriction.update.failure",null,locale)));
+            bindingResult.addError(new ObjectError("exception", messageSource.getMessage("class.restriction.update.failure",null,locale)));
             return "ops/account/restriction/class/edit";
         }
-        redirectAttributes.addFlashAttribute("message",messageSource.getMessage("account.class.restriction.update.success",null,locale));
+        redirectAttributes.addFlashAttribute("message",messageSource.getMessage("class.restriction.update.success",null,locale));
         return "redirect:/ops/accounts/restriction/class";
     }
 
@@ -208,7 +213,7 @@ return restrictionTypes;
     public @ResponseBody
     DataTablesOutput<AccountClassRestrictionDTO> getAccountClassRestrictions(DataTablesInput input){
         Pageable pageable = DataTablesUtils.getPageable(input);
-        Page<AccountClassRestrictionDTO> accountClassRestrictions = accountConfigService.getdAccountClassRestrictions(pageable);
+        Page<AccountClassRestrictionDTO> accountClassRestrictions = accountConfigService.getAccountClassRestrictions(pageable);
         DataTablesOutput<AccountClassRestrictionDTO> out = new DataTablesOutput<AccountClassRestrictionDTO>();
         out.setDraw(input.getDraw());
         out.setData(accountClassRestrictions.getContent());
@@ -219,7 +224,11 @@ return restrictionTypes;
 
     @GetMapping("/restriction/class/{id}/delete")
     public String deleteAccountClassRestriction(@PathVariable Long id,RedirectAttributes redirectAttributes,Locale locale) {
-        accountConfigService.deleteAccountClassRestriction(id);
+        try {
+            accountConfigService.deleteAccountClassRestriction(id);
+        } catch (InternetBankingException ibe) {
+            logger.error("Could not delete account class restriction {}"+ibe.toString());
+        }
         redirectAttributes.addFlashAttribute("message",messageSource.getMessage("account.class.restriction.remove",null,locale));
         return "redirect:/ops/accounts/restriction/class";
     }

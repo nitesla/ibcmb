@@ -3,11 +3,8 @@ package longbridge.services;
 import longbridge.dtos.AccountLimitDTO;
 import longbridge.dtos.ClassLimitDTO;
 import longbridge.dtos.GlobalLimitDTO;
-import longbridge.models.Account;
-import longbridge.models.GlobalLimit;
-import org.springframework.data.domain.Page;
+import longbridge.exception.InternetBankingException;
 
-import java.awt.print.Pageable;
 import java.util.List;
 
 /**
@@ -15,11 +12,11 @@ import java.util.List;
  */
 public interface TransactionLimitService {
 
-    void addGlobalLimit(GlobalLimitDTO globalLimit) throws Exception;
+    String addGlobalLimit(GlobalLimitDTO globalLimit) throws InternetBankingException;
 
-    void addClassLimit(ClassLimitDTO classLimit) throws Exception;
+    String addClassLimit(ClassLimitDTO classLimit) throws InternetBankingException;
 
-    void addAccountLimit(AccountLimitDTO accountLimit) throws Exception;
+    String addAccountLimit(AccountLimitDTO accountLimit) throws InternetBankingException;
 
 
     GlobalLimitDTO getCorporateGlobalLimit(Long id);

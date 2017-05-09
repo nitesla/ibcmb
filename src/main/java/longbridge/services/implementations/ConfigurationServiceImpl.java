@@ -1,15 +1,19 @@
 package longbridge.services.implementations;
 
 import longbridge.dtos.SettingDTO;
+import longbridge.exception.InternetBankingException;
 import longbridge.models.Setting;
 import longbridge.repositories.SettingRepo;
 import longbridge.services.ConfigurationService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -29,12 +33,18 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 	@Autowired
 	ModelMapper modelMapper;
 
+	@Autowired
+	MessageSource messageSource;
+
+	Locale locale = LocaleContextHolder.getLocale();
+
 	@Transactional
 	@Override
-	public void addSetting(SettingDTO dto) {
+	public String addSetting(SettingDTO dto) throws InternetBankingException {
 		ModelMapper mapper = new ModelMapper();
 		Setting setting = mapper.map(dto, Setting.class);
 		settingRepo.save(setting);
+		return  messageSource.getMessage("setting.add.success",null,locale);
 	}
 
 	@Override
@@ -78,16 +88,18 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 	
 	@Transactional
 	@Override
-	public void updateSetting(SettingDTO dto) {
+	public String updateSetting(SettingDTO dto) throws InternetBankingException {
 		Setting setting = settingRepo.findOne(dto.getId());
 		ModelMapper mapper = new ModelMapper();
 		mapper.map(dto, setting);
 		settingRepo.save(setting);
+		return messageSource.getMessage("setting.update.success",null,locale);
 	}
 
 	@Override
-	public void deleteSetting(Long id) {
+	public String deleteSetting(Long id) throws InternetBankingException {
 		settingRepo.delete(id);
+		return messageSource.getMessage("setting.delete.success",null,locale);
 	}
 
 	private SettingDTO convertEntityToDTO(Setting setting) {

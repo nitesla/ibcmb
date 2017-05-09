@@ -3,7 +3,8 @@ package longbridge.services;
 import longbridge.api.AccountDetails;
 import longbridge.api.AccountInfo;
 import longbridge.api.CustomerDetails;
-import longbridge.api.LocalTransferResponse;
+import longbridge.exception.InternetBankingTokenException;
+import longbridge.exception.InternetBankingTransferException;
 import longbridge.models.TransferRequest;
 import longbridge.utils.AccountStatement;
 
@@ -45,7 +46,7 @@ public interface IntegrationService {
     /** Initiates a transfer request to the relevant Transfer service.
      *
      */
-    boolean makeTransfer(TransferRequest transferRequest);
+    boolean makeTransfer(TransferRequest transferRequest) throws InternetBankingTransferException;
 
     /**Fetches the account Name, Balance , Type from the account table specified by account Number
      *
@@ -93,7 +94,7 @@ public interface IntegrationService {
      * with the specified username
      * @param username the username of the required user
      */
-    void synchronizeToken(String username);
+    boolean synchronizeToken(String username) throws InternetBankingTokenException;
     
     
      /** This validates the token string passed in.
@@ -102,6 +103,6 @@ public interface IntegrationService {
      * @param tokenString the inputted token string
      * @return true if the validation was true and false if not
      */
-    boolean performTokenValidation(String username, String tokenString);
+    boolean performTokenValidation(String username, String tokenString) throws InternetBankingTokenException;
     
 }

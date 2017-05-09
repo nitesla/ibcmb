@@ -2,6 +2,7 @@ package longbridge.services;
 
 import java.util.List;
 
+import longbridge.exception.InternetBankingException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -23,21 +24,21 @@ public interface CorporateService{
      *
      * @param corporate the corporate customer
      */
-    void addCorporate(CorporateDTO corporate);
+    String  addCorporate(CorporateDTO corporate) throws InternetBankingException;
 
     /**
      * Deletes the given corporate customer
      *
      * @param corporateId the corporate customer's id
      */
-    void deleteCorporate(Long corporateId);
+    String deleteCorporate(Long corporateId) throws InternetBankingException;
 
     /**
      * Updates the details of the corporate customer
      *
      * @param corporate the corporate customer
      */
-    void updateCorporate(CorporateDTO corporate);
+    String updateCorporate(CorporateDTO corporate) throws InternetBankingException;
 
     /**
      * Returns a {@code Corporate} object that has the details of the customer
@@ -63,7 +64,7 @@ public interface CorporateService{
      * @param corporate the corporate customer
      * @param limit        the corporate limit
      */
-    void setLimit(Corporate corporate, CorpLimit limit);
+    void setLimit(Corporate corporate, CorpLimit limit) throws InternetBankingException;
 
     /**
      * Updates the limit of transaction amount for the specified corporate customer
@@ -71,7 +72,7 @@ public interface CorporateService{
      * @param corporate the corporate customer
      * @param limit        the corporate limit
      */
-    void updateLimit(Corporate corporate,  CorpLimit limit);
+    void updateLimit(Corporate corporate,  CorpLimit limit) throws InternetBankingException;
 
     /**
      * Returns the transaction limit set for the specified customer
@@ -87,7 +88,7 @@ public interface CorporateService{
      * @param corporateId the corporate customer's id
      * @param  limit the corporate limit
      */
-    void deleteLimit(Long corporateId, CorpLimit limit);
+    void deleteLimit(Long corporateId, CorpLimit limit) throws InternetBankingException;
 
 
 
@@ -97,7 +98,7 @@ public interface CorporateService{
      * @param corporate the corporate customer
      * @param account           the account
      */
-    void addAccount(Corporate corporate, Account account);
+    boolean addAccount(Corporate corporate, Account account) throws InternetBankingException;
 
     /**
      * Adds a corporate user to a corporate customer
@@ -105,14 +106,14 @@ public interface CorporateService{
      * @param corporate the corporate customer
      * @param corporateUser     the corporate user
      */
-    void addCorporateUser(Corporate corporate, CorporateUser corporateUser);
+    String addCorporateUser(Corporate corporate, CorporateUser corporateUser) throws InternetBankingException;
 
     /**
      * Enables the corporate customer
      *
      * @param corporate the corporate customer
      */
-    void enableCorporate(Corporate corporate);
+    void enableCorporate(Corporate corporate) throws InternetBankingException;
 
     /**
      * Disables the corporate customer
@@ -120,6 +121,6 @@ public interface CorporateService{
      * @param corporate the corporate customer
      *
      */
-    void disableCorporate(Corporate corporate);
+    void disableCorporate(Corporate corporate) throws InternetBankingException;
 
 }
