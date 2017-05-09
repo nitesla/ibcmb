@@ -1,5 +1,6 @@
 package longbridge.services.implementations;
 
+import longbridge.exception.InternetBankingException;
 import longbridge.models.AuditConfig;
 import longbridge.repositories.AuditConfigRepo;
 import longbridge.services.AuditConfigService;
@@ -9,10 +10,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by ayoade_farooq@yahoo.com on 4/19/2017.
@@ -35,7 +32,7 @@ public class AuditConfigImpl implements AuditConfigService {
 	}
 
 	@Override
-	public boolean saveAuditConfig(AuditConfig cfg) {
+    public boolean saveAuditConfig(AuditConfig cfg) throws InternetBankingException {
 		configRepo.save(cfg);
 		return true;
 	}

@@ -1,5 +1,6 @@
 package longbridge.controllers.admin;
 
+import longbridge.services.AdminUserService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +35,7 @@ import longbridge.services.CodeService;
 import longbridge.services.VerificationService;
 
 import javax.validation.Valid;
+import java.security.Principal;
 
 /**
  * Created by Fortune on 4/5/2017.
@@ -51,7 +53,7 @@ public class AdmCodeController {
 	ModelMapper modelMapper;
 
 	@Autowired
-	private AdminUserRepo adminUserRepo;
+	private AdminUserService adminUserService;
 
 	@GetMapping("/new")
 	public String addCode(CodeDTO codeDTO) {
@@ -59,7 +61,7 @@ public class AdmCodeController {
 	}
 
 	@PostMapping
-    public String createCode(@ModelAttribute("codeDTO") @Valid CodeDTO codeDTO, BindingResult result, RedirectAttributes redirectAttributes){
+    public String createCode(@ModelAttribute("codeDTO") @Valid CodeDTO codeDTO, BindingResult result, Principal principal, RedirectAttributes redirectAttributes){
         if(result.hasErrors()){
             //return "add";
             logger.error("Error occurred creating code{}", result.toString());
@@ -70,9 +72,9 @@ public class AdmCodeController {
 
         logger.info("Code {}", codeDTO.toString());
 
-		AdminUser adminUser = adminUserRepo.findOne(1l);
+		AdminUser adminUser =adminUserService.getUserByName(principal.getName()) ;
 //		logger.info("Code {}", codeDTO.toString());
-		codeService.updateCode(codeDTO, adminUser);
+		codeService.addCode(codeDTO, adminUser);
 //        Code code = codeService.convertDTOToEntity(codeDTO);
 //        try {
 //			verificationService.addNewVerificationRequest(code);
@@ -177,7 +179,7 @@ public class AdmCodeController {
 
 	@PostMapping("/update")
 	public String updateCode(@ModelAttribute("code") @Valid CodeDTO codeDTO, BindingResult result,
-			RedirectAttributes redirectAttributes) {
+			Principal principal,RedirectAttributes redirectAttributes) {
 		if(result.hasErrors()){
 			//return "add";
 			logger.error("Error occurred creating code{}", result.toString());
@@ -186,20 +188,18 @@ public class AdmCodeController {
 
 		}
 
-//		codeService.addCode(codeDTO);
-
-		AdminUser adminUser = adminUserRepo.findOne(1l);
+		AdminUser adminUser = adminUserService.getUserByName(principal.getName());
 //		logger.info("Code {}", codeDTO.toString());
-		codeService.updateCode(codeDTO, adminUser);
+		String message = codeService.updateCode(codeDTO, adminUser);
 //		// codeService.modify(codeDTO, adminUser);
-		redirectAttributes.addFlashAttribute("message", "Code updated successfully");
+		redirectAttributes.addFlashAttribute("message", message);
 		return "redirect:/admin/codes";
 	}
 
 	@GetMapping("/{codeId}/delete")
 	public String deleteCode(@PathVariable Long codeId, RedirectAttributes redirectAttributes) {
-		codeService.deleteCode(codeId);
-		redirectAttributes.addFlashAttribute("message", "Code deleted successfully");
+		String message = codeService.deleteCode(codeId);
+		redirectAttributes.addFlashAttribute("message", message);
 		return "redirect:/admin/codes";
 	}
 }

@@ -2,6 +2,7 @@ package longbridge.services;
 
 import java.util.Date;
 
+import longbridge.exception.InternetBankingException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -49,44 +50,44 @@ public interface CorporateUserService{
      * @param user the corporate user
      * @param hashedPassword the hashed password
      */
-    void setPassword(CorporateUser user, String hashedPassword);
+    void setPassword(CorporateUser user, String hashedPassword) throws InternetBankingException;
 
     /**
      * Updates the details of the specified corporate customer
      * @param user the corporate user
      */
-    boolean updateUser(CorporateUser user);
+    String updateUser(CorporateUserDTO user) throws InternetBankingException;
 
     /**
      * Adds a corporate user to a corporate customer
      * @param user the corporate user
      */
-    void addUser(CorporateUser user);
+    String addUser(CorporateUser user);
 
     /**
      * resets the password for the specified corporate user
      * @param user the corporate user
      */
-    void resetPassword(CorporateUser user);
+    String resetPassword(CorporateUser user)throws InternetBankingException;
 
     /**
      * Deletes the specified corporate user
      * @param userId the corporate user's id
      */
-    void deleteUser(Long userId);
+    String deleteUser(Long userId) throws InternetBankingException;
 
     /**
      * Enables the corporate user. This allows the corporate user to perform
      * operations with the required permissions
      * @param user the corporate user
      */
-    void enableUser(CorporateUser user);
+    void enableUser(CorporateUser user) throws InternetBankingException;
 
     /**
      * Disables the corporate user. A disabled user cannot access the system.
      * @param user disables the corporate user
      */
-    void disableUser(CorporateUser user);
+    void disableUser(CorporateUser user) throws InternetBankingException;
     
     /**
      * Temporarily Locks the corporate user
@@ -102,7 +103,7 @@ public interface CorporateUserService{
      * @param oldPassword the old password
      * @param newPassword the hashed new password
      */
-    void changePassword(CorporateUser user, String oldPassword, String newPassword);
+    void changePassword(CorporateUser user, String oldPassword, String newPassword) throws InternetBankingException;
 
     /**
      * Generates and sends a password to the specified user

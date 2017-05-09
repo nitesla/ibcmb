@@ -1,6 +1,7 @@
 package longbridge.services;
 
 import longbridge.dtos.InternationalBeneficiaryDTO;
+import longbridge.exception.InternetBankingException;
 import longbridge.models.InternationalBeneficiary;
 import longbridge.models.RetailUser;
 
@@ -12,13 +13,13 @@ public interface InternationalBeneficiaryService {
      * @param user the customer
      * @param  beneficiary  the beneficiary
      */
-    boolean addInternationalBeneficiary(RetailUser user, InternationalBeneficiaryDTO beneficiary);
+    String addInternationalBeneficiary(RetailUser user, InternationalBeneficiaryDTO beneficiary) throws InternetBankingException;
 
     /**
      * Deletes a beneficiary
      * @param beneficiaryId the beneficiary's id
      */
-    boolean deleteInternationalBeneficiary(Long beneficiaryId);
+    String deleteInternationalBeneficiary(Long beneficiaryId) throws InternetBankingException;
 
     /**
      * Returns a beneficiary specified by the {@code id}

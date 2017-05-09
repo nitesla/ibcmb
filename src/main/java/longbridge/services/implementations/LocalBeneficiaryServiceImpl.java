@@ -1,6 +1,7 @@
 package longbridge.services.implementations;
 
 import longbridge.dtos.LocalBeneficiaryDTO;
+import longbridge.exception.InternetBankingException;
 import longbridge.models.LocalBeneficiary;
 import longbridge.models.RetailUser;
 import longbridge.repositories.LocalBeneficiaryRepo;
@@ -9,10 +10,13 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by Wunmi on 29/03/2017.
@@ -27,44 +31,32 @@ public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
     ModelMapper modelMapper;
 
     @Autowired
+    MessageSource messageSource;
+
+    Locale locale = LocaleContextHolder.getLocale();
+
+    @Autowired
     public LocalBeneficiaryServiceImpl(LocalBeneficiaryRepo localBeneficiaryRepo) {
         this.localBeneficiaryRepo = localBeneficiaryRepo;
     }
 
     @Override
-    public boolean addLocalBeneficiary(RetailUser user, LocalBeneficiaryDTO beneficiary) {
-        boolean result= false;
-
-        try {
+    public String addLocalBeneficiary(RetailUser user, LocalBeneficiaryDTO beneficiary) throws InternetBankingException{
             LocalBeneficiary localBeneficiary = convertDTOToEntity(beneficiary);
             localBeneficiary.setUser(user);
             this.localBeneficiaryRepo.save(localBeneficiary);
             logger.trace("Beneficiary {} has been added", localBeneficiary.toString());
-            result=true;
-        }
-        catch (Exception e){
-            logger.error("Could not create beneficiary",e);
-        }
-        return result;
+            return messageSource.getMessage("beneficiary.add.success",null,locale);
+
     }
 
     @Override
-    public boolean deleteLocalBeneficiary(Long beneficiaryId) {
-        boolean result= false;
+    public String deleteLocalBeneficiary(Long beneficiaryId) {
 
-        try {
+            this.localBeneficiaryRepo.delete(beneficiaryId);
+            logger.info("Beneficiary with Id {} deleted", beneficiaryId);
+            return messageSource.getMessage("beneficiary.delete.success",null,locale);
 
-            LocalBeneficiary beneficiary = localBeneficiaryRepo.findOne(beneficiaryId);
-            beneficiary.setDelFlag("Y");
-            this.localBeneficiaryRepo.save(beneficiary);
-            logger.info("Beneficiary {} has been deleted", beneficiary.toString());
-            result=true;
-        }
-        catch (Exception e){
-            logger.error("Could not delete beneficiary",e.getMessage());
-
-        }
-        return result;
     }
 
     @Override
@@ -101,6 +93,5 @@ public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
     public LocalBeneficiary convertDTOToEntity(LocalBeneficiaryDTO localBeneficiaryDTO){
         return  modelMapper.map(localBeneficiaryDTO,LocalBeneficiary.class);
     }
-	
-	
+
 }

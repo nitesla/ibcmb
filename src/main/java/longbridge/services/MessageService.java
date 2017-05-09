@@ -2,6 +2,7 @@ package longbridge.services;
 
 import longbridge.dtos.CorporateUserDTO;
 import longbridge.dtos.MessageDTO;
+import longbridge.exception.InternetBankingException;
 import longbridge.models.*;
 
 import java.awt.print.Pageable;
@@ -51,7 +52,7 @@ public interface MessageService {
      * @param recipient the recipient of the message
      * @param message the message object
      */
-    void addMessage(User sender, User recipient, MessageDTO message);
+    String addMessage(User sender, User recipient, MessageDTO message) throws InternetBankingException;
 
     /**
      * Returns a list of messages of the specified user
@@ -136,27 +137,27 @@ public interface MessageService {
      * Deletes the sent message identified by the given {@code id}
      * @param id the message id
      */
-    void deleteSentMessage(User user, Long id);
+    String deleteSentMessage(User user, Long id) throws InternetBankingException;
 
 
     /**
      * Deletes the received message identified by the given {@code id}
      * @param id the message id
      */
-    void deleteReceivedMessage(Long id);
+    String deleteReceivedMessage(Long id) throws InternetBankingException;
 
     /**
      *Purges the messages after the specified days
      * @param daysOld the daysOld
      */
-    void purge(int daysOld);
+    String purge(int daysOld) throws InternetBankingException;
 
     /**
      *Purges the messages with the given date range
      * @param fromDate the start date
      * @param toDate the end date
      */
-    void purge(Date fromDate, Date toDate);
+    String purge(Date fromDate, Date toDate) throws InternetBankingException;
 
     /**
      * Creates and sends the message from the sender to the recipient
@@ -164,11 +165,11 @@ public interface MessageService {
      * @param recipient the user the receives the message
      * @param message  the message
      */
-    void sendMessage(User sender, User recipient, MessageDTO message);
+    String sendMessage(User sender, User recipient, MessageDTO message) throws InternetBankingException;
 
     /** Makes a request to send an email to using the details
      * in the {@link EmailDetail} object
      * @param email EmailDetail object containing all the details required to send an email
      */
-    void sendEmail(EmailDetail email);
+    void sendEmail(EmailDetail email) throws InternetBankingException;
 }

@@ -19,6 +19,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 
@@ -32,36 +33,38 @@ public class AdmCorporateUserController {
     @Autowired
     CorporateUserService corporateUserService;
 
-    private Logger logger= LoggerFactory.getLogger(this.getClass());
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private ModelMapper modelMapper;
 
 
     @GetMapping("/new")
-    public String addUser(){
+    public String addUser() {
         return "addUser";
     }
 
     @PostMapping
-    public String createUser(@ModelAttribute("corporateUser") CorporateUserDTO corporateUserDTO, BindingResult result, Model model) throws Exception{
-        if(result.hasErrors()){
+    public String createUser(@ModelAttribute("corporateUser") CorporateUserDTO corporateUserDTO, BindingResult result, Model model) throws Exception {
+        if (result.hasErrors()) {
             return "addUser";
         }
-        CorporateUser corporateUser = modelMapper.map(corporateUserDTO,CorporateUser.class);
+        CorporateUser corporateUser = modelMapper.map(corporateUserDTO, CorporateUser.class);
         corporateUserService.addUser(corporateUser);
-        model.addAttribute("success","Corporate user created successfully");
+        model.addAttribute("success", "Corporate user created successfully");
         return "redirect:/corporate/users";
     }
 
     @GetMapping
-    public String getRetailUsers(){
+    public String getRetailUsers() {
 
         return "adm/corporate/view";
     }
 
     @GetMapping(path = "/all")
-    public @ResponseBody DataTablesOutput<CorporateUserDTO> getUsers(DataTablesInput input){
+    public
+    @ResponseBody
+    DataTablesOutput<CorporateUserDTO> getUsers(DataTablesInput input) {
 
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<CorporateUserDTO> corpUsers = corporateUserService.getUsers(pageable);
@@ -74,26 +77,23 @@ public class AdmCorporateUserController {
     }
 
     @GetMapping("/{userId}")
-    public String getUser(@PathVariable Long userId, Model model){
+    public String getUser(@PathVariable Long userId, Model model) {
         CorporateUserDTO user = corporateUserService.getUser(userId);
 
-        model.addAttribute("corporateUser",user);
+        model.addAttribute("corporateUser", user);
         return "corporateUser";
     }
 
 
-
     @PostMapping("/{userId}")
-    public String UpdateUser(@ModelAttribute("corporateUser") CorporateUserDTO corporateUserDTO, @PathVariable Long userId, BindingResult result,Model model) throws Exception{
-        if(result.hasErrors()){
+    public String UpdateUser(@ModelAttribute("corporateUser") CorporateUserDTO corporateUserDTO, @PathVariable Long userId, BindingResult result, RedirectAttributes redirectAttributes) {
+        if (result.hasErrors()) {
             return "addUser";
         }
         corporateUserDTO.setId(userId);
-        CorporateUser corporateUser = modelMapper.map(corporateUserDTO,CorporateUser.class);
-        boolean updated = corporateUserService.updateUser(corporateUser);
-        if(updated) {
-            model.addAttribute("success", "Corporate user updated successfully");
-        }
+        String message = corporateUserService.updateUser(corporateUserDTO);
+        redirectAttributes.addFlashAttribute("message", message);
+
         return "redirect:/corporate/users";
     }
 
@@ -104,25 +104,25 @@ public class AdmCorporateUserController {
     }
 
     @GetMapping("/changePassword")
-    public String changePassword(){
+    public String changePassword() {
         return "changePassword";
     }
 
     @PostMapping("/changePassword")
-    public String changePassword(@Valid ChangePassword changePassword, Long userId, BindingResult result, HttpRequest request, Model model){
-         if(result.hasErrors()){
-             return "changePassword";
+    public String changePassword(@Valid ChangePassword changePassword, Long userId, BindingResult result, HttpRequest request, Model model) {
+        if (result.hasErrors()) {
+            return "changePassword";
         }
-        CorporateUserDTO user= corporateUserService.getUser(userId);
-        String oldPassword=changePassword.getOldPassword();
-        String newPassword=changePassword.getNewPassword();
-        String confirmPassword=changePassword.getConfirmPassword();
+        CorporateUserDTO user = corporateUserService.getUser(userId);
+        String oldPassword = changePassword.getOldPassword();
+        String newPassword = changePassword.getNewPassword();
+        String confirmPassword = changePassword.getConfirmPassword();
 
         //TODO validate password according to the defined password policy
         //The validations can be done on the ChangePassword class
 
 
-        if(!newPassword.equals(confirmPassword)){
+        if (!newPassword.equals(confirmPassword)) {
             logger.info("PASSWORD MISMATCH");
         }
 

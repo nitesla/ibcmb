@@ -1,8 +1,11 @@
 package longbridge.controllers.admin;
 
+import longbridge.exception.InternetBankingDuplicateObjectException;
+import longbridge.exception.InternetBankingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
@@ -26,6 +29,7 @@ import longbridge.services.FinancialInstitutionService;
 import longbridge.services.VerificationService;
 
 import javax.validation.Valid;
+import java.util.Locale;
 
 /**
  * Created by Wunmi Sowunmi on 24/04/2017.
@@ -40,13 +44,18 @@ public class AdmFinancialInstitutionController {
     @Autowired
     private VerificationService verificationService;
 
+    @Autowired
+    MessageSource messageSource;
+
     @GetMapping
-    public String getFis() {
+    public String getFinancialInstitutions() {
         return "adm/financialinstitution/view";
     }
 
     @GetMapping(path = "/all")
-    public @ResponseBody DataTablesOutput<FinancialInstitutionDTO> getAllFis(DataTablesInput input) {
+    public
+    @ResponseBody
+    DataTablesOutput<FinancialInstitutionDTO> getAllFis(DataTablesInput input) {
 
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<FinancialInstitutionDTO> fis = financialInstitutionService.getFinancialInstitutions(pageable);
@@ -59,70 +68,74 @@ public class AdmFinancialInstitutionController {
     }
 
     @ModelAttribute
-    public  void init(Model model){
+    public void init(Model model) {
         model.addAttribute("types", FinancialInstitutionType.values());
     }
 
     @GetMapping("/new")
-    public String addFi( Model model) {
+    public String addFinancialInstutions(Model model) {
         model.addAttribute("financialInstitution", new FinancialInstitutionDTO());
         return "adm/financialinstitution/add";
     }
 
     @PostMapping
-    public String createFi(@ModelAttribute("financialInstitution") @Valid FinancialInstitutionDTO financialInstitutionDTO, BindingResult result, RedirectAttributes redirectAttributes){
-        if(result.hasErrors()){
-            result.addError(new ObjectError("invalid", "Please fill in the required fields"));
+    public String createFinancialInstitution(@ModelAttribute("financialInstitution") @Valid FinancialInstitutionDTO financialInstitutionDTO, BindingResult result, RedirectAttributes redirectAttributes, Model model, Locale locale) {
+        if (result.hasErrors()) {
+            result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
             logger.error("Error occurred creating code{}", result.toString());
             return "adm/financialinstitution/add";
         }
-
-        boolean response = financialInstitutionService.addFinancialInstitution(financialInstitutionDTO);
-        if (response == false){
-            logger.error("Error occurred creating FI to DB {}");
+        try {
+            String message = financialInstitutionService.addFinancialInstitution(financialInstitutionDTO);
+            redirectAttributes.addFlashAttribute("message", message);
+            return "redirect:/admin/finst";
+        } catch (InternetBankingDuplicateObjectException doe) {
+            logger.error("Error occurred creating financial institution", doe);
+            result.addError(new ObjectError("error", doe.getMessage()));
+            return "adm/financialinstitution/add";
+        } catch (InternetBankingException ibe) {
+            logger.error("Error occurred creating financial institution {}", ibe.toString());
+            result.addError(new ObjectError("error", messageSource.getMessage("institution.add.failure", null, locale)));
             return "adm/financialinstitution/add";
         }
 
-        redirectAttributes.addFlashAttribute("message", "Financial Institution added successfully");
-        return "redirect:/admin/finst";
     }
 
     @GetMapping("/{id}/edit")
-    public String editFi(@PathVariable Long id, Model model) {
+    public String editFinancialInstitution(@PathVariable Long id, Model model) {
         FinancialInstitutionDTO fi = financialInstitutionService.getFinancialInstitution(id);
         model.addAttribute("financialInstitution", fi);
         return "adm/financialinstitution/edit";
     }
 
     @PostMapping("/update")
-    public String updateFi(@ModelAttribute("financialInstitution") @Valid FinancialInstitutionDTO financialInstitutionDTO, BindingResult result,
-                             RedirectAttributes redirectAttributes) {
+    public String updateFinancialInstitution(@ModelAttribute("financialInstitution") @Valid FinancialInstitutionDTO financialInstitutionDTO, BindingResult result, RedirectAttributes redirectAttributes, Locale locale) {
         if (result.hasErrors()) {
-            result.addError(new ObjectError("invalid", "Please fill in the required fields"));
-
+            result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
+            return "adm/financialinstitution/edit";
+        }
+        try {
+            String message = financialInstitutionService.updateFinancialInstitution(financialInstitutionDTO);
+            redirectAttributes.addFlashAttribute("message", message);
+        } catch (Exception e) {
+            logger.error("Error occurred updating financial institution", e);
+            result.addError(new ObjectError("error", messageSource.getMessage("institution.update.failure", null, locale)));
             return "adm/financialinstitution/edit";
         }
 
-        boolean response = financialInstitutionService.updateFinancialInstitution(financialInstitutionDTO);
-
-        if (response == false){
-            logger.error("Error occurred updatinging FI to DB {}");
-            return "adm/financialinstitution/add";
-        }
-
-        redirectAttributes.addFlashAttribute("message", "Financial Institution updated successfully");
         return "redirect:/admin/finst";
     }
 
     @GetMapping("/{id}/delete")
-    public String deleteCode(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        boolean response = financialInstitutionService.deleteFi(id);
-        if (response == false){
-            logger.error("Error occurred deleting FI {}");
-            return "adm/financialinstitution/view";
+    public String deleteFinancialInstitution(@PathVariable Long id, RedirectAttributes redirectAttributes, Locale locale) {
+        try {
+            String message = financialInstitutionService.deleteFinancialInstitution(id);
+            redirectAttributes.addFlashAttribute("message", message);
+        } catch (Exception e) {
+            logger.error("Error occurred deleting financial institution ", e);
+            redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("institution.delete.failure", null, locale));
         }
-
-        redirectAttributes.addFlashAttribute("message", "Financial Institution deleted successfully");
         return "redirect:/admin/finst";
+
     }
 }

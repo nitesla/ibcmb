@@ -150,7 +150,7 @@
 <!-- /ops menu -->
 
 
-<!-- /menu footer buttons admin-->
+<!-- /menu footer buttons -->
 <div th:fragment="menu-footer-adm" class="sidebar-footer hidden-small">
     <a data-toggle="tooltip" data-placement="top" title="Settings">
         <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
@@ -271,7 +271,7 @@
     <div th:if="${failure}">
         <div hidden="hidden">
             <ul class="actionError">
-                <li th:each="msg : ${message}" th:text="${msg}">Message</li>
+                <li th:each="msg : ${failure}" th:text="${msg}">Message</li>
             </ul>
         </div>
     </div>

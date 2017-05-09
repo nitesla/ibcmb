@@ -2,6 +2,7 @@ package longbridge.services;
 
 import longbridge.dtos.AccountClassRestrictionDTO;
 import longbridge.dtos.AccountRestrictionDTO;
+import longbridge.exception.InternetBankingException;
 import longbridge.models.Account;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,13 +19,13 @@ public interface AccountConfigurationService {
      * Adds an account to a list of restricted accounts
      * @param accountRestrictionDTO contains details of the restriction
      */
-    void addAccountRestriction(AccountRestrictionDTO accountRestrictionDTO)throws Exception;
+    String addAccountRestriction(AccountRestrictionDTO accountRestrictionDTO)throws InternetBankingException;
 
     /**
      * updates the restriction on the account
      * @param accountRestrictionDTO contains details of the restriction
      */
-    void updateAccountRestriction(AccountRestrictionDTO accountRestrictionDTO)throws Exception;
+    String updateAccountRestriction(AccountRestrictionDTO accountRestrictionDTO)throws InternetBankingException;
 
 
     /**
@@ -46,26 +47,26 @@ public interface AccountConfigurationService {
      * Removes removes an account from the list of restricted accounts
      * @param id the id
      */
-    void deleteAccountRestriction(Long id);
+    String deleteAccountRestriction(Long id) throws InternetBankingException;
 
     /**
      * Adds an account to a list of restricted accounts
      * @param accountClassRestrictionDTO contains details of the restriction
      */
-    void addAccountClassRestriction(AccountClassRestrictionDTO accountClassRestrictionDTO) throws Exception;
+    String addAccountClassRestriction(AccountClassRestrictionDTO accountClassRestrictionDTO) throws InternetBankingException;
 
     /**
      * Updates the restriction on the account class
      * @param accountClassRestrictionDTO contains details of the restriction
      */
-    void updateAccountClassRestriction(AccountClassRestrictionDTO accountClassRestrictionDTO) throws Exception;
+    String updateAccountClassRestriction(AccountClassRestrictionDTO accountClassRestrictionDTO) throws InternetBankingException;
 
 
     /**
      * Removes removes an account class from the list of restricted account classes
      * @param id the id
      */
-    void deleteAccountClassRestriction(Long id);
+    String deleteAccountClassRestriction(Long id) throws InternetBankingException;
 
 
     /**
@@ -140,7 +141,7 @@ public interface AccountConfigurationService {
      * Returns a list of restricted account classes
      * @return restricted account classes
      */
-    Iterable<AccountClassRestrictionDTO> getdAccountClassRestrictions();
+    Iterable<AccountClassRestrictionDTO> getAccountClassRestrictions();
 
 
     /**
@@ -155,7 +156,7 @@ public interface AccountConfigurationService {
      * Returns a paginated list of restricted account classes
      * @return restricted account classes
      */
-    Page<AccountClassRestrictionDTO> getdAccountClassRestrictions(Pageable pageable);
+    Page<AccountClassRestrictionDTO> getAccountClassRestrictions(Pageable pageable);
 
 
 }
