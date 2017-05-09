@@ -10,6 +10,7 @@ import longbridge.repositories.RequestHistoryRepo;
 import longbridge.repositories.RetailUserRepo;
 import longbridge.repositories.ServiceRequestRepo;
 import longbridge.services.CodeService;
+import longbridge.services.MailService;
 import longbridge.services.RequestService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -44,9 +45,10 @@ public class RequestServiceImpl implements RequestService {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private MailService mailService;
+
     private Logger logger= LoggerFactory.getLogger(this.getClass());
-
-
 
 
     @Autowired
@@ -58,8 +60,9 @@ public class RequestServiceImpl implements RequestService {
     @Override
     public void addRequest(ServiceRequestDTO request) {
         ServiceRequest serviceRequest = convertDTOToEntity(request);
-        serviceRequest.setUser(retailUserRepo.findOne(serviceRequest.getUser().getId()));
+        serviceRequest.setUser(retailUserRepo.findOne(request.getUserId()));
         serviceRequestRepo.save(serviceRequest);
+
     }
 
 
@@ -104,6 +107,14 @@ public class RequestServiceImpl implements RequestService {
         Page<ServiceRequestDTO> pageImpl = new PageImpl<>(dtOs, pageDetails, t);
         return pageImpl;
     }
+
+//    public Page<ServiceRequestDTO>getUserRequests(Pageable pageDetails, RetailUser user){
+//        Page<ServiceRequest> page = serviceRequestRepo.findAll(pageDetails);
+//        List<ServiceRequestDTO> dtOs = convertEntitiesToDTOs(page.getContent());
+//        long t = page.getTotalElements();
+//        Page<ServiceRequestDTO> pageImpl = new PageImpl<>(dtOs, pageDetails, t);
+//        return pageImpl;
+//    }
 
 
 

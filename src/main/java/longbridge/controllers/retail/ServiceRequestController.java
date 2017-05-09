@@ -80,6 +80,7 @@ public class ServiceRequestController {
                 }
                 if (name.equals("serviceReqConfigId")) {
                     serviceReqConfigId = Long.parseLong(nameValue.getValue());
+                    serviceRequestDTO.setServiceReqConfigId(serviceReqConfigId);
                     iterator.remove();
                 }
             }
@@ -101,7 +102,7 @@ public class ServiceRequestController {
             RetailUser user = userService.getUserByName(principal.getName());
             serviceRequestDTO.setBody(requestBody);
             serviceRequestDTO.setRequestStatus("S");
-            serviceRequestDTO.setUser(user);
+            serviceRequestDTO.setUserId(user.getId());
             serviceRequestDTO.setDateRequested(new Date());
             requestService.addRequest(serviceRequestDTO);
 
@@ -109,25 +110,9 @@ public class ServiceRequestController {
             logger.error("Could not process the request: {}",e.toString());
         }
         redirectAttributes.addFlashAttribute("message", "Request sent successfully");
-        return "redirect:/retail/dashboard";
+        return "redirect:/retail/requests/track";
 
     }
-
-//    @PostMapping
-//    public String createServiceRequest(@ModelAttribute("requestForm") ServiceRequestDTO requestDTO, BindingResult result, Model model){
-//        if(result.hasErrors()){
-//            return "cust/servicerequest/add";
-//        }
-//
-//            retailUser = userRepo.findOne(1l);
-//
-//        logger.info(requestDTO.toString());
-//        requestDTO.setUser(retailUser);
-//        requestDTO.setDateRequested(new Date());
-//        requestService.addRequest(requestDTO);
-//        model.addAttribute("success", "Request added successfully");
-//        return "redirect:/retail/requests";
-//    }
 
     @GetMapping("/{reqId}")
     public String makeRequest(@PathVariable Long reqId, Model model) {
@@ -152,5 +137,29 @@ public class ServiceRequestController {
         model.addAttribute("requestConfig", serviceReqConfig);
         return "cust/servicerequest/add";
     }
+
+    @GetMapping("/track")
+    public String trackRequests(Model model, Principal principal){
+        RetailUser user = userService.getUserByName(principal.getName());
+        Iterable<ServiceRequestDTO> serviceRequests = requestService.getRequests(user);
+        model.addAttribute("requests", serviceRequests);
+        return "cust/servicerequest/track";
+    }
+
+//    @GetMapping(path = "/track/all")
+//    public @ResponseBody
+//    DataTablesOutput<ServiceRequestDTO> getUsers(DataTablesInput input, Principal principal){
+//        RetailUser user = userService.getUserByName(principal.getName());
+//        Pageable pageable = DataTablesUtils.getPageable(input);
+//        Page<ServiceRequestDTO> serviceRequests = requestService.getRequests(pageable);
+//        DataTablesOutput<ServiceRequestDTO> out = new DataTablesOutput<ServiceRequestDTO>();
+//        out.setDraw(input.getDraw());
+//        out.setData(serviceRequests.getContent());
+//        out.setRecordsFiltered(serviceRequests.getTotalElements());
+//        out.setRecordsTotal(serviceRequests.getTotalElements());
+//        return out;
+//    }
+
+
 
 }

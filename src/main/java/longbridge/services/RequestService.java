@@ -2,13 +2,11 @@ package longbridge.services;
 
 import longbridge.dtos.RequestHistoryDTO;
 import longbridge.dtos.ServiceRequestDTO;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-
 import longbridge.models.RequestHistory;
 import longbridge.models.RetailUser;
 import longbridge.models.ServiceRequest;
-import longbridge.models.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 /**
  * The {@code RequestService} interface provides the methods that manages customer's requests.
@@ -39,6 +37,8 @@ public interface RequestService {
     Iterable<ServiceRequestDTO>getRequests(RetailUser user);
     
     Page<ServiceRequestDTO>getRequests(Pageable pageDetails);
+
+//    Page<ServiceRequestDTO>getUserRequests(Pageable pageDetails, RetailUser user);
 
 
 

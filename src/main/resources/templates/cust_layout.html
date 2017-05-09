@@ -8,10 +8,10 @@
 
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/jquery-ui.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/bootstrap.css}"/>
+    <!--<link rel="stylesheet" type="text/css" th:href="@{~/customer/css/mega-menu.css}"/>-->
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/custom.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/font-awesome/font-awesome.min.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/sweetalert/sweetalert.css}"/>
-    <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>-->
     <title>Coronation Merchant Bank</title>
 
 </head>
@@ -73,7 +73,8 @@
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.servreq}"> Service Requests </a>
                             <ul class="dropdown-menu">
-                                <li><a th:href="@{/retail/service_requests}" th:text="#{menu.servreq.track}">Track Requests</a></li>
+                                <li><a th:href="@{/retail/requests/track}" th:text="#{menu.servreq.track}">Track Requests</a></li>
+                                <li role="separator" class="divider"></li>
                                 <p th:each="requests : ${serviceRequests}">
                                 <li><a th:href="@{/retail/requests/} + ${requests.id}" th:text="${requests.requestName}"></a></li>
                                 </p>
@@ -87,6 +88,31 @@
                                 <li><a th:href="@{/retail/change_password}" th:text="#{menu.settings.password}">Change Password</a></li>
                             </ul>
                         </li>
+                        <!--<li class="dropdown mega-dropdown">-->
+                            <!--<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.more}"> More </a>-->
+                            <!--<ul class="dropdown-menu mega-dropdown-menu col-md-12">-->
+                                <!--<li class="col-md-3 col-sm-3">-->
+                                    <!--<ul>-->
+                                        <!--<li class="dropdown-header">Dresses</li>-->
+                                        <!--<li><a href="#">Unique Features</a></li>-->
+                                        <!--<li><a href="#">Image Responsive</a></li>-->
+                                        <!--<li><a href="#">Auto Carousel</a></li>-->
+                                        <!--<li><a href="#">Newsletter Form</a></li>-->
+                                        <!--<li><a href="#">Four columns</a></li>-->
+                                    <!--</ul>-->
+                                <!--</li>-->
+                                <!--<li class="col-md-3 col-sm-3">-->
+                                    <!--<ul>-->
+                                        <!--<li class="dropdown-header">Dresses</li>-->
+                                        <!--<li><a href="#">Unique Features</a></li>-->
+                                        <!--<li><a href="#">Image Responsive</a></li>-->
+                                        <!--<li><a href="#">Auto Carousel</a></li>-->
+                                        <!--<li><a href="#">Newsletter Form</a></li>-->
+                                        <!--<li><a href="#">Four columns</a></li>-->
+                                    <!--</ul>-->
+                                <!--</li>-->
+                            <!--</ul>-->
+                        <!--</li>-->
                     </ul>
 
                     <ul class="nav navbar-nav navbar-right">
@@ -131,10 +157,26 @@
     <!-- CORE JQUERY SCRIPTS -->
     <script th:src="@{~/customer/js/jquery-1.11.1.js}"></script>
     <script th:src="@{~/customer/js/jquery-ui.js}"></script>
+    <script th:src="@{~/customer/js/jquery.dataTables.js}"></script>
+    <script th:src="@{~/customer/js/dataTables.bootstrap.js}"></script>
     <!-- SWEET ALERT -->
     <script th:src="@{~/customer/plugins/sweetalert/sweet-alert.js}"></script>
     <!-- BOOTSTRAP SCRIPTS  -->
     <script th:src="@{~/customer/js/bootstrap.js}"></script>
+    <script>
+        $(document).ready(function(){
+            $(".dropdown").hover(
+                function() {
+                    $('.dropdown-menu', this).not('.in .dropdown-menu').stop(true,true).slideDown("400");
+                    $(this).toggleClass('open');
+                },
+                function() {
+                    $('.dropdown-menu', this).not('.in .dropdown-menu').stop(true,true).slideUp("400");
+                    $(this).toggleClass('open');
+                }
+            );
+        });
+    </script>
 </footer>
 <!-- /footer content -->
 

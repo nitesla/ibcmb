@@ -1,20 +1,11 @@
 package longbridge.services.implementations;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import longbridge.dtos.AdminUserDTO;
 import longbridge.models.AdminUser;
-import longbridge.models.OperationCode;
 import longbridge.models.Role;
-import longbridge.models.Verification;
 import longbridge.repositories.AdminUserRepo;
 import longbridge.repositories.VerificationRepo;
 import longbridge.services.*;
-//import longbridge.utils.Verifiable;
-import java.util.ArrayList;
-import java.util.List;
-
-import longbridge.utils.Verifiable;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,30 +16,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.mail.MailSessionDefinition;
 import javax.transaction.Transactional;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import longbridge.dtos.AdminUserDTO;
-import longbridge.models.AdminUser;
-import longbridge.models.Role;
-import longbridge.repositories.AdminUserRepo;
-import longbridge.repositories.VerificationRepo;
-import longbridge.services.AdminUserService;
-import longbridge.services.RoleService;
-import longbridge.services.SecurityService;
 
-import longbridge.dtos.AdminUserDTO;
-import longbridge.models.AdminUser;
-import longbridge.models.Role;
-import longbridge.repositories.AdminUserRepo;
-import longbridge.repositories.VerificationRepo;
-import longbridge.services.AdminUserService;
-import longbridge.services.RoleService;
-import longbridge.services.SecurityService;
+//import longbridge.utils.Verifiable;
 
 
 /**
@@ -146,7 +120,7 @@ public class AdminUserServiceImpl implements AdminUserService {
             calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) + 2);
             adminUser.setExpiryDate(calendar.getTime());
             this.adminUserRepo.save(adminUser);
-            mailService.send(user.getEmail(), String.format("Your username is %s and password is %s", user.getUserName(), password));
+            mailService.send(user.getEmail(), "User Creation Notification", String.format("Your username is %s and password is %s", user.getUserName(), password));
             ok = true;
             logger.info("New admin user: {} created", adminUser.getUserName());
 
@@ -167,7 +141,7 @@ public class AdminUserServiceImpl implements AdminUserService {
         if ("INACTIVE".equals(oldStatus) && "ACTIVE".equals(newStatus)) {
             String password = passwordService.generatePassword();
             user.setPassword(passwordEncoder.encode(password));
-            mailService.send(user.getEmail(), String.format("Your new password to Admin console is %s and your current username is %s", password, user.getUserName()));
+            mailService.send(user.getEmail(), "Password Notification", String.format("Your new password to Admin console is %s and your current username is %s", password, user.getUserName()));
         }
         logger.info("Admin user {} status changed from {} to {}", user.getUserName(), oldStatus, newStatus);
 
@@ -217,7 +191,7 @@ public class AdminUserServiceImpl implements AdminUserService {
             user.setPassword(passwordEncoder.encode(newPassword));
             user.setExpiryDate(new Date());
             this.adminUserRepo.save(user);
-            mailService.send(user.getEmail(), "Your new password to Internet banking is " + newPassword);
+            mailService.send(user.getEmail(), "Password Change Notification", "Your new password to Internet banking is " + newPassword);
             ok = true;
             logger.info("Admin user {} password reset successfully", user.getUserName());
 

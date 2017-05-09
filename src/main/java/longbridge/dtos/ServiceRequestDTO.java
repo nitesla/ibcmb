@@ -1,7 +1,6 @@
 package longbridge.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import longbridge.models.RetailUser;
 
 import java.util.Date;
 
@@ -13,14 +12,14 @@ public class ServiceRequestDTO {
 
     @JsonProperty("DT_RowId")
     private  Long id;
-    private RetailUser user;
+    private Long userId;
     private String username;
     private String requestName;
-    private  String requestStatus;
+    private String requestStatus;
     private String body;
     private Date dateRequested;
     private String date;
-
+    private Long serviceReqConfigId;
 
     public Long getId() {
         return id;
@@ -30,12 +29,12 @@ public class ServiceRequestDTO {
         this.id = id;
     }
 
-    public RetailUser getUser() {
-        return user;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setUser(RetailUser user) {
-        this.user = user;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public String getRequestName() {
@@ -66,7 +65,13 @@ public class ServiceRequestDTO {
         return dateRequested;
     }
 
+    public Long getServiceReqConfigId() {
+        return serviceReqConfigId;
+    }
 
+    public void setServiceReqConfigId(Long serviceReqConfig) {
+        this.serviceReqConfigId = serviceReqConfig;
+    }
 
     public void setDateRequested(Date dateRequested) {
         this.dateRequested = dateRequested;
@@ -91,7 +96,7 @@ public class ServiceRequestDTO {
     @Override
     public String toString() {
         return "ServiceRequestDTO{" +
-                "user=" + user +
+                "userId=" + userId +
                 ", username='" + username + '\'' +
                 ", requestName='" + requestName + '\'' +
                 ", requestStatus='" + requestStatus + '\'' +

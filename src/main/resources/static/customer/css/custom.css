@@ -199,6 +199,11 @@ body {
     padding-left: 0;
 }
 
+.navbar-nav li a{
+    padding-top: 8px;
+    padding-bottom: 0px;
+}
+
 .navbar-nav li.dropdown:hover > ul.dropdown-menu {
     display: block;
 }
@@ -561,6 +566,12 @@ button, input, optgroup, select, textarea {
 /*****************************************************************
                     RESPONSIVE DESIGN
 *******************************************************************/
+@media screen and (min-width: 993px){
+    .logo {
+        right: 120px;
+    }
+}
+
 
 @media screen and (max-width: 992px) and (min-width: 760px){
     .logo {
@@ -687,7 +698,7 @@ button, input, optgroup, select, textarea {
     }
 
     .navbar .container-fluid {
-        padding-left: 15px;
+        padding-left: 12px;
     }
 
     .navbar-default .navbar-toggle {

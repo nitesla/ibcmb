@@ -3,7 +3,6 @@ package longbridge.services.implementations;
 import longbridge.dtos.OperationsUserDTO;
 import longbridge.models.OperationsUser;
 import longbridge.models.Role;
-import longbridge.models.User;
 import longbridge.repositories.OperationsUserRepo;
 import longbridge.services.MailService;
 import longbridge.services.OperationsUserService;
@@ -94,7 +93,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
         if ("INACTIVE".equals(oldStatus) && "ACTIVE".equals(newStatus)) {
             String password = passwordService.generatePassword();
             user.setPassword(passwordEncoder.encode(password));
-            mailService.send(user.getEmail(), String.format("Your new password to Operations console is %s and your current username is %s", password, user.getUserName()));
+            mailService.send(user.getEmail(),"Password Notification", String.format("Your new password to Operations console is %s and your current username is %s", password, user.getUserName()));
         }
         logger.info("Operations user {} status changed from {} to {}", user.getUserName(), oldStatus, newStatus);
     }
@@ -134,7 +133,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             opsUser.setPassword(passwordEncoder.encode(password));
             this.operationsUserRepo.save(opsUser);
 
-            mailService.send(user.getEmail(), String.format("Your username is %s and password is %s", user.getUserName(), password));
+            mailService.send(user.getEmail(), "Password Notification", String.format("Your username is %s and password is %s", user.getUserName(), password));
             ok = true;
             logger.info("New operations user: {} created", opsUser.getUserName());
 
@@ -206,7 +205,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             user.setPassword(passwordEncoder.encode(newPassword));
             user.setExpiryDate(new Date());
             operationsUserRepo.save(user);
-            mailService.send(user.getEmail(), "Your new password to Internet Banking is " + newPassword);
+            mailService.send(user.getEmail(), "Password Change Notification","Your new password to Internet Banking is " + newPassword);
             ok = true;
             logger.info("Operations user {} password reset successfully", user.getUserName());
 
