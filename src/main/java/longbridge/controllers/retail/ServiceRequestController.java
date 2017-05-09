@@ -19,6 +19,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.security.Principal;
 import java.util.*;
 
 /**
@@ -42,6 +43,9 @@ public class ServiceRequestController {
 
     @Autowired
     private RetailUserService userService;
+
+    @Autowired
+    private FinancialInstitutionService financialInstitutionService;
 
     //private RetailUser retailUser = new RetailUser();//TODO user must be authenticated
 

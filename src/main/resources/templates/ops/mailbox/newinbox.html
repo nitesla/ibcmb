@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+    <!-- Bootstrap -->
+    <link th:href="@{~/bank/css/bootstrap.min.css}" rel="stylesheet"/>
+    <!-- Font Awesome -->
+    <link th:href="@{~/bank/font-awesome/font-awesome.min.css}" rel="stylesheet"/>
+    <!-- NProgress -->
+    <link th:href="@{~/bank/vendors/nprogress/nprogress.css}" rel="stylesheet"/>
+    <link th:href="@{~/bank/css/select.bootstrap.css}" rel="stylesheet"/>
+    <!-- Custom Theme Style -->
+    <link th:href="@{~/bank/vendors/bootstrap-editable/css/bootstrap-editable.css}" rel="stylesheet" type="text/css"/>
+    <link th:href="@{~/bank/css/custom.css}" rel="stylesheet"/>
+    <link th:href="@{~/bank/css/coronation.css}" rel="stylesheet"/>
+    <link th:href="@{~/bank/vendors/sweetalert/sweetalert.css}" rel="stylesheet"/>
+    <link th:href="@{~/bank/css/bootstrap-switch.min.css}" rel="stylesheet"/>
+    <link th:href="@{~/bank/vendors/switchery/switchery.css}" rel="stylesheet" type="text/css"/>
+    <link th:href="@{~/bank/vendors/bootstrap-dialog/css/bootstrap-dialog.css}" rel="stylesheet" type="text/css"/>
+</head>
+
+
+
+<body class="nav-md">
+<div class="container body">
+    <div class="main_container">
+        <div class="col-md-3 left_col">
+            <div class="left_col scroll-view">
+                <div class="navbar nav_title" >
+                    <!--<a href="index.html"><img th:src="@{~/images/cmb_logo.png}"/></a>-->
+                </div>
+
+                <div class="clearfix"></div>
+                <div class="clearfix"></div>
+
+                <div th:replace="layout :: ops-menu"></div>
+                <div th:replace="layout :: menu-footer"></div>
+
+            </div>
+        </div>
+        <div th:replace="layout :: ops-top-nav"></div>
+
+        <!-- page content -->
+        <div class="right_col" role="main">
+            <div class="">
+
+                <div class="page-title">
+                    <div class="title_left">
+                        <h3>
+
+                            <small>
+
+                            </small>
+                        </h3>
+                    </div>
+
+
+                </div>
+                <div class="clearfix"></div>
+                <div class="x_title">
+                    <h2>Inbox</h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        </li>
+
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+
+                <div class="col-md-12">
+
+                <div class="col-md-3">
+                    <a href="/ops/mailbox/newcompose" class="btn btn-primary outline-btn btn-block m-b-10">Compose</a>
+                    <ul class="list-unstyled mailbox-nav">
+                        <li class="active"><a href="/ops/mailbox/newinbox"><i class="fa fa-inbox"></i>Inbox
+                            <span class="badge badge-success">4</span></a></li>
+                        <li><a href="inbox.html#"><i class="fa fa-sign-out"></i>Sent</a></li>
+                        <li><a href="inbox.html#"><i class="fa fa-file-text-o"></i>Draft</a></li>
+                        <li><a href="inbox.html#"><i class="fa fa-exclamation-circle"></i>Spam</a></li>
+                        <li><a href="inbox.html#"><i class="fa fa-trash"></i>Trash</a></li>
+                    </ul>
+                </div>
+
+
+
+                    <div class="col-md-9">
+                        <div class="x_panel">
+
+                            <!--Start Page Title-->
+                            <!--<div class="page-title-box">-->
+                                <!--<h4 class="page-title">Inbox</h4>-->
+                                <!--<div class="clearfix"></div>-->
+                            <!--</div>-->
+                            <!--End Page Title-->
+
+                            <!--Start row-->
+
+
+
+
+
+
+
+
+
+                                                            <table class="table table-striped table-bordered table-hover" id="limit">
+                                                                <thead>
+                                                                <tr>
+                                                                    <!--<th colspan="1" class="hidden-xs">-->
+                                                                        <!--<div class="checkbox">-->
+                                                                            <!--<input type="checkbox" class="check-mail-all">-->
+                                                                            <!--<label></label>-->
+                                                                        <!--</div>-->
+                                                                    <!--</th>-->
+                                                                    <th class="text-right" colspan="5">
+                                                                        <!--<a class="btn btn-primary outline-btn m-r-10"  title="Refresh"><i class="fa fa-refresh"></i></a>-->
+
+                                                                    </th>
+
+                                                                </tr>
+                                                                <tr>
+                                                                    <th>..</th>
+                                                                    <th>..</th>
+                                                                    <th>..</th>
+
+                                                                </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                <!--<tr >-->
+
+
+                                                                    <!--<td class="hidden-xs">-->
+                                                                        <!--Jacob-->
+                                                                    <!--</td>-->
+                                                                    <!--<td>-->
+                                                                        <!--There are many variations of passages of Lorem Ipsum </td>-->
+                                                                    <!--<td>-->
+                                                                        <!--21 march-->
+                                                                    <!--</td>-->
+                                                                <!--</tr>-->
+
+                                                                </tbody>
+                                                            </table>
+
+
+
+
+
+
+
+
+</div>
+                                    <!--End row-->
+
+
+
+                                <!-- End Wrapper-->
+
+
+                </div>
+            </div>
+        </div>
+        </div>
+        <!-- /page content -->
+
+        <!-- footer content -->
+
+        <!-- /footer content -->
+        <footer th:replace="layout :: footer">
+        </footer>
+    </div>
+</div>
+
+<script th:src="@{~/bank/vendors/datatables.net/js/jquery.dataTables.js}"></script>
+<script th:src="@{~/bank/js/dataTables.bootstrap.js}"></script>
+<script th:src="@{~/bank/js/dataTables.select.js}"></script>
+<script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
+
+
+<!-- bootstrap-wysiwyg -->
+
+<script>
+    $('#compose').click(function(){
+        location.href = "/ops/mailbox/new";
+    });
+    $(document).ready(function() {
+        var table = $('#limit').DataTable({
+            select:true,
+            responsive: true,
+            "lengthMenu" : [ [ 5, 10, 20],	[ 5, 10, 20 ] ],
+            "pagingType" : "simple_numbers",
+            "searching": false,
+            "paging": true,
+            "serverSide" : true,
+            "ajax": "/ops/limits/corporate/class/all",
+            "dom": 'T<"clear">frtlp',
+
+            "columns": [
+                { "data": "channel" },
+                { "data": "lowerLimit" },
+                { "data": "upperLimit" },
+                { "data": "currency" },
+                { "data": "frequency" }
+
+
+
+
+            ] });
+
+        table.on('select', function() {
+            if (table.rows({
+                        selected : true
+                    }).indexes().length === 0) {
+                $('.bt-select').attr("disabled", true);
+            } else {
+                $('.bt-select').removeAttr("disabled");
+            }
+
+        });
+
+        table.on('deselect', function() {
+            if (table.rows({
+                        selected : true
+                    }).indexes().length === 0) {
+                $('.bt-select').attr("disabled", true);
+            } else {
+                $('.bt-select').removeAttr("disabled");
+            }
+        });
+
+    });
+
+    $("a.bt-link-act").on("click", function(e) {
+        e.preventDefault();
+        var link = $(e.currentTarget);
+        if($(link).attr("disabled")){
+            return;
+        }
+        var dt = $('#limit').DataTable();
+        var id = $(dt.row({
+            selected: true
+        }).node()).attr("id");
+        //window.location.href = link.attr("formaction") + '?id=' + id;
+        //replace {id} with id
+        var ooo = link.attr("href").replace("index",id);
+        window.location.assign(ooo);
+
+    } );
+
+    $("#delete-btn").on("click", function(e) {
+        e.preventDefault();
+        var link = $(e.currentTarget);
+        if($(link).attr("disabled")){
+            return;
+        }
+        var dt = $('#limit').DataTable();
+        var id = $(dt.row({
+            selected: true
+        }).node()).attr("id");
+        //window.location.href = link.attr("formaction") + '?id=' + id;
+        //replace {id} with id
+        var ooo = link.attr("href").replace("index",id);
+
+        //goto url
+        warnBeforeRedirect(ooo);
+    });
+</script>
+<!-- /compose -->
+
+
+</body>
+</html>

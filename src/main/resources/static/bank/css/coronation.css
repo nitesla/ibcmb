@@ -2,3 +2,577 @@ table.dataTable tbody > tr.selected,
 table.dataTable tbody > tr > .selected {
     background-color: #BFC7CF;
 }
+/*--------------------------------------------*/
+/*   Mail
+/*--------------------------------------------*/
+
+.mailbox-nav-main{
+    background: #FFF;
+    padding: 10px;
+    box-shadow: 0px 0px 2px #cbc7c7;
+}
+
+.mailbox-nav{
+    background: #dddddd4d;
+}
+
+.mailbox-nav li a {
+    display: block;
+    padding: 15px 7px 6px 16px;
+    color: #353333;
+    text-decoration: none;
+    border-bottom: 1px solid #CCC;
+    overflow: hidden;
+}
+
+.mailbox-nav .active a, .mailbox-nav li a:hover {
+    background: #ECECEC;
+    border-color: #EAEEF1;
+}
+
+.mailbox-nav li a i {
+    margin-right:5px
+}
+
+.icon-state-warning {
+    color: #f6d433;
+}
+
+.mailbox-content {
+    background:#fff;
+    padding:15px
+}
+
+.mailbox-header {
+    margin-bottom:20px
+}
+
+.mailbox-header h2 {
+    margin:3px 0
+}
+
+.note-editor {
+    border: 1px solid #DCE1E4;
+    border-radius: 0;
+}
+.mail-hidden-options{
+    display:inline-block;
+}
+
+.mailbox-content {
+    overflow:hidden
+}
+
+.mailbox-content table thead tr th {
+    border-bottom:1px solid #ddd
+}
+
+.mailbox-content table tbody tr td {
+    cursor:pointer
+}
+
+.mailbox-content table tbody tr:hover {
+    background:#FAFAFA
+}
+
+.mailbox-content table tbody tr.read {
+    background:#F9F9F9;
+    color:#7F7F7F
+}
+
+.mailbox-content table tbody tr.checked {
+    background:#FFC
+}
+
+.badge.badge-success {
+    background: #03a9f3;
+    color: #FFF;
+}
+
+.message-header {
+    overflow:hidden;
+    border-bottom:1px solid #f1f1f1;
+    padding:5px 0 15px;
+    margin-bottom:10px
+}
+
+.message-header h3 {
+    float: left;
+    font-size: 14px;
+    margin: 0;
+    color: #2b2b2b;
+    font-weight: 600;
+}
+.message-header p {
+    float:right;
+    margin:0
+}
+
+.message-sender {
+    overflow:hidden;
+    border-bottom:1px solid #f1f1f1;
+    padding:0 0 5px;
+    margin-bottom:10px
+}
+
+.message-sender img {
+    width:30px;
+    border-radius:50%;
+    display:inline-block;
+    margin-right:5px
+}
+
+.message-sender p {
+    display:inline-block
+}
+
+.message-sender span {
+    color:#7F7F7F
+}
+
+.message-content {
+    overflow:hidden;
+    border-bottom:1px solid #f1f1f1;
+    padding:0 0 5px;
+    margin-bottom:10px
+}
+
+.message-attachments {
+    overflow:hidden;
+    border-bottom:1px solid #f1f1f1;
+    padding:0 0 15px;
+    margin-bottom:10px
+}
+
+.message-attachment {
+    position:relative;
+    width:200px;
+    float:left;
+    margin-right:10px;
+    border:1px solid #f1f1f1
+}
+
+.message-attachment a {
+    text-decoration:none
+}
+
+.message-attachment img {
+    display:block;
+    width:100%
+}
+
+.attachment-info {
+    background:#f9f9f9;
+    padding:10px
+}
+
+.attachment-info p {
+    margin:0
+}
+
+.attachment-info span {
+    font-size:11px;
+    color:#aaa
+}
+
+.compose-message {
+    overflow: hidden;
+    padding: 0 0 10px;
+    float: left;
+    width: 100%;
+}
+
+.compose-options {
+    width:100%;
+    overflow:hidden;
+    display:block
+}
+
+.note-editor {
+    border:1px solid #DCE1E4;
+    border-radius:0
+}
+
+.note-dialog .note-modal-form {
+    margin:0 15px
+}
+
+.note-editor .note-toolbar {
+    border-bottom: 0;
+    background: transparent;
+    padding: 10px;
+}
+
+.note-popover .popover .popover-content>.btn-group,.note-toolbar>.btn-group {
+    margin-top:0
+}
+
+.note-editor .note-editable {
+    overflow: auto;
+    min-height: 200px;
+    outline: 0;
+    padding: 10px;
+}
+
+.note-editor .note-statusbar {
+    background:0 0
+}
+
+.note-editor .note-statusbar .note-resizebar {
+    border:0
+}
+
+div.checker span {
+    display: -moz-inline-box;
+    display: inline-block;
+    *display: inline;
+    zoom: 1;
+    text-align: center;
+    background-position: 0 -260px;
+}
+
+/*--------------------------------------------*/
+/*   Checkbox and Radio
+/*--------------------------------------------*/
+
+.checkbox {
+    padding-left: 20px;
+}
+
+.checkbox label {
+    display: inline-block;
+    padding-left: 5px;
+    position: relative;
+}
+
+.checkbox, .radio {
+    margin-top: 0;
+}
+
+.checkbox label::before {
+    -o-transition: 0.3s ease-in-out;
+    -webkit-transition: 0.3s ease-in-out;
+    background-color: #ffffff;
+    border-radius: 1px;
+    border: 1px solid #c0bfbf;
+    content: "";
+    display: inline-block;
+    height: 17px;
+    left: 0;
+    margin-left: -20px;
+    position: absolute;
+    transition: 0.3s ease-in-out;
+    width: 17px;
+    outline: none !important;
+}
+
+.checkbox label::after {
+    color: #817D7D;
+    display: inline-block;
+    font-size: 11px;
+    height: 16px;
+    left: 0;
+    margin-left: -20px;
+    padding-left: 3px;
+    padding-top: 1px;
+    position: absolute;
+    top: 0;
+    width: 16px;
+}
+
+.checkbox.primary label::after,
+.checkbox.success label::after,
+.checkbox.info label::after,
+.checkbox.warning label::after,
+.checkbox.danger label::after,
+.checkbox.purple label::after,
+.checkbox.pink label::after,
+.checkbox.inverse label::after{
+    color: #FFF;
+}
+
+.checkbox input[type="checkbox"] {
+    cursor: pointer;
+    opacity: 0;
+    z-index: 1;
+    outline: none !important;
+}
+
+.checkbox input[type="checkbox"]:disabled + label {
+    opacity: 0.65;
+}
+
+.checkbox input[type="checkbox"]:focus + label::before {
+    outline-offset: -2px;
+    outline: none;
+    outline: thin dotted;
+}
+
+.checkbox input[type="checkbox"]:checked + label::after {
+    content: "\f00c";
+    font-family: 'FontAwesome';
+}
+
+.checkbox input[type="checkbox"]:disabled + label::before {
+    background-color: #e4e7ea;
+    cursor: not-allowed;
+}
+
+.checkbox.checkbox-circle label::before {
+    border-radius: 50%;
+}
+
+.checkbox.checkbox-inline {
+    margin-top: 0;
+}
+
+.checkbox.checkbox-single label {
+    height: 17px;
+}
+
+.checkbox.default input[type="checkbox"]:checked+label:before {
+    background:#EBECF0;
+    border-color:#EBECF0;
+    color:#FFF !important;
+}
+
+.checkbox.primary input[type="checkbox"]:checked+label:before {
+    background:#188ae2;
+    border-color:#188ae2;
+    color:#FFF !important;
+}
+
+.checkbox.success input[type="checkbox"]:checked+label:before {
+    background:#00bf4f;
+    border-color:#00bf4f;
+    color:#FFF;
+}
+
+.checkbox.info input[type="checkbox"]:checked+label:before {
+    background:#00aeff;
+    border-color:#00aeff;
+    color:#FFF;
+}
+
+.checkbox.warning input[type="checkbox"]:checked+label:before {
+    background:#ffa000;
+    border-color:#ffa000;
+    color:#FFF;
+
+}
+
+.checkbox.danger input[type="checkbox"]:checked+label:before {
+    background:#f60e0e;
+    border-color:#f60e0e;
+    color:#FFF;
+}
+
+.checkbox.purple input[type="checkbox"]:checked+label:before {
+    background:#5b69bc;
+    border-color:#5b69bc;
+    color:#FFF;
+}
+
+.checkbox.pink input[type="checkbox"]:checked+label:before {
+    background:#ff8acc;
+    border-color:#ff8acc;
+    color:#FFF;
+}
+
+.checkbox.inverse input[type="checkbox"]:checked+label:before {
+    background:#212121;
+    border-color:#212121;
+    color:#FFF;
+}
+
+.checkbox.circled label:before {
+    -webkit-border-radius:100%;
+    -moz-border-radius:100%;
+    border-radius:100%
+}
+
+.wrapper {
+    padding: 15px;
+}
+
+.wrapper::after {
+    clear: both;
+    display: block;
+    content: '';
+    margin-bottom: 30px;
+}
+/*--------------------------------------------*/
+/*   dropzone
+/*--------------------------------------------*/
+
+
+.dropzone {
+    min-height: 230px;
+    border: 2px dashed rgba(0, 0, 0, 0.3);
+    background: white;
+    border-radius: 6px;
+}
+
+.dropzone .dz-message {
+    font-size: 30px;
+}
+
+.dropzone .dz-message {
+    text-align: center;
+}
+
+
+.has-success .form-control {
+    border-color: #4cae4c;
+    box-shadow: none !important;
+}
+
+.has-warning .form-control {
+    border-color: #f0ad4e;
+    box-shadow: none !important;
+}
+
+.has-error .form-control {
+    border-color: #f05050;
+    box-shadow: none !important;
+}
+
+/*--------------------------------------------*/
+/*   Wizard
+/*--------------------------------------------*/
+
+.wizard > .content {
+    background: #ffffff;
+    min-height: 240px;
+}
+
+.wizard > .content > .body {
+    padding: 0px;
+    position: relative;
+}
+
+.wizard > .content > .body input {
+    border: 1px solid #E3E3E3;
+}
+
+.wizard > .content > .body ul > li {
+    display: block;
+    line-height: 30px;
+}
+
+.wizard > .content > .body label.error {
+    color: #f05050;
+    margin-left: 0;
+}
+
+.wizard > .content > .body label {
+    display: inline-block;
+    margin-top: 10px;
+}
+
+.wizard > .steps .number {
+    display: inline-block;
+}
+
+.wizard > .steps .disabled a {
+    background: #ffffff;
+    color: #333333;
+    cursor: default;
+    border: 1px solid #eaeaea;
+}
+
+.wizard > .steps .disabled a:hover {
+    background: #f9f9f9;
+    color: #333333;
+    cursor: default;
+    border: 1px solid #eaeaea;
+}
+
+.wizard > .steps .disabled a:active {
+    background: #f9f9f9;
+    color: #333333;
+    cursor: default;
+    border: 1px solid #eaeaea;
+}
+
+.wizard > .steps .current a {
+    background: #03A9F3;
+}
+
+.wizard > .steps .current a:hover {
+    background: #139AD7;
+}
+
+.wizard > .steps .current a:hover .number {
+    color: #ffffff;
+}
+
+.wizard > .steps .current a:active {
+    background: #5fbeaa;
+}
+
+.wizard > .steps .current a:active .number {
+    color: #ffffff;
+}
+
+.wizard > .steps .current a .number {
+    color: #ffffff;
+}
+
+.wizard > .steps .done a {
+    background: #5D5F62;
+}
+
+.wizard > .steps .done a:hover {
+    background: #7a8c9a;
+}
+
+.wizard > .steps .done a:active {
+    background: #7a8c9a;
+}
+
+.wizard > .steps a,
+.wizard > .steps a:hover,
+.wizard > .steps a:active,
+.wizard > .content {
+    border-radius: 2px;
+}
+
+.wizard > .actions a {
+    background: #03A9F3;
+    border-radius: 2px;
+    color: #ffffff;
+}
+
+.wizard > .actions a:hover {
+    background:#119CDA;
+    border-radius: 2px;
+    color: #ffffff;
+}
+
+.wizard > .actions a:active {
+    background: #5fbeaa;
+    border-radius: 2px;
+    color: #ffffff;
+}
+
+.wizard > .actions .disabled a {
+    background: #ffffff;
+    color: #333333;
+    cursor: default;
+    border: 1px solid #eaeaea;
+}
+
+.wizard > .actions .disabled a:hover {
+    background: #f9f9f9;
+    color: #333333;
+    cursor: default;
+    border: 1px solid #eaeaea;
+}
+
+.wizard > .actions .disabled a:active {
+    background: #f9f9f9;
+    color: #333333;
+    cursor: default;
+    border: 1px solid #eaeaea;
+}
