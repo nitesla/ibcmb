@@ -17,9 +17,9 @@ public class UserGroupDTO {
     private String description;
     private Date dateCreated;
 
-    private List<OperationsUserDTO> operationsUserList;
+    private List<OperationsUserDTO> users;
 
-    private List<PersonnelContactDTO> personnelContactList;
+    private List<ContactDTO> contacts;
 
 
     public Long getId() {
@@ -62,19 +62,20 @@ public class UserGroupDTO {
         this.dateCreated = dateCreated;
     }
 
-    public List<OperationsUserDTO> getOperationsUserList() {
-        return operationsUserList;
-    }
+	public List<OperationsUserDTO> getUsers() {
+		return users;
+	}
 
-    public void setOperationsUserList(List<OperationsUserDTO> operationsUserList) {
-        this.operationsUserList = operationsUserList;
-    }
+	public void setUsers(List<OperationsUserDTO> users) {
+		this.users = users;
+	}
 
-    public List<PersonnelContactDTO> getPersonnelContactList() {
-        return personnelContactList;
-    }
+	public List<ContactDTO> getContacts() {
+		return contacts;
+	}
 
-    public void setPersonnelContactList(List<PersonnelContactDTO> personnelContactList) {
-        this.personnelContactList = personnelContactList;
-    }
+	public void setContacts(List<ContactDTO> contacts) {
+		this.contacts = contacts;
+	}
+
 }

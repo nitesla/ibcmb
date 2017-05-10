@@ -1,10 +1,25 @@
 package longbridge.controllers.operations;
 
 import longbridge.dtos.CodeDTO;
+import longbridge.dtos.ContactDTO;
+import longbridge.dtos.OperationsUserDTO;
 import longbridge.dtos.UnitDTO;
+import longbridge.dtos.UserGroupDTO;
+import longbridge.models.Contact;
+import longbridge.models.OperationsUser;
+import longbridge.models.Person;
 import longbridge.models.Unit;
+import longbridge.models.UserGroup;
 import longbridge.services.CodeService;
+import longbridge.services.OperationsUserService;
 import longbridge.services.UnitService;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +32,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import com.fasterxml.jackson.core.JsonParser.Feature;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 
@@ -38,6 +57,10 @@ public class OpsUnitController {
 
 
     private Logger logger= LoggerFactory.getLogger(this.getClass());
+    
+    
+    @Autowired
+	private OperationsUserService operationsUserService;
 
 
     @GetMapping("/new")
@@ -49,14 +72,34 @@ public class OpsUnitController {
     }
 
     @PostMapping
-    public String createUnit(@ModelAttribute("unit") UnitDTO unit, BindingResult result, RedirectAttributes redirectAttributes) throws Exception{
-        if(result.hasErrors()){
-            return "ops/unit/add";
-        }
+    public String createUnit(WebRequest request, RedirectAttributes redirectAttributes) throws Exception{
 
-        unitService.addUnit(unit);
-        redirectAttributes.addFlashAttribute("message","Unit personnel created successfully");
-        return "redirect:/ops/units";
+		String contacts = request.getParameter("contacts");
+		String name = request.getParameter("name");
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.configure(Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+		List<ContactDTO> contactList = mapper.readValue(contacts, new TypeReference<List<ContactDTO>>() {
+		});
+		List<OperationsUserDTO> opList = new ArrayList<>();
+		Iterator<ContactDTO> iterator = contactList.iterator();
+		while (iterator.hasNext()) {
+			ContactDTO contactDTO = iterator.next();
+			if (!contactDTO.isExternal()) {
+				// is opuser
+				OperationsUserDTO operationsUserDTO = operationsUserService.getUser(contactDTO.getDt_RowId());
+				opList.add(operationsUserDTO);
+				iterator.remove();
+			}
+		}
+		UserGroupDTO userGroup = new UserGroupDTO();
+		userGroup.setName(name);
+		userGroup.setContacts(contactList);
+		userGroup.setUsers(opList);
+		
+		//TODO :Save
+
+		redirectAttributes.addFlashAttribute("message", "Unit personnel created successfully");
+		return "redirect:/ops/units";
     }
 
     @GetMapping
@@ -106,7 +149,18 @@ public class OpsUnitController {
         redirectAttributes.addFlashAttribute("message", "Unit deleted successfully");
         return "redirect:/ops/units";
     }
-
+    
+    @GetMapping("/find")
+    public String  findOpsUser(Model model){
+    	OperationsUser user = new OperationsUser();
+    	model.addAttribute("operationsUser",user);
+        return "/ops/unit/add-op";
+    }
+ 
+    @GetMapping("/contact/new")
+    public String  addContact(Model model){
+        return "/ops/unit/add-ex";
+    }
 
 }
 

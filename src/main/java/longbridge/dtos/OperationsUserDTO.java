@@ -1,7 +1,11 @@
 package longbridge.dtos;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonValue;
+
+import longbridge.models.Person;
 import longbridge.models.UserType;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -11,7 +15,7 @@ import java.util.Date;
 /**
  * Created by Fortune on 4/5/2017.
  */
-public class OperationsUserDTO {
+public class OperationsUserDTO implements Person{
     @JsonProperty("DT_RowId")
     private Long id;
 
@@ -30,6 +34,7 @@ public class OperationsUserDTO {
     @NotEmpty(message = "email")
     @Email(message = "email")
     private String email;
+    @JsonIgnore
     private String password;
     private String status;
     private Date expiryDate;
@@ -37,6 +42,7 @@ public class OperationsUserDTO {
     private String lastLogin;
     private Date lastLoginDate;
     private int noOfLoginAttempts;
+    private boolean external=false;
 
     private UserType userType;
 
@@ -160,4 +166,10 @@ public class OperationsUserDTO {
     public void setNoOfLoginAttempts(int noOfLoginAttempts) {
         this.noOfLoginAttempts = noOfLoginAttempts;
     }
+
+	@Override
+	public boolean isExternal() {
+		return external;
+	}
+    
 }

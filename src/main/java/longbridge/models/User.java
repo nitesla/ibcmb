@@ -11,28 +11,28 @@ import java.util.Date;
 @MappedSuperclass
 public class User extends AbstractEntity{
 
-    private String userName;
-    private String firstName;
-    private String lastName;
-    private String email;
-    private String password;
-    private String status;
-    private Date dateCreated;
-    private Date expiryDate;
-    private Date lockedUntilDate;
-    private Date lastLoginDate;
-    private int noOfLoginAttempts;
+    protected String userName;
+    protected String firstName;
+    protected String lastName;
+    protected String email;
+    protected String password;
+    protected String status;
+    protected Date dateCreated;
+    protected Date expiryDate;
+    protected Date lockedUntilDate;
+    protected Date lastLoginDate;
+    protected int noOfLoginAttempts;
 
     //@Enumerated(value = EnumType.STRING)
     protected UserType userType;
 
 
     @ManyToOne
-    private Code alertPreference;
+    protected Code alertPreference;
 
 
     @ManyToOne
-    private Role role;
+    protected Role role;
 
 //    @ManyToMany(cascade = CascadeType.ALL)
 //    @JoinTable(name = "user_groups", joinColumns =

@@ -41,10 +41,6 @@ public class AdmOperationsUserController {
     @Autowired
     private  OperationsUserService operationsUserService;
     @Autowired
-    private OperationsUserRepo operationsUserRepo;
-    @Autowired
-    private VerificationRepo verificationRepo;
-    @Autowired
     private RoleService roleService;
 
     @Autowired
@@ -209,7 +205,7 @@ public class AdmOperationsUserController {
 
         if(!this.passwordEncoder.matches(changePassword.getOldPassword(),user.getPassword())){
             logger.trace("Invalid old password provided for change");
-            result.addError(new ObjectError("invalid", "Incorrect Old Password"));
+            result.rejectValue("oldPassword","password.bad.old", "Incorrect Old Password");
             return "/ops/pword";
         }
 
@@ -240,38 +236,42 @@ public class AdmOperationsUserController {
 
     }
 
-    @PostMapping("/{id}/verify")
-    public String verify(@PathVariable Long id){
-        logger.info("id {}", id);
+//    @PostMapping("/{id}/verify")
+//    public String verify(@PathVariable Long id){
+//        logger.info("id {}", id);
+//
+//        //todo check verifier role
+//        OperationsUser operationsUser = operationsUserRepo.findOne(1l);
+//        Verification verification = verificationRepo.findOne(id);
+//
+//        if (verification == null || Verification.VerificationStatus.PENDING != verification.getStatus())
+//            return "Verification not found";
+//
+////        try {
+////            operationsUserService.verify(verification, operationsUser);
+////        } catch (IOException e) {
+////            logger.error("Error occurred", e);
+////        }
+//        return "role/add";
+//    }
+//    
+//    
+    
 
-        //todo check verifier role
-        OperationsUser operationsUser = operationsUserRepo.findOne(1l);
-        Verification verification = verificationRepo.findOne(id);
-
-        if (verification == null || Verification.VerificationStatus.PENDING != verification.getStatus())
-            return "Verification not found";
-
-//        try {
-//            operationsUserService.verify(verification, operationsUser);
-//        } catch (IOException e) {
-//            logger.error("Error occurred", e);
-//        }
-        return "role/add";
-    }
-
-    @PostMapping("/{id}/decline")
-    public String decline(@PathVariable Long id){
-
-        //todo check verifier role
-        OperationsUser operationsUser = operationsUserRepo.findOne(1l);
-        Verification verification = verificationRepo.findOne(id);
-
-        if (verification == null || Verification.VerificationStatus.PENDING != verification.getStatus())
-            return "Verification not found";
-
-       // operationsUserService.decline(verification, operationsUser, "todo get the  reason from the frontend");
-        return "role/add";
-    }
+//
+//    @PostMapping("/{id}/decline")
+//    public String decline(@PathVariable Long id){
+//
+//        //todo check verifier role
+//        OperationsUser operationsUser = operationsUserRepo.findOne(1l);
+//        Verification verification = verificationRepo.findOne(id);
+//
+//        if (verification == null || Verification.VerificationStatus.PENDING != verification.getStatus())
+//            return "Verification not found";
+//
+//       // operationsUserService.decline(verification, operationsUser, "todo get the  reason from the frontend");
+//        return "role/add";
+//    }
 
 
 }

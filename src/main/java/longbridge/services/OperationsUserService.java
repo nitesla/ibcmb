@@ -47,6 +47,7 @@ public interface OperationsUserService{
      */
     Page<OperationsUserDTO> getUsers(Pageable pageDetails);
 
+    Page<OperationsUserDTO> findUsers(OperationsUserDTO example,Pageable pageDetails);
 
     /**
      * Sets the password for the specified Operations User.

@@ -98,7 +98,7 @@
 <script th:src="@{~/bank/js/dataTables.select.js}"></script>
 <script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
 
-<script type="text/javascript" language="javascript" class="init">
+<script type="text/javascript" class="init">
     /*<![CDATA[*/
 
     $(document).ready(function () {
@@ -129,10 +129,10 @@
             e.preventDefault()
             var dt = $('#mytab').DataTable();
             dt.row('.selected').remove().draw(false);
-
-
         });
     });
+    
+   
 
     document.getElementById("cancel").onclick = function () {
         location.href = "/ops/units"
