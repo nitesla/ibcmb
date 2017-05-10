@@ -57,6 +57,10 @@ var BaseFormValidation = function() {
                 },
                 'val-terms': {
                     required: true
+                },
+                'val-acct':{
+                    required: true,
+                    minlength: 10
                 }
             },
             messages: {
@@ -73,6 +77,10 @@ var BaseFormValidation = function() {
                     required: 'Please provide a password',
                     minlength: 'Your password must be at least 5 characters long',
                     equalTo: 'Please enter the same password as above'
+                },
+                'val-acct': {
+                    required: 'Please provide Account Number',
+                    minlength: 'Account Number must be at least 10 characters long'
                 },
                 'val-suggestions': 'What can we do to become better?',
                 'val-skill': 'Please select a skill!',

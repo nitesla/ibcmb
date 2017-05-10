@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -96,7 +97,7 @@ public interface AccountService {
     Iterable<Account> getAccountsForDebit(String customerId);
 
 
-    Iterable<Account> getAccountsForDebitAndCredit(String customerId);
+    List<AccountDTO> getAccountsForDebitAndCredit(String customerId);
 
 
     /**

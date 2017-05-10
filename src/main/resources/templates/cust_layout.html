@@ -45,13 +45,16 @@
                             <div class="hide-faq"><h6>FAQS &nbsp; &nbsp;<i class="fa fa-question-circle"></i><span class="date2 lorem">&nbsp; &nbsp;Login History:&nbsp;</span>&nbsp;
                                 <span class="lorem" th:text="*{lastLogin}">21st March 2017 10:30am</span></h6></div></div>
                     </div>
+                    <div class="row">
                 <div class="collapse navbar-collapse links" id="navbar-collapse-1">
+                    <div class="container">
                     <ul class="nav navbar-nav">
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.account}"> My Accounts</a>
                             <ul class="dropdown-menu">
                                 <li><a th:href="@{/retail/account/customize}" th:text="#{menu.account.customize}">Customise Accounts</a></li>
                                 <li><a th:href="@{/retail/account/settings}" th:text="#{menu.account.settings}">Account Settings</a></li>
+                                <li><a th:href="@{/retail/account/officer}" th:text="#{menu.account.officer}">Account Officer</a></li>
                                 <li><a th:href="@{'#'}" th:text="#{menu.account.create}">Create New Acoount</a></li>
                             </ul>
                         </li>
@@ -73,7 +76,7 @@
 
                                   </ul>
                         </li>
-                        <li><a href="#" th:text="#{menu.bill}">Bill Payments</a></li>
+                        <!--<li><a href="#" th:text="#{menu.bill}">Bill Payments</a></li>-->
                         <li><a th:href="@{/retail/beneficiary}" th:text="#{menu.beneficiary}">Beneficiaries</a></li>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.servreq}"> Service Requests </a>
@@ -85,7 +88,15 @@
                                 </p>
 
 
-                            </ul></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.token}"> Token Management </a>
+                            <ul class="dropdown-menu">
+                                <li><a th:href="@{/retail/alert_preference}" th:text="#{menu.token.sync}">Synchronize Token</a></li>
+                                <li><a th:href="@{/retail/change_password}" th:text="#{menu.token.report}">Report Lost Token</a></li>
+                            </ul>
+                        </li>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.settings}"> Settings </a>
                             <ul class="dropdown-menu">
@@ -126,7 +137,9 @@
                                   <i class="fa fa-power-off fa-stack-1x fa-inverse"></i>
                                 </span></a></li>
                     </ul>
+                    </div>
                 </div>
+                    </div>
                 </div>
             </nav>
         </div>

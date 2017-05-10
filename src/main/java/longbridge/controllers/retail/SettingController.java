@@ -1,9 +1,11 @@
 package longbridge.controllers.retail;
 
+import longbridge.dtos.AccountDTO;
 import longbridge.dtos.CodeDTO;
 import longbridge.dtos.RetailUserDTO;
 import longbridge.forms.AlertPref;
 import longbridge.forms.ChangePassword;
+import longbridge.models.RetailUser;
 import longbridge.services.AccountService;
 import longbridge.services.CodeService;
 import longbridge.services.RetailUserService;
@@ -20,6 +22,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.List;
 
 /**
  * Created by Fortune on 4/5/2017.
@@ -41,9 +44,10 @@ public class SettingController {
     private AccountService accountService;
 
     @RequestMapping("/dashboard")
-    public String getRetailDashboard(Model model) {
-//        List<AccountDTO> accountList = accountService.getAccountsForDebitAndCredit()
-//        model.addAttribute()
+    public String getRetailDashboard(Model model, Principal principal) {
+        RetailUser retailUser = retailUserService.getUserByName(principal.getName());
+        List<AccountDTO> accountList = accountService.getAccountsForDebitAndCredit(retailUser.getCustomerId());
+        model.addAttribute("accountList", accountList);
         return "cust/dashboard";
     }
 

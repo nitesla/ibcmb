@@ -11,28 +11,13 @@
     <div class="container">
         <div class="row">
             <div class="col-md-4 col-sm-4">
-                <h5 class="page_header"> Dashboard</h5>
-                <select class="form-control" id="view">
-                    <option value="account">Account Overview</option>
-                </select>
+                <h5 class="page_header"> Account Officer Details</h5>
             </div>
         </div>
         <div class="row">
             <div class="col-md-8 content-bg">
                 <div class="row spacing">
                     <div class="col-md-10">
-                        <table class="table">
-                            <thead>
-                            <td>Account Number</td>
-                            <td>Account Balance</td>
-                            </thead>
-                            <tbody>
-                                <tr th:each="list : ${accountList}">
-                                    <td th:text="${list.accountNumber}"></td>
-                                    <td th:text="${list.accountBalance}"></td>
-                                </tr>
-                            </tbody>
-                        </table>
 
                     </div>
                 </div>

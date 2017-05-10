@@ -228,12 +228,16 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Iterable<Account> getAccountsForDebitAndCredit(String customerId) {
-        List<Account> accountsForDebitAndCredit = new ArrayList<Account>();
-        Iterable<Account> accounts = this.getCustomerAccounts(customerId);
-        for (Account account : accounts) {
+    public List<AccountDTO> getAccountsForDebitAndCredit(String customerId) {
+        List<AccountDTO> accountsForDebitAndCredit = new ArrayList<AccountDTO>();
+        //Iterable<Account> accounts = this.getCustomerAccounts(customerId);
+        Iterable<AccountDTO> accountDTOS = convertEntitiesToDTOs(this.getCustomerAccounts(customerId));
+        for (AccountDTO account : accountDTOS) {
             if (!accountConfigService.isAccountHidden(account.getAccountNumber())
                     && (!accountConfigService.isAccountRestrictedForView(account.getAccountNumber())) && !accountConfigService.isAccountRestrictedForDebitAndCredit(account.getAccountNumber()) && (!accountConfigService.isAccountClassRestrictedForView(account.getSchemeCode()) && (!accountConfigService.isAccountClassRestrictedForDebitAndCredit(account.getSchemeCode())))) {
+
+                String balance = integrationService.getBalance(account.getAccountId()).toString();
+                account.setAccountBalance(balance);
                 accountsForDebitAndCredit.add(account);
             }
 

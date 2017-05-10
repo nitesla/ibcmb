@@ -2,6 +2,8 @@ package longbridge.controllers;
 
 import longbridge.api.CustomerDetails;
 import longbridge.dtos.RetailUserDTO;
+import longbridge.models.Account;
+import longbridge.services.AccountService;
 import longbridge.services.IntegrationService;
 import longbridge.services.RetailUserService;
 import org.slf4j.Logger;
@@ -24,6 +26,9 @@ public class UserRegController {
     
     @Autowired
     private RetailUserService retailUserService;
+
+    @Autowired
+    private AccountService accountService;
 
     private Logger logger= LoggerFactory.getLogger(this.getClass());
     @GetMapping("/register")
@@ -58,10 +63,19 @@ public class UserRegController {
     	return builder.toString();
     }
 
-    @GetMapping("/rest/accountname/{accountNumber}")
+    @GetMapping("/rest/retail/accountname/{accountNumber}")
     public @ResponseBody String getAccountNameFromNumber(@PathVariable String accountNumber){
+        String customerId = "";
     	logger.info("Account nUmber : " + accountNumber);
-        return integrationService.getAccountName(accountNumber);
+        Account account = accountService.getAccountByAccountNumber(accountNumber);
+        if (account != null){
+            customerId = account.getCustomerId();
+        }else {
+            //nothing
+            customerId = "";
+        }
+
+        return customerId;
     }
 
     @GetMapping("/rest/username/check/{username}")
