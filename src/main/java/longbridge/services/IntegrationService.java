@@ -103,5 +103,8 @@ public interface IntegrationService {
      * @return true if the validation was true and false if not
      */
     boolean performTokenValidation(String username, String tokenString);
+
+
+    BigDecimal getAvailableBalance(String s);
     
 }

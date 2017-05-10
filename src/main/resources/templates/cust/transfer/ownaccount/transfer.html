@@ -18,7 +18,7 @@
     <div th:if="${error != null}" class="alert alert-info" th:text="${error}">message</div>
 
     <form method="post" th:action="@{/retail/transfer/ownaccount/summary}" th:object="${transferRequest}">
-
+        <input type="hidden" th:field="*{financialInstitution}"/>
 
         <div class="form-group">
             <label>Source account</label>
@@ -57,6 +57,7 @@
     </form>
 
 </th:block>
+
 
 </body>
 

@@ -200,7 +200,10 @@ public class SecurityConfig {
 		}
 
 		protected void configure(HttpSecurity http) throws Exception {
-			http.antMatcher("/retail/**").authorizeRequests().anyRequest()
+
+            http
+                    .antMatcher("/retail/**").authorizeRequests()
+                    .anyRequest()
 					// .authenticated()
 					.hasAuthority(UserType.RETAIL.toString())
 					// log in
@@ -208,6 +211,8 @@ public class SecurityConfig {
 					.failureUrl("/login/retail?error=true").defaultSuccessUrl("/retail/dashboard")
 					.successHandler(retailAuthenticationSuccessHandler)
 					.failureHandler(retailAuthenticationFailureHandler)
+
+                    //.failureForwardUrl()
 
 					.and()
 

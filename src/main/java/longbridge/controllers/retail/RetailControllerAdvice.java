@@ -5,9 +5,12 @@ import longbridge.models.RetailUser;
 import longbridge.models.ServiceReqConfig;
 import longbridge.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.config.ResourceNotFoundException;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 import java.security.Principal;
 import java.util.ArrayList;
@@ -30,7 +33,7 @@ public class RetailControllerAdvice {
     private AccountService accountService;
     private ServiceReqConfigService reqConfigService;
 
-  @Autowired
+    @Autowired
     public RetailControllerAdvice(RetailUserService retailUserService, IntegrationService integrationService, TransferService transferService, AccountService accountService, ServiceReqConfigService reqConfigService) {
         this.retailUserService = retailUserService;
         this.integrationService = integrationService;
@@ -86,19 +89,16 @@ public class RetailControllerAdvice {
     }
 
 
+    @ModelAttribute
+    public String getCustmerAccounts(Model model, Principal principal) {
 
+        if (principal == null || principal.getName() == null) {
+            return "redirect:/login/retail";
+        }
 
-
-            @ModelAttribute
-           public  String getCustmerAccounts(Model model,Principal principal){
-
-            if (principal ==null||principal.getName() == null){
-                return "redirect:/login/retail";
-            }
-
-            RetailUser user = retailUserService.getUserByName(principal.getName());
-            if (user != null) {
-                List<String> accountList = new ArrayList<>();
+        RetailUser user = retailUserService.getUserByName(principal.getName());
+        if (user != null) {
+            List<String> accountList = new ArrayList<>();
 
 
             Iterable<Account> accounts = accountService.getAccountsForDebit(user.getCustomerId());
@@ -116,4 +116,19 @@ public class RetailControllerAdvice {
 
         return "";
     }
+
+
+//    @ExceptionHandler(NoHandlerFoundException.class)
+//   // @ResponseStatus(HttpStatus.NOT_FOUND)
+//    public String pageNotFound() {
+//
+//        System.out.println("YAHOO YAHOO");
+//
+//        return "redirect:/retail/dashboard";
+//    }
+//    @ExceptionHandler(ResourceNotFoundException.class)
+//    public String handleResourceNotFoundException() {
+//        System.out.println("YAHOO YAHOO 2");
+//        return "redirect:/retail/dashboard";
+//    }
 }

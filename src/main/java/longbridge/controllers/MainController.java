@@ -6,13 +6,18 @@ import longbridge.services.SecurityService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.config.ResourceNotFoundException;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletResponse;
+import java.security.Principal;
 import java.util.Iterator;
 import java.util.Optional;
 
@@ -155,6 +160,24 @@ public class MainController {
     	redirectAttributes.addAttribute("success", true);
     	
     	return "cust/passwordreset";
+    }
+//    @GetMapping(value = {"/retail/{path:(?!static).*$}","/retail/{path:(?!static).*$}/**" })
+//    public String retailUnknown(Principal principal){
+//        System.out.println("YAHOO YAHOO");
+//        return "redirect:/retail/dashboard";
+//
+//    }
+
+
+    @GetMapping(value = {"{path:(?!static).*$}","{path:(?!static).*$}/**" })
+    public String retailUnknown(Principal principal){
+        if (principal!=null){
+            System.out.println("YAHOO YAHOO");
+            return "redirect:/retail/dashboard";
+
+        }
+
+   // throw new ;
     }
 
 }
