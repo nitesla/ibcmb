@@ -78,11 +78,11 @@
 
                                         <div class="form-group">
                                             <div class="col-sm-4 col-sm-offset-2">
-                                                <button class="btn btn-white" type="submit">Cancel</button>
+                                                <button class="btn btn-white" type="reset" id="cancel">Cancel</button>
                                                 <button class="btn btn-primary" type="submit">Submit</button>
                                             </div>
                                         </div>
-
+                                        <div th:replace="layout::form-validation"></div>
 
                                     </form>
                                 </div>
@@ -100,6 +100,12 @@
         <!-- /footer content -->
     </div>
 </div>
+
+<script>
+    document.getElementById("cancel").onclick = function () {
+        location.href = "/admin/permissions";
+    }
+</script>
 
 </body>
 </html>

@@ -52,32 +52,25 @@
 
                                         <input type="hidden" class="form-control" th:field="*{version}"/>
 
-                                        <div class="form-group">
-                                            <label class="col-sm-2 control-label">CIFID</label>
-
-                                            <div class="col-sm-6">
-
-                                                <input type="text" class="form-control" th:field="*{cifId}"/>
-                                            </div>
-
-                                        </div>
+                                        <div th:replace="layout::form-validation"></div>
 
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">Username</label>
 
                                             <div class="col-sm-6">
-                                                <input type="text" class="form-control" th:field="*{userName}" required="required"/>
+                                                <input type="text" class="form-control" th:field="*{userName}"/>
                                             </div>
 
 
                                         </div>
+
 
 
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">First Name</label>
 
                                             <div class="col-sm-6">
-                                                <input type="text" class="form-control" th:field="*{firstName}" />
+                                                <input type="text" class="form-control" th:field="*{firstName}"/>
                                             </div>
 
                                         </div>
@@ -85,13 +78,12 @@
                                             <label class="col-sm-2 control-label">Last Name</label>
 
                                             <div class="col-sm-6">
-                                                <input type="text" class="form-control" th:field="*{lastName}"/>
+                                                <input type="text" class="form-control" th:field="*{lastName}" />
+                                                <!--<p th:if="${#fields.hasErrors('*')}" th:errors="*{lastName}">Last Name Error</p>-->
+
                                             </div>
 
                                         </div>
-
-
-
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">Email</label>
 
@@ -100,19 +92,19 @@
                                             </div>
 
                                         </div>
+
+                                        <div class="form-group">
+                                        </div>
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">Role</label>
                                             <div class="col-sm-6">
 
-
                                                 <select class="form-control" th:field="*{roleId}">
-                                                    <!--<option value="" name="select">Select..</option>-->
+                                                    <option value="">Select..</option>
                                                     <option th:each="role : ${roles.?[#strings.equalsIgnoreCase(userType, 'admin')]}" th:value="${role.id}" th:text="${role.name}" th:selected="${role.id==adminUser.roleId}"></option>
                                                 </select>
-
-                                         </div>
+                                            </div>
                                         </div>
-
 
 
                                         <div class="form-group">
@@ -121,8 +113,6 @@
                                                 <button class="btn btn-primary" type="submit">Save</button>
                                             </div>
                                         </div>
-
-
 
                                     </form>
                                 </div>
