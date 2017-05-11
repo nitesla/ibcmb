@@ -1,6 +1,5 @@
 package longbridge.services.implementations;
 
-import com.sun.xml.internal.bind.v2.TODO;
 import longbridge.dtos.MessageDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.*;
@@ -18,8 +17,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.awt.print.Pageable;
-import java.security.Principal;
-import java.security.PrivateKey;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -187,7 +184,7 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public void sendEmail(EmailDetail email) {
+    public void sendEmail(Email email) {
         //todo  send email
     }
 

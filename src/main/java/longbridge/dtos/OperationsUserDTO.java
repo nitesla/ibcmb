@@ -37,6 +37,7 @@ public class OperationsUserDTO implements Person{
     @JsonIgnore
     private String password;
     private String status;
+    private String createdOn;
     private Date expiryDate;
     private Date lockedUntilDate;
     private String lastLogin;
@@ -137,6 +138,26 @@ public class OperationsUserDTO implements Person{
 
     public Date getExpiryDate() {
         return expiryDate;
+    }
+
+    public String getCreatedOn() {
+        return createdOn;
+    }
+
+    public void setCreatedOn(String createdOn) {
+        this.createdOn = createdOn;
+    }
+
+    public String getLastLogin() {
+        return lastLogin;
+    }
+
+    public void setLastLogin(String lastLogin) {
+        this.lastLogin = lastLogin;
+    }
+
+    public void setExternal(boolean external) {
+        this.external = external;
     }
 
     public void setExpiryDate(Date expiryDate) {

@@ -17,7 +17,7 @@ import java.util.List;
  */
 
 @Service
-public class PasswordService {
+public class PasswordPolicyService {
 
     @Autowired
     ConfigurationService configService;

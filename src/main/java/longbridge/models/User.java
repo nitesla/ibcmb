@@ -17,7 +17,7 @@ public class User extends AbstractEntity{
     protected String email;
     protected String password;
     protected String status;
-    protected Date dateCreated;
+    protected Date createdOnDate;
     protected Date expiryDate;
     protected Date lockedUntilDate;
     protected Date lastLoginDate;
@@ -117,12 +117,12 @@ public class User extends AbstractEntity{
         this.alertPreference = alertPreference;
     }
 
-    public Date getDateCreated() {
-        return dateCreated;
+    public Date getCreatedOnDate() {
+        return createdOnDate;
     }
 
-    public void setDateCreated(Date dateCreated) {
-        this.dateCreated = dateCreated;
+    public void setCreatedOnDate(Date createdOnDate) {
+        this.createdOnDate = createdOnDate;
     }
 
     public Date getExpiryDate() {return expiryDate;}
@@ -162,7 +162,7 @@ public class User extends AbstractEntity{
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", status='" + status + '\'' +
-                ", dateCreated=" + dateCreated +
+                ", createdOnDate=" + createdOnDate +
                 ", expiryDate=" + expiryDate +
                 ", lockedUntilDate=" + lockedUntilDate +
                 ", lastLoginDate=" + lastLoginDate +

@@ -1,6 +1,8 @@
 package longbridge.services;
 
 import longbridge.exception.InternetBankingException;
+import longbridge.exception.PasswordException;
+import longbridge.forms.ChangePassword;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -96,11 +98,10 @@ public interface OperationsUserService{
      * Also, the password must meet the organization's password policy if any one has been defined
      * It is important that the password is hashed before storing it in the database.
      * * @param oldPassword the oldPassword
-     * @param oldPassword the old password
-     * @param newPassword the new Password
+     * @param changePassword
      */
 
-    String changePassword(OperationsUser user, String oldPassword, String newPassword) throws InternetBankingException;
+    String changePassword(OperationsUser user, ChangePassword changePassword) throws InternetBankingException, PasswordException;
 
 
     /**

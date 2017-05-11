@@ -96,7 +96,7 @@ public class CorporateServiceImpl implements CorporateService {
     public String addCorporateUser(Corporate corporate, CorporateUser corporateUser) throws InternetBankingException{
         corporate.getUsers().add(corporateUser);
         corporateRepo.save(corporate);
-        return  messageSource.getMessage("user.create.success",null,locale);
+        return  messageSource.getMessage("user.add.success",null,locale);
     }
 
 

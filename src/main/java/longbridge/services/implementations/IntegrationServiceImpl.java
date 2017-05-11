@@ -5,8 +5,8 @@ import longbridge.api.AccountInfo;
 
 import longbridge.api.CustomerDetails;
 import longbridge.api.LocalTransferResponse;
-import longbridge.exception.InternetBankingTokenException;
-import longbridge.exception.InternetBankingTransferException;
+import longbridge.exception.TokenException;
+import longbridge.exception.TransferException;
 import longbridge.models.TransferRequest;
 import longbridge.services.IntegrationService;
 import longbridge.utils.AccountStatement;
@@ -86,7 +86,7 @@ public class IntegrationServiceImpl implements IntegrationService {
     }
 
     @Override
-    public boolean makeTransfer(TransferRequest transferRequest) throws InternetBankingTransferException {
+    public boolean makeTransfer(TransferRequest transferRequest) throws TransferException {
 
         TransferType type;
         type = TransferType.INTER_BANK_TRANSFER;
@@ -252,7 +252,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 
     @Override
-    public boolean synchronizeToken(String username) throws InternetBankingTokenException {
+    public boolean synchronizeToken(String username) throws TokenException {
         // TODO send request to entrust
         // send request to entrust
         String uri = URI + "/token/synchronize";
@@ -266,7 +266,7 @@ public class IntegrationServiceImpl implements IntegrationService {
     }
 
     @Override
-    public boolean performTokenValidation(String username, String tokenString) throws InternetBankingTokenException {
+    public boolean performTokenValidation(String username, String tokenString) throws TokenException {
         // TODO to be implemented
         // send request to entrust
         String uri = URI + "/token/authenticate";

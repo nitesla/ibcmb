@@ -5,7 +5,20 @@ package longbridge.exception;
  */
 public class InternetBankingException extends RuntimeException {
 
-    public InternetBankingException(){super("Failed to perform the requested action");}
+    public InternetBankingException() {
+        super("Failed to perform the requested action");
+    }
 
-    public InternetBankingException(String message){super(message);}
+    public InternetBankingException(Throwable cause) {
+        super("Failed to perform the requested action", cause);
+    }
+
+
+    public InternetBankingException(String message) {
+        super(message);
+    }
+
+    public InternetBankingException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

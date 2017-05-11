@@ -1,5 +1,6 @@
 package longbridge.controllers;
 
+import longbridge.exception.PasswordPolicyViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import longbridge.dtos.OperationsUserDTO;
 import longbridge.services.OperationsUserService;
-import longbridge.services.PasswordService;
+import longbridge.services.PasswordPolicyService;
 
 @Controller
 @RequestMapping("/general/operations/users")
@@ -26,7 +27,7 @@ public class OperationsUserContoller {
 
 
     @Autowired
-    PasswordService passwordService;
+    PasswordPolicyService passwordService;
 
 	@RequestMapping(path = "/find" )
     public @ResponseBody DataTablesOutput<OperationsUserDTO> getUsers(DataTablesInput input, OperationsUserDTO user){

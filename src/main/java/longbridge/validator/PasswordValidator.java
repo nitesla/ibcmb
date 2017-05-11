@@ -35,6 +35,7 @@ public class PasswordValidator {
     private String specialCharacters = "!@#$%^)(&";
     private boolean initialized = false;
     private StringBuilder errorMessage;
+    private String message ="";
 
 
 
@@ -100,22 +101,24 @@ public class PasswordValidator {
         boolean noOK = password.length() >= minLength && password.length() <= maxLength;
 
         if (!digitOK) {
-            String message = String.format("Your password must include at least %d digits",
+            message = String.format("Your password must include at least %d digits",
                     numOfDigits);
             errorMessage.append(message);
-            errorMessage.append('\n');
-        } else if (!specOK) {
-            String msg = String.format(
+            errorMessage.append(".\n");
+        }
+        if (!specOK) {
+             message = String.format(
                     "Your password must include at least %d special characters from %s", noOfSpecial,
                     specialCharacters);
-            errorMessage.append(msg);
-            errorMessage.append('\n');
+            errorMessage.append(message);
+            errorMessage.append(".\n");
 
-        } else if (!noOK) {
-            String message = String.format(
+        }
+        if (!noOK) {
+            message = String.format(
                     "Your password must be between %d and %d characters", minLength, maxLength);
             errorMessage.append(message);
-            errorMessage.append('\n');
+            errorMessage.append(".\n");
         }
         return errorMessage.toString();
     }

@@ -120,10 +120,14 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public String addRole(RoleDTO roleDTO) throws InternetBankingException {
-        Role role = convertDTOToEntity(roleDTO);
-        roleRepo.save(role);
-        logger.info("Added role {}",role.toString());
-        return messageSource.getMessage("role.add.success", null, locale);
+        try {
+            Role role = convertDTOToEntity(roleDTO);
+            roleRepo.save(role);
+            logger.info("Added role {}", role.toString());
+            return messageSource.getMessage("role.add.success", null, locale);
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("role.add.failure", null, locale), e);
+        }
     }
 
 
@@ -147,26 +151,36 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public String updateRole(RoleDTO roleDTO) throws InternetBankingException {
-        Role role = convertDTOToEntity(roleDTO);
-        roleRepo.save(role);
-        logger.info("Updated role {}",role.toString());
-        return messageSource.getMessage("role.update.success", null, locale);
+        try {
+            Role role = convertDTOToEntity(roleDTO);
+            roleRepo.save(role);
+            logger.info("Updated role {}", role.toString());
+            return messageSource.getMessage("role.update.success", null, locale);
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("role.update.failure", null, locale), e);
+        }
     }
 
     @Override
     public String deleteRole(Long id) throws InternetBankingException {
-        roleRepo.delete(id);
-        logger.warn("Deleted role with Id {}",id);
-        return messageSource.getMessage("role.delete.success", null, locale);
-
+        try {
+            roleRepo.delete(id);
+            logger.warn("Deleted role with Id {}", id);
+            return messageSource.getMessage("role.delete.success", null, locale);
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("role.delete.failure", null, locale), e);
+        }
     }
 
     public String addPermission(PermissionDTO permissionDTO) throws InternetBankingException {
-        Permission permission = convertDTOToEntity(permissionDTO);
-        permissionRepo.save(permission);
-        logger.info("Added permission {}",permission.toString());
-        return messageSource.getMessage("permission.add.success", null, locale);
-
+        try {
+            Permission permission = convertDTOToEntity(permissionDTO);
+            permissionRepo.save(permission);
+            logger.info("Added permission {}", permission.toString());
+            return messageSource.getMessage("permission.add.success", null, locale);
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("permission.add.failure", null, locale), e);
+        }
     }
 
     @Override
@@ -202,18 +216,25 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public String updatePermission(PermissionDTO permissionDTO) throws InternetBankingException {
-        Permission permission = convertDTOToEntity(permissionDTO);
-        permissionRepo.save(permission);
-        logger.info("Updated permission {}",permission.toString());
-        return messageSource.getMessage("permission.update.success", null, locale);
-
+        try {
+            Permission permission = convertDTOToEntity(permissionDTO);
+            permissionRepo.save(permission);
+            logger.info("Updated permission {}", permission.toString());
+            return messageSource.getMessage("permission.update.success", null, locale);
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("permission.add.failure", null, locale), e);
+        }
     }
 
     @Override
     public String deletePermission(Long id) throws InternetBankingException {
-        permissionRepo.delete(id);
-        logger.warn("Deleted permission with Id {}",id);
-        return messageSource.getMessage("permission.delete.success", null, locale);
+        try {
+            permissionRepo.delete(id);
+            logger.warn("Deleted permission with Id {}", id);
+            return messageSource.getMessage("permission.delete.success", null, locale);
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("permission.delete.failure",null,locale),e);
+        }
     }
 
     public RoleDTO convertEntityToDTO(Role role) {

@@ -2,6 +2,8 @@ package longbridge.services;
 
 import longbridge.dtos.AdminUserDTO;
 import longbridge.exception.InternetBankingException;
+import longbridge.exception.PasswordException;
+import longbridge.forms.ChangePassword;
 import longbridge.models.AdminUser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -81,16 +83,15 @@ public interface AdminUserService {
      * Resets the password of the specified Admin user
      * @param userId the admin user
      */
-    String resetPassword(Long userId) throws InternetBankingException;
+    String resetPassword(Long userId) throws PasswordException;
 
     /**
      * Replaces the old password of the admin user with the new password.
      * The new password must meet the organisation's password policy if any one has been defined
      * It is important that the password is hashed before storing it in the database.
-     * @param oldPassword the old password
-     * @param newPassword the new password
+     * @param changePassword
      */
-    String changePassword(AdminUser user, String oldPassword, String newPassword) throws InternetBankingException;
+    String changePassword(AdminUser user, ChangePassword changePassword) throws PasswordException;
 
     /**
      * Generates and sends password to an admin user

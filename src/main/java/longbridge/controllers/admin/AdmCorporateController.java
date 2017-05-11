@@ -83,7 +83,7 @@ public class AdmCorporateController {
         if(result.hasErrors()){
             return "adm/corporate/new";
         }
-        corporateService.addCorporate(corporate);
+        corporateService.updateCorporate(corporate);
         redirectAttributes.addFlashAttribute("message", "Corporate updated successfully");
         return "redirect:/admin/corporates";
     }

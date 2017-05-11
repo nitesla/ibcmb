@@ -5,6 +5,7 @@ import longbridge.dtos.ContactDTO;
 import longbridge.dtos.OperationsUserDTO;
 import longbridge.dtos.UnitDTO;
 import longbridge.dtos.UserGroupDTO;
+import longbridge.exception.InternetBankingException;
 import longbridge.models.Contact;
 import longbridge.models.OperationsUser;
 import longbridge.models.Person;
@@ -14,15 +15,14 @@ import longbridge.services.CodeService;
 import longbridge.services.OperationsUserService;
 import longbridge.services.UnitService;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import longbridge.services.UserGroupService;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
@@ -55,6 +55,12 @@ public class OpsUnitController {
     @Autowired
     UnitService unitService;
 
+    @Autowired
+    UserGroupService userGroupService;
+
+    @Autowired
+    MessageSource messageSource;
+
 
     private Logger logger= LoggerFactory.getLogger(this.getClass());
     
@@ -72,8 +78,9 @@ public class OpsUnitController {
     }
 
     @PostMapping
-    public String createUnit(WebRequest request, RedirectAttributes redirectAttributes) throws Exception{
+    public String createUnit(WebRequest request, RedirectAttributes redirectAttributes, Model model, Locale locale){
 
+        try {
 		String contacts = request.getParameter("contacts");
 		String name = request.getParameter("name");
 		ObjectMapper mapper = new ObjectMapper();
@@ -96,10 +103,18 @@ public class OpsUnitController {
 		userGroup.setContacts(contactList);
 		userGroup.setUsers(opList);
 		
-		//TODO :Save
 
-		redirectAttributes.addFlashAttribute("message", "Unit personnel created successfully");
-		return "redirect:/ops/units";
+		    String message = userGroupService.addGroup(userGroup);
+            redirectAttributes.addFlashAttribute("message", message);
+            return "redirect:/ops/units";
+        }
+        catch (Exception ibe){
+		    logger.error("Error creating group",ibe);
+		    model.addAttribute("failure",messageSource.getMessage("group.add.failure",null,locale));
+            return "ops/unit/add";
+        }
+
+
     }
 
     @GetMapping

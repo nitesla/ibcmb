@@ -1,6 +1,8 @@
 package longbridge.controllers.admin;
 
 import longbridge.dtos.RetailUserDTO;
+import longbridge.exception.InternetBankingException;
+import longbridge.exception.PasswordException;
 import longbridge.forms.ChangePassword;
 import longbridge.services.RetailUserService;
 import org.slf4j.Logger;
@@ -32,22 +34,6 @@ public class AdmRetailUserController {
     private Logger logger= LoggerFactory.getLogger(this.getClass());
 
 
-//    @GetMapping("/new")
-//    public String addUser(Model model){
-//        model.addAttribute("retailUser",new RetailUserDTO());
-//        return "adm/retail/add";
-//    }
-
-
-//    @PostMapping
-//    public String createUser(@ModelAttribute("retailUser") RetailUserDTO retailUser, BindingResult result, RedirectAttributes redirectAttributes) throws Exception{
-//        if(result.hasErrors()){
-//            return "adm/retail/add";
-//        }
-//        retailUserService.addUser(retailUser);
-//        redirectAttributes.addFlashAttribute("message","Retail user created successfully");
-//        return "redirect:/admin/retail/users";
-//    }
     @PostMapping
     public String createUser(@ModelAttribute("retailUser") RetailUserDTO retailUser, BindingResult result, RedirectAttributes redirectAttributes) throws Exception{
         if(result.hasErrors()){
@@ -113,6 +99,32 @@ public class AdmRetailUserController {
        }
         retailUserService.updateUser(retailUser);
         redirectAttributes.addFlashAttribute("message", "Retail user updated successfully");
+        return "redirect:/admin/retail/users";
+    }
+
+
+    @GetMapping("/{id}/activation")
+    public String changeActivationStatus(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            String message = retailUserService.changeActivationStatus(id);
+            redirectAttributes.addFlashAttribute("message", message);
+        } catch (InternetBankingException ibe) {
+            logger.error("Error changing user activation status", ibe);
+            redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
+        }
+        return "redirect:/admin/retail/users";
+    }
+
+
+    @GetMapping("/{id}/password/reset")
+    public String resetPassword(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            String message = retailUserService.resetPassword(id);
+            redirectAttributes.addFlashAttribute("message", message);
+        } catch (PasswordException pe) {
+            redirectAttributes.addAttribute("failure", pe.getMessage());
+            logger.error("Error resetting password for retail user", pe);
+        }
         return "redirect:/admin/retail/users";
     }
 

@@ -12,6 +12,8 @@ import java.util.List;
 public class UserGroupDTO {
 
     private Long id;
+
+
     private int version;
     private String name;
     private String description;

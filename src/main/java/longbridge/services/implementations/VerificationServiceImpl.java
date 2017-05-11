@@ -1,7 +1,7 @@
 package longbridge.services.implementations;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import longbridge.exception.InternetBankingVerificationException;
+import longbridge.exception.VerificationException;
 import longbridge.models.AbstractEntity;
 import longbridge.models.SerializableEntity;
 import longbridge.models.Verification;
@@ -38,7 +38,7 @@ public class VerificationServiceImpl implements VerificationService {
 	Locale locale = LocaleContextHolder.getLocale();
 
 	@Override
-	public String decline(Verification verification, String declineReason) throws InternetBankingVerificationException {
+	public String decline(Verification verification, String declineReason) throws VerificationException {
 //		verification.setDeclinedBy(decliner);
 		verification.setDeclinedOn(new Date());
         verification.setDeclineReason(declineReason);
@@ -47,7 +47,7 @@ public class VerificationServiceImpl implements VerificationService {
 	}
 
 	@Override
-	public String verify(Verification t) throws InternetBankingVerificationException {
+	public String verify(Verification t) throws VerificationException {
 		//check if it is verified
 		if(t.getVerifiedBy() != null){
 			//already verified
@@ -102,7 +102,7 @@ public class VerificationServiceImpl implements VerificationService {
 
 	@Override
 
-	public <T extends SerializableEntity<T>> String addNewVerificationRequest(T entity) throws JsonProcessingException, InternetBankingVerificationException {
+	public <T extends SerializableEntity<T>> String addNewVerificationRequest(T entity) throws JsonProcessingException, VerificationException {
 
 		String classSimpleName = entity.getClass().getSimpleName();
 		Verification verification = new Verification();

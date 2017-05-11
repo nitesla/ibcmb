@@ -28,7 +28,6 @@ public class ClassLimit extends  AbstractEntity {
     private String currency;
     private String status;
     private String frequency;
-    private Date effectiveDate;
 
 
     public Long getId() {
@@ -111,11 +110,4 @@ public class ClassLimit extends  AbstractEntity {
         this.status = status;
     }
 
-    public Date getEffectiveDate() {
-        return effectiveDate;
     }
-
-    public void setEffectiveDate(Date effectiveDate) {
-        this.effectiveDate = effectiveDate;
-    }
-}

@@ -3,6 +3,7 @@ package longbridge.models;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
@@ -21,10 +22,10 @@ public class UserGroup extends AbstractEntity {
     private String description;
     private Date dateCreated;
 
-    @ManyToMany(mappedBy = "groups")
+    @ManyToMany(cascade = CascadeType.ALL)
     private List<OperationsUser> users;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Contact> contacts;
 
 

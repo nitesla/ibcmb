@@ -1,6 +1,7 @@
 package longbridge.models;
 
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 
 import org.hibernate.envers.Audited;
 
@@ -19,6 +20,9 @@ public class Contact extends AbstractEntity implements Person {
 		this.email = email;
 		this.external = external;
 	}
+
+	@ManyToOne
+	UserGroup userGroup;
 
 
 
@@ -47,6 +51,14 @@ public class Contact extends AbstractEntity implements Person {
 	@Override
 	public String getEmail() {
 		return email;
+	}
+
+	public UserGroup getUserGroup() {
+		return userGroup;
+	}
+
+	public void setUserGroup(UserGroup userGroup) {
+		this.userGroup = userGroup;
 	}
 
 	@Override

@@ -23,8 +23,11 @@ public class OperationsUser extends User implements Person {
 		this.userType = (UserType.OPERATIONS);
 	}
 
-	@ManyToMany
+	@ManyToMany(mappedBy = "users")
 	private List<UserGroup> groups;
+
+
+
 
 
 	public List<UserGroup> getGroups() {
