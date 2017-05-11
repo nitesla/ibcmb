@@ -26,7 +26,7 @@
                     <li><a href="#"> Help&nbsp;</a></li>
                 </ul>
             </div>
-            <nav class="navbar navbar-default links">
+            <nav class="navbar yamm navbar-default">
                 <div class="container-fluid">
                     <div class="navbar-header navbar-left">
                         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
@@ -66,18 +66,11 @@
                                 <li><a th:href="@{/retail/transfer/interbanktransfer}" th:text="#{menu.transfer.other}">Transfer to other banks</a></li>
                                 <li><a th:href="@{/retail/transfer}" th:text="#{menu.transfer.int}">International transfer</a></li>
                                 <li><a th:href="@{/retail/transfer/settransferlimit}" th:text="#{menu.transfer.limit}">Set transfer limit</a></li>
-                                <li><a th:href="@{'#'}" th:text="#{menu.transfer.order}">Standing order</a></li>
-                                <li><a th:href="@{/retail/transfer/ownaccount}">Own account transfers </a></li>
-                                <li><a th:href="@{/retail/transfer/local}">Transfer to Coronation account </a></li>
-                                <li><a th:href="@{/retail/transfer/interbanktransfer}">Transfer to other banks</a></li>
-                                <li><a th:href="@{/retail/transfer}">International transfer</a></li>
-                                <li><a th:href="@{/retail/transfer/settransferlimit}">Set transfer limit</a></li>
-                                <li><a th:href="@{/retail/transfer/standingorder}">Standing order</a></li>
-
-                                  </ul>
+                                <li><a th:href="@{/retail/transfer/standingorder}" th:text="#{menu.transfer.order}">Standing order</a></li>
+                            </ul>
                         </li>
-                        <!--<li><a href="#" th:text="#{menu.bill}">Bill Payments</a></li>-->
-                        <li><a th:href="@{/retail/beneficiary}" th:text="#{menu.beneficiary}">Beneficiaries</a></li>
+                        <li><a href="#" th:text="#{menu.bill}">Bill Payments</a></li>
+                        <li><a href="#" th:text="#{menu.bill}">Investment</a></li>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.servreq}"> Service Requests </a>
                             <ul class="dropdown-menu">
@@ -86,17 +79,9 @@
                                 <p th:each="requests : ${serviceRequests}">
                                 <li><a th:href="@{/retail/requests/} + ${requests.id}" th:text="${requests.requestName}"></a></li>
                                 </p>
-
-
                             </ul>
                         </li>
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.token}"> Token Management </a>
-                            <ul class="dropdown-menu">
-                                <li><a th:href="@{/retail/alert_preference}" th:text="#{menu.token.sync}">Synchronize Token</a></li>
-                                <li><a th:href="@{/retail/change_password}" th:text="#{menu.token.report}">Report Lost Token</a></li>
-                            </ul>
-                        </li>
+
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.settings}"> Settings </a>
                             <ul class="dropdown-menu">
@@ -104,31 +89,39 @@
                                 <li><a th:href="@{/retail/change_password}" th:text="#{menu.settings.password}">Change Password</a></li>
                             </ul>
                         </li>
-                        <!--<li class="dropdown mega-dropdown">-->
-                            <!--<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.more}"> More </a>-->
-                            <!--<ul class="dropdown-menu mega-dropdown-menu col-md-12">-->
-                                <!--<li class="col-md-3 col-sm-3">-->
-                                    <!--<ul>-->
-                                        <!--<li class="dropdown-header">Dresses</li>-->
-                                        <!--<li><a href="#">Unique Features</a></li>-->
-                                        <!--<li><a href="#">Image Responsive</a></li>-->
-                                        <!--<li><a href="#">Auto Carousel</a></li>-->
-                                        <!--<li><a href="#">Newsletter Form</a></li>-->
-                                        <!--<li><a href="#">Four columns</a></li>-->
-                                    <!--</ul>-->
-                                <!--</li>-->
-                                <!--<li class="col-md-3 col-sm-3">-->
-                                    <!--<ul>-->
-                                        <!--<li class="dropdown-header">Dresses</li>-->
-                                        <!--<li><a href="#">Unique Features</a></li>-->
-                                        <!--<li><a href="#">Image Responsive</a></li>-->
-                                        <!--<li><a href="#">Auto Carousel</a></li>-->
-                                        <!--<li><a href="#">Newsletter Form</a></li>-->
-                                        <!--<li><a href="#">Four columns</a></li>-->
-                                    <!--</ul>-->
-                                <!--</li>-->
-                            <!--</ul>-->
-                        <!--</li>-->
+                        <li class="mega-dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">More<i class="caret"></i></a>
+                            <ul class="dropdown-menu mega-dropdown-menu row">
+                                <li class="col-sm-3">
+                                    <ul>
+                                        <li class="dropdown-header">Cards</li>
+                                        <li class="divider"></li>
+                                        <li class="dropdown-header">Product Offerings</li>
+
+                                    </ul>
+                                </li>
+                                <li class="col-sm-3">
+                                    <ul>
+                                        <li class="dropdown-header">Token Management </li>
+                                        <li><a th:href="@{/retail/alert_preference}" th:text="#{menu.token.sync}">Synchronize Token</a></li>
+                                        <li><a th:href="@{/retail/change_password}" th:text="#{menu.token.report}">Report Lost Token</a></li>
+                                        <li class="divider"></li>
+                                        <li class="dropdown-header">Beneficiaries</li>
+                                        <li><a th:href="@{/retail/beneficiary}" th:text="#{menu.beneficiary}">Beneficiaries</a></li>
+                                        <li><a th:href="@{/retail/beneficiary/new}" th:text="#{menu.beneficiary.add}">Beneficiaries</a></li>
+
+                                    </ul>
+                                </li>
+                                <li class="col-sm-3">
+                                    <ul>
+                                        <li class="dropdown-header">Message Center</li>
+                                        <li><a href="#" th:text="#{menu.mail}"> Mailbox</a></li>
+                                        <li class="divider"></li>
+                                        <li class="dropdown-header">Loans &amp; Installments</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
                     </ul>
 
                     <ul class="nav navbar-nav navbar-right">
@@ -194,6 +187,12 @@
                 }
             );
         });
+
+    </script>
+    <script>
+        $(document).on('click', '.mega-dropdown', function(e) {
+            e.stopPropagation()
+        })
     </script>
 </footer>
 <!-- /footer content -->
