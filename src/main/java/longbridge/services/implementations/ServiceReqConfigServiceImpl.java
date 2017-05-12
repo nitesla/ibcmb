@@ -120,7 +120,7 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 		serviceReqConfig.setVersion(serviceReqConfigDTO.getVersion());
 		serviceReqConfig.setRequestName(serviceReqConfigDTO.getRequestName());
 		serviceReqConfig.setRequestType(serviceReqConfigDTO.getRequestType());
-		serviceReqConfig.setRequestUnit(serviceReqConfigDTO.getRequestUnit());
+		serviceReqConfig.setGroupId(serviceReqConfigDTO.getGroupId());
 		serviceReqConfig.setFormFields(fields);
 		serviceReqConfigRepo.save(serviceReqConfig);
 		logger.info("Updated service request configuration {}",serviceReqConfig.toString());
