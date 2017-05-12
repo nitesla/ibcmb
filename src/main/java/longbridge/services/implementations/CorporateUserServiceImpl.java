@@ -183,9 +183,14 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     }
 
 	@Override
-	public Page<CorporateUserDTO> getUsers(Corporate Corporate, Pageable pageDetails) {
-		// TODO Auto-generated method stub
-		return null;
+	public Page<CorporateUserDTO> getUsers(Long corpId, Pageable pageDetails) {
+
+        Page<CorporateUser> page = corporateUserRepo.findByCorporateId(corpId, pageDetails);
+        List<CorporateUserDTO> dtOs = convertEntitiesToDTOs(page.getContent());
+        long t = page.getTotalElements();
+        Page<CorporateUserDTO> pageImpl = new PageImpl<CorporateUserDTO>(dtOs, pageDetails, t);
+        return pageImpl;
+		// TODO Auto-gene
 	}
 
 	@Override

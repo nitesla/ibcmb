@@ -1,8 +1,9 @@
 package longbridge.controllers.admin;
 
 import longbridge.dtos.CorporateDTO;
-import longbridge.models.Corporate;
+import longbridge.dtos.CorporateUserDTO;
 import longbridge.services.CorporateService;
+import longbridge.services.CorporateUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,6 +26,9 @@ public class AdmCorporateController {
 
     @Autowired
     private CorporateService corporateService;
+
+    @Autowired
+    private CorporateUserService corporateUserService;
 
     @GetMapping("/new")
     public String addCorporate(Model model){
@@ -63,6 +67,27 @@ public class AdmCorporateController {
     @GetMapping
     public String getAllCorporates(){
         return "adm/corporate/view";
+    }
+
+    @GetMapping("/{reqId}/view")
+    public String  viewRole(@PathVariable Long reqId, Model model){
+        CorporateDTO corporate = corporateService.getCorporate(reqId);
+        model.addAttribute("corporate",corporate);
+        return "/adm/corporate/details";
+    }
+
+    @GetMapping(path = "/{corpId}/users")
+    public @ResponseBody
+    DataTablesOutput<CorporateUserDTO> getUsers(@PathVariable Long corpId, DataTablesInput input){
+//        CorporateDTO corporate = corporateService.getCorporate(corpId);
+        Pageable pageable = DataTablesUtils.getPageable(input);
+        Page<CorporateUserDTO> users = corporateUserService.getUsers(corpId, pageable);
+        DataTablesOutput<CorporateUserDTO> out = new DataTablesOutput<CorporateUserDTO>();
+        out.setDraw(input.getDraw());
+        out.setData(users.getContent());
+        out.setRecordsFiltered(users.getTotalElements());
+        out.setRecordsTotal(users.getTotalElements());
+        return out;
     }
 
     @GetMapping(path = "/all")

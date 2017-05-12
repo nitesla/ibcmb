@@ -1,9 +1,7 @@
 package longbridge.dtos;
 
-import longbridge.models.Corporate;
 import org.hibernate.validator.constraints.NotEmpty;
 
-import javax.validation.constraints.NotNull;
 import java.util.Date;
 /**
  * Created by Fortune on 4/5/2017.
@@ -11,7 +9,7 @@ import java.util.Date;
 public class CorporateUserDTO {
 
     private Long id;
-    private Corporate corporate;
+    private Long corporateId;
     @NotEmpty
     private String userName;
     @NotEmpty
@@ -33,12 +31,12 @@ public class CorporateUserDTO {
         this.id = id;
     }
 
-    public Corporate getCorporate() {
-        return corporate;
+    public Long getCorporateId() {
+        return corporateId;
     }
 
-    public void setCorporate(Corporate corporate) {
-        this.corporate = corporate;
+    public void setCorporateId(Long corporateId) {
+        this.corporateId = corporateId;
     }
 
     public String getUserName() {

@@ -15,4 +15,5 @@ public interface CorporateUserRepo extends JpaRepository<CorporateUser, Long> {
 	Iterable<CorporateUser> findByRole(Role r);
     Page<CorporateUser> findByRole(Role r, Pageable pageDetail);
     CorporateUser   findByUserName(String s);
+    Page<CorporateUser> findByCorporateId(Long corpId, Pageable pageDetail);
 }
