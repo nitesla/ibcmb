@@ -2,7 +2,7 @@ package longbridge.services.implementations;
 
 import longbridge.dtos.MessageDTO;
 import longbridge.exception.InternetBankingException;
-import longbridge.models.EmailDetail;
+import longbridge.models.Email;
 import longbridge.models.MailBox;
 import longbridge.models.Message;
 import longbridge.models.User;
