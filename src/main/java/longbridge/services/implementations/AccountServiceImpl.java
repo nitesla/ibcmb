@@ -5,7 +5,7 @@ import longbridge.dtos.AccountDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.Account;
 import longbridge.repositories.AccountRepo;
-import longbridge.services.AccountConfigurationService;
+import longbridge.services.AccountConfigService;
 import longbridge.services.AccountService;
 import longbridge.services.IntegrationService;
 import longbridge.utils.AccountStatement;
@@ -38,12 +38,12 @@ public class AccountServiceImpl implements AccountService {
 
     private ModelMapper modelMapper;
 
-    private AccountConfigurationService accountConfigService;
+    private AccountConfigService accountConfigService;
 
     private MessageSource messageSource;
 
 
-    public AccountServiceImpl(AccountRepo accountRepo, IntegrationService integrationService, ModelMapper modelMapper, AccountConfigurationService accountConfigService, MessageSource messageSource) {
+    public AccountServiceImpl(AccountRepo accountRepo, IntegrationService integrationService, ModelMapper modelMapper, AccountConfigService accountConfigService, MessageSource messageSource) {
         this.accountRepo = accountRepo;
         this.integrationService = integrationService;
         this.modelMapper = modelMapper;

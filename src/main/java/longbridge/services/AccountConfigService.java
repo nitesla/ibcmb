@@ -10,7 +10,7 @@ import org.springframework.data.domain.Pageable;
 /**
  * Created by Fortune on 5/1/2017.
  */
-public interface AccountConfigurationService {
+public interface AccountConfigService {
 
 
       boolean isAccountHidden(String accountNumber);

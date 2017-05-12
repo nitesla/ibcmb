@@ -4,7 +4,7 @@ import longbridge.dtos.AccountClassRestrictionDTO;
 import longbridge.dtos.AccountRestrictionDTO;
 import longbridge.dtos.CodeDTO;
 import longbridge.exception.InternetBankingException;
-import longbridge.services.AccountConfigurationService;
+import longbridge.services.AccountConfigService;
 import longbridge.services.CodeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,7 +39,7 @@ public class OpsAccountController {
     CodeService codeService;
 
     @Autowired
-    AccountConfigurationService accountConfigService;
+    AccountConfigService accountConfigService;
 
     @Autowired
     MessageSource messageSource;

@@ -9,7 +9,7 @@ import longbridge.models.AccountRestriction;
 import longbridge.repositories.AccountClassRestrictionRepo;
 import longbridge.repositories.AccountRepo;
 import longbridge.repositories.AccountRestrictionRepo;
-import longbridge.services.AccountConfigurationService;
+import longbridge.services.AccountConfigService;
 import longbridge.services.CodeService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +31,7 @@ import java.util.List;
 
 
 @Service
-public class AccountConfigurationServiceImpl implements AccountConfigurationService {
+public class AccountConfigServiceImpl implements AccountConfigService {
 
 
     private AccountRestrictionRepo accountRestrictionRepo;
@@ -46,7 +46,7 @@ public class AccountConfigurationServiceImpl implements AccountConfigurationServ
     MessageSource messageSource;
 
 @Autowired
-    public AccountConfigurationServiceImpl(AccountRestrictionRepo accountRestrictionRepo, AccountClassRestrictionRepo accountClassRestrictionRepo, CodeService codeService, ModelMapper modelMapper) {
+    public AccountConfigServiceImpl(AccountRestrictionRepo accountRestrictionRepo, AccountClassRestrictionRepo accountClassRestrictionRepo, CodeService codeService, ModelMapper modelMapper) {
         this.accountRestrictionRepo = accountRestrictionRepo;
         this.accountClassRestrictionRepo = accountClassRestrictionRepo;
         this.codeService = codeService;

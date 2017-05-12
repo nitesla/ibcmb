@@ -13,7 +13,6 @@ import longbridge.models.Unit;
 import longbridge.models.UserGroup;
 import longbridge.services.CodeService;
 import longbridge.services.OperationsUserService;
-import longbridge.services.UnitService;
 
 import java.util.*;
 
@@ -51,8 +50,6 @@ public class OpsGroupController {
     @Autowired
     private CodeService codeService;
 
-    @Autowired
-    UnitService unitService;
 
     @Autowired
     UserGroupService userGroupService;
@@ -154,7 +151,6 @@ public class OpsGroupController {
     @GetMapping("/{id}/edit")
     public String editGroup(@PathVariable Long id, Model model) {
         UserGroupDTO group = userGroupService.getGroup(id);
-        Iterable<ContactDTO> contactDTOs = userGroupService.getContacts(id);
         model.addAttribute("group", group);
         return "/ops/group/edit";
 
