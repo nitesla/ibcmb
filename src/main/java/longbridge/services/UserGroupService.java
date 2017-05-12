@@ -1,7 +1,12 @@
 package longbridge.services;
 
+import longbridge.dtos.ContactDTO;
 import longbridge.dtos.UserGroupDTO;
 import longbridge.exception.InternetBankingException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+import java.util.List;
 
 /**
  * Created by Fortune on 5/3/2017.
@@ -17,9 +22,12 @@ public interface UserGroupService {
 
     String deleteGroup(Long id) throws InternetBankingException;
 
+    List<UserGroupDTO> getGroups();
 
+    Page<UserGroupDTO> getGroups(Pageable pageDetails);
 
     UserGroupDTO getGroup(Long id);
 
-    boolean addOperatorToGroup(Long groupId, String username);
+    List<ContactDTO> getContacts(Long groupId);
+
 }

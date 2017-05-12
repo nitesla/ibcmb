@@ -1,5 +1,6 @@
 package longbridge.dtos;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import longbridge.models.PersonnelContact;
 
 import java.beans.PersistenceDelegate;
@@ -11,9 +12,8 @@ import java.util.List;
  */
 public class UserGroupDTO {
 
+    @JsonProperty("DT_RowId")
     private Long id;
-
-
     private int version;
     private String name;
     private String description;

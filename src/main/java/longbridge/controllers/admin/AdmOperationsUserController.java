@@ -107,7 +107,7 @@ public class AdmOperationsUserController {
     public String createUser(@ModelAttribute("operationsUser") @Valid OperationsUserDTO operationsUser, BindingResult result, RedirectAttributes redirectAttributes, Locale locale){
         if (result.hasErrors()) {
             result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
-            return "adm/admin/add";
+            return "adm/operation/add";
         }
         try {
             String message = operationsUserService.addUser(operationsUser);

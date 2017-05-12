@@ -67,7 +67,6 @@
                                                 <li th:each="err : ${#fields.errors('global')}" th:text="${err}">Global error message</li>
                                             </ul>
                                         </div>
-                                        <div th:replace="layout :: message"></div>
                                         <div th:replace="layout :: form-validation">
 
                                         </div>
@@ -81,7 +80,7 @@
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">New Password</label>
                                             <div class="col-sm-4">
-                                                <input type="password" class="form-control" th:field="*{newPassword}""/>
+                                                <input type="password" class="form-control" th:field="*{newPassword}"/>
                                             </div>
                                         </div>
                                         <div class="form-group">
