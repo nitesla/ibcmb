@@ -168,6 +168,15 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
+    public Page<MessageDTO> getSentMessages(String recipient, UserType recipientTye, Pageable pageable) {
+        Page<Message> page = messageRepo.findByRecipientAndRecipientTypeOrderByIdDesc(recipient, recipientTye,pageable);
+        List<MessageDTO> dtOs = convertEntitiesToDTOs(page.getContent());
+        long t = page.getTotalElements();
+        Page<MessageDTO> pageImpl = new PageImpl<MessageDTO>(dtOs, pageable, t);
+        return pageImpl;
+    }
+
+    @Override
     @Transactional
     public List<MessageDTO> getReceivedMessages(User user) {
         List<Message> receivedMessages = messageRepo.findByRecipientAndRecipientTypeOrderByIdDesc(user.getUserName(),user.getUserType());

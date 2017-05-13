@@ -115,66 +115,55 @@
                                                     </div>
 
                                                     <div class="compose-body">
-                                                        <form class="row form-group" th:action="@{/ops/mailbox}" th:object="${messageDTO}">
+                                                        <form method="post" th:action="@{/ops/mailbox}" th:object="${messageDTO}">
+
                                                             <div class="form-group">
-                                                                <label for="to" class="col-md-2 control-label">From:</label>
+                                                                <label class="col-md-2 control-label">From:</label>
                                                                 <div class="col-md-10">
-                                                                    <input type="text" class="form-control" readonly="readonly" id="from" th:field="*{sender}">
+                                                                    <input class="form-control" type="text" th:field="*{sender}"
+                                                                           readonly="readonly"/>
                                                                 </div>
                                                             </div>
                                                             <br/><br/>
                                                             <div class="form-group">
-                                                                <label for="to" class="col-md-2 control-label">To:</label>
+                                                                <label class="col-md-2 control-label">To:</label>
                                                                 <div class="col-md-10">
-                                                                    <select  class="form-control input-group-addon" id="to" th:field="*{recipientType}">
+                                                                    <select class="form-control input-group-addon"
+                                                                            th:field="*{recipientType}">
                                                                         <option value="RETAIL">RETAIL USER</option>
                                                                         <option value="CORPORATE">CORPORATE USER</option>
                                                                         <option value="OPERATIONS">OPERATOR</option>
 
 
                                                                     </select>
+                                                                    <input class="form-control" type="text" th:field="*{recipient}"
+                                                                           placeholder="Enter username of the recipient"/>
+                                                                </div>
+                                                            </div>
+                                                            <br/><br/><br/>
+                                                            <div class="form-group">
+                                                                <label class="col-md-2 control-label">Subject:</label>
+                                                                <div class="col-md-10">
+                                                                    <input class="form-control" type="text" th:field="*{subject}"
+                                                                           placeholder="Subject"/>
                                                                 </div>
                                                             </div>
                                                             <br/><br/>
-                                                            <div class="form-group">
-                                                                <label for="recipient" class="col-md-2 control-label">Recipient:</label>
+                                                            <div class="compose-message form-group">
 
-                                                                <div class="col-md-10">
-                                                                    <input type="text" class="form-control" id="recipient" th:field="*{recipient}" placeholder="Enter username of the recipient"/>
-                                                                </div>
-                                                            </div>
-                                                            <br/><br/>
-                                                            <div class="form-group">
-                                                                <label for="subject" class="col-md-2 control-label">Subject</label>
-                                                                <div class="col-md-10">
-                                                                    <input type="text" class="form-control" id="subject" th:field="*{subject}">
-                                                                </div>
-                                                            </div>
 
+                                                                    <textarea style="height: 250px" class="note-editable form-control" th:field="*{body}" placeholder="Enter message here"></textarea>
+
+                                                            </div>
 <br/><br/>
-                                                    <div class="compose-message">
-                                                        <div class="summernote" style="display:none;"></div>
-                                                        <div class="note-editor">
-                                                            <div class="note-dropzone">
-                                                                <div class="note-dropzone-message"></div>
-                                                            </div>
-
-                                                            <!--<div class="note-editable" contenteditable="true" style="height: 350px;"><br></div><div class="note-statusbar"><div class="note-resizebar"><div class="note-icon-bar"></div><div class="note-icon-bar"></div><div class="note-icon-bar"></div></div></div></div>-->
-                                                       <!---->
-                                                        <div class="note-editable" contenteditable="true" th:field="*{body}" style="height: 350px;" placeholder="Enter message here"></div>
-
-                                                    </div>
-                                                        </div>
                                                             <div class="form-group">
-                                                    <div class="compose-options">
-                                                        <div class="pull-right">
-                                                            <button class="btn btn-primary" type="submit"><i class="fa fa-send"></i> Send</button>
-                                                            <button class="btn btn-danger" type="reset"><i class="fa fa-trash"></i> Reset</button>
-                                                        </div>
-                                                    </div>
+                                                                <div class="pull-right">
+                                                                    <button class="btn btn-white" id="cancel" type="reset"><i class="fa fa-trash"></i>Cancel</button>
+                                                                    <button class="btn btn-primary"  type="submit"><i class="fa fa-send"></i> Send</button>
                                                                 </div>
-                                                </form>
-
+                                                            </div>
+                                                            <div th:replace="layout::form-validation"></div>
+                                                        </form>
                                                 </div>
                                                 </div>
                                             </div>
@@ -185,7 +174,7 @@
                                 <!--End row-->
 
 
-
+                            </div>
                                 <!-- End Wrapper-->
                             </div>
                         </div>
@@ -212,6 +201,6 @@
     </script>>
     <!-- /compose -->
 
-</div>
+
 </body>
 </html>

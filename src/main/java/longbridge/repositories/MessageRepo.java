@@ -3,6 +3,8 @@ package longbridge.repositories;
 import longbridge.models.MailBox;
 import longbridge.models.Message;
 import longbridge.models.UserType;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
@@ -20,6 +22,9 @@ public interface MessageRepo extends CommonRepo<Message, Long> {
 //    Message findFirstByRecipientOrderByIdDesc(String recipient);
 
     List<Message> findByRecipientAndRecipientTypeOrderByIdDesc(String recipient, UserType recipientTye);
+
+    Page<Message> findByRecipientAndRecipientTypeOrderByIdDesc(String recipient, UserType recipientTye, Pageable pageable);
+
 
     Iterable<Message> findByMailBox(MailBox mailBox);
 

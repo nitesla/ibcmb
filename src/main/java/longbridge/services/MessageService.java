@@ -4,11 +4,12 @@ import longbridge.dtos.MessageDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.*;
 
-import java.awt.print.Pageable;
+//import java.awt.print.Pageable;
 import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 /**
  * The {@code MessagingService} interface provides a service for sending messages
@@ -105,6 +106,12 @@ public interface MessageService {
      */
     List<MessageDTO> getSentMessages(User user);
 
+    /**
+     * Returns a page list of maessages recieved
+     * @param pageableDetails the pagination
+     * @return returns a list of messages
+     */
+     Page<MessageDTO> getSentMessages(String recipient, UserType recipientTye, Pageable pageable);
     /**
      * Returns a list of messages received by the specified user
      * @param user the user
