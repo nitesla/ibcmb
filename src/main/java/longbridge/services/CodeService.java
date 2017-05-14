@@ -48,7 +48,7 @@ public interface CodeService {
 	 *            the code's type
 	 * @return a list of codes
 	 */
-	Iterable<CodeDTO> getCodesByType(String codeType);
+	List<CodeDTO> getCodesByType(String codeType);
 
 	public String updateCode(CodeDTO codeDTO, AdminUser adminUser) throws InternetBankingException;
 

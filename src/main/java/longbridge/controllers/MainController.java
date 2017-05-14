@@ -1,5 +1,6 @@
 package longbridge.controllers;
 
+import longbridge.forms.ResetPasswordForm;
 import longbridge.models.RetailUser;
 import longbridge.services.RetailUserService;
 import longbridge.services.SecurityService;
@@ -7,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
@@ -115,44 +117,59 @@ public class MainController {
     } 
     
     @GetMapping("/forgot/password")
-    public String showResetPassword(){
-    	return "cust/passwordreset";
+    public String showResetPassword(Model model){
+        ResetPasswordForm resetPasswordForm = new ResetPasswordForm();
+        resetPasswordForm.step = "1";
+    	model.addAttribute("forgotPasswordForm", resetPasswordForm);
+        return "cust/passwordreset";
     }
     
     @PostMapping("/forgot/password")
-    public String resetPassword(WebRequest webRequest,  RedirectAttributes redirectAttributes){
+    public @ResponseBody  String resetPassword(WebRequest webRequest,  RedirectAttributes redirectAttributes){
     	Iterator<String> iterator = webRequest.getParameterNames();
     	
     	while(iterator.hasNext()){
     		logger.info(iterator.next());
     	}
-    	
+
+
     	String accountNumber = webRequest.getParameter("acct");
     	String securityQuestion = webRequest.getParameter("securityQuestion");
     	String securityAnswer = webRequest.getParameter("securityAnswer");
     	String password= webRequest.getParameter("password");
     	String confirmPassword = webRequest.getParameter("confirm");
+    	String customerId = webRequest.getParameter("customerId");
     	
-    	//confirm passwords are the same
-    	boolean isValid = password.equals(confirmPassword);
+        if (customerId == "" || customerId == null){
+            logger.error("Account Number not valid");
+            return "false";
+        }
     	
-    	if(isValid){
-    		logger.error("Passwords do not match");
-    	}
-    	
-    	String username = retailUserService.retrieveUsername(accountNumber, securityQuestion, securityAnswer);
-        RetailUser retailUser = retailUserService.getUserByName(username);
+//    	String username = retailUserService.retrieveUsername(accountNumber, securityQuestion, securityAnswer);
+//        RetailUser retailUser = retailUserService.getUserByName(username);
 
         //confirm security question is correct
-    	isValid &= securityService.validateSecurityQuestion(retailUser, securityQuestion, securityAnswer);
-    	if(isValid){
-    		logger.error("Invalid security question / answer");
-    	}
+//    	isValid &= securityService.validateSecurityQuestion(retailUser, securityQuestion, securityAnswer);
+//    	if(isValid){
+//    		logger.error("Invalid security question / answer");
+//    		return "false";
+//    	}
+
+
+        //confirm passwords are the same
+        boolean isValid = password.trim().equalsIgnoreCase(confirmPassword.trim());
+        if(!isValid){
+            logger.error("Passwords do not match");
+            return "false";
+        }
+
+        //get Retail User by customerId
+        RetailUser retailUser = retailUserService.getUserByCustomerId(customerId);
     	//change password	
     	retailUserService.resetPassword(retailUser, password);
     	redirectAttributes.addAttribute("success", true);
     	
-    	return "cust/passwordreset";
+    	return "true";
     }
 
 }

@@ -96,6 +96,12 @@ public class RetailUserServiceImpl implements RetailUserService {
     }
 
     @Override
+    public RetailUser getUserByCustomerId(String custId) {
+        RetailUser retailUser = this.retailUserRepo.findFirstByCustomerId(custId);
+        return retailUser;
+    }
+
+    @Override
     public String setPassword(RetailUser user, String password) throws PasswordException {
         boolean ok = false;
         if (user != null) {
@@ -147,19 +153,7 @@ public class RetailUserServiceImpl implements RetailUserService {
     }
 
 
-    @Override
-    public boolean resetPassword(RetailUser user, String newPassword) {
-        boolean ok = false;
 
-        if(user!=null)
-        {
-            setPassword(user,newPassword);
-
-            logger.info("PASSWORD RESET SUCCESSFULLY");
-        }
-
-        return ok;
-    }
 
 
     @Override
@@ -213,6 +207,29 @@ public class RetailUserServiceImpl implements RetailUserService {
         } catch (Exception e) {
             throw new PasswordException(messageSource.getMessage("password.reset.failure", null, locale), e);
         }
+    }
+
+    @Override
+    public boolean resetPassword(RetailUser user, String newPassword) {
+        boolean ok = false;
+
+        try {
+
+            if (getUser(user.getId()) == null) {
+                logger.error("USER DOES NOT EXIST");
+                return ok;
+            }else{
+                user.setPassword(this.passwordEncoder.encode(newPassword));
+                this.retailUserRepo.save(user);
+                logger.info("PASSWORD RESET SUCCESSFULLY");
+                ok = true;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("ERROR OCCURRED {}", e.getMessage());
+        }
+        return ok;
     }
 
     @Override

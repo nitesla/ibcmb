@@ -3,6 +3,7 @@ package longbridge.services.implementations;
 import longbridge.dtos.RequestHistoryDTO;
 import longbridge.dtos.ServiceRequestDTO;
 import longbridge.exception.InternetBankingException;
+import longbridge.models.Email;
 import longbridge.models.RequestHistory;
 import longbridge.models.RetailUser;
 import longbridge.models.ServiceRequest;
@@ -71,13 +72,33 @@ public class RequestServiceImpl implements RequestService {
         this.requestHistoryRepo=requestHistoryRepo;
     }
 
+    public String getFullName(ServiceRequest serviceRequest){
+        String firstName = serviceRequest.getUser().getFirstName();
+        String lastName = "";
+        if (serviceRequest.getUser().getLastName() == null) {
+            lastName = "";
+        } else {
+            lastName = serviceRequest.getUser().getLastName();
+        }
+        String name = firstName + ' ' + lastName;
+        return name;
+    }
+
     @Override
     public String addRequest(ServiceRequestDTO request) throws InternetBankingException {
         ServiceRequest serviceRequest = convertDTOToEntity(request);
         serviceRequest.setUser(retailUserRepo.findOne(serviceRequest.getUser().getId()));
+        String name = getFullName(serviceRequest);
+
+        Email email = new Email.Builder().setSender("info@ibanking.coronationmb.com")
+                .setRecipient(serviceRequest.getUser().getEmail())
+                .setSubject("Service Request from " + name)
+                .setBody("Your new password to Internet Banking is and your username is")
+                .build();
+        mailService.send(email);
+
         serviceRequestRepo.save(serviceRequest);
         return messageSource.getMessage("request.add.success",null,locale);
-
     }
 
 

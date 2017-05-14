@@ -18,6 +18,7 @@
 				}else{
 					//valid account number
 					alert("Customer Id: " + customerId);
+					$('input[name=customerId]').val(customerId);
 				}
             }
         }); 
@@ -28,6 +29,34 @@
         	return true;
         }
 	}
+
+	function changePassword(){
+	    var returnValue = false;
+        $('#reg-form').submit(function(e){
+            e.preventDefault();
+
+            $.ajax({
+                url: '',
+                async:false,
+                type: "POST",
+                data: $(this).serialize(),
+                success: function(data)
+                {
+                    alert(data+" return ");
+                    //callback methods go right here
+                    if(data==="true"){
+                        $('#returnValue').val(true);
+                    }
+                }
+            });
+        });
+        $('#reg-form').submit();
+        returnValue = $('#returnValue').val();
+        alert(returnValue);
+        return Boolean(returnValue);
+    }
+
+
 	
 
     //steps with form
@@ -45,7 +74,7 @@
     });
     
     var ACCOUNT_DETAILS_STEP = 0;
-//    var CONFIRM_PASSWORD_STEP = 2;
+    var CHANGE_PASSWORD_STEP = 2;
 
     //var condition = [[${success}]];
     
@@ -64,12 +93,12 @@
                 var accountNumber = $('input[name="acct"]').val();
                 return isValid && validateAccountNo(accountNumber);
             }
-//             if(CONFIRM_PASSWORD_STEP === currentIndex){
-//                 console.log("Current stp is the profile details step");
-//                 //form.submit();
-// //                return isValid && changePassword(username);
-//             }
-//             return form.valid();
+            if(CHANGE_PASSWORD_STEP === currentIndex){
+                console.log("Current step is the change password step");
+                //form.submit();
+               return isValid && changePassword();
+            }
+            return form.valid();
         },
         onFinishing: function (event, currentIndex)
         {
@@ -78,8 +107,9 @@
         },
         onFinished: function (event, currentIndex)
         {
-//            alert("Submitted!");
-            $("#reg-form").submit();
+           alert("Submitted!");
+           window.location.href = "/login/retail";
+//             $("#reg-form").submit();
         }
     });
 

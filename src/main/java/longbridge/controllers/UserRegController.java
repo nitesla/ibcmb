@@ -42,6 +42,7 @@ public class UserRegController {
             return "cust/servicerequest/add";
         }
 
+
         logger.info(retailUserDTO.toString());
         String accountNumber = webRequest.getParameter("acct");
         String email = webRequest.getParameter("email");
