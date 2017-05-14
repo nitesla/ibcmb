@@ -2,12 +2,10 @@ package longbridge.services.implementations;
 
 import longbridge.dtos.ContactDTO;
 import longbridge.dtos.OperationsUserDTO;
-import longbridge.dtos.UnitDTO;
 import longbridge.dtos.UserGroupDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.Contact;
 import longbridge.models.OperationsUser;
-import longbridge.models.Unit;
 import longbridge.models.UserGroup;
 import longbridge.repositories.OperationsUserRepo;
 import longbridge.repositories.UserGroupRepo;

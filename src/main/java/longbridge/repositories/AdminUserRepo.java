@@ -21,6 +21,7 @@ import org.springframework.stereotype.Repository;
 
 @org.springframework.transaction.annotation.Transactional
 
+
 public interface AdminUserRepo extends CommonRepo<AdminUser, Long>{
     AdminUser findFirstByUserName(String s);
     Iterable<AdminUser> findByRole(Role r);

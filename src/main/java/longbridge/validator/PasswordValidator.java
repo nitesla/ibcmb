@@ -2,11 +2,15 @@ package longbridge.validator;
 
 import longbridge.dtos.SettingDTO;
 import longbridge.services.ConfigurationService;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -16,6 +20,9 @@ import java.util.regex.Pattern;
 @Component
 @Scope("singleton")
 public class PasswordValidator {
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     private Pattern digitPattern = Pattern.compile("[0-9]");
     private Pattern letterPattern = Pattern.compile("[a-zA-Z]");
@@ -27,16 +34,18 @@ public class PasswordValidator {
     private SettingDTO maxLengthOfPassword;
     private SettingDTO noSpecialChar;
     private SettingDTO specialChars;
+    private SettingDTO numOfChangesBeforeReuse;
+
 
     private int numOfDigits = 0;
     private int noOfSpecial = 0;
     private int minLength = 8;
     private int maxLength = 255;
     private String specialCharacters = "!@#$%^)(&";
+    private int numOfChanges = 0;
     private boolean initialized = false;
     private StringBuilder errorMessage;
-    private String message ="";
-
+    private String message = "";
 
 
     @Autowired
@@ -48,8 +57,10 @@ public class PasswordValidator {
         minLengthOfPassword = configService.getSettingByName("PASSWORD_MIN_LEN");
         maxLengthOfPassword = configService.getSettingByName("PASSWORD_MAX_LEN");
         specialChars = configService.getSettingByName("PASSWORD_SPECIAL_CHARS");
+        numOfChangesBeforeReuse = configService.getSettingByName("PASSWORD_REUSE");
 
-        if (numOfPasswordDigits != null && numOfPasswordDigits.isEnabled() ){
+
+        if (numOfPasswordDigits != null && numOfPasswordDigits.isEnabled()) {
             numOfDigits = NumberUtils.toInt(numOfPasswordDigits.getValue());
         }
         if (noSpecialChar != null && noSpecialChar.isEnabled()) {
@@ -65,17 +76,21 @@ public class PasswordValidator {
         if (specialChars != null && specialChars.isEnabled()) {
             specialCharacters = specialChars.getValue();
         }
+        if (numOfChangesBeforeReuse != null && numOfChangesBeforeReuse.isEnabled()) {
+            numOfChanges = NumberUtils.toInt(numOfChangesBeforeReuse.getValue());
+
+        }
 
         specialCharsPattern = Pattern.compile("[" + specialCharacters + "]");
         initialized = true;
     }
 
-    public String validate(String password) {
+    public String validate(String password, String usedPasswords) {
         if (!initialized) {
             init();
         }
 
-       errorMessage = new StringBuilder();
+        errorMessage = new StringBuilder();
 
         Matcher digitMatcher = digitPattern.matcher(password);
         boolean digitOK = false;
@@ -107,7 +122,7 @@ public class PasswordValidator {
             errorMessage.append(".\n");
         }
         if (!specOK) {
-             message = String.format(
+            message = String.format(
                     "Your password must include at least %d special characters from %s", noOfSpecial,
                     specialCharacters);
             errorMessage.append(message);
@@ -120,86 +135,57 @@ public class PasswordValidator {
             errorMessage.append(message);
             errorMessage.append(".\n");
         }
+
+        if (!isPasswordReuseable(password, usedPasswords)) {
+            message = String.format(
+                    "Previous password can only be reused after %d different passwords", numOfChanges);
+            errorMessage.append(message);
+            errorMessage.append(".\n");
+        }
+
         return errorMessage.toString();
     }
 
-    public SettingDTO getNumOfPasswordDigits() {
-        return numOfPasswordDigits;
+    /**
+     * Checks if the specified password can be reused by the user
+     * The password policy allows a password to be reused after a certain number of different
+     * passwords have been used by the user
+     *
+     * @param password      the password to be used
+     * @param usedPasswords the comma-separated list of used passwords
+     * @return true if the password can be reused
+     */
+    private boolean isPasswordReuseable(String password, String usedPasswords) {
+        boolean isReusable = false;
+        if (usedPasswords == null) {
+            isReusable=true;
+            return isReusable;
+        }
+        List<String> passwordHashes = Arrays.asList(StringUtils.split(usedPasswords, ","));
+        for (String passwordHash : passwordHashes) {
+            if (passwordEncoder.matches(password, passwordHash)) {
+                if (passwordHashes.size() - getPasswordHashPosition(password, usedPasswords) > numOfChanges) {
+                    isReusable = true;
+                    return isReusable;
+                }
+            }
+        }
+        return isReusable;
     }
 
-    public void setNumOfPasswordDigits(SettingDTO numOfPasswordDigits) {
-        this.numOfPasswordDigits = numOfPasswordDigits;
-    }
-
-    public SettingDTO getMinLengthOfPassword() {
-        return minLengthOfPassword;
-    }
-
-    public void setMinLengthOfPassword(SettingDTO minLengthOfPassword) {
-        this.minLengthOfPassword = minLengthOfPassword;
-    }
-
-    public SettingDTO getMaxLengthOfPassword() {
-        return maxLengthOfPassword;
-    }
-
-    public void setMaxLengthOfPassword(SettingDTO maxLengthOfPassword) {
-        this.maxLengthOfPassword = maxLengthOfPassword;
-    }
-
-    public SettingDTO getNoSpecialChar() {
-        return noSpecialChar;
-    }
-
-    public void setNoSpecialChar(SettingDTO noSpecialChar) {
-        this.noSpecialChar = noSpecialChar;
-    }
-
-    public SettingDTO getSpecialChars() {
-        return specialChars;
-    }
-
-    public void setSpecialChars(SettingDTO specialChars) {
-        this.specialChars = specialChars;
-    }
-
-    public int getNumOfDigits() {
-        return numOfDigits;
-    }
-
-    public void setNumOfDigits(int numOfDigits) {
-        this.numOfDigits = numOfDigits;
-    }
-
-    public int getNoOfSpecial() {
-        return noOfSpecial;
-    }
-
-    public void setNoOfSpecial(int noOfSpecial) {
-        this.noOfSpecial = noOfSpecial;
-    }
-
-    public int getMinLength() {
-        return minLength;
-    }
-
-    public void setMinLength(int minLength) {
-        this.minLength = minLength;
-    }
-
-    public int getMaxLength() {
-        return maxLength;
-    }
-
-    public void setMaxLength(int maxLength) {
-        this.maxLength = maxLength;
-    }
-
-    public String getSpecialCharacters() {
-        return specialCharacters;
-    }
-
-    public void setSpecialCharacters(String specialCharacters) {
-        this.specialCharacters = specialCharacters;
+    /**
+     * Gets the position of the passwordHash from the list of password hashes
+     * The first entry in our list is given a value of 1 even though Java List starts with an index of 0.
+     * If the password is not found, we return 0
+     */
+    private int getPasswordHashPosition(String password, String usedPasswords) {
+        int position = 0;
+        List<String> usedPasswordHashes = Arrays.asList(StringUtils.split(usedPasswords, ","));
+        for (String passwordHash : usedPasswordHashes) {
+            if (passwordEncoder.matches(password, passwordHash)) {
+                position = usedPasswordHashes.lastIndexOf(passwordHash) + 1;
+            }
+        }
+        return position;
     }
 }

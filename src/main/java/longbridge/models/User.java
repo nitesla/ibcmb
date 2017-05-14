@@ -2,6 +2,7 @@ package longbridge.models;
 
 
 
+import javax.persistence.Column;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 import java.util.Date;
@@ -16,6 +17,8 @@ public class User extends AbstractEntity{
     protected String lastName;
     protected String email;
     protected String password;
+    @Column(columnDefinition = "TEXT")
+    protected String usedPasswords;
     protected String status;
     protected Date createdOnDate;
     protected Date expiryDate;
@@ -33,13 +36,6 @@ public class User extends AbstractEntity{
 
     @ManyToOne
     protected Role role;
-
-//    @ManyToMany(cascade = CascadeType.ALL)
-//    @JoinTable(name = "user_groups", joinColumns =
-//    @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns =
-//    @JoinColumn(name = "group_id", referencedColumnName = "id"))
-//    private Collection<UserGroup> groups;
-
 
 
     public String getUserName() {
@@ -82,7 +78,14 @@ public class User extends AbstractEntity{
         this.password = password;
     }
 
-   
+    public String getUsedPasswords() {
+        return usedPasswords;
+    }
+
+    public void setUsedPasswords(String usedPasswords) {
+        this.usedPasswords = usedPasswords;
+    }
+
     public String getStatus() {
 		return status;
 	}
@@ -99,14 +102,6 @@ public class User extends AbstractEntity{
     public void setRole(Role role) {
         this.role = role;
     }
-
-//	public Collection<UserGroup> getGroups() {
-//		return groups;
-//	}
-
-//	public void setGroups(Collection<UserGroup> groups) {
-//		this.groups = groups;
-//	}
 
 
     public Code getAlertPreference() {

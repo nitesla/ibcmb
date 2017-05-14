@@ -47,11 +47,16 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public String addTransactionFee(TransactionFeeDTO transactionFeeDTO) throws InternetBankingException {
-        TransactionFee transactionFee = convertDTOToEntity(transactionFeeDTO);
-        transactionFee.setDateCreated(new Date());
-        transactionFeeRepo.save(transactionFee);
-        logger.info("Transaction fee added");
-        return messageSource.getMessage("fee.add.success",null,locale);
+        try {
+            TransactionFee transactionFee = convertDTOToEntity(transactionFeeDTO);
+            transactionFee.setDateCreated(new Date());
+            transactionFeeRepo.save(transactionFee);
+            logger.info("Transaction fee added");
+            return messageSource.getMessage("fee.add.success", null, locale);
+        }
+        catch (Exception e){
+           throw new InternetBankingException(messageSource.getMessage("fee.add.failure",null,locale));
+        }
     }
 
     @Override
@@ -62,23 +67,33 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public String updateTransactionFee(TransactionFeeDTO transactionFeeDTO) throws InternetBankingException {
-        TransactionFee transactionFee = transactionFeeRepo.findOne(transactionFeeDTO.getId());
-        transactionFee.setVersion(transactionFeeDTO.getVersion());
-        transactionFee.setFixed(transactionFeeDTO.getFixed());
-        transactionFee.setPercentage(transactionFeeDTO.getPercentage());
-        transactionFee.setCurrency(transactionFeeDTO.getCurrency());
-        transactionFee.setEnabled(transactionFeeDTO.isEnabled());
-        transactionFeeRepo.save(transactionFee);
-        logger.info("Transaction fee updated");
-        return messageSource.getMessage("fee.add.success",null,locale);
+        try {
+            TransactionFee transactionFee = transactionFeeRepo.findOne(transactionFeeDTO.getId());
+            transactionFee.setVersion(transactionFeeDTO.getVersion());
+            transactionFee.setFixed(transactionFeeDTO.getFixed());
+            transactionFee.setPercentage(transactionFeeDTO.getPercentage());
+            transactionFee.setCurrency(transactionFeeDTO.getCurrency());
+            transactionFee.setEnabled(transactionFeeDTO.isEnabled());
+            transactionFeeRepo.save(transactionFee);
+            logger.info("Transaction fee updated");
+            return messageSource.getMessage("fee.add.success", null, locale);
 
+        }
+        catch (Exception e){
+            throw new InternetBankingException(messageSource.getMessage("fee.add.failure",null,locale),e);
+        }
     }
 
     @Override
     public String deleteTransactionFee(Long id) throws InternetBankingException {
-        transactionFeeRepo.delete(id);
-        logger.info("Transaction fee deleted");
-        return messageSource.getMessage("fee.delete.success",null,locale);
+        try {
+            transactionFeeRepo.delete(id);
+            logger.info("Transaction fee deleted");
+            return messageSource.getMessage("fee.delete.success", null, locale);
+        }
+        catch (Exception e){
+            throw new InternetBankingException(messageSource.getMessage("fee.delete.failure",null,locale));
+        }
     }
 
     @Override

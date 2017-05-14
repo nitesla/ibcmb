@@ -19,7 +19,6 @@ public class RoleDTO{
     private String email;
     private int version;
 
-    @NotEmpty(message = "userType")
     private UserType userType;
 
     private List<PermissionDTO> permissions;

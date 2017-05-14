@@ -133,7 +133,7 @@ public class AdmOperationsUserController {
             logger.error("Error changing user activation status", ibe);
             redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
         }
-        return "redirect:/admin/operation/users";
+        return "redirect:/admin/operations/users";
 
     }
 

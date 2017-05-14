@@ -26,21 +26,38 @@ public class PasswordCreator {
     private char[] specialCharsArray = SPECIAL_CHARS.toCharArray();
     private char[] allArray = ALL.toCharArray();
 
+    private int numOfDigits = 1;
+    private int numOfSpecial = 1;
+    private int minLength = 8;
 
-    public String generatePassword(int MinLength, String specialChars) {
 
-        specialCharsArray = specialChars.toCharArray();
+    public String generatePassword(int length, int noOfDigits, int noOfSpecial, String specialChars) {
+
+        minLength = length;
+        numOfDigits = noOfDigits;
+        numOfSpecial=noOfSpecial;
+        int count = 0;
+
+        if(specialChars!=null) {
+            specialCharsArray = specialChars.toCharArray();
+        }
         StringBuilder sb = new StringBuilder();
         // get at least one lowercase letter
         sb.append(locaseArray[random.nextInt(locaseArray.length)]);
+        count+=1;
         // get at least one uppercase letter
         sb.append(upcaseArray[random.nextInt(upcaseArray.length)]);
-        // get at least one digit
-        sb.append(digitsArray[random.nextInt(digitsArray.length)]);
-        // get at least one symbol
-        sb.append(specialCharsArray[random.nextInt(specialCharsArray.length)]);
+        count+=1;
+        for(int i =0;i<numOfDigits;i++) {
+            sb.append(digitsArray[random.nextInt(digitsArray.length)]);
+            count+=1;
+        }
+        for(int i =0;i<numOfSpecial;i++) {
+            sb.append(specialCharsArray[random.nextInt(specialCharsArray.length)]);
+            count+=1;
+        }
         // fill in remaining with random letters
-        for (int i = 0; i < MinLength - 4; i++) {
+        for (int i = 0; i < minLength - count; i++) {
             sb.append(allAphabetsArray[random.nextInt(allAphabetsArray.length)]);
         }
         return sb.toString();

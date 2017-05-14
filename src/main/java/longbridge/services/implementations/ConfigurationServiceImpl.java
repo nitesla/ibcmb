@@ -7,6 +7,7 @@ import longbridge.repositories.SettingRepo;
 import longbridge.services.ConfigurationService;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -41,10 +42,15 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 	@Transactional
 	@Override
 	public String addSetting(SettingDTO dto) throws InternetBankingException {
-		ModelMapper mapper = new ModelMapper();
-		Setting setting = mapper.map(dto, Setting.class);
-		settingRepo.save(setting);
-		return  messageSource.getMessage("setting.add.success",null,locale);
+		try {
+			ModelMapper mapper = new ModelMapper();
+			Setting setting = mapper.map(dto, Setting.class);
+			settingRepo.save(setting);
+			return messageSource.getMessage("setting.add.success", null, locale);
+		}
+		catch (Exception e){
+			throw new InternetBankingException(messageSource.getMessage("setting.add.failure",null,locale),e);
+		}
 	}
 
 	@Override
@@ -89,16 +95,23 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 	@Transactional
 	@Override
 	public String updateSetting(SettingDTO dto) throws InternetBankingException {
-		Setting setting = settingRepo.findOne(dto.getId());
-		ModelMapper mapper = new ModelMapper();
-		mapper.map(dto, setting);
-		settingRepo.save(setting);
-		return messageSource.getMessage("setting.update.success",null,locale);
+		try {
+			Setting setting = settingRepo.findOne(dto.getId());
+			ModelMapper mapper = new ModelMapper();
+			mapper.map(dto, setting);
+			settingRepo.save(setting);
+			return messageSource.getMessage("setting.update.success", null, locale);
+		} catch (Exception e) {
+			throw new InternetBankingException(messageSource.getMessage("setting.update.failure",null,locale),e);
+		}
 	}
 
 	@Override
 	public String deleteSetting(Long id) throws InternetBankingException {
-		settingRepo.delete(id);
+		Setting setting = settingRepo.findOne(id);
+		setting.setDeletedOn(new Date());
+		settingRepo.save(setting);
+		settingRepo.delete(setting);
 		return messageSource.getMessage("setting.delete.success",null,locale);
 	}
 

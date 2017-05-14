@@ -43,7 +43,7 @@ public interface RetailUserService {
      * @param user the retail user to be added
      */
 
-    boolean addUser(RetailUserDTO user, CustomerDetails details);
+    String addUser(RetailUserDTO user, CustomerDetails details) throws InternetBankingException;
 
     /**
      * Deletes a retail user to the system
@@ -54,7 +54,7 @@ public interface RetailUserService {
     void deleteUser(Long userId);
 
 
-    String setPassword(RetailUser user, String password) throws PasswordException;
+//    String setPassword(RetailUser user, String password) throws PasswordException;
 
 
     boolean resetPassword(RetailUser user, String newPassword);
@@ -105,7 +105,7 @@ public interface RetailUserService {
      *Generates a password and send it to the specified user
      * @param user the user
      */
-    boolean generateAndSendPassword(RetailUser user);
+//    boolean generateAndSendPassword(RetailUser user);
 
     /** This sets the Alert preference of the specified user. Alert preference may
      * be SMS, EMAIL or BOTH

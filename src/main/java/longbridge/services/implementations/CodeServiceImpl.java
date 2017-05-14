@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -52,10 +53,19 @@ public class CodeServiceImpl implements CodeService {
 
 
     @Override
+    @Transactional
     public String deleteCode(Long codeId) throws InternetBankingException{
-            this.codeRepo.delete(codeId);
-            logger.info("Code {} has been deleted",codeId.toString());
-        return messageSource.getMessage("code.delete",null,locale);
+          try{
+           Code code = codeRepo.findOne(codeId);
+           code.setDeletedOn(new Date());
+           codeRepo.save(code);
+           codeRepo.delete(code);
+           logger.info("Code {} has been deleted",codeId.toString());
+           return messageSource.getMessage("code.delete.success",null,locale);
+    }
+    catch (Exception e){
+          throw new InternetBankingException(messageSource.getMessage("code.delete.failure",null,locale));
+          }
     }
 
     @Override
@@ -85,13 +95,18 @@ public class CodeServiceImpl implements CodeService {
 
     @Transactional
     public String updateCode(CodeDTO codeDTO, AdminUser adminUser) throws InternetBankingException{
-        Code code = convertDTOToEntity(codeDTO);
-        //check if maker checker is enabled
-        codeRepo.save(code);
-        return messageSource.getMessage("code.update.success",null,locale);
-        
-       // Code originalObject = codeRepo.findOne(code.getId());
-        
+        try {
+            Code code = convertDTOToEntity(codeDTO);
+            // Code originalObject = codeRepo.findOne(code.getId());
+            //check if maker checker is enabled
+            codeRepo.save(code);
+            logger.info("Updated code with Id {}",code.getId());
+            return messageSource.getMessage("code.update.success", null, locale);
+        }
+        catch (Exception e){
+            throw new InternetBankingException(messageSource.getMessage("code.update.failure",null,locale));
+        }
+
         
     }
 
@@ -140,11 +155,15 @@ public class CodeServiceImpl implements CodeService {
 
 	@Override
 	public String addCode(CodeDTO codeDTO, AdminUser adminUser) throws InternetBankingException {
-		Code code = convertDTOToEntity(codeDTO);
-
-        //check if maker checker is enabled
-        codeRepo.save(code);
-        return messageSource.getMessage("code.add.success",null,locale);
+		try {
+            Code code = convertDTOToEntity(codeDTO);
+            //check if maker checker is enabled
+            codeRepo.save(code);
+            logger.info("Added new code {} of type {}",code.getDescription(),code.getType());
+            return messageSource.getMessage("code.add.success", null, locale);
+        }catch (Exception e){
+		    throw new InternetBankingException(messageSource.getMessage("code.add.failure",null,locale));
+        }
 
 //        try {
 //			return verificationService.addNewVerificationRequest(code);

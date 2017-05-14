@@ -9,7 +9,6 @@ import longbridge.exception.InternetBankingException;
 import longbridge.models.Contact;
 import longbridge.models.OperationsUser;
 import longbridge.models.Person;
-import longbridge.models.Unit;
 import longbridge.models.UserGroup;
 import longbridge.services.CodeService;
 import longbridge.services.OperationsUserService;

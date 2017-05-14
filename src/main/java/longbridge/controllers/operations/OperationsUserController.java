@@ -110,7 +110,7 @@ public class OperationsUserController {
             return "/ops/pword";
         }
 
-        String errorMsg = passwordPolicyService.validate(changePassword.getNewPassword());
+        String errorMsg = passwordPolicyService.validate(changePassword.getNewPassword(),user.getUsedPasswords());
         if(!errorMsg.equals("")){
             result.addError(new ObjectError("invalid", errorMsg));
             return "/ops/pword";

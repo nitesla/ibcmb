@@ -4,8 +4,10 @@ package longbridge.services.implementations;
 import longbridge.api.AccountInfo;
 import longbridge.api.CustomerDetails;
 import longbridge.dtos.RetailUserDTO;
+import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.PasswordException;
+import longbridge.exception.PasswordPolicyViolationException;
 import longbridge.forms.AlertPref;
 import longbridge.models.*;
 import longbridge.repositories.RetailUserRepo;
@@ -23,6 +25,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import javax.xml.crypto.dsig.spec.ExcC14NParameterSpec;
 import java.util.*;
 
 /**
@@ -47,6 +50,7 @@ public class RetailUserServiceImpl implements RetailUserService {
 
     @Autowired
     PasswordPolicyService passwordPolicyService;
+
     @Autowired
     MailService mailService;
 
@@ -91,7 +95,6 @@ public class RetailUserServiceImpl implements RetailUserService {
     @Override
     public Iterable<RetailUserDTO> getUsers() {
         Iterable<RetailUser> retailUsers = retailUserRepo.findAll();
-        logger.info("RetailUsers {}", retailUsers.toString());
         return convertEntitiesToDTOs(retailUsers);
     }
 
@@ -101,25 +104,27 @@ public class RetailUserServiceImpl implements RetailUserService {
         return retailUser;
     }
 
-    @Override
-    public String setPassword(RetailUser user, String password) throws PasswordException {
-        boolean ok = false;
-        if (user != null) {
-            user.setPassword(this.passwordEncoder.encode(user.getPassword()));
-        } else {
-            throw new RuntimeException("Null user provided");
-        }
-        return null;
-
-    }
-
-    @Override
-    public boolean addUser(RetailUserDTO user, CustomerDetails details) {
-        boolean ok = false;
-        /*Get the user's details from the model */
-        if (user != null) {
+//    @Override
+//    public String setPassword(RetailUser user, String password) throws PasswordException {
+//        boolean ok = false;
+//        if (user != null) {
 //            user.setPassword(this.passwordEncoder.encode(user.getPassword()));
-            RetailUser retailUser = new RetailUser();
+//        } else {
+//            throw new RuntimeException("Null user provided");
+//        }
+//        return null;
+//
+//    }
+
+    @Override
+    public String addUser(RetailUserDTO user, CustomerDetails details) throws InternetBankingException {
+        try {
+
+            RetailUser retailUser = getUserByName(user.getUserName());
+            if (retailUser != null) {
+                throw new DuplicateObjectException(messageSource.getMessage("user.add.exists", null, locale));
+            }
+            retailUser = new RetailUser();
             retailUser.setUserName(user.getUserName());
             retailUser.setCustomerId(details.getCifId());
             retailUser.setFirstName(details.getCustomerName());
@@ -129,31 +134,30 @@ public class RetailUserServiceImpl implements RetailUserService {
             retailUser.setRole(roleService.getTheRole(34L));
             retailUser.setStatus("ACTIVE");
             retailUser.setBvn("58478457841");
-            Calendar calendar = Calendar.getInstance();
-            calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) + 2);
-            retailUser.setExpiryDate(calendar.getTime());
+            retailUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
             retailUser.setAlertPreference(codeService.getCodeById(39L));
+            String errorMsg = passwordPolicyService.validate(user.getPassword(),null);
+            if("".equals(errorMsg)){
+                throw new PasswordPolicyViolationException(errorMsg);
+            }
             retailUser.setPassword(this.passwordEncoder.encode(user.getPassword()));
-            this.retailUserRepo.save(retailUser);
+            retailUserRepo.save(retailUser);
             Collection<AccountInfo> accounts = integrationService.fetchAccounts(details.getCifId());
             for (AccountInfo acct : accounts) {
                 accountService.AddFIAccount(details.getCifId(), acct);
             }
-            logger.info("USER {} HAS BEEN CREATED");
-        } else {
-            logger.error("USER NOT FOUND");
-        }
 
-        return ok;
+            logger.info("Retail user {} created", user.getUserName());
+            return messageSource.getMessage("user.add.success", null, locale);
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("user.add.failure", null, locale), e);
+        }
     }
 
     @Override
     public void deleteUser(Long userId) {
         retailUserRepo.delete(userId);
     }
-
-
-
 
 
     @Override
@@ -195,7 +199,7 @@ public class RetailUserServiceImpl implements RetailUserService {
             String newPassword = passwordPolicyService.generatePassword();
             user.setPassword(passwordEncoder.encode(newPassword));
             user.setExpiryDate(new Date());
-            this.retailUserRepo.save(user);
+            retailUserRepo.save(user);
             Email email = new Email.Builder().setSender("info@ibanking.coronationmb.com")
                     .setRecipient(user.getEmail())
                     .setSubject("Internet Banking Password Reset")
@@ -218,7 +222,7 @@ public class RetailUserServiceImpl implements RetailUserService {
             if (getUser(user.getId()) == null) {
                 logger.error("USER DOES NOT EXIST");
                 return ok;
-            }else{
+            } else {
                 user.setPassword(this.passwordEncoder.encode(newPassword));
                 this.retailUserRepo.save(user);
                 logger.info("PASSWORD RESET SUCCESSFULLY");
@@ -282,25 +286,25 @@ public class RetailUserServiceImpl implements RetailUserService {
         return accountService.AddAccount(user.getCustomerId(), account);
     }
 
-    @Override
-    public boolean generateAndSendPassword(RetailUser user) {
-        boolean ok = false;
-
-        try {
-            String newPassword = generatePassword();
-            setPassword(user, newPassword);
-            retailUserRepo.save(user);
-
-            sendPassword(user);
-            logger.info("PASSWORD GENERATED AND SENT");
-        } catch (Exception e) {
-            logger.error("ERROR OCCURRED {}", e.getMessage());
-        }
-
-
-        return ok;
-
-    }
+//    @Override
+//    public boolean generateAndSendPassword(RetailUser user) {
+//        boolean ok = false;
+//
+//        try {
+//            String newPassword = generatePassword();
+//            setPassword(user, newPassword);
+//            retailUserRepo.save(user);
+//
+//            sendPassword(user);
+//            logger.info("PASSWORD GENERATED AND SENT");
+//        } catch (Exception e) {
+//            logger.error("ERROR OCCURRED {}", e.getMessage());
+//        }
+//
+//
+//        return ok;
+//
+//    }
 
     @Override
     public boolean changeAlertPreference(RetailUserDTO user, AlertPref alertPreference) {
@@ -368,7 +372,7 @@ public class RetailUserServiceImpl implements RetailUserService {
         Account account = accountService.getAccountByAccountNumber(accountNumber);
         if (account == null) {
             //invalid account number
-            return "Invalid Account NUmber";
+            return "Invalid Account Number";
         }
         logger.info("Account: {}", account.toString());
         String customerId = account.getCustomerId();

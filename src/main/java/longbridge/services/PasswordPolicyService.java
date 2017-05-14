@@ -4,12 +4,12 @@ import longbridge.dtos.SettingDTO;
 import longbridge.utils.PasswordCreator;
 import longbridge.validator.PasswordValidator;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.passay.CharacterRule;
-import org.passay.EnglishCharacterData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -29,7 +29,6 @@ public class PasswordPolicyService {
     PasswordCreator passwordCreator;
 
     private List<String> passwordRules = new ArrayList<String>();
-    private List<CharacterRule> characterRules = new ArrayList<CharacterRule>();
     String ruleMessage = "";
 
 
@@ -38,6 +37,7 @@ public class PasswordPolicyService {
     private SettingDTO maxLengthOfPassword;
     private SettingDTO noSpecialChar;
     private SettingDTO specialChars;
+    private SettingDTO numOfChangesBeforeReuse;
 
 
     private int numOfDigits = 0;
@@ -45,45 +45,43 @@ public class PasswordPolicyService {
     private int minLength = 8;
     private int maxLength = 255;
     private String specialCharacters = "~!@#$%^&*()+{};'?.";
+    private int numOfChanges=0;
     private boolean initialized = false;
 
 
     private void init() {
-        characterRules = new ArrayList<CharacterRule>();
 
         numOfPasswordDigits = configService.getSettingByName("PASSWORD_NUM_DIGITS");
         noSpecialChar = configService.getSettingByName("PASSWORD_NUM_SPECIAL_CHARS");
         minLengthOfPassword = configService.getSettingByName("PASSWORD_MIN_LEN");
         maxLengthOfPassword = configService.getSettingByName("PASSWORD_MAX_LEN");
         specialChars = configService.getSettingByName("PASSWORD_SPECIAL_CHARS");
+        numOfChangesBeforeReuse = configService.getSettingByName("PASSWORD_REUSE");
 
-        characterRules.add(new CharacterRule(EnglishCharacterData.UpperCase,1 ));
-        characterRules.add(new CharacterRule(EnglishCharacterData.LowerCase,1 ));
 
 
         if (numOfPasswordDigits != null && numOfPasswordDigits.isEnabled()) {
             numOfDigits = NumberUtils.toInt(numOfPasswordDigits.getValue());
 
-            ruleMessage = String.format("Number of password must not be less than %d", numOfDigits);
-
-            passwordRules.add(ruleMessage);
-            characterRules.add(new CharacterRule(EnglishCharacterData.Digit, numOfDigits));
+            if(numOfDigits>0) {
+                ruleMessage = String.format("Minimum number of digits required in password is %d", numOfDigits);
+                passwordRules.add(ruleMessage);
+            }
 
         }
         if (noSpecialChar != null && noSpecialChar.isEnabled()) {
             noOfSpecial = NumberUtils.toInt(noSpecialChar.getValue());
 
-            ruleMessage = String.format("Number of special characters allowed is %d", noOfSpecial);
-            passwordRules.add(ruleMessage);
-            characterRules.add(new CharacterRule(EnglishCharacterData.Special, noOfSpecial));
-
-
+            if(noOfSpecial>0) {
+                ruleMessage = String.format("Minimum number of special characters required is %d", noOfSpecial);
+                passwordRules.add(ruleMessage);
+            }
 
         }
         if (minLengthOfPassword != null && minLengthOfPassword.isEnabled()) {
             minLength = NumberUtils.toInt(minLengthOfPassword.getValue());
 
-            ruleMessage = String.format("Password length must not be less than %d", minLength);
+            ruleMessage = String.format("Minimum length of password required is %d", minLength);
 
             passwordRules.add(ruleMessage);
 
@@ -91,35 +89,27 @@ public class PasswordPolicyService {
         if (maxLengthOfPassword != null && maxLengthOfPassword.isEnabled()) {
             maxLength = NumberUtils.toInt(maxLengthOfPassword.getValue());
 
-            ruleMessage = String.format("Password length must not be greater than %d", maxLength);
-
+            ruleMessage = String.format("Maximum length of password is %d", maxLength);
             passwordRules.add(ruleMessage);
         }
         if (specialChars != null && specialChars.isEnabled()) {
             specialCharacters = specialChars.getValue();
             ruleMessage = String.format("Password must include any of these special characters: %s", specialCharacters);
             passwordRules.add(ruleMessage);
-//            characterRules.add(new CharacterRule(new CharacterData() {
-//                @Override
-//                public String getErrorCode() {
-//                    return "ERR_SPACE";
-//                }
-//
-//                @Override
-//                public String getCharacters() {
-//                    return specialCharacters;
-//                }
-//            }, 1));
 
         }
+        if(numOfChangesBeforeReuse!=null&&numOfChangesBeforeReuse.isEnabled()){
+            numOfChanges = NumberUtils.toInt(numOfChangesBeforeReuse.getValue());
+            ruleMessage = String.format("Password reuse must be after %d usages of different passwords");
+            passwordRules.add(ruleMessage);
 
-        initialized = true;
-
+        }
+            initialized = true;
 
     }
 
-    public String validate(String password) {
-        return passwordValidator.validate(password);
+    public String validate(String password,String usedPasswords) {
+        return passwordValidator.validate(password, usedPasswords);
     }
 
 
@@ -134,7 +124,18 @@ public class PasswordPolicyService {
         if (!initialized) {
             init();
         }
-        return passwordCreator.generatePassword(minLength,specialCharacters);
+        return passwordCreator.generatePassword(minLength,numOfDigits,noOfSpecial,specialCharacters);
+    }
+
+    public Date getPasswordExpiryDate(){
+        Calendar calendar = Calendar.getInstance();
+        int days = 60;//default
+        SettingDTO setting = configService.getSettingByName("PASSWORD_EXPIRY");
+        if(setting!=null&setting.isEnabled() ){
+            days = NumberUtils.toInt(setting.getValue());
+        }
+        calendar.add(Calendar.DAY_OF_YEAR,days);
+        return  calendar.getTime();
     }
 
 }

@@ -20,8 +20,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -44,16 +44,17 @@ public class RequestServiceImpl implements RequestService {
     private UserGroupService userGroupService;
 
     @Autowired
+    UserGroupMessageService groupMessageService;
+
+    @Autowired
     private RetailUserRepo retailUserRepo;
 
     @Autowired
     private CodeService codeService;
-    
+
     @Autowired
     private ModelMapper modelMapper;
 
-    @Autowired
-    private MailService mailService;
 
     @Autowired
     MessageSource messageSource;
@@ -62,19 +63,18 @@ public class RequestServiceImpl implements RequestService {
     OperationsUserService operationsUserService;
 
 
-    private Logger logger= LoggerFactory.getLogger(this.getClass());
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     Locale locale = LocaleContextHolder.getLocale();
 
 
-
     @Autowired
-    public RequestServiceImpl(ServiceRequestRepo serviceRequestRepo, RequestHistoryRepo requestHistoryRepo){
-        this.serviceRequestRepo=serviceRequestRepo;
-        this.requestHistoryRepo=requestHistoryRepo;
+    public RequestServiceImpl(ServiceRequestRepo serviceRequestRepo, RequestHistoryRepo requestHistoryRepo) {
+        this.serviceRequestRepo = serviceRequestRepo;
+        this.requestHistoryRepo = requestHistoryRepo;
     }
 
-    public String getFullName(ServiceRequest serviceRequest){
+    private String getFullName(ServiceRequest serviceRequest) {
         String firstName = serviceRequest.getUser().getFirstName();
         String lastName = "";
         if (serviceRequest.getUser().getLastName() == null) {
@@ -87,26 +87,27 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
+    @Transactional
     public String addRequest(ServiceRequestDTO request) throws InternetBankingException {
-        ServiceRequest serviceRequest = convertDTOToEntity(request);
-        serviceRequest.setUser(retailUserRepo.findOne(serviceRequest.getUser().getId()));
-        String name = getFullName(serviceRequest);
-        ServiceReqConfigDTO config = reqConfigService.getServiceReqConfig(serviceRequest.getServiceReqConfigId());
-        UserGroupDTO userGroupDTO = userGroupService.getGroup(config.getGroupId());
-        List<ContactDTO> contacts = userGroupDTO.getContacts();
-        String body = serviceRequest.getBody();//TODO format body
+       try {
+           ServiceRequest serviceRequest = convertDTOToEntity(request);
+           serviceRequest.setUser(retailUserRepo.findOne(serviceRequest.getUser().getId()));
 
-        for (ContactDTO contactDTO : contacts) {
-            Email email = new Email.Builder().setSender("info@ibanking.coronationmb.com")
-                    .setRecipient(contactDTO.getEmail())
-                    .setSubject("Service Request from " + name)
-                    .setBody(body)
-                    .build();
-            mailService.send(email);
-        }
+           String name = getFullName(serviceRequest);
+           ServiceReqConfigDTO config = reqConfigService.getServiceReqConfig(serviceRequest.getServiceReqConfigId());
+           String body = serviceRequest.getBody();//TODO format body
+           serviceRequestRepo.save(serviceRequest);
 
-        serviceRequestRepo.save(serviceRequest);
-        return messageSource.getMessage("request.add.success",null,locale);
+           Email email = new Email.Builder().setSender("info@ibanking.coronationmb.com")
+                   .setSubject("Service Request from " + name)
+                   .setBody(body)
+                   .build();
+           groupMessageService.send(config.getGroupId(), email);
+           return messageSource.getMessage("request.add.success", null, locale);
+       }
+       catch (Exception e){
+           throw new InternetBankingException(messageSource.getMessage("req.add.failure",null,locale),e);
+       }
     }
 
 
@@ -123,12 +124,19 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public void addRequestHistory(RequestHistoryDTO requestHistoryDTO) {
-        RequestHistory requestHistory =convertRequestHistoryDTOToEntity(requestHistoryDTO);
-        ServiceRequest serviceRequest = requestHistory.getServiceRequest();
-        serviceRequest.setRequestStatus(requestHistory.getStatus());
-        serviceRequestRepo.save(serviceRequest);
-        requestHistoryRepo.save(requestHistory);
+    @Transactional
+    public String addRequestHistory(RequestHistoryDTO requestHistoryDTO) throws InternetBankingException {
+        try {
+            RequestHistory requestHistory = convertRequestHistoryDTOToEntity(requestHistoryDTO);
+            ServiceRequest serviceRequest = requestHistory.getServiceRequest();
+            serviceRequest.setRequestStatus(requestHistory.getStatus());
+            serviceRequestRepo.save(serviceRequest);
+            requestHistoryRepo.save(requestHistory);
+            return messageSource.getMessage("req.hist.update.success",null,locale);
+        }
+        catch (Exception e){
+            throw new InternetBankingException(messageSource.getMessage("req.hist.update.failure",null,locale),e);
+        }
     }
 
     @Override
@@ -140,19 +148,17 @@ public class RequestServiceImpl implements RequestService {
     @Override
     @Transactional
     public Iterable<RequestHistoryDTO> getRequestHistories(Long serviceRequestId) {
-        Iterable<RequestHistory> requestHistories  = serviceRequestRepo.findOne(serviceRequestId).getRequestHistories();
+        Iterable<RequestHistory> requestHistories = serviceRequestRepo.findOne(serviceRequestId).getRequestHistories();
         return convertRequestHistoryEntitiesToDTOs(requestHistories);
     }
 
-    public Page<ServiceRequestDTO>getRequests(Pageable pageDetails){
+    public Page<ServiceRequestDTO> getRequests(Pageable pageDetails) {
         Page<ServiceRequest> page = serviceRequestRepo.findAll(pageDetails);
         List<ServiceRequestDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
         Page<ServiceRequestDTO> pageImpl = new PageImpl<>(dtOs, pageDetails, t);
         return pageImpl;
     }
-
-
 
 
 //    @Override
@@ -170,24 +176,24 @@ public class RequestServiceImpl implements RequestService {
 //    }
 
 
-    private ServiceRequestDTO convertEntityToDTO(ServiceRequest serviceRequest){
-        ServiceRequestDTO requestDTO = modelMapper.map(serviceRequest,ServiceRequestDTO.class);
+    private ServiceRequestDTO convertEntityToDTO(ServiceRequest serviceRequest) {
+        ServiceRequestDTO requestDTO = modelMapper.map(serviceRequest, ServiceRequestDTO.class);
         requestDTO.setUsername(serviceRequest.getUser().getUserName());
         return requestDTO;
 
     }
 
-    private ServiceRequest convertDTOToEntity(ServiceRequestDTO ServiceRequestDTO){
-        return  modelMapper.map(ServiceRequestDTO,ServiceRequest.class);
+    private ServiceRequest convertDTOToEntity(ServiceRequestDTO ServiceRequestDTO) {
+        return modelMapper.map(ServiceRequestDTO, ServiceRequest.class);
     }
 
-    private List<ServiceRequestDTO> convertEntitiesToDTOs(Iterable<ServiceRequest> serviceRequests){
+    private List<ServiceRequestDTO> convertEntitiesToDTOs(Iterable<ServiceRequest> serviceRequests) {
         List<ServiceRequestDTO> serviceRequestDTOList = new ArrayList<>();
-        for(ServiceRequest serviceRequest: serviceRequests){
-            ServiceRequestDTO requestDTO =  convertEntityToDTO(serviceRequest);
+        for (ServiceRequest serviceRequest : serviceRequests) {
+            ServiceRequestDTO requestDTO = convertEntityToDTO(serviceRequest);
             requestDTO.setUsername(serviceRequest.getUser().getUserName());
             requestDTO.setDate(serviceRequest.getDateRequested().toString());
-            String status = codeService.getByTypeAndCode("REQUEST_STATUS",serviceRequest.getRequestStatus()).getDescription();
+            String status = codeService.getByTypeAndCode("REQUEST_STATUS", serviceRequest.getRequestStatus()).getDescription();
             requestDTO.setRequestStatus(status);
             serviceRequestDTOList.add(requestDTO);
         }
@@ -195,26 +201,26 @@ public class RequestServiceImpl implements RequestService {
     }
 
 
-    private RequestHistoryDTO convertRequestHistoryEntityToDTO(RequestHistory requestHistory){
-        return  modelMapper.map(requestHistory,RequestHistoryDTO.class);
+    private RequestHistoryDTO convertRequestHistoryEntityToDTO(RequestHistory requestHistory) {
+        return modelMapper.map(requestHistory, RequestHistoryDTO.class);
     }
 
-    private RequestHistory convertRequestHistoryDTOToEntity(RequestHistoryDTO requestHistoryDTO){
+    private RequestHistory convertRequestHistoryDTOToEntity(RequestHistoryDTO requestHistoryDTO) {
         RequestHistory requestHistory = new RequestHistory();
         requestHistory.setServiceRequest(serviceRequestRepo.findOne(Long.parseLong(requestHistoryDTO.getServiceRequestId())));
         requestHistory.setComment(requestHistoryDTO.getComment());
         requestHistory.setStatus(requestHistoryDTO.getStatus());
-         requestHistory.setCreatedBy(operationsUserService.getUserByName(requestHistoryDTO.getCreatedBy()));
+        requestHistory.setCreatedBy(operationsUserService.getUserByName(requestHistoryDTO.getCreatedBy()));
         requestHistory.setCreatedOn(new Date());
         return requestHistory;
     }
 
-    private List<RequestHistoryDTO> convertRequestHistoryEntitiesToDTOs(Iterable<RequestHistory> requestHistories){
+    private List<RequestHistoryDTO> convertRequestHistoryEntitiesToDTOs(Iterable<RequestHistory> requestHistories) {
         List<RequestHistoryDTO> requestHistoryList = new ArrayList<>();
-        for(RequestHistory requestHistory: requestHistories){
-            RequestHistoryDTO requestDTO =  new RequestHistoryDTO();
+        for (RequestHistory requestHistory : requestHistories) {
+            RequestHistoryDTO requestDTO = new RequestHistoryDTO();
             requestDTO.setId(requestHistory.getId());
-            String status = codeService.getByTypeAndCode("REQUEST_STATUS",requestHistory.getStatus()).getDescription();
+            String status = codeService.getByTypeAndCode("REQUEST_STATUS", requestHistory.getStatus()).getDescription();
             requestDTO.setStatus(status);
             requestDTO.setComment(requestHistory.getComment());
             requestDTO.setCreatedBy(requestHistory.getCreatedBy().getUserName());

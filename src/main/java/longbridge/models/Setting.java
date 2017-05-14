@@ -3,9 +3,7 @@ package longbridge.models;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 /**
  * Created by LB-PRJ-020 on 4/5/2017.
@@ -13,9 +11,10 @@ import javax.persistence.ManyToOne;
 @Entity
 @Audited
 @Where(clause ="del_Flag='N'" )
+@Table(uniqueConstraints=@UniqueConstraint(columnNames={"name","deletedOn"}))
+
 public class Setting extends AbstractEntity{
 
-    @Column(unique = true)
     private String name;
 
     private String type;

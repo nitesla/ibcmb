@@ -16,7 +16,7 @@ import java.util.Date;
 @Entity
 @Audited
 @Where(clause ="del_Flag='N'" )
-@Table(uniqueConstraints=@UniqueConstraint(columnNames={"channel","accountClass","customerType"}))
+@Table(uniqueConstraints=@UniqueConstraint(columnNames={"channel","accountClass","customerType","deletedOn"}))
 public class ClassLimit extends  AbstractEntity {
 
     private String customerType;

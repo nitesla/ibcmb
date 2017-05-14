@@ -1,16 +1,19 @@
 package longbridge.services.implementations;
 
 import longbridge.dtos.OperationsUserDTO;
+import longbridge.dtos.SettingDTO;
 import longbridge.exception.*;
 import longbridge.forms.ChangePassword;
 import longbridge.models.Email;
 import longbridge.models.OperationsUser;
 import longbridge.models.Role;
 import longbridge.repositories.OperationsUserRepo;
+import longbridge.services.ConfigurationService;
 import longbridge.services.MailService;
 import longbridge.services.OperationsUserService;
 import longbridge.services.PasswordPolicyService;
 import longbridge.utils.ReflectionUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +43,9 @@ public class OperationsUserServiceImpl implements OperationsUserService {
 
     @Autowired
     MailService mailService;
+
+    @Autowired
+    ConfigurationService configService;
 
     @Autowired
     PasswordPolicyService passwordPolicyService;
@@ -74,17 +80,17 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     }
 
     @Override
-	public Page<OperationsUserDTO> findUsers(OperationsUserDTO example, Pageable pageDetails) {
-		ExampleMatcher matcher = ExampleMatcher.matchingAll().withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING)
-				.withIgnoreCase().withIgnorePaths("version","noOfAttempts").withIgnoreNullValues();
-		OperationsUser entity = convertDTOToEntity(example);
-		ReflectionUtils.nullifyStrings(entity,1);
-		Page<OperationsUser> page = operationsUserRepo.findAll(Example.of(entity, matcher), pageDetails);
-		List<OperationsUserDTO> dtOs = convertEntitiesToDTOs(page.getContent());
-		long t = page.getTotalElements();
-		Page<OperationsUserDTO> pageImpl = new PageImpl<OperationsUserDTO>(dtOs, pageDetails, t);
-		return pageImpl;
-	}
+    public Page<OperationsUserDTO> findUsers(OperationsUserDTO example, Pageable pageDetails) {
+        ExampleMatcher matcher = ExampleMatcher.matchingAll().withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING)
+                .withIgnoreCase().withIgnorePaths("version", "noOfAttempts").withIgnoreNullValues();
+        OperationsUser entity = convertDTOToEntity(example);
+        ReflectionUtils.nullifyStrings(entity, 1);
+        Page<OperationsUser> page = operationsUserRepo.findAll(Example.of(entity, matcher), pageDetails);
+        List<OperationsUserDTO> dtOs = convertEntitiesToDTOs(page.getContent());
+        long t = page.getTotalElements();
+        Page<OperationsUserDTO> pageImpl = new PageImpl<OperationsUserDTO>(dtOs, pageDetails, t);
+        return pageImpl;
+    }
 
     @Override
     public Iterable<OperationsUserDTO> getUsers() {
@@ -123,7 +129,8 @@ public class OperationsUserServiceImpl implements OperationsUserService {
         } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("user.status.failure", null, locale), e);
 
-        }}
+        }
+    }
 
 
     @Override
@@ -151,9 +158,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             Role role = new Role();
             role.setId(Long.parseLong(user.getRoleId()));
             opsUser.setRole(role);
-            Calendar calendar = Calendar.getInstance();
-            calendar.set(Calendar.DAY_OF_YEAR, calendar.get(Calendar.DAY_OF_YEAR) + 60);
-            opsUser.setExpiryDate(calendar.getTime());
+            opsUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
             this.operationsUserRepo.save(opsUser);
             logger.info("New Operation user  {} created", opsUser.getUserName());
             return messageSource.getMessage("user.add.success", null, LocaleContextHolder.getLocale());
@@ -161,6 +166,8 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             throw new InternetBankingException(messageSource.getMessage("user.add.failure", null, locale), e);
         }
     }
+
+
 
     @Override
     @Transactional
@@ -180,7 +187,8 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             return messageSource.getMessage("user.update.success", null, locale);
         } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("user.update.failure", null, locale), e);
-        }}
+        }
+    }
 
 
     @Override
@@ -211,7 +219,8 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             return messageSource.getMessage("password.reset.success", null, locale);
         } catch (Exception e) {
             throw new PasswordException(messageSource.getMessage("password.reset.failure", null, locale), e);
-        } }
+        }
+    }
 
     @Override
     @Transactional
@@ -221,7 +230,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             throw new WrongPasswordException();
         }
 
-        String errorMessage = passwordPolicyService.validate(changePassword.getNewPassword());
+        String errorMessage = passwordPolicyService.validate(changePassword.getNewPassword(),user.getUsedPasswords());
         if (!"".equals(errorMessage)) {
             throw new PasswordPolicyViolationException(errorMessage);
         }
@@ -237,7 +246,8 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             return messageSource.getMessage("password.change.success", null, locale);
         } catch (Exception e) {
             throw new PasswordException(messageSource.getMessage("password.change.failure", null, locale), e);
-        }}
+        }
+    }
 
 
     @Override
@@ -272,9 +282,6 @@ public class OperationsUserServiceImpl implements OperationsUserService {
         Page<OperationsUserDTO> pageImpl = new PageImpl<OperationsUserDTO>(dtOs, pageDetails, t);
         return pageImpl;
     }
-
-
-
 
 
 }

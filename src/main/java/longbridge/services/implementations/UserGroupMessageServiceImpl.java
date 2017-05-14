@@ -107,6 +107,7 @@ public class UserGroupMessageServiceImpl implements UserGroupMessageService {
             }
 
             try {
+                email.setReceiverEmail(contact.getEmail());
                 mailService.send(email);
             } catch (MailAuthenticationException mae) {
                 throw new MessageException(messageSource.getMessage("mail.connect.failure", null, locale), mae);

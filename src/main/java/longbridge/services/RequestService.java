@@ -49,7 +49,7 @@ public interface RequestService {
          * Creates and adds a new history for a request
          * @param requestHistory the request history
          */
-    void addRequestHistory(RequestHistoryDTO requestHistory);
+    String addRequestHistory(RequestHistoryDTO requestHistory) throws InternetBankingException;
 
 
     /**

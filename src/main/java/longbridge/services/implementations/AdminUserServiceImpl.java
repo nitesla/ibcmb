@@ -127,12 +127,10 @@ public class AdminUserServiceImpl implements AdminUserService {
             Role role = new Role();
             role.setId(Long.parseLong(user.getRoleId()));
             adminUser.setRole(role);
-            Calendar calendar = Calendar.getInstance();
-            calendar.set(Calendar.DAY_OF_YEAR, calendar.get(Calendar.DAY_OF_YEAR) + 60);
-            adminUser.setExpiryDate(calendar.getTime());
-            this.adminUserRepo.save(adminUser);
-            logger.info("New admin user: {} created", adminUser.getUserName());
-            return messageSource.getMessage("user.add.success", null, LocaleContextHolder.getLocale());
+            adminUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
+            adminUserRepo.save(adminUser);
+            logger.info("New admin user {} created", adminUser.getUserName());
+            return messageSource.getMessage("user.add.success", null, locale);
         } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("user.add.failure", null, locale), e);
         }
@@ -169,10 +167,14 @@ public class AdminUserServiceImpl implements AdminUserService {
 
 
     @Override
+    @Transactional
     public String deleteUser(Long id) throws InternetBankingException {
         try {
-            adminUserRepo.delete(id);
-            logger.warn("Admin user with Id {} deleted", id);
+            AdminUser user = adminUserRepo.findOne(id);
+            user.setDeletedOn(new Date());
+            adminUserRepo.save(user);
+            adminUserRepo.delete(user);
+            logger.warn("Admin user {} deleted", user.getUserName());
             return messageSource.getMessage("user.delete.success", null, locale);
         } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("user.delete.failure", null, locale), e);
@@ -234,7 +236,7 @@ public class AdminUserServiceImpl implements AdminUserService {
             throw new WrongPasswordException();
         }
 
-        String errorMessage = passwordPolicyService.validate(changePassword.getNewPassword());
+        String errorMessage = passwordPolicyService.validate(changePassword.getNewPassword(),user.getUsedPasswords());
         if (!"".equals(errorMessage)) {
             throw new PasswordPolicyViolationException(errorMessage);
         }

@@ -5,9 +5,7 @@ import org.hibernate.envers.Audited;
 
 import java.util.List;
 
-import javax.persistence.Entity;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 /**
  * Created by Wunmi on 3/28/2017.
@@ -18,6 +16,7 @@ import javax.persistence.ManyToOne;
 @Entity
 @Audited
 @Where(clause ="del_Flag='N'" )
+@Table(uniqueConstraints=@UniqueConstraint(columnNames={"userName","deletedOn"}))
 public class OperationsUser extends User implements Person {
 	public OperationsUser(){
 		this.userType = (UserType.OPERATIONS);

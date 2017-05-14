@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import longbridge.dtos.CodeDTO;
 import longbridge.dtos.RequestHistoryDTO;
 import longbridge.dtos.ServiceRequestDTO;
-import longbridge.models.RetailUser;
 import longbridge.repositories.RetailUserRepo;
 import longbridge.services.CodeService;
 import longbridge.services.RequestService;
