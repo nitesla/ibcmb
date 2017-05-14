@@ -112,6 +112,9 @@ public interface MessageService {
      * @return returns a list of messages
      */
      Page<MessageDTO> getSentMessages(String recipient, UserType recipientTye, Pageable pageable);
+
+    Page<MessageDTO> getSentMessages(String recipient, UserType recipientTye, java.awt.print.Pageable pageable);
+
     /**
      * Returns a list of messages received by the specified user
      * @param user the user
@@ -176,4 +179,10 @@ public interface MessageService {
      * @param email EmailDetail object containing all the details required to send an email
      */
     void sendEmail(Email email) throws InternetBankingException;
+
+    Page<Message> getMessages(User user, java.awt.print.Pageable pageDetails);
+
+    Page<Message> getMessages(User user, Date date, java.awt.print.Pageable pageDetails);
+
+    Page<Message> getMessages(User user, Date fromDate, Date toDate, java.awt.print.Pageable pageDetails);
 }
