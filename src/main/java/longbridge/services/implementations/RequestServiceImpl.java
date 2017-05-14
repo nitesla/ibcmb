@@ -1,7 +1,6 @@
 package longbridge.services.implementations;
 
-import longbridge.dtos.RequestHistoryDTO;
-import longbridge.dtos.ServiceRequestDTO;
+import longbridge.dtos.*;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.Email;
 import longbridge.models.RequestHistory;
@@ -10,10 +9,7 @@ import longbridge.models.ServiceRequest;
 import longbridge.repositories.RequestHistoryRepo;
 import longbridge.repositories.RetailUserRepo;
 import longbridge.repositories.ServiceRequestRepo;
-import longbridge.services.CodeService;
-import longbridge.services.MailService;
-import longbridge.services.OperationsUserService;
-import longbridge.services.RequestService;
+import longbridge.services.*;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +36,12 @@ public class RequestServiceImpl implements RequestService {
 
     private ServiceRequestRepo serviceRequestRepo;
     private RequestHistoryRepo requestHistoryRepo;
+
+    @Autowired
+    private ServiceReqConfigService reqConfigService;
+
+    @Autowired
+    private UserGroupService userGroupService;
 
     @Autowired
     private RetailUserRepo retailUserRepo;
@@ -89,13 +91,19 @@ public class RequestServiceImpl implements RequestService {
         ServiceRequest serviceRequest = convertDTOToEntity(request);
         serviceRequest.setUser(retailUserRepo.findOne(serviceRequest.getUser().getId()));
         String name = getFullName(serviceRequest);
+        ServiceReqConfigDTO config = reqConfigService.getServiceReqConfig(serviceRequest.getServiceReqConfigId());
+        UserGroupDTO userGroupDTO = userGroupService.getGroup(config.getGroupId());
+        List<ContactDTO> contacts = userGroupDTO.getContacts();
+        String body = serviceRequest.getBody();//TODO format body
 
-        Email email = new Email.Builder().setSender("info@ibanking.coronationmb.com")
-                .setRecipient(serviceRequest.getUser().getEmail())
-                .setSubject("Service Request from " + name)
-                .setBody("Your new password to Internet Banking is and your username is")
-                .build();
-        mailService.send(email);
+        for (ContactDTO contactDTO : contacts) {
+            Email email = new Email.Builder().setSender("info@ibanking.coronationmb.com")
+                    .setRecipient(contactDTO.getEmail())
+                    .setSubject("Service Request from " + name)
+                    .setBody(body)
+                    .build();
+            mailService.send(email);
+        }
 
         serviceRequestRepo.save(serviceRequest);
         return messageSource.getMessage("request.add.success",null,locale);
