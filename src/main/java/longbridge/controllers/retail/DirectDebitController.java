@@ -1,32 +1,20 @@
 package longbridge.controllers.retail;
 
-import java.security.Principal;
-import java.util.List;
-
-import javax.validation.Valid;
-
+import longbridge.dtos.DirectDebitDTO;
+import longbridge.models.DirectDebit;
+import longbridge.models.RetailUser;
+import longbridge.services.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
-import longbridge.dtos.DirectDebitDTO;
-import longbridge.models.DirectDebit;
-import longbridge.models.InternationalBeneficiary;
-import longbridge.models.LocalBeneficiary;
-import longbridge.models.RetailUser;
-import longbridge.services.AccountService;
-import longbridge.services.DirectDebitService;
-import longbridge.services.FinancialInstitutionService;
-import longbridge.services.LocalBeneficiaryService;
-import longbridge.services.RetailUserService;
+import javax.validation.Valid;
+import java.security.Principal;
+import java.util.List;
 
 /**
  * Created by Chigozirim Torti
@@ -36,6 +24,7 @@ import longbridge.services.RetailUserService;
 public class DirectDebitController {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
+
     @Autowired
     private DirectDebitService directDebitService;
     @Autowired
@@ -55,10 +44,7 @@ public class DirectDebitController {
         logger.info("local BEN {}", localBeneficiaryService.getLocalBeneficiaries(retailUser));
         
         List<DirectDebit> directDebits = directDebitService.getUserDirectDebits(retailUser); //(directDebitId); //getDebit(retailUser);
-//        
-//        for (LocalBeneficiary localBenef : localBeneficiary){
-//            localBenef.setBeneficiaryBank(financialInstitutionService.getFinancialInstitutionByCode(localBenef.getBeneficiaryBank()).getInstitutionName());
-//        }
+
         model.addAttribute("directDebits", directDebits);
         return "cust/directdebit/view";
     }
@@ -67,7 +53,7 @@ public class DirectDebitController {
     public String addDirectDebit(Model model, Principal principal){
     	RetailUser retailUser = retailUserService.getUserByName(principal.getName());
         model.addAttribute("beneficiaries", localBeneficiaryService.getLocalBeneficiaries(retailUser));
-        model.addAttribute("accounts", accountService.getAccountByCustomerId(retailUser.getCustomerId()));
+        model.addAttribute("accounts", accountService.getCustomerAccounts(retailUser.getCustomerId()));
         return "cust/directdebit/add";
     }
 

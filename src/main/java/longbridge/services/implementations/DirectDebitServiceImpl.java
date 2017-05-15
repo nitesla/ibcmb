@@ -1,13 +1,5 @@
 package longbridge.services.implementations;
 
-import java.util.List;
-
-import org.joda.time.LocalDate;
-import org.modelmapper.ModelMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import longbridge.dtos.DirectDebitDTO;
 import longbridge.dtos.TransferRequestDTO;
 import longbridge.models.DirectDebit;
@@ -18,7 +10,16 @@ import longbridge.services.DirectDebitService;
 import longbridge.services.FinancialInstitutionService;
 import longbridge.services.TransferService;
 import longbridge.utils.TransferType;
+import org.joda.time.LocalDate;
+import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import java.util.List;
+
+@Service
 public class DirectDebitServiceImpl implements DirectDebitService {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());

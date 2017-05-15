@@ -29,14 +29,11 @@ public class User extends AbstractEntity{
     //@Enumerated(value = EnumType.STRING)
     protected UserType userType;
 
-
     @ManyToOne
     protected Code alertPreference;
 
-
     @ManyToOne
     protected Role role;
-
 
     public String getUserName() {
         return userName;
