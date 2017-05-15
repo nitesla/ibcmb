@@ -77,6 +77,7 @@ public class DirectDebitServiceImpl implements DirectDebitService {
 		transferRequest.setNarration("Direct Debit:" + directDebit.getNarration());
 //		transferRequest.setReferenceNumber(referenceNumber);
 		transferRequest.setRemarks(directDebit.getNarration());
+
 		//TODO use the correct bank code of coronation merchant bank
 		if(directDebit.getBeneficiary().getBeneficiaryBank().equals("CORONAION")){
 			transferRequest.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
@@ -104,7 +105,7 @@ public class DirectDebitServiceImpl implements DirectDebitService {
 
 	@Override
 	public List<DirectDebit> getUserDirectDebits(RetailUser user) {
-		// TODO Auto-generated method stub
+		// TODO create method in directdebitrepo or retailuserrepo for fetching a user's direct debits for viewing on the frontend
 		
 		return null;
 	}

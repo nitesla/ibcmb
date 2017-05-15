@@ -21,6 +21,8 @@ import org.joda.time.LocalDate;
 public class DirectDebit extends AbstractEntity {
 
 	@ManyToOne
+	private RetailUser retailUser;
+	@ManyToOne
     private LocalBeneficiary beneficiary;
     private String debitAccount;
     private BigDecimal amount;
@@ -30,6 +32,13 @@ public class DirectDebit extends AbstractEntity {
     private String narration;
 
 
+    public RetailUser getRetailUser(){
+    	return retailUser;
+    }
+    
+    public void setRetailUser(RetailUser retailUser){
+    	this.retailUser = retailUser;
+    }
     public String getDebitAccount() {
 		return debitAccount;
 	}
