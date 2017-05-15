@@ -23,9 +23,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
-import javax.xml.crypto.dsig.spec.ExcC14NParameterSpec;
 import java.util.*;
 
 /**
@@ -117,9 +116,9 @@ public class RetailUserServiceImpl implements RetailUserService {
 //    }
 
     @Override
+    @Transactional
     public String addUser(RetailUserDTO user, CustomerDetails details) throws InternetBankingException {
         try {
-
             RetailUser retailUser = getUserByName(user.getUserName());
             if (retailUser != null) {
                 throw new DuplicateObjectException(messageSource.getMessage("user.add.exists", null, locale));
@@ -131,11 +130,11 @@ public class RetailUserServiceImpl implements RetailUserService {
             retailUser.setEmail(details.getEmail());
             retailUser.setCreatedOnDate(new Date());
             retailUser.setBirthDate(user.getBirthDate());
-            retailUser.setRole(roleService.getTheRole(34L));
+            retailUser.setRole(roleService.getTheRole(34L));//TODO get actual role
             retailUser.setStatus("ACTIVE");
-            retailUser.setBvn("58478457841");
+            retailUser.setBvn("58478457841");//TODO get actual BVN
             retailUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
-            retailUser.setAlertPreference(codeService.getCodeById(39L));
+            retailUser.setAlertPreference(codeService.getCodeById(39L));//TODO get actual preference
             String errorMsg = passwordPolicyService.validate(user.getPassword(),null);
             if("".equals(errorMsg)){
                 throw new PasswordPolicyViolationException(errorMsg);
@@ -155,8 +154,17 @@ public class RetailUserServiceImpl implements RetailUserService {
     }
 
     @Override
-    public void deleteUser(Long userId) {
-        retailUserRepo.delete(userId);
+    public String deleteUser(Long userId) throws InternetBankingException {
+        try {
+            RetailUser user = retailUserRepo.findOne(userId);
+            user.setDeletedOn(new Date());
+            retailUserRepo.save(user);
+            retailUserRepo.delete(userId);
+            return messageSource.getMessage("user.delete.success",null,locale);
+        }
+        catch (Exception e){
+            throw new InternetBankingException(messageSource.getMessage("user.delete.failure",null,locale),e);
+        }
     }
 
 
@@ -218,7 +226,6 @@ public class RetailUserServiceImpl implements RetailUserService {
         boolean ok = false;
 
         try {
-
             if (getUser(user.getId()) == null) {
                 logger.error("USER DOES NOT EXIST");
                 return ok;

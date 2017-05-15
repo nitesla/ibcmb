@@ -108,11 +108,16 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 
 	@Override
 	public String deleteSetting(Long id) throws InternetBankingException {
-		Setting setting = settingRepo.findOne(id);
-		setting.setDeletedOn(new Date());
-		settingRepo.save(setting);
-		settingRepo.delete(setting);
-		return messageSource.getMessage("setting.delete.success",null,locale);
+		try {
+			Setting setting = settingRepo.findOne(id);
+			setting.setDeletedOn(new Date());
+			settingRepo.save(setting);
+			settingRepo.delete(setting);
+			return messageSource.getMessage("setting.delete.success", null, locale);
+		}
+		catch (Exception e){
+			throw new InternetBankingException(messageSource.getMessage("setting.delete.failure", null, locale),e);
+		}
 	}
 
 	private SettingDTO convertEntityToDTO(Setting setting) {

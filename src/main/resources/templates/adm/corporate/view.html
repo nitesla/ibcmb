@@ -56,6 +56,13 @@
                                     <li >
                                         <div class="col-lg-4">
                                             <div class="title-action">
+                                                <a  class="btn btn-danger btn-sm bt-select bt-link-act" href="/admin/corporates/index/activation" disabled="disabled" ><i class="fa fa-user"></i> Activate/Deactivate</a>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li >
+                                        <div class="col-lg-4">
+                                            <div class="title-action">
                                                 <a id="delete-btn" class="btn btn-danger btn-sm bt-select" href="/admin/corporates/index/delete" disabled="disabled" ><i class="fa fa-trash"></i> Delete</a>
                                             </div>
                                         </div>
@@ -107,7 +114,8 @@
                                                             <th>CIFID</th>
                                                             <th>Name</th>
                                                             <th>Email</th>
-                                                            <!--<th>Date Created</th>-->
+                                                            <th>Status</th>
+                                                            <th>Date Created</th>
 
                                                         </tr>
                                                         </thead>
@@ -120,7 +128,8 @@
                                                             <th>CIFID</th>
                                                             <th>Name</th>
                                                             <th>Email</th>
-                                                            <!--<th>Date Created</th>-->
+                                                            <th>Status</th>
+                                                            <th>Date Created</th>
 
                                                         </tr>
                                                         </tfoot>
@@ -193,9 +202,32 @@
             "columns": [
                 { "data": "customerId" },
                 { "data": "companyName" },
-                { "data": "email" }
+                { "data": "email" },
+                { "data": "status" },
+                { "data": "createdOn" }
 
-            ] });
+            ] ,
+            "columnDefs" : [ {
+                "targets" : 3,
+                "data" : "status",
+                "render" : function(data, type,full, meta) {
+                    if (type === 'display') {
+                        if (data == "ACTIVE") {
+                            return "<i class='fa fa-check dt-body-center' style='color:green;display:block; text-align:center; margin:0 auto;'></i>";
+                        } else if (data == "INACTIVE") {
+                            return "<i class='fa fa-ban  dt-body-center' style='color:red;display:block; text-align:center; margin:0 auto;'></i>";
+                        }
+                        else if (data == "LOCKED") {
+                            return "<i class='fa fa-lock  dt-body-center' style='color:red;display:block; text-align:center; margin:0 auto;'></i>";
+                        }else {
+                            return "<i class='fa fa-question  dt-body-center' style='color:red;display:block; text-align:center; margin:0 auto;'></i>";
+                        }
+                    }
+                    return data;
+                }
+
+            } ]
+        });
 
         table.on('select', function() {
             if (table.rows({

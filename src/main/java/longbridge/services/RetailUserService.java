@@ -51,7 +51,7 @@ public interface RetailUserService {
 
      */
 
-    void deleteUser(Long userId);
+    String deleteUser(Long userId) throws InternetBankingException;
 
 
 //    String setPassword(RetailUser user, String password) throws PasswordException;

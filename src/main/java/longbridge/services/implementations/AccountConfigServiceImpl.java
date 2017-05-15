@@ -19,15 +19,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by Fortune on 5/1/2017.
  */
-
 
 
 @Service
@@ -45,7 +46,9 @@ public class AccountConfigServiceImpl implements AccountConfigService {
     @Autowired
     MessageSource messageSource;
 
-@Autowired
+    private Locale locale = LocaleContextHolder.getLocale();
+
+    @Autowired
     public AccountConfigServiceImpl(AccountRestrictionRepo accountRestrictionRepo, AccountClassRestrictionRepo accountClassRestrictionRepo, CodeService codeService, ModelMapper modelMapper) {
         this.accountRestrictionRepo = accountRestrictionRepo;
         this.accountClassRestrictionRepo = accountClassRestrictionRepo;
@@ -57,29 +60,37 @@ public class AccountConfigServiceImpl implements AccountConfigService {
     @Override
     public boolean isAccountHidden(String accountNumber) {
         Account account = accountRepo.findByAccountNumber(accountNumber);
-        if(account.getHiddenFlag().equals("Y")){
+        if (account.getHiddenFlag().equals("Y")) {
             return true;
         }
         return false;
- }
-
-    @Override
-    public String addAccountRestriction(AccountRestrictionDTO accountRestrictionDTO) throws InternetBankingException{
-        AccountRestriction accountRestriction = convertAccountRestrictionDTOToEntity(accountRestrictionDTO);
-        accountRestriction.setDateCreated(new Date());
-        accountRestrictionRepo.save(accountRestriction);
-        return messageSource.getMessage("account.restriction.success", null,LocaleContextHolder.getLocale());
     }
 
     @Override
-    public String updateAccountRestriction(AccountRestrictionDTO accountRestrictionDTO) throws InternetBankingException {
-        AccountRestriction accountRestriction = accountRestrictionRepo.findOne(accountRestrictionDTO.getId());
-        accountRestriction.setVersion(accountRestrictionDTO.getVersion());
-        accountRestriction.setAccountNumber(accountRestrictionDTO.getAccountNumber());
-        accountRestriction.setRestrictionType(accountRestrictionDTO.getRestrictionType());
-        accountRestrictionRepo.save(accountRestriction);
-        return messageSource.getMessage("account.restriction.update.success", null,LocaleContextHolder.getLocale());
+    public String addAccountRestriction(AccountRestrictionDTO accountRestrictionDTO) throws InternetBankingException {
+        try {
+            AccountRestriction accountRestriction = convertAccountRestrictionDTOToEntity(accountRestrictionDTO);
+            accountRestriction.setDateCreated(new Date());
+            accountRestrictionRepo.save(accountRestriction);
+            return messageSource.getMessage("account.restrict.add.success", null, locale);
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("account.restrict.add.failure", null, locale), e);
+        }
+    }
 
+
+    @Override
+    public String updateAccountRestriction(AccountRestrictionDTO accountRestrictionDTO) throws InternetBankingException {
+        try {
+            AccountRestriction accountRestriction = accountRestrictionRepo.findOne(accountRestrictionDTO.getId());
+            accountRestriction.setVersion(accountRestrictionDTO.getVersion());
+            accountRestriction.setAccountNumber(accountRestrictionDTO.getAccountNumber());
+            accountRestriction.setRestrictionType(accountRestrictionDTO.getRestrictionType());
+            accountRestrictionRepo.save(accountRestriction);
+            return messageSource.getMessage("account.restrict.update.success", null, locale);
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("account.restrict.update.failure", null, locale), e);
+        }
     }
 
     @Override
@@ -95,36 +106,63 @@ public class AccountConfigServiceImpl implements AccountConfigService {
     }
 
     @Override
-    public String deleteAccountRestriction(Long id) throws InternetBankingException{
-        accountRestrictionRepo.delete(id);
-        return messageSource.getMessage("account.restriction.delete", null,LocaleContextHolder.getLocale());
+    @Transactional
+    public String deleteAccountRestriction(Long id) throws InternetBankingException {
+        try {
+            AccountRestriction accountRestriction = accountRestrictionRepo.findOne(id);
+            accountRestriction.setDeletedOn(new Date());
+            accountRestrictionRepo.save(accountRestriction);
+            accountRestrictionRepo.delete(id);
+            return messageSource.getMessage("account.restrict.delete.success", null, LocaleContextHolder.getLocale());
 
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("account.restrict.delete.failure", null, locale), e);
+
+        }
     }
 
     @Override
     public String addAccountClassRestriction(AccountClassRestrictionDTO accountClassRestrictionDTO) throws InternetBankingException {
-        AccountClassRestriction accountClassRestriction = convertAccountClassRestrictionDTOToEntity(accountClassRestrictionDTO);
-        accountClassRestriction.setDateCreated(new Date());
-        accountClassRestrictionRepo.save(accountClassRestriction);
-        return messageSource.getMessage("class.restriction.success", null,LocaleContextHolder.getLocale());
+        try {
+            AccountClassRestriction accountClassRestriction = convertAccountClassRestrictionDTOToEntity(accountClassRestrictionDTO);
+            accountClassRestriction.setDateCreated(new Date());
+            accountClassRestrictionRepo.save(accountClassRestriction);
+            return messageSource.getMessage("class.restrict.add.success", null, locale);
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("class.restrict.add.failure", null, locale), e);
+        }
     }
 
     @Override
     public String updateAccountClassRestriction(AccountClassRestrictionDTO accountClassRestrictionDTO) throws InternetBankingException {
-        AccountClassRestriction accountClassRestriction = accountClassRestrictionRepo.findOne(accountClassRestrictionDTO.getId());
-        accountClassRestriction.setVersion(accountClassRestrictionDTO.getVersion());
-        accountClassRestriction.setAccountClass(accountClassRestrictionDTO.getAccountClass());
-        accountClassRestriction.setRestrictionType(accountClassRestrictionDTO.getRestrictionType());
-        accountClassRestrictionRepo.save(accountClassRestriction);
-        return messageSource.getMessage("class.restriction.update.success", null,LocaleContextHolder.getLocale());
+        try {
+            AccountClassRestriction accountClassRestriction = accountClassRestrictionRepo.findOne(accountClassRestrictionDTO.getId());
+            accountClassRestriction.setVersion(accountClassRestrictionDTO.getVersion());
+            accountClassRestriction.setAccountClass(accountClassRestrictionDTO.getAccountClass());
+            accountClassRestriction.setRestrictionType(accountClassRestrictionDTO.getRestrictionType());
+            accountClassRestrictionRepo.save(accountClassRestriction);
+            return messageSource.getMessage("class.restrict.update.success", null, locale);
 
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("class.restrict.update.failure", null, locale), e);
+
+        }
     }
 
     @Override
 
     public String deleteAccountClassRestriction(Long id) throws InternetBankingException {
-        accountClassRestrictionRepo.delete(id);
-        return messageSource.getMessage("class.restriction.delete", null,LocaleContextHolder.getLocale());
+        try {
+            AccountClassRestriction accountClassRestriction = accountClassRestrictionRepo.findOne(id);
+            accountClassRestriction.setDeletedOn(new Date());
+            accountClassRestrictionRepo.save(accountClassRestriction);
+            accountClassRestrictionRepo.delete(id);
+            return messageSource.getMessage("class.restrict.delete.success", null, locale);
+
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("class.restrict.update.failure", null, locale), e);
+
+        }
 
     }
 
@@ -132,94 +170,97 @@ public class AccountConfigServiceImpl implements AccountConfigService {
     public boolean isAccountRestrictedForDebit(String accountNumber) {
         boolean isRestricted = false;
         AccountRestriction accountRestriction = accountRestrictionRepo.findByAccountNumber(accountNumber);
-        if(accountRestriction!=null){
-            if(accountRestriction.getRestrictionType().equals("D")){
-                isRestricted =true;
+        if (accountRestriction != null) {
+            if (accountRestriction.getRestrictionType().equals("D")) {
+                isRestricted = true;
             }
         }
-        return  isRestricted;
+        return isRestricted;
     }
 
     @Override
     public boolean isAccountRestrictedForCredit(String accountNumber) {
         boolean isRestricted = false;
         AccountRestriction accountRestriction = accountRestrictionRepo.findByAccountNumber(accountNumber);
-        if(accountRestriction!=null){
-            if(accountRestriction.getRestrictionType().equals("C")){
-                isRestricted =true;
+        if (accountRestriction != null) {
+            if (accountRestriction.getRestrictionType().equals("C")) {
+                isRestricted = true;
             }
         }
-        return  isRestricted;
+        return isRestricted;
     }
 
     @Override
+    @Transactional
     public boolean isAccountRestrictedForDebitAndCredit(String accountNumber) {
         boolean isRestricted = false;
         AccountRestriction accountRestriction = accountRestrictionRepo.findByAccountNumber(accountNumber);
-        if(accountRestriction!=null){
-            if(accountRestriction.getRestrictionType().equals("CD")){
-                isRestricted =true;
+        if (accountRestriction != null) {
+            if (accountRestriction.getRestrictionType().equals("CD")) {
+                isRestricted = true;
             }
         }
-        return  isRestricted;       }
+        return isRestricted;
+    }
 
     @Override
     public boolean isAccountRestrictedForView(String accountNumber) {
         boolean isRestricted = false;
         AccountRestriction accountRestriction = accountRestrictionRepo.findByAccountNumber(accountNumber);
-        if(accountRestriction!=null){
-            if(accountRestriction.getRestrictionType().equals("V")){
-                isRestricted =true;
+        if (accountRestriction != null) {
+            if (accountRestriction.getRestrictionType().equals("V")) {
+                isRestricted = true;
             }
         }
-        return  isRestricted;
+        return isRestricted;
     }
 
     @Override
     public boolean isAccountClassRestrictedForDebit(String accountClass) {
         boolean isRestricted = false;
         AccountClassRestriction accountClassRestriction = accountClassRestrictionRepo.findByAccountClass(accountClass);
-        if(accountClassRestriction!=null){
-            if(accountClassRestriction.getRestrictionType().equals("D")){
-                isRestricted =true;
+        if (accountClassRestriction != null) {
+            if (accountClassRestriction.getRestrictionType().equals("D")) {
+                isRestricted = true;
             }
         }
-        return  isRestricted;
+        return isRestricted;
     }
 
     @Override
     public boolean isAccountClassRestrictedForCredit(String accountClass) {
         boolean isRestricted = false;
         AccountClassRestriction accountClassRestriction = accountClassRestrictionRepo.findByAccountClass(accountClass);
-        if(accountClassRestriction!=null){
-            if(accountClassRestriction.getRestrictionType().equals("C")){
-                isRestricted =true;
+        if (accountClassRestriction != null) {
+            if (accountClassRestriction.getRestrictionType().equals("C")) {
+                isRestricted = true;
             }
         }
-        return  isRestricted;
+        return isRestricted;
     }
 
     @Override
     public boolean isAccountClassRestrictedForDebitAndCredit(String accountClass) {
         boolean isRestricted = false;
         AccountClassRestriction accountClassRestriction = accountClassRestrictionRepo.findByAccountClass(accountClass);
-        if(accountClassRestriction!=null){
-            if(accountClassRestriction.getRestrictionType().equals("CD")){
-                isRestricted =true;
+        if (accountClassRestriction != null) {
+            if (accountClassRestriction.getRestrictionType().equals("CD")) {
+                isRestricted = true;
             }
         }
-        return  isRestricted;       }
+        return isRestricted;
+    }
 
     @Override
     public boolean isAccountClassRestrictedForView(String accountClass) {
         boolean isRestricted = false;
         AccountClassRestriction accountClassRestriction = accountClassRestrictionRepo.findByAccountClass(accountClass);
-        if(accountClassRestriction!=null){
-            if(accountClassRestriction.getRestrictionType().equals("V")){
-                isRestricted =true;
+        if (accountClassRestriction != null) {
+            if (accountClassRestriction.getRestrictionType().equals("V")) {
+                isRestricted = true;
             }
         }
-        return  isRestricted;
+        return isRestricted;
     }
 
     @Override
@@ -239,7 +280,7 @@ public class AccountConfigServiceImpl implements AccountConfigService {
         Page<AccountRestriction> accountRestrictionPageable = accountRestrictionRepo.findAll(pageable);
         List<AccountRestrictionDTO> dtos = convertAccountRestrictionEntitiesToDTOs(accountRestrictionPageable.getContent());
         long t = accountRestrictionPageable.getTotalElements();
-        return  new PageImpl<AccountRestrictionDTO>(dtos,pageable,t);
+        return new PageImpl<AccountRestrictionDTO>(dtos, pageable, t);
 
 
     }
@@ -249,46 +290,46 @@ public class AccountConfigServiceImpl implements AccountConfigService {
         Page<AccountClassRestriction> accountClassRestrictionPageable = accountClassRestrictionRepo.findAll(pageable);
         List<AccountClassRestrictionDTO> dtos = convertAccountClassRestrictionEntitiesToDTOs(accountClassRestrictionPageable.getContent());
         long t = accountClassRestrictionPageable.getTotalElements();
-        return  new PageImpl<AccountClassRestrictionDTO>(dtos,pageable,t);    }
+        return new PageImpl<AccountClassRestrictionDTO>(dtos, pageable, t);
+    }
 
 
-    private AccountRestrictionDTO convertAccountRestrictionEntityToDTO(AccountRestriction accountRestriction){
-        AccountRestrictionDTO accountRestrictionDTO = modelMapper.map(accountRestriction,AccountRestrictionDTO.class);
+    private AccountRestrictionDTO convertAccountRestrictionEntityToDTO(AccountRestriction accountRestriction) {
+        AccountRestrictionDTO accountRestrictionDTO = modelMapper.map(accountRestriction, AccountRestrictionDTO.class);
         return accountRestrictionDTO;
     }
 
 
-    private AccountRestriction convertAccountRestrictionDTOToEntity(AccountRestrictionDTO accountRestrictionDTO){
-        return this.modelMapper.map(accountRestrictionDTO,AccountRestriction.class);
+    private AccountRestriction convertAccountRestrictionDTOToEntity(AccountRestrictionDTO accountRestrictionDTO) {
+        return this.modelMapper.map(accountRestrictionDTO, AccountRestriction.class);
     }
 
-    private List<AccountRestrictionDTO> convertAccountRestrictionEntitiesToDTOs(Iterable<AccountRestriction> accountRestrictions){
+    private List<AccountRestrictionDTO> convertAccountRestrictionEntitiesToDTOs(Iterable<AccountRestriction> accountRestrictions) {
         List<AccountRestrictionDTO> accountRestrictionDTOList = new ArrayList<>();
-        for(AccountRestriction accountRestriction: accountRestrictions){
+        for (AccountRestriction accountRestriction : accountRestrictions) {
             AccountRestrictionDTO accountRestrictionDTO = convertAccountRestrictionEntityToDTO(accountRestriction);
-            accountRestrictionDTO.setRestrictionType(codeService.getByTypeAndCode("RESTRICTION_TYPE",accountRestriction.getRestrictionType()).getDescription());
+            accountRestrictionDTO.setRestrictionType(codeService.getByTypeAndCode("RESTRICTION_TYPE", accountRestriction.getRestrictionType()).getDescription());
             accountRestrictionDTOList.add(accountRestrictionDTO);
         }
         return accountRestrictionDTOList;
     }
 
 
-
-    private AccountClassRestrictionDTO convertAccountClassRestrictionEntityToDTO(AccountClassRestriction accountClassRestriction){
-        AccountClassRestrictionDTO accountClassRestrictionDTO = modelMapper.map(accountClassRestriction,AccountClassRestrictionDTO.class);
+    private AccountClassRestrictionDTO convertAccountClassRestrictionEntityToDTO(AccountClassRestriction accountClassRestriction) {
+        AccountClassRestrictionDTO accountClassRestrictionDTO = modelMapper.map(accountClassRestriction, AccountClassRestrictionDTO.class);
         return accountClassRestrictionDTO;
     }
 
 
-    private AccountClassRestriction convertAccountClassRestrictionDTOToEntity(AccountClassRestrictionDTO accountClassRestrictionDTO){
-        return this.modelMapper.map(accountClassRestrictionDTO,AccountClassRestriction.class);
+    private AccountClassRestriction convertAccountClassRestrictionDTOToEntity(AccountClassRestrictionDTO accountClassRestrictionDTO) {
+        return this.modelMapper.map(accountClassRestrictionDTO, AccountClassRestriction.class);
     }
 
-    private List<AccountClassRestrictionDTO> convertAccountClassRestrictionEntitiesToDTOs(Iterable<AccountClassRestriction> accountClassRestrictions){
+    private List<AccountClassRestrictionDTO> convertAccountClassRestrictionEntitiesToDTOs(Iterable<AccountClassRestriction> accountClassRestrictions) {
         List<AccountClassRestrictionDTO> accountClassRestrictionDTOList = new ArrayList<>();
-        for(AccountClassRestriction accountClassRestriction: accountClassRestrictions){
+        for (AccountClassRestriction accountClassRestriction : accountClassRestrictions) {
             AccountClassRestrictionDTO accountClassRestrictionDTO = convertAccountClassRestrictionEntityToDTO(accountClassRestriction);
-            accountClassRestrictionDTO.setRestrictionType(codeService.getByTypeAndCode("RESTRICTION_TYPE",accountClassRestriction.getRestrictionType()).getDescription());
+            accountClassRestrictionDTO.setRestrictionType(codeService.getByTypeAndCode("RESTRICTION_TYPE", accountClassRestriction.getRestrictionType()).getDescription());
             accountClassRestrictionDTOList.add(accountClassRestrictionDTO);
         }
         return accountClassRestrictionDTOList;

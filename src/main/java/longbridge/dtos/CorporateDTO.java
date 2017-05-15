@@ -19,8 +19,9 @@ public class CorporateDTO {
     private String customerId;
     private String companyName;
     private String email;
+    private String status;
     private String address;
-    private Date dateCreated;
+    private String createdOn;
 
 
     public Long getId() {return id;}
@@ -55,7 +56,6 @@ public class CorporateDTO {
         return corporateType;
     }
 
-
     public void setCorporateType(String corporateType) {
         this.corporateType = corporateType;
     }
@@ -84,11 +84,20 @@ public class CorporateDTO {
         this.address = address;
     }
 
-    public Date getDateCreated() {
-        return dateCreated;
+    public String getCreatedOn() {
+
+        return createdOn;
     }
 
-    public void setDateCreated(Date dateCreated) {
-        this.dateCreated = dateCreated;
+    public void setCreatedOn(String createdOn) {
+        this.createdOn = createdOn;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

@@ -24,7 +24,7 @@ import javax.validation.Valid;
  */
 
 @Controller
-@RequestMapping("/admin/corporates/")
+@RequestMapping("/admin/corporates")
 public class AdmCorporateUserController {
     @Autowired
     CorporateUserService corporateUserService;
@@ -47,7 +47,7 @@ public class AdmCorporateUserController {
         return "adm/corporate/addUser";
     }
 
-    @PostMapping
+    @PostMapping("/users")
     public String createUser(@ModelAttribute("corporateUser") CorporateUserDTO corporateUserDTO, BindingResult result, Model model) throws Exception {
         if (result.hasErrors()) {
             return "addUser";
@@ -58,7 +58,7 @@ public class AdmCorporateUserController {
         return "redirect:/corporate/users";
     }
 
-    @GetMapping("/{userId}")
+    @GetMapping("/users/{userId}")
     public String getUser(@PathVariable Long userId, Model model) {
         CorporateUserDTO user = corporateUserService.getUser(userId);
 
@@ -67,7 +67,7 @@ public class AdmCorporateUserController {
     }
 
 
-    @PostMapping("/{userId}")
+    @PostMapping("/users/{userId}")
     public String UpdateUser(@ModelAttribute("corporateUser") CorporateUserDTO corporateUserDTO, @PathVariable Long userId, BindingResult result, RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
             return "addUser";
@@ -79,18 +79,18 @@ public class AdmCorporateUserController {
         return "redirect:/corporate/users";
     }
 
-    @PostMapping("/{userId}/delete")
+    @PostMapping("/users/{userId}/delete")
     public String deleteUser(@PathVariable Long userId) {
         corporateUserService.deleteUser(userId);
         return "redirect:/corporate/users";
     }
 
-    @GetMapping("/changePassword")
+    @GetMapping("/users/changePassword")
     public String changePassword() {
         return "changePassword";
     }
 
-    @PostMapping("/changePassword")
+    @PostMapping("/users/changePassword")
     public String changePassword(@Valid ChangePassword changePassword, Long userId, BindingResult result, HttpRequest request, Model model) {
         if (result.hasErrors()) {
             return "changePassword";
