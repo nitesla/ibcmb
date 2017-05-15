@@ -58,12 +58,13 @@ public class CustomUserPrincipal implements UserDetails {
 
 	@Override
 	public boolean isAccountNonExpired() {
-		boolean result = false;
-		LocalDate date = new LocalDate(user.getExpiryDate());
-		if (date == null ||today.isBefore(date)) {
-			result = true;
-		}
-		return result;
+//		boolean result = false;
+//		LocalDate date = new LocalDate(user.getExpiryDate());
+//		if (date == null ||today.isBefore(date)) {
+//			result = true;
+//		}
+//		return result;
+		return isAccountNonLocked();
 	}
 
 	@Override
@@ -72,13 +73,14 @@ public class CustomUserPrincipal implements UserDetails {
 		LocalDate date = new LocalDate(user.getLockedUntilDate());
 		if (date == null || today.isAfter(date) || today.isEqual(date)) {
 			result = true;
-		} 
+		}
 		return result;
 	}
 
 	@Override
 	public boolean isCredentialsNonExpired() {
-		return isEnabled();
+		//return isEnabled();
+		return true;
 	}
 
 	@Override

@@ -1,7 +1,9 @@
 package longbridge.security.adminuser;
 
+import longbridge.models.AdminUser;
 import longbridge.models.UserType;
 import longbridge.repositories.AdminUserRepo;
+import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +24,7 @@ import java.io.IOException;
 @Component("adminAuthenticationSuccessHandler")
 public class AdminAuthenticationSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
     private final Logger logger = LoggerFactory.getLogger(getClass());
-
+    private LocalDate today = LocalDate.now();
 
     public AdminAuthenticationSuccessHandler() {
         setUseReferer(true);
@@ -43,6 +45,12 @@ public class AdminAuthenticationSuccessHandler extends SavedRequestAwareAuthenti
         HttpSession session = request.getSession();
         if (session != null) {
         	session.setMaxInactiveInterval(30 *60); //TODO this cannot be static
+            AdminUser user= adminUserRepo.findFirstByUserName(authentication.getName());
+            LocalDate date = new LocalDate(user.getExpiryDate());
+
+            if (today.isAfter(date) || today.isEqual(date)) {
+               session.setAttribute("expired-password","expired-password");
+            }
         }
         setUseReferer(true);
         adminUserRepo.updateUserAfterLogin(authentication.getName());
@@ -67,6 +75,8 @@ public class AdminAuthenticationSuccessHandler extends SavedRequestAwareAuthenti
 
     protected String determineTargetUrl(final Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+
+
           boolean isAdmin= adminUserRepo.findFirstByUserName(userDetails.getUsername()).getUserType().equals(UserType.ADMIN);
         if (isAdmin) {
             return "/admin/dashboard";
