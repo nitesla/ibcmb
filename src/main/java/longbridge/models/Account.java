@@ -175,6 +175,14 @@ public class Account extends AbstractEntity{
 //		// TODO Auto-generated method stub
 //		return null;
 //	}
+    
+    /** Gets a description for the account.
+     * This description is of the form: ACCOUNTNUMBER - ACCOUNT CLASS
+     * @return
+     */
+    public String getAccountDescription(){
+    	return String.format("%s - %s", getAccountNumber());
+    }
 
 	public static OperationCode getAddCode() {
 		// TODO Auto-generated method stub
