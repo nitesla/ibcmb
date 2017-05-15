@@ -3,6 +3,7 @@ package longbridge.controllers.admin;
 import longbridge.dtos.AdminUserDTO;
 import longbridge.dtos.RoleDTO;
 import longbridge.exception.*;
+import longbridge.forms.ChangeDefaultPassword;
 import longbridge.forms.ChangePassword;
 import longbridge.models.AdminUser;
 import longbridge.services.AdminUserService;
@@ -263,5 +264,45 @@ public class AdminUserController {
             return "/adm/admin/pword";
         }
     }
+
+
+    @GetMapping("/password/new")
+    public String changeDefaultPassword(Model model) {
+        ChangeDefaultPassword changePassword = new ChangeDefaultPassword();
+        model.addAttribute("changePassword", changePassword);
+        model.addAttribute("passwordRules", passwordPolicyService.getPasswordRules());
+        return "adm/admin/new-pword";
+    }
+
+
+    @PostMapping("/password/new")
+    public String changeDefaultPassword(@ModelAttribute("changePassword") @Valid ChangeDefaultPassword changePassword, BindingResult result, Principal principal, RedirectAttributes redirectAttributes,Locale locale) {
+
+        if (result.hasErrors()) {
+            result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required",null,locale)));
+            return "/adm/admin/new-pword";
+        }
+
+        AdminUser user = adminUserService.getUserByName(principal.getName());
+        try {
+            String message = adminUserService.changeDefaultPassword(user, changePassword);
+            redirectAttributes.addFlashAttribute("message", message);
+            return "redirect:/admin/logout";
+        } catch (PasswordPolicyViolationException pve) {
+            result.reject("newPassword", pve.getMessage());
+            logger.error("Password policy violation from admin user {}", user.getUserName(), pve);
+            return "/adm/admin/new-pword";
+        } catch (PasswordMismatchException pme) {
+            result.reject("confirmPassword", pme.getMessage());
+            logger.error("New password mismatch from admin user {}", user.getUserName(), pme.toString());
+            return "/adm/admin/new-pword";
+        } catch (PasswordException pe) {
+            result.addError(new ObjectError("error", pe.getMessage()));
+            logger.error("Error changing password for admin user {}", user.getUserName(), pe);
+
+            return "/adm/admin/new-pword";
+        }
+    }
+
 
 }

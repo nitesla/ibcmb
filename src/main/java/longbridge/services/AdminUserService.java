@@ -3,6 +3,7 @@ package longbridge.services;
 import longbridge.dtos.AdminUserDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.PasswordException;
+import longbridge.forms.ChangeDefaultPassword;
 import longbridge.forms.ChangePassword;
 import longbridge.models.AdminUser;
 import org.springframework.data.domain.Page;
@@ -99,5 +100,7 @@ public interface AdminUserService {
      */
     boolean generateAndSendPassword(AdminUser user);
 
+
+    String changeDefaultPassword(AdminUser user, ChangeDefaultPassword changePassword) throws PasswordException;
 
 }
