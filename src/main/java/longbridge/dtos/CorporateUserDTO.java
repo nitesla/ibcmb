@@ -1,17 +1,18 @@
 package longbridge.dtos;
 
-import longbridge.models.Corporate;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.validator.constraints.NotEmpty;
 
-import javax.validation.constraints.NotNull;
 import java.util.Date;
 /**
  * Created by Fortune on 4/5/2017.
  */
 public class CorporateUserDTO {
 
+    @JsonProperty("DT_RowId")
     private Long id;
-    private Corporate corporate;
+    @NotEmpty
+    private String corporateId;
     @NotEmpty
     private String userName;
     @NotEmpty
@@ -20,6 +21,9 @@ public class CorporateUserDTO {
     private String lastName;
     @NotEmpty
     private String email;
+    @NotEmpty
+    private String roleId;
+    private String role;
     private String password;
     private String status;
     private Date expiryDate;
@@ -33,12 +37,12 @@ public class CorporateUserDTO {
         this.id = id;
     }
 
-    public Corporate getCorporate() {
-        return corporate;
+    public String getCorporateId() {
+        return corporateId;
     }
 
-    public void setCorporate(Corporate corporate) {
-        this.corporate = corporate;
+    public void setCorporateId(String corporateId) {
+        this.corporateId = corporateId;
     }
 
     public String getUserName() {
@@ -87,6 +91,22 @@ public class CorporateUserDTO {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(String roleId) {
+        this.roleId = roleId;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public Date getExpiryDate() {

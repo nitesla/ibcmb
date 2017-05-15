@@ -17,6 +17,7 @@ public class AccountDTO{
     
     private String accountType;
     private String accountBalance;
+    private String ledgerBalance;
     
     public AccountDTO() {
     }
@@ -139,6 +140,14 @@ public class AccountDTO{
 
     public void setCurrencyCode(String currencyCode) {
         this.currencyCode = currencyCode;
+    }
+
+    public String getLedgerBalance() {
+        return ledgerBalance;
+    }
+
+    public void setLedgerBalance(String ledgerBalance) {
+        this.ledgerBalance = ledgerBalance;
     }
 
     @Override

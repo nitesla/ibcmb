@@ -1,6 +1,7 @@
 package longbridge.services;
 
 import longbridge.dtos.GlobalLimitDTO;
+import longbridge.exception.InternetBankingException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -15,7 +16,7 @@ import longbridge.models.Setting;
 
 public interface ConfigurationService{
 
-    void addSetting( SettingDTO setting);
+    String addSetting( SettingDTO setting) throws InternetBankingException;
 
     SettingDTO getSetting(Long id);
 
@@ -25,14 +26,8 @@ public interface ConfigurationService{
 
     Page<SettingDTO> getSettings(Pageable pageDetails);
 
-    void updateSetting(SettingDTO setting);
+    String updateSetting(SettingDTO setting) throws InternetBankingException;
 
-    void deleteSetting(Long id);
-
-
-
-
-
-
+    String deleteSetting(Long id) throws InternetBankingException;
 
 }

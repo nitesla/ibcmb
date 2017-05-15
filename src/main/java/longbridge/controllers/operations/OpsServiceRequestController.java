@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import longbridge.dtos.CodeDTO;
 import longbridge.dtos.RequestHistoryDTO;
 import longbridge.dtos.ServiceRequestDTO;
-import longbridge.models.RetailUser;
 import longbridge.repositories.RetailUserRepo;
 import longbridge.services.CodeService;
 import longbridge.services.RequestService;
@@ -26,6 +25,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.security.Principal;
 import java.util.List;
 
 
@@ -111,12 +111,13 @@ public class OpsServiceRequestController {
 
 
     @PostMapping("/history")
-    public String createRequestHistory(@ModelAttribute("requestHistory") RequestHistoryDTO requestHistoryDTO, BindingResult result, RedirectAttributes redirectAttributes) {
+    public String createRequestHistory(@ModelAttribute("requestHistory") RequestHistoryDTO requestHistoryDTO, BindingResult result, Principal principal,RedirectAttributes redirectAttributes) {
 
         if (result.hasErrors()) {
             return "";
         }
 
+        requestHistoryDTO.setCreatedBy(principal.getName());
         logger.info("RequestHistoryDTO received: {}", requestHistoryDTO);
         requestService.addRequestHistory(requestHistoryDTO);
 

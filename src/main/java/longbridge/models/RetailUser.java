@@ -5,6 +5,8 @@ import org.hibernate.envers.Audited;
 
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import java.util.Collection;
 import java.util.Date;
 
@@ -17,6 +19,7 @@ import java.util.Date;
 @Entity
 @Audited
 @Where(clause ="del_Flag='N'" )
+@Table(uniqueConstraints=@UniqueConstraint(columnNames={"userName","deletedOn"}))
 public class RetailUser extends User{
 
 	private String bvn;

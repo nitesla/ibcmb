@@ -1,8 +1,6 @@
 package longbridge.controllers.retail;
 
-import longbridge.dtos.LocalBeneficiaryDTO;
 import longbridge.dtos.TransferRequestDTO;
-import longbridge.models.FinancialInstitutionType;
 import longbridge.models.LocalBeneficiary;
 import longbridge.models.RetailUser;
 import longbridge.services.*;
@@ -10,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -48,7 +45,7 @@ public class LocalTransferController {
     }
 
     @GetMapping("")
-    public String bankTransfer(Model model, Principal principal) throws Exception {
+    public String index (Model model, Principal principal) throws Exception {
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
         model.addAttribute("localBen", localBeneficiaryService.getLocalBeneficiaries(retailUser));
 
@@ -70,16 +67,15 @@ public class LocalTransferController {
     }
 
     @PostMapping("/summary")
-    public String bankTransferSummary(@ModelAttribute("transferRequest") @Valid TransferRequestDTO transferRequestDTO, Model model) throws Exception {
+    public String transferSummary(@ModelAttribute("transferRequest") @Valid TransferRequestDTO transferRequestDTO, Model model) throws Exception {
         model.addAttribute("transferRequest", transferRequestDTO);
-
-
-        return "cust/transfer/local/summary";
+ return "cust/transfer/local/summary";
     }
 
 
     @GetMapping("/{id}")
-    public String makeLocaltransfer(@PathVariable Long id, Model model) throws Exception {
+    public String transfer(@PathVariable Long id, Model model) throws Exception
+    {
         LocalBeneficiary beneficiary = localBeneficiaryService.getLocalBeneficiary(id);
         TransferRequestDTO transferRequestDTO = new TransferRequestDTO();
         transferRequestDTO.setBeneficiaryAccountName(beneficiary.getAccountName());

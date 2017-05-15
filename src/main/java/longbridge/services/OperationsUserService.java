@@ -1,6 +1,9 @@
 package longbridge.services;
 
-import longbridge.models.User;
+import longbridge.exception.InternetBankingException;
+import longbridge.exception.PasswordException;
+import longbridge.forms.ChangeDefaultPassword;
+import longbridge.forms.ChangePassword;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -47,6 +50,7 @@ public interface OperationsUserService{
      */
     Page<OperationsUserDTO> getUsers(Pageable pageDetails);
 
+    Page<OperationsUserDTO> findUsers(OperationsUserDTO example,Pageable pageDetails);
 
     /**
      * Sets the password for the specified Operations User.
@@ -55,19 +59,19 @@ public interface OperationsUserService{
      * @param User the user
      * @param password the password
      */
-    void setPassword(OperationsUser User, String password);
+    String setPassword(OperationsUser User, String password) throws InternetBankingException;
 
     /**
      * Creates an Operations User
      * @param user the new OperationsUser
      */
-    boolean addUser(OperationsUserDTO user);
+    String addUser(OperationsUserDTO user) throws InternetBankingException;
 
     /**
      * Update the details of the Operations User
      * @param user the Operations User
      */
-    boolean updateUser(OperationsUserDTO user);
+    String updateUser(OperationsUserDTO user) throws InternetBankingException;
 
     /**
      * Changes the activation status of the user
@@ -75,36 +79,40 @@ public interface OperationsUserService{
      * On creation, the user has a null status until activated by the Admin
      * @param userId the user's Id
      */
-    void changeActivationStatus(Long userId);
+    String changeActivationStatus(Long userId) throws InternetBankingException;
 
     /**
      * Deletes an Operations User
      * @param userId the  Operations user's id
      */
-    void deleteUser(Long userId);
+    String deleteUser(Long userId) throws InternetBankingException;
 
     /**
      * Resets the password of the specified Operations user
      * @param id of the user
      */
 
-    boolean resetPassword(Long id);
+    String resetPassword(Long id) throws InternetBankingException;
+
+
+
 
     /**
      * Replaces the old password with the new password
      * Also, the password must meet the organization's password policy if any one has been defined
      * It is important that the password is hashed before storing it in the database.
      * * @param oldPassword the oldPassword
-     * @param oldPassword the old password
-     * @param newPassword the new Password
+     * @param changePassword
      */
 
-    boolean changePassword(OperationsUser user, String oldPassword, String newPassword);
+    String changePassword(OperationsUser user, ChangePassword changePassword) throws InternetBankingException, PasswordException;
 
 
     /**
      * Generates and sends a password to the specified user
-      * @param user the use that will receive the new pasword
+     * @param user the use that will receive the new pasword
      */
-    void generateAndSendPassword(OperationsUser user);
+    String generateAndSendPassword(OperationsUser user) throws InternetBankingException;
+
+    String changeDefaultPassword(OperationsUser user, ChangeDefaultPassword changePassword) throws PasswordException;
 }

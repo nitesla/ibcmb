@@ -13,8 +13,9 @@ public class AuthenticationFailureListener implements ApplicationListener<Authen
     private CustomBruteForceService loginAttemptService;
 
     @Override
-    public void onApplicationEvent(final AuthenticationFailureBadCredentialsEvent e) {
+    public void onApplicationEvent(final AuthenticationFailureBadCredentialsEvent  e) {
         final WebAuthenticationDetails auth = (WebAuthenticationDetails) e.getAuthentication().getDetails();
+
         if (auth != null) {
             loginAttemptService.loginFailed(auth.getRemoteAddress());
         }

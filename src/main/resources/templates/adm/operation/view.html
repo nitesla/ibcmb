@@ -104,6 +104,7 @@
                                         <th>Last Name</th>
                                         <th>Role</th>
                                         <th>Status</th>
+                                        <th>Created On</th>
                                         <th>Last Login</th>
                                     </tr>
                                     </thead>
@@ -118,6 +119,7 @@
                                         <th>Last Name</th>
                                         <th>Role</th>
                                         <th>Status</th>
+                                        <th>Created On</th>
                                         <th>Last Login</th>
                                     </tr>
                                     </tfoot>
@@ -166,6 +168,7 @@
                 { "data": "lastName" },
                 { "data": "role" },
                 { "data": "status" },
+                {"data":"createdOn"},
                 { "data": "lastLogin" }
             ] ,
             "columnDefs" : [ {
@@ -236,7 +239,7 @@
         if($(link).attr("disabled")){
         	return;
         }
-        var dt = $('#role').DataTable();
+        var dt = $('#operation').DataTable();
         var id = $(dt.row({
             selected: true
         }).node()).attr("id");

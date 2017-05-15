@@ -1,9 +1,12 @@
 package longbridge.controllers.admin;
 
+import longbridge.exception.InternetBankingException;
+import longbridge.services.AdminUserService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
@@ -34,6 +37,8 @@ import longbridge.services.CodeService;
 import longbridge.services.VerificationService;
 
 import javax.validation.Valid;
+import java.security.Principal;
+import java.util.Locale;
 
 /**
  * Created by Fortune on 4/5/2017.
@@ -51,7 +56,10 @@ public class AdmCodeController {
 	ModelMapper modelMapper;
 
 	@Autowired
-	private AdminUserRepo adminUserRepo;
+	MessageSource messageSource;
+
+	@Autowired
+	private AdminUserService adminUserService;
 
 	@GetMapping("/new")
 	public String addCode(CodeDTO codeDTO) {
@@ -59,20 +67,16 @@ public class AdmCodeController {
 	}
 
 	@PostMapping
-    public String createCode(@ModelAttribute("codeDTO") @Valid CodeDTO codeDTO, BindingResult result, RedirectAttributes redirectAttributes){
+    public String createCode(@ModelAttribute("codeDTO") @Valid CodeDTO codeDTO, BindingResult result, Principal principal, RedirectAttributes redirectAttributes, Locale locale){
         if(result.hasErrors()){
-            //return "add";
-            logger.error("Error occurred creating code{}", result.toString());
-            result.addError(new ObjectError("invalid","Please fill in the required fields"));
+            result.addError(new ObjectError("invalid",messageSource.getMessage("form.fields.required",null,locale)));
             return "adm/code/add";
-
         }
 
-        logger.info("Code {}", codeDTO.toString());
+		AdminUser adminUser =adminUserService.getUserByName(principal.getName()) ;
 
-		AdminUser adminUser = adminUserRepo.findOne(1l);
-//		logger.info("Code {}", codeDTO.toString());
-		codeService.updateCode(codeDTO, adminUser);
+        try {
+			String message = codeService.addCode(codeDTO, adminUser);
 //        Code code = codeService.convertDTOToEntity(codeDTO);
 //        try {
 //			verificationService.addNewVerificationRequest(code);
@@ -84,16 +88,17 @@ public class AdmCodeController {
 //        codeService.addObject(code);
 //        codeService.addCode(codeDTO);
 
-        redirectAttributes.addFlashAttribute("message", "Code added successfully");
-        return "redirect:/admin/codes";
+			redirectAttributes.addFlashAttribute("message", message);
+			return "redirect:/admin/codes";
+		}
+		catch (InternetBankingException ibe){
+        	result.addError(new ObjectError("error",ibe.getMessage()));
+        	logger.error("Error creating code",ibe);
+			return "adm/code/add";
+		}
     }
 
-	@GetMapping("/{id}/edit")
-	public String editCode(@PathVariable Long id, Model model) {
-		CodeDTO code = codeService.getCode(id);
-		model.addAttribute("code", code);
-		return "adm/code/edit";
-	}
+
 
 	@GetMapping("/{codeId}")
 	public CodeDTO getCode(@PathVariable Long codeId, Model model) {
@@ -175,31 +180,47 @@ public class AdmCodeController {
 		return codeList;
 	}
 
+	@GetMapping("/{id}/edit")
+	public String editCode(@PathVariable Long id, Model model) {
+		CodeDTO code = codeService.getCode(id);
+		model.addAttribute("code", code);
+		return "adm/code/edit";
+	}
+
 	@PostMapping("/update")
-	public String updateCode(@ModelAttribute("code") @Valid CodeDTO codeDTO, BindingResult result,
-			RedirectAttributes redirectAttributes) {
+	public String updateCode(@ModelAttribute("code") @Valid CodeDTO codeDTO, BindingResult result, Principal principal,RedirectAttributes redirectAttributes,Locale locale) {
 		if(result.hasErrors()){
-			//return "add";
 			logger.error("Error occurred creating code{}", result.toString());
-			result.addError(new ObjectError("invalid","Please fill in the required fields"));
-			return "adm/code/add";
+			result.addError(new ObjectError("invalid",messageSource.getMessage("form.fields.required",null,locale)));
+			return "adm/code/edit";
 
 		}
-
-//		codeService.addCode(codeDTO);
-
-		AdminUser adminUser = adminUserRepo.findOne(1l);
-//		logger.info("Code {}", codeDTO.toString());
-		codeService.updateCode(codeDTO, adminUser);
+		try {
+			AdminUser adminUser = adminUserService.getUserByName(principal.getName());
+			String message = codeService.updateCode(codeDTO, adminUser);
 //		// codeService.modify(codeDTO, adminUser);
-		redirectAttributes.addFlashAttribute("message", "Code updated successfully");
-		return "redirect:/admin/codes";
+			redirectAttributes.addFlashAttribute("message", message);
+			return "redirect:/admin/codes";
+		}
+		catch (InternetBankingException ibe){
+			result.addError(new ObjectError("error",ibe.getMessage()));
+			logger.error("Error updating Code",ibe);
+			return "adm/code/edit";
+
+		}
 	}
 
 	@GetMapping("/{codeId}/delete")
 	public String deleteCode(@PathVariable Long codeId, RedirectAttributes redirectAttributes) {
-		codeService.deleteCode(codeId);
-		redirectAttributes.addFlashAttribute("message", "Code deleted successfully");
+		try {
+			String message = codeService.deleteCode(codeId);
+			redirectAttributes.addFlashAttribute("message", message);
+		}
+		catch (InternetBankingException ibe){
+			logger.error("Error deleting Code",ibe);
+			redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
+
+		}
 		return "redirect:/admin/codes";
 	}
 }

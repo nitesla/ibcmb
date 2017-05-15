@@ -1,7 +1,7 @@
 package longbridge.services.implementations;
 
-import com.sun.xml.internal.bind.v2.TODO;
 import longbridge.dtos.MessageDTO;
+import longbridge.exception.InternetBankingException;
 import longbridge.models.*;
 import longbridge.repositories.MailBoxRepo;
 import longbridge.repositories.MessageRepo;
@@ -10,21 +10,30 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.awt.print.Pageable;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 @Service
 public class MessageServiceImpl implements MessageService {
 
 
     @Autowired
-    ModelMapper modelMapper;
+    private ModelMapper modelMapper;
+    @Autowired
+    private MessageSource messageSource;
+    Locale locale = LocaleContextHolder.getLocale();
+
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private MessageRepo messageRepo;
     private MailBoxRepo mailBoxRepo;
@@ -72,7 +81,7 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     @Transactional
-    public void addMessage(User sender, User recipient, MessageDTO messageDTO) {
+    public String addMessage(User sender, User recipient, MessageDTO messageDTO) {
 
         Message message = convertDTOToEntity(messageDTO);
         message.setDateCreated(new Date());
@@ -84,6 +93,7 @@ public class MessageServiceImpl implements MessageService {
         message.setMailBox(senderMailBox);
         senderMailBox.getMessages().add(message);
         mailBoxRepo.save(senderMailBox);
+        return messageSource.getMessage("message.add.success",null,locale);
 
     }
 
@@ -99,11 +109,14 @@ public class MessageServiceImpl implements MessageService {
     }
 
 
+
     @Override
     public Iterable<Message> getMessages(User user, Date date) {
 //
         return null;
     }
+
+
 
     @Override
     public Iterable<Message> getMessages(User user, Date fromDate, Date toDate) {
@@ -123,22 +136,25 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public void deleteSentMessage(User user,Long id) {
+    public String deleteSentMessage(User user,Long id)throws InternetBankingException{
         Message message = new Message();
         message.setId(id);
         MailBox mailBox = mailBoxRepo.findByUserIdAndUserType(user.getId(),user.getUserType());
         mailBox.getMessages().remove(message);
         mailBoxRepo.save(mailBox);
+        return messageSource.getMessage("message.delete.success",null,locale);
     }
 
     @Override
-    public void deleteReceivedMessage(Long id) {
+    public String deleteReceivedMessage(Long id)throws InternetBankingException {
         this.messageRepo.delete(id);
+        return messageSource.getMessage("message.delete.success",null,locale);
+
     }
 
     @Override
-    public void purge(int daysOld) {
-
+    public String purge(int daysOld) throws InternetBankingException {
+        return null;
     }
 
     @Override
@@ -153,6 +169,23 @@ public class MessageServiceImpl implements MessageService {
         return reverse(sentMessages);
     }
 
+
+
+    @Override
+    public Page<MessageDTO> getSentMessages(String recipient, UserType recipientTye, Pageable pageable) {
+        Page<Message> page = messageRepo.findByRecipientAndRecipientTypeOrderByIdDesc(recipient, recipientTye,pageable);
+        List<MessageDTO> dtOs = convertEntitiesToDTOs(page.getContent());
+        long t = page.getTotalElements();
+        Page<MessageDTO> pageImpl = new PageImpl<MessageDTO>(dtOs, pageable, t);
+        return pageImpl;
+
+    }
+
+    @Override
+    public Page<MessageDTO> getSentMessages(String recipient, UserType recipientTye, java.awt.print.Pageable pageable) {
+        return null;
+    }
+
     @Override
     @Transactional
     public List<MessageDTO> getReceivedMessages(User user) {
@@ -160,35 +193,50 @@ public class MessageServiceImpl implements MessageService {
         return convertEntitiesToDTOs(receivedMessages);
     }
 
+
     @Override
-    public void purge(Date fromDate, Date toDate) {
+    public String purge(Date fromDate, Date toDate) {
         Iterable<Message> messages = getMessage(fromDate, toDate);
         this.messageRepo.delete(messages);
-
-
+        return messageSource.getMessage("message.purge.success",null,locale);
     }
 
     @Override
-    public void sendMessage(User sender, User recipient, MessageDTO message) {
-
+    public String sendMessage(User sender, User recipient, MessageDTO message) throws InternetBankingException {
+        return null; //TODO
     }
 
     @Override
-    public void sendEmail(EmailDetail email) {
+    public void sendEmail(Email email) {
         //todo  send email
     }
 
     @Override
-    public Page<Message> getMessages(User user, Pageable pageDetails) {
-        // TODO Auto-generated method stub
+    public Page<Message> getMessages(User user, java.awt.print.Pageable pageDetails) {
         return null;
     }
 
     @Override
-    public Page<Message> getMessages(User user, Date date, Pageable pageDetails) {
-        // TODO Auto-generated method stub
+    public Page<Message> getMessages(User user, Date date, java.awt.print.Pageable pageDetails) {
         return null;
     }
+
+    @Override
+    public Page<Message> getMessages(User user, Date fromDate, Date toDate, java.awt.print.Pageable pageDetails) {
+        return null;
+    }
+
+//    @Override
+//    public Page<Message> getMessages(User user, Pageable pageDetails) {
+//        // TODO Auto-generated method stub
+//        return null;
+//    }
+
+//    @Override
+//    public Page<Message> getMessages(User user, Date date, Pageable pageDetails) {
+//        // TODO Auto-generated method stub
+//        return null;
+//    }
 
     @Override
     public Page<Message> getMessages(User user, Date fromDate, Date toDate, Pageable pageDetails) {

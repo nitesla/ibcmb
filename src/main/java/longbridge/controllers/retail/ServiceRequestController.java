@@ -2,10 +2,7 @@ package longbridge.controllers.retail;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import longbridge.dtos.FinancialInstitutionDTO;
-import longbridge.dtos.ServiceReqConfigDTO;
-import longbridge.dtos.ServiceReqFormFieldDTO;
-import longbridge.dtos.ServiceRequestDTO;
+import longbridge.dtos.*;
 import longbridge.models.FinancialInstitutionType;
 import longbridge.models.RetailUser;
 import longbridge.services.*;
@@ -20,10 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Fortune on 4/5/2017.
@@ -40,9 +34,6 @@ public class ServiceRequestController {
     private ServiceReqConfigService serviceReqConfigService;
 
     @Autowired
-    private FinancialInstitutionService financialInstitutionService;
-
-    @Autowired
     private CodeService codeService;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -50,12 +41,18 @@ public class ServiceRequestController {
     @Autowired
     private RetailUserService userService;
 
+    @Autowired
+    private FinancialInstitutionService financialInstitutionService;
+
+    @Autowired
+    private AccountService accountService;
+
     //private RetailUser retailUser = new RetailUser();//TODO user must be authenticated
 
     @GetMapping
     public String getServiceRequests(Model model) {
-//        Iterable<ServiceReqConfigDTO> requestList = serviceReqConfigService.getServiceReqConfigs();
-//        model.addAttribute("requestList", requestList);
+        Iterable<ServiceReqConfigDTO> requestList = serviceReqConfigService.getServiceReqConfigs();
+        model.addAttribute("requestList", requestList);
         return "cust/servicerequest/list";
     }
 
@@ -80,6 +77,7 @@ public class ServiceRequestController {
                 }
                 if (name.equals("serviceReqConfigId")) {
                     serviceReqConfigId = Long.parseLong(nameValue.getValue());
+                    serviceRequestDTO.setServiceReqConfigId(serviceReqConfigId);
                     iterator.remove();
                 }
             }
@@ -101,7 +99,7 @@ public class ServiceRequestController {
             RetailUser user = userService.getUserByName(principal.getName());
             serviceRequestDTO.setBody(requestBody);
             serviceRequestDTO.setRequestStatus("S");
-            serviceRequestDTO.setUser(user);
+            serviceRequestDTO.setUserId(user.getId());
             serviceRequestDTO.setDateRequested(new Date());
             requestService.addRequest(serviceRequestDTO);
 
@@ -109,32 +107,23 @@ public class ServiceRequestController {
             logger.error("Could not process the request: {}",e.toString());
         }
         redirectAttributes.addFlashAttribute("message", "Request sent successfully");
-        return "redirect:/retail/dashboard";
+        return "redirect:/retail/requests/track";
 
     }
 
-//    @PostMapping
-//    public String createServiceRequest(@ModelAttribute("requestForm") ServiceRequestDTO requestDTO, BindingResult result, Model model){
-//        if(result.hasErrors()){
-//            return "cust/servicerequest/add";
-//        }
-//
-//            retailUser = userRepo.findOne(1l);
-//
-//        logger.info(requestDTO.toString());
-//        requestDTO.setUser(retailUser);
-//        requestDTO.setDateRequested(new Date());
-//        requestService.addRequest(requestDTO);
-//        model.addAttribute("success", "Request added successfully");
-//        return "redirect:/retail/requests";
-//    }
-
     @GetMapping("/{reqId}")
-    public String makeRequest(@PathVariable Long reqId, Model model) {
+    public String makeRequest(@PathVariable Long reqId, Model model, Principal principal) {
+        RetailUser user = userService.getUserByName(principal.getName());
         ServiceReqConfigDTO serviceReqConfig = serviceReqConfigService.getServiceReqConfig(reqId);
         for (ServiceReqFormFieldDTO field : serviceReqConfig.getFormFields()) {
             if (field.getFieldType() != null && field.getFieldType().equals("CODE")) {
-                field.setCodeDTOs(codeService.getCodesByType(field.getTypeData()));
+                List<CodeDTO> codeList = codeService.getCodesByType(field.getTypeData());
+                model.addAttribute("codes", codeList);
+            }
+
+            if (field.getFieldType() != null && field.getFieldType().equals("ACCOUNT")) {
+                List<AccountDTO> acctList = accountService.getAccountsForDebitAndCredit(user.getCustomerId());
+                model.addAttribute("accts", acctList);
             }
 
             if (field.getFieldType() != null && field.getFieldType().equals("FI")) {
@@ -148,9 +137,33 @@ public class ServiceRequestController {
                 model.addAttribute("fixedList", myList);
             }
         }
-        //System.out.println(serviceReqConfig);
+        System.out.println(serviceReqConfig);
         model.addAttribute("requestConfig", serviceReqConfig);
         return "cust/servicerequest/add";
     }
+
+    @GetMapping("/track")
+    public String trackRequests(Model model, Principal principal){
+        RetailUser user = userService.getUserByName(principal.getName());
+        Iterable<ServiceRequestDTO> serviceRequests = requestService.getRequests(user);
+        model.addAttribute("requests", serviceRequests);
+        return "cust/servicerequest/track";
+    }
+
+//    @GetMapping(path = "/track/all")
+//    public @ResponseBody
+//    DataTablesOutput<ServiceRequestDTO> getUsers(DataTablesInput input, Principal principal){
+//        RetailUser user = userService.getUserByName(principal.getName());
+//        Pageable pageable = DataTablesUtils.getPageable(input);
+//        Page<ServiceRequestDTO> serviceRequests = requestService.getRequests(pageable);
+//        DataTablesOutput<ServiceRequestDTO> out = new DataTablesOutput<ServiceRequestDTO>();
+//        out.setDraw(input.getDraw());
+//        out.setData(serviceRequests.getContent());
+//        out.setRecordsFiltered(serviceRequests.getTotalElements());
+//        out.setRecordsTotal(serviceRequests.getTotalElements());
+//        return out;
+//    }
+
+
 
 }

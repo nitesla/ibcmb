@@ -1,15 +1,20 @@
 package longbridge.services.implementations;
 
 import longbridge.dtos.SettingDTO;
+import longbridge.exception.InternetBankingException;
 import longbridge.models.Setting;
 import longbridge.repositories.SettingRepo;
 import longbridge.services.ConfigurationService;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -29,12 +34,23 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 	@Autowired
 	ModelMapper modelMapper;
 
+	@Autowired
+	MessageSource messageSource;
+
+	Locale locale = LocaleContextHolder.getLocale();
+
 	@Transactional
 	@Override
-	public void addSetting(SettingDTO dto) {
-		ModelMapper mapper = new ModelMapper();
-		Setting setting = mapper.map(dto, Setting.class);
-		settingRepo.save(setting);
+	public String addSetting(SettingDTO dto) throws InternetBankingException {
+		try {
+			ModelMapper mapper = new ModelMapper();
+			Setting setting = mapper.map(dto, Setting.class);
+			settingRepo.save(setting);
+			return messageSource.getMessage("setting.add.success", null, locale);
+		}
+		catch (Exception e){
+			throw new InternetBankingException(messageSource.getMessage("setting.add.failure",null,locale),e);
+		}
 	}
 
 	@Override
@@ -78,16 +94,30 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 	
 	@Transactional
 	@Override
-	public void updateSetting(SettingDTO dto) {
-		Setting setting = settingRepo.findOne(dto.getId());
-		ModelMapper mapper = new ModelMapper();
-		mapper.map(dto, setting);
-		settingRepo.save(setting);
+	public String updateSetting(SettingDTO dto) throws InternetBankingException {
+		try {
+			Setting setting = settingRepo.findOne(dto.getId());
+			ModelMapper mapper = new ModelMapper();
+			mapper.map(dto, setting);
+			settingRepo.save(setting);
+			return messageSource.getMessage("setting.update.success", null, locale);
+		} catch (Exception e) {
+			throw new InternetBankingException(messageSource.getMessage("setting.update.failure",null,locale),e);
+		}
 	}
 
 	@Override
-	public void deleteSetting(Long id) {
-		settingRepo.delete(id);
+	public String deleteSetting(Long id) throws InternetBankingException {
+		try {
+			Setting setting = settingRepo.findOne(id);
+			setting.setDeletedOn(new Date());
+			settingRepo.save(setting);
+			settingRepo.delete(setting);
+			return messageSource.getMessage("setting.delete.success", null, locale);
+		}
+		catch (Exception e){
+			throw new InternetBankingException(messageSource.getMessage("setting.delete.failure", null, locale),e);
+		}
 	}
 
 	private SettingDTO convertEntityToDTO(Setting setting) {

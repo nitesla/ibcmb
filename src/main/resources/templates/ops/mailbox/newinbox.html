@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+    <!-- Bootstrap -->
+    <link th:href="@{~/bank/css/bootstrap.min.css}" rel="stylesheet"/>
+    <!-- Font Awesome -->
+    <link th:href="@{~/bank/font-awesome/font-awesome.min.css}" rel="stylesheet"/>
+    <!-- NProgress -->
+    <link th:href="@{~/bank/vendors/nprogress/nprogress.css}" rel="stylesheet"/>
+    <link th:href="@{~/bank/css/select.bootstrap.css}" rel="stylesheet"/>
+    <!-- Custom Theme Style -->
+    <link th:href="@{~/bank/vendors/bootstrap-editable/css/bootstrap-editable.css}" rel="stylesheet" type="text/css"/>
+    <link th:href="@{~/bank/css/custom.css}" rel="stylesheet"/>
+    <link th:href="@{~/bank/css/coronation.css}" rel="stylesheet"/>
+    <link th:href="@{~/bank/vendors/sweetalert/sweetalert.css}" rel="stylesheet"/>
+    <link th:href="@{~/bank/css/bootstrap-switch.min.css}" rel="stylesheet"/>
+    <link th:href="@{~/bank/vendors/switchery/switchery.css}" rel="stylesheet" type="text/css"/>
+    <link th:href="@{~/bank/vendors/bootstrap-dialog/css/bootstrap-dialog.css}" rel="stylesheet" type="text/css"/>
+</head>
+
+
+
+<body class="nav-md">
+<div class="container body">
+    <div class="main_container">
+        <div class="col-md-3 left_col">
+            <div class="left_col scroll-view">
+                <div class="navbar nav_title" >
+                    <!--<a href="index.html"><img th:src="@{~/images/cmb_logo.png}"/></a>-->
+                </div>
+
+                <div class="clearfix"></div>
+                <div class="clearfix"></div>
+
+                <div th:replace="layout :: ops-menu"></div>
+                <div th:replace="layout :: menu-footer-ops"></div>
+
+            </div>
+        </div>
+        <div th:replace="layout :: ops-top-nav"></div>
+
+        <!-- page content -->
+        <div class="right_col" role="main">
+            <div class="">
+
+                <div class="page-title">
+                    <div class="title_left">
+                        <h3>
+
+                            <small>
+
+                            </small>
+                        </h3>
+                    </div>
+
+
+                </div>
+                <div class="clearfix"></div>
+                <div class="x_title">
+                    <h2>Inbox</h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        </li>
+
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+
+                <div class="col-md-12">
+
+                <div class="col-md-3">
+                    <a href="/ops/mailbox/newcompose" class="btn btn-primary outline-btn btn-block m-b-10">Compose</a>
+
+                    <div class="white-box">
+                        <div class="mailbox-content">
+
+
+
+                                <a th:each="messageDTO: ${receivedMessages}" th:href="@{/ops/mailbox/viewmail/{id}/details(id=${messageDTO.id})}">
+                                    <div class="mail_list">
+                                        <div class="left">
+                                            <i class="fa fa-user"></i>
+                                        </div>
+                                        <div class="right">
+                                            <h3 th:text="${messageDTO.sender}"></h3>
+                                            <p th:text="${messageDTO.subject}"></p><span th:text="${messageDTO.dateCreated}" ></span>
+                                        </div>
+                                    </div>
+                                </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                    <div class="col-md-9">
+
+                            <div class="white-box">
+                            <div class="mailbox-content" th:if="${messageDTO}">
+
+                                <div class="row">
+                                    <div class="col-md-12">
+
+                                        <div class="row">
+
+
+
+                                            <div class="col-md-12">
+                                                <div class="white-box">
+                                                    <div class="message-header">
+                                                        <h3>Subject:&nbsp;<span th:text="${messageDTO.subject}" ></span> </h3>
+                                                        <p class="message-date">Date:&nbsp;<span th:text="${messageDTO.dateCreated}" ></span></p>
+                                                    </div>
+                                                    <div class="message-sender">
+                                                        <p>From:&nbsp; <span th:text="${messageDTO.recipient}" ></span></p>
+                                                    </div>
+                                                    <div class="message-content">
+                                                        <p>
+                                                            <span th:text="${messageDTO.body}" ></span></p>
+                                                        </p>
+                                                    </div>
+
+                                                    <div class="message-options">
+                                                        <a th:href="@{/ops/mailbox/{id}/reply(id=${messageDTO.id})}" class="btn btn-link"><i class="fa fa-reply m-r-5"></i>Reply</a>
+                                                        <a th:href="@{/ops/mailbox/{id}/forward(id=${messageDTO.id})}" class="btn btn-link"><i class="fa fa-arrow-right m-r-5"></i>Forward</a>
+                                                        <a th:href="@{/ops/mailbox/newinbox/{id}/delete(id=${messageDTO.id})}" class="btn btn-link"><i class="fa fa-trash-o m-r-5"></i>Delete</a>
+
+                                                    </div>
+                                                </div>
+
+
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+</div>
+
+</div>
+
+                </div>
+                    <div th:unless="${messageDTO}"><p align="center"> No Received Messages</p></div>
+
+                </div>
+        </div>
+        </div>
+        <!-- /page content -->
+
+        <!-- footer content -->
+
+        <!-- /footer content -->
+        <footer th:replace="layout :: footer">
+        </footer>
+    </div>
+</div>
+
+<script th:src="@{~/bank/vendors/datatables.net/js/jquery.dataTables.js}"></script>
+<script th:src="@{~/bank/js/dataTables.bootstrap.js}"></script>
+<script th:src="@{~/bank/js/dataTables.select.js}"></script>
+<script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
+<!--<script th:src="@{~/bank/pages/inbox.js}"></script>-->
+<!--<script th:src="@{~/bank/js/function.js}"></script>-->
+<!--<script th:src="@{~/bank/js/jquery.nicescroll.js}"></script>-->
+<!--<script th:src="@{~/bank/js/jquery.slimscroll.js}"></script>-->
+
+
+<!-- bootstrap-wysiwyg -->
+
+<script>
+
+</script>
+<!-- /compose -->
+
+
+</body>
+</html>

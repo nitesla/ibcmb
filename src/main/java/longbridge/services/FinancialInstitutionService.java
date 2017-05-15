@@ -1,6 +1,8 @@
 package longbridge.services;
 
 import longbridge.dtos.FinancialInstitutionDTO;
+import longbridge.exception.DuplicateObjectException;
+import longbridge.exception.InternetBankingException;
 import longbridge.models.FinancialInstitution;
 import longbridge.models.FinancialInstitutionType;
 import org.springframework.data.domain.Page;
@@ -13,9 +15,9 @@ import java.util.List;
  */
 public interface FinancialInstitutionService {
 
-    boolean addFinancialInstitution(FinancialInstitutionDTO financialInstitutionDTO);
+    String addFinancialInstitution(FinancialInstitutionDTO financialInstitutionDTO) throws InternetBankingException, DuplicateObjectException;
 
-    boolean updateFinancialInstitution(FinancialInstitutionDTO financialInstitutionDTO);
+    String updateFinancialInstitution(FinancialInstitutionDTO financialInstitutionDTO) throws InternetBankingException;
 
     List<FinancialInstitutionDTO> getFinancialInstitutions();
 
@@ -23,7 +25,7 @@ public interface FinancialInstitutionService {
 
     FinancialInstitutionDTO getFinancialInstitution(Long id);
 
-    boolean deleteFi(Long id);
+    String deleteFinancialInstitution(Long id) throws InternetBankingException;
 
     Page<FinancialInstitutionDTO> getFinancialInstitutions(Pageable pageDetails);
 
@@ -33,5 +35,5 @@ public interface FinancialInstitutionService {
 
     List<FinancialInstitutionDTO> convertEntitiesToDTOs(Iterable<FinancialInstitution> financialInstitutions);
 
-     FinancialInstitution getFinancialInstitutionByCode(String institutionCode);
+    FinancialInstitution getFinancialInstitutionByCode(String institutionCode);
 }

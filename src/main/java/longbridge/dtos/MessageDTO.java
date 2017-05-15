@@ -119,7 +119,7 @@ public class MessageDTO {
                 ", recipient='" + recipient + '\'' +
                 ", subject='" + subject + '\'' +
                 ", body='" + body + '\'' +
-                ", dateCreated=" + dateCreated +
+                ", createdOnDate=" + dateCreated +
                 ", status='" + status + '\'' +
                 ", tag='" + tag + '\'' +
                 '}';

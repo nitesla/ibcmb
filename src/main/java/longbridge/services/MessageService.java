@@ -1,16 +1,15 @@
 package longbridge.services;
 
-import longbridge.dtos.CorporateUserDTO;
 import longbridge.dtos.MessageDTO;
+import longbridge.exception.InternetBankingException;
 import longbridge.models.*;
 
-import java.awt.print.Pageable;
+//import java.awt.print.Pageable;
 import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
-
-import javax.jws.soap.SOAPBinding;
+import org.springframework.data.domain.Pageable;
 
 /**
  * The {@code MessagingService} interface provides a service for sending messages
@@ -51,7 +50,7 @@ public interface MessageService {
      * @param recipient the recipient of the message
      * @param message the message object
      */
-    void addMessage(User sender, User recipient, MessageDTO message);
+    String addMessage(User sender, User recipient, MessageDTO message) throws InternetBankingException;
 
     /**
      * Returns a list of messages of the specified user
@@ -66,7 +65,7 @@ public interface MessageService {
      * @param pageDetails the page details
      * @return a list of messages
      */
-    Page<Message> getMessages(User user, Pageable pageDetails);
+
     
 
     /**
@@ -76,14 +75,7 @@ public interface MessageService {
      */
    Iterable<Message> getMessages(User user, Date date);
 
-    /**
-     * Returns a page list of messages identified by the mailbox on the given date
-     * @param user the user
-     * @param date the date to look for
-     * @param pageDetails the page details for pagination
-     * @return a list of messages
-     */
-   Page<Message> getMessages(User user, Date date, Pageable pageDetails);
+
 
 
 //    MessageDTO getLastSentMessage(String sender);
@@ -106,6 +98,15 @@ public interface MessageService {
      * @return a list of messages
      */
     List<MessageDTO> getSentMessages(User user);
+
+    /**
+     * Returns a page list of maessages recieved
+     * @param pageable the pagination
+     * @return returns a list of messages
+     */
+     Page<MessageDTO> getSentMessages(String recipient, UserType recipientTye, Pageable pageable);
+
+    Page<MessageDTO> getSentMessages(String recipient, UserType recipientTye, java.awt.print.Pageable pageable);
 
     /**
      * Returns a list of messages received by the specified user
@@ -136,27 +137,27 @@ public interface MessageService {
      * Deletes the sent message identified by the given {@code id}
      * @param id the message id
      */
-    void deleteSentMessage(User user, Long id);
+    String deleteSentMessage(User user, Long id) throws InternetBankingException;
 
 
     /**
      * Deletes the received message identified by the given {@code id}
      * @param id the message id
      */
-    void deleteReceivedMessage(Long id);
+    String deleteReceivedMessage(Long id) throws InternetBankingException;
 
     /**
      *Purges the messages after the specified days
      * @param daysOld the daysOld
      */
-    void purge(int daysOld);
+    String purge(int daysOld) throws InternetBankingException;
 
     /**
      *Purges the messages with the given date range
      * @param fromDate the start date
      * @param toDate the end date
      */
-    void purge(Date fromDate, Date toDate);
+    String purge(Date fromDate, Date toDate) throws InternetBankingException;
 
     /**
      * Creates and sends the message from the sender to the recipient
@@ -164,11 +165,17 @@ public interface MessageService {
      * @param recipient the user the receives the message
      * @param message  the message
      */
-    void sendMessage(User sender, User recipient, MessageDTO message);
+    String sendMessage(User sender, User recipient, MessageDTO message) throws InternetBankingException;
 
     /** Makes a request to send an email to using the details
-     * in the {@link EmailDetail} object
+     * in the {@link Email} object
      * @param email EmailDetail object containing all the details required to send an email
      */
-    void sendEmail(EmailDetail email);
+    void sendEmail(Email email) throws InternetBankingException;
+
+    Page<Message> getMessages(User user, java.awt.print.Pageable pageDetails);
+
+    Page<Message> getMessages(User user, Date date, java.awt.print.Pageable pageDetails);
+
+    Page<Message> getMessages(User user, Date fromDate, Date toDate, java.awt.print.Pageable pageDetails);
 }

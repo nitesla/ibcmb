@@ -158,7 +158,6 @@
                 { "data": "lowerLimit" },
                 { "data": "upperLimit" },
                 { "data": "currency" },
-                { "data": "startDate" },
                 { "data": "frequency" }
 
 
@@ -205,7 +204,7 @@
 
     } );
 
-    ("#delete-btn").on("click", function(e) {
+    $("#delete-btn").on("click", function(e) {
         e.preventDefault();
         var link = $(e.currentTarget);
         if($(link).attr("disabled")){

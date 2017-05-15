@@ -2,13 +2,13 @@ package longbridge.services;
 
 import longbridge.dtos.RequestHistoryDTO;
 import longbridge.dtos.ServiceRequestDTO;
+import longbridge.exception.InternetBankingException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import longbridge.models.RequestHistory;
 import longbridge.models.RetailUser;
 import longbridge.models.ServiceRequest;
-import longbridge.models.User;
 
 /**
  * The {@code RequestService} interface provides the methods that manages customer's requests.
@@ -22,7 +22,7 @@ public interface RequestService {
      * Adds a new request to the system
      * @param request the request
      */
-    void addRequest(ServiceRequestDTO request);
+    String addRequest(ServiceRequestDTO request) throws InternetBankingException;
 
 
     /**
@@ -49,7 +49,7 @@ public interface RequestService {
          * Creates and adds a new history for a request
          * @param requestHistory the request history
          */
-    void addRequestHistory(RequestHistoryDTO requestHistory);
+    String addRequestHistory(RequestHistoryDTO requestHistory) throws InternetBankingException;
 
 
     /**

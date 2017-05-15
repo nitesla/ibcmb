@@ -28,17 +28,10 @@ public class Corporate extends AbstractEntity{
     private String companyName;
     private String email;
     private String address;
-    private boolean isEnabled;
-    private Date dateCreated;
+    private String status ;
+    private Date createdOnDate;
 
 
-    public boolean isEnabled() {
-        return isEnabled;
-    }
-
-    public void setEnabled(boolean enabled) {
-        isEnabled = enabled;
-    }
 
     public Collection<CorpLimit> getCorpLimits() {
         return corpLimits;
@@ -97,6 +90,14 @@ public class Corporate extends AbstractEntity{
         this.email = email;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     public String getAddress() {
         return address;
     }
@@ -124,14 +125,13 @@ public class Corporate extends AbstractEntity{
 //	}
 
 
-    public Date getDateCreated() {
-        return dateCreated;
+    public Date getCreatedOnDate() {
+        return createdOnDate;
     }
 
-    public void setDateCreated(Date dateCreated) {
-        this.dateCreated = dateCreated;
+    public void setCreatedOnDate(Date createdOnDate) {
+        this.createdOnDate = createdOnDate;
     }
-
 
     @Override
     public String toString() {
@@ -142,8 +142,7 @@ public class Corporate extends AbstractEntity{
                 ", companyName='" + companyName + '\'' +
                 ", email='" + email + '\'' +
                 ", address='" + address + '\'' +
-                ", isEnabled=" + isEnabled +
-                ", dateCreated=" + dateCreated +
+                ", createdOnDate=" + createdOnDate +
                 ", users=" + users +
                 ", corpLimits=" + corpLimits +
                 '}';

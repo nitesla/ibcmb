@@ -22,11 +22,12 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
-		<guava.version>20.0</guava.version>
+        <!--<start-class>longbridge.InternetbankingApplication</start-class>-->
+        <guava.version>20.0</guava.version>
 		<!-- MY THYMELEAF TWEAK -->
-		<thymeleaf.version>3.0.2.RELEASE</thymeleaf.version>
-		<thymeleaf-extras-java8time.version>3.0.0.RELEASE</thymeleaf-extras-java8time.version>
-		<thymeleaf-layout-dialect.version>2.0.5</thymeleaf-layout-dialect.version>
+		<!--<thymeleaf.version>3.0.2.RELEASE</thymeleaf.version>-->
+		<!--<thymeleaf-extras-java8time.version>3.0.0.RELEASE</thymeleaf-extras-java8time.version>-->
+		<!--<thymeleaf-layout-dialect.version>2.0.5</thymeleaf-layout-dialect.version>-->
 	</properties>
 
 	<dependencies>
@@ -161,8 +162,30 @@
             <artifactId>spring-test</artifactId>
             <version>RELEASE</version>
         </dependency>
+		<dependency>
+			<groupId>net.sf.jasperreports</groupId>
+			<artifactId>jasperreports</artifactId>
+			<version>6.4.0</version>
+		</dependency>
 
-    </dependencies>
+
+        <dependency>
+        	<groupId>org.codehaus.jackson</groupId>
+        	<artifactId>jackson-core-asl</artifactId>
+        	<version>1.9.13</version>
+        </dependency>
+
+		<!--<dependency>-->
+			<!--<groupId>org.springframework.boot</groupId>-->
+			<!--<artifactId>spring-boot-starter-web</artifactId>-->
+		<!--</dependency>-->
+		<!--<dependency>-->
+			<!--<groupId>org.springframework.boot</groupId>-->
+			<!--<artifactId>spring-boot-starter-tomcat</artifactId>-->
+			<!--<scope>provided</scope>-->
+		<!--</dependency>-->
+
+	</dependencies>
 
 	<build>
 		<plugins>

@@ -3,6 +3,7 @@ package longbridge.dtos;
 import longbridge.models.*;
 import longbridge.utils.TransferType;
 
+
 import java.math.BigDecimal;
 
 /** *
@@ -11,6 +12,7 @@ import java.math.BigDecimal;
  */
 
 public class TransferRequestDTO extends AbstractEntity{
+
 
     private String customerAccountNumber;
     private TransferType transferType;

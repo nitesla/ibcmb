@@ -44,34 +44,37 @@
                             </div>
 
                             <div class="x_content">
-                                    <form method="post" th:action="@{/admin/roles}" class="form-horizontal"  th:object="${role}" id="form-save">
-                                        <div class="panel panel-default">
+                                <form method="post" th:action="@{/admin/roles}" class="form-horizontal"
+                                      th:object="${role}" id="form-save">
+                                    <div class="panel panel-default">
                                         <div class="panel-body">
                                             <fieldset>
                                                 <div class="form-group col-lg-6">
-                                                    <label>Name</label> <input class="form-control" type="text" th:field="*{name}" />
+                                                    <label>Name</label> <input class="form-control" type="text"
+                                                                               th:field="*{name}"/>
                                                 </div>
-												<div class="form-group col-lg-6">
-														<label>Type</label> 
-														<select class="form-control" th:field="*{userType}">
-														<option value="">--Select--</option>
-															<option value="ADMIN">Administrator</option>
-															<option value="OPERATIONS">Operator</option>
-															<option value="RETAIL">Customer</option>
-														</select>
-													</div>
                                                 <div class="form-group col-lg-6">
-                                                    <label>Email</label> <input class="form-control" type="text" th:field="*{email}" />
+                                                    <label>Type</label>
+                                                    <select class="form-control" th:field="*{userType}">
+                                                        <option value="">--Select--</option>
+                                                        <option value="ADMIN">Administrator</option>
+                                                        <option value="OPERATIONS">Operator</option>
+                                                        <option value="RETAIL">Retail Customer</option>
+                                                        <option value="CORPORATE">Corporate Customer</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group col-lg-6">
+                                                    <label>Email</label> <input class="form-control" type="text"
+                                                                                th:field="*{email}"/>
                                                 </div>
 
                                                 <div class="form-group col-lg-6">
-                                                    <label>Description</label> <textarea class="form-control" rows="2" th:field="*{description}" ></textarea>
+                                                    <label>Description</label> <textarea class="form-control" rows="2"
+                                                                                         th:field="*{description}"></textarea>
                                                 </div>
 
 
-
-                                        </fieldset>
-
+                                            </fieldset>
 
 
                                             <fieldset>
@@ -79,38 +82,50 @@
                                                 <div class="row">
 
                                                     <div class="form-group text-left col-lg-5">
-                                                        <select multiple="multiple" class="form-control left-selector" >
-                                                            <option th:each="permission: ${permissions}" th:value="${permission.id}" th:text="${permission.name}" ></option>
+                                                        <select multiple="multiple" class="form-control left-selector">
+                                                            <option th:each="permission: ${permissions}"
+                                                                    th:value="${permission.id}"
+                                                                    th:text="${permission.name}"></option>
 
                                                         </select>
                                                     </div>
 
                                                     <div class="btn-group-vertical col-xs-2 ">
-                                                        <button type="button" class="btn btn-default text- btn-circle btn-default right-btn"><i class="fa fa-long-arrow-right"></i>
+                                                        <button type="button"
+                                                                class="btn btn-default text- btn-circle btn-default right-btn">
+                                                            <i class="fa fa-long-arrow-right"></i>
                                                         </button>
-                                                        <button type="button" class="btn btn-default text-center btn-circle left-btn" ><i class="fa fa-long-arrow-left"></i>
+                                                        <button type="button"
+                                                                class="btn btn-default text-center btn-circle left-btn">
+                                                            <i class="fa fa-long-arrow-left"></i>
                                                         </button>
 
                                                     </div>
                                                     <div class="form-group text-right col-lg-5">
-                                                        <select multiple="multiple" class="form-control right-selector" name="permissionsList" >
-                                                            <option th:each="p: ${role.permissions}"  th:value="${p.id}" th:text="${p.name}" ></option>
+                                                        <select multiple="multiple" class="form-control right-selector"
+                                                                name="permissionsList">
+                                                            <option th:each="p: ${role.permissions}" th:value="${p.id}"
+                                                                    th:text="${p.name}"></option>
 
                                                         </select>
                                                     </div>
 
-                                                    </div>
+                                                </div>
                                             </fieldset>
-                                              <div class="form-group">
-                                              <p/>
-                                            <div class="col-sm-4">
-                                                <button class="btn btn-white" type="reset" id="cancel">Cancel</button>
-                                                <button class="btn btn-primary" id="btn-save" type="submit">Submit</button>
+                                            <div class="form-group">
+                                                <p/>
+                                                <div class="col-sm-4">
+                                                    <button class="btn btn-white" type="reset" id="cancel">Cancel
+                                                    </button>
+                                                    <button class="btn btn-primary" id="btn-save" type="submit">Submit
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
-</div>
-                               </div>
-                                    </form>
+                                    </div>
+                                    <div th:replace="layout::form-validation"></div>
+
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -128,28 +143,27 @@
 
 <script type="text/javascript">
 
-    $().ready(function() {
+    $().ready(function () {
         $('.left-btn').click(
-                function() {
-                    return !$('.right-selector option:selected').remove()
-                            .appendTo('.left-selector');
-                });
+            function () {
+                return !$('.right-selector option:selected').remove()
+                    .appendTo('.left-selector');
+            });
         $('.right-btn').click(
-                function() {
-                    return !$('.left-selector option:selected').remove()
-                            .appendTo('.right-selector');
-                });
+            function () {
+                return !$('.left-selector option:selected').remove()
+                    .appendTo('.right-selector');
+            });
     });
-    $("#btn-save").on("click", function(e) {
+    $("#btn-save").on("click", function (e) {
         $('.right-selector option').prop("selected", true);
         $("#form-save").submit();
     });
 
 
-
     document.getElementById("cancel").onclick = function () {
         location.href = "/admin/roles";
-        }
+    }
 </script>
 
 </body>

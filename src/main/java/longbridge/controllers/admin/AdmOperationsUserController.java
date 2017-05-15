@@ -2,17 +2,21 @@ package longbridge.controllers.admin;
 
 import longbridge.dtos.OperationsUserDTO;
 import longbridge.dtos.RoleDTO;
+import longbridge.exception.*;
+import longbridge.forms.ChangeDefaultPassword;
 import longbridge.forms.ChangePassword;
+import longbridge.models.AdminUser;
 import longbridge.models.OperationsUser;
 import longbridge.models.Verification;
 import longbridge.repositories.OperationsUserRepo;
 import longbridge.repositories.VerificationRepo;
 import longbridge.services.OperationsUserService;
-import longbridge.services.PasswordService;
+import longbridge.services.PasswordPolicyService;
 import longbridge.services.RoleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
@@ -29,6 +33,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.Locale;
 
 /**
  * Created by SYLVESTER on 31/03/2017.
@@ -51,10 +56,21 @@ public class AdmOperationsUserController {
     private BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
-    PasswordService passwordService;
+    PasswordPolicyService passwordPolicyService;
+
+    @Autowired
+    MessageSource messageSource;
 
 
 
+
+    @ModelAttribute
+    public void init(Model model){
+        model.addAttribute("passwordRules", passwordPolicyService.getPasswordRules());
+        Iterable<RoleDTO> roles = roleService.getRoles();
+        model.addAttribute("roles",roles);
+
+    }
 
     /**
      * Page for adding a new user
@@ -89,31 +105,37 @@ public class AdmOperationsUserController {
      * @throws Exception
      */
     @PostMapping
-    public String createUser(@ModelAttribute("operationsUser") @Valid OperationsUserDTO operationsUser, BindingResult result, RedirectAttributes redirectAttributes) throws Exception{
-        if(result.hasErrors()){
-
-            result.addError(new ObjectError("invalid","Please fill in the required fields"));
-            return "adm/operation/add";
-
-        }
-        if(!operationsUserService.isValidUsername(operationsUser.getUserName())){
-            result.addError(new ObjectError("invalid","Username already exists"));
+    public String createUser(@ModelAttribute("operationsUser") @Valid OperationsUserDTO operationsUser, BindingResult result, RedirectAttributes redirectAttributes, Locale locale){
+        if (result.hasErrors()) {
+            result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
             return "adm/operation/add";
         }
-
-
-        operationsUserService.addUser(operationsUser);
-
-        redirectAttributes.addFlashAttribute("message","Operation user created successfully");
-        return "redirect:/admin/operations/users";
-    }
+        try {
+            String message = operationsUserService.addUser(operationsUser);
+            redirectAttributes.addFlashAttribute("message", message);
+            return "redirect:/admin/operations/users";
+        } catch (DuplicateObjectException doe) {
+            result.addError(new ObjectError("error", doe.getMessage()));
+            logger.error("Error creating operation user {}", operationsUser.getUserName(), doe);
+            return "adm/operation/add";
+        } catch (InternetBankingException ibe) {
+            result.addError(new ObjectError("error", ibe.getMessage()));
+            logger.error("Error creating operation user", ibe);
+            return "adm/operation/add";
+        }}
 
 
     @GetMapping("/{id}/activation")
     public String changeActivationStatus(@PathVariable Long id, RedirectAttributes redirectAttributes){
-        operationsUserService.changeActivationStatus(id);
-        redirectAttributes.addFlashAttribute("message", "User activation status changed successfully");
+        try {
+            String message = operationsUserService.changeActivationStatus(id);
+            redirectAttributes.addFlashAttribute("message", message);
+        } catch (InternetBankingException ibe) {
+            logger.error("Error changing user activation status", ibe);
+            redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
+        }
         return "redirect:/admin/operations/users";
+
     }
 
     @GetMapping(path = "/all")
@@ -161,83 +183,121 @@ public class AdmOperationsUserController {
      * @throws Exception
      */
     @PostMapping("/update")
-    public String updateUser(@ModelAttribute("user") OperationsUserDTO operationsUser, BindingResult result, RedirectAttributes redirectAttributes) throws Exception{
-        if(result.hasErrors()) {
-            return "adm/operation/add";
+    public String updateUser(@ModelAttribute("user") OperationsUserDTO operationsUser, BindingResult result, RedirectAttributes redirectAttributes,Locale locale) throws Exception{
+        if (result.hasErrors()) {
+            result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
+            return "adm/operation/edit";
         }
-        boolean updated = operationsUserService.updateUser(operationsUser);
-        if (updated) {
-            redirectAttributes.addFlashAttribute("message", "Operations user updated successfully");
+        try {
+            String message = operationsUserService.updateUser(operationsUser);
+            redirectAttributes.addFlashAttribute("message", message);
+            return "redirect:/admin/operations/users";
+        } catch (InternetBankingException ibe) {
+            result.addError(new ObjectError("error", ibe.getMessage()));
+            logger.error("Error updating operation user", ibe);
+            return "adm/operation/edit";
         }
-        return "redirect:/admin/operations/users";
     }
 
     @GetMapping("/{id}/password/reset")
     public String resetPassword(@PathVariable Long id, RedirectAttributes redirectAttributes){
-        if(operationsUserService.resetPassword(id)) {
-            redirectAttributes.addFlashAttribute("message", "Password reset successfully");
+        try {
+            String message = operationsUserService.resetPassword(id);
+            redirectAttributes.addFlashAttribute("message", message);
+        } catch (PasswordException pe) {
+            redirectAttributes.addAttribute("failure", pe.getMessage());
+            logger.error("Error resetting password for operation user", pe);
         }
         return "redirect:/admin/operations/users";
     }
 
     @GetMapping("/{userId}/delete")
-    public String deleteUser(@PathVariable Long userId){
-        operationsUserService.deleteUser(userId);
+    public String deleteUser(@PathVariable Long userId, RedirectAttributes redirectAttributes){
+        try {
+            String message = operationsUserService.deleteUser(userId);
+            redirectAttributes.addAttribute("message", message);
+        } catch (InternetBankingException ibe) {
+            redirectAttributes.addAttribute("failure", ibe.getMessage());
+            logger.error("Error updating operations user", ibe);
+        }
         return "redirect:/admin/operations/users";
     }
 
-    @ModelAttribute
-    public void init(Model model){
-        model.addAttribute("passwordRules",passwordService.getPasswordRules());
-        Iterable<RoleDTO> roles = roleService.getRoles();
-        model.addAttribute("roles",roles);
 
-    }
 
     @GetMapping("/password")
     public String changePassword(){
-        return "changePassword";
+        return "/ops/pword";
     }
 
     @PostMapping("/password")
-    public String changePassword(@Valid ChangePassword changePassword, BindingResult result, Principal principal, RedirectAttributes redirectAttributes){
-        if(result.hasErrors()){
-            result.addError(new ObjectError("invalid", "Please provide valid password"));
+    public String changePassword(@Valid ChangePassword changePassword, BindingResult result, Principal principal, RedirectAttributes redirectAttributes,Locale locale){
+        if (result.hasErrors()) {
+            result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required",null,locale)));
             return "/ops/pword";
         }
+
         OperationsUser user = operationsUserService.getUserByName(principal.getName());
-
-        if(!this.passwordEncoder.matches(changePassword.getOldPassword(),user.getPassword())){
-            logger.trace("Invalid old password provided for change");
-            result.addError(new ObjectError("invalid", "Incorrect Old Password"));
+        try {
+            String message = operationsUserService.changePassword(user, changePassword);
+            redirectAttributes.addFlashAttribute("message", message);
+            return "redirect:/ops/dashboard";
+        } catch (WrongPasswordException wpe) {
+            result.reject("oldPassword", wpe.getMessage());
+            logger.error("Wrong password from operation user {}", user.getUserName(), wpe.toString());
+            return "/ops/pword";
+        } catch (PasswordPolicyViolationException pve) {
+            result.reject("newPassword",  pve.getMessage());
+            logger.error("Password policy violation from operation user {}", user.getUserName(), pve.toString());
+            return "/ops/pword";
+        } catch (PasswordMismatchException pme) {
+            result.reject("confirmPassword", pme.getMessage());
+            logger.error("New password mismatch from operation user {}", user.getUserName(), pme.toString());
+            return "/ops/pword";
+        } catch (PasswordException pe) {
+            result.addError(new ObjectError("error", pe.getMessage()));
+            logger.error("Error changing password for operation user {}", user.getUserName(), pe);
             return "/ops/pword";
         }
 
-        String errorMsg = passwordService.validate(changePassword.getNewPassword());
-        if(!errorMsg.equals("")){
-            result.addError(new ObjectError("invalid", errorMsg));
-            return "/ops/pword";
+    }
+
+    @GetMapping("/password/new")
+    public String changeDefaultPassword(Model model) {
+        ChangeDefaultPassword changePassword = new ChangeDefaultPassword();
+        model.addAttribute("changePassword", changePassword);
+        model.addAttribute("passwordRules", passwordPolicyService.getPasswordRules());
+        return "ops/new-pword";
+    }
+
+
+    @PostMapping("/password/new")
+    public String changeDefaultPassword(@ModelAttribute("changePassword") @Valid ChangeDefaultPassword changePassword, BindingResult result, Principal principal, RedirectAttributes redirectAttributes,Locale locale) {
+
+        if (result.hasErrors()) {
+            result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required",null,locale)));
+            return "/ops/new-pword";
         }
 
-        if(!changePassword.getNewPassword().equals(changePassword.getConfirmPassword())){
-            logger.trace("PASSWORD MISMATCH");
-            result.addError(new ObjectError("invalid", "Passwords do not match"));
-            return "/ops/pword";
+        OperationsUser user = operationsUserService.getUserByName(principal.getName());
+        try {
+            String message = operationsUserService.changeDefaultPassword(user, changePassword);
+            redirectAttributes.addFlashAttribute("message", message);
+            return "redirect:/ops/logout";
+        } catch (PasswordPolicyViolationException pve) {
+            result.reject("newPassword", pve.getMessage());
+            logger.error("Password policy violation from admin user {}", user.getUserName(), pve);
+            return "/ops/new-pword";
+        } catch (PasswordMismatchException pme) {
+            result.reject("confirmPassword", pme.getMessage());
+            logger.error("New password mismatch from operations user {}", user.getUserName(), pme.toString());
+            return "/ops/new-pword";
+        } catch (PasswordException pe) {
+            result.addError(new ObjectError("error", pe.getMessage()));
+            logger.error("Error changing password for admin user {}", user.getUserName(), pe);
+
+            return "/ops/new-pword";
         }
-
-
-        if(!this.passwordEncoder.matches(changePassword.getOldPassword(),user.getPassword())){
-            logger.trace("Invalid old password provided for change");
-            result.addError(new ObjectError("invalid", "Incorrect Old Password"));
-            return "/ops/pword";
-        }
-
-        operationsUserService.changePassword(user, changePassword.getOldPassword(), changePassword.getNewPassword());
-
-        redirectAttributes.addFlashAttribute("message","Password changed successfully");
-
-        return "redirect:/ops/logout";
-
     }
 
     @PostMapping("/{id}/verify")

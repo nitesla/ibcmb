@@ -2,6 +2,7 @@ package longbridge.services;
 
 import longbridge.dtos.CodeDTO;
 import longbridge.dtos.CodeTypeDTO;
+import longbridge.exception.InternetBankingException;
 import longbridge.models.AdminUser;
 import longbridge.models.Code;
 import org.springframework.data.domain.Page;
@@ -19,7 +20,7 @@ import java.util.List;
  */
 public interface CodeService {
 
-	String addCode(CodeDTO code);
+	String addCode(CodeDTO code, AdminUser adminUser) throws InternetBankingException;
 
 	/**
 	 * Deletes a code from the system
@@ -27,7 +28,7 @@ public interface CodeService {
 	 * @param codeId
 	 *            the oode's id
 	 */
-	boolean deleteCode(Long codeId);
+	String deleteCode(Long codeId) throws InternetBankingException;
 
 	/**
 	 * Returns the specified code
@@ -47,9 +48,9 @@ public interface CodeService {
 	 *            the code's type
 	 * @return a list of codes
 	 */
-	Iterable<CodeDTO> getCodesByType(String codeType);
+	List<CodeDTO> getCodesByType(String codeType);
 
-	public String updateCode(CodeDTO codeDTO, AdminUser adminUser);
+	public String updateCode(CodeDTO codeDTO, AdminUser adminUser) throws InternetBankingException;
 
     Page<CodeDTO> getCodesByType(String codeType, Pageable pageDetails);
     

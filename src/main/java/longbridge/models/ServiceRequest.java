@@ -30,6 +30,7 @@ public class ServiceRequest extends AbstractEntity {
     private String body;
     private String requestStatus;
     private Date dateRequested;
+    private Long serviceReqConfigId;
 
     @OneToMany(mappedBy = "serviceRequest")
     private List<RequestHistory> requestHistories;
@@ -82,6 +83,14 @@ public class ServiceRequest extends AbstractEntity {
         this.user = user;
     }
 
+    public Long getServiceReqConfigId() {
+        return serviceReqConfigId;
+    }
+
+    public void setServiceReqConfigId(Long serviceReqConfigId) {
+        this.serviceReqConfigId = serviceReqConfigId;
+    }
+
     @Override
     public String toString() {
         return "ServiceRequest{" +
@@ -90,11 +99,12 @@ public class ServiceRequest extends AbstractEntity {
                 ", body='" + body + '\'' +
                 ", requestStatus='" + requestStatus + '\'' +
                 ", dateRequested=" + dateRequested +
+                ", serviceReqConfigId=" + serviceReqConfigId +
                 ", requestHistories=" + requestHistories +
                 '}';
     }
 
-	public static OperationCode getAddCode() {
+    public static OperationCode getAddCode() {
 		// TODO Auto-generated method stub
 		return null;
 	}

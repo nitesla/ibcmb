@@ -87,7 +87,6 @@
                                 <div class="clearfix"></div>
                             </div>
 
-                            <div th:replace="layout :: message"></div>
                             <div class="x_content">
 
                                 <table class="table table-striped table-bordered table-hover" id="admin">
@@ -98,6 +97,7 @@
                                         <th>Last Name</th>
                                         <th>Role</th>
                                         <th>Status</th>
+                                        <th>Created On</th>
                                         <th>Last Login</th>
 
                                     </tr>
@@ -113,6 +113,7 @@
                                         <th>Last Name</th>
                                         <th>Role</th>
                                         <th>Status</th>
+                                        <th>Created On</th>
                                         <th>Last Login</th>
 
                                     </tr>
@@ -161,6 +162,7 @@
                 { "data": "lastName" },
                 { "data": "role" },
                 { "data": "status" },
+                {"data":"createdOn"},
                 { "data": "lastLogin" }
 
             ] ,

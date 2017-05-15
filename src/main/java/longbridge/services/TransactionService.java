@@ -1,7 +1,7 @@
 package longbridge.services;
 
 import longbridge.dtos.TransactionFeeDTO;
-import longbridge.models.TransactionFee;
+import longbridge.exception.InternetBankingException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -16,7 +16,7 @@ public interface TransactionService {
      * Adds a transaction fee
      * @param transactionFee
      */
-    void addTransactionFee(TransactionFeeDTO transactionFee) throws  Exception;
+    String addTransactionFee(TransactionFeeDTO transactionFee) throws InternetBankingException;
 
     /**
      * Returns a transaction fee
@@ -29,13 +29,13 @@ public interface TransactionService {
      * Updates the transaction fees
      * @param transactionFeeDTO
      */
-    void updateTransactionFee(TransactionFeeDTO transactionFeeDTO) throws Exception;
+    String updateTransactionFee(TransactionFeeDTO transactionFeeDTO) throws InternetBankingException;
 
     /**
      * Deletes the transaction fees
      * @param id
      */
-    void deleteTransactionFee(Long id);
+    String deleteTransactionFee(Long id) throws InternetBankingException;
 
 
     /**

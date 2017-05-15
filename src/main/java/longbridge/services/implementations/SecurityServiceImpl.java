@@ -4,6 +4,7 @@ import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.List;
 
+import longbridge.exception.TokenException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -49,14 +50,13 @@ public class SecurityServiceImpl implements SecurityService {
 
 	@Override
 	public boolean performTokenValidation(String username, String tokenString) {
-		return integrationService.performTokenValidation(username, tokenString);
+		return false;
 	}
 
 	@Override
 	public void synchronizeToken(String username) {
-		integrationService.synchronizeToken(username);
-	}
-	
 
-	
+	}
+
+
 }

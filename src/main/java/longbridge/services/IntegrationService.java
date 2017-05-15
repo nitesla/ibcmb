@@ -3,7 +3,8 @@ package longbridge.services;
 import longbridge.api.AccountDetails;
 import longbridge.api.AccountInfo;
 import longbridge.api.CustomerDetails;
-import longbridge.api.LocalTransferResponse;
+import longbridge.exception.TokenException;
+import longbridge.exception.TransferException;
 import longbridge.models.TransferRequest;
 import longbridge.utils.AccountStatement;
 
@@ -45,7 +46,7 @@ public interface IntegrationService {
     /** Initiates a transfer request to the relevant Transfer service.
      *
      */
-    boolean makeTransfer(TransferRequest transferRequest);
+    boolean makeTransfer(TransferRequest transferRequest) throws TransferException;
 
     /**Fetches the account Name, Balance , Type from the account table specified by account Number
      *
@@ -89,19 +90,14 @@ public interface IntegrationService {
      */
     BigDecimal getDailyAccountLimit(String accNo,String channel);
     
-    /** This sends a request to synchronize the token attached to the user
-     * with the specified username
-     * @param username the username of the required user
-     */
-    void synchronizeToken(String username);
+
+
     
-    
-     /** This validates the token string passed in.
-     * 
-     * @param username The username of the user
-     * @param tokenString the inputted token string
-     * @return true if the validation was true and false if not
-     */
-    boolean performTokenValidation(String username, String tokenString);
-    
+
+
+    BigDecimal getAvailableBalance(String s);
+
+
+
+
 }

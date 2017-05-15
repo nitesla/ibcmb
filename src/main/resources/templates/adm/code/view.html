@@ -169,6 +169,21 @@
 
     });
 
+    $("a.bt-link-act").on("click", function(e) {
+        e.preventDefault();
+        var link = $(e.currentTarget);
+        if($(link).attr("disabled")){
+            return;
+        }
+        var dt = $('#codes').DataTable();
+        var id = $(dt.row({
+            selected: true
+        }).node()).attr("id");
+        var ooo = link.attr("href").replace("index",id);
+        window.location.assign(ooo);
+
+    } );
+
     $("#delete-btn").on("click", function(e) {
         e.preventDefault();
         var link = $(e.currentTarget);

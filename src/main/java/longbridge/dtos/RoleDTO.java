@@ -13,9 +13,8 @@ public class RoleDTO{
 
     @JsonProperty("DT_RowId")
     private Long id;
-    @NotEmpty
+    @NotEmpty(message = "name")
     private String name;
-    @NotEmpty
     private String description;
     private String email;
     private int version;

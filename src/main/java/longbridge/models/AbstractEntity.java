@@ -16,6 +16,7 @@ import javax.persistence.Version;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * The {@code AbstractEntity} abstract class is a superclass for all entities.
@@ -36,7 +37,10 @@ public abstract class AbstractEntity implements Serializable, SerializableEntity
 
     protected String delFlag = "N";
 
-//    protected Date lastModificationTime;
+    protected Date deletedOn;
+
+//    pr
+// otected Date lastModificationTime;
 //
 //    protected Date createdTime = Date.now();
 //
@@ -67,6 +71,14 @@ public abstract class AbstractEntity implements Serializable, SerializableEntity
 
     public void setDelFlag(String delFlag) {
         this.delFlag = delFlag;
+    }
+
+    public Date getDeletedOn() {
+        return deletedOn;
+    }
+
+    public void setDeletedOn(Date deletedOn) {
+        this.deletedOn = deletedOn;
     }
 
     @Override

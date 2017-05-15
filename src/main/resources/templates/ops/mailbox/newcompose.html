@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+    <!-- Bootstrap -->
+    <link th:href="@{~/bank/css/bootstrap.min.css}" rel="stylesheet"/>
+    <!-- Font Awesome -->
+    <link th:href="@{~/bank/font-awesome/font-awesome.min.css}" rel="stylesheet"/>
+    <!-- NProgress -->
+    <link th:href="@{~/bank/vendors/nprogress/nprogress.css}" rel="stylesheet"/>
+    <link th:href="@{~/bank/css/select.bootstrap.css}" rel="stylesheet"/>
+    <!-- Custom Theme Style -->
+    <link th:href="@{~/bank/vendors/bootstrap-editable/css/bootstrap-editable.css}" rel="stylesheet" type="text/css"/>
+    <link th:href="@{~/bank/css/custom.css}" rel="stylesheet"/>
+    <link th:href="@{~/bank/css/coronation.css}" rel="stylesheet"/>
+    <link th:href="@{~/bank/vendors/sweetalert/sweetalert.css}" rel="stylesheet"/>
+    <link th:href="@{~/bank/css/bootstrap-switch.min.css}" rel="stylesheet"/>
+    <link th:href="@{~/bank/vendors/switchery/switchery.css}" rel="stylesheet" type="text/css"/>
+    <link th:href="@{~/bank/vendors/bootstrap-dialog/css/bootstrap-dialog.css}" rel="stylesheet" type="text/css"/>
+</head>
+
+
+
+<body class="nav-md">
+<div class="container body">
+    <div class="main_container">
+        <div class="col-md-3 left_col">
+            <div class="left_col scroll-view">
+                <div class="navbar nav_title" style="border: 0;">
+                    <!--<a href="index.html"><img th:src="@{~/images/cmb_logo.png}"/></a>-->
+                </div>
+
+                <div class="clearfix"></div>
+                <div class="clearfix"></div>
+
+                <div th:replace="layout :: ops-menu"></div>
+                <div th:replace="layout :: menu-footer-ops"></div>
+
+            </div>
+        </div>
+        <div th:replace="layout :: ops-top-nav"></div>
+
+        <!-- page content -->
+        <div class="right_col" role="main">
+            <div class="">
+
+                <div class="page-title">
+                    <div class="title_left">
+                        <h3>
+
+                            <small>
+
+                            </small>
+                        </h3>
+                    </div>
+
+
+                </div>
+                <div class="clearfix"></div>
+                <div class="x_title">
+                    <h2>Compose Mail</h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        </li>
+
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+
+                <div class="col-md-12">
+
+                    <div class="col-md-2">
+                        <a href="/ops/mailbox/newinbox" class="btn btn-primary outline-btn btn-block m-b-10">Back to Inbox</a>
+                        <ul class="list-unstyled mailbox-nav">
+                            <li class="active"><a href="inbox.html"><i class="fa fa-inbox"></i>Inbox <span class="badge badge-success">4</span></a></li>
+                            <li><a href="compose.html#"><i class="fa fa-sign-out"></i>Sent</a></li>
+                            <li><a href="compose.html#"><i class="fa fa-file-text-o"></i>Draft</a></li>
+                            <li><a href="compose.html#"><i class="fa fa-exclamation-circle"></i>Spam</a></li>
+                            <li><a href="compose.html#"><i class="fa fa-trash"></i>Trash</a></li>
+                        </ul>
+                    </div>
+
+
+
+                    <div class="col-md-10">
+                        <div class="x_panel">
+
+                            <!--Start Page Title-->
+                            <!--<div class="page-title-box">-->
+                            <!--<h4 class="page-title">Inbox</h4>-->
+                            <!--<div class="clearfix"></div>-->
+                            <!--</div>-->
+                            <!--End Page Title-->
+
+                            <!--Start row-->
+
+                            <div class="row">
+                                <div class="col-md-12">
+
+                                    <div class="row">
+
+                                        <div class="col-md-12">
+                                            <div class="white-box">
+                                                <div class="mailbox-content">
+                                                    <div class="mailbox-header">
+                                                        <div class="compose-options">
+                                                            <div class="pull-right">
+                                                                <a href="inbox.html" class="btn btn-default"><i class="fa fa-trash m-r-5"></i>Discard</a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="compose-body">
+                                                        <form method="post" th:action="@{/ops/mailbox}" th:object="${messageDTO}">
+
+                                                            <div class="form-group">
+                                                                <label class="col-md-2 control-label">From:</label>
+                                                                <div class="col-md-10">
+                                                                    <input class="form-control" type="text" th:field="*{sender}"
+                                                                           readonly="readonly"/>
+                                                                </div>
+                                                            </div>
+                                                            <br/><br/>
+                                                            <div class="form-group">
+                                                                <label class="col-md-2 control-label">To:</label>
+                                                                <div class="col-md-10">
+                                                                    <select class="form-control input-group-addon"
+                                                                            th:field="*{recipientType}">
+                                                                        <option value="RETAIL">RETAIL USER</option>
+                                                                        <option value="CORPORATE">CORPORATE USER</option>
+                                                                        <option value="OPERATIONS">OPERATOR</option>
+
+
+                                                                    </select>
+                                                                    <input class="form-control" type="text" th:field="*{recipient}"
+                                                                           placeholder="Enter username of the recipient"/>
+                                                                </div>
+                                                            </div>
+                                                            <br/><br/><br/>
+                                                            <div class="form-group">
+                                                                <label class="col-md-2 control-label">Subject:</label>
+                                                                <div class="col-md-10">
+                                                                    <input class="form-control" type="text" th:field="*{subject}"
+                                                                           placeholder="Subject"/>
+                                                                </div>
+                                                            </div>
+                                                            <br/><br/>
+                                                            <div class="compose-message form-group">
+
+
+                                                                    <textarea style="height: 250px" class="note-editable form-control" th:field="*{body}" placeholder="Enter message here"></textarea>
+
+                                                            </div>
+<br/><br/>
+                                                            <div class="form-group">
+                                                                <div class="pull-right">
+                                                                    <button class="btn btn-white" id="cancel" type="reset"><i class="fa fa-trash"></i>Cancel</button>
+                                                                    <button class="btn btn-primary"  type="submit"><i class="fa fa-send"></i> Send</button>
+                                                                </div>
+                                                            </div>
+                                                            <div th:replace="layout::form-validation"></div>
+                                                        </form>
+                                                </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <!--End row-->
+
+
+                            </div>
+                                <!-- End Wrapper-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /page content -->
+
+            <!-- footer content -->
+            <footer th:replace="layout :: footer">
+            </footer>
+            <!-- /footer content -->
+        </div>
+    </div>
+
+
+
+    <!-- bootstrap-wysiwyg -->
+
+    <script>
+        $('#compose').click(function(){
+            location.href = "/ops/mailbox/new";
+        });
+    </script>>
+    <!-- /compose -->
+
+
+</body>
+</html>

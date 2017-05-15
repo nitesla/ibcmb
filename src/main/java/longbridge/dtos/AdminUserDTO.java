@@ -28,7 +28,7 @@ public class AdminUserDTO {
     @Email(message = "email")
     private String email;
     private String password;
-    private String dateCreated;
+    private String createdOn;
     private Date expiryDate;
     private String lastLogin;
     private String status;
@@ -104,12 +104,12 @@ public class AdminUserDTO {
         this.password = password;
     }
 
-    public String getDateCreated() {
-        return dateCreated;
+    public String getCreatedOn() {
+        return createdOn;
     }
 
-    public void setDateCreated(String dateCreated) {
-        this.dateCreated = dateCreated;
+    public void setCreatedOn(String createdOn) {
+        this.createdOn = createdOn;
     }
 
     public String getLastLogin() {

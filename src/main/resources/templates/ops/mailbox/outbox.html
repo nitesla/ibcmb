@@ -65,7 +65,7 @@
                                                     <i class="fa fa-user"></i> <i class="fa fa-envelope"></i>
                                                 </div>
                                                 <div class="right">
-                                                    <h3 th:text="${message.sender}">Dennis Mugo <small th:text="${message.dateCreated}"> 3.00 PM</small></h3>
+                                                    <h3 th:text="${message.sender}">Dennis Mugo <small th:text="${message.createdOnDate}"> 3.00 PM</small></h3>
                                                     <p th:text="${message.subject}">Subject</p>
                                                 </div>
                                             </div>
@@ -84,7 +84,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4 text-right">
-                                                    <p class="date" th:text="${messageDTO.dateCreated}"></p>
+                                                    <p class="date" th:text="${messageDTO.createdOnDate}"></p>
                                                 </div>
                                                 <div class="col-md-12">
                                                     <h4 th:text="${messageDTO.subject}"> </h4>

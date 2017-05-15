@@ -2,22 +2,15 @@ package longbridge.controllers.admin;
 
 import longbridge.dtos.PermissionDTO;
 import longbridge.dtos.RoleDTO;
-import longbridge.dtos.ServiceReqConfigDTO;
-import longbridge.models.AdminUser;
-import longbridge.models.Permission;
-import longbridge.models.Role;
+import longbridge.exception.InternetBankingException;
 import longbridge.models.User;
-import longbridge.models.Verification;
-import longbridge.repositories.AdminUserRepo;
-import longbridge.repositories.RoleRepo;
-import longbridge.repositories.VerificationRepo;
 import longbridge.services.RoleService;
 
 import org.apache.commons.lang3.math.NumberUtils;
-import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
@@ -26,6 +19,7 @@ import org.springframework.data.jpa.datatables.repository.DataTablesUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.context.request.WebRequest;
@@ -34,7 +28,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.io.IOException;
 import java.util.*;
 
 /**
@@ -49,6 +42,8 @@ public class AdmRoleController {
     @Autowired
     private RoleService roleService;
 
+    @Autowired
+    private MessageSource messageSource;
 
     @GetMapping("/new")
     public String addRole(Model model){
@@ -131,8 +126,9 @@ public class AdmRoleController {
     }
 
     @PostMapping
-    public String createRole(@ModelAttribute("role") @Valid RoleDTO roleDTO, BindingResult result,WebRequest request, RedirectAttributes redirectAttributes){
+    public String createRole(@ModelAttribute("role") @Valid RoleDTO roleDTO, BindingResult result,WebRequest request, RedirectAttributes redirectAttributes,Locale locale){
         if(result.hasErrors()){
+            result.addError(new ObjectError("invalid",messageSource.getMessage("form.fields.required",null,locale)));
             return "adm/role/add";
         }
         logger.info("Role {}", roleDTO.toString());
@@ -145,15 +141,22 @@ public class AdmRoleController {
         	permissionList.add(pdto);
         }
         roleDTO.setPermissions(permissionList);
-        roleService.addRole(roleDTO);
-        redirectAttributes.addFlashAttribute("message", "Role added successfully");
-        return "redirect:/admin/roles";
+        try {
+            String message = roleService.addRole(roleDTO);
+            redirectAttributes.addFlashAttribute("message", message);
+            return "redirect:/admin/roles";
+        }catch (InternetBankingException ibe){
+            result.addError(new ObjectError("error",messageSource.getMessage("role.add.failure",null,locale)));
+            logger.error("Error creating role",ibe);
+            return "adm/role/add";
+        }
     }
 
     @PostMapping("/update")
-    public String updateRole(@ModelAttribute("role") RoleDTO roleDTO, BindingResult result,WebRequest request, RedirectAttributes redirectAttributes) {
+    public String updateRole(@ModelAttribute("role") @Valid RoleDTO roleDTO, BindingResult result,WebRequest request, RedirectAttributes redirectAttributes,Locale locale) {
     	 if(result.hasErrors()){
-             return "adm/role/add";
+             result.addError(new ObjectError("invalid",messageSource.getMessage("form.fields.required",null,locale)));
+             return "adm/role/edit";
          }
          logger.info("Role {}", roleDTO.toString());
          List<PermissionDTO> permissionList = new ArrayList<>();
@@ -165,15 +168,29 @@ public class AdmRoleController {
          	permissionList.add(pdto);
          }
          roleDTO.setPermissions(permissionList);
-         roleService.updateRole(roleDTO);
-         redirectAttributes.addFlashAttribute("message", "Role updated successfully");
-         return "redirect:/admin/roles";
+        try {
+            String message = roleService.updateRole(roleDTO);
+            redirectAttributes.addFlashAttribute("message", message);
+            return "redirect:/admin/roles";
+        }catch (InternetBankingException ibe){
+            result.addError(new ObjectError("error",messageSource.getMessage("role.update.failure",null,locale)));
+            logger.error("Error updating role",ibe);
+            return "adm/role/edit";
+        }
     }
 
     @GetMapping("/{roleId}/delete")
-    public String deleteRole(@PathVariable Long roleId, RedirectAttributes redirectAttributes){
-        roleService.deleteRole(roleId);
-        redirectAttributes.addFlashAttribute("message", "Role deleted successfully");
-        return "redirect:/admin/roles";
+    public String deleteRole(@PathVariable Long roleId, RedirectAttributes redirectAttributes,Locale locale){
+        try {
+            String message = roleService.deleteRole(roleId);
+            redirectAttributes.addFlashAttribute("message", message);
+            return "redirect:/admin/roles";
+        }
+        catch (InternetBankingException ibe){
+            logger.error("Error deleting role",ibe);
+            redirectAttributes.addFlashAttribute("message", messageSource.getMessage("role.update.failure",null,locale));
+            return "redirect:/admin/roles";
+
+        }
     }
 }

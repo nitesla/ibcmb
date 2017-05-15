@@ -1,25 +1,29 @@
 package longbridge.services.implementations;
 
 import longbridge.dtos.CorporateDTO;
-import longbridge.models.Account;
-import longbridge.models.CorpLimit;
-import longbridge.models.Corporate;
-import longbridge.models.CorporateUser;
+import longbridge.exception.InternetBankingException;
+import longbridge.models.*;
 import longbridge.repositories.CorpLimitRepo;
 import longbridge.repositories.CorporateRepo;
 import longbridge.repositories.CorporateUserRepo;
 import longbridge.services.AccountService;
 import longbridge.services.CorporateService;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by Fortune on 4/5/2017.
@@ -38,26 +42,58 @@ public class CorporateServiceImpl implements CorporateService {
     ModelMapper modelMapper;
 
     @Autowired
+    MessageSource messageSource;
+
+    Locale locale = LocaleContextHolder.getLocale();
+
+    Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    @Autowired
     public CorporateServiceImpl(CorporateRepo corporateRepo, CorpLimitRepo corpLimitRepo){
         this.corporateRepo = corporateRepo;
         this.corpLimitRepo = corpLimitRepo;
     }
     @Override
-    public void addCorporate(CorporateDTO corporateDTO) {
-        corporateDTO.setDateCreated(new Date());
+    public String addCorporate(CorporateDTO corporateDTO) throws InternetBankingException {
+        try{
         Corporate corporate = convertDTOToEntity(corporateDTO);
+        corporate.setCreatedOnDate(new Date());
         corporateRepo.save(corporate);
+        return messageSource.getMessage("corporate.add.success", null, locale);
+    }
+    catch (Exception e){
+            throw new InternetBankingException(messageSource.getMessage("corporate.add.failure",null,locale),e);
+    }
+
     }
 
     @Override
-    public void deleteCorporate(Long id) {
-        corporateRepo.delete(id);
+    public String deleteCorporate(Long id) throws InternetBankingException {
+        try {
+            corporateRepo.delete(id);
+            return messageSource.getMessage("corporate.delete.success", null, locale);
+        }
+        catch (Exception e){
+            throw new InternetBankingException(messageSource.getMessage("corporate.delete.failure",null,locale));
+
+        }
     }
 
     @Override
-    public void updateCorporate(CorporateDTO corporateDTO) {
-        Corporate corporate = convertDTOToEntity(corporateDTO);
-        corporateRepo.save(corporate);
+    public String updateCorporate(CorporateDTO corporateDTO) throws InternetBankingException {
+        try {
+            Corporate corporate = corporateRepo.findOne(corporateDTO.getId());
+            corporate.setVersion(corporateDTO.getVersion());
+            corporate.setEmail(corporateDTO.getEmail());
+            corporate.setCompanyName(corporateDTO.getCompanyName());
+            corporate.setAddress(corporateDTO.getAddress());
+            corporateRepo.save(corporate);
+            return messageSource.getMessage("corporate.update.success", null, locale);
+        }
+        catch (Exception e){
+            throw new InternetBankingException(messageSource.getMessage("corporate.update.failure",null,locale),e);
+
+        }
     }
 
     @Override
@@ -74,37 +110,47 @@ public class CorporateServiceImpl implements CorporateService {
 
 
     @Override
-    public void addAccount(Corporate corporate, Account account) {
+    public boolean addAccount(Corporate corporate, Account account) throws  InternetBankingException {
         accountService.AddAccount(corporate.getCustomerId(),account);
+        return true;
     }
 
     @Override
-    public void addCorporateUser(Corporate corporate, CorporateUser corporateUser) {
+    public String addCorporateUser(Corporate corporate, CorporateUser corporateUser) throws InternetBankingException{
         corporate.getUsers().add(corporateUser);
         corporateRepo.save(corporate);
+        return  messageSource.getMessage("user.add.success",null,locale);
     }
 
 
     @Override
-    public void enableCorporate(Corporate corporate) {
-        corporate.setEnabled(true);
-        corporateRepo.save(corporate);
+    @Transactional
+    public String changeActivationStatus(Long id) throws InternetBankingException {
+        try {
+            Corporate corporate = corporateRepo.findOne(id);
+            String oldStatus = corporate.getStatus();
+            String newStatus = "ACTIVE".equals(oldStatus) ? "INACTIVE" : "ACTIVE";
+            corporate.setStatus(newStatus);
+            corporateRepo.save(corporate);
+
+
+            logger.info("Corporate {} status changed from {} to {}", corporate.getCompanyName(), oldStatus, newStatus);
+            return messageSource.getMessage("corporate.status.success", null, locale);
+
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("corporate.status.failure", null, locale), e);
+
+        }
     }
 
     @Override
-    public void disableCorporate(Corporate corporate) {
-        corporate.setEnabled(false);
-        corporateRepo.save(corporate);
-    }
-
-    @Override
-    public void setLimit(Corporate corporate, CorpLimit limit) {
+    public void setLimit(Corporate corporate, CorpLimit limit) throws InternetBankingException{
         limit.setCorporate(corporate);
         corpLimitRepo.save(limit);
     }
 
     @Override
-    public void updateLimit(Corporate corporate, CorpLimit limit) {
+    public void updateLimit(Corporate corporate, CorpLimit limit) throws InternetBankingException {
         limit.setCorporate(corporate);
         corpLimitRepo.save(limit);
     }

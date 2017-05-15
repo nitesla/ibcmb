@@ -3,7 +3,6 @@
  */
 $('#source').on('change',function(){
     var acct = $('#source').val();
-    alert('YAHOO YAHOO');
     getDestAccounts(acct)
     getSourceCurrency(acct);
 });
@@ -40,4 +39,7 @@ function getDestCurrency(acct) {
         document.getElementById("dcurency").innerHTML = data;
 
     });
+}
+function goBack() {
+    window.history.back();
 }

@@ -1,5 +1,6 @@
 package longbridge.config;
 
+import longbridge.security.adminuser.AdminUserLoginInterceptor;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -22,6 +23,7 @@ import java.util.Locale;
 
 @Configuration
 public class WebMvcConfig   extends WebMvcConfigurerAdapter {
+
 
 
 	@Bean
@@ -53,6 +55,7 @@ public class WebMvcConfig   extends WebMvcConfigurerAdapter {
 		final LocaleChangeInterceptor localeChangeInterceptor = new LocaleChangeInterceptor();
 		localeChangeInterceptor.setParamName("lang");
 		registry.addInterceptor(localeChangeInterceptor);
+		registry.addInterceptor(new AdminUserLoginInterceptor()).addPathPatterns("/admin/**");
 	}
 
 	@Bean
