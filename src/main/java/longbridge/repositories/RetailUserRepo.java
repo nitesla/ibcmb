@@ -17,7 +17,6 @@ public interface RetailUserRepo extends CommonRepo<RetailUser, Long> {
 	Iterable<RetailUser> findByRole(Role r);
     Page<RetailUser> findByRole(Role r, Pageable pageDetail);
     RetailUser findFirstByUserName(String s);
-    
     RetailUser findFirstByCustomerId(String customerId);
 
 }
