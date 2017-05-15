@@ -25,9 +25,9 @@
         <!--<start-class>longbridge.InternetbankingApplication</start-class>-->
         <guava.version>20.0</guava.version>
 		<!-- MY THYMELEAF TWEAK -->
-		<thymeleaf.version>3.0.2.RELEASE</thymeleaf.version>
-		<thymeleaf-extras-java8time.version>3.0.0.RELEASE</thymeleaf-extras-java8time.version>
-		<thymeleaf-layout-dialect.version>2.0.5</thymeleaf-layout-dialect.version>
+		<!--<thymeleaf.version>3.0.2.RELEASE</thymeleaf.version>-->
+		<!--<thymeleaf-extras-java8time.version>3.0.0.RELEASE</thymeleaf-extras-java8time.version>-->
+		<!--<thymeleaf-layout-dialect.version>2.0.5</thymeleaf-layout-dialect.version>-->
 	</properties>
 
 	<dependencies>

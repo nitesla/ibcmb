@@ -19,19 +19,14 @@
                 <div class="row form-spacing">
                     <div class="col-md-6 col-sm-6">
                         <h5 class="page_header" th:text="${requestConfig.requestName}"></h5>
-                        <!--<form method="post" th:action="" id="reqForm">-->
                         <form method="post" th:action="@{/retail/requests}" th:object="${requestDTO}" id="reqForm">
                             <!--<p><input class="form-control" type="hidden" id="requestName" name="requestName" th:value="${requestConfig.requestName}"/></p>-->
                             <!--<input type="hidden" name="serviceReqConfigId" th:value="${requestConfig.id}"/>-->
-                            <div class="form-group">
                             <p th:each="field : ${requestConfig.formFields}">
+                                <div class="form-group">
                                     <label th:text="${field.fieldLabel}"></label>
-                                <label th:text="${field.fieldType}"></label>
-                                <label th:text="${field.fieldName}"></label>
 
-                                    <p th:switch="${field.fieldType} == 'TEXT'">
-                                    <input class="form-control" th:type="text" th:name="${field.fieldName}"/>
-                                    </p>
+                                    <p th:if="${field.fieldType} == 'TEXT'"><input class="form-control" type="text" th:name="${field.fieldName}"/></p>
 
                                     <p th:if="${field.fieldType} == 'TEXTAREA'">
                                         <textarea class="form-control" th:name="${field.fieldName}">
@@ -62,20 +57,22 @@
                                             <option th:each="type : ${fixedList}" th:value="${type}" th:text="${type}"></option>
                                         </select>
                                     </p>
-                            </div>
+
+                                </div>
                             </p>
 
                             <button type="submit" class="btn btn-default">Submit</button>
                         </form>
+                    </div>
                 </div>
             </div>
+            <div th:replace="cust_layout :: sidebar" class="col-md-3 sidebar">
+            </div>
         </div>
-        <div th:replace="cust_layout :: sidebar" class="col-md-3 sidebar">
-        </div>
+
         <form id="submitform" action="/retail/requests" method="post">
             <input type="hidden" id="body" name="requestName"/>
         </form>
-    </div>
     </div>
 </section>
 
