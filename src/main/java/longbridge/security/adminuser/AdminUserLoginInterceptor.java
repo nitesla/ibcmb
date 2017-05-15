@@ -1,5 +1,6 @@
 package longbridge.security.adminuser;
 
+import longbridge.forms.ChangeDefaultPassword;
 import longbridge.forms.ChangePassword;
 import longbridge.services.PasswordPolicyService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,11 +41,11 @@ private PasswordPolicyService passwordPolicyService;
 
 
             System.out.println("The guy is  expired jare");
-            ChangeDefaultPassword changePassword = new ChangePassword();
-            modelAndView.setViewName("adm/admin/new-password");
+            ChangeDefaultPassword changePassword = new ChangeDefaultPassword();
+            modelAndView.setViewName("/adm/admin/new-pword");
 
             modelAndView.addObject("changePassword", changePassword);
-           // modelAndView.addObject("passwordRules", passwordPolicyService.getPasswordRules());
+            modelAndView.addObject("passwordRules", passwordPolicyService.getPasswordRules());
             System.out.println("i hope it works");
 
 
