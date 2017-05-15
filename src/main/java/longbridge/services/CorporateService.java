@@ -74,12 +74,15 @@ public interface CorporateService{
      */
     void updateLimit(Corporate corporate,  CorpLimit limit) throws InternetBankingException;
 
-    /**
-     * Returns the transaction limit set for the specified customer
-     *
-     * @param corporate the corporate customer
-     * @return the limit set for the corporate customer
-     */
+    String changeActivationStatus(Long id) throws InternetBankingException;
+
+
+        /**
+         * Returns the transaction limit set for the specified customer
+         *
+         * @param corporate the corporate customer
+         * @return the limit set for the corporate customer
+         */
     List<CorpLimit>  getLimit(Corporate corporate);
 
     /**
@@ -108,19 +111,5 @@ public interface CorporateService{
      */
     String addCorporateUser(Corporate corporate, CorporateUser corporateUser) throws InternetBankingException;
 
-    /**
-     * Enables the corporate customer
-     *
-     * @param corporate the corporate customer
-     */
-    void enableCorporate(Corporate corporate) throws InternetBankingException;
-
-    /**
-     * Disables the corporate customer
-     *
-     * @param corporate the corporate customer
-     *
-     */
-    void disableCorporate(Corporate corporate) throws InternetBankingException;
 
 }

@@ -33,6 +33,7 @@ public interface TransferService {
 
     void deleteTransfer(Long id) throws InternetBankingException;
     boolean validateBalance(TransferRequestDTO transferRequest);
+    void validateTransfer(TransferRequestDTO transferRequest);
 
 
 }

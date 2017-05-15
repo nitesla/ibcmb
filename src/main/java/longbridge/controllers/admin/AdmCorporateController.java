@@ -2,8 +2,11 @@ package longbridge.controllers.admin;
 
 import longbridge.dtos.CorporateDTO;
 import longbridge.dtos.CorporateUserDTO;
+import longbridge.exception.InternetBankingException;
 import longbridge.services.CorporateService;
 import longbridge.services.CorporateUserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,6 +32,8 @@ public class AdmCorporateController {
 
     @Autowired
     private CorporateUserService corporateUserService;
+
+    Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @GetMapping("/new")
     public String addCorporate(Model model){
@@ -110,6 +115,18 @@ public class AdmCorporateController {
         }
         corporateService.updateCorporate(corporate);
         redirectAttributes.addFlashAttribute("message", "Corporate updated successfully");
+        return "redirect:/admin/corporates";
+    }
+
+    @GetMapping("/{id}/activation")
+    public String changeActivationStatus(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            String message = corporateService.changeActivationStatus(id);
+            redirectAttributes.addFlashAttribute("message", message);
+        } catch (InternetBankingException ibe) {
+            logger.error("Error changing corporate activation status", ibe);
+            redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
+        }
         return "redirect:/admin/corporates";
     }
 

@@ -49,15 +49,14 @@ public class SecurityServiceImpl implements SecurityService {
 	}
 
 	@Override
-	public boolean performTokenValidation(String username, String tokenString) throws TokenException {
-		return integrationService.performTokenValidation(username, tokenString);
+	public boolean performTokenValidation(String username, String tokenString) {
+		return false;
 	}
 
 	@Override
-	public void synchronizeToken(String username) throws TokenException {
-		integrationService.synchronizeToken(username);
-	}
-	
+	public void synchronizeToken(String username) {
 
-	
+	}
+
+
 }

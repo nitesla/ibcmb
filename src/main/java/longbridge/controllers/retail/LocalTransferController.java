@@ -45,7 +45,7 @@ public class LocalTransferController {
     }
 
     @GetMapping("")
-    public String bankTransfer(Model model, Principal principal) throws Exception {
+    public String index (Model model, Principal principal) throws Exception {
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
         model.addAttribute("localBen", localBeneficiaryService.getLocalBeneficiaries(retailUser));
 
@@ -67,16 +67,15 @@ public class LocalTransferController {
     }
 
     @PostMapping("/summary")
-    public String bankTransferSummary(@ModelAttribute("transferRequest") @Valid TransferRequestDTO transferRequestDTO, Model model) throws Exception {
+    public String transferSummary(@ModelAttribute("transferRequest") @Valid TransferRequestDTO transferRequestDTO, Model model) throws Exception {
         model.addAttribute("transferRequest", transferRequestDTO);
-
-
-        return "cust/transfer/local/summary";
+ return "cust/transfer/local/summary";
     }
 
 
     @GetMapping("/{id}")
-    public String makeLocaltransfer(@PathVariable Long id, Model model) throws Exception {
+    public String transfer(@PathVariable Long id, Model model) throws Exception
+    {
         LocalBeneficiary beneficiary = localBeneficiaryService.getLocalBeneficiary(id);
         TransferRequestDTO transferRequestDTO = new TransferRequestDTO();
         transferRequestDTO.setBeneficiaryAccountName(beneficiary.getAccountName());

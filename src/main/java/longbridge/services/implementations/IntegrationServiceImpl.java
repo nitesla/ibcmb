@@ -176,10 +176,9 @@ public class IntegrationServiceImpl implements IntegrationService {
     @Override
     public String getAccountName(String accountNumber) {
         logger.info(accountNumber + "account number");
-        if ("0021424028".equals(accountNumber.trim())) {
-            return "Torti Chigozirim David";
-        }
-        return accountNumber;
+
+        return viewAccountDetails(accountNumber).getAcctName();
+
     }
 
     @Override
@@ -222,6 +221,16 @@ public class IntegrationServiceImpl implements IntegrationService {
 
     }
 
+    @Override
+    public BigDecimal getAvailableBalance(String s) {
+        Map<String, BigDecimal> getBalance = getBalance(s);
+        BigDecimal balance = getBalance.get("AvailableBalance");
+        if(balance!=null){
+            return balance;
+        }
+        return new BigDecimal(0);
+    }
+
 //    @Override
 //    public boolean makeLocalTransfer(TransferRequest transferRequest) {
 //      if (transferRequest.getTransferType().equals(TransferType.OWN_ACCOUNT_TRANSFER)){
@@ -251,32 +260,6 @@ public class IntegrationServiceImpl implements IntegrationService {
 //    }
 
 
-    @Override
-    public boolean synchronizeToken(String username) throws TokenException {
-        // TODO send request to entrust
-        // send request to entrust
-        String uri = URI + "/token/synchronize";
-        Map<String, String> params = new HashMap<>();
-        params.put("username", username);
 
-        String response = template.postForObject(uri, params, String.class);
 
-        // TODO to be implemented
-        return true;
-    }
-
-    @Override
-    public boolean performTokenValidation(String username, String tokenString) throws TokenException {
-        // TODO to be implemented
-        // send request to entrust
-        String uri = URI + "/token/authenticate";
-        Map<String, String> params = new HashMap<>();
-        params.put("username", username);
-        params.put("token", tokenString);
-
-        String response = template.postForObject(uri, params, String.class);
-
-        // TODO to be implemented
-        return true;
-    }
 }

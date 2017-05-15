@@ -13,10 +13,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.awt.print.Pageable;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -106,11 +108,6 @@ public class MessageServiceImpl implements MessageService {
         return convertEntitiesToDTOs(mailBox.getMessages());
     }
 
-    @Override
-    public Page<Message> getMessages(User user, org.springframework.data.domain.Pageable pageDetails) {
-        return null;
-    }
-
 
     @Override
     public Iterable<Message> getMessages(User user, Date date) {
@@ -118,10 +115,6 @@ public class MessageServiceImpl implements MessageService {
         return null;
     }
 
-    @Override
-    public Page<Message> getMessages(User user, Date date, org.springframework.data.domain.Pageable pageDetails) {
-        return null;
-    }
 
     @Override
     public Iterable<Message> getMessages(User user, Date fromDate, Date toDate) {
@@ -174,10 +167,7 @@ public class MessageServiceImpl implements MessageService {
         return reverse(sentMessages);
     }
 
-    @Override
-    public Page<MessageDTO> getSentMessages(String recipient, UserType recipientTye, org.springframework.data.domain.Pageable pageable) {
-        return null;
-    }
+
 
     @Override
     public Page<MessageDTO> getSentMessages(String recipient, UserType recipientTye, Pageable pageable) {
@@ -190,16 +180,17 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
+    public Page<MessageDTO> getSentMessages(String recipient, UserType recipientTye, java.awt.print.Pageable pageable) {
+        return null;
+    }
+
+    @Override
     @Transactional
     public List<MessageDTO> getReceivedMessages(User user) {
         List<Message> receivedMessages = messageRepo.findByRecipientAndRecipientTypeOrderByIdDesc(user.getUserName(),user.getUserType());
         return convertEntitiesToDTOs(receivedMessages);
     }
 
-    @Override
-    public Page<Message> getMessages(User user, Date fromDate, Date toDate, org.springframework.data.domain.Pageable pageDetails) {
-        return null;
-    }
 
     @Override
     public String purge(Date fromDate, Date toDate) {
@@ -219,14 +210,17 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public Page<Message> getMessages(User user, Pageable pageDetails) {
-        // TODO Auto-generated method stub
+    public Page<Message> getMessages(User user, java.awt.print.Pageable pageDetails) {
         return null;
     }
 
     @Override
-    public Page<Message> getMessages(User user, Date date, Pageable pageDetails) {
-        // TODO Auto-generated method stub
+    public Page<Message> getMessages(User user, Date date, java.awt.print.Pageable pageDetails) {
+        return null;
+    }
+
+    @Override
+    public Page<Message> getMessages(User user, Date fromDate, Date toDate, java.awt.print.Pageable pageDetails) {
         return null;
     }
 

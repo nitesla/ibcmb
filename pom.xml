@@ -162,6 +162,12 @@
             <artifactId>spring-test</artifactId>
             <version>RELEASE</version>
         </dependency>
+		<dependency>
+			<groupId>net.sf.jasperreports</groupId>
+			<artifactId>jasperreports</artifactId>
+			<version>6.4.0</version>
+		</dependency>
+
 
         <dependency>
         	<groupId>org.codehaus.jackson</groupId>
@@ -178,6 +184,7 @@
 			<!--<artifactId>spring-boot-starter-tomcat</artifactId>-->
 			<!--<scope>provided</scope>-->
 		<!--</dependency>-->
+
 	</dependencies>
 
 	<build>
