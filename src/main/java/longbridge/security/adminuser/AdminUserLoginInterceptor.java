@@ -20,8 +20,9 @@ public class AdminUserLoginInterceptor extends HandlerInterceptorAdapter {
 private PasswordPolicyService passwordPolicyService;
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) throws Exception {
-
-
+        String uri=httpServletRequest.getRequestURI();
+        if (uri.equalsIgnoreCase("/admin/users/password/new"))
+ return false;
         System.out.println("E DEY ENTER INTERCEPTOR");
 
         if (httpServletRequest.getSession().getAttribute("expired-password")!=null){
@@ -39,7 +40,7 @@ private PasswordPolicyService passwordPolicyService;
 
 
             System.out.println("The guy is  expired jare");
-            ChangePassword changePassword = new ChangePassword();
+            ChangeDefaultPassword changePassword = new ChangePassword();
             modelAndView.setViewName("adm/admin/new-password");
 
             modelAndView.addObject("changePassword", changePassword);
