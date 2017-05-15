@@ -65,7 +65,7 @@ public interface MessageService {
      * @param pageDetails the page details
      * @return a list of messages
      */
-    Page<Message> getMessages(User user, Pageable pageDetails);
+
     
 
     /**
@@ -75,14 +75,7 @@ public interface MessageService {
      */
    Iterable<Message> getMessages(User user, Date date);
 
-    /**
-     * Returns a page list of messages identified by the mailbox on the given date
-     * @param user the user
-     * @param date the date to look for
-     * @param pageDetails the page details for pagination
-     * @return a list of messages
-     */
-   Page<Message> getMessages(User user, Date date, Pageable pageDetails);
+
 
 
 //    MessageDTO getLastSentMessage(String sender);
@@ -108,7 +101,7 @@ public interface MessageService {
 
     /**
      * Returns a page list of maessages recieved
-     * @param pageableDetails the pagination
+     * @param pageable the pagination
      * @return returns a list of messages
      */
      Page<MessageDTO> getSentMessages(String recipient, UserType recipientTye, Pageable pageable);
