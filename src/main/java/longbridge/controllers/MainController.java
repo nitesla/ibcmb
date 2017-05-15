@@ -1,6 +1,9 @@
 package longbridge.controllers;
 
+
 import longbridge.exception.UnknownResourceException;
+import longbridge.forms.ResetPasswordForm;
+
 import longbridge.models.RetailUser;
 import longbridge.services.RetailUserService;
 import longbridge.services.SecurityService;
@@ -8,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
@@ -123,44 +127,62 @@ public class MainController {
     }
 
     @GetMapping("/forgot/password")
-    public String showResetPassword() {
+    public String showResetPassword(Model model){
+        ResetPasswordForm resetPasswordForm = new ResetPasswordForm();
+        resetPasswordForm.step = "1";
+    	model.addAttribute("forgotPasswordForm", resetPasswordForm);
+
         return "cust/passwordreset";
     }
 
     @PostMapping("/forgot/password")
-    public String resetPassword(WebRequest webRequest, RedirectAttributes redirectAttributes) {
-        Iterator<String> iterator = webRequest.getParameterNames();
 
-        while (iterator.hasNext()) {
-            logger.info(iterator.next());
+    public @ResponseBody  String resetPassword(WebRequest webRequest,  RedirectAttributes redirectAttributes){
+    	Iterator<String> iterator = webRequest.getParameterNames();
+    	
+    	while(iterator.hasNext()){
+    		logger.info(iterator.next());
+    	}
+
+
+    	String accountNumber = webRequest.getParameter("acct");
+    	String securityQuestion = webRequest.getParameter("securityQuestion");
+    	String securityAnswer = webRequest.getParameter("securityAnswer");
+    	String password= webRequest.getParameter("password");
+    	String confirmPassword = webRequest.getParameter("confirm");
+    	String customerId = webRequest.getParameter("customerId");
+    	
+        if (customerId == "" || customerId == null){
+            logger.error("Account Number not valid");
+            return "false";
         }
-
-        String accountNumber = webRequest.getParameter("acct");
-        String securityQuestion = webRequest.getParameter("securityQuestion");
-        String securityAnswer = webRequest.getParameter("securityAnswer");
-        String password = webRequest.getParameter("password");
-        String confirmPassword = webRequest.getParameter("confirm");
-
-        //confirm passwords are the same
-        boolean isValid = password.equals(confirmPassword);
-
-        if (isValid) {
-            logger.error("Passwords do not match");
-        }
-
-        String username = retailUserService.retrieveUsername(accountNumber, securityQuestion, securityAnswer);
-        RetailUser retailUser = retailUserService.getUserByName(username);
+    	
+//    	String username = retailUserService.retrieveUsername(accountNumber, securityQuestion, securityAnswer);
+//        RetailUser retailUser = retailUserService.getUserByName(username);
 
         //confirm security question is correct
-        isValid &= securityService.validateSecurityQuestion(retailUser, securityQuestion, securityAnswer);
-        if (isValid) {
-            logger.error("Invalid security question / answer");
-        }
-        //change password
-        retailUserService.resetPassword(retailUser, password);
-        redirectAttributes.addAttribute("success", true);
+//    	isValid &= securityService.validateSecurityQuestion(retailUser, securityQuestion, securityAnswer);
+//    	if(isValid){
+//    		logger.error("Invalid security question / answer");
+//    		return "false";
+//    	}
 
-        return "cust/passwordreset";
+
+        //confirm passwords are the same
+        boolean isValid = password.trim().equalsIgnoreCase(confirmPassword.trim());
+        if(!isValid){
+            logger.error("Passwords do not match");
+            return "false";
+        }
+
+        //get Retail User by customerId
+        RetailUser retailUser = retailUserService.getUserByCustomerId(customerId);
+    	//change password	
+    	retailUserService.resetPassword(retailUser, password);
+    	redirectAttributes.addAttribute("success", true);
+    	
+    	return "true";
+
     }
 
 
@@ -182,7 +204,7 @@ public class MainController {
     @GetMapping(value = {"/admin/{path:(?!static).*$}","/admin/{path:(?!static).*$}/**" })
     public String adminUnknown(Principal principal){
         if (principal!=null){
-            System.out.println("YAHOO YAHOO");
+
             return "redirect:/admin/dashboard";
 
         }
@@ -194,7 +216,7 @@ public class MainController {
     @GetMapping(value = {"/ops/{path:(?!static).*$}","/ops/{path:(?!static).*$}/**" })
     public String opsUnknown(Principal principal){
         if (principal!=null){
-            System.out.println("YAHOO YAHOO");
+
             return "redirect:/ops/dashboard";
 
         }
@@ -203,12 +225,5 @@ public class MainController {
        // return "";
     }
 
-    @ExceptionHandler(UnknownResourceException.class)
-    // @ResponseStatus(HttpStatus.NOT_FOUND)
-      public String pageNotFound() {
 
-        System.out.println("YAHOO YAHOO tyi");
-
-        return "redirect:/";
-    }
 }

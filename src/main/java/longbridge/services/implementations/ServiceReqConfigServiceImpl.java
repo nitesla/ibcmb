@@ -51,21 +51,26 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 	@Override
 	@Transactional
 	public String addServiceReqConfig(ServiceReqConfigDTO serviceReqConfigDTO) throws InternetBankingException {
-		ServiceReqConfig serviceReqConfig = convertDTOToEntity(serviceReqConfigDTO);
-		Iterator<ServiceReqFormField> serviceReqFormFieldIterator = serviceReqConfig.getFormFields().iterator();
+		try {
+			ServiceReqConfig serviceReqConfig = convertDTOToEntity(serviceReqConfigDTO);
+			Iterator<ServiceReqFormField> serviceReqFormFieldIterator = serviceReqConfig.getFormFields().iterator();
 
-		while (serviceReqFormFieldIterator.hasNext()) {
-			ServiceReqFormField serviceReqFormField = serviceReqFormFieldIterator.next();
-			if (serviceReqFormField.getFieldName() == null) {
-				serviceReqFormFieldIterator.remove();
-			} else {
-				serviceReqFormField.setServiceReqConfig(serviceReqConfig);
+			while (serviceReqFormFieldIterator.hasNext()) {
+				ServiceReqFormField serviceReqFormField = serviceReqFormFieldIterator.next();
+				if (serviceReqFormField.getFieldName() == null) {
+					serviceReqFormFieldIterator.remove();
+				} else {
+					serviceReqFormField.setServiceReqConfig(serviceReqConfig);
 
+				}
 			}
+			serviceReqConfigRepo.save(serviceReqConfig);
+			logger.info("Added service request configuration {}", serviceReqConfigDTO.toString());
+			return messageSource.getMessage("req.config.add.success", null, locale);
 		}
-		serviceReqConfigRepo.save(serviceReqConfig);
-		logger.info("Added service request configuration {}",serviceReqConfigDTO.toString());
-		return  messageSource.getMessage("req.config.add.success",null,locale);
+		catch (Exception e){
+			throw new InternetBankingException(messageSource.getMessage("reg.config.add.failure",null,locale),e);
+		}
 	}
 
 	@Override
@@ -97,50 +102,66 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 	@Override
 	@Transactional
 	public String updateServiceReqConfig(ServiceReqConfigDTO serviceReqConfigDTO) throws InternetBankingException {
-		ServiceReqConfig serviceReqConfig = serviceReqConfigRepo.findOne(serviceReqConfigDTO.getId());
-		ModelMapper mapper = new ModelMapper();
-		List<ServiceReqFormField> fields = new ArrayList<ServiceReqFormField>();
+		try {
+			ServiceReqConfig serviceReqConfig = serviceReqConfigRepo.findOne(serviceReqConfigDTO.getId());
+			ModelMapper mapper = new ModelMapper();
+			List<ServiceReqFormField> fields = new ArrayList<ServiceReqFormField>();
 
-		for (ServiceReqFormFieldDTO f : serviceReqConfigDTO.getFormFields()) {
-			ServiceReqFormField onefield = null;
-			if(f.getFieldName() == null)
-				continue;
-			if (f.getId() == null) {
-				onefield = new ServiceReqFormField();
-				onefield.setServiceReqConfig(serviceReqConfig);
-			}else{
-				 onefield = serviceReqFormFieldRepo.findOne(f.getId());
-				
+			for (ServiceReqFormFieldDTO f : serviceReqConfigDTO.getFormFields()) {
+				ServiceReqFormField onefield = null;
+				if (f.getFieldName() == null)
+					continue;
+				if (f.getId() == null) {
+					onefield = new ServiceReqFormField();
+					onefield.setServiceReqConfig(serviceReqConfig);
+				} else {
+					onefield = serviceReqFormFieldRepo.findOne(f.getId());
+
+				}
+				mapper.map(f, onefield);
+				fields.add(onefield);
+
 			}
-			 mapper.map(f, onefield);
-			fields.add(onefield);
-			
-		}
-		serviceReqConfig.setId(serviceReqConfigDTO.getId());
-		serviceReqConfig.setVersion(serviceReqConfigDTO.getVersion());
-		serviceReqConfig.setRequestName(serviceReqConfigDTO.getRequestName());
-		serviceReqConfig.setRequestType(serviceReqConfigDTO.getRequestType());
-		serviceReqConfig.setRequestUnit(serviceReqConfigDTO.getRequestUnit());
-		serviceReqConfig.setFormFields(fields);
-		serviceReqConfigRepo.save(serviceReqConfig);
-		logger.info("Updated service request configuration {}",serviceReqConfig.toString());
-		return  messageSource.getMessage("req.config.update.success",null,locale);
+			serviceReqConfig.setId(serviceReqConfigDTO.getId());
+			serviceReqConfig.setVersion(serviceReqConfigDTO.getVersion());
+			serviceReqConfig.setRequestName(serviceReqConfigDTO.getRequestName());
+			serviceReqConfig.setRequestType(serviceReqConfigDTO.getRequestType());
+			serviceReqConfig.setGroupId(serviceReqConfigDTO.getGroupId());
+			serviceReqConfig.setFormFields(fields);
+			serviceReqConfigRepo.save(serviceReqConfig);
+			logger.info("Updated service request configuration {}", serviceReqConfig.toString());
+			return messageSource.getMessage("req.config.update.success", null, locale);
 
+		}
+		catch (Exception e){
+			throw new InternetBankingException(messageSource.getMessage("req.config.update.failure",null,locale),e);
+		}
 	}
 
 	@Override
 	public String delServiceReqConfig(Long id) throws InternetBankingException {
-		serviceReqConfigRepo.delete(id);
-		logger.warn("Deleted service request configuration with Id {}",id);
-		return  messageSource.getMessage("req.config.delete.success",null,locale);
+		try {
+			serviceReqConfigRepo.delete(id);
+			logger.warn("Deleted service request configuration with Id {}", id);
+			return messageSource.getMessage("req.config.delete.success", null, locale);
+		}
+		catch (Exception e){
+			throw new InternetBankingException(messageSource.getMessage("req.config.delete.failure",null,locale),e);
+		}
 	}
 
 	@Override
+	@Transactional
 	public String addServiceReqFormField(ServiceReqFormFieldDTO serviceReqFormFieldDTO) throws InternetBankingException {
-		ServiceReqFormField serviceReqFormField = convertFormFieldDTOToEntity(serviceReqFormFieldDTO);
-		serviceReqFormFieldRepo.save(serviceReqFormField);
-		logger.info("Added service request form fields {}",serviceReqFormField.toString());
-		return  messageSource.getMessage("req.config.add.success",null,locale);
+		try {
+			ServiceReqFormField serviceReqFormField = convertFormFieldDTOToEntity(serviceReqFormFieldDTO);
+			serviceReqFormFieldRepo.save(serviceReqFormField);
+			logger.info("Added service request form fields {}", serviceReqFormField.toString());
+			return messageSource.getMessage("req.config.add.success", null, locale);
+		}
+		catch (Exception e){
+			throw new InternetBankingException(messageSource.getMessage("req.config.add.failure",null,locale),e);
+		}
 	}
 
 	@Override
@@ -163,20 +184,30 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 	}
 
 	@Override
+	@Transactional
 	public String updateServiceReqFormField(ServiceReqFormFieldDTO serviceReqFormFieldDTO) throws InternetBankingException {
-		ServiceReqFormField serviceReqFormField = convertFormFieldDTOToEntity(serviceReqFormFieldDTO);
-		serviceReqFormFieldRepo.save(serviceReqFormField);
-		logger.info("Updated service request form fields {}",serviceReqFormField.toString());
-		return  messageSource.getMessage("req.config.update.success",null,locale);
-
+		try {
+			ServiceReqFormField serviceReqFormField = convertFormFieldDTOToEntity(serviceReqFormFieldDTO);
+			serviceReqFormFieldRepo.save(serviceReqFormField);
+			logger.info("Updated service request form fields {}", serviceReqFormField.toString());
+			return messageSource.getMessage("req.config.update.success", null, locale);
+		}
+		catch (Exception e){
+			throw new InternetBankingException(messageSource.getMessage("req.config.update.failure",null,locale),e);
+		}
 	}
 
 	@Override
 	public String delServiceReqFormField(Long id) throws InternetBankingException {
+		try{
 		serviceReqFormFieldRepo.delete(id);
 		logger.info("Deleted service request form fields with Id {}",id);
 		return  messageSource.getMessage("req.config.delete.success",null,locale);
 
+	}
+	catch (Exception e){
+		throw new InternetBankingException(messageSource.getMessage("req.config.delete.failure",null,locale));
+		}
 	}
 
 	@Override

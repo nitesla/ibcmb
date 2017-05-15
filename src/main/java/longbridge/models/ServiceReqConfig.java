@@ -18,7 +18,7 @@ public class ServiceReqConfig extends AbstractEntity{
 
     private String requestName;
     private String requestType;
-    private String requestUnit;
+    private Long groupId;
 
     @OneToMany(cascade = CascadeType.ALL)
     private Collection<ServiceReqFormField> formFields;
@@ -39,12 +39,12 @@ public class ServiceReqConfig extends AbstractEntity{
         this.requestType = requestType;
     }
 
-    public String getRequestUnit() {
-        return requestUnit;
+    public Long getGroupId() {
+        return groupId;
     }
 
-    public void setRequestUnit(String requestUnit) {
-        this.requestUnit = requestUnit;
+    public void setGroupId(Long groupId) {
+        this.groupId = groupId;
     }
 
     public Collection<ServiceReqFormField> getFormFields() {

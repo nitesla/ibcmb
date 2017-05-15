@@ -2,16 +2,15 @@ package longbridge.services.implementations;
 
 import longbridge.dtos.CorporateDTO;
 import longbridge.exception.InternetBankingException;
-import longbridge.models.Account;
-import longbridge.models.CorpLimit;
-import longbridge.models.Corporate;
-import longbridge.models.CorporateUser;
+import longbridge.models.*;
 import longbridge.repositories.CorpLimitRepo;
 import longbridge.repositories.CorporateRepo;
 import longbridge.repositories.CorporateUserRepo;
 import longbridge.services.AccountService;
 import longbridge.services.CorporateService;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -20,6 +19,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -46,6 +46,8 @@ public class CorporateServiceImpl implements CorporateService {
 
     Locale locale = LocaleContextHolder.getLocale();
 
+    Logger logger = LoggerFactory.getLogger(this.getClass());
+
     @Autowired
     public CorporateServiceImpl(CorporateRepo corporateRepo, CorpLimitRepo corpLimitRepo){
         this.corporateRepo = corporateRepo;
@@ -53,24 +55,41 @@ public class CorporateServiceImpl implements CorporateService {
     }
     @Override
     public String addCorporate(CorporateDTO corporateDTO) throws InternetBankingException {
-        corporateDTO.setDateCreated(new Date());
+        try{
         Corporate corporate = convertDTOToEntity(corporateDTO);
+        corporate.setCreatedOnDate(new Date());
         corporateRepo.save(corporate);
-        return messageSource.getMessage("corporate.add.success",null,locale);
+        return messageSource.getMessage("corporate.add.success", null, locale);
+    }
+    catch (Exception e){
+            throw new InternetBankingException(messageSource.getMessage("corporate.add.failure",null,locale),e);
+    }
 
     }
 
     @Override
     public String deleteCorporate(Long id) throws InternetBankingException {
-        corporateRepo.delete(id);
-        return messageSource.getMessage("corporate.delete.success",null,locale);
+        try {
+            corporateRepo.delete(id);
+            return messageSource.getMessage("corporate.delete.success", null, locale);
+        }
+        catch (Exception e){
+            throw new InternetBankingException(messageSource.getMessage("corporate.delete.failure",null,locale));
+
+        }
     }
 
     @Override
-    public String updateCorporate(CorporateDTO corporateDTO) throws InternetBankingException{
-        Corporate corporate = convertDTOToEntity(corporateDTO);
-        corporateRepo.save(corporate);
-        return messageSource.getMessage("corporate.update.success",null,locale);
+    public String updateCorporate(CorporateDTO corporateDTO) throws InternetBankingException {
+        try {
+            Corporate corporate = convertDTOToEntity(corporateDTO);
+            corporateRepo.save(corporate);
+            return messageSource.getMessage("corporate.update.success", null, locale);
+        }
+        catch (Exception e){
+            throw new InternetBankingException(messageSource.getMessage("corporate.update.failure",null,locale),e);
+
+        }
     }
 
     @Override
@@ -96,20 +115,28 @@ public class CorporateServiceImpl implements CorporateService {
     public String addCorporateUser(Corporate corporate, CorporateUser corporateUser) throws InternetBankingException{
         corporate.getUsers().add(corporateUser);
         corporateRepo.save(corporate);
-        return  messageSource.getMessage("user.create.success",null,locale);
+        return  messageSource.getMessage("user.add.success",null,locale);
     }
 
 
     @Override
-    public void enableCorporate(Corporate corporate) throws InternetBankingException {
-        corporate.setEnabled(true);
-        corporateRepo.save(corporate);
-    }
+    @Transactional
+    public String changeActivationStatus(Long id) throws InternetBankingException {
+        try {
+            Corporate corporate = corporateRepo.findOne(id);
+            String oldStatus = corporate.getStatus();
+            String newStatus = "ACTIVE".equals(oldStatus) ? "INACTIVE" : "ACTIVE";
+            corporate.setStatus(newStatus);
+            corporateRepo.save(corporate);
 
-    @Override
-    public void disableCorporate(Corporate corporate) throws InternetBankingException{
-        corporate.setEnabled(false);
-        corporateRepo.save(corporate);
+
+            logger.info("Corporate {} status changed from {} to {}", corporate.getCompanyName(), oldStatus, newStatus);
+            return messageSource.getMessage("corporate.status.success", null, locale);
+
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("corporate.status.failure", null, locale), e);
+
+        }
     }
 
     @Override

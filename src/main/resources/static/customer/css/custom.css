@@ -20,6 +20,54 @@ html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockq
     position: absolute;
 }
 
+/****************YAMM STYLE **************/
+.mega-dropdown {
+    position: static !important;
+    /*width: 100%;*/
+}
+
+.mega-dropdown-menu {
+    padding: 20px 0px;
+    width: 65%;
+    box-shadow: none;
+    -webkit-box-shadow: none;
+}
+
+.mega-dropdown-menu > li > ul {
+    padding: 0;
+    margin: 0;
+}
+
+.mega-dropdown-menu > li > ul > li {
+    list-style: none;
+}
+
+.mega-dropdown-menu > li > ul > li > a {
+    display: block;
+    padding: 3px 10px;
+    clear: both;
+    text-align: center;
+    font-size: 12px;
+    line-height: 1.428571429;
+    color: #999;
+    white-space: normal;
+}
+
+.mega-dropdown-menu > li ul > li > a:hover,
+.mega-dropdown-menu > li ul > li > a:focus {
+    text-decoration: none;
+    color: #444;
+    background-color: #f5f5f5;
+}
+
+.mega-dropdown-menu .dropdown-header {
+    padding: 3px 10px;
+    text-align: center;
+    color: #032A4F;
+    font-size: 16px;
+}
+/*********** END OF YAMN STYLE ******/
+
 *, *:before, *:after {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
@@ -48,6 +96,15 @@ body {
 .container {
     padding: 0 60px;
     position: relative;
+}
+
+.header .container .container{
+    padding: 0px;
+    /*border: 1px solid red;*/
+}
+.header .container .container .navbar-right{
+    padding-right: 10%;
+    margin-right: 0px;
 }
 
 .logo {
@@ -200,13 +257,14 @@ body {
 }
 
 .navbar-nav li a{
+    margin-top: 5px;
     padding-top: 8px;
     padding-bottom: 0px;
 }
 
-.navbar-nav li.dropdown:hover > ul.dropdown-menu {
-    display: block;
-}
+/*.navbar-nav li.dropdown:hover > ul.dropdown-menu {*/
+    /*display: block;*/
+/*}*/
 
 .lft li.dropdown:hover > ul.dropdown-menu {
     display: block;
@@ -702,7 +760,7 @@ button, input, optgroup, select, textarea {
     }
 
     .navbar-default .navbar-toggle {
-        border-color: none;
+        border-color: transparent;
     }
 
     .navbar-brand {
@@ -738,6 +796,10 @@ button, input, optgroup, select, textarea {
 
     .bg{
         min-height: 300px;
+    }
+
+    .links{
+        border-bottom: 0px;
     }
 
     .biglist{

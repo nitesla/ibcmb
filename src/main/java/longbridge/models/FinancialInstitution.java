@@ -16,7 +16,7 @@ import javax.persistence.UniqueConstraint;
 @Entity
 @Audited
 @Where(clause ="del_Flag='N'" )
-@Table(uniqueConstraints=@UniqueConstraint(columnNames={"institutionCode","institutionType"}))
+@Table(uniqueConstraints=@UniqueConstraint(columnNames={"institutionCode","institutionType","deletedOn"}))
 
 public class FinancialInstitution extends AbstractEntity {
 

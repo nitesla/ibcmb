@@ -163,19 +163,12 @@ public class TransactionLimitServiceImpl implements TransactionLimitService {
 
     private GlobalLimitDTO convertGlobalLimitEntityToDTO(GlobalLimit limit) {
         GlobalLimitDTO globalLimitDTO = modelMapper.map(limit, GlobalLimitDTO.class);
-        globalLimitDTO.setStartDate(dateFormatter.format(limit.getEffectiveDate()));
-        globalLimitDTO.setEffectiveDate(limit.getEffectiveDate());
-        globalLimitDTO.setFrequency(codeService.getByTypeAndCode("FREQUENCY", limit.getFrequency()).getDescription());
+         globalLimitDTO.setFrequency(codeService.getByTypeAndCode("FREQUENCY", limit.getFrequency()).getDescription());
         return globalLimitDTO;
     }
 
     private GlobalLimit convertGlobalLimitDTOToEntity(GlobalLimitDTO limit) {
         GlobalLimit globalLimit = modelMapper.map(limit, GlobalLimit.class);
-        try {
-            globalLimit.setEffectiveDate(dateFormatter.parse(limit.getStartDate()));
-        } catch (ParseException e) {
-            logger.error("Could not parse date {}", e.toString());
-        }
         return globalLimit;
     }
 
@@ -191,18 +184,11 @@ public class TransactionLimitServiceImpl implements TransactionLimitService {
 
     private ClassLimitDTO convertClassLimitEntityToDTO(ClassLimit limit) {
         ClassLimitDTO classLimitDTO = modelMapper.map(limit, ClassLimitDTO.class);
-        classLimitDTO.setStartDate(dateFormatter.format(limit.getEffectiveDate()));
-        classLimitDTO.setEffectiveDate(limit.getEffectiveDate());
-        return classLimitDTO;
+         return classLimitDTO;
     }
 
     private ClassLimit convertClassLimitDTOToEntity(ClassLimitDTO limit) {
         ClassLimit classLimit = modelMapper.map(limit, ClassLimit.class);
-        try {
-            classLimit.setEffectiveDate(dateFormatter.parse(limit.getStartDate()));
-        } catch (ParseException e) {
-            logger.error("Could not parse date {}", e.toString());
-        }
         return classLimit;
     }
 
@@ -220,18 +206,11 @@ public class TransactionLimitServiceImpl implements TransactionLimitService {
 
     private AccountLimitDTO convertAccountLimitEntityToDTO(AccountLimit limit) {
         AccountLimitDTO accountLimitDTO = modelMapper.map(limit, AccountLimitDTO.class);
-        accountLimitDTO.setStartDate(dateFormatter.format(limit.getEffectiveDate()));
-        accountLimitDTO.setEffectiveDate(limit.getEffectiveDate());
-        return accountLimitDTO;
+         return accountLimitDTO;
     }
 
     private AccountLimit convertAccountLimitDTOToEntity(AccountLimitDTO limit) {
         AccountLimit accountLimit = modelMapper.map(limit, AccountLimit.class);
-        try {
-            accountLimit.setEffectiveDate(dateFormatter.parse(limit.getStartDate()));
-        } catch (ParseException e) {
-            logger.error("Could not parse date {}", e.toString());
-        }
         return accountLimit;
     }
 

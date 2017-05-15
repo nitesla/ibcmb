@@ -1,14 +1,13 @@
 package longbridge.services;
 
-import java.util.Date;
-
+import longbridge.dtos.CorporateUserDTO;
 import longbridge.exception.InternetBankingException;
+import longbridge.models.Corporate;
+import longbridge.models.CorporateUser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import longbridge.dtos.CorporateUserDTO;
-import longbridge.models.Corporate;
-import longbridge.models.CorporateUser;
+import java.util.Date;
 
 
 /**The {@code CorporateUserService} interface provides the methods for managing a corporate user
@@ -34,7 +33,7 @@ public interface CorporateUserService{
      */
     Iterable<CorporateUserDTO> getUsers(Corporate Corporate);
     
-    Page<CorporateUserDTO> getUsers(Corporate Corporate, Pageable pageDetails);
+    Page<CorporateUserDTO> getUsers(Long corpId, Pageable pageDetails);
 
     /**
      * Returns all the corporate users in the system

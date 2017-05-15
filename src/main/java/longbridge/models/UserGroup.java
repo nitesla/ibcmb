@@ -3,7 +3,9 @@ package longbridge.models;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import java.util.Date;
 import java.util.List;
@@ -20,11 +22,11 @@ public class UserGroup extends AbstractEntity {
     private String description;
     private Date dateCreated;
 
-    @OneToMany(mappedBy = "userGroup")
-    private List<OperationsUser> operationsUsers;
+    @ManyToMany(cascade = CascadeType.ALL)
+    private List<OperationsUser> users;
 
-    @OneToMany(mappedBy = "userGroup")
-    private List<PersonnelContact> personnelContacts;
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Contact> contacts;
 
 
     public String getName() {
@@ -51,23 +53,26 @@ public class UserGroup extends AbstractEntity {
         this.dateCreated = dateCreated;
     }
 
-    public List<OperationsUser> getOperationsUsers() {
-        return operationsUsers;
-    }
 
-    public void setOperationsUser(List<OperationsUser> operationsUsers) {
-        this.operationsUsers = operationsUsers;
-    }
 
-    public List<PersonnelContact> getPersonnelContacts() {
-        return personnelContacts;
-    }
+    public List<Contact> getContacts() {
+		return contacts;
+	}
 
-    public void setPersonnelContacts(List<PersonnelContact> personnelContacts) {
-        this.personnelContacts = personnelContacts;
-    }
+	public void setContacts(List<Contact> contacts) {
+		this.contacts = contacts;
+	}
 
-    public static OperationCode getAddCode() {
+
+	public List<OperationsUser> getUsers() {
+		return users;
+	}
+
+	public void setUsers(List<OperationsUser> users) {
+		this.users = users;
+	}
+
+	public static OperationCode getAddCode() {
 		// TODO Auto-generated method stub
 		return null;
 	}

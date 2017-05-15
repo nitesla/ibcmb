@@ -75,91 +75,76 @@
 
                 <div class="col-md-3">
                     <a href="/ops/mailbox/newcompose" class="btn btn-primary outline-btn btn-block m-b-10">Compose</a>
-                    <ul class="list-unstyled mailbox-nav">
-                        <li class="active"><a href="/ops/mailbox/newinbox"><i class="fa fa-inbox"></i>Inbox
-                            <span class="badge badge-success">4</span></a></li>
-                        <li><a href="inbox.html#"><i class="fa fa-sign-out"></i>Sent</a></li>
-                        <li><a href="inbox.html#"><i class="fa fa-file-text-o"></i>Draft</a></li>
-                        <li><a href="inbox.html#"><i class="fa fa-exclamation-circle"></i>Spam</a></li>
-                        <li><a href="inbox.html#"><i class="fa fa-trash"></i>Trash</a></li>
-                    </ul>
+
+                    <div class="white-box">
+                        <div class="mailbox-content">
+
+
+
+                                <a th:each="messageDTO: ${receivedMessages}" th:href="@{/ops/mailbox/viewmail/{id}/details(id=${messageDTO.id})}">
+                                    <div class="mail_list">
+                                        <div class="left">
+                                            <i class="fa fa-user"></i>
+                                        </div>
+                                        <div class="right">
+                                            <h3 th:text="${messageDTO.sender}"><small th:text="${messageDTO.dateCreated}"></small></h3>
+                                            <p th:text="${messageDTO.subject}"></p>
+                                        </div>
+                                    </div>
+                                </a>
+
+                        </div>
+
+                    </div>
+
                 </div>
 
 
 
                     <div class="col-md-9">
-                        <div class="x_panel">
 
-                            <!--Start Page Title-->
-                            <!--<div class="page-title-box">-->
-                                <!--<h4 class="page-title">Inbox</h4>-->
-                                <!--<div class="clearfix"></div>-->
-                            <!--</div>-->
-                            <!--End Page Title-->
+                            <div class="white-box">
+                            <div class="mailbox-content" th:if="${messageDTO}">
 
-                            <!--Start row-->
+                                <div class="row">
+                                    <div class="col-md-12">
+
+                                        <div class="row">
 
 
 
+                                            <div class="col-md-12">
+                                                <div class="white-box">
+                                                    <div class="message-header">
+                                                        <h3>Subject:&nbsp;<span th:text="${messageDTO.subject}" ></span> </h3>
+                                                        <p class="message-date">Date:&nbsp;<span th:text="${messageDTO.dateCreated}" ></span></p>
+                                                    </div>
+                                                    <div class="message-sender">
+                                                        <p>From:&nbsp; <span th:text="${messageDTO.recipient}" ></span></p>
+                                                    </div>
+                                                    <div class="message-content">
+                                                        <p>
+                                                            <span th:text="${messageDTO.body}" ></span></p>
+                                                        </p>
+                                                    </div>
+
+                                                    <div class="message-options">
+                                                        <a th:href="@{/ops/mailbox/{id}/reply(id=${messageDTO.id})}" class="btn btn-link"><i class="fa fa-reply m-r-5"></i>Reply</a>
+                                                        <a th:href="@{/ops/mailbox/{id}/forward(id=${messageDTO.id})}" class="btn btn-link"><i class="fa fa-arrow-right m-r-5"></i>Forward</a>
+                                                    </div>
+                                                </div>
 
 
 
+                                            </div>
 
+                                        </div>
+                                    </div>
 
-
-                                                            <table class="table table-striped table-bordered table-hover" id="limit">
-                                                                <thead>
-                                                                <tr>
-                                                                    <!--<th colspan="1" class="hidden-xs">-->
-                                                                        <!--<div class="checkbox">-->
-                                                                            <!--<input type="checkbox" class="check-mail-all">-->
-                                                                            <!--<label></label>-->
-                                                                        <!--</div>-->
-                                                                    <!--</th>-->
-                                                                    <th class="text-right" colspan="5">
-                                                                        <!--<a class="btn btn-primary outline-btn m-r-10"  title="Refresh"><i class="fa fa-refresh"></i></a>-->
-
-                                                                    </th>
-
-                                                                </tr>
-                                                                <tr>
-                                                                    <th>..</th>
-                                                                    <th>..</th>
-                                                                    <th>..</th>
-
-                                                                </tr>
-                                                                </thead>
-                                                                <tbody>
-                                                                <!--<tr >-->
-
-
-                                                                    <!--<td class="hidden-xs">-->
-                                                                        <!--Jacob-->
-                                                                    <!--</td>-->
-                                                                    <!--<td>-->
-                                                                        <!--There are many variations of passages of Lorem Ipsum </td>-->
-                                                                    <!--<td>-->
-                                                                        <!--21 march-->
-                                                                    <!--</td>-->
-                                                                <!--</tr>-->
-
-                                                                </tbody>
-                                                            </table>
-
-
-
-
-
-
-
+                                </div>
+</div>
 
 </div>
-                                    <!--End row-->
-
-
-
-                                <!-- End Wrapper-->
-
 
                 </div>
             </div>
@@ -179,95 +164,16 @@
 <script th:src="@{~/bank/js/dataTables.bootstrap.js}"></script>
 <script th:src="@{~/bank/js/dataTables.select.js}"></script>
 <script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
+<!--<script th:src="@{~/bank/pages/inbox.js}"></script>-->
+<!--<script th:src="@{~/bank/js/function.js}"></script>-->
+<!--<script th:src="@{~/bank/js/jquery.nicescroll.js}"></script>-->
+<!--<script th:src="@{~/bank/js/jquery.slimscroll.js}"></script>-->
 
 
 <!-- bootstrap-wysiwyg -->
 
 <script>
-    $('#compose').click(function(){
-        location.href = "/ops/mailbox/new";
-    });
-    $(document).ready(function() {
-        var table = $('#limit').DataTable({
-            select:true,
-            responsive: true,
-            "lengthMenu" : [ [ 5, 10, 20],	[ 5, 10, 20 ] ],
-            "pagingType" : "simple_numbers",
-            "searching": false,
-            "paging": true,
-            "serverSide" : true,
-            "ajax": "/ops/limits/corporate/class/all",
-            "dom": 'T<"clear">frtlp',
 
-            "columns": [
-                { "data": "channel" },
-                { "data": "lowerLimit" },
-                { "data": "upperLimit" },
-                { "data": "currency" },
-                { "data": "frequency" }
-
-
-
-
-            ] });
-
-        table.on('select', function() {
-            if (table.rows({
-                        selected : true
-                    }).indexes().length === 0) {
-                $('.bt-select').attr("disabled", true);
-            } else {
-                $('.bt-select').removeAttr("disabled");
-            }
-
-        });
-
-        table.on('deselect', function() {
-            if (table.rows({
-                        selected : true
-                    }).indexes().length === 0) {
-                $('.bt-select').attr("disabled", true);
-            } else {
-                $('.bt-select').removeAttr("disabled");
-            }
-        });
-
-    });
-
-    $("a.bt-link-act").on("click", function(e) {
-        e.preventDefault();
-        var link = $(e.currentTarget);
-        if($(link).attr("disabled")){
-            return;
-        }
-        var dt = $('#limit').DataTable();
-        var id = $(dt.row({
-            selected: true
-        }).node()).attr("id");
-        //window.location.href = link.attr("formaction") + '?id=' + id;
-        //replace {id} with id
-        var ooo = link.attr("href").replace("index",id);
-        window.location.assign(ooo);
-
-    } );
-
-    $("#delete-btn").on("click", function(e) {
-        e.preventDefault();
-        var link = $(e.currentTarget);
-        if($(link).attr("disabled")){
-            return;
-        }
-        var dt = $('#limit').DataTable();
-        var id = $(dt.row({
-            selected: true
-        }).node()).attr("id");
-        //window.location.href = link.attr("formaction") + '?id=' + id;
-        //replace {id} with id
-        var ooo = link.attr("href").replace("index",id);
-
-        //goto url
-        warnBeforeRedirect(ooo);
-    });
 </script>
 <!-- /compose -->
 

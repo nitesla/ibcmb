@@ -1,22 +1,26 @@
 package longbridge.services.implementations;
 
 import longbridge.dtos.OperationsUserDTO;
-import longbridge.exception.InternetBankingException;
+import longbridge.dtos.SettingDTO;
+import longbridge.exception.*;
+import longbridge.forms.ChangePassword;
+import longbridge.models.Email;
 import longbridge.models.OperationsUser;
 import longbridge.models.Role;
 import longbridge.repositories.OperationsUserRepo;
+import longbridge.services.ConfigurationService;
 import longbridge.services.MailService;
 import longbridge.services.OperationsUserService;
-import longbridge.services.PasswordService;
+import longbridge.services.PasswordPolicyService;
+import longbridge.utils.ReflectionUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -41,7 +45,10 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     MailService mailService;
 
     @Autowired
-    PasswordService passwordService;
+    ConfigurationService configService;
+
+    @Autowired
+    PasswordPolicyService passwordPolicyService;
 
     @Autowired
     MessageSource messageSource;
@@ -73,6 +80,19 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     }
 
     @Override
+    public Page<OperationsUserDTO> findUsers(OperationsUserDTO example, Pageable pageDetails) {
+        ExampleMatcher matcher = ExampleMatcher.matchingAll().withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING)
+                .withIgnoreCase().withIgnorePaths("version", "noOfAttempts").withIgnoreNullValues();
+        OperationsUser entity = convertDTOToEntity(example);
+        ReflectionUtils.nullifyStrings(entity, 1);
+        Page<OperationsUser> page = operationsUserRepo.findAll(Example.of(entity, matcher), pageDetails);
+        List<OperationsUserDTO> dtOs = convertEntitiesToDTOs(page.getContent());
+        long t = page.getTotalElements();
+        Page<OperationsUserDTO> pageImpl = new PageImpl<OperationsUserDTO>(dtOs, pageDetails, t);
+        return pageImpl;
+    }
+
+    @Override
     public Iterable<OperationsUserDTO> getUsers() {
         Iterable<OperationsUser> operationsUsers = operationsUserRepo.findAll();
         return convertEntitiesToDTOs(operationsUsers);
@@ -86,18 +106,30 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     @Override
     @Transactional
     public String changeActivationStatus(Long userId) throws InternetBankingException {
-        OperationsUser user = operationsUserRepo.findOne(userId);
-        String oldStatus = user.getStatus();
-        String newStatus = "ACTIVE".equals(oldStatus) ? "INACTIVE" : "ACTIVE";
-        user.setStatus(newStatus);
-        operationsUserRepo.save(user);
-        if ("INACTIVE".equals(oldStatus) && "ACTIVE".equals(newStatus)) {
-            String password = passwordService.generatePassword();
-            user.setPassword(passwordEncoder.encode(password));
-            mailService.send(user.getEmail(),"Mail from Internet Banking", String.format("Your new password to Operations console is %s and your current username is %s", password, user.getUserName()));
+        try {
+            OperationsUser user = operationsUserRepo.findOne(userId);
+            String oldStatus = user.getStatus();
+            String newStatus = "ACTIVE".equals(oldStatus) ? "INACTIVE" : "ACTIVE";
+            user.setStatus(newStatus);
+            operationsUserRepo.save(user);
+            if ((oldStatus == null) || ("INACTIVE".equals(oldStatus)) && "ACTIVE".equals(newStatus)) {
+                String password = passwordPolicyService.generatePassword();
+                user.setPassword(passwordEncoder.encode(password));
+                Email email = new Email.Builder().setSender("admin@ibanking.coronationmb.com")
+                        .setRecipient(user.getEmail())
+                        .setSubject("Internet Banking Operations Console Activation")
+                        .setBody(String.format("Your new password to Operations console is %s and your username is %s", password, user.getUserName()))
+                        .build();
+                mailService.send(email);
+            }
+
+            logger.info("Operations user {} status changed from {} to {}", user.getUserName(), oldStatus, newStatus);
+            return messageSource.getMessage("user.status.success", null, locale);
+
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("user.status.failure", null, locale), e);
+
         }
-        logger.info("Operations user {} status changed from {} to {}", user.getUserName(), oldStatus, newStatus);
-        return messageSource.getMessage("user.status.success", null, locale);
     }
 
 
@@ -110,43 +142,52 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     @Override
     @Transactional
     public String addUser(OperationsUserDTO user) throws InternetBankingException {
-        OperationsUser opsUser = new OperationsUser();
-        opsUser.setFirstName(user.getFirstName());
-        opsUser.setLastName(user.getLastName());
-        opsUser.setUserName(user.getUserName());
-        opsUser.setEmail(user.getEmail());
-        opsUser.setDateCreated(new Date());
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) + 2);
-        opsUser.setExpiryDate(calendar.getTime());
-        Role role = new Role();
-        role.setId(Long.parseLong(user.getRoleId()));
-        opsUser.setRole(role);
-        String password = passwordService.generatePassword();
-        opsUser.setPassword(passwordEncoder.encode(password));
-        this.operationsUserRepo.save(opsUser);
-
-        mailService.send(user.getEmail(), "Mail from Internet banking",String.format("Your username is %s and password is %s", user.getUserName(), password));
-        logger.info("New operations user: {} created", opsUser.getUserName());
-        return messageSource.getMessage("user.create.success", null, locale);
-
+        OperationsUser opsUser = operationsUserRepo.findFirstByUserName(user.getUserName());
+        if (opsUser != null) {
+            throw new DuplicateObjectException(messageSource.getMessage("user.exists", null, locale));
+        }
+        try {
+            opsUser = new OperationsUser();
+            opsUser.setFirstName(user.getFirstName());
+            opsUser.setLastName(user.getLastName());
+            opsUser.setUserName(user.getUserName());
+            opsUser.setEmail(user.getEmail());
+            opsUser.setCreatedOnDate(new Date());
+            String password = passwordPolicyService.generatePassword();
+            opsUser.setPassword(passwordEncoder.encode(password));
+            Role role = new Role();
+            role.setId(Long.parseLong(user.getRoleId()));
+            opsUser.setRole(role);
+            opsUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
+            this.operationsUserRepo.save(opsUser);
+            logger.info("New Operation user  {} created", opsUser.getUserName());
+            return messageSource.getMessage("user.add.success", null, LocaleContextHolder.getLocale());
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("user.add.failure", null, locale), e);
+        }
     }
+
+
 
     @Override
     @Transactional
-    public String updateUser(OperationsUserDTO userDTO) throws InternetBankingException {
-        OperationsUser operationsUser = new OperationsUser();
-        operationsUser.setId(userDTO.getId());
-        operationsUser.setVersion(userDTO.getVersion());
-        operationsUser.setFirstName(userDTO.getFirstName());
-        operationsUser.setLastName(userDTO.getLastName());
-        operationsUser.setUserName(userDTO.getUserName());
-        Role role = new Role();
-        role.setId(Long.parseLong(userDTO.getRoleId()));
-        operationsUser.setRole(role);
-        operationsUserRepo.save(operationsUser);
-        logger.info("Operations user {} updated", operationsUser.getUserName());
-        return messageSource.getMessage("user.update.success", null, locale);
+    public String updateUser(OperationsUserDTO user) throws InternetBankingException {
+        try {
+            OperationsUser opsUser = new OperationsUser();
+            opsUser.setId((user.getId()));
+            opsUser.setVersion(user.getVersion());
+            opsUser.setFirstName(user.getFirstName());
+            opsUser.setLastName(user.getLastName());
+            opsUser.setUserName(user.getUserName());
+            Role role = new Role();
+            role.setId(Long.parseLong(user.getRoleId()));
+            opsUser.setRole(role);
+            this.operationsUserRepo.save(opsUser);
+            logger.info("Operations user {} updated", opsUser.getUserName());
+            return messageSource.getMessage("user.update.success", null, locale);
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("user.update.failure", null, locale), e);
+        }
     }
 
 
@@ -162,31 +203,50 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     @Override
     @Transactional
     public String resetPassword(Long id) throws InternetBankingException {
-        OperationsUser user = operationsUserRepo.findOne(id);
-        String newPassword = passwordService.generatePassword();
-        user.setPassword(passwordEncoder.encode(newPassword));
-        user.setExpiryDate(new Date());
-        operationsUserRepo.save(user);
-        mailService.send(user.getEmail(),"Mail form Internet banking", "Your new password to Internet Banking is " + newPassword);
-        logger.info("Operations user {} password reset successfully", user.getUserName());
-        return messageSource.getMessage("password.reset.success", null, locale);
+        try {
+            OperationsUser user = operationsUserRepo.findOne(id);
+            String newPassword = passwordPolicyService.generatePassword();
+            user.setPassword(passwordEncoder.encode(newPassword));
+            user.setExpiryDate(new Date());
+            this.operationsUserRepo.save(user);
+            Email email = new Email.Builder().setSender("admin@ibanking.coronationmb.com")
+                    .setRecipient(user.getEmail())
+                    .setSubject("Internet Banking Admin Console Password Reset")
+                    .setBody(String.format("Your new password to Operations console is %s and your username is %s", newPassword, user.getUserName()))
+                    .build();
+            mailService.send(email);
+            logger.info("Operations user {} password reset successfully", user.getUserName());
+            return messageSource.getMessage("password.reset.success", null, locale);
+        } catch (Exception e) {
+            throw new PasswordException(messageSource.getMessage("password.reset.failure", null, locale), e);
+        }
     }
 
     @Override
     @Transactional
-    public String changePassword(OperationsUser user, String oldPassword, String newPassword) throws InternetBankingException {
+    public String changePassword(OperationsUser user, ChangePassword changePassword) throws InternetBankingException, PasswordException {
 
-        if (this.passwordEncoder.matches(oldPassword, user.getPassword())) {
-            OperationsUser opsUser = operationsUserRepo.findOne(user.getId());
-            opsUser.setPassword(this.passwordEncoder.encode(newPassword));
-            this.operationsUserRepo.save(opsUser);
-            logger.info("User {}'s password has been updated", user.getId());
-
-        } else {
-            logger.error("Could not change password for operations user {} due to incorrect old password", user.getUserName());
+        if (!this.passwordEncoder.matches(changePassword.getOldPassword(), user.getPassword())) {
+            throw new WrongPasswordException();
         }
 
-        return messageSource.getMessage("password.cahnge.success", null, locale);
+        String errorMessage = passwordPolicyService.validate(changePassword.getNewPassword(),user.getUsedPasswords());
+        if (!"".equals(errorMessage)) {
+            throw new PasswordPolicyViolationException(errorMessage);
+        }
+        if (!changePassword.getNewPassword().equals(changePassword.getConfirmPassword())) {
+            throw new PasswordMismatchException();
+        }
+
+        try {
+            OperationsUser adminUser = operationsUserRepo.findOne(user.getId());
+            adminUser.setPassword(this.passwordEncoder.encode(changePassword.getNewPassword()));
+            this.operationsUserRepo.save(adminUser);
+            logger.info("User {}'s password has been updated", user.getId());
+            return messageSource.getMessage("password.change.success", null, locale);
+        } catch (Exception e) {
+            throw new PasswordException(messageSource.getMessage("password.change.failure", null, locale), e);
+        }
     }
 
 

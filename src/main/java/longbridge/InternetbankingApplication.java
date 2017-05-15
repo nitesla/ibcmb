@@ -16,6 +16,7 @@ import javax.transaction.Transactional;
 
 @SpringBootApplication
 @EnableJpaRepositories(repositoryFactoryBeanClass = CustomJpaRepositoryFactoryBean.class)
+//extends SpringBootServletInitializer
 public class InternetbankingApplication implements CommandLineRunner {
 
 	@Autowired
@@ -39,5 +40,10 @@ public class InternetbankingApplication implements CommandLineRunner {
 //		Iterable<Message> sent = messageService.getSentMessages(mailBox);
 //		logger.info("Mailbox is {}",sent);
 	}
+
+//	@Override
+//	protected SpringApplicationBuilder configure(SpringApplicationBuilder builder){
+//		return builder.sources(InternetbankingApplication.class);
+//	}
 
 }

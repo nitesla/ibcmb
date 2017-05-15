@@ -2,6 +2,7 @@ package longbridge.dtos;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.hibernate.validator.constraints.NotEmpty;
 
 /**
  * Created by Fortune on 4/5/2017.
@@ -12,8 +13,11 @@ public class PermissionDTO {
     @JsonProperty("DT_RowId")
     private Long id;
     private  int version;
+    @NotEmpty(message = "name")
     private String name;
+    @NotEmpty(message = "description")
     private String description;
+    @NotEmpty(message = "code")
     private String code;
 
 

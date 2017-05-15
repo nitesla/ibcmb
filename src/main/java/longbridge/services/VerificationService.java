@@ -1,7 +1,7 @@
 package longbridge.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import longbridge.exception.InternetBankingVerificationException;
+import longbridge.exception.VerificationException;
 import longbridge.models.SerializableEntity;
 import longbridge.models.Verification;
 
@@ -11,13 +11,13 @@ public interface VerificationService {
       *  @param verification The {@link Verification} object
       * @param declineReason The reason for declining the verification request
       */
-     String decline(Verification verification, String declineReason) throws InternetBankingVerificationException;
+     String decline(Verification verification, String declineReason) throws VerificationException;
 
 	 /** This will verify/approve a Verification request.
       *
       * @param verification The {@link Verification} object
       */
-     String verify(Verification verification) throws InternetBankingVerificationException;
+     String verify(Verification verification) throws VerificationException;
      
      /** This fetches the {@link Verification} object with the id {@code id}
       * 
@@ -34,7 +34,7 @@ public interface VerificationService {
 
 
 
-     <T extends SerializableEntity<T>> String addNewVerificationRequest(T entity) throws JsonProcessingException, InternetBankingVerificationException;
+     <T extends SerializableEntity<T>> String addNewVerificationRequest(T entity) throws JsonProcessingException, VerificationException;
 
 
 

@@ -2,10 +2,7 @@ package longbridge.controllers.retail;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import longbridge.dtos.FinancialInstitutionDTO;
-import longbridge.dtos.ServiceReqConfigDTO;
-import longbridge.dtos.ServiceReqFormFieldDTO;
-import longbridge.dtos.ServiceRequestDTO;
+import longbridge.dtos.*;
 import longbridge.models.FinancialInstitutionType;
 import longbridge.models.RetailUser;
 import longbridge.services.*;
@@ -47,12 +44,15 @@ public class ServiceRequestController {
     @Autowired
     private FinancialInstitutionService financialInstitutionService;
 
+    @Autowired
+    private AccountService accountService;
+
     //private RetailUser retailUser = new RetailUser();//TODO user must be authenticated
 
     @GetMapping
     public String getServiceRequests(Model model) {
-//        Iterable<ServiceReqConfigDTO> requestList = serviceReqConfigService.getServiceReqConfigs();
-//        model.addAttribute("requestList", requestList);
+        Iterable<ServiceReqConfigDTO> requestList = serviceReqConfigService.getServiceReqConfigs();
+        model.addAttribute("requestList", requestList);
         return "cust/servicerequest/list";
     }
 
@@ -112,11 +112,18 @@ public class ServiceRequestController {
     }
 
     @GetMapping("/{reqId}")
-    public String makeRequest(@PathVariable Long reqId, Model model) {
+    public String makeRequest(@PathVariable Long reqId, Model model, Principal principal) {
+        RetailUser user = userService.getUserByName(principal.getName());
         ServiceReqConfigDTO serviceReqConfig = serviceReqConfigService.getServiceReqConfig(reqId);
         for (ServiceReqFormFieldDTO field : serviceReqConfig.getFormFields()) {
             if (field.getFieldType() != null && field.getFieldType().equals("CODE")) {
-                field.setCodeDTOs(codeService.getCodesByType(field.getTypeData()));
+                List<CodeDTO> codeList = codeService.getCodesByType(field.getTypeData());
+                model.addAttribute("codes", codeList);
+            }
+
+            if (field.getFieldType() != null && field.getFieldType().equals("ACCOUNT")) {
+                List<AccountDTO> acctList = accountService.getAccountsForDebitAndCredit(user.getCustomerId());
+                model.addAttribute("accts", acctList);
             }
 
             if (field.getFieldType() != null && field.getFieldType().equals("FI")) {
@@ -130,7 +137,7 @@ public class ServiceRequestController {
                 model.addAttribute("fixedList", myList);
             }
         }
-        //System.out.println(serviceReqConfig);
+        System.out.println(serviceReqConfig);
         model.addAttribute("requestConfig", serviceReqConfig);
         return "cust/servicerequest/add";
     }

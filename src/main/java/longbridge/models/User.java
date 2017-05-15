@@ -2,6 +2,7 @@ package longbridge.models;
 
 
 
+import javax.persistence.Column;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 import java.util.Date;
@@ -11,35 +12,30 @@ import java.util.Date;
 @MappedSuperclass
 public class User extends AbstractEntity{
 
-    private String userName;
-    private String firstName;
-    private String lastName;
-    private String email;
-    private String password;
-    private String status;
-    private Date dateCreated;
-    private Date expiryDate;
-    private Date lockedUntilDate;
-    private Date lastLoginDate;
-    private int noOfLoginAttempts;
+    protected String userName;
+    protected String firstName;
+    protected String lastName;
+    protected String email;
+    protected String password;
+    @Column(columnDefinition = "TEXT")
+    protected String usedPasswords;
+    protected String status;
+    protected Date createdOnDate;
+    protected Date expiryDate;
+    protected Date lockedUntilDate;
+    protected Date lastLoginDate;
+    protected int noOfLoginAttempts;
 
     //@Enumerated(value = EnumType.STRING)
     protected UserType userType;
 
 
     @ManyToOne
-    private Code alertPreference;
+    protected Code alertPreference;
 
 
     @ManyToOne
-    private Role role;
-
-//    @ManyToMany(cascade = CascadeType.ALL)
-//    @JoinTable(name = "user_groups", joinColumns =
-//    @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns =
-//    @JoinColumn(name = "group_id", referencedColumnName = "id"))
-//    private Collection<UserGroup> groups;
-
+    protected Role role;
 
 
     public String getUserName() {
@@ -82,7 +78,14 @@ public class User extends AbstractEntity{
         this.password = password;
     }
 
-   
+    public String getUsedPasswords() {
+        return usedPasswords;
+    }
+
+    public void setUsedPasswords(String usedPasswords) {
+        this.usedPasswords = usedPasswords;
+    }
+
     public String getStatus() {
 		return status;
 	}
@@ -100,14 +103,6 @@ public class User extends AbstractEntity{
         this.role = role;
     }
 
-//	public Collection<UserGroup> getGroups() {
-//		return groups;
-//	}
-
-//	public void setGroups(Collection<UserGroup> groups) {
-//		this.groups = groups;
-//	}
-
 
     public Code getAlertPreference() {
         return alertPreference;
@@ -117,12 +112,12 @@ public class User extends AbstractEntity{
         this.alertPreference = alertPreference;
     }
 
-    public Date getDateCreated() {
-        return dateCreated;
+    public Date getCreatedOnDate() {
+        return createdOnDate;
     }
 
-    public void setDateCreated(Date dateCreated) {
-        this.dateCreated = dateCreated;
+    public void setCreatedOnDate(Date createdOnDate) {
+        this.createdOnDate = createdOnDate;
     }
 
     public Date getExpiryDate() {return expiryDate;}
@@ -162,7 +157,7 @@ public class User extends AbstractEntity{
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", status='" + status + '\'' +
-                ", dateCreated=" + dateCreated +
+                ", createdOnDate=" + createdOnDate +
                 ", expiryDate=" + expiryDate +
                 ", lockedUntilDate=" + lockedUntilDate +
                 ", lastLoginDate=" + lastLoginDate +

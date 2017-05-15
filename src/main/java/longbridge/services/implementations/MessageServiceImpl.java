@@ -1,6 +1,5 @@
 package longbridge.services.implementations;
 
-import com.sun.xml.internal.bind.v2.TODO;
 import longbridge.dtos.MessageDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.*;
@@ -18,8 +17,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.awt.print.Pageable;
-import java.security.Principal;
-import java.security.PrivateKey;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -109,10 +106,20 @@ public class MessageServiceImpl implements MessageService {
         return convertEntitiesToDTOs(mailBox.getMessages());
     }
 
+    @Override
+    public Page<Message> getMessages(User user, org.springframework.data.domain.Pageable pageDetails) {
+        return null;
+    }
+
 
     @Override
     public Iterable<Message> getMessages(User user, Date date) {
 //
+        return null;
+    }
+
+    @Override
+    public Page<Message> getMessages(User user, Date date, org.springframework.data.domain.Pageable pageDetails) {
         return null;
     }
 
@@ -168,10 +175,30 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
+    public Page<MessageDTO> getSentMessages(String recipient, UserType recipientTye, org.springframework.data.domain.Pageable pageable) {
+        return null;
+    }
+
+    @Override
+    public Page<MessageDTO> getSentMessages(String recipient, UserType recipientTye, Pageable pageable) {
+//        Page<Message> page = messageRepo.findByRecipientAndRecipientTypeOrderByIdDesc(recipient, recipientTye,pageable);
+//        List<MessageDTO> dtOs = convertEntitiesToDTOs(page.getContent());
+//        long t = page.getTotalElements();
+//        Page<MessageDTO> pageImpl = new PageImpl<MessageDTO>(dtOs, pageable, t);
+//        return pageImpl;
+        return null;
+    }
+
+    @Override
     @Transactional
     public List<MessageDTO> getReceivedMessages(User user) {
         List<Message> receivedMessages = messageRepo.findByRecipientAndRecipientTypeOrderByIdDesc(user.getUserName(),user.getUserType());
         return convertEntitiesToDTOs(receivedMessages);
+    }
+
+    @Override
+    public Page<Message> getMessages(User user, Date fromDate, Date toDate, org.springframework.data.domain.Pageable pageDetails) {
+        return null;
     }
 
     @Override
@@ -187,7 +214,7 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public void sendEmail(EmailDetail email) {
+    public void sendEmail(Email email) {
         //todo  send email
     }
 

@@ -2,7 +2,8 @@ package longbridge.services;
 
 import longbridge.api.CustomerDetails;
 import longbridge.dtos.RetailUserDTO;
-import longbridge.exception.InternetBankingPasswordException;
+import longbridge.exception.InternetBankingException;
+import longbridge.exception.PasswordException;
 import longbridge.forms.AlertPref;
 import longbridge.models.Account;
 import longbridge.models.RetailUser;
@@ -24,6 +25,8 @@ public interface RetailUserService {
 
     RetailUserDTO getUserDTOByName(String name);
 
+    RetailUser getUserByCustomerId(String custId);
+
     /**
      *Returns a list of retail users
      * @return the list of retail users
@@ -32,28 +35,29 @@ public interface RetailUserService {
     
     Page<RetailUserDTO> getUsers(Pageable pageDetails);
 
-    /**
-     *Sets the password of the specified retail user
-     * The password must meet the organisation's password policy if any one has been defined
-     * It is important to hash the password before storing in the database
-     * @param user the user
-     * @param password the password
-     */
-    String setPassword(RetailUser user, String password) throws InternetBankingPasswordException;
+
+
 
     /**
      * Adds a new retail user to the system
      * @param user the retail user to be added
      */
 
-    boolean addUser(RetailUserDTO user, CustomerDetails details);
+    String addUser(RetailUserDTO user, CustomerDetails details) throws InternetBankingException;
 
     /**
      * Deletes a retail user to the system
      * @param userId the retail user's id
+
      */
 
-    void deleteUser(Long userId);
+    String deleteUser(Long userId) throws InternetBankingException;
+
+
+//    String setPassword(RetailUser user, String password) throws PasswordException;
+
+
+    boolean resetPassword(RetailUser user, String newPassword);
 
     /**
      * Updates the details of the specified retail user
@@ -71,13 +75,20 @@ public interface RetailUserService {
     boolean AddAccount(RetailUser user, Account account);
 
 
+
+
+
+    String changeActivationStatus(Long userId) throws InternetBankingException;
+
+
     /**
-     * Resets the password of the specified Retail user
-     *@param user the retail user
+     *Sets the password of the specified retail user
+     * The password must meet the organisation's password policy if any one has been defined
+     * It is important to hash the password before storing in the database
+     * @param userId the user Id
+     *
      */
-
-
-    boolean resetPassword(RetailUser user, String newPassword);
+    String resetPassword(Long userId) throws PasswordException;
 
     /**
      *Replaces the old password with the new password
@@ -94,7 +105,7 @@ public interface RetailUserService {
      *Generates a password and send it to the specified user
      * @param user the user
      */
-    boolean generateAndSendPassword(RetailUser user);
+//    boolean generateAndSendPassword(RetailUser user);
 
     /** This sets the Alert preference of the specified user. Alert preference may
      * be SMS, EMAIL or BOTH

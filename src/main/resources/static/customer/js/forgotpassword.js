@@ -1,33 +1,62 @@
-    var accountName = "null";
+    var customerId = "null";
 
 	/** This validates the input account number.
 	 * 
 	 * @param accountNumber the account number to check
 	 */
-	function validateAccountNumber(accountNumber){
-		var accountName;
+	function validateAccountNo(accountNumber){
+		var customerId;
 		$.ajax({
             type:'GET',
-            url:"/rest/accountname/"+accountNumber,
+            url:"/rest/retail/accountname/"+accountNumber,
             async:false,
             success:function(data1){
-            	accountName = ''+String(data1);
-				if(accountName == 'null'){
+            	customerId = ''+String(data1);
+				if(customerId == ""){
 					//invalid account number
-					alert("Account name not found");
+					alert("Account number not found");
 				}else{
 					//valid account number
-					alert("Account name: " + accountName);
+					alert("Customer Id: " + customerId);
+					$('input[name=customerId]').val(customerId);
 				}
             }
         }); 
 
-        if(accountName===accountNumber){
+        if(customerId == "" || customerId === null){
         	return false;
         }else{
         	return true;
         }
 	}
+
+	function changePassword(){
+	    var returnValue = false;
+        $('#reg-form').submit(function(e){
+            e.preventDefault();
+
+            $.ajax({
+                url: '',
+                async:false,
+                type: "POST",
+                data: $(this).serialize(),
+                success: function(data)
+                {
+                    alert(data+" return ");
+                    //callback methods go right here
+                    if(data==="true"){
+                        $('#returnValue').val(true);
+                    }
+                }
+            });
+        });
+        $('#reg-form').submit();
+        returnValue = $('#returnValue').val();
+        alert(returnValue);
+        return Boolean(returnValue);
+    }
+
+
 	
 
     //steps with form
@@ -45,7 +74,7 @@
     });
     
     var ACCOUNT_DETAILS_STEP = 0;
-    var CONFIRM_PASSWORD_STEP = 2;
+    var CHANGE_PASSWORD_STEP = 2;
 
     //var condition = [[${success}]];
     
@@ -62,25 +91,25 @@
             if(ACCOUNT_DETAILS_STEP === currentIndex){
                 console.log("Current step is the account details step");
                 var accountNumber = $('input[name="acct"]').val();
-                return isValid && validateAccountNumber(accountNumber);
+                return isValid && validateAccountNo(accountNumber);
             }
-            if(CONFIRM_PASSWORD_STEP === currentIndex){
-                console.log("Current stp is the profile details step");
-                form.submit();
-//                return isValid && changePassword(username);
+            if(CHANGE_PASSWORD_STEP === currentIndex){
+                console.log("Current step is the change password step");
+                //form.submit();
+               return isValid && changePassword();
             }
             return form.valid();
         },
         onFinishing: function (event, currentIndex)
         {
-            
-            form.validate().settings.ignore = ":disabled";
+            //form.validate().settings.ignore = ":disabled";
             return form.valid();
         },
         onFinished: function (event, currentIndex)
         {
-//            alert("Submitted!");
-            $("#reg-form").submit();
+           alert("Submitted!");
+           window.location.href = "/login/retail";
+//             $("#reg-form").submit();
         }
     });
 

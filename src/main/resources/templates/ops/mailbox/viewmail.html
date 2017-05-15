@@ -104,46 +104,33 @@
 
                                     <div class="row">
 
+
+
                                         <div class="col-md-12">
                                             <div class="white-box">
                                                 <div class="message-header">
-                                                    <h3><span>Subject:</span> Lorem Ipsum is simply dummy text of the printing</h3>
-                                                    <p class="message-date">12/01/17</p>
+                                                    <h3>Subject:&nbsp;<span th:text="${receivedMessage.subject}" ></span> </h3>
+                                                    <p class="message-date">Date:&nbsp;<span th:text="${receivedMessage.dateCreated}" ></span></p>
                                                 </div>
                                                 <div class="message-sender">
-                                                    <p>John Doe <span>&lt;example@email.com&gt;</span></p>
+                                                    <p>From:&nbsp; <span th:text="${receivedMessage.recipient}" ></span></p>
                                                 </div>
                                                 <div class="message-content">
-                                                    <p>Hi jonathan Doe !<br><br>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. </p>
+                                                    <p>
+                                                        <span th:text="${receivedMessage.body}" ></span></p>
+                                                    </p>
+                                                </div>
 
-                                                    <p>It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages</p>
-                                                </div>
-                                                <div class="message-attachments">
-                                                    <p><i class="fa fa-paperclip m-r-5"></i>2 Attachments <a href="message-view.html#">Download all</a></p>
-                                                    <div class="message-attachment">
-                                                        <a href="message-view.html#">
-                                                            <div class="attachment-content">
-                                                                <img src="assets/images/attachment1.jpg" alt="">
-                                                            </div>
-                                                        </a>
-                                                    </div>
-                                                    <div class="message-attachment">
-                                                        <a href="message-view.html#">
-                                                            <div class="attachment-content">
-                                                                <img src="assets/images/attachment2.jpg" alt="">
-                                                            </div>
-                                                        </a>
-                                                    </div>
-                                                </div>
                                                 <div class="message-options">
-                                                    <a href="compose.html" class="btn btn-link"><i class="fa fa-reply m-r-5"></i>Reply</a>
-                                                    <a href="message-view.html#" class="btn btn-link"><i class="fa fa-arrow-right m-r-5"></i>Forward</a>
+                                                    <a th:href="@{/ops/mailbox/{id}/reply(id=${receivedMessage.id})}" class="btn btn-link"><i class="fa fa-reply m-r-5"></i>Reply</a>
+                                                    <a th:href="@{/ops/mailbox/{id}/forward(id=${receivedMessage.id})}" class="btn btn-link"><i class="fa fa-arrow-right m-r-5"></i>Forward</a>
                                                 </div>
                                                 </div>
 
 
 
                                             </div>
+
                                         </div>
                                     </div>
 

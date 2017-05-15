@@ -1,7 +1,7 @@
 package longbridge.services.implementations;
 
 import longbridge.dtos.FinancialInstitutionDTO;
-import longbridge.exception.InternetBankingDuplicateObjectException;
+import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.FinancialInstitution;
 import longbridge.models.FinancialInstitutionType;
@@ -73,30 +73,40 @@ public class FinancialInstitutionServiceImpl implements FinancialInstitutionServ
     public String addFinancialInstitution(FinancialInstitutionDTO financialInstitutionDTO) throws InternetBankingException {
 
         FinancialInstitution financialInstitution;
-        financialInstitution = financialInstitutionRepo.findByInstitutionCodeAndInstitutionType(financialInstitutionDTO.getInstitutionCode(),financialInstitutionDTO.getInstitutionType());
-        if(financialInstitution!=null){
-            throw new InternetBankingDuplicateObjectException("Financial institution code already exists");
+        financialInstitution = financialInstitutionRepo.findByInstitutionCodeAndInstitutionType(financialInstitutionDTO.getInstitutionCode(), financialInstitutionDTO.getInstitutionType());
+        if (financialInstitution != null) {
+            throw new DuplicateObjectException(messageSource.getMessage("institution.exists", null, locale));
         }
-        financialInstitution = new FinancialInstitution();
-        financialInstitution.setInstitutionCode(financialInstitutionDTO.getInstitutionCode());
-        financialInstitution.setInstitutionType(financialInstitutionDTO.getInstitutionType());
-        financialInstitution.setInstitutionName(financialInstitutionDTO.getInstitutionName());
-        this.financialInstitutionRepo.save(financialInstitution);
-        logger.info("New financial institution: {} created", financialInstitution.getInstitutionName());
-        return messageSource.getMessage("institution.add.success", null, locale);
+        try {
+            financialInstitution = new FinancialInstitution();
+            financialInstitution.setInstitutionCode(financialInstitutionDTO.getInstitutionCode());
+            financialInstitution.setInstitutionType(financialInstitutionDTO.getInstitutionType());
+            financialInstitution.setInstitutionName(financialInstitutionDTO.getInstitutionName());
+            this.financialInstitutionRepo.save(financialInstitution);
+            logger.info("New financial institution: {} created", financialInstitution.getInstitutionName());
+            return messageSource.getMessage("institution.add.success", null, locale);
+        }
+        catch (Exception e){
+            throw new InternetBankingException(messageSource.getMessage("institution.add.failure", null, locale),e);
+        }
     }
 
     @Override
-    public String updateFinancialInstitution(FinancialInstitutionDTO financialInstitutionDTO) throws InternetBankingException{
-        FinancialInstitution financialInstitution = new FinancialInstitution();
-        financialInstitution.setId((financialInstitutionDTO.getId()));
-        financialInstitution.setVersion(financialInstitutionDTO.getVersion());
-        financialInstitution.setInstitutionCode(financialInstitutionDTO.getInstitutionCode());
-        financialInstitution.setInstitutionType(financialInstitutionDTO.getInstitutionType());
-        financialInstitution.setInstitutionName(financialInstitutionDTO.getInstitutionName());
-        this.financialInstitutionRepo.save(financialInstitution);
-        logger.info("Financial Institution {} updated", financialInstitution.getInstitutionName());
-        return messageSource.getMessage("institution.update.success", null, locale);
+    public String updateFinancialInstitution(FinancialInstitutionDTO financialInstitutionDTO) throws InternetBankingException {
+        try {
+            FinancialInstitution financialInstitution = new FinancialInstitution();
+            financialInstitution.setId((financialInstitutionDTO.getId()));
+            financialInstitution.setVersion(financialInstitutionDTO.getVersion());
+            financialInstitution.setInstitutionCode(financialInstitutionDTO.getInstitutionCode());
+            financialInstitution.setInstitutionType(financialInstitutionDTO.getInstitutionType());
+            financialInstitution.setInstitutionName(financialInstitutionDTO.getInstitutionName());
+            this.financialInstitutionRepo.save(financialInstitution);
+            logger.info("Financial Institution {} updated", financialInstitution.getInstitutionName());
+            return messageSource.getMessage("institution.update.success", null, locale);
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("institution.update.failure", null, locale));
+        }
+
     }
 
     @Override
@@ -119,11 +129,16 @@ public class FinancialInstitutionServiceImpl implements FinancialInstitutionServ
     }
 
     @Override
-    public String deleteFinancialInstitution(Long id) throws  InternetBankingException{
-        this.financialInstitutionRepo.delete(id);
-        logger.info("Financial institution  with Id {} deleted ", id.toString());
-        return messageSource.getMessage("institution.delete.success",null,locale);
-}
+    public String deleteFinancialInstitution(Long id) throws InternetBankingException {
+      try {
+          this.financialInstitutionRepo.delete(id);
+          logger.info("Financial institution  with Id {} deleted ", id.toString());
+          return messageSource.getMessage("institution.delete.success", null, locale);
+      }
+      catch (Exception e){
+          throw new InternetBankingException(messageSource.getMessage("institution.delete.failure", null, locale));
+      }
+    }
 
     @Override
     public Page<FinancialInstitutionDTO> getFinancialInstitutions(Pageable pageDetails) {

@@ -116,12 +116,5 @@ public class RetailControllerAdvice {
     }
 
 
-    @ExceptionHandler(NoHandlerFoundException.class)
-   // @ResponseStatus(HttpStatus.NOT_FOUND)
-    public String pageNotFound() {
 
-        System.out.println("YAHOO YAHOO tyi");
-
-        return "redirect:/retail/dashboard";
-    }
 }

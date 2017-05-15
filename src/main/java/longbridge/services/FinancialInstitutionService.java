@@ -1,7 +1,7 @@
 package longbridge.services;
 
 import longbridge.dtos.FinancialInstitutionDTO;
-import longbridge.exception.InternetBankingDuplicateObjectException;
+import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.FinancialInstitution;
 import longbridge.models.FinancialInstitutionType;
@@ -15,7 +15,7 @@ import java.util.List;
  */
 public interface FinancialInstitutionService {
 
-    String addFinancialInstitution(FinancialInstitutionDTO financialInstitutionDTO) throws InternetBankingException, InternetBankingDuplicateObjectException;
+    String addFinancialInstitution(FinancialInstitutionDTO financialInstitutionDTO) throws InternetBankingException, DuplicateObjectException;
 
     String updateFinancialInstitution(FinancialInstitutionDTO financialInstitutionDTO) throws InternetBankingException;
 

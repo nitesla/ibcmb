@@ -3,8 +3,9 @@ package longbridge.models;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
+import java.util.List;
+
+import javax.persistence.*;
 
 /**
  * Created by Wunmi on 3/28/2017.
@@ -15,25 +16,44 @@ import javax.persistence.ManyToOne;
 @Entity
 @Audited
 @Where(clause ="del_Flag='N'" )
-public class OperationsUser extends User {
+@Table(uniqueConstraints=@UniqueConstraint(columnNames={"userName","deletedOn"}))
+public class OperationsUser extends User implements Person {
 	public OperationsUser(){
 		this.userType = (UserType.OPERATIONS);
 	}
 
-	@ManyToOne
-	private UserGroup userGroup;
+	@ManyToMany(mappedBy = "users")
+	private List<UserGroup> groups;
 
-	public UserGroup getUserGroup() {
-		return userGroup;
+
+
+
+
+	public List<UserGroup> getGroups() {
+		return groups;
 	}
 
-	public void setUserGroup(UserGroup userGroup) {
-		this.userGroup = userGroup;
+
+
+
+	public void setGroups(List<UserGroup> groups) {
+		this.groups = groups;
 	}
+
+
+
 
 	@Override
 	public String toString() {
 		return "OperationsUser{"+super.toString()+"}";
 	}
+
+
+
+	@Override
+	public boolean isExternal() {
+		return false;
+	}
+
 
 }

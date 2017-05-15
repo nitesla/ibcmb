@@ -2,14 +2,16 @@ package longbridge.controllers.admin;
 
 import longbridge.dtos.AdminUserDTO;
 import longbridge.dtos.RoleDTO;
+import longbridge.exception.*;
 import longbridge.forms.ChangePassword;
 import longbridge.models.AdminUser;
 import longbridge.services.AdminUserService;
-import longbridge.services.PasswordService;
+import longbridge.services.PasswordPolicyService;
 import longbridge.services.RoleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
@@ -25,6 +27,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.Locale;
 
 /**
  * Created by SYLVESTER on 31/03/2017.
@@ -43,7 +46,10 @@ public class AdminUserController {
     private BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
-    PasswordService passwordService;
+    PasswordPolicyService passwordPolicyService;
+
+    @Autowired
+    MessageSource messageSource;
 
 
     /**
@@ -59,19 +65,6 @@ public class AdminUserController {
         return "adm/admin/add";
     }
 
-    /**
-     * Edit an existing user
-     *
-     * @return
-     */
-    @GetMapping("/{userId}/edit")
-    public String editUser(@PathVariable Long userId, Model model) {
-        AdminUserDTO user = adminUserService.getAdminUser(userId);
-        Iterable<RoleDTO> roles = roleService.getRoles();
-        model.addAttribute("adminUser", user);
-        model.addAttribute("roles", roles);
-        return "adm/admin/edit";
-    }
 
     /**
      * Creates a new user
@@ -82,19 +75,25 @@ public class AdminUserController {
      * @throws Exception
      */
     @PostMapping
-    public String createUser(@ModelAttribute("adminUser") @Valid AdminUserDTO adminUser, BindingResult result, RedirectAttributes redirectAttributes) {
+    public String createUser(@ModelAttribute("adminUser") @Valid AdminUserDTO adminUser, BindingResult result, RedirectAttributes redirectAttributes, Locale locale) {
         if (result.hasErrors()) {
-            result.addError(new ObjectError("invalid", "Please fill in the required fields"));
+            result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
             return "adm/admin/add";
         }
-        if (!adminUserService.isUsernameExist(adminUser.getUserName())) {
-            result.addError(new ObjectError("invalid", "Username already exists"));
+        try {
+            String message = adminUserService.addUser(adminUser);
+            redirectAttributes.addFlashAttribute("message", message);
+            return "redirect:/admin/users";
+        } catch (DuplicateObjectException doe) {
+            result.addError(new ObjectError("error", doe.getMessage()));
+            logger.error("Error creating admin user {}", adminUser.getUserName(), doe);
+            return "adm/admin/add";
+        } catch (InternetBankingException ibe) {
+            result.addError(new ObjectError("error", ibe.getMessage()));
+            logger.error("Error creating admin user", ibe);
             return "adm/admin/add";
         }
 
-        String message = adminUserService.addUser(adminUser);
-        redirectAttributes.addFlashAttribute("message", message);
-        return "redirect:/admin/users";
     }
 
 
@@ -140,6 +139,21 @@ public class AdminUserController {
     }
 
     /**
+     * Edit an existing user
+     *
+     * @return
+     */
+    @GetMapping("/{userId}/edit")
+    public String editUser(@PathVariable Long userId, Model model) {
+        AdminUserDTO user = adminUserService.getAdminUser(userId);
+        Iterable<RoleDTO> roles = roleService.getRoles();
+        model.addAttribute("adminUser", user);
+        model.addAttribute("roles", roles);
+        return "adm/admin/edit";
+    }
+
+
+    /**
      * Updates the user
      *
      * @param adminUser
@@ -148,26 +162,37 @@ public class AdminUserController {
      * @throws Exception
      */
     @PostMapping("/update")
-    public String updateUser(@ModelAttribute("user") AdminUserDTO adminUser, BindingResult result, RedirectAttributes redirectAttributes) {
+    public String updateUser(@ModelAttribute("adminUser") @Valid AdminUserDTO adminUser, BindingResult result, RedirectAttributes redirectAttributes, Locale locale) {
         if (result.hasErrors()) {
-            return "adm/admin/add";
+            result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
+            return "adm/admin/edit";
         }
-        String message = adminUserService.updateUser(adminUser);
-
-        redirectAttributes.addFlashAttribute("message", "Admin user updated successfully");
-
-        return "redirect:/admin/users";
+        try {
+            String message = adminUserService.updateUser(adminUser);
+            redirectAttributes.addFlashAttribute("message", message);
+            return "redirect:/admin/users";
+        } catch (InternetBankingException ibe) {
+            result.addError(new ObjectError("error", ibe.getMessage()));
+            logger.error("Error updating admin user", ibe);
+            return "adm/admin/edit";
+        }
     }
 
     @GetMapping("/{userId}/delete")
-    public String deleteUser(@PathVariable Long userId) {
-        adminUserService.deleteUser(userId);
+    public String deleteUser(@PathVariable Long userId, RedirectAttributes redirectAttributes) {
+        try {
+            String message = adminUserService.deleteUser(userId);
+            redirectAttributes.addAttribute("message", message);
+        } catch (InternetBankingException ibe) {
+            redirectAttributes.addAttribute("failure", ibe.getMessage());
+            logger.error("Error updating admin user", ibe);
+        }
         return "redirect:/admin/users";
     }
 
     @ModelAttribute
     public void init(Model model) {
-        model.addAttribute("passwordRules", passwordService.getPasswordRules());
+        model.addAttribute("passwordRules", passwordPolicyService.getPasswordRules());
         Iterable<RoleDTO> roles = roleService.getRoles();
         model.addAttribute("roles", roles);
 
@@ -175,68 +200,68 @@ public class AdminUserController {
 
     @GetMapping("/{id}/activation")
     public String changeActivationStatus(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        adminUserService.changeActivationStatus(id);
-        redirectAttributes.addFlashAttribute("message", "User activation status changed successfully");
+        try {
+            String message = adminUserService.changeActivationStatus(id);
+            redirectAttributes.addFlashAttribute("message", message);
+        } catch (InternetBankingException ibe) {
+            logger.error("Error changing user activation status", ibe);
+            redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
+        }
         return "redirect:/admin/users";
     }
 
 
     @GetMapping("/{id}/password/reset")
     public String resetPassword(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        adminUserService.resetPassword(id);
-        redirectAttributes.addFlashAttribute("message", "Password reset successfully");
-
+        try {
+            String message = adminUserService.resetPassword(id);
+            redirectAttributes.addFlashAttribute("message", message);
+        } catch (PasswordException pe) {
+            redirectAttributes.addAttribute("failure", pe.getMessage());
+            logger.error("Error resetting password for admin user", pe);
+        }
         return "redirect:/admin/users";
     }
 
     @GetMapping("/password")
     public String changePassword(Model model) {
-
         ChangePassword changePassword = new ChangePassword();
         model.addAttribute("changePassword", changePassword);
-        model.addAttribute("passwordRules", passwordService.getPasswordRules());
+        model.addAttribute("passwordRules", passwordPolicyService.getPasswordRules());
         return "adm/admin/pword";
     }
 
     @PostMapping("/password")
-    public String changePassword(@ModelAttribute("changePassword") @Valid ChangePassword changePassword, BindingResult result, Principal principal, RedirectAttributes redirectAttributes) {
+    public String changePassword(@ModelAttribute("changePassword") @Valid ChangePassword changePassword, BindingResult result, Principal principal, RedirectAttributes redirectAttributes,Locale locale) {
 
         if (result.hasErrors()) {
-            result.addError(new ObjectError("invalid", "Please provide valid password"));
+            result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required",null,locale)));
             return "/adm/admin/pword";
         }
 
         AdminUser user = adminUserService.getUserByName(principal.getName());
+        try {
+            String message = adminUserService.changePassword(user, changePassword);
+            redirectAttributes.addFlashAttribute("message", message);
+            return "redirect:/admin/dashboard";
+        } catch (WrongPasswordException wpe) {
+            result.reject("oldPassword", wpe.getMessage());
+            logger.error("Wrong password from admin user {}", user.getUserName(), wpe.toString());
+            return "/adm/admin/pword";
+        } catch (PasswordPolicyViolationException pve) {
+            result.reject("newPassword", pve.getMessage());
+            logger.error("Password policy violation from admin user {} error {}", user.getUserName(), pve.toString());
+            return "/adm/admin/pword";
+        } catch (PasswordMismatchException pme) {
+            result.reject("confirmPassword", pme.getMessage());
+            logger.error("New password mismatch from admin user {}", user.getUserName(), pme.toString());
+            return "/adm/admin/pword";
+        } catch (PasswordException pe) {
+            result.addError(new ObjectError("error", pe.getMessage()));
+            logger.error("Error changing password for admin user {}", user.getUserName(), pe);
 
-        if (!this.passwordEncoder.matches(changePassword.getOldPassword(), user.getPassword())) {
-            logger.trace("Invalid old password provided for change");
-            result.addError(new ObjectError("invalid", "Incorrect Old Password"));
             return "/adm/admin/pword";
         }
-
-        String errorMsg = passwordService.validate(changePassword.getNewPassword());
-        if (!errorMsg.equals("")) {
-            result.addError(new ObjectError("invalid", errorMsg));
-            return "/adm/admin/pword";
-        }
-
-        if (!changePassword.getNewPassword().equals(changePassword.getConfirmPassword())) {
-            logger.trace("PASSWORD MISMATCH");
-            result.addError(new ObjectError("invalid", "Passwords do not match"));
-            return "/adm/admin/pword";
-        }
-
-
-        if (!this.passwordEncoder.matches(changePassword.getOldPassword(), user.getPassword())) {
-            logger.trace("Invalid old password provided for change");
-            result.addError(new ObjectError("invalid", "Incorrect Old Password"));
-            return "/adm/admin/pword";
-        }
-
-
-        adminUserService.changePassword(user, changePassword.getOldPassword(), changePassword.getNewPassword());
-        redirectAttributes.addFlashAttribute("message", "Password changed successfully");
-        return "redirect:/admin/dashboard";
     }
 
 }

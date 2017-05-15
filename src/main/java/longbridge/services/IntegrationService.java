@@ -3,8 +3,8 @@ package longbridge.services;
 import longbridge.api.AccountDetails;
 import longbridge.api.AccountInfo;
 import longbridge.api.CustomerDetails;
-import longbridge.exception.InternetBankingTokenException;
-import longbridge.exception.InternetBankingTransferException;
+import longbridge.exception.TokenException;
+import longbridge.exception.TransferException;
 import longbridge.models.TransferRequest;
 import longbridge.utils.AccountStatement;
 
@@ -46,7 +46,7 @@ public interface IntegrationService {
     /** Initiates a transfer request to the relevant Transfer service.
      *
      */
-    boolean makeTransfer(TransferRequest transferRequest) throws InternetBankingTransferException;
+    boolean makeTransfer(TransferRequest transferRequest) throws TransferException;
 
     /**Fetches the account Name, Balance , Type from the account table specified by account Number
      *
@@ -91,6 +91,7 @@ public interface IntegrationService {
     BigDecimal getDailyAccountLimit(String accNo,String channel);
     
 
+
     
 
 
@@ -98,5 +99,5 @@ public interface IntegrationService {
 
 
 
-    
+
 }

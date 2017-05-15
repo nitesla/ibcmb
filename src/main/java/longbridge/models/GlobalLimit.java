@@ -16,7 +16,7 @@ import java.util.Date;
 @Entity
 @Audited
 @Where(clause ="del_Flag='N'" )
-@Table(uniqueConstraints=@UniqueConstraint(columnNames={"channel","customerType"}))
+@Table(uniqueConstraints=@UniqueConstraint(columnNames={"channel","customerType","deletedOn"}))
 public class GlobalLimit extends  AbstractEntity {
 
     private String customerType;
@@ -27,7 +27,6 @@ public class GlobalLimit extends  AbstractEntity {
     private String currency;
     private String status;
     private String frequency;
-    private Date effectiveDate;
 
 
     public Long getId() {
@@ -102,11 +101,4 @@ public class GlobalLimit extends  AbstractEntity {
         this.status = status;
     }
 
-    public Date getEffectiveDate() {
-        return effectiveDate;
     }
-
-    public void setEffectiveDate(Date effectiveDate) {
-        this.effectiveDate = effectiveDate;
-    }
-}

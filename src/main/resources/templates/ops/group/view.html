@@ -30,7 +30,7 @@
             <div class="">
                 <div class="page-title">
                     <div class="title_left">
-                        <h3>User Groups</h3>
+                        <h3>Groups</h3>
                     </div>
 
                 </div>
@@ -45,13 +45,6 @@
                                     <li >
                                         <div class="col-lg-4">
                                             <div class="title-action">
-                                                <a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/ops/groups/index/details" disabled="disabled" ><i class="fa fa-eye"></i> View</a>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li >
-                                        <div class="col-lg-4">
-                                            <div class="title-action">
                                                 <a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/ops/groups/index/edit" disabled="disabled" ><i class="fa fa-pencil"></i> Edit</a>
                                             </div>
                                         </div>
@@ -59,7 +52,7 @@
                                     <li >
                                         <div class="col-lg-4">
                                             <div class="title-action">
-                                                <a  class="btn btn-danger bt-select btn-sm bt-link-act" href="/ops/units/index/delete" disabled="disabled" ><i class="fa fa-trash"></i> Delete</a>
+                                                <a id="delete-btn" class="btn btn-danger bt-select btn-sm" href="/ops/groups/index/delete" disabled="disabled" ><i class="fa fa-trash"></i> Delete</a>
                                             </div>
                                         </div>
                                     </li>
@@ -86,19 +79,15 @@
                                     <thead>
                                     <tr>
                                         <th>Name</th>
-                                        <th>Description</th>
-                                        <th>Date Created</th>
                                     </tr>
                                     </thead>
                                     <tbody>
 
 
-                                    </tbody>s
+                                    </tbody>
                                     <tfoot>
                                     <tr>
                                         <th>Name</th>
-                                        <th>Description</th>
-                                        <th>Date Created</th>
                                     </tr>
                                     </tfoot>
                                 </table>
@@ -127,7 +116,7 @@
     /*<![CDATA[*/
     $(document).ready(function() {
 
-        var table = $('#unit').DataTable({
+        var table = $('#group').DataTable({
             "pagingType" : "simple_numbers",
             select: true,
             responsive: true,
@@ -168,9 +157,6 @@
     $("a.bt-link-act").on("click", function(e) {
         e.preventDefault();
         var link = $(e.currentTarget);
-        if($(link).attr("disabled")){
-            return;
-        }
         var dt = $('#group').DataTable();
         var id = $(dt.row({
             selected: true
@@ -181,6 +167,41 @@
         window.location.assign(ooo);
         //goto url
     });
+
+    $("#delete-btn").on("click", function(e) {
+        e.preventDefault();
+        var link = $(e.currentTarget);
+
+        if($(link).attr("disabled")){
+            return;
+        }
+
+        var dt = $('#group').DataTable();
+        var id = $(dt.row({
+            selected: true
+        }).node()).attr("id");
+        //window.location.href = link.attr("formaction") + '?id=' + id;
+        //replace {id} with id
+        var ooo = link.attr("href").replace("index",id);
+
+        //goto url
+        warnBeforeRedirect(ooo);
+    });
+
+    function warnBeforeRedirect(ooo) {
+        swal({
+            title: "Are you sure?",
+            text: "Are you sure that you want to delete group and its contacts?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes, delete group!",
+            closeOnConfirm: false
+        }, function() {
+            // Redirect the user
+            window.location.assign(ooo);
+        });
+    }
     /*]]>*/
 </script>
 

@@ -1,15 +1,16 @@
 package longbridge.services.implementations;
 
 import longbridge.dtos.AdminUserDTO;
-import longbridge.exception.InternetBankingException;
+import longbridge.exception.*;
+import longbridge.forms.ChangePassword;
 import longbridge.models.AdminUser;
+import longbridge.models.Email;
 import longbridge.models.Role;
 import longbridge.repositories.AdminUserRepo;
 import longbridge.repositories.VerificationRepo;
 import longbridge.services.*;
 //import longbridge.utils.Verifiable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -24,8 +25,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.Calendar;
-import java.util.Date;
 
 import longbridge.services.AdminUserService;
 import longbridge.services.RoleService;
@@ -59,10 +58,12 @@ public class AdminUserServiceImpl implements AdminUserService {
     MailService mailService;
 
     @Autowired
-    PasswordService passwordService;
+    PasswordPolicyService passwordPolicyService;
 
     @Autowired
     MessageSource messageSource;
+
+    Locale locale = LocaleContextHolder.getLocale();
 
 
     @Autowired
@@ -82,7 +83,7 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     @Override
     public AdminUser getUserByName(String name) {
-        return  this.adminUserRepo.findFirstByUserName(name);
+        return this.adminUserRepo.findFirstByUserName(name);
 
     }
 
@@ -95,7 +96,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Override
     public boolean isUsernameExist(String username) throws InternetBankingException {
         AdminUser adminUser = adminUserRepo.findFirstByUserName(username);
-        return (adminUser == null)?true:false;
+        return (adminUser == null) ? true : false;
     }
 
 
@@ -110,98 +111,149 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Transactional
 //    @Verifiable(operation="Add Admin",description="Adding a new User")
     public String addUser(AdminUserDTO user) throws InternetBankingException {
-        AdminUser adminUser = new AdminUser();
-        adminUser.setFirstName(user.getFirstName());
-        adminUser.setLastName(user.getLastName());
-        adminUser.setUserName(user.getUserName());
-        adminUser.setEmail(user.getEmail());
-        adminUser.setDateCreated(new Date());
-        String password = passwordService.generatePassword();
-        adminUser.setPassword(passwordEncoder.encode(password));
-        Role role = new Role();
-        role.setId(Long.parseLong(user.getRoleId()));
-        adminUser.setRole(role);
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) + 2);
-        adminUser.setExpiryDate(calendar.getTime());
-        this.adminUserRepo.save(adminUser);
-        mailService.send(user.getEmail(), "Mail from Internet Banking",String.format("Your username is %s and password is %s", user.getUserName(), password));
-        logger.info("New admin user: {} created", adminUser.getUserName());
-        return messageSource.getMessage("user.admin.create.success", null, LocaleContextHolder.getLocale());
+        AdminUser adminUser = adminUserRepo.findFirstByUserName(user.getUserName());
+        if (adminUser != null) {
+            throw new DuplicateObjectException(messageSource.getMessage("user.exists", null, locale));
+        }
+        try {
+            adminUser = new AdminUser();
+            adminUser.setFirstName(user.getFirstName());
+            adminUser.setLastName(user.getLastName());
+            adminUser.setUserName(user.getUserName());
+            adminUser.setEmail(user.getEmail());
+            adminUser.setCreatedOnDate(new Date());
+            String password = passwordPolicyService.generatePassword();
+            adminUser.setPassword(passwordEncoder.encode(password));
+            Role role = new Role();
+            role.setId(Long.parseLong(user.getRoleId()));
+            adminUser.setRole(role);
+            adminUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
+            adminUserRepo.save(adminUser);
+            logger.info("New admin user {} created", adminUser.getUserName());
+            return messageSource.getMessage("user.add.success", null, locale);
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("user.add.failure", null, locale), e);
+        }
     }
 
     @Override
     @Transactional
     public String changeActivationStatus(Long userId) throws InternetBankingException {
-        AdminUser user = adminUserRepo.findOne(userId);
-        String oldStatus = user.getStatus();
-        String newStatus = "ACTIVE".equals(oldStatus) ? "INACTIVE" : "ACTIVE";
-        user.setStatus(newStatus);
-        adminUserRepo.save(user);
-        if ("INACTIVE".equals(oldStatus) && "ACTIVE".equals(newStatus)) {
-            String password = passwordService.generatePassword();
-            user.setPassword(passwordEncoder.encode(password));
-            mailService.send(user.getEmail(),"Mail from Internet Banking", String.format("Your new password to Admin console is %s and your current username is %s", password, user.getUserName()));
-        }
-        logger.info("Admin user {} status changed from {} to {}", user.getUserName(), oldStatus, newStatus);
-        return messageSource.getMessage("user.status.success",null,LocaleContextHolder.getLocale());
+        try {
+            AdminUser user = adminUserRepo.findOne(userId);
+            String oldStatus = user.getStatus();
+            String newStatus = "ACTIVE".equals(oldStatus) ? "INACTIVE" : "ACTIVE";
+            user.setStatus(newStatus);
+            adminUserRepo.save(user);
+            if ((oldStatus == null) || ("INACTIVE".equals(oldStatus)) && "ACTIVE".equals(newStatus)) {
+                String password = passwordPolicyService.generatePassword();
+                user.setPassword(passwordEncoder.encode(password));
+                Email email = new Email.Builder().setSender("admin@ibanking.coronationmb.com")
+                        .setRecipient(user.getEmail())
+                        .setSubject("Internet Banking Admin Console Activation")
+                        .setBody(String.format("Your new password to Admin console is %s and your username is %s", password, user.getUserName()))
+                        .build();
+                mailService.send(email);
+            }
 
+            logger.info("Admin user {} status changed from {} to {}", user.getUserName(), oldStatus, newStatus);
+            return messageSource.getMessage("user.status.success", null, locale);
+
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("user.status.failure", null, locale), e);
+
+        }
     }
 
 
     @Override
+    @Transactional
     public String deleteUser(Long id) throws InternetBankingException {
-        adminUserRepo.delete(id);
-        logger.warn("Admin user with Id {} deleted", id);
-        return messageSource.getMessage("user.delete", null, LocaleContextHolder.getLocale());
-
+        try {
+            AdminUser user = adminUserRepo.findOne(id);
+            user.setDeletedOn(new Date());
+            adminUserRepo.save(user);
+            adminUserRepo.delete(user);
+            logger.warn("Admin user {} deleted", user.getUserName());
+            return messageSource.getMessage("user.delete.success", null, locale);
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("user.delete.failure", null, locale), e);
+        }
     }
 
     @Override
     @Transactional
 //    @Verifiable(operation="Updating an Existing User")
     public String updateUser(AdminUserDTO user) throws InternetBankingException {
-        AdminUser adminUser = new AdminUser();
-        adminUser.setId((user.getId()));
-        adminUser.setVersion(user.getVersion());
-        adminUser.setFirstName(user.getFirstName());
-        adminUser.setLastName(user.getLastName());
-        adminUser.setUserName(user.getUserName());
-        Role role = new Role();
-        role.setId(Long.parseLong(user.getRoleId()));
-        adminUser.setRole(role);
-        this.adminUserRepo.save(adminUser);
-        logger.info("Admin user {} updated", adminUser.getUserName());
-        return messageSource.getMessage("user.update.success", null, LocaleContextHolder.getLocale());
+
+        try {
+            AdminUser adminUser = new AdminUser();
+            adminUser.setId((user.getId()));
+            adminUser.setVersion(user.getVersion());
+            adminUser.setFirstName(user.getFirstName());
+            adminUser.setLastName(user.getLastName());
+            adminUser.setUserName(user.getUserName());
+            adminUser.setEmail(user.getEmail());
+            Role role = new Role();
+            role.setId(Long.parseLong(user.getRoleId()));
+            adminUser.setRole(role);
+            this.adminUserRepo.save(adminUser);
+            logger.info("Admin user {} updated", adminUser.getUserName());
+            return messageSource.getMessage("user.update.success", null, locale);
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("user.update.failure", null, locale), e);
+        }
     }
 
     @Override
     @Transactional
-    public String resetPassword(Long userId) throws InternetBankingException {
-        AdminUser user = getUser(userId);
-        String newPassword = passwordService.generatePassword();
-        user.setPassword(passwordEncoder.encode(newPassword));
-        user.setExpiryDate(new Date());
-        this.adminUserRepo.save(user);
-        mailService.send(user.getEmail(), "Mail from Internet Banking","Your new password to Internet banking is " + newPassword);
-        logger.info("Admin user {} password reset successfully", user.getUserName());
-        return messageSource.getMessage("password.reset.success", null, LocaleContextHolder.getLocale());
+    public String resetPassword(Long userId) throws PasswordException {
+
+        try {
+            AdminUser user = adminUserRepo.findOne(userId);
+            String newPassword = passwordPolicyService.generatePassword();
+            user.setPassword(passwordEncoder.encode(newPassword));
+            user.setExpiryDate(new Date());
+            this.adminUserRepo.save(user);
+            Email email = new Email.Builder().setSender("admin@ibanking.coronationmb.com")
+                    .setRecipient(user.getEmail())
+                    .setSubject("Internet Banking Admin Console Password Reset")
+                    .setBody(String.format("Your new password to Admin console is %s and your username is %s", newPassword, user.getUserName()))
+                    .build();
+            mailService.send(email);
+            logger.info("Admin user {} password reset successfully", user.getUserName());
+            return messageSource.getMessage("password.reset.success", null, locale);
+        } catch (Exception e) {
+            throw new PasswordException(messageSource.getMessage("password.reset.failure", null, locale), e);
+        }
     }
 
     @Override
     @Transactional
-    public String changePassword(AdminUser user, String oldPassword, String newPassword) throws InternetBankingException {
-        if (this.passwordEncoder.matches(oldPassword, user.getPassword())) {
+    public String changePassword(AdminUser user, ChangePassword changePassword) throws PasswordException {
+
+        if (!this.passwordEncoder.matches(changePassword.getOldPassword(), user.getPassword())) {
+            throw new WrongPasswordException();
+        }
+
+        String errorMessage = passwordPolicyService.validate(changePassword.getNewPassword(),user.getUsedPasswords());
+        if (!"".equals(errorMessage)) {
+            throw new PasswordPolicyViolationException(errorMessage);
+        }
+        if (!changePassword.getNewPassword().equals(changePassword.getConfirmPassword())) {
+            throw new PasswordMismatchException();
+        }
+
+        try {
             AdminUser adminUser = adminUserRepo.findOne(user.getId());
-            adminUser.setPassword(this.passwordEncoder.encode(newPassword));
+            adminUser.setPassword(this.passwordEncoder.encode(changePassword.getNewPassword()));
             this.adminUserRepo.save(adminUser);
             logger.info("User {}'s password has been updated", user.getId());
-
-        } else {
-            logger.error("Could not change password for admin user {} due to incorrect old password", user.getUserName());
+            return messageSource.getMessage("password.change.success", null, locale);
+        } catch (Exception e) {
+            throw new PasswordException(messageSource.getMessage("password.change.failure", null, locale), e);
         }
-        return messageSource.getMessage("password.change.success",null,LocaleContextHolder.getLocale());
-}
+    }
 
 
     @Override

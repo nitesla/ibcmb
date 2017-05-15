@@ -1,6 +1,6 @@
 package longbridge.controllers.admin;
 
-import longbridge.exception.InternetBankingDuplicateObjectException;
+import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.InternetBankingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -89,7 +89,7 @@ public class AdmFinancialInstitutionController {
             String message = financialInstitutionService.addFinancialInstitution(financialInstitutionDTO);
             redirectAttributes.addFlashAttribute("message", message);
             return "redirect:/admin/finst";
-        } catch (InternetBankingDuplicateObjectException doe) {
+        } catch (DuplicateObjectException doe) {
             logger.error("Error occurred creating financial institution", doe);
             result.addError(new ObjectError("error", doe.getMessage()));
             return "adm/financialinstitution/add";
@@ -117,9 +117,9 @@ public class AdmFinancialInstitutionController {
         try {
             String message = financialInstitutionService.updateFinancialInstitution(financialInstitutionDTO);
             redirectAttributes.addFlashAttribute("message", message);
-        } catch (Exception e) {
-            logger.error("Error occurred updating financial institution", e);
-            result.addError(new ObjectError("error", messageSource.getMessage("institution.update.failure", null, locale)));
+        } catch (InternetBankingException ibe) {
+            logger.error("Error occurred updating financial institution", ibe);
+            result.addError(new ObjectError("error", ibe.getMessage()));
             return "adm/financialinstitution/edit";
         }
 
@@ -131,9 +131,9 @@ public class AdmFinancialInstitutionController {
         try {
             String message = financialInstitutionService.deleteFinancialInstitution(id);
             redirectAttributes.addFlashAttribute("message", message);
-        } catch (Exception e) {
+        } catch (InternetBankingException e) {
             logger.error("Error occurred deleting financial institution ", e);
-            redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("institution.delete.failure", null, locale));
+            redirectAttributes.addFlashAttribute("failure", e.getMessage());
         }
         return "redirect:/admin/finst";
 

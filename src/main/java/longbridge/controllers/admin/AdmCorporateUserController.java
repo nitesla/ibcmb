@@ -4,16 +4,12 @@ import longbridge.dtos.CorporateDTO;
 import longbridge.dtos.CorporateUserDTO;
 import longbridge.forms.ChangePassword;
 import longbridge.models.CorporateUser;
+import longbridge.services.CorporateService;
 import longbridge.services.CorporateUserService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
-import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
-import org.springframework.data.jpa.datatables.repository.DataTablesUtils;
 import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,10 +24,13 @@ import javax.validation.Valid;
  */
 
 @Controller
-@RequestMapping("/admin/corporate/users")
+@RequestMapping("/admin/corporates")
 public class AdmCorporateUserController {
     @Autowired
     CorporateUserService corporateUserService;
+
+    @Autowired
+    private CorporateService corporateService;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -39,12 +38,16 @@ public class AdmCorporateUserController {
     private ModelMapper modelMapper;
 
 
-    @GetMapping("/new")
-    public String addUser() {
-        return "addUser";
+    @GetMapping("{corpId}/users/new")
+    public String addUser(@PathVariable Long corpId, Model model) {
+        CorporateDTO corporateDTO = corporateService.getCorporate(corpId);
+        CorporateUserDTO corporateUserDTO = new CorporateUserDTO();
+        model.addAttribute("corporate", corporateDTO);
+        model.addAttribute("corporateUser", corporateUserDTO);
+        return "adm/corporate/addUser";
     }
 
-    @PostMapping
+    @PostMapping("/users")
     public String createUser(@ModelAttribute("corporateUser") CorporateUserDTO corporateUserDTO, BindingResult result, Model model) throws Exception {
         if (result.hasErrors()) {
             return "addUser";
@@ -55,28 +58,7 @@ public class AdmCorporateUserController {
         return "redirect:/corporate/users";
     }
 
-    @GetMapping
-    public String getRetailUsers() {
-
-        return "adm/corporate/view";
-    }
-
-    @GetMapping(path = "/all")
-    public
-    @ResponseBody
-    DataTablesOutput<CorporateUserDTO> getUsers(DataTablesInput input) {
-
-        Pageable pageable = DataTablesUtils.getPageable(input);
-        Page<CorporateUserDTO> corpUsers = corporateUserService.getUsers(pageable);
-        DataTablesOutput<CorporateUserDTO> out = new DataTablesOutput<CorporateUserDTO>();
-        out.setDraw(input.getDraw());
-        out.setData(corpUsers.getContent());
-        out.setRecordsFiltered(corpUsers.getTotalElements());
-        out.setRecordsTotal(corpUsers.getTotalElements());
-        return out;
-    }
-
-    @GetMapping("/{userId}")
+    @GetMapping("/users/{userId}")
     public String getUser(@PathVariable Long userId, Model model) {
         CorporateUserDTO user = corporateUserService.getUser(userId);
 
@@ -85,7 +67,7 @@ public class AdmCorporateUserController {
     }
 
 
-    @PostMapping("/{userId}")
+    @PostMapping("/users/{userId}")
     public String UpdateUser(@ModelAttribute("corporateUser") CorporateUserDTO corporateUserDTO, @PathVariable Long userId, BindingResult result, RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
             return "addUser";
@@ -97,18 +79,18 @@ public class AdmCorporateUserController {
         return "redirect:/corporate/users";
     }
 
-    @PostMapping("/{userId}/delete")
+    @PostMapping("/users/{userId}/delete")
     public String deleteUser(@PathVariable Long userId) {
         corporateUserService.deleteUser(userId);
         return "redirect:/corporate/users";
     }
 
-    @GetMapping("/changePassword")
+    @GetMapping("/users/changePassword")
     public String changePassword() {
         return "changePassword";
     }
 
-    @PostMapping("/changePassword")
+    @PostMapping("/users/changePassword")
     public String changePassword(@Valid ChangePassword changePassword, Long userId, BindingResult result, HttpRequest request, Model model) {
         if (result.hasErrors()) {
             return "changePassword";

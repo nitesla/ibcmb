@@ -31,7 +31,7 @@ import longbridge.dtos.CodeDTO;
 @Table(
 		name="code",
 		uniqueConstraints=
-		@UniqueConstraint(columnNames={"code", "type"})
+		@UniqueConstraint(columnNames={"code", "type","deletedOn"})
 )
 @Where(clause ="del_Flag='N'" )
 public class Code extends AbstractEntity {

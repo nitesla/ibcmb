@@ -1,17 +1,15 @@
 package longbridge.services;
 
-import longbridge.dtos.CorporateUserDTO;
 import longbridge.dtos.MessageDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.*;
 
-import java.awt.print.Pageable;
+//import java.awt.print.Pageable;
 import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
-
-import javax.jws.soap.SOAPBinding;
+import org.springframework.data.domain.Pageable;
 
 /**
  * The {@code MessagingService} interface provides a service for sending messages
@@ -109,6 +107,15 @@ public interface MessageService {
     List<MessageDTO> getSentMessages(User user);
 
     /**
+     * Returns a page list of maessages recieved
+     * @param pageableDetails the pagination
+     * @return returns a list of messages
+     */
+     Page<MessageDTO> getSentMessages(String recipient, UserType recipientTye, Pageable pageable);
+
+    Page<MessageDTO> getSentMessages(String recipient, UserType recipientTye, java.awt.print.Pageable pageable);
+
+    /**
      * Returns a list of messages received by the specified user
      * @param user the user
      * @return a list of  messages
@@ -168,8 +175,14 @@ public interface MessageService {
     String sendMessage(User sender, User recipient, MessageDTO message) throws InternetBankingException;
 
     /** Makes a request to send an email to using the details
-     * in the {@link EmailDetail} object
+     * in the {@link Email} object
      * @param email EmailDetail object containing all the details required to send an email
      */
-    void sendEmail(EmailDetail email) throws InternetBankingException;
+    void sendEmail(Email email) throws InternetBankingException;
+
+    Page<Message> getMessages(User user, java.awt.print.Pageable pageDetails);
+
+    Page<Message> getMessages(User user, Date date, java.awt.print.Pageable pageDetails);
+
+    Page<Message> getMessages(User user, Date fromDate, Date toDate, java.awt.print.Pageable pageDetails);
 }

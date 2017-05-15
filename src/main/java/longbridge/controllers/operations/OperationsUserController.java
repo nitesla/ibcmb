@@ -4,7 +4,7 @@ import longbridge.dtos.OperationsUserDTO;
 import longbridge.forms.ChangePassword;
 import longbridge.models.OperationsUser;
 import longbridge.services.OperationsUserService;
-import longbridge.services.PasswordService;
+import longbridge.services.PasswordPolicyService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +33,7 @@ public class OperationsUserController {
     private BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
-    PasswordService passwordService;
+    PasswordPolicyService passwordPolicyService;
 
     private Logger logger= LoggerFactory.getLogger(this.getClass());
 
@@ -92,7 +92,7 @@ public class OperationsUserController {
 
         ChangePassword changePassword = new ChangePassword();
         model.addAttribute("changePassword", changePassword);
-        model.addAttribute("passwordRules",passwordService.getPasswordRules());
+        model.addAttribute("passwordRules", passwordPolicyService.getPasswordRules());
         return "/ops/pword";
     }
 
@@ -110,7 +110,7 @@ public class OperationsUserController {
             return "/ops/pword";
         }
 
-        String errorMsg = passwordService.validate(changePassword.getNewPassword());
+        String errorMsg = passwordPolicyService.validate(changePassword.getNewPassword(),user.getUsedPasswords());
         if(!errorMsg.equals("")){
             result.addError(new ObjectError("invalid", errorMsg));
             return "/ops/pword";
@@ -129,7 +129,7 @@ public class OperationsUserController {
             return "/ops/pword";
         }
 
-        operationsUserService.changePassword(user, changePassword.getOldPassword(), changePassword.getNewPassword());
+        operationsUserService.changePassword(user,changePassword);
 
         redirectAttributes.addFlashAttribute("message","Password changed successfully");
 

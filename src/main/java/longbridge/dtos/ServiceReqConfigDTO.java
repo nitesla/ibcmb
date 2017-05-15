@@ -12,10 +12,10 @@ public class ServiceReqConfigDTO {
 
 	@JsonProperty("DT_RowId")
     private Long id;
-	@NotEmpty
+	@NotEmpty(message = "requestName")
     private String requestName;
     private String requestType;
-    private String requestUnit;
+    private Long groupId;
     private int version;
     private ArrayList<ServiceReqFormFieldDTO> formFields;
 
@@ -48,12 +48,12 @@ public class ServiceReqConfigDTO {
         this.requestType = requestType;
     }
 
-    public String getRequestUnit() {
-        return requestUnit;
+    public Long getGroupId() {
+        return groupId;
     }
 
-    public void setRequestUnit(String requestUnit) {
-        this.requestUnit = requestUnit;
+    public void setGroupId(Long groupId) {
+        this.groupId = groupId;
     }
 
     public void setRequestName(String requestName) {
@@ -74,7 +74,7 @@ public class ServiceReqConfigDTO {
                 "id=" + id +
                 ", requestName='" + requestName + '\'' +
                 ", requestType='" + requestType + '\'' +
-                ", requestUnit='" + requestUnit + '\'' +
+                ", groupId='" + groupId + '\'' +
                 ", version=" + version +
                 ", formFields=" + formFields +
                 '}';
