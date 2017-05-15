@@ -108,11 +108,6 @@ public class MessageServiceImpl implements MessageService {
         return convertEntitiesToDTOs(mailBox.getMessages());
     }
 
-    @Override
-    public Page<Message> getMessages(User user, org.springframework.data.domain.Pageable pageDetails) {
-        return null;
-    }
-
 
     @Override
     public Iterable<Message> getMessages(User user, Date date) {
@@ -120,10 +115,6 @@ public class MessageServiceImpl implements MessageService {
         return null;
     }
 
-    @Override
-    public Page<Message> getMessages(User user, Date date, org.springframework.data.domain.Pageable pageDetails) {
-        return null;
-    }
 
     @Override
     public Iterable<Message> getMessages(User user, Date fromDate, Date toDate) {
@@ -177,7 +168,7 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public Page<MessageDTO> getSentMessages(String recipient, UserType recipientTye, org.springframework.data.domain.Pageable pageable) {
+    public Page<MessageDTO> getSentMessages(String recipient, UserType recipientTye, Pageable pageable) {
         return null;
     }
 
@@ -195,9 +186,10 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public Page<Message> getMessages(User user, Date fromDate, Date toDate, org.springframework.data.domain.Pageable pageDetails) {
+    public Page<Message> getMessages(User user, Date fromDate, Date toDate, Pageable pageDetails) {
         return null;
     }
+
 
     @Override
     public String purge(Date fromDate, Date toDate) {
@@ -223,6 +215,8 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public Page<Message> getMessages(User user, Date date, java.awt.print.Pageable pageDetails) {
+
+
         return null;
     }
 

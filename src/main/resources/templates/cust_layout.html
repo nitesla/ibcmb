@@ -40,7 +40,7 @@
                     <div class="row ">
                         <div class="col-md-3 col-sm-4 header_info bvn"><p>Your Bank verification number</p>
                             <h5 th:text="'BVN: ' + ${bvn}"></h5></div>
-                        <div class="col-md-5 col-sm-4 header_info"><h5><span th:text="*{greeting}"></span><br class="break"/><b th:text="*{name}"></b> &nbsp; <i class="fa fa-envelope"></i></h5>
+                        <div class="col-md-5 col-sm-4 header_info"><h5><span th:text="*{greeting}"></span><br class="break"/><b th:text="*{name}"></b> &nbsp; <a href="#"><i class="fa fa-envelope"></i></a></h5>
 
                             <div class="hide-faq"><h6>FAQS &nbsp; &nbsp;<i class="fa fa-question-circle"></i><span class="date2 lorem">&nbsp; &nbsp;Login History:&nbsp;</span>&nbsp;
                                 <span class="lorem" th:text="*{lastLogin}">21st March 2017 10:30am</span></h6></div></div>
@@ -92,31 +92,31 @@
                         <li class="mega-dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">More<i class="caret"></i></a>
                             <ul class="dropdown-menu mega-dropdown-menu row">
-                                <li class="col-sm-3">
+                                <li class="col-sm-4">
                                     <ul>
                                         <li class="dropdown-header">Cards</li>
-                                        <li class="divider"></li>
+                                        <!--<li class="divider"></li>-->
                                         <li class="dropdown-header">Product Offerings</li>
 
                                     </ul>
                                 </li>
-                                <li class="col-sm-3">
+                                <li class="col-sm-4 lists">
                                     <ul>
                                         <li class="dropdown-header">Token Management </li>
-                                        <li><a th:href="@{/retail/alert_preference}" th:text="#{menu.token.sync}">Synchronize Token</a></li>
-                                        <li><a th:href="@{/retail/change_password}" th:text="#{menu.token.report}">Report Lost Token</a></li>
-                                        <li class="divider"></li>
+                                        <li><i class="fa fa-plus-square"></i><a th:href="@{/retail/alert_preference}" th:text="#{menu.token.sync}">Synchronize Token</a></li>
+                                        <li><i class="fa fa-plus-square"></i>&nbsp;<a th:href="@{/retail/change_password}" th:text="#{menu.token.report}">Report Lost Token</a></li>
+                                        <!--<li class="divider"></li>-->
                                         <li class="dropdown-header">Beneficiaries</li>
                                         <li><a th:href="@{/retail/beneficiary}" th:text="#{menu.beneficiary}">Beneficiaries</a></li>
                                         <li><a th:href="@{/retail/beneficiary/new}" th:text="#{menu.beneficiary.add}">Beneficiaries</a></li>
 
                                     </ul>
                                 </li>
-                                <li class="col-sm-3">
+                                <li class="col-sm-4">
                                     <ul>
                                         <li class="dropdown-header">Message Center</li>
                                         <li><a href="#" th:text="#{menu.mail}"> Mailbox</a></li>
-                                        <li class="divider"></li>
+                                        <!--<li class="divider"></li>-->
                                         <li class="dropdown-header">Loans &amp; Installments</li>
                                     </ul>
                                 </li>

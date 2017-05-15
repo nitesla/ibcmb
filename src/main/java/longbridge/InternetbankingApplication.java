@@ -1,5 +1,6 @@
 package longbridge;
 
+import longbridge.jobs.DirectDebitJob;
 import longbridge.repositories.CustomJpaRepositoryFactoryBean;
 import longbridge.services.MessageService;
 import longbridge.services.OperationsUserService;
@@ -11,6 +12,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
+import javax.swing.*;
 import javax.transaction.Transactional;
 
 
@@ -23,14 +25,18 @@ public class InternetbankingApplication implements CommandLineRunner {
 	OperationsUserService operationsUserService;
 	@Autowired
 	MessageService messageService;
+
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	//	@Autowired
 	//	IntegrationService service;
 
 	public static void main(String[] args) {
+		//startup all jobs
+		Timer timer = new Timer(1000 * 60 * 60 * 12, new DirectDebitJob());
 		SpringApplication.run(InternetbankingApplication.class, args);
 	}
+	
 
 	@Override
 	@Transactional

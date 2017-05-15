@@ -82,7 +82,11 @@ public class CorporateServiceImpl implements CorporateService {
     @Override
     public String updateCorporate(CorporateDTO corporateDTO) throws InternetBankingException {
         try {
-            Corporate corporate = convertDTOToEntity(corporateDTO);
+            Corporate corporate = corporateRepo.findOne(corporateDTO.getId());
+            corporate.setVersion(corporateDTO.getVersion());
+            corporate.setEmail(corporateDTO.getEmail());
+            corporate.setCompanyName(corporateDTO.getCompanyName());
+            corporate.setAddress(corporateDTO.getAddress());
             corporateRepo.save(corporate);
             return messageSource.getMessage("corporate.update.success", null, locale);
         }

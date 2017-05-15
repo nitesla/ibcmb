@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="cust_layout :: site-head">
+
+</head>
+<body>
+<header th:replace="cust_layout :: header">
+</header>
+
+<section class="content-wrapper">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 col-sm-8">
+                <h5 class="page_header"> Direct Debit</h5>
+                <a th:href="@{/retail/directdebit/new}" class="pull-right">Add New Direct Debit</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-8 content-bg">
+                <div class="row spacing">
+                    <div class="col-md-10">
+                        <table class="table">
+                            <thead>
+                                <td>Beneficiary</td>
+                                <td>Debit Account</td>
+                                <td>Amount</td>
+                                <td>Next Debit Date</td>
+                            </thead>
+                            <tbody>
+                                <!--<tr th:each="int : ${intBen}">-->
+                                    <!--<td th:text="${int.accountName}"></td>-->
+                                    <!--<td th:text="${int.accountNumber}"></td>-->
+                                    <!--<td th:text="${int.beneficiaryBank}"></td>-->
+                                    <!--<td><a th:href="@{'/retail/beneficiary/' + ${int.id} + '/int/delete'}"><i class="fa fa-trash"></i></a></td>-->
+                                <!--</tr>-->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div th:replace="cust_layout :: sidebar" class="col-md-3 sidebar">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CONTENT-WRAPPER SECTION END-->
+<footer th:replace="cust_layout ::footer">
+</footer>
+</body>
+</html>

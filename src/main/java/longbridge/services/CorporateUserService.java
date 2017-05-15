@@ -61,7 +61,7 @@ public interface CorporateUserService{
      * Adds a corporate user to a corporate customer
      * @param user the corporate user
      */
-    String addUser(CorporateUser user);
+    String addUser(CorporateUserDTO user);
 
     /**
      * resets the password for the specified corporate user
@@ -74,19 +74,6 @@ public interface CorporateUserService{
      * @param userId the corporate user's id
      */
     String deleteUser(Long userId) throws InternetBankingException;
-
-    /**
-     * Enables the corporate user. This allows the corporate user to perform
-     * operations with the required permissions
-     * @param user the corporate user
-     */
-    void enableUser(CorporateUser user) throws InternetBankingException;
-
-    /**
-     * Disables the corporate user. A disabled user cannot access the system.
-     * @param user disables the corporate user
-     */
-    void disableUser(CorporateUser user) throws InternetBankingException;
     
     /**
      * Temporarily Locks the corporate user

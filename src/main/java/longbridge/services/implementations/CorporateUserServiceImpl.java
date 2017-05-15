@@ -1,12 +1,15 @@
 package longbridge.services.implementations;
 
 import longbridge.dtos.CorporateUserDTO;
+import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.Corporate;
 import longbridge.models.CorporateUser;
+import longbridge.models.Role;
 import longbridge.repositories.CorpLimitRepo;
 import longbridge.repositories.CorporateUserRepo;
 import longbridge.services.CorporateUserService;
+import longbridge.services.PasswordPolicyService;
 import longbridge.services.SecurityService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -44,6 +47,9 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
     @Autowired
     MessageSource messageSource;
+
+    @Autowired
+    PasswordPolicyService passwordPolicyService;
 
     Locale locale = LocaleContextHolder.getLocale();
 
@@ -91,9 +97,34 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     }
 
     @Override
-    public String addUser(CorporateUser user) throws InternetBankingException {
-        corporateUserRepo.save(user);
-        return messageSource.getMessage("user.add.success",null,locale);
+    public String addUser(CorporateUserDTO user) throws InternetBankingException {
+
+        CorporateUser corporateUser = corporateUserRepo.findFirstByUserName(user.getUserName());
+        if (corporateUser != null) {
+            throw new DuplicateObjectException(messageSource.getMessage("user.exists", null, locale));
+        }
+        try {
+            corporateUser = new CorporateUser();
+            corporateUser.setFirstName(user.getFirstName());
+            corporateUser.setLastName(user.getLastName());
+            corporateUser.setUserName(user.getUserName());
+            corporateUser.setEmail(user.getEmail());
+            corporateUser.setCreatedOnDate(new Date());
+            String password = passwordPolicyService.generatePassword();
+            corporateUser.setPassword(passwordEncoder.encode(password));
+            Role role = new Role();
+            role.setId(Long.parseLong(user.getRoleId()));
+            corporateUser.setRole(role);
+            corporateUser.setExpiryDate(new Date());
+            Corporate corporate = new Corporate();
+            corporate.setId(Long.parseLong(user.getCorporateId()));
+            corporateUser.setCorporate(corporate);
+            corporateUserRepo.save(corporateUser);
+            logger.info("New corporate user {} created", corporateUser.getUserName());
+            return messageSource.getMessage("user.add.success", null, locale);
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("user.add.failure", null, locale), e);
+        }
     }
 
     @Override
@@ -105,18 +136,6 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     public String deleteUser(Long userId) throws InternetBankingException{
         corporateUserRepo.delete(userId);
         return messageSource.getMessage("user.delete.success",null,locale);
-    }
-
-    @Override
-    public void enableUser(CorporateUser user) {
-        user.setEnabled(true);
-        corporateUserRepo.save(user);
-    }
-
-    @Override
-    public void disableUser(CorporateUser user) {
-        user.setEnabled(false);
-        corporateUserRepo.save(user);
     }
 
     @Override
