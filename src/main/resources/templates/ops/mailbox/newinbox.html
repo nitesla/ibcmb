@@ -87,8 +87,8 @@
                                             <i class="fa fa-user"></i>
                                         </div>
                                         <div class="right">
-                                            <h3 th:text="${messageDTO.sender}"><small th:text="${messageDTO.dateCreated}"></small></h3>
-                                            <p th:text="${messageDTO.subject}"></p>
+                                            <h3 th:text="${messageDTO.sender}"></h3>
+                                            <p th:text="${messageDTO.subject}"></p><span th:text="${messageDTO.dateCreated}" ></span>
                                         </div>
                                     </div>
                                 </a>
@@ -131,6 +131,8 @@
                                                     <div class="message-options">
                                                         <a th:href="@{/ops/mailbox/{id}/reply(id=${messageDTO.id})}" class="btn btn-link"><i class="fa fa-reply m-r-5"></i>Reply</a>
                                                         <a th:href="@{/ops/mailbox/{id}/forward(id=${messageDTO.id})}" class="btn btn-link"><i class="fa fa-arrow-right m-r-5"></i>Forward</a>
+                                                        <a th:href="@{/ops/mailbox/newinbox/{id}/delete(id=${messageDTO.id})}" class="btn btn-link"><i class="fa fa-trash-o m-r-5"></i>Delete</a>
+
                                                     </div>
                                                 </div>
 
@@ -147,7 +149,9 @@
 </div>
 
                 </div>
-            </div>
+                    <div th:unless="${messageDTO}"><p align="center"> No Received Messages</p></div>
+
+                </div>
         </div>
         </div>
         <!-- /page content -->
