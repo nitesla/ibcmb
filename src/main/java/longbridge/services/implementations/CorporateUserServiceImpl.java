@@ -1,6 +1,7 @@
 package longbridge.services.implementations;
 
 import longbridge.dtos.CorporateUserDTO;
+import longbridge.exception.InternetBankingException;
 import longbridge.models.Corporate;
 import longbridge.models.CorporateUser;
 import longbridge.repositories.CorpLimitRepo;
@@ -11,6 +12,8 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +23,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by Fortune on 4/4/2017.
@@ -37,6 +41,11 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
     @Autowired
     ModelMapper modelMapper;
+
+    @Autowired
+    MessageSource messageSource;
+
+    Locale locale = LocaleContextHolder.getLocale();
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -76,25 +85,26 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     }
 
     @Override
-    public boolean updateUser(CorporateUser user) {
-        return false;
+    public String updateUser(CorporateUserDTO user) throws InternetBankingException{
+        corporateUserRepo.save(convertDTOToEntity(user));
+        return messageSource.getMessage("user.update.success",null,locale);
     }
 
     @Override
-    public void addUser(CorporateUser user) {
+    public String addUser(CorporateUser user) throws InternetBankingException {
         corporateUserRepo.save(user);
+        return messageSource.getMessage("user.add.success",null,locale);
     }
 
     @Override
-    public void resetPassword(CorporateUser user) {
-
+    public String resetPassword(CorporateUser user) {
+        return null;
     }
 
     @Override
-    public void deleteUser(Long userId) {
-        CorporateUser repo = corporateUserRepo.findOne(userId);
-        repo.setDelFlag("Y");
-        corporateUserRepo.save(repo);
+    public String deleteUser(Long userId) throws InternetBankingException{
+        corporateUserRepo.delete(userId);
+        return messageSource.getMessage("user.delete.success",null,locale);
     }
 
     @Override

@@ -37,8 +37,8 @@ public class AdmCorporateController {
         if(result.hasErrors()){
             return "adm/corporate/add";
         }
-        corporateService.addCorporate(corporate);
-        redirectAttributes.addFlashAttribute("message", "Corporate added successfully");
+        String message = corporateService.addCorporate(corporate);
+        redirectAttributes.addFlashAttribute("message", message);
         return "redirect:/admin/corporates";
     }
 
@@ -90,8 +90,8 @@ public class AdmCorporateController {
 
     @GetMapping("/{corporateId}/delete")
     public String deleteCorporate(@PathVariable Long corporateId, RedirectAttributes redirectAttributes){
-        corporateService.deleteCorporate(corporateId);
-        redirectAttributes.addFlashAttribute("message", "Corporate deleted successfully");
+        String message = corporateService.deleteCorporate(corporateId);
+        redirectAttributes.addFlashAttribute("message", message);
         return "redirect:/admin/corporates";
     }
 }

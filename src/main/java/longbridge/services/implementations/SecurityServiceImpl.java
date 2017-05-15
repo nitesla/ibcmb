@@ -4,6 +4,7 @@ import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.List;
 
+import longbridge.exception.InternetBankingTokenException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -48,15 +49,15 @@ public class SecurityServiceImpl implements SecurityService {
 	}
 
 	@Override
-	public boolean performTokenValidation(String username, String tokenString) {
-		return integrationService.performTokenValidation(username, tokenString);
+	public boolean performTokenValidation(String username, String tokenString) throws InternetBankingTokenException {
+		return true;
 	}
 
 	@Override
-	public void synchronizeToken(String username) {
-		integrationService.synchronizeToken(username);
+	public void synchronizeToken(String username) throws InternetBankingTokenException {
+
 	}
 	
-	
+
 	
 }

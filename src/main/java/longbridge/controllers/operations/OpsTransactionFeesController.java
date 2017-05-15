@@ -1,6 +1,5 @@
 package longbridge.controllers.operations;
 
-import jdk.nashorn.internal.objects.Global;
 import longbridge.dtos.CodeDTO;
 import longbridge.dtos.TransactionFeeDTO;
 import longbridge.services.CodeService;
@@ -18,7 +17,6 @@ import org.springframework.data.jpa.datatables.repository.DataTablesUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -70,16 +68,16 @@ public class OpsTransactionFeesController {
             transactionService.addTransactionFee(transactionFeeDTO);
         } catch (DataAccessException dae) {
             logger.error("Could not create transaction fee {}", dae.toString());
-            bindingResult.addError(new ObjectError("exception", messageSource.getMessage("transaction.fee.exists", null, locale)));
+            bindingResult.addError(new ObjectError("exception", messageSource.getMessage("fee.exists", null, locale)));
             return "ops/fees/add";
         } catch (Exception exc) {
             logger.error("Could not create transaction fee {}", exc.toString());
-            bindingResult.addError(new ObjectError("exception", messageSource.getMessage("transaction.fee.failure", null, locale)));
+            bindingResult.addError(new ObjectError("exception", messageSource.getMessage("fee.add.failure", null, locale)));
             return "ops/fee/add";
         }
 
         logger.info("Fee created for transaction {}", transactionFeeDTO.getTransactionType());
-        redirectAttributes.addFlashAttribute("message", messageSource.getMessage("transaction.fee.success", null, locale));
+        redirectAttributes.addFlashAttribute("message", messageSource.getMessage("fee.add.success", null, locale));
         return "redirect:/ops/fees";
     }
 
@@ -101,12 +99,12 @@ public class OpsTransactionFeesController {
             transactionService.updateTransactionFee(transactionFeeDTO);
         } catch (Exception exc) {
             logger.error("Could not update transaction fee {}", exc.toString());
-            bindingResult.addError(new ObjectError("exception", messageSource.getMessage("transaction.fee.update.failure", null, locale)));
+            bindingResult.addError(new ObjectError("exception", messageSource.getMessage("fee.update.failure", null, locale)));
             return "ops/fee/edit";
         }
 
         logger.info("Fee updated for transaction {}", transactionFeeDTO.getTransactionType());
-        redirectAttributes.addFlashAttribute("message", messageSource.getMessage("transaction.fee.update.success", null, locale));
+        redirectAttributes.addFlashAttribute("message", messageSource.getMessage("fee.update.success", null, locale));
         return "redirect:/ops/fees";
     }
 
@@ -135,7 +133,7 @@ public class OpsTransactionFeesController {
         TransactionFeeDTO transactionFeeDTO = transactionService.getTransactionFee(id);
         transactionService.deleteTransactionFee(id);
         logger.warn("Fee deleted for transaction {}", transactionFeeDTO.getTransactionType());
-        redirectAttributes.addFlashAttribute("message", messageSource.getMessage("transaction.fee.delete", null, locale));
+        redirectAttributes.addFlashAttribute("message", messageSource.getMessage("fee.delete.success", null, locale));
         return "redirect:/ops/fees";
     }
 }

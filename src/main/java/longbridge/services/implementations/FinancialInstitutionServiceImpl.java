@@ -1,6 +1,8 @@
 package longbridge.services.implementations;
 
 import longbridge.dtos.FinancialInstitutionDTO;
+import longbridge.exception.InternetBankingDuplicateObjectException;
+import longbridge.exception.InternetBankingException;
 import longbridge.models.FinancialInstitution;
 import longbridge.models.FinancialInstitutionType;
 import longbridge.repositories.FinancialInstitutionRepo;
@@ -9,6 +11,8 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by Wunmi Sowunmi on 24/04/2017.
@@ -31,14 +36,19 @@ public class FinancialInstitutionServiceImpl implements FinancialInstitutionServ
     ModelMapper modelMapper;
 
     @Autowired
+    MessageSource messageSource;
+
+    Locale locale = LocaleContextHolder.getLocale();
+
+    @Autowired
     public FinancialInstitutionServiceImpl(FinancialInstitutionRepo financialInstitutionRepo) {
         this.financialInstitutionRepo = financialInstitutionRepo;
     }
 
     @Override
-    public List<FinancialInstitutionDTO> convertEntitiesToDTOs(Iterable<FinancialInstitution> financialInstitutions){
+    public List<FinancialInstitutionDTO> convertEntitiesToDTOs(Iterable<FinancialInstitution> financialInstitutions) {
         List<FinancialInstitutionDTO> financialInstitutionDTOList = new ArrayList<>();
-        for(FinancialInstitution financialInstitution: financialInstitutions){
+        for (FinancialInstitution financialInstitution : financialInstitutions) {
             FinancialInstitutionDTO fiDTO = convertEntityToDTO(financialInstitution);
             financialInstitutionDTOList.add(fiDTO);
         }
@@ -46,67 +56,60 @@ public class FinancialInstitutionServiceImpl implements FinancialInstitutionServ
     }
 
     @Override
-    public FinancialInstitutionDTO convertEntityToDTO(FinancialInstitution financialInstitution){
+    public FinancialInstitutionDTO convertEntityToDTO(FinancialInstitution financialInstitution) {
         FinancialInstitutionDTO financialInstitutionDTO = new FinancialInstitutionDTO();
         financialInstitutionDTO.setInstitutionCode(financialInstitution.getInstitutionCode());
         financialInstitutionDTO.setInstitutionType(financialInstitution.getInstitutionType());
         financialInstitutionDTO.setInstitutionName(financialInstitution.getInstitutionName());
-        return  modelMapper.map(financialInstitution,FinancialInstitutionDTO.class);
+        return modelMapper.map(financialInstitution, FinancialInstitutionDTO.class);
     }
 
     @Override
-    public FinancialInstitution convertDTOToEntity(FinancialInstitutionDTO financialInstitutionDTO){
-        return  modelMapper.map(financialInstitutionDTO,FinancialInstitution.class);
+    public FinancialInstitution convertDTOToEntity(FinancialInstitutionDTO financialInstitutionDTO) {
+        return modelMapper.map(financialInstitutionDTO, FinancialInstitution.class);
     }
 
     @Override
-    public boolean addFinancialInstitution(FinancialInstitutionDTO financialInstitutionDTO) {
-        boolean ok = false;
-        if (financialInstitutionDTO != null) {
-            FinancialInstitution financialInstitution = new FinancialInstitution();
-            financialInstitution.setInstitutionCode(financialInstitutionDTO.getInstitutionCode());
-            financialInstitution.setInstitutionType(financialInstitutionDTO.getInstitutionType());
-            financialInstitution.setInstitutionName(financialInstitutionDTO.getInstitutionName());
-            this.financialInstitutionRepo.save(financialInstitution
-            );
-            logger.info("New financial institution: {} created", financialInstitution.getInstitutionName());
-            ok=true;
-        } else {
-            logger.error("FINANCIAL INSTITUTION NOT FOUND");
+    public String addFinancialInstitution(FinancialInstitutionDTO financialInstitutionDTO) throws InternetBankingException {
+
+        FinancialInstitution financialInstitution;
+        financialInstitution = financialInstitutionRepo.findByInstitutionCodeAndInstitutionType(financialInstitutionDTO.getInstitutionCode(),financialInstitutionDTO.getInstitutionType());
+        if(financialInstitution!=null){
+            throw new InternetBankingDuplicateObjectException("Financial institution code already exists");
         }
-        return ok;
+        financialInstitution = new FinancialInstitution();
+        financialInstitution.setInstitutionCode(financialInstitutionDTO.getInstitutionCode());
+        financialInstitution.setInstitutionType(financialInstitutionDTO.getInstitutionType());
+        financialInstitution.setInstitutionName(financialInstitutionDTO.getInstitutionName());
+        this.financialInstitutionRepo.save(financialInstitution);
+        logger.info("New financial institution: {} created", financialInstitution.getInstitutionName());
+        return messageSource.getMessage("institution.add.success", null, locale);
     }
 
     @Override
-    public boolean updateFinancialInstitution(FinancialInstitutionDTO financialInstitutionDTO) {
-            boolean ok = false;
-            if (financialInstitutionDTO != null) {
-                FinancialInstitution financialInstitution = new FinancialInstitution();
-                financialInstitution.setId((financialInstitutionDTO.getId()));
-                financialInstitution.setVersion(financialInstitutionDTO.getVersion());
-                financialInstitution.setInstitutionCode(financialInstitutionDTO.getInstitutionCode());
-                financialInstitution.setInstitutionType(financialInstitutionDTO.getInstitutionType());
-                financialInstitution.setInstitutionName(financialInstitutionDTO.getInstitutionName());
-                this.financialInstitutionRepo.save(financialInstitution);
-                logger.info("Financial Institution {} updated", financialInstitution.getInstitutionName());
-                ok=true;
-            } else {
-                logger.error("Null Fi provided");
-            }
-            return ok;
+    public String updateFinancialInstitution(FinancialInstitutionDTO financialInstitutionDTO) throws InternetBankingException{
+        FinancialInstitution financialInstitution = new FinancialInstitution();
+        financialInstitution.setId((financialInstitutionDTO.getId()));
+        financialInstitution.setVersion(financialInstitutionDTO.getVersion());
+        financialInstitution.setInstitutionCode(financialInstitutionDTO.getInstitutionCode());
+        financialInstitution.setInstitutionType(financialInstitutionDTO.getInstitutionType());
+        financialInstitution.setInstitutionName(financialInstitutionDTO.getInstitutionName());
+        this.financialInstitutionRepo.save(financialInstitution);
+        logger.info("Financial Institution {} updated", financialInstitution.getInstitutionName());
+        return messageSource.getMessage("institution.update.success", null, locale);
     }
 
     @Override
     public List<FinancialInstitutionDTO> getFinancialInstitutions() {
-        Iterable<FinancialInstitution> fis =financialInstitutionRepo.findAll();
-        logger.info("FinancialInstitutions {}",fis.toString());
+        Iterable<FinancialInstitution> fis = financialInstitutionRepo.findAll();
+        logger.info("FinancialInstitutions {}", fis.toString());
         return convertEntitiesToDTOs(fis);
     }
 
     @Override
     public List<FinancialInstitutionDTO> getFinancialInstitutionsByType(FinancialInstitutionType institutionType) {
-        Iterable<FinancialInstitution> fis =financialInstitutionRepo.findByInstitutionType(institutionType);
-        logger.info("FinancialInstitutions {}",fis.toString());
+        Iterable<FinancialInstitution> fis = financialInstitutionRepo.findByInstitutionType(institutionType);
+        logger.info("FinancialInstitutions {}", fis.toString());
         return convertEntitiesToDTOs(fis);
     }
 
@@ -116,22 +119,11 @@ public class FinancialInstitutionServiceImpl implements FinancialInstitutionServ
     }
 
     @Override
-    public boolean deleteFi(Long id) {
-        boolean result= false;
-
-        try {
-            FinancialInstitution financialInstitution = financialInstitutionRepo.findOne(id);
-            financialInstitution.setDelFlag("Y");
-            this.financialInstitutionRepo.save(financialInstitution);
-            logger.info("Fi {} HAS BEEN DELETED ",id.toString());
-            result=true;
-        }
-        catch (Exception e){
-            logger.error("ERROR OCCURRED {}",e.getMessage());
-
-        }
-        return result;
-    }
+    public String deleteFinancialInstitution(Long id) throws  InternetBankingException{
+        this.financialInstitutionRepo.delete(id);
+        logger.info("Financial institution  with Id {} deleted ", id.toString());
+        return messageSource.getMessage("institution.delete.success",null,locale);
+}
 
     @Override
     public Page<FinancialInstitutionDTO> getFinancialInstitutions(Pageable pageDetails) {
@@ -140,7 +132,7 @@ public class FinancialInstitutionServiceImpl implements FinancialInstitutionServ
         long t = page.getTotalElements();
 
         // return  new PageImpl<ServiceReqConfigDTO>(dtOs,pageDetails,page.getTotalElements());
-        Page<FinancialInstitutionDTO> pageImpl = new PageImpl<FinancialInstitutionDTO>(dtOs,pageDetails,t);
+        Page<FinancialInstitutionDTO> pageImpl = new PageImpl<FinancialInstitutionDTO>(dtOs, pageDetails, t);
         return pageImpl;
     }
 

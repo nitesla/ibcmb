@@ -1,12 +1,17 @@
 package longbridge.services.implementations;
 
 import longbridge.dtos.TransactionFeeDTO;
+import longbridge.exception.InternetBankingException;
 import longbridge.models.TransactionFee;
 import longbridge.repositories.TransactionFeeRepo;
 import longbridge.services.CodeService;
 import longbridge.services.TransactionService;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by Fortune on 4/29/2017.
@@ -24,19 +30,28 @@ import java.util.List;
 public class TransactionServiceImpl implements TransactionService {
 
     @Autowired
-    ModelMapper modelMapper;
+    private ModelMapper modelMapper;
 
     @Autowired
-    TransactionFeeRepo transactionFeeRepo;
+    private TransactionFeeRepo transactionFeeRepo;
 
     @Autowired
-    CodeService codeService;
+    private CodeService codeService;
+
+    @Autowired
+    private MessageSource messageSource;
+
+    Locale locale = LocaleContextHolder.getLocale();
+
+    Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
-    public void addTransactionFee(TransactionFeeDTO transactionFeeDTO) throws  Exception{
+    public String addTransactionFee(TransactionFeeDTO transactionFeeDTO) throws InternetBankingException {
         TransactionFee transactionFee = convertDTOToEntity(transactionFeeDTO);
         transactionFee.setDateCreated(new Date());
         transactionFeeRepo.save(transactionFee);
+        logger.info("Transaction fee added");
+        return messageSource.getMessage("fee.add.success",null,locale);
     }
 
     @Override
@@ -46,7 +61,7 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public void updateTransactionFee(TransactionFeeDTO transactionFeeDTO) throws Exception{
+    public String updateTransactionFee(TransactionFeeDTO transactionFeeDTO) throws InternetBankingException {
         TransactionFee transactionFee = transactionFeeRepo.findOne(transactionFeeDTO.getId());
         transactionFee.setVersion(transactionFeeDTO.getVersion());
         transactionFee.setFixed(transactionFeeDTO.getFixed());
@@ -54,11 +69,16 @@ public class TransactionServiceImpl implements TransactionService {
         transactionFee.setCurrency(transactionFeeDTO.getCurrency());
         transactionFee.setEnabled(transactionFeeDTO.isEnabled());
         transactionFeeRepo.save(transactionFee);
+        logger.info("Transaction fee updated");
+        return messageSource.getMessage("fee.add.success",null,locale);
+
     }
 
     @Override
-    public void deleteTransactionFee(Long id) {
+    public String deleteTransactionFee(Long id) throws InternetBankingException {
         transactionFeeRepo.delete(id);
+        logger.info("Transaction fee deleted");
+        return messageSource.getMessage("fee.delete.success",null,locale);
     }
 
     @Override

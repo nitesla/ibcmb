@@ -2,6 +2,7 @@ package longbridge.services.implementations;
 
 import longbridge.api.AccountInfo;
 import longbridge.dtos.AccountDTO;
+import longbridge.exception.InternetBankingException;
 import longbridge.models.Account;
 import longbridge.repositories.AccountRepo;
 import longbridge.services.AccountConfigurationService;
@@ -12,6 +13,8 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -38,12 +41,15 @@ public class AccountServiceImpl implements AccountService {
 
     private AccountConfigurationService accountConfigService;
 
-    @Autowired
-    public AccountServiceImpl(AccountRepo accountRepo, IntegrationService integrationService, ModelMapper modelMapper, AccountConfigurationService accountConfigService) {
+    private MessageSource messageSource;
+
+
+    public AccountServiceImpl(AccountRepo accountRepo, IntegrationService integrationService, ModelMapper modelMapper, AccountConfigurationService accountConfigService, MessageSource messageSource) {
         this.accountRepo = accountRepo;
         this.integrationService = integrationService;
         this.modelMapper = modelMapper;
         this.accountConfigService = accountConfigService;
+        this.messageSource = messageSource;
     }
 
     @Override
@@ -66,7 +72,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public boolean AddAccount(String customerId, Account account) {
+    public boolean AddAccount(String customerId, Account account) throws InternetBankingException {
         if (!customerId.equals(account.getCustomerId())) {
             return false;
         }
@@ -75,19 +81,13 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public boolean customizeAccount(Long id, String name) {
-        boolean result = false;
+    public String customizeAccount(Long id, String name) throws InternetBankingException{
 
-        try {
-            Account account = accountRepo.findFirstById(id);
-            account.setAccountName(name);
-            this.accountRepo.save(account);
-            logger.trace("Customization successful {}", account.toString());
-            result = true;
-        } catch (Exception e) {
-            logger.error("Could not customize account", e);
-        }
-        return result;
+        Account account = accountRepo.findFirstById(id);
+        account.setAccountName(name);
+        this.accountRepo.save(account);
+        return messageSource.getMessage("account.customize.success",null, LocaleContextHolder.getLocale());
+
     }
 
     @Override
@@ -168,51 +168,34 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public boolean hideAccount(Long id) {
-        try {
+    public boolean hideAccount(Long id) throws InternetBankingException{
             Account account = accountRepo.findFirstById(id);
             account.setHiddenFlag("Y");
             accountRepo.save(account);
             return true;
-        } catch (Exception e) {
-            logger.info("Error in hiding account");
-        }
-        return false;
+
     }
 
     @Override
-    public boolean unhideAccount(Long id) {
-        try {
+    public boolean unhideAccount(Long id) throws InternetBankingException{
             Account account = accountRepo.findFirstById(id);
             account.setHiddenFlag("N");
             accountRepo.save(account);
             return true;
-        } catch (Exception e) {
-            logger.info("Error unhiding account");
-        }
-        return false;
     }
 
     @Override
-    public boolean makePrimaryAccount(Long acctId, String customerId) {
-        try {
+    public boolean makePrimaryAccount(Long acctId, String customerId) throws InternetBankingException {
             accountRepo.unsetPrimaryAccount(customerId);
-
-
 //            for (Account account : accounts){
 //                    account.setPrimaryFlag("N");
 //                    accountRepo.save(account);
 //            }
-
-
             Account account = accountRepo.findFirstById(acctId);
             account.setPrimaryFlag("Y");
             accountRepo.save(account);
             return true;
-        } catch (Exception e) {
-            logger.info("Error setting primary account");
-        }
-        return false;
+
     }
 
 

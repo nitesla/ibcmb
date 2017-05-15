@@ -1,8 +1,8 @@
 package longbridge.services.implementations;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import longbridge.dtos.CodeDTO;
 import longbridge.dtos.CodeTypeDTO;
+import longbridge.exception.InternetBankingException;
 import longbridge.models.AdminUser;
 import longbridge.models.Code;
 import longbridge.repositories.CodeRepo;
@@ -12,6 +12,8 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by Wunmi on 29/03/2017.
@@ -35,6 +38,11 @@ public class CodeServiceImpl implements CodeService {
 
     private ModelMapper modelMapper;
 
+    private Locale locale = LocaleContextHolder.getLocale();
+
+    @Autowired
+    MessageSource messageSource;
+
     @Autowired
     public CodeServiceImpl(CodeRepo codeRepository, VerificationService verificationService, ModelMapper modelMapper) {
         codeRepo = codeRepository;
@@ -44,19 +52,10 @@ public class CodeServiceImpl implements CodeService {
 
 
     @Override
-    public boolean deleteCode(Long codeId) {
-        boolean result= false;
-
-        try {
+    public String deleteCode(Long codeId) throws InternetBankingException{
             this.codeRepo.delete(codeId);
-            logger.info("Code {} HAS BEEN DELETED ",codeId.toString());
-            result=true;
-        }
-        catch (Exception e){
-            logger.error("ERROR OCCURRED {}",e.getMessage());
-
-        }
-        return result;
+            logger.info("Code {} has been deleted",codeId.toString());
+        return messageSource.getMessage("code.delete",null,locale);
     }
 
     @Override
@@ -85,14 +84,12 @@ public class CodeServiceImpl implements CodeService {
   
 
     @Transactional
-    public String updateCode(CodeDTO codeDTO, AdminUser adminUser) {
-        boolean result = false;
+    public String updateCode(CodeDTO codeDTO, AdminUser adminUser) throws InternetBankingException{
         Code code = convertDTOToEntity(codeDTO);
         //check if maker checker is enabled
-        
         codeRepo.save(code);
+        return messageSource.getMessage("code.update.success",null,locale);
         
-        return  "" + result;
        // Code originalObject = codeRepo.findOne(code.getId());
         
         
@@ -142,15 +139,20 @@ public class CodeServiceImpl implements CodeService {
 
 
 	@Override
-	public String addCode(CodeDTO codeDTO) {
+	public String addCode(CodeDTO codeDTO, AdminUser adminUser) throws InternetBankingException {
 		Code code = convertDTOToEntity(codeDTO);
-        try {
-			return verificationService.addNewVerificationRequest(code);
-		} catch (JsonProcessingException e) {
-			// TODO Auto-generated catch block
-			logger.error("Error", e);
-			return "Error adding Code " + e.getMessage();
-		}
+
+        //check if maker checker is enabled
+        codeRepo.save(code);
+        return messageSource.getMessage("code.add.success",null,locale);
+
+//        try {
+//			return verificationService.addNewVerificationRequest(code);
+//		} catch (JsonProcessingException e) {
+//			// TODO Auto-generated catch block
+//			logger.error("Error", e);
+//			return "Error adding Code " + e.getMessage();
+//		}
 	}
 
     @Override

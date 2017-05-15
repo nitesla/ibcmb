@@ -1,12 +1,9 @@
 package longbridge.services.implementations;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import longbridge.dtos.AdminUserDTO;
+import longbridge.exception.InternetBankingException;
 import longbridge.models.AdminUser;
-import longbridge.models.OperationCode;
 import longbridge.models.Role;
-import longbridge.models.Verification;
 import longbridge.repositories.AdminUserRepo;
 import longbridge.repositories.VerificationRepo;
 import longbridge.services.*;
@@ -14,38 +11,22 @@ import longbridge.services.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import longbridge.utils.Verifiable;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.mail.MailSessionDefinition;
 import javax.transaction.Transactional;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
-import longbridge.dtos.AdminUserDTO;
-import longbridge.models.AdminUser;
-import longbridge.models.Role;
-import longbridge.repositories.AdminUserRepo;
-import longbridge.repositories.VerificationRepo;
-import longbridge.services.AdminUserService;
-import longbridge.services.RoleService;
-import longbridge.services.SecurityService;
 
-import longbridge.dtos.AdminUserDTO;
-import longbridge.models.AdminUser;
-import longbridge.models.Role;
-import longbridge.repositories.AdminUserRepo;
-import longbridge.repositories.VerificationRepo;
 import longbridge.services.AdminUserService;
 import longbridge.services.RoleService;
 import longbridge.services.SecurityService;
@@ -80,15 +61,9 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Autowired
     PasswordService passwordService;
 
-    @Override
-    public boolean isValidUsername(String username) {
-        boolean isValid = false;
-        AdminUser adminUser = adminUserRepo.findFirstByUserName(username);
-        if (adminUser == null) {
-            isValid = true;
-        }
-        return isValid;
-    }
+    @Autowired
+    MessageSource messageSource;
+
 
     @Autowired
     public AdminUserServiceImpl(AdminUserRepo adminUserRepo, BCryptPasswordEncoder passwordEncoder) {
@@ -106,9 +81,9 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
     @Override
-    public AdminUserDTO getUserByName(String name) {
-        AdminUser adminUser = this.adminUserRepo.findFirstByUserName(name);
-        return convertEntityToDTO(adminUser);
+    public AdminUser getUserByName(String name) {
+        return  this.adminUserRepo.findFirstByUserName(name);
+
     }
 
     @Override
@@ -118,47 +93,46 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
     @Override
+    public boolean isUsernameExist(String username) throws InternetBankingException {
+        AdminUser adminUser = adminUserRepo.findFirstByUserName(username);
+        return (adminUser == null)?true:false;
+    }
+
+
+    @Override
     public Iterable<AdminUserDTO> getUsers() {
         Iterable<AdminUser> adminUsers = adminUserRepo.findAll();
         return convertEntitiesToDTOs(adminUsers);
     }
 
 
-
     @Override
     @Transactional
 //    @Verifiable(operation="Add Admin",description="Adding a new User")
-    public boolean addUser(AdminUserDTO user) {
-        boolean ok = false;
-        if (user != null) {
-            AdminUser adminUser = new AdminUser();
-            adminUser.setFirstName(user.getFirstName());
-            adminUser.setLastName(user.getLastName());
-            adminUser.setUserName(user.getUserName());
-            adminUser.setEmail(user.getEmail());
-            adminUser.setDateCreated(new Date());
-            String password = passwordService.generatePassword();
-            adminUser.setPassword(passwordEncoder.encode(password));
-            Role role = new Role();
-            role.setId(Long.parseLong(user.getRoleId()));
-            adminUser.setRole(role);
-            Calendar calendar = Calendar.getInstance();
-            calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) + 2);
-            adminUser.setExpiryDate(calendar.getTime());
-            this.adminUserRepo.save(adminUser);
-            mailService.send(user.getEmail(), String.format("Your username is %s and password is %s", user.getUserName(), password));
-            ok = true;
-            logger.info("New admin user: {} created", adminUser.getUserName());
-
-        } else {
-            logger.error("Aborted Admin user creation. NULL user supplied");
-        }
-        return ok;
+    public String addUser(AdminUserDTO user) throws InternetBankingException {
+        AdminUser adminUser = new AdminUser();
+        adminUser.setFirstName(user.getFirstName());
+        adminUser.setLastName(user.getLastName());
+        adminUser.setUserName(user.getUserName());
+        adminUser.setEmail(user.getEmail());
+        adminUser.setDateCreated(new Date());
+        String password = passwordService.generatePassword();
+        adminUser.setPassword(passwordEncoder.encode(password));
+        Role role = new Role();
+        role.setId(Long.parseLong(user.getRoleId()));
+        adminUser.setRole(role);
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) + 2);
+        adminUser.setExpiryDate(calendar.getTime());
+        this.adminUserRepo.save(adminUser);
+        mailService.send(user.getEmail(), "Mail from Internet Banking",String.format("Your username is %s and password is %s", user.getUserName(), password));
+        logger.info("New admin user: {} created", adminUser.getUserName());
+        return messageSource.getMessage("user.admin.create.success", null, LocaleContextHolder.getLocale());
     }
 
     @Override
     @Transactional
-    public void changeActivationStatus(Long userId) {
+    public String changeActivationStatus(Long userId) throws InternetBankingException {
         AdminUser user = adminUserRepo.findOne(userId);
         String oldStatus = user.getStatus();
         String newStatus = "ACTIVE".equals(oldStatus) ? "INACTIVE" : "ACTIVE";
@@ -167,86 +141,67 @@ public class AdminUserServiceImpl implements AdminUserService {
         if ("INACTIVE".equals(oldStatus) && "ACTIVE".equals(newStatus)) {
             String password = passwordService.generatePassword();
             user.setPassword(passwordEncoder.encode(password));
-            mailService.send(user.getEmail(), String.format("Your new password to Admin console is %s and your current username is %s", password, user.getUserName()));
+            mailService.send(user.getEmail(),"Mail from Internet Banking", String.format("Your new password to Admin console is %s and your current username is %s", password, user.getUserName()));
         }
         logger.info("Admin user {} status changed from {} to {}", user.getUserName(), oldStatus, newStatus);
-
+        return messageSource.getMessage("user.status.success",null,LocaleContextHolder.getLocale());
 
     }
 
 
     @Override
-    public void deleteUser(Long id) {
+    public String deleteUser(Long id) throws InternetBankingException {
         adminUserRepo.delete(id);
-        logger.warn("Admin user with Id {} deleted",id);
+        logger.warn("Admin user with Id {} deleted", id);
+        return messageSource.getMessage("user.delete", null, LocaleContextHolder.getLocale());
+
     }
 
     @Override
     @Transactional
 //    @Verifiable(operation="Updating an Existing User")
-    public boolean updateUser(AdminUserDTO user) {
-        boolean ok = false;
-        if (user != null) {
-            AdminUser adminUser = new AdminUser();
-            adminUser.setId((user.getId()));
-            adminUser.setVersion(user.getVersion());
-            adminUser.setFirstName(user.getFirstName());
-            adminUser.setLastName(user.getLastName());
-            adminUser.setUserName(user.getUserName());
-            Role role = new Role();
-            role.setId(Long.parseLong(user.getRoleId()));
-            adminUser.setRole(role);
+    public String updateUser(AdminUserDTO user) throws InternetBankingException {
+        AdminUser adminUser = new AdminUser();
+        adminUser.setId((user.getId()));
+        adminUser.setVersion(user.getVersion());
+        adminUser.setFirstName(user.getFirstName());
+        adminUser.setLastName(user.getLastName());
+        adminUser.setUserName(user.getUserName());
+        Role role = new Role();
+        role.setId(Long.parseLong(user.getRoleId()));
+        adminUser.setRole(role);
+        this.adminUserRepo.save(adminUser);
+        logger.info("Admin user {} updated", adminUser.getUserName());
+        return messageSource.getMessage("user.update.success", null, LocaleContextHolder.getLocale());
+    }
+
+    @Override
+    @Transactional
+    public String resetPassword(Long userId) throws InternetBankingException {
+        AdminUser user = getUser(userId);
+        String newPassword = passwordService.generatePassword();
+        user.setPassword(passwordEncoder.encode(newPassword));
+        user.setExpiryDate(new Date());
+        this.adminUserRepo.save(user);
+        mailService.send(user.getEmail(), "Mail from Internet Banking","Your new password to Internet banking is " + newPassword);
+        logger.info("Admin user {} password reset successfully", user.getUserName());
+        return messageSource.getMessage("password.reset.success", null, LocaleContextHolder.getLocale());
+    }
+
+    @Override
+    @Transactional
+    public String changePassword(AdminUser user, String oldPassword, String newPassword) throws InternetBankingException {
+        if (this.passwordEncoder.matches(oldPassword, user.getPassword())) {
+            AdminUser adminUser = adminUserRepo.findOne(user.getId());
+            adminUser.setPassword(this.passwordEncoder.encode(newPassword));
             this.adminUserRepo.save(adminUser);
-            ok = true;
-            logger.info("Admin user {} updated", adminUser.getUserName());
+            logger.info("User {}'s password has been updated", user.getId());
 
         } else {
-            logger.error("Aborted Admin user update. NULL user supplied");
+            logger.error("Could not change password for admin user {} due to incorrect old password", user.getUserName());
         }
-        return ok;
-    }
-
-    @Override
-    @Transactional
-    public boolean resetPassword(Long userId) {
-        boolean ok = false;
-        AdminUser user = getUser(userId);
-
-        if (user != null) {
-            String newPassword = passwordService.generatePassword();
-            user.setPassword(passwordEncoder.encode(newPassword));
-            user.setExpiryDate(new Date());
-            this.adminUserRepo.save(user);
-            mailService.send(user.getEmail(), "Your new password to Internet banking is " + newPassword);
-            ok = true;
-            logger.info("Admin user {} password reset successfully", user.getUserName());
-
-        }
-        return ok;
-    }
-
-    @Override
-    @Transactional
-    public boolean changePassword(AdminUserDTO user, String oldPassword, String newPassword) {
-        boolean ok = false;
-
-        try {
-
-            if (this.passwordEncoder.matches(oldPassword, user.getPassword())) {
-                AdminUser adminUser = adminUserRepo.findOne(user.getId());
-                adminUser.setPassword(this.passwordEncoder.encode(newPassword));
-                this.adminUserRepo.save(adminUser);
-                ok = true;
-                logger.info("User {}'s password has been updated", user.getId());
-
-            } else {
-                logger.error("Could not change password for admin user {} due to incorrect old password", user.getUserName());
-            }
-        } catch (Exception e) {
-            logger.error("Aborted password change{}", e.toString());
-        }
-        return ok;
-    }
+        return messageSource.getMessage("password.change.success",null,LocaleContextHolder.getLocale());
+}
 
 
     @Override
@@ -288,7 +243,6 @@ public class AdminUserServiceImpl implements AdminUserService {
         Page<AdminUser> page = adminUserRepo.findAll(pageDetails);
         List<AdminUserDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
-        // return  new PageImpl<ServiceReqConfigDTO>(dtOs,pageDetails,page.getTotalElements());
         Page<AdminUserDTO> pageImpl = new PageImpl<AdminUserDTO>(dtOs, pageDetails, t);
         return pageImpl;
     }

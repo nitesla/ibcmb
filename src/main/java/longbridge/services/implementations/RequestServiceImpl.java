@@ -2,7 +2,7 @@ package longbridge.services.implementations;
 
 import longbridge.dtos.RequestHistoryDTO;
 import longbridge.dtos.ServiceRequestDTO;
-import longbridge.models.OperationsUser;
+import longbridge.exception.InternetBankingException;
 import longbridge.models.RequestHistory;
 import longbridge.models.RetailUser;
 import longbridge.models.ServiceRequest;
@@ -10,11 +10,15 @@ import longbridge.repositories.RequestHistoryRepo;
 import longbridge.repositories.RetailUserRepo;
 import longbridge.repositories.ServiceRequestRepo;
 import longbridge.services.CodeService;
+import longbridge.services.MailService;
+import longbridge.services.OperationsUserService;
 import longbridge.services.RequestService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -24,6 +28,7 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by Fortune on 4/7/2017.
@@ -44,8 +49,19 @@ public class RequestServiceImpl implements RequestService {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private MailService mailService;
+
+    @Autowired
+    MessageSource messageSource;
+
+    @Autowired
+    OperationsUserService operationsUserService;
+
+
     private Logger logger= LoggerFactory.getLogger(this.getClass());
 
+    Locale locale = LocaleContextHolder.getLocale();
 
 
 
@@ -56,10 +72,12 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public void addRequest(ServiceRequestDTO request) {
+    public String addRequest(ServiceRequestDTO request) throws InternetBankingException {
         ServiceRequest serviceRequest = convertDTOToEntity(request);
         serviceRequest.setUser(retailUserRepo.findOne(serviceRequest.getUser().getId()));
         serviceRequestRepo.save(serviceRequest);
+        return messageSource.getMessage("request.add.success",null,locale);
+
     }
 
 
@@ -157,9 +175,7 @@ public class RequestServiceImpl implements RequestService {
         requestHistory.setServiceRequest(serviceRequestRepo.findOne(Long.parseLong(requestHistoryDTO.getServiceRequestId())));
         requestHistory.setComment(requestHistoryDTO.getComment());
         requestHistory.setStatus(requestHistoryDTO.getStatus());
-        OperationsUser user = new OperationsUser();//todo get current operations user
-        user.setId(1L);//todo get actual details
-        requestHistory.setCreatedBy(user);
+         requestHistory.setCreatedBy(operationsUserService.getUserByName(requestHistoryDTO.getCreatedBy()));
         requestHistory.setCreatedOn(new Date());
         return requestHistory;
     }

@@ -23,6 +23,7 @@ import java.util.List;
  * Created by Fortune on 5/1/2017.
  */
 
+
 @Controller
 @RequestMapping("/ops/mailbox")
 public class OpsMailboxController {
@@ -55,6 +56,56 @@ public class OpsMailboxController {
 
         return "ops/mailbox/inbox";
     }
+
+    @GetMapping("/newinbox")
+    public String getNewInbox(Model model,Principal principal) {
+        OperationsUser opsUser = operationsUserService.getUserByName(principal.getName());
+        List<MessageDTO> receivedMessages = messageService.getReceivedMessages(opsUser);
+
+        if (!receivedMessages.isEmpty()) {
+            MessageDTO message = receivedMessages.get(0);
+            model.addAttribute("messageDTO", message);
+
+        }
+        model.addAttribute("receivedMessages", receivedMessages);
+
+
+        return "ops/mailbox/newinbox";
+    }
+
+    @GetMapping("/newcompose")
+    public String getNewCompose(Model model,Principal principal) {
+        OperationsUser opsUser = operationsUserService.getUserByName(principal.getName());
+        List<MessageDTO> receivedMessages = messageService.getReceivedMessages(opsUser);
+
+        if (!receivedMessages.isEmpty()) {
+            MessageDTO message = receivedMessages.get(0);
+            model.addAttribute("messageDTO", message);
+
+        }
+        model.addAttribute("receivedMessages", receivedMessages);
+
+
+        return "ops/mailbox/newcompose";
+    }
+
+    @GetMapping("/viewmail")
+    public String getViewMail(Model model,Principal principal) {
+        OperationsUser opsUser = operationsUserService.getUserByName(principal.getName());
+        List<MessageDTO> receivedMessages = messageService.getReceivedMessages(opsUser);
+
+        if (!receivedMessages.isEmpty()) {
+            MessageDTO message = receivedMessages.get(0);
+            model.addAttribute("messageDTO", message);
+
+        }
+        model.addAttribute("receivedMessages", receivedMessages);
+
+
+        return "ops/mailbox/viewmail";
+    }
+
+
 
     @GetMapping("/outbox")
     public String getOutbox(Model model,Principal principal) {

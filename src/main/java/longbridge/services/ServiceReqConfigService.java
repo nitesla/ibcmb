@@ -1,5 +1,6 @@
 package longbridge.services;
 
+import longbridge.exception.InternetBankingException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -14,7 +15,7 @@ import java.util.List;
  */
 public interface ServiceReqConfigService{
 
-    void addServiceReqConfig(ServiceReqConfigDTO serviceReqFormField);
+    String addServiceReqConfig(ServiceReqConfigDTO serviceReqFormField) throws InternetBankingException;
 
     ServiceReqConfigDTO getServiceReqConfig(Long id);
 
@@ -28,11 +29,11 @@ public interface ServiceReqConfigService{
 
     Iterable<ServiceReqConfigDTO> gerServiceReqConfigsPage(Integer pageNum, Integer pageSize);
 
-    void updateServiceReqConfig(ServiceReqConfigDTO serviceReqFormField);
+    String updateServiceReqConfig(ServiceReqConfigDTO serviceReqConfig) throws InternetBankingException;
 
-    void delServiceReqConfig(Long id);
+    String delServiceReqConfig(Long id) throws InternetBankingException;
 
-    void addServiceReqFormField(ServiceReqFormFieldDTO serviceReqFormField);
+    String addServiceReqFormField(ServiceReqFormFieldDTO serviceReqFormField) throws InternetBankingException;
 
     ServiceReqFormFieldDTO getServiceReqFormField(Long id);
 
@@ -42,8 +43,8 @@ public interface ServiceReqConfigService{
 
     Page<ServiceReqFormFieldDTO> getServiceReqFormFields(Pageable pageDetails);
     
-    void updateServiceReqFormField(ServiceReqFormFieldDTO serviceReqFormField);
+    String updateServiceReqFormField(ServiceReqFormFieldDTO serviceReqFormField) throws InternetBankingException;
 
-    void delServiceReqFormField(Long id);
+    String delServiceReqFormField(Long id) throws InternetBankingException;
 
 }

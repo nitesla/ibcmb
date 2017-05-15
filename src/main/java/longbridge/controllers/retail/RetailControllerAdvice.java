@@ -96,10 +96,11 @@ public class RetailControllerAdvice {
             return "redirect:/login/retail";
         }
 
+
+
         RetailUser user = retailUserService.getUserByName(principal.getName());
         if (user != null) {
             List<String> accountList = new ArrayList<>();
-
 
             Iterable<Account> accounts = accountService.getAccountsForDebit(user.getCustomerId());
 
@@ -109,26 +110,18 @@ public class RetailControllerAdvice {
 
 
             model.addAttribute("accounts", accountList);
-
-
         }
-
 
         return "";
     }
 
 
-//    @ExceptionHandler(NoHandlerFoundException.class)
-//   // @ResponseStatus(HttpStatus.NOT_FOUND)
-//    public String pageNotFound() {
-//
-//        System.out.println("YAHOO YAHOO");
-//
-//        return "redirect:/retail/dashboard";
-//    }
-//    @ExceptionHandler(ResourceNotFoundException.class)
-//    public String handleResourceNotFoundException() {
-//        System.out.println("YAHOO YAHOO 2");
-//        return "redirect:/retail/dashboard";
-//    }
+    @ExceptionHandler(NoHandlerFoundException.class)
+   // @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String pageNotFound() {
+
+        System.out.println("YAHOO YAHOO tyi");
+
+        return "redirect:/retail/dashboard";
+    }
 }

@@ -160,25 +160,25 @@ public class AdmOperationsUserController {
      * @return
      * @throws Exception
      */
-    @PostMapping("/update")
-    public String updateUser(@ModelAttribute("user") OperationsUserDTO operationsUser, BindingResult result, RedirectAttributes redirectAttributes) throws Exception{
-        if(result.hasErrors()) {
-            return "adm/operation/add";
-        }
-        boolean updated = operationsUserService.updateUser(operationsUser);
-        if (updated) {
-            redirectAttributes.addFlashAttribute("message", "Operations user updated successfully");
-        }
-        return "redirect:/admin/operations/users";
-    }
-
-    @GetMapping("/{id}/password/reset")
-    public String resetPassword(@PathVariable Long id, RedirectAttributes redirectAttributes){
-        if(operationsUserService.resetPassword(id)) {
-            redirectAttributes.addFlashAttribute("message", "Password reset successfully");
-        }
-        return "redirect:/admin/operations/users";
-    }
+//    @PostMapping("/update")
+//    public String updateUser(@ModelAttribute("user") OperationsUserDTO operationsUser, BindingResult result, RedirectAttributes redirectAttributes) throws Exception{
+//        if(result.hasErrors()) {
+//            return "adm/operation/add";
+//        }
+//        boolean updated = operationsUserService.updateUser(operationsUser);
+//        if (updated) {
+//            redirectAttributes.addFlashAttribute("message", "Operations user updated successfully");
+//        }
+//        return "redirect:/admin/operations/users";
+//    }
+//
+//    @GetMapping("/{id}/password/reset")
+//    public String resetPassword(@PathVariable Long id, RedirectAttributes redirectAttributes){
+//        if(operationsUserService.resetPassword(id)) {
+//            redirectAttributes.addFlashAttribute("message", "Password reset successfully");
+//        }
+//        return "redirect:/admin/operations/users";
+//    }
 
     @GetMapping("/{userId}/delete")
     public String deleteUser(@PathVariable Long userId){

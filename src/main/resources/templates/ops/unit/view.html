@@ -19,7 +19,7 @@
                 <div class="clearfix"></div>
 
                 <div th:replace="layout :: ops-menu"></div>
-                <div th:replace="layout :: menu-footer"></div>
+                <div th:replace="layout :: menu-footer-ops"></div>
 
             </div>
         </div>
@@ -171,12 +171,11 @@
     $("#delete-btn").on("click", function(e) {
         e.preventDefault();
         var link = $(e.currentTarget);
-<<<<<<< HEAD
+
         if($(link).attr("disabled")){
             return;
         }
-=======
->>>>>>> LAST PUSH FROM FAROOQ TODAY
+
         var dt = $('#codes').DataTable();
         var id = $(dt.row({
             selected: true

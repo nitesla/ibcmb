@@ -42,49 +42,11 @@ public class TransferValidator implements Validator {
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "beneficiaryAccountNumber", "message.beneficiaryAccountNumber", "beneficiaryAccountNumber is required.");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "amount", "message.amount", "amount is required.");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "customerAccountNumber", "message.customerAccountNumber", "customerAccountNumber is required.");
-        TransferRequestDTO request = (TransferRequestDTO) o;
-         if (sameAccount(request)){
-             errors.reject("customerAccountNumber", "message.sameaccount");
-         }
-
-
-         if (!isDebitAllowed(request.getCustomerAccountNumber())){
-             errors.reject("customerAccountNumber", "message.nodebit");
-         }
-         if( !hasSufficientBalance(request)){
-             errors.reject("amount", "message.insufficient");
-         }
-
     }
 
 
-    boolean sameAccount(TransferRequestDTO dto) {
-        if (dto.getBeneficiaryAccountNumber().equalsIgnoreCase(dto.getCustomerAccountNumber())) {
-            return true;
-        }
-        return false;
-    }
 
 
-    boolean isDebitAllowed(String s) {
-        String cif = accountService.getAccountByAccountNumber(s).getCustomerId();
-        Account acct = StreamSupport.stream(accountService.getAccountsForDebit(cif).spliterator(), false)
-                .filter(i -> i.getAccountNumber().equalsIgnoreCase(s))
-                .findFirst()
-                .orElse(null);
-
-        if (acct != null) {
-            return true;
-        }
-        return false;
-    }
-
-    boolean hasSufficientBalance(TransferRequestDTO dto) {
-   BigDecimal balance = integrationService.getAvailableBalance(dto.getCustomerAccountNumber());
-    BigDecimal amount = dto.getAmount();
-    boolean ok = balance.compareTo(amount)==1;
-    return ok;
-    }
 
 
 }

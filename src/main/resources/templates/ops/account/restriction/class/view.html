@@ -18,7 +18,7 @@
                 <div class="clearfix"></div>
 
                 <div th:replace="layout :: ops-menu"></div>
-                <div th:replace="layout :: menu-footer"></div>
+                <div th:replace="layout :: menu-footer-ops"></div>
 
             </div>
         </div>
@@ -54,11 +54,7 @@
                                     <li >
                                         <div class="col-lg-4">
                                             <div class="title-action">
-<<<<<<< HEAD
                                                 <a id="delete-btn" class="btn btn-danger btn-sm bt-select" href="/ops/accounts/restriction/class/index/delete" disabled="disabled" ><i class="fa fa-trash"></i> Delete</a>
-=======
-                                                <a id="delete-btn" class="btn btn-danger btn-sm bt-select" href="/ops/accounts/restriction/class/index/remove" disabled="disabled" ><i class="fa fa-trash"></i> Remove</a>
->>>>>>> LAST PUSH FROM FAROOQ TODAY
                                             </div>
                                         </div>
                                     </li>
@@ -198,14 +194,10 @@
     $("#delete-btn").on("click", function(e) {
         e.preventDefault();
         var link = $(e.currentTarget);
-<<<<<<< HEAD
         if($(link).attr("disabled")){
             return;
         }
         var dt = $('#restriction').DataTable();
-=======
-        var dt = $('#codes').DataTable();
->>>>>>> LAST PUSH FROM FAROOQ TODAY
         var id = $(dt.row({
             selected: true
         }).node()).attr("id");

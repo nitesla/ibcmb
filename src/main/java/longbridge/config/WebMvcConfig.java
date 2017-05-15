@@ -62,9 +62,6 @@ public class WebMvcConfig   extends WebMvcConfigurerAdapter {
 		return cookieLocaleResolver;
 	}
 
-
-
-
 	@Bean
 	public LocaleChangeInterceptor localeChangeInterceptor() {
 		LocaleChangeInterceptor lci = new LocaleChangeInterceptor();
@@ -82,6 +79,7 @@ public class WebMvcConfig   extends WebMvcConfigurerAdapter {
 	public ResourceBundleMessageSource messageSource() {
 		ResourceBundleMessageSource source = new ResourceBundleMessageSource();
 		source.setBasenames("messages");  // name of the resource bundle
+		source.setCacheSeconds(1000);
 		source.setUseCodeAsDefaultMessage(true);
 		return source;
 	}

@@ -12,4 +12,5 @@ public interface FinancialInstitutionRepo extends CommonRepo<FinancialInstitutio
 
     Iterable<FinancialInstitution> findByInstitutionType(FinancialInstitutionType institutionType);
   FinancialInstitution findByInstitutionCode(String institutionCode);
+  FinancialInstitution findByInstitutionCodeAndInstitutionType(String code, FinancialInstitutionType type);
 }

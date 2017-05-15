@@ -5,6 +5,8 @@ import longbridge.api.AccountInfo;
 
 import longbridge.api.CustomerDetails;
 import longbridge.api.LocalTransferResponse;
+import longbridge.exception.InternetBankingTokenException;
+import longbridge.exception.InternetBankingTransferException;
 import longbridge.models.TransferRequest;
 import longbridge.services.IntegrationService;
 import longbridge.utils.AccountStatement;
@@ -35,10 +37,12 @@ public class IntegrationServiceImpl implements IntegrationService {
 
     private RestTemplate template;
 
+
     @Autowired
     public IntegrationServiceImpl(RestTemplate template) {
         this.template = template;
     }
+
 
     @Override
     public Collection<AccountInfo> fetchAccounts(String cifid) {
@@ -82,7 +86,7 @@ public class IntegrationServiceImpl implements IntegrationService {
     }
 
     @Override
-    public boolean makeTransfer(TransferRequest transferRequest) {
+    public boolean makeTransfer(TransferRequest transferRequest) throws InternetBankingTransferException {
 
         TransferType type;
         type = TransferType.INTER_BANK_TRANSFER;
@@ -172,7 +176,9 @@ public class IntegrationServiceImpl implements IntegrationService {
     @Override
     public String getAccountName(String accountNumber) {
         logger.info(accountNumber + "account number");
+
         return viewAccountDetails(accountNumber).getAcctName();
+
     }
 
     @Override
@@ -215,6 +221,16 @@ public class IntegrationServiceImpl implements IntegrationService {
 
     }
 
+    @Override
+    public BigDecimal getAvailableBalance(String s) {
+        Map<String, BigDecimal> getBalance = getBalance(s);
+        BigDecimal balance = getBalance.get("AvailableBalance");
+        if(balance!=null){
+            return balance;
+        }
+        return new BigDecimal(0);
+    }
+
 //    @Override
 //    public boolean makeLocalTransfer(TransferRequest transferRequest) {
 //      if (transferRequest.getTransferType().equals(TransferType.OWN_ACCOUNT_TRANSFER)){
@@ -244,51 +260,10 @@ public class IntegrationServiceImpl implements IntegrationService {
 //    }
 
 
-    @Override
-    public void synchronizeToken(String username) {
-        // TODO send request to entrust
-        // send request to entrust
-        String uri = URI + "/token/synchronize";
-        Map<String, String> params = new HashMap<>();
-        params.put("username", username);
 
-        try {
-            String response = template.postForObject(uri, params, String.class);
-        } catch (Exception exc) {
-            logger.error("Error", exc);
-        }
-        // TODO to be implemented
-    }
 
-    @Override
-    public boolean performTokenValidation(String username, String tokenString) {
-        boolean ok = false;
-        // send request to entrust
-        String uri = URI + "/token/authenticate";
-        Map<String, String> params = new HashMap<>();
-        params.put("username", username);
-        params.put("token", tokenString);
 
-        try {
-            String response = template.postForObject(uri, params, String.class);
-            ok = true;
-        } catch (Exception exc) {
-            logger.error("Error", exc);
-        }
-        // TODO to be implemented
-        return true;
-    }
 
-    @Override
-    public BigDecimal getAvailableBalance(String s) {
-      try{
 
-          Map<String, BigDecimal>    result= getBalance(s);
-          return result.get("AvailableBalance");
 
-      }catch(Exception e){
-        logger.error("exceptipn occurred  {}",e.getMessage());
-        return new BigDecimal(0);
-      }
-    }
 }
