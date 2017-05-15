@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="cust_layout :: site-head">
+
+</head>
+<body>
+<header th:replace="cust_layout :: header">
+</header>
+
+<section class="content-wrapper">
+    <div class="container conts">
+        <div class="wrapper wrapper-content">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-3">
+                        <div class="ibox float-e-margins">
+                            <div class="ibox-content mailbox-content">
+                                <div class="margin-bottoms"></div>
+                                <div class="file-manager">
+                                    <a class="btn btn-block btn-primary compose-mail" href="retail-compose.html">Compose Mail</a>
+                                    <div class="margin-bottoms"></div>
+                                    <ul class="folder-list">
+                                        <li><a href="retail-mail.html"> <i class="fa fa-inbox "></i> Inbox <span class="label label-warning pull-right">16</span> </a></li>
+                                        <li><a href="retail-sent.html"> <i class="fa fa-sign-out"></i> Sent Mail</a></li>
+                                        <li><a href=""> <i class="fa fa-file-text-o"></i> Drafts <span class="label label-danger pull-right">2</span></a></li>
+                                        <li><a href=""> <i class="fa fa-trash-o"></i> Trash</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-9 animated fadeInRight">
+                        <div class="contain">
+                            <div class="margin-bottom"></div>
+                            <div class="mail-box-header">
+                                <h2 class="in-box">
+                                    Sent Messages
+                                </h2>
+                                <div class="mail-tools tooltip-demo m-t-md faz">
+                                    <button class="btn-success btn-sm" data-toggle="tooltip" data-placement="left" title="Refresh inbox"><i class="fa fa-refresh"></i> Refresh</button>
+                                    <button class="btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="Mark as read"><i class="fa fa-eye"></i> </button>
+                                    <button class="btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="Move to trash"><i class="fa fa-trash-o"></i> </button>
+                                </div>
+                            </div>
+                            <div class="margin-bottoms"></div>
+                            <div class="mail-box">
+                                <table class="table table-hover table-mail">
+                                    <tbody>
+                                    <tr class="unread">
+                                        <td class="check-mail">
+                                            <input type="checkbox" class="i-checks">
+                                        </td>
+                                        <td class="mail-ontact"><a href="message.html">Anna Smith</a></td>
+                                        <td class="mail-subject"><a href="message.html">Lorem ipsum dolor noretek imit set.</a></td>
+                                        <td class=""><i class="fa fa-paperclip"></i></td>
+                                        <td class="text-right mail-date">6.10 AM</td>
+                                    </tr>
+                                    <tr class="unread">
+                                        <td class="check-mail">
+                                            <input type="checkbox" class="i-checks" checked>
+                                        </td>
+                                        <td class="mail-ontact"><a href="message.html">Jack Nowak</a></td>
+                                        <td class="mail-subject"><a href="message.html">Aldus PageMaker including versions of Lorem Ipsum.</a></td>
+                                        <td class=""></td>
+                                        <td class="text-right mail-date">8.22 PM</td>
+                                    </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+<!-- CONTENT-WRAPPER SECTION END-->
+<footer th:replace="cust_layout ::footer">
+</footer>
+</body>
+</html>

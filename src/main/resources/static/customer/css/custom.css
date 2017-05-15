@@ -320,6 +320,44 @@ body {
     color: #9F614B;
 }
 
+.conts{
+    padding-left: 0px;
+}
+.contain{
+    background-color: #F2F2F1;
+    padding: 2px 15px 15px 15px;
+}
+.margin-bottoms{
+    margin-bottom: 25px;
+}
+.btn-primary{
+    font-size: 18px;
+}
+.btn-default{
+    color: #fff;
+    background-color: #032A4F;
+}
+.in-box{
+    font-size: 22px;
+}
+.folder-list li a{
+    list-style: none;
+    font-size: 16px;
+    font-weight: 100;
+    color: #032A4F;
+}
+.folder-list li{
+    list-style: none;
+}
+.folder-list .fa{
+    color: #032A4F;
+}
+.fas .fa{
+    color: #fff;
+}
+.faz .fa{
+    color: #032A4F;
+}
 
 nav li a {
     /*text-transform: uppercase;*/
