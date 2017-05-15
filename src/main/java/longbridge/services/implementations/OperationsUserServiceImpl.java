@@ -3,6 +3,7 @@ package longbridge.services.implementations;
 import longbridge.dtos.OperationsUserDTO;
 import longbridge.dtos.SettingDTO;
 import longbridge.exception.*;
+import longbridge.forms.ChangeDefaultPassword;
 import longbridge.forms.ChangePassword;
 import longbridge.models.Email;
 import longbridge.models.OperationsUser;
@@ -243,6 +244,30 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             adminUser.setPassword(this.passwordEncoder.encode(changePassword.getNewPassword()));
             this.operationsUserRepo.save(adminUser);
             logger.info("User {}'s password has been updated", user.getId());
+            return messageSource.getMessage("password.change.success", null, locale);
+        } catch (Exception e) {
+            throw new PasswordException(messageSource.getMessage("password.change.failure", null, locale), e);
+        }
+    }
+
+    @Override
+    @Transactional
+    public String changeDefaultPassword(OperationsUser user, ChangeDefaultPassword changePassword) throws PasswordException {
+
+
+        String errorMessage = passwordPolicyService.validate(changePassword.getNewPassword(),user.getUsedPasswords());
+        if (!"".equals(errorMessage)) {
+            throw new PasswordPolicyViolationException(errorMessage);
+        }
+        if (!changePassword.getNewPassword().equals(changePassword.getConfirmPassword())) {
+            throw new PasswordMismatchException();
+        }
+
+        try {
+            OperationsUser opsUser = operationsUserRepo.findOne(user.getId());
+            opsUser.setPassword(this.passwordEncoder.encode(changePassword.getNewPassword()));
+            operationsUserRepo.save(opsUser);
+            logger.info("User {} password has been updated", user.getId());
             return messageSource.getMessage("password.change.success", null, locale);
         } catch (Exception e) {
             throw new PasswordException(messageSource.getMessage("password.change.failure", null, locale), e);

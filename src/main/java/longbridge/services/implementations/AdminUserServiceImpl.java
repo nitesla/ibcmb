@@ -2,6 +2,7 @@ package longbridge.services.implementations;
 
 import longbridge.dtos.AdminUserDTO;
 import longbridge.exception.*;
+import longbridge.forms.ChangeDefaultPassword;
 import longbridge.forms.ChangePassword;
 import longbridge.models.AdminUser;
 import longbridge.models.Email;
@@ -248,13 +249,36 @@ public class AdminUserServiceImpl implements AdminUserService {
             AdminUser adminUser = adminUserRepo.findOne(user.getId());
             adminUser.setPassword(this.passwordEncoder.encode(changePassword.getNewPassword()));
             this.adminUserRepo.save(adminUser);
-            logger.info("User {}'s password has been updated", user.getId());
+            logger.info("User {} password has been updated", user.getId());
             return messageSource.getMessage("password.change.success", null, locale);
         } catch (Exception e) {
             throw new PasswordException(messageSource.getMessage("password.change.failure", null, locale), e);
         }
     }
 
+    @Override
+    @Transactional
+    public String changeDefaultPassword(AdminUser user, ChangeDefaultPassword changePassword) throws PasswordException {
+
+
+        String errorMessage = passwordPolicyService.validate(changePassword.getNewPassword(),user.getUsedPasswords());
+        if (!"".equals(errorMessage)) {
+            throw new PasswordPolicyViolationException(errorMessage);
+        }
+        if (!changePassword.getNewPassword().equals(changePassword.getConfirmPassword())) {
+            throw new PasswordMismatchException();
+        }
+
+        try {
+            AdminUser adminUser = adminUserRepo.findOne(user.getId());
+            adminUser.setPassword(this.passwordEncoder.encode(changePassword.getNewPassword()));
+            this.adminUserRepo.save(adminUser);
+            logger.info("User {}'s password has been updated", user.getId());
+            return messageSource.getMessage("password.change.success", null, locale);
+        } catch (Exception e) {
+            throw new PasswordException(messageSource.getMessage("password.change.failure", null, locale), e);
+        }
+    }
 
     @Override
     public boolean generateAndSendPassword(AdminUser user) {

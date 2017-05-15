@@ -109,11 +109,13 @@ public class MessageServiceImpl implements MessageService {
     }
 
 
+
     @Override
     public Iterable<Message> getMessages(User user, Date date) {
 //
         return null;
     }
+
 
 
     @Override
@@ -167,9 +169,16 @@ public class MessageServiceImpl implements MessageService {
         return reverse(sentMessages);
     }
 
+
+
     @Override
     public Page<MessageDTO> getSentMessages(String recipient, UserType recipientTye, Pageable pageable) {
-        return null;
+        Page<Message> page = messageRepo.findByRecipientAndRecipientTypeOrderByIdDesc(recipient, recipientTye,pageable);
+        List<MessageDTO> dtOs = convertEntitiesToDTOs(page.getContent());
+        long t = page.getTotalElements();
+        Page<MessageDTO> pageImpl = new PageImpl<MessageDTO>(dtOs, pageable, t);
+        return pageImpl;
+
     }
 
     @Override
@@ -177,17 +186,11 @@ public class MessageServiceImpl implements MessageService {
         return null;
     }
 
-
     @Override
     @Transactional
     public List<MessageDTO> getReceivedMessages(User user) {
         List<Message> receivedMessages = messageRepo.findByRecipientAndRecipientTypeOrderByIdDesc(user.getUserName(),user.getUserType());
         return convertEntitiesToDTOs(receivedMessages);
-    }
-
-    @Override
-    public Page<Message> getMessages(User user, Date fromDate, Date toDate, Pageable pageDetails) {
-        return null;
     }
 
 
@@ -215,8 +218,6 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public Page<Message> getMessages(User user, Date date, java.awt.print.Pageable pageDetails) {
-
-
         return null;
     }
 
@@ -225,6 +226,23 @@ public class MessageServiceImpl implements MessageService {
         return null;
     }
 
+//    @Override
+//    public Page<Message> getMessages(User user, Pageable pageDetails) {
+//        // TODO Auto-generated method stub
+//        return null;
+//    }
+
+//    @Override
+//    public Page<Message> getMessages(User user, Date date, Pageable pageDetails) {
+//        // TODO Auto-generated method stub
+//        return null;
+//    }
+
+    @Override
+    public Page<Message> getMessages(User user, Date fromDate, Date toDate, Pageable pageDetails) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
     private List<MessageDTO> reverse(List<MessageDTO> list) {
         for(int i = 0, j = list.size() - 1; i < j; i++) {

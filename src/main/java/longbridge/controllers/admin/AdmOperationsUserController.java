@@ -3,6 +3,7 @@ package longbridge.controllers.admin;
 import longbridge.dtos.OperationsUserDTO;
 import longbridge.dtos.RoleDTO;
 import longbridge.exception.*;
+import longbridge.forms.ChangeDefaultPassword;
 import longbridge.forms.ChangePassword;
 import longbridge.models.AdminUser;
 import longbridge.models.OperationsUser;
@@ -259,6 +260,44 @@ public class AdmOperationsUserController {
             return "/ops/pword";
         }
 
+    }
+
+    @GetMapping("/password/new")
+    public String changeDefaultPassword(Model model) {
+        ChangeDefaultPassword changePassword = new ChangeDefaultPassword();
+        model.addAttribute("changePassword", changePassword);
+        model.addAttribute("passwordRules", passwordPolicyService.getPasswordRules());
+        return "ops/new-pword";
+    }
+
+
+    @PostMapping("/password/new")
+    public String changeDefaultPassword(@ModelAttribute("changePassword") @Valid ChangeDefaultPassword changePassword, BindingResult result, Principal principal, RedirectAttributes redirectAttributes,Locale locale) {
+
+        if (result.hasErrors()) {
+            result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required",null,locale)));
+            return "/ops/new-pword";
+        }
+
+        OperationsUser user = operationsUserService.getUserByName(principal.getName());
+        try {
+            String message = operationsUserService.changeDefaultPassword(user, changePassword);
+            redirectAttributes.addFlashAttribute("message", message);
+            return "redirect:/ops/logout";
+        } catch (PasswordPolicyViolationException pve) {
+            result.reject("newPassword", pve.getMessage());
+            logger.error("Password policy violation from admin user {}", user.getUserName(), pve);
+            return "/ops/new-pword";
+        } catch (PasswordMismatchException pme) {
+            result.reject("confirmPassword", pme.getMessage());
+            logger.error("New password mismatch from operations user {}", user.getUserName(), pme.toString());
+            return "/ops/new-pword";
+        } catch (PasswordException pe) {
+            result.addError(new ObjectError("error", pe.getMessage()));
+            logger.error("Error changing password for admin user {}", user.getUserName(), pe);
+
+            return "/ops/new-pword";
+        }
     }
 
     @PostMapping("/{id}/verify")

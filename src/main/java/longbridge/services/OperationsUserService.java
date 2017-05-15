@@ -2,6 +2,7 @@ package longbridge.services;
 
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.PasswordException;
+import longbridge.forms.ChangeDefaultPassword;
 import longbridge.forms.ChangePassword;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -93,6 +94,9 @@ public interface OperationsUserService{
 
     String resetPassword(Long id) throws InternetBankingException;
 
+
+
+
     /**
      * Replaces the old password with the new password
      * Also, the password must meet the organization's password policy if any one has been defined
@@ -109,4 +113,6 @@ public interface OperationsUserService{
      * @param user the use that will receive the new pasword
      */
     String generateAndSendPassword(OperationsUser user) throws InternetBankingException;
+
+    String changeDefaultPassword(OperationsUser user, ChangeDefaultPassword changePassword) throws PasswordException;
 }
