@@ -4,6 +4,7 @@ import longbridge.dtos.AccountLimitDTO;
 import longbridge.dtos.ClassLimitDTO;
 import longbridge.dtos.CodeDTO;
 import longbridge.dtos.GlobalLimitDTO;
+import longbridge.exception.InternetBankingException;
 import longbridge.models.UserType;
 import longbridge.services.CodeService;
 import longbridge.services.TransactionLimitService;
@@ -39,13 +40,13 @@ public class OpsLimitController {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    CodeService codeService;
+    private CodeService codeService;
 
     @Autowired
-    TransactionLimitService transactionLimitService;
+    private TransactionLimitService transactionLimitService;
 
     @Autowired
-    MessageSource messageSource;
+    private MessageSource messageSource;
 
 
     @ModelAttribute
@@ -78,20 +79,21 @@ public class OpsLimitController {
 
 
         try {
-            transactionLimitService.addGlobalLimit(globalLimitDTO);
+            String message = transactionLimitService.addGlobalLimit(globalLimitDTO);
+            redirectAttributes.addFlashAttribute("message", message);
+            return "redirect:/ops/limits/retail/global";
         }
         catch (DataAccessException exc){
             logger.error("Could not add global limit: {}",exc.toString());
             result.addError(new ObjectError("exception",String.format("The global limit for %s already exists",globalLimitDTO.getChannel())));
             return "/ops/limit/retail/global/add";
         }
-        catch (Exception e) {
+        catch (InternetBankingException e) {
             logger.error("Exception while adding global limit");
             result.addError(new ObjectError("exception","Could not create global retail limit: "+e.getMessage()));
             return "/ops/limit/retail/global/add";
         }
-        redirectAttributes.addFlashAttribute("message", "Retail Global limit created successfully");
-        return "redirect:/ops/limits/retail/global";
+
     }
 
 
@@ -146,20 +148,21 @@ public class OpsLimitController {
         }
         globalLimitDTO.setCustomerType(UserType.CORPORATE.name());
         try {
-            transactionLimitService.addGlobalLimit(globalLimitDTO);
+            String message = transactionLimitService.addGlobalLimit(globalLimitDTO);
+            redirectAttributes.addFlashAttribute("message", message);
+            return "redirect:/ops/limits/corporate/global";
         }
         catch (DataAccessException exc){
             logger.error("Could not add global limit: {}",exc.toString());
             result.addError(new ObjectError("exception",String.format("The global limit for %s already exists",globalLimitDTO.getChannel())));
             return "/ops/limit/corporate/global/add";
         }
-        catch (Exception e) {
+        catch (InternetBankingException e) {
             logger.error("Exception while adding global limit: {}",e.toString());
             result.addError(new ObjectError("exception","Could not create global corporate limit"));
             return "/ops/limit/corporate/global/add";
         }
-        redirectAttributes.addFlashAttribute("message", "Corporate global limit created successfully");
-        return "redirect:/ops/limits/corporate/global";
+
     }
 
 
@@ -180,14 +183,28 @@ public class OpsLimitController {
         }
 
         try {
-            transactionLimitService.addGlobalLimit(globalLimitDTO);
+            String message = transactionLimitService.addGlobalLimit(globalLimitDTO);
+            redirectAttributes.addFlashAttribute("message", message);
+            return "redirect:/ops/limits/corporate/global";
         }
-        catch (Exception e) {
+        catch (InternetBankingException e) {
             logger.error("Exception while updating global limit: {}",e.toString());
             result.addError(new ObjectError("exception","Could not update global corporate limit"));
             return "/ops/limit/corporate/global/edit";
         }
-        redirectAttributes.addFlashAttribute("message", "Corporate global limit updated successfully");
+
+    }
+
+    @GetMapping("/corporate/global/{id}/delete")
+    public String deleteCorporateGlobalLimit(@PathVariable Long id, RedirectAttributes redirectAttributes){
+        try {
+            String message = transactionLimitService.deleteCorporateGlobalLimit(id);
+            redirectAttributes.addFlashAttribute("message",message);
+        }
+        catch (InternetBankingException ibe){
+            logger.error("Failed to delete global limit",ibe);
+            redirectAttributes.addFlashAttribute("failure",ibe.getMessage());
+        }
         return "redirect:/ops/limits/corporate/global";
     }
 
@@ -206,16 +223,29 @@ public class OpsLimitController {
             return "/ops/limit/retail/global/edit";
         }
         try {
-            transactionLimitService.addGlobalLimit(globalLimitDTO);
-        } catch (Exception e) {
+            String message = transactionLimitService.updateGlobalLimit(globalLimitDTO);
+            redirectAttributes.addFlashAttribute("message", message);
+            return "redirect:/ops/limits/retail/global";
+        } catch (InternetBankingException e) {
             logger.error("Exception while updating global limit: {}",e.toString());
             result.addError(new ObjectError("exception","Could not update global retail limit"));
             return "/ops/limit/retail/global/edit";        }
 
-        redirectAttributes.addFlashAttribute("message", "Retail global limit updated successfully");
-        return "redirect:/ops/limits/retail/global";
+
     }
 
+    @GetMapping("/retail/global/{id}/delete")
+    public String deleteRetailGlobalLimit(@PathVariable Long id, RedirectAttributes redirectAttributes){
+        try {
+            String message = transactionLimitService.deleteRetailGlobalLimit(id);
+            redirectAttributes.addFlashAttribute("message",message);
+        }
+        catch (InternetBankingException ibe){
+            logger.error("Failed to delete account limit",ibe);
+            redirectAttributes.addFlashAttribute("failure",ibe.getMessage());
+        }
+        return "redirect:/ops/limits/retail/global";
+    }
 
 
     @GetMapping("/retail/class/new")
@@ -232,19 +262,20 @@ public class OpsLimitController {
         }
         classLimitDTO.setCustomerType(UserType.RETAIL.name());
         try {
-            transactionLimitService.addClassLimit(classLimitDTO);
+            String message= transactionLimitService.addClassLimit(classLimitDTO);
+            redirectAttributes.addFlashAttribute("message", message);
+            return "redirect:/ops/limits/retail/class";
         }
         catch (DataAccessException exc){
             logger.error("Could not add class limit: {}",exc.toString());
             result.addError(new ObjectError("exception",String.format("The class limit for %s already exists",classLimitDTO.getChannel())));
             return "/ops/limit/retail/class/add";
         }
-        catch (Exception e) {
+        catch (InternetBankingException e) {
             logger.error("Exception while adding class limit: {}",e.toString());
             result.addError(new ObjectError("exception","Could not create class retail limit"));
             return "/ops/limit/retail/class/add";        }
-        redirectAttributes.addFlashAttribute("message", "Retail Class limit created successfully");
-        return "redirect:/ops/limits/retail/class";
+
     }
 
 
@@ -296,24 +327,25 @@ public class OpsLimitController {
     public String createCorporateClassLimit(@ModelAttribute("classLimit") @Valid ClassLimitDTO classLimitDTO, BindingResult result, RedirectAttributes redirectAttributes,Locale locale) {
         if (result.hasErrors()) {
             result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
-            return "/ops/limits/corporate/class/add";
+            return "/ops/limit/corporate/class/add";
         }
         classLimitDTO.setCustomerType(UserType.CORPORATE.name());
         try {
-            transactionLimitService.addClassLimit(classLimitDTO);
+           String message = transactionLimitService.addClassLimit(classLimitDTO);
+            redirectAttributes.addFlashAttribute("message", message);
+            return "redirect:/ops/limits/corporate/class";
         }
         catch (DataAccessException exc){
             logger.error("Could not add class limit: {}",exc.toString());
             result.addError(new ObjectError("exception",String.format("The class limit for %s already exists",classLimitDTO.getChannel())));
             return "/ops/limit/corporate/class/add";
         }
-        catch (Exception e) {
+        catch (InternetBankingException e) {
             logger.error("Exception while adding class limit: {}",e.toString());
             result.addError(new ObjectError("exception","Could not create class corporate limit"));
             return "/ops/limit/corporate/class/add";
         }
-        redirectAttributes.addFlashAttribute("message", "Corporate class limit created successfully");
-        return "redirect:/ops/limits/corporate/class";
+
     }
 
 
@@ -335,13 +367,27 @@ public class OpsLimitController {
         }
 
         try {
-            transactionLimitService.addClassLimit(classLimitDTO);
-        } catch (Exception e) {
+            String message = transactionLimitService.updateClassLimit(classLimitDTO);
+            redirectAttributes.addFlashAttribute("message", message);
+            return "redirect:/ops/limits/corporate/class";
+        } catch (InternetBankingException e) {
             logger.error("Exception while updating class limit: {}",e.toString());
             result.addError(new ObjectError("exception","Could not update class corporate limit"));
             return "/ops/limit/corporate/class/edit";
         }
-        redirectAttributes.addFlashAttribute("message", "Corporate class limit updated successfully");
+
+    }
+
+    @GetMapping("/corporate/class/{id}/delete")
+    public String deleteCorporateClassLimit(@PathVariable Long id, RedirectAttributes redirectAttributes){
+        try {
+            String message = transactionLimitService.deleteCorporateClassLimit(id);
+            redirectAttributes.addFlashAttribute("message",message);
+        }
+        catch (InternetBankingException ibe){
+            logger.error("Failed to delete class limit",ibe);
+            redirectAttributes.addFlashAttribute("failure",ibe.getMessage());
+        }
         return "redirect:/ops/limits/corporate/class";
     }
 
@@ -360,14 +406,28 @@ public class OpsLimitController {
             return "/ops/limit/retail/class/edit";
         }
         try {
-            transactionLimitService.addClassLimit(classLimitDTO);
-        } catch (Exception e) {
+            String message = transactionLimitService.updateClassLimit(classLimitDTO);
+            redirectAttributes.addFlashAttribute("message", message);
+            return "redirect:/ops/limits/retail/class";
+        } catch (InternetBankingException e) {
             logger.error("Exception while updating class limit: {}",e.toString());
             result.addError(new ObjectError("exception","Could not update class retail limit"));
             return "/ops/limit/retail/class/edit";
         }
 
-        redirectAttributes.addFlashAttribute("message", "Retail class limit updated successfully");
+
+    }
+
+    @GetMapping("/retail/class/{id}/delete")
+    public String deleteRetailClassLimit(@PathVariable Long id, RedirectAttributes redirectAttributes){
+        try {
+            String message = transactionLimitService.deleteCorporateClassLimit(id);
+            redirectAttributes.addFlashAttribute("message",message);
+        }
+        catch (InternetBankingException ibe){
+            logger.error("Failed to delete class limit",ibe);
+            redirectAttributes.addFlashAttribute("failure",ibe.getMessage());
+        }
         return "redirect:/ops/limits/retail/class";
     }
 
@@ -385,19 +445,20 @@ public class OpsLimitController {
         }
         accountLimitDTO.setCustomerType(UserType.RETAIL.name());
         try {
-            transactionLimitService.addAccountLimit(accountLimitDTO);
+            String message = transactionLimitService.addAccountLimit(accountLimitDTO);
+            redirectAttributes.addFlashAttribute("message", message);
+            return "redirect:/ops/limits/retail/account";
         }
         catch (DataAccessException exc){
             logger.error("Could not add account limit: {}",exc.toString());
             result.addError(new ObjectError("exception",String.format("The account limit for %s already exists",accountLimitDTO.getChannel())));
             return "/ops/limit/retail/account/add";
         }
-        catch (Exception e) {
+        catch (InternetBankingException e) {
             logger.error("Exception while adding account limit: {}",e.toString());
             result.addError(new ObjectError("exception","Could not create account retail limit"));
             return "/ops/limit/retail/account/add";        }
-        redirectAttributes.addFlashAttribute("message", "Retail Account limit created successfully");
-        return "redirect:/ops/limits/retail/account";
+
     }
 
 
@@ -452,20 +513,21 @@ public class OpsLimitController {
         }
         accountLimitDTO.setCustomerType(UserType.CORPORATE.name());
         try {
-            transactionLimitService.addAccountLimit(accountLimitDTO);
+           String message = transactionLimitService.addAccountLimit(accountLimitDTO);
+            redirectAttributes.addFlashAttribute("message", message);
+            return "redirect:/ops/limits/corporate/account";
         }
         catch (DataAccessException exc){
             logger.error("Could not add global limit: {}",exc.toString());
             result.addError(new ObjectError("exception",String.format("The account limit for %s already exists",accountLimitDTO.getChannel())));
             return "/ops/limit/corporate/account/add";
         }
-        catch (Exception e) {
+        catch (InternetBankingException e) {
             logger.error("Exception while adding account limit: {}",e.toString());
             result.addError(new ObjectError("exception","Could not create account corporate limit"));
             return "/ops/limit/corporate/account/add";
         }
-        redirectAttributes.addFlashAttribute("message", "Corporate account limit created successfully");
-        return "redirect:/ops/limits/corporate/account";
+
     }
 
 
@@ -486,13 +548,27 @@ public class OpsLimitController {
         }
 
         try {
-            transactionLimitService.addAccountLimit(accountLimitDTO);
-        } catch (Exception e) {
+            String message = transactionLimitService.addAccountLimit(accountLimitDTO);
+            redirectAttributes.addFlashAttribute("message", message);
+            return "redirect:/ops/limits/corporate/account";
+        } catch (InternetBankingException e) {
             logger.error("Exception while updating account limit: {}",e.toString());
             result.addError(new ObjectError("exception","Could not update account corporate limit"));
             return "/ops/limit/corporate/account/edit";
         }
-        redirectAttributes.addFlashAttribute("message", "Corporate account limit updated successfully");
+
+    }
+
+    @GetMapping("/corporate/account/{id}/delete")
+    public String deleteCorporateAccountLimit(@PathVariable Long id, RedirectAttributes redirectAttributes){
+        try {
+            String message = transactionLimitService.deleteCorporateAccountLimit(id);
+            redirectAttributes.addFlashAttribute("message",message);
+        }
+        catch (InternetBankingException ibe){
+            logger.error("Failed to delete account limit",ibe);
+            redirectAttributes.addFlashAttribute("failure",ibe.getMessage());
+        }
         return "redirect:/ops/limits/corporate/account";
     }
 
@@ -503,6 +579,8 @@ public class OpsLimitController {
         return "ops/limit/retail/account/edit";
     }
 
+
+
     @PostMapping("/retail/account/update")
     public String updateRetailAccountLimit(@ModelAttribute("accountLimit") @Valid AccountLimitDTO accountLimitDTO, BindingResult result, RedirectAttributes redirectAttributes,Locale locale){
 
@@ -511,14 +589,27 @@ public class OpsLimitController {
             return "/ops/limit/retail/account/edit";
         }
         try {
-            transactionLimitService.addAccountLimit(accountLimitDTO);
+            String message = transactionLimitService.addAccountLimit(accountLimitDTO);
+            redirectAttributes.addFlashAttribute("message", "Retail account limit updated successfully");
+            return "redirect:/ops/limits/retail/account";
         } catch (Exception e) {
             logger.error("Exception while updating account limit: {}",e.toString());
             result.addError(new ObjectError("exception","Could not update account retail limit"));
             return "/ops/limit/retail/account/edit";        }
 
 
-        redirectAttributes.addFlashAttribute("message", "Retail account limit updated successfully");
+
+    }
+    @GetMapping("/retail/account/{id}/delete")
+    public String deleteRetailAccountLimit(@PathVariable Long id, RedirectAttributes redirectAttributes){
+        try {
+            String message = transactionLimitService.deleteRetailAccountLimit(id);
+            redirectAttributes.addFlashAttribute("message",message);
+        }
+        catch (InternetBankingException ibe){
+            logger.error("Failed to delete account limit",ibe);
+            redirectAttributes.addFlashAttribute("failure",ibe.getMessage());
+        }
         return "redirect:/ops/limits/retail/account";
     }
 }
