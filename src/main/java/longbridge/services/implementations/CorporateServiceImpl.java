@@ -1,18 +1,17 @@
 package longbridge.services.implementations;
 
+import longbridge.api.AccountInfo;
 import longbridge.dtos.AccountDTO;
 import longbridge.dtos.CorporateDTO;
 import longbridge.exception.InternetBankingException;
-import longbridge.models.Account;
-import longbridge.models.CorpLimit;
-import longbridge.models.Corporate;
-import longbridge.models.CorporateUser;
+import longbridge.models.*;
 import longbridge.repositories.CorpLimitRepo;
 import longbridge.repositories.CorporateRepo;
 import longbridge.repositories.CorporateUserRepo;
 import longbridge.services.AccountService;
 import longbridge.services.CodeService;
 import longbridge.services.CorporateService;
+import longbridge.services.IntegrationService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,10 +24,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 /**
  * Created by Fortune on 4/5/2017.
@@ -48,6 +44,8 @@ public class CorporateServiceImpl implements CorporateService {
     private MessageSource messageSource;
     @Autowired
     private CodeService  codeService;
+    @Autowired
+    private IntegrationService integrationService;
 
     private Locale locale = LocaleContextHolder.getLocale();
 
@@ -60,17 +58,25 @@ public class CorporateServiceImpl implements CorporateService {
         this.corporateRepo = corporateRepo;
         this.corpLimitRepo = corpLimitRepo;
     }
+
     @Override
     public String addCorporate(CorporateDTO corporateDTO) throws InternetBankingException {
         try{
-        Corporate corporate = convertDTOToEntity(corporateDTO);
-        corporate.setCreatedOnDate(new Date());
-        corporateRepo.save(corporate);
-        return messageSource.getMessage("corporate.add.success", null, locale);
-    }
-    catch (Exception e){
-            throw new InternetBankingException(messageSource.getMessage("corporate.add.failure",null,locale),e);
-    }
+            Corporate corporate = convertDTOToEntity(corporateDTO);
+            corporate.setCreatedOnDate(new Date());
+            corporateRepo.save(corporate);
+            String customerId = corporate.getCustomerId();
+            Collection<AccountInfo> accounts = integrationService.fetchAccounts(customerId);
+            for (AccountInfo acct : accounts) {
+                accountService.AddFIAccount(customerId, acct);
+            }
+
+            logger.info("Corporate {} created", corporate.getCompanyName());
+            return messageSource.getMessage("corporate.add.success", null, locale);
+        }
+        catch (Exception e){
+                throw new InternetBankingException(messageSource.getMessage("corporate.add.failure",null,locale),e);
+        }
 
     }
 

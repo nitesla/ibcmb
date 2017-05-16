@@ -27,7 +27,7 @@
             <div class="">
                 <div class="page-title">
                     <div class="title_left">
-                        <h3>Corporate Management</h3>
+                        <h3 th:text="${corporate.companyName}">Corporate Management</h3>
                     </div>
                 </div>
 
@@ -51,14 +51,14 @@
                                                     <li >
                                                         <div class="col-lg-4">
                                                             <div class="title-action">
-                                                                <a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/corporates/index/edit" disabled="disabled" ><i class="fa fa-pencil"></i> Edit</a>
+                                                                <a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/corporates/users/index/edit" disabled="disabled" ><i class="fa fa-pencil"></i> Edit</a>
                                                             </div>
                                                         </div>
                                                     </li>
                                                     <li >
                                                         <div class="col-lg-4">
                                                             <div class="title-action">
-                                                                <a  class="btn btn-danger btn-sm bt-select bt-link-act" href="/admin/corporates/index/activation" disabled="disabled" ><i class="fa fa-user"></i> Activate/Deactivate</a>
+                                                                <a  class="btn btn-danger btn-sm bt-select bt-link-act" href="/admin/corporates/users/index/activation" disabled="disabled" ><i class="fa fa-user"></i> Activate/Deactivate</a>
                                                             </div>
                                                         </div>
                                                     </li>
@@ -67,7 +67,7 @@
                                                     <li >
                                                         <div class="col-lg-4">
                                                             <div class="title-action">
-                                                                <a class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/corporates/index/users/new" disabled="disabled" ><i class="fa fa-user-plus"></i> Add Corporate User</a>
+                                                                <a class="btn btn-primary btn-sm" th:href="@{'/admin/corporates/users/' + ${corporate.id}+ '/new'}"><i class="fa fa-user-plus"></i> Add Corporate User</a>
                                                             </div>
                                                         </div>
                                                     </li>
@@ -114,26 +114,19 @@
 
                                                 <div class="x_title">
                                                     <ul class="nav navbar-left panel_toolbox">
-                                                        <!--<li >-->
-                                                            <!--<div class="col-lg-4">-->
-                                                                <!--<div class="title-action">-->
-                                                                    <!--<a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/corporates/index/edit" disabled="disabled" ><i class="fa fa-pencil"></i> Edit</a>-->
-                                                                <!--</div>-->
-                                                            <!--</div>-->
-                                                        <!--</li>-->
-                                                        <!--<li >-->
-                                                            <!--<div class="col-lg-4">-->
-                                                                <!--<div class="title-action">-->
-                                                                    <!--<a  class="btn btn-danger btn-sm bt-select bt-link-act" href="/admin/corporates/index/activation" disabled="disabled" ><i class="fa fa-user"></i> Activate/Deactivate</a>-->
-                                                                <!--</div>-->
-                                                            <!--</div>-->
-                                                        <!--</li>-->
+                                                        <li>
+                                                            <div class="col-lg-4">
+                                                                <div class="title-action">
+                                                                    <a  class="btn btn-danger btn-sm bt-select bt-link-act" href="/admin/corporates/index/account/activation" disabled="disabled" ><i class="fa fa-user"></i> Activate/Deactivate</a>
+                                                                </div>
+                                                            </div>
+                                                        </li>
                                                     </ul>
                                                     <ul class="nav navbar-right panel_toolbox">
                                                         <li >
                                                             <div class="col-lg-4">
                                                                 <div class="title-action">
-                                                                    <a class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/corporates/index/users/new" disabled="disabled" ><i class="fa fa-user-plus"></i> Link Account</a>
+                                                                    <a class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/corporates/index/account/new" disabled="disabled" ><i class="fa fa-user-plus"></i> Link Account</a>
                                                                 </div>
                                                             </div>
                                                         </li>
@@ -260,6 +253,41 @@
             }
         });
 
+
+    });
+
+    $("a.bt-link-act").on("click", function(e) {
+        e.preventDefault();
+        var link = $(e.currentTarget);
+        if($(link).attr("disabled")){
+            return;
+        }
+        var dt = $('#users').DataTable();
+        var id = $(dt.row({
+            selected: true
+        }).node()).attr("id");
+        //replace {id} with id
+        var ooo = link.attr("href").replace("index",id);
+        window.location.assign(ooo);
+    });
+
+    $("a.bt-link-none").on("click", function(e) {
+        e.preventDefault();
+        var link = $(e.currentTarget);
+        if($(link).attr("disabled")){
+            return;
+        }
+
+    });
+
+
+    /*]]>*/
+</script>
+
+<!-- Page-Level Scripts -->
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    $(document).ready(function() {
         var acurl = /*[['/admin/corporates/'+${corporate.id}+'/accounts']]*/"/admin/corporates/${corporate.id}/accounts";
         var table = $('#account').DataTable({
             select: true,
@@ -279,52 +307,7 @@
 
         });
     });
-
-    $("a.bt-link-act").on("click", function(e) {
-        e.preventDefault();
-        var link = $(e.currentTarget);
-        if($(link).attr("disabled")){
-            return;
-        }
-        var dt = $('#corporate').DataTable();
-        var id = $(dt.row({
-            selected: true
-        }).node()).attr("id");
-        //replace {id} with id
-        var ooo = link.attr("href").replace("index",id);
-        window.location.assign(ooo);
-    });
-
-    $("a.bt-link-none").on("click", function(e) {
-        e.preventDefault();
-        var link = $(e.currentTarget);
-        if($(link).attr("disabled")){
-            return;
-        }
-
-    });
-
-
-    $(document).on('hidden.bs.modal', function(e) {
-        $(e.target).removeData('bs.modal');
-    });
-
-    $(".modal").on("show.bs.modal", function(e) {
-        var target = $(e.relatedTarget);
-//        if($(target).attr("disabled")){
-//            return;
-//        }
-        var dt = $('#corporate').DataTable();
-        var id = $(dt.row({
-            selected : true
-        }).node()).attr("id");
-        var ooo = target.attr("href").replace("index", id);
-        $(this).find(".modal-body").load(ooo);
-    });
-
-
     /*]]>*/
 </script>
-
 </body>
 </html>
