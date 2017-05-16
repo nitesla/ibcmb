@@ -174,10 +174,10 @@ public class RetailUserServiceImpl implements RetailUserService {
         try {
             RetailUser user = retailUserRepo.findOne(userId);
             String oldStatus = user.getStatus();
-            String newStatus = "ACTIVE".equals(oldStatus) ? "INACTIVE" : "ACTIVE";
+            String newStatus = "A".equals(oldStatus) ? "I" : "A";
             user.setStatus(newStatus);
             retailUserRepo.save(user);
-            if ((oldStatus == null) || ("INACTIVE".equals(oldStatus)) && "ACTIVE".equals(newStatus)) {
+            if ((oldStatus == null) || ("I".equals(oldStatus)) && "A".equals(newStatus)) {
                 String password = passwordPolicyService.generatePassword();
                 user.setPassword(passwordEncoder.encode(password));
                 Email email = new Email.Builder().setSender("info@ibanking.coronationmb.com")
@@ -347,12 +347,17 @@ public class RetailUserServiceImpl implements RetailUserService {
         return false;
     }
 
-    private RetailUserDTO convertEntityToDTO(RetailUser RetailUser) {
-        return modelMapper.map(RetailUser, RetailUserDTO.class);
+    private RetailUserDTO convertEntityToDTO(RetailUser retailUser) {
+        RetailUserDTO retailUserDTO =  modelMapper.map(retailUser, RetailUserDTO.class);
+        Code code = codeService.getByTypeAndCode("USER_STATUS", retailUser.getStatus());
+        if (code != null) {
+            retailUserDTO.setStatus(code.getDescription());
+        }
+        return retailUserDTO;
     }
 
-    private RetailUser convertDTOToEntity(RetailUserDTO RetailUserDTO) {
-        return modelMapper.map(RetailUserDTO, RetailUser.class);
+    private RetailUser convertDTOToEntity(RetailUserDTO retailUserDTO) {
+       return   modelMapper.map(retailUserDTO, RetailUser.class);
     }
 
     private List<RetailUserDTO> convertEntitiesToDTOs(Iterable<RetailUser> RetailUsers) {

@@ -205,7 +205,7 @@ public class AdmOperationsUserController {
             String message = operationsUserService.resetPassword(id);
             redirectAttributes.addFlashAttribute("message", message);
         } catch (PasswordException pe) {
-            redirectAttributes.addAttribute("failure", pe.getMessage());
+            redirectAttributes.addFlashAttribute("failure", pe.getMessage());
             logger.error("Error resetting password for operation user", pe);
         }
         return "redirect:/admin/operations/users";

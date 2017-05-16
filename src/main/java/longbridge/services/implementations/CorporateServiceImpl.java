@@ -7,6 +7,7 @@ import longbridge.repositories.CorpLimitRepo;
 import longbridge.repositories.CorporateRepo;
 import longbridge.repositories.CorporateUserRepo;
 import longbridge.services.AccountService;
+import longbridge.services.CodeService;
 import longbridge.services.CorporateService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -37,16 +38,18 @@ public class CorporateServiceImpl implements CorporateService {
     private CorporateUserRepo corporateUserRepo;
     @Autowired
     private AccountService accountService;
-
     @Autowired
-    ModelMapper modelMapper;
-
+    private ModelMapper modelMapper;
     @Autowired
-    MessageSource messageSource;
+    private MessageSource messageSource;
+    @Autowired
+    private CodeService  codeService;
 
-    Locale locale = LocaleContextHolder.getLocale();
+    private Locale locale = LocaleContextHolder.getLocale();
 
-    Logger logger = LoggerFactory.getLogger(this.getClass());
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+
+
 
     @Autowired
     public CorporateServiceImpl(CorporateRepo corporateRepo, CorpLimitRepo corpLimitRepo){
@@ -129,7 +132,7 @@ public class CorporateServiceImpl implements CorporateService {
         try {
             Corporate corporate = corporateRepo.findOne(id);
             String oldStatus = corporate.getStatus();
-            String newStatus = "ACTIVE".equals(oldStatus) ? "INACTIVE" : "ACTIVE";
+            String newStatus = "A".equals(oldStatus) ? "I" : "A";
             corporate.setStatus(newStatus);
             corporateRepo.save(corporate);
 
@@ -178,7 +181,12 @@ public class CorporateServiceImpl implements CorporateService {
 	}
 
     private CorporateDTO convertEntityToDTO(Corporate corporate){
-        return  modelMapper.map(corporate,CorporateDTO.class);
+        CorporateDTO corporateDTO = modelMapper.map(corporate,CorporateDTO.class);
+        Code code = codeService.getByTypeAndCode("USER_STATUS", corporate.getStatus());
+        if (code != null) {
+            corporateDTO.setStatus(code.getDescription());
+        }
+        return corporateDTO;
     }
 
     private Corporate convertDTOToEntity(CorporateDTO corporateDTO){

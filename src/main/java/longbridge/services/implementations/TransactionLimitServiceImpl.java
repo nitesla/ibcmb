@@ -53,10 +53,15 @@ public class TransactionLimitServiceImpl implements TransactionLimitService {
 
     @Override
     public String addGlobalLimit(GlobalLimitDTO globalLimitDTO) throws InternetBankingException {
+        try{
         GlobalLimit globalLimit = convertGlobalLimitDTOToEntity(globalLimitDTO);
         globalLimitRepo.save(globalLimit);
         logger.info("Added global limit {}",globalLimit.toString());
         return messageSource.getMessage("limit.add.success",null,locale);
+    }
+    catch (Exception e){
+        throw new InternetBankingException(messageSource.getMessage("limit.add.failure",null,locale));
+        }
     }
 
 
