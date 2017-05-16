@@ -55,7 +55,7 @@ public class WebMvcConfig   extends WebMvcConfigurerAdapter {
 		final LocaleChangeInterceptor localeChangeInterceptor = new LocaleChangeInterceptor();
 		localeChangeInterceptor.setParamName("lang");
 		registry.addInterceptor(localeChangeInterceptor);
-		registry.addInterceptor(new AdminUserLoginInterceptor()).addPathPatterns("/admin/**");
+		//registry.addInterceptor(new AdminUserLoginInterceptor()).addPathPatterns("/admin/**");
 	}
 
 	@Bean
