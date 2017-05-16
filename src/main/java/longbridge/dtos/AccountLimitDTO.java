@@ -30,9 +30,6 @@ public class AccountLimitDTO {
     private String status;
     @NotEmpty
     private String frequency;
-    private Date effectiveDate;
-    @NotEmpty(message = "startDate")
-    private String startDate; //same as effectiveDate
 
 
     public Long getId() {
@@ -127,23 +124,6 @@ public class AccountLimitDTO {
     }
 
 
-    public Date getEffectiveDate() {
-        return effectiveDate;
-    }
-
-    public void setEffectiveDate(Date effectiveDate) {
-        this.effectiveDate = effectiveDate;
-    }
-
-
-
-    public String getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(String startDate) {
-        this.startDate = startDate;
-    }
 
     @Override
     public String toString() {
@@ -159,8 +139,6 @@ public class AccountLimitDTO {
                 ", currency='" + currency + '\'' +
                 ", status='" + status + '\'' +
                 ", frequency='" + frequency + '\'' +
-                ", effectiveDate=" + effectiveDate +
-                ", startDate='" + startDate + '\'' +
                 '}';
     }
 }

@@ -178,7 +178,7 @@ public class AdminUserServiceImpl implements AdminUserService {
             AdminUser user = adminUserRepo.findOne(id);
             user.setDeletedOn(new Date());
             adminUserRepo.save(user);
-            adminUserRepo.delete(user);
+            adminUserRepo.delete(id);
             logger.warn("Admin user {} deleted", user.getUserName());
             return messageSource.getMessage("user.delete.success", null, locale);
         } catch (Exception e) {
