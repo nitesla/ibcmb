@@ -74,11 +74,18 @@ public class AdmCorporateController {
         return "adm/corporate/view";
     }
 
+//    @GetMapping("/{reqId}/view")
+//    public String  viewRole(@PathVariable Long reqId, Model model){
+//        CorporateDTO corporate = corporateService.getCorporate(reqId);
+//        model.addAttribute("corporate",corporate);
+//        return "/adm/corporate/details";
+//    }
+
     @GetMapping("/{reqId}/view")
     public String  viewRole(@PathVariable Long reqId, Model model){
         CorporateDTO corporate = corporateService.getCorporate(reqId);
         model.addAttribute("corporate",corporate);
-        return "/adm/corporate/details";
+        return "/adm/corporate/viewdetails";
     }
 
     @GetMapping(path = "/{corpId}/users")

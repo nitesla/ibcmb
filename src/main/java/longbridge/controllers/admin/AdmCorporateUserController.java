@@ -77,6 +77,8 @@ public class AdmCorporateUserController {
         try {
             String message = corporateUserService.addUser(corporateUserDTO);
             redirectAttributes.addFlashAttribute("message", message);
+
+
             return "redirect:/admin/corporates/";
         } catch (DuplicateObjectException doe) {
             result.addError(new ObjectError("error", doe.getMessage()));
@@ -101,7 +103,7 @@ public class AdmCorporateUserController {
         }
     }
 
-    @GetMapping("/users/{userId}")
+    @GetMapping("/users/{userId}/edit")
     public String getUser(@PathVariable Long userId, Model model) {
         CorporateUserDTO user = corporateUserService.getUser(userId);
 
@@ -110,7 +112,7 @@ public class AdmCorporateUserController {
     }
 
 
-    @PostMapping("/users/{userId}")
+    @PostMapping("/users/{userId}/edit")
     public String UpdateUser(@ModelAttribute("corporateUser") CorporateUserDTO corporateUserDTO, @PathVariable Long userId, BindingResult result, RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
             return "addUser";

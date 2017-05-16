@@ -5,10 +5,12 @@ import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.Corporate;
 import longbridge.models.CorporateUser;
+import longbridge.models.Email;
 import longbridge.models.Role;
 import longbridge.repositories.CorpLimitRepo;
 import longbridge.repositories.CorporateUserRepo;
 import longbridge.services.CorporateUserService;
+import longbridge.services.MailService;
 import longbridge.services.PasswordPolicyService;
 import longbridge.services.SecurityService;
 import org.modelmapper.ModelMapper;
@@ -23,6 +25,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -47,6 +50,9 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
     @Autowired
     MessageSource messageSource;
+
+    @Autowired
+    MailService mailService;
 
     @Autowired
     PasswordPolicyService passwordPolicyService;
@@ -116,14 +122,45 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             role.setId(Long.parseLong(user.getRoleId()));
             corporateUser.setRole(role);
             corporateUser.setExpiryDate(new Date());
+            corporateUser.setStatus("INACTIVE");
             Corporate corporate = new Corporate();
             corporate.setId(Long.parseLong(user.getCorporateId()));
             corporateUser.setCorporate(corporate);
             corporateUserRepo.save(corporateUser);
+            logger.info("password {}", password);
             logger.info("New corporate user {} created", corporateUser.getUserName());
             return messageSource.getMessage("user.add.success", null, locale);
         } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("user.add.failure", null, locale), e);
+        }
+    }
+
+    @Override
+    @Transactional
+    public String changeActivationStatus(Long userId) throws InternetBankingException {
+        try {
+            CorporateUser user = corporateUserRepo.findOne(userId);
+            String oldStatus = user.getStatus();
+            String newStatus = "ACTIVE".equals(oldStatus) ? "INACTIVE" : "ACTIVE";
+            user.setStatus(newStatus);
+            corporateUserRepo.save(user);
+            if ((oldStatus == null) || ("INACTIVE".equals(oldStatus)) && "ACTIVE".equals(newStatus)) {
+                String password = passwordPolicyService.generatePassword();
+                user.setPassword(passwordEncoder.encode(password));
+                Email email = new Email.Builder().setSender("admin@ibanking.coronationmb.com")
+                        .setRecipient(user.getEmail())
+                        .setSubject("Internet Banking Corporate User Activation")
+                        .setBody(String.format("Your new password to corporate console is %s and your username is %s", password, user.getUserName()))
+                        .build();
+                mailService.send(email);
+            }
+
+            logger.info("Admin user {} status changed from {} to {}", user.getUserName(), oldStatus, newStatus);
+            return messageSource.getMessage("user.status.success", null, locale);
+
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("user.status.failure", null, locale), e);
+
         }
     }
 
@@ -182,23 +219,27 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         }
     }
 
-
-    private CorporateUserDTO convertEntityToDTO(CorporateUser CorporateUser){
-        return  modelMapper.map(CorporateUser,CorporateUserDTO.class);
-    }
-
     private CorporateUser convertDTOToEntity(CorporateUserDTO CorporateUserDTO){
         return  modelMapper.map(CorporateUserDTO,CorporateUser.class);
     }
 
 
-    private List<CorporateUserDTO> convertEntitiesToDTOs(Iterable<CorporateUser> corporateUsers){
+    private List<CorporateUserDTO> convertEntitiesToDTOs(Iterable<CorporateUser> corporateUsers) {
         List<CorporateUserDTO> corporateUserDTOList = new ArrayList<>();
-        for(CorporateUser corporateUser: corporateUsers){
-            CorporateUserDTO corporateUserDTO =  convertEntityToDTO(corporateUser);
-            corporateUserDTOList.add(corporateUserDTO);
+        for (CorporateUser corporateUser : corporateUsers) {
+            CorporateUserDTO userDTO = convertEntityToDTO(corporateUser);
+            userDTO.setRole(corporateUser.getRole().getName());
+            corporateUserDTOList.add(userDTO);
         }
         return corporateUserDTOList;
+    }
+
+    private CorporateUserDTO convertEntityToDTO(CorporateUser corporateUser) {
+        CorporateUserDTO corporateUserDTO = new CorporateUserDTO();
+        corporateUserDTO.setFirstName(corporateUser.getFirstName());
+        corporateUserDTO.setLastName(corporateUser.getLastName());
+        corporateUserDTO.setRoleId(corporateUser.getRole().getId().toString());
+        return modelMapper.map(corporateUser, CorporateUserDTO.class);
     }
 
 	@Override
