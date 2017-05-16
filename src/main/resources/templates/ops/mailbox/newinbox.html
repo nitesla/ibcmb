@@ -76,7 +76,7 @@
 
                             <div class="x_content">
                                 <div class="row">
-<div id="MySplitter">
+
                                     <div class="col-sm-3 mail_list_column">
                                         <a href="/ops/mailbox/newcompose" class="btn btn-sm btn-primary outline-btn btn-block m-b-10">Compose</a>
 
@@ -130,7 +130,7 @@
                                                                     <div class="message-content">
                                                                         <p>
                                                                             <span th:text="${messageDTO.body}" ></span></p>
-                                                                        </p>
+gi
                                                                         <br/><br/>
                                                                     </div>
 
@@ -156,7 +156,7 @@
 
                                     </div>
                                     <div th:unless="${messageDTO}"><p align="center"> No Received Messages</p></div>
-</div>
+
 
                                 </div>
                             </div>
@@ -187,13 +187,7 @@
 
 <!-- bootstrap-wysiwyg -->
 
-<script>
-    $(document).ready(function () {
 
-        $('#MySplitter').jqxSplitter
-        ({ width: 400, height: 400, panels: [{ size: 200 }, { size: 200}] });
-    });
-</script>
 <!-- /compose -->
 
 
