@@ -85,10 +85,17 @@
     <div class="menu_section">
         <h3>Operations Console</h3>
         <ul class="nav side-menu">
-            <li><a><i class="fa fa-building-o"></i> Corporates <span class="fa fa-chevron-down"></span></a>
+            <li><a href="/ops/requests/"><i class="fa fa-question-circle"></i> Service Requests</a>
+                <!--<ul class="nav child_menu">-->
+                    <!--<li><a href="/ops/requests/">Requests</a></li>-->
+
+                <!--</ul>-->
+
+            </li>
+            <li><a><i class="fa fa-money"></i> Limits <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
                     <!--<li><a href="#">Accounts</a></li>-->
-                    <li><a> Limits <span class="fa fa-chevron-down"></span></a>
+                    <li><a> Corporate <span class="fa fa-chevron-down"></span></a>
                         <ul class="nav child_menu">
                             <li class="sub_menu"><a href="/ops/limits/corporate/global">Global Level</a></li>
                             <li class="sub_menu"><a href="/ops/limits/corporate/class">Class Level</a></li>
@@ -96,12 +103,7 @@
 
                         </ul>
                     </li>
-                </ul>
-            </li>
-            <li><a><i class="fa fa-users"></i> Retail <span class="fa fa-chevron-down"></span></a>
-                <ul class="nav child_menu">
-                    <!--<li><a href="#">Account</a></li>-->
-                    <li><a> Limits <span class="fa fa-chevron-down"></span></a>
+                    <li><a> Retail <span class="fa fa-chevron-down"></span></a>
                         <ul class="nav child_menu">
                             <li class="sub_menu"><a href="/ops/limits/retail/global">Global Level</a></li>
                             <li class="sub_menu"><a href="/ops/limits/retail/class">Class Level</a></li>
@@ -111,40 +113,33 @@
                     </li>
                 </ul>
             </li>
-            <li><a><i class="fa fa-question-circle"></i> Service Request <span class="fa fa-chevron-down"></span></a>
+
+
+            <li><a><i class="fa fa-tasks"></i> Transactions <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
-                    <li><a href="/ops/requests/">Requests</a></li>
-
-                </ul>
-
-            </li>
-
-            <li><a><i class="fa fa-cog"></i> Settings <span class="fa fa-chevron-down"></span></a>
-                <ul class="nav child_menu">
-
-                    <li><a href="/ops/fees">Transaction Fees</a></li>
-                    <li><a href="/ops/groups/">Contact Groups</a></li>
-                    <li><a> Account Restriction <span class="fa fa-chevron-down"></span></a>
+                    <li><a> Account Restrictions <span class="fa fa-chevron-down"></span></a>
                         <ul class="nav child_menu">
-                            <li class="sub_menu"><a href="/ops/accounts/restriction/account">Account</a></li>
-                            <li class="sub_menu"><a href="/ops/accounts/restriction/class">Account Class</a></li>
+                            <li class="sub_menu"><a href="/ops/accounts/restriction/class">Global</a></li>
+                            <li class="sub_menu"><a href="/ops/accounts/restriction/account">Individual</a></li>
 
                         </ul>
                     </li>
+                    <li><a href="/ops/fees">Fees</a></li>
+
                 </ul>
 
             </li>
+
             <li><a><i class="fa fa-inbox"></i> Mailbox<span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
                     <li><a href="/ops/mailbox/newinbox/">Inbox</a></li>
 
                     <li><a href="/ops/mailbox/outbox/">Sent</a></li>
-                   <!-- <li><a href="/ops</li>/mailbox/newcompose/">New Outbox</a></li>
-                  --> <!-- <li><a href="/ops/mailbox/vgiewmail/">View Mail</a></li>-->
-
 
                 </ul>
             </li>
+            <li><a href="/ops/groups/"><i class="fa fa-group"></i>Contacts</a></li>
+
             <li><a><i class="fa fa-bar-chart-o"></i> Reports <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu"></ul>
             </li>
