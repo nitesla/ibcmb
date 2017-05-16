@@ -1,5 +1,6 @@
 package longbridge.controllers.admin;
 
+import longbridge.dtos.AccountDTO;
 import longbridge.dtos.CorporateDTO;
 import longbridge.dtos.CorporateUserDTO;
 import longbridge.exception.InternetBankingException;
@@ -99,6 +100,20 @@ public class AdmCorporateController {
         out.setData(users.getContent());
         out.setRecordsFiltered(users.getTotalElements());
         out.setRecordsTotal(users.getTotalElements());
+        return out;
+    }
+
+    @GetMapping(path = "/{corpId}/accounts")
+    public @ResponseBody
+    DataTablesOutput<AccountDTO> getAccounts(@PathVariable Long corpId, DataTablesInput input){
+
+        Pageable pageable = DataTablesUtils.getPageable(input);
+        Page<AccountDTO> accounts = corporateService.getAccounts(corpId, pageable);
+        DataTablesOutput<AccountDTO> out = new DataTablesOutput<AccountDTO>();
+        out.setDraw(input.getDraw());
+        out.setData(accounts.getContent());
+        out.setRecordsFiltered(accounts.getTotalElements());
+        out.setRecordsTotal(accounts.getTotalElements());
         return out;
     }
 

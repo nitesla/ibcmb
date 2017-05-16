@@ -9,10 +9,7 @@ import longbridge.models.Email;
 import longbridge.models.Role;
 import longbridge.repositories.CorpLimitRepo;
 import longbridge.repositories.CorporateUserRepo;
-import longbridge.services.CorporateUserService;
-import longbridge.services.MailService;
-import longbridge.services.PasswordPolicyService;
-import longbridge.services.SecurityService;
+import longbridge.services.*;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,6 +53,9 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
     @Autowired
     PasswordPolicyService passwordPolicyService;
+
+    @Autowired
+    private AccountService accountService;
 
     Locale locale = LocaleContextHolder.getLocale();
 
@@ -253,7 +253,9 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 		// TODO Auto-gene
 	}
 
-	@Override
+
+
+    @Override
 	public Page<CorporateUserDTO> getUsers(Pageable pageDetails) {
 		// TODO Auto-generated method stub
 

@@ -57,7 +57,7 @@ public interface AccountService {
 
     Iterable<Account> getCustomerAccounts(String customerId);
 
-    Page<Account> getAccounts(String customerId, Pageable pageDetails);
+    Page<AccountDTO> getAccounts(String customerId, Pageable pageDetails);
 
     /**
      * Returns the details of an account balance.

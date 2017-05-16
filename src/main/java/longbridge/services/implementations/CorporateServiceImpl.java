@@ -1,8 +1,12 @@
 package longbridge.services.implementations;
 
+import longbridge.dtos.AccountDTO;
 import longbridge.dtos.CorporateDTO;
 import longbridge.exception.InternetBankingException;
-import longbridge.models.*;
+import longbridge.models.Account;
+import longbridge.models.CorpLimit;
+import longbridge.models.Corporate;
+import longbridge.models.CorporateUser;
 import longbridge.repositories.CorpLimitRepo;
 import longbridge.repositories.CorporateRepo;
 import longbridge.repositories.CorporateUserRepo;
@@ -176,6 +180,29 @@ public class CorporateServiceImpl implements CorporateService {
         Page<CorporateDTO> pageImpl = new PageImpl<CorporateDTO>(dtOs,pageDetails,t);
         return pageImpl;
 	}
+
+    @Override
+    public Page<AccountDTO> getAccounts(Long corpId, Pageable pageDetails) {
+        Corporate corporate = corporateRepo.findOne(corpId);
+        Page<AccountDTO> page = accountService.getAccounts(corporate.getCustomerId(), pageDetails);
+        List<AccountDTO> dtOs = page.getContent();
+        long t = page.getTotalElements();
+        Page<AccountDTO> pageImpl = new PageImpl<AccountDTO>(dtOs,pageDetails,t);
+        return pageImpl;
+    }
+
+//    private List<AccountDTO> convertAccountEntitiesToDTOs(Iterable<Account> accounts){
+//        List<AccountDTO> accountDTOList = new ArrayList<>();
+//        for(Account account: accounts){
+//            AccountDTO accountDTO = convertAccountEntityToDTO(account);
+//            accountDTOList.add(accountDTO);
+//        }
+//        return accountDTOList;
+//    }
+//
+//    private AccountDTO convertAccountEntityToDTO(Account account){
+//        return  modelMapper.map(account,AccountDTO.class);
+//    }
 
     private CorporateDTO convertEntityToDTO(Corporate corporate){
         return  modelMapper.map(corporate,CorporateDTO.class);
