@@ -106,22 +106,23 @@ public class AdmCorporateUserController {
     @GetMapping("{userId}/edit")
     public String getUser(@PathVariable Long userId, Model model) {
         CorporateUserDTO user = corporateUserService.getUser(userId);
-
+        Iterable<RoleDTO> roles = roleService.getRoles();
+        model.addAttribute("roles", roles);
         model.addAttribute("corporateUser", user);
         return "adm/corporate/edituser";
     }
 
 
-    @PostMapping("{userId}/edit")
-    public String UpdateUser(@ModelAttribute("corporateUser") CorporateUserDTO corporateUserDTO, @PathVariable Long userId, BindingResult result, RedirectAttributes redirectAttributes) {
+    @PostMapping("edit")
+    public String UpdateUser(@ModelAttribute("corporateUser") CorporateUserDTO corporateUserDTO, BindingResult result, RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
-            return "addUser";
+            return "adm/corporate/edituser";
         }
-        corporateUserDTO.setId(userId);
+
         String message = corporateUserService.updateUser(corporateUserDTO);
         redirectAttributes.addFlashAttribute("message", message);
 
-        return "redirect:/corporate/users";
+        return "redirect:/admin/corporates/";
     }
 
     @PostMapping("{userId}/delete")

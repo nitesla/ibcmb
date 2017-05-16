@@ -55,7 +55,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     PasswordPolicyService passwordPolicyService;
 
     @Autowired
-    private AccountService accountService;
+    RoleService roleService;
 
     Locale locale = LocaleContextHolder.getLocale();
 
@@ -98,8 +98,23 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
     @Override
     public String updateUser(CorporateUserDTO user) throws InternetBankingException{
-        corporateUserRepo.save(convertDTOToEntity(user));
-        return messageSource.getMessage("user.update.success",null,locale);
+        try {
+            CorporateUser corporateUser = corporateUserRepo.findOne(user.getId());
+            corporateUser.setEmail(user.getEmail());
+            corporateUser.setLastName(user.getLastName());
+            corporateUser.setUserName(user.getUserName());
+            corporateUser.setFirstName(user.getFirstName());
+            Role role = new Role();
+            role.setId(Long.parseLong(user.getRoleId()));
+            corporateUser.setRole(role);
+
+            corporateUserRepo.save(corporateUser);
+            return messageSource.getMessage("user.update.success",null,locale);
+        }
+        catch (Exception e){
+            throw new InternetBankingException(messageSource.getMessage("corporate.update.failure",null,locale),e);
+
+        }
     }
 
     @Override

@@ -117,7 +117,7 @@
                                                         <li>
                                                             <div class="col-lg-4">
                                                                 <div class="title-action">
-                                                                    <a  class="btn btn-danger btn-sm bt-select bt-link-act" href="/admin/corporates/index/account/activation" disabled="disabled" ><i class="fa fa-user"></i> Activate/Deactivate</a>
+                                                                    <a  class="btn btn-danger btn-sm btn-select btn-link-act" href="/admin/corporates/index/account/activation" disabled="disabled" ><i class="fa fa-user"></i> Activate/Deactivate</a>
                                                                 </div>
                                                             </div>
                                                         </li>
@@ -126,7 +126,7 @@
                                                         <li >
                                                             <div class="col-lg-4">
                                                                 <div class="title-action">
-                                                                    <a class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/corporates/index/account/new" disabled="disabled" ><i class="fa fa-user-plus"></i> Link Account</a>
+                                                                    <a class="btn btn-primary btn-sm" th:href="@{'/admin/corporates/' + ${corporate.id}+ '/account/new'}"><i class="fa fa-user-plus"></i> Link Account</a>
                                                                 </div>
                                                             </div>
                                                         </li>
@@ -306,6 +306,51 @@
             ]
 
         });
+
+        table.on('select', function() {
+            if (table.rows({
+                    selected : true
+                }).indexes().length === 0) {
+                $('.btn-select').attr("disabled", true);
+            } else {
+                $('.btn-select').removeAttr("disabled");
+            }
+
+        });
+
+        table.on('deselect', function() {
+            if (table.rows({
+                    selected : true
+                }).indexes().length === 0) {
+                $('.btn-select').attr("disabled", true);
+            } else {
+                $('.btn-select').removeAttr("disabled");
+            }
+        });
+    });
+
+    $("a.btn-link-act").on("click", function(e) {
+        e.preventDefault();
+        var link = $(e.currentTarget);
+        if($(link).attr("disabled")){
+            return;
+        }
+        var dt = $('#account').DataTable();
+        var id = $(dt.row({
+            selected: true
+        }).node()).attr("id");
+        //replace {id} with id
+        var ooo = link.attr("href").replace("index",id);
+        window.location.assign(ooo);
+    });
+
+    $("a.btn-link-none").on("click", function(e) {
+        e.preventDefault();
+        var link = $(e.currentTarget);
+        if($(link).attr("disabled")){
+            return;
+        }
+
     });
     /*]]>*/
 </script>
