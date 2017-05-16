@@ -32,22 +32,22 @@ private PasswordPolicyService passwordPolicyService;
 
         String uri=httpServletRequest.getRequestURI();
 
-        System.out.println("E DEY ENTER INTERCEPTOR");
+
 
         if (httpServletRequest.getSession().getAttribute("expired-password")!=null&& !(uri.equalsIgnoreCase("/admin/users/password/new")))
         {
             ChangeDefaultPassword changePassword = new ChangeDefaultPassword();
-            modelAndView.setViewName("/adm/admin/new-pword");
+
 
             modelAndView.addObject("changePassword", changePassword);
             //modelAndView.addObject("passwordRules", passwordPolicyService.getPasswordRules());
-            System.out.println("i hope it works");
 
+             modelAndView.setViewName("/adm/admin/new-pword");
         }
 
 
 
-            ///admin/users/password/new"
+          
 
 
 
