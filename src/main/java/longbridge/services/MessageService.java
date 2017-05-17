@@ -139,6 +139,7 @@ public interface MessageService {
      */
     String deleteSentMessage(User user, Long id) throws InternetBankingException;
 
+    int getNumOfUnreadMessages(User user);
 
     /**
      * Deletes the received message identified by the given {@code id}

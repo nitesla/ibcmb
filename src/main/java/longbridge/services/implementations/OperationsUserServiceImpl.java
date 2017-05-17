@@ -11,6 +11,7 @@ import longbridge.models.OperationsUser;
 import longbridge.models.Role;
 import longbridge.repositories.OperationsUserRepo;
 import longbridge.services.*;
+import longbridge.utils.DateFormatter;
 import longbridge.utils.ReflectionUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.modelmapper.ModelMapper;
@@ -168,6 +169,8 @@ public class OperationsUserServiceImpl implements OperationsUserService {
         } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("user.add.failure", null, locale), e);
         }
+
+
     }
 
 
@@ -176,8 +179,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     @Transactional
     public String updateUser(OperationsUserDTO user) throws InternetBankingException {
         try {
-            OperationsUser opsUser = new OperationsUser();
-            opsUser.setId((user.getId()));
+            OperationsUser opsUser = operationsUserRepo.findOne(user.getId());
             opsUser.setVersion(user.getVersion());
             opsUser.setFirstName(user.getFirstName());
             opsUser.setLastName(user.getLastName());
@@ -286,6 +288,12 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     private OperationsUserDTO convertEntityToDTO(OperationsUser operationsUser) {
         OperationsUserDTO operationsUserDTO =  modelMapper.map(operationsUser, OperationsUserDTO.class);
         operationsUserDTO.setRole(operationsUser.getRole().getName());
+        if(operationsUser.getCreatedOnDate()!=null) {
+            operationsUserDTO.setCreatedOn(DateFormatter.format(operationsUser.getCreatedOnDate()));
+        }
+        if(operationsUser.getLastLoginDate()!=null) {
+            operationsUserDTO.setLastLogin(DateFormatter.format(operationsUser.getLastLoginDate()));
+        }
         Code code = codeService.getByTypeAndCode("USER_STATUS", operationsUser.getStatus());
         if (code != null) {
             operationsUserDTO.setStatus(code.getDescription());

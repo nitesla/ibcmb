@@ -2,6 +2,7 @@ package longbridge.controllers;
 
 import longbridge.api.CustomerDetails;
 import longbridge.dtos.RetailUserDTO;
+import longbridge.forms.ResetPasswordForm;
 import longbridge.models.Account;
 import longbridge.models.RetailUser;
 import longbridge.services.AccountService;
@@ -40,6 +41,7 @@ public class UserRegController {
     private AccountService accountService;
 
     private Logger logger= LoggerFactory.getLogger(this.getClass());
+
     @GetMapping("/register")
     public String registerPage(){
         return "cust/register/registration";
@@ -143,8 +145,16 @@ public class UserRegController {
         return "{'success': " + result + "}";
     }
 
-    @PostMapping("/forgot/password")
+    @GetMapping("/forgot/password")
+    public String showResetPassword(Model model){
+        ResetPasswordForm resetPasswordForm = new ResetPasswordForm();
+        resetPasswordForm.step = "1";
+        model.addAttribute("forgotPasswordForm", resetPasswordForm);
 
+        return "cust/passwordreset";
+    }
+
+    @PostMapping("/forgot/password")
     public @ResponseBody  String resetPassword(WebRequest webRequest,  RedirectAttributes redirectAttributes){
         Iterator<String> iterator = webRequest.getParameterNames();
 

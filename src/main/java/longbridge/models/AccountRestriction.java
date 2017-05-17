@@ -15,7 +15,6 @@ import java.util.Date;
 @Entity
 @Audited
 @Where(clause ="del_Flag='N'" )
-@Table(uniqueConstraints=@UniqueConstraint(columnNames={"accountNumber","deletedOn"}))
 public class AccountRestriction extends AbstractEntity{
 
     private String accountNumber;

@@ -59,10 +59,6 @@ public class MainController {
         return "adm/dashboard";
     }
 
-    @RequestMapping(value = {"/ops/dashboard", "/ops"})
-    public String getOpsDashboard() {
-        return "ops/dashboard";
-    }
 
 
 
@@ -71,20 +67,12 @@ public class MainController {
         return "cust/faqs"; //TODO
     }
 
-    @GetMapping("/forgot/password")
-    public String showResetPassword(Model model){
-        ResetPasswordForm resetPasswordForm = new ResetPasswordForm();
-        resetPasswordForm.step = "1";
-    	model.addAttribute("forgotPasswordForm", resetPasswordForm);
 
-        return "cust/passwordreset";
-    }
 
 
     @GetMapping(value = {"/retail/{path:(?!static).*$}","/retail/{path:(?!static).*$}/**" })
     public String retailUnknown(Principal principal){
         if (principal!=null){
-            System.out.println("YAHOO YAHOO");
             return "redirect:/retail/dashboard";
 
         }

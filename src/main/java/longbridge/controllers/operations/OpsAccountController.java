@@ -84,7 +84,7 @@ return restrictionTypes;
             bindingResult.addError(new ObjectError("exception", String.format(messageSource.getMessage("account.restriction.exists",null,locale),accountRestrictionDTO.getAccountNumber())));
             return "ops/account/restriction/account/add";
         }
-        catch (Exception e) {
+        catch (InternetBankingException e) {
             logger.error("Could not create account restriction: {}",e.toString());
             bindingResult.addError(new ObjectError("exception",messageSource.getMessage("account.restriction.failure",null,locale)));
             return "ops/account/restriction/account/add";
@@ -110,7 +110,7 @@ return restrictionTypes;
         try {
             accountConfigService.updateAccountRestriction(accountRestrictionDTO);
         }
-        catch (Exception e) {
+        catch (InternetBankingException e) {
             logger.error("Could not update account restriction: {}",e.toString());
             bindingResult.addError(new ObjectError("exception", messageSource.getMessage("account.restriction.update.failure",null,locale)));
             return "ops/account/restriction/account/edit";
@@ -169,7 +169,7 @@ return restrictionTypes;
             bindingResult.addError(new ObjectError("exception", String.format(messageSource.getMessage("class.restriction.exists",null,locale),accountClassRestrictionDTO.getAccountClass())));
             return "ops/account/restriction/class/add";
         }
-        catch (Exception e) {
+        catch (InternetBankingException e) {
             logger.error("Could not create account class restriction: {}",e.toString());
             bindingResult.addError(new ObjectError("exception", messageSource.getMessage("class.restriction.failure",null,locale)));
             return "ops/account/restriction/class/add";
@@ -195,7 +195,7 @@ return restrictionTypes;
         try {
             accountConfigService.updateAccountClassRestriction(accountClassRestrictionDTO);
         }
-        catch (Exception e) {
+        catch (InternetBankingException e) {
             logger.error("Could not update account class restriction: {}",e.toString());
             bindingResult.addError(new ObjectError("exception", messageSource.getMessage("class.restriction.update.failure",null,locale)));
             return "ops/account/restriction/class/edit";

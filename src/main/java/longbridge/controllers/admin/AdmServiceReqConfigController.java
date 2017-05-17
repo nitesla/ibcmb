@@ -77,7 +77,7 @@ public class AdmServiceReqConfigController {
 
         try {
             String message = serviceReqConfigService.addServiceReqConfig(serviceReqConfigDTO);
-            redirectAttributes.addAttribute("message", message);
+            redirectAttributes.addFlashAttribute("message", message);
             return "redirect:/admin/srconfig";
         } catch (InternetBankingException ibe) {
             result.addError(new ObjectError("error", messageSource.getMessage("req.add.failure", null, locale)));

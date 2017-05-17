@@ -27,12 +27,13 @@
                                 <td>Next Debit Date</td>
                             </thead>
                             <tbody>
-                                <!--<tr th:each="int : ${intBen}">-->
-                                    <!--<td th:text="${int.accountName}"></td>-->
-                                    <!--<td th:text="${int.accountNumber}"></td>-->
-                                    <!--<td th:text="${int.beneficiaryBank}"></td>-->
-                                    <!--<td><a th:href="@{'/retail/beneficiary/' + ${int.id} + '/int/delete'}"><i class="fa fa-trash"></i></a></td>-->
-                                <!--</tr>-->
+                                <tr th:each="dd : ${directDebits}">
+
+                                    <td th:text="${dd.debitAccount}"></td>
+                                    <td th:text="${dd.amount}"></td>
+                                    <td th:text="${dd.nextDebitDate}"></td>
+                                    <td><a th:href="@{'/retail/beneficiary/' + ${dd.id} + '/int/delete'}"><i class="fa fa-pencil"></i></a></td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>

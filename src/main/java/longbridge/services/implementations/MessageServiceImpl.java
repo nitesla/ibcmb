@@ -6,6 +6,7 @@ import longbridge.models.*;
 import longbridge.repositories.MailBoxRepo;
 import longbridge.repositories.MessageRepo;
 import longbridge.services.*;
+import longbridge.utils.DateFormatter;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -112,7 +113,6 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public Iterable<Message> getMessages(User user, Date date) {
-//
         return null;
     }
 
@@ -193,6 +193,16 @@ public class MessageServiceImpl implements MessageService {
         return convertEntitiesToDTOs(receivedMessages);
     }
 
+    public int getNumOfUnreadMessages(User user){
+        int count = 0;
+        List<Message> receivedMessages = messageRepo.findByRecipientAndRecipientTypeOrderByIdDesc(user.getUserName(),user.getUserType());
+        for(Message message: receivedMessages){
+            if("Unread".equals(message.getStatus())){
+                count+=1;
+            }
+        }
+        return count;
+    }
 
     @Override
     public String purge(Date fromDate, Date toDate) {
@@ -252,7 +262,11 @@ public class MessageServiceImpl implements MessageService {
     }
 
     private MessageDTO convertEntityToDTO(Message message) {
-        return this.modelMapper.map(message, MessageDTO.class);
+        MessageDTO messageDTO = this.modelMapper.map(message, MessageDTO.class);
+        if(message.getDateCreated()!=null){
+            messageDTO.setCreatedOn(DateFormatter.format(message.getDateCreated()));
+        }
+        return messageDTO;
     }
 
 

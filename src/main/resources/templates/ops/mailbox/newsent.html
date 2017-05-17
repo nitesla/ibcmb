@@ -78,6 +78,8 @@
                                 <div class="row">
 
                                     <div class="col-sm-3 mail_list_column">
+                                        <div class="panel panel-default">
+                                            <div class="panel-body">
                                         <a href="/ops/mailbox/newcompose" class="btn btn-sm btn-primary outline-btn btn-block m-b-10">Compose</a>
 
                                         <!-- <div class="white-box">
@@ -95,7 +97,8 @@
                                         </div>
                                     </div>
                                 </a>
-
+</div>
+                                            </div>
                                         <!--</div>
 
                                     </div>
@@ -120,12 +123,12 @@
                                                             <div class="col-md-12">
                                                                 <div class="white-box">
                                                                     <div class="message-header">
-                                                                        <h3>Subject:&nbsp;<span th:text="${messageDTO.subject}" ></span> </h3>
+                                                                        <h3><span th:text="${messageDTO.subject}" ></span> </h3>
                                                                         <p class="message-date">Date:&nbsp;<span th:text="${messageDTO.dateCreated}" ></span></p>
                                                                     </div>
-                                                                    <div class="message-sender">
-                                                                        <p>From:&nbsp; <span th:text="${messageDTO.recipient}" ></span></p>
-                                                                    </div>
+                                                                    <!--<div class="message-sender">-->
+                                                                        <!--<p>From:&nbsp; <span th:text="${messageDTO.recipient}" ></span></p>-->
+                                                                    <!--</div>-->
 
                                                                     <div class="message-content">
                                                                         <p>

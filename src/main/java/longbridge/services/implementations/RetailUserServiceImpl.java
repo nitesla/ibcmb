@@ -16,6 +16,7 @@ import longbridge.models.Email;
 import longbridge.models.RetailUser;
 import longbridge.repositories.RetailUserRepo;
 import longbridge.services.*;
+import longbridge.utils.DateFormatter;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -354,6 +355,12 @@ public class RetailUserServiceImpl implements RetailUserService {
     private RetailUserDTO convertEntityToDTO(RetailUser retailUser) {
         RetailUserDTO retailUserDTO =  modelMapper.map(retailUser, RetailUserDTO.class);
         Code code = codeService.getByTypeAndCode("USER_STATUS", retailUser.getStatus());
+        if(retailUser.getCreatedOnDate()!=null) {
+            retailUserDTO.setCreatedOn(DateFormatter.format(retailUser.getCreatedOnDate()));
+        }
+        if(retailUser.getLastLoginDate()!=null) {
+            retailUserDTO.setLastLogin(DateFormatter.format(retailUser.getLastLoginDate()));
+        }
         if (code != null) {
             retailUserDTO.setStatus(code.getDescription());
         }

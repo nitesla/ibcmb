@@ -65,8 +65,9 @@ public class BeneficiaryController {
 
     @PostMapping("/local")
     public String createLocalBeneficiary(@ModelAttribute("localBeneficiary") @Valid  LocalBeneficiaryDTO localBeneficiaryDTO, Principal principal, BindingResult result, Model model){
-
         if(result.hasErrors()){
+            model.addAttribute("foreignBanks", financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.FOREIGN));
+            model.addAttribute("localBanks", financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.LOCAL));
             return "cust/beneficiary/add";
         }
 

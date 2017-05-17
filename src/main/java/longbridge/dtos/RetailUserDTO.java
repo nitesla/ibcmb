@@ -26,7 +26,7 @@ public class RetailUserDTO {
     private String password;
     private String status;
     private String bvn;
-    private Date createdOn;
+    private String createdOn;
     private Date expiryDate;
     private Date lockedUntilDate;
     private String lastLogin;
@@ -134,11 +134,11 @@ public class RetailUserDTO {
         this.status = status;
     }
 
-    public Date getCreatedOn() {
+    public String getCreatedOn() {
         return createdOn;
     }
 
-    public void setCreatedOn(Date createdOn) {
+    public void setCreatedOn(String createdOn) {
         this.createdOn = createdOn;
     }
 

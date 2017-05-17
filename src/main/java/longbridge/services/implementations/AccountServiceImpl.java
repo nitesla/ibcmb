@@ -1,5 +1,6 @@
 package longbridge.services.implementations;
 
+import longbridge.api.AccountDetails;
 import longbridge.api.AccountInfo;
 import longbridge.dtos.AccountDTO;
 import longbridge.exception.InternetBankingException;
@@ -76,17 +77,17 @@ public class AccountServiceImpl implements AccountService {
         if (!customerId.equals(accountdto.getCustomerId())) {
             return false;
         }
-        AccountInfo acct = integrationService.fetchAccount(accountdto.getAccountNumber());
+        AccountDetails acct = integrationService.viewAccountDetails(accountdto.getAccountNumber());
         Account account = new Account();
         account.setPrimaryFlag("N");
         account.setHiddenFlag("N");
-        account.setCustomerId(acct.getCustomerId());
-        account.setAccountName(acct.getAccountName());
-        account.setAccountNumber(acct.getAccountNumber());
+        account.setCustomerId(acct.getCustId());
+        account.setAccountName(acct.getAcctName());
+        account.setAccountNumber(acct.getAcctNumber());
         account.setSolId(acct.getSolId());
-        account.setSchemeCode(acct.getSchemeCode());
-        account.setSchemeType(acct.getSchemeType());
-        account.setAccountId(acct.getAccountId());
+        account.setSchemeCode(acct.getSchmCode());
+        account.setSchemeType(acct.getAcctType());
+        //account.setAccountId(acct.);TODO
         accountRepo.save(account);
         return true;
     }

@@ -29,7 +29,7 @@ public interface AccountService {
      * Adds the specified account to a customer's list of accounts
      *
      * @param customerId the customer's id
-     * @param account    the account to be added
+     * @param accountdto   the account to be added
      * @return an {@link Account} object
      */
     boolean AddAccount(String customerId, AccountDTO accountdto) throws InternetBankingException;
