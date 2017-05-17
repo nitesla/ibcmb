@@ -88,8 +88,6 @@ public class WebMvcConfig   extends WebMvcConfigurerAdapter {
 		return source;
 	}
 
-
-
 //
 //	@Bean
 //	public AuthenticationSuccessHandler successHandler() {

@@ -67,14 +67,7 @@ public class MainController {
         return "cust/faqs"; //TODO
     }
 
-    @GetMapping("/forgot/password")
-    public String showResetPassword(Model model){
-        ResetPasswordForm resetPasswordForm = new ResetPasswordForm();
-        resetPasswordForm.step = "1";
-    	model.addAttribute("forgotPasswordForm", resetPasswordForm);
 
-        return "cust/passwordreset";
-    }
 
 
     @GetMapping(value = {"/retail/{path:(?!static).*$}","/retail/{path:(?!static).*$}/**" })

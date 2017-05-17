@@ -37,7 +37,7 @@
 
                                     <p th:if="${field.fieldType} == 'CODE'">
                                         <select class="form-control" th:name="${field.fieldName}">
-                                            <option th:each="type : ${field.codeDTOs}" th:value="${type.code}" th:text="${type.description}"></option>
+                                            <option th:each="code : ${codes}" th:value="${code.code}" th:text="${code.description}"></option>
                                         </select>
                                     </p>
 
