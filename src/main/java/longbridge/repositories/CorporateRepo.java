@@ -11,4 +11,5 @@ import org.springframework.stereotype.Repository;
 public interface CorporateRepo extends CommonRepo<Corporate, Long> {
 
     Corporate findByCustomerId(String customerId);
+    Corporate findFirstByCustomerId(String customerId);
 }
