@@ -23,6 +23,7 @@ public class MessageDTO {
     @NotEmpty(message = "body")
     private String body;
     private Date dateCreated;
+    private String createdOn;
     private String status;
     private String tag; //a comma separated list of keywords to identify a message
 
@@ -104,6 +105,14 @@ public class MessageDTO {
         this.body = body;
     }
 
+    public String getCreatedOn() {
+        return createdOn;
+    }
+
+    public void setCreatedOn(String createdOn) {
+        this.createdOn = createdOn;
+    }
+
     public String getStatus() {
         return status;
     }
@@ -112,14 +121,19 @@ public class MessageDTO {
         this.status = status;
     }
 
+
     @Override
     public String toString() {
         return "MessageDTO{" +
-                "sender='" + sender + '\'' +
+                "id=" + id +
+                ", version=" + version +
+                ", sender='" + sender + '\'' +
                 ", recipient='" + recipient + '\'' +
+                ", recipientType=" + recipientType +
                 ", subject='" + subject + '\'' +
                 ", body='" + body + '\'' +
-                ", createdOnDate=" + dateCreated +
+                ", dateCreated=" + dateCreated +
+                ", createdOn='" + createdOn + '\'' +
                 ", status='" + status + '\'' +
                 ", tag='" + tag + '\'' +
                 '}';

@@ -5,6 +5,7 @@ import longbridge.exception.InternetBankingException;
 import longbridge.models.*;
 import longbridge.repositories.*;
 import longbridge.services.*;
+import longbridge.utils.DateFormatter;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -212,6 +213,12 @@ public class RequestServiceImpl implements RequestService {
     private ServiceRequestDTO convertEntityToDTO(ServiceRequest serviceRequest) {
         ServiceRequestDTO requestDTO = modelMapper.map(serviceRequest, ServiceRequestDTO.class);
         requestDTO.setUsername(serviceRequest.getUser().getUserName());
+        requestDTO.setDate(DateFormatter.format(serviceRequest.getDateRequested()));
+        Code code = codeService.getByTypeAndCode("REQUEST_STATUS", serviceRequest.getRequestStatus());
+        if (code != null) {
+            String status = code.getDescription();
+            requestDTO.setRequestStatus(status);
+        }
         return requestDTO;
 
     }
@@ -224,13 +231,6 @@ public class RequestServiceImpl implements RequestService {
         List<ServiceRequestDTO> serviceRequestDTOList = new ArrayList<>();
         for (ServiceRequest serviceRequest : serviceRequests) {
             ServiceRequestDTO requestDTO = convertEntityToDTO(serviceRequest);
-            requestDTO.setUsername(serviceRequest.getUser().getUserName());
-            requestDTO.setDate(serviceRequest.getDateRequested().toString());
-            Code code = codeService.getByTypeAndCode("REQUEST_STATUS", serviceRequest.getRequestStatus());
-            if (code != null) {
-                String status = code.getDescription();
-                requestDTO.setRequestStatus(status);
-            }
             serviceRequestDTOList.add(requestDTO);
         }
         return serviceRequestDTOList;
@@ -238,7 +238,15 @@ public class RequestServiceImpl implements RequestService {
 
 
     private RequestHistoryDTO convertRequestHistoryEntityToDTO(RequestHistory requestHistory) {
-        return modelMapper.map(requestHistory, RequestHistoryDTO.class);
+        RequestHistoryDTO requestDTO = new RequestHistoryDTO();
+        requestDTO.setId(requestHistory.getId());
+        String status = codeService.getByTypeAndCode("REQUEST_STATUS", requestHistory.getStatus()).getDescription();
+        requestDTO.setStatus(status);
+        requestDTO.setComment(requestHistory.getComment());
+        requestDTO.setCreatedBy(requestHistory.getCreatedBy().getUserName());
+        requestDTO.setCreatedOn(DateFormatter.format(requestHistory.getCreatedOn()));
+        requestDTO.setServiceRequestId(requestHistory.getServiceRequest().getId().toString());
+        return requestDTO;
     }
 
     private RequestHistory convertRequestHistoryDTOToEntity(RequestHistoryDTO requestHistoryDTO) {
@@ -254,14 +262,7 @@ public class RequestServiceImpl implements RequestService {
     private List<RequestHistoryDTO> convertRequestHistoryEntitiesToDTOs(Iterable<RequestHistory> requestHistories) {
         List<RequestHistoryDTO> requestHistoryList = new ArrayList<>();
         for (RequestHistory requestHistory : requestHistories) {
-            RequestHistoryDTO requestDTO = new RequestHistoryDTO();
-            requestDTO.setId(requestHistory.getId());
-            String status = codeService.getByTypeAndCode("REQUEST_STATUS", requestHistory.getStatus()).getDescription();
-            requestDTO.setStatus(status);
-            requestDTO.setComment(requestHistory.getComment());
-            requestDTO.setCreatedBy(requestHistory.getCreatedBy().getUserName());
-            requestDTO.setCreatedOn(requestHistory.getCreatedOn().toString());
-            requestDTO.setServiceRequestId(requestHistory.getServiceRequest().getId().toString());
+            RequestHistoryDTO requestDTO = convertRequestHistoryEntityToDTO(requestHistory);
             requestHistoryList.add(requestDTO);
         }
         return requestHistoryList;

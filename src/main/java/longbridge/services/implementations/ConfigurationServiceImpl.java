@@ -109,10 +109,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 	@Override
 	public String deleteSetting(Long id) throws InternetBankingException {
 		try {
-			Setting setting = settingRepo.findOne(id);
-			setting.setDeletedOn(new Date());
-			settingRepo.save(setting);
-			settingRepo.delete(setting);
+			settingRepo.delete(id);
 			return messageSource.getMessage("setting.delete.success", null, locale);
 		}
 		catch (Exception e){

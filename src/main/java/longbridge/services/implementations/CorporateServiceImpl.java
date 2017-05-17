@@ -12,6 +12,7 @@ import longbridge.services.AccountService;
 import longbridge.services.CodeService;
 import longbridge.services.CorporateService;
 import longbridge.services.IntegrationService;
+import longbridge.utils.DateFormatter;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -221,6 +222,9 @@ public class CorporateServiceImpl implements CorporateService {
 
     private CorporateDTO convertEntityToDTO(Corporate corporate){
         CorporateDTO corporateDTO = modelMapper.map(corporate,CorporateDTO.class);
+        if(corporate.getCreatedOnDate()!=null){
+            corporateDTO.setCreatedOn(DateFormatter.format(corporate.getCreatedOnDate()));
+        }
         Code code = codeService.getByTypeAndCode("USER_STATUS", corporate.getStatus());
         if (code != null) {
             corporateDTO.setStatus(code.getDescription());
