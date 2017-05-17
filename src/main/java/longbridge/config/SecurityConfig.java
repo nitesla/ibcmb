@@ -26,6 +26,7 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
+import sun.net.httpserver.AuthFilter;
 
 /**
  * Created by ayoade_farooq@yahoo.com on 4/10/2017.
@@ -251,10 +252,10 @@ public class SecurityConfig {
         @Autowired
         BCryptPasswordEncoder bCryptPasswordEncoder;
         @Autowired
-        @Qualifier("corpAuthenticationSuccessHandler")
+        @Qualifier("corporateAuthenticationSuccessHandler")
         private AuthenticationSuccessHandler corpAuthenticationSuccessHandler;
         @Autowired
-        @Qualifier("corpAuthenticationFailureHandler")
+        @Qualifier("corporateAuthenticationFailureHandler")
         private AuthenticationFailureHandler corpAuthenticationFailureHandler;
 
         public CorpUserConfigurationAdapter() {
@@ -296,6 +297,11 @@ public class SecurityConfig {
         public void configure(WebSecurity web) throws Exception {
             new SecurityConfig().customConfig(web);
         }
+
+
+
+
+
 
 
     }
