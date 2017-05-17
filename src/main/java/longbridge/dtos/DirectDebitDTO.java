@@ -1,22 +1,22 @@
 package longbridge.dtos;
 
-import java.math.BigDecimal;
-import java.util.Date;
-
-import longbridge.models.Account;
 import longbridge.models.LocalBeneficiary;
 import longbridge.models.RetailUser;
+
+import java.math.BigDecimal;
+import java.util.Date;
 
 public class DirectDebitDTO {
 
 		private Long id;
 	    private LocalBeneficiary beneficiary;
-	    private Account debitAccount;
+	    private String debitAccount;
 	    private BigDecimal amount;
 	    private int intervalDays;
 	    private Date nextDebitDate;
 	    private Date dateCreated;
 	    private RetailUser retailUser;
+	    private String narration;
 
 
 	    public Long getId() {
@@ -75,5 +75,19 @@ public class DirectDebitDTO {
 			this.retailUser = retailUser;
 		}
 
-	    
+	public String getDebitAccount() {
+		return debitAccount;
 	}
+
+	public void setDebitAccount(String debitAccount) {
+		this.debitAccount = debitAccount;
+	}
+
+	public String getNarration() {
+		return narration;
+	}
+
+	public void setNarration(String narration) {
+		this.narration = narration;
+	}
+}
