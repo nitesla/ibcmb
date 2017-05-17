@@ -89,7 +89,6 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    @Transactional
     public String addRequest(ServiceRequestDTO request) throws InternetBankingException {
         try {
             ServiceRequest serviceRequest = convertDTOToEntity(request);
