@@ -10,11 +10,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import javax.transaction.Transactional;
+
 /**
  * Created by Fortune on 4/5/2017.
  */
 @Repository
-
+@Transactional
 public interface RetailUserRepo extends CommonRepo<RetailUser, Long> {
 
 	Iterable<RetailUser> findByRole(Role r);

@@ -53,7 +53,7 @@ public class mailboxController {
         return "cust/mailbox/inbox";
     }
 
-    @GetMapping("/outbox")
+    @GetMapping("/sentmail")
     public String getOutbox(Model model,Principal principal) {
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
         List<MessageDTO> sentMessages = messageService.getSentMessages(retailUser);
@@ -96,7 +96,7 @@ public class mailboxController {
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
         MessageDTO message = new MessageDTO();
         message.setSender(retailUser.getUserName());
-
+        message.setRecipient("joykwere@yahoo.com");
         //if(!message.getStatus()==not sent){
         //
         model.addAttribute("messageDTO", message);

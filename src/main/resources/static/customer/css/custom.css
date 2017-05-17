@@ -399,16 +399,17 @@ body {
     background-color: #032A4F;
 }
 .in-box{
-    font-size: 22px;
+    font-size: 19px;
 }
 .folder-list li a{
     list-style: none;
-    font-size: 16px;
+    font-size: 13px;
     font-weight: 100;
     color: #032A4F;
 }
 .folder-list li{
     list-style: none;
+    padding-bottom: 5px;
 }
 .folder-list .fa{
     color: #032A4F;
@@ -418,6 +419,9 @@ body {
 }
 .faz .fa{
     color: #032A4F;
+}
+.txtarea{
+    padding: 0 15px 0 15px;
 }
 
 nav li a {

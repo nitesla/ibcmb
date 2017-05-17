@@ -17,13 +17,13 @@
                             <div class="ibox-content mailbox-content">
                                 <div class="margin-bottoms"></div>
                                 <div class="file-manager">
-                                    <a class="btn btn-block btn-primary compose-mail" href="compose.html">Compose Mail</a>
+                                    <a class="btn btn-block btn-primary compose-mail" href="@{/retail/mailbox/compose}">Compose Mail</a>
                                     <div class="margin-bottoms"></div>
                                     <ul class="folder-list">
-                                        <li><a href="inbox.html"> <i class="fa fa-inbox "></i> Inbox <span class="label label-warning pull-right">12</span> </a></li>
-                                        <li><a href="sentmail.html"> <i class="fa fa-sign-out"></i> Sent Mail</a></li>
-                                        <li><a href=""> <i class="fa fa-file-text-o"></i> Drafts <span class="label label-danger pull-right">2</span></a></li>
-                                        <li><a href=""> <i class="fa fa-trash-o"></i> Trash</a></li>
+                                        <li><a href="@{/retail/mailbox/inbox}"> <i class="fa fa-inbox "></i> Inbox <span class="label label-warning pull-right">12</span> </a></li>
+                                        <li><a href="@{/retail/mailbox/sentmail}"> <i class="fa fa-sign-out"></i> Sent Mail</a></li>
+                                        <li><a href="@{/retail/mailbox/draft}"> <i class="fa fa-file-text-o"></i> Drafts <span class="label label-danger pull-right">2</span></a></li>
+                                        <li><a href="@{/retail/mailbox/trash}"> <i class="fa fa-trash-o"></i> Trash</a></li>
                                     </ul>
                                 </div>
                             </div>
@@ -38,8 +38,8 @@
                                 </h2>
                                 <div class="mail-tools tooltip-demo m-t-md faz">
                                     <button class="btn-success btn-sm" data-toggle="tooltip" data-placement="left" title="Refresh inbox"><i class="fa fa-refresh"></i> Refresh</button>
-                                    <button class="btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="Mark as read"><i class="fa fa-eye"></i> </button>
-                                    <button class="btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="Move to trash"><i class="fa fa-trash-o"></i> </button>
+                                    <button class="btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="Mark as read"><i class="fa fa-eye" th:action="@{/retail/mailbox/trash}"></i> </button>
+                                    <button class="btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="Move to trash" th:action="@{/retail/mailbox/inbox}"><i class="fa fa-trash-o"></i> </button>
                                 </div>
                             </div>
                             <div class="margin-bottoms"></div>
@@ -64,33 +64,7 @@
                                         <td class=""></td>
                                         <td class="text-right mail-date">8.22 PM</td>
                                     </tr>
-                                    <tr class="read">
-                                        <td class="check-mail">
-                                            <input type="checkbox" class="i-checks">
-                                        </td>
-                                        <td class="mail-ontact"><a href="">Facebook</a> <span class="label label-warning pull-right">Clients</span> </td>
-                                        <td class="mail-subject"><a href="">Many desktop publishing packages and web page editors.</a></td>
-                                        <td class=""></td>
-                                        <td class="text-right mail-date">Jan 16</td>
-                                    </tr>
-                                    <tr class="read">
-                                        <td class="check-mail">
-                                            <input type="checkbox" class="i-checks">
-                                        </td>
-                                        <td class="mail-ontact"><a href="">Mailchip</a></td>
-                                        <td class="mail-subject"><a href="">There are many variations of passages of Lorem Ipsum.</a></td>
-                                        <td class=""></td>
-                                        <td class="text-right mail-date">Mar 22</td>
-                                    </tr>
-                                    <tr class="read">
-                                        <td class="check-mail">
-                                            <input type="checkbox" class="i-checks">
-                                        </td>
-                                        <td class="mail-ontact"><a href="">Alex T.</a> <span class="label label-danger pull-right">Documents</span></td>
-                                        <td class="mail-subject"><a href="">Lorem ipsum dolor noretek imit set.</a></td>
-                                        <td class=""><i class="fa fa-paperclip"></i></td>
-                                        <td class="text-right mail-date">December 22</td>
-                                    </tr>
+
 
                                     </tbody>
                                 </table>
