@@ -193,6 +193,16 @@ public class MessageServiceImpl implements MessageService {
         return convertEntitiesToDTOs(receivedMessages);
     }
 
+    public int getNumOfUnreadMessages(User user){
+        int count = 0;
+        List<Message> receivedMessages = messageRepo.findByRecipientAndRecipientTypeOrderByIdDesc(user.getUserName(),user.getUserType());
+        for(Message message: receivedMessages){
+            if("Unread".equals(message.getStatus())){
+                count+=1;
+            }
+        }
+        return count;
+    }
 
     @Override
     public String purge(Date fromDate, Date toDate) {

@@ -46,21 +46,21 @@ public class OpsMailboxController {
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
-    @GetMapping("/inbox")
-    public String getInbox(Model model,Principal principal) {
-        OperationsUser opsUser = operationsUserService.getUserByName(principal.getName());
-        List<MessageDTO> receivedMessages = messageService.getReceivedMessages(opsUser);
-
-        if (!receivedMessages.isEmpty()) {
-            MessageDTO message = receivedMessages.get(0);
-            model.addAttribute("messageDTO", message);
-
-        }
-        model.addAttribute("receivedMessages", receivedMessages);
-
-
-        return "ops/mailbox/inbox";
-    }
+//    @GetMapping("/inbox")
+//    public String getInbox(Model model,Principal principal) {
+//        OperationsUser opsUser = operationsUserService.getUserByName(principal.getName());
+//        List<MessageDTO> receivedMessages = messageService.getReceivedMessages(opsUser);
+//
+//        if (!receivedMessages.isEmpty()) {
+//            MessageDTO message = receivedMessages.get(0);
+//            model.addAttribute("messageDTO", message);
+//
+//        }
+//        model.addAttribute("receivedMessages", receivedMessages);
+//
+//
+//        return "ops/mailbox/inbox";
+//    }
 
     @GetMapping("/newinbox")
     public String getNewInbox(Model model,Principal principal) {
@@ -122,7 +122,7 @@ public class OpsMailboxController {
         OperationsUser opsUser = operationsUserService.getUserByName(principal.getName());
         messageService.addMessage(opsUser,recipient,messageDTO);
         redirectAttributes.addFlashAttribute("message","Message sent successfully");
-        return "redirect:/ops/mailbox/newsent";
+        return "redirect:/ops/mailbox/outbox";
     }
 
     @GetMapping("/viewmail")
@@ -189,55 +189,55 @@ public class OpsMailboxController {
         return "ops/mailbox/newcompose";
     }
 
-    @GetMapping("/new")
-    public String addMessage(Model model,Principal principal) {
-        OperationsUser opsUser = operationsUserService.getUserByName(principal.getName());
-        MessageDTO message = new MessageDTO();
-        message.setSender(opsUser.getUserName());
-        model.addAttribute("messageDTO", message);
-        return "ops/mailbox/compose";
-    }
+//    @GetMapping("/new")
+//    public String addMessage(Model model,Principal principal) {
+//        OperationsUser opsUser = operationsUserService.getUserByName(principal.getName());
+//        MessageDTO message = new MessageDTO();
+//        message.setSender(opsUser.getUserName());
+//        model.addAttribute("messageDTO", message);
+//        return "ops/mailbox/compose";
+//    }
 
 
-    @PostMapping
-    public String createMessage(@ModelAttribute("messageDTO") @Valid MessageDTO messageDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes, Principal principal){
-        if(bindingResult.hasErrors()){
-            bindingResult.addError(new ObjectError("Invalid", "Please fill in the required fields"));
-            return "ops/mailbox/newcompose";
-        }
-        User recipient = null;
-        switch (messageDTO.getRecipientType()){
-            case OPERATIONS:
-                recipient = operationsUserService.getUserByName(messageDTO.getRecipient());
-                break;
-            case CORPORATE:
-                recipient = corporateUserService.getUserByName(messageDTO.getRecipient());
-                break;
-            case RETAIL:
-                recipient = retailUserService.getUserByName(messageDTO.getRecipient());
-                break;
-        }
+//    @PostMapping
+//    public String createMessage(@ModelAttribute("messageDTO") @Valid MessageDTO messageDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes, Principal principal){
+//        if(bindingResult.hasErrors()){
+//            bindingResult.addError(new ObjectError("Invalid", "Please fill in the required fields"));
+//            return "ops/mailbox/newcompose";
+//        }
+//        User recipient = null;
+//        switch (messageDTO.getRecipientType()){
+//            case OPERATIONS:
+//                recipient = operationsUserService.getUserByName(messageDTO.getRecipient());
+//                break;
+//            case CORPORATE:
+//                recipient = corporateUserService.getUserByName(messageDTO.getRecipient());
+//                break;
+//            case RETAIL:
+//                recipient = retailUserService.getUserByName(messageDTO.getRecipient());
+//                break;
+//        }
+//
+//        if(recipient==null){
+//            bindingResult.addError(new ObjectError("Invalid", "Invalid recipient username"));
+//            return "ops/mailbox/compose";
+//        }
+//
+//        OperationsUser opsUser = operationsUserService.getUserByName(principal.getName());
+//        messageService.addMessage(opsUser,recipient,messageDTO);
+//        redirectAttributes.addFlashAttribute("message","Message sent successfully");
+//        return "redirect:/ops/mailbox/outbox";
+//    }
 
-        if(recipient==null){
-            bindingResult.addError(new ObjectError("Invalid", "Invalid recipient username"));
-            return "ops/mailbox/compose";
-        }
-
-        OperationsUser opsUser = operationsUserService.getUserByName(principal.getName());
-        messageService.addMessage(opsUser,recipient,messageDTO);
-        redirectAttributes.addFlashAttribute("message","Message sent successfully");
-        return "redirect:/ops/mailbox/outbox";
-    }
-
-    @GetMapping("/inbox/{id}/details")
-    public String viewReceivedMessage(@PathVariable Long id, Model model, Principal principal) {
-        MessageDTO message = messageService.getMessage(id);
-        OperationsUser opsUser = operationsUserService.getUserByName(principal.getName());
-        List<MessageDTO> receivedMessages = messageService.getReceivedMessages(opsUser);
-        model.addAttribute("receivedMessages", receivedMessages);
-        model.addAttribute("messageDTO", message);
-        return "ops/mailbox/inbox";
-    }
+//    @GetMapping("/inbox/{id}/details")
+//    public String viewReceivedMessage(@PathVariable Long id, Model model, Principal principal) {
+//        MessageDTO message = messageService.getMessage(id);
+//        OperationsUser opsUser = operationsUserService.getUserByName(principal.getName());
+//        List<MessageDTO> receivedMessages = messageService.getReceivedMessages(opsUser);
+//        model.addAttribute("receivedMessages", receivedMessages);
+//        model.addAttribute("messageDTO", message);
+//        return "ops/mailbox/inbox";
+//    }
 
 
     @GetMapping("/sent/{id}/details")

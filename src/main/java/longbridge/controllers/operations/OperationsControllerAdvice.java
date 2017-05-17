@@ -1,6 +1,7 @@
 package longbridge.controllers.operations;
 
 import longbridge.models.OperationsUser;
+import longbridge.services.MessageService;
 import longbridge.services.OperationsUserService;
 import longbridge.services.RequestService;
 import org.slf4j.Logger;
@@ -23,6 +24,9 @@ public class OperationsControllerAdvice {
     @Autowired
     private RequestService requestService;
 
+    @Autowired
+    MessageService  messageService;
+
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
@@ -35,11 +39,15 @@ public class OperationsControllerAdvice {
         }
         OperationsUser operationsUser = operationsUserService.getUserByName(principal.getName());
         int numOfSubmittedRequests = requestService.getNumOfUnattendedRequests(operationsUser);
-        logger.error("Number of submitted requests is "+numOfSubmittedRequests);
         if(numOfSubmittedRequests>0) {
             model.addAttribute("numOfSubmittedRequests",numOfSubmittedRequests);
-
         }
+
+        int numOfUnreadMessages = messageService.getNumOfUnreadMessages(operationsUser);
+        if(numOfUnreadMessages>0){
+            model.addAttribute("numOfUnreadMessages",numOfUnreadMessages);
+        }
+
         return "";
     }
 
