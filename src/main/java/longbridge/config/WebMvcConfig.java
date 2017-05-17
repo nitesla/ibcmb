@@ -10,8 +10,6 @@ import org.springframework.context.annotation.CommonAnnotationBeanPostProcessor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.request.RequestContextListener;
 import org.springframework.web.servlet.LocaleResolver;
@@ -83,7 +81,8 @@ public class WebMvcConfig   extends WebMvcConfigurerAdapter {
 	@Bean
 	public ResourceBundleMessageSource messageSource() {
 		ResourceBundleMessageSource source = new ResourceBundleMessageSource();
-		source.setBasenames("messages");  // name of the resource bundle
+		String[] baseNames= new String[]{"i18n/messages","i18n/menu"};
+		source.setBasenames(baseNames);  // name of the resource bundle
 		source.setCacheSeconds(1000);
 		source.setUseCodeAsDefaultMessage(true);
 		return source;
