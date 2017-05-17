@@ -10,6 +10,7 @@ import org.springframework.util.Assert;
 
 import javax.persistence.EntityManager;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Iterator;
 
 /**
@@ -38,6 +39,7 @@ public class CommonRepoImpl<T extends AbstractEntity, ID extends Serializable> e
     public void delete(ID id) {
         T t = findOne(id);
         t.setDelFlag("Y");
+        t.setDeletedOn(new Date());
 
         super.save(t);
     }
@@ -47,6 +49,7 @@ public class CommonRepoImpl<T extends AbstractEntity, ID extends Serializable> e
     public void delete(T entity) {
 
         entity.setDelFlag("Y");
+        entity.setDeletedOn(new Date());
         super.save(entity);
     }
 
@@ -59,6 +62,7 @@ public class CommonRepoImpl<T extends AbstractEntity, ID extends Serializable> e
         while(var2.hasNext()) {
             T entity = var2.next();
             entity.setDelFlag("Y");
+            entity.setDeletedOn(new Date());
             super.save(entity);
         }
 
@@ -73,6 +77,7 @@ public class CommonRepoImpl<T extends AbstractEntity, ID extends Serializable> e
         while(var1.hasNext()) {
             T entity = var1.next();
             entity.setDelFlag("Y");
+            entity.setDeletedOn(new Date());
             super.save(entity);
         }
     }

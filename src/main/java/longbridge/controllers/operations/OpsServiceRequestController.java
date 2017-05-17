@@ -5,8 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import longbridge.dtos.CodeDTO;
 import longbridge.dtos.RequestHistoryDTO;
 import longbridge.dtos.ServiceRequestDTO;
+import longbridge.models.OperationsUser;
 import longbridge.repositories.RetailUserRepo;
 import longbridge.services.CodeService;
+import longbridge.services.OperationsUserService;
 import longbridge.services.RequestService;
 import longbridge.services.RetailUserService;
 
@@ -39,13 +41,16 @@ import java.util.List;
 public class OpsServiceRequestController {
 
     @Autowired
-    RetailUserService retailUserService;
+    private RetailUserService retailUserService;
 
     @Autowired
-    CodeService codeService;
+    private CodeService codeService;
 
     @Autowired
-    RetailUserRepo retailUserRepo;
+    private RetailUserRepo retailUserRepo;
+
+    @Autowired
+    private OperationsUserService opsUserService;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -61,9 +66,10 @@ public class OpsServiceRequestController {
     @GetMapping(path = "/all")
     public
     @ResponseBody
-    DataTablesOutput<ServiceRequestDTO> getRequests(DataTablesInput input) {
+    DataTablesOutput<ServiceRequestDTO> getRequests(DataTablesInput input,Principal principal) {
+        OperationsUser opsUser = opsUserService.getUserByName(principal.getName());
         Pageable pageable = DataTablesUtils.getPageable(input);
-        Page<ServiceRequestDTO> serviceRequests = requestService.getRequests(pageable);
+        Page<ServiceRequestDTO> serviceRequests = requestService.getRequests(opsUser,pageable);
         DataTablesOutput<ServiceRequestDTO> out = new DataTablesOutput<ServiceRequestDTO>();
         out.setDraw(input.getDraw());
         out.setData(serviceRequests.getContent());
