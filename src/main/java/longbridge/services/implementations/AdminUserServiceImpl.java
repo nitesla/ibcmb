@@ -14,6 +14,7 @@ import longbridge.services.*;
 //import longbridge.utils.Verifiable;
 import java.util.*;
 
+import longbridge.utils.DateFormatter;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -192,8 +193,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     public String updateUser(AdminUserDTO user) throws InternetBankingException {
 
         try {
-            AdminUser adminUser = new AdminUser();
-            adminUser.setId((user.getId()));
+            AdminUser adminUser = adminUserRepo.findOne(user.getId());
             adminUser.setVersion(user.getVersion());
             adminUser.setFirstName(user.getFirstName());
             adminUser.setLastName(user.getLastName());
@@ -312,6 +312,12 @@ public class AdminUserServiceImpl implements AdminUserService {
     private AdminUserDTO convertEntityToDTO(AdminUser adminUser) {
         AdminUserDTO adminUserDTO = modelMapper.map(adminUser, AdminUserDTO.class);
         adminUserDTO.setRoleId(adminUser.getRole().getId().toString());
+        if(adminUser.getCreatedOnDate()!=null) {
+            adminUserDTO.setCreatedOn(DateFormatter.format(adminUser.getCreatedOnDate()));
+        }
+        if(adminUser.getLastLoginDate()!=null) {
+            adminUserDTO.setLastLogin(DateFormatter.format(adminUser.getLastLoginDate()));
+        }
         Code code = codeService.getByTypeAndCode("USER_STATUS", adminUser.getStatus());
         if (code != null) {
             adminUserDTO.setStatus(code.getDescription());
