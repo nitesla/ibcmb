@@ -1,8 +1,10 @@
 package longbridge.security.opsuser;
 
+import longbridge.models.OperationsUser;
 import longbridge.models.UserType;
 import longbridge.repositories.AdminUserRepo;
 import longbridge.repositories.OperationsUserRepo;
+import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +25,7 @@ import java.io.IOException;
 @Component("opAuthenticationSuccessHandler")
 public class OpAuthenticationSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
     private final Logger logger = LoggerFactory.getLogger(getClass());
-
+    private LocalDate today = LocalDate.now();
 
     public OpAuthenticationSuccessHandler() {
         setUseReferer(true);
@@ -45,6 +47,12 @@ public class OpAuthenticationSuccessHandler extends SavedRequestAwareAuthenticat
         if (session != null) {
             setUseReferer(true);
         	session.setMaxInactiveInterval(30 *60);
+            OperationsUser user= operationsUserRepo.findFirstByUserName(authentication.getName());
+            LocalDate date = new LocalDate(user.getExpiryDate());
+
+            if (today.isAfter(date) || today.isEqual(date)) {
+                session.setAttribute("expired-password","expired-password");
+            }
         }
 
         operationsUserRepo.updateUserAfterLogin(authentication.getName());

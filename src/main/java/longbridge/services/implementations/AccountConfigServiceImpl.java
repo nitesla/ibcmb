@@ -2,6 +2,7 @@ package longbridge.services.implementations;
 
 import longbridge.dtos.AccountClassRestrictionDTO;
 import longbridge.dtos.AccountRestrictionDTO;
+import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.Account;
 import longbridge.models.AccountClassRestriction;
@@ -68,6 +69,11 @@ public class AccountConfigServiceImpl implements AccountConfigService {
 
     @Override
     public String addAccountRestriction(AccountRestrictionDTO accountRestrictionDTO) throws InternetBankingException {
+
+        AccountRestriction restriction = accountRestrictionRepo.findByAccountNumber(accountRestrictionDTO.getAccountNumber());
+       if(restriction!=null){
+           throw new DuplicateObjectException(String.format(messageSource.getMessage("account.restrict.exists",null,locale),accountRestrictionDTO.getAccountNumber()));
+       }
         try {
             AccountRestriction accountRestriction = convertAccountRestrictionDTOToEntity(accountRestrictionDTO);
             accountRestriction.setDateCreated(new Date());

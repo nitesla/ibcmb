@@ -89,12 +89,10 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    @Transactional
     public String addRequest(ServiceRequestDTO request) throws InternetBankingException {
         try {
             ServiceRequest serviceRequest = convertDTOToEntity(request);
             serviceRequest.setUser(retailUserRepo.findOne(serviceRequest.getUser().getId()));
-
             String name = getFullName(serviceRequest);
             ServiceReqConfigDTO config = reqConfigService.getServiceReqConfig(serviceRequest.getServiceReqConfigId());
             String body = serviceRequest.getBody();//TODO format body

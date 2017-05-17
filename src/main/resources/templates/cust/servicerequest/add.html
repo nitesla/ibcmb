@@ -20,8 +20,8 @@
                     <div class="col-md-6 col-sm-6">
                         <h5 class="page_header" th:text="${requestConfig.requestName}"></h5>
                         <form method="post" th:action="@{/retail/requests}" th:object="${requestDTO}" id="reqForm">
-                            <!--<p><input class="form-control" type="hidden" id="requestName" name="requestName" th:value="${requestConfig.requestName}"/></p>-->
-                            <!--<input type="hidden" name="serviceReqConfigId" th:value="${requestConfig.id}"/>-->
+                            <p><input class="form-control" type="hidden" id="requestName" name="requestName" th:value="${requestConfig.requestName}"/></p>
+                            <input type="hidden" name="serviceReqConfigId" th:value="${requestConfig.id}"/>
                             <p th:each="field : ${requestConfig.formFields}">
                                 <div class="form-group">
                                     <label th:text="${field.fieldLabel}"></label>

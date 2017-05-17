@@ -259,6 +259,13 @@
                         <li><a th:href="@{/ops/logout}"><i class="fa fa-sign-out pull-right"></i> Log Out</a></li>
                     </ul>
                 </li>
+                <li  th:if="${numOfUnreadMessages}">
+                    <a th:href="@{/ops/mailbox/newinbox/}" class="info-number"  aria-expanded="false">
+                        <i class="fa fa-envelope-o"></i>
+                        <span class="badge bg-green"  th:text="${numOfUnreadMessages}">count</span>
+                    </a>
+
+                </li>
                 <li  th:if="${numOfSubmittedRequests}">
                     <a th:href="@{/ops/requests}" class="info-number"  aria-expanded="false">
                         <i class="fa fa-bell-o"></i>
