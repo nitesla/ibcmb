@@ -184,6 +184,20 @@ public class mailboxController {
         return sentMessages;
 
     }
+    @GetMapping("/message")
+    public String getMessage(Model model,Principal principal) {
+        RetailUser retailUser = retailUserService.getUserByName(principal.getName());
+        List<MessageDTO> receivedMessages = messageService.getReceivedMessages(retailUser);
+        MessageDTO message = receivedMessages.get(0);
+        //  if (!receivedMessages.isEmpty()) {
+        //      MessageDTO message = receivedMessages.get(0);
+        //      model.addAttribute("messageDTO", message);
+        //  }
+        model.addAttribute("messageDTO", message);
+
+
+        return "cust/mailbox/message";
+    }
 
 
 }
