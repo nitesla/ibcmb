@@ -3,7 +3,6 @@ package longbridge.services;
 import longbridge.api.AccountDetails;
 import longbridge.api.AccountInfo;
 import longbridge.api.CustomerDetails;
-import longbridge.exception.TokenException;
 import longbridge.exception.TransferException;
 import longbridge.models.TransferRequest;
 import longbridge.utils.AccountStatement;
@@ -18,6 +17,8 @@ import java.util.Map;
  */
 public interface IntegrationService {
 
+
+    AccountInfo fetchAccount(String accountNumber);
     /**
      * Returns all the accounts of a customer
      * @param cifid the customer's id

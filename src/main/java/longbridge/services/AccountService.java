@@ -32,7 +32,7 @@ public interface AccountService {
      * @param account    the account to be added
      * @return an {@link Account} object
      */
-    boolean AddAccount(String customerId, Account account) throws InternetBankingException;
+    boolean AddAccount(String customerId, AccountDTO accountdto) throws InternetBankingException;
 
 
     String customizeAccount(Long id, String name) throws InternetBankingException;

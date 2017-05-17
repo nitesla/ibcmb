@@ -72,10 +72,21 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public boolean AddAccount(String customerId, Account account) throws InternetBankingException {
-        if (!customerId.equals(account.getCustomerId())) {
+    public boolean AddAccount(String customerId, AccountDTO accountdto) throws InternetBankingException {
+        if (!customerId.equals(accountdto.getCustomerId())) {
             return false;
         }
+        AccountInfo acct = integrationService.fetchAccount(accountdto.getAccountNumber());
+        Account account = new Account();
+        account.setPrimaryFlag("N");
+        account.setHiddenFlag("N");
+        account.setCustomerId(acct.getCustomerId());
+        account.setAccountName(acct.getAccountName());
+        account.setAccountNumber(acct.getAccountNumber());
+        account.setSolId(acct.getSolId());
+        account.setSchemeCode(acct.getSchemeCode());
+        account.setSchemeType(acct.getSchemeType());
+        account.setAccountId(acct.getAccountId());
         accountRepo.save(account);
         return true;
     }

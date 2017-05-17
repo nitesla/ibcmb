@@ -116,6 +116,12 @@ public class CorporateServiceImpl implements CorporateService {
     }
 
     @Override
+    public Corporate getCorporateByCustomerId(String customerId) {
+        Corporate corporate = corporateRepo.findByCustomerId(customerId);
+        return corporate;
+    }
+
+    @Override
     public List<CorporateDTO> getCorporates() {
         Iterable<Corporate> corporateDTOS = corporateRepo.findAll();
         return convertEntitiesToDTOs(corporateDTOS);
@@ -123,9 +129,9 @@ public class CorporateServiceImpl implements CorporateService {
 
 
     @Override
-    public boolean addAccount(Corporate corporate, Account account) throws  InternetBankingException {
-        accountService.AddAccount(corporate.getCustomerId(),account);
-        return true;
+    public String addAccount(Corporate corporate, AccountDTO accountDTO) throws  InternetBankingException {
+        accountService.AddAccount(corporate.getCustomerId(),accountDTO);
+        return messageSource.getMessage("account.add.success",null,locale);
     }
 
     @Override

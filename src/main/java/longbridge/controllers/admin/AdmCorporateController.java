@@ -4,8 +4,10 @@ import longbridge.dtos.AccountDTO;
 import longbridge.dtos.CorporateDTO;
 import longbridge.dtos.CorporateUserDTO;
 import longbridge.exception.InternetBankingException;
+import longbridge.models.Corporate;
 import longbridge.services.CorporateService;
 import longbridge.services.CorporateUserService;
+import longbridge.services.IntegrationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +35,9 @@ public class AdmCorporateController {
 
     @Autowired
     private CorporateUserService corporateUserService;
+
+    @Autowired
+    IntegrationService integrationService;
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -157,6 +162,32 @@ public class AdmCorporateController {
         String message = corporateService.deleteCorporate(corporateId);
         redirectAttributes.addFlashAttribute("message", message);
         return "redirect:/admin/corporates";
+    }
+
+
+    @GetMapping("/{corporateId}/account/new")
+    public String linkAccount(@PathVariable Long corporateId, Model model){
+        CorporateDTO corporate = corporateService.getCorporate(corporateId);
+        AccountDTO account = new AccountDTO();
+        account.setCustomerId(corporate.getCustomerId());
+        model.addAttribute("account", account);
+        model.addAttribute("corporate", corporate);
+        return "adm/corporate/addAccount";
+    }
+
+    @PostMapping("/account/new")
+    public String linkAccountPost(AccountDTO accountDTO, BindingResult result, RedirectAttributes redirectAttributes){
+        if(result.hasErrors()){
+            return "adm/corporate/new";
+        }
+
+        //integrationService.fetchAccount(accountDTO.getAccountNumber());
+
+        Corporate corporate = corporateService.getCorporateByCustomerId(accountDTO.getCustomerId());
+        String message = corporateService.addAccount(corporate, accountDTO);
+        Long corporateId = corporate.getId();
+        redirectAttributes.addFlashAttribute("message", message);
+        return "redirect:/admin/corporates/"+corporateId+"/view";
     }
 }
 

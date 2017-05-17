@@ -3,13 +3,17 @@ package longbridge.services.implementations;
 
 import longbridge.api.AccountInfo;
 import longbridge.api.CustomerDetails;
+import longbridge.dtos.AccountDTO;
 import longbridge.dtos.RetailUserDTO;
 import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.PasswordException;
 import longbridge.exception.PasswordPolicyViolationException;
 import longbridge.forms.AlertPref;
-import longbridge.models.*;
+import longbridge.models.Account;
+import longbridge.models.Code;
+import longbridge.models.Email;
+import longbridge.models.RetailUser;
 import longbridge.repositories.RetailUserRepo;
 import longbridge.services.*;
 import org.modelmapper.ModelMapper;
@@ -289,8 +293,8 @@ public class RetailUserServiceImpl implements RetailUserService {
     }
 
     @Override
-    public boolean AddAccount(RetailUser user, Account account) {
-        return accountService.AddAccount(user.getCustomerId(), account);
+    public boolean AddAccount(RetailUser user, AccountDTO accountDTO) {
+        return accountService.AddAccount(user.getCustomerId(), accountDTO);
     }
 
 //    @Override
