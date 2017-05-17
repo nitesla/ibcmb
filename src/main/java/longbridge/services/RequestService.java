@@ -3,6 +3,7 @@ package longbridge.services;
 import longbridge.dtos.RequestHistoryDTO;
 import longbridge.dtos.ServiceRequestDTO;
 import longbridge.exception.InternetBankingException;
+import longbridge.models.OperationsUser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -39,6 +40,12 @@ public interface RequestService {
     Iterable<ServiceRequestDTO>getRequests(RetailUser user);
     
     Page<ServiceRequestDTO>getRequests(Pageable pageDetails);
+
+    Page<ServiceRequestDTO>getRequests(OperationsUser opsUser,Pageable pageDetails);
+
+    int getNumOfUnattendedRequests(OperationsUser opsUser);
+
+
 
 
 

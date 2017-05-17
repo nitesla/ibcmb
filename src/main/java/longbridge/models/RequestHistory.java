@@ -19,6 +19,8 @@ import java.util.Date;
 @Entity
 @Audited
 @Where(clause ="del_Flag='N'" )
+
+
 public class RequestHistory extends AbstractEntity{
 
     @ManyToOne

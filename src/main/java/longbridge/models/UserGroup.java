@@ -22,6 +22,7 @@ public class UserGroup extends AbstractEntity {
     private String description;
     private Date dateCreated;
 
+
     @ManyToMany(cascade = CascadeType.ALL)
     private List<OperationsUser> users;
 

@@ -98,12 +98,13 @@ public class OperationsUserController {
 
 
     @GetMapping("/password")
-    public String changePassword(){
+    public String changePassword(Model model){
+        model.addAttribute("changePassword",new ChangePassword());
         return "/ops/pword";
     }
 
     @PostMapping("/password")
-    public String changePassword(@Valid ChangePassword changePassword, BindingResult result, Principal principal, RedirectAttributes redirectAttributes,Locale locale){
+    public String changePassword(@ModelAttribute("changePassword") @Valid ChangePassword changePassword, BindingResult result, Principal principal, RedirectAttributes redirectAttributes,Locale locale){
         if (result.hasErrors()) {
             result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required",null,locale)));
             return "/ops/pword";
