@@ -77,6 +77,8 @@
                 <div class="x_content">
                     <div class="row">
                     <div class="col-sm-3 mail_list_column">
+                        <div class="panel panel-default">
+                            <div class="panel-body">
                         <a href="/ops/mailbox/newinbox" class="btn btn-sm btn-primary outline-btn btn-block m-b-10">Back to Inbox</a>
                         <a th:each="messageDTO: ${receivedMessages}" th:href="@{/ops/mailbox/viewmail/{id}/details(id=${messageDTO.id})}">
                             <div class="mail_list">
@@ -91,7 +93,8 @@
                         </a>
                     </div>
 
-
+</div>
+                        </div>
 
                     <div class="col-sm-9 mail_view">
                         <div class="inbox-body">
@@ -144,6 +147,7 @@
 
 
                                                                     </select>
+                                                                    <br/><br/>
                                                                     <input class="form-control" type="text" th:field="*{recipient}"
                                                                            placeholder="Enter username of the recipient"/>
                                                                 </div>
@@ -169,6 +173,7 @@
                                                                 </div>
                                                             </div>
                                                             <div th:replace="layout::form-validation"></div>
+
                                                         </form>
                                                 </div>
                                                 </div>
