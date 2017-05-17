@@ -88,17 +88,20 @@ public class SecurityConfig {
                 ipRange.append(String.format(" or hasIpAddress('%s')", temp));
                 logger.info("IP address whitelist " + ipRange.toString());
             }
+
+
             http.antMatcher("/admin/**").authorizeRequests().anyRequest().
                     hasAuthority(UserType.ADMIN.toString())
-                    .and().authorizeRequests().anyRequest().access(ipRange.toString())
+
+
+                    .and().authorizeRequests().anyRequest()
+                    .access("hasAuthority('" + UserType.ADMIN.toString() + "') and " + ipRange.toString())
 
                     // log in
                     .and().formLogin().loginPage("/login/admin").loginProcessingUrl("/admin/login")
                     .failureUrl("/login/admin?error=login_error").defaultSuccessUrl("/admin/dashboard")
                     .successHandler(adminAuthenticationSuccessHandler).failureHandler(adminAuthenticationFailureHandler)
                     .and()
-                    // logout
-
 
                     .logout().logoutUrl("/admin/logout").logoutSuccessUrl("/login/admin").deleteCookies("JSESSIONID")
                     .and().requestCache()

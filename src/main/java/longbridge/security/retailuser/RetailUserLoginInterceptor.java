@@ -16,38 +16,36 @@ import javax.servlet.http.HttpServletResponse;
  */
 @Component
 public class RetailUserLoginInterceptor extends HandlerInterceptorAdapter {
-
     @Autowired
     private PasswordPolicyService passwordPolicyService;
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) throws Exception {
-        String uri=httpServletRequest.getRequestURI();
-        if (uri.equalsIgnoreCase("/admin/users/password/new"))
-            return false;
-        //janan
-        System.out.println("E DEY ENTER INTERCEPTOR");
 
-        if (httpServletRequest.getSession().getAttribute("expired-password")!=null){
-
-            return true;
-
-        }
-
-        return false;
+        return true;
     }
 
     @Override
     public void postHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o, ModelAndView modelAndView) throws Exception {
 
+        String uri=httpServletRequest.getRequestURI();
 
 
-        System.out.println("The guy is  expired jare");
-        ChangeDefaultPassword changePassword = new ChangeDefaultPassword();
-        modelAndView.setViewName("/adm/admin/new-pword");
 
-        modelAndView.addObject("changePassword", changePassword);
-        modelAndView.addObject("passwordRules", passwordPolicyService.getPasswordRules());
-        System.out.println("i hope it works");
+        if (httpServletRequest.getSession().getAttribute("expired-password")!=null&& !(uri.equalsIgnoreCase("/ops/users/password/new")))
+        {
+            ChangeDefaultPassword changePassword = new ChangeDefaultPassword();
+
+
+            modelAndView.addObject("changePassword", changePassword);
+            //modelAndView.addObject("passwordRules", passwordPolicyService.getPasswordRules());
+
+            modelAndView.setViewName("/adm/admin/new-pword");
+        }
+
+
+
+
+
 
 
 
