@@ -59,10 +59,6 @@ public class MainController {
         return "adm/dashboard";
     }
 
-    @RequestMapping(value = {"/ops/dashboard", "/ops"})
-    public String getOpsDashboard() {
-        return "ops/dashboard";
-    }
 
 
 
@@ -84,7 +80,6 @@ public class MainController {
     @GetMapping(value = {"/retail/{path:(?!static).*$}","/retail/{path:(?!static).*$}/**" })
     public String retailUnknown(Principal principal){
         if (principal!=null){
-            System.out.println("YAHOO YAHOO");
             return "redirect:/retail/dashboard";
 
         }
