@@ -30,7 +30,7 @@
     <div class="main_container">
         <div class="col-md-3 left_col">
             <div class="left_col scroll-view">
-                <div class="navbar nav_title" style="border: 0;">
+                <div class="navbar nav_title" >
                     <!--<a href="index.html"><img th:src="@{~/images/cmb_logo.png}"/></a>-->
                 </div>
 
@@ -51,7 +51,7 @@
                 <div class="page-title">
                     <div class="title_left">
                         <h3>
-
+                            Compose Mail
                             <small>
 
                             </small>
@@ -61,8 +61,11 @@
 
                 </div>
                 <div class="clearfix"></div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="x_panel">
                 <div class="x_title">
-                    <h2>Compose Mail</h2>
+                    <h2></h2>
                     <ul class="nav navbar-right panel_toolbox">
                         <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                         </li>
@@ -71,23 +74,31 @@
                     <div class="clearfix"></div>
                 </div>
 
-                <div class="col-md-12">
-
-                    <div class="col-md-2">
-                        <a href="/ops/mailbox/newinbox" class="btn btn-primary outline-btn btn-block m-b-10">Back to Inbox</a>
-                        <ul class="list-unstyled mailbox-nav">
-                            <li class="active"><a href="inbox.html"><i class="fa fa-inbox"></i>Inbox <span class="badge badge-success">4</span></a></li>
-                            <li><a href="compose.html#"><i class="fa fa-sign-out"></i>Sent</a></li>
-                            <li><a href="compose.html#"><i class="fa fa-file-text-o"></i>Draft</a></li>
-                            <li><a href="compose.html#"><i class="fa fa-exclamation-circle"></i>Spam</a></li>
-                            <li><a href="compose.html#"><i class="fa fa-trash"></i>Trash</a></li>
-                        </ul>
+                <div class="x_content">
+                    <div class="row">
+                    <div class="col-sm-3 mail_list_column">
+                        <div class="panel panel-default">
+                            <div class="panel-body">
+                        <a href="/ops/mailbox/newinbox" class="btn btn-sm btn-primary outline-btn btn-block m-b-10">Back to Inbox</a>
+                        <a th:each="messageDTO: ${receivedMessages}" th:href="@{/ops/mailbox/viewmail/{id}/details(id=${messageDTO.id})}">
+                            <div class="mail_list">
+                                <div class="left">
+                                    <i class="fa fa-user"></i>
+                                </div>
+                                <div class="right">
+                                    <h3 th:text="${messageDTO.sender}"></h3>
+                                    <p th:text="${messageDTO.subject}"></p><span th:text="${messageDTO.dateCreated}" ></span>
+                                </div>
+                            </div>
+                        </a>
                     </div>
 
+</div>
+                        </div>
 
-
-                    <div class="col-md-10">
-                        <div class="x_panel">
+                    <div class="col-sm-9 mail_view">
+                        <div class="inbox-body">
+                            <div class="mailbox-content">
 
                             <!--Start Page Title-->
                             <!--<div class="page-title-box">-->
@@ -106,28 +117,28 @@
                                         <div class="col-md-12">
                                             <div class="white-box">
                                                 <div class="mailbox-content">
-                                                    <div class="mailbox-header">
+                                                    <!--<div class="mailbox-header">
                                                         <div class="compose-options">
                                                             <div class="pull-right">
                                                                 <a href="inbox.html" class="btn btn-default"><i class="fa fa-trash m-r-5"></i>Discard</a>
                                                             </div>
                                                         </div>
-                                                    </div>
+                                                    </div>-->
 
                                                     <div class="compose-body">
-                                                        <form method="post" th:action="@{/ops/mailbox}" th:object="${messageDTO}">
+                                                        <form method="post" class="form-horizontal" th:action="@{/ops/mailbox}" th:object="${messageDTO}">
 
                                                             <div class="form-group">
-                                                                <label class="col-md-2 control-label">From:</label>
-                                                                <div class="col-md-10">
+                                                                <label class="col-sm-2 control-label">From:</label>
+                                                                <div class="col-sm-10">
                                                                     <input class="form-control" type="text" th:field="*{sender}"
                                                                            readonly="readonly"/>
                                                                 </div>
                                                             </div>
-                                                            <br/><br/>
+
                                                             <div class="form-group">
-                                                                <label class="col-md-2 control-label">To:</label>
-                                                                <div class="col-md-10">
+                                                                <label class="col-sm-2 control-label">To:</label>
+                                                                <div class="col-sm-10">
                                                                     <select class="form-control input-group-addon"
                                                                             th:field="*{recipientType}">
                                                                         <option value="RETAIL">RETAIL USER</option>
@@ -136,11 +147,12 @@
 
 
                                                                     </select>
+                                                                    <br/><br/>
                                                                     <input class="form-control" type="text" th:field="*{recipient}"
                                                                            placeholder="Enter username of the recipient"/>
                                                                 </div>
                                                             </div>
-                                                            <br/><br/><br/>
+
                                                             <div class="form-group">
                                                                 <label class="col-md-2 control-label">Subject:</label>
                                                                 <div class="col-md-10">
@@ -148,14 +160,12 @@
                                                                            placeholder="Subject"/>
                                                                 </div>
                                                             </div>
-                                                            <br/><br/>
-                                                            <div class="compose-message form-group">
 
+                                                            <div class="compose-message form-group">
 
                                                                     <textarea style="height: 250px" class="note-editable form-control" th:field="*{body}" placeholder="Enter message here"></textarea>
 
                                                             </div>
-<br/><br/>
                                                             <div class="form-group">
                                                                 <div class="pull-right">
                                                                     <button class="btn btn-white" id="cancel" type="reset"><i class="fa fa-trash"></i>Cancel</button>
@@ -163,6 +173,7 @@
                                                                 </div>
                                                             </div>
                                                             <div th:replace="layout::form-validation"></div>
+
                                                         </form>
                                                 </div>
                                                 </div>
@@ -176,9 +187,14 @@
 
                             </div>
                                 <!-- End Wrapper-->
+                           </div>
+                            </div>
+                        </div>
+                                </div>
                             </div>
                         </div>
                     </div>
+                </div>
                 </div>
             </div>
             <!-- /page content -->

@@ -2,10 +2,8 @@ package longbridge.services.implementations;
 
 import longbridge.api.AccountDetails;
 import longbridge.api.AccountInfo;
-
 import longbridge.api.CustomerDetails;
 import longbridge.api.LocalTransferResponse;
-import longbridge.exception.TokenException;
 import longbridge.exception.TransferException;
 import longbridge.models.TransferRequest;
 import longbridge.services.IntegrationService;
@@ -43,6 +41,13 @@ public class IntegrationServiceImpl implements IntegrationService {
         this.template = template;
     }
 
+
+    @Override
+    public AccountInfo fetchAccount(String accountNumber) {
+        //TODO
+        AccountInfo accountInfo = new AccountInfo();
+        return accountInfo;
+    }
 
     @Override
     public Collection<AccountInfo> fetchAccounts(String cifid) {

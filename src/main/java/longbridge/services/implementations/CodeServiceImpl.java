@@ -56,10 +56,8 @@ public class CodeServiceImpl implements CodeService {
     @Transactional
     public String deleteCode(Long codeId) throws InternetBankingException{
           try{
-           Code code = codeRepo.findOne(codeId);
-           code.setDeletedOn(new Date());
-           codeRepo.save(code);
-           codeRepo.delete(code);
+
+           codeRepo.delete(codeId);
            logger.info("Code {} has been deleted",codeId.toString());
            return messageSource.getMessage("code.delete.success",null,locale);
     }

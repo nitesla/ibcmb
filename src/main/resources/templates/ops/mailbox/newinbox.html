@@ -24,7 +24,6 @@
 </head>
 
 
-
 <body class="nav-md">
 <div class="container body">
     <div class="main_container">
@@ -51,7 +50,7 @@
                 <div class="page-title">
                     <div class="title_left">
                         <h3>
-
+                            Inbox
                             <small>
 
                             </small>
@@ -61,98 +60,112 @@
 
                 </div>
                 <div class="clearfix"></div>
-                <div class="x_title">
-                    <h2>Inbox</h2>
-                    <ul class="nav navbar-right panel_toolbox">
-                        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                        </li>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h2></h2>
+                                <ul class="nav navbar-right panel_toolbox">
+                                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                    </li>
 
-                    </ul>
-                    <div class="clearfix"></div>
-                </div>
+                                </ul>
+                                <div class="clearfix"></div>
+                            </div>
 
-                <div class="col-md-12">
-
-                <div class="col-md-3">
-                    <a href="/ops/mailbox/newcompose" class="btn btn-primary outline-btn btn-block m-b-10">Compose</a>
-
-                    <div class="white-box">
-                        <div class="mailbox-content">
-
-
-
-                                <a th:each="messageDTO: ${receivedMessages}" th:href="@{/ops/mailbox/viewmail/{id}/details(id=${messageDTO.id})}">
-                                    <div class="mail_list">
-                                        <div class="left">
-                                            <i class="fa fa-user"></i>
-                                        </div>
-                                        <div class="right">
-                                            <h3 th:text="${messageDTO.sender}"></h3>
-                                            <p th:text="${messageDTO.subject}"></p><span th:text="${messageDTO.dateCreated}" ></span>
-                                        </div>
-                                    </div>
-                                </a>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-
-                    <div class="col-md-9">
-
-                            <div class="white-box">
-                            <div class="mailbox-content" th:if="${messageDTO}">
-
+                            <div class="x_content">
                                 <div class="row">
-                                    <div class="col-md-12">
 
-                                        <div class="row">
+                                    <div class="col-sm-3 mail_list_column" >
+                                        <div class="panel panel-default">
+                                            <div class="panel-body">
+                                        <a href="/ops/mailbox/newcompose" class="btn btn-sm btn-primary outline-btn btn-block m-b-10">Compose</a>
+
+                                        <!-- <div class="white-box">
+                                             <div class="mailbox-content">-->
 
 
-
-                                            <div class="col-md-12">
-                                                <div class="white-box">
-                                                    <div class="message-header">
-                                                        <h3>Subject:&nbsp;<span th:text="${messageDTO.subject}" ></span> </h3>
-                                                        <p class="message-date">Date:&nbsp;<span th:text="${messageDTO.dateCreated}" ></span></p>
-                                                    </div>
-                                                    <div class="message-sender">
-                                                        <p>From:&nbsp; <span th:text="${messageDTO.recipient}" ></span></p>
-                                                    </div>
-                                                    <div class="message-content">
-                                                        <p>
-                                                            <span th:text="${messageDTO.body}" ></span></p>
-                                                        </p>
-                                                    </div>
-
-                                                    <div class="message-options">
-                                                        <a th:href="@{/ops/mailbox/{id}/reply(id=${messageDTO.id})}" class="btn btn-link"><i class="fa fa-reply m-r-5"></i>Reply</a>
-                                                        <a th:href="@{/ops/mailbox/{id}/forward(id=${messageDTO.id})}" class="btn btn-link"><i class="fa fa-arrow-right m-r-5"></i>Forward</a>
-                                                        <a th:href="@{/ops/mailbox/newinbox/{id}/delete(id=${messageDTO.id})}" class="btn btn-link"><i class="fa fa-trash-o m-r-5"></i>Delete</a>
-
-                                                    </div>
+                                        <a th:each="messageDTO: ${receivedMessages}" th:href="@{/ops/mailbox/viewmail/{id}/details(id=${messageDTO.id})}">
+                                            <div class="mail_list">
+                                                <div class="left">
+                                                    <i class="fa fa-user"></i>
                                                 </div>
+                                                <div class="right">
+                                                    <h3 th:text="${messageDTO.sender}"></h3>
+                                                    <p th:text="${messageDTO.subject}"></p><span th:text="${messageDTO.dateCreated}" ></span>
+                                                </div>
+                                            </div>
+                                        </a>
+</div>
+                                            </div>
+                                        <!--</div>
+
+                                    </div>
+                -->
+                                    </div>
 
 
 
+
+                                    <div class="col-sm-9 mail_view">
+
+                                        <div class="inbox-body">
+                                            <div class="mailbox-content" th:if="${messageDTO}">
+
+                                                <div class="row">
+                                                    <div class="col-md-12">
+
+                                                        <div class="row">
+
+
+
+                                                            <div class="col-md-12">
+                                                                <div class="white-box">
+                                                                    <div class="message-header">
+                                                                        <h3>Subject:&nbsp;<span th:text="${messageDTO.subject}" ></span> </h3>
+                                                                        <p class="message-date">Date:&nbsp;<span th:text="${messageDTO.dateCreated}" ></span></p>
+                                                                    </div>
+                                                                    <div class="message-sender">
+                                                                        <p>From:&nbsp; <span th:text="${messageDTO.recipient}" ></span></p>
+                                                                    </div>
+
+                                                                    <div class="message-content">
+                                                                        <p>
+                                                                            <span th:text="${messageDTO.body}" ></span></p>
+
+                                                                        <br/><br/>
+                                                                    </div>
+
+                                                                    <div class="message-options">
+                                                                        <a th:href="@{/ops/mailbox/{id}/reply(id=${messageDTO.id})}" class="btn btn-link"><i class="fa fa-reply m-r-5"></i>Reply</a>
+                                                                        <a th:href="@{/ops/mailbox/{id}/forward(id=${messageDTO.id})}" class="btn btn-link"><i class="fa fa-arrow-right m-r-5"></i>Forward</a>
+                                                                        <a th:href="@{/ops/mailbox/newinbox/{id}/delete(id=${messageDTO.id})}" class="btn btn-link"><i class="fa fa-trash-o m-r-5"></i>Delete</a>
+
+                                                                    </div>
+                                                                </div>
+
+
+
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+
+                                                </div>
                                             </div>
 
                                         </div>
+
                                     </div>
+                                    <div th:unless="${messageDTO}"><p align="center"> No Received Messages</p></div>
+
 
                                 </div>
-</div>
-
-</div>
-
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                    <div th:unless="${messageDTO}"><p align="center"> No Received Messages</p></div>
-
-                </div>
-        </div>
+            </div>
         </div>
         <!-- /page content -->
 
@@ -176,9 +189,7 @@
 
 <!-- bootstrap-wysiwyg -->
 
-<script>
 
-</script>
 <!-- /compose -->
 
 

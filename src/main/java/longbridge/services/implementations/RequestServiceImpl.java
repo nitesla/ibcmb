@@ -2,14 +2,10 @@ package longbridge.services.implementations;
 
 import longbridge.dtos.*;
 import longbridge.exception.InternetBankingException;
-import longbridge.models.Email;
-import longbridge.models.RequestHistory;
-import longbridge.models.RetailUser;
-import longbridge.models.ServiceRequest;
-import longbridge.repositories.RequestHistoryRepo;
-import longbridge.repositories.RetailUserRepo;
-import longbridge.repositories.ServiceRequestRepo;
+import longbridge.models.*;
+import longbridge.repositories.*;
 import longbridge.services.*;
+import longbridge.utils.DateFormatter;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,15 +53,21 @@ public class RequestServiceImpl implements RequestService {
 
 
     @Autowired
-    MessageSource messageSource;
+    private MessageSource messageSource;
 
     @Autowired
-    OperationsUserService operationsUserService;
+    private OperationsUserService operationsUserService;
+
+    @Autowired
+    private UserGroupRepo userGroupRepo;
+
+    @Autowired
+    private ServiceReqConfigRepo reqConfigRepo;
 
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    Locale locale = LocaleContextHolder.getLocale();
+    private Locale locale = LocaleContextHolder.getLocale();
 
 
     @Autowired
@@ -89,25 +91,24 @@ public class RequestServiceImpl implements RequestService {
     @Override
     @Transactional
     public String addRequest(ServiceRequestDTO request) throws InternetBankingException {
-       try {
-           ServiceRequest serviceRequest = convertDTOToEntity(request);
-           serviceRequest.setUser(retailUserRepo.findOne(serviceRequest.getUser().getId()));
+        try {
+            ServiceRequest serviceRequest = convertDTOToEntity(request);
+            serviceRequest.setUser(retailUserRepo.findOne(serviceRequest.getUser().getId()));
 
-           String name = getFullName(serviceRequest);
-           ServiceReqConfigDTO config = reqConfigService.getServiceReqConfig(serviceRequest.getServiceReqConfigId());
-           String body = serviceRequest.getBody();//TODO format body
-           serviceRequestRepo.save(serviceRequest);
+            String name = getFullName(serviceRequest);
+            ServiceReqConfigDTO config = reqConfigService.getServiceReqConfig(serviceRequest.getServiceReqConfigId());
+            String body = serviceRequest.getBody();//TODO format body
+            serviceRequestRepo.save(serviceRequest);
 
-           Email email = new Email.Builder().setSender("info@ibanking.coronationmb.com")
-                   .setSubject("Service Request from " + name)
-                   .setBody(body)
-                   .build();
-           groupMessageService.send(config.getGroupId(), email);
-           return messageSource.getMessage("request.add.success", null, locale);
-       }
-       catch (Exception e){
-           throw new InternetBankingException(messageSource.getMessage("req.add.failure",null,locale),e);
-       }
+            Email email = new Email.Builder().setSender("info@ibanking.coronationmb.com")
+                    .setSubject("Service Request from " + name)
+                    .setBody(body)
+                    .build();
+            groupMessageService.send(config.getGroupId(), email);
+            return messageSource.getMessage("request.add.success", null, locale);
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("req.add.failure", null, locale), e);
+        }
     }
 
 
@@ -132,10 +133,9 @@ public class RequestServiceImpl implements RequestService {
             serviceRequest.setRequestStatus(requestHistory.getStatus());
             serviceRequestRepo.save(serviceRequest);
             requestHistoryRepo.save(requestHistory);
-            return messageSource.getMessage("req.hist.update.success",null,locale);
-        }
-        catch (Exception e){
-            throw new InternetBankingException(messageSource.getMessage("req.hist.update.failure",null,locale),e);
+            return messageSource.getMessage("req.hist.update.success", null, locale);
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("req.hist.update.failure", null, locale), e);
         }
     }
 
@@ -160,8 +160,42 @@ public class RequestServiceImpl implements RequestService {
         return pageImpl;
     }
 
+    public Page<ServiceRequestDTO> getRequests(OperationsUser opsUser, Pageable pageDetails) {
+        Page<ServiceRequest> page = serviceRequestRepo.findAllByOrderByDateRequestedDesc(pageDetails);
+        List<ServiceRequestDTO> dtOs = convertEntitiesToDTOs(page.getContent());
+        List<ServiceRequestDTO> requestsForOpsUser = new ArrayList<ServiceRequestDTO>();
+        List<UserGroup> opsUserGroups = opsUser.getGroups();
+        for (ServiceRequestDTO request : dtOs) {
+            ServiceReqConfig reqConfig = reqConfigRepo.findOne(request.getServiceReqConfigId());
+            for (UserGroup group : opsUserGroups) {
+                if (group.equals(userGroupRepo.findOne(reqConfig.getGroupId()))) {
+                    requestsForOpsUser.add(request);
+                }
+            }
+        }
+        long t = page.getTotalElements();
+        Page<ServiceRequestDTO> pageImpl = new PageImpl<>(requestsForOpsUser, pageDetails, t);
+        return pageImpl;
+    }
 
-//    @Override
+    @Override
+    public int getNumOfUnattendedRequests(OperationsUser opsUser) {
+        int count=0;
+        List<ServiceRequest> serviceRequests = serviceRequestRepo.findByRequestStatus("S");
+        List<UserGroup> opsUserGroups = opsUser.getGroups();
+        for (ServiceRequest request : serviceRequests) {
+            ServiceReqConfig reqConfig = reqConfigRepo.findOne(request.getServiceReqConfigId());
+            for (UserGroup group : opsUserGroups) {
+                if (group.equals(userGroupRepo.findOne(reqConfig.getGroupId()))) {
+                    count+=1;
+                }
+            }
+        }
+
+        return count;
+    }
+
+    //    @Override
 //	public Page<ServiceRequestDTO> getRequests(ServiceRequestDTO request, Pageable pageDetails) {
 //		// TODO Auto-generated method stub
 //		return null;
@@ -179,6 +213,12 @@ public class RequestServiceImpl implements RequestService {
     private ServiceRequestDTO convertEntityToDTO(ServiceRequest serviceRequest) {
         ServiceRequestDTO requestDTO = modelMapper.map(serviceRequest, ServiceRequestDTO.class);
         requestDTO.setUsername(serviceRequest.getUser().getUserName());
+        requestDTO.setDate(DateFormatter.format(serviceRequest.getDateRequested()));
+        Code code = codeService.getByTypeAndCode("REQUEST_STATUS", serviceRequest.getRequestStatus());
+        if (code != null) {
+            String status = code.getDescription();
+            requestDTO.setRequestStatus(status);
+        }
         return requestDTO;
 
     }
@@ -191,10 +231,6 @@ public class RequestServiceImpl implements RequestService {
         List<ServiceRequestDTO> serviceRequestDTOList = new ArrayList<>();
         for (ServiceRequest serviceRequest : serviceRequests) {
             ServiceRequestDTO requestDTO = convertEntityToDTO(serviceRequest);
-            requestDTO.setUsername(serviceRequest.getUser().getUserName());
-            requestDTO.setDate(serviceRequest.getDateRequested().toString());
-            String status = codeService.getByTypeAndCode("REQUEST_STATUS", serviceRequest.getRequestStatus()).getDescription();
-            requestDTO.setRequestStatus(status);
             serviceRequestDTOList.add(requestDTO);
         }
         return serviceRequestDTOList;
@@ -202,7 +238,15 @@ public class RequestServiceImpl implements RequestService {
 
 
     private RequestHistoryDTO convertRequestHistoryEntityToDTO(RequestHistory requestHistory) {
-        return modelMapper.map(requestHistory, RequestHistoryDTO.class);
+        RequestHistoryDTO requestDTO = new RequestHistoryDTO();
+        requestDTO.setId(requestHistory.getId());
+        String status = codeService.getByTypeAndCode("REQUEST_STATUS", requestHistory.getStatus()).getDescription();
+        requestDTO.setStatus(status);
+        requestDTO.setComment(requestHistory.getComment());
+        requestDTO.setCreatedBy(requestHistory.getCreatedBy().getUserName());
+        requestDTO.setCreatedOn(DateFormatter.format(requestHistory.getCreatedOn()));
+        requestDTO.setServiceRequestId(requestHistory.getServiceRequest().getId().toString());
+        return requestDTO;
     }
 
     private RequestHistory convertRequestHistoryDTOToEntity(RequestHistoryDTO requestHistoryDTO) {
@@ -218,14 +262,7 @@ public class RequestServiceImpl implements RequestService {
     private List<RequestHistoryDTO> convertRequestHistoryEntitiesToDTOs(Iterable<RequestHistory> requestHistories) {
         List<RequestHistoryDTO> requestHistoryList = new ArrayList<>();
         for (RequestHistory requestHistory : requestHistories) {
-            RequestHistoryDTO requestDTO = new RequestHistoryDTO();
-            requestDTO.setId(requestHistory.getId());
-            String status = codeService.getByTypeAndCode("REQUEST_STATUS", requestHistory.getStatus()).getDescription();
-            requestDTO.setStatus(status);
-            requestDTO.setComment(requestHistory.getComment());
-            requestDTO.setCreatedBy(requestHistory.getCreatedBy().getUserName());
-            requestDTO.setCreatedOn(requestHistory.getCreatedOn().toString());
-            requestDTO.setServiceRequestId(requestHistory.getServiceRequest().getId().toString());
+            RequestHistoryDTO requestDTO = convertRequestHistoryEntityToDTO(requestHistory);
             requestHistoryList.add(requestDTO);
         }
         return requestHistoryList;

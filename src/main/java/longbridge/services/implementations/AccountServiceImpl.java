@@ -1,5 +1,6 @@
 package longbridge.services.implementations;
 
+import longbridge.api.AccountDetails;
 import longbridge.api.AccountInfo;
 import longbridge.dtos.AccountDTO;
 import longbridge.exception.InternetBankingException;
@@ -15,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -71,10 +73,21 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public boolean AddAccount(String customerId, Account account) throws InternetBankingException {
-        if (!customerId.equals(account.getCustomerId())) {
+    public boolean AddAccount(String customerId, AccountDTO accountdto) throws InternetBankingException {
+        if (!customerId.equals(accountdto.getCustomerId())) {
             return false;
         }
+        AccountDetails acct = integrationService.viewAccountDetails(accountdto.getAccountNumber());
+        Account account = new Account();
+        account.setPrimaryFlag("N");
+        account.setHiddenFlag("N");
+        account.setCustomerId(acct.getCustId());
+        account.setAccountName(acct.getAcctName());
+        account.setAccountNumber(acct.getAcctNumber());
+        account.setSolId(acct.getSolId());
+        account.setSchemeCode(acct.getSchmCode());
+        account.setSchemeType(acct.getAcctType());
+        //account.setAccountId(acct.);TODO
         accountRepo.save(account);
         return true;
     }
@@ -137,10 +150,14 @@ public class AccountServiceImpl implements AccountService {
 
 
     @Override
-    public Page<Account> getAccounts(String customerId, Pageable pageDetails) {
-        // TODO Auto-generated method stub
-        return null;
+    public Page<AccountDTO> getAccounts(String customerId, Pageable pageDetails) {
+        Page<Account> page = accountRepo.findAccountByCustomerId(customerId, pageDetails);
+        List<AccountDTO> dtOs = convertEntitiesToDTOs(page.getContent());
+        long t = page.getTotalElements();
+        Page<AccountDTO> pageImpl = new PageImpl<AccountDTO>(dtOs, pageDetails, t);
+        return pageImpl;
     }
+
 
     private AccountDTO convertEntityToDTO(Account account) {
         return this.modelMapper.map(account, AccountDTO.class);

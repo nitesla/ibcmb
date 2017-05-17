@@ -1,5 +1,7 @@
 package longbridge.services.implementations;
 
+import longbridge.api.AccountInfo;
+import longbridge.dtos.AccountDTO;
 import longbridge.dtos.CorporateDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.*;
@@ -7,7 +9,10 @@ import longbridge.repositories.CorpLimitRepo;
 import longbridge.repositories.CorporateRepo;
 import longbridge.repositories.CorporateUserRepo;
 import longbridge.services.AccountService;
+import longbridge.services.CodeService;
 import longbridge.services.CorporateService;
+import longbridge.services.IntegrationService;
+import longbridge.utils.DateFormatter;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,10 +25,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 /**
  * Created by Fortune on 4/5/2017.
@@ -37,33 +39,45 @@ public class CorporateServiceImpl implements CorporateService {
     private CorporateUserRepo corporateUserRepo;
     @Autowired
     private AccountService accountService;
-
     @Autowired
-    ModelMapper modelMapper;
-
+    private ModelMapper modelMapper;
     @Autowired
-    MessageSource messageSource;
+    private MessageSource messageSource;
+    @Autowired
+    private CodeService  codeService;
+    @Autowired
+    private IntegrationService integrationService;
 
-    Locale locale = LocaleContextHolder.getLocale();
+    private Locale locale = LocaleContextHolder.getLocale();
 
-    Logger logger = LoggerFactory.getLogger(this.getClass());
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+
+
 
     @Autowired
     public CorporateServiceImpl(CorporateRepo corporateRepo, CorpLimitRepo corpLimitRepo){
         this.corporateRepo = corporateRepo;
         this.corpLimitRepo = corpLimitRepo;
     }
+
     @Override
     public String addCorporate(CorporateDTO corporateDTO) throws InternetBankingException {
         try{
-        Corporate corporate = convertDTOToEntity(corporateDTO);
-        corporate.setCreatedOnDate(new Date());
-        corporateRepo.save(corporate);
-        return messageSource.getMessage("corporate.add.success", null, locale);
-    }
-    catch (Exception e){
-            throw new InternetBankingException(messageSource.getMessage("corporate.add.failure",null,locale),e);
-    }
+            Corporate corporate = convertDTOToEntity(corporateDTO);
+            corporate.setCreatedOnDate(new Date());
+            corporateRepo.save(corporate);
+            String customerId = corporate.getCustomerId();
+            Collection<AccountInfo> accounts = integrationService.fetchAccounts(customerId);
+            for (AccountInfo acct : accounts) {
+                accountService.AddFIAccount(customerId, acct);
+            }
+
+            logger.info("Corporate {} created", corporate.getCompanyName());
+            return messageSource.getMessage("corporate.add.success", null, locale);
+        }
+        catch (Exception e){
+                throw new InternetBankingException(messageSource.getMessage("corporate.add.failure",null,locale),e);
+        }
 
     }
 
@@ -103,6 +117,12 @@ public class CorporateServiceImpl implements CorporateService {
     }
 
     @Override
+    public Corporate getCorporateByCustomerId(String customerId) {
+        Corporate corporate = corporateRepo.findByCustomerId(customerId);
+        return corporate;
+    }
+
+    @Override
     public List<CorporateDTO> getCorporates() {
         Iterable<Corporate> corporateDTOS = corporateRepo.findAll();
         return convertEntitiesToDTOs(corporateDTOS);
@@ -110,9 +130,9 @@ public class CorporateServiceImpl implements CorporateService {
 
 
     @Override
-    public boolean addAccount(Corporate corporate, Account account) throws  InternetBankingException {
-        accountService.AddAccount(corporate.getCustomerId(),account);
-        return true;
+    public String addAccount(Corporate corporate, AccountDTO accountDTO) throws  InternetBankingException {
+        accountService.AddAccount(corporate.getCustomerId(),accountDTO);
+        return messageSource.getMessage("account.add.success",null,locale);
     }
 
     @Override
@@ -129,7 +149,7 @@ public class CorporateServiceImpl implements CorporateService {
         try {
             Corporate corporate = corporateRepo.findOne(id);
             String oldStatus = corporate.getStatus();
-            String newStatus = "ACTIVE".equals(oldStatus) ? "INACTIVE" : "ACTIVE";
+            String newStatus = "A".equals(oldStatus) ? "I" : "A";
             corporate.setStatus(newStatus);
             corporateRepo.save(corporate);
 
@@ -177,8 +197,39 @@ public class CorporateServiceImpl implements CorporateService {
         return pageImpl;
 	}
 
+    @Override
+    public Page<AccountDTO> getAccounts(Long corpId, Pageable pageDetails) {
+        Corporate corporate = corporateRepo.findOne(corpId);
+        Page<AccountDTO> page = accountService.getAccounts(corporate.getCustomerId(), pageDetails);
+        List<AccountDTO> dtOs = page.getContent();
+        long t = page.getTotalElements();
+        Page<AccountDTO> pageImpl = new PageImpl<AccountDTO>(dtOs,pageDetails,t);
+        return pageImpl;
+    }
+
+//    private List<AccountDTO> convertAccountEntitiesToDTOs(Iterable<Account> accounts){
+//        List<AccountDTO> accountDTOList = new ArrayList<>();
+//        for(Account account: accounts){
+//            AccountDTO accountDTO = convertAccountEntityToDTO(account);
+//            accountDTOList.add(accountDTO);
+//        }
+//        return accountDTOList;
+//    }
+//
+//    private AccountDTO convertAccountEntityToDTO(Account account){
+//        return  modelMapper.map(account,AccountDTO.class);
+//    }
+
     private CorporateDTO convertEntityToDTO(Corporate corporate){
-        return  modelMapper.map(corporate,CorporateDTO.class);
+        CorporateDTO corporateDTO = modelMapper.map(corporate,CorporateDTO.class);
+        if(corporate.getCreatedOnDate()!=null){
+            corporateDTO.setCreatedOn(DateFormatter.format(corporate.getCreatedOnDate()));
+        }
+        Code code = codeService.getByTypeAndCode("USER_STATUS", corporate.getStatus());
+        if (code != null) {
+            corporateDTO.setStatus(code.getDescription());
+        }
+        return corporateDTO;
     }
 
     private Corporate convertDTOToEntity(CorporateDTO corporateDTO){

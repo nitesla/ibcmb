@@ -3,15 +3,20 @@ package longbridge.services.implementations;
 
 import longbridge.api.AccountInfo;
 import longbridge.api.CustomerDetails;
+import longbridge.dtos.AccountDTO;
 import longbridge.dtos.RetailUserDTO;
 import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.PasswordException;
 import longbridge.exception.PasswordPolicyViolationException;
 import longbridge.forms.AlertPref;
-import longbridge.models.*;
+import longbridge.models.Account;
+import longbridge.models.Code;
+import longbridge.models.Email;
+import longbridge.models.RetailUser;
 import longbridge.repositories.RetailUserRepo;
 import longbridge.services.*;
+import longbridge.utils.DateFormatter;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -174,10 +179,10 @@ public class RetailUserServiceImpl implements RetailUserService {
         try {
             RetailUser user = retailUserRepo.findOne(userId);
             String oldStatus = user.getStatus();
-            String newStatus = "ACTIVE".equals(oldStatus) ? "INACTIVE" : "ACTIVE";
+            String newStatus = "A".equals(oldStatus) ? "I" : "A";
             user.setStatus(newStatus);
             retailUserRepo.save(user);
-            if ((oldStatus == null) || ("INACTIVE".equals(oldStatus)) && "ACTIVE".equals(newStatus)) {
+            if ((oldStatus == null) || ("I".equals(oldStatus)) && "A".equals(newStatus)) {
                 String password = passwordPolicyService.generatePassword();
                 user.setPassword(passwordEncoder.encode(password));
                 Email email = new Email.Builder().setSender("info@ibanking.coronationmb.com")
@@ -289,8 +294,8 @@ public class RetailUserServiceImpl implements RetailUserService {
     }
 
     @Override
-    public boolean AddAccount(RetailUser user, Account account) {
-        return accountService.AddAccount(user.getCustomerId(), account);
+    public boolean AddAccount(RetailUser user, AccountDTO accountDTO) {
+        return accountService.AddAccount(user.getCustomerId(), accountDTO);
     }
 
 //    @Override
@@ -347,12 +352,23 @@ public class RetailUserServiceImpl implements RetailUserService {
         return false;
     }
 
-    private RetailUserDTO convertEntityToDTO(RetailUser RetailUser) {
-        return modelMapper.map(RetailUser, RetailUserDTO.class);
+    private RetailUserDTO convertEntityToDTO(RetailUser retailUser) {
+        RetailUserDTO retailUserDTO =  modelMapper.map(retailUser, RetailUserDTO.class);
+        Code code = codeService.getByTypeAndCode("USER_STATUS", retailUser.getStatus());
+        if(retailUser.getCreatedOnDate()!=null) {
+            retailUserDTO.setCreatedOn(DateFormatter.format(retailUser.getCreatedOnDate()));
+        }
+        if(retailUser.getLastLoginDate()!=null) {
+            retailUserDTO.setLastLogin(DateFormatter.format(retailUser.getLastLoginDate()));
+        }
+        if (code != null) {
+            retailUserDTO.setStatus(code.getDescription());
+        }
+        return retailUserDTO;
     }
 
-    private RetailUser convertDTOToEntity(RetailUserDTO RetailUserDTO) {
-        return modelMapper.map(RetailUserDTO, RetailUser.class);
+    private RetailUser convertDTOToEntity(RetailUserDTO retailUserDTO) {
+       return   modelMapper.map(retailUserDTO, RetailUser.class);
     }
 
     private List<RetailUserDTO> convertEntitiesToDTOs(Iterable<RetailUser> RetailUsers) {

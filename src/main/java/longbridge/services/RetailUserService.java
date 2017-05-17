@@ -1,11 +1,11 @@
 package longbridge.services;
 
 import longbridge.api.CustomerDetails;
+import longbridge.dtos.AccountDTO;
 import longbridge.dtos.RetailUserDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.PasswordException;
 import longbridge.forms.AlertPref;
-import longbridge.models.Account;
 import longbridge.models.RetailUser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -72,7 +72,7 @@ public interface RetailUserService {
      * @param account the account to be added
      * @return true if the account is successfully added for the customer
      */
-    boolean AddAccount(RetailUser user, Account account);
+    boolean AddAccount(RetailUser user, AccountDTO account);
 
 
 

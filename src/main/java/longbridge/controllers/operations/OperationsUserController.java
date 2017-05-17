@@ -1,6 +1,11 @@
 package longbridge.controllers.operations;
 
 import longbridge.dtos.OperationsUserDTO;
+import longbridge.exception.PasswordException;
+import longbridge.exception.PasswordMismatchException;
+import longbridge.exception.PasswordPolicyViolationException;
+import longbridge.exception.WrongPasswordException;
+import longbridge.forms.ChangeDefaultPassword;
 import longbridge.forms.ChangePassword;
 import longbridge.models.OperationsUser;
 import longbridge.services.OperationsUserService;
@@ -8,6 +13,7 @@ import longbridge.services.PasswordPolicyService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,6 +24,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.Locale;
 
 /**
  * Created by Wunmi on 31/03/2017.
@@ -33,7 +40,10 @@ public class OperationsUserController {
     private BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
-    PasswordPolicyService passwordPolicyService;
+    private PasswordPolicyService passwordPolicyService;
+
+    @Autowired
+    private MessageSource messageSource;
 
     private Logger logger= LoggerFactory.getLogger(this.getClass());
 
@@ -89,52 +99,78 @@ public class OperationsUserController {
 
     @GetMapping("/password")
     public String changePassword(Model model){
-
-        ChangePassword changePassword = new ChangePassword();
-        model.addAttribute("changePassword", changePassword);
-        model.addAttribute("passwordRules", passwordPolicyService.getPasswordRules());
+        model.addAttribute("changePassword",new ChangePassword());
         return "/ops/pword";
     }
 
     @PostMapping("/password")
-    public String changePassword(@ModelAttribute("changePassword") @Valid ChangePassword changePassword, BindingResult result, Principal principal, RedirectAttributes redirectAttributes){
-        if(result.hasErrors()){
-            result.addError(new ObjectError("invalid", "Please provide valid password"));
+    public String changePassword(@ModelAttribute("changePassword") @Valid ChangePassword changePassword, BindingResult result, Principal principal, RedirectAttributes redirectAttributes,Locale locale){
+        if (result.hasErrors()) {
+            result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required",null,locale)));
             return "/ops/pword";
         }
+
         OperationsUser user = operationsUserService.getUserByName(principal.getName());
-
-        if(!this.passwordEncoder.matches(changePassword.getOldPassword(),user.getPassword())){
-            logger.trace("Invalid old password provided for change");
-            result.addError(new ObjectError("invalid", "Incorrect Old Password"));
+        try {
+            String message = operationsUserService.changePassword(user, changePassword);
+            redirectAttributes.addFlashAttribute("message", message);
+            return "redirect:/ops/dashboard";
+        } catch (WrongPasswordException wpe) {
+            result.reject("oldPassword", wpe.getMessage());
+            logger.error("Wrong password from operation user {}", user.getUserName(), wpe.toString());
+            return "/ops/pword";
+        } catch (PasswordPolicyViolationException pve) {
+            result.reject("newPassword",  pve.getMessage());
+            logger.error("Password policy violation from operation user {}", user.getUserName(), pve.toString());
+            return "/ops/pword";
+        } catch (PasswordMismatchException pme) {
+            result.reject("confirmPassword", pme.getMessage());
+            logger.error("New password mismatch from operation user {}", user.getUserName(), pme.toString());
+            return "/ops/pword";
+        } catch (PasswordException pe) {
+            result.addError(new ObjectError("error", pe.getMessage()));
+            logger.error("Error changing password for operation user {}", user.getUserName(), pe);
             return "/ops/pword";
         }
 
-        String errorMsg = passwordPolicyService.validate(changePassword.getNewPassword(),user.getUsedPasswords());
-        if(!errorMsg.equals("")){
-            result.addError(new ObjectError("invalid", errorMsg));
-            return "/ops/pword";
+    }
+
+    @GetMapping("/password/new")
+    public String changeDefaultPassword(Model model) {
+        ChangeDefaultPassword changePassword = new ChangeDefaultPassword();
+        model.addAttribute("changePassword", changePassword);
+        model.addAttribute("passwordRules", passwordPolicyService.getPasswordRules());
+        return "ops/new-pword";
+    }
+
+
+    @PostMapping("/password/new")
+    public String changeDefaultPassword(@ModelAttribute("changePassword") @Valid ChangeDefaultPassword changePassword, BindingResult result, Principal principal, RedirectAttributes redirectAttributes,Locale locale) {
+
+        if (result.hasErrors()) {
+            result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required",null,locale)));
+            return "/ops/new-pword";
         }
 
-        if(!changePassword.getNewPassword().equals(changePassword.getConfirmPassword())){
-            logger.trace("PASSWORD MISMATCH");
-            result.addError(new ObjectError("invalid", "Passwords do not match"));
-            return "/ops/pword";
+        OperationsUser user = operationsUserService.getUserByName(principal.getName());
+        try {
+            String message = operationsUserService.changeDefaultPassword(user, changePassword);
+            redirectAttributes.addFlashAttribute("message", message);
+            return "redirect:/ops/logout";
+        } catch (PasswordPolicyViolationException pve) {
+            result.reject("newPassword", pve.getMessage());
+            logger.error("Password policy violation from admin user {}", user.getUserName(), pve);
+            return "/ops/new-pword";
+        } catch (PasswordMismatchException pme) {
+            result.reject("confirmPassword", pme.getMessage());
+            logger.error("New password mismatch from operations user {}", user.getUserName(), pme.toString());
+            return "/ops/new-pword";
+        } catch (PasswordException pe) {
+            result.addError(new ObjectError("error", pe.getMessage()));
+            logger.error("Error changing password for admin user {}", user.getUserName(), pe);
+
+            return "/ops/new-pword";
         }
-
-
-        if(!this.passwordEncoder.matches(changePassword.getOldPassword(),user.getPassword())){
-            logger.trace("Invalid old password provided for change");
-            result.addError(new ObjectError("invalid", "Incorrect Old Password"));
-            return "/ops/pword";
-        }
-
-        operationsUserService.changePassword(user,changePassword);
-
-        redirectAttributes.addFlashAttribute("message","Password changed successfully");
-
-        return "redirect:/ops/dashboard";
-
     }
 
 }

@@ -5,14 +5,13 @@ import longbridge.dtos.SettingDTO;
 import longbridge.exception.*;
 import longbridge.forms.ChangeDefaultPassword;
 import longbridge.forms.ChangePassword;
+import longbridge.models.Code;
 import longbridge.models.Email;
 import longbridge.models.OperationsUser;
 import longbridge.models.Role;
 import longbridge.repositories.OperationsUserRepo;
-import longbridge.services.ConfigurationService;
-import longbridge.services.MailService;
-import longbridge.services.OperationsUserService;
-import longbridge.services.PasswordPolicyService;
+import longbridge.services.*;
+import longbridge.utils.DateFormatter;
 import longbridge.utils.ReflectionUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.modelmapper.ModelMapper;
@@ -53,6 +52,10 @@ public class OperationsUserServiceImpl implements OperationsUserService {
 
     @Autowired
     MessageSource messageSource;
+
+    @Autowired
+    CodeService codeService;
+
     Locale locale = LocaleContextHolder.getLocale();
 
     public OperationsUserServiceImpl() {
@@ -110,10 +113,10 @@ public class OperationsUserServiceImpl implements OperationsUserService {
         try {
             OperationsUser user = operationsUserRepo.findOne(userId);
             String oldStatus = user.getStatus();
-            String newStatus = "ACTIVE".equals(oldStatus) ? "INACTIVE" : "ACTIVE";
+            String newStatus = "A".equals(oldStatus) ? "I" : "A";
             user.setStatus(newStatus);
             operationsUserRepo.save(user);
-            if ((oldStatus == null) || ("INACTIVE".equals(oldStatus)) && "ACTIVE".equals(newStatus)) {
+            if ((oldStatus == null) || ("I".equals(oldStatus)) && "A".equals(newStatus)) {
                 String password = passwordPolicyService.generatePassword();
                 user.setPassword(passwordEncoder.encode(password));
                 Email email = new Email.Builder().setSender("admin@ibanking.coronationmb.com")
@@ -166,6 +169,8 @@ public class OperationsUserServiceImpl implements OperationsUserService {
         } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("user.add.failure", null, locale), e);
         }
+
+
     }
 
 
@@ -174,8 +179,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     @Transactional
     public String updateUser(OperationsUserDTO user) throws InternetBankingException {
         try {
-            OperationsUser opsUser = new OperationsUser();
-            opsUser.setId((user.getId()));
+            OperationsUser opsUser = operationsUserRepo.findOne(user.getId());
             opsUser.setVersion(user.getVersion());
             opsUser.setFirstName(user.getFirstName());
             opsUser.setLastName(user.getLastName());
@@ -240,9 +244,10 @@ public class OperationsUserServiceImpl implements OperationsUserService {
         }
 
         try {
-            OperationsUser adminUser = operationsUserRepo.findOne(user.getId());
-            adminUser.setPassword(this.passwordEncoder.encode(changePassword.getNewPassword()));
-            this.operationsUserRepo.save(adminUser);
+            OperationsUser opsUser = operationsUserRepo.findOne(user.getId());
+            opsUser.setPassword(this.passwordEncoder.encode(changePassword.getNewPassword()));
+            opsUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
+            this.operationsUserRepo.save(opsUser);
             logger.info("User {}'s password has been updated", user.getId());
             return messageSource.getMessage("password.change.success", null, locale);
         } catch (Exception e) {
@@ -281,7 +286,19 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     }
 
     private OperationsUserDTO convertEntityToDTO(OperationsUser operationsUser) {
-        return modelMapper.map(operationsUser, OperationsUserDTO.class);
+        OperationsUserDTO operationsUserDTO =  modelMapper.map(operationsUser, OperationsUserDTO.class);
+        operationsUserDTO.setRole(operationsUser.getRole().getName());
+        if(operationsUser.getCreatedOnDate()!=null) {
+            operationsUserDTO.setCreatedOn(DateFormatter.format(operationsUser.getCreatedOnDate()));
+        }
+        if(operationsUser.getLastLoginDate()!=null) {
+            operationsUserDTO.setLastLogin(DateFormatter.format(operationsUser.getLastLoginDate()));
+        }
+        Code code = codeService.getByTypeAndCode("USER_STATUS", operationsUser.getStatus());
+        if (code != null) {
+            operationsUserDTO.setStatus(code.getDescription());
+        }
+        return operationsUserDTO;
     }
 
     private OperationsUser convertDTOToEntity(OperationsUserDTO operationsUserDTO) {
@@ -292,7 +309,6 @@ public class OperationsUserServiceImpl implements OperationsUserService {
         List<OperationsUserDTO> operationsUserDTOList = new ArrayList<>();
         for (OperationsUser operationsUser : operationsUsers) {
             OperationsUserDTO userDTO = convertEntityToDTO(operationsUser);
-            userDTO.setRole(operationsUser.getRole().getName());
             operationsUserDTOList.add(userDTO);
         }
         return operationsUserDTOList;

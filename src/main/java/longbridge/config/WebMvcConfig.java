@@ -1,6 +1,7 @@
 package longbridge.config;
 
 import longbridge.security.adminuser.AdminUserLoginInterceptor;
+import longbridge.security.opsuser.OpUserLoginInterceptor;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -9,8 +10,6 @@ import org.springframework.context.annotation.CommonAnnotationBeanPostProcessor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.request.RequestContextListener;
 import org.springframework.web.servlet.LocaleResolver;
@@ -56,6 +55,7 @@ public class WebMvcConfig   extends WebMvcConfigurerAdapter {
 		localeChangeInterceptor.setParamName("lang");
 		registry.addInterceptor(localeChangeInterceptor);
 		registry.addInterceptor(new AdminUserLoginInterceptor()).addPathPatterns("/admin/**");
+		registry.addInterceptor(new OpUserLoginInterceptor()).addPathPatterns("/ops/**");
 	}
 
 	@Bean
@@ -81,13 +81,12 @@ public class WebMvcConfig   extends WebMvcConfigurerAdapter {
 	@Bean
 	public ResourceBundleMessageSource messageSource() {
 		ResourceBundleMessageSource source = new ResourceBundleMessageSource();
-		source.setBasenames("messages");  // name of the resource bundle
+		String[] baseNames= new String[]{"i18n/messages","i18n/menu"};
+		source.setBasenames(baseNames);  // name of the resource bundle
 		source.setCacheSeconds(1000);
 		source.setUseCodeAsDefaultMessage(true);
 		return source;
 	}
-
-
 
 //
 //	@Bean
