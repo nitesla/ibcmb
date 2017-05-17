@@ -2,6 +2,7 @@ package longbridge.config;
 
 import longbridge.dtos.SettingDTO;
 import longbridge.models.UserType;
+import longbridge.security.corpuser.CorperateAuthenticationFilter;
 import longbridge.services.ConfigurationService;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log;
@@ -23,6 +24,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 
 /**
@@ -240,4 +242,67 @@ public class SecurityConfig {
         }
 
     }
+    @Configuration
+    @Order(4)
+    public static class CorpUserConfigurationAdapter extends WebSecurityConfigurerAdapter {
+        @Autowired
+        @Qualifier("corpUserDetails")
+        UserDetailsService corpDetails;
+        @Autowired
+        BCryptPasswordEncoder bCryptPasswordEncoder;
+        @Autowired
+        @Qualifier("corpAuthenticationSuccessHandler")
+        private AuthenticationSuccessHandler corpAuthenticationSuccessHandler;
+        @Autowired
+        @Qualifier("corpAuthenticationFailureHandler")
+        private AuthenticationFailureHandler corpAuthenticationFailureHandler;
+
+        public CorpUserConfigurationAdapter() {
+            super();
+        }
+
+        @Override
+        protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+            auth.userDetailsService(corpDetails).passwordEncoder(bCryptPasswordEncoder);
+        }
+
+        protected void configure(HttpSecurity http) throws Exception {
+            http.addFilterBefore(new CorperateAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+
+            http
+                    .antMatcher("/corporate/**").authorizeRequests()
+                    .anyRequest()
+                    // .authenticated()
+                    .hasAuthority(UserType.CORPORATE.toString())
+                    // log in
+                    .and().formLogin().loginPage("/login/corporate").loginProcessingUrl("/corporate/login")
+                    .failureUrl("/login/corporate?error=true").defaultSuccessUrl("/corporate/dashboard")
+                    .successHandler(corpAuthenticationSuccessHandler)
+                    .failureHandler(corpAuthenticationFailureHandler)
+
+                    //.failureForwardUrl()
+
+                    .and()
+
+                    // logout
+                    .logout().logoutUrl("/corporate/logout").logoutSuccessUrl("/login/corporate").deleteCookies("JSESSIONID").invalidateHttpSession(true).and().exceptionHandling().and().csrf().disable()
+
+                    .sessionManagement().sessionFixation().migrateSession()
+                    .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED).invalidSessionUrl("/login/corporate")
+                    .maximumSessions(1).expiredUrl("/login/corporate");
+        }
+
+        @Override
+        public void configure(WebSecurity web) throws Exception {
+            new SecurityConfig().customConfig(web);
+        }
+
+
+    }
+
+
+
+
+
+
 }
