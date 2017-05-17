@@ -7,6 +7,7 @@ import longbridge.models.CorporateUser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import javax.transaction.Transactional;
 import java.util.Date;
 
 
@@ -62,6 +63,9 @@ public interface CorporateUserService{
      * @param user the corporate user
      */
     String addUser(CorporateUserDTO user);
+
+    @Transactional
+    String changeActivationStatus(Long userId) throws InternetBankingException;
 
     /**
      * resets the password for the specified corporate user

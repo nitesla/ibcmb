@@ -30,7 +30,7 @@ import java.util.Locale;
  */
 
 @Controller
-@RequestMapping("/admin/corporates")
+@RequestMapping("/admin/corporates/users/")
 public class AdmCorporateUserController {
     @Autowired
     private CorporateUserService corporateUserService;
@@ -50,7 +50,7 @@ public class AdmCorporateUserController {
     MessageSource messageSource;
 
 
-    @GetMapping("{corpId}/users/new")
+    @GetMapping("{corpId}/new")
     public String addUser(@PathVariable Long corpId, Model model) {
         CorporateDTO corporateDTO = corporateService.getCorporate(corpId);
         CorporateUserDTO corporateUserDTO = new CorporateUserDTO();
@@ -61,7 +61,7 @@ public class AdmCorporateUserController {
         return "adm/corporate/adduser";
     }
 
-    @PostMapping("/users")
+    @PostMapping
     public String createUser(@ModelAttribute("corporateUser") @Valid CorporateUserDTO corporateUserDTO, BindingResult result, Model model, RedirectAttributes redirectAttributes, Locale locale) throws Exception {
 
         if (result.hasErrors()) {
@@ -77,6 +77,8 @@ public class AdmCorporateUserController {
         try {
             String message = corporateUserService.addUser(corporateUserDTO);
             redirectAttributes.addFlashAttribute("message", message);
+
+
             return "redirect:/admin/corporates/";
         } catch (DuplicateObjectException doe) {
             result.addError(new ObjectError("error", doe.getMessage()));
@@ -101,39 +103,40 @@ public class AdmCorporateUserController {
         }
     }
 
-    @GetMapping("/users/{userId}")
+    @GetMapping("{userId}/edit")
     public String getUser(@PathVariable Long userId, Model model) {
         CorporateUserDTO user = corporateUserService.getUser(userId);
-
+        Iterable<RoleDTO> roles = roleService.getRoles();
+        model.addAttribute("roles", roles);
         model.addAttribute("corporateUser", user);
-        return "corporateUser";
+        return "adm/corporate/edituser";
     }
 
 
-    @PostMapping("/users/{userId}")
-    public String UpdateUser(@ModelAttribute("corporateUser") CorporateUserDTO corporateUserDTO, @PathVariable Long userId, BindingResult result, RedirectAttributes redirectAttributes) {
+    @PostMapping("edit")
+    public String UpdateUser(@ModelAttribute("corporateUser") CorporateUserDTO corporateUserDTO, BindingResult result, RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
-            return "addUser";
+            return "adm/corporate/edituser";
         }
-        corporateUserDTO.setId(userId);
+
         String message = corporateUserService.updateUser(corporateUserDTO);
         redirectAttributes.addFlashAttribute("message", message);
 
-        return "redirect:/corporate/users";
+        return "redirect:/admin/corporates/";
     }
 
-    @PostMapping("/users/{userId}/delete")
+    @PostMapping("{userId}/delete")
     public String deleteUser(@PathVariable Long userId) {
         corporateUserService.deleteUser(userId);
         return "redirect:/corporate/users";
     }
 
-    @GetMapping("/users/changePassword")
+    @GetMapping("changePassword")
     public String changePassword() {
         return "changePassword";
     }
 
-    @PostMapping("/users/changePassword")
+    @PostMapping("changePassword")
     public String changePassword(@Valid ChangePassword changePassword, Long userId, BindingResult result, HttpRequest request, Model model) {
         if (result.hasErrors()) {
             return "changePassword";

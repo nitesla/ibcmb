@@ -27,7 +27,7 @@
             <div class="">
                 <div class="page-title">
                     <div class="title_left">
-                        <h3>Create Corporate</h3>
+                        <h3>Edit User</h3>
                     </div>
 
                 </div>
@@ -43,56 +43,58 @@
                             </div>
                             <div class="x_content">
                                 <div class="ibox-content">
-                                    <form method="post" class="form-horizontal" th:action="@{/admin/corporates/}" th:object="${corporate}">
+                                    <form method="post" class="form-horizontal" th:action="@{/admin/corporates/users/edit}" th:object="${corporateUser}">
+
+
+                                        <div th:replace="layout::form-validation"></div>
+
+                                        <input type="hidden" th:field="*{id}"/>
 
                                         <div class="form-group">
-                                            <label class="col-sm-2 control-label">Corporate Type</label>
+                                            <label class="col-sm-2 control-label">Username</label>
 
                                             <div class="col-sm-6">
-                                                <select class="form-control" name="corporateType">
-                                                    <option value="sole" >Sole User</option>
-                                                    <option value="multi" >Multi User</option>
-
-                                                </select>
-                                            </div> </div>
-                                        <div class="form-group">
-                                            <label class="col-sm-2 control-label">Customer Id</label>
-
-                                            <div class="col-sm-6">
-                                                <input type="text" class="form-control" th:field="*{customerId}" />
+                                                <input type="text" class="form-control" th:field="*{userName}"/>
                                             </div>
-                                            <!--<button class="btn btn-primary col-sm-2" type="submit">Search</button>-->
-
                                         </div>
 
-
                                         <div class="form-group">
-                                            <label class="col-sm-2 control-label">Company Name</label>
+                                            <label class="col-sm-2 control-label">First Name</label>
 
                                             <div class="col-sm-6">
-                                                <input type="text" class="form-control" th:field="*{companyName}" />
+                                                <input type="text" class="form-control" th:field="*{firstName}"/>
                                             </div>
 
                                         </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">Last Name</label>
 
+                                            <div class="col-sm-6">
+                                                <input type="text" class="form-control" th:field="*{lastName}" />
+                                            </div>
+
+                                        </div>
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">Email</label>
 
                                             <div class="col-sm-6">
-                                                <input type="text" class="form-control" th:field="*{email}" />
+                                                <input type="text" class="form-control" th:field="*{email}"/>
                                             </div>
 
                                         </div>
 
                                         <div class="form-group">
-                                            <label class="col-sm-2 control-label">Address</label>
-
+                                            <label class="col-sm-2 control-label">Role</label>
                                             <div class="col-sm-6">
-                                                <input type="text" class="form-control" th:field="*{address}" />
+
+                                                <select class="form-control" th:field="*{roleId}">
+                                                    <option value="" >Select..</option>
+                                                    <option th:each="role : ${roles.?[#strings.equalsIgnoreCase(userType, 'corporate')]}" th:value="${role.id}" th:text="${role.name}"></option>
+                                                </select>
+
+
                                             </div>
-
                                         </div>
-
 
 
 
@@ -102,9 +104,9 @@
                                                 <button class="btn btn-primary" type="submit">Submit</button>
                                             </div>
                                         </div>
-                                        <div th:replace="layout::form-validation"></div>
+
                                     </form>
-                                </div>`
+                                </div>
                             </div>
                         </div>
                     </div>

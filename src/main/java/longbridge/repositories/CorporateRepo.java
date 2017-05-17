@@ -1,8 +1,6 @@
 package longbridge.repositories;
 
 import longbridge.models.Corporate;
-import longbridge.models.CorporateUser;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -12,5 +10,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CorporateRepo extends CommonRepo<Corporate, Long> {
 
-
+    Corporate findByCustomerId(String customerId);
 }

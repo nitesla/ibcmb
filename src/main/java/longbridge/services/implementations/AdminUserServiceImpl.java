@@ -5,6 +5,7 @@ import longbridge.exception.*;
 import longbridge.forms.ChangeDefaultPassword;
 import longbridge.forms.ChangePassword;
 import longbridge.models.AdminUser;
+import longbridge.models.Code;
 import longbridge.models.Email;
 import longbridge.models.Role;
 import longbridge.repositories.AdminUserRepo;
@@ -63,6 +64,9 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     @Autowired
     MessageSource messageSource;
+
+    @Autowired
+    CodeService codeService;
 
     Locale locale = LocaleContextHolder.getLocale();
 
@@ -143,10 +147,10 @@ public class AdminUserServiceImpl implements AdminUserService {
         try {
             AdminUser user = adminUserRepo.findOne(userId);
             String oldStatus = user.getStatus();
-            String newStatus = "ACTIVE".equals(oldStatus) ? "INACTIVE" : "ACTIVE";
+            String newStatus = "A".equals(oldStatus) ? "I" : "A";
             user.setStatus(newStatus);
             adminUserRepo.save(user);
-            if ((oldStatus == null) || ("INACTIVE".equals(oldStatus)) && "ACTIVE".equals(newStatus)) {
+            if ((oldStatus == null) || ("I".equals(oldStatus)) && "A".equals(newStatus)) {
                 String password = passwordPolicyService.generatePassword();
                 user.setPassword(passwordEncoder.encode(password));
                 Email email = new Email.Builder().setSender("admin@ibanking.coronationmb.com")
@@ -174,7 +178,7 @@ public class AdminUserServiceImpl implements AdminUserService {
             AdminUser user = adminUserRepo.findOne(id);
             user.setDeletedOn(new Date());
             adminUserRepo.save(user);
-            adminUserRepo.delete(user);
+            adminUserRepo.delete(id);
             logger.warn("Admin user {} deleted", user.getUserName());
             return messageSource.getMessage("user.delete.success", null, locale);
         } catch (Exception e) {
@@ -237,7 +241,7 @@ public class AdminUserServiceImpl implements AdminUserService {
             throw new WrongPasswordException();
         }
 
-        String errorMessage = passwordPolicyService.validate(changePassword.getNewPassword(),user.getUsedPasswords());
+        String errorMessage = passwordPolicyService.validate(changePassword.getNewPassword(), user.getUsedPasswords());
         if (!"".equals(errorMessage)) {
             throw new PasswordPolicyViolationException(errorMessage);
         }
@@ -248,6 +252,8 @@ public class AdminUserServiceImpl implements AdminUserService {
         try {
             AdminUser adminUser = adminUserRepo.findOne(user.getId());
             adminUser.setPassword(this.passwordEncoder.encode(changePassword.getNewPassword()));
+            adminUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
+
             this.adminUserRepo.save(adminUser);
             logger.info("User {} password has been updated", user.getId());
             return messageSource.getMessage("password.change.success", null, locale);
@@ -261,7 +267,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     public String changeDefaultPassword(AdminUser user, ChangeDefaultPassword changePassword) throws PasswordException {
 
 
-        String errorMessage = passwordPolicyService.validate(changePassword.getNewPassword(),user.getUsedPasswords());
+        String errorMessage = passwordPolicyService.validate(changePassword.getNewPassword(), user.getUsedPasswords());
         if (!"".equals(errorMessage)) {
             throw new PasswordPolicyViolationException(errorMessage);
         }
@@ -272,6 +278,7 @@ public class AdminUserServiceImpl implements AdminUserService {
         try {
             AdminUser adminUser = adminUserRepo.findOne(user.getId());
             adminUser.setPassword(this.passwordEncoder.encode(changePassword.getNewPassword()));
+            adminUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
             this.adminUserRepo.save(adminUser);
             logger.info("User {}'s password has been updated", user.getId());
             return messageSource.getMessage("password.change.success", null, locale);
@@ -303,11 +310,13 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
     private AdminUserDTO convertEntityToDTO(AdminUser adminUser) {
-        AdminUserDTO adminUserDTO = new AdminUserDTO();
-        adminUserDTO.setFirstName(adminUser.getFirstName());
-        adminUserDTO.setLastName(adminUser.getLastName());
+        AdminUserDTO adminUserDTO = modelMapper.map(adminUser, AdminUserDTO.class);
         adminUserDTO.setRoleId(adminUser.getRole().getId().toString());
-        return modelMapper.map(adminUser, AdminUserDTO.class);
+        Code code = codeService.getByTypeAndCode("USER_STATUS", adminUser.getStatus());
+        if (code != null) {
+            adminUserDTO.setStatus(code.getDescription());
+        }
+        return adminUserDTO;
     }
 
     private AdminUser convertDTOToEntity(AdminUserDTO adminUserDTO) {

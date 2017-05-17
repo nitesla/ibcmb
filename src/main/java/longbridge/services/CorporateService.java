@@ -1,16 +1,15 @@
 package longbridge.services;
 
-import java.util.List;
-
-import longbridge.exception.InternetBankingException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-
+import longbridge.dtos.AccountDTO;
 import longbridge.dtos.CorporateDTO;
-import longbridge.models.Account;
+import longbridge.exception.InternetBankingException;
 import longbridge.models.CorpLimit;
 import longbridge.models.Corporate;
 import longbridge.models.CorporateUser;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+import java.util.List;
 
 
 /**
@@ -48,6 +47,7 @@ public interface CorporateService{
      */
     CorporateDTO getCorporate(Long id);
 
+    Corporate getCorporateByCustomerId(String customerId);
     /**
      * Returns a list of all the corporate customers
      *
@@ -99,9 +99,9 @@ public interface CorporateService{
      * Adds an account to a corporate customer.
      * This makes the added account to be available for transactions
      * @param corporate the corporate customer
-     * @param account           the account
+     * @param accountDTO           the account
      */
-    boolean addAccount(Corporate corporate, Account account) throws InternetBankingException;
+    String addAccount(Corporate corporate, AccountDTO accountDTO) throws InternetBankingException;
 
     /**
      * Adds a corporate user to a corporate customer
@@ -112,4 +112,5 @@ public interface CorporateService{
     String addCorporateUser(Corporate corporate, CorporateUser corporateUser) throws InternetBankingException;
 
 
+    Page<AccountDTO> getAccounts(Long corpId, Pageable pageDetails);
 }

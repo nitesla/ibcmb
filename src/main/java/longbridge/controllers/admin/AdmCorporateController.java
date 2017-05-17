@@ -1,10 +1,13 @@
 package longbridge.controllers.admin;
 
+import longbridge.dtos.AccountDTO;
 import longbridge.dtos.CorporateDTO;
 import longbridge.dtos.CorporateUserDTO;
 import longbridge.exception.InternetBankingException;
+import longbridge.models.Corporate;
 import longbridge.services.CorporateService;
 import longbridge.services.CorporateUserService;
+import longbridge.services.IntegrationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +35,9 @@ public class AdmCorporateController {
 
     @Autowired
     private CorporateUserService corporateUserService;
+
+    @Autowired
+    IntegrationService integrationService;
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -74,11 +80,18 @@ public class AdmCorporateController {
         return "adm/corporate/view";
     }
 
+//    @GetMapping("/{reqId}/view")
+//    public String  viewRole(@PathVariable Long reqId, Model model){
+//        CorporateDTO corporate = corporateService.getCorporate(reqId);
+//        model.addAttribute("corporate",corporate);
+//        return "/adm/corporate/details";
+//    }
+
     @GetMapping("/{reqId}/view")
     public String  viewRole(@PathVariable Long reqId, Model model){
         CorporateDTO corporate = corporateService.getCorporate(reqId);
         model.addAttribute("corporate",corporate);
-        return "/adm/corporate/details";
+        return "/adm/corporate/viewdetails";
     }
 
     @GetMapping(path = "/{corpId}/users")
@@ -92,6 +105,20 @@ public class AdmCorporateController {
         out.setData(users.getContent());
         out.setRecordsFiltered(users.getTotalElements());
         out.setRecordsTotal(users.getTotalElements());
+        return out;
+    }
+
+    @GetMapping(path = "/{corpId}/accounts")
+    public @ResponseBody
+    DataTablesOutput<AccountDTO> getAccounts(@PathVariable Long corpId, DataTablesInput input){
+
+        Pageable pageable = DataTablesUtils.getPageable(input);
+        Page<AccountDTO> accounts = corporateService.getAccounts(corpId, pageable);
+        DataTablesOutput<AccountDTO> out = new DataTablesOutput<AccountDTO>();
+        out.setDraw(input.getDraw());
+        out.setData(accounts.getContent());
+        out.setRecordsFiltered(accounts.getTotalElements());
+        out.setRecordsTotal(accounts.getTotalElements());
         return out;
     }
 
@@ -135,6 +162,32 @@ public class AdmCorporateController {
         String message = corporateService.deleteCorporate(corporateId);
         redirectAttributes.addFlashAttribute("message", message);
         return "redirect:/admin/corporates";
+    }
+
+
+    @GetMapping("/{corporateId}/account/new")
+    public String linkAccount(@PathVariable Long corporateId, Model model){
+        CorporateDTO corporate = corporateService.getCorporate(corporateId);
+        AccountDTO account = new AccountDTO();
+        account.setCustomerId(corporate.getCustomerId());
+        model.addAttribute("account", account);
+        model.addAttribute("corporate", corporate);
+        return "adm/corporate/addAccount";
+    }
+
+    @PostMapping("/account/new")
+    public String linkAccountPost(AccountDTO accountDTO, BindingResult result, RedirectAttributes redirectAttributes){
+        if(result.hasErrors()){
+            return "adm/corporate/new";
+        }
+
+        //integrationService.fetchAccount(accountDTO.getAccountNumber());
+
+        Corporate corporate = corporateService.getCorporateByCustomerId(accountDTO.getCustomerId());
+        String message = corporateService.addAccount(corporate, accountDTO);
+        Long corporateId = corporate.getId();
+        redirectAttributes.addFlashAttribute("message", message);
+        return "redirect:/admin/corporates/"+corporateId+"/view";
     }
 }
 

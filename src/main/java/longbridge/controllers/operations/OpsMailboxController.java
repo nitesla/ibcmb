@@ -203,7 +203,7 @@ public class OpsMailboxController {
     public String createMessage(@ModelAttribute("messageDTO") @Valid MessageDTO messageDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes, Principal principal){
         if(bindingResult.hasErrors()){
             bindingResult.addError(new ObjectError("Invalid", "Please fill in the required fields"));
-            return "ops/mailbox/compose";
+            return "ops/mailbox/newcompose";
         }
         User recipient = null;
         switch (messageDTO.getRecipientType()){
