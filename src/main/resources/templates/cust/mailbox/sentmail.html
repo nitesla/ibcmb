@@ -17,13 +17,13 @@
                             <div class="ibox-content mailbox-content">
                                 <div class="margin-bottoms"></div>
                                 <div class="file-manager">
-                                    <a class="btn btn-block btn-primary compose-mail" href="@{/retail/mailbox/compose}">Compose Mail</a>
+                                    <a class="btn btn-block btn-primary compose-mail" th:href="@{/retail/mailbox/compose}">Compose Mail</a>
                                     <div class="margin-bottoms"></div>
                                     <ul class="folder-list">
-                                        <li><a href="@{/retail/mailbox/inbox}"> <i class="fa fa-inbox "></i> Inbox <span class="label label-warning pull-right">16</span> </a></li>
-                                        <li><a href="@{/retail/mailbox/inbox}"> <i class="fa fa-sign-out"></i> Sent Mail</a></li>
-                                        <li><a href="@{/retail/mailbox/draft}"> <i class="fa fa-file-text-o"></i> Drafts <span class="label label-danger pull-right">2</span></a></li>
-                                        <li><a href="@{/retail/mailbox/trash}"> <i class="fa fa-trash-o"></i> Trash</a></li>
+                                        <li><a th:href="@{/retail/mailbox/inbox}"> <i class="fa fa-inbox "></i> Inbox <span class="label label-warning pull-right">16</span> </a></li>
+                                        <li><a th:href="@{/retail/mailbox/sentmail}"> <i class="fa fa-sign-out"></i> Sent Mail</a></li>
+                                        <li><a th:href="@{/retail/mailbox/draft}"> <i class="fa fa-file-text-o"></i> Drafts <span class="label label-danger pull-right">2</span></a></li>
+                                        <li><a th:href="@{/retail/mailbox/trash}"> <i class="fa fa-trash-o"></i> Trash</a></li>
                                     </ul>
                                 </div>
                             </div>
@@ -51,7 +51,7 @@
                                             <input type="checkbox" class="i-checks">
                                         </td>
                                         <td class="mail-ontact"><a href="message.html">Anna Smith</a></td>
-                                        <td class="mail-subject"><a href="message.html">Lorem ipsum dolor noretek imit set.</a></td>
+                                        <td class="mail-subject"><a th:href="@{/retail/mailbox/message}">Lorem ipsum dolor noretek imit set.</a></td>
                                         <td class=""><i class="fa fa-paperclip"></i></td>
                                         <td class="text-right mail-date">6.10 AM</td>
                                     </tr>
