@@ -29,6 +29,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -211,9 +212,9 @@ public class CorporateServiceImpl implements CorporateService {
 
     @Override
     public String addCorporateRule(CorpTransferRuleDTO transferRuleDTO) throws InternetBankingException {
-        double lowerLimit = transferRuleDTO.getLowerLimitAmount();
-        double upperLimit = transferRuleDTO.getUpperLimitAmount();
-        if(upperLimit<lowerLimit){
+        BigDecimal lowerLimit = transferRuleDTO.getLowerLimitAmount();
+        BigDecimal upperLimit = transferRuleDTO.getUpperLimitAmount();
+        if(upperLimit.compareTo(lowerLimit)<0){
             throw new TransferRuleException(messageSource.getMessage("rule.range.violation",null,locale));
         }
 
@@ -273,6 +274,25 @@ public class CorporateServiceImpl implements CorporateService {
         catch (Exception e){
             throw new InternetBankingException(messageSource.getMessage("rule.delete.failure",null,locale),e);
         }
+    }
+
+    @Override
+    @Transactional
+    public List<CorporateUserDTO> getAuthorizers(Long corpId) {
+        Corporate corporate = corporateRepo.findOne(corpId);
+        Collection<CorporateUser> corporateUsers = corporate.getUsers();
+        List<CorporateUserDTO> authorizers = new ArrayList<CorporateUserDTO>();
+        for (CorporateUser user : corporateUsers){
+            if("Authorizer".equalsIgnoreCase(user.getRole().getName())){
+                CorporateUserDTO userDTO = new CorporateUserDTO();
+                userDTO.setId(user.getId());
+                userDTO.setUserName(user.getUserName());
+                userDTO.setFirstName(user.getFirstName());
+                userDTO.setLastName(user.getLastName());
+                authorizers.add(userDTO);
+            }
+        }
+        return authorizers;
     }
 
     private CorpTransferRuleDTO convertTransferRuleEntityToDTO(CorpTransferRule transferRule){

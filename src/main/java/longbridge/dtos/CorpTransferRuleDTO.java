@@ -1,7 +1,9 @@
 package longbridge.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.hibernate.validator.constraints.NotEmpty;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -12,8 +14,10 @@ public class CorpTransferRuleDTO {
     @JsonProperty("DT_RowId")
     private Long id;
     private int version;
-    private double lowerLimitAmount;
-    private double upperLimitAmount;
+    @NotEmpty(message = "lowerLimitAmount")
+    private BigDecimal lowerLimitAmount;
+    @NotEmpty(message = "upperLimitAmount")
+    private BigDecimal upperLimitAmount;
     private boolean anyOne;
     private String corporateId;
     private int numOfAuthorizers;
@@ -35,19 +39,19 @@ public class CorpTransferRuleDTO {
         this.version = version;
     }
 
-    public double getLowerLimitAmount() {
+    public BigDecimal getLowerLimitAmount() {
         return lowerLimitAmount;
     }
 
-    public void setLowerLimitAmount(double lowerLimitAmount) {
+    public void setLowerLimitAmount(BigDecimal lowerLimitAmount) {
         this.lowerLimitAmount = lowerLimitAmount;
     }
 
-    public double getUpperLimitAmount() {
+    public BigDecimal getUpperLimitAmount() {
         return upperLimitAmount;
     }
 
-    public void setUpperLimitAmount(double upperLimitAmount) {
+    public void setUpperLimitAmount(BigDecimal upperLimitAmount) {
         this.upperLimitAmount = upperLimitAmount;
     }
 

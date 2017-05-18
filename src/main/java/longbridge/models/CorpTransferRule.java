@@ -6,6 +6,7 @@ import org.hibernate.envers.Audited;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -17,8 +18,8 @@ import java.util.List;
 @Where(clause = "del_Flag='N'")
 public class CorpTransferRule extends AbstractEntity {
 
-    private double lowerLimitAmount;
-    private double upperLimitAmount;
+    private BigDecimal lowerLimitAmount;
+    private BigDecimal upperLimitAmount;
     private boolean anyOne;
 
     @ManyToOne
@@ -27,19 +28,19 @@ public class CorpTransferRule extends AbstractEntity {
     @ManyToMany
     private List<CorporateUser> authorizers;
 
-    public double getLowerLimitAmount() {
+    public BigDecimal getLowerLimitAmount() {
         return lowerLimitAmount;
     }
 
-    public void setLowerLimitAmount(double lowerLimitAmount) {
+    public void setLowerLimitAmount(BigDecimal lowerLimitAmount) {
         this.lowerLimitAmount = lowerLimitAmount;
     }
 
-    public double getUpperLimitAmount() {
+    public BigDecimal getUpperLimitAmount() {
         return upperLimitAmount;
     }
 
-    public void setUpperLimitAmount(double upperLimitAmount) {
+    public void setUpperLimitAmount(BigDecimal upperLimitAmount) {
         this.upperLimitAmount = upperLimitAmount;
     }
 

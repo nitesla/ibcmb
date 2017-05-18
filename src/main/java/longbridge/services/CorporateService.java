@@ -3,6 +3,7 @@ package longbridge.services;
 import longbridge.dtos.AccountDTO;
 import longbridge.dtos.CorpTransferRuleDTO;
 import longbridge.dtos.CorporateDTO;
+import longbridge.dtos.CorporateUserDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.CorpLimit;
 import longbridge.models.Corporate;
@@ -173,6 +174,6 @@ public interface CorporateService{
      */
    String deleteCorporateRule(Long id) throws InternetBankingException;
 
-
+List<CorporateUserDTO> getAuthorizers(Long corpId);
 
 }

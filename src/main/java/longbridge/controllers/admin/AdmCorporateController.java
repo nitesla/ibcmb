@@ -228,7 +228,9 @@ public class AdmCorporateController {
     @GetMapping("{corpId}/rules/new")
     public String addCorporateRule(@PathVariable Long corpId, Model model){
         CorporateDTO corporate = corporateService.getCorporate(corpId);
+        List<CorporateUserDTO> authorizers = corporateService.getAuthorizers(corpId);
         model.addAttribute("corporate", corporate);
+        model.addAttribute("authorizers",authorizers);
         model.addAttribute("corporateRule",new CorpTransferRuleDTO());
         return "adm/corporate/addrule";
     }
@@ -252,7 +254,11 @@ public class AdmCorporateController {
 
     @GetMapping("/rules/{id}/edit")
     public String editCorporateRule(@PathVariable Long id, Model model){
+        CorporateDTO corporate = corporateService.getCorporate(id);
+        List<CorporateUserDTO> authorizers = corporateService.getAuthorizers(id);
         CorpTransferRuleDTO transferRuleDTO = corporateService.getCorporateRule(id);
+        model.addAttribute("corporate", corporate);
+        model.addAttribute("authorizers",authorizers);
         model.addAttribute("corporateRule",transferRuleDTO);
         return "adm/corporate/edit-rule";
     }
