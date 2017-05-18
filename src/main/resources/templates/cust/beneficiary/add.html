@@ -34,13 +34,18 @@
                                     <option th:each="bank : ${localBanks}" th:value="${bank.institutionCode}" th:text="${bank.institutionName}"></option>
                                 </select>
                             </div>
-                            <div class="form-group">
-                                <input type="text" class="form-control" name="accountNumber" placeholder="Account Number"/>
+                            <div class="form-group alert alert-danger alert-dismissable">
+                                <input type="text" class="form-control" th:field="*{accountNumber}" placeholder="Account Number"/>
+                                <a href="#" class="close" data-dismiss="alert" aria-label="close" th:if="${#fields.hasErrors('accountNumber')}" th:errors="*{accountNumber}">&times;</a>
+                                <strong>invalid account number</strong>
                             </div>
-                            <div class="form-group">
-                                <input type="text" class="form-control" name="accountName" placeholder="Beneficiary Name"/>
+
+                            <div class="form-group alert alert-danger alert-dismissable">
+                                <input type="text" class="form-control" th:field="*{accountName}" placeholder="Beneficiary Name"/>
+                                <a href="#" class="close" data-dismiss="alert" aria-label="close" th:if="${#fields.hasErrors('accountName')}" th:errors="*{accountName}">&times;</a>
+                                <strong>invalid account name</strong>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group alert alert-danger alert-dismissable">
                                 <input type="text" class="form-control" name="preferredName" placeholder="Preferred Name"/>
                             </div>
                             <button class="btn btn-primary">Save</button>
@@ -50,8 +55,10 @@
                             <input type="hidden" th:value="foreign" class="form-control"/>
                             <div class="form-group">
                                 <label>Bank Details</label>
-                                <select name="beneficiaryBank" class="form-control" >
+                                <select th:field="*{beneficiaryBank}" class="form-control" >
                                     <option th:each="bank : ${foreignBanks}" th:value="${bank.institutionCode}" th:text="${bank.institutionName}"></option>
+                                    <a href="#" class="close" data-dismiss="alert" aria-label="close" th:if="${#fields.hasErrors('beneficiaryBank')}" th:errors="*{beneficiaryBank}">&times;</a>
+                                    <strong>invalid </strong>
                                 </select>
                             </div>
                             <div class="form-group">

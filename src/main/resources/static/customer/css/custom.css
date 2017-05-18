@@ -423,6 +423,17 @@ body {
 .txtarea{
     padding: 0 15px 0 15px;
 }
+.alert-danger{
+    background-color: #d9534f;
+    border-color: #d43f3a;
+}
+.alert-success{
+    background-color: #5cb85c;
+    border-color: #4cae4c;
+}
+.alert strong{
+    color: #ffffff;
+}
 
 nav li a {
     /*text-transform: uppercase;*/
