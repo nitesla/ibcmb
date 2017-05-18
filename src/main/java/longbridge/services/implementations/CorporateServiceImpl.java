@@ -292,6 +292,7 @@ public class CorporateServiceImpl implements CorporateService {
             authorizerDTO.setRole(authorizer.getRole().getName());
             authorizerList.add(authorizerDTO);
         }
+        corpTransferRuleDTO.setNumOfAuthorizers(authorizerList.size());
         corpTransferRuleDTO.setAuthorizers(authorizerList);
         return corpTransferRuleDTO;
     }

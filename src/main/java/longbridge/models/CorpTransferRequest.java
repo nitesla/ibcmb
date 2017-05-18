@@ -21,7 +21,6 @@ import java.util.List;
 public class CorpTransferRequest extends TransferRequest {
 
 
-
     @ManyToOne
     private Corporate corporate;
 

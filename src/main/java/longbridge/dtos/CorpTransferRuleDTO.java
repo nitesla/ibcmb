@@ -16,6 +16,7 @@ public class CorpTransferRuleDTO {
     private double upperLimitAmount;
     private boolean anyOne;
     private String corporateId;
+    private int numOfAuthorizers;
     private List<CorporateUserDTO> authorizers;
 
     public Long getId() {
@@ -64,6 +65,14 @@ public class CorpTransferRuleDTO {
 
     public void setCorporateId(String corporateId) {
         this.corporateId = corporateId;
+    }
+
+    public int getNumOfAuthorizers() {
+        return numOfAuthorizers;
+    }
+
+    public void setNumOfAuthorizers(int numOfAuthorizers) {
+        this.numOfAuthorizers = numOfAuthorizers;
     }
 
     public List<CorporateUserDTO> getAuthorizers() {
