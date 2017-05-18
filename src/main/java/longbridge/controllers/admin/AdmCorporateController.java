@@ -225,10 +225,12 @@ public class AdmCorporateController {
         return "redirect:/admin/corporates/"+corporateId+"/view";
     }
 
-    @GetMapping("/rules/new")
-    public String addCorporateRule(Model model){
+    @GetMapping("{corpId}/rules/new")
+    public String addCorporateRule(@PathVariable Long corpId, Model model){
+        CorporateDTO corporate = corporateService.getCorporate(corpId);
+        model.addAttribute("corporate", corporate);
         model.addAttribute("corporateRule",new CorpTransferRuleDTO());
-        return "adm/corporate/add-rule";
+        return "adm/corporate/addrule";
     }
 
     @PostMapping("/rules")
@@ -272,7 +274,7 @@ public class AdmCorporateController {
         }
     }
 
-    @GetMapping("{id}/all")
+    @GetMapping("/{id}/rules")
     public @ResponseBody DataTablesOutput<CorpTransferRuleDTO> getCorporateRules(@PathVariable Long id, DataTablesInput input){
 
         Pageable pageable = DataTablesUtils.getPageable(input);
