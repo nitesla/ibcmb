@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,6 +20,11 @@ public class CorperateAuthenticationFilter extends UsernamePasswordAuthenticatio
 
     private String extraParameter = "corporateId";
 
+    public CorperateAuthenticationFilter() {
+        super();
+        setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher("/corporate/login", "POST"));
+
+    }
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request,
@@ -84,3 +89,5 @@ public class CorperateAuthenticationFilter extends UsernamePasswordAuthenticatio
         this.delimiter = delimiter;
     }
 }
+
+

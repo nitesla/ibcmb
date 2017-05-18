@@ -251,10 +251,10 @@ public class SecurityConfig {
         @Autowired
         BCryptPasswordEncoder bCryptPasswordEncoder;
         @Autowired
-        @Qualifier("corpAuthenticationSuccessHandler")
+        @Qualifier("corporateAuthenticationSuccessHandler")
         private AuthenticationSuccessHandler corpAuthenticationSuccessHandler;
         @Autowired
-        @Qualifier("corpAuthenticationFailureHandler")
+        @Qualifier("corporateAuthenticationFailureHandler")
         private AuthenticationFailureHandler corpAuthenticationFailureHandler;
 
         public CorpUserConfigurationAdapter() {
@@ -267,18 +267,25 @@ public class SecurityConfig {
         }
 
         protected void configure(HttpSecurity http) throws Exception {
-            http.addFilterBefore(new CorperateAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+
+
+            http
+           .addFilterBefore(customFilter() , UsernamePasswordAuthenticationFilter.class);
 
             http
                     .antMatcher("/corporate/**").authorizeRequests()
                     .anyRequest()
+
                     // .authenticated()
                     .hasAuthority(UserType.CORPORATE.toString())
+
                     // log in
                     .and().formLogin().loginPage("/login/corporate").loginProcessingUrl("/corporate/login")
+
                     .failureUrl("/login/corporate?error=true").defaultSuccessUrl("/corporate/dashboard")
                     .successHandler(corpAuthenticationSuccessHandler)
                     .failureHandler(corpAuthenticationFailureHandler)
+
 
                     //.failureForwardUrl()
 
@@ -295,6 +302,20 @@ public class SecurityConfig {
         @Override
         public void configure(WebSecurity web) throws Exception {
             new SecurityConfig().customConfig(web);
+        }
+
+
+        @Bean
+        public CorperateAuthenticationFilter customFilter() throws Exception{
+            CorperateAuthenticationFilter    customFilter = new CorperateAuthenticationFilter();
+            customFilter.setAuthenticationManager(authenticationManagerBean());
+            customFilter.setAuthenticationSuccessHandler(corpAuthenticationSuccessHandler);
+            customFilter.setAuthenticationFailureHandler(corpAuthenticationFailureHandler);
+
+            return customFilter;
+
+
+
         }
 
 
