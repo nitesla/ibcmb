@@ -129,6 +129,7 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
+    @Transactional
     public void setStatus(Long id, String status) {
         Message message = this.messageRepo.getOne(id);
         message.setStatus(status);

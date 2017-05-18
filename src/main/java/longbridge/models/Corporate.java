@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Fortune on 3/29/2017.
@@ -27,13 +28,6 @@ public class Corporate extends AbstractEntity{
 
 
 
-    public Collection<CorpLimit> getCorpLimits() {
-        return corpLimits;
-    }
-
-    public void setCorpLimits(Collection<CorpLimit> corpLimits) {
-        this.corpLimits = corpLimits;
-    }
 
     @OneToMany
     private Collection<CorporateUser> users;
@@ -43,6 +37,36 @@ public class Corporate extends AbstractEntity{
 
     @OneToMany
     private Collection<CorpLimit> corpLimits;
+
+    @OneToMany
+    List<CorpTransferRequest> corpTransferRequests;
+
+    @OneToMany
+    List<CorpTransferRule> corpTransferRules;
+
+    public Collection<CorpLimit> getCorpLimits() {
+        return corpLimits;
+    }
+
+    public void setCorpLimits(Collection<CorpLimit> corpLimits) {
+        this.corpLimits = corpLimits;
+    }
+
+    public List<CorpTransferRequest> getCorpTransferRequests() {
+        return corpTransferRequests;
+    }
+
+    public void setCorpTransferRequests(List<CorpTransferRequest> corpTransferRequests) {
+        this.corpTransferRequests = corpTransferRequests;
+    }
+
+    public List<CorpTransferRule> getCorpTransferRules() {
+        return corpTransferRules;
+    }
+
+    public void setCorpTransferRules(List<CorpTransferRule> corpTransferRules) {
+        this.corpTransferRules = corpTransferRules;
+    }
 
     public String getCustomerId() {
         return customerId;

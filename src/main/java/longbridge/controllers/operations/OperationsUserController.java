@@ -84,8 +84,7 @@ public class OperationsUserController {
         }
         user.setId(userId);
         String message = operationsUserService.updateUser(user);
-
-            model.addAttribute("success", "Operations user updated successfully");
+            model.addAttribute("message", message);
 
         return "updateUser";
     }
@@ -156,7 +155,7 @@ public class OperationsUserController {
         try {
             String message = operationsUserService.changeDefaultPassword(user, changePassword);
             redirectAttributes.addFlashAttribute("message", message);
-            return "redirect:/ops/logout";
+            return "redirect:/ops/dashboard";
         } catch (PasswordPolicyViolationException pve) {
             result.reject("newPassword", pve.getMessage());
             logger.error("Password policy violation from admin user {}", user.getUserName(), pve);
