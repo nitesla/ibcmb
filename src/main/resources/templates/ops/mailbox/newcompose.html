@@ -148,8 +148,13 @@
 
                                                                     </select>
                                                                     <br/><br/>
-                                                                    <input class="form-control" type="text" th:field="*{recipient}"
-                                                                           placeholder="Enter username of the recipient"/>
+
+                                                                    <div class="input-group col-sm-12">
+                                                                    <input class="form-control" type="text" th:field="*{recipient}" placeholder="Enter username of the recipient"/><span class="input-group-btn">
+                              <button type="button" class="btn btn-primary">Go!</button>
+                            </span>
+                                                                    </div>
+
                                                                 </div>
                                                             </div>
 
@@ -163,7 +168,7 @@
 
                                                             <div class="compose-message form-group">
 
-                                                                    <textarea style="height: 180px" class="note-editable form-control" th:field="*{body}" placeholder="Enter message here"></textarea>
+                                                                    <textarea style="height:180px" class="note-editable form-control" th:field="*{body}" placeholder="Enter message here"></textarea>
 
                                                             </div>
                                                             <div class="form-group">
