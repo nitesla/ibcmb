@@ -61,7 +61,7 @@ public class AdmCorporateUserController {
         return "adm/corporate/adduser";
     }
 
-    @PostMapping
+    @PostMapping("/new")
     public String createUser(@ModelAttribute("corporateUser") @Valid CorporateUserDTO corporateUserDTO, BindingResult result, Model model, RedirectAttributes redirectAttributes, Locale locale) throws Exception {
 
         if (result.hasErrors()) {
