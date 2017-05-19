@@ -138,7 +138,7 @@
 <script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
 <script th:src="@{~/bank/vendors/emodal/eModal.js}"></script>
 
-<script type="text/javascript"  class="init">
+<script type="text/javascript"  class="init" th:inline="javascript">
     /*<![CDATA[*/
     var groupId=[[${group.id}]];
     var url ="/ops/groups/"+groupId+"/all";

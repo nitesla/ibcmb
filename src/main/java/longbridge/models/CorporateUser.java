@@ -4,6 +4,7 @@ import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * Created by Wunmi on 27/03/2017. CorporateUser is a bank customer. Typically
@@ -19,6 +20,13 @@ public class CorporateUser extends User {
 	@ManyToOne
     private Corporate corporate;
 
+	@ManyToMany(mappedBy = "authorizers")
+	private List<CorpTransferRule> corpTransferRules;
+
+	@OneToMany(mappedBy = "authorizer",cascade = CascadeType.ALL)
+	List<PendingAuthorization> pendingAuthorizations;
+
+
     public CorporateUser(){
 		this.userType = (UserType.CORPORATE);
 	}
@@ -29,6 +37,22 @@ public class CorporateUser extends User {
 
 	public void setCorporate(Corporate corporate) {
 		this.corporate = corporate;
+	}
+
+	public List<CorpTransferRule> getCorpTransferRules() {
+		return corpTransferRules;
+	}
+
+	public void setCorpTransferRules(List<CorpTransferRule> corpTransferRules) {
+		this.corpTransferRules = corpTransferRules;
+	}
+
+	public List<PendingAuthorization> getPendingAuthorizations() {
+		return pendingAuthorizations;
+	}
+
+	public void setPendingAuthorizations(List<PendingAuthorization> pendingAuthorizations) {
+		this.pendingAuthorizations = pendingAuthorizations;
 	}
 
 	@Override

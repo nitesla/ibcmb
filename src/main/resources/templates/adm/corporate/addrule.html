@@ -25,12 +25,12 @@
         <!-- page content -->
         <div class="right_col" role="main">
             <div class="">
-                <!--<div class="page-title">-->
-                    <!--<div class="title_left">-->
-                        <!--<h3>Create Admin User</h3>-->
-                    <!--</div>-->
+                <div class="page-title">
+                    <div class="title_left">
+                        <!--<h3 th:text="${corporate.companyName}"></h3>-->
+                    </div>
 
-                <!--</div>-->
+                </div>
 
                 <div class="clearfix"></div>
 
@@ -38,43 +38,49 @@
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="x_panel">
                             <div class="x_title">
-                                <h2>Change Password</h2>
+                                <h2>New Rule</h2>
 
                                 <div class="clearfix"></div>
                             </div>
 
-
-
                             <div class="x_content">
                                 <div class="ibox-content">
-                                    <form method="post" class="form-horizontal" th:action="@{/admin/users/password}" th:object="${changePassword}">
+                                    <form method="post" class="form-horizontal" th:action="@{/admin/corporates/rules}" th:object="${corporateRule}">
+
+
+                                        <div th:replace="layout::form-validation"></div>
+
+                                        <input th:type="hidden" name="corporateId" th:value="${corporate.Id}"/>
 
                                         <div class="form-group">
-                                            <ul id="">
-                                                <li th:each="rule : ${passwordRules}" th:text="${rule}">Input is incorrect</li>
-                                            </ul>
-                                        </div>
-
-
-
-                                        <div class="form-group">
-                                            <label class="col-sm-2 control-label">Old Password</label>
-                                            <div class="col-sm-4">
-                                            <input type="password" name="oldPassword" class="form-control" th:field="*{oldPassword}"/>
-
+                                            <label class="col-sm-2 control-label">Lower Limit Amount</label>
+                                            <div class="col-sm-6">
+                                                <input type="text" class="form-control" th:field="*{lowerLimitAmount}"/>
                                             </div>
                                         </div>
-                                        <div class="form-group">
-                                            <label class="col-sm-2 control-label">New Password</label>
-                                            <div class="col-sm-4">
-                                            <input type="password" class="form-control" th:field="*{newPassword}"/>
 
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">Upper Limit Amount</label>
+                                            <div class="col-sm-6">
+                                                <input type="text" class="form-control" th:field="*{upperLimitAmount}"/>
                                             </div>
                                         </div>
+<br/>
                                         <div class="form-group">
-                                            <label class="col-sm-2 control-label">Confirm New Password</label>
-                                            <div class="col-sm-4">
-                                            <input type="password" class="form-control" th:field="*{confirmPassword}"/>
+                                            <label class="col-sm-2 control-label">Select Authorizers</label>
+                                            <div class="col-sm-6">
+                                                <p th:each="user: ${authUserList}">
+                                                    <input type="checkbox" th:field="*{authorizers}" th:value="${user.id}" />
+                                                    <label th:text="${user.firstName + ' ' + user.lastName}"></label>
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label"></label>
+                                            <div class="col-sm-8">
+                                                <input type="checkbox" class="checkbox-inline" th:field="*{anyOne}"/>
+                                                <label><strong>Any of the users listed above can authorize transactions</strong></label>
                                             </div>
                                         </div>
 
@@ -84,12 +90,6 @@
                                                 <button class="btn btn-primary" type="submit">Submit</button>
                                             </div>
                                         </div>
-
-                                        <div th:replace="layout :: form-validation">
-
-                                        </div>
-
-
 
                                     </form>
                                 </div>
@@ -107,8 +107,12 @@
         <!-- /footer content -->
     </div>
 </div>
-<script>  document.getElementById("cancel").onclick = function () {
-    location.href = "/admin/dashboard";}
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    document.getElementById("cancel").onclick = function () {
+        location.href = "/admin/corporates";}
+    /*]]>*/
 </script>
+
 </body>
 </html>

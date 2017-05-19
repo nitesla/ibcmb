@@ -2,10 +2,14 @@ package longbridge.services.implementations;
 
 import longbridge.api.AccountInfo;
 import longbridge.dtos.AccountDTO;
+import longbridge.dtos.CorpTransferRuleDTO;
 import longbridge.dtos.CorporateDTO;
+import longbridge.dtos.CorporateUserDTO;
 import longbridge.exception.InternetBankingException;
+import longbridge.exception.TransferRuleException;
 import longbridge.models.*;
 import longbridge.repositories.CorpLimitRepo;
+import longbridge.repositories.CorpTransferRuleRepo;
 import longbridge.repositories.CorporateRepo;
 import longbridge.repositories.CorporateUserRepo;
 import longbridge.services.AccountService;
@@ -23,8 +27,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -35,6 +40,7 @@ public class CorporateServiceImpl implements CorporateService {
 
     private CorporateRepo corporateRepo;
     private CorpLimitRepo corpLimitRepo;
+    private CorpTransferRuleRepo corpTransferRuleRepo;
     @Autowired
     private CorporateUserRepo corporateUserRepo;
     @Autowired
@@ -49,15 +55,13 @@ public class CorporateServiceImpl implements CorporateService {
     private IntegrationService integrationService;
 
     private Locale locale = LocaleContextHolder.getLocale();
-
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
-
-    @Autowired
-    public CorporateServiceImpl(CorporateRepo corporateRepo, CorpLimitRepo corpLimitRepo){
+    public CorporateServiceImpl(CorporateRepo corporateRepo, CorpLimitRepo corpLimitRepo, CorpTransferRuleRepo corpTransferRuleRepo) {
         this.corporateRepo = corporateRepo;
         this.corpLimitRepo = corpLimitRepo;
+        this.corpTransferRuleRepo = corpTransferRuleRepo;
     }
 
     @Override
@@ -152,8 +156,6 @@ public class CorporateServiceImpl implements CorporateService {
             String newStatus = "A".equals(oldStatus) ? "I" : "A";
             corporate.setStatus(newStatus);
             corporateRepo.save(corporate);
-
-
             logger.info("Corporate {} status changed from {} to {}", corporate.getCompanyName(), oldStatus, newStatus);
             return messageSource.getMessage("corporate.status.success", null, locale);
 
@@ -207,18 +209,149 @@ public class CorporateServiceImpl implements CorporateService {
         return pageImpl;
     }
 
-//    private List<AccountDTO> convertAccountEntitiesToDTOs(Iterable<Account> accounts){
-//        List<AccountDTO> accountDTOList = new ArrayList<>();
-//        for(Account account: accounts){
-//            AccountDTO accountDTO = convertAccountEntityToDTO(account);
-//            accountDTOList.add(accountDTO);
-//        }
-//        return accountDTOList;
-//    }
-//
-//    private AccountDTO convertAccountEntityToDTO(Account account){
-//        return  modelMapper.map(account,AccountDTO.class);
-//    }
+    @Override
+    public String addCorporateRule(CorpTransferRuleDTO transferRuleDTO) throws InternetBankingException {
+
+
+        try{
+            CorpTransferRule corpTransferRule = convertTransferRuleDTOToEntity(transferRuleDTO);
+            corpTransferRuleRepo.save(corpTransferRule);
+            logger.info("Added transfer rule for corporate with Id {}",transferRuleDTO.getCorporateId());
+            return messageSource.getMessage("rule.add.success",null,locale);
+        }
+        catch (Exception e){
+         throw new InternetBankingException(messageSource.getMessage("rule.add.failure",null,locale),e);
+        }
+    }
+
+    @Override
+    public CorpTransferRuleDTO getCorporateRule(Long id) {
+        CorpTransferRule transferRule = corpTransferRuleRepo.findOne(id);
+        return convertTransferRuleEntityToDTO(transferRule);
+    }
+
+    @Override
+    @Transactional
+    public String updateCorporateRule(CorpTransferRuleDTO transferRuleDTO) throws InternetBankingException {
+        try{
+            CorpTransferRule corpTransferRule = convertTransferRuleDTOToEntity(transferRuleDTO);
+            corpTransferRule.setId(transferRuleDTO.getId());
+            corpTransferRule.setVersion(transferRuleDTO.getVersion());
+            corpTransferRuleRepo.save(corpTransferRule);
+            logger.info("Updated transfer rule for corporate with Id {}",transferRuleDTO.getCorporateId());
+            return messageSource.getMessage("rule.update.success",null,locale);
+        }
+        catch (Exception e){
+            throw new InternetBankingException(messageSource.getMessage("rule.update.failure",null,locale),e);
+        }
+    }
+
+    @Override
+    public List<CorpTransferRuleDTO> getCorporateRules() {
+        List<CorpTransferRule> transferRules = corpTransferRuleRepo.findAll();
+        return convertTransferRuleEntitiesToDTOs(transferRules);
+    }
+
+    @Override
+    @Transactional
+    public List<CorpTransferRuleDTO> getCorporateRules(Long corpId) {
+        Corporate corporate = corporateRepo.findOne(corpId);
+        List<CorpTransferRule> transferRules = corpTransferRuleRepo.findByCorporate(corporate);
+        return convertTransferRuleEntitiesToDTOs(transferRules);
+    }
+
+    @Override
+    public String deleteCorporateRule(Long id) throws InternetBankingException {
+        try{
+            corpTransferRuleRepo.delete(id);
+            logger.info("Updated transfer rule  with Id {}",id);
+            return messageSource.getMessage("rule.delete.success",null,locale);
+        }
+        catch (Exception e){
+            throw new InternetBankingException(messageSource.getMessage("rule.delete.failure",null,locale),e);
+        }
+    }
+
+    @Override
+    @Transactional
+    public List<CorporateUserDTO> getAuthorizers(Long corpId) {
+        Corporate corporate = corporateRepo.findOne(corpId);
+        Collection<CorporateUser> corporateUsers = corporate.getUsers();
+        List<CorporateUserDTO> authorizers = new ArrayList<CorporateUserDTO>();
+        CorporateUserDTO userDTO;
+        for (CorporateUser user : corporateUsers){
+            if("Authorizer".equalsIgnoreCase(user.getRole().getName())){
+                userDTO = new CorporateUserDTO();
+                userDTO.setId(user.getId());
+                userDTO.setUserName(user.getUserName());
+                userDTO.setFirstName(user.getFirstName());
+                userDTO.setLastName(user.getLastName());
+                authorizers.add(userDTO);
+                logger.error("Authorizer got is {}",userDTO.toString());
+            }
+        }
+        return authorizers;
+    }
+
+    private void validateTransferRule(CorpTransferRuleDTO transferRuleDTO) throws InternetBankingException{
+        BigDecimal lowerLimit = transferRuleDTO.getLowerLimitAmount();
+        BigDecimal upperLimit = transferRuleDTO.getUpperLimitAmount();
+        if(upperLimit.compareTo(lowerLimit)<0){
+            throw new TransferRuleException(messageSource.getMessage("rule.range.violation",null,locale));
+        }
+
+    }
+
+    private CorpTransferRuleDTO convertTransferRuleEntityToDTO(CorpTransferRule transferRule){
+        CorpTransferRuleDTO corpTransferRuleDTO = new CorpTransferRuleDTO();
+        corpTransferRuleDTO.setId(transferRule.getId());
+        corpTransferRuleDTO.setVersion(transferRule.getVersion());
+        corpTransferRuleDTO.setLowerLimitAmount(transferRule.getLowerLimitAmount());
+        corpTransferRuleDTO.setUpperLimitAmount(transferRule.getUpperLimitAmount());
+        corpTransferRuleDTO.setAnyOne(transferRule.isAnyOne());
+        corpTransferRuleDTO.setCorporateId(transferRule.getCorporate().getId().toString());
+        corpTransferRuleDTO.setCorporateName(transferRule.getCorporate().getCompanyName());
+
+        List<CorporateUserDTO> authorizerList = new ArrayList<CorporateUserDTO>();
+        for (CorporateUser authorizer: transferRule.getAuthorizers()){
+            CorporateUserDTO authorizerDTO = new CorporateUserDTO();
+            authorizerDTO.setId(authorizer.getId());
+            authorizerDTO.setUserName(authorizer.getUserName());
+            authorizerDTO.setFirstName(authorizer.getFirstName());
+            authorizerDTO.setLastName(authorizer.getLastName());
+            authorizerDTO.setRole(authorizer.getRole().getName());
+            authorizerList.add(authorizerDTO);
+        }
+        corpTransferRuleDTO.setNumOfAuthorizers(authorizerList.size());
+        corpTransferRuleDTO.setAuthorizers(authorizerList);
+        return corpTransferRuleDTO;
+    }
+
+    private CorpTransferRule convertTransferRuleDTOToEntity(CorpTransferRuleDTO transferRuleDTO){
+        CorpTransferRule corpTransferRule = new CorpTransferRule();
+        corpTransferRule.setLowerLimitAmount(transferRuleDTO.getLowerLimitAmount());
+        corpTransferRule.setUpperLimitAmount(transferRuleDTO.getUpperLimitAmount());
+        corpTransferRule.setAnyOne(transferRuleDTO.isAnyOne());
+        corpTransferRule.setCorporate(corporateRepo.findOne(Long.parseLong(transferRuleDTO.getCorporateId())));
+
+        List<CorporateUser> authorizerList = new ArrayList<CorporateUser>();
+        for (CorporateUserDTO authorizer: transferRuleDTO.getAuthorizers()){
+            authorizerList.add(corporateUserRepo.findOne(authorizer.getId()));
+        }
+        corpTransferRule.setAuthorizers(authorizerList);
+        return corpTransferRule;
+    }
+
+    private List<CorpTransferRuleDTO> convertTransferRuleEntitiesToDTOs(List<CorpTransferRule> transferRules){
+        List<CorpTransferRuleDTO> transferRuleDTOs = new ArrayList<CorpTransferRuleDTO>();
+        for(CorpTransferRule transferRule: transferRules){
+            CorpTransferRuleDTO transferRuleDTO = convertTransferRuleEntityToDTO(transferRule);
+            transferRuleDTOs.add(transferRuleDTO);
+        }
+        return transferRuleDTOs;
+    }
+
+
 
     private CorporateDTO convertEntityToDTO(Corporate corporate){
         CorporateDTO corporateDTO = modelMapper.map(corporate,CorporateDTO.class);
@@ -244,5 +377,16 @@ public class CorporateServiceImpl implements CorporateService {
         }
         return corporateDTOList;
     }
-
+    //    private List<AccountDTO> convertAccountEntitiesToDTOs(Iterable<Account> accounts){
+//        List<AccountDTO> accountDTOList = new ArrayList<>();
+//        for(Account account: accounts){
+//            AccountDTO accountDTO = convertAccountEntityToDTO(account);
+//            accountDTOList.add(accountDTO);
+//        }
+//        return accountDTOList;
+//    }
+//
+//    private AccountDTO convertAccountEntityToDTO(Account account){
+//        return  modelMapper.map(account,AccountDTO.class);
+//    }
 }

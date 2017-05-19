@@ -39,11 +39,12 @@
                 <img th:src="@{/bank/images/cmb_logo.png}" alt="Coronation Merchant Bank" />
                 <br/>
                 
-                <form th:action="@{/admin/operations/users/password/new}" method="POST" th:object="${changePassword}">
+                <form th:action="@{/ops/users/password/new}" method="POST" th:object="${changePassword}">
                     <h4>Change password </h4>
 
+
                     <div class="form-group">
-                        <ul id="">
+                        <ul id="" th:align="left">
                             <li th:each="rule : ${passwordRules}" th:text="${rule}">Input is incorrect</li>
                         </ul>
                     </div>

@@ -134,9 +134,8 @@ public class OpsGroupController {
     }
 
     @GetMapping("/{id}/all")
-    public
     @ResponseBody
-    DataTablesOutput<ContactDTO> getGroups(@PathVariable Long id, DataTablesInput input) {
+    public DataTablesOutput<ContactDTO> getGroups(@PathVariable Long id, DataTablesInput input) {
         Pageable pageable = DataTablesUtils.getPageable(input);
         List<ContactDTO> groups = userGroupService.getContacts(id);
         DataTablesOutput<ContactDTO> out = new DataTablesOutput<ContactDTO>();

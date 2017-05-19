@@ -1,7 +1,9 @@
 package longbridge.services;
 
 import longbridge.dtos.AccountDTO;
+import longbridge.dtos.CorpTransferRuleDTO;
 import longbridge.dtos.CorporateDTO;
+import longbridge.dtos.CorporateUserDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.CorpLimit;
 import longbridge.models.Corporate;
@@ -47,6 +49,8 @@ public interface CorporateService{
      */
     CorporateDTO getCorporate(Long id);
 
+
+
     Corporate getCorporateByCustomerId(String customerId);
     /**
      * Returns a list of all the corporate customers
@@ -74,6 +78,13 @@ public interface CorporateService{
      */
     void updateLimit(Corporate corporate,  CorpLimit limit) throws InternetBankingException;
 
+
+    /**
+     * Changes the activation status of the corporate specified by the Id
+     * @param id the Id of the corporate
+     * @return a message is the status is changed successfully
+     * @throws InternetBankingException if changing the status fails
+     */
     String changeActivationStatus(Long id) throws InternetBankingException;
 
 
@@ -111,6 +122,58 @@ public interface CorporateService{
      */
     String addCorporateUser(Corporate corporate, CorporateUser corporateUser) throws InternetBankingException;
 
+    /**
+     * Returns a page list of accounts owned by the corporate identified by the corpId
+     * @param corpId the corporate Id
+     * @param pageDetails the page details for pagination
+     * @return a list of accounts
+     */
+   Page<AccountDTO> getAccounts(Long corpId, Pageable pageDetails);
 
-    Page<AccountDTO> getAccounts(Long corpId, Pageable pageDetails);
+    /**
+     * Adds a corporate transfer rule
+     * @param transferRuleDTO the transfer rule object
+     * @return a message if successfully added
+     * @throws InternetBankingException if adding the rule fails
+     */
+   String addCorporateRule(CorpTransferRuleDTO transferRuleDTO) throws InternetBankingException;
+
+    /**
+     * Returns a corporate transfer rule
+     * @param id the id
+     * @return corporate transfer rule
+     */
+   CorpTransferRuleDTO getCorporateRule(Long id);
+
+    /**
+     * updates the corporate transfer rule
+     * @param transferRuleDTO the transfer rule object
+     * @return a message if successfully updated
+     * @throws InternetBankingException if updating the rule fails
+     */
+   String updateCorporateRule(CorpTransferRuleDTO transferRuleDTO) throws InternetBankingException;
+
+    /**
+     * Returns a list of corporate transfer rules
+     * @return a list of rules
+     */
+   List<CorpTransferRuleDTO> getCorporateRules();
+
+    /**
+     * Returns a list of corporate transfer rules for the corporate specified by the corpId
+     * @param corpId the Id of the corporate entity
+     * @return a list of corporate rules
+     */
+   List<CorpTransferRuleDTO> getCorporateRules(Long corpId);
+
+    /**
+     * Deletes the corporate transfer rule
+     * @param id the Id of the corporate rule
+     * @return a message if successfully deleted
+     * @throws InternetBankingException if deleting the rule fails
+     */
+   String deleteCorporateRule(Long id) throws InternetBankingException;
+
+List<CorporateUserDTO> getAuthorizers(Long corpId);
+
 }

@@ -24,6 +24,7 @@ public class CorporateUserDTO {
     @NotEmpty
     private String roleId;
     private String role;
+    private boolean ruleMember;
     private String password;
     private String status;
     private Date expiryDate;
@@ -117,6 +118,14 @@ public class CorporateUserDTO {
         this.expiryDate = expiryDate;
     }
 
+    public boolean isRuleMember() {
+        return ruleMember;
+    }
+
+    public void setRuleMember(boolean ruleMember) {
+        this.ruleMember = ruleMember;
+    }
+
     public Date getLockedUntilDate() {
         return lockedUntilDate;
     }
@@ -139,5 +148,25 @@ public class CorporateUserDTO {
 
     public void setNoOfLoginAttempts(int noOfLoginAttempts) {
         this.noOfLoginAttempts = noOfLoginAttempts;
+    }
+
+    @Override
+    public String toString() {
+        return "CorporateUserDTO{" +
+                "id=" + id +
+                ", corporateId='" + corporateId + '\'' +
+                ", userName='" + userName + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", roleId='" + roleId + '\'' +
+                ", role='" + role + '\'' +
+                ", password='" + password + '\'' +
+                ", status='" + status + '\'' +
+                ", expiryDate=" + expiryDate +
+                ", lockedUntilDate=" + lockedUntilDate +
+                ", lastLoginDate=" + lastLoginDate +
+                ", noOfLoginAttempts=" + noOfLoginAttempts +
+                '}';
     }
 }
