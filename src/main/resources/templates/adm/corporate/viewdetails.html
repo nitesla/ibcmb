@@ -116,13 +116,13 @@
 
                                                 <div class="x_title">
                                                     <ul class="nav navbar-left panel_toolbox">
-                                                        <li>
-                                                            <div class="col-lg-4">
-                                                                <div class="title-action">
-                                                                    <a  class="btn btn-danger btn-sm btn-select btn-link-act" href="/admin/corporates/index/account/activation" disabled="disabled" ><i class="fa fa-user"></i> Activate/Deactivate</a>
-                                                                </div>
-                                                            </div>
-                                                        </li>
+                                                        <!--<li>-->
+                                                            <!--<div class="col-lg-4">-->
+                                                                <!--<div class="title-action">-->
+                                                                    <!--<a  class="btn btn-danger btn-sm btn-select btn-link-act" href="/admin/corporates/index/account/activation" disabled="disabled" ><i class="fa fa-user"></i> Activate/Deactivate</a>-->
+                                                                <!--</div>-->
+                                                            <!--</div>-->
+                                                        <!--</li>-->
                                                     </ul>
                                                     <ul class="nav navbar-right panel_toolbox">
                                                         <li >
@@ -281,12 +281,12 @@
                 "data" : "status",
                 "render" : function(data, type,full, meta) {
                     if (type === 'display') {
-                        if (data == "ACTIVE") {
+                        if (data == "A") {
                             return "<i class='fa fa-check dt-body-center' style='color:green;display:block; text-align:center; margin:0 auto;'></i>";
-                        } else if (data == "INACTIVE") {
+                        } else if (data == "I") {
                             return "<i class='fa fa-ban  dt-body-center' style='color:red;display:block; text-align:center; margin:0 auto;'></i>";
                         }
-                        else if (data == "LOCKED") {
+                        else if (data == "L") {
                             return "<i class='fa fa-lock  dt-body-center' style='color:red;display:block; text-align:center; margin:0 auto;'></i>";
                         }else {
                             return "<i class='fa fa-question  dt-body-center' style='color:red;display:block; text-align:center; margin:0 auto;'></i>";

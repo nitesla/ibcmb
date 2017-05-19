@@ -181,9 +181,21 @@ public class AdmCorporateController {
     }
 
     @GetMapping("/{id}/activation")
-    public String changeActivationStatus(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+    public String changeCorporateActivationStatus(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
             String message = corporateService.changeActivationStatus(id);
+            redirectAttributes.addFlashAttribute("message", message);
+        } catch (InternetBankingException ibe) {
+            logger.error("Error changing corporate activation status", ibe);
+            redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
+        }
+        return "redirect:/admin/corporates";
+    }
+
+    @GetMapping("/users/{id}/activation")
+    public String changeUserActivationStatus(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            String message = corporateService.changeUserActivationStatus(id);
             redirectAttributes.addFlashAttribute("message", message);
         } catch (InternetBankingException ibe) {
             logger.error("Error changing corporate activation status", ibe);
