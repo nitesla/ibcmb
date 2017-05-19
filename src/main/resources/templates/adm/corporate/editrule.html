@@ -27,7 +27,7 @@
             <div class="">
                 <div class="page-title">
                     <div class="title_left">
-                        <h3 th:text="${corporate.companyName}"></h3>
+                        <h3 th:text="${corporateRule.corporateName}"></h3>
                     </div>
 
                 </div>
@@ -45,12 +45,15 @@
 
                             <div class="x_content">
                                 <div class="ibox-content">
-                                    <form method="post" class="form-horizontal" th:action="@{/admin/corporates/rules}" th:object="${corporateRule}">
+                                    <form method="post" class="form-horizontal" th:action="@{/admin/corporates/rules/update}" th:object="${corporateRule}">
 
 
                                         <div th:replace="layout::form-validation"></div>
 
-                                        <input th:type="hidden" name="corporateId" th:value="${corporate.Id}"/>
+                                        <input th:type="hidden" th:field="*{corporateId}"/>
+                                        <input th:type="hidden" th:field="*{id}"/>
+                                        <input th:type="hidden" th:field="*{version}"/>
+
 
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">Lower Limit Amount</label>
@@ -65,12 +68,12 @@
                                                 <input type="text" class="form-control" th:field="*{upperLimitAmount}"/>
                                             </div>
                                         </div>
-
+<br/>
                                         <div class="form-group">
-                                            <label class="col-sm-2 control-label">Select Users</label>
+                                            <label class="col-sm-2 control-label">Select Authorizers</label>
                                             <div class="col-sm-6">
                                                 <p th:each="user: ${authUserList}">
-                                                    <input type="checkbox" th:field="*{authorizers}" th:value="${user.id}" />
+                                                    <input type="checkbox" name="authorizers" th:value="${user.id}" th:checked="${user.ruleMember}" />
                                                     <label th:text="${user.firstName + ' ' + user.lastName}"></label>
                                                 </p>
                                             </div>
@@ -78,10 +81,10 @@
 
 
                                         <div class="form-group">
-                                            <label class="col-sm-2 control-label">Check if</label>
+                                            <label class="col-sm-2 control-label"></label>
                                             <div class="col-sm-8">
                                                 <input type="checkbox" class="checkbox-inline" th:field="*{anyOne}"/>
-                                                <label>Any of the users listed above can authorize transactions</label>
+                                                <label><strong>Any of the users listed above can authorize transactions</strong></label>
                                             </div>
                                         </div>
 
@@ -110,9 +113,10 @@
     </div>
 </div>
 <script th:inline="javascript">
-
+    /*<![CDATA[*/
     document.getElementById("cancel").onclick = function () {
-        location.href = "/admin/corporates/${corporate.id}/rules";}
+        location.href = "/admin/corporates";}
+    /*]]>*/
 </script>
 
 </body>

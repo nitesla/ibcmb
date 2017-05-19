@@ -231,6 +231,7 @@ public class CorporateServiceImpl implements CorporateService {
     }
 
     @Override
+    @Transactional
     public String updateCorporateRule(CorpTransferRuleDTO transferRuleDTO) throws InternetBankingException {
         try{
             CorpTransferRule corpTransferRule = convertTransferRuleDTOToEntity(transferRuleDTO);
@@ -303,10 +304,13 @@ public class CorporateServiceImpl implements CorporateService {
 
     private CorpTransferRuleDTO convertTransferRuleEntityToDTO(CorpTransferRule transferRule){
         CorpTransferRuleDTO corpTransferRuleDTO = new CorpTransferRuleDTO();
+        corpTransferRuleDTO.setId(transferRule.getId());
+        corpTransferRuleDTO.setVersion(transferRule.getVersion());
         corpTransferRuleDTO.setLowerLimitAmount(transferRule.getLowerLimitAmount());
         corpTransferRuleDTO.setUpperLimitAmount(transferRule.getUpperLimitAmount());
         corpTransferRuleDTO.setAnyOne(transferRule.isAnyOne());
-        corpTransferRuleDTO.setCorporateId(transferRule.getId().toString());
+        corpTransferRuleDTO.setCorporateId(transferRule.getCorporate().getId().toString());
+        corpTransferRuleDTO.setCorporateName(transferRule.getCorporate().getCompanyName());
 
         List<CorporateUserDTO> authorizerList = new ArrayList<CorporateUserDTO>();
         for (CorporateUser authorizer: transferRule.getAuthorizers()){
