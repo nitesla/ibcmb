@@ -68,10 +68,12 @@
 
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">Select Users</label>
-                                            <p th:each="user: ${authUserList}">
-                                                <input type="checkbox" th:field="*{authorizers}" th:value="${user.id}" />
-                                                <label th:text="${user.firstName + ' ' + user.lastName}">Name</label>
-                                            </p>
+                                            <div class="col-sm-6">
+                                                <p th:each="user: ${authUserList}">
+                                                    <input type="checkbox" th:field="*{authorizers}" th:value="${user.id}" />
+                                                    <label th:text="${user.firstName + ' ' + user.lastName}"></label>
+                                                </p>
+                                            </div>
                                         </div>
 
 
