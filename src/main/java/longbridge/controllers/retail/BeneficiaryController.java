@@ -68,6 +68,7 @@ public class BeneficiaryController {
     @PostMapping("/local")
     public String createLocalBeneficiary(@Valid LocalBeneficiaryDTO localBeneficiaryDTO, BindingResult result, Principal principal,  Model model){
         if(result.hasErrors()){
+            model.addAttribute("internationalBeneficiaryDTO", new InternationalBeneficiaryDTO());
             model.addAttribute("foreignBanks", financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.FOREIGN));
             model.addAttribute("localBanks", financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.LOCAL));
             return "cust/beneficiary/add";
@@ -82,6 +83,10 @@ public class BeneficiaryController {
     @PostMapping("/foreign")
     public String createForeignBeneficiary(@ModelAttribute("internationalBeneficiary") @Valid  InternationalBeneficiaryDTO internationalBeneficiaryDTO, Principal principal, BindingResult result, Model model){
         if(result.hasErrors()){
+            model.addAttribute("localBeneficiaryDTO", new LocalBeneficiaryDTO());
+            model.addAttribute("foreignBanks", financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.FOREIGN));
+            model.addAttribute("localBanks", financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.LOCAL));
+
             return "cust/beneficiary/add";
         }
 
