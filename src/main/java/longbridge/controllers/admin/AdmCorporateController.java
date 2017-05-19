@@ -245,11 +245,11 @@ public class AdmCorporateController {
         try {
             String message = corporateService.addCorporateRule(transferRuleDTO);
             redirectAttributes.addFlashAttribute("message", message);
-            return "redirect:/admin/corporates/rules";
+            return "redirect:/admin/corporates/";
         } catch (InternetBankingException ibe) {
             logger.error("Failed to create transfer rule", ibe);
             bindingResult.addError(new ObjectError("exception", ibe.getMessage()));
-            return "adm/corporate/add-rule";
+            return "adm/corporate/addrule";
         }
     }
 
@@ -262,23 +262,23 @@ public class AdmCorporateController {
         model.addAttribute("corporate", corporate);
         model.addAttribute("authorizers",authorizers);
         model.addAttribute("corporateRule",transferRuleDTO);
-        return "adm/corporate/edit-rule";
+        return "adm/corporate/editrule";
     }
 
     @PostMapping("/rules/update")
     public String updateCorporateRule(@ModelAttribute("corporateRule") @Valid CorpTransferRuleDTO transferRuleDTO, BindingResult bindingResult, Principal principal, RedirectAttributes redirectAttributes,Locale locale) {
         if (bindingResult.hasErrors()) {
             bindingResult.addError(new ObjectError("exception", messageSource.getMessage("form.fields.required", null, locale)));
-            return "adm/corporate/edit-rule";
+            return "adm/corporate/editrule";
         }
         try {
             String message = corporateService.updateCorporateRule(transferRuleDTO);
             redirectAttributes.addFlashAttribute("message", message);
-            return "redirect:/admin/corporates/rules";
+            return "redirect:/admin/corporates/";
         } catch (InternetBankingException ibe) {
             logger.error("Failed to update transfer rule", ibe);
             bindingResult.addError(new ObjectError("exception", ibe.getMessage()));
-            return "adm/corporate/edit-rule";
+            return "adm/corporate/editrule";
         }
     }
 
@@ -305,7 +305,7 @@ public class AdmCorporateController {
            logger.error("Failed to delete transfer rule", ibe);
             redirectAttributes.addFlashAttribute("failure",ibe.getMessage());
        }
-        return "adm/corporate/rules";
+        return "adm/corporate/";
 
     }
 
