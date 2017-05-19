@@ -55,7 +55,6 @@ public class CorporateServiceImpl implements CorporateService {
     private IntegrationService integrationService;
 
     private Locale locale = LocaleContextHolder.getLocale();
-
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
@@ -212,11 +211,7 @@ public class CorporateServiceImpl implements CorporateService {
 
     @Override
     public String addCorporateRule(CorpTransferRuleDTO transferRuleDTO) throws InternetBankingException {
-        BigDecimal lowerLimit = transferRuleDTO.getLowerLimitAmount();
-        BigDecimal upperLimit = transferRuleDTO.getUpperLimitAmount();
-        if(upperLimit.compareTo(lowerLimit)<0){
-            throw new TransferRuleException(messageSource.getMessage("rule.range.violation",null,locale));
-        }
+
 
         try{
             CorpTransferRule corpTransferRule = convertTransferRuleDTOToEntity(transferRuleDTO);
@@ -282,17 +277,28 @@ public class CorporateServiceImpl implements CorporateService {
         Corporate corporate = corporateRepo.findOne(corpId);
         Collection<CorporateUser> corporateUsers = corporate.getUsers();
         List<CorporateUserDTO> authorizers = new ArrayList<CorporateUserDTO>();
+        CorporateUserDTO userDTO;
         for (CorporateUser user : corporateUsers){
             if("Authorizer".equalsIgnoreCase(user.getRole().getName())){
-                CorporateUserDTO userDTO = new CorporateUserDTO();
+                userDTO = new CorporateUserDTO();
                 userDTO.setId(user.getId());
                 userDTO.setUserName(user.getUserName());
                 userDTO.setFirstName(user.getFirstName());
                 userDTO.setLastName(user.getLastName());
                 authorizers.add(userDTO);
+                logger.error("Authorizer got is {}",userDTO.toString());
             }
         }
         return authorizers;
+    }
+
+    private void validateTransferRule(CorpTransferRuleDTO transferRuleDTO) throws InternetBankingException{
+        BigDecimal lowerLimit = transferRuleDTO.getLowerLimitAmount();
+        BigDecimal upperLimit = transferRuleDTO.getUpperLimitAmount();
+        if(upperLimit.compareTo(lowerLimit)<0){
+            throw new TransferRuleException(messageSource.getMessage("rule.range.violation",null,locale));
+        }
+
     }
 
     private CorpTransferRuleDTO convertTransferRuleEntityToDTO(CorpTransferRule transferRule){

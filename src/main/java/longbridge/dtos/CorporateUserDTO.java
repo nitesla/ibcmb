@@ -140,4 +140,24 @@ public class CorporateUserDTO {
     public void setNoOfLoginAttempts(int noOfLoginAttempts) {
         this.noOfLoginAttempts = noOfLoginAttempts;
     }
+
+    @Override
+    public String toString() {
+        return "CorporateUserDTO{" +
+                "id=" + id +
+                ", corporateId='" + corporateId + '\'' +
+                ", userName='" + userName + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", roleId='" + roleId + '\'' +
+                ", role='" + role + '\'' +
+                ", password='" + password + '\'' +
+                ", status='" + status + '\'' +
+                ", expiryDate=" + expiryDate +
+                ", lockedUntilDate=" + lockedUntilDate +
+                ", lastLoginDate=" + lastLoginDate +
+                ", noOfLoginAttempts=" + noOfLoginAttempts +
+                '}';
+    }
 }

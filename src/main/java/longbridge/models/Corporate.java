@@ -3,6 +3,7 @@ package longbridge.models;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import java.util.Collection;
@@ -29,7 +30,7 @@ public class Corporate extends AbstractEntity{
 
 
 
-    @OneToMany
+    @OneToMany(mappedBy = "corporate",cascade = CascadeType.ALL)
     private Collection<CorporateUser> users;
 
 //    @OneToMany
