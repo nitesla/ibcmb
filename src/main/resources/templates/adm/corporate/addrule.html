@@ -38,7 +38,7 @@
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="x_panel">
                             <div class="x_title">
-                                <h2>Link Account to Corporate</h2>
+                                <h2>New Rule</h2>
 
                                 <div class="clearfix"></div>
                             </div>
@@ -66,14 +66,17 @@
                                             </div>
                                         </div>
 
-
-
                                         <div class="form-group">
-                                            <label class="col-sm-2 control-label">No of Authorizers</label>
-                                            <div class="col-sm-6">
-                                                <input type="text" class="form-control" th:field="*{numOfAuthorizers}"/>
-                                            </div>
+                                            <label class="col-sm-2 control-label">Select Users</label>
+                                            <p th:each="user: ${authUserList}">
+                                                <input type="checkbox" th:field="*{authorizers}" th:value="${user.id}" />
+                                                <label th:text="${user.firstName + ' ' + user.lastName}">Name</label>
+                                            </p>
                                         </div>
+
+
+
+
 
                                         <div class="form-group">
                                             <div class="col-sm-4 col-sm-offset-2">

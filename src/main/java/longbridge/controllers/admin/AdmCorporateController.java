@@ -229,8 +229,9 @@ public class AdmCorporateController {
     public String addCorporateRule(@PathVariable Long corpId, Model model){
         CorporateDTO corporate = corporateService.getCorporate(corpId);
         List<CorporateUserDTO> authorizers = corporateService.getAuthorizers(corpId);
+        logger.info("AUTHORIZERS {}:", authorizers);
         model.addAttribute("corporate", corporate);
-        model.addAttribute("authorizers",authorizers);
+        model.addAttribute("authUserList",authorizers);
         model.addAttribute("corporateRule",new CorpTransferRuleDTO());
         return "adm/corporate/addrule";
     }
@@ -257,6 +258,7 @@ public class AdmCorporateController {
         CorporateDTO corporate = corporateService.getCorporate(id);
         List<CorporateUserDTO> authorizers = corporateService.getAuthorizers(id);
         CorpTransferRuleDTO transferRuleDTO = corporateService.getCorporateRule(id);
+        logger.info("AUTHORIZERS", authorizers);
         model.addAttribute("corporate", corporate);
         model.addAttribute("authorizers",authorizers);
         model.addAttribute("corporateRule",transferRuleDTO);
