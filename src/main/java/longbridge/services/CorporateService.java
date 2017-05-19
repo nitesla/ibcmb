@@ -174,6 +174,8 @@ public interface CorporateService{
      */
    String deleteCorporateRule(Long id) throws InternetBankingException;
 
-List<CorporateUserDTO> getAuthorizers(Long corpId);
+    String changeUserActivationStatus(Long id) throws InternetBankingException;
+
+    List<CorporateUserDTO> getAuthorizers(Long corpId);
 
 }

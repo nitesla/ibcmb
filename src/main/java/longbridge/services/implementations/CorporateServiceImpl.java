@@ -165,6 +165,25 @@ public class CorporateServiceImpl implements CorporateService {
         }
     }
 
+
+    @Override
+    @Transactional
+    public String changeUserActivationStatus(Long id) throws InternetBankingException {
+        try {
+            CorporateUser corporateUser = corporateUserRepo.findOne(id);
+            String oldStatus = corporateUser.getStatus();
+            String newStatus = "A".equals(oldStatus) ? "I" : "A";
+            corporateUser.setStatus(newStatus);
+            corporateUserRepo.save(corporateUser);
+            logger.info("Corporate user{} status changed from {} to {}", corporateUser.getUserName(), oldStatus, newStatus);
+            return messageSource.getMessage("user.status.success", null, locale);
+
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("user.status.failure", null, locale), e);
+
+        }
+    }
+
     @Override
     public void setLimit(Corporate corporate, CorpLimit limit) throws InternetBankingException{
         limit.setCorporate(corporate);
