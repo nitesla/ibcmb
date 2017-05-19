@@ -24,6 +24,7 @@ public class CorporateUserDTO {
     @NotEmpty
     private String roleId;
     private String role;
+    private boolean ruleMember;
     private String password;
     private String status;
     private Date expiryDate;
@@ -115,6 +116,14 @@ public class CorporateUserDTO {
 
     public void setExpiryDate(Date expiryDate) {
         this.expiryDate = expiryDate;
+    }
+
+    public boolean isRuleMember() {
+        return ruleMember;
+    }
+
+    public void setRuleMember(boolean ruleMember) {
+        this.ruleMember = ruleMember;
     }
 
     public Date getLockedUntilDate() {
