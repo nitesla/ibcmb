@@ -34,18 +34,16 @@
                                     <option th:each="bank : ${localBanks}" th:value="${bank.institutionCode}" th:text="${bank.institutionName}"></option>
                                 </select>
                             </div>
-                            <div class="form-group alert alert-danger alert-dismissable">
+                            <div class="form-group">
                                 <input type="text" class="form-control" th:field="*{accountNumber}" placeholder="Account Number"/>
-                                <a href="#" class="close" data-dismiss="alert" aria-label="close" th:if="${#fields.hasErrors('accountNumber')}" th:errors="*{accountNumber}">&times;</a>
-                                <strong>invalid account number</strong>
+                                <p class="close" data-dismiss="alert" aria-label="close" th:if="${#fields.hasErrors('accountNumber')}" th:errors="*{accountNumber}">Invalid account number &nbsp; &times;</p>
                             </div>
 
-                            <div class="form-group alert alert-danger alert-dismissable">
+                            <div class="form-group">
                                 <input type="text" class="form-control" th:field="*{accountName}" placeholder="Beneficiary Name"/>
-                                <a href="#" class="close" data-dismiss="alert" aria-label="close" th:if="${#fields.hasErrors('accountName')}" th:errors="*{accountName}">&times;</a>
-                                <strong>invalid account name</strong>
+                                <p class="close" data-dismiss="alert" aria-label="close" th:if="${#fields.hasErrors('accountNumber')}" th:errors="*{accountNumber}">Invalid account name &nbsp; &times;</p>
                             </div>
-                            <div class="form-group alert alert-danger alert-dismissable">
+                            <div class="form-group">
                                 <input type="text" class="form-control" name="preferredName" placeholder="Preferred Name"/>
                             </div>
                             <button class="btn btn-primary">Save</button>
@@ -57,8 +55,7 @@
                                 <label>Bank Details</label>
                                 <select th:field="*{beneficiaryBank}" class="form-control" >
                                     <option th:each="bank : ${foreignBanks}" th:value="${bank.institutionCode}" th:text="${bank.institutionName}"></option>
-                                    <a href="#" class="close" data-dismiss="alert" aria-label="close" th:if="${#fields.hasErrors('beneficiaryBank')}" th:errors="*{beneficiaryBank}">&times;</a>
-                                    <strong>invalid </strong>
+
                                 </select>
                             </div>
                             <div class="form-group">
