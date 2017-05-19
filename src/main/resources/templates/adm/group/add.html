@@ -18,12 +18,12 @@
                 <div class="clearfix"></div>
                 <div class="clearfix"></div>
 
-                <div th:replace="layout :: ops-menu"></div>
-                <div th:replace="layout :: menu-footer-ops"></div>
+                <div th:replace="layout :: admin-menu"></div>
+                <div th:replace="layout :: menu-footer-adm"></div>
 
             </div>
         </div>
-		<div th:replace="layout :: ops-top-nav"></div>
+		<div th:replace="layout :: top-nav"></div>
 
         <!-- page content -->
         <div class="right_col" role="main">
@@ -54,7 +54,7 @@
                             </div>
 
                             <div class="x_content">
-									<form method="post" th:action="@{/ops/groups}" id="" th:object="${group}"
+									<form method="post" th:action="@{/admin/groups}" id="" th:object="${group}"
 										class="form-horizontal">
 
 										<div class="x_content">
@@ -185,7 +185,7 @@ $(document).ready(function() {
     $('#button_add').on('click', function(e) {
         e.preventDefault()
         var options = {
-            url: "/ops/groups/contact/new",
+            url: "/admin/groups/contact/new",
             title: 'Add ',
             size: eModal.size.lg,
             subtitle: 'External Users',
@@ -226,7 +226,7 @@ $(document).ready(function() {
     $('#button_add_op').click(function(e) {
         e.preventDefault()
         var options = {
-            url: "/ops/groups/find",
+            url: "/admin/groups/find",
             title: 'Select ',
             size: eModal.size.lg,
             subtitle: 'Operations Users',
@@ -269,7 +269,7 @@ $(document).on('hidden.bs.modal', function(e) {
 });
 
 document.getElementById("cancel").onclick = function() {
-    location.href = "/ops/groups"
+    location.href = "/admin/groups"
 }
 	/*]]>*/
 </script>
