@@ -97,6 +97,7 @@
                                                         <select multiple="multiple"
                                                                 class="form-control left-selector">
                                                             <option th:each="permission: ${permissions}"
+                                                                    th:class="${permission.userType}"
                                                                     th:value="${permission.id}"
                                                                     th:text="${permission.name}"></option>
 
@@ -156,6 +157,12 @@
 <script type="text/javascript">
     $().ready(
         function () {
+            $(".RETAIL").hide()
+            $(".ADMIN").hide()
+            $(".OPERATIONS").hide()
+            $(".CORPORATE").hide()
+
+
             $('.left-btn').click(
                 function () {
                     return !$('.right-selector option:selected')
@@ -172,6 +179,39 @@
         $("#form-save").submit();
     });
 
+    $('#userType').on('change',function(){
+        if( $(this).val()==="RETAIL"){
+            $(".RETAIL").show()
+            $(".ADMIN").hide()
+            $(".OPERATIONS").hide()
+            $(".CORPORATE").hide()
+        }
+        else if( $(this).val()==="ADMIN"){
+            $(".ADMIN").show()
+            $(".RETAIL").hide()
+            $(".OPERATIONS").hide()
+            $(".CORPORATE").hide()
+        }
+        else if( $(this).val()==="OPERATIONS"){
+            $(".OPERATIONS").show()
+            $(".RETAIL").hide()
+            $(".ADMIN").hide()
+            $(".CORPORATE").hide()
+        }
+        else if( $(this).val()==="CORPORATE"){
+            $(".CORPORATE").show()
+            $(".RETAIL").hide()
+            $(".OPERATIONS").hide()
+            $(".ADMIN").hide()
+        }
+        else if( $(this).val()===""){
+            $(".CORPORATE").hide()
+            $(".RETAIL").hide()
+            $(".OPERATIONS").hide()
+            $(".ADMIN").hide()
+        }
+
+    });
 
     document.getElementById("cancel").onclick = function () {
         location.href = "/admin/roles";

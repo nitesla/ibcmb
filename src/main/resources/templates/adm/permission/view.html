@@ -90,6 +90,7 @@
                                     <tr>
                                         <th>Name</th>
                                         <th>Code</th>
+                                        <th>User Type</th>
                                         <th>Description</th>
 
                                     </tr>
@@ -102,6 +103,7 @@
                                     <tr>
                                         <th>Name</th>
                                         <th>Code</th>
+                                        <th>User Type</th>
                                         <th>Description</th>
 
                                     </tr>
@@ -136,7 +138,7 @@
         var table = $('#permission').DataTable({
             select:true,
             responsive: true,
-            "lengthMenu" : [ [ 5, 10, 20],	[ 5, 10, 20 ] ],
+            "lengthMenu" : [ [ 10, 20],	[ 10, 20 ] ],
             "pagingType" : "simple_numbers",
             "searching": false,
             "paging": true,
@@ -146,6 +148,7 @@
             "columns": [
                 {"data": "name"},
                 {"data": "code"},
+                {"data": "userType"},
                 {"data": "description"}
 
             ]

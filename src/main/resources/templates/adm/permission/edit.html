@@ -68,6 +68,20 @@
                                             </div>
 
                                         </div>
+
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">User Type</label>
+                                            <div class="col-sm-4">
+                                            <select class="form-control" th:field="*{userType}">
+                                                <option value="">--Select--</option>
+                                                <option value="ADMIN">Administrator</option>
+                                                <option value="OPERATIONS">Operator</option>
+                                                <option value="RETAIL">Retail Customer</option>
+                                                <option value="CORPORATE">Corporate Customer</option>
+                                            </select>
+                                            </div>
+                                        </div>
+
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">Description</label>
 

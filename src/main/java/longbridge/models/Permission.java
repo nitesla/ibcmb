@@ -3,12 +3,6 @@ package longbridge.models;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-
-import java.io.IOException;
-
 import javax.persistence.Entity;
 
 /**
@@ -23,10 +17,18 @@ public class Permission extends AbstractEntity{
     private String name;
     private String description;
     private String code;
-
+    private String userType;
 
     public Permission(){
 
+    }
+
+    public String getUserType() {
+        return userType;
+    }
+
+    public void setUserType(String userType) {
+        this.userType = userType;
     }
 
     @Override
@@ -66,10 +68,11 @@ public class Permission extends AbstractEntity{
     @Override
     public String toString() {
         return "Permission{" +
-                "name='" + name + '\'' +
+                "id=" + id +
+                ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", code='" + code + '\'' +
+                ", userType='" + userType + '\'' +
                 '}';
     }
-
 }
