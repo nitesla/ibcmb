@@ -1,10 +1,7 @@
 package longbridge.services.implementations;
 
 import longbridge.api.AccountInfo;
-import longbridge.dtos.AccountDTO;
-import longbridge.dtos.CorpTransferRuleDTO;
-import longbridge.dtos.CorporateDTO;
-import longbridge.dtos.CorporateUserDTO;
+import longbridge.dtos.*;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.TransferRuleException;
 import longbridge.models.*;
@@ -306,8 +303,32 @@ public class CorporateServiceImpl implements CorporateService {
                 userDTO.setFirstName(user.getFirstName());
                 userDTO.setLastName(user.getLastName());
                 authorizers.add(userDTO);
-                logger.error("Authorizer got is {}",userDTO.toString());
+
             }
+        }
+        return authorizers;
+    }
+
+    @Override
+    public List<CorporateUser> getQualifiedAuthorizers(CorpTransferRequest transferRequest) {
+        Corporate corporate = transferRequest.getCorporate();
+        List<CorpTransferRule> transferRules = corporate.getCorpTransferRules();
+        Collections.sort(transferRules, new TransferRuleComparator());
+        BigDecimal transferAmount = transferRequest.getAmount();
+        CorpTransferRule applicableTransferRule = null;
+        for(CorpTransferRule transferRule: transferRules){
+            BigDecimal loweLimit = transferRule.getLowerLimitAmount();
+            BigDecimal upperLimit = transferRule.getUpperLimitAmount();
+            if(transferAmount.compareTo(loweLimit)>=0&&(transferAmount.compareTo(upperLimit)<=0)){
+                applicableTransferRule = transferRule;
+            }
+            else if(transferAmount.compareTo(upperLimit)>0&&transferRule.isInfinite()){
+                applicableTransferRule = transferRule;
+            }
+        }
+        List<CorporateUser> authorizers = new ArrayList<>();
+        if(applicableTransferRule!=null){
+            authorizers = applicableTransferRule.getAuthorizers();
         }
         return authorizers;
     }

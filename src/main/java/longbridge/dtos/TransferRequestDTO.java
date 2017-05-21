@@ -1,5 +1,6 @@
 package longbridge.dtos;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import longbridge.models.*;
 import longbridge.utils.TransferType;
 
@@ -11,9 +12,12 @@ import java.math.BigDecimal;
  *
  */
 
-public class TransferRequestDTO extends AbstractEntity{
+public class TransferRequestDTO{
 
 
+    @JsonProperty("DT_RowId")
+    private Long id;
+    private int version;
     private String customerAccountNumber;
     private TransferType transferType;
 
@@ -24,6 +28,8 @@ public class TransferRequestDTO extends AbstractEntity{
     private String beneficiaryAccountName;
 
     private String remarks;
+
+    private String status;
 
     private String referenceNumber;
 
@@ -52,6 +58,21 @@ public class TransferRequestDTO extends AbstractEntity{
         this.amount=amount;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
+    }
 
     public String getCustomerAccountNumber() {
         return customerAccountNumber;
@@ -99,6 +120,14 @@ public class TransferRequestDTO extends AbstractEntity{
 
     public void setRemarks(String remarks) {
         this.remarks = remarks;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public String getReferenceNumber() {

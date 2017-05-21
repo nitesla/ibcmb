@@ -13,7 +13,6 @@ public class InternetBankingException extends RuntimeException {
         super("Failed to perform the requested action", cause);
     }
 
-
     public InternetBankingException(String message) {
         super(message);
     }
