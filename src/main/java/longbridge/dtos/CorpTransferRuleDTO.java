@@ -18,6 +18,9 @@ public class CorpTransferRuleDTO {
     private BigDecimal lowerLimitAmount;
     @NotEmpty(message = "upperLimitAmount")
     private BigDecimal upperLimitAmount;
+    @NotEmpty(message = "currency")
+    private String currency;
+    private boolean infinite;
     private boolean anyOne;
     private String corporateId;
     private int numOfAuthorizers;
@@ -54,6 +57,22 @@ public class CorpTransferRuleDTO {
 
     public void setUpperLimitAmount(BigDecimal upperLimitAmount) {
         this.upperLimitAmount = upperLimitAmount;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
+    public boolean isInfinite() {
+        return infinite;
+    }
+
+    public void setInfinite(boolean infinite) {
+        this.infinite = infinite;
     }
 
     public boolean isAnyOne() {

@@ -348,6 +348,7 @@ public class CorporateServiceImpl implements CorporateService {
         corpTransferRuleDTO.setVersion(transferRule.getVersion());
         corpTransferRuleDTO.setLowerLimitAmount(transferRule.getLowerLimitAmount());
         corpTransferRuleDTO.setUpperLimitAmount(transferRule.getUpperLimitAmount());
+        corpTransferRuleDTO.setCurrency(transferRule.getCurrency());
         corpTransferRuleDTO.setAnyOne(transferRule.isAnyOne());
         corpTransferRuleDTO.setCorporateId(transferRule.getCorporate().getId().toString());
         corpTransferRuleDTO.setCorporateName(transferRule.getCorporate().getCompanyName());
@@ -371,6 +372,7 @@ public class CorporateServiceImpl implements CorporateService {
         CorpTransferRule corpTransferRule = new CorpTransferRule();
         corpTransferRule.setLowerLimitAmount(transferRuleDTO.getLowerLimitAmount());
         corpTransferRule.setUpperLimitAmount(transferRuleDTO.getUpperLimitAmount());
+        corpTransferRule.setCurrency(transferRuleDTO.getCurrency());
         corpTransferRule.setAnyOne(transferRuleDTO.isAnyOne());
         corpTransferRule.setCorporate(corporateRepo.findOne(Long.parseLong(transferRuleDTO.getCorporateId())));
 

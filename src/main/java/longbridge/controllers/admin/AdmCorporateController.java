@@ -1,11 +1,9 @@
 package longbridge.controllers.admin;
 
-import longbridge.dtos.AccountDTO;
-import longbridge.dtos.CorpTransferRuleDTO;
-import longbridge.dtos.CorporateDTO;
-import longbridge.dtos.CorporateUserDTO;
+import longbridge.dtos.*;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.Corporate;
+import longbridge.services.CodeService;
 import longbridge.services.CorporateService;
 import longbridge.services.CorporateUserService;
 import longbridge.services.IntegrationService;
@@ -49,6 +47,9 @@ public class AdmCorporateController {
 
     @Autowired
     private MessageSource messageSource;
+
+    @Autowired
+    CodeService codeService;
 
     @Autowired
     IntegrationService integrationService;
@@ -247,8 +248,11 @@ public class AdmCorporateController {
     public String addCorporateRule(@PathVariable Long corpId, Model model) {
         CorporateDTO corporate = corporateService.getCorporate(corpId);
         List<CorporateUserDTO> authorizers = corporateService.getAuthorizers(corpId);
+        Iterable<CodeDTO> currencies = codeService.getCodesByType("CURRENCY");
+
         model.addAttribute("corporate", corporate);
         model.addAttribute("authUserList", authorizers);
+        model.addAttribute("currencies",currencies);
         model.addAttribute("corporateRule", new CorpTransferRuleDTO());
         return "adm/corporate/addrule";
     }
@@ -264,10 +268,13 @@ public class AdmCorporateController {
         String[] authorizerIds = webRequest.getParameterValues("authorizers");
         List<CorporateUserDTO> authorizerDTOs = new ArrayList<>();
         CorporateUserDTO corporateUser;
-        for (String authorizerId : authorizerIds) {
-            corporateUser = new CorporateUserDTO();
-            corporateUser.setId(NumberUtils.toLong(authorizerId));
-            authorizerDTOs.add(corporateUser);
+
+        if(authorizerIds!=null) {
+            for (String authorizerId : authorizerIds) {
+                corporateUser = new CorporateUserDTO();
+                corporateUser.setId(NumberUtils.toLong(authorizerId));
+                authorizerDTOs.add(corporateUser);
+            }
         }
         transferRuleDTO.setAuthorizers(authorizerDTOs);
 
@@ -280,8 +287,11 @@ public class AdmCorporateController {
             bindingResult.addError(new ObjectError("exception", ibe.getMessage()));
             CorporateDTO corporate = corporateService.getCorporate(NumberUtils.toLong(transferRuleDTO.getCorporateId()));
             List<CorporateUserDTO> authorizers = corporateService.getAuthorizers(NumberUtils.toLong(transferRuleDTO.getCorporateId()));
+            Iterable<CodeDTO> currencies = codeService.getCodesByType("CURRENCY");
+
             model.addAttribute("corporate", corporate);
             model.addAttribute("authUserList", authorizers);
+            model.addAttribute("currencies",currencies);
             return "adm/corporate/addrule";
         }
     }
@@ -290,6 +300,8 @@ public class AdmCorporateController {
     public String editCorporateRule(@PathVariable Long id, Model model) {
         CorpTransferRuleDTO transferRuleDTO = corporateService.getCorporateRule(id);
         List<CorporateUserDTO> authorizers = corporateService.getAuthorizers(NumberUtils.toLong(transferRuleDTO.getCorporateId()));
+        Iterable<CodeDTO> currencies = codeService.getCodesByType("CURRENCY");
+
         for (CorporateUserDTO userDTO : authorizers) {
             for (CorporateUserDTO authorizer : transferRuleDTO.getAuthorizers()) {
                 if (userDTO.getId() == authorizer.getId()) {
@@ -299,6 +311,8 @@ public class AdmCorporateController {
         }
         model.addAttribute("authUserList", authorizers);
         model.addAttribute("corporateRule", transferRuleDTO);
+        model.addAttribute("currencies",currencies);
+
         return "adm/corporate/editrule";
     }
 
@@ -329,8 +343,12 @@ public class AdmCorporateController {
             bindingResult.addError(new ObjectError("exception", ibe.getMessage()));
             CorporateDTO corporate = corporateService.getCorporate(NumberUtils.toLong(transferRuleDTO.getCorporateId()));
             List<CorporateUserDTO> authorizers = corporateService.getAuthorizers(NumberUtils.toLong(transferRuleDTO.getCorporateId()));
+            Iterable<CodeDTO> currencies = codeService.getCodesByType("CURRENCY");
+
             model.addAttribute("corporate", corporate);
             model.addAttribute("authUserList", authorizers);
+            model.addAttribute("currencies",currencies);
+
             return "adm/corporate/editrule";
         }
     }

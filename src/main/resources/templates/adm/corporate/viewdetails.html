@@ -209,6 +209,7 @@
                                                                         <tr>
                                                                             <th>Lower Limit</th>
                                                                             <th>Upper Limit</th>
+                                                                            <th>Currency</th>
                                                                             <th>No of Authorizers</th>
                                                                             <th>Any Authorizer</th>
                                                                         </tr>
@@ -219,6 +220,7 @@
                                                                         <tr>
                                                                             <th>Lower Limit</th>
                                                                             <th>Upper Limit</th>
+                                                                            <th>Currency</th>
                                                                             <th>No of Authorizers</th>
                                                                             <th>Any Authorizer</th>
                                                                         </tr>
@@ -440,12 +442,13 @@
             "columns" : [
                 { "data" : "lowerLimitAmount" },
                 { "data" : "upperLimitAmount" },
+                { "data" : "currency" },
                 { "data" : "numOfAuthorizers" },
                 { "data" : "anyOne" }
             ],
             "columnDefs" : [ {
-                "targets" : 3,
-                "data" : "status",
+                "targets" : 4,
+                "data" : "anyOne",
                 "render" : function(data, type,full, meta) {
                     if (type === 'display') {
                         if (data == true) {
@@ -453,6 +456,16 @@
                         } else{
                             return "<i class='fa fa-minus dt-body-center' style='color:black;display:block; text-align:center; margin:0 auto;'></i>";
                         }
+                    }
+                    return data;
+                }
+
+            },{
+                "targets" : 3,
+                "data" : "numOfAuthorizers",
+                "render" : function(data, type,full, meta) {
+                    if (type === 'display') {
+                            return "<span class='dt-body-center' style='display:block;text-align:center; margin:0 auto;'>"+data+"</span>";
                     }
                     return data;
                 }

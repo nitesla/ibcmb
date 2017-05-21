@@ -81,7 +81,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     public String authorizeTransfer(CorporateUser authorizer, Long authorizationId) {
         PendingAuthorization pendingAuthorization = pendingAuthorizationRepo.findOne(authorizationId);
         if (!authorizer.getPendingAuthorizations().contains(pendingAuthorization)) {
-            throw new InvalidAuthorizationexception(messageSource.getMessage("transfer.auth.invalid", null, locale));
+            throw new InvalidAuthorizationException(messageSource.getMessage("transfer.auth.invalid", null, locale));
         }
         try {
             CorpTransferRequest transferRequest = pendingAuthorization.getCorpTransferRequest();

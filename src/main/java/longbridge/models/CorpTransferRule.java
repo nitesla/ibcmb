@@ -20,6 +20,7 @@ public class CorpTransferRule extends AbstractEntity {
 
     private BigDecimal lowerLimitAmount;
     private BigDecimal upperLimitAmount;
+    private String currency;
     private boolean infinite;
     private boolean anyOne;
 
@@ -43,6 +44,14 @@ public class CorpTransferRule extends AbstractEntity {
 
     public void setUpperLimitAmount(BigDecimal upperLimitAmount) {
         this.upperLimitAmount = upperLimitAmount;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 
     public boolean isAnyOne() {
