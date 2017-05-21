@@ -86,7 +86,10 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         try {
             CorpTransferRequest transferRequest = pendingAuthorization.getCorpTransferRequest();
             transferRequest.getPendingAuthorizations().remove(pendingAuthorization);
-            if(transferRequest.getPendingAuthorizations().isEmpty()){
+            if(corporateService.getApplicableTransferRule(transferRequest).isAnyOne()){
+                makeTransfer(transferRequest);
+            }
+            else if(transferRequest.getPendingAuthorizations().isEmpty()){
                 makeTransfer(transferRequest);
             }
             corpTransferRequestRepo.save(transferRequest);

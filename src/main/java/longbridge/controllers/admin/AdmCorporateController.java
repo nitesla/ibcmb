@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.validation.Valid;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
@@ -276,6 +275,9 @@ public class AdmCorporateController {
                 authorizerDTOs.add(corporateUser);
             }
         }
+        else if (authorizerIds==null&&transferRuleDTO.isAnyCanAuthorize()){
+            authorizerDTOs = corporateService.getAuthorizers(Long.parseLong(transferRuleDTO.getCorporateId()));
+        }
         transferRuleDTO.setAuthorizers(authorizerDTOs);
 
         try {
@@ -327,10 +329,15 @@ public class AdmCorporateController {
         String[] authorizerIds = webRequest.getParameterValues("authorizers");
         List<CorporateUserDTO> authorizerDTOs = new ArrayList<>();
         CorporateUserDTO corporateUser;
-        for (String authorizerId : authorizerIds) {
-            corporateUser = new CorporateUserDTO();
-            corporateUser.setId(NumberUtils.toLong(authorizerId));
-            authorizerDTOs.add(corporateUser);
+        if(authorizerIds!=null) {
+            for (String authorizerId : authorizerIds) {
+                corporateUser = new CorporateUserDTO();
+                corporateUser.setId(NumberUtils.toLong(authorizerId));
+                authorizerDTOs.add(corporateUser);
+            }
+        }
+        else if (authorizerIds==null&&transferRuleDTO.isAnyCanAuthorize()){
+            authorizerDTOs = corporateService.getAuthorizers(Long.parseLong(transferRuleDTO.getCorporateId()));
         }
         transferRuleDTO.setAuthorizers(authorizerDTOs);
 

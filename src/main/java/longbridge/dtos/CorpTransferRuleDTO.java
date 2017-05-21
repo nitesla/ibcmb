@@ -21,7 +21,7 @@ public class CorpTransferRuleDTO {
     @NotEmpty(message = "currency")
     private String currency;
     private boolean infinite;
-    private boolean anyOne;
+    private boolean anyCanAuthorize;
     private String corporateId;
     private int numOfAuthorizers;
     private String corporateName;
@@ -75,12 +75,12 @@ public class CorpTransferRuleDTO {
         this.infinite = infinite;
     }
 
-    public boolean isAnyOne() {
-        return anyOne;
+    public boolean isAnyCanAuthorize() {
+        return anyCanAuthorize;
     }
 
-    public void setAnyOne(boolean anyOne) {
-        this.anyOne = anyOne;
+    public void setAnyCanAuthorize(boolean anyCanAuthorize) {
+        this.anyCanAuthorize = anyCanAuthorize;
     }
 
     public String getCorporateId() {

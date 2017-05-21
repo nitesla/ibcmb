@@ -444,11 +444,11 @@
                 { "data" : "upperLimitAmount" },
                 { "data" : "currency" },
                 { "data" : "numOfAuthorizers" },
-                { "data" : "anyOne" }
+                { "data" : "anyCanAuthorize" }
             ],
             "columnDefs" : [ {
                 "targets" : 4,
-                "data" : "anyOne",
+                "data" : "anyCanAuthorize",
                 "render" : function(data, type,full, meta) {
                     if (type === 'display') {
                         if (data == true) {
