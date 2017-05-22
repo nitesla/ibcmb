@@ -14,10 +14,8 @@ public class CorpTransferRuleDTO {
     @JsonProperty("DT_RowId")
     private Long id;
     private int version;
-    @NotEmpty(message = "lowerLimitAmount")
     private String lowerLimitAmount;
     private String upperLimitAmount;
-    @NotEmpty(message = "currency")
     private String currency;
     private boolean infinite;
     private boolean anyCanAuthorize;
