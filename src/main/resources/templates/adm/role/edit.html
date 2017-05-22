@@ -157,11 +157,36 @@
 <script type="text/javascript">
     $().ready(
         function () {
-            $(".RETAIL").hide()
-            $(".ADMIN").hide()
-            $(".OPERATIONS").hide()
-            $(".CORPORATE").hide()
-
+            if( $('#userType').val()==="RETAIL"){
+                $(".RETAIL").show()
+                $(".ADMIN").hide()
+                $(".OPERATIONS").hide()
+                $(".CORPORATE").hide()
+            }
+            else if( $('#userType').val()==="ADMIN"){
+                $(".ADMIN").show()
+                $(".RETAIL").hide()
+                $(".OPERATIONS").hide()
+                $(".CORPORATE").hide()
+            }
+            else if( $('#userType').val()==="OPERATIONS"){
+                $(".OPERATIONS").show()
+                $(".RETAIL").hide()
+                $(".ADMIN").hide()
+                $(".CORPORATE").hide()
+            }
+            else if( $('#userType').val()==="CORPORATE"){
+                $(".CORPORATE").show()
+                $(".RETAIL").hide()
+                $(".OPERATIONS").hide()
+                $(".ADMIN").hide()
+            }
+            else if( $('#userType').val()===""){
+                $(".CORPORATE").hide()
+                $(".RETAIL").hide()
+                $(".OPERATIONS").hide()
+                $(".ADMIN").hide()
+            }
 
             $('.left-btn').click(
                 function () {
@@ -174,6 +199,7 @@
                         .remove().appendTo('.right-selector');
                 });
         });
+
     $("#btn-save").on("click", function (e) {
         $('.right-selector option').prop("selected", true);
         $("#form-save").submit();
