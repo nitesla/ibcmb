@@ -235,6 +235,9 @@ public class CorporateServiceImpl implements CorporateService {
             logger.info("Added transfer rule for corporate with Id {}",transferRuleDTO.getCorporateId());
             return messageSource.getMessage("rule.add.success",null,locale);
         }
+        catch (NumberFormatException nfe){
+            throw new TransferRuleException(messageSource.getMessage("rule.amount.invalid",null,locale),nfe);
+        }
         catch (Exception e){
          throw new InternetBankingException(messageSource.getMessage("rule.add.failure",null,locale),e);
         }
@@ -343,7 +346,7 @@ public class CorporateServiceImpl implements CorporateService {
             if(transferAmount.compareTo(loweLimit)>=0&&(transferAmount.compareTo(upperLimit)<=0)){
                 applicableTransferRule = transferRule;
             }
-            else if(transferAmount.compareTo(upperLimit)>0&&transferRule.isInfinite()){
+            if(transferAmount.compareTo(upperLimit)>=0&&transferRule.isInfinite()){
                 applicableTransferRule = transferRule;
             }
         }
@@ -354,23 +357,17 @@ public class CorporateServiceImpl implements CorporateService {
         return authorizers;
     }
 
-    private void validateTransferRule(CorpTransferRuleDTO transferRuleDTO) throws InternetBankingException{
-        BigDecimal lowerLimit = transferRuleDTO.getLowerLimitAmount();
-        BigDecimal upperLimit = transferRuleDTO.getUpperLimitAmount();
-        if(upperLimit.compareTo(lowerLimit)<0){
-            throw new TransferRuleException(messageSource.getMessage("rule.range.violation",null,locale));
-        }
 
-    }
 
     private CorpTransferRuleDTO convertTransferRuleEntityToDTO(CorpTransferRule transferRule){
         CorpTransferRuleDTO corpTransferRuleDTO = new CorpTransferRuleDTO();
         corpTransferRuleDTO.setId(transferRule.getId());
         corpTransferRuleDTO.setVersion(transferRule.getVersion());
-        corpTransferRuleDTO.setLowerLimitAmount(transferRule.getLowerLimitAmount());
-        corpTransferRuleDTO.setUpperLimitAmount(transferRule.getUpperLimitAmount());
+        corpTransferRuleDTO.setLowerLimitAmount(transferRule.getLowerLimitAmount().toString());
+        corpTransferRuleDTO.setUpperLimitAmount(transferRule.isInfinite()?"Unlimited":transferRule.getUpperLimitAmount().toString());
+        corpTransferRuleDTO.setInfinite(transferRule.isInfinite());
         corpTransferRuleDTO.setCurrency(transferRule.getCurrency());
-        corpTransferRuleDTO.setAnyCanAuthorize(transferRule.isAnyOne());
+        corpTransferRuleDTO.setAnyCanAuthorize(transferRule.isAnyCanAuthorize());
         corpTransferRuleDTO.setCorporateId(transferRule.getCorporate().getId().toString());
         corpTransferRuleDTO.setCorporateName(transferRule.getCorporate().getCompanyName());
 
@@ -391,10 +388,11 @@ public class CorporateServiceImpl implements CorporateService {
 
     private CorpTransferRule convertTransferRuleDTOToEntity(CorpTransferRuleDTO transferRuleDTO){
         CorpTransferRule corpTransferRule = new CorpTransferRule();
-        corpTransferRule.setLowerLimitAmount(transferRuleDTO.getLowerLimitAmount());
-        corpTransferRule.setUpperLimitAmount(transferRuleDTO.getUpperLimitAmount());
+        corpTransferRule.setLowerLimitAmount(new BigDecimal(transferRuleDTO.getLowerLimitAmount()));
+        corpTransferRule.setUpperLimitAmount(new BigDecimal(transferRuleDTO.getUpperLimitAmount()));
+        corpTransferRule.setInfinite(transferRuleDTO.isInfinite());
         corpTransferRule.setCurrency(transferRuleDTO.getCurrency());
-        corpTransferRule.setAnyOne(transferRuleDTO.isAnyCanAuthorize());
+        corpTransferRule.setAnyCanAuthorize(transferRuleDTO.isAnyCanAuthorize());
         corpTransferRule.setCorporate(corporateRepo.findOne(Long.parseLong(transferRuleDTO.getCorporateId())));
 
         List<CorporateUser> authorizerList = new ArrayList<CorporateUser>();
@@ -413,8 +411,6 @@ public class CorporateServiceImpl implements CorporateService {
         }
         return transferRuleDTOs;
     }
-
-
 
     private CorporateDTO convertEntityToDTO(Corporate corporate){
         CorporateDTO corporateDTO = modelMapper.map(corporate,CorporateDTO.class);

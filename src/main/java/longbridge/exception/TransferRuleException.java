@@ -9,4 +9,6 @@ public class TransferRuleException extends InternetBankingException {
 
     public TransferRuleException(String message){super(message);}
 
+    public TransferRuleException(String message,Throwable cause){super(message,cause);}
+
 }

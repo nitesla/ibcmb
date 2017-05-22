@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
@@ -278,6 +279,9 @@ public class AdmCorporateController {
         else if (authorizerIds==null&&transferRuleDTO.isAnyCanAuthorize()){
             authorizerDTOs = corporateService.getAuthorizers(Long.parseLong(transferRuleDTO.getCorporateId()));
         }
+        if(transferRuleDTO.isInfinite()){
+            transferRuleDTO.setUpperLimitAmount(new BigDecimal(transferRuleDTO.getLowerLimitAmount()).multiply(new BigDecimal("2")).toString());
+        }
         transferRuleDTO.setAuthorizers(authorizerDTOs);
 
         try {
@@ -338,6 +342,9 @@ public class AdmCorporateController {
         }
         else if (authorizerIds==null&&transferRuleDTO.isAnyCanAuthorize()){
             authorizerDTOs = corporateService.getAuthorizers(Long.parseLong(transferRuleDTO.getCorporateId()));
+        }
+        if(transferRuleDTO.isInfinite()){
+            transferRuleDTO.setUpperLimitAmount(new BigDecimal(transferRuleDTO.getLowerLimitAmount()).multiply(new BigDecimal("2")).toString());
         }
         transferRuleDTO.setAuthorizers(authorizerDTOs);
 

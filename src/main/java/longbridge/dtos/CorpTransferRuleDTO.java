@@ -15,9 +15,8 @@ public class CorpTransferRuleDTO {
     private Long id;
     private int version;
     @NotEmpty(message = "lowerLimitAmount")
-    private BigDecimal lowerLimitAmount;
-    @NotEmpty(message = "upperLimitAmount")
-    private BigDecimal upperLimitAmount;
+    private String lowerLimitAmount;
+    private String upperLimitAmount;
     @NotEmpty(message = "currency")
     private String currency;
     private boolean infinite;
@@ -43,19 +42,19 @@ public class CorpTransferRuleDTO {
         this.version = version;
     }
 
-    public BigDecimal getLowerLimitAmount() {
+    public String getLowerLimitAmount() {
         return lowerLimitAmount;
     }
 
-    public void setLowerLimitAmount(BigDecimal lowerLimitAmount) {
+    public void setLowerLimitAmount(String lowerLimitAmount) {
         this.lowerLimitAmount = lowerLimitAmount;
     }
 
-    public BigDecimal getUpperLimitAmount() {
+    public String getUpperLimitAmount() {
         return upperLimitAmount;
     }
 
-    public void setUpperLimitAmount(BigDecimal upperLimitAmount) {
+    public void setUpperLimitAmount(String upperLimitAmount) {
         this.upperLimitAmount = upperLimitAmount;
     }
 
