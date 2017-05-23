@@ -19,8 +19,6 @@ public class CustomPostUpdateListener extends EnversPostUpdateEventListenerImpl 
 		String s = event.getEntity().getClass().getSimpleName();
 
 		if (CustomJdbcUtil.auditEntity(s)) {
-			System.out.println("Meaning i can control it?");
-			System.out.println(event.getEntity().getClass().getSimpleName());
 			super.onPostUpdate(event);
 		}
 

@@ -28,9 +28,7 @@ public class CustomPostInsertListener extends EnversPostInsertEventListenerImpl 
 
 	public void onPostInsert(PostInsertEvent event) {
 		String s = event.getEntity().getClass().getSimpleName();
-		System.out.println(s + "ok na");
 		if (CustomJdbcUtil.auditEntity(s)) {
-			System.out.println("Meaning i can control it?");
 			super.onPostInsert(event);
 		}
 	}
