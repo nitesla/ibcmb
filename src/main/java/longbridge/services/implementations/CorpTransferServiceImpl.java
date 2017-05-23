@@ -6,6 +6,7 @@ import longbridge.models.CorpTransferRequest;
 import longbridge.models.CorporateUser;
 import longbridge.models.PendingAuthorization;
 import longbridge.repositories.CorpTransferRequestRepo;
+import longbridge.repositories.CorporateUserRepo;
 import longbridge.repositories.PendingAuthorizationRepo;
 import longbridge.services.CorpTransferService;
 import longbridge.services.CorporateService;
@@ -32,6 +33,9 @@ public class CorpTransferServiceImpl implements CorpTransferService {
 
     @Autowired
     PendingAuthorizationRepo pendingAuthorizationRepo;
+
+    @Autowired
+    CorporateUserRepo corporateUserRepo;
 
     @Autowired
     MessageSource messageSource;
@@ -66,6 +70,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
                 pendingAuthorization.setAuthorizer(authorizer);
                 pendingAuthorizations.add(pendingAuthorization);
             }
+
             transferRequest.setPendingAuthorizations(pendingAuthorizations);
             corpTransferRequestRepo.save(transferRequest);
 
@@ -86,14 +91,16 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         try {
             CorpTransferRequest transferRequest = pendingAuthorization.getCorpTransferRequest();
             transferRequest.getPendingAuthorizations().remove(pendingAuthorization);
-            if(corporateService.getApplicableTransferRule(transferRequest).isAnyCanAuthorize()){
+            if (corporateService.getApplicableTransferRule(transferRequest).isAnyCanAuthorize()) {
                 makeTransfer(transferRequest);
                 transferRequest.getPendingAuthorizations().clear();
             }
-            else if(transferRequest.getPendingAuthorizations().isEmpty()){
+            else if (transferRequest.getPendingAuthorizations().isEmpty()) {
                 makeTransfer(transferRequest);
             }
             corpTransferRequestRepo.save(transferRequest);
+            corporateUserRepo.save(authorizer);
+
         } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("transfer.auth.failure", null, locale), e);
         }

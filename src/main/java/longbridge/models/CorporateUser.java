@@ -4,6 +4,7 @@ import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,8 +24,8 @@ public class CorporateUser extends User {
 	@ManyToMany(mappedBy = "authorizers")
 	private List<CorpTransferRule> corpTransferRules;
 
-	@OneToMany(mappedBy = "authorizer",cascade = CascadeType.ALL)
-	List<PendingAuthorization> pendingAuthorizations;
+	@OneToMany(mappedBy = "authorizer")
+	List<PendingAuthorization> pendingAuthorizations = new ArrayList<PendingAuthorization>();
 
 
     public CorporateUser(){

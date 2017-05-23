@@ -90,9 +90,11 @@
                                             <label class="col-sm-2 control-label">Select Authorizers</label>
                                             <div class="col-sm-6">
                                                 <p th:each="user: ${authUserList}">
+                                                    <label class="checkbox-inline">
                                                     <input type="checkbox" th:field="*{authorizers}"
                                                            th:value="${user.id}"/>
-                                                    <label th:text="${user.firstName + ' ' + user.lastName}"></label>
+                                                    <span th:text="${user.firstName + ' ' + user.lastName}"></span>
+                                                    </label>
                                                 </p>
                                             </div>
                                         </div>
@@ -100,6 +102,7 @@
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">Check If</label>
                                             <div class="col-sm-8">
+
                                                 <input id="anyAuthorizer" type="checkbox" class="checkbox-inline"
                                                        th:field="*{anyCanAuthorize}"/>
                                                 <label><strong>Any of the users selected above can authorize

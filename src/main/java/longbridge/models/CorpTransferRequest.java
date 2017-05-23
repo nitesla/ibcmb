@@ -24,7 +24,7 @@ public class CorpTransferRequest extends TransferRequest {
     @ManyToOne
     private Corporate corporate;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true)
     private List<PendingAuthorization> pendingAuthorizations;
 
     public Corporate getCorporate() {

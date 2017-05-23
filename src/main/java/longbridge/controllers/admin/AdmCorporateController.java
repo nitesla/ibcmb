@@ -6,6 +6,8 @@ import longbridge.exception.TransferRuleException;
 import longbridge.models.*;
 import longbridge.repositories.CorpTransferRequestRepo;
 import longbridge.repositories.CorporateRepo;
+import longbridge.repositories.CorporateUserRepo;
+import longbridge.repositories.PendingAuthorizationRepo;
 import longbridge.services.CodeService;
 import longbridge.services.CorporateService;
 import longbridge.services.CorporateUserService;
@@ -454,15 +456,22 @@ public class AdmCorporateController {
     @Autowired
     CorpTransferRequestRepo transferRequestRepo;
 
-    @GetMapping("/{id}/{amount}")
+    @Autowired
+    CorporateUserRepo corporateUserRepo;
+
+    @Autowired
+    PendingAuthorizationRepo pendingAuthorizationRepo;
+
+    @GetMapping("/transfer/{amount}")
     @Transactional
-    public void getQualifiedAuthorizers(@PathVariable Long id, @PathVariable String amount) {
+    public void corpTransfer(@PathVariable String amount){
+
         CorpTransferRequest transferRequest = new CorpTransferRequest();
         transferRequest.setAmount(new BigDecimal(amount));
-        Corporate corporate = corporateRepo.findOne(id);
+        Corporate corporate = corporateRepo.findOne(2L);
         transferRequest.setCorporate(corporate);
-
         List<CorporateUser> authorizers = corporateService.getQualifiedAuthorizers(transferRequest);
+
         List<PendingAuthorization> pendingAuthorizations = new ArrayList<>();
         for (CorporateUser authorizer : authorizers) {
             PendingAuthorization pendingAuthorization = new PendingAuthorization();
@@ -472,6 +481,36 @@ public class AdmCorporateController {
         }
         transferRequest.setPendingAuthorizations(pendingAuthorizations);
         transferRequestRepo.save(transferRequest);
+    }
+
+
+
+
+    @GetMapping("/authorize/{id}")
+    @Transactional
+    @ResponseBody
+    public int getQualifiedAuthorizers(@PathVariable Long id) {
+        CorporateUser authorizer = corporateUserRepo.findOne(1L);
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("Authorizer has " + authorizer.getPendingAuthorizations().size() + " pending\n");
+        PendingAuthorization pendingAuthorization = pendingAuthorizationRepo.findOne(id);
+        CorpTransferRequest transferRequest = pendingAuthorization.getCorpTransferRequest();
+//        BigDecimal amount =  transferRequest.getAmount();
+//        BigDecimal scaledAmount = amount.setScale(0);
+//        assertThat(authorizer.getPendingAuthorizations().size()).isEqualTo(2);
+//        assertThat(scaledAmount).isEqualTo(new BigDecimal("250000"));
+//        assertThat(transferRequest.getPendingAuthorizations().size()).isEqualTo(5);
+        transferRequest.getPendingAuthorizations().remove(pendingAuthorization);
+
+        stringBuilder.append("Before save, authorizer now has " + authorizer.getPendingAuthorizations().size() + " pending\n");
+
+//        assertThat(transferRequest.getPendingAuthorizations().size()).isEqualTo(4);
+        transferRequestRepo.save(transferRequest);
+        corporateUserRepo.save(authorizer);
+        CorporateUser authorizer1 = corporateUserRepo.findOne(1L);
+        stringBuilder.append("After save, authorizer now has " + authorizer1.getPendingAuthorizations().size() + " pending\n");
+
+        return authorizer.getPendingAuthorizations().size();
     }
 
 }
