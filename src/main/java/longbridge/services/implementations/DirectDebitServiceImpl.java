@@ -41,6 +41,7 @@ public class DirectDebitServiceImpl implements DirectDebitService {
 		//get current time
 		LocalDate now = LocalDate.now(); 
 		DirectDebit directDebit = convertDTOToEntity(directDebitDTO);
+		directDebit.setDebitAccount(directDebit.getDebitAccount());
 		directDebit.setDateCreated(now.toDate());
 		directDebit.setRetailUser(user);
 		directDebit.setNextDebitDate(now.plusDays(directDebit.getIntervalDays()).toDate());
@@ -95,6 +96,16 @@ public class DirectDebitServiceImpl implements DirectDebitService {
 	}
 
 	private DirectDebit convertDTOToEntity(DirectDebitDTO directDebitDTO) {
+		DirectDebit directDebit = new DirectDebit();
+		directDebit.setId(directDebitDTO.getId());
+		directDebit.setDebitAccount(directDebitDTO.getDebitAccount());
+		directDebit.setAmount(directDebitDTO.getAmount());
+		directDebit.setBeneficiary(directDebitDTO.getBeneficiary());
+		directDebit.setDateCreated(directDebitDTO.getDateCreated());
+		directDebit.setIntervalDays(directDebitDTO.getIntervalDays());
+		directDebit.setNextDebitDate(directDebitDTO.getNextDebitDate());
+		directDebit.setNarration(directDebitDTO.getNarration());
+		directDebit.setRetailUser(directDebitDTO.getRetailUser());
 		return modelMapper.map(directDebitDTO, DirectDebit.class);
 	}
 

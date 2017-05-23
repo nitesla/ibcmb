@@ -1,11 +1,10 @@
 package longbridge.repositories;
 
 
-import longbridge.models.audits.CustomRevisionEntity;
-import longbridge.models.audits.EntityWithRevision;
+import longbridge.config.audits.CustomRevisionEntity;
+import longbridge.config.audits.EntityWithRevision;
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;

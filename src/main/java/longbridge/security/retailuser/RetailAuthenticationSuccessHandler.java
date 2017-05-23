@@ -12,6 +12,7 @@ import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.WebAttributes;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,7 +21,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 @Component("retailAuthenticationSuccessHandler")
-public class RetailAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
+public class RetailAuthenticationSuccessHandler  extends SimpleUrlAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
@@ -29,6 +30,10 @@ public class RetailAuthenticationSuccessHandler implements AuthenticationSuccess
     private RetailUserRepo retailUserRepo;
 
 
+    public RetailAuthenticationSuccessHandler() {
+        super();
+        setUseReferer(true);
+    }
 
     @Override
     public void onAuthenticationSuccess(final HttpServletRequest request, final HttpServletResponse response, final Authentication authentication) throws IOException {
@@ -65,13 +70,13 @@ public class RetailAuthenticationSuccessHandler implements AuthenticationSuccess
         }
     }
 
-    protected void clearAuthenticationAttributes(final HttpServletRequest request) {
-        final HttpSession session = request.getSession(false);
-        if (session == null) {
-            return;
-        }
-        session.removeAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
-    }
+//    protected void clearAuthenticationAttributes(final HttpServletRequest request) {
+//        final HttpSession session = request.getSession(false);
+//        if (session == null) {
+//            return;
+//        }
+//        session.removeAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
+//    }
 
     public void setRedirectStrategy(final RedirectStrategy redirectStrategy) {
         this.redirectStrategy = redirectStrategy;

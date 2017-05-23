@@ -1,4 +1,4 @@
-package longbridge.models.audits.listeners;
+package longbridge.config.audits.listeners;
 
 import org.hibernate.HibernateException;
 import org.hibernate.boot.Metadata;
@@ -11,7 +11,6 @@ import org.hibernate.event.spi.EventType;
 import org.hibernate.event.spi.PostInsertEventListener;
 import org.hibernate.event.spi.PostUpdateEventListener;
 import org.hibernate.service.spi.SessionFactoryServiceRegistry;
-import org.springframework.web.context.WebApplicationContext;
 
 /**
  * Created by ayoade_farooq@yahoo.com on 4/8/2017.

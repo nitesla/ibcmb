@@ -1,6 +1,6 @@
-package longbridge.models.audits.listeners;
+package longbridge.config.audits.listeners;
 
-import longbridge.models.audits.CustomJdbcUtil;
+import longbridge.config.audits.CustomJdbcUtil;
 import org.hibernate.envers.boot.internal.EnversService;
 import org.hibernate.envers.event.spi.EnversPostInsertEventListenerImpl;
 import org.hibernate.event.spi.PostInsertEvent;

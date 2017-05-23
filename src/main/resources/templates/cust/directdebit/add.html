@@ -23,13 +23,13 @@
                             <div class="form-group">
                                 <label>Beneficiary</label>
                                 <select name="beneficiary" class="form-control">
-                                    <option th:each="beneficiary : ${beneficiaries}" th:value="${beneficiary.id}" th:text="${beneficiary.preferredName}"></option>
+                                    <option th:each="beneficiary : ${beneficiaries}" th:value="${beneficiary.id}" th:text="${beneficiary.accountName}"></option>
                                 </select>
                             </div>
                             <div class="form-group">
                                 <label>Debit Account</label>
                                 <select name="debitAccount" class="form-control" >
-                                    <option th:each="account : ${accounts}" th:value="${account.accountNumber}" th:text="${bank.institutionName}"></option>
+                                    <option th:each="account : ${accounts}" th:value="${account.accountNumber}" th:text="${account.accountNumber}"></option>
                                 </select>
                             </div>
                             <div class="form-group">

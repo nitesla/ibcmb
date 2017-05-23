@@ -53,25 +53,7 @@ public class TransferController {
     }
 
 
-    @GetMapping("/local/new")
-    public String addCoronationBeneficiary(Model model, LocalBeneficiaryDTO localBeneficiaryDTO) throws Exception {
-        model.addAttribute("localBanks", financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.LOCAL));
 
-        return "cust/transfer/local/addbeneficiary";
-    }
-
-    @PostMapping("/local/new")
-    public String createCoronationBeneficiary(@ModelAttribute("localBeneficiary") @Valid LocalBeneficiaryDTO localBeneficiaryDTO, Principal principal, BindingResult result, Model model) throws Exception {
-        if (result.hasErrors()) {
-            return "cust/transfer/local/addbeneficiary";
-        }
-
-        RetailUser user = retailUserService.getUserByName(principal.getName());
-        localBeneficiaryService.addLocalBeneficiary(user, localBeneficiaryDTO);
-        model.addAttribute("success", "Beneficiary added successfully");
-
-        return "redirect:/retail/transfer/local";
-    }
 
 
     @GetMapping("/dest/{accountId}/accounts")
@@ -104,7 +86,13 @@ public class TransferController {
     }
 
 
-
+    @GetMapping("/local/{accountNo}/nameEnquiry")
+    public
+    @ResponseBody
+    String getBankAccountName(@PathVariable String accountNo) {
+       // return integrationService.viewAccountDetails(accountNo).getAcctName();
+        return "AYOADE FAROOQ";
+    }
 
 
 

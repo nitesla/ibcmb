@@ -253,8 +253,15 @@ public class AccountServiceImpl implements AccountService {
                     && (!accountConfigService.isAccountRestrictedForView(account.getAccountNumber())) && !accountConfigService.isAccountRestrictedForDebitAndCredit(account.getAccountNumber()) && (!accountConfigService.isAccountClassRestrictedForView(account.getSchemeCode()) && (!accountConfigService.isAccountClassRestrictedForDebitAndCredit(account.getSchemeCode())))) {
 
                 Map<String, BigDecimal> balance = integrationService.getBalance(account.getAccountId());
-                String availbalance = balance.get("AvailableBalance").toString();
-                String ledBalance = balance.get("LedgerBalance").toString();
+                String availbalance ="0";
+                String ledBalance="0";
+                  if (balance!=null){
+                       availbalance = balance.get("AvailableBalance").toString();
+                     ledBalance = balance.get("LedgerBalance").toString();
+                  }
+
+
+
                 account.setAccountBalance(availbalance);
                 account.setLedgerBalance(ledBalance);
                 accountsForDebitAndCredit.add(account);

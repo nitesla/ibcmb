@@ -3,10 +3,8 @@ package longbridge.config;
 import longbridge.dtos.SettingDTO;
 import longbridge.models.UserType;
 import longbridge.security.corpuser.CorperateAuthenticationFilter;
+import longbridge.security.retailuser.RetailAuthenticationSuccessHandler;
 import longbridge.services.ConfigurationService;
-
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +24,6 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
-import sun.net.httpserver.AuthFilter;
 
 /**
  * Created by ayoade_farooq@yahoo.com on 4/10/2017.
@@ -196,9 +193,12 @@ public class SecurityConfig {
         UserDetailsService retDetails;
         @Autowired
         BCryptPasswordEncoder bCryptPasswordEncoder;
-        @Autowired
-        @Qualifier("retailAuthenticationSuccessHandler")
-        private AuthenticationSuccessHandler retailAuthenticationSuccessHandler;
+//        @Autowired
+//        @Qualifier("retailAuthenticationSuccessHandler")
+        @Bean
+         AuthenticationSuccessHandler retailAuthenticationSuccessHandler(){
+          return new   RetailAuthenticationSuccessHandler();
+        }
         @Autowired
         @Qualifier("retailAuthenticationFailureHandler")
         private AuthenticationFailureHandler retailAuthenticationFailureHandler;
@@ -222,7 +222,8 @@ public class SecurityConfig {
                     // log in
                     .and().formLogin().loginPage("/login/retail").loginProcessingUrl("/retail/login")
                     .failureUrl("/login/retail?error=true").defaultSuccessUrl("/retail/dashboard")
-                    .successHandler(retailAuthenticationSuccessHandler)
+                   //.successHandler(retailAuthenticationSuccessHandler)
+                   .successHandler(retailAuthenticationSuccessHandler())
                     .failureHandler(retailAuthenticationFailureHandler)
 
                     //.failureForwardUrl()
@@ -264,22 +265,30 @@ public class SecurityConfig {
 
         @Override
         protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+
             auth.userDetailsService(corpDetails).passwordEncoder(bCryptPasswordEncoder);
         }
 
         protected void configure(HttpSecurity http) throws Exception {
-            http.addFilterBefore(new CorperateAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+
+
+            http
+           .addFilterBefore(customFilter() , UsernamePasswordAuthenticationFilter.class);
 
             http
                     .antMatcher("/corporate/**").authorizeRequests()
                     .anyRequest()
+
                     // .authenticated()
                     .hasAuthority(UserType.CORPORATE.toString())
+
                     // log in
                     .and().formLogin().loginPage("/login/corporate").loginProcessingUrl("/corporate/login")
+
                     .failureUrl("/login/corporate?error=true").defaultSuccessUrl("/corporate/dashboard")
                     .successHandler(corpAuthenticationSuccessHandler)
                     .failureHandler(corpAuthenticationFailureHandler)
+
 
                     //.failureForwardUrl()
 
@@ -301,6 +310,17 @@ public class SecurityConfig {
 
 
 
+        @Bean
+        public CorperateAuthenticationFilter customFilter() throws Exception{
+            CorperateAuthenticationFilter  customFilter = new CorperateAuthenticationFilter();
+            customFilter.setAuthenticationManager(authenticationManagerBean());
+            customFilter.setAuthenticationSuccessHandler(corpAuthenticationSuccessHandler);
+            customFilter.setAuthenticationFailureHandler(corpAuthenticationFailureHandler);
+            return customFilter;
+
+
+
+        }
 
 
 

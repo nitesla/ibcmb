@@ -1,1 +1,1 @@
- longbridge.models.audits.listeners.CustomEnversIntegrator
+ longbridge.config.audits.listeners.CustomEnversIntegrator

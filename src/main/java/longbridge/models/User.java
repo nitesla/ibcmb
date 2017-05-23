@@ -34,6 +34,16 @@ public class User extends AbstractEntity{
 
     @ManyToOne
     protected Role role;
+    protected  String entrustId;
+
+
+    public String getEntrustId() {
+        return entrustId;
+    }
+
+    public void setEntrustId(String entrustId) {
+        this.entrustId = entrustId;
+    }
 
     public String getUserName() {
         return userName;

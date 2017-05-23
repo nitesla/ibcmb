@@ -42,6 +42,7 @@ public class OwnTransferController {
     private ApplicationContext appContext;
 
     private String page = "cust/transfer/ownaccount/";
+
     @Autowired
     public OwnTransferController(RetailUserService retailUserService, IntegrationService integrationService, TransferService transferService, AccountService accountService, MessageSource messages, LocaleResolver localeResolver, LocalBeneficiaryService localBeneficiaryService, TransferValidator validator, FinancialInstitutionService financialInstitutionService, ApplicationContext appContext) {
         this.retailUserService = retailUserService;
@@ -55,10 +56,6 @@ public class OwnTransferController {
         this.financialInstitutionService = financialInstitutionService;
         this.appContext = appContext;
     }
-
-
-
-
 
 
     @GetMapping("")
@@ -142,7 +139,6 @@ public class OwnTransferController {
         }
 
     }
-
 
 
     @RequestMapping(path = "{id}/receipt", method = RequestMethod.GET)

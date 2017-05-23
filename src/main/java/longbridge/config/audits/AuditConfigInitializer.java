@@ -1,4 +1,4 @@
-package longbridge.models.audits;
+package longbridge.config.audits;
 
 import java.util.stream.Collectors;
 

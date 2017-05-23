@@ -1,7 +1,7 @@
 package longbridge.repositories;
 
 
-import longbridge.models.audits.CustomRevisionEntity;
+import longbridge.config.audits.CustomRevisionEntity;
 
 /**
  * Created by ayoade_farooq@yahoo.com on 4/6/2017.

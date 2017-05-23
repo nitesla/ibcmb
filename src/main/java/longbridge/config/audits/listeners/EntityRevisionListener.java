@@ -1,7 +1,6 @@
-package longbridge.models.audits.listeners;
+package longbridge.config.audits.listeners;
 
-import longbridge.models.User;
-import longbridge.models.audits.CustomRevisionEntity;
+import longbridge.config.audits.CustomRevisionEntity;
 import longbridge.security.userdetails.CustomUserPrincipal;
 
 import org.hibernate.envers.EntityTrackingRevisionListener;
@@ -10,7 +9,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.io.Serializable;
-import java.security.Principal;
 
 /**
  * Created by ayoade_farooq@yahoo.com on 4/8/2017.

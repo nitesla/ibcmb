@@ -1,7 +1,7 @@
-package longbridge.models.audits;
+package longbridge.config.audits;
 
 
-import longbridge.models.audits.listeners.EntityRevisionListener;
+import longbridge.config.audits.listeners.EntityRevisionListener;
 import org.hibernate.envers.DefaultRevisionEntity;
 import org.hibernate.envers.RevisionEntity;
 
@@ -10,7 +10,6 @@ import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 

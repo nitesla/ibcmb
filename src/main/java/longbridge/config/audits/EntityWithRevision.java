@@ -1,4 +1,4 @@
-package longbridge.models.audits;
+package longbridge.config.audits;
 
 /**
  * Created by ayoade_farooq@yahoo.com on 4/8/2017.
