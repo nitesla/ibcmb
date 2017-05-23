@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head th:replace="corp_layout :: site-head">
+
+</head>
+<body>
+<header th:replace="corp_layout :: corp-header">
+</header>
+
+<section class="content-wrapper">
+    <div class="container">
+
+        <div class="row">
+
+            <div class="col-md-4 col-sm-4" layout:fragment="transferheader">
+                <h5 class="page_header"> Transfer to <span th:text="${beneficiary.preferredName}"></span></h5>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-8 content-bg">
+                <div class="row form-spacing">
+                    <div class="col-md-6 col-sm-6">
+                        <div class="row form-spacing" layout:fragment="transferform">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div th:replace="corp_layout :: corp-sidebar" class="col-md-3 sidebar">
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- CONTENT-WRAPPER SECTION END-->
+<footer th:replace="corp_layout ::corp-footer">
+</footer>
+<script th:src="@{~/customer/js/accountdetails.js}"></script>
+</body>
+
+</html>

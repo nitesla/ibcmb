@@ -45,7 +45,8 @@
 
                             <div class="x_content">
                                 <div class="ibox-content">
-                                    <form method="post" class="form-horizontal" th:action="@{/admin/corporates/rules}" th:object="${corporateRule}">
+                                    <form method="post" class="form-horizontal" th:action="@{/admin/corporates/rules}"
+                                          th:object="${corporateRule}">
 
 
                                         <div th:replace="layout::form-validation"></div>
@@ -62,15 +63,35 @@
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">Upper Limit Amount</label>
                                             <div class="col-sm-6">
-                                                <input type="text" class="form-control" th:field="*{upperLimitAmount}"/>
+                                                <input id="upperLimit" type="text" class="form-control"
+                                                       th:field="*{upperLimitAmount}"/>
+                                            </div>
+                                            <input id="unlimited" type="checkbox" class="checkbox-inline"
+                                                   th:field="*{unlimited}"/>
+                                            <label><strong>Unlimited Amount</strong></label>
+
+                                        </div>
+
+
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">Currency</label>
+                                            <div class="col-sm-6">
+                                                <select class="form-control" th:field="*{currency}">
+                                                    <option th:each="currency: ${currencies}"
+                                                            th:value="${currency.code}"
+                                                            th:text="${currency.description}"
+                                                            th:selected="${currency.code==corporateRule.currency}"></option>
+
+                                                </select>
                                             </div>
                                         </div>
-<br/>
+                                        <br/>
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">Select Authorizers</label>
                                             <div class="col-sm-6">
                                                 <p th:each="user: ${authUserList}">
-                                                    <input type="checkbox" th:field="*{authorizers}" th:value="${user.id}" />
+                                                    <input type="checkbox" th:field="*{authorizers}"
+                                                           th:value="${user.id}"/>
                                                     <label th:text="${user.firstName + ' ' + user.lastName}"></label>
                                                 </p>
                                             </div>
@@ -79,8 +100,10 @@
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">Check If</label>
                                             <div class="col-sm-8">
-                                                <input type="checkbox" class="checkbox-inline" th:field="*{anyOne}"/>
-                                                <label><strong>Any of the users listed above can authorize transactions</strong></label>
+                                                <input id="anyAuthorizer" type="checkbox" class="checkbox-inline"
+                                                       th:field="*{anyCanAuthorize}"/>
+                                                <label><strong>Any of the users selected above can authorize
+                                                    transactions</strong></label>
                                             </div>
                                         </div>
 
@@ -110,7 +133,34 @@
 <script th:inline="javascript">
     /*<![CDATA[*/
     document.getElementById("cancel").onclick = function () {
-        location.href = "/admin/corporates";}
+        location.href = "/admin/corporates";
+    }
+    $(document).ready(function () {
+
+
+        $("#unlimited").change(function () {
+            if ($(this).is(":checked")) {
+                $("#upperLimit").val("");
+                $("#upperLimit").prop("disabled", true);
+            }
+            else {
+                $("#upperLimit").prop("disabled", false);
+
+            }
+        });
+
+        $("#anyAuthorizer").change(function () {
+            if ($(this).is(":checked")) {
+                if (!$("input[name='authorizers']").is(":checked")) {
+                    $("input[name='authorizers']").prop("checked", true);
+                }
+            }
+
+
+
+        });
+    })
+
     /*]]>*/
 </script>
 

@@ -20,7 +20,9 @@ public class CorpTransferRule extends AbstractEntity {
 
     private BigDecimal lowerLimitAmount;
     private BigDecimal upperLimitAmount;
-    private boolean anyOne;
+    private String currency;
+    private boolean unlimited;
+    private boolean anyCanAuthorize;
 
     @ManyToOne
     private Corporate corporate;
@@ -44,12 +46,28 @@ public class CorpTransferRule extends AbstractEntity {
         this.upperLimitAmount = upperLimitAmount;
     }
 
-    public boolean isAnyOne() {
-        return anyOne;
+    public String getCurrency() {
+        return currency;
     }
 
-    public void setAnyOne(boolean anyOne) {
-        this.anyOne = anyOne;
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
+    public boolean isAnyCanAuthorize() {
+        return anyCanAuthorize;
+    }
+
+    public void setAnyCanAuthorize(boolean anyCanAuthorize) {
+        this.anyCanAuthorize = anyCanAuthorize;
+    }
+
+    public boolean isUnlimited() {
+        return unlimited;
+    }
+
+    public void setUnlimited(boolean unlimited) {
+        this.unlimited = unlimited;
     }
 
     public Corporate getCorporate() {

@@ -1,13 +1,8 @@
 package longbridge.services;
 
-import longbridge.dtos.AccountDTO;
-import longbridge.dtos.CorpTransferRuleDTO;
-import longbridge.dtos.CorporateDTO;
-import longbridge.dtos.CorporateUserDTO;
+import longbridge.dtos.*;
 import longbridge.exception.InternetBankingException;
-import longbridge.models.CorpLimit;
-import longbridge.models.Corporate;
-import longbridge.models.CorporateUser;
+import longbridge.models.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -177,5 +172,9 @@ public interface CorporateService{
     String changeUserActivationStatus(Long id) throws InternetBankingException;
 
     List<CorporateUserDTO> getAuthorizers(Long corpId);
+
+    List<CorporateUser> getQualifiedAuthorizers(CorpTransferRequest transferRequest);
+
+    public CorpTransferRule getApplicableTransferRule(CorpTransferRequest transferRequest);
 
 }

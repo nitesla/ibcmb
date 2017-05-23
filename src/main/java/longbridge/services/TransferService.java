@@ -32,7 +32,9 @@ public interface TransferService {
     boolean saveTransfer(TransferRequestDTO transferRequestDTO) throws TransferException;
 
     void deleteTransfer(Long id) throws InternetBankingException;
+
     boolean validateBalance(TransferRequestDTO transferRequest);
+
     void validateTransfer(TransferRequestDTO transferRequest);
 
 

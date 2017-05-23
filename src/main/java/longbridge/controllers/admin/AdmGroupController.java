@@ -1,4 +1,4 @@
-package longbridge.controllers.operations;
+package longbridge.controllers.admin;
 
 import longbridge.dtos.CodeDTO;
 import longbridge.dtos.ContactDTO;
@@ -42,9 +42,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 
 @Controller
-@RequestMapping("/ops/groups")
+@RequestMapping("/admin/groups")
 
-public class OpsGroupController {
+public class AdmGroupController {
 
     @Autowired
     private CodeService codeService;
@@ -67,7 +67,7 @@ public class OpsGroupController {
     @GetMapping("/new")
     public String addGroup(Model model) {
         model.addAttribute("group", new UserGroupDTO());
-        return "ops/group/add";
+        return "adm/group/add";
     }
 
     @PostMapping
@@ -79,7 +79,7 @@ public class OpsGroupController {
             if("".equals(name)){
                 model.addAttribute("group", new UserGroupDTO());
                 model.addAttribute("failure","Group name is required");
-                return "ops/group/add";
+                return "adm/group/add";
             }
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
@@ -104,11 +104,11 @@ public class OpsGroupController {
 
             String message = userGroupService.addGroup(userGroup);
             redirectAttributes.addFlashAttribute("message", message);
-            return "redirect:/ops/groups";
+            return "redirect:/admin/groups";
         } catch (Exception ibe) {
             logger.error("Error creating group", ibe);
             model.addAttribute("failure", messageSource.getMessage("group.add.failure", null, locale));
-            return "ops/group/add";
+            return "adm/group/add";
         }
 
 
@@ -116,7 +116,7 @@ public class OpsGroupController {
 
     @GetMapping
     public String getGroups(Model model) {
-        return "ops/group/view";
+        return "adm/group/view";
     }
 
     @GetMapping("/all")
@@ -150,7 +150,7 @@ public class OpsGroupController {
     public String editGroup(@PathVariable Long id, Model model) {
         UserGroupDTO group = userGroupService.getGroup(id);
         model.addAttribute("group", group);
-        return "/ops/group/edit";
+        return "/adm/group/edit";
 
     }
 
@@ -189,11 +189,11 @@ public class OpsGroupController {
 
             String message = userGroupService.updateGroup(userGroup);
             redirectAttributes.addFlashAttribute("message", message);
-            return "redirect:/ops/groups";
+            return "redirect:/admin/groups";
         } catch (Exception ibe) {
             logger.error("Error creating group", ibe);
             model.addAttribute("failure", messageSource.getMessage("group.update.failure", null, locale));
-            return "ops/group/edit";
+            return "adm/group/edit";
         }
 
 
@@ -204,25 +204,24 @@ public class OpsGroupController {
         try {
             String message = userGroupService.deleteGroup(id);
             redirectAttributes.addFlashAttribute("message", message);
-            return "redirect:/ops/groups";
         } catch (InternetBankingException ibe) {
             logger.error("Error deleting group", ibe);
             redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("group.delete.failure", null, locale));
-            return "redirect:/ops/groups";
 
         }
+        return "redirect:/admin/groups";
     }
 
     @GetMapping("/find")
     public String findOpsUser(Model model) {
         OperationsUser user = new OperationsUser();
         model.addAttribute("operationsUser", user);
-        return "/ops/group/add-op";
+        return "/adm/group/add-op";
     }
 
     @GetMapping("/contact/new")
     public String addContact(Model model) {
-        return "/ops/group/add-ex";
+        return "/adm/group/add-ex";
     }
 
 }

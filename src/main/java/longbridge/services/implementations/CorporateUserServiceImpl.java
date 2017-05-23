@@ -3,10 +3,8 @@ package longbridge.services.implementations;
 import longbridge.dtos.CorporateUserDTO;
 import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.InternetBankingException;
-import longbridge.models.Corporate;
-import longbridge.models.CorporateUser;
-import longbridge.models.Email;
-import longbridge.models.Role;
+import longbridge.forms.AlertPref;
+import longbridge.models.*;
 import longbridge.repositories.CorpLimitRepo;
 import longbridge.repositories.CorporateUserRepo;
 import longbridge.services.*;
@@ -57,6 +55,9 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     @Autowired
     RoleService roleService;
 
+    @Autowired
+            CodeService codeService;
+
     Locale locale = LocaleContextHolder.getLocale();
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -75,9 +76,21 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     }
 
     @Override
+    public CorporateUserDTO getUserDTOByName(String name) {
+        CorporateUser corporateUser = this.corporateUserRepo.findFirstByUserName(name);
+        return convertEntityToDTO(corporateUser);
+    }
+
+    @Override
     public CorporateUser getUserByName(String username) {
         return corporateUserRepo.findByUserName(username);
     }
+
+    /*@Override
+    public CorporateUser getUserByCustomerId(String custId) {
+        CorporateUser corporateUser = this.corporateUserRepo.findFirstByCustomerId(custId);
+        return corporateUser;
+    }*/
 
     @Override
     public Iterable<CorporateUserDTO> getUsers(Corporate corporate) {
@@ -232,6 +245,28 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         } catch (Exception e) {
             logger.error("Error Occurred {}", e);
         }
+    }
+
+    @Override
+    public boolean changeAlertPreference(CorporateUserDTO corporateUser, AlertPref alertPreference) {
+        boolean ok = false;
+        try {
+            if (getUser(corporateUser.getId()) == null) {
+                logger.error("USER DOES NOT EXIST");
+                return ok;
+            }
+
+            CorporateUser corp = convertDTOToEntity(corporateUser);
+            Code code = codeService.getByTypeAndCode("ALERT_PREFERENCE", alertPreference.getPreference());
+            corp.setAlertPreference(code);
+            this.corporateUserRepo.save(corp);
+            logger.info("USER {}'s alert preference set", corp.getId());
+            ok = true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("ERROR OCCURRED {}", e.getMessage());
+        }
+        return ok;
     }
 
     private CorporateUser convertDTOToEntity(CorporateUserDTO CorporateUserDTO){

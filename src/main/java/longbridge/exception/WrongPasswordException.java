@@ -5,7 +5,7 @@ package longbridge.exception;
  */
 public class WrongPasswordException extends PasswordException{
 
-    public WrongPasswordException(){super("Wrong old password provided");}
+    public WrongPasswordException(){super("Incorrect old password provided");}
 
 
     public WrongPasswordException(String message){super(message);}

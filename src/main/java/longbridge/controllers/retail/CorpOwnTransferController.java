@@ -28,7 +28,7 @@ import java.util.Map;
  */
 @Controller
 @RequestMapping("/retail/transfer/ownaccount")
-public class OwnTransferController {
+public class CorpOwnTransferController {
 
     private RetailUserService retailUserService;
     private IntegrationService integrationService;
@@ -43,7 +43,7 @@ public class OwnTransferController {
 
     private String page = "cust/transfer/ownaccount/";
     @Autowired
-    public OwnTransferController(RetailUserService retailUserService, IntegrationService integrationService, TransferService transferService, AccountService accountService, MessageSource messages, LocaleResolver localeResolver, LocalBeneficiaryService localBeneficiaryService, TransferValidator validator, FinancialInstitutionService financialInstitutionService, ApplicationContext appContext) {
+    public CorpOwnTransferController(RetailUserService retailUserService, IntegrationService integrationService, TransferService transferService, AccountService accountService, MessageSource messages, LocaleResolver localeResolver, LocalBeneficiaryService localBeneficiaryService, TransferValidator validator, FinancialInstitutionService financialInstitutionService, ApplicationContext appContext) {
         this.retailUserService = retailUserService;
         this.integrationService = integrationService;
         this.transferService = transferService;

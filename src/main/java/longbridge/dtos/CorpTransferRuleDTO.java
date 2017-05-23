@@ -1,9 +1,7 @@
 package longbridge.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.hibernate.validator.constraints.NotEmpty;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -14,11 +12,11 @@ public class CorpTransferRuleDTO {
     @JsonProperty("DT_RowId")
     private Long id;
     private int version;
-    @NotEmpty(message = "lowerLimitAmount")
-    private BigDecimal lowerLimitAmount;
-    @NotEmpty(message = "upperLimitAmount")
-    private BigDecimal upperLimitAmount;
-    private boolean anyOne;
+    private String lowerLimitAmount;
+    private String upperLimitAmount;
+    private String currency;
+    private boolean unlimited;
+    private boolean anyCanAuthorize;
     private String corporateId;
     private int numOfAuthorizers;
     private String corporateName;
@@ -40,28 +38,44 @@ public class CorpTransferRuleDTO {
         this.version = version;
     }
 
-    public BigDecimal getLowerLimitAmount() {
+    public String getLowerLimitAmount() {
         return lowerLimitAmount;
     }
 
-    public void setLowerLimitAmount(BigDecimal lowerLimitAmount) {
+    public void setLowerLimitAmount(String lowerLimitAmount) {
         this.lowerLimitAmount = lowerLimitAmount;
     }
 
-    public BigDecimal getUpperLimitAmount() {
+    public String getUpperLimitAmount() {
         return upperLimitAmount;
     }
 
-    public void setUpperLimitAmount(BigDecimal upperLimitAmount) {
+    public void setUpperLimitAmount(String upperLimitAmount) {
         this.upperLimitAmount = upperLimitAmount;
     }
 
-    public boolean isAnyOne() {
-        return anyOne;
+    public String getCurrency() {
+        return currency;
     }
 
-    public void setAnyOne(boolean anyOne) {
-        this.anyOne = anyOne;
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
+    public boolean isUnlimited() {
+        return unlimited;
+    }
+
+    public void setUnlimited(boolean unlimited) {
+        this.unlimited = unlimited;
+    }
+
+    public boolean isAnyCanAuthorize() {
+        return anyCanAuthorize;
+    }
+
+    public void setAnyCanAuthorize(boolean anyCanAuthorize) {
+        this.anyCanAuthorize = anyCanAuthorize;
     }
 
     public String getCorporateId() {

@@ -1,11 +1,12 @@
 package longbridge.controllers.admin;
 
-import longbridge.dtos.AccountDTO;
-import longbridge.dtos.CorpTransferRuleDTO;
-import longbridge.dtos.CorporateDTO;
-import longbridge.dtos.CorporateUserDTO;
+import longbridge.dtos.*;
 import longbridge.exception.InternetBankingException;
-import longbridge.models.Corporate;
+import longbridge.exception.TransferRuleException;
+import longbridge.models.*;
+import longbridge.repositories.CorpTransferRequestRepo;
+import longbridge.repositories.CorporateRepo;
+import longbridge.services.CodeService;
 import longbridge.services.CorporateService;
 import longbridge.services.CorporateUserService;
 import longbridge.services.IntegrationService;
@@ -20,6 +21,7 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.data.jpa.datatables.repository.DataTablesUtils;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -27,7 +29,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.validation.Valid;
+import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +51,9 @@ public class AdmCorporateController {
 
     @Autowired
     private MessageSource messageSource;
+
+    @Autowired
+    CodeService codeService;
 
     @Autowired
     IntegrationService integrationService;
@@ -247,27 +252,54 @@ public class AdmCorporateController {
     public String addCorporateRule(@PathVariable Long corpId, Model model) {
         CorporateDTO corporate = corporateService.getCorporate(corpId);
         List<CorporateUserDTO> authorizers = corporateService.getAuthorizers(corpId);
+        Iterable<CodeDTO> currencies = codeService.getCodesByType("CURRENCY");
+
         model.addAttribute("corporate", corporate);
         model.addAttribute("authUserList", authorizers);
+        model.addAttribute("currencies", currencies);
         model.addAttribute("corporateRule", new CorpTransferRuleDTO());
         return "adm/corporate/addrule";
     }
 
     @PostMapping("/rules")
     public String createCorporateRule(@ModelAttribute("corporateRule") CorpTransferRuleDTO transferRuleDTO, BindingResult bindingResult, Principal principal, WebRequest webRequest, RedirectAttributes redirectAttributes, Model model, Locale locale) {
-//        if (bindingResult.hasErrors()) {
-//            bindingResult.addError(new ObjectError("exception", messageSource.getMessage("form.fields.required", null, locale)));
-//            return "adm/corporate/addrule";
-//        }
 
+        try {
+            BigDecimal lowerAmount = new BigDecimal(transferRuleDTO.getLowerLimitAmount());
+            if (!transferRuleDTO.isUnlimited()) {
+                BigDecimal upperAmount = new BigDecimal(transferRuleDTO.getUpperLimitAmount());
 
-        String[] authorizerIds = webRequest.getParameterValues("authorizers");
+            }
+        } catch (NumberFormatException nfe) {
+            CorporateDTO corporate = corporateService.getCorporate(NumberUtils.toLong(transferRuleDTO.getCorporateId()));
+            List<CorporateUserDTO> authorizers = corporateService.getAuthorizers(NumberUtils.toLong(transferRuleDTO.getCorporateId()));
+            Iterable<CodeDTO> currencies = codeService.getCodesByType("CURRENCY");
+
+            model.addAttribute("corporate", corporate);
+            model.addAttribute("authUserList", authorizers);
+            model.addAttribute("currencies", currencies);
+            bindingResult.addError(new ObjectError("exception", messageSource.getMessage("rule.amount.invalid", null, locale)));
+
+            return "adm/corporate/addrule";
+
+        }
+
+        String[] authorizerIds;
+        authorizerIds = webRequest.getParameterValues("authorizers");
         List<CorporateUserDTO> authorizerDTOs = new ArrayList<>();
         CorporateUserDTO corporateUser;
-        for (String authorizerId : authorizerIds) {
-            corporateUser = new CorporateUserDTO();
-            corporateUser.setId(NumberUtils.toLong(authorizerId));
-            authorizerDTOs.add(corporateUser);
+
+        if (authorizerIds != null) {
+            for (String authorizerId : authorizerIds) {
+                corporateUser = new CorporateUserDTO();
+                corporateUser.setId(NumberUtils.toLong(authorizerId));
+                authorizerDTOs.add(corporateUser);
+            }
+        } else if (authorizerIds == null && transferRuleDTO.isAnyCanAuthorize()) {
+            authorizerDTOs = corporateService.getAuthorizers(Long.parseLong(transferRuleDTO.getCorporateId()));
+        }
+        if (transferRuleDTO.isUnlimited()) {
+            transferRuleDTO.setUpperLimitAmount(new BigDecimal(transferRuleDTO.getLowerLimitAmount()).multiply(new BigDecimal("5")).toString());
         }
         transferRuleDTO.setAuthorizers(authorizerDTOs);
 
@@ -275,13 +307,26 @@ public class AdmCorporateController {
             String message = corporateService.addCorporateRule(transferRuleDTO);
             redirectAttributes.addFlashAttribute("message", message);
             return "redirect:/admin/corporates/" + transferRuleDTO.getCorporateId() + "/view";
+        } catch (TransferRuleException tre) {
+            logger.error("Failed to create transfer rule", tre);
+            bindingResult.addError(new ObjectError("exception", tre.getMessage()));
+            CorporateDTO corporate = corporateService.getCorporate(NumberUtils.toLong(transferRuleDTO.getCorporateId()));
+            List<CorporateUserDTO> authorizers = corporateService.getAuthorizers(NumberUtils.toLong(transferRuleDTO.getCorporateId()));
+            Iterable<CodeDTO> currencies = codeService.getCodesByType("CURRENCY");
+            model.addAttribute("corporate", corporate);
+            model.addAttribute("authUserList", authorizers);
+            model.addAttribute("currencies", currencies);
+            return "adm/corporate/addrule";
+
         } catch (InternetBankingException ibe) {
             logger.error("Failed to create transfer rule", ibe);
             bindingResult.addError(new ObjectError("exception", ibe.getMessage()));
             CorporateDTO corporate = corporateService.getCorporate(NumberUtils.toLong(transferRuleDTO.getCorporateId()));
             List<CorporateUserDTO> authorizers = corporateService.getAuthorizers(NumberUtils.toLong(transferRuleDTO.getCorporateId()));
+            Iterable<CodeDTO> currencies = codeService.getCodesByType("CURRENCY");
             model.addAttribute("corporate", corporate);
             model.addAttribute("authUserList", authorizers);
+            model.addAttribute("currencies", currencies);
             return "adm/corporate/addrule";
         }
     }
@@ -290,6 +335,8 @@ public class AdmCorporateController {
     public String editCorporateRule(@PathVariable Long id, Model model) {
         CorpTransferRuleDTO transferRuleDTO = corporateService.getCorporateRule(id);
         List<CorporateUserDTO> authorizers = corporateService.getAuthorizers(NumberUtils.toLong(transferRuleDTO.getCorporateId()));
+        Iterable<CodeDTO> currencies = codeService.getCodesByType("CURRENCY");
+
         for (CorporateUserDTO userDTO : authorizers) {
             for (CorporateUserDTO authorizer : transferRuleDTO.getAuthorizers()) {
                 if (userDTO.getId() == authorizer.getId()) {
@@ -299,24 +346,48 @@ public class AdmCorporateController {
         }
         model.addAttribute("authUserList", authorizers);
         model.addAttribute("corporateRule", transferRuleDTO);
+        model.addAttribute("currencies", currencies);
+
         return "adm/corporate/editrule";
     }
 
     @PostMapping("/rules/update")
     public String updateCorporateRule(@ModelAttribute("corporateRule") CorpTransferRuleDTO transferRuleDTO, BindingResult bindingResult, Principal principal, Model model, WebRequest webRequest, RedirectAttributes redirectAttributes, Locale locale) {
 
-        //        if (bindingResult.hasErrors()) {
-//            bindingResult.addError(new ObjectError("exception", messageSource.getMessage("form.fields.required", null, locale)));
-//            return "adm/corporate/addrule";
-//        }
+        try {
+            BigDecimal lowerAmount = new BigDecimal(transferRuleDTO.getLowerLimitAmount());
+            if (!transferRuleDTO.isUnlimited()) {
+                BigDecimal upperAmount = new BigDecimal(transferRuleDTO.getUpperLimitAmount());
 
-        String[] authorizerIds = webRequest.getParameterValues("authorizers");
+            }
+        } catch (NumberFormatException nfe) {
+            CorporateDTO corporate = corporateService.getCorporate(NumberUtils.toLong(transferRuleDTO.getCorporateId()));
+            List<CorporateUserDTO> authorizers = corporateService.getAuthorizers(NumberUtils.toLong(transferRuleDTO.getCorporateId()));
+            Iterable<CodeDTO> currencies = codeService.getCodesByType("CURRENCY");
+
+            model.addAttribute("corporate", corporate);
+            model.addAttribute("authUserList", authorizers);
+            model.addAttribute("currencies", currencies);
+            bindingResult.addError(new ObjectError("exception", messageSource.getMessage("rule.amount.invalid", null, locale)));
+
+            return "adm/corporate/editrule";
+
+        }
+        String[] authorizerIds;
+        authorizerIds = webRequest.getParameterValues("authorizers");
         List<CorporateUserDTO> authorizerDTOs = new ArrayList<>();
         CorporateUserDTO corporateUser;
-        for (String authorizerId : authorizerIds) {
-            corporateUser = new CorporateUserDTO();
-            corporateUser.setId(NumberUtils.toLong(authorizerId));
-            authorizerDTOs.add(corporateUser);
+        if (authorizerIds != null) {
+            for (String authorizerId : authorizerIds) {
+                corporateUser = new CorporateUserDTO();
+                corporateUser.setId(NumberUtils.toLong(authorizerId));
+                authorizerDTOs.add(corporateUser);
+            }
+        } else if (authorizerIds == null && transferRuleDTO.isAnyCanAuthorize()) {
+            authorizerDTOs = corporateService.getAuthorizers(Long.parseLong(transferRuleDTO.getCorporateId()));
+        }
+        if (transferRuleDTO.isUnlimited()) {
+            transferRuleDTO.setUpperLimitAmount(new BigDecimal(transferRuleDTO.getLowerLimitAmount()).multiply(new BigDecimal("5")).toString());
         }
         transferRuleDTO.setAuthorizers(authorizerDTOs);
 
@@ -324,13 +395,26 @@ public class AdmCorporateController {
             String message = corporateService.updateCorporateRule(transferRuleDTO);
             redirectAttributes.addFlashAttribute("message", message);
             return "redirect:/admin/corporates/" + transferRuleDTO.getCorporateId() + "/view";
+        } catch (TransferRuleException tre) {
+            logger.error("Failed to update transfer rule", tre);
+            bindingResult.addError(new ObjectError("exception", tre.getMessage()));
+            CorporateDTO corporate = corporateService.getCorporate(NumberUtils.toLong(transferRuleDTO.getCorporateId()));
+            List<CorporateUserDTO> authorizers = corporateService.getAuthorizers(NumberUtils.toLong(transferRuleDTO.getCorporateId()));
+            Iterable<CodeDTO> currencies = codeService.getCodesByType("CURRENCY");
+            model.addAttribute("corporate", corporate);
+            model.addAttribute("authUserList", authorizers);
+            model.addAttribute("currencies", currencies);
+            return "adm/corporate/editrule";
+
         } catch (InternetBankingException ibe) {
             logger.error("Failed to update transfer rule", ibe);
             bindingResult.addError(new ObjectError("exception", ibe.getMessage()));
             CorporateDTO corporate = corporateService.getCorporate(NumberUtils.toLong(transferRuleDTO.getCorporateId()));
             List<CorporateUserDTO> authorizers = corporateService.getAuthorizers(NumberUtils.toLong(transferRuleDTO.getCorporateId()));
+            Iterable<CodeDTO> currencies = codeService.getCodesByType("CURRENCY");
             model.addAttribute("corporate", corporate);
             model.addAttribute("authUserList", authorizers);
+            model.addAttribute("currencies", currencies);
             return "adm/corporate/editrule";
         }
     }
@@ -364,6 +448,31 @@ public class AdmCorporateController {
 
     }
 
+    @Autowired
+    CorporateRepo corporateRepo;
+
+    @Autowired
+    CorpTransferRequestRepo transferRequestRepo;
+
+    @GetMapping("/{id}/{amount}")
+    @Transactional
+    public void getQualifiedAuthorizers(@PathVariable Long id, @PathVariable String amount) {
+        CorpTransferRequest transferRequest = new CorpTransferRequest();
+        transferRequest.setAmount(new BigDecimal(amount));
+        Corporate corporate = corporateRepo.findOne(id);
+        transferRequest.setCorporate(corporate);
+
+        List<CorporateUser> authorizers = corporateService.getQualifiedAuthorizers(transferRequest);
+        List<PendingAuthorization> pendingAuthorizations = new ArrayList<>();
+        for (CorporateUser authorizer : authorizers) {
+            PendingAuthorization pendingAuthorization = new PendingAuthorization();
+            pendingAuthorization.setAuthorizer(authorizer);
+            pendingAuthorization.setCorpTransferRequest(transferRequest);
+            pendingAuthorizations.add(pendingAuthorization);
+        }
+        transferRequest.setPendingAuthorizations(pendingAuthorizations);
+        transferRequestRepo.save(transferRequest);
+    }
 
 }
 

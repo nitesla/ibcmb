@@ -53,7 +53,7 @@
                             </div>
 
                             <div class="x_content">
-                                <form method="post" th:action="@{/ops/groups/update}" id="" th:object="${group}"
+                                <form method="post" th:action="@{/admin/groups/update}" id="" th:object="${group}"
                                       class="form-horizontal">
 
                                     <div class="x_content">
@@ -141,7 +141,7 @@
 <script type="text/javascript"  class="init" th:inline="javascript">
     /*<![CDATA[*/
     var groupId=[[${group.id}]];
-    var url ="/ops/groups/"+groupId+"/all";
+    var url ="/admin/groups/"+groupId+"/all";
 
     $(document).ready(function() {
         var counter = 0;
@@ -192,7 +192,7 @@
         $('#button_add').on('click', function(e) {
             e.preventDefault()
             var options = {
-                url: "/ops/groups/contact/new",
+                url: "/admin/groups/contact/new",
                 title: 'Add ',
                 size: eModal.size.lg,
                 subtitle: 'External Users',
@@ -233,7 +233,7 @@
         $('#button_add_op').click(function(e) {
             e.preventDefault()
             var options = {
-                url: "/ops/groups/find",
+                url: "/admin/groups/find",
                 title: 'Select ',
                 size: eModal.size.lg,
                 subtitle: 'Operations Users',
@@ -276,7 +276,7 @@
     });
 
     document.getElementById("cancel").onclick = function() {
-        location.href = "/ops/groups"
+        location.href = "/admin/groups"
     }
     /*]]>*/
 </script>

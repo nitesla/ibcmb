@@ -32,6 +32,8 @@ public class TransferRequest extends AbstractEntity{
 
     private String remarks;
 
+    private String status;
+
     private String referenceNumber;
 
     private String userReferenceNumber;
@@ -105,6 +107,14 @@ public class TransferRequest extends AbstractEntity{
 
     public void setRemarks(String remarks) {
         this.remarks = remarks;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public String getReferenceNumber() {
