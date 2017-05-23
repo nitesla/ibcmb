@@ -39,6 +39,7 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 	private Locale locale = LocaleContextHolder.getLocale();
+
 	@Autowired
 	private MessageSource messageSource;
 
@@ -125,6 +126,7 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 			serviceReqConfig.setId(serviceReqConfigDTO.getId());
 			serviceReqConfig.setVersion(serviceReqConfigDTO.getVersion());
 			serviceReqConfig.setRequestName(serviceReqConfigDTO.getRequestName());
+			serviceReqConfig.setAuthenticate(serviceReqConfigDTO.isAuthenticate());
 			serviceReqConfig.setRequestType(serviceReqConfigDTO.getRequestType());
 			serviceReqConfig.setGroupId(serviceReqConfigDTO.getGroupId());
 			serviceReqConfig.setFormFields(fields);

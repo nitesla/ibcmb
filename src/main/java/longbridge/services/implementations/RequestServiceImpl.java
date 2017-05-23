@@ -1,11 +1,14 @@
 package longbridge.services.implementations;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import longbridge.dtos.*;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.*;
 import longbridge.repositories.*;
 import longbridge.services.*;
 import longbridge.utils.DateFormatter;
+import longbridge.utils.NameValue;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,10 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 /**
  * Created by Fortune on 4/7/2017.
@@ -95,12 +95,23 @@ public class RequestServiceImpl implements RequestService {
             serviceRequest.setUser(retailUserRepo.findOne(serviceRequest.getUser().getId()));
             String name = getFullName(serviceRequest);
             ServiceReqConfigDTO config = reqConfigService.getServiceReqConfig(serviceRequest.getServiceReqConfigId());
-            String body = serviceRequest.getBody();//TODO format body
+
+            //***///
+            ObjectMapper objectMapper = new ObjectMapper();
+            ArrayList<NameValue> myFormObjects = objectMapper.readValue(serviceRequest.getBody(), new TypeReference<ArrayList<NameValue>>() {
+            });
+
+            StringBuilder messageBody = new StringBuilder();
+            for(NameValue nameValue : myFormObjects){
+                messageBody.append(nameValue.getName() + " : " + nameValue.getValue() + "\n");
+            }
+
+            String message = messageBody.toString();
             serviceRequestRepo.save(serviceRequest);
 
             Email email = new Email.Builder().setSender("info@ibanking.coronationmb.com")
                     .setSubject("Service Request from " + name)
-                    .setBody(body)
+                    .setBody(message)
                     .build();
             groupMessageService.send(config.getGroupId(), email);
             return messageSource.getMessage("request.add.success", null, locale);

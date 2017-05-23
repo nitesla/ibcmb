@@ -236,18 +236,25 @@ public class AdmCorporateController {
     }
 
     @PostMapping("/account/new")
-    public String linkAccountPost(AccountDTO accountDTO, BindingResult result, RedirectAttributes redirectAttributes) {
+    public String linkAccountPost(AccountDTO accountDTO, BindingResult result, Model model, RedirectAttributes redirectAttributes, Locale locale) {
         if (result.hasErrors()) {
-            return "adm/corporate/new";
+            return "adm/corporate/addAccount";
         }
 
-        //integrationService.fetchAccount(accountDTO.getAccountNumber());
+        try {
+            Corporate corporate = corporateService.getCorporateByCustomerId(accountDTO.getCustomerId());
+            String message = corporateService.addAccount(corporate, accountDTO);
+            Long corporateId = corporate.getId();
+            redirectAttributes.addFlashAttribute("message", message);
+            return "redirect:/admin/corporates/" + corporateId + "/view";
+        }catch (InternetBankingException ibe){
+            Corporate corporate = corporateService.getCorporateByCustomerId(accountDTO.getCustomerId());
+            model.addAttribute("account", accountDTO);
+            model.addAttribute("corporate", corporate);
+            result.addError(new ObjectError("exception", messageSource.getMessage("corporate.account.add.failure", null, locale)));
+            return "adm/corporate/addAccount";
+        }
 
-        Corporate corporate = corporateService.getCorporateByCustomerId(accountDTO.getCustomerId());
-        String message = corporateService.addAccount(corporate, accountDTO);
-        Long corporateId = corporate.getId();
-        redirectAttributes.addFlashAttribute("message", message);
-        return "redirect:/admin/corporates/" + corporateId + "/view";
     }
 
     @GetMapping("{corpId}/rules/new")

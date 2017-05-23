@@ -5,6 +5,7 @@ import longbridge.exception.InternetBankingException;
 import longbridge.models.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 
@@ -20,6 +21,7 @@ public interface CorporateService{
      *
      * @param corporate the corporate customer
      */
+    @PreAuthorize("hasAuthority('ADD_CORPORATE')")
     String  addCorporate(CorporateDTO corporate) throws InternetBankingException;
 
     /**
@@ -27,6 +29,7 @@ public interface CorporateService{
      *
      * @param corporateId the corporate customer's id
      */
+    @PreAuthorize("hasAuthority('DELETE_CORPORATE')")
     String deleteCorporate(Long corporateId) throws InternetBankingException;
 
     /**
@@ -34,6 +37,7 @@ public interface CorporateService{
      *
      * @param corporate the corporate customer
      */
+    @PreAuthorize("hasAuthority('UPDATE_CORPORATE')")
     String updateCorporate(CorporateDTO corporate) throws InternetBankingException;
 
     /**

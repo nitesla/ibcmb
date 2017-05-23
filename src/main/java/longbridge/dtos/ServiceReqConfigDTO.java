@@ -15,6 +15,7 @@ public class ServiceReqConfigDTO {
 	@NotEmpty(message = "requestName")
     private String requestName;
     private String requestType;
+    private boolean authenticate;
     private Long groupId;
     private int version;
     private ArrayList<ServiceReqFormFieldDTO> formFields;
@@ -66,6 +67,14 @@ public class ServiceReqConfigDTO {
 
     public void setFormFields(ArrayList<ServiceReqFormFieldDTO> formFields) {
         this.formFields = formFields;
+    }
+
+    public boolean isAuthenticate() {
+        return authenticate;
+    }
+
+    public void setAuthenticate(boolean authenticate) {
+        this.authenticate = authenticate;
     }
 
     @Override

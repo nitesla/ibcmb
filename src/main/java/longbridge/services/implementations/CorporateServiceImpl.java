@@ -129,8 +129,18 @@ public class CorporateServiceImpl implements CorporateService {
 
     @Override
     public String addAccount(Corporate corporate, AccountDTO accountDTO) throws InternetBankingException {
-        accountService.AddAccount(corporate.getCustomerId(), accountDTO);
-        return messageSource.getMessage("account.add.success", null, locale);
+
+        try{
+            boolean ok = accountService.AddAccount(corporate.getCustomerId(), accountDTO);
+            if (ok){
+                return messageSource.getMessage("account.add.success", null, locale);
+            }else {
+                throw new InternetBankingException(messageSource.getMessage("corporate.account.add.failure", null, locale));
+            }
+
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("corporate.account.add.failure", null, locale), e);
+        }
     }
 
     @Override
