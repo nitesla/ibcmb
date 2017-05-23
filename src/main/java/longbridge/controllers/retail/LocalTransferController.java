@@ -31,11 +31,8 @@ import java.util.Locale;
 public class LocalTransferController {
 
     private RetailUserService retailUserService;
-    private IntegrationService integrationService;
     private TransferService transferService;
-    private AccountService accountService;
     private MessageSource messages;
-    private LocaleResolver localeResolver;
     private LocalBeneficiaryService localBeneficiaryService;
     private FinancialInstitutionService financialInstitutionService;
     private String page = "cust/transfer/local/";
@@ -45,11 +42,8 @@ public class LocalTransferController {
     @Autowired
     public LocalTransferController(RetailUserService retailUserService, IntegrationService integrationService, TransferService transferService, AccountService accountService, MessageSource messages, LocaleResolver localeResolver, LocalBeneficiaryService localBeneficiaryService, FinancialInstitutionService financialInstitutionService) {
         this.retailUserService = retailUserService;
-        this.integrationService = integrationService;
         this.transferService = transferService;
-        this.accountService = accountService;
         this.messages = messages;
-        this.localeResolver = localeResolver;
         this.localBeneficiaryService = localBeneficiaryService;
         this.financialInstitutionService = financialInstitutionService;
     }
