@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface CorporateUserRepo extends JpaRepository<CorporateUser, Long> {
     CorporateUser findFirstByUserName(String s);
+//    CorporateUser findFirstByCustomerId(String customerId);
 	Iterable<CorporateUser> findByRole(Role r);
     Page<CorporateUser> findByRole(Role r, Pageable pageDetail);
     CorporateUser   findByUserName(String s);

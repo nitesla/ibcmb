@@ -1,14 +1,16 @@
-package longbridge.controllers.retail;
+/*
+package longbridge.controllers.corporate;
 
 import longbridge.dtos.AccountDTO;
 import longbridge.dtos.CodeDTO;
-import longbridge.dtos.RetailUserDTO;
+import longbridge.dtos.CorporateUserDTO;
 import longbridge.forms.AlertPref;
 import longbridge.forms.ChangePassword;
-import longbridge.models.RetailUser;
+import longbridge.models.CorporateUser;
 import longbridge.services.AccountService;
 import longbridge.services.CodeService;
-import longbridge.services.RetailUserService;
+
+import longbridge.services.CorporateUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,57 +26,59 @@ import javax.validation.Valid;
 import java.security.Principal;
 import java.util.List;
 
+*/
 /**
- * Created by Fortune on 4/5/2017.
- * Modified by Wunmi
- */
-@Controller
-@RequestMapping("/retail")
-public class SettingController {
+ * Created by SYLVESTER on 5/22/2017.
+ *//*
 
+@Controller
+@RequestMapping("/corporate")
+public class CorpSettingController {
     private Logger logger= LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private CodeService codeService;
 
     @Autowired
-    private RetailUserService retailUserService;
+    private CorporateUserService corporateUserService;
 
     @Autowired
     private AccountService accountService;
 
     @RequestMapping("/dashboard")
     public String getRetailDashboard(Model model, Principal principal) {
-        RetailUser retailUser = retailUserService.getUserByName(principal.getName());
-        List<AccountDTO> accountList = accountService.getAccountsForDebitAndCredit(retailUser.getCustomerId());
+        CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
+        List<AccountDTO> accountList = accountService.getAccountsForDebitAndCredit(corporateUser.getCorporate().getCustomerId());
         model.addAttribute("accountList", accountList);
-        return "cust/dashboard";
+        return "corp/dashboard";
     }
 
     @GetMapping("/change_password")
     public String ChangePaswordPage(ChangePassword changePassword){
-        return "cust/settings/pword";
+        return "corp/settings/pword";
     }
 
-    @PostMapping("/change_password")
+    */
+/*@PostMapping("/change_password")
     public String ChangePassword(@Valid ChangePassword changePassword, Principal principal, BindingResult result, Model model, RedirectAttributes redirectAttributes) throws Exception{
         if(result.hasErrors()){
-            model.addAttribute("message","Pls correct the errors");
-            return "redirect:/retail/change_password";
+            model.addAttribute("message","please provide the appropriate input");
+            return "redirect:/corp/change_password";
         }
 
         if(!changePassword.getNewPassword().equals(changePassword.getConfirmPassword())){
             logger.info("PASSWORD MISMATCH");
-            return "redirect:/retail/change_password";
+            return "redirect:/corp/change_password";
         }
 
-        RetailUserDTO user = retailUserService.getUserDTOByName(principal.getName());
+        CorporateUserDTO user = corporateUserService.getUserDTOByName(principal.getName());
 
-        retailUserService.changePassword(user, changePassword.getOldPassword(), changePassword.getNewPassword());
+        corporateUserService.changePassword(user, changePassword.getOldPassword(), changePassword.getNewPassword());
 
         redirectAttributes.addFlashAttribute("message","Password change successful");
         return "redirect:/retail/change_password";
-    }
+    }*//*
+
 
     @GetMapping("/alert_preference")
     public String AlertPreferencePage(AlertPref alertPref, Model model){
@@ -90,9 +94,9 @@ public class SettingController {
             return "redirect:/retail/alert_preference";
         }
 
-        RetailUserDTO user = retailUserService.getUserDTOByName(principal.getName());
+        CorporateUserDTO user = corporateUserService.getUserDTOByName(principal.getName());
 
-        retailUserService.changeAlertPreference(user, alertPref);
+        corporateUserService.changeAlertPreference(user, alertPref);
 
         redirectAttributes.addFlashAttribute("message","Preference Change Successful successful");
         return "redirect:/retail/alert_preference";
@@ -104,3 +108,4 @@ public class SettingController {
         return "abc";
     }
 }
+*/

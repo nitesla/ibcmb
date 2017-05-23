@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="corp_layout :: site-head">
+
+</head>
+<body>
+<header th:replace="corp_layout ::corp-header">
+</header>
+
+<section class="content-wrapper">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 col-sm-4">
+                <h5 class="page_header"> Transfer to other bank</h5>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-8 content-bg">
+                <div class="row form-spacing">
+                    <div class="col-md-6 col-sm-6">
+                        <form method="post">
+
+
+                            <div class="form-group">
+                                <label>Select transfer type</label>
+                                <select name="transfertype" class="form-control" >
+                                    <option value=""> </option>
+                                    <!--<option th:each="d: ${destination}" th:value="${d.accountNumber}" th:text="${d.accountNumber}" ></option>-->
+
+                                </select>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div th:replace="corp_layout :: corp-sidebar" class="col-md-3 sidebar">
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- CONTENT-WRAPPER SECTION END-->
+<footer th:replace="corp_layout ::corp-footer">
+</footer>
+<script>
+    //datepicker
+    $( function() {
+        $( "#datepicker" ).datepicker(
+                { dateformat : 'dd/mm/yy'}
+        );
+    } );
+</script>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head th:replace="corp_layout :: site-head">
+
+</head>
+<body>
+<header th:replace="corp_layout :: corp-header">
+</header>
+
+<section class="content-wrapper">
+    <div class="container">
+
+        <div class="row">
+
+            <div class="col-md-4 col-sm-4">
+                <h5 class="page_header"> Own Account Transaction</h5>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-8 content-bg">
+                <!--<div class="row form-spacing">-->
+                <div class="col-md-6 col-sm-6">
+                    <div class="row form-spacing">
+
+
+                        <table>
+                            <tr>
+
+                                <th>Source account</th>
+                                <td th:text="${transferRequest.customerAccountNumber}"></td>
+
+                            </tr>
+                            <tr>
+
+                                <th>Destination account</th>
+                                <td th:text="${transferRequest.beneficiaryAccountNumber}"></td>
+
+                            </tr>
+                            <tr>
+
+                                <th>Amount</th>
+                                <td th:text="${transferRequest.amount}"></td>
+
+                            </tr>
+                            <tr>
+
+                                <th>Remarks</th>
+                                <td th:text="${transferRequest.remarks}"></td>
+
+                            </tr>
+                        </table>
+
+                        <form method="post" th:action="@{/corporate/transfer/ownaccount}"
+                              th:object="${transferRequest}">
+                            <input type="hidden" th:field="*{customerAccountNumber}"/>
+                            <input type="hidden" th:field="*{beneficiaryAccountNumber}"/>
+                            <input type="hidden" th:field="*{beneficiaryAccountName}"/>
+                            <input type="hidden" th:field="*{amount}"/>
+                            <input type="hidden" th:field="*{remarks}"/>
+                            <div class="form-group">
+                                <label>Token *</label>
+                                <input type="text" name="token" placeholder="" class="form-control"/>
+                                <br/>
+                                <div class="form-group">
+
+                                    <a th:href="@{/corporate/transfer/ownaccount}" >Receipt</a>
+                                    <a th:href="@{/corporate/dashboard}" >Home</a>
+                                    <a th:href="@{/corporate/transfer/ownaccount}" >Make another transfer</a>
+                                </div>
+
+
+                            </div>
+
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div th:replace="corp_layout :: corp-sidebar" class="col-md-3 sidebar">
+        </div>
+    </div>
+
+</section>
+
+
+<!-- CONTENT-WRAPPER SECTION END-->
+<footer th:replace="cust_layout ::footer">
+</footer>
+<script th:src="@{~/customer/js/accountdetails.js}"></script>
+</body>
+
+</html>

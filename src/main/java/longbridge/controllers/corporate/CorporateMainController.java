@@ -20,7 +20,7 @@ public class CorporateMainController {
     private CorporateUserService corporateUserService;
 
     @RequestMapping("/dashboard")
-    public String getRetailDashboard(Model model, Principal principal) {
+    public String getCorporateDashboard(Model model, Principal principal) {
         CorporateUser corporateUser= corporateUserService.getUserByName(principal.getName());
        /* List<AccountDTO> accountList = accountService.getAccountsForDebitAndCredit(retailUser.getCustomerId());
         model.addAttribute("accountList", accountList);

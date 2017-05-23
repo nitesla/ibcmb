@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="corp_layout :: site-head">
+
+</head>
+<body>
+<header th:replace="corp_layout ::corp-header">
+</header>
+
+<section class="content-wrapper">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 col-sm-4">
+                <h5 class="page_header"> Account Settings</h5>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-8 content-bg">
+                <div class="row spacing">
+                    <div class="col-md-10">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Account Name</th>
+                                <th>Account Number</th>
+                                <th>Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="acct : ${accounts}">
+                                <td th:text="${acct.accountName}"></td>
+                                <td th:text="${acct.accountNumber}"></td>
+                                <td><a th:href="@{'/corporate/account/' + ${acct.id} + '/customize'}">Customise</a></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div th:replace="corp_layout :: corp-sidebar" class="col-md-3 sidebar">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CONTENT-WRAPPER SECTION END-->
+<footer th:replace="corp_layout ::corp-footer">
+</footer>
+</body>
+</html>

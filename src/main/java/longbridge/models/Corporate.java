@@ -26,6 +26,7 @@ public class Corporate extends AbstractEntity{
     private String address;
     private String status ;
     private Date createdOnDate;
+    private String bvn;
 
 
 
@@ -144,6 +145,14 @@ public class Corporate extends AbstractEntity{
 //	}
 
 
+    public String getBvn() {
+        return bvn;
+    }
+
+    public void setBvn(String bvn) {
+        this.bvn = bvn;
+    }
+
     public Date getCreatedOnDate() {
         return createdOnDate;
     }
@@ -161,15 +170,18 @@ public class Corporate extends AbstractEntity{
                 ", companyName='" + companyName + '\'' +
                 ", email='" + email + '\'' +
                 ", address='" + address + '\'' +
+                ", status='" + status + '\'' +
                 ", createdOnDate=" + createdOnDate +
+                ", bvn='" + bvn + '\'' +
                 ", users=" + users +
                 ", corpLimits=" + corpLimits +
+                ", corpTransferRequests=" + corpTransferRequests +
+                ", corpTransferRules=" + corpTransferRules +
                 '}';
     }
 
 
-
-	public static OperationCode getAddCode() {
+    public static OperationCode getAddCode() {
 		// TODO Auto-generated method stub
 		return null;
 	}

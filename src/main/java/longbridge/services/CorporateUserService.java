@@ -2,6 +2,7 @@ package longbridge.services;
 
 import longbridge.dtos.CorporateUserDTO;
 import longbridge.exception.InternetBankingException;
+import longbridge.forms.AlertPref;
 import longbridge.models.Corporate;
 import longbridge.models.CorporateUser;
 import org.springframework.data.domain.Page;
@@ -24,8 +25,11 @@ public interface CorporateUserService{
      */
     CorporateUserDTO getUser(Long id);
 
+    CorporateUserDTO getUserDTOByName(String name);
 
     CorporateUser getUserByName(String username);
+
+    /*CorporateUser getUserByCustomerId(String custId);*/
 
     /**
      * Returns all the corporate users for the corporate customer
@@ -100,4 +104,13 @@ public interface CorporateUserService{
      * @param user the corporate user
      */
     void generateAndSendPassword(CorporateUser user);
+
+    /** This sets the Alert preference of the specified user. Alert preference may
+     * be SMS, EMAIL or BOTH
+     * @param
+     * @param alertPreference
+     * @return
+     */
+    boolean changeAlertPreference(CorporateUserDTO corporateUser, AlertPref alertPreference);
+
 }
