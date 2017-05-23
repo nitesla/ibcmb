@@ -1,6 +1,7 @@
 package longbridge.controllers.operations;
 
 import longbridge.dtos.OperationsUserDTO;
+import longbridge.dtos.RoleDTO;
 import longbridge.exception.PasswordException;
 import longbridge.exception.PasswordMismatchException;
 import longbridge.exception.PasswordPolicyViolationException;
@@ -22,6 +23,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.security.Principal;
 import java.util.Locale;
@@ -84,8 +86,7 @@ public class OperationsUserController {
         }
         user.setId(userId);
         String message = operationsUserService.updateUser(user);
-
-            model.addAttribute("success", "Operations user updated successfully");
+            model.addAttribute("message", message);
 
         return "updateUser";
     }
@@ -96,6 +97,10 @@ public class OperationsUserController {
         return "redirect:/ops/users";
     }
 
+    @ModelAttribute
+    public void init(Model model) {
+        model.addAttribute("passwordRules", passwordPolicyService.getPasswordRules());
+    }
 
     @GetMapping("/password")
     public String changePassword(Model model){
@@ -145,7 +150,7 @@ public class OperationsUserController {
 
 
     @PostMapping("/password/new")
-    public String changeDefaultPassword(@ModelAttribute("changePassword") @Valid ChangeDefaultPassword changePassword, BindingResult result, Principal principal, RedirectAttributes redirectAttributes,Locale locale) {
+    public String changeDefaultPassword(@ModelAttribute("changePassword") @Valid ChangeDefaultPassword changePassword, BindingResult result, Principal principal, RedirectAttributes redirectAttributes,Locale locale,HttpServletRequest httpServletRequest) {
 
         if (result.hasErrors()) {
             result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required",null,locale)));
@@ -156,10 +161,13 @@ public class OperationsUserController {
         try {
             String message = operationsUserService.changeDefaultPassword(user, changePassword);
             redirectAttributes.addFlashAttribute("message", message);
-            return "redirect:/ops/logout";
+            if (httpServletRequest.getSession().getAttribute("expired-password") != null) {
+                httpServletRequest.getSession().removeAttribute("expired-password");
+            }
+            return "redirect:/ops/dashboard";
         } catch (PasswordPolicyViolationException pve) {
             result.reject("newPassword", pve.getMessage());
-            logger.error("Password policy violation from admin user {}", user.getUserName(), pve);
+            logger.error("Password policy violation from operations user {}", user.getUserName(), pve);
             return "/ops/new-pword";
         } catch (PasswordMismatchException pme) {
             result.reject("confirmPassword", pme.getMessage());
@@ -168,7 +176,6 @@ public class OperationsUserController {
         } catch (PasswordException pe) {
             result.addError(new ObjectError("error", pe.getMessage()));
             logger.error("Error changing password for admin user {}", user.getUserName(), pe);
-
             return "/ops/new-pword";
         }
     }

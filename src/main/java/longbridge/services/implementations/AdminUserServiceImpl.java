@@ -143,7 +143,6 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
     @Override
-    @Transactional
     public String changeActivationStatus(Long userId) throws InternetBankingException {
         try {
             AdminUser user = adminUserRepo.findOne(userId);
@@ -209,7 +208,6 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
     @Override
-    @Transactional
     public String resetPassword(Long userId) throws PasswordException {
 
         try {
@@ -259,6 +257,16 @@ public class AdminUserServiceImpl implements AdminUserService {
             throw new PasswordException(messageSource.getMessage("password.change.failure", null, locale), e);
         }
     }
+
+    private String getUsedPasswords(String newPassword, String oldPasswords){
+        StringBuilder builder = new StringBuilder();
+        if(oldPasswords!=null){
+            builder.append(oldPasswords);
+        }
+        builder.append(newPassword+",");
+        return builder.toString();
+    }
+
 
     @Override
     @Transactional

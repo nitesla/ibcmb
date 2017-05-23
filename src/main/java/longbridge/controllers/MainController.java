@@ -2,15 +2,14 @@ package longbridge.controllers;
 
 
 import longbridge.exception.UnknownResourceException;
-import longbridge.forms.ResetPasswordForm;
+import longbridge.models.RetailUser;
+import longbridge.services.RetailUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.security.Principal;
@@ -24,6 +23,8 @@ public class MainController {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    @Autowired
+    private RetailUserService retailUserService;
 
     @RequestMapping(value = {"/", "/home"})
     public String getHomePage() {
@@ -106,5 +107,14 @@ public class MainController {
        // return "";
     }
 
+    @PostMapping("/user/exists")
+    public @ResponseBody boolean userExists(WebRequest webRequest){
+        String username = webRequest.getParameter("username");
+        RetailUser user =  retailUserService.getUserByName(username);
+        if (user == null){
+            return false;
+        }
+        return true;
+    }
 
 }

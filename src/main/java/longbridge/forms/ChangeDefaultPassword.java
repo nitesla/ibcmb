@@ -7,9 +7,9 @@ import org.hibernate.validator.constraints.NotEmpty;
  */
 public class ChangeDefaultPassword {
 
-    @NotEmpty(message = "newPassword")
+    @NotEmpty(message = "Enter the New Password")
     private String newPassword;
-    @NotEmpty(message = "confirmPassword")
+    @NotEmpty(message = "Confirm the New Password")
     private String confirmPassword;
 
 

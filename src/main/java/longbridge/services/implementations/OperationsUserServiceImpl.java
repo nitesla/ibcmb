@@ -206,7 +206,6 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     }
 
     @Override
-    @Transactional
     public String resetPassword(Long id) throws InternetBankingException {
         try {
             OperationsUser user = operationsUserRepo.findOne(id);
@@ -271,6 +270,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
         try {
             OperationsUser opsUser = operationsUserRepo.findOne(user.getId());
             opsUser.setPassword(this.passwordEncoder.encode(changePassword.getNewPassword()));
+            opsUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
             operationsUserRepo.save(opsUser);
             logger.info("User {} password has been updated", user.getId());
             return messageSource.getMessage("password.change.success", null, locale);

@@ -288,7 +288,6 @@ public class AdminUserController {
         AdminUser user = adminUserService.getUserByName(principal.getName());
         try {
             String message = adminUserService.changeDefaultPassword(user, changePassword);
-
             redirectAttributes.addFlashAttribute("message", message);
             if (httpServletRequest.getSession().getAttribute("expired-password") != null) {
                 httpServletRequest.getSession().removeAttribute("expired-password");

@@ -1,3 +1,4 @@
+
 package longbridge.dtos;
 
 import org.hibernate.validator.constraints.NotEmpty;
@@ -9,11 +10,11 @@ import org.hibernate.validator.constraints.NotEmpty;
 public class LocalBeneficiaryDTO{
 
     private Long id;
-    @NotEmpty
+    @NotEmpty(message = "Please enter a Beneficiary Name")
     private String accountName;
-    @NotEmpty
+    @NotEmpty(message = "Please enter an Account Number")
     private String accountNumber;
-    @NotEmpty
+    @NotEmpty(message = "Please enter a Beneficiary Bank")
     private String beneficiaryBank;
     private String preferredName;
 

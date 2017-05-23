@@ -34,20 +34,20 @@ import java.util.Locale;
 public class UserGroupServiceImpl implements UserGroupService {
 
     @Autowired
-    UserGroupRepo userGroupRepo;
+    private UserGroupRepo userGroupRepo;
 
     @Autowired
-    ModelMapper modelMapper;
+    private ModelMapper modelMapper;
 
     @Autowired
-    OperationsUserRepo operationsUserRepo;
+    private OperationsUserRepo operationsUserRepo;
 
     @Autowired
-    MessageSource messageSource;
+    private MessageSource messageSource;
 
-    Locale locale = LocaleContextHolder.getLocale();
+    private Locale locale = LocaleContextHolder.getLocale();
 
-    Logger logger = LoggerFactory.getLogger(this.getClass());
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
     public String addGroup(UserGroupDTO userGroupDTO) throws InternetBankingException {

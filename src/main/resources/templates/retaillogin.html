@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <link rel="stylesheet" type="text/css" th:href="@{/customer/css/bootstrap.css}"/>
-    <link rel="stylesheet" type="text/css" th:href="@{/customer/css/custom.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/bootstrap.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/custom.css}"/>
     <title>Log in | Coronation Merchant Bank
     </title>
 </head>
@@ -49,21 +49,25 @@
 <section class="content-wrapper">
     <div class="container">
         <div class="bg">
-                    <form  th:action="@{/retail/login}" method="POST" class="form-signin">
+                    <form id="loginform" th:action="@{/retail/login}" method="POST" class="form-signin">
                         <h5 class="form-signin-heading">Enter Login Details</h5>
                         <br/>
+
+                        <h6 id="label">Please enter your username</h6>
+
                         <div th:if="${param.message != null}" class="alert alert-info" th:text="${param.message[0]}">message</div>
-
-
                         <div th:if="${param.error != null}" class="alert alert-danger" th:text="${session[SPRING_SECURITY_LAST_EXCEPTION]}">error</div>
-                        <div class="form-group">
-                            <input type="text" name="username" class="form-control"  placeholder="Username" />
+                        <br/>
+                        <div id="username_div" class="form-group">
+                            <input type="text" id="username" name="username" class="form-control"  placeholder="Username" />
+                            <p><a href="/forgot/username">Forgot Username?</a></p>
                         </div>
-                        <p><a href="/forgot/username">Forgot Username?</a></p>
-                        <div class="form-group">
-                            <input type="password" name="password" class="form-control"  placeholder="Password"/>
+
+                        <div id="password_div" class="hidden form-group">
+                            <input type="password" id="password" name="password" class="form-control"  placeholder="Password" autocomplete="off" />
+                            <p><a href="/forgot/password">forgot password?</a></p>
                         </div>
-                        <p><a href="/forgot/password">forgot password?</a></p>
+
                         <div class="form-group">
                             <!--<input name="submit" type="submit" value="submit" />-->
                             <button class="btn form-control">Submit</button>
@@ -90,8 +94,84 @@
     </div>
 </footer>
 <!-- CORE JQUERY SCRIPTS -->
-<script th:src="@{/customer/js/jquery-1.11.1.js}"></script>
+<script th:src="@{~/customer/js/jquery-1.11.1.js}"></script>
 <!-- BOOTSTRAP SCRIPTS  -->
-<script th:src="@{/customer/js/bootstrap.js}"></script>
+<script th:src="@{~/customer/js/bootstrap.js}"></script>
+    <script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
+
+    <script th:th:inline="javascript" type="text/javascript">
+        /*<![CDATA[*/
+        $.notifyDefaults({
+            placement: {
+                from: "top",
+                align: 'left',
+                offset: 50
+            }
+        });
+
+        $(document).ready(function(){
+            $('#loginform').submit(function(event){
+                event.preventDefault();
+                if($('#password').val()==""){
+                    confirmUser();
+                    return;
+                }
+                this.submit();
+            });
+
+        });
+        function confirmUser(){
+            //$('#loading').html("<img src='/assets/img/ajax-loader.gif' />");
+            //get the username
+            var username = $('#username').val();
+            if(username==""){
+                //("Please enter your username");
+                $.notify({
+                    title: '<strong>Oops!</strong>',
+                    message: 'Please enter your username'
+                },{
+                    type: 'danger'
+                });
+                //$('#loading').html("");
+                return;
+            }
+            var options = {
+                type: 'POST',
+                url: '/user/exists',
+                data: {"username": username},
+                error: function(xhr, textStatus, errorThrown) {
+                    $.notify({
+                        title: '<strong>Oops!</strong>',
+                        message: 'An error occurred while logging in. Please reload the page and try again'
+                    });
+                },
+                success: function(data, textStatus) {
+                    console.log(data);
+                    if(data) {
+                        $("#username_div").hide();
+
+                        $("#password_div").removeClass("hidden");
+                        $("#password_div").show().slideDown("fast", function () {
+                            // Animation complete.
+                            console.log("input shown");
+                        });
+
+                        //$('#label').html("Please enter your password");
+                    }else{
+                        //$('#loading').html("");
+                        $.notify({
+                            title: '<strong>Oops!</strong>',
+                            message: 'User not found'
+                        },{
+                            type: 'danger'
+                        });
+                    }
+                }
+            };
+            $.ajax(options);
+
+        }
+        /*]]>*/
+    </script>
 </body>
 </html>

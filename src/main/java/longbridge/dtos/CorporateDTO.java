@@ -22,6 +22,7 @@ public class CorporateDTO {
     private String status;
     private String address;
     private String createdOn;
+    private String bvn;
 
 
     public Long getId() {return id;}
@@ -99,5 +100,13 @@ public class CorporateDTO {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getBvn() {
+        return bvn;
+    }
+
+    public void setBvn(String bvn) {
+        this.bvn = bvn;
     }
 }

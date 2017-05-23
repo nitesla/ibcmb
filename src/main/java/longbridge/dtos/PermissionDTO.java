@@ -19,6 +19,8 @@ public class PermissionDTO {
     private String description;
     @NotEmpty(message = "code")
     private String code;
+    @NotEmpty(message = "userType")
+    private String userType;
 
 
     public PermissionDTO(){
@@ -63,6 +65,14 @@ public class PermissionDTO {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public String getUserType() {
+        return userType;
+    }
+
+    public void setUserType(String userType) {
+        this.userType = userType;
     }
 
     @Override

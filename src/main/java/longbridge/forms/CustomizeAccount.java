@@ -7,7 +7,7 @@ import org.hibernate.validator.constraints.NotEmpty;
  */
 public class CustomizeAccount {
 
-    @NotEmpty
+    @NotEmpty (message = "Please enter an Account Name")
     private String accountName;
 
     public String getAccountName() {

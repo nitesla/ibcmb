@@ -5,12 +5,9 @@ import longbridge.models.RetailUser;
 import longbridge.models.ServiceReqConfig;
 import longbridge.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.config.ResourceNotFoundException;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.NoHandlerFoundException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.security.Principal;
 import java.util.ArrayList;
@@ -49,7 +46,6 @@ public class RetailControllerAdvice {
         if (principal.getName() == null) {
             return "redirect:/login/retail";
         }
-
 
         RetailUser user = retailUserService.getUserByName(principal.getName());
         model.addAttribute("bvn", user.getBvn());

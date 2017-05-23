@@ -33,55 +33,56 @@
     <div class="menu_section">
         <h3>Admin Console</h3>
         <ul class="nav side-menu">
-            <li><a><i class="fa fa-users"></i> User Management <span class="fa fa-chevron-down"></span></a>
+            <li sec:authorize="hasAuthority('USER_MANAGEMENT')"><a><i class="fa fa-users"></i> User Management <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
-                    <li><a href="/admin/users/">Administrators</a></li>
-                    <li><a href="/admin/operations/users">Operators</a></li>
-                    <li><a href="/admin/corporates/">Corporate</a></li>
-                    <li><a href="/admin/retail/users/">Retail</a></li>
-                      </ul>
-            </li>
-            <li><a><i class="fa fa-gears"></i> Configurations <span class="fa fa-chevron-down"></span></a>
-                <ul class="nav child_menu">
-                    <li><a href="/admin/codes/alltypes">Codes</a></li>
-                    <li><a href="/admin/settings">System Settings</a></li>
-                    <li><a href="/admin/audit">Audit</a></li>
+                    <li sec:authorize="hasAuthority('ADMIN_USER_MANAGEMENT')"><a href="/admin/users/">Administrators</a></li>
+                    <li sec:authorize="hasAuthority('OPS_USER_MANAGEMENT')"><a href="/admin/operations/users">Operators</a></li>
+                    <li sec:authorize="hasAuthority('CORPORATE_USER_MANAGEMENT')"><a href="/admin/corporates/">Corporate</a></li>
+                    <li sec:authorize="hasAuthority('RETAIL_USER_MANAGEMENT')"><a href="/admin/retail/users/">Retail</a></li>
                 </ul>
             </li>
-            <li><a><i class="fa fa-bank"></i> Bank Setup <span class="fa fa-chevron-down"></span></a>
+            <li sec:authorize="hasAuthority('MANAGE_CONFIG')"><a><i class="fa fa-gears"></i> Configurations <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
-                    <li><a href="/admin/finst">Financial Institutions</a></li>
-                    <li><a href="/admin/srconfig">Service Requests</a></li>
+                    <li sec:authorize="hasAuthority('CODE_CONFIG')"><a href="/admin/codes/alltypes">Codes</a></li>
+                    <li sec:authorize="hasAuthority('SETTING_CONFIG')"><a href="/admin/settings">System Settings</a></li>
+                    <li sec:authorize="hasAuthority('AUDIT_CONFIG')"><a href="/admin/audit">Audit</a></li>
+                </ul>
+            </li>
+            <li sec:authorize="hasAuthority('BANK_CONFIG')"><a><i class="fa fa-bank"></i> Bank Setup <span class="fa fa-chevron-down"></span></a>
+                <ul class="nav child_menu">
+                    <li sec:authorize="hasAuthority('FIN_INST')"><a href="/admin/finst">Financial Institutions</a></li>
+                    <li sec:authorize="hasAuthority('CONTACT_GRP')"><a href="/admin/groups/">Contact Groups</a></li>
+                    <li sec:authorize="hasAuthority('SERVICE_REQ')"><a href="/admin/srconfig">Service Requests</a></li>
                 </ul>
             </li>
 
-            <li><a><i class="fa fa-lock"></i> Security <span class="fa fa-chevron-down"></span></a>
+            <li sec:authorize="hasAuthority('MANAGE_ACCESS')"><a><i class="fa fa-lock"></i> Access Management <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
-                    <li><a href="/admin/roles/">Role</a></li>
-                    <li><a href="/admin/permissions/">Permission</a></li>
+                    <li sec:authorize="hasAuthority('MANAGE_ROLES')"><a href="/admin/roles/">Role</a></li>
+                    <li sec:authorize="hasAuthority('MANAGE_PERMISSIONS')"><a href="/admin/permissions/">Permission</a></li>
                 </ul>
             </li>
-            <li><a><i class="fa fa-bar-chart-o"></i> Reports <span class="fa fa-chevron-down"></span></a>
-                <ul class="nav child_menu">
-                    <li><a href="view.html">Transfer</a></li>
-                    <li><a href="add.html">Transaction</a></li>
-                    <li><a href="edit.html">Edit FI</a></li>
-                </ul>
-            </li>
-            <li><a><i class="fa fa-key"></i> Token Management <span class="fa fa-chevron-down"></span></a>
-                <ul class="nav child_menu">
-                    <li><a href="view.html">View TR</a></li>
-                    <li><a href="add.html">Add TR</a></li>
-                    <li><a href="edit.html">Edit TR</a></li>
-                </ul>
-            </li>
-            <li><a><i class="fa fa-check"></i> Approvals <span class="fa fa-chevron-down"></span></a>
-                <ul class="nav child_menu">
-                    <li><a href="view.html">View TR</a></li>
-                    <li><a href="add.html">Add TR</a></li>
-                    <li><a href="edit.html">Edit TR</a></li>
-                </ul>
-            </li>
+            <!--<li><a><i class="fa fa-bar-chart-o"></i> Reports <span class="fa fa-chevron-down"></span></a>-->
+                <!--<ul class="nav child_menu">-->
+                    <!--<li><a href="view.html">Transfer</a></li>-->
+                    <!--<li><a href="add.html">Transaction</a></li>-->
+                    <!--<li><a href="edit.html">Edit FI</a></li>-->
+                <!--</ul>-->
+            <!--</li>-->
+            <!--<li><a><i class="fa fa-key"></i> Token Management <span class="fa fa-chevron-down"></span></a>-->
+                <!--<ul class="nav child_menu">-->
+                    <!--<li><a href="view.html">View TR</a></li>-->
+                    <!--<li><a href="add.html">Add TR</a></li>-->
+                    <!--<li><a href="edit.html">Edit TR</a></li>-->
+                <!--</ul>-->
+            <!--</li>-->
+            <!--<li><a><i class="fa fa-check"></i> Approvals <span class="fa fa-chevron-down"></span></a>-->
+                <!--&lt;!&ndash;<ul class="nav child_menu">&ndash;&gt;-->
+                    <!--&lt;!&ndash;<li><a href="view.html">View TR</a></li>&ndash;&gt;-->
+                    <!--&lt;!&ndash;<li><a href="add.html">Add TR</a></li>&ndash;&gt;-->
+                    <!--&lt;!&ndash;<li><a href="edit.html">Edit TR</a></li>&ndash;&gt;-->
+                <!--&lt;!&ndash;</ul>&ndash;&gt;-->
+            <!--</li>-->
         </ul>
     </div>
 
@@ -94,29 +95,22 @@
     <div class="menu_section">
         <h3>Operations Console</h3>
         <ul class="nav side-menu">
-            <li><a href="/ops/requests/"><i class="fa fa-question-circle"></i> Service Requests</a>
-                <!--<ul class="nav child_menu">-->
-                    <!--<li><a href="/ops/requests/">Requests</a></li>-->
-
-                <!--</ul>-->
-
-            </li>
-            <li><a><i class="fa fa-money"></i> Limits <span class="fa fa-chevron-down"></span></a>
+            <li sec:authorize="hasAuthority('OPS_SERV_REQ')"><a href="/ops/requests/"><i class="fa fa-question-circle"></i> Service Requests</a></li>
+            <li sec:authorize="hasAuthority('OPS_LIMIT')"><a><i class="fa fa-money"></i> Limits <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
-                    <!--<li><a href="#">Accounts</a></li>-->
-                    <li><a> Corporate <span class="fa fa-chevron-down"></span></a>
+                    <li sec:authorize="hasAuthority('LIMIT_CORPORATE')"><a> Corporate <span class="fa fa-chevron-down"></span></a>
                         <ul class="nav child_menu">
-                            <li class="sub_menu"><a href="/ops/limits/corporate/global">Global Level</a></li>
-                            <li class="sub_menu"><a href="/ops/limits/corporate/class">Class Level</a></li>
-                            <li class="sub_menu"><a href="/ops/limits/corporate/account">Account Level</a></li>
+                            <li sec:authorize="hasAuthority('LIMIT_CORPORATE_GLOBAL')" class="sub_menu"><a href="/ops/limits/corporate/global">Global Level</a></li>
+                            <li sec:authorize="hasAuthority('LIMIT_CORPORATE_CLASS')" class="sub_menu"><a href="/ops/limits/corporate/class">Class Level</a></li>
+                            <li sec:authorize="hasAuthority('LIMIT_CORPORATE_ACCOUNT')" class="sub_menu"><a href="/ops/limits/corporate/account">Account Level</a></li>
 
                         </ul>
                     </li>
-                    <li><a> Retail <span class="fa fa-chevron-down"></span></a>
+                    <li sec:authorize="hasAuthority('LIMIT_RETAIL')"><a> Retail <span class="fa fa-chevron-down"></span></a>
                         <ul class="nav child_menu">
-                            <li class="sub_menu"><a href="/ops/limits/retail/global">Global Level</a></li>
-                            <li class="sub_menu"><a href="/ops/limits/retail/class">Class Level</a></li>
-                            <li class="sub_menu"><a href="/ops/limits/retail/account">Account Level</a></li>
+                            <li sec:authorize="hasAuthority('LIMIT_RETAIL_GLOBAL')" class="sub_menu"><a href="/ops/limits/retail/global">Global Level</a></li>
+                            <li sec:authorize="hasAuthority('LIMIT_RETAIL_CLASS')" class="sub_menu"><a href="/ops/limits/retail/class">Class Level</a></li>
+                            <li sec:authorize="hasAuthority('LIMIT_RETAIL_ACCOUNT')" class="sub_menu"><a href="/ops/limits/retail/account">Account Level</a></li>
 
                         </ul>
                     </li>
@@ -124,34 +118,32 @@
             </li>
 
 
-            <li><a><i class="fa fa-tasks"></i> Transactions <span class="fa fa-chevron-down"></span></a>
+            <li sec:authorize="hasAuthority('MANAGE_TRANSACTION')"><a><i class="fa fa-tasks"></i> Transactions <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
-                    <li><a> Account Restrictions <span class="fa fa-chevron-down"></span></a>
+                    <li sec:authorize="hasAuthority('ACCOUNT_RESTRICTION')"><a> Account Restrictions <span class="fa fa-chevron-down"></span></a>
                         <ul class="nav child_menu">
-                            <li class="sub_menu"><a href="/ops/accounts/restriction/class">Global</a></li>
-                            <li class="sub_menu"><a href="/ops/accounts/restriction/account">Individual</a></li>
+                            <li sec:authorize="hasAuthority('ACCOUNT_CLASS_RESTRICTION')" class="sub_menu"><a href="/ops/accounts/restriction/class">Global</a></li>
+                            <li sec:authorize="hasAuthority('SINGLE_ACCOUNT_RESTRICTION')" class="sub_menu"><a href="/ops/accounts/restriction/account">Individual</a></li>
 
                         </ul>
                     </li>
-                    <li><a href="/ops/fees">Fees</a></li>
+                    <li sec:authorize="hasAuthority('MANAGE_FEES')"><a href="/ops/fees">Fees</a></li>
 
                 </ul>
 
             </li>
 
-            <li><a><i class="fa fa-inbox"></i> Mailbox<span class="fa fa-chevron-down"></span></a>
+            <li sec:authorize="hasAuthority('MAILBOX')"><a><i class="fa fa-inbox"></i> Mailbox<span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
-                    <li><a href="/ops/mailbox/newinbox/">Inbox</a></li>
-
-                    <li><a href="/ops/mailbox/outbox/">Sent</a></li>
+                    <li sec:authorize="hasAuthority('MAILBOX_INBOX')"><a href="/ops/mailbox/newinbox/">Inbox</a></li>
+                    <li sec:authorize="hasAuthority('MAILBOX_SENT')"><a href="/ops/mailbox/outbox/">Sent</a></li>
 
                 </ul>
             </li>
-            <li><a href="/ops/groups/"><i class="fa fa-group"></i>Contacts</a></li>
 
-            <li><a><i class="fa fa-bar-chart-o"></i> Reports <span class="fa fa-chevron-down"></span></a>
-                <ul class="nav child_menu"></ul>
-            </li>
+            <!--<li><a><i class="fa fa-bar-chart-o"></i> Reports <span class="fa fa-chevron-down"></span></a>-->
+                <!--<ul class="nav child_menu"></ul>-->
+            <!--</li>-->
         </ul>
     </div>
 </div>

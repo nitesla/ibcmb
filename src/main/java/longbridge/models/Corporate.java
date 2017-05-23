@@ -3,10 +3,12 @@ package longbridge.models;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Fortune on 3/29/2017.
@@ -24,8 +26,25 @@ public class Corporate extends AbstractEntity{
     private String address;
     private String status ;
     private Date createdOnDate;
+    private String bvn;
 
 
+
+
+    @OneToMany(mappedBy = "corporate",cascade = CascadeType.ALL)
+    private Collection<CorporateUser> users;
+
+//    @OneToMany
+//    private Collection<Beneficiary> beneficiaries;
+
+    @OneToMany
+    private Collection<CorpLimit> corpLimits;
+
+    @OneToMany(mappedBy = "corporate")
+    List<CorpTransferRequest> corpTransferRequests;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    List<CorpTransferRule> corpTransferRules;
 
     public Collection<CorpLimit> getCorpLimits() {
         return corpLimits;
@@ -35,14 +54,21 @@ public class Corporate extends AbstractEntity{
         this.corpLimits = corpLimits;
     }
 
-    @OneToMany
-    private Collection<CorporateUser> users;
+    public List<CorpTransferRequest> getCorpTransferRequests() {
+        return corpTransferRequests;
+    }
 
-//    @OneToMany
-//    private Collection<Beneficiary> beneficiaries;
+    public void setCorpTransferRequests(List<CorpTransferRequest> corpTransferRequests) {
+        this.corpTransferRequests = corpTransferRequests;
+    }
 
-    @OneToMany
-    private Collection<CorpLimit> corpLimits;
+    public List<CorpTransferRule> getCorpTransferRules() {
+        return corpTransferRules;
+    }
+
+    public void setCorpTransferRules(List<CorpTransferRule> corpTransferRules) {
+        this.corpTransferRules = corpTransferRules;
+    }
 
     public String getCustomerId() {
         return customerId;
@@ -119,6 +145,14 @@ public class Corporate extends AbstractEntity{
 //	}
 
 
+    public String getBvn() {
+        return bvn;
+    }
+
+    public void setBvn(String bvn) {
+        this.bvn = bvn;
+    }
+
     public Date getCreatedOnDate() {
         return createdOnDate;
     }
@@ -136,15 +170,18 @@ public class Corporate extends AbstractEntity{
                 ", companyName='" + companyName + '\'' +
                 ", email='" + email + '\'' +
                 ", address='" + address + '\'' +
+                ", status='" + status + '\'' +
                 ", createdOnDate=" + createdOnDate +
+                ", bvn='" + bvn + '\'' +
                 ", users=" + users +
                 ", corpLimits=" + corpLimits +
+                ", corpTransferRequests=" + corpTransferRequests +
+                ", corpTransferRules=" + corpTransferRules +
                 '}';
     }
 
 
-
-	public static OperationCode getAddCode() {
+    public static OperationCode getAddCode() {
 		// TODO Auto-generated method stub
 		return null;
 	}

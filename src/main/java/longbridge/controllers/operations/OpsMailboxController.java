@@ -133,6 +133,7 @@ public class OpsMailboxController {
         if (!receivedMessages.isEmpty()) {
             MessageDTO message = receivedMessages.get(0);
             model.addAttribute("messageDTO", message);
+            messageService.setStatus(message.getId(),"Read");
 
         }
         model.addAttribute("receivedMessages", receivedMessages);
@@ -144,10 +145,12 @@ public class OpsMailboxController {
     @GetMapping("/viewmail/{id}/details")
     public String showMail(@PathVariable Long id, Model model, Principal principal,MessageDTO messageDTO) {
         MessageDTO message = messageService.getMessage(id);
+        messageService.setStatus(id,"Read");
         OperationsUser opsUser = operationsUserService.getUserByName(principal.getName());
         List<MessageDTO> receivedMessages = messageService.getReceivedMessages(opsUser);
         model.addAttribute("receivedMessages", receivedMessages);
         model.addAttribute("messageDTO", message);
+
         return "ops/mailbox/newinbox";
 
     }

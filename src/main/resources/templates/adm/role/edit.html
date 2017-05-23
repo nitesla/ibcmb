@@ -72,7 +72,8 @@
                                                         <option value="">--Select--</option>
                                                         <option value="ADMIN">Administrator</option>
                                                         <option value="OPERATIONS">Operator</option>
-                                                        <option value="RETAIL">Customer</option>
+                                                        <option value="RETAIL">Retail Customer</option>
+                                                        <option value="CORPORATE">Corporate Customer</option>
                                                     </select>
                                                 </div>
                                                 <div class="form-group col-lg-6">
@@ -96,6 +97,7 @@
                                                         <select multiple="multiple"
                                                                 class="form-control left-selector">
                                                             <option th:each="permission: ${permissions}"
+                                                                    th:class="${permission.userType}"
                                                                     th:value="${permission.id}"
                                                                     th:text="${permission.name}"></option>
 
@@ -155,6 +157,37 @@
 <script type="text/javascript">
     $().ready(
         function () {
+            if( $('#userType').val()==="RETAIL"){
+                $(".RETAIL").show()
+                $(".ADMIN").hide()
+                $(".OPERATIONS").hide()
+                $(".CORPORATE").hide()
+            }
+            else if( $('#userType').val()==="ADMIN"){
+                $(".ADMIN").show()
+                $(".RETAIL").hide()
+                $(".OPERATIONS").hide()
+                $(".CORPORATE").hide()
+            }
+            else if( $('#userType').val()==="OPERATIONS"){
+                $(".OPERATIONS").show()
+                $(".RETAIL").hide()
+                $(".ADMIN").hide()
+                $(".CORPORATE").hide()
+            }
+            else if( $('#userType').val()==="CORPORATE"){
+                $(".CORPORATE").show()
+                $(".RETAIL").hide()
+                $(".OPERATIONS").hide()
+                $(".ADMIN").hide()
+            }
+            else if( $('#userType').val()===""){
+                $(".CORPORATE").hide()
+                $(".RETAIL").hide()
+                $(".OPERATIONS").hide()
+                $(".ADMIN").hide()
+            }
+
             $('.left-btn').click(
                 function () {
                     return !$('.right-selector option:selected')
@@ -166,11 +199,45 @@
                         .remove().appendTo('.right-selector');
                 });
         });
+
     $("#btn-save").on("click", function (e) {
         $('.right-selector option').prop("selected", true);
         $("#form-save").submit();
     });
 
+    $('#userType').on('change',function(){
+        if( $(this).val()==="RETAIL"){
+            $(".RETAIL").show()
+            $(".ADMIN").hide()
+            $(".OPERATIONS").hide()
+            $(".CORPORATE").hide()
+        }
+        else if( $(this).val()==="ADMIN"){
+            $(".ADMIN").show()
+            $(".RETAIL").hide()
+            $(".OPERATIONS").hide()
+            $(".CORPORATE").hide()
+        }
+        else if( $(this).val()==="OPERATIONS"){
+            $(".OPERATIONS").show()
+            $(".RETAIL").hide()
+            $(".ADMIN").hide()
+            $(".CORPORATE").hide()
+        }
+        else if( $(this).val()==="CORPORATE"){
+            $(".CORPORATE").show()
+            $(".RETAIL").hide()
+            $(".OPERATIONS").hide()
+            $(".ADMIN").hide()
+        }
+        else if( $(this).val()===""){
+            $(".CORPORATE").hide()
+            $(".RETAIL").hide()
+            $(".OPERATIONS").hide()
+            $(".ADMIN").hide()
+        }
+
+    });
 
     document.getElementById("cancel").onclick = function () {
         location.href = "/admin/roles";

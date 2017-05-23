@@ -1,12 +1,10 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="layout :: site-head">
 </head>
 <div class="row">
 	<div class="col-md-12 col-sm-12 col-xs-12">
 
 			<div class="x_content">
-				<form method="post" th:action="@{/ops/unit/search}" class="form-horizontal"
+				<form method="post" th:action="@{/admin/unit/search}" class="form-horizontal"
 					 id="ops-search" th:object="${operationsUser}">
 					<div class="panel panel-default">
 						<div class="panel-body">

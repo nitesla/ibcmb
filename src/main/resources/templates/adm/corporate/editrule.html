@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout :: site-head">
+</head>
+
+<body class="nav-md">
+<div class="container body">
+    <div class="main_container">
+        <div class="col-md-3 left_col">
+            <div class="left_col scroll-view">
+                <div class="navbar nav_title" style="border: 0;">
+                    <!--<a href="index.html"><img th:src="@{~/images/cmb_logo.png}"/></a>-->
+                </div>
+
+                <div class="clearfix"></div>
+                <div class="clearfix"></div>
+
+                <div th:replace="layout :: admin-menu"></div>
+                <div th:replace="layout :: menu-footer-adm"></div>
+
+            </div>
+        </div>
+        <div th:replace="layout :: top-nav"></div>
+
+        <!-- page content -->
+        <div class="right_col" role="main">
+            <div class="">
+                <div class="page-title">
+                    <div class="title_left">
+                        <h3 th:text="${corporateRule.corporateName}"></h3>
+                    </div>
+
+                </div>
+
+                <div class="clearfix"></div>
+
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h2>Edit Rule</h2>
+
+                                <div class="clearfix"></div>
+                            </div>
+
+                            <div class="x_content">
+                                <div class="ibox-content">
+                                    <form method="post" class="form-horizontal" th:action="@{/admin/corporates/rules/update}" th:object="${corporateRule}">
+
+
+                                        <div th:replace="layout::form-validation"></div>
+
+                                        <input th:type="hidden" th:field="*{corporateId}"/>
+                                        <input th:type="hidden" th:field="*{id}"/>
+                                        <input th:type="hidden" th:field="*{version}"/>
+
+
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">Lower Limit Amount</label>
+                                            <div class="col-sm-6">
+                                                <input type="text" class="form-control" th:field="*{lowerLimitAmount}"/>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">Upper Limit Amount</label>
+                                            <div class="col-sm-6">
+                                                <input id="upperLimit" type="text" class="form-control" th:field="*{upperLimitAmount}"/>
+                                            </div>
+                                            <input id="unlimited" type="checkbox" class="checkbox-inline"
+                                                   th:field="*{unlimited}"/>
+                                            <label><strong>Unlimited Amount</strong></label>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">Currency</label>
+                                            <div class="col-sm-6">
+                                                <select class="form-control" th:field="*{currency}">
+                                                    <option th:each="currency: ${currencies}" th:value="${currency.code}" th:text="${currency.description}" th:selected="${currency.code==corporateRule.currency}"></option>
+
+                                                </select>
+                                            </div>
+                                        </div>
+<br/>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">Select Authorizers</label>
+                                            <div class="col-sm-6">
+                                                <p th:each="user: ${authUserList}">
+                                                    <input type="checkbox" name="authorizers" th:value="${user.id}" th:checked="${user.ruleMember}" />
+                                                    <label th:text="${user.firstName + ' ' + user.lastName}"></label>
+                                                </p>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">Check If</label>
+                                            <div class="col-sm-8">
+                                                <input id="anyAuthorizer" type="checkbox" class="checkbox-inline" th:field="*{anyCanAuthorize}"/>
+                                                <label><strong>Any of the users selected above can authorize transactions</strong></label>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="form-group">
+                                            <div class="col-sm-4 col-sm-offset-2">
+                                                <button class="btn btn-white" type="reset" id="cancel">Cancel</button>
+                                                <button class="btn btn-primary" type="submit">Save</button>
+                                            </div>
+                                        </div>
+
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /page content -->
+
+        <!-- footer content -->
+        <footer th:replace="layout :: footer">
+        </footer>
+        <!-- /footer content -->
+    </div>
+</div>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    document.getElementById("cancel").onclick = function () {
+        location.href = "/admin/corporates";}
+
+    $(document).ready(function () {
+        if ($("#unlimited").is(":checked")) {
+            $("#upperLimit").val("");
+            $("#upperLimit").prop("disabled", true);
+        }
+
+        $("#unlimited").change(function () {
+            if ($(this).is(":checked")) {
+                $("#upperLimit").val("");
+                $("#upperLimit").prop("disabled", true);
+            }
+            else {
+                $("#upperLimit").prop("disabled", false);
+
+            }
+        });
+
+        $("#anyAuthorizer").change(function () {
+            if ($(this).is(":checked")) {
+                if (!$("input[name='authorizers']").is(":checked")) {
+                    $("input[name='authorizers']").prop("checked", true);
+                }
+            }
+
+
+
+        });
+    })
+
+    /*]]>*/
+</script>
+
+</body>
+</html>

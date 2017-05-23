@@ -263,8 +263,9 @@ public class AccountServiceImpl implements AccountService {
 
 
                 account.setAccountBalance(availbalance);
+
                 account.setLedgerBalance(ledBalance);
-                accountsForDebitAndCredit.add(account);
+//                accountsForDebitAndCredit.add(account);
             }
 
         }

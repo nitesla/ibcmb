@@ -423,6 +423,11 @@ body {
 .txtarea{
     padding: 0 15px 0 15px;
 }
+.errors{
+    padding: 10px 0 10px 0;
+    color: red;
+    font-size: 15px;
+}
 
 nav li a {
     /*text-transform: uppercase;*/
