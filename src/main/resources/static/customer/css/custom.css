@@ -423,16 +423,10 @@ body {
 .txtarea{
     padding: 0 15px 0 15px;
 }
-.alert-danger{
-    background-color: #d9534f;
-    border-color: #d43f3a;
-}
-.alert-success{
-    background-color: #5cb85c;
-    border-color: #4cae4c;
-}
-.alert strong{
-    color: #ffffff;
+.errors{
+    padding: 10px 0 10px 0;
+    color: red;
+    font-size: 15px;
 }
 
 nav li a {

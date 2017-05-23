@@ -21,15 +21,18 @@
                         <form method="post" th:action="@{/retail/change_password}" th:object="${changePassword}">
                             <div class="form-group">
                                 <label>Old Password</label>
-                                <input type="password" name="oldPassword" class="form-control"/>
+                                <input type="password" th:field="*{oldPassword}" class="form-control"/>
+                                <p class="errors close" data-dismiss="alert" aria-label="close" th:if="${#fields.hasErrors('oldPassword')}" th:errors="*{oldPassword}">&times;</p>
                             </div>
                             <div class="form-group">
                                 <label>New Password</label>
-                                <input type="password" name="newPassword" class="form-control"/>
+                                <input type="password" th:field="*{newPassword}"  class="form-control"/>
+                                <p class="errors close" data-dismiss="alert" aria-label="close" th:if="${#fields.hasErrors('newPassword')}" th:errors="*{newPassword}">&times;</p>
                             </div>
                             <div class="form-group">
                                 <label>Confirm New Password</label>
-                                <input type="password" name="confirmPassword" class="form-control"/>
+                                <input type="password" th:field="*{confirmPassword}"  class="form-control"/>
+                                <p class="errors close" data-dismiss="alert" aria-label="close" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}">&times;</p>
                             </div>
 
                             <button type="submit" class="btn btn-default">Submit</button>
