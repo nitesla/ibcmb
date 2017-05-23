@@ -46,7 +46,7 @@ public class AdmRoleController {
     private MessageSource messageSource;
 
     @GetMapping("/new")
-    public String addRole(Model model){
+    public String addRole(Model model) {
         RoleDTO roleDTO = new RoleDTO();
         roleDTO.setPermissions(new ArrayList<>());
         model.addAttribute("role", new RoleDTO());
@@ -54,53 +54,54 @@ public class AdmRoleController {
     }
 
     @ModelAttribute("permissions")
-    public Iterable<PermissionDTO> getPermissions(NativeWebRequest request){
-    	 HttpServletRequest httpServletRequest = request.getNativeRequest(HttpServletRequest.class);
-    	 Map<String,String> map = (Map<String, String>) httpServletRequest.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
-    	Long reqId = NumberUtils.createLong(map.get("reqId"));
-    	Iterable<PermissionDTO> permissions;
-    	if(reqId != null){
-    		RoleDTO role = roleService.getRole(reqId);
-    		permissions = roleService.getPermissionsNotInRole(role);
-    	}else
-    		permissions = roleService.getPermissions();
-    	 return permissions ;
+    public Iterable<PermissionDTO> getPermissions(NativeWebRequest request) {
+        HttpServletRequest httpServletRequest = request.getNativeRequest(HttpServletRequest.class);
+        Map<String, String> map = (Map<String, String>) httpServletRequest.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
+        Long reqId = NumberUtils.createLong(map.get("reqId"));
+        Iterable<PermissionDTO> permissions;
+        if (reqId != null) {
+            RoleDTO role = roleService.getRole(reqId);
+            permissions = roleService.getPermissionsNotInRole(role);
+        } else
+            permissions = roleService.getPermissions();
+        return permissions;
     }
-    
-    
+
+
     @GetMapping("/{roleId}")
-    public String getRole(@PathVariable Long roleId, Model model){
+    public String getRole(@PathVariable Long roleId, Model model) {
         RoleDTO role = roleService.getRole(roleId);
-        model.addAttribute("role",role);
+        model.addAttribute("role", role);
         return "adm/role/edit";
     }
 
     @GetMapping
-    public String getRoles(Model model){
+    public String getRoles(Model model) {
         return "adm/role/view";
     }
 
     @GetMapping("/{reqId}/edit")
-    public String  editRole(@PathVariable Long reqId, Model model){
+    public String editRole(@PathVariable Long reqId, Model model) {
         RoleDTO role = roleService.getRole(reqId);
-        Iterable<PermissionDTO> permissionDTOs =roleService.getRole(reqId).getPermissions();
-        model.addAttribute("role",role);
+        Iterable<PermissionDTO> permissionDTOs = roleService.getRole(reqId).getPermissions();
+        model.addAttribute("role", role);
 //        model.addAttribute("permissions",role);
 
         return "/adm/role/edit";
     }
-    
+
     @GetMapping("/{reqId}/view")
-    public String  viewRole(@PathVariable Long reqId, Model model){
+    public String viewRole(@PathVariable Long reqId, Model model) {
         RoleDTO role = roleService.getRole(reqId);
-        model.addAttribute("role",role);
+        model.addAttribute("role", role);
         return "/adm/role/details";
     }
-    
+
     @GetMapping(path = "/{roleId}/users")
-    public @ResponseBody
-    DataTablesOutput<User> getUsers(@PathVariable Long roleId, DataTablesInput input){
-    	RoleDTO role = roleService.getRole(roleId);
+    public
+    @ResponseBody
+    DataTablesOutput<User> getUsers(@PathVariable Long roleId, DataTablesInput input) {
+        RoleDTO role = roleService.getRole(roleId);
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<User> users = roleService.getUsers(role, pageable);
         DataTablesOutput<User> out = new DataTablesOutput<User>();
@@ -112,8 +113,9 @@ public class AdmRoleController {
     }
 
     @GetMapping(path = "/all")
-    public @ResponseBody
-    DataTablesOutput<RoleDTO> getRoles(DataTablesInput input){
+    public
+    @ResponseBody
+    DataTablesOutput<RoleDTO> getRoles(DataTablesInput input) {
 
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<RoleDTO> roles = roleService.getRoles(pageable);
@@ -126,69 +128,72 @@ public class AdmRoleController {
     }
 
     @PostMapping
-    public String createRole(@ModelAttribute("role") @Valid RoleDTO roleDTO, BindingResult result,WebRequest request, RedirectAttributes redirectAttributes,Locale locale){
-        if(result.hasErrors()){
-            result.addError(new ObjectError("invalid",messageSource.getMessage("form.fields.required",null,locale)));
+    public String createRole(@ModelAttribute("role") @Valid RoleDTO roleDTO, BindingResult result, WebRequest request, RedirectAttributes redirectAttributes, Locale locale) {
+        if (result.hasErrors()) {
+            result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
             return "adm/role/add";
         }
         logger.info("Role {}", roleDTO.toString());
         List<PermissionDTO> permissionList = new ArrayList<>();
-        
+
         String[] permissions = request.getParameterValues("permissionsList");
-        for(String perm : permissions){
-        	PermissionDTO pdto = new PermissionDTO();
-        	pdto.setId(NumberUtils.toLong(perm));
-        	permissionList.add(pdto);
+        if (permissions != null) {
+            for (String perm : permissions) {
+                PermissionDTO pdto = new PermissionDTO();
+                pdto.setId(NumberUtils.toLong(perm));
+                permissionList.add(pdto);
+            }
         }
         roleDTO.setPermissions(permissionList);
         try {
             String message = roleService.addRole(roleDTO);
             redirectAttributes.addFlashAttribute("message", message);
             return "redirect:/admin/roles";
-        }catch (InternetBankingException ibe){
-            result.addError(new ObjectError("error",messageSource.getMessage("role.add.failure",null,locale)));
-            logger.error("Error creating role",ibe);
+        } catch (InternetBankingException ibe) {
+            result.addError(new ObjectError("error", messageSource.getMessage("role.add.failure", null, locale)));
+            logger.error("Error creating role", ibe);
             return "adm/role/add";
         }
     }
 
     @PostMapping("/update")
-    public String updateRole(@ModelAttribute("role") @Valid RoleDTO roleDTO, BindingResult result,WebRequest request, RedirectAttributes redirectAttributes,Locale locale) {
-    	 if(result.hasErrors()){
-             result.addError(new ObjectError("invalid",messageSource.getMessage("form.fields.required",null,locale)));
-             return "adm/role/edit";
-         }
-         logger.info("Role {}", roleDTO.toString());
-         List<PermissionDTO> permissionList = new ArrayList<>();
-         
-         String[] permissions = request.getParameterValues("permissionsList");
-         for(String perm : permissions){
-         	PermissionDTO pdto = new PermissionDTO();
-         	pdto.setId(NumberUtils.toLong(perm));
-         	permissionList.add(pdto);
-         }
-         roleDTO.setPermissions(permissionList);
+    public String updateRole(@ModelAttribute("role") @Valid RoleDTO roleDTO, BindingResult result, WebRequest request, RedirectAttributes redirectAttributes, Locale locale) {
+        if (result.hasErrors()) {
+            result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
+            return "adm/role/edit";
+        }
+        logger.info("Role {}", roleDTO.toString());
+        List<PermissionDTO> permissionList = new ArrayList<>();
+
+        String[] permissions = request.getParameterValues("permissionsList");
+        if (permissions != null) {
+            for (String perm : permissions) {
+                PermissionDTO pdto = new PermissionDTO();
+                pdto.setId(NumberUtils.toLong(perm));
+                permissionList.add(pdto);
+            }
+        }
+        roleDTO.setPermissions(permissionList);
         try {
             String message = roleService.updateRole(roleDTO);
             redirectAttributes.addFlashAttribute("message", message);
             return "redirect:/admin/roles";
-        }catch (InternetBankingException ibe){
-            result.addError(new ObjectError("error",messageSource.getMessage("role.update.failure",null,locale)));
-            logger.error("Error updating role",ibe);
+        } catch (InternetBankingException ibe) {
+            result.addError(new ObjectError("error", messageSource.getMessage("role.update.failure", null, locale)));
+            logger.error("Error updating role", ibe);
             return "adm/role/edit";
         }
     }
 
     @GetMapping("/{roleId}/delete")
-    public String deleteRole(@PathVariable Long roleId, RedirectAttributes redirectAttributes,Locale locale){
+    public String deleteRole(@PathVariable Long roleId, RedirectAttributes redirectAttributes, Locale locale) {
         try {
             String message = roleService.deleteRole(roleId);
             redirectAttributes.addFlashAttribute("message", message);
             return "redirect:/admin/roles";
-        }
-        catch (InternetBankingException ibe){
-            logger.error("Error deleting role",ibe);
-            redirectAttributes.addFlashAttribute("message", messageSource.getMessage("role.update.failure",null,locale));
+        } catch (InternetBankingException ibe) {
+            logger.error("Error deleting role", ibe);
+            redirectAttributes.addFlashAttribute("message", messageSource.getMessage("role.update.failure", null, locale));
             return "redirect:/admin/roles";
 
         }

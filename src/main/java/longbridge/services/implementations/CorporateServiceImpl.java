@@ -225,13 +225,15 @@ public class CorporateServiceImpl implements CorporateService {
     @Override
     public String addCorporateRule(CorpTransferRuleDTO transferRuleDTO) throws InternetBankingException {
 
-        if(new BigDecimal(transferRuleDTO.getUpperLimitAmount()).compareTo(new BigDecimal(transferRuleDTO.getLowerLimitAmount()))<0){
-            throw new TransferRuleException(messageSource.getMessage("rule.range.violation",null,locale));
+        if (new BigDecimal(transferRuleDTO.getUpperLimitAmount()).compareTo(new BigDecimal(transferRuleDTO.getLowerLimitAmount())) < 0) {
+            throw new TransferRuleException(messageSource.getMessage("rule.range.violation", null, locale));
         }
 
         try {
             CorpTransferRule corpTransferRule = convertTransferRuleDTOToEntity(transferRuleDTO);
-            corpTransferRuleRepo.save(corpTransferRule);
+            Corporate corporate = corpTransferRule.getCorporate();
+            corporate.getCorpTransferRules().add(corpTransferRule);
+            corporateRepo.save(corporate);
             logger.info("Added transfer rule for corporate with Id {}", transferRuleDTO.getCorporateId());
             return messageSource.getMessage("rule.add.success", null, locale);
         } catch (Exception e) {
@@ -249,8 +251,8 @@ public class CorporateServiceImpl implements CorporateService {
     @Transactional
     public String updateCorporateRule(CorpTransferRuleDTO transferRuleDTO) throws InternetBankingException {
 
-        if(new BigDecimal(transferRuleDTO.getUpperLimitAmount()).compareTo(new BigDecimal(transferRuleDTO.getLowerLimitAmount()))<0){
-            throw new TransferRuleException(messageSource.getMessage("rule.range.violation",null,locale));
+        if (new BigDecimal(transferRuleDTO.getUpperLimitAmount()).compareTo(new BigDecimal(transferRuleDTO.getLowerLimitAmount())) < 0) {
+            throw new TransferRuleException(messageSource.getMessage("rule.range.violation", null, locale));
         }
 
         try {
@@ -275,14 +277,19 @@ public class CorporateServiceImpl implements CorporateService {
     @Transactional
     public List<CorpTransferRuleDTO> getCorporateRules(Long corpId) {
         Corporate corporate = corporateRepo.findOne(corpId);
-        List<CorpTransferRule> transferRules = corpTransferRuleRepo.findByCorporate(corporate);
+        List<CorpTransferRule> transferRules = corporate.getCorpTransferRules();
+        Collections.sort(transferRules,new TransferRuleComparator());
         return convertTransferRuleEntitiesToDTOs(transferRules);
     }
 
     @Override
     public String deleteCorporateRule(Long id) throws InternetBankingException {
         try {
-            corpTransferRuleRepo.delete(id);
+           CorpTransferRule transferRule = corpTransferRuleRepo.findOne(id);
+           Corporate corporate = corporateRepo.findOne(transferRule.getCorporate().getId());
+
+           corporate.getCorpTransferRules().remove(transferRule);
+           corporateRepo.save(corporate);
             logger.info("Updated transfer rule  with Id {}", id);
             return messageSource.getMessage("rule.delete.success", null, locale);
         } catch (Exception e) {
@@ -312,6 +319,7 @@ public class CorporateServiceImpl implements CorporateService {
     }
 
     @Override
+    @Transactional
     public CorpTransferRule getApplicableTransferRule(CorpTransferRequest transferRequest) {
         Corporate corporate = transferRequest.getCorporate();
         List<CorpTransferRule> transferRules = corporate.getCorpTransferRules();
@@ -319,11 +327,13 @@ public class CorporateServiceImpl implements CorporateService {
         BigDecimal transferAmount = transferRequest.getAmount();
         CorpTransferRule applicableTransferRule = null;
         for (CorpTransferRule transferRule : transferRules) {
-            BigDecimal loweLimit = transferRule.getLowerLimitAmount();
+            BigDecimal lowerLimit = transferRule.getLowerLimitAmount();
             BigDecimal upperLimit = transferRule.getUpperLimitAmount();
-            if (transferAmount.compareTo(loweLimit) >= 0 && (transferAmount.compareTo(upperLimit) <= 0)) {
+            if (transferAmount.compareTo(lowerLimit) >= 0 && (transferAmount.compareTo(upperLimit) <= 0)) {
                 applicableTransferRule = transferRule;
-            } else if (transferAmount.compareTo(upperLimit) > 0 && transferRule.isInfinite()) {
+                break;
+            }
+            else if (transferAmount.compareTo(lowerLimit) >= 0 && transferRule.isUnlimited()) {
                 applicableTransferRule = transferRule;
             }
         }
@@ -332,6 +342,7 @@ public class CorporateServiceImpl implements CorporateService {
     }
 
     @Override
+    @Transactional
     public List<CorporateUser> getQualifiedAuthorizers(CorpTransferRequest transferRequest) {
         Corporate corporate = transferRequest.getCorporate();
         List<CorpTransferRule> transferRules = corporate.getCorpTransferRules();
@@ -339,12 +350,13 @@ public class CorporateServiceImpl implements CorporateService {
         BigDecimal transferAmount = transferRequest.getAmount();
         CorpTransferRule applicableTransferRule = null;
         for (CorpTransferRule transferRule : transferRules) {
-            BigDecimal loweLimit = transferRule.getLowerLimitAmount();
+            BigDecimal lowerLimit = transferRule.getLowerLimitAmount();
             BigDecimal upperLimit = transferRule.getUpperLimitAmount();
-            if (transferAmount.compareTo(loweLimit) >= 0 && (transferAmount.compareTo(upperLimit) <= 0)) {
+            if (transferAmount.compareTo(lowerLimit) >= 0 && transferAmount.compareTo(upperLimit) <= 0) {
                 applicableTransferRule = transferRule;
+                break;
             }
-            if (transferAmount.compareTo(upperLimit) >= 0 && transferRule.isInfinite()) {
+            else if (transferAmount.compareTo(lowerLimit) >= 0 && transferRule.isUnlimited()) {
                 applicableTransferRule = transferRule;
             }
         }
@@ -361,8 +373,8 @@ public class CorporateServiceImpl implements CorporateService {
         corpTransferRuleDTO.setId(transferRule.getId());
         corpTransferRuleDTO.setVersion(transferRule.getVersion());
         corpTransferRuleDTO.setLowerLimitAmount(transferRule.getLowerLimitAmount().toString());
-        corpTransferRuleDTO.setUpperLimitAmount(transferRule.isInfinite() ? "Unlimited" : transferRule.getUpperLimitAmount().toString());
-        corpTransferRuleDTO.setInfinite(transferRule.isInfinite());
+        corpTransferRuleDTO.setUpperLimitAmount(transferRule.isUnlimited() ? "Unlimited" : transferRule.getUpperLimitAmount().toString());
+        corpTransferRuleDTO.setUnlimited(transferRule.isUnlimited());
         corpTransferRuleDTO.setCurrency(transferRule.getCurrency());
         corpTransferRuleDTO.setAnyCanAuthorize(transferRule.isAnyCanAuthorize());
         corpTransferRuleDTO.setCorporateId(transferRule.getCorporate().getId().toString());
@@ -387,7 +399,7 @@ public class CorporateServiceImpl implements CorporateService {
         CorpTransferRule corpTransferRule = new CorpTransferRule();
         corpTransferRule.setLowerLimitAmount(new BigDecimal(transferRuleDTO.getLowerLimitAmount()));
         corpTransferRule.setUpperLimitAmount(new BigDecimal(transferRuleDTO.getUpperLimitAmount()));
-        corpTransferRule.setInfinite(transferRuleDTO.isInfinite());
+        corpTransferRule.setUnlimited(transferRuleDTO.isUnlimited());
         corpTransferRule.setCurrency(transferRuleDTO.getCurrency());
         corpTransferRule.setAnyCanAuthorize(transferRuleDTO.isAnyCanAuthorize());
         corpTransferRule.setCorporate(corporateRepo.findOne(Long.parseLong(transferRuleDTO.getCorporateId())));
@@ -414,10 +426,8 @@ public class CorporateServiceImpl implements CorporateService {
         if (corporate.getCreatedOnDate() != null) {
             corporateDTO.setCreatedOn(DateFormatter.format(corporate.getCreatedOnDate()));
         }
-        Code code = codeService.getByTypeAndCode("USER_STATUS", corporate.getStatus());
-        if (code != null) {
-            corporateDTO.setStatus(code.getDescription());
-        }
+
+        corporateDTO.setStatus(corporate.getStatus());
         return corporateDTO;
     }
 

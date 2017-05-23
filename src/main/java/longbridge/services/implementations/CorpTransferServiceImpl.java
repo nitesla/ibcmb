@@ -60,9 +60,9 @@ public class CorpTransferServiceImpl implements CorpTransferService {
             //TODO do some other validations before saving
 
             List<CorporateUser> authorizers = corporateService.getQualifiedAuthorizers(transferRequest);
-            PendingAuthorization pendingAuthorization = new PendingAuthorization();
             List<PendingAuthorization> pendingAuthorizations = new ArrayList<>();
             for (CorporateUser authorizer : authorizers) {
+                PendingAuthorization pendingAuthorization = new PendingAuthorization();
                 pendingAuthorization.setAuthorizer(authorizer);
                 pendingAuthorizations.add(pendingAuthorization);
             }

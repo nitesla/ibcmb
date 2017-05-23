@@ -36,27 +36,31 @@
     <div class="login_wrapper">
         <div class="animate form login_form">
             <section class="login_content">
-                <img th:src="@{/bank/images/cmb_logo.png}" alt="Coronation Merchant Bank" />
+                <img th:src="@{/bank/images/cmb_logo.png}" alt="Coronation Merchant Bank"/>
                 <br/>
-                
+
                 <form th:action="@{/admin/users/password/new}" method="POST" th:object="${changePassword}">
                     <h4>Change password </h4>
-
+                    <p><span style="color: red;">Your current password has expired.</span> <br/>Please enter a new password.</p>
                     <div class="form-group">
                         <ul id="" th:align="left">
                             <li th:each="rule : ${passwordRules}" th:text="${rule}">Input is incorrect</li>
                         </ul>
                     </div>
                     <div>
-                        <input type="password" class="form-control" placeholder="New Password" required="" name="newPassword" />
+                        <input type="password" class="form-control" placeholder="New Password" required=""
+                               name="newPassword"/>
                     </div>
                     <div>
-                        <input type="password" class="form-control" placeholder="Confirm Password" required="" name="confirmPassword"/>
+                        <input type="password" class="form-control" placeholder="Confirm Password" required=""
+                               name="confirmPassword"/>
                     </div>
                     <div>
-                        <input name="submit"  type="submit" value="Submit" />
+                        <input name="submit" type="submit" value="Submit"/>
                     </div>
-                    <div th:if="${param.message != null}" class="alert alert-info" th:text="${param.message[0]}">message</div>
+                    <div th:if="${param.message != null}" class="alert alert-info" th:text="${param.message[0]}">
+                        message
+                    </div>
 
 
                     <div class="clearfix"></div>

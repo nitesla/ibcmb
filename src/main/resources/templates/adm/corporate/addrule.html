@@ -66,8 +66,8 @@
                                                 <input id="upperLimit" type="text" class="form-control"
                                                        th:field="*{upperLimitAmount}"/>
                                             </div>
-                                            <input id="infinite" type="checkbox" class="checkbox-inline"
-                                                   th:field="*{infinite}"/>
+                                            <input id="unlimited" type="checkbox" class="checkbox-inline"
+                                                   th:field="*{unlimited}"/>
                                             <label><strong>Unlimited Amount</strong></label>
 
                                         </div>
@@ -138,7 +138,7 @@
     $(document).ready(function () {
 
 
-        $("#infinite").change(function () {
+        $("#unlimited").change(function () {
             if ($(this).is(":checked")) {
                 $("#upperLimit").val("");
                 $("#upperLimit").prop("disabled", true);

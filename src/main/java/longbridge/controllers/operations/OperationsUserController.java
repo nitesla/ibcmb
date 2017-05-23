@@ -1,6 +1,7 @@
 package longbridge.controllers.operations;
 
 import longbridge.dtos.OperationsUserDTO;
+import longbridge.dtos.RoleDTO;
 import longbridge.exception.PasswordException;
 import longbridge.exception.PasswordMismatchException;
 import longbridge.exception.PasswordPolicyViolationException;
@@ -96,6 +97,10 @@ public class OperationsUserController {
         return "redirect:/ops/users";
     }
 
+    @ModelAttribute
+    public void init(Model model) {
+        model.addAttribute("passwordRules", passwordPolicyService.getPasswordRules());
+    }
 
     @GetMapping("/password")
     public String changePassword(Model model){
@@ -171,7 +176,6 @@ public class OperationsUserController {
         } catch (PasswordException pe) {
             result.addError(new ObjectError("error", pe.getMessage()));
             logger.error("Error changing password for admin user {}", user.getUserName(), pe);
-
             return "/ops/new-pword";
         }
     }

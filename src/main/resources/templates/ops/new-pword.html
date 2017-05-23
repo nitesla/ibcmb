@@ -41,6 +41,7 @@
                 
                 <form th:action="@{/ops/users/password/new}" method="POST" th:object="${changePassword}">
                     <h4>Change password </h4>
+                    <p><span style="color: red;">Your current password has expired.</span> <br/>Please enter a new password.</p>
 
 
                     <div class="form-group">

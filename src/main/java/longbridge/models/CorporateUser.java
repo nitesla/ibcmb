@@ -23,7 +23,7 @@ public class CorporateUser extends User {
 	@ManyToMany(mappedBy = "authorizers")
 	private List<CorpTransferRule> corpTransferRules;
 
-	@OneToMany(mappedBy = "authorizer")
+	@OneToMany(mappedBy = "authorizer",cascade = CascadeType.ALL)
 	List<PendingAuthorization> pendingAuthorizations;
 
 

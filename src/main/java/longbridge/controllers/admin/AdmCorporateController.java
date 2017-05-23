@@ -3,7 +3,9 @@ package longbridge.controllers.admin;
 import longbridge.dtos.*;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.TransferRuleException;
-import longbridge.models.Corporate;
+import longbridge.models.*;
+import longbridge.repositories.CorpTransferRequestRepo;
+import longbridge.repositories.CorporateRepo;
 import longbridge.services.CodeService;
 import longbridge.services.CorporateService;
 import longbridge.services.CorporateUserService;
@@ -19,6 +21,7 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.data.jpa.datatables.repository.DataTablesUtils;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -263,7 +266,7 @@ public class AdmCorporateController {
 
         try {
             BigDecimal lowerAmount = new BigDecimal(transferRuleDTO.getLowerLimitAmount());
-            if (!transferRuleDTO.isInfinite()) {
+            if (!transferRuleDTO.isUnlimited()) {
                 BigDecimal upperAmount = new BigDecimal(transferRuleDTO.getUpperLimitAmount());
 
             }
@@ -281,7 +284,8 @@ public class AdmCorporateController {
 
         }
 
-        String[] authorizerIds = webRequest.getParameterValues("authorizers");
+        String[] authorizerIds;
+        authorizerIds = webRequest.getParameterValues("authorizers");
         List<CorporateUserDTO> authorizerDTOs = new ArrayList<>();
         CorporateUserDTO corporateUser;
 
@@ -294,7 +298,7 @@ public class AdmCorporateController {
         } else if (authorizerIds == null && transferRuleDTO.isAnyCanAuthorize()) {
             authorizerDTOs = corporateService.getAuthorizers(Long.parseLong(transferRuleDTO.getCorporateId()));
         }
-        if (transferRuleDTO.isInfinite()) {
+        if (transferRuleDTO.isUnlimited()) {
             transferRuleDTO.setUpperLimitAmount(new BigDecimal(transferRuleDTO.getLowerLimitAmount()).multiply(new BigDecimal("5")).toString());
         }
         transferRuleDTO.setAuthorizers(authorizerDTOs);
@@ -352,7 +356,7 @@ public class AdmCorporateController {
 
         try {
             BigDecimal lowerAmount = new BigDecimal(transferRuleDTO.getLowerLimitAmount());
-            if (!transferRuleDTO.isInfinite()) {
+            if (!transferRuleDTO.isUnlimited()) {
                 BigDecimal upperAmount = new BigDecimal(transferRuleDTO.getUpperLimitAmount());
 
             }
@@ -369,8 +373,8 @@ public class AdmCorporateController {
             return "adm/corporate/editrule";
 
         }
-
-        String[] authorizerIds = webRequest.getParameterValues("authorizers");
+        String[] authorizerIds;
+        authorizerIds = webRequest.getParameterValues("authorizers");
         List<CorporateUserDTO> authorizerDTOs = new ArrayList<>();
         CorporateUserDTO corporateUser;
         if (authorizerIds != null) {
@@ -382,7 +386,7 @@ public class AdmCorporateController {
         } else if (authorizerIds == null && transferRuleDTO.isAnyCanAuthorize()) {
             authorizerDTOs = corporateService.getAuthorizers(Long.parseLong(transferRuleDTO.getCorporateId()));
         }
-        if (transferRuleDTO.isInfinite()) {
+        if (transferRuleDTO.isUnlimited()) {
             transferRuleDTO.setUpperLimitAmount(new BigDecimal(transferRuleDTO.getLowerLimitAmount()).multiply(new BigDecimal("5")).toString());
         }
         transferRuleDTO.setAuthorizers(authorizerDTOs);
@@ -444,6 +448,31 @@ public class AdmCorporateController {
 
     }
 
+    @Autowired
+    CorporateRepo corporateRepo;
+
+    @Autowired
+    CorpTransferRequestRepo transferRequestRepo;
+
+    @GetMapping("/{id}/{amount}")
+    @Transactional
+    public void getQualifiedAuthorizers(@PathVariable Long id, @PathVariable String amount) {
+        CorpTransferRequest transferRequest = new CorpTransferRequest();
+        transferRequest.setAmount(new BigDecimal(amount));
+        Corporate corporate = corporateRepo.findOne(id);
+        transferRequest.setCorporate(corporate);
+
+        List<CorporateUser> authorizers = corporateService.getQualifiedAuthorizers(transferRequest);
+        List<PendingAuthorization> pendingAuthorizations = new ArrayList<>();
+        for (CorporateUser authorizer : authorizers) {
+            PendingAuthorization pendingAuthorization = new PendingAuthorization();
+            pendingAuthorization.setAuthorizer(authorizer);
+            pendingAuthorization.setCorpTransferRequest(transferRequest);
+            pendingAuthorizations.add(pendingAuthorization);
+        }
+        transferRequest.setPendingAuthorizations(pendingAuthorizations);
+        transferRequestRepo.save(transferRequest);
+    }
 
 }
 

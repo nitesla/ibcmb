@@ -39,10 +39,10 @@ public class Corporate extends AbstractEntity{
     @OneToMany
     private Collection<CorpLimit> corpLimits;
 
-    @OneToMany
+    @OneToMany(mappedBy = "corporate")
     List<CorpTransferRequest> corpTransferRequests;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     List<CorpTransferRule> corpTransferRules;
 
     public Collection<CorpLimit> getCorpLimits() {

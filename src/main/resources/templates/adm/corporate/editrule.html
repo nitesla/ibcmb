@@ -67,8 +67,8 @@
                                             <div class="col-sm-6">
                                                 <input id="upperLimit" type="text" class="form-control" th:field="*{upperLimitAmount}"/>
                                             </div>
-                                            <input id="infinite" type="checkbox" class="checkbox-inline"
-                                                   th:field="*{infinite}"/>
+                                            <input id="unlimited" type="checkbox" class="checkbox-inline"
+                                                   th:field="*{unlimited}"/>
                                             <label><strong>Unlimited Amount</strong></label>
                                         </div>
                                         <div class="form-group">
@@ -104,7 +104,7 @@
                                         <div class="form-group">
                                             <div class="col-sm-4 col-sm-offset-2">
                                                 <button class="btn btn-white" type="reset" id="cancel">Cancel</button>
-                                                <button class="btn btn-primary" type="submit">Submit</button>
+                                                <button class="btn btn-primary" type="submit">Save</button>
                                             </div>
                                         </div>
 
@@ -130,12 +130,12 @@
         location.href = "/admin/corporates";}
 
     $(document).ready(function () {
-        if ($("#infinite").is(":checked")) {
+        if ($("#unlimited").is(":checked")) {
             $("#upperLimit").val("");
             $("#upperLimit").prop("disabled", true);
         }
 
-        $("#infinite").change(function () {
+        $("#unlimited").change(function () {
             if ($(this).is(":checked")) {
                 $("#upperLimit").val("");
                 $("#upperLimit").prop("disabled", true);

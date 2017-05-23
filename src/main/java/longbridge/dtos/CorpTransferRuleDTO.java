@@ -1,9 +1,7 @@
 package longbridge.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.hibernate.validator.constraints.NotEmpty;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -17,7 +15,7 @@ public class CorpTransferRuleDTO {
     private String lowerLimitAmount;
     private String upperLimitAmount;
     private String currency;
-    private boolean infinite;
+    private boolean unlimited;
     private boolean anyCanAuthorize;
     private String corporateId;
     private int numOfAuthorizers;
@@ -64,12 +62,12 @@ public class CorpTransferRuleDTO {
         this.currency = currency;
     }
 
-    public boolean isInfinite() {
-        return infinite;
+    public boolean isUnlimited() {
+        return unlimited;
     }
 
-    public void setInfinite(boolean infinite) {
-        this.infinite = infinite;
+    public void setUnlimited(boolean unlimited) {
+        this.unlimited = unlimited;
     }
 
     public boolean isAnyCanAuthorize() {
