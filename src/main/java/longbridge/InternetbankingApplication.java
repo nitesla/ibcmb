@@ -1,24 +1,18 @@
 package longbridge;
 
-import longbridge.jobs.DirectDebitJob;
-import longbridge.models.CorpTransferRequest;
-import longbridge.models.Corporate;
 import longbridge.repositories.CorporateRepo;
 import longbridge.repositories.CustomJpaRepositoryFactoryBean;
+import longbridge.repositories.PermissionRepo;
+import longbridge.repositories.RoleRepo;
 import longbridge.services.CorporateService;
 import longbridge.services.MessageService;
 import longbridge.services.OperationsUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-
-import javax.swing.*;
-import javax.transaction.Transactional;
-import java.math.BigDecimal;
 
 
 @SpringBootApplication
@@ -35,7 +29,11 @@ public class InternetbankingApplication/*extends SpringBootServletInitializer*/ 
     CorporateService corporateService;
 
     @Autowired
-            CorporateRepo corporateRepo;
+    CorporateRepo corporateRepo;
+    @Autowired
+    RoleRepo roleRepo;
+    @Autowired
+    PermissionRepo permissionRepo;
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -44,7 +42,7 @@ public class InternetbankingApplication/*extends SpringBootServletInitializer*/ 
 
     public static void main(String[] args) {
         //startup all jobs
-        Timer timer = new Timer(1000 * 60 * 60 * 12, new DirectDebitJob());
+     //   Timer timer = new Timer(1000 * 60 * 60 * 12, new DirectDebitJob());
         SpringApplication.run(InternetbankingApplication.class, args);
 
 
