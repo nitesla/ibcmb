@@ -97,7 +97,7 @@ public interface CorporateUserService{
      * @param oldPassword the old password
      * @param newPassword the hashed new password
      */
-    void changePassword(CorporateUser user, String oldPassword, String newPassword) throws InternetBankingException;
+    boolean changePassword(CorporateUserDTO user, String oldPassword, String newPassword) throws InternetBankingException;
 
     /**
      * Generates and sends a password to the specified user

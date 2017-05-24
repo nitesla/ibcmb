@@ -1,4 +1,3 @@
-/*
 package longbridge.controllers.corporate;
 
 import longbridge.dtos.AccountDTO;
@@ -26,10 +25,7 @@ import javax.validation.Valid;
 import java.security.Principal;
 import java.util.List;
 
-*/
-/**
- * Created by SYLVESTER on 5/22/2017.
- *//*
+
 
 @Controller
 @RequestMapping("/corporate")
@@ -46,7 +42,7 @@ public class CorpSettingController {
     private AccountService accountService;
 
     @RequestMapping("/dashboard")
-    public String getRetailDashboard(Model model, Principal principal) {
+    public String getCorporateDashboard(Model model, Principal principal) {
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
         List<AccountDTO> accountList = accountService.getAccountsForDebitAndCredit(corporateUser.getCorporate().getCustomerId());
         model.addAttribute("accountList", accountList);
@@ -54,21 +50,22 @@ public class CorpSettingController {
     }
 
     @GetMapping("/change_password")
-    public String ChangePaswordPage(ChangePassword changePassword){
+    public String ChangePaswordPage(ChangePassword changePassword)
+    {
         return "corp/settings/pword";
+
     }
 
-    */
-/*@PostMapping("/change_password")
+   @PostMapping("/change_password")
     public String ChangePassword(@Valid ChangePassword changePassword, Principal principal, BindingResult result, Model model, RedirectAttributes redirectAttributes) throws Exception{
         if(result.hasErrors()){
             model.addAttribute("message","please provide the appropriate input");
-            return "redirect:/corp/change_password";
+            return "redirect:/corporate/change_password";
         }
 
         if(!changePassword.getNewPassword().equals(changePassword.getConfirmPassword())){
             logger.info("PASSWORD MISMATCH");
-            return "redirect:/corp/change_password";
+            return "redirect:/corporate/change_password";
         }
 
         CorporateUserDTO user = corporateUserService.getUserDTOByName(principal.getName());
@@ -76,22 +73,22 @@ public class CorpSettingController {
         corporateUserService.changePassword(user, changePassword.getOldPassword(), changePassword.getNewPassword());
 
         redirectAttributes.addFlashAttribute("message","Password change successful");
-        return "redirect:/retail/change_password";
-    }*//*
+        return "redirect:/corporate/change_password";
+    }
 
 
     @GetMapping("/alert_preference")
     public String AlertPreferencePage(AlertPref alertPref, Model model){
         Iterable<CodeDTO> pref = codeService.getCodesByType("ALERT_PREFERENCE");
         model.addAttribute("prefs", pref);
-        return "cust/settings/alertpref";
+        return "corp/settings/alertpref";
     }
 
     @PostMapping("/alert_preference")
     public String ChangeAlertPreference(@Valid AlertPref alertPref, Principal principal, BindingResult result, Model model, RedirectAttributes redirectAttributes) throws Exception{
         if(result.hasErrors()){
             model.addAttribute("message","Pls correct the errors");
-            return "redirect:/retail/alert_preference";
+            return "redirect:/corporate/alert_preference";
         }
 
         CorporateUserDTO user = corporateUserService.getUserDTOByName(principal.getName());
@@ -99,13 +96,12 @@ public class CorpSettingController {
         corporateUserService.changeAlertPreference(user, alertPref);
 
         redirectAttributes.addFlashAttribute("message","Preference Change Successful successful");
-        return "redirect:/retail/alert_preference";
+        return "redirect:/corporate/alert_preference";
     }
-
 
     @GetMapping("/bvn")
     public String linkBVN(){
         return "abc";
     }
+
 }
-*/

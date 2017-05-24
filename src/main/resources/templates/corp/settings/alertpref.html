@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="corp_layout :: site-head">
+
+</head>
+<body>
+<header th:replace="corp_layout :: corp-header">
+</header>
+
+<section class="content-wrapper">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 col-sm-4">
+                <h5 class="page_header"> Alert Preference</h5>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-8 content-bg">
+                <div class="row form-spacing">
+                    <div class="col-md-6 col-sm-6">
+                        <form method="post" th:action="@{/corporate/alert_preference}" th:object="${alertPref}">
+                            <div class="form-group">
+                                <label>Select Preference</label>
+                                <select th:field="*{preference}" class="form-control">
+                                    <option th:each="pref : ${prefs}" th:value="${pref.code}" th:text="${pref.description}"></option>
+                                </select>
+                                <p class="errors close" data-dismiss="alert" aria-label="close" th:if="${#fields.hasErrors('preference')}" th:errors="*{preference}">&times;</p>
+                            </div>
+
+                            <button type="submit" class="btn btn-default">Submit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div th:replace="corp_layout :: corp-sidebar" class="col-md-3 sidebar">
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- CONTENT-WRAPPER SECTION END-->
+<footer th:replace="corp_layout ::corp-footer">
+</footer>
+</body>
+</html>

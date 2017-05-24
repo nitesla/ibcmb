@@ -53,4 +53,10 @@ public class CorpTransferController {
         transferRequest.setPendingAuthorizations(pendingAuthorizations);
         transferRequestRepo.save(transferRequest);
     }
+
+    @GetMapping("/pending")
+    public String getPendingTransfer(){
+
+        return "corp/transfer/pendingtransfer/view";
+    }
 }

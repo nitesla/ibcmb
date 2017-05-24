@@ -209,25 +209,28 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     }
 
     @Override
-    public void changePassword(CorporateUser user, String oldPassword, String newPassword) {
+    public boolean changePassword(CorporateUserDTO user, String oldPassword, String newPassword) {
+       boolean ok=false;
         try {
-            if (user == null) {
+            if (getUser(user.getId()) == null) {
                 logger.error("User does not exist");
-                return;
+                return ok;
             }
 
             if (this.passwordEncoder.matches(oldPassword, user.getPassword())) {
-                user.setPassword(this.passwordEncoder.encode(newPassword));
-                corporateUserRepo.save(user);
-                logger.info("User {}'s password has been updated", user.getUserName());
-                return;
+                CorporateUser corporateUser=convertDTOToEntity(user);
+                corporateUser.setPassword(this.passwordEncoder.encode(newPassword));
+                corporateUserRepo.save(corporateUser);
+                logger.info("User {}'s password has been updated", user.getId());
+                ok=true;
             } else {
                 logger.error("Invalid current password supplied for {}", user.getUserName());
-                return;
+
             }
         } catch (Exception e) {
-            logger.error("Error Occurred {}", e);
+            logger.error("Error Occurred {}", e.getMessage());
         }
+        return ok;
     }
 
     @Override
