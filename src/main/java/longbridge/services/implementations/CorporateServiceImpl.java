@@ -144,14 +144,6 @@ public class CorporateServiceImpl implements CorporateService {
     }
 
     @Override
-    public String addCorporateUser(Corporate corporate, CorporateUser corporateUser) throws InternetBankingException {
-        corporate.getUsers().add(corporateUser);
-        corporateRepo.save(corporate);
-        return messageSource.getMessage("user.add.success", null, locale);
-    }
-
-
-    @Override
     @Transactional
     public String changeActivationStatus(Long id) throws InternetBankingException {
         try {
@@ -165,25 +157,6 @@ public class CorporateServiceImpl implements CorporateService {
 
         } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("corporate.status.failure", null, locale), e);
-
-        }
-    }
-
-
-    @Override
-    @Transactional
-    public String changeUserActivationStatus(Long id) throws InternetBankingException {
-        try {
-            CorporateUser corporateUser = corporateUserRepo.findOne(id);
-            String oldStatus = corporateUser.getStatus();
-            String newStatus = "A".equals(oldStatus) ? "I" : "A";
-            corporateUser.setStatus(newStatus);
-            corporateUserRepo.save(corporateUser);
-            logger.info("Corporate user{} status changed from {} to {}", corporateUser.getUserName(), oldStatus, newStatus);
-            return messageSource.getMessage("user.status.success", null, locale);
-
-        } catch (Exception e) {
-            throw new InternetBankingException(messageSource.getMessage("user.status.failure", null, locale), e);
 
         }
     }

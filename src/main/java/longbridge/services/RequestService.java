@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import longbridge.models.RequestHistory;
 import longbridge.models.RetailUser;
 import longbridge.models.ServiceRequest;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
  * The {@code RequestService} interface provides the methods that manages customer's requests.
@@ -23,6 +24,7 @@ public interface RequestService {
      * Adds a new request to the system
      * @param request the request
      */
+    @PreAuthorize("hasAuthority('ADD_SERVICE_REQUEST')")
     String addRequest(ServiceRequestDTO request) throws InternetBankingException;
 
 
@@ -31,31 +33,30 @@ public interface RequestService {
      * @param id the request's id
      * @return a service request
      */
+    @PreAuthorize("hasAuthority('GET_SERVICE_REQUEST')")
     ServiceRequestDTO getRequest(Long id);
 
     /**
      *Returns a list of requests made by the specified user
      * @param user the user
      */
+    @PreAuthorize("hasAuthority('GET_SERVICE_REQUEST')")
     Iterable<ServiceRequestDTO>getRequests(RetailUser user);
-    
-    Page<ServiceRequestDTO>getRequests(Pageable pageDetails);
 
+    @PreAuthorize("hasAuthority('GET_SERVICE_REQUEST')")
+    Page<ServiceRequestDTO>getRequests(RetailUser user, Pageable pageDetails);
+
+    @PreAuthorize("hasAuthority('GET_SERVICE_REQUEST')")
     Page<ServiceRequestDTO>getRequests(OperationsUser opsUser,Pageable pageDetails);
 
+    @PreAuthorize("hasAuthority('GET_SERVICE_REQUEST')")
     int getNumOfUnattendedRequests(OperationsUser opsUser);
 
-
-
-
-
-
-//    public Page<ServiceRequestDTO> getRequests(ServiceRequestDTO request, Pageable pageDetails);
-
-        /**
-         * Creates and adds a new history for a request
-         * @param requestHistory the request history
-         */
+    /**
+     * Creates and adds a new history for a request
+     * @param requestHistory the request history
+     */
+    @PreAuthorize("hasAuthority('REQUEST_HISTORY')")
     String addRequestHistory(RequestHistoryDTO requestHistory) throws InternetBankingException;
 
 
@@ -63,15 +64,11 @@ public interface RequestService {
      *Returns a list of request histories for the specified service request
      * @param request the service request
      */
+    @PreAuthorize("hasAuthority('REQUEST_HISTORY')")
     Iterable<RequestHistory>getRequestHistories(ServiceRequest request);
 
+    @PreAuthorize("hasAuthority('REQUEST_HISTORY')")
     Iterable<RequestHistoryDTO>getRequestHistories(Long requestId);
-    
-
-
-//    Page<RequestHistoryDTO>getRequestHistories(Long serviceRequestId, Pageable pageDetails);
-
-
 
 
 }

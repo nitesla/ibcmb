@@ -18,18 +18,16 @@ public interface ServiceReqConfigService{
     @PreAuthorize("hasAuthority('ADD_SERV_REQ_CONFIG')")
     String addServiceReqConfig(ServiceReqConfigDTO serviceReqFormField) throws InternetBankingException;
 
-//    @PreAuthorize("hasAuthority('GET_SERV_REQ_CONFIG')")
+    @PreAuthorize("hasAuthority('GET_SERV_REQ_CONFIG')")
     ServiceReqConfigDTO getServiceReqConfig(Long id);
 
-    //List<ServiceReqConfigDTO> getServiceReqConfigs();
-
-//    @PreAuthorize("hasAuthority('GET_SERV_REQ_CONFIGS')")
+    @PreAuthorize("hasAuthority('GET_SERV_REQ_CONFIGS')")
     Iterable<ServiceReqConfigDTO> getServiceReqConfigs();
 
-//    @PreAuthorize("hasAuthority('GET_SERV_REQ_CONFIGS')")
+    @PreAuthorize("hasAuthority('GET_SERV_REQ_CONFIGS')")
     Page<ServiceReqConfigDTO> getServiceReqConfigs(Pageable pageDetails);
 
-//    @PreAuthorize("hasAuthority('GET_SERV_REQ_CONFIGS')")
+    @PreAuthorize("hasAuthority('GET_SERV_REQ_CONFIGS')")
     List<ServiceReqConfig> getServiceReqConfs();
 
     Iterable<ServiceReqConfigDTO> gerServiceReqConfigsPage(Integer pageNum, Integer pageSize);

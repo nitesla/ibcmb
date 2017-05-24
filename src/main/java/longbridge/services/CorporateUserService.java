@@ -7,6 +7,7 @@ import longbridge.models.Corporate;
 import longbridge.models.CorporateUser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import javax.transaction.Transactional;
 import java.util.Date;
@@ -23,10 +24,13 @@ public interface CorporateUserService{
      * @param id the corporate user's id
      * @return the user
      */
+    @PreAuthorize("hasAuthority('GET_CORPORATE_USER')")
     CorporateUserDTO getUser(Long id);
 
+    @PreAuthorize("hasAuthority('GET_CORPORATE_USER')")
     CorporateUserDTO getUserDTOByName(String name);
 
+    @PreAuthorize("hasAuthority('GET_CORPORATE_USER')")
     CorporateUser getUserByName(String username);
 
     /*CorporateUser getUserByCustomerId(String custId);*/
@@ -36,38 +40,37 @@ public interface CorporateUserService{
      * @param Corporate  the corporate customer
      * @return a list of the corporate users
      */
+    @PreAuthorize("hasAuthority('GET_CORPORATE_USER')")
     Iterable<CorporateUserDTO> getUsers(Corporate Corporate);
-    
+
+    @PreAuthorize("hasAuthority('GET_CORPORATE_USER')")
     Page<CorporateUserDTO> getUsers(Long corpId, Pageable pageDetails);
 
     /**
      * Returns all the corporate users in the system
      * @return a list of the corporate users
      */
+    @PreAuthorize("hasAuthority('GET_CORPORATE_USER')")
     Iterable<CorporateUser> getUsers();
 
+    @PreAuthorize("hasAuthority('GET_CORPORATE_USER')")
     Page<CorporateUserDTO> getUsers(Pageable pageDetails);
-    /**
-     * Sets the password for the specified corporate user
-     * The password must meet the organisation's password policy if any one is defined
-     * It is important that the password is hashed before saving
-     * @param user the corporate user
-     * @param hashedPassword the hashed password
-     */
-    void setPassword(CorporateUser user, String hashedPassword) throws InternetBankingException;
 
     /**
      * Updates the details of the specified corporate customer
      * @param user the corporate user
      */
+    @PreAuthorize("hasAuthority('UPDATE_CORPORATE_USER')")
     String updateUser(CorporateUserDTO user) throws InternetBankingException;
 
     /**
      * Adds a corporate user to a corporate customer
      * @param user the corporate user
      */
+    @PreAuthorize("hasAuthority('ADD_CORPORATE_USER')")
     String addUser(CorporateUserDTO user);
 
+    @PreAuthorize("hasAuthority('CORP_USER_STATUS')")
     @Transactional
     String changeActivationStatus(Long userId) throws InternetBankingException;
 
@@ -75,19 +78,21 @@ public interface CorporateUserService{
      * resets the password for the specified corporate user
      * @param user the corporate user
      */
+    @PreAuthorize("hasAuthority('UPDATE_CORPORATE_USER')")
     String resetPassword(CorporateUser user)throws InternetBankingException;
 
     /**
      * Deletes the specified corporate user
      * @param userId the corporate user's id
      */
+    @PreAuthorize("hasAuthority('DELETE_CORPORATE_USER')")
     String deleteUser(Long userId) throws InternetBankingException;
     
     /**
      * Temporarily Locks the corporate user
      * @param user the corporate user
      */
-    void lockUser(CorporateUser user, Date unlockat);
+    void lockUser(CorporateUser user, Date unlocked);
 
     /**
      * Replaces the old password with the new password for the specified corporate user.
@@ -97,6 +102,7 @@ public interface CorporateUserService{
      * @param oldPassword the old password
      * @param newPassword the hashed new password
      */
+    @PreAuthorize("hasAuthority('UPDATE_CORPORATE_USER')")
     boolean changePassword(CorporateUserDTO user, String oldPassword, String newPassword) throws InternetBankingException;
 
     /**

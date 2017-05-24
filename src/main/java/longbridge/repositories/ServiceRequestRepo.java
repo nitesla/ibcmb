@@ -1,5 +1,6 @@
 package longbridge.repositories;
 
+import longbridge.models.RetailUser;
 import longbridge.models.ServiceRequest;
 import longbridge.models.User;
 import org.springframework.data.domain.Page;
@@ -17,7 +18,7 @@ public interface ServiceRequestRepo extends CommonRepo<ServiceRequest, Long> {
 
     Iterable<ServiceRequest> findByUser(User user);
 
-    Page<ServiceRequest> findByUser(User user, Pageable pageable);
+    Page<ServiceRequest> findAllByUser(RetailUser user, Pageable pageable);
 
     Page<ServiceRequest> findAllByOrderByDateRequestedDesc(Pageable pageable);
 

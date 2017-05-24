@@ -27,10 +27,10 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr th:each="req : ${requests}">
-                                <td th:text="${req.requestName}"></td>
-                                <td th:text="${req.dateRequested}"></td>
-                                <td th:text="${req.requestStatus}"></td></tr>
+                            <!--<tr th:each="req : ${requests}">-->
+                                <!--<td th:text="${req.requestName}"></td>-->
+                                <!--<td th:text="${req.dateRequested}"></td>-->
+                                <!--<td th:text="${req.requestStatus}"></td></tr>-->
                             </tbody>
                         </table>
                     </div>
@@ -45,51 +45,30 @@
 <!-- CONTENT-WRAPPER SECTION END-->
 <footer th:replace="cust_layout ::footer">
 </footer>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    $(document).ready(function() {
+        var url = "/retail/requests/track/all";
+        var table = $('#track').DataTable({
+            select: true,
+            responsive : false,
+            "lengthMenu" : [ [ 5, 10 ], [ 5, 10 ] ],
+            "pagingType" : "simple_numbers",
+            "searching" : false,
+            "paging" : true,
+            "serverSide" : true,
+            "ajax" : url,
+            "dom" : 'T<"clear">frtlp',
+            "columns" : [
+                { "data": "requestName" },
+                { "data": "requestStatus" },
+                { "data": "date" }
 
-<!--<script>-->
-    <!--/*<![CDATA[*/-->
-    <!--$(document).ready(function() {-->
-        <!--var table = $('#track').DataTable({-->
-            <!--select:true,-->
-            <!--responsive: true,-->
-            <!--"lengthMenu" : [ [ 5, 10, 20],	[ 5, 10, 20 ] ],-->
-            <!--"pagingType" : "simple_numbers",-->
-            <!--"searching": false,-->
-            <!--"paging": true,-->
-            <!--"serverSide" : true,-->
-            <!--"ajax": "/retail/requests/track/all",-->
-            <!--"dom": 'T<"clear">frtlp',-->
-            <!--"columns": [-->
-                <!--{ "data": "requestName" },-->
-                <!--{ "data": "date" },-->
-                <!--{ "data": "requestStatus" }-->
+            ]
+        });
+    });
 
-            <!--] });-->
-
-        <!--table.on('select', function() {-->
-            <!--if (table.rows({-->
-                    <!--selected : true-->
-                <!--}).indexes().length === 0) {-->
-                <!--$('.bt-select').attr("disabled", true);-->
-            <!--} else {-->
-                <!--$('.bt-select').removeAttr("disabled");-->
-            <!--}-->
-
-        <!--});-->
-
-        <!--table.on('deselect', function() {-->
-            <!--if (table.rows({-->
-                    <!--selected : true-->
-                <!--}).indexes().length === 0) {-->
-                <!--$('.bt-select').attr("disabled", true);-->
-            <!--} else {-->
-                <!--$('.bt-select').removeAttr("disabled");-->
-            <!--}-->
-        <!--});-->
-
-    <!--});-->
-
-    <!--/*]]>*/-->
-<!--</script>-->
+    /*]]>*/
+</script>
 </body>
 </html>

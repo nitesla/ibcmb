@@ -202,7 +202,7 @@ public class AdmCorporateController {
     @GetMapping("/users/{id}/activation")
     public String changeUserActivationStatus(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
-            String message = corporateService.changeUserActivationStatus(id);
+            String message = corporateUserService.changeActivationStatus(id);
             redirectAttributes.addFlashAttribute("message", message);
         } catch (InternetBankingException ibe) {
             logger.error("Error changing corporate activation status", ibe);

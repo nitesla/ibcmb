@@ -3,13 +3,14 @@ package longbridge.services;
 import longbridge.dtos.MessageDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 
-//import java.awt.print.Pageable;
 import java.util.Date;
 import java.util.List;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+//import java.awt.print.Pageable;
 
 /**
  * The {@code MessagingService} interface provides a service for sending messages
@@ -20,6 +21,7 @@ import org.springframework.data.domain.Pageable;
  */
 public interface MessageService {
 
+    @PreAuthorize("hasAuthority('SEND_EMAIL')")
     Iterable<MessageDTO> getMessages();
 
     /**

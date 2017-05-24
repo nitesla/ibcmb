@@ -1,12 +1,11 @@
 package longbridge.services;
 
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-
 import longbridge.dtos.DirectDebitDTO;
 import longbridge.models.DirectDebit;
 import longbridge.models.RetailUser;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public interface DirectDebitService {
@@ -14,8 +13,6 @@ public interface DirectDebitService {
 	/** Adds a new direct debit for the specified user and beneficiary
 	 * 
 	 * @param user the customer
-	 * @param beneficiary the beneficiary of the direct debit
-	 * @param account the account to be debitted for the payments
 	 * @return A message detailing the success or failure
 	 */
 	String addDirectDebit(RetailUser user, DirectDebitDTO directDebitDTO);

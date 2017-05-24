@@ -104,10 +104,6 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         return corporateUserRepo.findAll();
     }
 
-    @Override
-    public void setPassword(CorporateUser user, String hashedPassword) {
-
-    }
 
     @Override
     public String updateUser(CorporateUserDTO user) throws InternetBankingException{

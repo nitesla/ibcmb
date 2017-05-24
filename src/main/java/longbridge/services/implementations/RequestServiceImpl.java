@@ -161,8 +161,8 @@ public class RequestServiceImpl implements RequestService {
         return convertRequestHistoryEntitiesToDTOs(requestHistories);
     }
 
-    public Page<ServiceRequestDTO> getRequests(Pageable pageDetails) {
-        Page<ServiceRequest> page = serviceRequestRepo.findAll(pageDetails);
+    public Page<ServiceRequestDTO> getRequests(RetailUser user, Pageable pageDetails) {
+        Page<ServiceRequest> page = serviceRequestRepo.findAllByUser(user, pageDetails);
         List<ServiceRequestDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
         Page<ServiceRequestDTO> pageImpl = new PageImpl<>(dtOs, pageDetails, t);

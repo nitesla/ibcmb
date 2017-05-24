@@ -46,19 +46,21 @@ public interface CorporateService{
      * @param id the id of the corporate customer
      * @return the corporate customer
      */
+    @PreAuthorize("hasAuthority('GET_CORPORATE')")
     CorporateDTO getCorporate(Long id);
 
 
-
+    @PreAuthorize("hasAuthority('GET_CORPORATE')")
     Corporate getCorporateByCustomerId(String customerId);
     /**
      * Returns a list of all the corporate customers
      *
      * @return a list of the corporate customers
      */
+    @PreAuthorize("hasAuthority('GET_CORPORATE')")
     Iterable<CorporateDTO> getCorporates();
-    
-    
+
+    @PreAuthorize("hasAuthority('GET_CORPORATE')")
     Page<CorporateDTO> getCorporates(Pageable pageDetails);
 
     /**
@@ -67,6 +69,7 @@ public interface CorporateService{
      * @param corporate the corporate customer
      * @param limit        the corporate limit
      */
+    @PreAuthorize("hasAuthority('SET_CORPORATE_LIMIT')")
     void setLimit(Corporate corporate, CorpLimit limit) throws InternetBankingException;
 
     /**
@@ -75,24 +78,17 @@ public interface CorporateService{
      * @param corporate the corporate customer
      * @param limit        the corporate limit
      */
+    @PreAuthorize("hasAuthority('UPDATE_CORPORATE_LIMIT')")
     void updateLimit(Corporate corporate,  CorpLimit limit) throws InternetBankingException;
 
 
     /**
-     * Changes the activation status of the corporate specified by the Id
-     * @param id the Id of the corporate
-     * @return a message is the status is changed successfully
-     * @throws InternetBankingException if changing the status fails
+     * Returns the transaction limit set for the specified customer
+     *
+     * @param corporate the corporate customer
+     * @return the limit set for the corporate customer
      */
-    String changeActivationStatus(Long id) throws InternetBankingException;
-
-
-        /**
-         * Returns the transaction limit set for the specified customer
-         *
-         * @param corporate the corporate customer
-         * @return the limit set for the corporate customer
-         */
+    @PreAuthorize("hasAuthority('GET_CORPORATE_LIMIT')")
     List<CorpLimit>  getLimit(Corporate corporate);
 
     /**
@@ -101,9 +97,18 @@ public interface CorporateService{
      * @param corporateId the corporate customer's id
      * @param  limit the corporate limit
      */
+    @PreAuthorize("hasAuthority('DELETE_CORPORATE_LIMIT')")
     void deleteLimit(Long corporateId, CorpLimit limit) throws InternetBankingException;
 
 
+    /**
+     * Changes the activation status of the corporate specified by the Id
+     * @param id the Id of the corporate
+     * @return a message is the status is changed successfully
+     * @throws InternetBankingException if changing the status fails
+     */
+    @PreAuthorize("hasAuthority('UPDATE_CORPORATE')")
+    String changeActivationStatus(Long id) throws InternetBankingException;
 
     /**
      * Adds an account to a corporate customer.
@@ -111,15 +116,8 @@ public interface CorporateService{
      * @param corporate the corporate customer
      * @param accountDTO           the account
      */
+    @PreAuthorize("hasAuthority('ADD_CORPORATE_ACCOUNT')")
     String addAccount(Corporate corporate, AccountDTO accountDTO) throws InternetBankingException;
-
-    /**
-     * Adds a corporate user to a corporate customer
-     *
-     * @param corporate the corporate customer
-     * @param corporateUser     the corporate user
-     */
-    String addCorporateUser(Corporate corporate, CorporateUser corporateUser) throws InternetBankingException;
 
     /**
      * Returns a page list of accounts owned by the corporate identified by the corpId
@@ -127,6 +125,7 @@ public interface CorporateService{
      * @param pageDetails the page details for pagination
      * @return a list of accounts
      */
+    @PreAuthorize("hasAuthority('GET_CORPORATE_ACCOUNT')")
    Page<AccountDTO> getAccounts(Long corpId, Pageable pageDetails);
 
     /**
@@ -135,6 +134,7 @@ public interface CorporateService{
      * @return a message if successfully added
      * @throws InternetBankingException if adding the rule fails
      */
+    @PreAuthorize("hasAuthority('ADD_CORPORATE_RULE')")
    String addCorporateRule(CorpTransferRuleDTO transferRuleDTO) throws InternetBankingException;
 
     /**
@@ -142,6 +142,7 @@ public interface CorporateService{
      * @param id the id
      * @return corporate transfer rule
      */
+    @PreAuthorize("hasAuthority('GET_CORPORATE_RULE')")
    CorpTransferRuleDTO getCorporateRule(Long id);
 
     /**
@@ -150,12 +151,14 @@ public interface CorporateService{
      * @return a message if successfully updated
      * @throws InternetBankingException if updating the rule fails
      */
+    @PreAuthorize("hasAuthority('UPDATE_CORPORATE_RULE')")
    String updateCorporateRule(CorpTransferRuleDTO transferRuleDTO) throws InternetBankingException;
 
     /**
      * Returns a list of corporate transfer rules
      * @return a list of rules
      */
+    @PreAuthorize("hasAuthority('GET_CORPORATE_RULE')")
    List<CorpTransferRuleDTO> getCorporateRules();
 
     /**
@@ -163,6 +166,7 @@ public interface CorporateService{
      * @param corpId the Id of the corporate entity
      * @return a list of corporate rules
      */
+    @PreAuthorize("hasAuthority('GET_CORPORATE_RULE')")
    List<CorpTransferRuleDTO> getCorporateRules(Long corpId);
 
     /**
@@ -171,14 +175,16 @@ public interface CorporateService{
      * @return a message if successfully deleted
      * @throws InternetBankingException if deleting the rule fails
      */
+    @PreAuthorize("hasAuthority('DELETE_CORPORATE_RULE')")
    String deleteCorporateRule(Long id) throws InternetBankingException;
 
-    String changeUserActivationStatus(Long id) throws InternetBankingException;
-
+    @PreAuthorize("hasAuthority('GET_CORPORATE_USER')")
     List<CorporateUserDTO> getAuthorizers(Long corpId);
 
+    @PreAuthorize("hasAuthority('GET_CORPORATE_USER')")
     List<CorporateUser> getQualifiedAuthorizers(CorpTransferRequest transferRequest);
 
-    public CorpTransferRule getApplicableTransferRule(CorpTransferRequest transferRequest);
+    @PreAuthorize("hasAuthority('GET_TRANSFER_RULE')")
+    CorpTransferRule getApplicableTransferRule(CorpTransferRequest transferRequest);
 
 }

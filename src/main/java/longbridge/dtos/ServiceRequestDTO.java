@@ -11,7 +11,7 @@ import java.util.Date;
 public class ServiceRequestDTO {
 
     @JsonProperty("DT_RowId")
-    private  Long id;
+    private Long id;
     private Long userId;
     private String username;
     private String requestName;
