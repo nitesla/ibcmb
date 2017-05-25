@@ -17,13 +17,13 @@
                             <div class="ibox-content mailbox-content">
                                 <div class="margin-bottoms"></div>
                                 <div class="file-manager">
-                                    <a class="btn btn-block btn-primary compose-mail" th:href="@{/retail/mailbox/compose}">Compose Mail</a>
+                                    <a class="btn btn-block btn-primary compose-mail" th:href="@{/corporate/mailbox/compose}">Compose Mail</a>
                                     <div class="margin-bottoms"></div>
                                     <ul class="folder-list">
-                                        <li><a th:href="@{/retail/mailbox/inbox}"> <i class="fa fa-inbox "></i> Inbox </a></li>
-                                        <li><a th:href="@{/retail/mailbox/sentmail}"> <i class="fa fa-sign-out"></i> Sent Mail</a></li>
-                                        <li><a th:href="@{/retail/mailbox/draft}"> <i class="fa fa-file-text-o"></i> Drafts </a></li>
-                                        <li><a th:href="@{/retail/mailbox/trash}"> <i class="fa fa-trash-o"></i> Trash</a></li>
+                                        <li><a th:href="@{/corporate/mailbox/inbox}"> <i class="fa fa-inbox "></i> Inbox </a></li>
+                                        <li><a th:href="@{/corporate/mailbox/sentmail}"> <i class="fa fa-sign-out"></i> Sent Mail</a></li>
+                                        <li><a th:href="@{/corporate/mailbox/draft}"> <i class="fa fa-file-text-o"></i> Drafts </a></li>
+                                        <li><a th:href="@{/corporate/mailbox/trash}"> <i class="fa fa-trash-o"></i> Trash</a></li>
                                     </ul>
                                 </div>
                             </div>
@@ -34,12 +34,12 @@
                             <div class="margin-bottom"></div>
                             <div class="mail-box-header">
                                 <h2 class="in-box">
-                                    Sent Messages
+                                    Inbox
                                 </h2>
                                 <div class="mail-tools tooltip-demo m-t-md faz">
                                     <button class="btn-success btn-sm" data-toggle="tooltip" data-placement="left" title="Refresh inbox"><i class="fa fa-refresh"></i> Refresh</button>
-                                    <button class="btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="Mark as read"><i class="fa fa-eye"></i> </button>
-                                    <button class="btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="Move to trash"><i class="fa fa-trash-o"></i> </button>
+                                    <button class="btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="Mark as read"><i class="fa fa-eye" th:action="@{/corporate/mailbox/trash}"></i> </button>
+                                    <button class="btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="Move to trash" th:action="@{/corporate/mailbox/inbox}"><i class="fa fa-trash-o"></i> </button>
                                 </div>
                             </div>
                             <div class="margin-bottoms"></div>
@@ -48,20 +48,21 @@
                                     <tbody>
                                     <tr class="unread">
                                         <td class="check-mail">
-                                            <input type="checkbox" class="i-checks">
+                                            <input type="checkbox" class="i-checks" />
                                         </td>
-                                        <td class="mail-ontact"><a>Anna Smith</a></td>
-                                        <td class="mail-subject"><a th:href="@{/retail/mailbox/message}">Lorem ipsum dolor noretek imit set.</a></td>
+                                        <td class="mail-ontact"><a href="">Anna Smith</a></td>
+                                        <td class="mail-subject"><a th:href="@{/corporate/mailbox/message}">Lorem ipsum dolor noretek imit set.</a></td>
                                         <td class="text-right mail-date">6.10 AM</td>
                                     </tr>
                                     <tr class="unread">
                                         <td class="check-mail">
-                                            <input type="checkbox" class="i-checks" checked>
+                                            <input type="checkbox" class="i-checks" checked="checked" />
                                         </td>
-                                        <td class="mail-ontact"><a >Jack Nowak</a></td>
-                                        <td class="mail-subject"><a >Aldus PageMaker including versions of Lorem Ipsum.</a></td>
+                                        <td class="mail-ontact"><a href="message.html">Jack Nowak</a></td>
+                                        <td class="mail-subject"><a th:href="@{/corporate/mailbox/message}">Aldus PageMaker including versions of Lorem</a></td>
                                         <td class="text-right mail-date">8.22 PM</td>
                                     </tr>
+
 
                                     </tbody>
                                 </table>

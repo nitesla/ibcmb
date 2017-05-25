@@ -7,15 +7,15 @@ import org.hibernate.validator.constraints.NotEmpty;
  */
 public class CorpInternationalBeneficiaryDTO {
     private Long id;
-    @NotEmpty
+    @NotEmpty(message = "Please enter a Beneficiary Name")
     private String accountName;
-    @NotEmpty
+    @NotEmpty(message = "Please enter an Account Number")
     private String accountNumber;
-    @NotEmpty
+    @NotEmpty(message = "Please enter a Beneficiary Bank")
     private String beneficiaryBank;
-    @NotEmpty
+    @NotEmpty(message = "Please enter a Swift Code")
     private String swiftCode;
-    @NotEmpty
+    @NotEmpty(message = "Please enter a Sort Code")
     private String sortCode;
     private String beneficiaryAddress;
     private String intermediaryBankName;
