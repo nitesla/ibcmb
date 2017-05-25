@@ -118,8 +118,31 @@
     </header>
 
     <div th:fragment="sidebar" class="col-md-3 sidebar">
-        <div class="sidebar-bg">
-            
+        <div class="sidebar-bg calender">
+            <body onload="showme()">
+            <div class="container">
+                <div class="col-md-3">
+                    <div id="showdate" class="showdate">
+                        <span onclick="reduceWeek()">< </span>&nbsp;<span id="dateMonth" class="dateMonth"></span><span id="dateYear" class="dateMonth"></span>&nbsp;<span onclick="increaseWeek()"> ></span>
+                        <div style="float: right;">
+                            <span id="dateDay" class="dateDay"></span>
+                            <span id="dateWeek" class="dateWeek"></span>
+                        </div>
+                        <hr class="hrhr">
+                        <div class="weeks" style="width: 100%">
+                            <span id="week" class="week"></span>&nbsp;&nbsp;&nbsp;
+                            <span id="day1" class="week"></span>&nbsp;&nbsp;&nbsp;
+                            <span id="day2" class="week"></span>&nbsp;&nbsp;&nbsp;
+                            <span id="day3" class="week"></span>&nbsp;&nbsp;&nbsp;
+                            <span id="day4" class="week"></span>&nbsp;&nbsp;&nbsp;
+                            <span id="day5" class="week"></span>&nbsp;&nbsp;&nbsp;
+                            <span id="day6" class="week"></span>&nbsp;&nbsp;&nbsp;
+                            <span id="day7" class="week"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </body>
         </div>
         <div class="sidebar-bg">
             <img th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
@@ -148,6 +171,7 @@
     <script th:src="@{~/customer/js/jquery-ui.js}"></script>
     <script th:src="@{~/customer/js/jquery.dataTables.js}"></script>
     <script th:src="@{~/customer/js/dataTables.bootstrap.js}"></script>
+    <script th:src="@{~/customer/js/calendar.js}"></script>
     <!-- SWEET ALERT -->
     <script th:src="@{~/customer/plugins/sweetalert/sweet-alert.js}"></script>
     <!-- BOOTSTRAP SCRIPTS  -->
