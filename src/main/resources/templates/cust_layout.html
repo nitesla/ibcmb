@@ -122,12 +122,12 @@
             <div class="container">
                 <div class="col-md-3">
                     <div id="showdate" class="showdate">
-                        <span onclick="reduceWeek()">< </span>&nbsp;<span id="dateMonth" class="dateMonth"></span><span id="dateYear" class="dateMonth"></span>&nbsp;<span onclick="increaseWeek()"> ></span>
+                        <span onclick="reduceWeek()">&lt; </span>&nbsp;<span id="dateMonth" class="dateMonth"></span><span id="dateYear" class="dateMonth"></span>&nbsp;<span onclick="increaseWeek()">&gt;</span>
                         <div style="float: right;">
                             <span id="dateDay" class="dateDay"></span>
                             <span id="dateWeek" class="dateWeek"></span>
                         </div>
-                        <hr class="hrhr">
+                        <hr class="hrhr"/>
                         <div class="weeks" style="width: 100%">
                             <span id="week" class="week"></span>&nbsp;&nbsp;&nbsp;
                             <span id="day1" class="week"></span>&nbsp;&nbsp;&nbsp;
@@ -185,6 +185,7 @@
     <script th:src="@{~/customer/js/jquery-1.11.1.js}"></script>
     <script th:src="@{~/customer/js/jquery-ui.js}"></script>
     <script th:src="@{~/customer/js/jquery.dataTables.js}"></script>
+    <script th:src="@{~/customer/js/calendar.js}"></script>
     <script th:src="@{~/customer/js/jquery.spring-friendly.min.js}"></script>
     <script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
     <script th:src="@{~/customer/js/coronation.js}"></script>
