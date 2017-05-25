@@ -3,11 +3,16 @@ package longbridge.controllers.retail;
 import longbridge.dtos.AccountDTO;
 import longbridge.dtos.CodeDTO;
 import longbridge.dtos.RetailUserDTO;
+import longbridge.exception.PasswordException;
+import longbridge.exception.PasswordMismatchException;
+import longbridge.exception.PasswordPolicyViolationException;
+import longbridge.exception.WrongPasswordException;
 import longbridge.forms.AlertPref;
 import longbridge.forms.CustChangePassword;
 import longbridge.models.RetailUser;
 import longbridge.services.AccountService;
 import longbridge.services.CodeService;
+import longbridge.services.PasswordPolicyService;
 import longbridge.services.RetailUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,6 +41,9 @@ public class SettingController {
     private Logger logger= LoggerFactory.getLogger(this.getClass());
 
     @Autowired
+    private PasswordPolicyService passwordPolicyService;
+
+    @Autowired
     private CodeService codeService;
 
     @Autowired
@@ -52,7 +61,10 @@ public class SettingController {
     }
 
     @GetMapping("/change_password")
-    public String ChangePaswordPage(CustChangePassword custChangePassword){
+    public String ChangePaswordPage(CustChangePassword custChangePassword, Model model){
+        List<String> passwordPolicy = passwordPolicyService.getPasswordRules();
+        logger.info("PASSWORD RULES {}", passwordPolicy);
+        model.addAttribute("passwordRules", passwordPolicy);
         return "cust/settings/pword";
     }
 
@@ -69,12 +81,32 @@ public class SettingController {
             return "cust/settings/pword";
         }
 
-        RetailUserDTO user = retailUserService.getUserDTOByName(principal.getName());
+        RetailUser user = retailUserService.getUserByName(principal.getName());
 
-        retailUserService.changePassword(user, custChangePassword.getOldPassword(), custChangePassword.getNewPassword());
-
-        redirectAttributes.addFlashAttribute("message","Password change successful");
-        return "redirect:/retail/change_password";
+        try {
+            String message =retailUserService.changePassword(user, custChangePassword);
+            List<String> passwordPolicy = passwordPolicyService.getPasswordRules();
+            logger.info("PASSWORD RULES {}", passwordPolicy);
+            redirectAttributes.addAttribute("passwordRules", passwordPolicy);
+            redirectAttributes.addFlashAttribute("message", message);
+            return "redirect:/retail/change_password";
+        } catch (WrongPasswordException wpe) {
+            result.reject("oldPassword", wpe.getMessage());
+            logger.error("Wrong password from retail user {}", user.getUserName(), wpe.toString());
+            return "cust/settings/pword";
+        } catch (PasswordPolicyViolationException pve) {
+            result.reject("newPassword", pve.getMessage());
+            logger.error("Password policy violation from retail user {} error {}", user.getUserName(), pve.toString());
+            return "cust/settings/pword";
+        } catch (PasswordMismatchException pme) {
+            result.reject("confirmPassword", pme.getMessage());
+            logger.error("New password mismatch from retail user {}", user.getUserName(), pme.toString());
+            return "cust/settings/pword";
+        } catch (PasswordException pe) {
+            result.addError(new ObjectError("error", pe.getMessage()));
+            logger.error("Error changing password for retail user {}", user.getUserName(), pe);
+            return "cust/settings/pword";
+        }
     }
 
     @GetMapping("/alert_preference")

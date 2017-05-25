@@ -6,6 +6,7 @@ import longbridge.dtos.RetailUserDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.PasswordException;
 import longbridge.forms.AlertPref;
+import longbridge.forms.CustChangePassword;
 import longbridge.models.RetailUser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -100,11 +101,10 @@ public interface RetailUserService {
      * The new password must meed the password policy of the organization if any one is defined
      * It is important that the password is hashed before storing it
      * @param retailUser  the retail user
-     * @param oldPassword the old password
-     * @param newPassword the new password
+     * @param custChangePassword the cahnge password DTO
      */
     @PreAuthorize("hasAuthority('UPDATE_RETAIL_USER')")
-    boolean changePassword(RetailUserDTO retailUser, String oldPassword, String newPassword);
+    String changePassword(RetailUser retailUser, CustChangePassword custChangePassword) throws PasswordException;
 
 
     /**

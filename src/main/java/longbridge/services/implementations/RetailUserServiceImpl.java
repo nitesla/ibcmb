@@ -5,15 +5,10 @@ import longbridge.api.AccountInfo;
 import longbridge.api.CustomerDetails;
 import longbridge.dtos.AccountDTO;
 import longbridge.dtos.RetailUserDTO;
-import longbridge.exception.DuplicateObjectException;
-import longbridge.exception.InternetBankingException;
-import longbridge.exception.PasswordException;
-import longbridge.exception.PasswordPolicyViolationException;
+import longbridge.exception.*;
 import longbridge.forms.AlertPref;
-import longbridge.models.Account;
-import longbridge.models.Code;
-import longbridge.models.Email;
-import longbridge.models.RetailUser;
+import longbridge.forms.CustChangePassword;
+import longbridge.models.*;
 import longbridge.repositories.RetailUserRepo;
 import longbridge.services.*;
 import longbridge.utils.DateFormatter;
@@ -249,33 +244,30 @@ public class RetailUserServiceImpl implements RetailUserService {
     }
 
     @Override
-    public boolean changePassword(RetailUserDTO user, String oldPassword, String newPassword) {
-        boolean ok = false;
+    public String changePassword(RetailUser user, CustChangePassword changePassword) throws PasswordException {
+        if (!this.passwordEncoder.matches(changePassword.getOldPassword(), user.getPassword())) {
+            throw new WrongPasswordException();
+        }
+
+        String errorMessage = passwordPolicyService.validate(changePassword.getNewPassword(), user.getUsedPasswords());
+        if (!"".equals(errorMessage)) {
+            throw new PasswordPolicyViolationException(errorMessage);
+        }
+        if (!changePassword.getNewPassword().equals(changePassword.getConfirmPassword())) {
+            throw new PasswordMismatchException();
+        }
 
         try {
+            RetailUser retailUser = retailUserRepo.findOne(user.getId());
+            retailUser.setPassword(this.passwordEncoder.encode(changePassword.getNewPassword()));
+            retailUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
 
-            if (getUser(user.getId()) == null) {
-
-                logger.error("USER DOES NOT EXIST");
-                return ok;
-            }
-
-            if (this.passwordEncoder.matches(oldPassword, user.getPassword())) {
-                RetailUser retailUser = convertDTOToEntity(user);
-//                    retailUser.setRole(user.getRole());
-                retailUser.setPassword(this.passwordEncoder.encode(newPassword));
-                this.retailUserRepo.save(retailUser);
-                logger.info("USER {}'s password has been updated", user.getId());
-                ok = true;
-            } else {
-                logger.error("INVALID CURRENT PASSWORD FOR USER {}", user.getId());
-
-            }
+            this.retailUserRepo.save(retailUser);
+            logger.info("User {} password has been updated", user.getId());
+            return messageSource.getMessage("password.change.success", null, locale);
         } catch (Exception e) {
-            e.printStackTrace();
-            logger.error("ERROR OCCURRED {}", e.getMessage());
+            throw new PasswordException(messageSource.getMessage("password.change.failure", null, locale), e);
         }
-        return ok;
     }
 
     @Override
