@@ -11,17 +11,17 @@ public class CorporateUserDTO {
 
     @JsonProperty("DT_RowId")
     private Long id;
-    @NotEmpty
     private String corporateId;
-    @NotEmpty
+    private String corporateType;
+    private String corporateName;
+    @NotEmpty(message = "userName")
     private String userName;
-    @NotEmpty
+    @NotEmpty(message = "firstName")
     private String firstName;
-    @NotEmpty
+    @NotEmpty(message = "lastName")
     private String lastName;
-    @NotEmpty
+    @NotEmpty(message = "email")
     private String email;
-    @NotEmpty
     private String roleId;
     private String role;
     private boolean ruleMember;
@@ -30,6 +30,7 @@ public class CorporateUserDTO {
     private Date expiryDate;
     private Date lockedUntilDate;
     private Date lastLoginDate;
+    private String lastLogin;
     private int noOfLoginAttempts;
 
     public Long getId() {return id;}
@@ -114,6 +115,14 @@ public class CorporateUserDTO {
         return expiryDate;
     }
 
+    public String getCorporateName() {
+        return corporateName;
+    }
+
+    public void setCorporateName(String corporateName) {
+        this.corporateName = corporateName;
+    }
+
     public void setExpiryDate(Date expiryDate) {
         this.expiryDate = expiryDate;
     }
@@ -124,6 +133,22 @@ public class CorporateUserDTO {
 
     public void setRuleMember(boolean ruleMember) {
         this.ruleMember = ruleMember;
+    }
+
+    public String getLastLogin() {
+        return lastLogin;
+    }
+
+    public void setLastLogin(String lastLogin) {
+        this.lastLogin = lastLogin;
+    }
+
+    public String getCorporateType() {
+        return corporateType;
+    }
+
+    public void setCorporateType(String corporateType) {
+        this.corporateType = corporateType;
     }
 
     public Date getLockedUntilDate() {

@@ -8,8 +8,8 @@ import longbridge.models.TransferRequest;
 import longbridge.utils.AccountStatement;
 
 import java.math.BigDecimal;
-import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -24,7 +24,7 @@ public interface IntegrationService {
      * @param cifid the customer's id
      * @return  a list of accounts
      */
-    Collection<AccountInfo> fetchAccounts(String cifid);
+    List<AccountInfo> fetchAccounts(String cifid);
 
 
     /** Fetches the {@link longbridge.utils.AccountStatement} of the account identified by

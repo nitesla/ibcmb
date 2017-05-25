@@ -6,6 +6,7 @@ import longbridge.models.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 
@@ -22,7 +23,7 @@ public interface CorporateService{
      * @param corporate the corporate customer
      */
     @PreAuthorize("hasAuthority('ADD_CORPORATE')")
-    String  addCorporate(CorporateDTO corporate) throws InternetBankingException;
+    String  addCorporate(CorporateDTO corporate, CorporateUserDTO corporateUser) throws InternetBankingException;
 
     /**
      * Deletes the given corporate customer

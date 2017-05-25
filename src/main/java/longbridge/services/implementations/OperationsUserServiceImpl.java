@@ -1,7 +1,6 @@
 package longbridge.services.implementations;
 
 import longbridge.dtos.OperationsUserDTO;
-import longbridge.dtos.SettingDTO;
 import longbridge.exception.*;
 import longbridge.forms.ChangeDefaultPassword;
 import longbridge.forms.ChangePassword;
@@ -13,7 +12,6 @@ import longbridge.repositories.OperationsUserRepo;
 import longbridge.services.*;
 import longbridge.utils.DateFormatter;
 import longbridge.utils.ReflectionUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -119,7 +117,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             if ((oldStatus == null) || ("I".equals(oldStatus)) && "A".equals(newStatus)) {
                 String password = passwordPolicyService.generatePassword();
                 user.setPassword(passwordEncoder.encode(password));
-                Email email = new Email.Builder().setSender("admin@ibanking.coronationmb.com")
+                Email email = new Email.Builder()
                         .setRecipient(user.getEmail())
                         .setSubject("Internet Banking Operations Console Activation")
                         .setBody(String.format("Your new password to Operations console is %s and your username is %s", password, user.getUserName()))
@@ -144,7 +142,6 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     }
 
     @Override
-    @Transactional
     public String addUser(OperationsUserDTO user) throws InternetBankingException {
         OperationsUser opsUser = operationsUserRepo.findFirstByUserName(user.getUserName());
         if (opsUser != null) {
@@ -164,6 +161,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             opsUser.setRole(role);
             opsUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
             this.operationsUserRepo.save(opsUser);
+            sendUserCredentials(opsUser, password);
             logger.info("New Operation user  {} created", opsUser.getUserName());
             return messageSource.getMessage("user.add.success", null, LocaleContextHolder.getLocale());
         } catch (Exception e) {
@@ -213,7 +211,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             user.setPassword(passwordEncoder.encode(newPassword));
             user.setExpiryDate(new Date());
             this.operationsUserRepo.save(user);
-            Email email = new Email.Builder().setSender("admin@ibanking.coronationmb.com")
+            Email email = new Email.Builder()
                     .setRecipient(user.getEmail())
                     .setSubject("Internet Banking Admin Console Password Reset")
                     .setBody(String.format("Your new password to Operations console is %s and your username is %s", newPassword, user.getUserName()))
@@ -280,9 +278,13 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     }
 
 
-    @Override
-    public String generateAndSendPassword(OperationsUser user) throws InternetBankingException {
-        return null;//TODO
+    private void sendUserCredentials(OperationsUser user, String password) throws InternetBankingException {
+        Email email = new Email.Builder()
+                .setRecipient(user.getEmail())
+                .setSubject("Creation on Internet Banking Operations Console")
+                .setBody(String.format("You have been created on the Internet Banking Operation console.\nYour username is %s and your password is %s. \nThank you.", user.getUserName(),password))
+                .build();
+        mailService.send(email);
     }
 
     private OperationsUserDTO convertEntityToDTO(OperationsUser operationsUser) {

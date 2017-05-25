@@ -128,7 +128,7 @@ public class RequestServiceImpl implements RequestService {
         try {
             ServiceRequest serviceRequest = convertDTOToEntity(request);
             serviceRequest.setCorporate(corporateRepo.findOne(request.getCorporate().getId()));
-            String name = request.getCorporate().getCompanyName();
+            String name = request.getCorporate().getName();
             ServiceReqConfigDTO config = reqConfigService.getServiceReqConfig(serviceRequest.getServiceReqConfigId());
 
             //***///
@@ -267,7 +267,7 @@ public class RequestServiceImpl implements RequestService {
         if (serviceRequest.getUser() != null){
             requestDTO.setUsername(serviceRequest.getUser().getUserName());
         }else if (serviceRequest.getCorporate() != null){
-            requestDTO.setCorpName(serviceRequest.getCorporate().getCompanyName());
+            requestDTO.setCorpName(serviceRequest.getCorporate().getName());
         }
         requestDTO.setDate(DateFormatter.format(serviceRequest.getDateRequested()));
         Code code = codeService.getByTypeAndCode("REQUEST_STATUS", serviceRequest.getRequestStatus());

@@ -3,6 +3,7 @@ package longbridge.controllers.operations;
 import longbridge.dtos.AccountClassRestrictionDTO;
 import longbridge.dtos.AccountRestrictionDTO;
 import longbridge.dtos.CodeDTO;
+import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.InternetBankingException;
 import longbridge.services.AccountConfigService;
 import longbridge.services.CodeService;
@@ -48,85 +49,92 @@ public class OpsAccountController {
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @ModelAttribute
-    public void init(Model model){
+    public void init(Model model) {
         Iterable<CodeDTO> accountClasses = codeService.getCodesByType("ACCOUNT_CLASS");
         Iterable<CodeDTO> restrictionTypes = codeService.getCodesByType("RESTRICTION_TYPE");
-        model.addAttribute("accountClasses",accountClasses);
-        model.addAttribute("restrictionTypes",restrictionTypes);
+        model.addAttribute("accountClasses", accountClasses);
+        model.addAttribute("restrictionTypes", restrictionTypes);
 
     }
 
     @GetMapping("/restrictions")
     @ResponseBody
-    public Iterable<CodeDTO> getRestrictions(){
+    public Iterable<CodeDTO> getRestrictions() {
         Iterable<CodeDTO> restrictionTypes = codeService.getCodesByType("RESTRICTION_TYPE");
-return restrictionTypes;
+        return restrictionTypes;
     }
 
     @GetMapping("/restriction/account/new")
     public String addAccountRestriction(Model model) {
+
         AccountRestrictionDTO accountRestriction = new AccountRestrictionDTO();
-        model.addAttribute("accountRestriction",accountRestriction);
+        model.addAttribute("accountRestriction", accountRestriction);
         return "ops/account/restriction/account/add";
     }
 
     @PostMapping("/restriction/account")
-    public  String CreateAccountRestriction(@ModelAttribute("accountRestriction") @Valid AccountRestrictionDTO accountRestrictionDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes, Locale locale){
-        if(bindingResult.hasErrors()){
-            bindingResult.addError(new ObjectError("invalid",messageSource.getMessage("form.fields.required",null,locale)));
+    public String CreateAccountRestriction(@ModelAttribute("accountRestriction") @Valid AccountRestrictionDTO accountRestrictionDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes, Locale locale) {
+        if (bindingResult.hasErrors()) {
+            bindingResult.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
             return "ops/account/restriction/account/add";
         }
+
         try {
-            accountConfigService.addAccountRestriction(accountRestrictionDTO);
-        }
-        catch (DataAccessException exc){
-            logger.error("Could not create account restriction: {}",exc.toString());
-            bindingResult.addError(new ObjectError("exception", String.format(messageSource.getMessage("account.restriction.exists",null,locale),accountRestrictionDTO.getAccountNumber())));
+            String message = accountConfigService.addAccountRestriction(accountRestrictionDTO);
+            redirectAttributes.addFlashAttribute("message", message);
+            return "redirect:/ops/accounts/restriction/account";
+        } catch (DuplicateObjectException exc) {
+            logger.error("Could not create account restriction: {}", exc);
+            bindingResult.addError(new ObjectError("exception", exc.getMessage()));
+            return "ops/account/restriction/account/add";
+        } catch (InternetBankingException e) {
+            logger.error("Could not create account restriction", e);
+            bindingResult.addError(new ObjectError("exception", e.getMessage()));
             return "ops/account/restriction/account/add";
         }
-        catch (InternetBankingException e) {
-            logger.error("Could not create account restriction: {}",e.toString());
-            bindingResult.addError(new ObjectError("exception",messageSource.getMessage("account.restriction.failure",null,locale)));
-            return "ops/account/restriction/account/add";
-        }
-        redirectAttributes.addFlashAttribute("message",messageSource.getMessage("account.restriction.success",null,locale));
-        return "redirect:/ops/accounts/restriction/account";
     }
 
 
     @GetMapping("/restriction/account/{id}/edit")
     public String editAccountRestriction(Model model, @PathVariable Long id) {
         AccountRestrictionDTO accountRestrictionDTO = accountConfigService.getAccountRestriction(id);
-        model.addAttribute("accountRestriction",accountRestrictionDTO);
+        model.addAttribute("accountRestriction", accountRestrictionDTO);
         return "/ops/account/restriction/account/edit";
     }
 
     @PostMapping("/restriction/account/update")
-    public  String updateAccountRestriction(@ModelAttribute("accountRestriction") @Valid AccountRestrictionDTO accountRestrictionDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes,Locale locale){
-        if(bindingResult.hasErrors()){
-            bindingResult.addError(new ObjectError("invalid",messageSource.getMessage("form.fields.required",null,locale)));
+    public String updateAccountRestriction(@ModelAttribute("accountRestriction") @Valid AccountRestrictionDTO accountRestrictionDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes, Locale locale) {
+        if (bindingResult.hasErrors()) {
+            bindingResult.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
             return "ops/account/restriction/account/edit";
         }
         try {
-            accountConfigService.updateAccountRestriction(accountRestrictionDTO);
+            String message = accountConfigService.updateAccountRestriction(accountRestrictionDTO);
+            redirectAttributes.addFlashAttribute("message", message);
+            return "redirect:/ops/accounts/restriction/account";
         }
-        catch (InternetBankingException e) {
-            logger.error("Could not update account restriction: {}",e.toString());
-            bindingResult.addError(new ObjectError("exception", messageSource.getMessage("account.restriction.update.failure",null,locale)));
+        catch (DuplicateObjectException exc) {
+            logger.error("Could not update account restriction: {}", exc);
+            bindingResult.addError(new ObjectError("exception", exc.getMessage()));
             return "ops/account/restriction/account/edit";
         }
-        redirectAttributes.addFlashAttribute("message",messageSource.getMessage("account.restriction.update.success",null,locale));
-        return "redirect:/ops/accounts/restriction/account";
+        catch (InternetBankingException ibe) {
+            logger.error("Could not update account restriction", ibe);
+            bindingResult.addError(new ObjectError("exception", ibe.getMessage()));
+            return "ops/account/restriction/account/edit";
+        }
+
     }
 
     @GetMapping("/restriction/account")
-    public String getAccountRestrictions(Model model){
+    public String getAccountRestrictions(Model model) {
         return "ops/account/restriction/account/view";
     }
 
     @GetMapping("/restriction/account/all")
-    public @ResponseBody
-    DataTablesOutput<AccountRestrictionDTO> getAccountRestrictions(DataTablesInput input){
+    public
+    @ResponseBody
+    DataTablesOutput<AccountRestrictionDTO> getAccountRestrictions(DataTablesInput input) {
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<AccountRestrictionDTO> accountRestrictions = accountConfigService.getAccountRestrictions(pageable);
         DataTablesOutput<AccountRestrictionDTO> out = new DataTablesOutput<AccountRestrictionDTO>();
@@ -140,78 +148,88 @@ return restrictionTypes;
     @GetMapping("/restriction/account/{id}/delete")
     public String deleteAccountRestriction(@PathVariable Long id, RedirectAttributes redirectAttributes, Locale locale) {
         try {
-            accountConfigService.deleteAccountRestriction(id);
+            String message = accountConfigService.deleteAccountRestriction(id);
+            redirectAttributes.addFlashAttribute("message", message);
+
         } catch (InternetBankingException ibe) {
-            logger.error("Could not delete account restriction {}",ibe.toString());
+            logger.error("Could not delete account restriction", ibe);
+            redirectAttributes.addFlashAttribute("message",ibe.getMessage());
+
         }
-        redirectAttributes.addFlashAttribute("message",messageSource.getMessage("account.restriction.remove",null,locale));
         return "redirect:/ops/accounts/restriction/account";
     }
 
     @GetMapping("/restriction/class/new")
     public String addAccountClassRestriction(Model model) {
         AccountClassRestrictionDTO accountClassRestriction = new AccountClassRestrictionDTO();
-        model.addAttribute("accountClassRestriction",accountClassRestriction);
+        model.addAttribute("accountClassRestriction", accountClassRestriction);
         return "ops/account/restriction/class/add";
     }
 
     @PostMapping("/restriction/class")
-    public  String CreateAccountClassRestriction(@ModelAttribute("accountClassRestriction") @Valid  AccountClassRestrictionDTO accountClassRestrictionDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes,Locale locale){
-        if(bindingResult.hasErrors()){
-            bindingResult.addError(new ObjectError("invalid",messageSource.getMessage("form.fields.required",null,locale)));
+    public String CreateAccountClassRestriction(@ModelAttribute("accountClassRestriction") @Valid AccountClassRestrictionDTO accountClassRestrictionDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes, Locale locale) {
+        if (bindingResult.hasErrors()) {
+            bindingResult.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
             return "ops/account/restriction/class/add";
         }
         try {
-            accountConfigService.addAccountClassRestriction(accountClassRestrictionDTO);
-        }
-        catch (DataAccessException exc){
-            logger.error("Could not create account restriction: {}",exc.toString());
-            bindingResult.addError(new ObjectError("exception", String.format(messageSource.getMessage("class.restriction.exists",null,locale),accountClassRestrictionDTO.getAccountClass())));
+           String message =  accountConfigService.addAccountClassRestriction(accountClassRestrictionDTO);
+            redirectAttributes.addFlashAttribute("message", message);
+            return "redirect:/ops/accounts/restriction/class";
+        } catch (DuplicateObjectException exc) {
+            logger.error("Could not create account class restriction", exc);
+            bindingResult.addError(new ObjectError("exception", exc.getMessage()));
+            return "ops/account/restriction/class/add";
+        } catch (InternetBankingException e) {
+            logger.error("Could not create account class restriction", e);
+            bindingResult.addError(new ObjectError("exception", e.getMessage()));
             return "ops/account/restriction/class/add";
         }
-        catch (InternetBankingException e) {
-            logger.error("Could not create account class restriction: {}",e.toString());
-            bindingResult.addError(new ObjectError("exception", messageSource.getMessage("class.restriction.failure",null,locale)));
-            return "ops/account/restriction/class/add";
-        }
-        redirectAttributes.addFlashAttribute("message",messageSource.getMessage("class.restriction.success",null,locale));
-        return "redirect:/ops/accounts/restriction/class";
+
     }
 
 
     @GetMapping("/restriction/class/{id}/edit")
     public String editAccountClassRestriction(Model model, @PathVariable Long id) {
         AccountClassRestrictionDTO accountClassRestrictionDTO = accountConfigService.getAccountClassRestriction(id);
-        model.addAttribute("accountClassRestriction",accountClassRestrictionDTO);
+        model.addAttribute("accountClassRestriction", accountClassRestrictionDTO);
         return "/ops/account/restriction/class/edit";
     }
 
     @PostMapping("/restriction/class/update")
-    public  String updateAccountClassRestriction(@ModelAttribute("accountClassRestriction") @Valid AccountClassRestrictionDTO accountClassRestrictionDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes,Locale locale){
-        if(bindingResult.hasErrors()){
-            bindingResult.addError(new ObjectError("invalid",messageSource.getMessage("form.fields.required",null,locale)));
+    public String updateAccountClassRestriction(@ModelAttribute("accountClassRestriction") @Valid AccountClassRestrictionDTO accountClassRestrictionDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes, Locale locale) {
+        if (bindingResult.hasErrors()) {
+            bindingResult.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
             return "ops/account/restriction/class/edit";
         }
         try {
-            accountConfigService.updateAccountClassRestriction(accountClassRestrictionDTO);
+           String message =  accountConfigService.updateAccountClassRestriction(accountClassRestrictionDTO);
+            redirectAttributes.addFlashAttribute("message", message);
+            return "redirect:/ops/accounts/restriction/class";
         }
-        catch (InternetBankingException e) {
-            logger.error("Could not update account class restriction: {}",e.toString());
-            bindingResult.addError(new ObjectError("exception", messageSource.getMessage("class.restriction.update.failure",null,locale)));
+        catch (DuplicateObjectException exc) {
+            logger.error("Could not update account class restriction", exc);
+            bindingResult.addError(new ObjectError("exception", exc.getMessage()));
             return "ops/account/restriction/class/edit";
         }
-        redirectAttributes.addFlashAttribute("message",messageSource.getMessage("class.restriction.update.success",null,locale));
-        return "redirect:/ops/accounts/restriction/class";
+        catch (InternetBankingException e) {
+            logger.error("Could not update account class restriction", e);
+            bindingResult.addError(new ObjectError("exception", e.getMessage()));
+            return "ops/account/restriction/class/edit";
+
+        }
+
     }
 
     @GetMapping("/restriction/class")
-    public String getAccountClassRestrictions(){
+    public String getAccountClassRestrictions() {
         return "ops/account/restriction/class/view";
     }
 
     @GetMapping("/restriction/class/all")
-    public @ResponseBody
-    DataTablesOutput<AccountClassRestrictionDTO> getAccountClassRestrictions(DataTablesInput input){
+    public
+    @ResponseBody
+    DataTablesOutput<AccountClassRestrictionDTO> getAccountClassRestrictions(DataTablesInput input) {
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<AccountClassRestrictionDTO> accountClassRestrictions = accountConfigService.getAccountClassRestrictions(pageable);
         DataTablesOutput<AccountClassRestrictionDTO> out = new DataTablesOutput<AccountClassRestrictionDTO>();
@@ -223,13 +241,16 @@ return restrictionTypes;
     }
 
     @GetMapping("/restriction/class/{id}/delete")
-    public String deleteAccountClassRestriction(@PathVariable Long id,RedirectAttributes redirectAttributes,Locale locale) {
+    public String deleteAccountClassRestriction(@PathVariable Long id, RedirectAttributes redirectAttributes, Locale locale) {
         try {
-            accountConfigService.deleteAccountClassRestriction(id);
+           String message = accountConfigService.deleteAccountClassRestriction(id);
+            redirectAttributes.addFlashAttribute("message", message);
+
         } catch (InternetBankingException ibe) {
-            logger.error("Could not delete account class restriction {}"+ibe.toString());
+            logger.error("Could not delete account class restriction", ibe);
+            redirectAttributes.addFlashAttribute("message", messageSource.getMessage("account.class.restriction.remove", null, locale));
+
         }
-        redirectAttributes.addFlashAttribute("message",messageSource.getMessage("account.class.restriction.remove",null,locale));
         return "redirect:/ops/accounts/restriction/class";
     }
 

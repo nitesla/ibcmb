@@ -93,7 +93,7 @@
                                                 </div>
                                                 <div class="right">
                                                     <h3 th:text="${messageDTO.sender}"></h3>
-                                                    <p th:text="${messageDTO.subject}"></p><span th:text="${messageDTO.dateCreated}" ></span>
+                                                    <p th:text="${messageDTO.subject}"></p><span th:text="${messageDTO.createdOn}" ></span>
                                                 </div>
                                             </div>
                                         </a>
@@ -124,7 +124,7 @@
                                                                 <div class="white-box">
                                                                     <div class="message-header">
                                                                         <h3><span th:text="${messageDTO.subject}" ></span> </h3>
-                                                                        <p class="message-date">Date:&nbsp;<span th:text="${messageDTO.dateCreated}" ></span></p>
+                                                                        <p class="message-date"><span th:text="${messageDTO.createdOn}" ></span></p>
                                                                     </div>
                                                                     <div class="message-sender">
                                                                         <p>From:&nbsp; <span th:text="${messageDTO.sender}" ></span></p>

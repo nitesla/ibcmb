@@ -30,6 +30,9 @@ public interface RoleService {
     RoleDTO getRole(Long id);
 
     @PreAuthorize("hasAuthority('GET_ROLE')")
+    Role getRoleByUserTypeAndName(UserType userType,String name);
+
+    @PreAuthorize("hasAuthority('GET_ROLE')")
     Role getTheRole(Long id);
 
     /**

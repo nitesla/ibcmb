@@ -34,47 +34,48 @@ public class AdmPermissionController {
     @Autowired
     private MessageSource messageSource;
 
-    Logger  logger = LoggerFactory.getLogger(this.getClass());
+    Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @GetMapping("/new")
-    public String addPermission(Model model){
+    public String addPermission(Model model) {
         model.addAttribute("permission", new PermissionDTO());
         return "adm/permission/add";
     }
-//org.springframework.web.context.request.WebRequest
+
+    //org.springframework.web.context.request.WebRequest
     @PostMapping
-    public String createPermission(@ModelAttribute("permission") PermissionDTO permission, BindingResult result, RedirectAttributes redirectAttributes, Locale locale){
-        if(result.hasErrors()){
-            result.addError(new ObjectError("invalid",messageSource.getMessage("form.fields.required",null,locale)));
+    public String createPermission(@ModelAttribute("permission") PermissionDTO permission, BindingResult result, RedirectAttributes redirectAttributes, Locale locale) {
+        if (result.hasErrors()) {
+            result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
             return "adm/permission/add";
         }
         try {
-           String message =  roleService.addPermission(permission);
-           redirectAttributes.addFlashAttribute("message", message);
+            String message = roleService.addPermission(permission);
+            redirectAttributes.addFlashAttribute("message", message);
             return "redirect:/admin/permissions";
-        }
-        catch (InternetBankingException ibe){
-            result.addError(new ObjectError("error",messageSource.getMessage(null,locale)));
-            logger.error("Error creating permission",ibe);
+        } catch (InternetBankingException ibe) {
+            result.addError(new ObjectError("error", messageSource.getMessage(null, locale)));
+            logger.error("Error creating permission", ibe);
             return "adm/permission/add";
         }
     }
 
     @GetMapping("/{permissionId}")
-    public PermissionDTO getPermission(@PathVariable Long permissionId, Model model){
+    public PermissionDTO getPermission(@PathVariable Long permissionId, Model model) {
         PermissionDTO permission = roleService.getPermission(permissionId);
-        model.addAttribute("permission",permission);
+        model.addAttribute("permission", permission);
         return permission;
     }
 
     @GetMapping
-    public String getPermissions(Model model){
+    public String getPermissions(Model model) {
         return "adm/permission/view";
     }
 
     @GetMapping(path = "/all")
-    public @ResponseBody
-    DataTablesOutput<PermissionDTO> getPermissions(DataTablesInput input){
+    public
+    @ResponseBody
+    DataTablesOutput<PermissionDTO> getPermissions(DataTablesInput input) {
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<PermissionDTO> permissions = roleService.getPermissions(pageable);
         DataTablesOutput<PermissionDTO> out = new DataTablesOutput<PermissionDTO>();
@@ -86,40 +87,38 @@ public class AdmPermissionController {
     }
 
     @GetMapping("/{reqId}/edit")
-    public String  editConfig(@PathVariable Long reqId, Model model){
+    public String editConfig(@PathVariable Long reqId, Model model) {
         PermissionDTO permission = roleService.getPermission(reqId);
-        model.addAttribute("permission",permission);
+        model.addAttribute("permission", permission);
         return "/adm/permission/edit";
     }
 
     @PostMapping("/update")
-    public String updatePermission(@ModelAttribute("permissionForm") PermissionDTO permission, BindingResult result, RedirectAttributes redirectAttributes,Locale locale){
+    public String updatePermission(@ModelAttribute("permissionForm") PermissionDTO permission, BindingResult result, RedirectAttributes redirectAttributes, Locale locale) {
 
-        if(result.hasErrors()){
-            result.addError(new ObjectError("invalid",messageSource.getMessage("permission.update.failure",null,locale)));
+        if (result.hasErrors()) {
+            result.addError(new ObjectError("invalid", messageSource.getMessage("permission.update.failure", null, locale)));
             return "/adm/permission/edit";
         }
         try {
             String message = roleService.updatePermission(permission);
             redirectAttributes.addFlashAttribute("message", message);
             return "redirect:/admin/permissions";
-        }
-        catch (InternetBankingException ibe){
-            result.addError(new ObjectError("error",messageSource.getMessage(null,locale)));
-            logger.error("Error updating permission",ibe);
+        } catch (InternetBankingException ibe) {
+            result.addError(new ObjectError("error", ibe.getMessage()));
+            logger.error("Error updating permission", ibe);
             return "adm/permission/edit";
         }
     }
 
     @GetMapping("/{permissionId}/delete")
-    public String deletePermission(@PathVariable Long permissionId, RedirectAttributes redirectAttributes,Locale locale){
+    public String deletePermission(@PathVariable Long permissionId, RedirectAttributes redirectAttributes, Locale locale) {
         try {
-           String message = roleService.deletePermission(permissionId);
+            String message = roleService.deletePermission(permissionId);
             redirectAttributes.addFlashAttribute("message", message);
-        }
-        catch (InternetBankingException ibe){
-            redirectAttributes.addFlashAttribute("failure",messageSource.getMessage("permission.delete.failure",null,locale));
-            logger.error("Error deleting permission",ibe);
+        } catch (InternetBankingException ibe) {
+            redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
+            logger.error("Error deleting permission", ibe);
         }
         return "redirect:/admin/permissions";
     }

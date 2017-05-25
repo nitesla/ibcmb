@@ -4,6 +4,7 @@ import longbridge.exception.InternetBankingException;
 import longbridge.exception.PasswordException;
 import longbridge.forms.ChangeDefaultPassword;
 import longbridge.forms.ChangePassword;
+import longbridge.models.Email;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -117,13 +118,6 @@ public interface OperationsUserService{
     @PreAuthorize("hasAuthority('UPDATE_OPS_USER')")
     String changePassword(OperationsUser user, ChangePassword changePassword) throws InternetBankingException, PasswordException;
 
-
-    /**
-     * Generates and sends a password to the specified user
-     * @param user the use that will receive the new pasword
-     */
-    @PreAuthorize("hasAuthority('UPDATE_OPS_USER')")
-    String generateAndSendPassword(OperationsUser user) throws InternetBankingException;
 
     @PreAuthorize("hasAuthority('UPDATE_OPS_USER')")
     String changeDefaultPassword(OperationsUser user, ChangeDefaultPassword changePassword) throws PasswordException;

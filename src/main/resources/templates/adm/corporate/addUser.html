@@ -27,7 +27,7 @@
             <div class="">
                 <div class="page-title">
                     <div class="title_left">
-                        <h3 th:text="${corporate.companyName}"></h3>
+                        <h3 th:text="${corporate.name}"></h3>
                     </div>
 
                 </div>
@@ -57,7 +57,7 @@
                                             </div>
                                         </div>
 
-                                        <input th:type="hidden" name="corporateId" th:value="${corporate.id}"/>
+                                        <input th:if="${corporate.id}" th:type="hidden" name="corporateId" th:value="${corporate.id}"/>
 
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">First Name</label>
@@ -84,12 +84,11 @@
 
                                         </div>
 
-                                        <div class="form-group">
+                                        <div th:if ="${corporate.corporateType=='MULTI'}" class="form-group">
                                             <label class="col-sm-2 control-label">Role</label>
                                             <div class="col-sm-6">
 
                                                 <select class="form-control" th:field="*{roleId}">
-                                                    <option value="" >Select..</option>
                                                     <option th:each="role : ${roles.?[#strings.equalsIgnoreCase(userType, 'corporate')]}" th:value="${role.id}" th:text="${role.name}"></option>
                                                 </select>
 
@@ -120,10 +119,21 @@
         <!-- /footer content -->
     </div>
 </div>
-<script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
 
-    document.getElementById("cancel").onclick = function () {
-        location.href = "/admin/corporates/";}
+    var corpId = [[${corporate.id}]];
+    if(corpId!=null) {
+        document.getElementById("cancel").onclick = function () {
+            location.href = "/admin/corporates/" + corpId + "/view";
+        }
+    }else{
+        document.getElementById("cancel").onclick = function () {
+            location.href = "/admin/corporates/";
+        }
+    }
+    /*]]>*/
+
 </script>
 
 </body>

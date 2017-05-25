@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -50,7 +49,7 @@ public class IntegrationServiceImpl implements IntegrationService {
     }
 
     @Override
-    public Collection<AccountInfo> fetchAccounts(String cifid) {
+    public List<AccountInfo> fetchAccounts(String cifid) {
         try {
 
             String uri = URI + "/customer/{acctId}/accounts";
@@ -82,7 +81,6 @@ public class IntegrationServiceImpl implements IntegrationService {
             BigDecimal ledgBal = new BigDecimal(details.getLedgerBalAmt());
             response.put("AvailableBalance", availBal);
             response.put("LedgerBalance", ledgBal);
-
 
             return response;
         } catch (Exception e) {

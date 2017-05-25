@@ -27,7 +27,7 @@
             <div class="">
                 <div class="page-title">
                     <div class="title_left">
-                        <h3 th:text="${corporate.companyName}">Corporate Management</h3>
+                        <h3 th:text="${corporate.name}">Corporate Management</h3>
                     </div>
                 </div>
 
@@ -42,7 +42,7 @@
                                         </li>
                                         <li role="presentation" class=""><a href="#tab_content2" role="tab" id="account-tab" data-toggle="tab" aria-expanded="false">Account Management</a>
                                         </li>
-                                        <li role="presentation" class=""><a href="#tab_content3" role="tab" id="mandate-tab" data-toggle="tab" aria-expanded="false">Mandate Management</a>
+                                        <li th:if="${corporate.corporateType=='MULTI'}" role="presentation" class=""><a href="#tab_content3" role="tab" id="mandate-tab" data-toggle="tab" aria-expanded="false">Mandate Management</a>
                                         </li>
                                     </ul>
                                     <div id="myTabContent" class="tab-content">
@@ -65,7 +65,7 @@
                                                         </div>
                                                     </li>
                                                 </ul>
-                                                <ul class="nav navbar-right panel_toolbox">
+                                                <ul th:if="${corporate.corporateType =='MULTI'}" class="nav navbar-right panel_toolbox">
                                                     <li >
                                                         <div class="col-lg-4">
                                                             <div class="title-action">
@@ -85,22 +85,24 @@
                                                                 <table class="table table-striped table-bordered table-hover"  width="100%" id="users">
                                                                     <thead>
                                                                     <tr>
-                                                                        <th>User Name</th>
+                                                                        <th>Username</th>
                                                                         <th>First Name</th>
                                                                         <th>Last Name</th>
-                                                                        <th>Email</th>
+                                                                        <th>Role</th>
                                                                         <th>Status</th>
+                                                                        <th>Last Login</th>
                                                                     </tr>
                                                                     </thead>
                                                                     <tbody>
                                                                     </tbody>
                                                                     <tfoot>
                                                                     <tr>
-                                                                        <th>User Name</th>
+                                                                        <th>Username</th>
                                                                         <th>First Name</th>
                                                                         <th>Last Name</th>
-                                                                        <th>Email</th>
+                                                                        <th>Role</th>
                                                                         <th>Status</th>
+                                                                        <th>Last Login</th>
                                                                     </tr>
                                                                     </tfoot>
                                                                 </table>
@@ -167,7 +169,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div role="tabpanel" class="tab-pane fade" id="tab_content3" aria-labelledby="mandate-tab">
+                                        <div th:if="${corporate.corporateType=='MULTI'}" role="tabpanel" class="tab-pane fade" id="tab_content3" aria-labelledby="mandate-tab">
                                             <div role="tabpanel" class="tab-pane fade active in" id="tab_content2" aria-labelledby="account-tab">
 
                                                 <div class="x_title">
@@ -275,8 +277,9 @@
                 { "data" : "userName" },
                 { "data" : "firstName" },
                 { "data" : "lastName" },
-                { "data" : "email" },
-                { "data" : "status" }
+                { "data" : "role" },
+                { "data" : "status" },
+                { "data" : "lastLogin" }
             ],
             "columnDefs" : [ {
                 "targets" : 4,

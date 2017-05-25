@@ -144,6 +144,11 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+    public Role getRoleByUserTypeAndName(UserType userType, String name) {
+        return null;
+    }
+
+    @Override
     public Iterable<RoleDTO> getRoles() {
         Iterable<Role> roles = roleRepo.findAll();
         return convertRoleEntitiesToDTOs(roles);

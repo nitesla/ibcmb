@@ -56,20 +56,20 @@ public class UserGroupMessageServiceImpl implements UserGroupMessageService {
     public String send(Long groupId, String sender, String subject, String message) throws MessageException {
         List<ContactDTO> contacts = userGroupService.getContacts(groupId);
         for (ContactDTO contact : contacts) {
-            if (!contact.isExternal()) {
-                Message msg = new Message();
-                try {
-                    msg.setSender(sender);
-                    msg.setRecipient(opsUserRepo.findOne(contact.getDt_RowId()).getUserName());
-                    msg.setSubject(subject);
-                    msg.setBody(message);
-                    msg.setRecipientType(opsUserRepo.findOne(contact.getDt_RowId()).getUserType());
-                    msg.setDateCreated(new Date());
-                    messageRepo.save(msg);
-                } catch (Exception me) {
-                    throw new MessageException(String.format(messageSource.getMessage("message.send.failure", null, locale), msg.getRecipient()), me);
-                }
-            }
+//            if (!contact.isExternal()) {
+//                Message msg = new Message();
+//                try {
+//                    msg.setSender(sender);
+//                    msg.setRecipient(opsUserRepo.findOne(contact.getDt_RowId()).getUserName());
+//                    msg.setSubject(subject);
+//                    msg.setBody(message);
+//                    msg.setRecipientType(opsUserRepo.findOne(contact.getDt_RowId()).getUserType());
+//                    msg.setDateCreated(new Date());
+//                    messageRepo.save(msg);
+//                } catch (Exception me) {
+//                    throw new MessageException(String.format(messageSource.getMessage("message.send.failure", null, locale), msg.getRecipient()), me);
+//                }
+//            }
 
             try {
                 mailService.send(contact.getEmail(), subject, message);
@@ -91,20 +91,20 @@ public class UserGroupMessageServiceImpl implements UserGroupMessageService {
     public String send(Long groupId, Email email) throws MessageException{
         List<ContactDTO> contacts = userGroupService.getContacts(groupId);
         for (ContactDTO contact : contacts) {
-            if (!contact.isExternal()) {
-                Message msg = new Message();
-                try {
-                    msg.setSender(email.getSenderEmail());
-                    msg.setRecipient(opsUserRepo.findOne(contact.getDt_RowId()).getUserName());
-                    msg.setSubject(email.getMessageSubject());
-                    msg.setBody(email.getMessageBody());
-                    msg.setRecipientType(opsUserRepo.findOne(contact.getDt_RowId()).getUserType());
-                    msg.setDateCreated(new Date());
-                    messageRepo.save(msg);
-                } catch (Exception me) {
-                    throw new MessageException(String.format(messageSource.getMessage("message.send.failure", null, locale), msg.getRecipient()), me);
-                }
-            }
+//            if (!contact.isExternal()) {
+//                Message msg = new Message();
+//                try {
+//                    msg.setSender(email.getSenderEmail());
+//                    msg.setRecipient(opsUserRepo.findOne(contact.getDt_RowId()).getUserName());
+//                    msg.setSubject(email.getMessageSubject());
+//                    msg.setBody(email.getMessageBody());
+//                    msg.setRecipientType(opsUserRepo.findOne(contact.getDt_RowId()).getUserType());
+//                    msg.setDateCreated(new Date());
+//                    messageRepo.save(msg);
+//                } catch (Exception me) {
+//                    throw new MessageException(String.format(messageSource.getMessage("message.send.failure", null, locale), msg.getRecipient()), me);
+//                }
+//            }
 
             try {
                 email.setReceiverEmail(contact.getEmail());
