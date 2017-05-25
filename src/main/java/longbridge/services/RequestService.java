@@ -3,13 +3,10 @@ package longbridge.services;
 import longbridge.dtos.RequestHistoryDTO;
 import longbridge.dtos.ServiceRequestDTO;
 import longbridge.exception.InternetBankingException;
-import longbridge.models.OperationsUser;
+import longbridge.models.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import longbridge.models.RequestHistory;
-import longbridge.models.RetailUser;
-import longbridge.models.ServiceRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
@@ -27,6 +24,8 @@ public interface RequestService {
     @PreAuthorize("hasAuthority('ADD_SERVICE_REQUEST')")
     String addRequest(ServiceRequestDTO request) throws InternetBankingException;
 
+    @PreAuthorize("hasAuthority('ADD_SERVICE_REQUEST')")
+    String addCorpRequest(ServiceRequestDTO request) throws InternetBankingException;
 
     /**
      * Returns a request identified by the id
@@ -45,6 +44,9 @@ public interface RequestService {
 
     @PreAuthorize("hasAuthority('GET_SERVICE_REQUEST')")
     Page<ServiceRequestDTO>getRequests(RetailUser user, Pageable pageDetails);
+
+    @PreAuthorize("hasAuthority('GET_SERVICE_REQUEST')")
+    Page<ServiceRequestDTO>getRequests(Corporate corporate, Pageable pageDetails);
 
     @PreAuthorize("hasAuthority('GET_SERVICE_REQUEST')")
     Page<ServiceRequestDTO>getRequests(OperationsUser opsUser,Pageable pageDetails);

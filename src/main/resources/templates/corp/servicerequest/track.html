@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="cust_layout :: site-head">
+<head th:replace="corp_layout :: site-head">
 
 </head>
 <body>
-<header th:replace="cust_layout :: header">
+<header th:replace="corp_layout :: header">
 </header>
 
 <section class="content-wrapper">
@@ -36,19 +36,19 @@
                     </div>
                 </div>
             </div>
-            <div th:replace="cust_layout :: sidebar" class="col-md-3 sidebar">
+            <div th:replace="corp_layout :: sidebar" class="col-md-3 sidebar">
             </div>
         </div>
     </div>
 </section>
 
 <!-- CONTENT-WRAPPER SECTION END-->
-<footer th:replace="cust_layout ::footer">
+<footer th:replace="corp_layout ::footer">
 </footer>
 <script th:inline="javascript">
     /*<![CDATA[*/
     $(document).ready(function() {
-        var url = "/retail/requests/track/all";
+        var url = "/corporate/requests/track/all";
         var table = $('#track').DataTable({
             select: true,
             responsive : false,
@@ -61,9 +61,8 @@
             "dom" : 'T<"clear">flrtp',
             "columns" : [
                 { "data": "requestName" },
-                { "data": "requestStatus" },
-                { "data": "date" }
-
+                { "data": "date" },
+                { "data": "requestStatus" }
             ]
         });
     });

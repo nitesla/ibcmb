@@ -46,6 +46,9 @@ public class RequestServiceImpl implements RequestService {
     private RetailUserRepo retailUserRepo;
 
     @Autowired
+    private CorporateRepo corporateRepo;
+
+    @Autowired
     private CodeService codeService;
 
     @Autowired
@@ -120,6 +123,37 @@ public class RequestServiceImpl implements RequestService {
         }
     }
 
+    @Override
+    public String addCorpRequest(ServiceRequestDTO request) throws InternetBankingException {
+        try {
+            ServiceRequest serviceRequest = convertDTOToEntity(request);
+            serviceRequest.setCorporate(corporateRepo.findOne(request.getCorporate().getId()));
+            String name = request.getCorporate().getCompanyName();
+            ServiceReqConfigDTO config = reqConfigService.getServiceReqConfig(serviceRequest.getServiceReqConfigId());
+
+            //***///
+            ObjectMapper objectMapper = new ObjectMapper();
+            ArrayList<NameValue> myFormObjects = objectMapper.readValue(serviceRequest.getBody(), new TypeReference<ArrayList<NameValue>>() {
+            });
+
+            StringBuilder messageBody = new StringBuilder();
+            for(NameValue nameValue : myFormObjects){
+                messageBody.append(nameValue.getName() + " : " + nameValue.getValue() + "\n");
+            }
+
+            String message = messageBody.toString();
+            serviceRequestRepo.save(serviceRequest);
+
+            Email email = new Email.Builder().setSender("info@ibanking.coronationmb.com")
+                    .setSubject("Service Request from " + name)
+                    .setBody(message)
+                    .build();
+            groupMessageService.send(config.getGroupId(), email);
+            return messageSource.getMessage("request.add.success", null, locale);
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("req.add.failure", null, locale), e);
+        }
+    }
 
     @Override
     public ServiceRequestDTO getRequest(Long id) {
@@ -162,7 +196,16 @@ public class RequestServiceImpl implements RequestService {
     }
 
     public Page<ServiceRequestDTO> getRequests(RetailUser user, Pageable pageDetails) {
-        Page<ServiceRequest> page = serviceRequestRepo.findAllByUser(user, pageDetails);
+        Page<ServiceRequest> page = serviceRequestRepo.findAllByUserOrderByDateRequestedDesc(user, pageDetails);
+        List<ServiceRequestDTO> dtOs = convertEntitiesToDTOs(page.getContent());
+        long t = page.getTotalElements();
+        Page<ServiceRequestDTO> pageImpl = new PageImpl<>(dtOs, pageDetails, t);
+        return pageImpl;
+    }
+
+    @Override
+    public Page<ServiceRequestDTO> getRequests(Corporate corporate, Pageable pageDetails) {
+        Page<ServiceRequest> page = serviceRequestRepo.findAllByCorporateOrderByDateRequestedDesc(corporate, pageDetails);
         List<ServiceRequestDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
         Page<ServiceRequestDTO> pageImpl = new PageImpl<>(dtOs, pageDetails, t);
@@ -221,7 +264,11 @@ public class RequestServiceImpl implements RequestService {
 
     private ServiceRequestDTO convertEntityToDTO(ServiceRequest serviceRequest) {
         ServiceRequestDTO requestDTO = modelMapper.map(serviceRequest, ServiceRequestDTO.class);
-        requestDTO.setUsername(serviceRequest.getUser().getUserName());
+        if (serviceRequest.getUser() != null){
+            requestDTO.setUsername(serviceRequest.getUser().getUserName());
+        }else if (serviceRequest.getCorporate() != null){
+            requestDTO.setCorpName(serviceRequest.getCorporate().getCompanyName());
+        }
         requestDTO.setDate(DateFormatter.format(serviceRequest.getDateRequested()));
         Code code = codeService.getByTypeAndCode("REQUEST_STATUS", serviceRequest.getRequestStatus());
         if (code != null) {

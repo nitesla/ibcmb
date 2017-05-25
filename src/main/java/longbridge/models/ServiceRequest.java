@@ -24,6 +24,8 @@ public class ServiceRequest extends AbstractEntity {
 
     @ManyToOne
     private RetailUser user;
+    @ManyToOne
+    private Corporate corporate;
 
     private String requestName;
     @Column(columnDefinition = "TEXT")
@@ -91,10 +93,19 @@ public class ServiceRequest extends AbstractEntity {
         this.serviceReqConfigId = serviceReqConfigId;
     }
 
+    public Corporate getCorporate() {
+        return corporate;
+    }
+
+    public void setCorporate(Corporate corporate) {
+        this.corporate = corporate;
+    }
+
     @Override
     public String toString() {
         return "ServiceRequest{" +
                 "user=" + user +
+                ", corporate=" + corporate +
                 ", requestName='" + requestName + '\'' +
                 ", body='" + body + '\'' +
                 ", requestStatus='" + requestStatus + '\'' +

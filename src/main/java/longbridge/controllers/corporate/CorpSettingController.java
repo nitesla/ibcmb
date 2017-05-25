@@ -8,7 +8,6 @@ import longbridge.forms.ChangePassword;
 import longbridge.models.CorporateUser;
 import longbridge.services.AccountService;
 import longbridge.services.CodeService;
-
 import longbridge.services.CorporateUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +23,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.validation.Valid;
 import java.security.Principal;
 import java.util.List;
-
 
 
 @Controller

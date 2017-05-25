@@ -21,13 +21,13 @@ public interface ServiceReqConfigService{
     @PreAuthorize("hasAuthority('GET_SERV_REQ_CONFIG')")
     ServiceReqConfigDTO getServiceReqConfig(Long id);
 
-    @PreAuthorize("hasAuthority('GET_SERV_REQ_CONFIGS')")
+    @PreAuthorize("hasAuthority('GET_SERV_REQ_CONFIG')")
     Iterable<ServiceReqConfigDTO> getServiceReqConfigs();
 
-    @PreAuthorize("hasAuthority('GET_SERV_REQ_CONFIGS')")
+    @PreAuthorize("hasAuthority('GET_SERV_REQ_CONFIG')")
     Page<ServiceReqConfigDTO> getServiceReqConfigs(Pageable pageDetails);
 
-    @PreAuthorize("hasAuthority('GET_SERV_REQ_CONFIGS')")
+    @PreAuthorize("hasAuthority('GET_SERV_REQ_CONFIG')")
     List<ServiceReqConfig> getServiceReqConfs();
 
     Iterable<ServiceReqConfigDTO> gerServiceReqConfigsPage(Integer pageNum, Integer pageSize);
