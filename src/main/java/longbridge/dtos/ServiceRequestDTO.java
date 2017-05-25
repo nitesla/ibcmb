@@ -11,9 +11,11 @@ import java.util.Date;
 public class ServiceRequestDTO {
 
     @JsonProperty("DT_RowId")
-    private  Long id;
+    private Long id;
     private Long userId;
     private String username;
+    private CorporateDTO corporate;
+    private String corpName;
     private String requestName;
     private String requestStatus;
     private String body;
@@ -91,6 +93,22 @@ public class ServiceRequestDTO {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public CorporateDTO getCorporate() {
+        return corporate;
+    }
+
+    public void setCorporate(CorporateDTO corporate) {
+        this.corporate = corporate;
+    }
+
+    public String getCorpName() {
+        return corpName;
+    }
+
+    public void setCorpName(String corpName) {
+        this.corpName = corpName;
     }
 
     @Override

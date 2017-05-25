@@ -10,6 +10,11 @@ import longbridge.utils.NameValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+import org.springframework.data.jpa.datatables.repository.DataTablesUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,7 +22,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by Fortune on 4/5/2017.
@@ -144,25 +152,25 @@ public class ServiceRequestController {
 
     @GetMapping("/track")
     public String trackRequests(Model model, Principal principal){
-        RetailUser user = userService.getUserByName(principal.getName());
-        Iterable<ServiceRequestDTO> serviceRequests = requestService.getRequests(user);
-        model.addAttribute("requests", serviceRequests);
+//        RetailUser user = userService.getUserByName(principal.getName());
+//        Iterable<ServiceRequestDTO> serviceRequests = requestService.getRequests(user);
+//        model.addAttribute("requests", serviceRequests);
         return "cust/servicerequest/track";
     }
 
-//    @GetMapping(path = "/track/all")
-//    public @ResponseBody
-//    DataTablesOutput<ServiceRequestDTO> getUsers(DataTablesInput input, Principal principal){
-//        RetailUser user = userService.getUserByName(principal.getName());
-//        Pageable pageable = DataTablesUtils.getPageable(input);
-//        Page<ServiceRequestDTO> serviceRequests = requestService.getRequests(pageable);
-//        DataTablesOutput<ServiceRequestDTO> out = new DataTablesOutput<ServiceRequestDTO>();
-//        out.setDraw(input.getDraw());
-//        out.setData(serviceRequests.getContent());
-//        out.setRecordsFiltered(serviceRequests.getTotalElements());
-//        out.setRecordsTotal(serviceRequests.getTotalElements());
-//        return out;
-//    }
+    @GetMapping(path = "/track/all")
+    public @ResponseBody
+    DataTablesOutput<ServiceRequestDTO> getUsers(DataTablesInput input, Principal principal){
+        RetailUser user = userService.getUserByName(principal.getName());
+        Pageable pageable = DataTablesUtils.getPageable(input);
+        Page<ServiceRequestDTO> serviceRequests = requestService.getRequests(user, pageable);
+        DataTablesOutput<ServiceRequestDTO> out = new DataTablesOutput<ServiceRequestDTO>();
+        out.setDraw(input.getDraw());
+        out.setData(serviceRequests.getContent());
+        out.setRecordsFiltered(serviceRequests.getTotalElements());
+        out.setRecordsTotal(serviceRequests.getTotalElements());
+        return out;
+    }
 
 
 

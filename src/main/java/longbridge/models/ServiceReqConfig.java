@@ -18,6 +18,7 @@ public class ServiceReqConfig extends AbstractEntity{
 
     private String requestName;
     private String requestType;
+    private boolean authenticate;
     private Long groupId;
 
     @OneToMany(cascade = CascadeType.ALL)
@@ -55,7 +56,15 @@ public class ServiceReqConfig extends AbstractEntity{
         this.formFields = formFields;
     }
 
-	public static OperationCode getAddCode() {
+    public boolean isAuthenticate() {
+        return authenticate;
+    }
+
+    public void setAuthenticate(boolean authenticate) {
+        this.authenticate = authenticate;
+    }
+
+    public static OperationCode getAddCode() {
 		// TODO Auto-generated method stub
 		return null;
 	}

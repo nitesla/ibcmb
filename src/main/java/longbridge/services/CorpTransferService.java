@@ -11,14 +11,10 @@ import longbridge.models.CorporateUser;
  */
 public interface CorpTransferService {
 
-String addTransferRequest(CorpTransferRequestDTO transferRequestDTO) throws InternetBankingException;
+    String addTransferRequest(CorpTransferRequestDTO transferRequestDTO) throws InternetBankingException;
 
+    String makeTransfer(CorpTransferRequest transferRequest) throws TransferException;
 
-
-String makeTransfer(CorpTransferRequest transferRequest) throws TransferException;
-
-String authorizeTransfer(CorporateUser authorizer, Long transferRequestId);
-
-
+    String authorizeTransfer(CorporateUser authorizer, Long transferRequestId);
 
 }

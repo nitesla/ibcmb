@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.CommonAnnotationBeanPostProcessor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.request.RequestContextListener;
@@ -22,8 +23,6 @@ import java.util.Locale;
 
 @Configuration
 public class WebMvcConfig   extends WebMvcConfigurerAdapter {
-
-
 
 	@Bean
 	public BCryptPasswordEncoder passwordEncoder() {

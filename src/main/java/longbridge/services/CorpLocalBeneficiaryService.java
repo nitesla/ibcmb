@@ -3,6 +3,7 @@ package longbridge.services;
 import longbridge.dtos.CorpLocalBeneficiaryDTO;
 import longbridge.models.CorpLocalBeneficiary;
 import longbridge.models.CorporateUser;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 
@@ -18,12 +19,14 @@ public interface CorpLocalBeneficiaryService {
      * @param user the corporate user
      * @param  beneficiary  the beneficiary
      */
+    @PreAuthorize("hasAuthority('ADD_BENEFICIARY')")
     String addCorpLocalBeneficiary(CorporateUser user, CorpLocalBeneficiaryDTO beneficiary);
 
     /**
      * Deletes a beneficiary that has been created by the user
      * @param beneficiaryId the beneficiary's id
      */
+    @PreAuthorize("hasAuthority('DELETE_BENEFICIARY')")
     String deleteCorpLocalBeneficiary(Long beneficiaryId);
 
     /**
@@ -31,6 +34,7 @@ public interface CorpLocalBeneficiaryService {
      * @param id the beneficiary's id
      * @return the specified beneficiary
      */
+    @PreAuthorize("hasAuthority('GET_BENEFICIARIES')")
     CorpLocalBeneficiary getCorpLocalBeneficiary(Long id);
 
     /**
@@ -38,8 +42,8 @@ public interface CorpLocalBeneficiaryService {
      * @param user the corporate user
      * @return a list of the beneficiaries
      */
+    @PreAuthorize("hasAuthority('GET_BENEFICIARIES')")
     Iterable<CorpLocalBeneficiary> getCorpLocalBeneficiaries(CorporateUser user);
-
 
     List<CorpLocalBeneficiaryDTO> convertEntitiesToDTOs(Iterable<CorpLocalBeneficiary> corpLocalBeneficiaries);
 

@@ -3,7 +3,6 @@ package longbridge.services.implementations;
 import longbridge.dtos.TransferRequestDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingTransferException;
-import longbridge.exception.TransferException;
 import longbridge.models.TransferRequest;
 import longbridge.models.User;
 import longbridge.repositories.TransferRequestRepo;
@@ -92,16 +91,6 @@ public class TransferServiceImpl implements TransferService {
 
         }
         return result;
-    }
-
-    @Override
-    public void deleteTransfer(Long id) throws InternetBankingException {
-        TransferRequest transferRequest = transferRequestRepo.findById(id);
-        if (transferRequest != null) {
-            transferRequestRepo.delete(transferRequest);
-        }
-
-
     }
 
     @Override

@@ -260,12 +260,9 @@ public class AccountServiceImpl implements AccountService {
                      ledBalance = balance.get("LedgerBalance").toString();
                   }
 
-
-
                 account.setAccountBalance(availbalance);
-
                 account.setLedgerBalance(ledBalance);
-//                accountsForDebitAndCredit.add(account);
+                accountsForDebitAndCredit.add(account);
             }
 
         }

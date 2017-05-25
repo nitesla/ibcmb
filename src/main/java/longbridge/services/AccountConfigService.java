@@ -3,9 +3,9 @@ package longbridge.services;
 import longbridge.dtos.AccountClassRestrictionDTO;
 import longbridge.dtos.AccountRestrictionDTO;
 import longbridge.exception.InternetBankingException;
-import longbridge.models.Account;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
  * Created by Fortune on 5/1/2017.
@@ -13,18 +13,20 @@ import org.springframework.data.domain.Pageable;
 public interface AccountConfigService {
 
 
-      boolean isAccountHidden(String accountNumber);
+    boolean isAccountHidden(String accountNumber);
 
     /**
      * Adds an account to a list of restricted accounts
      * @param accountRestrictionDTO contains details of the restriction
      */
+    @PreAuthorize("hasAuthority('ADD_ACCT_RESTRICT')")
     String addAccountRestriction(AccountRestrictionDTO accountRestrictionDTO)throws InternetBankingException;
 
     /**
      * updates the restriction on the account
      * @param accountRestrictionDTO contains details of the restriction
      */
+    @PreAuthorize("hasAuthority('UPDATE_ACCT_RESTRICT')")
     String updateAccountRestriction(AccountRestrictionDTO accountRestrictionDTO)throws InternetBankingException;
 
 
@@ -33,6 +35,7 @@ public interface AccountConfigService {
      * @param id the id
      * @return AccountRestrictionDTO
      */
+    @PreAuthorize("hasAuthority('GET_ACCT_RESTRICT')")
     AccountRestrictionDTO getAccountRestriction(Long id);
 
 
@@ -41,24 +44,28 @@ public interface AccountConfigService {
      * @param id the id
      * @return AccountClassRestrictionDTO
      */
+    @PreAuthorize("hasAuthority('ADD_ACCT_CLASS_RESTRICT')")
     AccountClassRestrictionDTO getAccountClassRestriction(Long id);
 
     /**
      * Removes removes an account from the list of restricted accounts
      * @param id the id
      */
+    @PreAuthorize("hasAuthority('DELETE_ACCT_RESTRICT')")
     String deleteAccountRestriction(Long id) throws InternetBankingException;
 
     /**
      * Adds an account to a list of restricted accounts
      * @param accountClassRestrictionDTO contains details of the restriction
      */
+    @PreAuthorize("hasAuthority('ADD_ACCT_CLASS_RESTRICT')")
     String addAccountClassRestriction(AccountClassRestrictionDTO accountClassRestrictionDTO) throws InternetBankingException;
 
     /**
      * Updates the restriction on the account class
      * @param accountClassRestrictionDTO contains details of the restriction
      */
+    @PreAuthorize("hasAuthority('UPDATE_ACCT_RESTRICT')")
     String updateAccountClassRestriction(AccountClassRestrictionDTO accountClassRestrictionDTO) throws InternetBankingException;
 
 
@@ -66,6 +73,7 @@ public interface AccountConfigService {
      * Removes removes an account class from the list of restricted account classes
      * @param id the id
      */
+    @PreAuthorize("hasAuthority('DELETE_ACCT_CLASS_RESTRICT')")
     String deleteAccountClassRestriction(Long id) throws InternetBankingException;
 
 
@@ -133,6 +141,7 @@ public interface AccountConfigService {
      * Returns a list of restricted accounts
      * @return restricted accounts
      */
+    @PreAuthorize("hasAuthority('GET_ACCT_RESTRICTS')")
     Iterable<AccountRestrictionDTO> getAccountRestrictions();
 
 
@@ -141,6 +150,7 @@ public interface AccountConfigService {
      * Returns a list of restricted account classes
      * @return restricted account classes
      */
+    @PreAuthorize("hasAuthority('GET_ACCT_CLASS_RESTRICTS')")
     Iterable<AccountClassRestrictionDTO> getAccountClassRestrictions();
 
 
@@ -148,6 +158,7 @@ public interface AccountConfigService {
      * Returns a paginated list of restricted accounts
      * @return restricted accounts
      */
+    @PreAuthorize("hasAuthority('GET_ACCT_RESTRICTS')")
     Page<AccountRestrictionDTO> getAccountRestrictions(Pageable pageable);
 
 
@@ -156,6 +167,7 @@ public interface AccountConfigService {
      * Returns a paginated list of restricted account classes
      * @return restricted account classes
      */
+    @PreAuthorize("hasAuthority('GET_ACCT_CLASS_RESTRICTS')")
     Page<AccountClassRestrictionDTO> getAccountClassRestrictions(Pageable pageable);
 
 

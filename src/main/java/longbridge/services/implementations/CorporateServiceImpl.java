@@ -129,17 +129,19 @@ public class CorporateServiceImpl implements CorporateService {
 
     @Override
     public String addAccount(Corporate corporate, AccountDTO accountDTO) throws InternetBankingException {
-        accountService.AddAccount(corporate.getCustomerId(), accountDTO);
-        return messageSource.getMessage("account.add.success", null, locale);
-    }
 
-    @Override
-    public String addCorporateUser(Corporate corporate, CorporateUser corporateUser) throws InternetBankingException {
-        corporate.getUsers().add(corporateUser);
-        corporateRepo.save(corporate);
-        return messageSource.getMessage("user.add.success", null, locale);
-    }
+        try{
+            boolean ok = accountService.AddAccount(corporate.getCustomerId(), accountDTO);
+            if (ok){
+                return messageSource.getMessage("account.add.success", null, locale);
+            }else {
+                throw new InternetBankingException(messageSource.getMessage("corporate.account.add.failure", null, locale));
+            }
 
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("corporate.account.add.failure", null, locale), e);
+        }
+    }
 
     @Override
     @Transactional
@@ -155,25 +157,6 @@ public class CorporateServiceImpl implements CorporateService {
 
         } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("corporate.status.failure", null, locale), e);
-
-        }
-    }
-
-
-    @Override
-    @Transactional
-    public String changeUserActivationStatus(Long id) throws InternetBankingException {
-        try {
-            CorporateUser corporateUser = corporateUserRepo.findOne(id);
-            String oldStatus = corporateUser.getStatus();
-            String newStatus = "A".equals(oldStatus) ? "I" : "A";
-            corporateUser.setStatus(newStatus);
-            corporateUserRepo.save(corporateUser);
-            logger.info("Corporate user{} status changed from {} to {}", corporateUser.getUserName(), oldStatus, newStatus);
-            return messageSource.getMessage("user.status.success", null, locale);
-
-        } catch (Exception e) {
-            throw new InternetBankingException(messageSource.getMessage("user.status.failure", null, locale), e);
 
         }
     }

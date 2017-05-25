@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 
 import longbridge.dtos.OperationsUserDTO;
 import longbridge.models.OperationsUser;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
  * The {@code OperationsUserService} provides the methods for managing operations users
@@ -24,6 +25,7 @@ public interface OperationsUserService{
      * @param id the user's id
      * @return the Operations User
      */
+    @PreAuthorize("hasAuthority('GET_OPS_USER')")
     OperationsUserDTO getUser(Long id);
 
     /**Checks that the provided username is valid for use as any username already
@@ -33,7 +35,7 @@ public interface OperationsUserService{
      */
     boolean isValidUsername(String username);
 
-
+    @PreAuthorize("hasAuthority('GET_OPS_USER')")
     OperationsUser getUserByName(String name);
 
 
@@ -41,6 +43,7 @@ public interface OperationsUserService{
      * Returns all Operations users present in th system
      * @return list of user
      */
+    @PreAuthorize("hasAuthority('GET_OPS_USER')")
     Iterable<OperationsUserDTO> getUsers();
 
     /**
@@ -48,8 +51,10 @@ public interface OperationsUserService{
      * @param pageDetails the page details
      * @return list of users
      */
+    @PreAuthorize("hasAuthority('GET_OPS_USER')")
     Page<OperationsUserDTO> getUsers(Pageable pageDetails);
 
+    @PreAuthorize("hasAuthority('GET_OPS_USER')")
     Page<OperationsUserDTO> findUsers(OperationsUserDTO example,Pageable pageDetails);
 
     /**
@@ -59,18 +64,21 @@ public interface OperationsUserService{
      * @param User the user
      * @param password the password
      */
+    @PreAuthorize("hasAuthority('UPDATE_OPS_USER')")
     String setPassword(OperationsUser User, String password) throws InternetBankingException;
 
     /**
      * Creates an Operations User
      * @param user the new OperationsUser
      */
+    @PreAuthorize("hasAuthority('ADD_OPS_USER')")
     String addUser(OperationsUserDTO user) throws InternetBankingException;
 
     /**
      * Update the details of the Operations User
      * @param user the Operations User
      */
+    @PreAuthorize("hasAuthority('UPDATE_OPS_USER')")
     String updateUser(OperationsUserDTO user) throws InternetBankingException;
 
     /**
@@ -79,19 +87,21 @@ public interface OperationsUserService{
      * On creation, the user has a null status until activated by the Admin
      * @param userId the user's Id
      */
+    @PreAuthorize("hasAuthority('UPDATE_OPS_USER')")
     String changeActivationStatus(Long userId) throws InternetBankingException;
 
     /**
      * Deletes an Operations User
      * @param userId the  Operations user's id
      */
+    @PreAuthorize("hasAuthority('DELETE_OPS_USER')")
     String deleteUser(Long userId) throws InternetBankingException;
 
     /**
      * Resets the password of the specified Operations user
      * @param id of the user
      */
-
+    @PreAuthorize("hasAuthority('UPDATE_OPS_USER')")
     String resetPassword(Long id) throws InternetBankingException;
 
 
@@ -104,7 +114,7 @@ public interface OperationsUserService{
      * * @param oldPassword the oldPassword
      * @param changePassword
      */
-
+    @PreAuthorize("hasAuthority('UPDATE_OPS_USER')")
     String changePassword(OperationsUser user, ChangePassword changePassword) throws InternetBankingException, PasswordException;
 
 
@@ -112,7 +122,9 @@ public interface OperationsUserService{
      * Generates and sends a password to the specified user
      * @param user the use that will receive the new pasword
      */
+    @PreAuthorize("hasAuthority('UPDATE_OPS_USER')")
     String generateAndSendPassword(OperationsUser user) throws InternetBankingException;
 
+    @PreAuthorize("hasAuthority('UPDATE_OPS_USER')")
     String changeDefaultPassword(OperationsUser user, ChangeDefaultPassword changePassword) throws PasswordException;
 }

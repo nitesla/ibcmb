@@ -6,7 +6,6 @@ import longbridge.repositories.CorporateRepo;
 import longbridge.repositories.CorporateUserRepo;
 import longbridge.repositories.PendingAuthorizationRepo;
 import longbridge.services.CorporateService;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +17,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 @RunWith(SpringRunner.class)

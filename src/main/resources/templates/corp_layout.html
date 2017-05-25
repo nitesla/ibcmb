@@ -10,7 +10,6 @@
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/bootstrap.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/custom.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/font-awesome/font-awesome.min.css}"/>
-    <link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/sweetalert/sweetalert.css}"/>
     <title>Coronation Merchant Bank</title>
 
 </head>
@@ -146,19 +145,19 @@
     <script th:src="@{~/customer/js/jquery-ui.js}"></script>
     <script th:src="@{~/customer/js/jquery.dataTables.js}"></script>
     <script th:src="@{~/customer/js/dataTables.bootstrap.js}"></script>
-    <!-- SWEET ALERT -->
-    <script th:src="@{~/customer/plugins/sweetalert/sweet-alert.js}"></script>
+    <script th:src="@{~/customer/js/jquery.spring-friendly.min.js}"></script>
+    <script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
     <!-- BOOTSTRAP SCRIPTS  -->
     <script th:src="@{~/customer/js/bootstrap.js}"></script>
     <script>
         $(document).ready(function(){
             $(".dropdown").hover(
                 function() {
-                    $('.dropdown-menu', this).not('.in .dropdown-menu').stop(true,true).slideDown("400");
+                    $('.dropdown-menu', this).not('.in .dropdown-menu').stop(true,true).slideDown("1200");
                     $(this).toggleClass('open');
                 },
                 function() {
-                    $('.dropdown-menu', this).not('.in .dropdown-menu').stop(true,true).slideUp("400");
+                    $('.dropdown-menu', this).not('.in .dropdown-menu').stop(true,true).slideUp("1200");
                     $(this).toggleClass('open');
                 }
             );
