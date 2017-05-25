@@ -6,8 +6,10 @@ import longbridge.exception.InternetBankingTransferException;
 import longbridge.models.FinancialInstitutionType;
 import longbridge.models.LocalBeneficiary;
 import longbridge.models.RetailUser;
+import longbridge.models.TransferRequest;
 import longbridge.services.*;
 import longbridge.utils.TransferType;
+import longbridge.validator.transfer.TransferValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
@@ -35,17 +37,19 @@ public class LocalTransferController {
     private MessageSource messages;
     private LocalBeneficiaryService localBeneficiaryService;
     private FinancialInstitutionService financialInstitutionService;
+    private TransferValidator validator;
     private String page = "cust/transfer/local/";
     @Value("${bank.code}")
     private String bankCode;
 
     @Autowired
-    public LocalTransferController(RetailUserService retailUserService, IntegrationService integrationService, TransferService transferService, AccountService accountService, MessageSource messages, LocaleResolver localeResolver, LocalBeneficiaryService localBeneficiaryService, FinancialInstitutionService financialInstitutionService) {
+    public LocalTransferController(RetailUserService retailUserService, TransferValidator validator, TransferService transferService, AccountService accountService, MessageSource messages, LocaleResolver localeResolver, LocalBeneficiaryService localBeneficiaryService, FinancialInstitutionService financialInstitutionService) {
         this.retailUserService = retailUserService;
         this.transferService = transferService;
         this.messages = messages;
         this.localBeneficiaryService = localBeneficiaryService;
         this.financialInstitutionService = financialInstitutionService;
+        this.validator = validator;
     }
 
     @GetMapping("")
@@ -68,12 +72,8 @@ public class LocalTransferController {
                 redirectAttributes.addFlashAttribute("message", messages.getMessage("auth.token.failure", null, locale));
                 return page + "pageiv";
             }
-            boolean ok = transferService.makeTransfer(transferRequestDTO);
-            if (ok) {
-                transferService.saveTransfer(transferRequestDTO);
-                redirectAttributes.addFlashAttribute("message", messages.getMessage("transaction.success", null, locale));
-
-            }
+            transferRequestDTO = transferService.makeTransfer(transferRequestDTO);
+            redirectAttributes.addFlashAttribute("message", messages.getMessage("transaction.success", null, locale));
 
 
             return "redirect:/retail/transfer/local";
@@ -84,8 +84,13 @@ public class LocalTransferController {
     }
 
     @PostMapping("/summary")
-    public String transferSummary(@ModelAttribute("transferRequest") @Valid TransferRequestDTO transferRequestDTO, Model model) throws Exception {
+    public String transferSummary(@ModelAttribute("transferRequest") @Valid TransferRequestDTO transferRequestDTO, BindingResult result, Model model) throws Exception {
         model.addAttribute("transferRequest", transferRequestDTO);
+
+        validator.validate(transferRequestDTO, result);
+        if (result.hasErrors()) {
+            return page + "pageii";
+        }
         return page + "pageiii";
     }
 

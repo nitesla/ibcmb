@@ -2,6 +2,7 @@ package longbridge.services;
 
 import longbridge.dtos.TransferRequestDTO;
 import longbridge.exception.InternetBankingException;
+import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,7 +22,7 @@ import longbridge.models.User;
 public interface TransferService {
 
 //    boolean makeLocalTransfer(TransferRequestDTO transferRequest);
-    boolean makeTransfer(TransferRequestDTO transferRequest) throws TransferException;
+    TransferRequestDTO makeTransfer(TransferRequestDTO transferRequest) throws TransferException;
 
     TransferRequest getTransfer(Long id);
 
@@ -33,9 +34,9 @@ public interface TransferService {
 
     void deleteTransfer(Long id) throws InternetBankingException;
 
-    boolean validateBalance(TransferRequestDTO transferRequest);
+    void  validateBalance(TransferRequestDTO transferRequest) throws InternetBankingTransferException;
 
-    void validateTransfer(TransferRequestDTO transferRequest);
+    void validateTransfer(TransferRequestDTO transferRequest) throws InternetBankingTransferException;
 
 
 }

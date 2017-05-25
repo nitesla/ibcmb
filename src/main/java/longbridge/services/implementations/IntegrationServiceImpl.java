@@ -1,13 +1,12 @@
 package longbridge.services.implementations;
 
-import longbridge.api.AccountDetails;
-import longbridge.api.AccountInfo;
-import longbridge.api.CustomerDetails;
-import longbridge.api.LocalTransferResponse;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import longbridge.api.*;
 import longbridge.exception.TransferException;
 import longbridge.models.TransferRequest;
 import longbridge.services.IntegrationService;
 import longbridge.utils.AccountStatement;
+import longbridge.utils.ResultType;
 import longbridge.utils.TransferType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +31,8 @@ public class IntegrationServiceImpl implements IntegrationService {
 
     @Value("${ebank.service.uri}")
     private String URI;
+    @Value("${CMB.ALERT.URL}")
+    private String cmbAlert;
 
     private RestTemplate template;
 
@@ -60,7 +61,8 @@ public class IntegrationServiceImpl implements IntegrationService {
             //            List list= template.getForObject(uri, ArrayList.class,cifid);
 
         } catch (Exception e) {
-            return null;
+            logger.error("Exception occurred {}", e.getMessage());
+            return new ArrayList<>();
         }
     }
 
@@ -86,12 +88,13 @@ public class IntegrationServiceImpl implements IntegrationService {
 
             return response;
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }
 
     @Override
-    public boolean makeTransfer(TransferRequest transferRequest) throws TransferException {
+    public TransferRequest makeTransfer(TransferRequest transferRequest) throws TransferException {
 
         TransferType type;
         type = TransferType.INTER_BANK_TRANSFER;
@@ -99,7 +102,35 @@ public class IntegrationServiceImpl implements IntegrationService {
             case CORONATION_BANK_TRANSFER:
 
             {
-//template.postForObject();
+                transferRequest.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
+                TransferDetails response;
+                String uri = URI + "/transfer/local";
+                Map<String, String> params = new HashMap<>();
+                params.put("debitAccountNumber", transferRequest.getCustomerAccountNumber());
+                params.put("creditAccountNumber", transferRequest.getBeneficiaryAccountNumber());
+                params.put("tranAmount", transferRequest.getAmount().toString());
+                params.put("naration", transferRequest.getNarration());
+                logger.info(params.toString());
+
+                try {
+                    response = template.postForObject(uri, params, TransferDetails.class);
+
+                    if (response.getResponseCode().equalsIgnoreCase("000")) {
+
+                        transferRequest.setStatus(ResultType.SUCCESS.toString());
+                        return transferRequest;
+                    } else {
+                        transferRequest.setStatus(ResultType.ERROR.toString());
+                        return transferRequest;
+                    }
+
+                } catch (Exception e) {
+
+                    e.printStackTrace();
+                    return new TransferRequest();
+                }
+
+
             }
             case INTER_BANK_TRANSFER: {
 
@@ -112,26 +143,29 @@ public class IntegrationServiceImpl implements IntegrationService {
             }
             case OWN_ACCOUNT_TRANSFER: {
 
-                LocalTransferResponse response = null;
+                TransferDetails response = null;
                 String uri = URI + "/transfer/local";
                 Map<String, String> params = new HashMap<>();
                 params.put("debitAccountNumber", transferRequest.getCustomerAccountNumber());
                 params.put("creditAccountNumber", transferRequest.getBeneficiaryAccountNumber());
                 params.put("tranAmount", transferRequest.getAmount().toString());
                 params.put("naration", transferRequest.getNarration());
-
+                logger.info("patrams for transfer {}", params.toString());
                 try {
-                    response = template.postForObject(uri, params, LocalTransferResponse.class);
+                    response = template.postForObject(uri, params, TransferDetails.class);
 
                     if (response.getResponseCode().equalsIgnoreCase("000")) {
-                        return true;
+                        transferRequest.setTransferType(TransferType.OWN_ACCOUNT_TRANSFER);
+                        transferRequest.setStatus(ResultType.SUCCESS.toString());
+                        return transferRequest;
                     }
 
                 } catch (Exception e) {
 
-                    e.printStackTrace();
+                    // e.printStackTrace();
+                    return new TransferRequest();
                 }
-                return false;
+
 
             }
 
@@ -140,7 +174,7 @@ public class IntegrationServiceImpl implements IntegrationService {
             }
         }
 
-        return false;
+        return new TransferRequest();
     }
 
     @Override
@@ -227,44 +261,60 @@ public class IntegrationServiceImpl implements IntegrationService {
     }
 
     @Override
+    public NEnquiryDetails doNameEnquiry(String destinationInstitutionCode, String accountNumber) {
+        NEnquiryDetails result = null;
+        String uri = URI + "/transfer/nameEnquiry";
+        Map<String, String> params = new HashMap<>();
+        params.put("destinationInstitutionCode", destinationInstitutionCode);
+        params.put("accountNumber", accountNumber);
+        logger.trace("params {}", params);
+        try {
+
+            result = template.postForObject(uri, params, NEnquiryDetails.class);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    @Override
     public BigDecimal getAvailableBalance(String s) {
         Map<String, BigDecimal> getBalance = getBalance(s);
         BigDecimal balance = getBalance.get("AvailableBalance");
-        if(balance!=null){
+        if (balance != null) {
             return balance;
         }
         return new BigDecimal(0);
     }
 
-//    @Override
-//    public boolean makeLocalTransfer(TransferRequest transferRequest) {
-//      if (transferRequest.getTransferType().equals(TransferType.OWN_ACCOUNT_TRANSFER)){
-//          LocalTransferResponse response=null;
-//          String uri=URI +"/transfer/local";
-//          Map<String, String> params = new HashMap<>();
-//          params.put("debitAccountNumber",transferRequest.getAccount() );
-//          params.put("creditAccountNumber",transferRequest.getBeneficiaryAccountNumber());
-//          params.put("tranAmount",transferRequest.getAmount().toString());
-//          params.put("naration",transferRequest.getNarration());
-//
-//          try {
-//              response   = template.postForObject(uri,params,LocalTransferResponse.class);
-//
-//              if (response.getResponseCode().equalsIgnoreCase("000")){
-//                  return true;
-//              }
-//
-//          }
-//          catch (Exception e){
-//
-//              e.printStackTrace();
-//          }
-//
-//      }
-//      return false;
-//    }
+    @Override
+    public ObjectNode sendSMS(String message, String contact, String subject) {
+        List<String> contacts = new ArrayList<>();
+        contacts.add(contact);
+
+        ObjectNode result = null;
+        String uri = cmbAlert;
+        Map<String, Object> params = new HashMap<>();
+        params.put("alertType", "SMS");
+        params.put("message", message);
+        params.put("subject", subject);
+        params.put("contactList",contacts);
+        logger.trace("params {}", params);
+        try {
+
+            result = template.postForObject(uri, params, ObjectNode.class);
+
+        } catch (Exception e) {
+            e.printStackTrace();
 
 
+        }
+
+        return result;
+    }
 
 
 }
+

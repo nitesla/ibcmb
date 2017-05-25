@@ -1,15 +1,18 @@
 package longbridge;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import longbridge.repositories.CorporateRepo;
 import longbridge.repositories.CustomJpaRepositoryFactoryBean;
 import longbridge.repositories.PermissionRepo;
 import longbridge.repositories.RoleRepo;
 import longbridge.services.CorporateService;
+import longbridge.services.IntegrationService;
 import longbridge.services.MessageService;
 import longbridge.services.OperationsUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -17,7 +20,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
 @EnableJpaRepositories(repositoryFactoryBeanClass = CustomJpaRepositoryFactoryBean.class)
-public class InternetbankingApplication/*extends SpringBootServletInitializer*/ {
+public class InternetbankingApplication/*extends SpringBootServletInitializer*/  {
 
     @Autowired
     OperationsUserService operationsUserService;
@@ -27,6 +30,8 @@ public class InternetbankingApplication/*extends SpringBootServletInitializer*/ 
 
     @Autowired
     CorporateService corporateService;
+    @Autowired
+    IntegrationService integrationService;
 
     @Autowired
     CorporateRepo corporateRepo;

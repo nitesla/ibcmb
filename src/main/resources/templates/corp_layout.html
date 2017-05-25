@@ -61,12 +61,12 @@
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.transfer}"> Transfers</a>
                             <ul class="dropdown-menu">
-                                <li><a th:href="@{'#'}" th:text="#{menu.transfer.own}">Own account transfers </a></li>
-                                <li><a th:href="@{/coporate/transfer/local/new}" th:text="#{menu.transfer.cmb}">Transfer to Coronation account </a></li>
+                                <li><a th:href="@{/corporate/transfer/ownaccount}" th:text="#{menu.transfer.own}">Own account transfers </a></li>
+                                <li><a th:href="@{/corporate/transfer/local/new}" th:text="#{menu.transfer.cmb}">Transfer to Coronation account </a></li>
                                 <li><a th:href="@{'#'}" th:text="#{menu.transfer.other}">Transfer to other banks</a></li>
-                                <li><a th:href="@{/coporate/transfer}" th:text="#{menu.transfer.int}">International transfer</a></li>
-                                <li><a th:href="@{/coporate/transfer/settransferlimit}" th:text="#{menu.transfer.limit}">Set transfer limit</a></li>
-                                <li><a th:href="@{/coporate/transfer/standingorder}" th:text="#{menu.transfer.order}">Standing order</a></li>
+                                <li><a th:href="@{/corporate/transfer}" th:text="#{menu.transfer.int}">International transfer</a></li>
+                                <li><a th:href="@{/corporate/transfer/settransferlimit}" th:text="#{menu.transfer.limit}">Set transfer limit</a></li>
+                                <li><a th:href="@{/corporate/transfer/standingorder}" th:text="#{menu.transfer.order}">Standing order</a></li>
                             </ul>
                         </li>
                         <li><a href="#" th:text="#{menu.bill}">Bill Payments</a></li>
@@ -89,37 +89,13 @@
                                 <li><a th:href="@{/corporate/change_password}" th:text="#{menu.settings.password}">Change Password</a></li>
                             </ul>
                         </li>
-                        <li class="mega-dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">More<i class="caret"></i></a>
-                            <ul class="dropdown-menu mega-dropdown-menu row">
-                                <li class="col-sm-4">
-                                    <ul>
-                                        <li class="dropdown-header">Cards</li>
-                                        <!--<li class="divider"></li>-->
-                                        <li class="dropdown-header">Product Offerings</li>
-
-                                    </ul>
-                                </li>
-                                <li class="col-sm-4 lists">
-                                    <ul>
-                                        <li class="dropdown-header">Token Management </li>
-                                        <li><i class="fa fa-plus-square"></i><a th:href="@{/corporate/alert_preference}" th:text="#{menu.token.sync}">Synchronize Token</a></li>
-                                        <li><i class="fa fa-plus-square"></i>&nbsp;<a th:href="@{/corporate/change_password}" th:text="#{menu.token.report}">Report Lost Token</a></li>
-                                        <!--<li class="divider"></li>-->
-                                        <li class="dropdown-header">Beneficiaries</li>
-                                        <li><a th:href="@{/corporate/beneficiary}" th:text="#{menu.beneficiary}">Beneficiaries</a></li>
-                                        <li><a th:href="@{/corporate/beneficiary/new}" th:text="#{menu.beneficiary.add}">Beneficiaries</a></li>
-
-                                    </ul>
-                                </li>
-                                <li class="col-sm-4">
-                                    <ul>
-                                        <li class="dropdown-header">Message Center</li>
-                                        <li><a href="#" th:text="#{menu.mail}"> Mailbox</a></li>
-                                        <!--<li class="divider"></li>-->
-                                        <li class="dropdown-header">Loans &amp; Installments</li>
-                                    </ul>
-                                </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> More </a>
+                            <ul class="dropdown-menu">
+                                <li><a th:href="@{/corporate/alert_preference}" th:text="#{menu.token.sync}">Synchronize Token</a></li>
+                                <li><a th:href="@{/corporate/change_password}" th:text="#{menu.token.report}">Report Lost Token</a></li>
+                                <li><a th:href="@{/corporate/beneficiary}" th:text="#{menu.beneficiary}">Beneficiaries</a></li>
+                                <li><a href="#" th:text="#{menu.mail}"> Mailbox</a></li>
                             </ul>
                         </li>
                     </ul>

@@ -2,9 +2,12 @@ package longbridge.controllers.retail;
 
 import longbridge.dtos.TransferRequestDTO;
 import longbridge.exception.InternetBankingTransferException;
+import longbridge.exception.TransferErrorService;
 import longbridge.services.*;
+import longbridge.utils.ResultType;
 import longbridge.validator.transfer.TransferValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
@@ -30,8 +33,6 @@ import java.util.Map;
 @RequestMapping("/retail/transfer/ownaccount")
 public class OwnTransferController {
 
-    private RetailUserService retailUserService;
-    private IntegrationService integrationService;
     private TransferService transferService;
     private AccountService accountService;
     private MessageSource messages;
@@ -40,13 +41,13 @@ public class OwnTransferController {
     private TransferValidator validator;
     private FinancialInstitutionService financialInstitutionService;
     private ApplicationContext appContext;
+   private TransferErrorService errorService;
 
     private String page = "cust/transfer/ownaccount/";
-
+    @Value("${bank.code}")
+    private String bankCode;
     @Autowired
-    public OwnTransferController(RetailUserService retailUserService, IntegrationService integrationService, TransferService transferService, AccountService accountService, MessageSource messages, LocaleResolver localeResolver, LocalBeneficiaryService localBeneficiaryService, TransferValidator validator, FinancialInstitutionService financialInstitutionService, ApplicationContext appContext) {
-        this.retailUserService = retailUserService;
-        this.integrationService = integrationService;
+    public OwnTransferController(TransferService transferService, AccountService accountService, MessageSource messages, LocaleResolver localeResolver, LocalBeneficiaryService localBeneficiaryService, TransferValidator validator, FinancialInstitutionService financialInstitutionService, ApplicationContext appContext,TransferErrorService errorService) {
         this.transferService = transferService;
         this.accountService = accountService;
         this.messages = messages;
@@ -55,21 +56,18 @@ public class OwnTransferController {
         this.validator = validator;
         this.financialInstitutionService = financialInstitutionService;
         this.appContext = appContext;
+        this.errorService=errorService;
     }
 
 
     @GetMapping("")
-    public ModelAndView index() throws Exception {
+    public ModelAndView index(ModelAndView view) throws Exception {
 
-        ModelAndView view = new ModelAndView();
-
-        TransferRequestDTO transferRequestDTO = new TransferRequestDTO();
-        transferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode("06001"));
-        view.addObject("transferRequest", transferRequestDTO);
+        TransferRequestDTO requestDTO = new TransferRequestDTO();
+        requestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode(bankCode));
+        view.addObject("transferRequest", requestDTO);
         view.setViewName(page + "pagei");
         return view;
-
-
     }
 
 
@@ -82,20 +80,36 @@ public class OwnTransferController {
 
             if (!tokenOk) {
                 redirectAttributes.addFlashAttribute("message", messages.getMessage("auth.token.failure", null, locale));
-                //  return "redirect:"
+                return "redirect:/auth";
             }
-            boolean ok = transferService.makeTransfer(transferRequestDTO);
+            System.out.println(transferRequestDTO);
+            TransferRequestDTO requestDTO = transferService.makeTransfer(transferRequestDTO);
 
+            try {
+                if (requestDTO != null && requestDTO.getStatus().equals(ResultType.SUCCESS.toString())) {
+                    model.addAttribute("transferRequest", requestDTO);
+                    return page + "pageiv";
 
-//       redirectAttributes.addFlashAttribute("message", messages.getMessage("transac tion.success", null, locale));
-            model.addAttribute("transferRequest", request);
-            return page + "pageiv";
+                }
+            } catch (Exception e) {
+                throw new InternetBankingTransferException();
+
+            }
+
+            throw new InternetBankingTransferException();
 
         } catch (InternetBankingTransferException exception)
 
         {
+
             String errorMessage = exception.getMessage();
-            redirectAttributes.addFlashAttribute("error", errorMessage);
+            System.out.println(errorMessage);
+//            redirectAttributes.addFlashAttribute("transferRequest", new TransferRequestDTO());
+//            redirectAttributes.addFlashAttribute("error", errorMessage);
+            TransferRequestDTO t = new TransferRequestDTO();
+            transferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode("06001"));
+
+            model.addAttribute("transferRequest", t);
             return page + "pagei";
 
         }
@@ -114,17 +128,16 @@ public class OwnTransferController {
 
 
     @PostMapping("/summary")
-    public String transferSummary(@ModelAttribute("transferRequest") @Valid TransferRequestDTO request, Locale locale, BindingResult result, Model model, RedirectAttributes redirectAttributes) {
+    public String transferSummary(@ModelAttribute("transferRequest") @Valid TransferRequestDTO request, Locale locale, BindingResult result, Model model, HttpServletRequest servletRequest) {
         try {
-
-
+            request.setBeneficiaryAccountName(accountService.getAccountByAccountNumber(request.getBeneficiaryAccountNumber()).getAccountName());
+            model.addAttribute("transferRequest", request);
             validator.validate(request, result);
             if (result.hasErrors()) {
-
                 return page + "pagei";
             }
-            request.setBeneficiaryAccountName(integrationService.viewAccountDetails(request.getBeneficiaryAccountNumber()).getAcctName());
 
+            transferService.validateTransfer(request);
             model.addAttribute("transferRequest", request);
 
             return page + "pageii";
@@ -132,8 +145,8 @@ public class OwnTransferController {
         } catch (InternetBankingTransferException exception)
 
         {
-            String errorMessage = exception.getMessage();
-            redirectAttributes.addFlashAttribute("error", errorMessage);
+            String errorMessage =errorService.getMessage(exception,servletRequest);
+           model.addAttribute("error", errorMessage);
             return page + "pagei";
 
         }
@@ -145,7 +158,7 @@ public class OwnTransferController {
     public ModelAndView report(@PathVariable Long id) {
 
         JasperReportsPdfView view = new JasperReportsPdfView();
-        view.setUrl("classpath:pdf/");
+        view.setUrl("classpath:pdf/a");
         view.setApplicationContext(appContext);
 
         Map<String, Object> params = new HashMap<>();

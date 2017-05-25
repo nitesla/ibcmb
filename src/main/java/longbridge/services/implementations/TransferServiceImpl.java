@@ -3,7 +3,6 @@ package longbridge.services.implementations;
 import longbridge.dtos.TransferRequestDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingTransferException;
-import longbridge.exception.TransferException;
 import longbridge.models.TransferRequest;
 import longbridge.models.User;
 import longbridge.repositories.TransferRequestRepo;
@@ -11,6 +10,8 @@ import longbridge.services.AccountService;
 import longbridge.services.FinancialInstitutionService;
 import longbridge.services.IntegrationService;
 import longbridge.services.TransferService;
+import longbridge.utils.ResultType;
+import longbridge.exception.TransferExceptions;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +23,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 /**
@@ -53,17 +54,21 @@ public class TransferServiceImpl implements TransferService {
 
     @Override
 
-    public boolean makeTransfer(TransferRequestDTO transferRequestDTO) throws InternetBankingTransferException {
+    public TransferRequestDTO makeTransfer(TransferRequestDTO transferRequestDTO) throws InternetBankingTransferException {
 
 
         validateTransfer(transferRequestDTO);
-        TransferRequest transferRequest = convertDTOToEntity(transferRequestDTO);
+        logger.trace("Transfer details valid {}", transferRequestDTO);
 
-        boolean ok = integrationService.makeTransfer(transferRequest);
-        if (ok) {
+
+
+        TransferRequest    transferRequest = integrationService.makeTransfer(convertDTOToEntity(transferRequestDTO));
+        if (transferRequest != null) {
             saveTransfer(transferRequestDTO);
+            if (transferRequest.getStatus().equals(ResultType.SUCCESS)) return convertEntityToDTO(transferRequest);
+            throw new InternetBankingTransferException(TransferExceptions.ERROR.toString());
         }
-        return ok;
+        throw new InternetBankingTransferException();
     }
 
     @Override
@@ -73,8 +78,11 @@ public class TransferServiceImpl implements TransferService {
 
     @Override
     public Iterable<TransferRequest> getTransfers(User user) {
-        // return transferRepo.getTransactions(user.getId());
-        return null;
+       return transferRequestRepo.findAll()
+               .stream()
+               .filter(i -> i.getUserReferenceNumber().equals(user.getId()))
+               .collect(Collectors.toList());
+
     }
 
     @Override
@@ -89,7 +97,7 @@ public class TransferServiceImpl implements TransferService {
             result = true;
 
         } catch (Exception e) {
-
+            logger.error("Exception occurred {}",e.getMessage());
         }
         return result;
     }
@@ -105,26 +113,22 @@ public class TransferServiceImpl implements TransferService {
     }
 
     @Override
-    public boolean validateBalance(TransferRequestDTO transferRequest) {
-        boolean ok = false;
-        try {
-            Map<String, BigDecimal> balanceDetails = integrationService.getBalance(transferRequest.getCustomerAccountNumber());
-            BigDecimal balance = balanceDetails.get("AvailableBalance");
-            if (balance != null) {
-                if (balance.compareTo(transferRequest.getAmount()) == 0 || (balance.compareTo(transferRequest.getAmount()) == 1)) {
-                    ok = true;
-                }
+    public void validateBalance(TransferRequestDTO transferRequest) throws InternetBankingTransferException {
+
+
+        BigDecimal balance = integrationService.getAvailableBalance(transferRequest.getCustomerAccountNumber());
+        if (balance != null) {
+            if (!(balance.compareTo(transferRequest.getAmount()) == 0 || (balance.compareTo(transferRequest.getAmount()) == 1))) {
+                throw new InternetBankingTransferException(TransferExceptions.BALANCE.toString());
             }
-        } catch (Exception e) {
-            ok = false;
         }
-        return ok;
+
     }
 
     @Override
-    public void validateTransfer(TransferRequestDTO dto) {
+    public void validateTransfer(TransferRequestDTO dto) throws InternetBankingTransferException {
         if (dto.getBeneficiaryAccountNumber().equalsIgnoreCase(dto.getCustomerAccountNumber())) {
-            throw new InternetBankingTransferException("Cannot Transfer to same account");
+            throw new InternetBankingTransferException();
         }
 
         String cif = accountService.getAccountByAccountNumber(dto.getCustomerAccountNumber()).getCustomerId();
@@ -133,13 +137,9 @@ public class TransferServiceImpl implements TransferService {
 
 
         if (!acctPresent) {
-            throw new InternetBankingTransferException("account cannot is not enabled for debit");
+            throw new InternetBankingTransferException(TransferExceptions.NO_DEBIT_ACCOUNT.toString());
         }
-
-        boolean hasSufficientBalance = validateBalance(dto);
-        if (!hasSufficientBalance) {
-            throw new InternetBankingTransferException("Insufficient Account balance");
-        }
+        validateBalance(dto);
 
 
     }

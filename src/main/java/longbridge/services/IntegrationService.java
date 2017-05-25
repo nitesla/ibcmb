@@ -1,8 +1,10 @@
 package longbridge.services;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import longbridge.api.AccountDetails;
 import longbridge.api.AccountInfo;
 import longbridge.api.CustomerDetails;
+import longbridge.api.NEnquiryDetails;
 import longbridge.exception.TransferException;
 import longbridge.models.TransferRequest;
 import longbridge.utils.AccountStatement;
@@ -47,7 +49,7 @@ public interface IntegrationService {
     /** Initiates a transfer request to the relevant Transfer service.
      *
      */
-    boolean makeTransfer(TransferRequest transferRequest) throws TransferException;
+    TransferRequest makeTransfer(TransferRequest transferRequest) throws TransferException;
 
     /**Fetches the account Name, Balance , Type from the account table specified by account Number
      *
@@ -90,13 +92,14 @@ public interface IntegrationService {
      * @return map containing the total transaction limit
      */
     BigDecimal getDailyAccountLimit(String accNo,String channel);
-    
 
 
-    
+
+    NEnquiryDetails doNameEnquiry( String destinationInstitutionCode, String accountNumber);
 
 
     BigDecimal getAvailableBalance(String s);
+     ObjectNode  sendSMS(String message , String contact ,String subject);
 
 
 

@@ -34,7 +34,7 @@ public class CorpBeneficiaryController {
 
     @GetMapping
     public String getBeneficiaries(Model model, Principal principal){
-       CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
+       /*CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
         logger.info("local BEN {}", corpLocalBeneficiaryService.getCorpLocalBeneficiaries(corporateUser));
         Iterable<CorpLocalBeneficiary> corpLocalBeneficiaries = corpLocalBeneficiaryService.getCorpLocalBeneficiaries(corporateUser);
         for (CorpLocalBeneficiary localBenef : corpLocalBeneficiaries){
@@ -46,7 +46,7 @@ public class CorpBeneficiaryController {
         for (CorpInternationalBeneficiary intBenef : intBeneficiary){
             intBenef.setBeneficiaryBank(financialInstitutionService.getFinancialInstitutionByCode(intBenef.getBeneficiaryBank()).getInstitutionName());
         }
-        model.addAttribute("intBen", intBeneficiary);
+        model.addAttribute("intBen", intBeneficiary);*/
         return "corp/beneficiary/view";
     }
 

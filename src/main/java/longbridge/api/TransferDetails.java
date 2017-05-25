@@ -1,13 +1,23 @@
 package longbridge.api;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /**
- * Created by ayoade_farooq@yahoo.com on 5/3/2017.
+ * Created by ayoade_farooq@yahoo.com on 5/8/2017.
  */
-public class LocalTransferResponse {
 
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class TransferDetails {
     private String responseCode;
-    private String responseDescription;
+    private String  responseDescription;
 
+    public TransferDetails() {
+    }
+
+    public TransferDetails(String responseCode, String responseDescription) {
+        this.responseCode = responseCode;
+        this.responseDescription = responseDescription;
+    }
 
     public String getResponseCode() {
         return responseCode;
@@ -28,7 +38,7 @@ public class LocalTransferResponse {
 
     @Override
     public String toString() {
-        return "{\"LocalTransferResponse\":{"
+        return "{\"TransferDetails\":{"
                 + "                        \"responseCode\":\"" + responseCode + "\""
                 + ",                         \"responseDescription\":\"" + responseDescription + "\""
                 + "}}";

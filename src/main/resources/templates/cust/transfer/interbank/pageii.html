@@ -24,7 +24,7 @@
                         <div th:if="${message != null}" class="alert alert-info" th:text="${message}">message</div>
                         <div th:if="${error != null}" class="alert alert-info" th:text="${error}">message</div>
 
-                        <form method="post" th:action="@{/retail/transfer/local/summary}"
+                        <form method="post" th:action="@{/retail/transfer/interbank/summary}"
                               th:object="${transferRequest}">
 
 

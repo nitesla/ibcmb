@@ -90,11 +90,21 @@ public class TransferController {
     public
     @ResponseBody
     String getBankAccountName(@PathVariable String accountNo) {
-       // return integrationService.viewAccountDetails(accountNo).getAcctName();
-        return "AYOADE FAROOQ";
+     return integrationService.viewAccountDetails(accountNo).getAcctName();
+
     }
 
 
+
+    @GetMapping("/{accountNo}/{bank}/nameEnquiry")
+    public
+    @ResponseBody
+    String getInterBankAccountName(@PathVariable String accountNo, @PathVariable String bank) {
+       // return (integrationService.doNameEnquiry(bank,accountNo)).getAccountName();
+//        return (integrationService.doNameEnquiry("000005",accountNo)).getAccountName();
+        return "AYOADE FAROOQ";
+
+    }
 
 
 }

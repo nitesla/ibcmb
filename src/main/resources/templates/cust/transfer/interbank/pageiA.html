@@ -11,39 +11,61 @@
     <div class="container">
         <div class="row">
             <div class="col-md-4 col-sm-4">
-                <h5 class="page_header"> New Beneficiary</h5>
+                <h5 class="page_header"> Transfers to other banks through NIP</h5>
+                <select class="form-control" name="beneficiaries">
+                    <option value="Overveiw">Beneficiaries</option>
+                </select>
             </div>
         </div>
+
         <div class="row">
+
             <div class="col-md-8 content-bg">
-                <div class="row form-spacing">
-                    <div class="col-md-6 col-sm-6">
-                        <form id="local" method="post" th:action="@{/retail/transfer/local/new}"
-                              th:object="${localBeneficiaryDTO}">
-                            <div class="form-group">
-                                <label>Beneficiary Bank</label>
-                                <select name="beneficiaryBank" class="form-control" th:field="*{beneficiaryBank}">
-                                    <option value="Coronation">Coronation Merchant Bank</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>Account Number</label>
-                                <input type="text" class="form-control" name="accountNumber" th:field="*{accountNumber}"
-                                       id="acct_num" placeholder="Account Number"/>
-                            </div>
 
-                            <div class="form-group">
-                                <label>Account Name</label>
-                                <input type="text" class="form-control" name="accountNumber" th:field="*{accountName}"
-                                       id="acct_name" readonly="readonly"/>
-                            </div>
-                            <div class="form-group">
-                                <input type="text" class="form-control" name="preferredName"
-                                       placeholder="Beneficiary Alias" th:field="*{preferredName}"/>
-                            </div>
-                            <button class="btn btn-primary" id="sub">Next</button>
-                        </form>
+                <div class="row spacing">
+                    <div class="col-md-12 col-sm-12">
+                        <h6 class="page_header">Beneficiaries</h6>
+                        <form method="post" >
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                <th>Beneficiary name</th>
+                                <th>Bank</th>
+                                <th>Currency</th>
+                                </tr>
+                                </thead>
+                                <tbody>
 
+
+                                <tr th:each="loc : ${localBen}">
+                                    <td th:text="${loc.accountName}"></td>
+                                     <td th:text="${loc.accountNumber}"></td>
+                                    <td>
+                                        <li class="dropdown" style="list-style: none">
+                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" style="font-size:20px;" aria-haspopup="true"><i class=" fa fa-angle-right"></i></a>
+                                        <ul class="dropdown-menu">
+
+
+                                            <li><a th:href="@{'/retail/transfer/local/' + ${loc.id} }">make a transfer</a>
+
+
+                                            </li>
+                                            <li><a href="#">view details</a>
+                                            </li>
+                                            <li><a href="#">edit</a>
+                                            </li>
+                                        </ul>
+                                        </li>
+                                    </td>
+                                </tr>
+
+                                </tbody>
+                            </table>
+                            <br/>
+                            <a th:href="@{/retail/transfer/interbank/new}" class="btn">Add Beneficiary</a>
+
+                           <!-- <button type="submit" class="btn btn-default" style="float: right">Add beneficiary</button>
+                       --> </form>
                     </div>
                 </div>
             </div>
@@ -57,40 +79,13 @@
 <!-- CONTENT-WRAPPER SECTION END-->
 <footer th:replace="cust_layout ::footer">
 </footer>
-
 <script>
-    $(document).ready(function () {
-        $('#acct_num').change(function () {
-            getAccountName();
-        });
-
-    })
-
-
-    function getAccountName() {
-        //make sure alert message is not empty
-        var acct = $('#acct_num').val();
-        console.log(acct);
-
-        var options = {
-            type: 'GET',
-            url: '/retail/transfer/local/' + acct + '/nameEnquiry',
-//					dataType: 'jsonp',
-            error: function (xhr, textStatus, errorThrown) {
-                alert('invalid account number ');
-                $('#sub').disabled();
-            },
-            success: function (data, textStatus) {
-                console.log(data);
-                console.log(textStatus);
-                var result = data;
-                //var result = (new Function("return " + result))();
-               // $('#acct_name').val(result.message);
-                $('#acct_name').val(result);
-            }
-        };
-        $.ajax(options);
-    }
+    //datepicker
+    $( function() {
+        $( "#datepicker" ).datepicker(
+                { dateformat : 'dd/mm/yy'}
+        );
+    } );
 </script>
 </body>
 </html>
