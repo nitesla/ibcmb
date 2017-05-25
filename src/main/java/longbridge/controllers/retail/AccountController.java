@@ -2,13 +2,16 @@ package longbridge.controllers.retail;
 
 import longbridge.api.AccountDetails;
 import longbridge.dtos.AccountDTO;
+import longbridge.exception.InternetBankingException;
 import longbridge.forms.CustomizeAccount;
-import longbridge.models.Account;
 import longbridge.models.RetailUser;
 import longbridge.services.AccountService;
 import longbridge.services.IntegrationService;
 import longbridge.services.RetailUserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -20,6 +23,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.Locale;
 
 /**
  * Created by Fortune on 4/3/2017.
@@ -27,6 +31,8 @@ import java.security.Principal;
 @Controller
 @RequestMapping("/retail/account")
 public class AccountController {
+
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private AccountService accountService;
@@ -37,12 +43,16 @@ public class AccountController {
     @Autowired
     private IntegrationService integrationService;
 
+    @Autowired
+    private MessageSource messageSource;
+
     private Long customizeAccountId;
 
     @GetMapping
     public String listAccounts(){
         return "cust/account/index";
     }
+
     @GetMapping("{id}/view")
     public String viewAccount(@PathVariable Long id, Model model){
         //fetch account details from Account Service
@@ -84,13 +94,19 @@ public class AccountController {
     }
 
     @PostMapping("/customize")
-    public String updateCustom(@Valid CustomizeAccount customizeAccount, BindingResult result, Model model)throws Exception{
+    public String updateCustom(@Valid CustomizeAccount customizeAccount, BindingResult result, Model model, RedirectAttributes redirectAttributes, Locale locale)throws Exception{
         if (result.hasErrors()){
-            model.addAttribute("message","Pls correct the errors");
+            model.addAttribute("failure","Pls correct the errors");
             return "cust/account/customize";
         }
 
-        accountService.customizeAccount(this.customizeAccountId, customizeAccount.getAccountName());
+        try{
+            String message = accountService.customizeAccount(this.customizeAccountId, customizeAccount.getAccountName());
+            redirectAttributes.addFlashAttribute("message", message);
+        }catch (InternetBankingException e){
+            logger.error("Customization Error", e);
+            redirectAttributes.addFlashAttribute("failure", e.getMessage());
+        }
 
         return "redirect:/retail/account/customize";
     }
@@ -104,39 +120,44 @@ public class AccountController {
     }
 
     @GetMapping("/{id}/hide")
-    public String hide(@PathVariable Long id, Model model, Principal principal){
+    public String hide(@PathVariable Long id, Model model, Principal principal, RedirectAttributes redirectAttributes, Locale locale){
 
-        accountService.hideAccount(id);
+        try{
+            String message = accountService.hideAccount(id);
+            redirectAttributes.addFlashAttribute("message", message);
+        }catch (InternetBankingException e){
+            logger.error("Customization Error", e);
+            redirectAttributes.addFlashAttribute("failure", e.getMessage());
+        }
 
-
-        RetailUser user = retailUserService.getUserByName(principal.getName());
-        Iterable<AccountDTO> account = accountService.getAccounts(user.getCustomerId());
-        model.addAttribute("accounts", account);
         return "redirect:/retail/account/settings";
     }
 
     @GetMapping("/{id}/unhide")
-    public String unhide(@PathVariable Long id, Model model, Principal principal){
+    public String unhide(@PathVariable Long id, Model model, Principal principal, RedirectAttributes redirectAttributes, Locale locale){
 
-        accountService.unhideAccount(id);
-
-
-        RetailUser user = retailUserService.getUserByName(principal.getName());
-        Iterable<AccountDTO> accounts = accountService.getAccounts(user.getCustomerId());
-        model.addAttribute("accounts", accounts);
+        try{
+            String message = accountService.unhideAccount(id);
+            redirectAttributes.addFlashAttribute("message", message);
+        }catch (InternetBankingException e){
+            logger.error("Customization Error", e);
+            redirectAttributes.addFlashAttribute("failure", e.getMessage());
+        }
         return "redirect:/retail/account/settings";
     }
 
     @GetMapping("/{id}/primary")
-    public String makePrimary(@PathVariable Long id, Model model, Principal principal){
+    public String makePrimary(@PathVariable Long id, Model model, Principal principal, RedirectAttributes redirectAttributes, Locale locale){
 
-        RetailUser user = retailUserService.getUserByName(principal.getName());
-        Iterable<Account> accounts = accountService.getCustomerAccounts(user.getCustomerId());
-        //Account accounts = accountService.getAccountByCustomerId(user.getCustomerId());
-        accountService.makePrimaryAccount(id, user.getCustomerId());
+        try{
+            RetailUser user = retailUserService.getUserByName(principal.getName());
+            String message = accountService.makePrimaryAccount(id, user.getCustomerId());
+            redirectAttributes.addFlashAttribute("message", message);
+        }catch (InternetBankingException e){
+            logger.error("Account Primary Error", e);
+            redirectAttributes.addFlashAttribute("failure", e.getMessage());
+        }
 
-
-        model.addAttribute("accounts", accounts);
         return "redirect:/retail/account/settings";
     }
 

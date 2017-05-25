@@ -42,20 +42,31 @@ public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
 
     @Override
     public String addLocalBeneficiary(RetailUser user, LocalBeneficiaryDTO beneficiary) throws InternetBankingException{
+
+        try {
             LocalBeneficiary localBeneficiary = convertDTOToEntity(beneficiary);
             localBeneficiary.setUser(user);
             this.localBeneficiaryRepo.save(localBeneficiary);
             logger.trace("Beneficiary {} has been added", localBeneficiary.toString());
             return messageSource.getMessage("beneficiary.add.success",null,locale);
+        }catch (Exception e){
+            throw new InternetBankingException(messageSource.getMessage("beneficiary.add.failure",null, locale), e);
+        }
+
 
     }
 
     @Override
     public String deleteLocalBeneficiary(Long beneficiaryId) {
 
+        try {
             this.localBeneficiaryRepo.delete(beneficiaryId);
             logger.info("Beneficiary with Id {} deleted", beneficiaryId);
             return messageSource.getMessage("beneficiary.delete.success",null,locale);
+        }catch (Exception e){
+            throw new InternetBankingException(messageSource.getMessage("beneficiary.delete.failure",null, locale), e);
+        }
+
 
     }
 

@@ -2,6 +2,7 @@ package longbridge.controllers.retail;
 
 import longbridge.dtos.InternationalBeneficiaryDTO;
 import longbridge.dtos.LocalBeneficiaryDTO;
+import longbridge.exception.InternetBankingException;
 import longbridge.models.*;
 import longbridge.services.FinancialInstitutionService;
 import longbridge.services.InternationalBeneficiaryService;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.security.Principal;
@@ -66,7 +68,7 @@ public class BeneficiaryController {
     }
 
     @PostMapping("/local")
-    public String createLocalBeneficiary(@Valid LocalBeneficiaryDTO localBeneficiaryDTO, BindingResult result, Principal principal,  Model model){
+    public String createLocalBeneficiary(@Valid LocalBeneficiaryDTO localBeneficiaryDTO, BindingResult result, Principal principal,  Model model, RedirectAttributes redirectAttributes){
         if(result.hasErrors()){
             model.addAttribute("internationalBeneficiaryDTO", new InternationalBeneficiaryDTO());
             model.addAttribute("foreignBanks", financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.FOREIGN));
@@ -74,25 +76,34 @@ public class BeneficiaryController {
             return "cust/beneficiary/add";
         }
 
-        RetailUser user = retailUserService.getUserByName(principal.getName());
-        localBeneficiaryService.addLocalBeneficiary(user,localBeneficiaryDTO);
-        model.addAttribute("success","Beneficiary added successfully");
+        try{
+            RetailUser user = retailUserService.getUserByName(principal.getName());
+            String message = localBeneficiaryService.addLocalBeneficiary(user,localBeneficiaryDTO);
+            redirectAttributes.addFlashAttribute("message", message);
+        }catch (InternetBankingException e){
+            logger.error("International Beneficiary Error", e);
+            redirectAttributes.addFlashAttribute("failure", e.getMessage());
+        }
         return "redirect:/retail/beneficiary";
     }
 
     @PostMapping("/foreign")
-    public String createForeignBeneficiary(@ModelAttribute("internationalBeneficiary") @Valid  InternationalBeneficiaryDTO internationalBeneficiaryDTO, Principal principal, BindingResult result, Model model){
+    public String createForeignBeneficiary(@ModelAttribute("internationalBeneficiary") @Valid  InternationalBeneficiaryDTO internationalBeneficiaryDTO, Principal principal, BindingResult result, Model model, RedirectAttributes redirectAttributes){
         if(result.hasErrors()){
             model.addAttribute("localBeneficiaryDTO", new LocalBeneficiaryDTO());
             model.addAttribute("foreignBanks", financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.FOREIGN));
             model.addAttribute("localBanks", financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.LOCAL));
-
             return "cust/beneficiary/add";
         }
 
-        RetailUser user = retailUserService.getUserByName(principal.getName());
-        internationalBeneficiaryService.addInternationalBeneficiary(user,internationalBeneficiaryDTO);
-        model.addAttribute("success","Beneficiary added successfully");
+        try{
+            RetailUser user = retailUserService.getUserByName(principal.getName());
+            String message = internationalBeneficiaryService.addInternationalBeneficiary(user,internationalBeneficiaryDTO);
+            redirectAttributes.addFlashAttribute("message", message);
+        }catch (InternetBankingException e){
+            logger.error("International Beneficiary Error", e);
+            redirectAttributes.addFlashAttribute("failure", e.getMessage());
+        }
         return "redirect:/retail/beneficiary";
     }
 
@@ -113,16 +124,28 @@ public class BeneficiaryController {
 //    }
 
     @GetMapping("/{beneficiaryId}/loc/delete")
-    public String deleteLocBeneficiary(@PathVariable Long beneficiaryId, Model model){
-        localBeneficiaryService.deleteLocalBeneficiary(beneficiaryId);
-        model.addAttribute("success","Beneficiary deleted successfully");
+    public String deleteLocBeneficiary(@PathVariable Long beneficiaryId, Model model, RedirectAttributes redirectAttributes){
+
+        try{
+            String message = localBeneficiaryService.deleteLocalBeneficiary(beneficiaryId);
+            redirectAttributes.addFlashAttribute("message", message);
+        }catch (InternetBankingException e){
+            logger.error("International Beneficiary Error", e);
+            redirectAttributes.addFlashAttribute("failure", e.getMessage());
+        }
         return "redirect:/retail/beneficiary";
     }
 
     @GetMapping("/{beneficiaryId}/int/delete")
-    public String deleteIncBeneficiary(@PathVariable Long beneficiaryId, Model model){
-        internationalBeneficiaryService.deleteInternationalBeneficiary(beneficiaryId);
-        model.addAttribute("success","Beneficiary deleted successfully");
+    public String deleteIncBeneficiary(@PathVariable Long beneficiaryId, Model model, RedirectAttributes redirectAttributes){
+
+        try{
+            String message = internationalBeneficiaryService.deleteInternationalBeneficiary(beneficiaryId);
+            redirectAttributes.addFlashAttribute("message", message);
+        }catch (InternetBankingException e){
+            logger.error("International Beneficiary Error", e);
+            redirectAttributes.addFlashAttribute("failure", e.getMessage());
+        }
         return "redirect:/retail/beneficiary";
     }
 

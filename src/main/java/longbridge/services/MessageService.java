@@ -5,7 +5,6 @@ import longbridge.exception.InternetBankingException;
 import longbridge.models.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.Date;
 import java.util.List;
@@ -21,7 +20,7 @@ import java.util.List;
  */
 public interface MessageService {
 
-    @PreAuthorize("hasAuthority('SEND_EMAIL')")
+//    @PreAuthorize("hasAuthority('SEND_EMAIL')")
     Iterable<MessageDTO> getMessages();
 
     /**

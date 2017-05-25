@@ -22,7 +22,7 @@
                             <div class="form-group">
                                 <label>Select Preference</label>
                                 <select th:field="*{preference}" class="form-control">
-                                    <option th:each="pref : ${prefs}" th:value="${pref.code}" th:text="${pref.description}"></option>
+                                    <option th:each="pref : ${prefs}" th:value="${pref.code}" th:text="${pref.description}" th:selected="${pref == alertP}"></option>
                                 </select>
                                 <p class="errors close" data-dismiss="alert" aria-label="close" th:if="${#fields.hasErrors('preference')}" th:errors="*{preference}">&times;</p>
                             </div>

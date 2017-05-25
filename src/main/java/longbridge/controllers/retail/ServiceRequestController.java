@@ -3,6 +3,7 @@ package longbridge.controllers.retail;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import longbridge.dtos.*;
+import longbridge.exception.InternetBankingException;
 import longbridge.models.FinancialInstitutionType;
 import longbridge.models.RetailUser;
 import longbridge.services.*;
@@ -10,6 +11,7 @@ import longbridge.utils.NameValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
@@ -22,10 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Fortune on 4/5/2017.
@@ -35,6 +34,7 @@ import java.util.List;
 @RequestMapping("/retail/requests")
 public class ServiceRequestController {
 
+    private MessageSource messageSource;
     @Autowired
     private RequestService requestService;
 
@@ -65,7 +65,7 @@ public class ServiceRequestController {
     }
 
     @PostMapping
-    public String processRequest(@ModelAttribute("requestDTO") ServiceRequestDTO requestDTO, BindingResult result, Principal principal, RedirectAttributes redirectAttributes) {
+    public String processRequest(@ModelAttribute("requestDTO") ServiceRequestDTO requestDTO, BindingResult result, Principal principal, Model model, RedirectAttributes redirectAttributes, Locale locale) {
 
         String requestBody = requestDTO.getRequestName();
         Long serviceReqConfigId = 0L;
@@ -109,14 +109,20 @@ public class ServiceRequestController {
             serviceRequestDTO.setRequestStatus("S");
             serviceRequestDTO.setUserId(user.getId());
             serviceRequestDTO.setDateRequested(new Date());
-            requestService.addRequest(serviceRequestDTO);
+            String message = requestService.addRequest(serviceRequestDTO);
+            redirectAttributes.addFlashAttribute("message", message);
 
+        } catch (InternetBankingException e){
+            logger.error("Service Request Error", e);
+            model.addAttribute("failure", e.getMessage());
+            return "cust/servicerequest/add";
         } catch (Exception e) {
-            logger.error("Could not process the request: {}",e.toString());
+            logger.error("Service Request Error", e);
+            model.addAttribute("failure", messageSource.getMessage("req.add.failure", null, locale));
+            return "cust/servicerequest/add";
         }
-        redirectAttributes.addFlashAttribute("message", "Request sent successfully");
-        return "redirect:/retail/requests/track";
 
+        return "redirect:/retail/requests/track";
     }
 
     @GetMapping("/{reqId}")
