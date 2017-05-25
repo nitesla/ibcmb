@@ -22,36 +22,36 @@
                         <h4 class="sub_header">Local Beneficiaries</h4>
                         <table class="table">
                             <thead>
-                                <td>Name</td>
-                                <td>Account Number</td>
-                                <td>Bank</td>
-                                <td>Delete</td>
+                            <td>Name</td>
+                            <td>Account Number</td>
+                            <td>Bank</td>
+                            <td>Delete</td>
                             </thead>
                             <tbody>
-                                <tr th:each="loc : ${localBen}">
-                                    <td th:text="${loc.accountName}"></td>
-                                    <td th:text="${loc.accountNumber}"></td>
-                                    <td th:text="${loc.beneficiaryBank}"></td>
-                                    <td><a th:href="@{'/corporate/beneficiary/' + ${loc.id} + '/loc/delete'}"><i class="fa fa-trash"></i></a></td>
-                                </tr>
+                            <tr th:each="loc : ${localBen}">
+                                <td th:text="${loc.accountName}"></td>
+                                <td th:text="${loc.accountNumber}"></td>
+                                <td th:text="${loc.beneficiaryBank}"></td>
+                                <td><a th:href="@{'/corporate/beneficiary/' + ${loc.id} + '/loc/delete'}"><i class="fa fa-trash"></i></a></td>
+                            </tr>
                             </tbody>
                         </table>
 
                         <h4 class="sub_header">International Beneficiaries</h4>
                         <table class="table">
                             <thead>
-                                <td>Name</td>
-                                <td>Account Number</td>
-                                <td>Bank</td>
-                                <td>Delete</td>
+                            <td>Name</td>
+                            <td>Account Number</td>
+                            <td>Bank</td>
+                            <td>Delete</td>
                             </thead>
                             <tbody>
-                                <tr th:each="int : ${intBen}">
-                                    <td th:text="${int.accountName}"></td>
-                                    <td th:text="${int.accountNumber}"></td>
-                                    <td th:text="${int.beneficiaryBank}"></td>
-                                    <td><a th:href="@{'/corporate/beneficiary/' + ${int.id} + '/int/delete'}"><i class="fa fa-trash"></i></a></td>
-                                </tr>
+                            <tr th:each="int : ${intBen}">
+                                <td th:text="${int.accountName}"></td>
+                                <td th:text="${int.accountNumber}"></td>
+                                <td th:text="${int.beneficiaryBank}"></td>
+                                <td><a th:href="@{'/corporate/beneficiary/' + ${int.id} + '/int/delete'}"><i class="fa fa-trash"></i></a></td>
+                            </tr>
                             </tbody>
                         </table>
                     </div>

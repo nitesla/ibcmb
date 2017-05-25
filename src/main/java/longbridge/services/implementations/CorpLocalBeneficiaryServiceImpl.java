@@ -3,7 +3,10 @@ package longbridge.services.implementations;
 import longbridge.dtos.CorpLocalBeneficiaryDTO;
 import longbridge.models.CorpLocalBeneficiary;
 import longbridge.models.CorporateUser;
+import longbridge.repositories.CorpLocalBeneficiaryRepo;
 import longbridge.services.CorpLocalBeneficiaryService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,9 +16,16 @@ import java.util.List;
  */
 @Service
 public class CorpLocalBeneficiaryServiceImpl implements CorpLocalBeneficiaryService {
+    private CorpLocalBeneficiaryRepo corpLocalBeneficiaryRepo;
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
     public String addCorpLocalBeneficiary(CorporateUser user, CorpLocalBeneficiaryDTO beneficiary) {
+        CorpLocalBeneficiary corpLocalBeneficiary=convertDTOToEntity(beneficiary);
+        corpLocalBeneficiary.setUser(user);
+        this.corpLocalBeneficiaryRepo.save(corpLocalBeneficiary);
+        logger.trace("Beneficiary {} has been added", corpLocalBeneficiary.toString());
+
         return null;
     }
 

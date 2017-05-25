@@ -219,14 +219,15 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             if (this.passwordEncoder.matches(oldPassword, user.getPassword())) {
                 CorporateUser corporateUser=convertDTOToEntity(user);
                 corporateUser.setPassword(this.passwordEncoder.encode(newPassword));
-                corporateUserRepo.save(corporateUser);
+                this.corporateUserRepo.save(corporateUser);
                 logger.info("User {}'s password has been updated", user.getId());
                 ok=true;
             } else {
-                logger.error("Invalid current password supplied for {}", user.getUserName());
+                logger.error("Invalid current password for user {}", user.getId());
 
             }
         } catch (Exception e) {
+            e.printStackTrace();
             logger.error("Error Occurred {}", e.getMessage());
         }
         return ok;
