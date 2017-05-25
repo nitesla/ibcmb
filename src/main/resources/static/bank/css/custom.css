@@ -1,10 +1,13 @@
-
 html , body{
 	
  height:100%;
  
 }
- 
+.bodied {
+    color: #536A7F;
+    background: #fff;
+}
+
 .full-width {
 	
  width:100%;
@@ -1228,7 +1231,8 @@ td span {
 .error-number {
     font-size: 90px;
     line-height: 90px;
-    margin: 20px 0
+    margin: 20px 0;
+    color: #9F614B;
 }
 .col-middle {
     margin-top: 5%

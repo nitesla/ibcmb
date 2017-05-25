@@ -85,18 +85,21 @@ public class SettingController {
 
         try {
             String message =retailUserService.changePassword(user, custChangePassword);
-            List<String> passwordPolicy = passwordPolicyService.getPasswordRules();
-            logger.info("PASSWORD RULES {}", passwordPolicy);
-            redirectAttributes.addAttribute("passwordRules", passwordPolicy);
             redirectAttributes.addFlashAttribute("message", message);
             return "redirect:/retail/change_password";
         } catch (WrongPasswordException wpe) {
             result.reject("oldPassword", wpe.getMessage());
             logger.error("Wrong password from retail user {}", user.getUserName(), wpe.toString());
+            List<String> passwordPolicy = passwordPolicyService.getPasswordRules();
+            logger.info("PASSWORD RULES {}", passwordPolicy);
+            model.addAttribute("passwordRules", passwordPolicy);
             return "cust/settings/pword";
         } catch (PasswordPolicyViolationException pve) {
             result.reject("newPassword", pve.getMessage());
             logger.error("Password policy violation from retail user {} error {}", user.getUserName(), pve.toString());
+            List<String> passwordPolicy = passwordPolicyService.getPasswordRules();
+            logger.info("PASSWORD RULES {}", passwordPolicy);
+            model.addAttribute("passwordRules", passwordPolicy);
             return "cust/settings/pword";
         } catch (PasswordMismatchException pme) {
             result.reject("confirmPassword", pme.getMessage());
@@ -105,6 +108,9 @@ public class SettingController {
         } catch (PasswordException pe) {
             result.addError(new ObjectError("error", pe.getMessage()));
             logger.error("Error changing password for retail user {}", user.getUserName(), pe);
+            List<String> passwordPolicy = passwordPolicyService.getPasswordRules();
+            logger.info("PASSWORD RULES {}", passwordPolicy);
+            model.addAttribute("passwordRules", passwordPolicy);
             return "cust/settings/pword";
         }
     }
