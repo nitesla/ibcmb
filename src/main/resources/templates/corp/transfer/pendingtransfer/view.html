@@ -20,11 +20,14 @@
                             <td>Transfer type</td>
                             <td>Amount</td>
                             <td>Approval</td>
-                            <td>Delete</td>
                             </thead>
                             <tbody>
                             <tr>
-
+                            <tr th:each="pnd : ${pendingAuthorizations}">
+                                <td th:text="${pnd.corpTransferRequest.transferType}"></td>
+                                <td th:text="${pnd.corpTransferRequest.amount}"></td>
+                                <td><a th:href="@{'/corporate/' + ${pnd.id} + '/authorize'}"><i class="fa fa-approve"></i></a></td>
+                            </tr>
                             </tr>
                             </tbody>
                         </table>
