@@ -5,11 +5,15 @@ import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.models.TransferRequest;
 import longbridge.models.User;
+import longbridge.models.UserType;
 import longbridge.repositories.TransferRequestRepo;
 import longbridge.services.AccountService;
 import longbridge.services.FinancialInstitutionService;
 import longbridge.services.IntegrationService;
 import longbridge.services.TransferService;
+import longbridge.utils.ResultType;
+import longbridge.exception.TransferExceptions;
+import longbridge.utils.TransferType;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +25,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 /**
@@ -33,6 +37,7 @@ public class TransferServiceImpl implements TransferService {
 
     private TransferRequestRepo transferRequestRepo;
     private IntegrationService integrationService;
+    private TransactionLimitServiceImpl limitService;
 
     private ModelMapper modelMapper;
 
@@ -42,27 +47,33 @@ public class TransferServiceImpl implements TransferService {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    public TransferServiceImpl(TransferRequestRepo transferRequestRepo, IntegrationService integrationService, ModelMapper modelMapper, AccountService accountService, FinancialInstitutionService financialInstitutionService) {
+    public TransferServiceImpl(TransferRequestRepo transferRequestRepo, IntegrationService integrationService, ModelMapper modelMapper, AccountService accountService, FinancialInstitutionService financialInstitutionService, TransactionLimitServiceImpl limitService) {
         this.transferRequestRepo = transferRequestRepo;
         this.integrationService = integrationService;
         this.modelMapper = modelMapper;
         this.accountService = accountService;
         this.financialInstitutionService = financialInstitutionService;
+        this.limitService = limitService;
     }
 
     @Override
 
-    public boolean makeTransfer(TransferRequestDTO transferRequestDTO) throws InternetBankingTransferException {
+    public TransferRequestDTO makeTransfer(TransferRequestDTO transferRequestDTO) throws InternetBankingTransferException {
 
 
         validateTransfer(transferRequestDTO);
-        TransferRequest transferRequest = convertDTOToEntity(transferRequestDTO);
+        logger.trace("Transfer details valid {}", transferRequestDTO);
 
-        boolean ok = integrationService.makeTransfer(transferRequest);
-        if (ok) {
+
+
+        TransferRequest    transferRequest = integrationService.makeTransfer(convertDTOToEntity(transferRequestDTO));
+        if (transferRequest != null) {
+            logger.trace("params {}",transferRequest);
             saveTransfer(transferRequestDTO);
+            if (transferRequest.getStatus().equals(ResultType.SUCCESS)) return convertEntityToDTO(transferRequest);
+            throw new InternetBankingTransferException(TransferExceptions.ERROR.toString());
         }
-        return ok;
+        throw new InternetBankingTransferException();
     }
 
     @Override
@@ -72,8 +83,11 @@ public class TransferServiceImpl implements TransferService {
 
     @Override
     public Iterable<TransferRequest> getTransfers(User user) {
-        // return transferRepo.getTransactions(user.getId());
-        return null;
+       return transferRequestRepo.findAll()
+               .stream()
+               .filter(i -> i.getUserReferenceNumber().equals(user.getId()))
+               .collect(Collectors.toList());
+
     }
 
     @Override
@@ -88,33 +102,49 @@ public class TransferServiceImpl implements TransferService {
             result = true;
 
         } catch (Exception e) {
-
+            logger.error("Exception occurred {}",e.getMessage());
         }
         return result;
     }
 
     @Override
-    public boolean validateBalance(TransferRequestDTO transferRequest) {
-        boolean ok = false;
-        try {
-            Map<String, BigDecimal> balanceDetails = integrationService.getBalance(transferRequest.getCustomerAccountNumber());
-            BigDecimal balance = balanceDetails.get("AvailableBalance");
-            if (balance != null) {
-                if (balance.compareTo(transferRequest.getAmount()) == 0 || (balance.compareTo(transferRequest.getAmount()) == 1)) {
-                    ok = true;
-                }
-            }
-        } catch (Exception e) {
-            ok = false;
+
+    public void deleteTransfer(Long id) throws InternetBankingException {
+        TransferRequest transferRequest = transferRequestRepo.findById(id);
+        if (transferRequest != null) {
+            transferRequestRepo.delete(transferRequest);
         }
-        return ok;
+
+
     }
 
     @Override
-    public void validateTransfer(TransferRequestDTO dto) {
-        if (dto.getBeneficiaryAccountNumber().equalsIgnoreCase(dto.getCustomerAccountNumber())) {
-            throw new InternetBankingTransferException("Cannot Transfer to same account");
+    public void validateBalance(TransferRequestDTO transferRequest) throws InternetBankingTransferException {
+
+
+        BigDecimal balance = integrationService.getAvailableBalance(transferRequest.getCustomerAccountNumber());
+        if (balance != null) {
+            if (!(balance.compareTo(transferRequest.getAmount()) == 0 || (balance.compareTo(transferRequest.getAmount()) == 1))) {
+                throw new InternetBankingTransferException(TransferExceptions.BALANCE.toString());
+            }
         }
+
+    }
+
+    @Override
+    public void validateTransfer(TransferRequestDTO dto) throws InternetBankingTransferException {
+        if (dto.getBeneficiaryAccountNumber().equalsIgnoreCase(dto.getCustomerAccountNumber())) {
+            throw new InternetBankingTransferException(TransferExceptions.SAME_ACCOUNT.toString());
+        }
+        valdateAccounts(dto);
+        boolean limitExceeded = limitService.isAboveInternetBankingLimit(
+                dto.getTransferType(),
+                UserType.RETAIL,
+                dto.getCustomerAccountNumber(),
+                dto.getAmount()
+
+        );
+        if (limitExceeded) throw new InternetBankingTransferException(TransferExceptions.LIMIT_EXCEEDED.toString());
 
         String cif = accountService.getAccountByAccountNumber(dto.getCustomerAccountNumber()).getCustomerId();
         boolean acctPresent = StreamSupport.stream(accountService.getAccountsForDebit(cif).spliterator(), false)
@@ -122,13 +152,9 @@ public class TransferServiceImpl implements TransferService {
 
 
         if (!acctPresent) {
-            throw new InternetBankingTransferException("account cannot is not enabled for debit");
+            throw new InternetBankingTransferException(TransferExceptions.NO_DEBIT_ACCOUNT.toString());
         }
-
-        boolean hasSufficientBalance = validateBalance(dto);
-        if (!hasSufficientBalance) {
-            throw new InternetBankingTransferException("Insufficient Account balance");
-        }
+        validateBalance(dto);
 
 
     }
@@ -156,6 +182,15 @@ public class TransferServiceImpl implements TransferService {
         }
         return transferRequestDTOList;
     }
+   public void valdateAccounts(TransferRequestDTO dto) throws InternetBankingTransferException{
+ if (dto.getTransferType().equals(TransferType.OWN_ACCOUNT_TRANSFER) || dto.getTransferType().equals(TransferType.CORONATION_BANK_TRANSFER))
+    {
+        if(integrationService.viewAccountDetails(dto.getBeneficiaryAccountNumber()) ==null) throw new InternetBankingTransferException(TransferExceptions.INVALID_BENEFICIARY.toString());
+        if(integrationService.viewAccountDetails(dto.getCustomerAccountNumber()) ==null) throw new InternetBankingTransferException(TransferExceptions.INVALID_ACCOUNT.toString());
 
+    }
+
+
+}
 
 }

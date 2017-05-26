@@ -2,6 +2,7 @@ package longbridge.services.implementations;
 
 import longbridge.dtos.DirectDebitDTO;
 import longbridge.dtos.TransferRequestDTO;
+import longbridge.exception.TransferException;
 import longbridge.models.DirectDebit;
 import longbridge.models.FinancialInstitution;
 import longbridge.models.RetailUser;
@@ -68,7 +69,7 @@ public class DirectDebitServiceImpl implements DirectDebitService {
 	}
 
 	@Override
-	public void performDirectDebit(DirectDebit directDebit) {
+	public void performDirectDebit(DirectDebit directDebit) throws TransferException {
 		TransferRequestDTO transferRequest = new TransferRequestDTO();
 		transferRequest.setAmount(directDebit.getAmount());
 		transferRequest.setBeneficiaryAccountName(directDebit.getBeneficiary().getAccountName());

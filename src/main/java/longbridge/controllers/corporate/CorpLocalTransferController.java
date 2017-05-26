@@ -80,12 +80,8 @@ public class CorpLocalTransferController {
                 redirectAttributes.addFlashAttribute("message", messages.getMessage("auth.token.failure", null, locale));
                 return page + "pageiv";
             }
-            boolean ok = transferService.makeTransfer(transferRequestDTO);
-            if (ok) {
-                transferService.saveTransfer(transferRequestDTO);
-                redirectAttributes.addFlashAttribute("message", messages.getMessage("transaction.success", null, locale));
+              transferService.makeTransfer(transferRequestDTO);
 
-            }
 
 
             return "redirect:/retail/transfer/local";

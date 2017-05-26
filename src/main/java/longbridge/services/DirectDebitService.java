@@ -1,6 +1,7 @@
 package longbridge.services;
 
 import longbridge.dtos.DirectDebitDTO;
+import longbridge.exception.TransferException;
 import longbridge.models.DirectDebit;
 import longbridge.models.RetailUser;
 import org.springframework.stereotype.Service;
@@ -34,7 +35,7 @@ public interface DirectDebitService {
 	 * 
 	 * @param directDebit the directDebit
 	 */
-	void performDirectDebit(DirectDebit directDebit);
+	void performDirectDebit(DirectDebit directDebit) throws TransferException;
 
 	/** This fetches all the direct debits that are due to be 
 	 * performed today.

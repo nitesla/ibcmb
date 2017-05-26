@@ -2,10 +2,14 @@ package longbridge.controllers.retail;
 
 
 import longbridge.dtos.LocalBeneficiaryDTO;
+import longbridge.dtos.TransferRequestDTO;
+import longbridge.exception.InternetBankingTransferException;
+import longbridge.exception.TransferErrorService;
 import longbridge.models.Account;
 import longbridge.models.FinancialInstitutionType;
 import longbridge.models.RetailUser;
 import longbridge.services.*;
+import longbridge.utils.TransferType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
@@ -13,11 +17,14 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.LocaleResolver;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.stream.StreamSupport;
 
@@ -38,10 +45,11 @@ public class TransferController {
     private LocaleResolver localeResolver;
     private LocalBeneficiaryService localBeneficiaryService;
     private FinancialInstitutionService financialInstitutionService;
+     private TransferErrorService transferErrorService;
 
 
     @Autowired
-    public TransferController(RetailUserService retailUserService, IntegrationService integrationService, TransferService transferService, AccountService accountService, MessageSource messages, LocaleResolver localeResolver, LocalBeneficiaryService localBeneficiaryService, FinancialInstitutionService financialInstitutionService) {
+    public TransferController(RetailUserService retailUserService, IntegrationService integrationService, TransferService transferService, AccountService accountService, MessageSource messages, LocaleResolver localeResolver, LocalBeneficiaryService localBeneficiaryService, FinancialInstitutionService financialInstitutionService,TransferErrorService transferErrorService) {
         this.retailUserService = retailUserService;
         this.integrationService = integrationService;
         this.transferService = transferService;
@@ -50,10 +58,40 @@ public class TransferController {
         this.localeResolver = localeResolver;
         this.localBeneficiaryService = localBeneficiaryService;
         this.financialInstitutionService = financialInstitutionService;
+        this.transferErrorService=transferErrorService;
+
     }
 
 
+    @GetMapping(value = "")
+    public String index(TransferType tranType) {
+        tranType = TransferType.INTER_BANK_TRANSFER;
+        switch (tranType) {
+            case CORONATION_BANK_TRANSFER:
 
+            {
+                return "redirect:/retail/transfer/local";
+            }
+            case INTER_BANK_TRANSFER: {
+                return "redirect:/retail/transfer/interbank";
+            }
+            case INTERNATIONAL_TRANSFER: {
+
+            }
+            case NAPS: {
+
+            }
+            case OWN_ACCOUNT_TRANSFER: {
+
+                return "redirect:/retail/transfer/ownaccount";
+            }
+
+            case RTGS: {
+                return "redirect:/retail/transfer/interbank";
+            }
+        }
+        return "redirect:/retail/transfer/ownaccount";
+    }
 
 
     @GetMapping("/dest/{accountId}/accounts")
@@ -90,11 +128,63 @@ public class TransferController {
     public
     @ResponseBody
     String getBankAccountName(@PathVariable String accountNo) {
-       // return integrationService.viewAccountDetails(accountNo).getAcctName();
-        return "AYOADE FAROOQ";
+        return integrationService.viewAccountDetails(accountNo).getAcctName();
+
     }
 
 
+    @GetMapping("/{accountNo}/{bank}/nameEnquiry")
+    public
+    @ResponseBody
+    String getInterBankAccountName(@PathVariable String accountNo, @PathVariable String bank) {
+        // return (integrationService.doNameEnquiry(bank,accountNo)).getAccountName();
+//        return (integrationService.doNameEnquiry("000005",accountNo)).getAccountName();
+        return "AYOADE FAROOQ";
+
+    }
 
 
+    @PostMapping("/process")
+    public String bankTransfer(@ModelAttribute("transferRequest") @Valid TransferRequestDTO transferRequestDTO, Model model, RedirectAttributes redirectAttributes, Locale locale, HttpServletRequest request) throws Exception {
+
+        try {
+
+            if (request.getSession().getAttribute("AUTH") != null) {
+                String token = request.getParameter("token");
+                // boolean tokenOk = integrationService.performTokenValidation(principal.getName(), token);
+                boolean tokenOk = !token.isEmpty();
+                if (!tokenOk) {
+                    model.addAttribute("error", messages.getMessage("auth.token.failure", null, locale));
+                    return "/transfer/transferauth";
+                } else {
+                    request.getSession().removeAttribute("AUTH");
+                }
+
+
+            }
+            transferRequestDTO = (TransferRequestDTO)request.getSession().getAttribute("transferRequest");
+
+            transferRequestDTO = transferService.makeTransfer(transferRequestDTO);
+            request.getSession().removeAttribute("transferRequest");
+
+            redirectAttributes.addFlashAttribute("message", messages.getMessage("transaction.success", null, locale));
+
+
+            return index(transferRequestDTO.getTransferType());
+        } catch (InternetBankingTransferException e) {
+            e.printStackTrace();
+            String errorMessage = transferErrorService.getMessage(e,request);
+            redirectAttributes.addFlashAttribute("error", errorMessage);
+            return index(transferRequestDTO.getTransferType());
+        }
+    }
+
+//    @PostMapping("/auth")
+//    public String processTransfer(@ModelAttribute("transferRequest") @Valid TransferRequestDTO transferRequestDTO, Model model) throws Exception {
+//
+//
+//        model.addAttribute("transferRequest", transferRequestDTO);
+//        return;
+//
+//    }
 }

@@ -15,6 +15,7 @@ import longbridge.repositories.AuditConfigRepo;
 @Component
 public class AuditConfigInitializer implements InitializingBean {
 
+
 	@Autowired
 	private AuditConfigRepo configRepo;
 	@Autowired
@@ -36,5 +37,6 @@ public class AuditConfigInitializer implements InitializingBean {
 //			}
 //		});
 	}
+
 
 }

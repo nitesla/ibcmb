@@ -1,17 +1,16 @@
 package longbridge.services.implementations;
 
-import java.math.BigInteger;
-import java.security.SecureRandom;
-import java.util.List;
-
-import longbridge.exception.TokenException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Service;
-
 import longbridge.models.RetailUser;
 import longbridge.services.IntegrationService;
 import longbridge.services.SecurityService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import java.math.BigInteger;
+import java.security.SecureRandom;
+import java.util.List;
 
 /**
  * Created by ayoade_farooq@yahoo.com on 3/29/2017.
@@ -20,6 +19,8 @@ import longbridge.services.SecurityService;
 @Service
 public class SecurityServiceImpl implements SecurityService {
 
+	@Value("${ENTRUST.URL}")
+	String entrustUrl;
     private BCryptPasswordEncoder passwordEncoder;
     
     @Autowired

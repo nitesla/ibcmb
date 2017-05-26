@@ -86,7 +86,7 @@ public class CustomUserPrincipal implements UserDetails {
 	@Override
 	public boolean isEnabled() {
 		try {
-			return user.getStatus().equalsIgnoreCase("ACTIVE");
+			return user.getStatus().equalsIgnoreCase("A");
 		} catch (Exception e) {
 			return false;
 		}

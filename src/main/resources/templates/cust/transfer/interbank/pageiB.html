@@ -18,12 +18,12 @@
             <div class="col-md-8 content-bg">
                 <div class="row form-spacing">
                     <div class="col-md-6 col-sm-6">
-                        <form id="local" method="post" th:action="@{/retail/transfer/local/new}"
+                        <form id="local" method="post" th:action="@{/retail/transfer/interbank/new}"
                               th:object="${localBeneficiaryDTO}">
                             <div class="form-group">
                                 <label>Beneficiary Bank</label>
-                                <select name="beneficiaryBank" class="form-control" th:field="*{beneficiaryBank}">
-                                    <option value="Coronation">Coronation Merchant Bank</option>
+                                <select name="beneficiaryBank" class="form-control" th:field="*{beneficiaryBank}" id="bank_code">
+                                    <option th:each="bank : ${localBanks}" th:value="${bank.institutionCode}" th:text="${bank.institutionName}"></option>
                                 </select>
                             </div>
                             <div class="form-group">
@@ -35,10 +35,7 @@
                             <div class="form-group">
                                 <label>Account Name</label>
                                 <input type="text" class="form-control" name="accountNumber" th:field="*{accountName}"
-                                       id="acct_name" readonly="readonly" required="required"/>
-                                <label
-                                        th:if="${#fields.hasErrors('accountName')}" th:errors="*{accountName}"
-                                        class="validation-message"></label>
+                                       id="acct_name" readonly="readonly"/>
                             </div>
                             <div class="form-group">
                                 <input type="text" class="form-control" name="preferredName"
@@ -73,11 +70,12 @@
     function getAccountName() {
         //make sure alert message is not empty
         var acct = $('#acct_num').val();
+        var bank = $('#bank_code').val();
         console.log(acct);
 
         var options = {
             type: 'GET',
-            url: '/retail/transfer/local/' + acct + '/nameEnquiry',
+            url: '/retail/transfer/' + acct + '/'+bank+'/nameEnquiry',
 //					dataType: 'jsonp',
             error: function (xhr, textStatus, errorThrown) {
                 alert('invalid account number ');
@@ -88,7 +86,7 @@
                 console.log(textStatus);
                 var result = data;
                 //var result = (new Function("return " + result))();
-               // $('#acct_name').val(result.message);
+                // $('#acct_name').val(result.message);
                 $('#acct_name').val(result);
             }
         };

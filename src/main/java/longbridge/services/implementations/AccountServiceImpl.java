@@ -141,12 +141,12 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Map<String, BigDecimal> getBalance(Account account) {
-        return integrationService.getBalance(account.getAccountId());
+        return integrationService.getBalance(account.getAccountNumber());
     }
 
     @Override
     public AccountStatement getAccountStatements(Account account, Date fromDate, Date toDate) {
-        return integrationService.getAccountStatements(account.getAccountId(), fromDate, toDate);
+        return integrationService.getAccountStatements(account.getAccountNumber(), fromDate, toDate);
     }
 
 
@@ -263,7 +263,7 @@ public class AccountServiceImpl implements AccountService {
             if (!accountConfigService.isAccountHidden(account.getAccountNumber())
                     && (!accountConfigService.isAccountRestrictedForView(account.getAccountNumber())) && !accountConfigService.isAccountRestrictedForDebitAndCredit(account.getAccountNumber()) && (!accountConfigService.isAccountClassRestrictedForView(account.getSchemeCode()) && (!accountConfigService.isAccountClassRestrictedForDebitAndCredit(account.getSchemeCode())))) {
 
-                Map<String, BigDecimal> balance = integrationService.getBalance(account.getAccountId());
+                Map<String, BigDecimal> balance = integrationService.getBalance(account.getAccountNumber());
                 String availbalance ="0";
                 String ledBalance="0";
                   if (balance!=null){

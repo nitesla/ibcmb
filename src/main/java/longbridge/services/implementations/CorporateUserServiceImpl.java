@@ -1,15 +1,18 @@
 package longbridge.services.implementations;
 
 import longbridge.dtos.CorporateUserDTO;
+import longbridge.exception.*;
 import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.PasswordException;
 import longbridge.forms.AlertPref;
+import longbridge.forms.ChangePassword;
 import longbridge.models.*;
 import longbridge.repositories.CorpLimitRepo;
 import longbridge.repositories.CorporateUserRepo;
 import longbridge.repositories.RoleRepo;
 import longbridge.services.*;
+import longbridge.utils.DateFormatter;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -307,30 +310,28 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     }
 
     @Override
-    public boolean changePassword(CorporateUserDTO user, String oldPassword, String newPassword) {
-       boolean ok=false;
-        try {
-            if (getUser(user.getId()) == null) {
-                logger.error("User does not exist");
-                return ok;
-            }
-
-            if (this.passwordEncoder.matches(oldPassword, user.getPassword())) {
-                CorporateUser corporateUser=convertDTOToEntity(user);
-                corporateUser.setPassword(this.passwordEncoder.encode(newPassword));
-                this.corporateUserRepo.save(corporateUser);
-                logger.info("User {}'s password has been updated", user.getId());
-                ok=true;
-            } else {
-                logger.error("Invalid current password for user {}", user.getId());
-
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            logger.error("Error Occurred {}", e.getMessage());
+    public String changePassword(CorporateUser user, ChangePassword changePassword) {
+       if(!this.passwordEncoder.matches(changePassword.getOldPassword(),user.getPassword())){
+           throw new WrongPasswordException();
+       }
+        String errorMessage=passwordPolicyService.validate(changePassword.getNewPassword(),user.getUsedPasswords());
+        if (!"".equals(errorMessage)) {
+            throw new PasswordPolicyViolationException(errorMessage);
         }
-        return ok;
-    }
+        if (!changePassword.getNewPassword().equals(changePassword.getConfirmPassword())) {
+            throw new PasswordMismatchException();
+        }
+try{
+    CorporateUser corporateUser=corporateUserRepo.findOne(user.getId());
+    corporateUser.setPassword(this.passwordEncoder.encode(changePassword.getNewPassword()));
+    corporateUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
+    this.corporateUserRepo.save(corporateUser);
+    logger.info("User {} password has been updated",user.getId());
+    return messageSource.getMessage("password.change.success",null,locale);
+} catch (Exception e) {
+    throw new PasswordException(messageSource.getMessage("password.change.failure", null, locale), e);
+}
+}
 
     @Override
     public void generateAndSendPassword(CorporateUser user) {
@@ -411,6 +412,18 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         corporateUserDTO.setCorporateType(corporateUser.getCorporate().getCorporateType());
         corporateUserDTO.setCorporateName(corporateUser.getCorporate().getName());
         corporateUserDTO.setCorporateId(corporateUser.getCorporate().getId().toString());
+
+        Code code = codeService.getByTypeAndCode("USER_STATUS", corporateUser.getStatus());
+
+        if(corporateUser.getCreatedOnDate()!=null) {
+            corporateUserDTO.setCreatedOn(DateFormatter.format(corporateUser.getCreatedOnDate()));
+        }
+        if(corporateUser.getLastLoginDate()!=null) {
+            corporateUserDTO.setLastLogin(DateFormatter.format(corporateUser.getLastLoginDate()));
+        }
+        if (code != null) {
+            corporateUserDTO.setStatus(code.getDescription());
+        }
         return corporateUserDTO;
     }
 

@@ -11,9 +11,9 @@
     <div class="container">
         <div class="row">
             <div class="col-md-4 col-sm-4">
-                <h5 class="page_header"> Coronation account transfer</h5>
-                <select class="form-control" name="coronationbeneficiaries">
-                    <option value="Overveiw">coronation beneficiaries</option>
+                <h5 class="page_header"> Transfers to other banks through NIP</h5>
+                <select class="form-control" name="beneficiaries">
+                    <option value="Overveiw">Beneficiaries</option>
                 </select>
             </div>
         </div>
@@ -30,7 +30,8 @@
                                 <thead>
                                 <tr>
                                 <th>Beneficiary name</th>
-                                <th>Account Number</th>
+                                <th>Bank</th>
+
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -39,13 +40,14 @@
                                 <tr th:each="loc : ${localBen}">
                                     <td th:text="${loc.accountName}"></td>
                                      <td th:text="${loc.accountNumber}"></td>
+
                                     <td>
                                         <li class="dropdown" style="list-style: none">
                                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" style="font-size:20px;" aria-haspopup="true"><i class=" fa fa-angle-right"></i></a>
                                         <ul class="dropdown-menu">
 
 
-                                            <li><a th:href="@{'/retail/transfer/local/' + ${loc.id} }">make a transfer</a>
+                                            <li><a th:href="@{'/retail/transfer/interbank/' + ${loc.id} }">make a transfer</a>
 
 
                                             </li>
@@ -61,7 +63,7 @@
                                 </tbody>
                             </table>
                             <br/>
-                            <a th:href="@{/retail/transfer/coronationbank/new}" class="btn">Add Beneficiary</a>
+                            <a th:href="@{/retail/transfer/interbank/new}" class="btn">Add Beneficiary</a>
 
                            <!-- <button type="submit" class="btn btn-default" style="float: right">Add beneficiary</button>
                        --> </form>

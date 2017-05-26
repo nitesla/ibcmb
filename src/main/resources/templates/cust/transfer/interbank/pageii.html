@@ -13,7 +13,7 @@
         <div class="row">
 
             <div class="col-md-4 col-sm-4">
-                <h5 class="page_header"> Transfer to <span th:text="${beneficiaryName}"></span></h5>
+                <h5 class="page_header"> Transfer to <span th:text="${benName}"></span></h5>
             </div>
         </div>
         <div class="row">
@@ -24,7 +24,7 @@
                         <div th:if="${message != null}" class="alert alert-info" th:text="${message}">message</div>
                         <div th:if="${error != null}" class="alert alert-info" th:text="${error}">message</div>
 
-                        <form method="post" th:action="@{/retail/transfer/local/summary}"
+                        <form method="post" th:action="@{/retail/transfer/interbank/summary}"
                               th:object="${transferRequest}">
 
 

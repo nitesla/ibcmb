@@ -9,14 +9,17 @@ import longbridge.models.PendingAuthorization;
 import longbridge.repositories.CorpTransferRequestRepo;
 import longbridge.repositories.CorporateRepo;
 import longbridge.services.CorporateService;
+import longbridge.services.CorporateUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.math.BigDecimal;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +36,9 @@ public class CorpTransferController {
 
     @Autowired
     CorporateRepo corporateRepo;
+
+    @Autowired
+    private CorporateUserService corporateUserService;
 
     @Autowired
     CorpTransferRequestRepo transferRequestRepo;
@@ -55,8 +61,11 @@ public class CorpTransferController {
     }
 
     @GetMapping("/pending")
-    public String getPendingTransfer(){
+    public String getPendingTransfer(Principal principal,Model model){
 
+        CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
+        List<PendingAuthorization> pendingAuthorizations=corporateUser.getPendingAuthorizations();
+        model.addAttribute("pendingAuthorizations",pendingAuthorizations);
         return "corp/transfer/pendingtransfer/view";
     }
 }

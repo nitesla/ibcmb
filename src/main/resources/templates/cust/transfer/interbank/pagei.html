@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head th:replace="cust_layout :: site-head">
+
+</head>
+<body>
+<header th:replace="cust_layout :: header">
+</header>
+
+<section class="content-wrapper">
+    <div class="container">
+
+        <div class="row">
+
+            <div class="col-md-4 col-sm-4">
+                <h5 class="page_header"> Select transfer type</h5>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-8 content-bg">
+                <!--<div class="row form-spacing">-->
+                <div class="col-md-6 col-sm-6">
+                    <div class="row form-spacing">
+
+                        <div th:if="${message != null}" class="alert alert-info" th:text="${message}">message</div>
+                        <div th:if="${error != null}" class="alert alert-info" th:text="${error}">message</div>
+
+                        <form method="post" th:action="@{/retail/transfer/interbank/index}"
+                              >
+
+
+
+                            <div class="form-group">
+                                <label>Transfer Type</label>
+
+                                <span id="tran"></span>
+                                <select name="tranType" class="form-control" id="tranType">
+                                <option>select an account</option>
+                                    <option value="NIP">NIP</option>
+                                    <option value="RTGS">RTGS</option>
+                                </select></div>
+                            <button class="btn btn-primary" type="submit">NEXT</button>
+                        </form>
+                    </div>
+                </div>
+                </div>
+
+            </div>
+            <div th:replace="cust_layout :: sidebar" class="col-md-3 sidebar">
+            </div>
+        </div>
+
+
+
+</section>
+
+
+
+<!-- CONTENT-WRAPPER SECTION END-->
+<footer th:replace="cust_layout ::footer">
+</footer>
+<script th:src="@{~/customer/js/accountdetails.js}"></script>
+</body>
+
+</html>

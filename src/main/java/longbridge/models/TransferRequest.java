@@ -183,4 +183,6 @@ public class TransferRequest extends AbstractEntity{
 		// TODO Auto-generated method stub
 		return null;
 	}
+
 }
+

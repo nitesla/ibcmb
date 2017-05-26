@@ -1,6 +1,9 @@
 package longbridge.services;
 
 import longbridge.dtos.TransferRequestDTO;
+
+import longbridge.exception.InternetBankingException;
+import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferException;
 import longbridge.models.TransferRequest;
 import longbridge.models.User;
@@ -19,8 +22,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
  */
 public interface TransferService {
 
+
     @PreAuthorize("hasAuthority('MAKE_TRANSFER')")
-    boolean makeTransfer(TransferRequestDTO transferRequest) throws TransferException;
+    TransferRequestDTO makeTransfer(TransferRequestDTO transferRequest) throws TransferException;
+
 
     @PreAuthorize("hasAuthority('GET_TRANSFER')")
     TransferRequest getTransfer(Long id);
@@ -34,11 +39,12 @@ public interface TransferService {
     @PreAuthorize("hasAuthority('MAKE_TRANSFER')")
     boolean saveTransfer(TransferRequestDTO transferRequestDTO) throws TransferException;
 
-    @PreAuthorize("hasAuthority('MAKE_TRANSFER')")
-    boolean validateBalance(TransferRequestDTO transferRequest);
 
+    void deleteTransfer(Long id) throws InternetBankingException;
     @PreAuthorize("hasAuthority('MAKE_TRANSFER')")
-    void validateTransfer(TransferRequestDTO transferRequest);
+    void  validateBalance(TransferRequestDTO transferRequest) throws InternetBankingTransferException;
+    @PreAuthorize("hasAuthority('MAKE_TRANSFER')")
+    void validateTransfer(TransferRequestDTO transferRequest) throws InternetBankingTransferException;
 
 
 }

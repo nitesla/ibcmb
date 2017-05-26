@@ -33,7 +33,7 @@ import org.springframework.security.web.session.HttpSessionEventPublisher;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+//@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
     public void customConfig(WebSecurity web) throws Exception {
@@ -195,12 +195,9 @@ public class SecurityConfig {
         UserDetailsService retDetails;
         @Autowired
         BCryptPasswordEncoder bCryptPasswordEncoder;
-//        @Autowired
-//        @Qualifier("retailAuthenticationSuccessHandler")
-        @Bean
-         AuthenticationSuccessHandler retailAuthenticationSuccessHandler(){
-          return new   RetailAuthenticationSuccessHandler();
-        }
+        @Autowired
+        @Qualifier("retailAuthenticationSuccessHandler")
+        AuthenticationSuccessHandler retailAuthenticationSuccessHandler;
         @Autowired
         @Qualifier("retailAuthenticationFailureHandler")
         private AuthenticationFailureHandler retailAuthenticationFailureHandler;
@@ -225,7 +222,7 @@ public class SecurityConfig {
                     .and().formLogin().loginPage("/login/retail").loginProcessingUrl("/retail/login")
                     .failureUrl("/login/retail?error=true").defaultSuccessUrl("/retail/dashboard")
                    //.successHandler(retailAuthenticationSuccessHandler)
-                   .successHandler(retailAuthenticationSuccessHandler())
+                   .successHandler(retailAuthenticationSuccessHandler)
                     .failureHandler(retailAuthenticationFailureHandler)
 
                     //.failureForwardUrl()

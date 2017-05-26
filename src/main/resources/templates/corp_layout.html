@@ -42,7 +42,7 @@
                         <div class="col-md-5 col-sm-4 header_info"><h5><span th:text="*{greeting}"></span><br class="break"/><b th:text="*{name}"></b> &nbsp; <a th:href="@{/corporate/mailbox/inbox}"><i class="fa fa-envelope"></i></a></h5>
 
                             <div class="hide-faq"><h6>FAQS &nbsp; &nbsp;<i class="fa fa-question-circle"></i><span class="date2 lorem">&nbsp; &nbsp;Login History:&nbsp;</span>&nbsp;
-                                <span class="lorem" th:text="*{lastLogin}">21st March 2017 10:30am</span></h6></div></div>
+                                <span class="lorem" th:text="*{lastLogin}"></span></h6></div></div>
                     </div>
                     <div class="row">
                 <div class="collapse navbar-collapse links" id="navbar-collapse-1">
@@ -66,6 +66,8 @@
                                 <li><a th:href="@{/corporate/transfer}" th:text="#{menu.transfer.int}">International transfer</a></li>
                                 <li><a th:href="@{/corporate/transfer/settransferlimit}" th:text="#{menu.transfer.limit}">Set transfer limit</a></li>
                                 <li><a th:href="@{/corporate/transfer/standingorder}" th:text="#{menu.transfer.order}">Standing order</a></li>
+                                <li><a th:href="@{/corporate/pending}">Pending Transfer</a></li>
+
                             </ul>
                         </li>
                         <li><a href="#" th:text="#{menu.bill}">Bill Payments</a></li>
