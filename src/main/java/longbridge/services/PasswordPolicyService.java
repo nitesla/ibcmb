@@ -131,7 +131,7 @@ public class PasswordPolicyService {
         Calendar calendar = Calendar.getInstance();
         int days = 60;//default
         SettingDTO setting = configService.getSettingByName("PASSWORD_EXPIRY");
-        if(setting!=null&setting.isEnabled() ){
+        if(setting!=null&&setting.isEnabled() ){
             days = NumberUtils.toInt(setting.getValue());
         }
         calendar.add(Calendar.DAY_OF_YEAR,days);

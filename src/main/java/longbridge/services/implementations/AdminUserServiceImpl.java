@@ -159,7 +159,9 @@ public class AdminUserServiceImpl implements AdminUserService {
                         .setSubject(messageSource.getMessage("admin.create.subject",null,locale))
                         .setBody(String.format(messageSource.getMessage("admin.create.message",null,locale),fullName, user.getUserName(), password))
                         .build();
-                mailService.send(email);
+                        mailService.send(email);
+
+
             }
 
             else if (("I".equals(oldStatus)) && "A".equals(newStatus)) {//User is being reactivated
@@ -173,6 +175,7 @@ public class AdminUserServiceImpl implements AdminUserService {
                         .setBody(String.format(messageSource.getMessage("admin.reactivation.message",null,locale), fullName,user.getUserName(),password))
                         .build();
                 mailService.send(email);
+
             }
 
             logger.info("Admin user {} status changed from {} to {}", user.getUserName(), oldStatus, newStatus);
