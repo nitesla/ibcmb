@@ -429,6 +429,7 @@ body {
     font-size: 12px;
 }
 .calender{
+    overflow: hidden;
     position: inherit;
 }
 .calender .container{
@@ -443,6 +444,10 @@ body {
     font-weight: 100;
     font-size: 14px;
     width: 100%
+}
+.showdate .fa{
+    color: #C1C1C1;
+    cursor: hand;
 }
 .dateMonth{
     color: #032A4F;
