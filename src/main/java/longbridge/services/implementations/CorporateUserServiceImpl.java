@@ -199,6 +199,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             if(!"Authorizer".equals(role.getName())){
              user.setStatus("A");
             }
+            corporateUser.setRole(role);
             Corporate corporate = new Corporate();
             corporate.setId(Long.parseLong(user.getCorporateId()));
             corporateUser.setCorporate(corporate);
