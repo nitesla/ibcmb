@@ -3,7 +3,7 @@ package longbridge.services.implementations;
 import longbridge.dtos.TransferRequestDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingTransferException;
-import longbridge.models.TransferRequest;
+import longbridge.models.TransRequest;
 import longbridge.models.User;
 import longbridge.models.UserType;
 import longbridge.repositories.TransferRequestRepo;
@@ -66,23 +66,23 @@ public class TransferServiceImpl implements TransferService {
 
 
 
-        TransferRequest    transferRequest = integrationService.makeTransfer(convertDTOToEntity(transferRequestDTO));
-        if (transferRequest != null) {
-            logger.trace("params {}",transferRequest);
+        TransRequest transRequest = integrationService.makeTransfer(convertDTOToEntity(transferRequestDTO));
+        if (transRequest != null) {
+            logger.trace("params {}", transRequest);
             saveTransfer(transferRequestDTO);
-            if (transferRequest.getStatus().equals(ResultType.SUCCESS)) return convertEntityToDTO(transferRequest);
+            if (transRequest.getStatus().equals(ResultType.SUCCESS)) return convertEntityToDTO(transRequest);
             throw new InternetBankingTransferException(TransferExceptions.ERROR.toString());
         }
         throw new InternetBankingTransferException();
     }
 
     @Override
-    public TransferRequest getTransfer(Long id) {
+    public TransRequest getTransfer(Long id) {
         return transferRequestRepo.findById(id);
     }
 
     @Override
-    public Iterable<TransferRequest> getTransfers(User user) {
+    public Iterable<TransRequest> getTransfers(User user) {
        return transferRequestRepo.findAll()
                .stream()
                .filter(i -> i.getUserReferenceNumber().equals(user.getId()))
@@ -97,8 +97,8 @@ public class TransferServiceImpl implements TransferService {
 
 
         try {
-            TransferRequest transferRequest = convertDTOToEntity(transferRequestDTO);
-            transferRequestRepo.save(transferRequest);
+            TransRequest transRequest = convertDTOToEntity(transferRequestDTO);
+            transferRequestRepo.save(transRequest);
             result = true;
 
         } catch (Exception e) {
@@ -110,9 +110,9 @@ public class TransferServiceImpl implements TransferService {
     @Override
 
     public void deleteTransfer(Long id) throws InternetBankingException {
-        TransferRequest transferRequest = transferRequestRepo.findById(id);
-        if (transferRequest != null) {
-            transferRequestRepo.delete(transferRequest);
+        TransRequest transRequest = transferRequestRepo.findById(id);
+        if (transRequest != null) {
+            transferRequestRepo.delete(transRequest);
         }
 
 
@@ -160,24 +160,24 @@ public class TransferServiceImpl implements TransferService {
     }
 
     @Override
-    public Page<TransferRequest> getTransfers(User user, Pageable pageDetails) {
+    public Page<TransRequest> getTransfers(User user, Pageable pageDetails) {
         // TODO Auto-generated method stub
         return null;
     }
 
-    public TransferRequestDTO convertEntityToDTO(TransferRequest transferRequest) {
-        return modelMapper.map(transferRequest, TransferRequestDTO.class);
+    public TransferRequestDTO convertEntityToDTO(TransRequest transRequest) {
+        return modelMapper.map(transRequest, TransferRequestDTO.class);
     }
 
 
-    public TransferRequest convertDTOToEntity(TransferRequestDTO transferRequestDTO) {
-        return modelMapper.map(transferRequestDTO, TransferRequest.class);
+    public TransRequest convertDTOToEntity(TransferRequestDTO transferRequestDTO) {
+        return modelMapper.map(transferRequestDTO, TransRequest.class);
     }
 
-    public List<TransferRequestDTO> convertEntitiesToDTOs(Iterable<TransferRequest> transferRequests) {
+    public List<TransferRequestDTO> convertEntitiesToDTOs(Iterable<TransRequest> transferRequests) {
         List<TransferRequestDTO> transferRequestDTOList = new ArrayList<>();
-        for (TransferRequest transferRequest : transferRequests) {
-            TransferRequestDTO transferRequestDTO = convertEntityToDTO(transferRequest);
+        for (TransRequest transRequest : transferRequests) {
+            TransferRequestDTO transferRequestDTO = convertEntityToDTO(transRequest);
             transferRequestDTOList.add(transferRequestDTO);
         }
         return transferRequestDTOList;

@@ -91,7 +91,7 @@
                                             <div class="col-sm-6">
                                                 <p th:each="user: ${authUserList}">
                                                     <label class="checkbox-inline">
-                                                    <input type="checkbox" th:field="*{authorizers}"
+                                                    <input type="checkbox" th:field="*{auths}"
                                                            th:value="${user.id}"/>
                                                     <span th:text="${user.firstName + ' ' + user.lastName}"></span>
                                                     </label>
@@ -152,8 +152,8 @@
 
         $("#anyAuthorizer").change(function () {
             if ($(this).is(":checked")) {
-                if (!$("input[name='authorizers']").is(":checked")) {
-                    $("input[name='authorizers']").prop("checked", true);
+                if (!$("input[name='auths']").is(":checked")) {
+                    $("input[name='auths']").prop("checked", true);
                 }
             }
 

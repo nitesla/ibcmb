@@ -171,7 +171,8 @@ public class TransferController {
             redirectAttributes.addFlashAttribute("message", messages.getMessage("transaction.success", null, locale));
 
 
-            return index(transferRequestDTO.getTransferType());
+          //  return index(transferRequestDTO.getTransferType());
+            return "redirect:/retail/dashboard";
         } catch (InternetBankingTransferException e) {
             e.printStackTrace();
             String errorMessage = transferErrorService.getMessage(e,request);

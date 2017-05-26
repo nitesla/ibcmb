@@ -1,11 +1,9 @@
 package longbridge.controllers.corporate;
 
-import longbridge.dtos.CorporateDTO;
-import longbridge.dtos.CorporateUserDTO;
-import longbridge.models.CorpTransferRequest;
+import longbridge.models.CorpTransRequest;
 import longbridge.models.Corporate;
 import longbridge.models.CorporateUser;
-import longbridge.models.PendingAuthorization;
+import longbridge.models.PendAuth;
 import longbridge.repositories.CorpTransferRequestRepo;
 import longbridge.repositories.CorporateRepo;
 import longbridge.services.CorporateService;
@@ -16,7 +14,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.math.BigDecimal;
 import java.security.Principal;
@@ -45,18 +42,18 @@ public class CorpTransferController {
 
     @GetMapping("/{id}/{amount}")
     public void getQualifiedAuthorizers(@PathVariable Long id, @PathVariable String amount) {
-        CorpTransferRequest transferRequest = new CorpTransferRequest();
+        CorpTransRequest transferRequest = new CorpTransRequest();
         transferRequest.setAmount(new BigDecimal(amount));
         Corporate corporate = corporateRepo.findOne(id);
         transferRequest.setCorporate(corporate);
         List<CorporateUser> authorizers = corporateService.getQualifiedAuthorizers(transferRequest);
-        PendingAuthorization pendingAuthorization = new PendingAuthorization();
-        List<PendingAuthorization> pendingAuthorizations = new ArrayList<>();
+        PendAuth pendAuth = new PendAuth();
+        List<PendAuth> pendAuths = new ArrayList<>();
         for (CorporateUser authorizer : authorizers) {
-            pendingAuthorization.setAuthorizer(authorizer);
-            pendingAuthorizations.add(pendingAuthorization);
+            pendAuth.setAuthorizer(authorizer);
+            pendAuths.add(pendAuth);
         }
-        transferRequest.setPendingAuthorizations(pendingAuthorizations);
+        transferRequest.setPendAuths(pendAuths);
         transferRequestRepo.save(transferRequest);
     }
 
@@ -64,8 +61,8 @@ public class CorpTransferController {
     public String getPendingTransfer(Principal principal,Model model){
 
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
-        List<PendingAuthorization> pendingAuthorizations=corporateUser.getPendingAuthorizations();
-        model.addAttribute("pendingAuthorizations",pendingAuthorizations);
+        List<PendAuth> pendAuths =corporateUser.getPendAuths();
+        model.addAttribute("pendAuths", pendAuths);
         return "corp/transfer/pendingtransfer/view";
     }
 }

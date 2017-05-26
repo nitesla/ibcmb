@@ -3,7 +3,7 @@ package longbridge.services.implementations;
 import longbridge.dtos.ServiceReqConfigDTO;
 import longbridge.dtos.ServiceReqFormFieldDTO;
 import longbridge.exception.InternetBankingException;
-import longbridge.models.ServiceReqConfig;
+import longbridge.models.SRConfig;
 import longbridge.models.ServiceReqFormField;
 import longbridge.repositories.ServiceReqConfigRepo;
 import longbridge.repositories.ServiceReqFormFieldRepo;
@@ -53,19 +53,19 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 	@Transactional
 	public String addServiceReqConfig(ServiceReqConfigDTO serviceReqConfigDTO) throws InternetBankingException {
 		try {
-			ServiceReqConfig serviceReqConfig = convertDTOToEntity(serviceReqConfigDTO);
-			Iterator<ServiceReqFormField> serviceReqFormFieldIterator = serviceReqConfig.getFormFields().iterator();
+			SRConfig SRConfig = convertDTOToEntity(serviceReqConfigDTO);
+			Iterator<ServiceReqFormField> serviceReqFormFieldIterator = SRConfig.getFormFields().iterator();
 
 			while (serviceReqFormFieldIterator.hasNext()) {
 				ServiceReqFormField serviceReqFormField = serviceReqFormFieldIterator.next();
 				if (serviceReqFormField.getFieldName() == null) {
 					serviceReqFormFieldIterator.remove();
 				} else {
-					serviceReqFormField.setServiceReqConfig(serviceReqConfig);
+					serviceReqFormField.setSRConfig(SRConfig);
 
 				}
 			}
-			serviceReqConfigRepo.save(serviceReqConfig);
+			serviceReqConfigRepo.save(SRConfig);
 			logger.info("Added service request configuration {}", serviceReqConfigDTO.toString());
 			return messageSource.getMessage("req.config.add.success", null, locale);
 		}
@@ -76,27 +76,27 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 
 	@Override
 	public ServiceReqConfigDTO getServiceReqConfig(Long id) {
-		ServiceReqConfig serviceReqConfig = serviceReqConfigRepo.findOne(id);
+		SRConfig SRConfig = serviceReqConfigRepo.findOne(id);
 		modelMapper = new ModelMapper();
-		return modelMapper.map(serviceReqConfig, ServiceReqConfigDTO.class);
+		return modelMapper.map(SRConfig, ServiceReqConfigDTO.class);
 	}
 
 	@Override
 	public List<ServiceReqConfigDTO> getServiceReqConfigs() {
-		List<ServiceReqConfig> serviceReqConfigs = serviceReqConfigRepo.findAll();
-		return convertEntitiesToDTOs(serviceReqConfigs);
+		List<SRConfig> SRConfigs = serviceReqConfigRepo.findAll();
+		return convertEntitiesToDTOs(SRConfigs);
 	}
 
 	@Override
-	public List<ServiceReqConfig> getServiceReqConfs() {
-		List<ServiceReqConfig> serviceReqConfigs = serviceReqConfigRepo.findAll();
-		return serviceReqConfigs;
+	public List<SRConfig> getServiceReqConfs() {
+		List<SRConfig> SRConfigs = serviceReqConfigRepo.findAll();
+		return SRConfigs;
 	}
 
 	@Override
 	public Iterable<ServiceReqConfigDTO> gerServiceReqConfigsPage(Integer pageNum, Integer pageSize) {
 		PageRequest pageRequest = new PageRequest(pageNum, pageSize);
-		Iterable<ServiceReqConfig> serviceReqConfigs = serviceReqConfigRepo.findAll(pageRequest);
+		Iterable<SRConfig> serviceReqConfigs = serviceReqConfigRepo.findAll(pageRequest);
 		return convertEntitiesToDTOs(serviceReqConfigs);
 	}
 
@@ -104,7 +104,7 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 	@Transactional
 	public String updateServiceReqConfig(ServiceReqConfigDTO serviceReqConfigDTO) throws InternetBankingException {
 		try {
-			ServiceReqConfig serviceReqConfig = serviceReqConfigRepo.findOne(serviceReqConfigDTO.getId());
+			SRConfig SRConfig = serviceReqConfigRepo.findOne(serviceReqConfigDTO.getId());
 			ModelMapper mapper = new ModelMapper();
 			List<ServiceReqFormField> fields = new ArrayList<ServiceReqFormField>();
 
@@ -114,7 +114,7 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 					continue;
 				if (f.getId() == null) {
 					onefield = new ServiceReqFormField();
-					onefield.setServiceReqConfig(serviceReqConfig);
+					onefield.setSRConfig(SRConfig);
 				} else {
 					onefield = serviceReqFormFieldRepo.findOne(f.getId());
 
@@ -123,15 +123,15 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 				fields.add(onefield);
 
 			}
-			serviceReqConfig.setId(serviceReqConfigDTO.getId());
-			serviceReqConfig.setVersion(serviceReqConfigDTO.getVersion());
-			serviceReqConfig.setRequestName(serviceReqConfigDTO.getRequestName());
-			serviceReqConfig.setAuthenticate(serviceReqConfigDTO.isAuthenticate());
-			serviceReqConfig.setRequestType(serviceReqConfigDTO.getRequestType());
-			serviceReqConfig.setGroupId(serviceReqConfigDTO.getGroupId());
-			serviceReqConfig.setFormFields(fields);
-			serviceReqConfigRepo.save(serviceReqConfig);
-			logger.info("Updated service request configuration {}", serviceReqConfig.toString());
+			SRConfig.setId(serviceReqConfigDTO.getId());
+			SRConfig.setVersion(serviceReqConfigDTO.getVersion());
+			SRConfig.setRequestName(serviceReqConfigDTO.getRequestName());
+			SRConfig.setAuthenticate(serviceReqConfigDTO.isAuthenticate());
+			SRConfig.setRequestType(serviceReqConfigDTO.getRequestType());
+			SRConfig.setGroupId(serviceReqConfigDTO.getGroupId());
+			SRConfig.setFormFields(fields);
+			serviceReqConfigRepo.save(SRConfig);
+			logger.info("Updated service request configuration {}", SRConfig.toString());
 			return messageSource.getMessage("req.config.update.success", null, locale);
 
 		}
@@ -214,7 +214,7 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 
 	@Override
 	public Page<ServiceReqConfigDTO> getServiceReqConfigs(Pageable pageDetails) {
-		Page<ServiceReqConfig> page = serviceReqConfigRepo.findAll(pageDetails);
+		Page<SRConfig> page = serviceReqConfigRepo.findAll(pageDetails);
 		List<ServiceReqConfigDTO> dtOs = convertEntitiesToDTOs(page.getContent());
 		long t = page.getTotalElements();
 		Page<ServiceReqConfigDTO> pageImpl = new PageImpl<ServiceReqConfigDTO>(dtOs, pageDetails, t);
@@ -228,8 +228,8 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 		return new PageImpl<ServiceReqFormFieldDTO>(dtOs, pageDetails, page.getTotalElements());
 	}
 
-	private ServiceReqConfigDTO convertEntityToDTO(ServiceReqConfig serviceReqConfig) {
-		PropertyMap<ServiceReqConfig, ServiceReqConfigDTO> mapperConfig = new PropertyMap<ServiceReqConfig, ServiceReqConfigDTO>() {
+	private ServiceReqConfigDTO convertEntityToDTO(SRConfig SRConfig) {
+		PropertyMap<SRConfig, ServiceReqConfigDTO> mapperConfig = new PropertyMap<SRConfig, ServiceReqConfigDTO>() {
 			@Override
 			protected void configure() {
 				skip().setFormFields(null);
@@ -237,27 +237,27 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 		};
 		modelMapper = new ModelMapper();
 		modelMapper.addMappings(mapperConfig);
-		return modelMapper.map(serviceReqConfig, ServiceReqConfigDTO.class);
+		return modelMapper.map(SRConfig, ServiceReqConfigDTO.class);
 	}
 
-	private ServiceReqConfig convertDTOToEntity(ServiceReqConfigDTO serviceReqConfigDTO) {
+	private SRConfig convertDTOToEntity(ServiceReqConfigDTO serviceReqConfigDTO) {
 		modelMapper = new ModelMapper();
-		return modelMapper.map(serviceReqConfigDTO, ServiceReqConfig.class);
+		return modelMapper.map(serviceReqConfigDTO, SRConfig.class);
 	}
 
-	private List<ServiceReqConfigDTO> convertEntitiesToDTOs(Iterable<ServiceReqConfig> serviceReqConfigs) {
+	private List<ServiceReqConfigDTO> convertEntitiesToDTOs(Iterable<SRConfig> serviceReqConfigs) {
 		List<ServiceReqConfigDTO> serviceReqConfigDTOList = new ArrayList<>();
-		for (ServiceReqConfig serviceReqConfig : serviceReqConfigs) {
-			ServiceReqConfigDTO dto = convertEntityToDTO(serviceReqConfig);
+		for (SRConfig SRConfig : serviceReqConfigs) {
+			ServiceReqConfigDTO dto = convertEntityToDTO(SRConfig);
 			serviceReqConfigDTOList.add(dto);
 		}
 		return serviceReqConfigDTOList;
 	}
 
-	private Iterable<ServiceReqConfigDTO> convertEntitiesToDTOs(Page<ServiceReqConfig> serviceReqConfigs) {
+	private Iterable<ServiceReqConfigDTO> convertEntitiesToDTOs(Page<SRConfig> serviceReqConfigs) {
 		List<ServiceReqConfigDTO> serviceReqConfigDTOList = new ArrayList<>();
-		for (ServiceReqConfig serviceReqConfig : serviceReqConfigs) {
-			ServiceReqConfigDTO dto = convertEntityToDTO(serviceReqConfig);
+		for (SRConfig SRConfig : serviceReqConfigs) {
+			ServiceReqConfigDTO dto = convertEntityToDTO(SRConfig);
 			serviceReqConfigDTOList.add(dto);
 		}
 		return serviceReqConfigDTOList;

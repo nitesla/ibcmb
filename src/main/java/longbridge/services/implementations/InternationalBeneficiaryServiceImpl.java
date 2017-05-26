@@ -93,7 +93,7 @@ public class InternationalBeneficiaryServiceImpl implements InternationalBenefic
 		internationalBeneficiaryDTO.setSwiftCode(internationalBeneficiary.getSwiftCode());
 		internationalBeneficiaryDTO.setSortCode(internationalBeneficiary.getSortCode());
 		internationalBeneficiaryDTO.setBeneficiaryAddress(internationalBeneficiary.getBeneficiaryAddress());
-		internationalBeneficiaryDTO.setIntermediaryBankAccountNumber(internationalBeneficiary.getIntermediaryBankAccountNumber());
+		internationalBeneficiaryDTO.setIntermediaryBankAccountNumber(internationalBeneficiary.getIntermediaryBankAcctNo());
 		internationalBeneficiaryDTO.setIntermediaryBankName(internationalBeneficiary.getIntermediaryBankName());
 		return  modelMapper.map(internationalBeneficiary,InternationalBeneficiaryDTO.class);
 	}

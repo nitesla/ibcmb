@@ -21,11 +21,11 @@ public class CorporateUser extends User {
 	@ManyToOne
     private Corporate corporate;
 
-	@ManyToMany(mappedBy = "authorizers")
-	private List<CorpTransferRule> corpTransferRules;
+	@ManyToMany(mappedBy = "auths")
+	private List<CorpTransRule> corpTransRules;
 
 	@OneToMany(mappedBy = "authorizer")
-	List<PendingAuthorization> pendingAuthorizations = new ArrayList<PendingAuthorization>();
+	List<PendAuth> pendAuths = new ArrayList<PendAuth>();
 
 
     public CorporateUser(){
@@ -40,20 +40,20 @@ public class CorporateUser extends User {
 		this.corporate = corporate;
 	}
 
-	public List<CorpTransferRule> getCorpTransferRules() {
-		return corpTransferRules;
+	public List<CorpTransRule> getCorpTransRules() {
+		return corpTransRules;
 	}
 
-	public void setCorpTransferRules(List<CorpTransferRule> corpTransferRules) {
-		this.corpTransferRules = corpTransferRules;
+	public void setCorpTransRules(List<CorpTransRule> corpTransRules) {
+		this.corpTransRules = corpTransRules;
 	}
 
-	public List<PendingAuthorization> getPendingAuthorizations() {
-		return pendingAuthorizations;
+	public List<PendAuth> getPendAuths() {
+		return pendAuths;
 	}
 
-	public void setPendingAuthorizations(List<PendingAuthorization> pendingAuthorizations) {
-		this.pendingAuthorizations = pendingAuthorizations;
+	public void setPendAuths(List<PendAuth> pendAuths) {
+		this.pendAuths = pendAuths;
 	}
 
 	@Override

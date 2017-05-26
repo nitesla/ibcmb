@@ -2,9 +2,9 @@ package longbridge.services.implementations;
 
 import longbridge.dtos.CorpTransferRequestDTO;
 import longbridge.exception.*;
-import longbridge.models.CorpTransferRequest;
+import longbridge.models.CorpTransRequest;
 import longbridge.models.CorporateUser;
-import longbridge.models.PendingAuthorization;
+import longbridge.models.PendAuth;
 import longbridge.repositories.CorpTransferRequestRepo;
 import longbridge.repositories.CorporateUserRepo;
 import longbridge.repositories.PendingAuthorizationRepo;
@@ -49,7 +49,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     @Transactional
     public String addTransferRequest(CorpTransferRequestDTO transferRequestDTO) throws InternetBankingException {
 
-        CorpTransferRequest transferRequest = convertDTOToEntity(transferRequestDTO);
+        CorpTransRequest transferRequest = convertDTOToEntity(transferRequestDTO);
 
         if(transferRequest.getCorporate().getCorporateType().equals("SOLE")){
             makeTransfer(transferRequest);
@@ -69,14 +69,14 @@ public class CorpTransferServiceImpl implements CorpTransferService {
             //TODO do some other validations before saving
 
             List<CorporateUser> authorizers = corporateService.getQualifiedAuthorizers(transferRequest);
-            List<PendingAuthorization> pendingAuthorizations = new ArrayList<>();
+            List<PendAuth> pendAuths = new ArrayList<>();
             for (CorporateUser authorizer : authorizers) {
-                PendingAuthorization pendingAuthorization = new PendingAuthorization();
-                pendingAuthorization.setAuthorizer(authorizer);
-                pendingAuthorizations.add(pendingAuthorization);
+                PendAuth pendAuth = new PendAuth();
+                pendAuth.setAuthorizer(authorizer);
+                pendAuths.add(pendAuth);
             }
 
-            transferRequest.setPendingAuthorizations(pendingAuthorizations);
+            transferRequest.setPendAuths(pendAuths);
             corpTransferRequestRepo.save(transferRequest);
 
         } catch (Exception e) {
@@ -89,18 +89,18 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     @Override
     @Transactional
     public String authorizeTransfer(CorporateUser authorizer, Long authorizationId) {
-        PendingAuthorization pendingAuthorization = pendingAuthorizationRepo.findOne(authorizationId);
-        if (!authorizer.getPendingAuthorizations().contains(pendingAuthorization)) {
+        PendAuth pendAuth = pendingAuthorizationRepo.findOne(authorizationId);
+        if (!authorizer.getPendAuths().contains(pendAuth)) {
             throw new InvalidAuthorizationException(messageSource.getMessage("transfer.auth.invalid", null, locale));
         }
         try {
-            CorpTransferRequest transferRequest = pendingAuthorization.getCorpTransferRequest();
-            transferRequest.getPendingAuthorizations().remove(pendingAuthorization);
+            CorpTransRequest transferRequest = pendAuth.getCorpTransferRequest();
+            transferRequest.getPendAuths().remove(pendAuth);
             if (corporateService.getApplicableTransferRule(transferRequest).isAnyCanAuthorize()) {
                 makeTransfer(transferRequest);
-                transferRequest.getPendingAuthorizations().clear();
+                transferRequest.getPendAuths().clear();
             }
-            else if (transferRequest.getPendingAuthorizations().isEmpty()) {
+            else if (transferRequest.getPendAuths().isEmpty()) {
                 makeTransfer(transferRequest);
             }
             corpTransferRequestRepo.save(transferRequest);
@@ -115,22 +115,22 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     }
 
     @Override
-    public String makeTransfer(CorpTransferRequest transferRequest) throws InternetBankingTransferException {
+    public String makeTransfer(CorpTransRequest transferRequest) throws InternetBankingTransferException {
         return null; //TODO implement
     }
 
-    public CorpTransferRequestDTO convertEntityToDTO(CorpTransferRequest transferRequest) {
+    public CorpTransferRequestDTO convertEntityToDTO(CorpTransRequest transferRequest) {
         return modelMapper.map(transferRequest, CorpTransferRequestDTO.class);
     }
 
 
-    public CorpTransferRequest convertDTOToEntity(CorpTransferRequestDTO transferRequestDTO) {
-        return modelMapper.map(transferRequestDTO, CorpTransferRequest.class);
+    public CorpTransRequest convertDTOToEntity(CorpTransferRequestDTO transferRequestDTO) {
+        return modelMapper.map(transferRequestDTO, CorpTransRequest.class);
     }
 
-    public List<CorpTransferRequestDTO> convertEntitiesToDTOs(Iterable<CorpTransferRequest> transferRequests) {
+    public List<CorpTransferRequestDTO> convertEntitiesToDTOs(Iterable<CorpTransRequest> transferRequests) {
         List<CorpTransferRequestDTO> transferRequestDTOList = new ArrayList<>();
-        for (CorpTransferRequest transferRequest : transferRequests) {
+        for (CorpTransRequest transferRequest : transferRequests) {
             CorpTransferRequestDTO transferRequestDTO = convertEntityToDTO(transferRequest);
             transferRequestDTOList.add(transferRequestDTO);
         }

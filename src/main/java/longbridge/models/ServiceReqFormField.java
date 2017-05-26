@@ -15,7 +15,7 @@ import javax.persistence.ManyToOne;
 public class ServiceReqFormField extends AbstractEntity {
 
     @ManyToOne
-    private ServiceReqConfig serviceReqConfig;
+    private SRConfig SRConfig;
 
     private String fieldName;
     private String fieldLabel;
@@ -54,12 +54,12 @@ public class ServiceReqFormField extends AbstractEntity {
         this.typeData = typeData;
     }
 
-    public ServiceReqConfig getServiceReqConfig() {
-        return serviceReqConfig;
+    public SRConfig getSRConfig() {
+        return SRConfig;
     }
 
-    public void setServiceReqConfig(ServiceReqConfig serviceReqConfig) {
-        this.serviceReqConfig = serviceReqConfig;
+    public void setSRConfig(SRConfig SRConfig) {
+        this.SRConfig = SRConfig;
     }
 
     @Override

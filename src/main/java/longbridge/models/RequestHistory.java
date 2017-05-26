@@ -3,14 +3,9 @@ package longbridge.models;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
-import java.io.IOException;
 import java.util.Date;
 
 /**
@@ -26,7 +21,7 @@ public class RequestHistory extends AbstractEntity{
     @ManyToOne
     private ServiceRequest serviceRequest;
     private String status;
-    private String comment;
+    private String comments;
     @ManyToOne
     private OperationsUser createdBy;
     private Date createdOn;
@@ -47,12 +42,12 @@ public class RequestHistory extends AbstractEntity{
         this.status = status;
     }
 
-    public String getComment() {
-        return comment;
+    public String getComments() {
+        return comments;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
+    public void setComments(String comments) {
+        this.comments = comments;
     }
 
     public OperationsUser getCreatedBy() {
@@ -64,7 +59,7 @@ public class RequestHistory extends AbstractEntity{
         return "RequestHistory{" +
                 "serviceRequest=" + serviceRequest +
                 ", status='" + status + '\'' +
-                ", comment='" + comment + '\'' +
+                ", comments='" + comments + '\'' +
                 ", createdBy=" + createdBy +
                 ", createdOn=" + createdOn +
                 '}';

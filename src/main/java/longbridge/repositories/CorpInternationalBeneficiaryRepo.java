@@ -1,16 +1,16 @@
 package longbridge.repositories;
 
-import longbridge.models.CorpInternationalBeneficiary;
+import longbridge.models.CorpInterBen;
 import longbridge.models.CorporateUser;
 
 /**
  * Created by SYLVESTER on 5/22/2017.
  */
-public interface CorpInternationalBeneficiaryRepo extends CommonRepo<CorpInternationalBeneficiary,Long>{
+public interface CorpInternationalBeneficiaryRepo extends CommonRepo<CorpInterBen,Long>{
 
-    Iterable<CorpInternationalBeneficiary> findByUser(CorporateUser user);
+    Iterable<CorpInterBen> findByUser(CorporateUser user);
 
-    Iterable<CorpInternationalBeneficiary> findByUserAndDelFlag(CorporateUser user, String delFlag);
+    Iterable<CorpInterBen> findByUserAndDelFlag(CorporateUser user, String delFlag);
 
 }
 

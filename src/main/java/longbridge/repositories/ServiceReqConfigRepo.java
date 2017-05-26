@@ -1,13 +1,13 @@
 package longbridge.repositories;
 
-import longbridge.models.ServiceReqConfig;
+import longbridge.models.SRConfig;
 import org.springframework.stereotype.Repository;
 
 /**
  * Created by Wunmi on 08/04/2017.
  */
 @Repository
-public interface ServiceReqConfigRepo extends CommonRepo<ServiceReqConfig, Long>{
+public interface ServiceReqConfigRepo extends CommonRepo<SRConfig, Long>{
 
-    ServiceReqConfig findByRequestName(String requestName);
+    SRConfig findByRequestName(String requestName);
 }

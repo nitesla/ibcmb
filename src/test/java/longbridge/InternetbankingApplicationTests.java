@@ -52,7 +52,7 @@ public class InternetbankingApplicationTests {
 
 	@Test
     public  void  testTransferRule(){
-        CorpTransferRule transferRule = new CorpTransferRule();
+        CorpTransRule transferRule = new CorpTransRule();
         transferRule.setLowerLimitAmount(new BigDecimal("5000.25"));
         transferRule.setUpperLimitAmount(new BigDecimal("3000.75"));
         assertThat(transferRule.getLowerLimitAmount().toString()).isEqualTo("5000.25");
@@ -63,17 +63,17 @@ public class InternetbankingApplicationTests {
     @Test
     @Transactional
     public  void getApplicableRule(){
-        List<CorpTransferRule> transferRules = new ArrayList<>();
-        CorpTransferRule transferRule1 = new CorpTransferRule();
+        List<CorpTransRule> transferRules = new ArrayList<>();
+        CorpTransRule transferRule1 = new CorpTransRule();
         transferRule1.setId(1L);
         transferRule1.setLowerLimitAmount(new BigDecimal("0.00"));
         transferRule1.setUpperLimitAmount(new BigDecimal("5000"));
-        CorpTransferRule transferRule2 = new CorpTransferRule();
+        CorpTransRule transferRule2 = new CorpTransRule();
         transferRule1.setId(2L);
         transferRule2.setLowerLimitAmount(new BigDecimal("4001"));
         transferRule2.setUpperLimitAmount(new BigDecimal("12000"));
         transferRule2.setUnlimited(true);
-        CorpTransferRule transferRule3 = new CorpTransferRule();
+        CorpTransRule transferRule3 = new CorpTransRule();
         transferRule1.setId(3L);
         transferRule3.setLowerLimitAmount(new BigDecimal("10000"));
         transferRule3.setUpperLimitAmount(new BigDecimal("20000"));
@@ -82,11 +82,11 @@ public class InternetbankingApplicationTests {
         transferRules.add(transferRule2);
         transferRules.add(transferRule3);
         Corporate corporate = new Corporate();
-        corporate.setCorpTransferRules(transferRules);
-        CorpTransferRequest transferRequest = new CorpTransferRequest();
+        corporate.setCorpTransRules(transferRules);
+        CorpTransRequest transferRequest = new CorpTransRequest();
         transferRequest.setAmount(new BigDecimal("100000"));
         transferRequest.setCorporate(corporate);
-        CorpTransferRule rule = corporateService.getApplicableTransferRule(transferRequest);
+        CorpTransRule rule = corporateService.getApplicableTransferRule(transferRequest);
         assertThat(rule).isEqualTo(transferRule3);
 
     }
@@ -94,11 +94,11 @@ public class InternetbankingApplicationTests {
     @Test
     @Transactional
     public void getQualifiedAuthorizers(){
-        CorpTransferRequest transferRequest = new CorpTransferRequest();
+        CorpTransRequest transferRequest = new CorpTransRequest();
         transferRequest.setAmount(new BigDecimal("150000"));
         Corporate corporate = corporateRepo.findOne(2L);
         transferRequest.setCorporate(corporate);
-        int numRules = corporate.getCorpTransferRules().size();
+        int numRules = corporate.getCorpTransRules().size();
         int numAuthorizers = corporateService.getQualifiedAuthorizers(transferRequest).size();
         assertThat(numAuthorizers).isEqualTo(3);
         assertThat(numRules).isEqualTo(3);
@@ -109,24 +109,24 @@ public class InternetbankingApplicationTests {
     @Transactional
     public void addCorpTransferRequest() {
 
-        CorpTransferRequest transferRequest = new CorpTransferRequest();
+        CorpTransRequest transferRequest = new CorpTransRequest();
         transferRequest.setAmount(new BigDecimal("150000"));
         Corporate corporate = corporateRepo.findOne(2L);
         transferRequest.setCorporate(corporate);
         List<CorporateUser> authorizers = corporateService.getQualifiedAuthorizers(transferRequest);
-        List<PendingAuthorization> pendingAuthorizations = new ArrayList<>();
+        List<PendAuth> pendAuths = new ArrayList<>();
         for (CorporateUser authorizer : authorizers) {
-            PendingAuthorization pendingAuthorization = new PendingAuthorization();
-            pendingAuthorization.setAuthorizer(authorizer);
-            pendingAuthorizations.add(pendingAuthorization);
+            PendAuth pendAuth = new PendAuth();
+            pendAuth.setAuthorizer(authorizer);
+            pendAuths.add(pendAuth);
         }
-        transferRequest.setPendingAuthorizations(pendingAuthorizations);
+        transferRequest.setPendAuths(pendAuths);
         transferRequestRepo.save(transferRequest);
 
-        assertThat(corporate.getCorpTransferRules().size()).isEqualTo(3);
+        assertThat(corporate.getCorpTransRules().size()).isEqualTo(3);
         assertThat(authorizers.size()).isEqualTo(3);
-        assertThat(pendingAuthorizations.size()).isEqualTo(3);
-        assertThat(transferRequest.getPendingAuthorizations().size()).isEqualTo(3);
+        assertThat(pendAuths.size()).isEqualTo(3);
+        assertThat(transferRequest.getPendAuths().size()).isEqualTo(3);
     }
 
 
@@ -135,15 +135,15 @@ public class InternetbankingApplicationTests {
 //    @Transactional
 //    public void authorizeTransfer(){
 //        CorporateUser authorizer = corporateUserRepo.findOne(1L);
-//        PendingAuthorization pendingAuthorization = pendingAuthorizationRepo.findOne(14L);
-//        CorpTransferRequest transferRequest = pendingAuthorization.getCorpTransferRequest();
+//        PendAuth pendingAuthorization = pendingAuthorizationRepo.findOne(14L);
+//        CorpTransRequest transferRequest = pendingAuthorization.getCorpTransferRequest();
 //        BigDecimal amount =  transferRequest.getAmount();
 //        BigDecimal scaledAmount = amount.setScale(0);
-//        assertThat(authorizer.getPendingAuthorizations().size()).isEqualTo(2);
+//        assertThat(authorizer.getPendAuths().size()).isEqualTo(2);
 //        assertThat(scaledAmount).isEqualTo(new BigDecimal("250000"));
-//        assertThat(transferRequest.getPendingAuthorizations().size()).isEqualTo(5);
-//        transferRequest.getPendingAuthorizations().remove(pendingAuthorization);
-//        assertThat(transferRequest.getPendingAuthorizations().size()).isEqualTo(4);
+//        assertThat(transferRequest.getPendAuths().size()).isEqualTo(5);
+//        transferRequest.getPendAuths().remove(pendingAuthorization);
+//        assertThat(transferRequest.getPendAuths().size()).isEqualTo(4);
 //        transferRequestRepo.save(transferRequest);
 //
 //    }

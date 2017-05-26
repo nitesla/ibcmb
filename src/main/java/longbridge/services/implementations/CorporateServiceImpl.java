@@ -259,9 +259,9 @@ public class CorporateServiceImpl implements CorporateService {
         }
 
         try {
-            CorpTransferRule corpTransferRule = convertTransferRuleDTOToEntity(transferRuleDTO);
-            Corporate corporate = corpTransferRule.getCorporate();
-            corporate.getCorpTransferRules().add(corpTransferRule);
+            CorpTransRule corpTransRule = convertTransferRuleDTOToEntity(transferRuleDTO);
+            Corporate corporate = corpTransRule.getCorporate();
+            corporate.getCorpTransRules().add(corpTransRule);
             corporateRepo.save(corporate);
             logger.info("Added transfer rule for corporate with Id {}", transferRuleDTO.getCorporateId());
             return messageSource.getMessage("rule.add.success", null, locale);
@@ -272,7 +272,7 @@ public class CorporateServiceImpl implements CorporateService {
 
     @Override
     public CorpTransferRuleDTO getCorporateRule(Long id) {
-        CorpTransferRule transferRule = corpTransferRuleRepo.findOne(id);
+        CorpTransRule transferRule = corpTransferRuleRepo.findOne(id);
         return convertTransferRuleEntityToDTO(transferRule);
     }
 
@@ -288,10 +288,10 @@ public class CorporateServiceImpl implements CorporateService {
         }
 
         try {
-            CorpTransferRule corpTransferRule = convertTransferRuleDTOToEntity(transferRuleDTO);
-            corpTransferRule.setId(transferRuleDTO.getId());
-            corpTransferRule.setVersion(transferRuleDTO.getVersion());
-            corpTransferRuleRepo.save(corpTransferRule);
+            CorpTransRule corpTransRule = convertTransferRuleDTOToEntity(transferRuleDTO);
+            corpTransRule.setId(transferRuleDTO.getId());
+            corpTransRule.setVersion(transferRuleDTO.getVersion());
+            corpTransferRuleRepo.save(corpTransRule);
             logger.info("Updated transfer rule for corporate with Id {}", transferRuleDTO.getCorporateId());
             return messageSource.getMessage("rule.update.success", null, locale);
         } catch (Exception e) {
@@ -301,7 +301,7 @@ public class CorporateServiceImpl implements CorporateService {
 
     @Override
     public List<CorpTransferRuleDTO> getCorporateRules() {
-        List<CorpTransferRule> transferRules = corpTransferRuleRepo.findAll();
+        List<CorpTransRule> transferRules = corpTransferRuleRepo.findAll();
         return convertTransferRuleEntitiesToDTOs(transferRules);
     }
 
@@ -309,7 +309,7 @@ public class CorporateServiceImpl implements CorporateService {
     @Transactional
     public List<CorpTransferRuleDTO> getCorporateRules(Long corpId) {
         Corporate corporate = corporateRepo.findOne(corpId);
-        List<CorpTransferRule> transferRules = corporate.getCorpTransferRules();
+        List<CorpTransRule> transferRules = corporate.getCorpTransRules();
         Collections.sort(transferRules, new TransferRuleComparator());
         return convertTransferRuleEntitiesToDTOs(transferRules);
     }
@@ -317,10 +317,10 @@ public class CorporateServiceImpl implements CorporateService {
     @Override
     public String deleteCorporateRule(Long id) throws InternetBankingException {
         try {
-            CorpTransferRule transferRule = corpTransferRuleRepo.findOne(id);
+            CorpTransRule transferRule = corpTransferRuleRepo.findOne(id);
             Corporate corporate = corporateRepo.findOne(transferRule.getCorporate().getId());
 
-            corporate.getCorpTransferRules().remove(transferRule);
+            corporate.getCorpTransRules().remove(transferRule);
             corporateRepo.save(corporate);
             logger.info("Updated transfer rule  with Id {}", id);
             return messageSource.getMessage("rule.delete.success", null, locale);
@@ -352,13 +352,13 @@ public class CorporateServiceImpl implements CorporateService {
 
     @Override
     @Transactional
-    public CorpTransferRule getApplicableTransferRule(CorpTransferRequest transferRequest) {
+    public CorpTransRule getApplicableTransferRule(CorpTransRequest transferRequest) {
         Corporate corporate = transferRequest.getCorporate();
-        List<CorpTransferRule> transferRules = corporate.getCorpTransferRules();
+        List<CorpTransRule> transferRules = corporate.getCorpTransRules();
         Collections.sort(transferRules, new TransferRuleComparator());
         BigDecimal transferAmount = transferRequest.getAmount();
-        CorpTransferRule applicableTransferRule = null;
-        for (CorpTransferRule transferRule : transferRules) {
+        CorpTransRule applicableTransferRule = null;
+        for (CorpTransRule transferRule : transferRules) {
             BigDecimal lowerLimit = transferRule.getLowerLimitAmount();
             BigDecimal upperLimit = transferRule.getUpperLimitAmount();
             if (transferAmount.compareTo(lowerLimit) >= 0 && (transferAmount.compareTo(upperLimit) <= 0)) {
@@ -374,13 +374,13 @@ public class CorporateServiceImpl implements CorporateService {
 
     @Override
     @Transactional
-    public List<CorporateUser> getQualifiedAuthorizers(CorpTransferRequest transferRequest) {
+    public List<CorporateUser> getQualifiedAuthorizers(CorpTransRequest transferRequest) {
         Corporate corporate = transferRequest.getCorporate();
-        List<CorpTransferRule> transferRules = corporate.getCorpTransferRules();
+        List<CorpTransRule> transferRules = corporate.getCorpTransRules();
         Collections.sort(transferRules, new TransferRuleComparator());
         BigDecimal transferAmount = transferRequest.getAmount();
-        CorpTransferRule applicableTransferRule = null;
-        for (CorpTransferRule transferRule : transferRules) {
+        CorpTransRule applicableTransferRule = null;
+        for (CorpTransRule transferRule : transferRules) {
             BigDecimal lowerLimit = transferRule.getLowerLimitAmount();
             BigDecimal upperLimit = transferRule.getUpperLimitAmount();
             if (transferAmount.compareTo(lowerLimit) >= 0 && transferAmount.compareTo(upperLimit) <= 0) {
@@ -392,13 +392,13 @@ public class CorporateServiceImpl implements CorporateService {
         }
         List<CorporateUser> authorizers = new ArrayList<>();
         if (applicableTransferRule != null) {
-            authorizers = applicableTransferRule.getAuthorizers();
+            authorizers = applicableTransferRule.getAuths();
         }
         return authorizers;
     }
 
 
-    private CorpTransferRuleDTO convertTransferRuleEntityToDTO(CorpTransferRule transferRule) {
+    private CorpTransferRuleDTO convertTransferRuleEntityToDTO(CorpTransRule transferRule) {
         CorpTransferRuleDTO corpTransferRuleDTO = new CorpTransferRuleDTO();
         corpTransferRuleDTO.setId(transferRule.getId());
         corpTransferRuleDTO.setVersion(transferRule.getVersion());
@@ -411,7 +411,7 @@ public class CorporateServiceImpl implements CorporateService {
         corpTransferRuleDTO.setCorporateName(transferRule.getCorporate().getName());
 
         List<CorporateUserDTO> authorizerList = new ArrayList<CorporateUserDTO>();
-        for (CorporateUser authorizer : transferRule.getAuthorizers()) {
+        for (CorporateUser authorizer : transferRule.getAuths()) {
             CorporateUserDTO authorizerDTO = new CorporateUserDTO();
             authorizerDTO.setId(authorizer.getId());
             authorizerDTO.setUserName(authorizer.getUserName());
@@ -425,26 +425,26 @@ public class CorporateServiceImpl implements CorporateService {
         return corpTransferRuleDTO;
     }
 
-    private CorpTransferRule convertTransferRuleDTOToEntity(CorpTransferRuleDTO transferRuleDTO) {
-        CorpTransferRule corpTransferRule = new CorpTransferRule();
-        corpTransferRule.setLowerLimitAmount(new BigDecimal(transferRuleDTO.getLowerLimitAmount()));
-        corpTransferRule.setUpperLimitAmount(new BigDecimal(transferRuleDTO.getUpperLimitAmount()));
-        corpTransferRule.setUnlimited(transferRuleDTO.isUnlimited());
-        corpTransferRule.setCurrency(transferRuleDTO.getCurrency());
-        corpTransferRule.setAnyCanAuthorize(transferRuleDTO.isAnyCanAuthorize());
-        corpTransferRule.setCorporate(corporateRepo.findOne(Long.parseLong(transferRuleDTO.getCorporateId())));
+    private CorpTransRule convertTransferRuleDTOToEntity(CorpTransferRuleDTO transferRuleDTO) {
+        CorpTransRule corpTransRule = new CorpTransRule();
+        corpTransRule.setLowerLimitAmount(new BigDecimal(transferRuleDTO.getLowerLimitAmount()));
+        corpTransRule.setUpperLimitAmount(new BigDecimal(transferRuleDTO.getUpperLimitAmount()));
+        corpTransRule.setUnlimited(transferRuleDTO.isUnlimited());
+        corpTransRule.setCurrency(transferRuleDTO.getCurrency());
+        corpTransRule.setAnyCanAuthorize(transferRuleDTO.isAnyCanAuthorize());
+        corpTransRule.setCorporate(corporateRepo.findOne(Long.parseLong(transferRuleDTO.getCorporateId())));
 
         List<CorporateUser> authorizerList = new ArrayList<CorporateUser>();
         for (CorporateUserDTO authorizer : transferRuleDTO.getAuthorizers()) {
             authorizerList.add(corporateUserRepo.findOne(authorizer.getId()));
         }
-        corpTransferRule.setAuthorizers(authorizerList);
-        return corpTransferRule;
+        corpTransRule.setAuths(authorizerList);
+        return corpTransRule;
     }
 
-    private List<CorpTransferRuleDTO> convertTransferRuleEntitiesToDTOs(List<CorpTransferRule> transferRules) {
+    private List<CorpTransferRuleDTO> convertTransferRuleEntitiesToDTOs(List<CorpTransRule> transferRules) {
         List<CorpTransferRuleDTO> transferRuleDTOs = new ArrayList<CorpTransferRuleDTO>();
-        for (CorpTransferRule transferRule : transferRules) {
+        for (CorpTransRule transferRule : transferRules) {
             CorpTransferRuleDTO transferRuleDTO = convertTransferRuleEntityToDTO(transferRule);
             transferRuleDTOs.add(transferRuleDTO);
         }

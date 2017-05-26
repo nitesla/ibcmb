@@ -6,8 +6,7 @@ import longbridge.api.AccountInfo;
 import longbridge.api.CustomerDetails;
 import longbridge.api.NEnquiryDetails;
 import longbridge.exception.InternetBankingTransferException;
-import longbridge.exception.TransferException;
-import longbridge.models.TransferRequest;
+import longbridge.models.TransRequest;
 import longbridge.utils.AccountStatement;
 
 import java.math.BigDecimal;
@@ -50,7 +49,7 @@ public interface IntegrationService {
     /** Initiates a transfer request to the relevant Transfer service.
      *
      */
-    TransferRequest makeTransfer(TransferRequest transferRequest) throws InternetBankingTransferException;
+    TransRequest makeTransfer(TransRequest transRequest) throws InternetBankingTransferException;
 
     /**Fetches the account Name, Balance , Type from the account table specified by account Number
      *

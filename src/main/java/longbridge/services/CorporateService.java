@@ -6,7 +6,6 @@ import longbridge.models.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 
@@ -183,9 +182,9 @@ public interface CorporateService{
     List<CorporateUserDTO> getAuthorizers(Long corpId);
 
     @PreAuthorize("hasAuthority('GET_CORPORATE_USER')")
-    List<CorporateUser> getQualifiedAuthorizers(CorpTransferRequest transferRequest);
+    List<CorporateUser> getQualifiedAuthorizers(CorpTransRequest transferRequest);
 
     @PreAuthorize("hasAuthority('GET_TRANSFER_RULE')")
-    CorpTransferRule getApplicableTransferRule(CorpTransferRequest transferRequest);
+    CorpTransRule getApplicableTransferRule(CorpTransRequest transferRequest);
 
 }

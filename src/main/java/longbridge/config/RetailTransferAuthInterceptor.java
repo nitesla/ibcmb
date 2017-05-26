@@ -33,7 +33,7 @@ public class RetailTransferAuthInterceptor extends HandlerInterceptorAdapter {
                  TransferRequestDTO dto= (TransferRequestDTO) httpServletRequest.getSession().getAttribute("transferRequest");
 
                   if (dto!=null) view.addObject("transferRequest", dto);
-                  if (dto!=null)System.out.println("@@@@@@@DTO@@@@@@"+dto);
+
                  view.setViewName("/cust/transfer/transferauth");
 
 //                 httpServletResponse.sendRedirect(httpServletRequest.getContextPath()+"/retail/transfer/interbank/auth");

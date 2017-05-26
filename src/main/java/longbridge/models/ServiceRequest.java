@@ -28,7 +28,7 @@ public class ServiceRequest extends AbstractEntity {
     private Corporate corporate;
 
     private String requestName;
-    @Column(columnDefinition = "TEXT")
+//    @Column(columnDefinition = "TEXT")
     private String body;
     private String requestStatus;
     private Date dateRequested;

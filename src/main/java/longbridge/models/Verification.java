@@ -20,11 +20,11 @@ public class Verification extends  AbstractEntity {
         VERIFIED, DECLINED,PENDING //EXPIRED
     }
 
-    @Column(columnDefinition = "TEXT")
+    //@Column(columnDefinition = "TEXT")
     private String beforeObject; //json
-    @Column(columnDefinition = "TEXT")
+    //@Column(columnDefinition = "TEXT")
     private String afterObject; //json
-    @Column(columnDefinition = "TEXT")
+    //@Column(columnDefinition = "TEXT")
     private String original; //json
 
     @Enumerated(value = EnumType.STRING)

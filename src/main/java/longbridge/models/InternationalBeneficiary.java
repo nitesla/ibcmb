@@ -21,7 +21,7 @@ public class InternationalBeneficiary extends Beneficiary {
     private String sortCode;
     private String beneficiaryAddress;
     private String intermediaryBankName;
-    private String intermediaryBankAccountNumber;
+    private String intermediaryBankAcctNo;
 
     public RetailUser getUser() {
         return user;
@@ -63,11 +63,11 @@ public class InternationalBeneficiary extends Beneficiary {
         this.intermediaryBankName = intermediaryBankName;
     }
 
-    public String getIntermediaryBankAccountNumber() {
-        return intermediaryBankAccountNumber;
+    public String getIntermediaryBankAcctNo() {
+        return intermediaryBankAcctNo;
     }
 
-    public void setIntermediaryBankAccountNumber(String intermediaryBankAccountNumber) {
-        this.intermediaryBankAccountNumber = intermediaryBankAccountNumber;
+    public void setIntermediaryBankAcctNo(String intermediaryBankAcctNo) {
+        this.intermediaryBankAcctNo = intermediaryBankAcctNo;
     }
 }
