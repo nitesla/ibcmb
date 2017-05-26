@@ -22,6 +22,7 @@ public class CorporateUserDTO {
     private String lastName;
     @NotEmpty(message = "email")
     private String email;
+    private String  phoneNumber;
     private String roleId;
     private String role;
     private boolean ruleMember;
@@ -77,6 +78,15 @@ public class CorporateUserDTO {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public String getPassword() {

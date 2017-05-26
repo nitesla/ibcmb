@@ -16,6 +16,7 @@ public class User extends AbstractEntity{
     protected String firstName;
     protected String lastName;
     protected String email;
+    protected String phoneNumber;
     protected String password;
     @Column(columnDefinition = "TEXT")
     protected String usedPasswords;
@@ -75,6 +76,14 @@ public class User extends AbstractEntity{
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public String getPassword() {

@@ -1,9 +1,12 @@
 package longbridge.dtos;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 public class AccountDTO{
 
     private Long id;
     private String accountId;
+    @NotEmpty(message = "accountNumber")
     private String accountNumber;
     private String accountName;
     private String customerId;

@@ -2,6 +2,7 @@ package longbridge.controllers.retail;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.javafx.sg.prism.NGShape;
 import longbridge.dtos.*;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.FinancialInstitutionType;
@@ -23,6 +24,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpSession;
 import java.security.Principal;
 import java.util.*;
 
@@ -65,7 +67,7 @@ public class ServiceRequestController {
     }
 
     @PostMapping
-    public String processRequest(@ModelAttribute("requestDTO") ServiceRequestDTO requestDTO, BindingResult result, Principal principal, Model model, RedirectAttributes redirectAttributes, Locale locale) {
+    public String processRequest(@ModelAttribute("requestDTO") ServiceRequestDTO requestDTO, BindingResult result, Principal principal, Model model, RedirectAttributes redirectAttributes, Locale locale, HttpSession session) {
 
         String requestBody = requestDTO.getRequestName();
         Long serviceReqConfigId = 0L;
@@ -109,6 +111,15 @@ public class ServiceRequestController {
             serviceRequestDTO.setRequestStatus("S");
             serviceRequestDTO.setUserId(user.getId());
             serviceRequestDTO.setDateRequested(new Date());
+
+            if(serviceReqConfigDTO.isAuthenticate()){
+                if(session.getAttribute("authenticated")!="authenticated"){
+                    session.setAttribute("requestDTO",serviceRequestDTO);
+                    session.setAttribute("requestURL", "/retail/request/process");
+                    return "redirect:/token/authenticate";
+                }
+            }
+
             String message = requestService.addRequest(serviceRequestDTO);
             redirectAttributes.addFlashAttribute("message", message);
 
@@ -121,9 +132,38 @@ public class ServiceRequestController {
             model.addAttribute("failure", messageSource.getMessage("req.add.failure", null, locale));
             return "cust/servicerequest/add";
         }
+        return "redirect:/retail/requests/track";
 
+    }
+
+    @GetMapping("/request/process")
+    public String processRequest(HttpSession session, RedirectAttributes redirectAttributes, Model model, Locale locale){
+
+        if(session.getAttribute("requestDTO")!=null){
+            ServiceRequestDTO requestDTO = (ServiceRequestDTO)session.getAttribute("requestDTO");
+
+            if(session.getAttribute("authenticated")!="authenticated"){
+
+                try {
+                    String message = requestService.addRequest(requestDTO);
+                    redirectAttributes.addFlashAttribute("message", message);
+                }
+            catch (InternetBankingException e){
+                logger.error("Service Request Error", e);
+                model.addAttribute("failure", e.getMessage());
+                return "cust/servicerequest/add";
+            } catch (Exception e) {
+                logger.error("Service Request Error", e);
+                model.addAttribute("failure", messageSource.getMessage("req.add.failure", null, locale));
+                return "cust/servicerequest/add";
+            }
+            }
+
+        }
         return "redirect:/retail/requests/track";
     }
+
+
 
     @GetMapping("/{reqId}")
     public String makeRequest(@PathVariable Long reqId, Model model, Principal principal) {

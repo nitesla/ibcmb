@@ -114,16 +114,34 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             String newStatus = "A".equals(oldStatus) ? "I" : "A";
             user.setStatus(newStatus);
             operationsUserRepo.save(user);
-            if ((oldStatus == null) || ("I".equals(oldStatus)) && "A".equals(newStatus)) {
+            String fullName = user.getFirstName()+" "+user.getLastName();
+            if ((oldStatus == null) ) {//User was just created
                 String password = passwordPolicyService.generatePassword();
                 user.setPassword(passwordEncoder.encode(password));
+                user.setExpiryDate(new Date());
+                operationsUserRepo.save(user);
+
                 Email email = new Email.Builder()
                         .setRecipient(user.getEmail())
-                        .setSubject("Internet Banking Operations Console Activation")
-                        .setBody(String.format("Your new password to Operations console is %s and your username is %s", password, user.getUserName()))
+                        .setSubject(messageSource.getMessage("ops.create.subject",null,locale))
+                        .setBody(String.format(messageSource.getMessage("ops.create.message",null,locale),fullName, user.getUserName(), password))
                         .build();
                 mailService.send(email);
             }
+
+            else if (("I".equals(oldStatus)) && "A".equals(newStatus)) {//User is being reactivated
+                String password = passwordPolicyService.generatePassword();
+                user.setPassword(passwordEncoder.encode(password));
+                user.setExpiryDate(new Date());
+                operationsUserRepo.save(user);
+                Email email = new Email.Builder()
+                        .setRecipient(user.getEmail())
+                        .setSubject(messageSource.getMessage("ops.reactivation.subject", null, locale))
+                        .setBody(String.format(messageSource.getMessage("ops.reactivation.message", null, locale), fullName, user.getUserName(),password))
+                        .build();
+                mailService.send(email);
+            }
+
 
             logger.info("Operations user {} status changed from {} to {}", user.getUserName(), oldStatus, newStatus);
             return messageSource.getMessage("user.status.success", null, locale);
@@ -154,14 +172,10 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             opsUser.setUserName(user.getUserName());
             opsUser.setEmail(user.getEmail());
             opsUser.setCreatedOnDate(new Date());
-            String password = passwordPolicyService.generatePassword();
-            opsUser.setPassword(passwordEncoder.encode(password));
             Role role = new Role();
             role.setId(Long.parseLong(user.getRoleId()));
             opsUser.setRole(role);
-            opsUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
             this.operationsUserRepo.save(opsUser);
-            sendUserCredentials(opsUser, password);
             logger.info("New Operation user  {} created", opsUser.getUserName());
             return messageSource.getMessage("user.add.success", null, LocaleContextHolder.getLocale());
         } catch (Exception e) {
@@ -209,12 +223,13 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             OperationsUser user = operationsUserRepo.findOne(id);
             String newPassword = passwordPolicyService.generatePassword();
             user.setPassword(passwordEncoder.encode(newPassword));
+            String fullName = user.getFirstName()+" "+user.getLastName();
             user.setExpiryDate(new Date());
             this.operationsUserRepo.save(user);
             Email email = new Email.Builder()
                     .setRecipient(user.getEmail())
-                    .setSubject("Internet Banking Admin Console Password Reset")
-                    .setBody(String.format("Your new password to Operations console is %s and your username is %s", newPassword, user.getUserName()))
+                    .setSubject(messageSource.getMessage("ops.password.reset.subject",null,locale))
+                    .setBody(String.format(messageSource.getMessage("ops.password.reset.message",null,locale), fullName, newPassword))
                     .build();
             mailService.send(email);
             logger.info("Operations user {} password reset successfully", user.getUserName());
@@ -243,6 +258,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
         try {
             OperationsUser opsUser = operationsUserRepo.findOne(user.getId());
             opsUser.setPassword(this.passwordEncoder.encode(changePassword.getNewPassword()));
+            opsUser.setUsedPasswords(getUsedPasswords(changePassword.getNewPassword(),opsUser.getUsedPasswords()));
             opsUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
             this.operationsUserRepo.save(opsUser);
             logger.info("User {}'s password has been updated", user.getId());
@@ -268,6 +284,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
         try {
             OperationsUser opsUser = operationsUserRepo.findOne(user.getId());
             opsUser.setPassword(this.passwordEncoder.encode(changePassword.getNewPassword()));
+            opsUser.setUsedPasswords(getUsedPasswords(changePassword.getNewPassword(),opsUser.getUsedPasswords()));
             opsUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
             operationsUserRepo.save(opsUser);
             logger.info("User {} password has been updated", user.getId());
@@ -277,6 +294,14 @@ public class OperationsUserServiceImpl implements OperationsUserService {
         }
     }
 
+    private String getUsedPasswords(String newPassword, String oldPasswords){
+        StringBuilder builder = new StringBuilder();
+        if(oldPasswords!=null){
+            builder.append(oldPasswords);
+        }
+        builder.append(newPassword+",");
+        return builder.toString();
+    }
 
     private void sendUserCredentials(OperationsUser user, String password) throws InternetBankingException {
         Email email = new Email.Builder()
