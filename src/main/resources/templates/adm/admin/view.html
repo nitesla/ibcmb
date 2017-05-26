@@ -189,6 +189,10 @@
 
       });
 
+        $('#myInput').on( 'keyup', function () {
+            table.search( this.value ).draw();
+        } );
+
             table.on('select', function() {
             if (table.rows({
                     selected : true

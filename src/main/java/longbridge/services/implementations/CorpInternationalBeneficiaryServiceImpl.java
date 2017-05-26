@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,7 @@ import java.util.Locale;
 /**
  * Created by SYLVESTER on 5/22/2017.
  */
+@Service
 public class CorpInternationalBeneficiaryServiceImpl implements CorpInternationalBeneficiaryService {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 

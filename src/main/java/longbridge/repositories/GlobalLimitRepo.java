@@ -10,4 +10,6 @@ import java.util.List;
 public interface GlobalLimitRepo extends CommonRepo<GlobalLimit, Long>{
 
     List<GlobalLimit> findByCustomerType(String type);
+
+    GlobalLimit findByChannel(String channel);
 }

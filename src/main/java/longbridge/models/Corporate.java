@@ -19,6 +19,7 @@ import java.util.List;
 @Where(clause ="del_Flag='N'" )
 public class Corporate extends AbstractEntity{
 
+
     private String rcNumber;
     private String customerId;
     private String corporateType;

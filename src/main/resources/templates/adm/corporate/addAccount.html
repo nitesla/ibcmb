@@ -50,13 +50,13 @@
 
                                         <div th:replace="layout::form-validation"></div>
 
-                                        <input th:type="hidden" name="corporateId" th:value="*{customerId}"/>
+                                        <input th:type="hidden" name="customerId" th:value="${corporate.customerId}"/>
 
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">Account Number</label>
 
                                             <div class="col-sm-6">
-                                                <input type="text" class="form-control" th:field="*{accountNumber}"/>
+                                                <input type="number" class="form-control" th:field="*{accountNumber}"/>
                                             </div>
 
                                         </div>
@@ -84,10 +84,14 @@
         <!-- /footer content -->
     </div>
 </div>
-<script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
 
+    var corpId = [[${corporate.id}]];
     document.getElementById("cancel").onclick = function () {
-        location.href = "/admin/corporates/";}
+        location.href = "/admin/corporates/"+corpId+"/view";}
+    /*]]>*/
+
 </script>
 
 </body>

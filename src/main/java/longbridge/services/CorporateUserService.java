@@ -2,7 +2,9 @@ package longbridge.services;
 
 import longbridge.dtos.CorporateUserDTO;
 import longbridge.exception.InternetBankingException;
+import longbridge.exception.PasswordException;
 import longbridge.forms.AlertPref;
+import longbridge.forms.ChangePassword;
 import longbridge.models.Corporate;
 import longbridge.models.CorporateUser;
 import org.springframework.data.domain.Page;
@@ -76,10 +78,10 @@ public interface CorporateUserService{
 
     /**
      * resets the password for the specified corporate user
-     * @param user the corporate user
+     * @param userId
      */
     @PreAuthorize("hasAuthority('UPDATE_CORPORATE_USER')")
-    String resetPassword(CorporateUser user)throws InternetBankingException;
+    String resetPassword(Long userId) throws PasswordException;
 
     /**
      * Deletes the specified corporate user
@@ -99,11 +101,10 @@ public interface CorporateUserService{
      * Also, the password must meet the organization's password policy if any one has been defined
      * It is important that the password is hashed before storing it in the database.
      * @param user the corporate user
-     * @param oldPassword the old password
-     * @param newPassword the hashed new password
+     * @param changePassword the change password
      */
     @PreAuthorize("hasAuthority('UPDATE_CORPORATE_USER')")
-    boolean changePassword(CorporateUserDTO user, String oldPassword, String newPassword) throws InternetBankingException;
+    String changePassword(CorporateUser user, ChangePassword changePassword) throws PasswordException;
 
     /**
      * Generates and sends a password to the specified user
@@ -118,5 +119,7 @@ public interface CorporateUserService{
      * @return
      */
     boolean changeAlertPreference(CorporateUserDTO corporateUser, AlertPref alertPreference);
+
+    public String addUserFromCorporateAdmin(CorporateUserDTO user) throws InternetBankingException;
 
 }

@@ -7,6 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -22,8 +23,7 @@ public class GlobalLimit extends  AbstractEntity {
     private String customerType;
     private String description;
     private String channel;
-    private double lowerLimit;
-    private double upperLimit;
+    private BigDecimal maxLimit;
     private String currency;
     private String status;
     private String frequency;
@@ -69,20 +69,12 @@ public class GlobalLimit extends  AbstractEntity {
         this.channel = channel;
     }
 
-    public double getLowerLimit() {
-        return lowerLimit;
+    public BigDecimal getMaxLimit() {
+        return maxLimit;
     }
 
-    public void setLowerLimit(double lowerLimit) {
-        this.lowerLimit = lowerLimit;
-    }
-
-    public double getUpperLimit() {
-        return upperLimit;
-    }
-
-    public void setUpperLimit(double upperLimit) {
-        this.upperLimit = upperLimit;
+    public void setMaxLimit(BigDecimal maxLimit) {
+        this.maxLimit = maxLimit;
     }
 
     public String getCurrency() {

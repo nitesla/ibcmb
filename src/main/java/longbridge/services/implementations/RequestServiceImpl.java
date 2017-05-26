@@ -112,8 +112,8 @@ public class RequestServiceImpl implements RequestService {
             String message = messageBody.toString();
             serviceRequestRepo.save(serviceRequest);
 
-            Email email = new Email.Builder().setSender("info@ibanking.coronationmb.com")
-                    .setSubject("Service Request from " + name)
+            Email email = new Email.Builder()
+                    .setSubject(String.format(messageSource.getMessage("request.subject",null,locale),name))
                     .setBody(message)
                     .build();
             groupMessageService.send(config.getGroupId(), email);

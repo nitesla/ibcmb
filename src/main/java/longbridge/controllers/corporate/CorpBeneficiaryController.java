@@ -2,13 +2,15 @@ package longbridge.controllers.corporate;
 
 import longbridge.dtos.CorpInternationalBeneficiaryDTO;
 import longbridge.dtos.CorpLocalBeneficiaryDTO;
-import longbridge.dtos.LocalBeneficiaryDTO;
 import longbridge.models.*;
-import longbridge.services.*;
-
+import longbridge.services.CorpInternationalBeneficiaryService;
+import longbridge.services.FinancialInstitutionService;
+import longbridge.services.CorpLocalBeneficiaryService;
+import longbridge.services.CorporateUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +21,7 @@ import java.security.Principal;
 /**
  * Created by SYLVESTER on 5/19/2017.
  */
+@Controller
 @RequestMapping("/corporate/beneficiary")
 public class CorpBeneficiaryController {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -32,17 +35,19 @@ public class CorpBeneficiaryController {
     @Autowired
     private CorporateUserService corporateUserService;
 
+
     @GetMapping
     public String getBeneficiaries(Model model, Principal principal){
-       /*CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
+       CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
         logger.info("local BEN {}", corpLocalBeneficiaryService.getCorpLocalBeneficiaries(corporateUser));
         Iterable<CorpLocalBeneficiary> corpLocalBeneficiaries = corpLocalBeneficiaryService.getCorpLocalBeneficiaries(corporateUser);
+
         for (CorpLocalBeneficiary localBenef : corpLocalBeneficiaries){
             localBenef.setBeneficiaryBank(financialInstitutionService.getFinancialInstitutionByCode(localBenef.getBeneficiaryBank()).getInstitutionName());
         }
         model.addAttribute("localBen", corpLocalBeneficiaries);
 
-        Iterable<CorpInternationalBeneficiary> intBeneficiary = corpInternationalBeneficiaryService.getCorpInternationalBeneficiaries(corporateUser);
+       /* Iterable<CorpInternationalBeneficiary> intBeneficiary = corpInternationalBeneficiaryService.getCorpInternationalBeneficiaries(corporateUser);
         for (CorpInternationalBeneficiary intBenef : intBeneficiary){
             intBenef.setBeneficiaryBank(financialInstitutionService.getFinancialInstitutionByCode(intBenef.getBeneficiaryBank()).getInstitutionName());
         }
@@ -56,12 +61,13 @@ public class CorpBeneficiaryController {
         model.addAttribute("corpInternationalBeneficiaryDTO", new CorpInternationalBeneficiaryDTO());
         model.addAttribute("foreignBanks", financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.FOREIGN));
         model.addAttribute("localBanks", financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.LOCAL));
-        return "corp/beneficiary/view";
+        return "corp/beneficiary/add";
     }
 
     @PostMapping("/local")
     public String createCorpLocalBeneficiary(@Valid CorpLocalBeneficiaryDTO corpLocalBeneficiaryDTO, BindingResult result, Principal principal, Model model){
         if(result.hasErrors()){
+            model.addAttribute("corpInternationalBeneficiaryDTO",new CorpInternationalBeneficiaryDTO());
             model.addAttribute("foreignBanks", financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.FOREIGN));
             model.addAttribute("localBanks", financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.LOCAL));
             return "corp/beneficiary/add";

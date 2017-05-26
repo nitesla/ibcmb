@@ -138,7 +138,7 @@ public class PasswordValidator {
 
         if (!isPasswordReuseable(password, usedPasswords)) {
             message = String.format(
-                    "Previous password can only be reused after %d different passwords", numOfChanges);
+                    "Previous passwords can only be reused after %d different passwords", numOfChanges);
             errorMessage.append(message);
             errorMessage.append(".\n");
         }

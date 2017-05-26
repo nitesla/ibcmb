@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Locale;
 
@@ -72,9 +73,22 @@ public class OpsLimitController {
     public String createRetailGlobalLimit(@ModelAttribute("globalLimit") @Valid GlobalLimitDTO globalLimitDTO, BindingResult result, RedirectAttributes redirectAttributes,Locale locale) {
         if (result.hasErrors()) {
             result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
-
             return "/ops/limit/retail/global/add";
         }
+        if("".equals(globalLimitDTO.getMaxLimit())){
+            globalLimitDTO.setMaxLimit("0");
+        }
+        else{
+            try {
+                BigDecimal amount = new BigDecimal(globalLimitDTO.getMaxLimit());
+            }
+            catch (NumberFormatException e){
+                result.addError(new ObjectError("invalid", messageSource.getMessage("rule.amount.invalid", null, locale)));
+                return "/ops/limit/retail/global/add";
+            }
+        }
+
+
         globalLimitDTO.setCustomerType(UserType.RETAIL.name());
 
 
@@ -84,7 +98,7 @@ public class OpsLimitController {
             return "redirect:/ops/limits/retail/global";
         }
         catch (DataAccessException exc){
-            logger.error("Could not add global limit: {}",exc.toString());
+            logger.error("Could not add global limit",exc.toString());
             result.addError(new ObjectError("exception",String.format("The global limit for %s already exists",globalLimitDTO.getChannel())));
             return "/ops/limit/retail/global/add";
         }
@@ -144,8 +158,23 @@ public class OpsLimitController {
     public String createCorporateGlobalLimit(@ModelAttribute("globalLimit") @Valid  GlobalLimitDTO globalLimitDTO, BindingResult result, RedirectAttributes redirectAttributes, Locale locale) {
         if (result.hasErrors()) {
             result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
-            return "/ops/limits/corporate/global/add";
+            return "/ops/limit/corporate/global/add";
         }
+
+        if("".equals(globalLimitDTO.getMaxLimit())){
+            globalLimitDTO.setMaxLimit("0");
+        }
+        else{
+            try {
+                BigDecimal amount = new BigDecimal(globalLimitDTO.getMaxLimit());
+            }
+            catch (NumberFormatException e){
+                result.addError(new ObjectError("invalid", messageSource.getMessage("rule.amount.invalid", null, locale)));
+                return "/ops/limit/corporate/global/add";
+            }
+        }
+
+
         globalLimitDTO.setCustomerType(UserType.CORPORATE.name());
         try {
             String message = transactionLimitService.addGlobalLimit(globalLimitDTO);
@@ -153,12 +182,12 @@ public class OpsLimitController {
             return "redirect:/ops/limits/corporate/global";
         }
         catch (DataAccessException exc){
-            logger.error("Could not add global limit: {}",exc.toString());
+            logger.error("Could not add global limit",exc);
             result.addError(new ObjectError("exception",String.format("The global limit for %s already exists",globalLimitDTO.getChannel())));
             return "/ops/limit/corporate/global/add";
         }
         catch (InternetBankingException e) {
-            logger.error("Exception while adding global limit: {}",e.toString());
+            logger.error("Exception while adding global limit",e);
             result.addError(new ObjectError("exception","Could not create global corporate limit"));
             return "/ops/limit/corporate/global/add";
         }
@@ -182,13 +211,26 @@ public class OpsLimitController {
             return "/ops/limit/corporate/global/edit";
         }
 
+        if("".equals(globalLimitDTO.getMaxLimit())){
+            globalLimitDTO.setMaxLimit("0");
+        }
+        else{
+            try {
+                BigDecimal amount = new BigDecimal(globalLimitDTO.getMaxLimit());
+            }
+            catch (NumberFormatException e){
+                result.addError(new ObjectError("invalid", messageSource.getMessage("rule.amount.invalid", null, locale)));
+                return "/ops/limit/corporate/global/edit";
+            }
+        }
+
         try {
             String message = transactionLimitService.addGlobalLimit(globalLimitDTO);
             redirectAttributes.addFlashAttribute("message", message);
             return "redirect:/ops/limits/corporate/global";
         }
         catch (InternetBankingException e) {
-            logger.error("Exception while updating global limit: {}",e.toString());
+            logger.error("Exception while updating global limit",e);
             result.addError(new ObjectError("exception","Could not update global corporate limit"));
             return "/ops/limit/corporate/global/edit";
         }
@@ -222,12 +264,25 @@ public class OpsLimitController {
             result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
             return "/ops/limit/retail/global/edit";
         }
+
+        if("".equals(globalLimitDTO.getMaxLimit())){
+            globalLimitDTO.setMaxLimit("0");
+        }
+        else{
+            try {
+                BigDecimal amount = new BigDecimal(globalLimitDTO.getMaxLimit());
+            }
+            catch (NumberFormatException e){
+                result.addError(new ObjectError("invalid", messageSource.getMessage("rule.amount.invalid", null, locale)));
+                return "/ops/limit/retail/global/edit";
+            }
+        }
         try {
             String message = transactionLimitService.updateGlobalLimit(globalLimitDTO);
             redirectAttributes.addFlashAttribute("message", message);
             return "redirect:/ops/limits/retail/global";
         } catch (InternetBankingException e) {
-            logger.error("Exception while updating global limit: {}",e.toString());
+            logger.error("Exception while updating global limit",e);
             result.addError(new ObjectError("exception","Could not update global retail limit"));
             return "/ops/limit/retail/global/edit";        }
 
@@ -260,6 +315,19 @@ public class OpsLimitController {
             result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
             return "/ops/limit/retail/class/add";
         }
+
+        if("".equals(classLimitDTO.getMaxLimit())){
+            classLimitDTO.setMaxLimit("0");
+        }
+        else{
+            try {
+                BigDecimal amount = new BigDecimal(classLimitDTO.getMaxLimit());
+            }
+            catch (NumberFormatException e){
+                result.addError(new ObjectError("invalid", messageSource.getMessage("rule.amount.invalid", null, locale)));
+                return "/ops/limit/retail/class/add";
+            }
+        }
         classLimitDTO.setCustomerType(UserType.RETAIL.name());
         try {
             String message= transactionLimitService.addClassLimit(classLimitDTO);
@@ -267,12 +335,12 @@ public class OpsLimitController {
             return "redirect:/ops/limits/retail/class";
         }
         catch (DataAccessException exc){
-            logger.error("Could not add class limit: {}",exc.toString());
+            logger.error("Could not add class limit",exc);
             result.addError(new ObjectError("exception",String.format("The class limit for %s already exists",classLimitDTO.getChannel())));
             return "/ops/limit/retail/class/add";
         }
         catch (InternetBankingException e) {
-            logger.error("Exception while adding class limit: {}",e.toString());
+            logger.error("Exception while adding class limi",e);
             result.addError(new ObjectError("exception","Could not create class retail limit"));
             return "/ops/limit/retail/class/add";        }
 
@@ -329,6 +397,20 @@ public class OpsLimitController {
             result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
             return "/ops/limit/corporate/class/add";
         }
+
+        if("".equals(classLimitDTO.getMaxLimit())){
+            classLimitDTO.setMaxLimit("0");
+        }
+        else{
+            try {
+                BigDecimal amount = new BigDecimal(classLimitDTO.getMaxLimit());
+            }
+            catch (NumberFormatException e){
+                result.addError(new ObjectError("invalid", messageSource.getMessage("rule.amount.invalid", null, locale)));
+                return "/ops/limit/corporate/class/add";
+            }
+        }
+
         classLimitDTO.setCustomerType(UserType.CORPORATE.name());
         try {
            String message = transactionLimitService.addClassLimit(classLimitDTO);
@@ -336,12 +418,12 @@ public class OpsLimitController {
             return "redirect:/ops/limits/corporate/class";
         }
         catch (DataAccessException exc){
-            logger.error("Could not add class limit: {}",exc.toString());
+            logger.error("Could not add class limit",exc);
             result.addError(new ObjectError("exception",String.format("The class limit for %s already exists",classLimitDTO.getChannel())));
             return "/ops/limit/corporate/class/add";
         }
         catch (InternetBankingException e) {
-            logger.error("Exception while adding class limit: {}",e.toString());
+            logger.error("Exception while adding class limit",e);
             result.addError(new ObjectError("exception","Could not create class corporate limit"));
             return "/ops/limit/corporate/class/add";
         }
@@ -366,12 +448,25 @@ public class OpsLimitController {
             return "/ops/limit/corporate/class/edit";
         }
 
+        if("".equals(classLimitDTO.getMaxLimit())){
+            classLimitDTO.setMaxLimit("0");
+        }
+        else{
+            try {
+                BigDecimal amount = new BigDecimal(classLimitDTO.getMaxLimit());
+            }
+            catch (NumberFormatException e){
+                result.addError(new ObjectError("invalid", messageSource.getMessage("rule.amount.invalid", null, locale)));
+                return "/ops/limit/corporate/class/edit";
+            }
+        }
+
         try {
             String message = transactionLimitService.updateClassLimit(classLimitDTO);
             redirectAttributes.addFlashAttribute("message", message);
             return "redirect:/ops/limits/corporate/class";
         } catch (InternetBankingException e) {
-            logger.error("Exception while updating class limit: {}",e.toString());
+            logger.error("Exception while updating class limit",e);
             result.addError(new ObjectError("exception","Could not update class corporate limit"));
             return "/ops/limit/corporate/class/edit";
         }
@@ -405,12 +500,25 @@ public class OpsLimitController {
             result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
             return "/ops/limit/retail/class/edit";
         }
+
+        if("".equals(classLimitDTO.getMaxLimit())){
+            classLimitDTO.setMaxLimit("0");
+        }
+        else{
+            try {
+                BigDecimal amount = new BigDecimal(classLimitDTO.getMaxLimit());
+            }
+            catch (NumberFormatException e){
+                result.addError(new ObjectError("invalid", messageSource.getMessage("rule.amount.invalid", null, locale)));
+                return "/ops/limit/retail/class/edit";
+            }
+        }
         try {
             String message = transactionLimitService.updateClassLimit(classLimitDTO);
             redirectAttributes.addFlashAttribute("message", message);
             return "redirect:/ops/limits/retail/class";
         } catch (InternetBankingException e) {
-            logger.error("Exception while updating class limit: {}",e.toString());
+            logger.error("Exception while updating class limit",e);
             result.addError(new ObjectError("exception","Could not update class retail limit"));
             return "/ops/limit/retail/class/edit";
         }
@@ -443,6 +551,19 @@ public class OpsLimitController {
             result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
             return "/ops/limit/retail/account/add";
         }
+
+        if("".equals(accountLimitDTO.getMaxLimit())){
+            accountLimitDTO.setMaxLimit("0");
+        }
+        else{
+            try {
+                BigDecimal amount = new BigDecimal(accountLimitDTO.getMaxLimit());
+            }
+            catch (NumberFormatException e){
+                result.addError(new ObjectError("invalid", messageSource.getMessage("rule.amount.invalid", null, locale)));
+                return "/ops/limit/retail/account/add";
+            }
+        }
         accountLimitDTO.setCustomerType(UserType.RETAIL.name());
         try {
             String message = transactionLimitService.addAccountLimit(accountLimitDTO);
@@ -450,12 +571,12 @@ public class OpsLimitController {
             return "redirect:/ops/limits/retail/account";
         }
         catch (DataAccessException exc){
-            logger.error("Could not add account limit: {}",exc.toString());
+            logger.error("Could not add account limit",exc);
             result.addError(new ObjectError("exception",String.format("The account limit for %s already exists",accountLimitDTO.getChannel())));
             return "/ops/limit/retail/account/add";
         }
         catch (InternetBankingException e) {
-            logger.error("Exception while adding account limit: {}",e.toString());
+            logger.error("Exception while adding account limit",e);
             result.addError(new ObjectError("exception","Could not create account retail limit"));
             return "/ops/limit/retail/account/add";        }
 
@@ -511,6 +632,18 @@ public class OpsLimitController {
             result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
             return "/ops/limits/corporate/account/add";
         }
+        if("".equals(accountLimitDTO.getMaxLimit())){
+            accountLimitDTO.setMaxLimit("0");
+        }
+        else{
+            try {
+                BigDecimal amount = new BigDecimal(accountLimitDTO.getMaxLimit());
+            }
+            catch (NumberFormatException e){
+                result.addError(new ObjectError("invalid", messageSource.getMessage("rule.amount.invalid", null, locale)));
+                return "/ops/limit/corporate/account/add";
+            }
+        }
         accountLimitDTO.setCustomerType(UserType.CORPORATE.name());
         try {
            String message = transactionLimitService.addAccountLimit(accountLimitDTO);
@@ -547,12 +680,25 @@ public class OpsLimitController {
             return "/ops/limit/corporate/account/edit";
         }
 
+        if("".equals(accountLimitDTO.getMaxLimit())){
+            accountLimitDTO.setMaxLimit("0");
+        }
+        else{
+            try {
+                BigDecimal amount = new BigDecimal(accountLimitDTO.getMaxLimit());
+            }
+            catch (NumberFormatException e){
+                result.addError(new ObjectError("invalid", messageSource.getMessage("rule.amount.invalid", null, locale)));
+                return "/ops/limit/corporate/account/edit";
+            }
+        }
+
         try {
             String message = transactionLimitService.addAccountLimit(accountLimitDTO);
             redirectAttributes.addFlashAttribute("message", message);
             return "redirect:/ops/limits/corporate/account";
         } catch (InternetBankingException e) {
-            logger.error("Exception while updating account limit: {}",e.toString());
+            logger.error("Exception while updating account limit",e);
             result.addError(new ObjectError("exception","Could not update account corporate limit"));
             return "/ops/limit/corporate/account/edit";
         }
@@ -590,7 +736,7 @@ public class OpsLimitController {
         }
         try {
             String message = transactionLimitService.addAccountLimit(accountLimitDTO);
-            redirectAttributes.addFlashAttribute("message", "Retail account limit updated successfully");
+            redirectAttributes.addFlashAttribute("message", message);
             return "redirect:/ops/limits/retail/account";
         } catch (Exception e) {
             logger.error("Exception while updating account limit: {}",e.toString());

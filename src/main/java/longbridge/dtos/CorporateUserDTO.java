@@ -1,6 +1,7 @@
 package longbridge.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import longbridge.models.Code;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import java.util.Date;
@@ -22,6 +23,7 @@ public class CorporateUserDTO {
     private String lastName;
     @NotEmpty(message = "email")
     private String email;
+    private String  phoneNumber;
     private String roleId;
     private String role;
     private boolean ruleMember;
@@ -32,6 +34,8 @@ public class CorporateUserDTO {
     private Date lastLoginDate;
     private String lastLogin;
     private int noOfLoginAttempts;
+    private Code alertPreference;
+    private String createdOn;
 
     public Long getId() {return id;}
 
@@ -77,6 +81,15 @@ public class CorporateUserDTO {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public String getPassword() {
@@ -175,23 +188,45 @@ public class CorporateUserDTO {
         this.noOfLoginAttempts = noOfLoginAttempts;
     }
 
+    public Code getAlertPreference() {
+        return alertPreference;
+    }
+
+    public void setAlertPreference(Code alertPreference) {
+        this.alertPreference = alertPreference;
+    }
+
+    public String getCreatedOn() {
+        return createdOn;
+    }
+
+    public void setCreatedOn(String createdOn) {
+        this.createdOn = createdOn;
+    }
+
     @Override
     public String toString() {
         return "CorporateUserDTO{" +
                 "id=" + id +
                 ", corporateId='" + corporateId + '\'' +
+                ", corporateType='" + corporateType + '\'' +
+                ", corporateName='" + corporateName + '\'' +
                 ", userName='" + userName + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
                 ", roleId='" + roleId + '\'' +
                 ", role='" + role + '\'' +
+                ", ruleMember=" + ruleMember +
                 ", password='" + password + '\'' +
                 ", status='" + status + '\'' +
                 ", expiryDate=" + expiryDate +
                 ", lockedUntilDate=" + lockedUntilDate +
                 ", lastLoginDate=" + lastLoginDate +
+                ", lastLogin='" + lastLogin + '\'' +
                 ", noOfLoginAttempts=" + noOfLoginAttempts +
+                ", alertPreference=" + alertPreference +
+                ", createdOn='" + createdOn + '\'' +
                 '}';
     }
 }

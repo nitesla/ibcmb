@@ -57,6 +57,8 @@ function reduceWeek() {
             break;
         }
 
+        document.getElementById(elementID + elementNum.toString()).style.backgroundColor = "transparent";
+        document.getElementById(elementID + elementNum.toString()).style.color = "#6a6d71"
         document.getElementById(elementID + elementNum.toString()).innerHTML = newNumber;
         elementNum = elementNum - 1;
         weekArray.push(newNumber);
@@ -88,7 +90,9 @@ function increaseWeek() {
             break;
         }
         else{
-            document.getElementById(elementID + elementNum.toString()).innerHTML = newNumber;
+            document.getElementById(elementID + elementNum.toString()).style.backgroundColor = "transparent";
+            document.getElementById(elementID + elementNum.toString()).style.color = "#6a6d71"
+            //document.getElementById(elementID + elementNum.toString()).innerHTML = newNumber;
             elementNum = elementNum + 1;
             weekArray.push(newNumber);
             newOne = Number(weekArray[weekArray.length - 1]) + 1

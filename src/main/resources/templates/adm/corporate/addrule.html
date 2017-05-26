@@ -135,9 +135,7 @@
 </div>
 <script th:inline="javascript">
     /*<![CDATA[*/
-    document.getElementById("cancel").onclick = function () {
-        location.href = "/admin/corporates";
-    }
+
     $(document).ready(function () {
 
 
@@ -164,7 +162,22 @@
         });
     })
 
-    /*]]>*/
+
+
+    var corpId = [[${corporate.id}]];
+    if(corpId!=null) {
+        document.getElementById("cancel").onclick = function () {
+            location.href = "/admin/corporates/" + corpId + "/view";
+        }
+    }else{
+        document.getElementById("cancel").onclick = function () {
+            location.href = "/admin/corporates/";
+        }
+    }
+
+
+
+/*]]>*/
 </script>
 
 </body>

@@ -6,8 +6,10 @@ import longbridge.models.*;
 import longbridge.repositories.AccountLimitRepo;
 import longbridge.repositories.ClassLimitRepo;
 import longbridge.repositories.GlobalLimitRepo;
+import longbridge.services.AccountService;
 import longbridge.services.CodeService;
 import longbridge.services.TransactionLimitService;
+import longbridge.utils.TransferType;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +19,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.xml.crypto.dsig.spec.ExcC14NParameterSpec;
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -45,6 +48,9 @@ public class TransactionLimitServiceImpl implements TransactionLimitService {
 
     @Autowired
     MessageSource messageSource;
+
+    @Autowired
+    AccountService accountService;
 
     Locale locale = LocaleContextHolder.getLocale();
 
@@ -217,9 +223,6 @@ public class TransactionLimitServiceImpl implements TransactionLimitService {
     @Override
     public String deleteCorporateAccountLimit(Long id) throws InternetBankingException {
         try {
-            AccountLimit accountLimit = accountLimitRepo.findOne(id);
-            accountLimit.setDeletedOn(new Date());
-            accountLimitRepo.save(accountLimit);
             accountLimitRepo.delete(id);
             logger.info("Deleted account limit with Id {}",id);
             return messageSource.getMessage("limit.delete.success", null, locale);
@@ -231,9 +234,6 @@ public class TransactionLimitServiceImpl implements TransactionLimitService {
     @Override
     public String deleteCorporateClassLimit(Long id) throws InternetBankingException {
         try {
-            ClassLimit classLimit = classLimitRepo.findOne(id);
-            classLimit.setDeletedOn(new Date());
-            classLimitRepo.save(classLimit);
             classLimitRepo.delete(id);
             logger.info("Deleted class limit with Id {}",id);
             return messageSource.getMessage("limit.delete.success", null, locale);
@@ -245,10 +245,7 @@ public class TransactionLimitServiceImpl implements TransactionLimitService {
     @Override
     public String deleteCorporateGlobalLimit(Long id) throws InternetBankingException {
         try {
-            GlobalLimit globalLimit = globalLimitRepo.findOne(id);
-            globalLimit.setDeletedOn(new Date());
-            globalLimitRepo.save(globalLimit);
-            classLimitRepo.delete(id);
+            globalLimitRepo.delete(id);
             logger.info("Deleted global limit with Id {}",id);
             return messageSource.getMessage("limit.delete.success", null, locale);
         } catch (Exception e) {
@@ -259,9 +256,6 @@ public class TransactionLimitServiceImpl implements TransactionLimitService {
     @Override
     public String deleteRetailAccountLimit(Long id) throws InternetBankingException {
         try {
-            AccountLimit accountLimit = accountLimitRepo.findOne(id);
-            accountLimit.setDeletedOn(new Date());
-            accountLimitRepo.save(accountLimit);
             accountLimitRepo.delete(id);
             logger.info("Deleted account limit with Id {}",id);
             return messageSource.getMessage("limit.delete.success", null, locale);
@@ -273,10 +267,7 @@ public class TransactionLimitServiceImpl implements TransactionLimitService {
     @Override
     public String deleteRetailClassLimit(Long id) throws InternetBankingException {
         try {
-            ClassLimit classLimit = classLimitRepo.findOne(id);
-            classLimit.setDeletedOn(new Date());
-            classLimitRepo.save(classLimit);
-            classLimitRepo.delete(id);
+             classLimitRepo.delete(id);
             logger.info("Deleted class limit with Id {}",id);
             return messageSource.getMessage("limit.delete.success", null, locale);
         } catch (Exception e) {
@@ -287,10 +278,7 @@ public class TransactionLimitServiceImpl implements TransactionLimitService {
     @Override
     public String deleteRetailGlobalLimit(Long id) throws InternetBankingException {
         try {
-            GlobalLimit globalLimit = globalLimitRepo.findOne(id);
-            globalLimit.setDeletedOn(new Date());
-            globalLimitRepo.save(globalLimit);
-            classLimitRepo.delete(id);
+             globalLimitRepo.delete(id);
             logger.info("Deleted global limit with Id {}",id);
             return messageSource.getMessage("limit.delete.success", null, locale);
         } catch (Exception e) {
@@ -361,5 +349,110 @@ public class TransactionLimitServiceImpl implements TransactionLimitService {
         return limitDTOList;
     }
 
+    @Override
+    public boolean isAboveInternetBankingLimit(TransferType transferType, UserType customerType, String accountNumber, BigDecimal amount) {
 
+        Account account = accountService.getAccountByAccountNumber(accountNumber);
+        String accountClass= account.getSchemeCode();
+
+        if(transferType.equals(TransferType.CORONATION_BANK_TRANSFER)){
+
+            GlobalLimit globalLimit = globalLimitRepo.findByChannel("CMB");
+            ClassLimit classLimit = classLimitRepo.findByCustomerTypeAndAccountClassAndChannel(customerType.name(),accountClass,"CMB");
+            AccountLimit accountLimit = accountLimitRepo.findByCustomerTypeAndAccountNumberAndChannel(customerType.name(),accountNumber,"CMB");
+
+             if(amount.compareTo(globalLimit.getMaxLimit())>0){
+                 return  true;
+             }
+
+             if(classLimit!=null) {
+                 if (account.getSchemeCode().equals(classLimit.getAccountClass())) {
+                     if (amount.compareTo(classLimit.getMaxLimit()) > 0) {
+                         return true;
+                     }
+                 }
+             }
+
+             if(accountLimit!=null){
+                 if(amount.compareTo(accountLimit.getMaxLimit())>0){
+                     return true;
+                 }
+             }
+
+
+        }
+        else if(transferType.equals(TransferType.NIP)){
+
+            GlobalLimit globalLimit = globalLimitRepo.findByChannel("NIP");
+            ClassLimit classLimit = classLimitRepo.findByCustomerTypeAndAccountClassAndChannel(customerType.name(),accountClass,"NIP");
+            AccountLimit accountLimit = accountLimitRepo.findByCustomerTypeAndAccountNumberAndChannel(customerType.name(),accountNumber,"NIP");
+
+            if(amount.compareTo(globalLimit.getMaxLimit())>0){
+                return  true;
+            }
+
+            if(classLimit!=null) {
+                if (account.getSchemeCode().equals(classLimit.getAccountClass())) {
+                    if (amount.compareTo(classLimit.getMaxLimit()) > 0) {
+                        return true;
+                    }
+                }
+            }
+
+            if(accountLimit!=null){
+                if(amount.compareTo(accountLimit.getMaxLimit())>0){
+                    return true;
+                }
+            }
+        }
+        else if(transferType.equals(TransferType.RTGS)){
+
+            GlobalLimit globalLimit = globalLimitRepo.findByChannel("RTGS");
+            ClassLimit classLimit = classLimitRepo.findByCustomerTypeAndAccountClassAndChannel(customerType.name(),accountClass,"RTGS");
+            AccountLimit accountLimit = accountLimitRepo.findByCustomerTypeAndAccountNumberAndChannel(customerType.name(),accountNumber,"RTGS");
+
+            if(amount.compareTo(globalLimit.getMaxLimit())>0){
+                return  true;
+            }
+
+            if(classLimit!=null) {
+                if (account.getSchemeCode().equals(classLimit.getAccountClass())) {
+                    if (amount.compareTo(classLimit.getMaxLimit()) > 0) {
+                        return true;
+                    }
+                }
+            }
+
+            if(accountLimit!=null){
+                if(amount.compareTo(accountLimit.getMaxLimit())>0){
+                    return true;
+                }
+            }
+        }
+        else if(transferType.equals(TransferType.CORONATION_BANK_TRANSFER.NAPS)){
+
+            GlobalLimit globalLimit = globalLimitRepo.findByChannel("NAPS");
+            ClassLimit classLimit = classLimitRepo.findByCustomerTypeAndAccountClassAndChannel(customerType.name(),accountClass,"NAPS");
+            AccountLimit accountLimit = accountLimitRepo.findByCustomerTypeAndAccountNumberAndChannel(customerType.name(),accountNumber,"NAPS");
+
+            if(amount.compareTo(globalLimit.getMaxLimit())>0){
+                return  true;
+            }
+
+            if(classLimit!=null) {
+                if (account.getSchemeCode().equals(classLimit.getAccountClass())) {
+                    if (amount.compareTo(classLimit.getMaxLimit()) > 0) {
+                        return true;
+                    }
+                }
+            }
+
+            if(accountLimit!=null){
+                if(amount.compareTo(accountLimit.getMaxLimit())>0){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }

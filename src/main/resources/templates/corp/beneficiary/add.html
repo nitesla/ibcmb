@@ -26,7 +26,7 @@
                             </select>
                         </div>
 
-                        <form id="local" method="post" th:action="@{/corporate/beneficiary/local}" th:object="${localBeneficiaryDTO}">
+                        <form id="local" method="post" th:action="@{/corporate/beneficiary/local}" th:object="${corpLocalBeneficiaryDTO}">
                             <input type="hidden" th:value="local" class="form-control"/>
                             <div class="form-group">
                                 <label>Bank Details</label>
@@ -36,27 +36,26 @@
                             </div>
                             <div class="form-group">
                                 <input type="text" class="form-control" th:field="*{accountNumber}" placeholder="Account Number"/>
-                                <p class="errors" th:if="${#fields.hasErrors('accountNumber')}" th:errors="*{accountNumber}">&times;</p>
+                                <p class="errors close" data-dismiss="alert" aria-label="close" th:if="${#fields.hasErrors('accountNumber')}" th:errors="*{accountNumber}">&times;</p>
                             </div>
 
                             <div class="form-group">
                                 <input type="text" class="form-control" th:field="*{accountName}" placeholder="Beneficiary Name"/>
-                                <p class="errors" th:if="${#fields.hasErrors('accountName')}" th:errors="*{accountName}">&times;</p>
+                                <p class="errors close" data-dismiss="alert" aria-label="close" th:if="${#fields.hasErrors('accountName')}" th:errors="*{accountName}">&times;</p>
                             </div>
-                            <div class="form-group alert alert-danger alert-dismissable">
+                            <div class="form-group">
                                 <input type="text" class="form-control" name="preferredName" placeholder="Preferred Name"/>
                             </div>
                             <button class="btn btn-primary">Save</button>
                         </form>
 
-                        <form id="foreign" method="post" th:action="@{/corporate/beneficiary/foreign}" th:object="${internationalBeneficiaryDTO}" style="display: none">
+                        <form id="foreign" method="post" th:action="@{/corporate/beneficiary/foreign}" th:object="${corpInternationalBeneficiaryDTO}" style="display: none">
                             <input type="hidden" th:value="foreign" class="form-control"/>
                             <div class="form-group">
                                 <label>Bank Details</label>
                                 <select th:field="*{beneficiaryBank}" class="form-control" >
                                     <option th:each="bank : ${foreignBanks}" th:value="${bank.institutionCode}" th:text="${bank.institutionName}"></option>
-                                    <a href="#" class="close" data-dismiss="alert" aria-label="close" th:if="${#fields.hasErrors('beneficiaryBank')}" th:errors="*{beneficiaryBank}">&times;</a>
-                                    <strong>invalid </strong>
+
                                 </select>
                             </div>
                             <div class="form-group">
@@ -95,7 +94,7 @@
 
 
 <!-- CONTENT-WRAPPER SECTION END-->
-<footer th:replace="corp_layout ::corp_footer">
+<footer th:replace="corp_layout ::corp-footer">
 </footer>
 
 <script>

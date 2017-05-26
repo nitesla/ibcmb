@@ -57,7 +57,7 @@
                     }else {
                         $.notify({
                             title: '<strong>Oops!</strong>',
-                            message: 'Password Reset Failed'
+                            message: 'Password Reset Failed, the entered password might not meet the set password policy'
                         },{
                             type: 'danger'
                         });

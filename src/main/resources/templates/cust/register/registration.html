@@ -52,7 +52,9 @@
         </a>
     </div>
 </header>
-
+<br/>
+<br/>
+<br/>
 
 <section class="content-wrapper">
     <div class="container">
@@ -69,17 +71,16 @@
                         <div class="col-md-offset-4 col-md-4">
                                 <div class="form-group clearfix">
                                     <label>Account Number</label>
-                                    <input type="text" name="acct" class="form-control required" placeholder="Account Number"/>
+                                    <input type="text" name="accountNumber"  th:value="${registrationForm.accountNumber}" class="form-control required" placeholder="Account Number"/>
                                 </div>
                                 <div class="form-group clearfix">
                                     <label>Email</label>
-                                    <input type="email" name="email" class="form-control required" placeholder="Email"/>
+                                    <input type="email" name="email" th:value="${registrationForm.email}" class="form-control required" placeholder="Email"/>
                                 </div>
                                 <div class="form-group clearfix">
                                     <label>Date of Birth</label>
-                                    <input id="datepicker" type="text" name="birthDate" class="form-control required"/>
+                                    <input id="datepicker" type="text" name="birthDate" th:value="${registrationForm.birthDate}" class="form-control required"/>
                                 </div>
-                                <input id="customerId" name="customerId" type="hidden"/>
                         </div>
                         </div>
                     </section>
@@ -89,20 +90,21 @@
                             <div class="col-md-offset-4 col-md-4">
                                         <div class="form-group clearfix">
                                             <label>Username</label>
-                                            <input type="text" name="userName" class="form-control required" placeholder="Preferred Username"/>
+                                            <input type="text" name="userName" th:value="${registrationForm.userName}" class="form-control required" placeholder="Preferred Username"/>
                                         </div>
                                         <div class="form-group clearfix">
                                             <label>Password</label>
-                                            <input type="password" id="password" name="password" class="form-control required" placeholder="Password"/>
+                                            <input type="password" id="password" name="password" th:value="${registrationForm.password}" class="form-control required" placeholder="Password"/>
                                         </div>
                                         <div class="form-group clearfix">
                                             <label>Confirm Password</label>
-                                            <input type="password" id="confirm" name="confirm" class="form-control required" placeholder="Confirm Password"/>
+                                            <input type="password" id="confirm" name="confirm" th:value="${registrationForm.confirmPassword}" class="form-control required" placeholder="Confirm Password"/>
                                         </div>
                                         <div class="form-group clearfix">
                                             <label>Registration Code</label>
-                                            <input type="text" id="code" name="code" class="form-control required" placeholder="Registration Code"/>
+                                            <input type="text" id="code" name="code" th:value="${registrationForm.regCode}" class="form-control required" placeholder="Registration Code"/>
                                         </div>
+                                        <input id="customerId" name="customerId" th:value="${registrationForm.customerId}" type="hidden"/>
                                 </div>
                                 </div>
                     </section>
@@ -110,6 +112,7 @@
                     <section>
                         <div class="row">
                             <div class="col-md-offset-4 col-md-4">
+                                <input id="returnValue" type="hidden"/>
                                         <div class="form-group clearfix">
                                             <label>Question</label>
                                             <select class="form-control">
@@ -123,7 +126,7 @@
                                 </div>
                     </section>
 
-                    <h3>Finish</h3>
+                    <h3>Phishing Image</h3>
                     <section>
                         <div class="row">
                             <div class="col-md-offset-4 col-md-4">
@@ -132,12 +135,20 @@
                                         <select id="phishing" name="antiPhishingImage" class="form-control">
                                         </select>
                                         <div>
-											<img width="200px" src='' id="phishing-preview" alt="Phishing Preview"/>
+											<img width="200px" height="200px" src='' id="phishing-preview" alt="Phishing Preview"/>
 										</div>
                                         <br/>
                                     </div>
                                 </div>
                                 </div>
+                    </section>
+                    <h3>Summary</h3>
+                    <section>
+                        <div class="row">
+                            <div class="col-md-offset-4 col-md-4">
+                                Self Registration Successful
+                            </div>
+                        </div>
                     </section>
                 </div>
                 </form>

@@ -43,7 +43,7 @@ public interface CodeService {
 	@PreAuthorize("hasAuthority('GET_CODE')")
 	CodeDTO getCode(Long codeId);
 
-	@PreAuthorize("hasAuthority('GET_CODE')")
+	//@PreAuthorize("hasAuthority('GET_CODE')")
 	Code getCodeById(Long codeId);
 
 	/**

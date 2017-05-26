@@ -2,20 +2,20 @@ package longbridge.controllers;
 
 import longbridge.api.CustomerDetails;
 import longbridge.dtos.RetailUserDTO;
+import longbridge.forms.RegistrationForm;
 import longbridge.forms.ResetPasswordForm;
 import longbridge.models.Account;
 import longbridge.models.RetailUser;
-import longbridge.services.AccountService;
-import longbridge.services.IntegrationService;
-import longbridge.services.RetailUserService;
-import longbridge.services.SecurityService;
+import longbridge.services.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -42,28 +42,8 @@ public class UserRegController {
 
     private Logger logger= LoggerFactory.getLogger(this.getClass());
 
-    @GetMapping("/register")
-    public String registerPage(){
-        return "cust/register/registration";
-    }
-
-    @PostMapping("/register")
-    public String addUser(@ModelAttribute("requestForm") RetailUserDTO retailUserDTO, BindingResult result, Model model, WebRequest webRequest){
-        if(result.hasErrors()){
-            return "cust/servicerequest/add";
-        }
-
-
-        logger.info(retailUserDTO.toString());
-        String accountNumber = webRequest.getParameter("acct");
-        String email = webRequest.getParameter("email");
-        String dob = webRequest.getParameter("birthDate");
-
-        CustomerDetails details = integrationService.isAccountValid(accountNumber, email, dob);
-        retailUserService.addUser(retailUserDTO, details);
-        model.addAttribute("success", "Registration successful");
-        return "redirect:/retail/requests";
-    }
+    @Autowired
+    private PasswordPolicyService passwordPolicyService;
     
     @GetMapping("/rest/json/phishingimages")
     public @ResponseBody String antiPhishingImages(){
@@ -73,6 +53,20 @@ public class UserRegController {
     	builder.append("<option value='/assets/phishing/cheetah.jpg'>Cheetah</option>");
     	builder.append("<option value='/assets/phishing/benz.jpg'>Car</option>");
     	return builder.toString();
+    }
+
+    @GetMapping("/rest/accountdetails/{accountNumber}/{email}/{birthDate}")
+    public @ResponseBody String getAccountDetailsFromNumber(@PathVariable String accountNumber, @PathVariable String email, @PathVariable String birthDate){
+        String customerId = "";
+        logger.info("Account nUmber : " + accountNumber);
+        CustomerDetails details = integrationService.isAccountValid(accountNumber, email, birthDate);
+        if (details != null){
+            customerId = details.getCifId();
+        }else {
+            //nothing
+            customerId = "";
+        }
+        return customerId;
     }
 
     @GetMapping("/rest/retail/accountname/{accountNumber}")
@@ -92,8 +86,32 @@ public class UserRegController {
 
     @GetMapping("/rest/username/check/{username}")
     public @ResponseBody String checkUsername(@PathVariable String username){
+        RetailUser user = retailUserService.getUserByName(username);
+        logger.info("USER RETURNED{}", user);
+        if(user == null){
+            return "true";
+        }
+        return "false";
+    }
+
+    @GetMapping("/rest/password/check/{password}")
+    public @ResponseBody String checkPassword(@PathVariable String password){
+        String message = passwordPolicyService.validate(password, null);
+
+        if (!"".equals(message)){
+            return "false";
+        }
         return "true";
     }
+
+
+
+
+
+
+
+
+
 
     @GetMapping("/forgot/username")
     public String showForgotUsername() {
@@ -145,12 +163,71 @@ public class UserRegController {
         return "{'success': " + result + "}";
     }
 
+
+    @GetMapping("/register")
+    public String registerPage(Model model){
+        RegistrationForm registrationForm = new RegistrationForm();
+        registrationForm.step = "1";
+        model.addAttribute("registrationForm", registrationForm);
+        return "cust/register/registration";
+    }
+
+    @PostMapping("/register")
+    public @ResponseBody String addUser(WebRequest webRequest, RedirectAttributes redirectAttributes){
+        Iterator<String> iterator = webRequest.getParameterNames();
+
+        while(iterator.hasNext()){
+            logger.info(iterator.next());
+        }
+
+        String accountNumber = webRequest.getParameter("acct");
+        String email = webRequest.getParameter("email");
+        String dob = webRequest.getParameter("birthDate");
+        String userName = webRequest.getParameter("userName");
+        String password = webRequest.getParameter("password");
+        String confirmPassword = webRequest.getParameter("confirm");
+        String customerId = webRequest.getParameter("customerId");
+
+        logger.info("Customer Id {}:", customerId);
+        CustomerDetails details = integrationService.isAccountValid(accountNumber, email, dob);
+
+
+        if (details.getCifId() == "" || details.getCifId() == null){
+            logger.error("Account Number not valid");
+            return "false";
+        }
+
+
+        //confirm passwords are the same
+        boolean isValid = password.trim().equalsIgnoreCase(confirmPassword.trim());
+        if(!isValid){
+            logger.error("Passwords do not match");
+            return "false";
+        }
+
+        //password meets policy
+
+        //security questions
+
+        //phishing image
+
+
+        RetailUserDTO retailUserDTO = new RetailUserDTO();
+        retailUserDTO.setUserName(userName);
+        retailUserDTO.setEmail(email);
+        retailUserDTO.setPassword(password);
+        retailUserDTO.setCustomerId(customerId);
+        String message = retailUserService.addUser(retailUserDTO, details);
+        logger.info("MESSAGE", message);
+        redirectAttributes.addAttribute("success", "true");
+        return "true";
+    }
+
     @GetMapping("/forgot/password")
     public String showResetPassword(Model model){
         ResetPasswordForm resetPasswordForm = new ResetPasswordForm();
         resetPasswordForm.step = "1";
         model.addAttribute("forgotPasswordForm", resetPasswordForm);
-
         return "cust/passwordreset";
     }
 
@@ -192,6 +269,8 @@ public class UserRegController {
             logger.error("Passwords do not match");
             return "false";
         }
+
+        //if ()
 
         //get Retail User by customerId
         RetailUser retailUser = retailUserService.getUserByCustomerId(customerId);

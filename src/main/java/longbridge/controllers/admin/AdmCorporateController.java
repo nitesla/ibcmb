@@ -240,17 +240,7 @@ public class AdmCorporateController {
         return "redirect:/admin/corporates";
     }
 
-    @GetMapping("/users/{id}/activation")
-    public String changeUserActivationStatus(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        try {
-            String message = corporateUserService.changeActivationStatus(id);
-            redirectAttributes.addFlashAttribute("message", message);
-        } catch (InternetBankingException ibe) {
-            logger.error("Error changing corporate activation status", ibe);
-            redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
-        }
-        return "redirect:/admin/corporates";
-    }
+
 
     @GetMapping("/{corporateId}/delete")
     public String deleteCorporate(@PathVariable Long corporateId, RedirectAttributes redirectAttributes) {
@@ -277,8 +267,11 @@ public class AdmCorporateController {
     }
 
     @PostMapping("/account/new")
-    public String linkAccountPost(AccountDTO accountDTO, BindingResult result, Model model, RedirectAttributes redirectAttributes, Locale locale) {
+    public String linkAccountPost(@ModelAttribute("account") @Valid AccountDTO accountDTO, BindingResult result, Model model, RedirectAttributes redirectAttributes, Locale locale) {
         if (result.hasErrors()) {
+            result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
+            Corporate corporate = corporateService.getCorporateByCustomerId(accountDTO.getCustomerId());
+            model.addAttribute("corporate", corporate);
             return "adm/corporate/addAccount";
         }
 
@@ -487,6 +480,7 @@ public class AdmCorporateController {
 
     @GetMapping("/rules/{id}/delete")
     public String deleteCorporateRule(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+
         try {
             String message = corporateService.deleteCorporateRule(id);
             redirectAttributes.addFlashAttribute("message", message);
