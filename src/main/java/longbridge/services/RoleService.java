@@ -32,7 +32,7 @@ public interface RoleService {
     @PreAuthorize("hasAuthority('GET_ROLE')")
     Role getRoleByUserTypeAndName(UserType userType,String name);
 
-    @PreAuthorize("hasAuthority('GET_ROLE')")
+    //@PreAuthorize("hasAuthority('GET_ROLE')")
     Role getTheRole(Long id);
 
     /**

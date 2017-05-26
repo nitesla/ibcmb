@@ -130,13 +130,13 @@ public class RetailUserServiceImpl implements RetailUserService {
             retailUser.setEmail(details.getEmail());
             retailUser.setCreatedOnDate(new Date());
             retailUser.setBirthDate(user.getBirthDate());
-            retailUser.setRole(roleService.getTheRole(34L));//TODO get actual role
+            retailUser.setRole(roleService.getTheRole(13L));//TODO get actual role
             retailUser.setStatus("A");
 //          retailUser.setBvn("58478457841");//TODO get actual BVN
             retailUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
             retailUser.setAlertPreference(codeService.getCodeById(39L));//TODO get actual preference
             String errorMsg = passwordPolicyService.validate(user.getPassword(),null);
-            if("".equals(errorMsg)){
+            if(!"".equals(errorMsg)){
                 throw new PasswordPolicyViolationException(errorMsg);
             }
             retailUser.setPassword(this.passwordEncoder.encode(user.getPassword()));

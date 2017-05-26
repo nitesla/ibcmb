@@ -28,7 +28,7 @@ public interface RetailUserService {
 //    @PreAuthorize("hasAuthority('GET_RETAIL_USER')")
     RetailUser getUserByName(String name);
 
-    @PreAuthorize("hasAuthority('GET_RETAIL_USER')")
+//    @PreAuthorize("hasAuthority('GET_RETAIL_USER')")
     RetailUserDTO getUserDTOByName(String name);
 
     @PreAuthorize("hasAuthority('GET_RETAIL_USER')")

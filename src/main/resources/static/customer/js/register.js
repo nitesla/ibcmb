@@ -1,37 +1,48 @@
-
-    function loadPhishingImages(){
+ function loadPhishingImages(){
 		console.log("in load phishing imges");
 		var listOfImages = [];
 		$('#phishing').load("/rest/json/phishingimages");
 	}
 
-	var accountName = "null";
+ var customerId = "null";
 
-	function validateAccountNumber(accountNumber){
-		var accountName;
-		$.ajax({
-            type:'GET',
-            url:"/rest/accountname/"+accountNumber,
-            async:false,
-            success:function(data1){
-            	accountName = ''+String(data1);
-				if(accountName == 'null'){
-					//invalid account number
-					alert("Account name not found");
-				}else{
-					//valid account number
-					alert("Account name: " + accountName);
-				}
-            }
-        });
 
-        if(accountName===accountNumber){
-        	return false;
-        }else{
-        	return true;
-        }
-        
-	}
+
+ /** This validates the input account number.
+  *
+  * @param accountNumber the account number to check
+  */
+ function validateAccountDetails(accountNumber, email, birthDate){
+     var customerId;
+     $.ajax({
+         type:'GET',
+         url:"/rest/accountdetails/"+accountNumber+"/"+email+"/"+birthDate,
+         async:false,
+         success:function(data1){
+             customerId = ''+String(data1);
+             if(customerId == "" || customerId === null){
+                 //invalid account number
+                 $.notify({
+                     title: '<strong>Oops!</strong>',
+                     message: 'Invalid Account Number'
+                 },{
+                     type: 'danger'
+                 });
+                 //alert("Account number not found");
+             }else{
+                 //valid account number
+                 //alert("Customer Id: " + customerId);
+                 $('input[name=customerId]').val(customerId);
+             }
+         }
+     });
+
+     if(customerId == "" || customerId === null){
+         return false;
+     }else{
+         return true;
+     }
+ }
 
 	function validateUsername(username){
         var result;
@@ -43,14 +54,20 @@
             	result = ''+String(data1);
 				if(result == 'false'){
 					//invalid account number
-					alert("user name not found");
+					//alert("user name not found");
+                    $.notify({
+                        title: '<strong>Oops!</strong>',
+                        message: 'Username already exists'
+                    },{
+                        type: 'danger'
+                    });
 				}else{
 					//valid account number
 					alert("user name: " + result);
 				}
             }
         });
-        
+
         if(result === 'true'){
             //username is valid and available
         	return true;
@@ -58,6 +75,75 @@
         	return false;
         }
 	}
+
+     function validatePassword(password){
+         var result;
+         $.ajax({
+             type:'GET',
+             url:"/rest/password/check/"+password,
+             async:false,
+             success:function(data1){
+                 result = ''+String(data1);
+                 if(result == 'false'){
+                     //invalid account number
+                     //alert("user name not found");
+                     $.notify({
+                         title: '<strong>Oops!</strong>',
+                         message: 'Password Reset Failed, the entered password might not meet the set password policy'
+                     },{
+                         type: 'danger'
+                     });
+
+                 }else{
+                     //valid account number
+                     alert("password: " + result);
+                 }
+             }
+         });
+
+         if(result === 'true'){
+             //username is valid and available
+             return true;
+         }else{
+             return false;
+         }
+     }
+
+
+    function registerUser(){
+         var returnValue = false;
+         $('#reg-form').submit(function(e){
+             e.preventDefault();
+
+             $.ajax({
+                 url: '',
+                 async:false,
+                 type: "POST",
+                 data: $(this).serialize(),
+                 success: function(data)
+                 {
+                     //alert(data+" return ");
+                     //callback methods go right here
+                     if(data==="true"){
+                         $('#returnValue').val(true);
+                     }else {
+                         $.notify({
+                             title: '<strong>Oops!</strong>',
+                             message: 'Self Registration Failed'
+                         },{
+                             type: 'danger'
+                         });
+                     }
+                 }
+             });
+         });
+         $('#reg-form').submit();
+         returnValue = $('#returnValue').val();
+         //alert(returnValue);
+         return Boolean(returnValue);
+    }
+
+
 
     //datepicker
     $( function() {
@@ -93,6 +179,7 @@
     });
     var ACCOUNT_DETAILS_STEP = 0;
     var PROFILE_DETAILS_STEP = 1;
+    var PHISHING_IMAGE_STEP = 3;
     form.children("div").steps({
         headerTag: "h3",
         bodyTag: "section",
@@ -105,25 +192,33 @@
             if(ACCOUNT_DETAILS_STEP === currentIndex){
                 console.log("Current step is the account details step");
                 var accountNumber = $('input[name="acct"]').val();
-                return isValid && validateAccountNumber(accountNumber);
+                var email = $('input[name="email"]').val();
+                var birthDate = $('input[name="birthDate"]').val();
+                return isValid && validateAccountDetails(accountNumber, email, birthDate);
             }
             if(PROFILE_DETAILS_STEP === currentIndex){
                 console.log("Current stp is the profile details step");
-                var username = $('input[name="username"]').val();
-                return isValid && validateUsername(username);
+                var username = $('input[name="userName"]').val();
+                var confirm = $('input[name="confirm"]').val();
+                return isValid && validateUsername(username) && validatePassword(confirm);
+            }
+            if(PHISHING_IMAGE_STEP === currentIndex){
+                console.log("Current Step is the phishing image step");
+                //$("#reg-form").submit();
+                return isValid && registerUser();
             }
             return form.valid();
         },
         onFinishing: function (event, currentIndex)
         {
-            
-            form.validate().settings.ignore = ":disabled";
+            //form.validate().settings.ignore = ":disabled";
             return form.valid();
         },
         onFinished: function (event, currentIndex)
         {
 //            alert("Submitted!");
-            $("#reg-form").submit();
+
+            window.location.href = "/login/retail";
         }
     });
 
