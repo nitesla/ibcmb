@@ -132,14 +132,14 @@ public class CorpMailboxController {
     @GetMapping("/inbox/{id}/message")
     public String viewReceivedMessage(@PathVariable Long id, Model model) {
         MessageDTO message = messageService.getMessage(id);
-        model.addAttribute("messageDTO", message);
+        model.addAttribute("message", message);
         return "corp/mailbox/message";
     }
 
     @GetMapping("/sent/{id}/message")
     public String viewSentMessage(@PathVariable Long id, Model model) {
         MessageDTO message = messageService.getMessage(id);
-        model.addAttribute("messageDTO", message);
+        model.addAttribute("message", message);
         return "corp/mailbox/message";
     }
 

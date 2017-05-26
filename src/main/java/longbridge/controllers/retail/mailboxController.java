@@ -96,7 +96,7 @@ public class mailboxController {
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
         MessageDTO message = new MessageDTO();
         message.setSender(retailUser.getUserName());
-        message.setRecipient("joykwere@yahoo.com");
+        message.setRecipient("kwere01");
         //if(!message.getStatus()==not sent){
         //
         model.addAttribute("messageDTO", message);
@@ -127,20 +127,20 @@ public class mailboxController {
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
         messageService.addMessage(retailUser,recipient,messageDTO);
         redirectAttributes.addFlashAttribute("message","Message sent successfully");
-        return "redirect:/cust/mailbox/outbox";
+        return "redirect:/cust/mailbox/sentmail";
     }
 
     @GetMapping("/inbox/{id}/message")
     public String viewReceivedMessage(@PathVariable Long id, Model model) {
         MessageDTO message = messageService.getMessage(id);
-        model.addAttribute("messageDTO", message);
+        model.addAttribute("message", message);
         return "cust/mailbox/message";
     }
 
     @GetMapping("/sent/{id}/message")
     public String viewSentMessage(@PathVariable Long id, Model model) {
         MessageDTO message = messageService.getMessage(id);
-        model.addAttribute("messageDTO", message);
+        model.addAttribute("message", message);
         return "cust/mailbox/message";
     }
 
@@ -188,12 +188,11 @@ public class mailboxController {
     public String getMessage(Model model,Principal principal) {
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
         List<MessageDTO> receivedMessages = messageService.getReceivedMessages(retailUser);
-        MessageDTO message = receivedMessages.get(0);
-        //  if (!receivedMessages.isEmpty()) {
-        //      MessageDTO message = receivedMessages.get(0);
-        //      model.addAttribute("messageDTO", message);
-        //  }
-        model.addAttribute("messageDTO", message);
+        if (!receivedMessages.isEmpty()) {
+             MessageDTO message = receivedMessages.get(0);
+             model.addAttribute("messageDTO", message);
+         }
+        model.addAttribute("receivedMessages", receivedMessages);
 
 
         return "cust/mailbox/message";

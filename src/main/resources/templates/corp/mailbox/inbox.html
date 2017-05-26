@@ -46,23 +46,11 @@
                             <div class="mail-box">
                                 <table class="table table-hover table-mail">
                                     <tbody>
-                                    <tr class="unread">
-                                        <td class="check-mail">
-                                            <input type="checkbox" class="i-checks" />
-                                        </td>
-                                        <td class="mail-ontact"><a href="">Anna Smith</a></td>
-                                        <td class="mail-subject"><a th:href="@{/corporate/mailbox/message}">Lorem ipsum dolor noretek imit set.</a></td>
-                                        <td class="text-right mail-date">6.10 AM</td>
+                                    <tr th:each="message: ${receivedMessages}" class="unread">
+                                        <td class="mail-ontact" th:text="${message.sender}"></td>
+                                        <td class="mail-subject"><a th:href="@{/corporate/mailbox/inbox/{id}/message(id=${message.id})}" th:text="${message.subject}">Placeholder text</a></td>
+                                        <td class="text-right mail-date" th:text="${message.createdOn}">6.10 AM</td>
                                     </tr>
-                                    <tr class="unread">
-                                        <td class="check-mail">
-                                            <input type="checkbox" class="i-checks" checked="checked" />
-                                        </td>
-                                        <td class="mail-ontact"><a href="message.html">Jack Nowak</a></td>
-                                        <td class="mail-subject"><a th:href="@{/corporate/mailbox/message}">Aldus PageMaker including versions of Lorem</a></td>
-                                        <td class="text-right mail-date">8.22 PM</td>
-                                    </tr>
-
 
                                     </tbody>
                                 </table>
