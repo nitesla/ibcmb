@@ -177,7 +177,7 @@ public class TransferController {
             e.printStackTrace();
             String errorMessage = transferErrorService.getMessage(e,request);
             redirectAttributes.addFlashAttribute("error", errorMessage);
-            return index(transferRequestDTO.getTransferType());
+            return"redirect:/retail/dashboard";
         }
     }
 
