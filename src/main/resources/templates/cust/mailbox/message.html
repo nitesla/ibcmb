@@ -38,21 +38,21 @@
                                     <a href="" class="btn-default btn-sm" data-toggle="tooltip" data-placement="top" title="Move to trash"><i class="fa fa-trash-o"></i>&nbsp;</a>
                                 </div>
                                 <h2 class="in-box">
-                                    Veiw Messages
+                                    Veiw Message
                                 </h2>
                                 <div class="mail-tools tooltip-demo m-t-md">
                                     <h3>
-                                        <span class="font-noraml">Subject: </span>Aldus PageMaker including versions of Lorem Ipsum.
+                                        <span class="font-noraml">Subject: </span><span th:text="${message.subject}">Aldus PageMaker including versions of Lorem Ipsum.</span>
                                     </h3>
                                     <h5>
-                                        <span class="pull-right font-noraml">02 FEB 2017</span>
-                                        <span class="font-noraml">From: </span>joy.utosu@longbridgetech.com
+                                        <span class="pull-right font-noraml" th:text="${message.createdOn}">02 FEB 2017</span>
+                                        <span class="font-noraml">From: </span><span th:text="${message.sender}">joy.utosu@longbridgetech.com</span>
                                     </h5>
                                 </div>
                             </div>
                             <div class="margin-bottoms"></div>
                             <div class="mail-box">
-                                <p>
+                                <p th:text="${message.body}">
                                     Hello Jonathan!
                                     <br/>
                                     <br/>

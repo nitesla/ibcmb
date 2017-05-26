@@ -119,7 +119,6 @@ public class ServiceRequestController {
                     return "redirect:/token/authenticate";
                 }
             }
-
             String message = requestService.addRequest(serviceRequestDTO);
             redirectAttributes.addFlashAttribute("message", message);
 
