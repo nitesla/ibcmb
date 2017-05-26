@@ -2,6 +2,7 @@ package longbridge.services;
 
 import longbridge.dtos.CorporateUserDTO;
 import longbridge.exception.InternetBankingException;
+import longbridge.exception.PasswordException;
 import longbridge.forms.AlertPref;
 import longbridge.models.Corporate;
 import longbridge.models.CorporateUser;
@@ -76,10 +77,10 @@ public interface CorporateUserService{
 
     /**
      * resets the password for the specified corporate user
-     * @param user the corporate user
+     * @param userId
      */
     @PreAuthorize("hasAuthority('UPDATE_CORPORATE_USER')")
-    String resetPassword(CorporateUser user)throws InternetBankingException;
+    String resetPassword(Long userId) throws PasswordException;
 
     /**
      * Deletes the specified corporate user

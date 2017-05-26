@@ -127,14 +127,10 @@ public class AdminUserServiceImpl implements AdminUserService {
             adminUser.setUserName(user.getUserName());
             adminUser.setEmail(user.getEmail());
             adminUser.setCreatedOnDate(new Date());
-            String password = passwordPolicyService.generatePassword();
-            adminUser.setPassword(passwordEncoder.encode(password));
             Role role = new Role();
             role.setId(Long.parseLong(user.getRoleId()));
             adminUser.setRole(role);
-            adminUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
             adminUserRepo.save(adminUser);
-            sendUserCredentials(adminUser,password);
             logger.info("New admin user {} created", adminUser.getUserName());
             return messageSource.getMessage("user.add.success", null, locale);
         } catch (Exception e) {
@@ -143,6 +139,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
     @Override
+    @Transactional
     public String changeActivationStatus(Long userId) throws InternetBankingException {
         try {
             AdminUser user = adminUserRepo.findOne(userId);
@@ -150,13 +147,30 @@ public class AdminUserServiceImpl implements AdminUserService {
             String newStatus = "A".equals(oldStatus) ? "I" : "A";
             user.setStatus(newStatus);
             adminUserRepo.save(user);
-            if ((oldStatus == null) || ("I".equals(oldStatus)) && "A".equals(newStatus)) {
+            String fullName = user.getFirstName()+" "+user.getLastName();
+            if ((oldStatus == null) ) {//User was just created
                 String password = passwordPolicyService.generatePassword();
                 user.setPassword(passwordEncoder.encode(password));
+                user.setExpiryDate(new Date());
+                adminUserRepo.save(user);
+
                 Email email = new Email.Builder()
                         .setRecipient(user.getEmail())
-                        .setSubject("Internet Banking Admin Console Activation")
-                        .setBody(String.format("Your new password to Admin console is %s and your username is %s", password, user.getUserName()))
+                        .setSubject(messageSource.getMessage("admin.create.subject",null,locale))
+                        .setBody(String.format(messageSource.getMessage("admin.create.message",null,locale),fullName, user.getUserName(), password))
+                        .build();
+                mailService.send(email);
+            }
+
+            else if (("I".equals(oldStatus)) && "A".equals(newStatus)) {//User is being reactivated
+                String password = passwordPolicyService.generatePassword();
+                user.setPassword(passwordEncoder.encode(password));
+                user.setExpiryDate(new Date());
+                adminUserRepo.save(user);
+                Email email = new Email.Builder()
+                        .setRecipient(user.getEmail())
+                        .setSubject(messageSource.getMessage("admin.reactivation.subject",null,locale))
+                        .setBody(String.format(messageSource.getMessage("admin.reactivation.message",null,locale), fullName,user.getUserName(),password))
                         .build();
                 mailService.send(email);
             }
@@ -215,11 +229,12 @@ public class AdminUserServiceImpl implements AdminUserService {
             String newPassword = passwordPolicyService.generatePassword();
             user.setPassword(passwordEncoder.encode(newPassword));
             user.setExpiryDate(new Date());
+            String fullName = user.getFirstName()+" "+user.getLastName();
             this.adminUserRepo.save(user);
             Email email = new Email.Builder()
                     .setRecipient(user.getEmail())
-                    .setSubject("Internet Banking Admin Console Password Reset")
-                    .setBody(String.format("Your new password to Admin console is %s and your username is %s", newPassword, user.getUserName()))
+                    .setSubject(messageSource.getMessage("admin.password.reset.subject",null,locale))
+                    .setBody(String.format(messageSource.getMessage("admin.password.reset.message",null,locale),fullName, newPassword))
                     .build();
             mailService.send(email);
             logger.info("Admin user {} password reset successfully", user.getUserName());
@@ -248,8 +263,8 @@ public class AdminUserServiceImpl implements AdminUserService {
         try {
             AdminUser adminUser = adminUserRepo.findOne(user.getId());
             adminUser.setPassword(this.passwordEncoder.encode(changePassword.getNewPassword()));
+            adminUser.setUsedPasswords(getUsedPasswords(changePassword.getNewPassword(),adminUser.getUsedPasswords()));
             adminUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
-
             this.adminUserRepo.save(adminUser);
             logger.info("User {} password has been updated", user.getId());
             return messageSource.getMessage("password.change.success", null, locale);
@@ -281,7 +296,6 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Transactional
     public String changeDefaultPassword(AdminUser user, ChangeDefaultPassword changePassword) throws PasswordException {
 
-
         String errorMessage = passwordPolicyService.validate(changePassword.getNewPassword(), user.getUsedPasswords());
         if (!"".equals(errorMessage)) {
             throw new PasswordPolicyViolationException(errorMessage);
@@ -293,6 +307,7 @@ public class AdminUserServiceImpl implements AdminUserService {
         try {
             AdminUser adminUser = adminUserRepo.findOne(user.getId());
             adminUser.setPassword(this.passwordEncoder.encode(changePassword.getNewPassword()));
+            adminUser.setUsedPasswords(getUsedPasswords(changePassword.getNewPassword(),adminUser.getUsedPasswords()));
             adminUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
             this.adminUserRepo.save(adminUser);
             logger.info("User {}'s password has been updated", user.getId());

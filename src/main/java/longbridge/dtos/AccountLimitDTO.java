@@ -21,10 +21,8 @@ public class AccountLimitDTO {
     private String description;
     @NotEmpty
     private String channel;
-    @Min(0)
-    private double lowerLimit;
-    @Min(0)
-    private double upperLimit;
+
+    private String maxLimit;
     @NotEmpty
     private String currency;
     private String status;
@@ -82,6 +80,13 @@ public class AccountLimitDTO {
         this.frequency = frequency;
     }
 
+    public String getMaxLimit() {
+        return maxLimit;
+    }
+
+    public void setMaxLimit(String maxLimit) {
+        this.maxLimit = maxLimit;
+    }
 
     public String getChannel() {
         return channel;
@@ -91,21 +96,6 @@ public class AccountLimitDTO {
         this.channel = channel;
     }
 
-    public double getLowerLimit() {
-        return lowerLimit;
-    }
-
-    public void setLowerLimit(double lowerLimit) {
-        this.lowerLimit = lowerLimit;
-    }
-
-    public double getUpperLimit() {
-        return upperLimit;
-    }
-
-    public void setUpperLimit(double upperLimit) {
-        this.upperLimit = upperLimit;
-    }
 
     public String getCurrency() {
         return currency;
@@ -134,8 +124,7 @@ public class AccountLimitDTO {
                 ", accountNumber='" + accountNumber + '\'' +
                 ", description='" + description + '\'' +
                 ", channel='" + channel + '\'' +
-                ", lowerLimit=" + lowerLimit +
-                ", upperLimit=" + upperLimit +
+                ", maxLimit=" + maxLimit +
                 ", currency='" + currency + '\'' +
                 ", status='" + status + '\'' +
                 ", frequency='" + frequency + '\'' +

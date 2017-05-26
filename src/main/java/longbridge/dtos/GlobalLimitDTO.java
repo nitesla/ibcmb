@@ -18,18 +18,13 @@ public class GlobalLimitDTO {
     private String description;
     @NotEmpty
     private String channel;
-    @Min(0)
-    private double lowerLimit;
-    @Min(0)
-    private double upperLimit;
+
+    private String maxLimit;
     @NotEmpty
     private String currency;
     private String status;
     @NotEmpty
     private String frequency;
-    private Date effectiveDate;
-    @NotEmpty(message = "startDate")
-    private String startDate; //same as effectiveDate
 
 
     public Long getId() {
@@ -81,20 +76,12 @@ public class GlobalLimitDTO {
         this.channel = channel;
     }
 
-    public double getLowerLimit() {
-        return lowerLimit;
+    public String getMaxLimit() {
+        return maxLimit;
     }
 
-    public void setLowerLimit(double lowerLimit) {
-        this.lowerLimit = lowerLimit;
-    }
-
-    public double getUpperLimit() {
-        return upperLimit;
-    }
-
-    public void setUpperLimit(double upperLimit) {
-        this.upperLimit = upperLimit;
+    public void setMaxLimit(String maxLimit) {
+        this.maxLimit = maxLimit;
     }
 
     public String getCurrency() {
@@ -114,23 +101,6 @@ public class GlobalLimitDTO {
     }
 
 
-    public Date getEffectiveDate() {
-        return effectiveDate;
-    }
-
-    public void setEffectiveDate(Date effectiveDate) {
-        this.effectiveDate = effectiveDate;
-    }
-
-
-
-    public String getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(String startDate) {
-        this.startDate = startDate;
-    }
 
     @Override
     public String toString() {
@@ -140,13 +110,10 @@ public class GlobalLimitDTO {
                 ", customerType='" + customerType + '\'' +
                 ", description='" + description + '\'' +
                 ", channel='" + channel + '\'' +
-                ", lowerLimit=" + lowerLimit +
-                ", upperLimit=" + upperLimit +
+                ", maxLimit=" + maxLimit +
                 ", currency='" + currency + '\'' +
                 ", status='" + status + '\'' +
                 ", frequency='" + frequency + '\'' +
-                ", effectiveDate=" + effectiveDate +
-                ", startDate='" + startDate + '\'' +
-                '}';
+                 '}';
     }
 }

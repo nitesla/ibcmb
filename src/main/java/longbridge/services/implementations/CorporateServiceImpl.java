@@ -84,6 +84,7 @@ public class CorporateServiceImpl implements CorporateService {
             corporateUser.setLastName(user.getLastName());
             corporateUser.setUserName(user.getUserName());
             corporateUser.setEmail(user.getEmail());
+            corporateUser.setPhoneNumber(user.getPhoneNumber());
             corporateUser.setCreatedOnDate(new Date());
             String password = passwordPolicyService.generatePassword();
             corporateUser.setPassword(passwordEncoder.encode(password));
@@ -249,6 +250,10 @@ public class CorporateServiceImpl implements CorporateService {
     @Override
     public String addCorporateRule(CorpTransferRuleDTO transferRuleDTO) throws InternetBankingException {
 
+
+        if (new BigDecimal(transferRuleDTO.getLowerLimitAmount()).compareTo(new BigDecimal("0")) < 0) {
+            throw new TransferRuleException(messageSource.getMessage("rule.amount.zero", null, locale));
+        }
         if (new BigDecimal(transferRuleDTO.getUpperLimitAmount()).compareTo(new BigDecimal(transferRuleDTO.getLowerLimitAmount())) < 0) {
             throw new TransferRuleException(messageSource.getMessage("rule.range.violation", null, locale));
         }
@@ -275,6 +280,9 @@ public class CorporateServiceImpl implements CorporateService {
     @Transactional
     public String updateCorporateRule(CorpTransferRuleDTO transferRuleDTO) throws InternetBankingException {
 
+        if (new BigDecimal(transferRuleDTO.getLowerLimitAmount()).compareTo(new BigDecimal("0")) < 0) {
+            throw new TransferRuleException(messageSource.getMessage("rule.amount.zero", null, locale));
+        }
         if (new BigDecimal(transferRuleDTO.getUpperLimitAmount()).compareTo(new BigDecimal(transferRuleDTO.getLowerLimitAmount())) < 0) {
             throw new TransferRuleException(messageSource.getMessage("rule.range.violation", null, locale));
         }

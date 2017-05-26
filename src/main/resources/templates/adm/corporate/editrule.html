@@ -126,8 +126,6 @@
 </div>
 <script th:inline="javascript">
     /*<![CDATA[*/
-    document.getElementById("cancel").onclick = function () {
-        location.href = "/admin/corporates";}
 
     $(document).ready(function () {
         if ($("#unlimited").is(":checked")) {
@@ -157,6 +155,18 @@
 
         });
     })
+
+    var corpId = [[${corporateRule.corporateId}]];
+    if(corpId!=null) {
+        document.getElementById("cancel").onclick = function () {
+            location.href = "/admin/corporates/" + corpId + "/view";
+        }
+    }else{
+        document.getElementById("cancel").onclick = function () {
+            location.href = "/admin/corporates/";
+        }
+    }
+
 
     /*]]>*/
 </script>

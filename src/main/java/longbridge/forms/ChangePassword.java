@@ -8,11 +8,11 @@ import javax.validation.constraints.Size;
  * Created by Fortune on 4/3/2017.
  */
 public class ChangePassword {
-    @NotEmpty(message = "Enter the Old Password")
+    @NotEmpty(message = "oldPassword")
     private String oldPassword;
-    @NotEmpty(message = "Enter the New Password")
+    @NotEmpty(message = "newPassword")
     private String newPassword;
-    @NotEmpty(message = "Confirm the New Password")
+    @NotEmpty(message = "confirmPassword")
     private String confirmPassword;
 
     public String getOldPassword() {

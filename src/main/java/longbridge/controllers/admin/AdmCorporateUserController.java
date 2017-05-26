@@ -5,6 +5,7 @@ import longbridge.dtos.CorporateUserDTO;
 import longbridge.dtos.RoleDTO;
 import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.InternetBankingException;
+import longbridge.exception.PasswordException;
 import longbridge.forms.ChangePassword;
 import longbridge.services.CorporateService;
 import longbridge.services.CorporateUserService;
@@ -157,10 +158,48 @@ public class AdmCorporateUserController {
         return "redirect:/admin/corporates/"+corporateUserDTO.getCorporateId()+"/view";
     }
 
-    @PostMapping("{userId}/delete")
-    public String deleteUser(@PathVariable Long userId) {
-        corporateUserService.deleteUser(userId);
-        return "redirect:/corporate/users";
+    @GetMapping("/{id}/activation")
+    public String changeUserActivationStatus(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        String corpId = corporateUserService.getUser(id).getCorporateId();
+
+        try {
+            String message = corporateUserService.changeActivationStatus(id);
+            redirectAttributes.addFlashAttribute("message", message);
+        } catch (InternetBankingException ibe) {
+            logger.error("Error changing corporate activation status", ibe);
+            redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
+        }
+        return "redirect:/admin/corporates/"+corpId+"/view";
+    }
+
+    @GetMapping("{userId}/delete")
+    public String deleteUser(@PathVariable Long userId, RedirectAttributes redirectAttributes) {
+        String corpId = corporateUserService.getUser(userId).getCorporateId();
+
+        try {
+            String message = corporateUserService.deleteUser(userId);
+            redirectAttributes.addFlashAttribute("message",message);
+        }
+        catch (InternetBankingException ibe){
+            logger.error("Error deleting user",ibe);
+            redirectAttributes.addFlashAttribute("failure",ibe.getMessage());
+        }
+        return "redirect:/admin/corporates/" + corpId + "/view";
+
+    }
+
+    @GetMapping("/{id}/password/reset")
+    public String resetPassword(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        String corpId = corporateUserService.getUser(id).getCorporateId();
+
+        try {
+            String message = corporateUserService.resetPassword(id);
+            redirectAttributes.addFlashAttribute("message", message);
+        } catch (PasswordException pe) {
+            redirectAttributes.addFlashAttribute("failure", pe.getMessage());
+            logger.error("Error resetting password for operation user", pe);
+        }
+        return "redirect:/admin/corporates/"+corpId+"/view";
     }
 
     @GetMapping("changePassword")

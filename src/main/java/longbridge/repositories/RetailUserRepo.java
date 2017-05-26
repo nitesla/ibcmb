@@ -21,7 +21,7 @@ public interface RetailUserRepo extends CommonRepo<RetailUser, Long> {
 
 	Iterable<RetailUser> findByRole(Role r);
     Page<RetailUser> findByRole(Role r, Pageable pageDetail);
-    RetailUser findFirstByUserName(String s);
+    RetailUser findFirstByUserName(String username);
     RetailUser findFirstByCustomerId(String customerId);
     @Modifying
     @Query("update RetailUser  u set u.lastLoginDate = current_timestamp() , u.lockedUntilDate = NULL, u.noOfLoginAttempts = 0 where u.userName = :name")

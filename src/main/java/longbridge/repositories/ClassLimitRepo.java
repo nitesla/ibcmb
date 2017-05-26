@@ -11,4 +11,9 @@ import java.util.List;
 public interface ClassLimitRepo extends CommonRepo<ClassLimit, Long>{
 
     List<ClassLimit> findByCustomerType(String type);
+
+    ClassLimit findByCustomerTypeAndAccountClassAndChannel(String customerType, String accountClass, String channel);
+
 }
+
+
