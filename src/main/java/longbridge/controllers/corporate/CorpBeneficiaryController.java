@@ -38,15 +38,16 @@ public class CorpBeneficiaryController {
 
     @GetMapping
     public String getBeneficiaries(Model model, Principal principal){
-      /* CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
+       CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
         logger.info("local BEN {}", corpLocalBeneficiaryService.getCorpLocalBeneficiaries(corporateUser));
         Iterable<CorpLocalBeneficiary> corpLocalBeneficiaries = corpLocalBeneficiaryService.getCorpLocalBeneficiaries(corporateUser);
+
         for (CorpLocalBeneficiary localBenef : corpLocalBeneficiaries){
             localBenef.setBeneficiaryBank(financialInstitutionService.getFinancialInstitutionByCode(localBenef.getBeneficiaryBank()).getInstitutionName());
         }
         model.addAttribute("localBen", corpLocalBeneficiaries);
 
-        Iterable<CorpInternationalBeneficiary> intBeneficiary = corpInternationalBeneficiaryService.getCorpInternationalBeneficiaries(corporateUser);
+       /* Iterable<CorpInternationalBeneficiary> intBeneficiary = corpInternationalBeneficiaryService.getCorpInternationalBeneficiaries(corporateUser);
         for (CorpInternationalBeneficiary intBenef : intBeneficiary){
             intBenef.setBeneficiaryBank(financialInstitutionService.getFinancialInstitutionByCode(intBenef.getBeneficiaryBank()).getInstitutionName());
         }

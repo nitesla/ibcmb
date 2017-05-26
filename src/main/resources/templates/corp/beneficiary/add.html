@@ -49,7 +49,7 @@
                             <button class="btn btn-primary">Save</button>
                         </form>
 
-                        <form id="foreign" method="post" th:action="@{/retail/beneficiary/foreign}" th:object="${corpInternationalBeneficiaryDTO}" style="display: none">
+                        <form id="foreign" method="post" th:action="@{/corporate/beneficiary/foreign}" th:object="${corpInternationalBeneficiaryDTO}" style="display: none">
                             <input type="hidden" th:value="foreign" class="form-control"/>
                             <div class="form-group">
                                 <label>Bank Details</label>
