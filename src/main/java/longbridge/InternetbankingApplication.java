@@ -68,9 +68,9 @@ public class InternetbankingApplication  implements  CommandLineRunner  {
 //
 //        );
 //        roleRepo.save(role);
-        System.out.println("DEAR WALE NO SALARY FOR YOU TILL IB IS COMPLETED");
-        integrationService.sendSMS("DEAR WALE NO SALARY FOR YOU TILL IB IS COMPLETED","08050915810","SALARY");
-        integrationService.sendSMS("DEAR WUNMI NO SALARY FOR YOU TILL IB IS COMPLETED","07038810752","SALARY");
+//        System.out.println("DEAR WALE NO SALARY FOR YOU TILL IB IS COMPLETED");
+//        integrationService.sendSMS("DEAR WALE NO SALARY FOR YOU TILL IB IS COMPLETED","08050915810","SALARY");
+//        integrationService.sendSMS("DEAR WUNMI NO SALARY FOR YOU TILL IB IS COMPLETED","07038810752","SALARY");
 
  }
 

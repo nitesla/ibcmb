@@ -5,6 +5,7 @@ import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.models.TransferRequest;
 import longbridge.models.User;
+import longbridge.models.UserType;
 import longbridge.repositories.TransferRequestRepo;
 import longbridge.services.AccountService;
 import longbridge.services.FinancialInstitutionService;
@@ -36,6 +37,7 @@ public class TransferServiceImpl implements TransferService {
 
     private TransferRequestRepo transferRequestRepo;
     private IntegrationService integrationService;
+    private TransactionLimitServiceImpl limitService;
 
     private ModelMapper modelMapper;
 
@@ -45,12 +47,13 @@ public class TransferServiceImpl implements TransferService {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    public TransferServiceImpl(TransferRequestRepo transferRequestRepo, IntegrationService integrationService, ModelMapper modelMapper, AccountService accountService, FinancialInstitutionService financialInstitutionService) {
+    public TransferServiceImpl(TransferRequestRepo transferRequestRepo, IntegrationService integrationService, ModelMapper modelMapper, AccountService accountService, FinancialInstitutionService financialInstitutionService, TransactionLimitServiceImpl limitService) {
         this.transferRequestRepo = transferRequestRepo;
         this.integrationService = integrationService;
         this.modelMapper = modelMapper;
         this.accountService = accountService;
         this.financialInstitutionService = financialInstitutionService;
+        this.limitService = limitService;
     }
 
     @Override
@@ -134,6 +137,14 @@ public class TransferServiceImpl implements TransferService {
             throw new InternetBankingTransferException(TransferExceptions.SAME_ACCOUNT.toString());
         }
         valdateAccounts(dto);
+        boolean limitExceeded = limitService.isAboveInternetBankingLimit(
+                dto.getTransferType(),
+                UserType.RETAIL,
+                dto.getCustomerAccountNumber(),
+                dto.getAmount()
+
+        );
+        if (limitExceeded) throw new InternetBankingTransferException(TransferExceptions.LIMIT_EXCEEDED.toString());
 
         String cif = accountService.getAccountByAccountNumber(dto.getCustomerAccountNumber()).getCustomerId();
         boolean acctPresent = StreamSupport.stream(accountService.getAccountsForDebit(cif).spliterator(), false)
