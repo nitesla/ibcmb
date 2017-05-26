@@ -31,7 +31,7 @@
                                 <tr>
                                 <th>Beneficiary name</th>
                                 <th>Bank</th>
-                                <th>Currency</th>
+
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -40,13 +40,14 @@
                                 <tr th:each="loc : ${localBen}">
                                     <td th:text="${loc.accountName}"></td>
                                      <td th:text="${loc.accountNumber}"></td>
+
                                     <td>
                                         <li class="dropdown" style="list-style: none">
                                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" style="font-size:20px;" aria-haspopup="true"><i class=" fa fa-angle-right"></i></a>
                                         <ul class="dropdown-menu">
 
 
-                                            <li><a th:href="@{'/retail/transfer/local/' + ${loc.id} }">make a transfer</a>
+                                            <li><a th:href="@{'/retail/transfer/interbank/' + ${loc.id} }">make a transfer</a>
 
 
                                             </li>

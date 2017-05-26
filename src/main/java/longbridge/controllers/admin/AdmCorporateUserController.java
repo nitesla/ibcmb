@@ -22,7 +22,11 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -44,74 +48,102 @@ public class AdmCorporateUserController {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    private ModelMapper modelMapper;
-
-    @Autowired
     MessageSource messageSource;
 
 
-    @GetMapping("{corpId}/new")
-    public String addUser(@PathVariable Long corpId, Model model) {
-        CorporateDTO corporateDTO = corporateService.getCorporate(corpId);
-        CorporateUserDTO corporateUserDTO = new CorporateUserDTO();
+    @ModelAttribute
+    public void init(Model model){
         Iterable<RoleDTO> roles = roleService.getRoles();
-        model.addAttribute("roles", roles);
+        Iterator<RoleDTO> roleDTOIterator = roles.iterator();
+        while (roleDTOIterator.hasNext()){
+            RoleDTO roleDTO = roleDTOIterator.next();
+            if(roleDTO.getName().equals("Sole Admin")){
+                roleDTOIterator.remove();
+            }
+        }
+        model.addAttribute("roles",roles);
+
+    }
+
+
+    @GetMapping("{corpId}/new")
+    public String addUser(@PathVariable Long corpId, Model model, RedirectAttributes redirectAttributes) {
+        CorporateDTO corporateDTO = corporateService.getCorporate(corpId);
+        if(corporateDTO.getCorporateType().equals("SOLE")){
+            redirectAttributes.addFlashAttribute("failure","Corporate entity has sole user");
+            return "redirect:/admin/corporates";
+        }
+        CorporateUserDTO corporateUserDTO = new CorporateUserDTO();
         model.addAttribute("corporate", corporateDTO);
         model.addAttribute("corporateUser", corporateUserDTO);
         return "adm/corporate/adduser";
     }
 
     @PostMapping("/new")
-    public String createUser(@ModelAttribute("corporateUser") @Valid CorporateUserDTO corporateUserDTO, BindingResult result, Model model, RedirectAttributes redirectAttributes, Locale locale) throws Exception {
+    public String createUser(@ModelAttribute("corporateUser") @Valid CorporateUserDTO corporateUserDTO, BindingResult result, HttpSession session, Model model,RedirectAttributes redirectAttributes, Locale locale) throws Exception {
 
         if (result.hasErrors()) {
             result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
-            CorporateDTO corporateDTO = corporateService.getCorporate(Long.parseLong(corporateUserDTO.getCorporateId()));
-            CorporateUserDTO corporateUser = new CorporateUserDTO();
-            Iterable<RoleDTO> roles = roleService.getRoles();
-            model.addAttribute("roles", roles);
-            model.addAttribute("corporate", corporateDTO);
-            model.addAttribute("corporateUser", corporateUser);
+            if(session.getAttribute("corporate")==null) {
+                CorporateDTO corporate = corporateService.getCorporate(Long.parseLong(corporateUserDTO.getCorporateId()));
+                model.addAttribute("corporate", corporate);
+            }
+            else{
+                CorporateDTO corporate = (CorporateDTO) session.getAttribute("corporate");
+                model.addAttribute("corporate", corporate);
+
+            }
             return "adm/corporate/adduser";
         }
         try {
-            String message = corporateUserService.addUser(corporateUserDTO);
-            redirectAttributes.addFlashAttribute("message", message);
 
-
-            return "redirect:/admin/corporates/";
+            if(session.getAttribute("corporate")!=null) {
+                CorporateDTO corporate = (CorporateDTO) session.getAttribute("corporate");
+                String message = corporateService.addCorporate(corporate,corporateUserDTO);
+                session.removeAttribute("corporate");
+                redirectAttributes.addFlashAttribute("message", message);
+                return "redirect:/admin/corporates/";
+            }
+            else{
+                String message = corporateUserService.addUser(corporateUserDTO);
+                redirectAttributes.addFlashAttribute("message", message);
+                return "redirect:/admin/corporates/";
+            }
         } catch (DuplicateObjectException doe) {
             result.addError(new ObjectError("error", doe.getMessage()));
-            logger.error("Error creating admin user {}", corporateUserDTO.getUserName(), doe);
-            CorporateDTO corporateDTO = corporateService.getCorporate(Long.parseLong(corporateUserDTO.getCorporateId()));
-            CorporateUserDTO corporateUser = new CorporateUserDTO();
-            Iterable<RoleDTO> roles = roleService.getRoles();
-            model.addAttribute("roles", roles);
-            model.addAttribute("corporate", corporateDTO);
-            model.addAttribute("corporateUser", corporateUser);
+            logger.error("Error creating corporate user {}", corporateUserDTO.getUserName(), doe);
+            if(session.getAttribute("corporate")==null) {
+                CorporateDTO corporate = corporateService.getCorporate(Long.parseLong(corporateUserDTO.getCorporateId()));
+                model.addAttribute("corporate", corporate);
+            }
+            else{
+                CorporateDTO corporate = (CorporateDTO) session.getAttribute("corporate");
+                model.addAttribute("corporate", corporate);
+
+            }
             return "adm/corporate/adduser";
         } catch (InternetBankingException ibe) {
             result.addError(new ObjectError("error", ibe.getMessage()));
-            logger.error("Error creating admin user", ibe);
-            CorporateDTO corporateDTO = corporateService.getCorporate(Long.parseLong(corporateUserDTO.getCorporateId()));
-            CorporateUserDTO corporateUser = new CorporateUserDTO();
-            Iterable<RoleDTO> roles = roleService.getRoles();
-            model.addAttribute("roles", roles);
-            model.addAttribute("corporate", corporateDTO);
-            model.addAttribute("corporateUser", corporateUser);
-            return "adm/corporate/adduser";
+            logger.error("Error creating corporate user", ibe);
+
+            if(session.getAttribute("corporate")==null) {
+                CorporateDTO corporate = corporateService.getCorporate(Long.parseLong(corporateUserDTO.getCorporateId()));
+                model.addAttribute("corporate", corporate);
+            }
+            else{
+                CorporateDTO corporate = (CorporateDTO) session.getAttribute("corporate");
+                model.addAttribute("corporate", corporate);
+
+            }            return "adm/corporate/adduser";
         }
     }
 
     @GetMapping("{userId}/edit")
     public String getUser(@PathVariable Long userId, Model model) {
         CorporateUserDTO user = corporateUserService.getUser(userId);
-        Iterable<RoleDTO> roles = roleService.getRoles();
-        model.addAttribute("roles", roles);
         model.addAttribute("corporateUser", user);
         return "adm/corporate/edituser";
     }
-
 
     @PostMapping("edit")
     public String UpdateUser(@ModelAttribute("corporateUser") CorporateUserDTO corporateUserDTO, BindingResult result, RedirectAttributes redirectAttributes) {
@@ -122,7 +154,7 @@ public class AdmCorporateUserController {
         String message = corporateUserService.updateUser(corporateUserDTO);
         redirectAttributes.addFlashAttribute("message", message);
 
-        return "redirect:/admin/corporates/";
+        return "redirect:/admin/corporates/"+corporateUserDTO.getCorporateId()+"/view";
     }
 
     @PostMapping("{userId}/delete")
@@ -148,7 +180,6 @@ public class AdmCorporateUserController {
 
         //TODO validate password according to the defined password policy
         //The validations can be done on the ChangePassword class
-
 
         if (!newPassword.equals(confirmPassword)) {
             logger.info("PASSWORD MISMATCH");

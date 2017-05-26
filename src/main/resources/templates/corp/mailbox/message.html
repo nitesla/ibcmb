@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="cust_layout :: site-head">
+
+</head>
+<body>
+<header th:replace="cust_layout :: header">
+</header>
+
+<section class="content-wrapper">
+    <div class="container conts">
+        <div class="wrapper wrapper-content">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-3">
+                        <div class="ibox float-e-margins">
+                            <div class="ibox-content mailbox-content">
+                                <div class="margin-bottoms"></div>
+                                <div class="file-manager">
+                                    <a class="btn btn-block btn-primary compose-mail" th:href="@{/corporate/mailbox/compose}">Compose Mail</a>
+                                    <div class="margin-bottoms"></div>
+                                    <ul class="folder-list">
+                                        <li><a th:href="@{/corporate/mailbox/inbo}"> <i class="fa fa-inbox "></i> Inbox </a></li>
+                                        <li><a th:href="@{/corporate/mailbox/sentmail}"> <i class="fa fa-sign-out"></i> Sent Mail</a></li>
+                                        <li><a th:href="@{/corporate/mailbox/draft}"> <i class="fa fa-file-text-o"></i> Drafts </a></li>
+                                        <li><a th:href="@{/corporate/mailbox/trash}"> <i class="fa fa-trash-o"></i> Trash</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-9 animated fadeInRight">
+                        <div class="contain">
+                            <div class="margin-bottom"></div>
+                            <div class="mail-box-header">
+                                <div class="pull-right tooltip-demo fas">
+                                    <a href="compose.html" class="btn-success btn-sm" data-toggle="tooltip" data-placement="top" title="Reply"><i class="fa fa-reply"></i> Reply</a>
+                                    <a href="" class="btn-default btn-sm" data-toggle="tooltip" data-placement="top" title="Move to trash"><i class="fa fa-trash-o"></i>&nbsp;</a>
+                                </div>
+                                <h2 class="in-box">
+                                    Veiw Messages
+                                </h2>
+                                <div class="mail-tools tooltip-demo m-t-md">
+                                    <h3>
+                                        <span class="font-noraml">Subject: </span>Aldus PageMaker including versions of Lorem Ipsum.
+                                    </h3>
+                                    <h5>
+                                        <span class="pull-right font-noraml">02 FEB 2017</span>
+                                        <span class="font-noraml">From: </span>joy.utosu@longbridgetech.com
+                                    </h5>
+                                </div>
+                            </div>
+                            <div class="margin-bottoms"></div>
+                            <div class="mail-box">
+                                <p>
+                                    Hello Jonathan!
+                                    <br/>
+                                    <br/>
+                                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer
+                                    took a galley of type and scrambled it to make a type <strong>specimen book.</strong>It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. It has survived not only five centuries
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+<!-- CONTENT-WRAPPER SECTION END-->
+<footer th:replace="cust_layout ::footer">
+</footer>
+</body>
+</html>

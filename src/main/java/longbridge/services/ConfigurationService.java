@@ -1,13 +1,9 @@
 package longbridge.services;
 
-import longbridge.dtos.GlobalLimitDTO;
+import longbridge.dtos.SettingDTO;
 import longbridge.exception.InternetBankingException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
-import longbridge.dtos.CodeDTO;
-import longbridge.dtos.SettingDTO;
-import longbridge.models.Setting;
 
 /**
  *The {@code ConfigurationService} interface provides the methods for setting and managing system configurations

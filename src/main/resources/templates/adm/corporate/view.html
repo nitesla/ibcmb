@@ -47,13 +47,13 @@
                                             </div>
                                         </div>
                                     </li>
-                                    <li >
-                                        <div class="col-lg-4">
-                                            <div class="title-action">
-                                                <a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/corporates/index/edit" disabled="disabled" ><i class="fa fa-pencil"></i> Edit</a>
-                                            </div>
-                                        </div>
-                                    </li>
+                                    <!--<li >-->
+                                        <!--<div class="col-lg-4">-->
+                                            <!--<div class="title-action">-->
+                                                <!--<a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/corporates/index/edit" disabled="disabled" ><i class="fa fa-pencil"></i> Edit</a>-->
+                                            <!--</div>-->
+                                        <!--</div>-->
+                                    <!--</li>-->
                                     <li >
                                         <div class="col-lg-4">
                                             <div class="title-action">
@@ -112,9 +112,9 @@
                                                     <table class="table table-striped table-bordered table-hover corporate" id="corporate">
                                                         <thead>
                                                         <tr>
-                                                            <th>CIFID</th>
+                                                            <th>Type</th>
+                                                            <th>Customer ID</th>
                                                             <th>Name</th>
-                                                            <th>Email</th>
                                                             <th>Status</th>
                                                             <th>Date Created</th>
 
@@ -126,9 +126,9 @@
                                                         </tbody>
                                                         <tfoot>
                                                         <tr>
-                                                            <th>CIFID</th>
-                                                            <th>Name</th>
-                                                            <th>Email</th>
+
+                                                            <th>Type</th>
+                                                            <th>Customer ID</th>                                                            <th>Name</th>
                                                             <th>Status</th>
                                                             <th>Date Created</th>
 
@@ -201,9 +201,9 @@
             "ajax": "/admin/corporates/all",
             "dom": 'T<"clear">frtlp',
             "columns": [
+                { "data": "corporateType" },
                 { "data": "customerId" },
-                { "data": "companyName" },
-                { "data": "email" },
+                { "data": "name" },
                 { "data": "status" },
                 { "data": "createdOn" }
 

@@ -1,50 +1,41 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <!-- Meta, title, CSS, favicons, etc. -->
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
-    <title>Access Denied! | CMB </title>
+    <title> 404 | CMB </title>
 
     <!-- Bootstrap -->
-    <link th:href="@{~/bank/css/bootstrap.min.css}" rel="stylesheet">
+    <link href="../bank/css/bootstrap.min.css" rel="stylesheet"/>
     <!-- Font Awesome -->
-    <link th:href="@{~/bank/vendors/font-awesome/css/font-awesome.min.css}" rel="stylesheet">
+    <link href="../bank/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet"/>
     <!-- NProgress -->
-    <link th:href="@{~/bank/vendors/nprogress/nprogress.css}" rel="stylesheet">
+    <link href="../bank/vendors/nprogress/nprogress.css" rel="stylesheet"/>
 
     <!-- Custom Theme Style -->
-    <link th:href="@{~/bank/css/custom.css}" rel="stylesheet"/>
-    <link th:href="@{~/bank/css/coronation.css}" rel="stylesheet"/>
+    <link href="../bank/css/custom.css" rel="stylesheet"/>
+    <link href="../bank/css/coronation.css" rel="stylesheet"/>
 </head>
 
-<body class="nav-md">
+<body class="nav-md bodied">
 <div class="container body">
     <div class="main_container">
         <!-- page content -->
-        <div class="col-md-12">
+        <div class="col-md-12 col-sm-12 col-xs-12">
             <div class="col-middle">
                 <div class="text-center text-center">
+                    <img src="../bank/images/cmb_logo.png"/>
+
+                    <br/>
+
                     <h1 class="error-number">404</h1>
                     <h2>Page Not Found</h2>
                     <p>The page you're looking for does not exist.
                     </p>
-                    <!--<div class="mid_center">-->
-                    <!--<h3>Search</h3>-->
-                    <!--<form>-->
-                    <!--<div class="col-xs-12 form-group pull-right top_search">-->
-                    <!--<div class="input-group">-->
-                    <!--<input type="text" class="form-control" placeholder="Search for...">-->
-                    <!--<span class="input-group-btn">-->
-                    <!--<button class="btn btn-default" type="button">Go!</button>-->
-                    <!--</span>-->
-                    <!--</div>-->
-                    <!--</div>-->
-                    <!--</form>-->
-                    <!--</div>-->
                 </div>
             </div>
         </div>
@@ -52,16 +43,5 @@
     </div>
 </div>
 
-<!-- jQuery -->
-<script th:src="@{~/bank/vendors/jquery/dist/jquery.min.js}"></script>
-<!-- Bootstrap -->
-<script th:src="@{~/bank/vendors/bootstrap/dist/js/bootstrap.min.js}"></script>
-<!-- FastClick -->
-<script th:src="@{~/bank/vendors/fastclick/lib/fastclick.js}"></script>
-<!-- NProgress -->
-<script th:src="@{~/bank/vendors/nprogress/nprogress.js}"></script>
-
-<!-- Custom Theme Scripts -->
-<script th:src="@{~/bank/js/custom.js}"></script>
 </body>
 </html>

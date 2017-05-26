@@ -12,6 +12,7 @@ import longbridge.repositories.AccountRepo;
 import longbridge.repositories.AccountRestrictionRepo;
 import longbridge.services.AccountConfigService;
 import longbridge.services.CodeService;
+import longbridge.utils.DateFormatter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -70,10 +71,7 @@ public class AccountConfigServiceImpl implements AccountConfigService {
     @Override
     public String addAccountRestriction(AccountRestrictionDTO accountRestrictionDTO) throws InternetBankingException {
 
-        AccountRestriction restriction = accountRestrictionRepo.findByAccountNumber(accountRestrictionDTO.getAccountNumber());
-       if(restriction!=null){
-           throw new DuplicateObjectException(String.format(messageSource.getMessage("account.restrict.exists",null,locale),accountRestrictionDTO.getAccountNumber()));
-       }
+        validateNoAccountDuplication(accountRestrictionDTO);
         try {
             AccountRestriction accountRestriction = convertAccountRestrictionDTOToEntity(accountRestrictionDTO);
             accountRestriction.setDateCreated(new Date());
@@ -87,6 +85,8 @@ public class AccountConfigServiceImpl implements AccountConfigService {
 
     @Override
     public String updateAccountRestriction(AccountRestrictionDTO accountRestrictionDTO) throws InternetBankingException {
+
+        validateNoAccountDuplication(accountRestrictionDTO);
         try {
             AccountRestriction accountRestriction = accountRestrictionRepo.findOne(accountRestrictionDTO.getId());
             accountRestriction.setVersion(accountRestrictionDTO.getVersion());
@@ -115,9 +115,6 @@ public class AccountConfigServiceImpl implements AccountConfigService {
     @Transactional
     public String deleteAccountRestriction(Long id) throws InternetBankingException {
         try {
-            AccountRestriction accountRestriction = accountRestrictionRepo.findOne(id);
-            accountRestriction.setDeletedOn(new Date());
-            accountRestrictionRepo.save(accountRestriction);
             accountRestrictionRepo.delete(id);
             return messageSource.getMessage("account.restrict.delete.success", null, LocaleContextHolder.getLocale());
 
@@ -129,6 +126,8 @@ public class AccountConfigServiceImpl implements AccountConfigService {
 
     @Override
     public String addAccountClassRestriction(AccountClassRestrictionDTO accountClassRestrictionDTO) throws InternetBankingException {
+
+        validateNoAccountClassDuplication(accountClassRestrictionDTO);
         try {
             AccountClassRestriction accountClassRestriction = convertAccountClassRestrictionDTOToEntity(accountClassRestrictionDTO);
             accountClassRestriction.setDateCreated(new Date());
@@ -141,6 +140,8 @@ public class AccountConfigServiceImpl implements AccountConfigService {
 
     @Override
     public String updateAccountClassRestriction(AccountClassRestrictionDTO accountClassRestrictionDTO) throws InternetBankingException {
+
+        validateNoAccountClassDuplication(accountClassRestrictionDTO);
         try {
             AccountClassRestriction accountClassRestriction = accountClassRestrictionRepo.findOne(accountClassRestrictionDTO.getId());
             accountClassRestriction.setVersion(accountClassRestrictionDTO.getVersion());
@@ -299,9 +300,33 @@ public class AccountConfigServiceImpl implements AccountConfigService {
         return new PageImpl<AccountClassRestrictionDTO>(dtos, pageable, t);
     }
 
+    private void validateNoAccountDuplication(AccountRestrictionDTO accountRestrictionDTO) throws DuplicateObjectException {
+        AccountRestriction accountRestriction = accountRestrictionRepo.findByAccountNumber(accountRestrictionDTO.getAccountNumber());
+        if (accountRestrictionDTO.getId() == null && accountRestriction != null) {
+            throw new DuplicateObjectException(String.format(messageSource.getMessage("account.restrict.exists", null, locale), accountRestrictionDTO.getAccountNumber())); //Duplication on creation
+        }
+        if (accountRestriction != null && (!accountRestriction.getId().equals(accountRestrictionDTO.getId()))) {
+            throw new DuplicateObjectException(String.format(messageSource.getMessage("account.restrict.exists", null, locale), accountRestrictionDTO.getAccountNumber())); //Duplication on update
+
+        }
+    }
+
+    private void validateNoAccountClassDuplication(AccountClassRestrictionDTO accountClassRestrictionDTO) throws DuplicateObjectException {
+        AccountClassRestriction accountClassRestriction = accountClassRestrictionRepo.findByAccountClass(accountClassRestrictionDTO.getAccountClass());
+        if (accountClassRestrictionDTO.getId() == null && accountClassRestriction != null) {
+            throw new DuplicateObjectException(String.format(messageSource.getMessage("class.restrict.exists", null, locale), accountClassRestrictionDTO.getAccountClass())); //Duplication on creation
+        }
+        if (accountClassRestriction != null && (!accountClassRestriction.getId().equals(accountClassRestrictionDTO.getId()))) {
+            throw new DuplicateObjectException(String.format(messageSource.getMessage("class.restrict.exists", null, locale), accountClassRestrictionDTO.getAccountClass())); //Duplication on update
+
+        }
+    }
+
 
     private AccountRestrictionDTO convertAccountRestrictionEntityToDTO(AccountRestriction accountRestriction) {
         AccountRestrictionDTO accountRestrictionDTO = modelMapper.map(accountRestriction, AccountRestrictionDTO.class);
+        accountRestrictionDTO.setDateCreated(DateFormatter.format(accountRestriction.getDateCreated()));
+
         return accountRestrictionDTO;
     }
 
@@ -321,9 +346,12 @@ public class AccountConfigServiceImpl implements AccountConfigService {
     }
 
 
+
     private AccountClassRestrictionDTO convertAccountClassRestrictionEntityToDTO(AccountClassRestriction accountClassRestriction) {
         AccountClassRestrictionDTO accountClassRestrictionDTO = modelMapper.map(accountClassRestriction, AccountClassRestrictionDTO.class);
+        accountClassRestrictionDTO.setDateCreated(DateFormatter.format(accountClassRestriction.getDateCreated()));
         return accountClassRestrictionDTO;
+
     }
 
 

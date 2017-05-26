@@ -61,7 +61,6 @@
 
                                         <div class="col-sm-6">
                                             <select class="form-control" th:field="*{accountClass}">
-                                                <option value="">--Select--</option>
                                                 <option th:each="c: ${accountClasses}" th:value="${c.code}" th:text="${c.description}" th:selected="${c.code==accountClassRestriction.accountClass}"></option>
 
                                             </select>

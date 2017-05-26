@@ -6,9 +6,11 @@ import longbridge.dtos.RetailUserDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.PasswordException;
 import longbridge.forms.AlertPref;
+import longbridge.forms.CustChangePassword;
 import longbridge.models.RetailUser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
  * The {@code RetailUserService} interface provides the methods for managing retails users
@@ -19,51 +21,54 @@ public interface RetailUserService {
      *Returns the specified retail user
      * @param id  the user's id
      */
+
+    @PreAuthorize("hasAuthority('GET_RETAIL_USER')")
     RetailUserDTO getUser(Long id);
 
+//    @PreAuthorize("hasAuthority('GET_RETAIL_USER')")
     RetailUser getUserByName(String name);
 
+    @PreAuthorize("hasAuthority('GET_RETAIL_USER')")
     RetailUserDTO getUserDTOByName(String name);
 
+    @PreAuthorize("hasAuthority('GET_RETAIL_USER')")
     RetailUser getUserByCustomerId(String custId);
 
     /**
      *Returns a list of retail users
      * @return the list of retail users
      */
+    @PreAuthorize("hasAuthority('GET_RETAIL_USER')")
     Iterable<RetailUserDTO> getUsers();
-    
+
+    @PreAuthorize("hasAuthority('GET_RETAIL_USER')")
     Page<RetailUserDTO> getUsers(Pageable pageDetails);
-
-
-
 
     /**
      * Adds a new retail user to the system
      * @param user the retail user to be added
      */
-
     String addUser(RetailUserDTO user, CustomerDetails details) throws InternetBankingException;
 
     /**
      * Deletes a retail user to the system
      * @param userId the retail user's id
-
      */
-
+    @PreAuthorize("hasAuthority('DELETE_RETAIL_USER')")
     String deleteUser(Long userId) throws InternetBankingException;
 
 
 //    String setPassword(RetailUser user, String password) throws PasswordException;
 
 
+    @PreAuthorize("hasAuthority('UPDATE_RETAIL_USER')")
     boolean resetPassword(RetailUser user, String newPassword);
 
     /**
      * Updates the details of the specified retail user
      * @param user the retail user whose details are to be updated
      */
-
+    @PreAuthorize("hasAuthority('UPDATE_RETAIL_USER')")
     boolean updateUser(RetailUserDTO user);
 
     /**
@@ -77,7 +82,7 @@ public interface RetailUserService {
 
 
 
-
+    @PreAuthorize("hasAuthority('UPDATE_RETAIL_USER')")
     String changeActivationStatus(Long userId) throws InternetBankingException;
 
 
@@ -88,6 +93,7 @@ public interface RetailUserService {
      * @param userId the user Id
      *
      */
+    @PreAuthorize("hasAuthority('UPDATE_RETAIL_USER')")
     String resetPassword(Long userId) throws PasswordException;
 
     /**
@@ -95,10 +101,10 @@ public interface RetailUserService {
      * The new password must meed the password policy of the organization if any one is defined
      * It is important that the password is hashed before storing it
      * @param retailUser  the retail user
-     * @param oldPassword the old password
-     * @param newPassword the new password
+     * @param custChangePassword the cahnge password DTO
      */
-    boolean changePassword(RetailUserDTO retailUser, String oldPassword, String newPassword);
+    @PreAuthorize("hasAuthority('UPDATE_RETAIL_USER')")
+    String changePassword(RetailUser retailUser, CustChangePassword custChangePassword) throws PasswordException;
 
 
     /**
@@ -113,6 +119,7 @@ public interface RetailUserService {
      * @param alertPreference
      * @return
      */
+    @PreAuthorize("hasAuthority('UPDATE_RETAIL_USER')")
     boolean changeAlertPreference(RetailUserDTO retailUser, AlertPref alertPreference);
 
     /** This tries to retrieve the username of a {@link RetailUser} using the specified information

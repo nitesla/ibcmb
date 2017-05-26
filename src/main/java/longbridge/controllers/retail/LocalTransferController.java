@@ -3,6 +3,7 @@ package longbridge.controllers.retail;
 import longbridge.dtos.LocalBeneficiaryDTO;
 import longbridge.dtos.TransferRequestDTO;
 import longbridge.exception.InternetBankingTransferException;
+import longbridge.exception.TransferErrorService;
 import longbridge.models.FinancialInstitutionType;
 import longbridge.models.LocalBeneficiary;
 import longbridge.models.RetailUser;
@@ -38,18 +39,20 @@ public class LocalTransferController {
     private LocalBeneficiaryService localBeneficiaryService;
     private FinancialInstitutionService financialInstitutionService;
     private TransferValidator validator;
+    private TransferErrorService transferErrorService;
     private String page = "cust/transfer/local/";
     @Value("${bank.code}")
     private String bankCode;
 
     @Autowired
-    public LocalTransferController(RetailUserService retailUserService, TransferValidator validator, TransferService transferService, AccountService accountService, MessageSource messages, LocaleResolver localeResolver, LocalBeneficiaryService localBeneficiaryService, FinancialInstitutionService financialInstitutionService) {
+    public LocalTransferController(RetailUserService retailUserService, TransferValidator validator, TransferService transferService, AccountService accountService, MessageSource messages, LocaleResolver localeResolver, LocalBeneficiaryService localBeneficiaryService, FinancialInstitutionService financialInstitutionService,TransferErrorService transferErrorService) {
         this.retailUserService = retailUserService;
         this.transferService = transferService;
         this.messages = messages;
         this.localBeneficiaryService = localBeneficiaryService;
         this.financialInstitutionService = financialInstitutionService;
         this.validator = validator;
+        this.transferErrorService= transferErrorService;
     }
 
     @GetMapping("")
@@ -60,43 +63,36 @@ public class LocalTransferController {
         return page + "pagei";
     }
 
-    @PostMapping("")
-    public String bankTransfer(@ModelAttribute("transferRequest") @Valid TransferRequestDTO transferRequestDTO, Model model, RedirectAttributes redirectAttributes, Locale locale, HttpServletRequest request) throws Exception {
 
-        try {
-
-            String token = request.getParameter("token");
-            // boolean tokenOk = integrationService.performTokenValidation(principal.getName(), token);
-            boolean tokenOk = !token.isEmpty();
-            if (!tokenOk) {
-                redirectAttributes.addFlashAttribute("message", messages.getMessage("auth.token.failure", null, locale));
-                return page + "pageiv";
-            }
-            transferRequestDTO = transferService.makeTransfer(transferRequestDTO);
-            redirectAttributes.addFlashAttribute("message", messages.getMessage("transaction.success", null, locale));
-
-
-            return "redirect:/retail/transfer/local";
-        } catch (InternetBankingTransferException e) {
-            redirectAttributes.addFlashAttribute("error", e.getMessage());
-            return "redirect:/retail/transfer/local";
-        }
-    }
 
     @PostMapping("/summary")
-    public String transferSummary(@ModelAttribute("transferRequest") @Valid TransferRequestDTO transferRequestDTO, BindingResult result, Model model) throws Exception {
+    public String transferSummary(@ModelAttribute("transferRequest") @Valid TransferRequestDTO transferRequestDTO, BindingResult result, Model model,HttpServletRequest servletRequest)  {
         model.addAttribute("transferRequest", transferRequestDTO);
-
+    String benName= ((LocalBeneficiaryDTO)servletRequest.getSession().getAttribute("beneficiary")).getPreferredName();
+       model.addAttribute("benName",benName);
         validator.validate(transferRequestDTO, result);
         if (result.hasErrors()) {
             return page + "pageii";
         }
-        return page + "pageiii";
+      try{
+          transferService.validateTransfer(transferRequestDTO);
+          servletRequest.getSession().setAttribute("transferRequest", transferRequestDTO);
+          transferRequestDTO.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
+          return page + "pageiii";
+      }catch (InternetBankingTransferException e){
+
+            String errorMessage=transferErrorService.getMessage(e,servletRequest);
+
+            model.addAttribute("error", errorMessage);
+          return page + "pageii";
+
+      }
+
     }
 
 
     @GetMapping("/{id}")
-    public String transfer(@PathVariable Long id, Model model) throws Exception {
+    public String transfer(@PathVariable Long id, Model model ,HttpServletRequest request) throws Exception {
         LocalBeneficiary beneficiary = localBeneficiaryService.getLocalBeneficiary(id);
         TransferRequestDTO transferRequestDTO = new TransferRequestDTO();
         transferRequestDTO.setBeneficiaryAccountName(beneficiary.getAccountName());
@@ -105,6 +101,8 @@ public class LocalTransferController {
         transferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode(bankCode));
         model.addAttribute("transferRequest", transferRequestDTO);
         model.addAttribute("beneficiary", beneficiary);
+        model.addAttribute("beneficiaryName",beneficiary.getPreferredName());
+        request.getSession().setAttribute("beneficiary", beneficiary);
         return page + "pageii";
     }
 
@@ -117,8 +115,9 @@ public class LocalTransferController {
     }
 
     @PostMapping("/new")
-    public String newBeneficiary(@ModelAttribute("localBeneficiary") @Valid LocalBeneficiaryDTO localBeneficiaryDTO, BindingResult result, Model model) throws Exception {
+    public String newBeneficiary(@ModelAttribute("localBeneficiary") @Valid LocalBeneficiaryDTO localBeneficiaryDTO, BindingResult result, Model model,HttpServletRequest request) throws Exception {
         if (result.hasErrors()) {
+            model.addAttribute("localBeneficiaryDTO",localBeneficiaryDTO);
             return page + "pageiA";
         }
 
@@ -128,7 +127,7 @@ public class LocalTransferController {
         transferRequestDTO.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
         transferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode(bankCode));
         model.addAttribute("transferRequest", transferRequestDTO);
-
+         request.getSession().setAttribute("beneficiary", localBeneficiaryDTO);
         model.addAttribute("beneficiary", localBeneficiaryDTO);
 
 
@@ -136,13 +135,6 @@ public class LocalTransferController {
     }
 
 
-    @PostMapping("/auth")
-    public String processTransfer(@ModelAttribute("transferRequest") @Valid TransferRequestDTO transferRequestDTO, Model model) throws Exception {
 
-
-        model.addAttribute("transferRequest", transferRequestDTO);
-        return page + "pageiv";
-
-    }
 
 }

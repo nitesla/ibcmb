@@ -4,14 +4,7 @@ import longbridge.dtos.*;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.TransferRuleException;
 import longbridge.models.*;
-import longbridge.repositories.CorpTransferRequestRepo;
-import longbridge.repositories.CorporateRepo;
-import longbridge.repositories.CorporateUserRepo;
-import longbridge.repositories.PendingAuthorizationRepo;
-import longbridge.services.CodeService;
-import longbridge.services.CorporateService;
-import longbridge.services.CorporateUserService;
-import longbridge.services.IntegrationService;
+import longbridge.services.*;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +16,6 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.data.jpa.datatables.repository.DataTablesUtils;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -31,9 +23,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
@@ -58,9 +53,30 @@ public class AdmCorporateController {
     CodeService codeService;
 
     @Autowired
+    RoleService roleService;
+
+    @Autowired
     IntegrationService integrationService;
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
+
+
+    @ModelAttribute
+    public void init(Model model) {
+        List<CodeDTO> corporateTypes = codeService.getCodesByType("CORPORATE_TYPE");
+        model.addAttribute("corporateTypes", corporateTypes);
+
+        Iterable<RoleDTO> roles = roleService.getRoles();
+        Iterator<RoleDTO> roleDTOIterator = roles.iterator();
+        while (roleDTOIterator.hasNext()) {
+            RoleDTO roleDTO = roleDTOIterator.next();
+            if (roleDTO.getName().equals("Sole Admin")) {
+                roleDTOIterator.remove();
+            }
+        }
+        model.addAttribute("roles", roles);
+
+    }
 
     @GetMapping("/new")
     public String addCorporate(Model model) {
@@ -69,21 +85,45 @@ public class AdmCorporateController {
     }
 
     @PostMapping
-    public String createCorporate(@ModelAttribute("corporate") CorporateDTO corporate, BindingResult result, RedirectAttributes redirectAttributes, Locale locale) {
+    public String createCorporate(@ModelAttribute("corporate") @Valid CorporateDTO corporate, BindingResult result, RedirectAttributes redirectAttributes, HttpSession session, Locale locale) {
         if (result.hasErrors()) {
             result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
             return "adm/corporate/add";
         }
-        try {
-            String message = corporateService.addCorporate(corporate);
-            redirectAttributes.addFlashAttribute("message", message);
-            return "redirect:/admin/corporates";
-        } catch (InternetBankingException ibe) {
-            logger.error("Failed to create corporate entity", ibe);
-            result.addError(new ObjectError("invalid", ibe.getMessage()));
-            return "adm/corporate/add";
 
-        }
+//        List<AccountInfo> accountInfos = integrationService.fetchAccounts(corporate.getCustomerId());
+//
+//        if(accountInfos ==null||accountInfos.isEmpty()){
+//            result.addError(new ObjectError("invalid", messageSource.getMessage("cifid.invalid", null, locale)));
+//            return "adm/corporate/add";
+//        }
+//        else{
+//            String accountName = accountInfos.get(0).getAccountName();
+        corporate.setName("Longbridge Technologies");
+        session.setAttribute("corporate", corporate);
+        return "redirect:/admin/corporates/user/first";
+//        }
+
+//        try{
+//
+//            String message = corporateService.addCorporate(corporate);
+//            redirectAttributes.addFlashAttribute("message", message);
+//            return "redirect:/admin/corporates";
+//        } catch (InternetBankingException ibe) {
+//            logger.error("Failed to create corporate entity", ibe);
+//            result.addError(new ObjectError("invalid", ibe.getMessage()));
+//            return "adm/corporate/add";
+//
+//        }
+    }
+
+    @GetMapping("/user/first")
+    public String addFirstCorporateUser(Model model, HttpSession session) {
+        CorporateDTO corporateDTO = (CorporateDTO) session.getAttribute("corporate");
+        CorporateUserDTO corporateUserDTO = new CorporateUserDTO();
+        model.addAttribute("corporate", corporateDTO);
+        model.addAttribute("corporateUser", corporateUserDTO);
+        return "adm/corporate/adduser";
     }
 
     /**
@@ -106,7 +146,8 @@ public class AdmCorporateController {
     }
 
     @GetMapping
-    public String getAllCorporates() {
+    public String getAllCorporates(HttpSession session) {
+        session.removeAttribute("corporate");
         return "adm/corporate/view";
     }
 
@@ -202,7 +243,7 @@ public class AdmCorporateController {
     @GetMapping("/users/{id}/activation")
     public String changeUserActivationStatus(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
-            String message = corporateService.changeUserActivationStatus(id);
+            String message = corporateUserService.changeActivationStatus(id);
             redirectAttributes.addFlashAttribute("message", message);
         } catch (InternetBankingException ibe) {
             logger.error("Error changing corporate activation status", ibe);
@@ -236,18 +277,25 @@ public class AdmCorporateController {
     }
 
     @PostMapping("/account/new")
-    public String linkAccountPost(AccountDTO accountDTO, BindingResult result, RedirectAttributes redirectAttributes) {
+    public String linkAccountPost(AccountDTO accountDTO, BindingResult result, Model model, RedirectAttributes redirectAttributes, Locale locale) {
         if (result.hasErrors()) {
-            return "adm/corporate/new";
+            return "adm/corporate/addAccount";
         }
 
-        //integrationService.fetchAccount(accountDTO.getAccountNumber());
+        try {
+            Corporate corporate = corporateService.getCorporateByCustomerId(accountDTO.getCustomerId());
+            String message = corporateService.addAccount(corporate, accountDTO);
+            Long corporateId = corporate.getId();
+            redirectAttributes.addFlashAttribute("message", message);
+            return "redirect:/admin/corporates/" + corporateId + "/view";
+        } catch (InternetBankingException ibe) {
+            Corporate corporate = corporateService.getCorporateByCustomerId(accountDTO.getCustomerId());
+            model.addAttribute("account", accountDTO);
+            model.addAttribute("corporate", corporate);
+            result.addError(new ObjectError("exception", messageSource.getMessage("corporate.account.add.failure", null, locale)));
+            return "adm/corporate/addAccount";
+        }
 
-        Corporate corporate = corporateService.getCorporateByCustomerId(accountDTO.getCustomerId());
-        String message = corporateService.addAccount(corporate, accountDTO);
-        Long corporateId = corporate.getId();
-        redirectAttributes.addFlashAttribute("message", message);
-        return "redirect:/admin/corporates/" + corporateId + "/view";
     }
 
     @GetMapping("{corpId}/rules/new")
@@ -448,69 +496,6 @@ public class AdmCorporateController {
         }
         return "redirect:/admin/corporates/";
 
-    }
-
-    @Autowired
-    CorporateRepo corporateRepo;
-
-    @Autowired
-    CorpTransferRequestRepo transferRequestRepo;
-
-    @Autowired
-    CorporateUserRepo corporateUserRepo;
-
-    @Autowired
-    PendingAuthorizationRepo pendingAuthorizationRepo;
-
-    @GetMapping("/transfer/{amount}")
-    @Transactional
-    public void corpTransfer(@PathVariable String amount){
-
-        CorpTransferRequest transferRequest = new CorpTransferRequest();
-        transferRequest.setAmount(new BigDecimal(amount));
-        Corporate corporate = corporateRepo.findOne(2L);
-        transferRequest.setCorporate(corporate);
-        List<CorporateUser> authorizers = corporateService.getQualifiedAuthorizers(transferRequest);
-
-        List<PendingAuthorization> pendingAuthorizations = new ArrayList<>();
-        for (CorporateUser authorizer : authorizers) {
-            PendingAuthorization pendingAuthorization = new PendingAuthorization();
-            pendingAuthorization.setAuthorizer(authorizer);
-            pendingAuthorization.setCorpTransferRequest(transferRequest);
-            pendingAuthorizations.add(pendingAuthorization);
-        }
-        transferRequest.setPendingAuthorizations(pendingAuthorizations);
-        transferRequestRepo.save(transferRequest);
-    }
-
-
-
-
-    @GetMapping("/authorize/{id}")
-    @Transactional
-    @ResponseBody
-    public int getQualifiedAuthorizers(@PathVariable Long id) {
-        CorporateUser authorizer = corporateUserRepo.findOne(1L);
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("Authorizer has " + authorizer.getPendingAuthorizations().size() + " pending\n");
-        PendingAuthorization pendingAuthorization = pendingAuthorizationRepo.findOne(id);
-        CorpTransferRequest transferRequest = pendingAuthorization.getCorpTransferRequest();
-//        BigDecimal amount =  transferRequest.getAmount();
-//        BigDecimal scaledAmount = amount.setScale(0);
-//        assertThat(authorizer.getPendingAuthorizations().size()).isEqualTo(2);
-//        assertThat(scaledAmount).isEqualTo(new BigDecimal("250000"));
-//        assertThat(transferRequest.getPendingAuthorizations().size()).isEqualTo(5);
-        transferRequest.getPendingAuthorizations().remove(pendingAuthorization);
-
-        stringBuilder.append("Before save, authorizer now has " + authorizer.getPendingAuthorizations().size() + " pending\n");
-
-//        assertThat(transferRequest.getPendingAuthorizations().size()).isEqualTo(4);
-        transferRequestRepo.save(transferRequest);
-        corporateUserRepo.save(authorizer);
-        CorporateUser authorizer1 = corporateUserRepo.findOne(1L);
-        stringBuilder.append("After save, authorizer now has " + authorizer1.getPendingAuthorizations().size() + " pending\n");
-
-        return authorizer.getPendingAuthorizations().size();
     }
 
 }

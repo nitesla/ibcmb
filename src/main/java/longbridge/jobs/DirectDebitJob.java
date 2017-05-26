@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import java.util.Date;
 import java.util.List;
 
+import longbridge.exception.TransferException;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +25,7 @@ public class DirectDebitJob implements ActionListener {
 	@Autowired
 	private DirectDebitService directDebitService;
 
-	public void executeDirectDebits() {
+	public void executeDirectDebits() throws TransferException {
 		logger.info("Executing direct debits for today: ", LocalDate.now());
 		List<DirectDebit> dueDirectDebits = directDebitService.getDueDirectDebits();
 		
@@ -36,6 +37,10 @@ public class DirectDebitJob implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		 executeDirectDebits();
+		try {
+			executeDirectDebits();
+		} catch (TransferException e1) {
+			e1.printStackTrace();
+		}
 	}
 }

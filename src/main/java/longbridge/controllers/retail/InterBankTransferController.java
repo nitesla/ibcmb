@@ -2,7 +2,9 @@ package longbridge.controllers.retail;
 
 import longbridge.dtos.LocalBeneficiaryDTO;
 import longbridge.dtos.TransferRequestDTO;
+import longbridge.exception.InternetBankingTransferException;
 import longbridge.models.FinancialInstitutionType;
+import longbridge.models.LocalBeneficiary;
 import longbridge.models.RetailUser;
 import longbridge.services.FinancialInstitutionService;
 import longbridge.services.LocalBeneficiaryService;
@@ -16,14 +18,13 @@ import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.Locale;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -46,13 +47,13 @@ public class InterBankTransferController {
     private String bankCode;
 
     @Autowired
-    public InterBankTransferController(RetailUserService retailUserService, TransferService transferService, MessageSource messages, LocalBeneficiaryService localBeneficiaryService, FinancialInstitutionService financialInstitutionService,TransferValidator validator) {
+    public InterBankTransferController(RetailUserService retailUserService, TransferService transferService, MessageSource messages, LocalBeneficiaryService localBeneficiaryService, FinancialInstitutionService financialInstitutionService, TransferValidator validator) {
         this.retailUserService = retailUserService;
         this.transferService = transferService;
         this.messages = messages;
         this.localBeneficiaryService = localBeneficiaryService;
         this.financialInstitutionService = financialInstitutionService;
-        this.validator=validator;
+        this.validator = validator;
     }
 
     @GetMapping(value = "")
@@ -80,16 +81,16 @@ public class InterBankTransferController {
     public String newBeneficiary(Model model, LocalBeneficiaryDTO localBeneficiaryDTO) throws Exception {
         model.addAttribute("localBanks",
                 financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.LOCAL)
-                .stream()
-                .filter(i -> i.getInstitutionCode().equals(bankCode))
-                .collect(Collectors.toList())
+                        .stream()
+                        .filter(i -> i.getInstitutionCode().equals(bankCode))
+                        .collect(Collectors.toList())
         );
 
         return page + "pageiB";
     }
 
     @PostMapping("/new")
-    public String getBeneficiary(@ModelAttribute("localBeneficiary") @Valid LocalBeneficiaryDTO localBeneficiaryDTO, BindingResult result, Model model,HttpServletRequest servletRequest) throws Exception {
+    public String getBeneficiary(@ModelAttribute("localBeneficiary") @Valid LocalBeneficiaryDTO localBeneficiaryDTO, BindingResult result, Model model, HttpServletRequest servletRequest) throws Exception {
         if (result.hasErrors()) {
             return page + "pageiB";
         }
@@ -102,32 +103,41 @@ public class InterBankTransferController {
         model.addAttribute("transferRequest", transferRequestDTO);
         model.addAttribute("beneficiary", localBeneficiaryDTO);
 
-         servletRequest.getSession().setAttribute("beneficiary", localBeneficiaryDTO);
+
+        servletRequest.getSession().setAttribute("beneficiary", localBeneficiaryDTO);
 
         return page + "pageii";
     }
 
 
-
     @PostMapping("/summary")
-    public String transferSummary(@ModelAttribute("transferRequest") @Valid TransferRequestDTO transferRequestDTO, BindingResult result, Model model) throws Exception {
+    public String transferSummary(@ModelAttribute("transferRequest") @Valid TransferRequestDTO transferRequestDTO, BindingResult result, Model model, HttpServletRequest request) throws Exception {
         model.addAttribute("transferRequest", transferRequestDTO);
+        String benName = (String) request.getSession().getAttribute("benName");
+
+        model.addAttribute("benName", benName);
 
         validator.validate(transferRequestDTO, result);
         if (result.hasErrors()) {
+
             return page + "pageii";
         }
         return page + "pageiii";
     }
 
+    @GetMapping("/{id}")
+    public String transfer(@PathVariable Long id, Model model, HttpServletRequest request) throws Exception {
+        LocalBeneficiary beneficiary = localBeneficiaryService.getLocalBeneficiary(id);
+        TransferRequestDTO requestDTO = new TransferRequestDTO();
+        requestDTO.setBeneficiaryAccountName(beneficiary.getAccountName());
+        requestDTO.setBeneficiaryAccountNumber(beneficiary.getAccountNumber());
+        requestDTO.setTransferType(TransferType.INTER_BANK_TRANSFER);
 
-    @PostMapping("/auth")
-    public String processTransfer(@ModelAttribute("transferRequest") @Valid TransferRequestDTO transferRequestDTO, Model model) throws Exception {
-
-
-        model.addAttribute("transferRequest", transferRequestDTO);
-        return page + "pageiv";
-
+        model.addAttribute("transferRequest", requestDTO);
+        model.addAttribute("beneficiary", beneficiary);
+        model.addAttribute("benName", beneficiary.getPreferredName());
+        request.getSession().setAttribute("benName", beneficiary.getPreferredName());
+        return page + "pageii";
     }
 
 

@@ -75,7 +75,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
             corpTransferRequestRepo.save(transferRequest);
 
         } catch (Exception e) {
-            throw new TransferException(messageSource.getMessage("transfer.add.failure", null, locale), e);
+            throw new InternetBankingTransferException();
         }
         return messageSource.getMessage("transfer.add.success", null, locale);
     }
@@ -110,7 +110,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     }
 
     @Override
-    public String makeTransfer(CorpTransferRequest transferRequest) throws TransferException {
+    public String makeTransfer(CorpTransferRequest transferRequest) throws InternetBankingTransferException {
         return null; //TODO implement
     }
 

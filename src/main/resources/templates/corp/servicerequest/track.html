@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="corp_layout :: site-head">
+
+</head>
+<body>
+<header th:replace="corp_layout :: header">
+</header>
+
+<section class="content-wrapper">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 col-sm-4">
+                <h5 class="page_header"> Previous Requests</h5>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-8 content-bg">
+                <div class="row spacing">
+                    <div class="col-md-10">
+                        <table class="table" id="track">
+                            <thead>
+                            <tr>
+                                <th>Request Name</th>
+                                <th>Request Date</th>
+                                <th>Status</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <!--<tr th:each="req : ${requests}">-->
+                                <!--<td th:text="${req.requestName}"></td>-->
+                                <!--<td th:text="${req.dateRequested}"></td>-->
+                                <!--<td th:text="${req.requestStatus}"></td></tr>-->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div th:replace="corp_layout :: sidebar" class="col-md-3 sidebar">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CONTENT-WRAPPER SECTION END-->
+<footer th:replace="corp_layout ::footer">
+</footer>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    $(document).ready(function() {
+        var url = "/corporate/requests/track/all";
+        var table = $('#track').DataTable({
+            select: true,
+            responsive : false,
+            "lengthMenu" : [ [ 5, 10 ], [ 5, 10 ] ],
+            "pagingType" : "simple_numbers",
+            "searching" : false,
+            "paging" : true,
+            "serverSide" : true,
+            "ajax" : url,
+            "dom" : 'T<"clear">flrtp',
+            "columns" : [
+                { "data": "requestName" },
+                { "data": "date" },
+                { "data": "requestStatus" }
+            ]
+        });
+    });
+
+    /*]]>*/
+</script>
+</body>
+</html>

@@ -1,11 +1,14 @@
 package longbridge.services.implementations;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import longbridge.dtos.*;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.*;
 import longbridge.repositories.*;
 import longbridge.services.*;
 import longbridge.utils.DateFormatter;
+import longbridge.utils.NameValue;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,10 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 /**
  * Created by Fortune on 4/7/2017.
@@ -44,6 +44,9 @@ public class RequestServiceImpl implements RequestService {
 
     @Autowired
     private RetailUserRepo retailUserRepo;
+
+    @Autowired
+    private CorporateRepo corporateRepo;
 
     @Autowired
     private CodeService codeService;
@@ -95,12 +98,23 @@ public class RequestServiceImpl implements RequestService {
             serviceRequest.setUser(retailUserRepo.findOne(serviceRequest.getUser().getId()));
             String name = getFullName(serviceRequest);
             ServiceReqConfigDTO config = reqConfigService.getServiceReqConfig(serviceRequest.getServiceReqConfigId());
-            String body = serviceRequest.getBody();//TODO format body
+
+            //***///
+            ObjectMapper objectMapper = new ObjectMapper();
+            ArrayList<NameValue> myFormObjects = objectMapper.readValue(serviceRequest.getBody(), new TypeReference<ArrayList<NameValue>>() {
+            });
+
+            StringBuilder messageBody = new StringBuilder();
+            for(NameValue nameValue : myFormObjects){
+                messageBody.append(nameValue.getName() + " : " + nameValue.getValue() + "\n");
+            }
+
+            String message = messageBody.toString();
             serviceRequestRepo.save(serviceRequest);
 
             Email email = new Email.Builder().setSender("info@ibanking.coronationmb.com")
                     .setSubject("Service Request from " + name)
-                    .setBody(body)
+                    .setBody(message)
                     .build();
             groupMessageService.send(config.getGroupId(), email);
             return messageSource.getMessage("request.add.success", null, locale);
@@ -109,6 +123,37 @@ public class RequestServiceImpl implements RequestService {
         }
     }
 
+    @Override
+    public String addCorpRequest(ServiceRequestDTO request) throws InternetBankingException {
+        try {
+            ServiceRequest serviceRequest = convertDTOToEntity(request);
+            serviceRequest.setCorporate(corporateRepo.findOne(request.getCorporate().getId()));
+            String name = request.getCorporate().getName();
+            ServiceReqConfigDTO config = reqConfigService.getServiceReqConfig(serviceRequest.getServiceReqConfigId());
+
+            //***///
+            ObjectMapper objectMapper = new ObjectMapper();
+            ArrayList<NameValue> myFormObjects = objectMapper.readValue(serviceRequest.getBody(), new TypeReference<ArrayList<NameValue>>() {
+            });
+
+            StringBuilder messageBody = new StringBuilder();
+            for(NameValue nameValue : myFormObjects){
+                messageBody.append(nameValue.getName() + " : " + nameValue.getValue() + "\n");
+            }
+
+            String message = messageBody.toString();
+            serviceRequestRepo.save(serviceRequest);
+
+            Email email = new Email.Builder().setSender("info@ibanking.coronationmb.com")
+                    .setSubject("Service Request from " + name)
+                    .setBody(message)
+                    .build();
+            groupMessageService.send(config.getGroupId(), email);
+            return messageSource.getMessage("request.add.success", null, locale);
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("req.add.failure", null, locale), e);
+        }
+    }
 
     @Override
     public ServiceRequestDTO getRequest(Long id) {
@@ -150,8 +195,17 @@ public class RequestServiceImpl implements RequestService {
         return convertRequestHistoryEntitiesToDTOs(requestHistories);
     }
 
-    public Page<ServiceRequestDTO> getRequests(Pageable pageDetails) {
-        Page<ServiceRequest> page = serviceRequestRepo.findAll(pageDetails);
+    public Page<ServiceRequestDTO> getRequests(RetailUser user, Pageable pageDetails) {
+        Page<ServiceRequest> page = serviceRequestRepo.findAllByUserOrderByDateRequestedDesc(user, pageDetails);
+        List<ServiceRequestDTO> dtOs = convertEntitiesToDTOs(page.getContent());
+        long t = page.getTotalElements();
+        Page<ServiceRequestDTO> pageImpl = new PageImpl<>(dtOs, pageDetails, t);
+        return pageImpl;
+    }
+
+    @Override
+    public Page<ServiceRequestDTO> getRequests(Corporate corporate, Pageable pageDetails) {
+        Page<ServiceRequest> page = serviceRequestRepo.findAllByCorporateOrderByDateRequestedDesc(corporate, pageDetails);
         List<ServiceRequestDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
         Page<ServiceRequestDTO> pageImpl = new PageImpl<>(dtOs, pageDetails, t);
@@ -210,7 +264,11 @@ public class RequestServiceImpl implements RequestService {
 
     private ServiceRequestDTO convertEntityToDTO(ServiceRequest serviceRequest) {
         ServiceRequestDTO requestDTO = modelMapper.map(serviceRequest, ServiceRequestDTO.class);
-        requestDTO.setUsername(serviceRequest.getUser().getUserName());
+        if (serviceRequest.getUser() != null){
+            requestDTO.setUsername(serviceRequest.getUser().getUserName());
+        }else if (serviceRequest.getCorporate() != null){
+            requestDTO.setCorpName(serviceRequest.getCorporate().getName());
+        }
         requestDTO.setDate(DateFormatter.format(serviceRequest.getDateRequested()));
         Code code = codeService.getByTypeAndCode("REQUEST_STATUS", serviceRequest.getRequestStatus());
         if (code != null) {

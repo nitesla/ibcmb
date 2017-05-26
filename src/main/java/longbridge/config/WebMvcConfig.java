@@ -9,6 +9,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.CommonAnnotationBeanPostProcessor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.request.RequestContextListener;
@@ -22,8 +24,6 @@ import java.util.Locale;
 
 @Configuration
 public class WebMvcConfig   extends WebMvcConfigurerAdapter {
-
-
 
 	@Bean
 	public BCryptPasswordEncoder passwordEncoder() {
@@ -56,6 +56,7 @@ public class WebMvcConfig   extends WebMvcConfigurerAdapter {
 		registry.addInterceptor(localeChangeInterceptor);
 		registry.addInterceptor(new AdminUserLoginInterceptor()).addPathPatterns("/admin/**");
 		registry.addInterceptor(new OpUserLoginInterceptor()).addPathPatterns("/ops/**");
+		registry.addInterceptor(retailTransferAuthInterceptor()).addPathPatterns( "/retail/transfer/process");
 	}
 
 	@Bean
@@ -96,5 +97,10 @@ public class WebMvcConfig   extends WebMvcConfigurerAdapter {
 //		handler.setDefaultTargetUrl();
 //		return handler;
 //	}
+
+	@Bean
+	public RetailTransferAuthInterceptor retailTransferAuthInterceptor(){
+		return new RetailTransferAuthInterceptor();
+	}
 
 }

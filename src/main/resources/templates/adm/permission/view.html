@@ -132,7 +132,7 @@
 <script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
 
 <!-- Page-Level Scripts -->
-<script>
+<script th:inline="javascript">
     /*<![CDATA[*/
     $(document).ready(function () {
         var table = $('#permission').DataTable({

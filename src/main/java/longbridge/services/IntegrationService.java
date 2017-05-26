@@ -5,13 +5,14 @@ import longbridge.api.AccountDetails;
 import longbridge.api.AccountInfo;
 import longbridge.api.CustomerDetails;
 import longbridge.api.NEnquiryDetails;
+import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferException;
 import longbridge.models.TransferRequest;
 import longbridge.utils.AccountStatement;
 
 import java.math.BigDecimal;
-import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -26,7 +27,7 @@ public interface IntegrationService {
      * @param cifid the customer's id
      * @return  a list of accounts
      */
-    Collection<AccountInfo> fetchAccounts(String cifid);
+    List<AccountInfo> fetchAccounts(String cifid);
 
 
     /** Fetches the {@link longbridge.utils.AccountStatement} of the account identified by
@@ -49,7 +50,7 @@ public interface IntegrationService {
     /** Initiates a transfer request to the relevant Transfer service.
      *
      */
-    TransferRequest makeTransfer(TransferRequest transferRequest) throws TransferException;
+    TransferRequest makeTransfer(TransferRequest transferRequest) throws InternetBankingTransferException;
 
     /**Fetches the account Name, Balance , Type from the account table specified by account Number
      *

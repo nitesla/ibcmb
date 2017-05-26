@@ -2,8 +2,7 @@ package longbridge.dtos;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import java.util.Date;
+import org.hibernate.validator.constraints.NotEmpty;
 
 /**
  * Created by Fortune on 4/5/2017.
@@ -16,8 +15,9 @@ public class CorporateDTO {
     private int version;
     private String rcNumber;
     private String corporateType;
+    @NotEmpty(message = "customerId")
     private String customerId;
-    private String companyName;
+    private String name;
     private String email;
     private String status;
     private String address;
@@ -61,12 +61,12 @@ public class CorporateDTO {
         this.corporateType = corporateType;
     }
 
-    public String getCompanyName() {
-        return companyName;
+    public String getName() {
+        return name;
     }
 
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getEmail() {

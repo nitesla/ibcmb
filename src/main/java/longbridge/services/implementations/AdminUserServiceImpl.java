@@ -114,7 +114,6 @@ public class AdminUserServiceImpl implements AdminUserService {
 
 
     @Override
-    @Transactional
 //    @Verifiable(operation="Add Admin",description="Adding a new User")
     public String addUser(AdminUserDTO user) throws InternetBankingException {
         AdminUser adminUser = adminUserRepo.findFirstByUserName(user.getUserName());
@@ -135,6 +134,7 @@ public class AdminUserServiceImpl implements AdminUserService {
             adminUser.setRole(role);
             adminUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
             adminUserRepo.save(adminUser);
+            sendUserCredentials(adminUser,password);
             logger.info("New admin user {} created", adminUser.getUserName());
             return messageSource.getMessage("user.add.success", null, locale);
         } catch (Exception e) {
@@ -153,7 +153,7 @@ public class AdminUserServiceImpl implements AdminUserService {
             if ((oldStatus == null) || ("I".equals(oldStatus)) && "A".equals(newStatus)) {
                 String password = passwordPolicyService.generatePassword();
                 user.setPassword(passwordEncoder.encode(password));
-                Email email = new Email.Builder().setSender("admin@ibanking.coronationmb.com")
+                Email email = new Email.Builder()
                         .setRecipient(user.getEmail())
                         .setSubject("Internet Banking Admin Console Activation")
                         .setBody(String.format("Your new password to Admin console is %s and your username is %s", password, user.getUserName()))
@@ -216,7 +216,7 @@ public class AdminUserServiceImpl implements AdminUserService {
             user.setPassword(passwordEncoder.encode(newPassword));
             user.setExpiryDate(new Date());
             this.adminUserRepo.save(user);
-            Email email = new Email.Builder().setSender("admin@ibanking.coronationmb.com")
+            Email email = new Email.Builder()
                     .setRecipient(user.getEmail())
                     .setSubject("Internet Banking Admin Console Password Reset")
                     .setBody(String.format("Your new password to Admin console is %s and your username is %s", newPassword, user.getUserName()))
@@ -267,6 +267,15 @@ public class AdminUserServiceImpl implements AdminUserService {
         return builder.toString();
     }
 
+
+    private void sendUserCredentials(AdminUser user, String password) throws InternetBankingException {
+        Email email = new Email.Builder()
+                .setRecipient(user.getEmail())
+                .setSubject("Creation on Internet Banking Admin Console")
+                .setBody(String.format("You have been created on the Internet Banking Administration console.\nYour username is %s and your password is %s. \nThank you.", user.getUserName(),password))
+                .build();
+        mailService.send(email);
+    }
 
     @Override
     @Transactional

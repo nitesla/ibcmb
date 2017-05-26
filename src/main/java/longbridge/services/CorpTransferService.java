@@ -2,7 +2,7 @@ package longbridge.services;
 
 import longbridge.dtos.CorpTransferRequestDTO;
 import longbridge.exception.InternetBankingException;
-import longbridge.exception.TransferException;
+import longbridge.exception.InternetBankingTransferException;
 import longbridge.models.CorpTransferRequest;
 import longbridge.models.CorporateUser;
 
@@ -11,14 +11,10 @@ import longbridge.models.CorporateUser;
  */
 public interface CorpTransferService {
 
-String addTransferRequest(CorpTransferRequestDTO transferRequestDTO) throws InternetBankingException;
+    String addTransferRequest(CorpTransferRequestDTO transferRequestDTO) throws InternetBankingException;
 
+    String makeTransfer(CorpTransferRequest transferRequest) throws InternetBankingTransferException;
 
-
-String makeTransfer(CorpTransferRequest transferRequest) throws TransferException;
-
-String authorizeTransfer(CorporateUser authorizer, Long transferRequestId);
-
-
+    String authorizeTransfer(CorporateUser authorizer, Long transferRequestId);
 
 }

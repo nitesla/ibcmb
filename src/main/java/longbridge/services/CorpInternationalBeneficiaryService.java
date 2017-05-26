@@ -4,6 +4,7 @@ import longbridge.dtos.CorpInternationalBeneficiaryDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.CorpInternationalBeneficiary;
 import longbridge.models.CorporateUser;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 
@@ -16,12 +17,14 @@ public interface CorpInternationalBeneficiaryService {
      * @param user the corporate user
      * @param  beneficiary  the beneficiary
      */
+    @PreAuthorize("hasAuthority('ADD_BENEFICIARY')")
     String addCorpInternationalBeneficiary(CorporateUser user, CorpInternationalBeneficiaryDTO beneficiary) throws InternetBankingException;
 
     /**
      * Deletes a beneficiary
      * @param beneficiaryId the beneficiary's id
      */
+    @PreAuthorize("hasAuthority('DELETE_BENEFICIARY')")
     String deleteCorpInternationalBeneficiary(Long beneficiaryId) throws InternetBankingException;
 
     /**
@@ -29,6 +32,7 @@ public interface CorpInternationalBeneficiaryService {
      * @param id the beneficiary's id
      * @return the specified beneficiary
      */
+    @PreAuthorize("hasAuthority('GET_BENEFICIARIES')")
     CorpInternationalBeneficiary getCorpInternationalBeneficiary(Long id);
 
     /**
@@ -36,12 +40,16 @@ public interface CorpInternationalBeneficiaryService {
      * @param user the corporate user
      * @return a list of the beneficiaries
      */
+    @PreAuthorize("hasAuthority('GET_BENEFICIARIES')")
     Iterable<CorpInternationalBeneficiary> getCorpInternationalBeneficiaries(CorporateUser user);
 
+    @PreAuthorize("hasAuthority('GET_BENEFICIARIES')")
     List<CorpInternationalBeneficiaryDTO> convertEntitiesToDTOs(Iterable<CorpInternationalBeneficiary> internationalBeneficiaries);
 
+    @PreAuthorize("hasAuthority('GET_BENEFICIARIES')")
     CorpInternationalBeneficiaryDTO convertEntityToDTO(CorpInternationalBeneficiary internationalBeneficiary);
 
+    @PreAuthorize("hasAuthority('GET_BENEFICIARIES')")
     CorpInternationalBeneficiary convertDTOToEntity(CorpInternationalBeneficiaryDTO internationalBeneficiaryDTO);
 
 }

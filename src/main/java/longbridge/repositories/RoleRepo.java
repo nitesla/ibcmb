@@ -14,4 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public interface RoleRepo extends CommonRepo<Role, Long>{
     Role findByName(String name);
+
+    Role findByUserTypeAndName( UserType userType, String name);
 }

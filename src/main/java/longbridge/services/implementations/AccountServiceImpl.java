@@ -21,10 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by chigozirim on 3/29/17.
@@ -44,6 +41,7 @@ public class AccountServiceImpl implements AccountService {
 
     private MessageSource messageSource;
 
+    Locale locale = LocaleContextHolder.getLocale();
 
     public AccountServiceImpl(AccountRepo accountRepo, IntegrationService integrationService, ModelMapper modelMapper, AccountConfigService accountConfigService, MessageSource messageSource) {
         this.accountRepo = accountRepo;
@@ -94,11 +92,14 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public String customizeAccount(Long id, String name) throws InternetBankingException{
-
-        Account account = accountRepo.findFirstById(id);
-        account.setAccountName(name);
-        this.accountRepo.save(account);
-        return messageSource.getMessage("account.customize.success",null, LocaleContextHolder.getLocale());
+        try {
+            Account account = accountRepo.findFirstById(id);
+            account.setAccountName(name);
+            this.accountRepo.save(account);
+            return messageSource.getMessage("account.customize.success",null, locale);
+        }catch (Exception e){
+            throw new InternetBankingException(messageSource.getMessage("account.customize.failure",null, locale), e);
+        }
 
     }
 
@@ -184,33 +185,43 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public boolean hideAccount(Long id) throws InternetBankingException{
+    public String hideAccount(Long id) throws InternetBankingException{
+
+        try {
             Account account = accountRepo.findFirstById(id);
             account.setHiddenFlag("Y");
             accountRepo.save(account);
-            return true;
-
+            return messageSource.getMessage("account.hide.success",null, locale);
+        }catch (Exception e){
+            throw new InternetBankingException(messageSource.getMessage("account.hide.failure",null, locale), e);
+        }
     }
 
     @Override
-    public boolean unhideAccount(Long id) throws InternetBankingException{
+    public String unhideAccount(Long id) throws InternetBankingException{
+
+        try {
             Account account = accountRepo.findFirstById(id);
             account.setHiddenFlag("N");
             accountRepo.save(account);
-            return true;
+            return messageSource.getMessage("success",null, locale);
+        }catch (Exception e){
+            throw new InternetBankingException(messageSource.getMessage("failure",null, locale), e);
+        }
     }
 
     @Override
-    public boolean makePrimaryAccount(Long acctId, String customerId) throws InternetBankingException {
+    public String makePrimaryAccount(Long acctId, String customerId) throws InternetBankingException {
+
+        try {
             accountRepo.unsetPrimaryAccount(customerId);
-//            for (Account account : accounts){
-//                    account.setPrimaryFlag("N");
-//                    accountRepo.save(account);
-//            }
             Account account = accountRepo.findFirstById(acctId);
             account.setPrimaryFlag("Y");
             accountRepo.save(account);
-            return true;
+            return messageSource.getMessage("success",null, locale);
+        }catch (Exception e){
+            throw new InternetBankingException(messageSource.getMessage("failure",null, locale), e);
+        }
 
     }
 
@@ -260,12 +271,9 @@ public class AccountServiceImpl implements AccountService {
                      ledBalance = balance.get("LedgerBalance").toString();
                   }
 
-
-
                 account.setAccountBalance(availbalance);
-
                 account.setLedgerBalance(ledBalance);
-//                accountsForDebitAndCredit.add(account);
+                accountsForDebitAndCredit.add(account);
             }
 
         }

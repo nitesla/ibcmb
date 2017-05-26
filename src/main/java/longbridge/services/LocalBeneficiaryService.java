@@ -5,6 +5,7 @@ import longbridge.models.Beneficiary;
 import longbridge.models.LocalBeneficiary;
 import longbridge.models.RetailUser;
 import longbridge.models.User;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 
@@ -23,12 +24,14 @@ public interface LocalBeneficiaryService {
      * @param user the customer
      * @param  beneficiary  the beneficiary
      */
+    @PreAuthorize("hasAuthority('ADD_BENEFICIARY')")
     String addLocalBeneficiary(RetailUser user, LocalBeneficiaryDTO beneficiary);
 
     /**
      * Deletes a beneficiary that has been created by the user
      * @param beneficiaryId the beneficiary's id
      */
+    @PreAuthorize("hasAuthority('DELETE_BENEFICIARY')")
     String deleteLocalBeneficiary(Long beneficiaryId);
 
     /**
@@ -36,6 +39,7 @@ public interface LocalBeneficiaryService {
      * @param id the beneficiary's id
      * @return the specified beneficiary
      */
+    @PreAuthorize("hasAuthority('GET_BENEFICIARIES')")
     LocalBeneficiary getLocalBeneficiary(Long id);
 
     /**
@@ -43,6 +47,7 @@ public interface LocalBeneficiaryService {
      * @param user the customer
      * @return a list of the beneficiaries
      */
+    @PreAuthorize("hasAuthority('GET_BENEFICIARIES')")
     Iterable<LocalBeneficiary> getLocalBeneficiaries(RetailUser user);
 
 

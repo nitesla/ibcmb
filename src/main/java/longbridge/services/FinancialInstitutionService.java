@@ -7,6 +7,7 @@ import longbridge.models.FinancialInstitution;
 import longbridge.models.FinancialInstitutionType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 
@@ -15,19 +16,29 @@ import java.util.List;
  */
 public interface FinancialInstitutionService {
 
+    @PreAuthorize("hasAuthority('ADD_FIN_INST')")
     String addFinancialInstitution(FinancialInstitutionDTO financialInstitutionDTO) throws InternetBankingException, DuplicateObjectException;
 
+    @PreAuthorize("hasAuthority('UPDATE_FIN_INST')")
     String updateFinancialInstitution(FinancialInstitutionDTO financialInstitutionDTO) throws InternetBankingException;
 
+    @PreAuthorize("hasAuthority('GET_FIN_INST')")
     List<FinancialInstitutionDTO> getFinancialInstitutions();
 
+    @PreAuthorize("hasAuthority('GET_FIN_INST')")
     List<FinancialInstitutionDTO> getFinancialInstitutionsByType(FinancialInstitutionType institutionType);
 
+    @PreAuthorize("hasAuthority('GET_FIN_INST')")
     FinancialInstitutionDTO getFinancialInstitution(Long id);
 
+    @PreAuthorize("hasAuthority('DELETE_FIN_INST')")
     String deleteFinancialInstitution(Long id) throws InternetBankingException;
 
+    @PreAuthorize("hasAuthority('GET_FIN_INST')")
     Page<FinancialInstitutionDTO> getFinancialInstitutions(Pageable pageDetails);
+
+    @PreAuthorize("hasAuthority('GET_FIN_INST')")
+    FinancialInstitution getFinancialInstitutionByCode(String institutionCode);
 
     FinancialInstitutionDTO convertEntityToDTO(FinancialInstitution financialInstitution);
 
@@ -35,5 +46,4 @@ public interface FinancialInstitutionService {
 
     List<FinancialInstitutionDTO> convertEntitiesToDTOs(Iterable<FinancialInstitution> financialInstitutions);
 
-    FinancialInstitution getFinancialInstitutionByCode(String institutionCode);
 }

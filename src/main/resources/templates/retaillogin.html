@@ -30,8 +30,8 @@
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> LOG IN </a>
                             <ul class="dropdown-menu">
-                                <li><a th:href="@{/login/retail}">Retail</a></li>
-                                <li><a href="#">Corporate</a></li>
+                                <li><a th:href="@{/login/retail}">RETAIL</a></li>
+                                <li><a th:href="@{/login/corporate}">CORPORATE</a></li>
                             </ul>
                         </li>
                         <li><a th:href="@{/register}">REGISTER</a></li>
@@ -49,30 +49,29 @@
 <section class="content-wrapper">
     <div class="container">
         <div class="bg">
-                    <form id="loginform" th:action="@{/retail/login}" method="POST" class="form-signin">
-                        <h5 class="form-signin-heading">Enter Login Details</h5>
-                        <br/>
+            <form id="loginform" th:action="@{/retail/login}" method="POST" class="form-signin">
+                <h5 class="form-signin-heading">Enter Login Details</h5>
+                <br/>
 
-                        <h6 id="label">Please enter your username</h6>
+                <h6 id="label">Please enter your username</h6>
 
-                        <div th:if="${param.message != null}" class="alert alert-info" th:text="${param.message[0]}">message</div>
-                        <div th:if="${param.error != null}" class="alert alert-danger" th:text="${session[SPRING_SECURITY_LAST_EXCEPTION]}">error</div>
-                        <br/>
-                        <div id="username_div" class="form-group">
-                            <input type="text" id="username" name="username" class="form-control"  placeholder="Username" />
-                            <p><a href="/forgot/username">Forgot Username?</a></p>
-                        </div>
+                <div th:if="${param.message != null}" class="alert alert-info" th:text="${param.message[0]}">message</div>
+                <div th:if="${param.error != null}" class="alert alert-danger" th:text="${session[SPRING_SECURITY_LAST_EXCEPTION]}">error</div>
+                <br/>
+                <div id="username_div" class="form-group">
+                    <input type="text" id="username" name="username" class="form-control"  placeholder="Username" />
+                    <p><a href="/forgot/username">Forgot Username?</a></p>
+                </div>
 
-                        <div id="password_div" class="hidden form-group">
-                            <input type="password" id="password" name="password" class="form-control"  placeholder="Password" autocomplete="off" />
-                            <p><a href="/forgot/password">forgot password?</a></p>
-                        </div>
+                <div id="password_div" class="hidden form-group">
+                    <input type="password" id="password" name="password" class="form-control"  placeholder="Password" autocomplete="off" />
+                    <p><a href="/forgot/password">forgot password?</a></p>
+                </div>
 
-                        <div class="form-group">
-                            <!--<input name="submit" type="submit" value="submit" />-->
-                            <button class="btn form-control">Submit</button>
-                        </div>
-                    </form>
+                <div class="form-group">
+                    <button class="btn form-control">Submit</button>
+                </div>
+            </form>
         </div>
     </div>
 </section>
@@ -156,7 +155,7 @@
                             console.log("input shown");
                         });
 
-                        //$('#label').html("Please enter your password");
+                        $('#label').html("Please enter your password");
                     }else{
                         //$('#loading').html("");
                         $.notify({

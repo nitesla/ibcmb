@@ -5,6 +5,7 @@ import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferErrorService;
 import longbridge.services.*;
 import longbridge.utils.ResultType;
+import longbridge.utils.TransferType;
 import longbridge.validator.transfer.TransferValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -71,74 +72,28 @@ public class OwnTransferController {
     }
 
 
-    @PostMapping("")
-    public String makeTransfer(@ModelAttribute("transferRequestDTO") @Valid TransferRequestDTO transferRequestDTO, RedirectAttributes redirectAttributes, Locale locale, HttpServletRequest request, Principal principal, Model model) {
-        try {
-            String token = request.getParameter("token");
-            // boolean tokenOk = integrationService.performTokenValidation(principal.getName(), token);
-            boolean tokenOk = !token.isEmpty();
-
-            if (!tokenOk) {
-                redirectAttributes.addFlashAttribute("message", messages.getMessage("auth.token.failure", null, locale));
-                return "redirect:/auth";
-            }
-            System.out.println(transferRequestDTO);
-            TransferRequestDTO requestDTO = transferService.makeTransfer(transferRequestDTO);
-
-            try {
-                if (requestDTO != null && requestDTO.getStatus().equals(ResultType.SUCCESS.toString())) {
-                    model.addAttribute("transferRequest", requestDTO);
-                    return page + "pageiv";
-
-                }
-            } catch (Exception e) {
-                throw new InternetBankingTransferException();
-
-            }
-
-            throw new InternetBankingTransferException();
-
-        } catch (InternetBankingTransferException exception)
-
-        {
-
-            String errorMessage = exception.getMessage();
-            System.out.println(errorMessage);
-//            redirectAttributes.addFlashAttribute("transferRequest", new TransferRequestDTO());
-//            redirectAttributes.addFlashAttribute("error", errorMessage);
-            TransferRequestDTO t = new TransferRequestDTO();
-            transferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode("06001"));
-
-            model.addAttribute("transferRequest", t);
-            return page + "pagei";
-
-        }
-
-    }
 
 
-    @PostMapping("/auth")
-    public String processTransfer(@ModelAttribute("transferRequest") @Valid TransferRequestDTO transferRequestDTO, Model model) throws Exception {
 
 
-        model.addAttribute("transferRequest", transferRequestDTO);
-        return page + "pageiii";
 
-    }
+
 
 
     @PostMapping("/summary")
     public String transferSummary(@ModelAttribute("transferRequest") @Valid TransferRequestDTO request, Locale locale, BindingResult result, Model model, HttpServletRequest servletRequest) {
         try {
+            request.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode(bankCode));
             request.setBeneficiaryAccountName(accountService.getAccountByAccountNumber(request.getBeneficiaryAccountNumber()).getAccountName());
             model.addAttribute("transferRequest", request);
             validator.validate(request, result);
             if (result.hasErrors()) {
                 return page + "pagei";
             }
-
+            request.setTransferType(TransferType.OWN_ACCOUNT_TRANSFER);
             transferService.validateTransfer(request);
             model.addAttribute("transferRequest", request);
+            servletRequest.getSession().setAttribute("transferRequest", request);
 
             return page + "pageii";
 

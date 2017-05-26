@@ -2,7 +2,8 @@ package longbridge.services.implementations;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import longbridge.api.*;
-import longbridge.exception.TransferException;
+import longbridge.exception.InternetBankingTransferException;
+
 import longbridge.models.TransferRequest;
 import longbridge.services.IntegrationService;
 import longbridge.utils.AccountStatement;
@@ -14,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -51,7 +51,7 @@ public class IntegrationServiceImpl implements IntegrationService {
     }
 
     @Override
-    public Collection<AccountInfo> fetchAccounts(String cifid) {
+    public List<AccountInfo> fetchAccounts(String cifid) {
         try {
 
             String uri = URI + "/customer/{acctId}/accounts";
@@ -85,7 +85,6 @@ public class IntegrationServiceImpl implements IntegrationService {
             response.put("AvailableBalance", availBal);
             response.put("LedgerBalance", ledgBal);
 
-
             return response;
         } catch (Exception e) {
             e.printStackTrace();
@@ -94,7 +93,7 @@ public class IntegrationServiceImpl implements IntegrationService {
     }
 
     @Override
-    public TransferRequest makeTransfer(TransferRequest transferRequest) throws TransferException {
+    public TransferRequest makeTransfer(TransferRequest transferRequest) throws InternetBankingTransferException {
 
         TransferType type;
         type = TransferType.INTER_BANK_TRANSFER;
@@ -127,7 +126,10 @@ public class IntegrationServiceImpl implements IntegrationService {
                 } catch (Exception e) {
 
                     e.printStackTrace();
-                    return new TransferRequest();
+
+                    transferRequest.setStatus(ResultType.ERROR.toString());
+                    return transferRequest;
+
                 }
 
 
@@ -142,7 +144,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 
             }
             case OWN_ACCOUNT_TRANSFER: {
-
+                transferRequest.setTransferType(TransferType.OWN_ACCOUNT_TRANSFER);
                 TransferDetails response = null;
                 String uri = URI + "/transfer/local";
                 Map<String, String> params = new HashMap<>();
@@ -155,15 +157,15 @@ public class IntegrationServiceImpl implements IntegrationService {
                     response = template.postForObject(uri, params, TransferDetails.class);
 
                     if (response.getResponseCode().equalsIgnoreCase("000")) {
-                        transferRequest.setTransferType(TransferType.OWN_ACCOUNT_TRANSFER);
+
                         transferRequest.setStatus(ResultType.SUCCESS.toString());
                         return transferRequest;
                     }
 
                 } catch (Exception e) {
 
-                    // e.printStackTrace();
-                    return new TransferRequest();
+                    transferRequest.setStatus(ResultType.ERROR.toString());
+                    return transferRequest;
                 }
 
 
@@ -174,7 +176,10 @@ public class IntegrationServiceImpl implements IntegrationService {
             }
         }
 
-        return new TransferRequest();
+
+        logger.trace("request did not match any type");
+        transferRequest.setStatus(ResultType.ERROR.toString());
+        return transferRequest;
     }
 
     @Override
@@ -302,6 +307,7 @@ public class IntegrationServiceImpl implements IntegrationService {
         params.put("subject", subject);
         params.put("contactList",contacts);
         logger.trace("params {}", params);
+        System.out.println("AYAOADE "+params);
         try {
 
             result = template.postForObject(uri, params, ObjectNode.class);

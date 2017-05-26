@@ -48,7 +48,13 @@ public class RetailControllerAdvice {
         }
 
         RetailUser user = retailUserService.getUserByName(principal.getName());
-        model.addAttribute("bvn", user.getBvn());
+        String bvn = "";
+        if (user.getBvn() == null){
+            bvn = "Not registered";
+        }else {
+            bvn = user.getBvn();
+        }
+        model.addAttribute("bvn", bvn);
 
         model.addAttribute("lastLogin", user.getLastLoginDate());
 

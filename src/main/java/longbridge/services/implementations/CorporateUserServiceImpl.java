@@ -52,6 +52,8 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     @Autowired
     PasswordPolicyService passwordPolicyService;
 
+
+
     @Autowired
     RoleService roleService;
 
@@ -104,10 +106,6 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         return corporateUserRepo.findAll();
     }
 
-    @Override
-    public void setPassword(CorporateUser user, String hashedPassword) {
-
-    }
 
     @Override
     public String updateUser(CorporateUserDTO user) throws InternetBankingException{
@@ -117,9 +115,11 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             corporateUser.setLastName(user.getLastName());
             corporateUser.setUserName(user.getUserName());
             corporateUser.setFirstName(user.getFirstName());
-            Role role = new Role();
-            role.setId(Long.parseLong(user.getRoleId()));
-            corporateUser.setRole(role);
+            if(user.getRoleId()!=null) {
+                Role role = new Role();
+                role.setId(Long.parseLong(user.getRoleId()));
+                corporateUser.setRole(role);
+            }
 
             corporateUserRepo.save(corporateUser);
             return messageSource.getMessage("user.update.success",null,locale);
@@ -150,12 +150,11 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             role.setId(Long.parseLong(user.getRoleId()));
             corporateUser.setRole(role);
             corporateUser.setExpiryDate(new Date());
-            corporateUser.setStatus("INACTIVE");
             Corporate corporate = new Corporate();
             corporate.setId(Long.parseLong(user.getCorporateId()));
             corporateUser.setCorporate(corporate);
             corporateUserRepo.save(corporateUser);
-            logger.info("password {}", password);
+            sendUserCredentials(corporateUser,password);
             logger.info("New corporate user {} created", corporateUser.getUserName());
             return messageSource.getMessage("user.add.success", null, locale);
         } catch (Exception e) {
@@ -175,7 +174,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             if ((oldStatus == null) || ("INACTIVE".equals(oldStatus)) && "ACTIVE".equals(newStatus)) {
                 String password = passwordPolicyService.generatePassword();
                 user.setPassword(passwordEncoder.encode(password));
-                Email email = new Email.Builder().setSender("admin@ibanking.coronationmb.com")
+                Email email = new Email.Builder()
                         .setRecipient(user.getEmail())
                         .setSubject("Internet Banking Corporate User Activation")
                         .setBody(String.format("Your new password to corporate console is %s and your username is %s", password, user.getUserName()))
@@ -209,25 +208,28 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     }
 
     @Override
-    public void changePassword(CorporateUser user, String oldPassword, String newPassword) {
+    public boolean changePassword(CorporateUserDTO user, String oldPassword, String newPassword) {
+       boolean ok=false;
         try {
-            if (user == null) {
+            if (getUser(user.getId()) == null) {
                 logger.error("User does not exist");
-                return;
+                return ok;
             }
 
             if (this.passwordEncoder.matches(oldPassword, user.getPassword())) {
-                user.setPassword(this.passwordEncoder.encode(newPassword));
-                corporateUserRepo.save(user);
-                logger.info("User {}'s password has been updated", user.getUserName());
-                return;
+                CorporateUser corporateUser=convertDTOToEntity(user);
+                corporateUser.setPassword(this.passwordEncoder.encode(newPassword));
+                corporateUserRepo.save(corporateUser);
+                logger.info("User {}'s password has been updated", user.getId());
+                ok=true;
             } else {
                 logger.error("Invalid current password supplied for {}", user.getUserName());
-                return;
+
             }
         } catch (Exception e) {
-            logger.error("Error Occurred {}", e);
+            logger.error("Error Occurred {}", e.getMessage());
         }
+        return ok;
     }
 
     @Override
@@ -240,11 +242,21 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             }
             user.setPassword(this.passwordEncoder.encode(newPassword));
             corporateUserRepo.save(user);
-            logger.info("USER {}'s password has been updated", user.getUserName());
+            logger.info("User {} password has been updated", user.getUserName());
             //todo send the email.. messagingService.sendEmail(EmailDetail);
         } catch (Exception e) {
             logger.error("Error Occurred {}", e);
         }
+    }
+
+
+    private void sendUserCredentials(CorporateUser user, String password) throws InternetBankingException {
+        Email email = new Email.Builder()
+                .setRecipient(user.getEmail())
+                .setSubject(messageSource.getMessage("customer.create.subject",null,locale))
+                .setBody(String.format(messageSource.getMessage("customer.create.message",null,locale), user.getUserName(),password))
+                .build();
+        mailService.send(email);
     }
 
     @Override
@@ -285,11 +297,13 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     }
 
     private CorporateUserDTO convertEntityToDTO(CorporateUser corporateUser) {
-        CorporateUserDTO corporateUserDTO = new CorporateUserDTO();
-        corporateUserDTO.setFirstName(corporateUser.getFirstName());
-        corporateUserDTO.setLastName(corporateUser.getLastName());
+        CorporateUserDTO corporateUserDTO =       modelMapper.map(corporateUser, CorporateUserDTO.class);
         corporateUserDTO.setRoleId(corporateUser.getRole().getId().toString());
-        return modelMapper.map(corporateUser, CorporateUserDTO.class);
+        corporateUserDTO.setRole(corporateUser.getRole().getName());
+        corporateUserDTO.setCorporateType(corporateUser.getCorporate().getCorporateType());
+        corporateUserDTO.setCorporateName(corporateUser.getCorporate().getName());
+        corporateUserDTO.setCorporateId(corporateUser.getCorporate().getId().toString());
+        return corporateUserDTO;
     }
 
 	@Override

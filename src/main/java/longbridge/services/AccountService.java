@@ -126,7 +126,7 @@ public interface AccountService {
      * @param id
      * @return
      */
-    boolean hideAccount(Long id) throws InternetBankingException;
+    String hideAccount(Long id) throws InternetBankingException;
 
     /**
      * unhides the customers acoount from the platform
@@ -134,7 +134,7 @@ public interface AccountService {
      * @param id
      * @return
      */
-    boolean unhideAccount(Long id) throws InternetBankingException;
+    String unhideAccount(Long id) throws InternetBankingException;
 
     /**
      * makes account the customers primary acoount
@@ -143,6 +143,6 @@ public interface AccountService {
      * @param customerId
      * @return
      */
-    boolean makePrimaryAccount(Long id, String customerId) throws InternetBankingException;
+    String makePrimaryAccount(Long id, String customerId) throws InternetBankingException;
 
    }

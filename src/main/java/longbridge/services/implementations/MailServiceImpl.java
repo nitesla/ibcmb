@@ -5,6 +5,7 @@ import longbridge.services.MailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -18,6 +19,9 @@ public class MailServiceImpl implements MailService {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    @Value("${mail.from}")
+    private String sender;
+
     @Autowired
     public MailServiceImpl(JavaMailSender mailSender) {
         this.mailSender = mailSender;
@@ -27,7 +31,7 @@ public class MailServiceImpl implements MailService {
     @Override public void send(String recipient, String subject, String message) throws MailException {
         MimeMessagePreparator messagePreparator = mimeMessage -> {
             MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
-            messageHelper.setFrom("admin@ibanking.coronationmb.com");
+            messageHelper.setFrom(sender);
             messageHelper.setTo(recipient);
             messageHelper.setSubject(subject);
             messageHelper.setText(message);
@@ -39,7 +43,7 @@ public class MailServiceImpl implements MailService {
     @Override public void send(Email email) throws MailException {
         MimeMessagePreparator messagePreparator = mimeMessage -> {
             MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
-            messageHelper.setFrom(email.getSenderEmail());
+            messageHelper.setFrom(sender);
             messageHelper.setTo(email.getReceiverEmail());
             messageHelper.setSubject(email.getMessageSubject());
             messageHelper.setText(email.getMessageBody());

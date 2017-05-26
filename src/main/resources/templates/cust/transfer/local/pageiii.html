@@ -54,7 +54,7 @@
                     </table>
 
 
-                    <form method="post" th:action="@{/retail/transfer/local/auth}" th:object="${transferRequest}">
+                    <form method="post" th:action="@{/retail/transfer/process}" th:object="${transferRequest}">
                         <input type="hidden" th:field="*{customerAccountNumber}"/>
                         <input type="hidden" th:field="*{beneficiaryAccountNumber}"/>
                         <input type="hidden" th:field="*{beneficiaryAccountName}"/>

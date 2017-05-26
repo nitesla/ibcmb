@@ -11,9 +11,9 @@ public class AccountRestrictionDTO {
     @JsonProperty("DT_RowId")
     private Long id;
     private int version;
-    @NotEmpty(message = "Please enter an Account Number")
+    @NotEmpty(message = "accountNumber")
     private String accountNumber;
-    @NotEmpty(message = "Please enter a Restriction Type")
+    @NotEmpty(message = "restrictionType")
     private String restrictionType;
     private String dateCreated;
 

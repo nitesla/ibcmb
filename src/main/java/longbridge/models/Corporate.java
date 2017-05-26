@@ -6,6 +6,7 @@ import org.hibernate.envers.Audited;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -21,7 +22,7 @@ public class Corporate extends AbstractEntity{
     private String rcNumber;
     private String customerId;
     private String corporateType;
-    private String companyName;
+    private String name;
     private String email;
     private String address;
     private String status ;
@@ -32,7 +33,7 @@ public class Corporate extends AbstractEntity{
 
 
     @OneToMany(mappedBy = "corporate",cascade = CascadeType.ALL)
-    private Collection<CorporateUser> users;
+    private List<CorporateUser> users =  new ArrayList<CorporateUser>();
 
 //    @OneToMany
 //    private Collection<Beneficiary> beneficiaries;
@@ -94,12 +95,12 @@ public class Corporate extends AbstractEntity{
         this.corporateType = corporateType;
     }
 
-    public String getCompanyName() {
-        return companyName;
+    public String getName() {
+        return name;
     }
 
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getEmail() {
@@ -128,11 +129,11 @@ public class Corporate extends AbstractEntity{
     
     
 
-	public Collection<CorporateUser> getUsers() {
+	public List<CorporateUser> getUsers() {
 		return users;
 	}
 
-	public void setUsers(Collection<CorporateUser> users) {
+	public void setUsers(List<CorporateUser> users) {
 		this.users = users;
 	}
 
@@ -167,7 +168,7 @@ public class Corporate extends AbstractEntity{
                 "rcNumber='" + rcNumber + '\'' +
                 ", customerId='" + customerId + '\'' +
                 ", corporateType='" + corporateType + '\'' +
-                ", companyName='" + companyName + '\'' +
+                ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 ", address='" + address + '\'' +
                 ", status='" + status + '\'' +

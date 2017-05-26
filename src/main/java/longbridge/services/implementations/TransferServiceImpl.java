@@ -12,6 +12,7 @@ import longbridge.services.IntegrationService;
 import longbridge.services.TransferService;
 import longbridge.utils.ResultType;
 import longbridge.exception.TransferExceptions;
+import longbridge.utils.TransferType;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,6 +65,7 @@ public class TransferServiceImpl implements TransferService {
 
         TransferRequest    transferRequest = integrationService.makeTransfer(convertDTOToEntity(transferRequestDTO));
         if (transferRequest != null) {
+            logger.trace("params {}",transferRequest);
             saveTransfer(transferRequestDTO);
             if (transferRequest.getStatus().equals(ResultType.SUCCESS)) return convertEntityToDTO(transferRequest);
             throw new InternetBankingTransferException(TransferExceptions.ERROR.toString());
@@ -103,6 +105,7 @@ public class TransferServiceImpl implements TransferService {
     }
 
     @Override
+
     public void deleteTransfer(Long id) throws InternetBankingException {
         TransferRequest transferRequest = transferRequestRepo.findById(id);
         if (transferRequest != null) {
@@ -128,8 +131,9 @@ public class TransferServiceImpl implements TransferService {
     @Override
     public void validateTransfer(TransferRequestDTO dto) throws InternetBankingTransferException {
         if (dto.getBeneficiaryAccountNumber().equalsIgnoreCase(dto.getCustomerAccountNumber())) {
-            throw new InternetBankingTransferException();
+            throw new InternetBankingTransferException(TransferExceptions.SAME_ACCOUNT.toString());
         }
+        valdateAccounts(dto);
 
         String cif = accountService.getAccountByAccountNumber(dto.getCustomerAccountNumber()).getCustomerId();
         boolean acctPresent = StreamSupport.stream(accountService.getAccountsForDebit(cif).spliterator(), false)
@@ -167,6 +171,15 @@ public class TransferServiceImpl implements TransferService {
         }
         return transferRequestDTOList;
     }
+   public void valdateAccounts(TransferRequestDTO dto) throws InternetBankingTransferException{
+ if (dto.getTransferType().equals(TransferType.OWN_ACCOUNT_TRANSFER) || dto.getTransferType().equals(TransferType.CORONATION_BANK_TRANSFER))
+    {
+        if(integrationService.viewAccountDetails(dto.getBeneficiaryAccountNumber()) ==null) throw new InternetBankingTransferException(TransferExceptions.INVALID_BENEFICIARY.toString());
+        if(integrationService.viewAccountDetails(dto.getCustomerAccountNumber()) ==null) throw new InternetBankingTransferException(TransferExceptions.INVALID_ACCOUNT.toString());
 
+    }
+
+
+}
 
 }

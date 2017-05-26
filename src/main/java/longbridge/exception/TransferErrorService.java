@@ -29,6 +29,10 @@ public class TransferErrorService {
             errorMessage = messages.getMessage(TransferExceptions.NO_DEBIT_ACCOUNT.toString(), null, locale);
         } else if (exception.getMessage().equalsIgnoreCase(TransferExceptions.SAME_ACCOUNT.toString())) {
             errorMessage = messages.getMessage(TransferExceptions.SAME_ACCOUNT.toString(), null, locale);
+        }else if (exception.getMessage().equalsIgnoreCase(TransferExceptions.INVALID_ACCOUNT.toString())) {
+            errorMessage = messages.getMessage(TransferExceptions.INVALID_ACCOUNT.toString(), null, locale);
+        }else if (exception.getMessage().equalsIgnoreCase(TransferExceptions.INVALID_BENEFICIARY.toString())) {
+            errorMessage = messages.getMessage(TransferExceptions.INVALID_BENEFICIARY.toString(), null, locale);
         }
 
         return errorMessage;

@@ -40,19 +40,28 @@ public class InternationalBeneficiaryServiceImpl implements InternationalBenefic
 
 	@Override
 	public String addInternationalBeneficiary(RetailUser user, InternationalBeneficiaryDTO beneficiary) throws InternetBankingException {
+		try {
 			InternationalBeneficiary internationalBeneficiary = convertDTOToEntity(beneficiary);
 			internationalBeneficiary.setUser(user);
 			this.internationalBeneficiaryRepo.save(internationalBeneficiary);
 			logger.info("International beneficiary {} has been added for user {}", internationalBeneficiary.toString(),user.getUserName());
 			return messageSource.getMessage("beneficiary.add.success",null,locale);
+		}catch (Exception e){
+			throw new InternetBankingException(messageSource.getMessage("beneficiary.add.failure",null, locale), e);
+		}
 	}
 
 	@Override
 	public String deleteInternationalBeneficiary(Long beneficiaryId) throws InternetBankingException{
-
+		try {
 			internationalBeneficiaryRepo.delete(beneficiaryId);
 			logger.info("Deleted beneficiary with Id{}", beneficiaryId);
 			return messageSource.getMessage("beneficiary.delete.success",null,locale);
+		}catch (Exception e){
+			throw new InternetBankingException(messageSource.getMessage("beneficiary.delete.failure",null, locale), e);
+		}
+
+
 	}
 
 	@Override
