@@ -207,9 +207,7 @@ public class IntegrationServiceImpl implements IntegrationService {
         params.put("email", email);
         params.put("dateOfBirth", dob);
         try {
-
-
-         result = template.postForObject(uri, params, CustomerDetails.class);
+            result = template.postForObject(uri, params, CustomerDetails.class);
 
         } catch (Exception e) {
             e.printStackTrace();

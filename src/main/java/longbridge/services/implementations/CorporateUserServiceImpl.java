@@ -223,6 +223,8 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         }
     }
 
+
+
     @Override
     @Transactional
     public String changeActivationStatus(Long userId) throws InternetBankingException {

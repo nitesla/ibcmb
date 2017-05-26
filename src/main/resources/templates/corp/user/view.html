@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="corp_layout :: site-head">
+
+</head>
+<body>
+<header th:replace="corp_layout :: header">
+</header>
+
+<section class="content-wrapper">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 col-sm-8">
+                <div class="page_header">
+                    <h5 class="page_header"> User Management</h5></div>
+                <a th:href="@{/corporate/users/add}" class="pull-right">Add New User</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-8 content-bg">
+                <div class="row spacing">
+                    <div class="col-md-12">
+                        <table class="table" id="track">
+                            <thead>
+                            <tr>
+                                <th>First Name</th>
+                                <th>Last Date</th>
+                                <th>Role</th>
+                                <th>Status</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div th:replace="corp_layout :: sidebar" class="col-md-3 sidebar">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CONTENT-WRAPPER SECTION END-->
+<footer th:replace="corp_layout ::footer">
+</footer>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    $(document).ready(function() {
+        var url = "/corporate/users/all";
+        var table = $('#track').DataTable({
+            select: true,
+            responsive : false,
+            "lengthMenu" : [ [ 5, 10 ], [ 5, 10 ] ],
+            "pagingType" : "simple_numbers",
+            "searching" : false,
+            "paging" : true,
+            "serverSide" : true,
+            "ajax" : url,
+            "dom" : 'T<"clear">flrtp',
+            "columns" : [
+                { "data": "firstName" },
+                { "data": "lastName" },
+                { "data": "role" },
+                { "data": "status" }
+            ]
+        });
+    });
+
+    /*]]>*/
+</script>
+</body>
+</html>

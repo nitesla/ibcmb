@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="corp_layout :: site-head">
+
+</head>
+<body>
+<header th:replace="corp_layout :: corp-header">
+</header>
+
+<section class="content-wrapper">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 col-sm-4">
+                <div class="page_header">
+                    <h5 class="page_header"> Add New User</h5></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-8 content-bg">
+                <div class="row form-spacing">
+                    <div class="col-md-6 col-sm-6">
+                        <form method="post" class="form-horizontal" th:action="@{/corporate/users}" th:object="${corporateUser}">
+
+                            <div th:replace="corp_layout::form-validation"></div>
+
+                            <div class="form-group">
+                                <label>Username</label>
+                                <input type="text" class="form-control" th:field="*{userName}"/>
+                                <p class="errors" th:if="${#fields.hasErrors('userName')}" th:errors="*{userName}">&times;</p>
+                            </div>
+
+                            <input th:if="${corporate.id}" th:type="hidden" name="corporateId" th:value="${corporate.id}"/>
+
+                            <div class="form-group">
+                                <label>First Name</label>
+                                <input type="text" class="form-control" th:field="*{firstName}"/>
+                            </div>
+                            <div class="form-group">
+                                <label>Last Name</label>
+                                <input type="text" class="form-control" th:field="*{lastName}" />
+                            </div>
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="text" class="form-control" th:field="*{email}"/>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Role</label>
+                                <select class="form-control" th:field="*{roleId}">
+                                    <option th:each="role : ${roles.?[#strings.equalsIgnoreCase(userType, 'corporate')]}" th:value="${role.id}" th:text="${role.name}"></option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-sm-4 col-sm-offset-2">
+                                    <button class="btn btn-primary btn-sm" type="submit">Submit</button>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div th:replace="corp_layout :: corp-sidebar" class="col-md-3 sidebar">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CONTENT-WRAPPER SECTION END-->
+<footer th:replace="corp_layout :: corp-footer">
+</footer>
+<script>
+    $( function() {
+        $( "#datepicker" ).datepicker(
+            { dateformat : 'dd/mm/yy'}
+        );
+    } );
+</script>
+
+</body>
+</html>

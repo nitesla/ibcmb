@@ -97,8 +97,11 @@
                                 <li><a th:href="@{/corporate/change_password}" th:text="#{menu.token.report}">Report Lost Token</a></li>
                                 <li><a th:href="@{/corporate/beneficiary}">Beneficiaries</a></li>
                                 <li><a href="#" th:text="#{menu.mail}"> Mailbox</a></li>
+                                <li sec:authorize="hasAuthority('ADD_CORPORATE_USER')"><a th:href="@{/corporate/users}" th:text="#{menu.usermanagement}">User Management</a></li>
                             </ul>
                         </li>
+
+
                     </ul>
 
                     <ul class="nav navbar-nav navbar-right">
