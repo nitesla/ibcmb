@@ -120,4 +120,6 @@ public interface CorporateUserService{
      */
     boolean changeAlertPreference(CorporateUserDTO corporateUser, AlertPref alertPreference);
 
+    public String addUserFromCorporateAdmin(CorporateUserDTO user) throws InternetBankingException;
+
 }

@@ -8,6 +8,7 @@ import longbridge.forms.AlertPref;
 import longbridge.models.*;
 import longbridge.repositories.CorpLimitRepo;
 import longbridge.repositories.CorporateUserRepo;
+import longbridge.repositories.RoleRepo;
 import longbridge.services.*;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -49,6 +50,9 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
     @Autowired
     MailService mailService;
+
+    @Autowired
+    RoleRepo roleRepo;
 
     @Autowired
     PasswordPolicyService passwordPolicyService;
@@ -145,8 +149,12 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             corporateUser.setLastName(user.getLastName());
             corporateUser.setUserName(user.getUserName());
             corporateUser.setEmail(user.getEmail());
+            corporateUser.setStatus("A");
             corporateUser.setPhoneNumber(user.getPhoneNumber());
             corporateUser.setCreatedOnDate(new Date());
+            String password = passwordPolicyService.generatePassword();
+            user.setPassword(passwordEncoder.encode(password));
+            user.setExpiryDate(new Date());
             Role role = new Role();
             role.setId(Long.parseLong(user.getRoleId()));
             corporateUser.setRole(role);
@@ -154,6 +162,56 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             corporate.setId(Long.parseLong(user.getCorporateId()));
             corporateUser.setCorporate(corporate);
             corporateUserRepo.save(corporateUser);
+            String fullName = user.getFirstName()+" "+user.getLastName();
+            Email email = new Email.Builder()
+                    .setRecipient(user.getEmail())
+                    .setSubject(messageSource.getMessage("customer.create.subject", null, locale))
+                    .setBody(String.format(messageSource.getMessage("customer.create.message", null, locale), fullName, user.getUserName(),password))
+                    .build();
+            mailService.send(email);
+            logger.info("New corporate user {} created", corporateUser.getUserName());
+            return messageSource.getMessage("user.add.success", null, locale);
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("user.add.failure", null, locale), e);
+        }
+    }
+
+
+    @Override
+    public String addUserFromCorporateAdmin(CorporateUserDTO user) throws InternetBankingException {
+
+        CorporateUser corporateUser = corporateUserRepo.findFirstByUserName(user.getUserName());
+        if (corporateUser != null) {
+            throw new DuplicateObjectException(messageSource.getMessage("user.exists", null, locale));
+        }
+        try {
+            corporateUser = new CorporateUser();
+            corporateUser.setFirstName(user.getFirstName());
+            corporateUser.setLastName(user.getLastName());
+            corporateUser.setUserName(user.getUserName());
+            corporateUser.setEmail(user.getEmail());
+            corporateUser.setPhoneNumber(user.getPhoneNumber());
+            corporateUser.setCreatedOnDate(new Date());
+            String password = passwordPolicyService.generatePassword();
+            user.setPassword(passwordEncoder.encode(password));
+            user.setExpiryDate(new Date());
+            Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
+            if(!"Authorizer".equals(role.getName())){
+             user.setStatus("A");
+            }
+            Corporate corporate = new Corporate();
+            corporate.setId(Long.parseLong(user.getCorporateId()));
+            corporateUser.setCorporate(corporate);
+            corporateUserRepo.save(corporateUser);
+            String fullName = user.getFirstName() + " " + user.getLastName();
+            if(!"Authorizer".equals(role.getName())) {
+                Email email = new Email.Builder()
+                        .setRecipient(user.getEmail())
+                        .setSubject(messageSource.getMessage("customer.create.subject", null, locale))
+                        .setBody(String.format(messageSource.getMessage("customer.create.message", null, locale), fullName, user.getUserName(), password))
+                        .build();
+                mailService.send(email);
+            }
             logger.info("New corporate user {} created", corporateUser.getUserName());
             return messageSource.getMessage("user.add.success", null, locale);
         } catch (Exception e) {

@@ -51,6 +51,11 @@ public class CorpTransferServiceImpl implements CorpTransferService {
 
         CorpTransferRequest transferRequest = convertDTOToEntity(transferRequestDTO);
 
+        if(transferRequest.getCorporate().getCorporateType().equals("SOLE")){
+            makeTransfer(transferRequest);
+            return messageSource.getMessage("transaction.success", null, locale);
+        }
+
         if (corporateService.getCorporateRules(transferRequest.getCorporate().getId()).isEmpty()) {
             throw new TransferRuleException(messageSource.getMessage("rule.unavailable", null, locale));
         }
