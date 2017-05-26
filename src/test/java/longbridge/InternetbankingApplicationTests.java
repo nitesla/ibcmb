@@ -130,21 +130,21 @@ public class InternetbankingApplicationTests {
     }
 
 
-//
-//    @Test
-//    @Transactional
-//    public void authorizeTransfer(){
-//        CorporateUser authorizer = corporateUserRepo.findOne(1L);
-//        PendingAuthorization pendingAuthorization = pendingAuthorizationRepo.findOne(14L);
-//        CorpTransferRequest transferRequest = pendingAuthorization.getCorpTransferRequest();
-//        BigDecimal amount =  transferRequest.getAmount();
-//        BigDecimal scaledAmount = amount.setScale(0);
-//        assertThat(authorizer.getPendingAuthorizations().size()).isEqualTo(2);
-//        assertThat(scaledAmount).isEqualTo(new BigDecimal("250000"));
-//        assertThat(transferRequest.getPendingAuthorizations().size()).isEqualTo(5);
-//        transferRequest.getPendingAuthorizations().remove(pendingAuthorization);
-//        assertThat(transferRequest.getPendingAuthorizations().size()).isEqualTo(4);
-//        transferRequestRepo.save(transferRequest);
-//
-//    }
+
+    @Test
+    @Transactional
+    public void authorizeTransfer(){
+        CorporateUser authorizer = corporateUserRepo.findOne(1L);
+        PendingAuthorization pendingAuthorization = pendingAuthorizationRepo.findOne(14L);
+        CorpTransferRequest transferRequest = pendingAuthorization.getCorpTransferRequest();
+        BigDecimal amount =  transferRequest.getAmount();
+        BigDecimal scaledAmount = amount.setScale(0);
+        assertThat(authorizer.getPendingAuthorizations().size()).isEqualTo(2);
+        assertThat(scaledAmount).isEqualTo(new BigDecimal("250000"));
+        assertThat(transferRequest.getPendingAuthorizations().size()).isEqualTo(5);
+        transferRequest.getPendingAuthorizations().remove(pendingAuthorization);
+        assertThat(transferRequest.getPendingAuthorizations().size()).isEqualTo(4);
+        transferRequestRepo.save(transferRequest);
+
+    }
 }

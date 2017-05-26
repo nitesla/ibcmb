@@ -86,6 +86,7 @@ public class CorporateServiceImpl implements CorporateService {
             corporateUser.setEmail(user.getEmail());
             corporateUser.setPhoneNumber(user.getPhoneNumber());
             corporateUser.setCreatedOnDate(new Date());
+            corporateUser.setStatus("A");
             String password = passwordPolicyService.generatePassword();
             corporateUser.setPassword(passwordEncoder.encode(password));
             corporateUser.setExpiryDate(new Date());
@@ -102,9 +103,9 @@ public class CorporateServiceImpl implements CorporateService {
             sendUserCredentials(corporateUser,password);
             String customerId = corporate.getCustomerId();
             Collection<AccountInfo> accounts = integrationService.fetchAccounts(customerId);
-//            for (AccountInfo acct : accounts) {
-//                accountService.AddFIAccount(customerId, acct);
-//            }
+            for (AccountInfo acct : accounts) {
+                accountService.AddFIAccount(customerId, acct);
+            }
 
             logger.info("Corporate {} created", corporate.getName());
             return messageSource.getMessage("corporate.add.success", null, locale);

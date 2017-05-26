@@ -1,5 +1,6 @@
 package longbridge.controllers.admin;
 
+import longbridge.api.AccountInfo;
 import longbridge.dtos.*;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.TransferRuleException;
@@ -91,18 +92,18 @@ public class AdmCorporateController {
             return "adm/corporate/add";
         }
 
-//        List<AccountInfo> accountInfos = integrationService.fetchAccounts(corporate.getCustomerId());
-//
-//        if(accountInfos ==null||accountInfos.isEmpty()){
-//            result.addError(new ObjectError("invalid", messageSource.getMessage("cifid.invalid", null, locale)));
-//            return "adm/corporate/add";
-//        }
-//        else{
-//            String accountName = accountInfos.get(0).getAccountName();
-        corporate.setName("Longbridge Technologies");
+        List<AccountInfo> accountInfos = integrationService.fetchAccounts(corporate.getCustomerId());
+
+        if(accountInfos ==null||accountInfos.isEmpty()){
+            result.addError(new ObjectError("invalid", messageSource.getMessage("cifid.invalid", null, locale)));
+            return "adm/corporate/add";
+        }
+        else{
+            String accountName = accountInfos.get(0).getAccountName();
+        corporate.setName(accountName);
         session.setAttribute("corporate", corporate);
         return "redirect:/admin/corporates/user/first";
-//        }
+     }
 
 //        try{
 //
@@ -329,7 +330,7 @@ public class AdmCorporateController {
 
         String[] authorizerIds;
         authorizerIds = webRequest.getParameterValues("authorizers");
-        List<CorporateUserDTO> authorizerDTOs = new ArrayList<>();
+        List<CorporateUserDTO> authorizerDTOs = new ArrayList<CorporateUserDTO>();
         CorporateUserDTO corporateUser;
 
         if (authorizerIds != null) {
@@ -418,7 +419,7 @@ public class AdmCorporateController {
         }
         String[] authorizerIds;
         authorizerIds = webRequest.getParameterValues("authorizers");
-        List<CorporateUserDTO> authorizerDTOs = new ArrayList<>();
+        List<CorporateUserDTO> authorizerDTOs = new ArrayList<CorporateUserDTO>();
         CorporateUserDTO corporateUser;
         if (authorizerIds != null) {
             for (String authorizerId : authorizerIds) {

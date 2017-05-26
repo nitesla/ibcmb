@@ -15,6 +15,6 @@ public interface CorpTransferService {
 
     String makeTransfer(CorpTransferRequest transferRequest) throws InternetBankingTransferException;
 
-    String authorizeTransfer(CorporateUser authorizer, Long transferRequestId);
+    String authorizeTransfer(CorporateUser authorizer, Long authorizationId);
 
 }
