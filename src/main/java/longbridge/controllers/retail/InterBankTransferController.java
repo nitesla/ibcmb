@@ -91,6 +91,7 @@ public class InterBankTransferController {
 
     @PostMapping("/new")
     public String getBeneficiary(@ModelAttribute("localBeneficiary") @Valid LocalBeneficiaryDTO localBeneficiaryDTO, BindingResult result, Model model, HttpServletRequest servletRequest) throws Exception {
+        model.addAttribute("beneficiary", localBeneficiaryDTO);
         if (result.hasErrors()) {
             return page + "pageiB";
         }
@@ -101,7 +102,7 @@ public class InterBankTransferController {
         transferRequestDTO.setTransferType(TransferType.INTER_BANK_TRANSFER);
         transferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode(localBeneficiaryDTO.getBeneficiaryBank()));
         model.addAttribute("transferRequest", transferRequestDTO);
-        model.addAttribute("beneficiary", localBeneficiaryDTO);
+
 
 
         servletRequest.getSession().setAttribute("beneficiary", localBeneficiaryDTO);

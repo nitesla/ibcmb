@@ -65,7 +65,7 @@
                                 <li sec:authorize="hasAuthority('INTERBANK_TRANSFER')"><a th:href="@{/retail/transfer/interbank}" th:text="#{menu.transfer.other}">Transfer to other banks</a></li>
                                 <li sec:authorize="hasAuthority('INTERNATIONAL_TRANSFER')"><a th:href="@{/retail/transfer}" th:text="#{menu.transfer.int}">International transfer</a></li>
                                 <li sec:authorize="hasAuthority('RET_TRANSACTION_LIMIT')"><a th:href="@{/retail/transfer/settransferlimit}" th:text="#{menu.transfer.limit}">Set transfer limit</a></li>
-                                <li sec:authorize="hasAuthority('STANDING_ORDER')"><a th:href="@{/retail/transfer/directdebit}" th:text="#{menu.transfer.order}">Standing order</a></li>
+                                <li sec:authorize="hasAuthority('STANDING_ORDER')"><a th:href="@{/retail/directdebit}" th:text="#{menu.transfer.order}">Standing order</a></li>
                             </ul>
                         </li>
                         <li sec:authorize="hasAuthority('MANAGE_BILL_PAYMENT')"><a href="#" th:text="#{menu.bill}">Bill Payments</a></li>

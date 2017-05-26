@@ -310,7 +310,7 @@ public class IntegrationServiceImpl implements IntegrationService {
         params.put("subject", subject);
         params.put("contactList",contacts);
         logger.trace("params {}", params);
-      
+
         try {
 
             result = template.postForObject(uri, params, ObjectNode.class);

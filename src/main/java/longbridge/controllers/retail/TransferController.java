@@ -137,9 +137,10 @@ public class TransferController {
     public
     @ResponseBody
     String getInterBankAccountName(@PathVariable String accountNo, @PathVariable String bank) {
-        // return (integrationService.doNameEnquiry(bank,accountNo)).getAccountName();
-//        return (integrationService.doNameEnquiry("000005",accountNo)).getAccountName();
-        return "AYOADE FAROOQ";
+       return (integrationService.doNameEnquiry(bank,accountNo)).getAccountName();
+      // return (integrationService.doNameEnquiry("000005",accountNo)).getAccountName();
+
+
 
     }
 
