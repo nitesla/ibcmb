@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 
 @SpringBootApplication
 @EnableJpaRepositories(repositoryFactoryBeanClass = CustomJpaRepositoryFactoryBean.class)
-public class InternetbankingApplication  extends  SpringBootServletInitializer  {
+public class InternetbankingApplication  extends  SpringBootServletInitializer {
 
     @Autowired
     OperationsUserService operationsUserService;
@@ -50,22 +50,19 @@ public class InternetbankingApplication  extends  SpringBootServletInitializer  
     //	@Autowired
     //	IntegrationService service;
 
-    @SpringBootApplication
-    public class SpringBootWebApplication extends SpringBootServletInitializer {
-
-        @Override
-        protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-            return application.sources(InternetbankingApplication.class);
-        }
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+        return application.sources(InternetbankingApplication.class);
     }
+
 
     public static void main(String[] args) {
         //startup all jobs
-     //   Timer timer = new Timer(1000 * 60 * 60 * 12, new DirectDebitJob());
+        //   Timer timer = new Timer(1000 * 60 * 60 * 12, new DirectDebitJob());
         SpringApplication.run(InternetbankingApplication.class, args);
 
 
- }
+    }
+}
 
 
 
@@ -84,14 +81,3 @@ public class InternetbankingApplication  extends  SpringBootServletInitializer  
 //
 
 
-
-//	@Override
-//	@Transactional
-//	public void run(String... strings) throws Exception {
-////		OperationsUserDTO opsUser = operationsUserService.getUser(1L);//TODO get current user
-//		MailBox mailBox= messageService.getMailBox(opsUser.getId(), UserType.OPERATIONS);
-//		Iterable<Message> sent = messageService.getSentMessages(mailBox);
-//		logger.info("Mailbox is {}",sent);
-
-
-}
