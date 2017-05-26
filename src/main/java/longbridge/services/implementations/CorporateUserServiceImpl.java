@@ -1,5 +1,6 @@
 package longbridge.services.implementations;
 
+import longbridge.dtos.CorpCorporateUserDTO;
 import longbridge.dtos.CorporateUserDTO;
 import longbridge.exception.*;
 import longbridge.exception.DuplicateObjectException;
@@ -181,7 +182,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
 
     @Override
-    public String addUserFromCorporateAdmin(CorporateUserDTO user) throws InternetBankingException {
+    public String addUserFromCorporateAdmin(CorpCorporateUserDTO user) throws InternetBankingException {
 
         CorporateUser corporateUser = corporateUserRepo.findFirstByUserName(user.getUserName());
         if (corporateUser != null) {
@@ -408,7 +409,7 @@ try{
     }
 
     private CorporateUserDTO convertEntityToDTO(CorporateUser corporateUser) {
-        CorporateUserDTO corporateUserDTO =       modelMapper.map(corporateUser, CorporateUserDTO.class);
+        CorporateUserDTO corporateUserDTO = modelMapper.map(corporateUser, CorporateUserDTO.class);
         corporateUserDTO.setRoleId(corporateUser.getRole().getId().toString());
         corporateUserDTO.setRole(corporateUser.getRole().getName());
         corporateUserDTO.setCorporateType(corporateUser.getCorporate().getCorporateType());

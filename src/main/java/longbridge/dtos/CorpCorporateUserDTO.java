@@ -9,19 +9,21 @@ import java.util.Date;
  * Created by Showboy on 26/05/2017.
  */
 public class CorpCorporateUserDTO {
+
     @JsonProperty("DT_RowId")
     private Long id;
     private String corporateId;
     private String corporateType;
     private String corporateName;
-    @NotEmpty(message = "userName")
+    @NotEmpty(message = "User name Field Cannot be empty")
     private String userName;
-    @NotEmpty(message = "firstName")
+    @NotEmpty(message = "First Name Field Cannot be empty")
     private String firstName;
-    @NotEmpty(message = "lastName")
+    @NotEmpty(message = "Last Name Field Cannot be empty")
     private String lastName;
-    @NotEmpty(message = "email")
+    @NotEmpty(message = "Email address Field Cannot be empty")
     private String email;
+    private String  phoneNumber;
     private String roleId;
     private String role;
     private boolean ruleMember;
@@ -77,6 +79,15 @@ public class CorpCorporateUserDTO {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public String getPassword() {
@@ -194,4 +205,5 @@ public class CorpCorporateUserDTO {
                 ", noOfLoginAttempts=" + noOfLoginAttempts +
                 '}';
     }
+
 }

@@ -1,5 +1,6 @@
 package longbridge.services;
 
+import longbridge.dtos.CorpCorporateUserDTO;
 import longbridge.dtos.CorporateUserDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.PasswordException;
@@ -120,6 +121,6 @@ public interface CorporateUserService{
      */
     boolean changeAlertPreference(CorporateUserDTO corporateUser, AlertPref alertPreference);
 
-    public String addUserFromCorporateAdmin(CorporateUserDTO user) throws InternetBankingException;
+    public String addUserFromCorporateAdmin(CorpCorporateUserDTO user) throws InternetBankingException;
 
 }

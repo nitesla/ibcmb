@@ -121,14 +121,13 @@ public class CorpUserManagement {
     public String createUser(@ModelAttribute("corporateUser") @Valid CorpCorporateUserDTO corporateUserDTO, BindingResult result, HttpSession session, Model model, RedirectAttributes redirectAttributes, Locale locale) throws Exception {
 
         if (result.hasErrors()) {
-
             return "corp/user/add";
         }
 
         try {
-            String message = corporateUserService.add;
+            String message = corporateUserService.addUserFromCorporateAdmin(corporateUserDTO);
             redirectAttributes.addFlashAttribute("message", message);
-            return "redirect:/corp/users/";
+            return "redirect:/corporate/users/";
 
         } catch (DuplicateObjectException doe) {
             result.addError(new ObjectError("error", doe.getMessage()));
