@@ -115,7 +115,7 @@ public class ServiceRequestController {
             if(serviceReqConfigDTO.isAuthenticate()){
                 if(session.getAttribute("authenticated")!="authenticated"){
                     session.setAttribute("requestDTO",serviceRequestDTO);
-                    session.setAttribute("requestURL", "/retail/request/process");
+                    session.setAttribute("redirectURL", "/retail/request/process");
                     return "redirect:/token/authenticate";
                 }
             }

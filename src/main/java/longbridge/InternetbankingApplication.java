@@ -16,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import java.util.stream.Collectors;
@@ -23,7 +25,7 @@ import java.util.stream.Collectors;
 
 @SpringBootApplication
 @EnableJpaRepositories(repositoryFactoryBeanClass = CustomJpaRepositoryFactoryBean.class)
-public class InternetbankingApplication  implements  CommandLineRunner  {
+public class InternetbankingApplication  extends  SpringBootServletInitializer  {
 
     @Autowired
     OperationsUserService operationsUserService;
@@ -48,6 +50,15 @@ public class InternetbankingApplication  implements  CommandLineRunner  {
     //	@Autowired
     //	IntegrationService service;
 
+    @SpringBootApplication
+    public class SpringBootWebApplication extends SpringBootServletInitializer {
+
+        @Override
+        protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+            return application.sources(InternetbankingApplication.class);
+        }
+    }
+
     public static void main(String[] args) {
         //startup all jobs
      //   Timer timer = new Timer(1000 * 60 * 60 * 12, new DirectDebitJob());
@@ -56,23 +67,22 @@ public class InternetbankingApplication  implements  CommandLineRunner  {
 
  }
 
-    @Override
-    public void run(String... strings) throws Exception {
-//        Role role =roleRepo.findOne(2L);
-//        role.setPermissions(
-//                permissionRepo.findAll()
-//                .stream()
-//                .filter(i-> i.getUserType().equals("RETAIL"))
-//                .collect(Collectors.toList())
-//
-//
-//        );
-//        roleRepo.save(role);
-//        System.out.println("DEAR WALE NO SALARY FOR YOU TILL IB IS COMPLETED");
-//        integrationService.sendSMS("DEAR WALE NO SALARY FOR YOU TILL IB IS COMPLETED","08050915810","SALARY");
-//        integrationService.sendSMS("DEAR WUNMI NO SALARY FOR YOU TILL IB IS COMPLETED","07038810752","SALARY");
 
- }
+
+
+//    @Override
+//    public void run(String... strings) throws Exception {
+////        Role role =roleRepo.findOne(2L);
+////        role.setPermissions(
+////                permissionRepo.findAll()
+////                .stream()
+////                .filter(i-> i.getUserType().equals("RETAIL"))
+////                .collect(Collectors.toList())
+////
+////
+////        );
+//
+
 
 
 //	@Override
