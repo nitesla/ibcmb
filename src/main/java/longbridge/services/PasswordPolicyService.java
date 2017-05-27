@@ -100,7 +100,7 @@ public class PasswordPolicyService {
         }
         if(numOfChangesBeforeReuse!=null&&numOfChangesBeforeReuse.isEnabled()){
             numOfChanges = NumberUtils.toInt(numOfChangesBeforeReuse.getValue());
-            ruleMessage = String.format("Password reuse must be after %d usages of different passwords");
+            ruleMessage = String.format("Password reuse must be after %d usages of different passwords",numOfChanges);
             passwordRules.add(ruleMessage);
 
         }

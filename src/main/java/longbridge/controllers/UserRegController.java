@@ -106,13 +106,6 @@ public class UserRegController {
 
 
 
-
-
-
-
-
-
-
     @GetMapping("/forgot/username")
     public String showForgotUsername() {
         return "cust/forgotusername";
@@ -247,7 +240,7 @@ public class UserRegController {
         String confirmPassword = webRequest.getParameter("confirm");
         String customerId = webRequest.getParameter("customerId");
 
-        if (customerId == "" || customerId == null){
+        if ("".equals(customerId) || customerId == null){
             logger.error("Account Number not valid");
             return "false";
         }

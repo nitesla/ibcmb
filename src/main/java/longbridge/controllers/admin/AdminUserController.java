@@ -185,9 +185,9 @@ public class AdminUserController {
     public String deleteUser(@PathVariable Long userId, RedirectAttributes redirectAttributes) {
         try {
             String message = adminUserService.deleteUser(userId);
-            redirectAttributes.addAttribute("message", message);
+            redirectAttributes.addFlashAttribute("message", message);
         } catch (InternetBankingException ibe) {
-            redirectAttributes.addAttribute("failure", ibe.getMessage());
+            redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
             logger.error("Error updating admin user", ibe);
         }
         return "redirect:/admin/users";
@@ -220,7 +220,7 @@ public class AdminUserController {
             String message = adminUserService.resetPassword(id);
             redirectAttributes.addFlashAttribute("message", message);
         } catch (PasswordException pe) {
-            redirectAttributes.addAttribute("failure", pe.getMessage());
+            redirectAttributes.addFlashAttribute("failure", pe.getMessage());
             logger.error("Error resetting password for admin user", pe);
         }
         return "redirect:/admin/users";
@@ -262,7 +262,6 @@ public class AdminUserController {
         } catch (PasswordException pe) {
             result.addError(new ObjectError("error", pe.getMessage()));
             logger.error("Error changing password for admin user {}", user.getUserName(), pe);
-
             return "/adm/admin/pword";
         }
     }
@@ -304,7 +303,6 @@ public class AdminUserController {
         } catch (PasswordException pe) {
             result.addError(new ObjectError("error", pe.getMessage()));
             logger.error("Error changing password for admin user {}", user.getUserName(), pe);
-
             return "/adm/admin/new-pword";
         }
     }

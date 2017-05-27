@@ -383,7 +383,7 @@ public class AdmCorporateController {
 
         for (CorporateUserDTO userDTO : authorizers) {
             for (CorporateUserDTO authorizer : transferRuleDTO.getAuthorizers()) {
-                if (userDTO.getId() == authorizer.getId()) {
+                if (userDTO.getId().equals(authorizer.getId())) {
                     userDTO.setRuleMember(true);
                 }
             }

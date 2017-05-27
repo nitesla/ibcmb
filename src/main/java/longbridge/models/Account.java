@@ -181,7 +181,7 @@ public class Account extends AbstractEntity{
      * @return
      */
     public String getAccountDescription(){
-    	return String.format("%s - %s", getAccountNumber());
+    	return String.format("%s - %s", getAccountNumber(),getSchemeCode());
     }
 
 	public static OperationCode getAddCode() {
