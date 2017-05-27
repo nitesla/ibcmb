@@ -65,14 +65,14 @@ public class AdmServiceReqConfigController {
     @GetMapping("/new")
     public String addConfig(Model model) {
         model.addAttribute("serviceReqConfig", new ServiceReqConfigDTO());
-             return "adm/servicereqconfig/add";
+             return "/adm/serviceReqConfig/add";
     }
 
     @PostMapping
     public String createConfig(@ModelAttribute("serviceReqConfig") @Valid ServiceReqConfigDTO serviceReqConfigDTO, BindingResult result, RedirectAttributes redirectAttributes, Locale locale) {
         if (result.hasErrors()) {
             result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
-            return "adm/servicereqconfig/add";
+            return "/adm/serviceReqConfig/add";
         }
 
         try {
@@ -82,14 +82,14 @@ public class AdmServiceReqConfigController {
         } catch (InternetBankingException ibe) {
             result.addError(new ObjectError("error", messageSource.getMessage("req.add.failure", null, locale)));
             logger.error("Error creating service request", ibe);
-            return "adm/servicereqconfig/add";
+            return "/adm/serviceReqConfig/add";
 
         }
     }
 
     @GetMapping
     public String getAllConfigs(Model model) {
-        return "adm/servicereqconfig/view";
+        return "adm/serviceReqConfig/view";
     }
 
     @GetMapping(path = "/all")
@@ -138,7 +138,7 @@ public class AdmServiceReqConfigController {
     public String getRequest(@PathVariable Long reqId, Model model) {
         ServiceReqConfigDTO serviceReq = serviceReqConfigService.getServiceReqConfig(reqId);
         model.addAttribute("requestDetails", serviceReq);
-        return "adm/servicereqconfig/add";
+        return "/adm/serviceReqConfig/add";
     }
 
     @GetMapping("/{reqId}/delete")

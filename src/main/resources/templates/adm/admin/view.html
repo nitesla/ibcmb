@@ -189,9 +189,7 @@
 
       });
 
-        $('#myInput').on( 'keyup', function () {
-            table.search( this.value ).draw();
-        } );
+
 
             table.on('select', function() {
             if (table.rows({
@@ -240,7 +238,7 @@
         if($(link).attr("disabled")){
         	return;
         }
-        var dt = $('#role').DataTable();
+        var dt = $('#admin').DataTable();
         var id = $(dt.row({
             selected: true
         }).node()).attr("id");
