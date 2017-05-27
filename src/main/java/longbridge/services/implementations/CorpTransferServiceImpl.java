@@ -98,9 +98,15 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         if (!authorizer.getPendAuths().contains(pendAuth)) {
             throw new InvalidAuthorizationException(messageSource.getMessage("transfer.auth.invalid", null, locale));
         }
+
+        if(corporateService.getApplicableTransferRule(pendAuth.getCorpTransferRequest())==null){
+            throw new TransferRuleException(messageSource.getMessage("rule.unavailable", null, locale));
+
+        }
         try {
             CorpTransRequest transferRequest = pendAuth.getCorpTransferRequest();
             transferRequest.getPendAuths().remove(pendAuth);
+
             if (corporateService.getApplicableTransferRule(transferRequest).isAnyCanAuthorize()) {
                 makeTransfer(transferRequest);
                 transferRequest.getPendAuths().clear();

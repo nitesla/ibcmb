@@ -14,19 +14,23 @@
             <div class="col-md-8 content-bg">
                 <div class="row spacing">
                     <div class="col-md-10">
-                        <h4 class="sub_header">Pending Transfer</h4>
+                        <h4 class="sub_header">Pending Transfers</h4>
                         <table class="table">
                             <thead>
                             <td>Transfer type</td>
+                            <td>Beneficiary</td>
+                            <td>Bank</td>
                             <td>Amount</td>
-                            <td>Approval</td>
+                            <td>Action</td>
                             </thead>
                             <tbody>
                             <tr>
-                            <tr th:each="pnd : ${pendingAuthorizations}">
+                            <tr th:each="pnd : ${pendAuths}">
                                 <td th:text="${pnd.corpTransferRequest.transferType}"></td>
+                                <td th:text="${pnd.corpTransferRequest.beneficiaryAccountName}"></td>
+                                <td th:text="${pnd.corpTransferRequest.financialInstitution.institutionName}"></td>
                                 <td th:text="${pnd.corpTransferRequest.amount}"></td>
-                                <td><a th:href="@{'/corporate/' + ${pnd.id} + '/authorize'}"><i class="fa fa-approve"></i></a></td>
+                                <td><a class="btn btn-sm" th:href="@{'/corporate/' + ${pnd.id} + '/authorize'}"><i></i>Approve</a></td>
                             </tr>
                             </tr>
                             </tbody>
