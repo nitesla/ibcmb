@@ -5,11 +5,13 @@ import longbridge.exception.*;
 import longbridge.models.CorpTransRequest;
 import longbridge.models.CorporateUser;
 import longbridge.models.PendAuth;
+import longbridge.models.TransRequest;
 import longbridge.repositories.CorpTransferRequestRepo;
 import longbridge.repositories.CorporateUserRepo;
 import longbridge.repositories.PendingAuthorizationRepo;
 import longbridge.services.CorpTransferService;
 import longbridge.services.CorporateService;
+import longbridge.services.IntegrationService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -28,25 +30,25 @@ import java.util.Locale;
 @Service
 public class CorpTransferServiceImpl implements CorpTransferService {
 
-    @Autowired
-    CorporateService corporateService;
-
-    @Autowired
-    CorpTransferRequestRepo corpTransferRequestRepo;
-
-    @Autowired
-    PendingAuthorizationRepo pendingAuthorizationRepo;
-
-    @Autowired
-    CorporateUserRepo corporateUserRepo;
-
-    @Autowired
-    MessageSource messageSource;
-
-    @Autowired
-    ModelMapper modelMapper;
 
     Locale locale = LocaleContextHolder.getLocale();
+    private CorporateService corporateService;
+    private CorpTransferRequestRepo corpTransferRequestRepo;
+    private PendingAuthorizationRepo pendingAuthorizationRepo;
+    private CorporateUserRepo corporateUserRepo;
+    private MessageSource messageSource;
+    private ModelMapper modelMapper;
+    private IntegrationService integrationService;
+
+    @Autowired
+    public CorpTransferServiceImpl(CorporateService corporateService, CorpTransferRequestRepo corpTransferRequestRepo, PendingAuthorizationRepo pendingAuthorizationRepo, CorporateUserRepo corporateUserRepo, MessageSource messageSource, ModelMapper modelMapper) {
+        this.corporateService = corporateService;
+        this.corpTransferRequestRepo = corpTransferRequestRepo;
+        this.pendingAuthorizationRepo = pendingAuthorizationRepo;
+        this.corporateUserRepo = corporateUserRepo;
+        this.messageSource = messageSource;
+        this.modelMapper = modelMapper;
+    }
 
     @Override
     @Transactional
@@ -54,7 +56,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
 
         CorpTransRequest transferRequest = convertDTOToEntity(transferRequestDTO);
 
-        if(transferRequest.getCorporate().getCorporateType().equals("SOLE")){
+        if (transferRequest.getCorporate().getCorporateType().equals("SOLE")) {
             makeTransfer(transferRequest);
             return messageSource.getMessage("transaction.success", null, locale);
         }
@@ -102,8 +104,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
             if (corporateService.getApplicableTransferRule(transferRequest).isAnyCanAuthorize()) {
                 makeTransfer(transferRequest);
                 transferRequest.getPendAuths().clear();
-            }
-            else if (transferRequest.getPendAuths().isEmpty()) {
+            } else if (transferRequest.getPendAuths().isEmpty()) {
                 makeTransfer(transferRequest);
             }
             corpTransferRequestRepo.save(transferRequest);
@@ -118,8 +119,8 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     }
 
     @Override
-    public String makeTransfer(CorpTransRequest transferRequest) throws InternetBankingTransferException {
-        return null; //TODO implement
+    public TransRequest makeTransfer(CorpTransRequest transferRequest) throws InternetBankingTransferException {
+         return integrationService.makeTransfer(transferRequest);
     }
 
     public CorpTransferRequestDTO convertEntityToDTO(CorpTransRequest transferRequest) {

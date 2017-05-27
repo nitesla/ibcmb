@@ -12,6 +12,8 @@ import longbridge.security.userdetails.CustomUserPrincipal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -57,6 +59,10 @@ public class CorporateUserDetailsService implements UserDetailsService {
             CorporateUser user = corporateUserRepo.findFirstByUserName(userName);
             Corporate corporate = corporateRepo.findFirstByCustomerId(corpId);
             if (corporate != null && user != null) {
+                if(!corporate.getStatus().equalsIgnoreCase("A")){
+                    throw  new DisabledException("User is disabled");
+                }
+
 
                 if ((user.getCorporate().getCustomerId().equalsIgnoreCase(corporate.getCustomerId())) && user.getUserType() == UserType.CORPORATE) {
                     return new CustomUserPrincipal(user);

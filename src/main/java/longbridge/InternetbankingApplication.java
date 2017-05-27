@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 
 @SpringBootApplication
 @EnableJpaRepositories(repositoryFactoryBeanClass = CustomJpaRepositoryFactoryBean.class)
-public class InternetbankingApplication  extends  SpringBootServletInitializer  {
+public class InternetbankingApplication  /*extends  SpringBootServletInitializer*/ implements CommandLineRunner  {
 
     @Autowired
     OperationsUserService operationsUserService;
@@ -70,18 +70,19 @@ public class InternetbankingApplication  extends  SpringBootServletInitializer  
 
 
 
-//    @Override
-//    public void run(String... strings) throws Exception {
-////        Role role =roleRepo.findOne(2L);
-////        role.setPermissions(
-////                permissionRepo.findAll()
-////                .stream()
-////                .filter(i-> i.getUserType().equals("RETAIL"))
-////                .collect(Collectors.toList())
-////
-////
-////        );
-//
+    @Override
+    public void run(String... strings) throws Exception {
+        Role role = roleRepo.findOne(2L);
+        role.setPermissions(
+                permissionRepo.findAll()
+                        .stream()
+                        .filter(i -> i.getUserType().equals("RETAIL"))
+                        .collect(Collectors.toList())
+
+
+        );
+        roleRepo.save(role);
+    }
 
 
 
