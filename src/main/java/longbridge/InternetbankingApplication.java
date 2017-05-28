@@ -1,34 +1,24 @@
 package longbridge;
 
-import longbridge.api.Finance;
-import longbridge.models.FinancialInstitution;
-import longbridge.models.FinancialInstitutionType;
-import longbridge.repositories.*;
-import longbridge.services.CorporateService;
-import longbridge.services.IntegrationService;
-import longbridge.services.MessageService;
-import longbridge.services.OperationsUserService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import longbridge.repositories.CustomJpaRepositoryFactoryBean;
+import longbridge.services.SecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.web.client.RestTemplate;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 
 @SpringBootApplication
 @EnableJpaRepositories(repositoryFactoryBeanClass = CustomJpaRepositoryFactoryBean.class)
 
-public class InternetbankingApplication  /*extends  SpringBootServletInitializer*/  {
 
 
+public class InternetbankingApplication  /*extends  SpringBootServletInitializer*/  implements CommandLineRunner {
+
+     @Autowired
+    private SecurityService securityService;
 
     public static void main(String[] args) {
         //startup all jobs
@@ -43,5 +33,11 @@ public class InternetbankingApplication  /*extends  SpringBootServletInitializer
     }
 
 
+    @Override
+    public void run(String... strings) throws Exception {
+//        System.out.println("start of call");
+//        securityService.createEntrustUser("bridger09","longbridger",true);
+//        System.out.println("end of call");
+    }
 }
 

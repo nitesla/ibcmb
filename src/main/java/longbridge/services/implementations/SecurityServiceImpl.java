@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -28,27 +29,27 @@ import java.net.URL;
 @Service
 public class SecurityServiceImpl implements SecurityService {
 
-	@Value("${ENTRUST.URL}")
-	private String entrustUrl;
+
 	@Value("${ENTRUST.app.code}")
 	private String appCode;
 	@Value("${ENTRUST.app.group}")
 	private String appGroup;
 	@Value("${ENTRUST.app.desc}")
 	private String appDesc;
+	private  EntrustMultiFactorAuthImpl port;
 
     private BCryptPasswordEncoder passwordEncoder;
 
     private IntegrationService integrationService;
-	QName qname = new QName("http://ws.entrustplugin.expertedge.com/", "EntrustMultiFactorAuthImplService");
     private Logger logger = LoggerFactory.getLogger(getClass());
-	EntrustMultiFactorAuthImpl port = getService().getPort(EntrustMultiFactorAuthImpl.class);
+
 
 
     @Autowired
-    public SecurityServiceImpl(BCryptPasswordEncoder passwordEncoder, IntegrationService integrationService) {
+    public SecurityServiceImpl(BCryptPasswordEncoder passwordEncoder, IntegrationService integrationService, EntrustMultiFactorAuthImpl port) {
         this.passwordEncoder = passwordEncoder;
         this.integrationService=integrationService;
+        this.port=port;
     }
 
     @Override
@@ -83,7 +84,8 @@ public class SecurityServiceImpl implements SecurityService {
 		AuthResponseDTO response = port.performTokenAuth(tauth);
 		if(response != null) {
 			logger.trace("Authentication status: " + response.isAuthenticationSuccessful());
-			logger.trace("Authentication response code: " + response.getRespCode());
+
+            logger.trace("Authentication response code: " + response.getRespCode());
 			ok = response.isAuthenticationSuccessful();
 		}
 		logger.trace("******************END RESPONSE***********");
@@ -161,6 +163,8 @@ public class SecurityServiceImpl implements SecurityService {
 		if(response != null) {
 			logger.trace("Creation status: " + response.isAdminSuccessful());
 			logger.trace(" Creation response code: " + response.getRespCode());
+            System.out.println("Authentication status: " + response.isAdminSuccessful());
+            System.out.println("Authentication response code: " + response.getRespCode());
 			ok = response.isAdminSuccessful();
 		}
 		logger.trace("******************END RESPONSE***********");
@@ -266,17 +270,4 @@ public class SecurityServiceImpl implements SecurityService {
 		return ok;
 	}
 
-
-	private javax.xml.ws.Service getService(){
-		URL url = null;
-		javax.xml.ws.Service service=null;
-		try {
-			url= new URL(entrustUrl);
-			service = 	javax.xml.ws.Service.create(url, qname);
-
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		}
-		return service;
-	}
 }
