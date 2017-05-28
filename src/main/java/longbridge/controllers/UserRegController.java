@@ -59,14 +59,16 @@ public class UserRegController {
     public @ResponseBody String getAccountDetailsFromNumber(@PathVariable String accountNumber, @PathVariable String email, @PathVariable String birthDate){
         String customerId = "";
         logger.info("Account nUmber : " + accountNumber);
+        logger.info("Email : " + email);
+        logger.info("BirthDate : " + birthDate);
         CustomerDetails details = integrationService.isAccountValid(accountNumber, email, birthDate);
         if (details != null){
             customerId = details.getCifId();
+            System.out.println("@@@@@CUST ID :"+customerId);
         }else {
             //nothing
             customerId = "";
         }
-        System.out.println("@@@@@CUST ID :"+customerId);
         return customerId;
     }
 

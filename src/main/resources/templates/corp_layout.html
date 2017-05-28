@@ -9,6 +9,7 @@
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/jquery-ui.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/bootstrap.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/custom.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/select.bootstrap.css}" />
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/font-awesome/font-awesome.min.css}"/>
     <title>Coronation Merchant Bank</title>
 
@@ -96,7 +97,7 @@
                                 <li><a th:href="@{/corporate/alert_preference}" th:text="#{menu.token.sync}">Synchronize Token</a></li>
                                 <li><a th:href="@{/corporate/change_password}" th:text="#{menu.token.report}">Report Lost Token</a></li>
                                 <li><a th:href="@{/corporate/beneficiary}">Beneficiaries</a></li>
-                                <li><a href="#" th:text="#{menu.mail}"> Mailbox</a></li>
+                                <li><a th:href="@{/corporate/mailbox/inbox}" th:text="#{menu.mail}"> Mailbox</a></li>
                                 <li sec:authorize="hasAuthority('ADD_CORPORATE_USER')"><a th:href="@{/corporate/users}" th:text="#{menu.usermanagement}">User Management</a></li>
                             </ul>
                         </li>
@@ -193,6 +194,7 @@
     <script th:src="@{~/customer/js/calendar.js}"></script>
     <script th:src="@{~/customer/js/dataTables.bootstrap.js}"></script>
     <script th:src="@{~/customer/js/jquery.spring-friendly.min.js}"></script>
+    <script th:src="@{~/customer/js/dataTables.select.js}"></script>
     <script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
     <script th:src="@{~/customer/js/coronation.js}"></script>
     <!-- BOOTSTRAP SCRIPTS  -->

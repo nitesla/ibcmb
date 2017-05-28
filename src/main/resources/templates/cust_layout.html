@@ -94,7 +94,7 @@
                                 <li sec:authorize="hasAuthority('RET_SYNC_TOKEN')"><a th:href="@{/retail/alert_preference}" th:text="#{menu.token.sync}">Synchronize Token</a></li>
                                 <li sec:authorize="hasAuthority('RET_LOST_TOKEN')"><a th:href="@{/retail/change_password}" th:text="#{menu.token.report}">Report Lost Token</a></li>
                                 <li sec:authorize="hasAuthority('MANAGE_BEN')"><a th:href="@{/retail/beneficiary}" th:text="#{menu.beneficiary}">Beneficiaries</a></li>
-                                <li sec:authorize="hasAuthority('RET_MAILBOX')"><a href="#" th:text="#{menu.mail}"> Mailbox</a></li>
+                                <li sec:authorize="hasAuthority('RET_MAILBOX')"><a th:href="@{/retail/mailbox/inbox}" th:text="#{menu.mail}"> Mailbox</a></li>
                             </ul>
                         </li>
                     </ul>

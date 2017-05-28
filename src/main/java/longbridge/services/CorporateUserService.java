@@ -77,6 +77,9 @@ public interface CorporateUserService{
     @Transactional
     String changeActivationStatus(Long userId) throws InternetBankingException;
 
+    @PreAuthorize("hasAuthority('CORP_USER_STATUS')")
+    String changeCorpActivationStatus(Long userId) throws InternetBankingException;
+
     /**
      * resets the password for the specified corporate user
      * @param userId

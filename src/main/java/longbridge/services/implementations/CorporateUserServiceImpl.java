@@ -274,6 +274,40 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     }
 
     @Override
+    public String changeCorpActivationStatus(Long userId) throws InternetBankingException {
+        try {
+            CorporateUser user = corporateUserRepo.findOne(userId);
+            String oldStatus = user.getStatus();
+            if (!"Authorizer".equals(user.getRole().getName())){
+                String newStatus = "A".equals(oldStatus) ? "I" : "A";
+                user.setStatus(newStatus);
+                corporateUserRepo.save(user);
+                String fullName = user.getFirstName()+" "+user.getLastName();
+
+                logger.info("Corporate user {} status changed from {} to {}", fullName, oldStatus, newStatus);
+                return messageSource.getMessage("user.status.success", null, locale);
+
+            }else {
+                if (!"A".equals(user.getStatus())) {
+                    throw new InternetBankingException(messageSource.getMessage("user.status.failure.permission", null, locale));
+                } else {
+                    String newStatus = "A".equals(oldStatus) ? "I" : "A";
+                    user.setStatus(newStatus);
+                    corporateUserRepo.save(user);
+                    String fullName = user.getFirstName()+" "+user.getLastName();
+
+                    logger.info("Corporate user {} status changed from {} to {}", fullName, oldStatus, newStatus);
+                    return messageSource.getMessage("user.status.success", null, locale);
+                }
+            }
+
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("user.status.failure", null, locale), e);
+
+        }
+    }
+
+    @Override
     public String resetPassword(Long userId) throws PasswordException {
 
             try {

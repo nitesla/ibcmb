@@ -81,7 +81,8 @@ public class CorporateControllerAdvice {
         List<SRConfig> requestList = reqConfigService.getServiceReqConfs();
         model.addAttribute("serviceRequests", requestList);
         return "";
-        }
+    }
+
     @ModelAttribute
     public String getCustmerAccounts(Model model, Principal principal) {
 

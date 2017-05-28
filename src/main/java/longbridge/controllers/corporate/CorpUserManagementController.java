@@ -38,7 +38,7 @@ import java.util.Locale;
 
 @Controller
 @RequestMapping("/corporate/users")
-public class CorpUserManagement {
+public class CorpUserManagementController {
     @Autowired
     private CorporateUserService corporateUserService;
     @Autowired
@@ -139,6 +139,20 @@ public class CorpUserManagement {
 
             return "corp/user/add";
         }
+    }
+
+    @GetMapping("/{id}/status")
+    public String activationStatus(@PathVariable Long id, RedirectAttributes redirectAttributes){
+
+        try {
+            String message = corporateUserService.changeCorpActivationStatus(id);
+            redirectAttributes.addFlashAttribute("message", message);
+        }catch (InternetBankingException ibe){
+            logger.error("Error creating corporate user", ibe);
+            redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
+        }
+
+        return "redirect:/corporate/users";
     }
 
 }

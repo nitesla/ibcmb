@@ -4,7 +4,7 @@
 
 </head>
 <body>
-<header th:replace="corp_layout :: header">
+<header th:replace="corp_layout :: corp-header">
 </header>
 
 <section class="content-wrapper">
@@ -12,19 +12,23 @@
         <div class="row">
             <div class="col-md-8 col-sm-8">
                 <div class="page_header">
-                    <h5 class="page_header"> User Management</h5></div>
-                <a th:href="@{/corporate/users/add}" class="pull-right">Add New User</a>
+                    <h5 class="page_header"> User Management</h5>
+                </div>
             </div>
         </div>
         <div class="row">
-            <div class="col-md-8 content-bg">
+            <div class="col-md-8 content-bg"><br/>
+                <div class="row spacing">
+                    <a th:href="@{/corporate/users/add}" class="btn btn-sm"><i class="fa fa-plus" style="color: white"></i>&nbsp; Add New User</a>
+                    <a th:href="@{/corporate/users/index/status}" class="btn btn-sm pull-right bt-select bt-link-act" disabled="disabled">Activate/Deactivate</a>
+                </div>
                 <div class="row spacing">
                     <div class="col-md-12">
-                        <table class="table" id="track">
+                        <table class="table" id="users">
                             <thead>
                             <tr>
                                 <th>First Name</th>
-                                <th>Last Date</th>
+                                <th>Last Name</th>
                                 <th>Role</th>
                                 <th>Status</th>
                             </tr>
@@ -35,20 +39,20 @@
                     </div>
                 </div>
             </div>
-            <div th:replace="corp_layout :: sidebar" class="col-md-3 sidebar">
+            <div th:replace="corp_layout :: corp-sidebar" class="col-md-3">
             </div>
         </div>
     </div>
 </section>
 
 <!-- CONTENT-WRAPPER SECTION END-->
-<footer th:replace="corp_layout ::footer">
+<footer th:replace="corp_layout :: corp-footer">
 </footer>
 <script th:inline="javascript">
     /*<![CDATA[*/
     $(document).ready(function() {
         var url = "/corporate/users/all";
-        var table = $('#track').DataTable({
+        var table = $('#users').DataTable({
             select: true,
             responsive : false,
             "lengthMenu" : [ [ 5, 10 ], [ 5, 10 ] ],
@@ -63,9 +67,67 @@
                 { "data": "lastName" },
                 { "data": "role" },
                 { "data": "status" }
-            ]
+            ],
+            "columnDefs" : [ {
+                "targets" : 3,
+                "data" : "status",
+                "render" : function(data, type,full, meta) {
+                    if (type === 'display') {
+                        if (data == "ACTIVE") {
+                            return "<i class='fa fa-check' style='color:green;display:block;  margin:0 auto;' ></i>";
+                        } else if (data == "INACTIVE") {
+                            return "<i class='fa fa-ban' style='color:red;display:block; margin:0 auto;'></i>";
+                        }
+                        else if (data == "LOCKED") {
+                            return "<i class='fa fa-lock' style='color:red;display:block;  margin:0 auto;'></i>";
+                        }else {
+                            return "<i class='fa fa-question' style='color:red;display:block;  margin:0 auto;'></i>";
+                        }
+                    }
+                    return data;
+                }
+
+            } ]
+        });
+
+        table.on('select', function() {
+            if (table.rows({
+                    selected : true
+                }).indexes().length === 0) {
+                $('.bt-select').attr("disabled", true);
+            } else {
+                $('.bt-select').removeAttr("disabled");
+            }
+
+
+        });
+
+        table.on('deselect', function() {
+            if (table.rows({
+                    selected : true
+                }).indexes().length === 0) {
+                $('.bt-select').attr("disabled", true);
+            } else {
+                $('.bt-select').removeAttr("disabled");
+            }
         });
     });
+
+    $("a.bt-link-act").on("click", function(e) {
+        e.preventDefault();
+        var link = $(e.currentTarget);
+        if($(link).attr("disabled")){
+            return;
+        }
+
+        var dt = $('#users').DataTable();
+        var id = $(dt.row({
+            selected: true
+        }).node()).attr("id");
+        var ooo = link.attr("href").replace("index",id);
+        window.location.assign(ooo);
+
+    } );
 
     /*]]>*/
 </script>
