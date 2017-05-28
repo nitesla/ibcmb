@@ -11,21 +11,23 @@
     <div class="container">
         <div class="row">
             <div class="col-md-4 col-sm-4">
-                <h5 class="page_header"> Customize Account</h5>
+                <h5 class="page_header"> Synchronize Token</h5>
             </div>
         </div>
         <div class="row">
             <div class="col-md-8 content-bg">
                 <div class="row form-spacing">
                     <div class="col-md-6">
-                        <form method="post" th:action="@{/retail/account/customize}" th:object="${customizeAccount}">
+                        <form method="post" th:action="@{/retail/token/sync}" th:object="${tokenProp}">
                             <div class="form-group">
-                                <label>Account Name</label>
-                                <input th:field="*{accountName}" th:value="${accountName}" class="form-control"/>
-                                <p class="errors close" data-dismiss="alert" aria-label="close" th:if="${#fields.hasErrors('accountName')}" th:errors="*{accountName}">&times;</p>
+                                <label>Token Serial Number</label>
+                                <select name="serialNo" class="form-control">
+                                    <option></option>
+                                </select>
+                                <p class="errors" th:if="${#fields.hasErrors('serialNo')}" th:errors="*{serialNo}">&times;</p>
                             </div>
 
-                            <button type="submit" class="btn btn-default">Save</button>
+                            <button type="submit" class="btn btn-default">Synchronize</button>
                         </form>
                     </div>
                 </div>
