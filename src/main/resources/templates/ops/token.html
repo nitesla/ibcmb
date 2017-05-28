@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+    <title>Log in | Coronation Merchant Bank</title>
+
+    <!-- Bootstrap -->
+    <link th:href="@{~/bank/css/bootstrap.min.css}"  rel="stylesheet"/>
+    <!-- Font Awesome -->
+    <link th:href="@{~/bank/fonts/css/font-awesome.min.css}" rel="stylesheet"/>
+    <!-- NProgress -->
+    <link th:href="@{~/bank/vendors/nprogress/nprogress.css}" rel="stylesheet"/>
+    <link th:href="@{~/bank/css/select.bootstrap.css}" rel="stylesheet"/>
+    <!-- Custom Theme Style -->
+    <link th:href="@{~/bank/css/custom.css}" rel="stylesheet"/>
+    <link th:href="@{~/bank/css/coronation.css}" rel="stylesheet"/>
+
+</head>
+
+<body class="login">
+<div>
+    <a class="hiddenanchor" id="signup"></a>
+    <a class="hiddenanchor" id="signin"></a>
+
+    <div class="login_wrapper">
+        <div class="animate form login_form">
+            <section class="login_content">
+                <img th:src="@{/bank/images/cmb_logo.png}" alt="Coronation Merchant Bank" />
+                <br/>
+                <form th:action="@{/ops/login}" method="POST">
+
+                    <h1>Operations Token Authentication</h1>
+
+                    <div>
+                        <input type="password" class="form-control" placeholder="Enter token number" name="token" required="" />
+                    </div>
+                    <div>
+                        <input name="submit" type="submit" value="Submit" />
+                        <!--<a class="reset_pass" href="#">Lost your password?</a>-->
+                    </div>
+                    <div th:if="${param.message != null}" class="alert alert-info" th:text="${param.message[0]}">message</div>
+
+
+                    <div th:if="${param.error != null}" class="alert alert-danger" th:text="${session[SPRING_SECURITY_LAST_EXCEPTION]}">error</div>
+
+
+                </form>
+            </section>
+        </div>
+
+    </div>
+</div>
+
+<div th:if="${message}">
+    <div hidden="hidden">
+        <ul class="actionMessage">
+            <li th:each="msg : ${message}" th:text="${msg}">Message</li>
+        </ul>
+    </div>
+</div>
+</body>
+</html>
