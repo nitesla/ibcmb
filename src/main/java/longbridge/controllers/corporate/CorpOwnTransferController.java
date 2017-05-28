@@ -1,5 +1,6 @@
 package longbridge.controllers.corporate;
 
+import longbridge.dtos.CorpTransferRequestDTO;
 import longbridge.dtos.TransferRequestDTO;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferException;
@@ -33,7 +34,7 @@ public class CorpOwnTransferController {
 
     private CorporateUserService corporateUserService;
     private IntegrationService integrationService;
-    private TransferService transferService;
+    private CorpTransferService transferService;
     private AccountService accountService;
     private MessageSource messages;
     private LocaleResolver localeResolver;
@@ -46,7 +47,7 @@ public class CorpOwnTransferController {
 
     @Autowired
 
-    public CorpOwnTransferController(CorporateUserService corporateUserService, IntegrationService integrationService, TransferService transferService, AccountService accountService, MessageSource messages, LocaleResolver localeResolver, CorpLocalBeneficiaryService corpLocalBeneficiaryService, TransferValidator validator, FinancialInstitutionService financialInstitutionService, ApplicationContext appContext) {
+    public CorpOwnTransferController(CorporateUserService corporateUserService, IntegrationService integrationService, CorpTransferService transferService, AccountService accountService, MessageSource messages, LocaleResolver localeResolver, CorpLocalBeneficiaryService corpLocalBeneficiaryService, TransferValidator validator, FinancialInstitutionService financialInstitutionService, ApplicationContext appContext) {
         this.corporateUserService = corporateUserService;
         this.integrationService = integrationService;
         this.transferService = transferService;
@@ -74,7 +75,7 @@ public class CorpOwnTransferController {
 
 
         @PostMapping("")
-        public String makeTransfer(@ModelAttribute("transferRequestDTO") @Valid TransferRequestDTO transferRequestDTO, RedirectAttributes redirectAttributes, Locale locale, HttpServletRequest request, Principal principal, Model model) throws TransferException {
+        public String makeTransfer(@ModelAttribute("transferRequestDTO") @Valid CorpTransferRequestDTO transferRequestDTO, RedirectAttributes redirectAttributes, Locale locale, HttpServletRequest request, Principal principal, Model model) throws TransferException {
             try {
                 String token = request.getParameter("token");
 
@@ -85,7 +86,7 @@ public class CorpOwnTransferController {
                     redirectAttributes.addFlashAttribute("message", messages.getMessage("auth.token.failure", null, locale));
                     //  return "redirect:"
                 }
-                 transferService.makeTransfer(transferRequestDTO);
+                 transferService.addTransferRequest(transferRequestDTO);
 
 
 //       redirectAttributes.addFlashAttribute("message", messages.getMessage("transac tion.success", null, locale));

@@ -26,7 +26,6 @@ public interface TransferService {
     @PreAuthorize("hasAuthority('MAKE_TRANSFER')")
     TransferRequestDTO makeTransfer(TransferRequestDTO transferRequest) throws TransferException;
 
-
     @PreAuthorize("hasAuthority('GET_TRANSFER')")
     TransRequest getTransfer(Long id);
 
@@ -38,13 +37,8 @@ public interface TransferService {
 
     @PreAuthorize("hasAuthority('MAKE_TRANSFER')")
     boolean saveTransfer(TransferRequestDTO transferRequestDTO) throws TransferException;
-
-
-    void deleteTransfer(Long id) throws InternetBankingException;
     @PreAuthorize("hasAuthority('MAKE_TRANSFER')")
-    void  validateBalance(TransferRequestDTO transferRequest) throws InternetBankingTransferException;
-    @PreAuthorize("hasAuthority('MAKE_TRANSFER')")
-    void validateTransfer(TransferRequestDTO transferRequest) throws InternetBankingTransferException;
+    void validateTransfer(TransferRequestDTO transferRequestDTO) throws InternetBankingTransferException;
 
 
 }

@@ -96,11 +96,11 @@ public class SecurityConfig {
                     hasAuthority(UserType.ADMIN.toString())
 
 
-                    .and().authorizeRequests().anyRequest()
-                    .access("hasAuthority('" + UserType.ADMIN.toString() + "') and " + ipRange.toString())
+                    .and().authorizeRequests().and()
+                   // .access("hasAuthority('" + UserType.ADMIN.toString() + "') and " + ipRange.toString()) .and()
 
                     // log in
-                    .and().formLogin().loginPage("/login/admin").loginProcessingUrl("/admin/login")
+                   .formLogin().loginPage("/login/admin").loginProcessingUrl("/admin/login")
                     .failureUrl("/login/admin?error=login_error").defaultSuccessUrl("/admin/dashboard")
                     .successHandler(adminAuthenticationSuccessHandler).failureHandler(adminAuthenticationFailureHandler)
                     .and()

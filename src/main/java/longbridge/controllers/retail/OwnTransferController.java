@@ -72,15 +72,7 @@ public class OwnTransferController {
     }
 
 
-
-
-
-
-
-
-
-
-    @PostMapping("/summary")
+@PostMapping("/summary")
     public String transferSummary(@ModelAttribute("transferRequest") @Valid TransferRequestDTO request, Locale locale, BindingResult result, Model model, HttpServletRequest servletRequest) {
         try {
             request.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode(bankCode));

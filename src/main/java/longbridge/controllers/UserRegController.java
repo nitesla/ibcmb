@@ -64,7 +64,6 @@ public class UserRegController {
         CustomerDetails details = integrationService.isAccountValid(accountNumber, email, birthDate);
         if (details != null){
             customerId = details.getCifId();
-            System.out.println("@@@@@CUST ID :"+customerId);
         }else {
             //nothing
             customerId = "";
