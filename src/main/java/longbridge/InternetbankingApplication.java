@@ -12,9 +12,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
 @EnableJpaRepositories(repositoryFactoryBeanClass = CustomJpaRepositoryFactoryBean.class)
-
-
-
 public class InternetbankingApplication  /*extends  SpringBootServletInitializer*/  implements CommandLineRunner {
 
      @Autowired
@@ -25,12 +22,12 @@ public class InternetbankingApplication  /*extends  SpringBootServletInitializer
         //   Timer timer = new Timer(1000 * 60 * 60 * 12, new DirectDebitJob());
         SpringApplication.run(InternetbankingApplication.class, args);
 
-
     }
 
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
         return application.sources(InternetbankingApplication.class);
     }
+
 
 
     @Override
@@ -39,5 +36,14 @@ public class InternetbankingApplication  /*extends  SpringBootServletInitializer
 //        securityService.createEntrustUser("bridger09","longbridger",true);
 //        System.out.println("end of call");
     }
+
+//	@Override
+//	@Transactional
+//	public void run(String... strings) throws Exception {
+////		OperationsUserDTO opsUser = operationsUserService.getUser(1L);//TODO get current user
+//		MailBox mailBox= messageService.getMailBox(opsUser.getId(), UserType.OPERATIONS);
+//		Iterable<Message> sent = messageService.getSentMessages(mailBox);
+//		logger.info("Mailbox is {}",sent);
+
 }
 

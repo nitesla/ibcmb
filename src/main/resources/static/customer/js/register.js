@@ -144,7 +144,6 @@
     }
 
 
-
     //datepicker
     $( function() {
         $('#datepicker').datepicker({ dateFormat: 'dd-mm-yy' }).val();
@@ -215,7 +214,6 @@
         onFinished: function (event, currentIndex)
         {
 //            alert("Submitted!");
-
             window.location.href = "/login/retail";
         }
     });
