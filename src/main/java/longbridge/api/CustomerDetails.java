@@ -54,14 +54,6 @@ public class CustomerDetails {
         return dateOfBirth;
     }
 
-    public String getBvn() {
-        return bvn;
-    }
-
-    public void setBvn(String bvn) {
-        this.bvn = bvn;
-    }
-
     public void setDateOfBirth(String dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
