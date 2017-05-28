@@ -208,10 +208,8 @@ public class IntegrationServiceImpl implements IntegrationService {
         params.put("dateOfBirth", dob);
         try {
 
-            CustomerDetails customerDetails = new CustomerDetails();
-            customerDetails.setCifId("R123");
-            result = customerDetails;
-            //result = template.postForObject(uri, params, CustomerDetails.class);
+
+         result = template.postForObject(uri, params, CustomerDetails.class);
 
         } catch (Exception e) {
             e.printStackTrace();

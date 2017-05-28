@@ -5,24 +5,34 @@ package longbridge.api;
  */
 public class CustomerDetails {
 
-private String cifId;
-private String customerName;
-private String dateOfBirth;
-private String email;
-private String phone;
+    private String cifId;
+    private String customerName;
+    private String dateOfBirth;
+    private String email;
+    private String phone;
+    private String bvn;
 
 
     public CustomerDetails() {
     }
 
-    public CustomerDetails(String cifId, String customerName, String dateOfBirth, String email, String phone) {
+    public CustomerDetails(String cifId, String customerName, String dateOfBirth, String email, String phone, String bvn) {
+
         this.cifId = cifId;
         this.customerName = customerName;
         this.dateOfBirth = dateOfBirth;
         this.email = email;
         this.phone = phone;
+        this.bvn = bvn;
     }
 
+    public String getBvn() {
+        return bvn;
+    }
+
+    public void setBvn(String bvn) {
+        this.bvn = bvn;
+    }
 
     public String getCifId() {
         return cifId;

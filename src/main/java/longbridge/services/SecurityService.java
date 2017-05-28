@@ -38,11 +38,23 @@ public interface SecurityService {
      * @param tokenString the inputted token string
      */
     boolean performTokenValidation(String username, String tokenString);
-    
+    boolean performOtpValidation(String username, String otp);
+
     
     /** This sends a request to synchronize the token attached to the user
      * with the specified username.
      * @param username the username of the required user
      */
     void synchronizeToken(String username);
+
+    boolean sendOtp(String username);
+
+    boolean createEntrustUser(String username ,String fullName,boolean enableOtp);
+    boolean deleteEntrustUser(String username ,String fullName,boolean enableOtp);
+
+    boolean assignToken(String username,String serialNumber);
+    boolean activateToken(String username,String serialNumber);
+    boolean deActivateToken(String username,String serialNumber);
+
+
 }

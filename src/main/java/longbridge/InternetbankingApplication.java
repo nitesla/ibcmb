@@ -1,11 +1,9 @@
 package longbridge;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import longbridge.models.Role;
-import longbridge.repositories.CorporateRepo;
-import longbridge.repositories.CustomJpaRepositoryFactoryBean;
-import longbridge.repositories.PermissionRepo;
-import longbridge.repositories.RoleRepo;
+import longbridge.api.Finance;
+import longbridge.models.FinancialInstitution;
+import longbridge.models.FinancialInstitutionType;
+import longbridge.repositories.*;
 import longbridge.services.CorporateService;
 import longbridge.services.IntegrationService;
 import longbridge.services.MessageService;
@@ -17,44 +15,19 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.web.client.RestTemplate;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 
 @SpringBootApplication
 @EnableJpaRepositories(repositoryFactoryBeanClass = CustomJpaRepositoryFactoryBean.class)
 
-public class InternetbankingApplication  extends  SpringBootServletInitializer {
+public class InternetbankingApplication  /*extends  SpringBootServletInitializer*/  {
 
-
-    @Autowired
-    OperationsUserService operationsUserService;
-    @Autowired
-    MessageService messageService;
-
-
-    @Autowired
-    CorporateService corporateService;
-    @Autowired
-    IntegrationService integrationService;
-
-    @Autowired
-    CorporateRepo corporateRepo;
-    @Autowired
-    RoleRepo roleRepo;
-    @Autowired
-    PermissionRepo permissionRepo;
-
-    Logger logger = LoggerFactory.getLogger(this.getClass());
-
-    //	@Autowired
-    //	IntegrationService service;
-
-    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-        return application.sources(InternetbankingApplication.class);
-    }
 
 
     public static void main(String[] args) {
@@ -65,20 +38,10 @@ public class InternetbankingApplication  extends  SpringBootServletInitializer {
 
     }
 
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+        return application.sources(InternetbankingApplication.class);
+    }
 
-//
-//    @Override
-//    public void run(String... strings) throws Exception {
-//        Role role = roleRepo.findOne(2L);
-//        role.setPermissions(
-//                permissionRepo.findAll()
-//                        .stream()
-//                        .filter(i -> i.getUserType().equals("RETAIL"))
-//                        .collect(Collectors.toList())
-//
-//
-//        );
-//        roleRepo.save(role);
-//    }
+
 }
 

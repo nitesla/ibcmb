@@ -66,6 +66,7 @@ public class UserRegController {
             //nothing
             customerId = "";
         }
+        System.out.println("@@@@@CUST ID :"+customerId);
         return customerId;
     }
 
@@ -180,14 +181,22 @@ public class UserRegController {
         String password = webRequest.getParameter("password");
         String confirmPassword = webRequest.getParameter("confirm");
         String customerId = webRequest.getParameter("customerId");
-
+        String bvn ="";
         logger.info("Customer Id {}:", customerId);
         CustomerDetails details = integrationService.isAccountValid(accountNumber, email, dob);
 
 
-        if (details.getCifId() == "" || details.getCifId() == null){
+
+        if ( details.getCifId().equals(null)||details.getCifId().isEmpty() ){
             logger.error("Account Number not valid");
             return "false";
+        }
+
+
+        if ( !details.getBvn().equals(null)&& !details.getBvn().isEmpty() ){
+            logger.error("No Bvn found");
+            bvn=details.getBvn();
+
         }
 
 
@@ -210,6 +219,7 @@ public class UserRegController {
         retailUserDTO.setEmail(email);
         retailUserDTO.setPassword(password);
         retailUserDTO.setCustomerId(customerId);
+        retailUserDTO.setBvn(bvn);
         String message = retailUserService.addUser(retailUserDTO, details);
         logger.info("MESSAGE", message);
         redirectAttributes.addAttribute("success", "true");
