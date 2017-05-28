@@ -16,7 +16,7 @@ import org.joda.time.LocalDate;
  * Created by Chigozirim Torti on 5/8/2017.
  */
 @Entity
-@Audited
+@Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
 public class DirectDebit extends AbstractEntity {
 

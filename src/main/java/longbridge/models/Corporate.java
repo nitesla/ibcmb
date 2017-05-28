@@ -15,7 +15,7 @@ import java.util.List;
  * Created by Fortune on 3/29/2017.
  */
 @Entity
-@Audited
+@Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
 public class Corporate extends AbstractEntity{
 

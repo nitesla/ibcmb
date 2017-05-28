@@ -12,7 +12,7 @@ import javax.persistence.UniqueConstraint;
  * and it configurations. They don't take part directly in transaction impacting activities
  */
 @Entity
-@Audited
+@Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
 @Table(uniqueConstraints=@UniqueConstraint(columnNames={"userName","deletedOn"}))
 

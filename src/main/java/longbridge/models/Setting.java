@@ -9,7 +9,7 @@ import javax.persistence.*;
  * Created by LB-PRJ-020 on 4/5/2017.
  */
 @Entity
-@Audited
+@Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
 @Table(uniqueConstraints=@UniqueConstraint(columnNames={"name","deletedOn"}))
 

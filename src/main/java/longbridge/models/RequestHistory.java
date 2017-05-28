@@ -12,7 +12,7 @@ import java.util.Date;
  * Created by Wunmi on 27/03/2017.
  */
 @Entity
-@Audited
+@Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
 
 

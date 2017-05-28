@@ -14,7 +14,7 @@ import java.math.BigDecimal;
  * Created on 3/30/2017.
  */
 @Entity
-@Audited
+@Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
 public class TransRequest extends AbstractEntity{
 

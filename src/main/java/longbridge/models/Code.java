@@ -27,7 +27,7 @@ import longbridge.dtos.CodeDTO;
  */
 
 @Entity
-@Audited
+@Audited(withModifiedFlag=true)
 @Table(
 		name="code",
 		uniqueConstraints=

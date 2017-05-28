@@ -6,7 +6,7 @@ import javax.persistence.ManyToOne;
 import org.hibernate.envers.Audited;
 
 @Entity
-@Audited
+@Audited(withModifiedFlag=true)
 public class Contact extends AbstractEntity implements Person {
 
 	public Contact(){
