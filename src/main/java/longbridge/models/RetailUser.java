@@ -17,7 +17,7 @@ import java.util.Date;
 
 
 @Entity
-@Audited
+@Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
 @Table(uniqueConstraints=@UniqueConstraint(columnNames={"userName","deletedOn"}))
 public class RetailUser extends User{
@@ -27,7 +27,7 @@ public class RetailUser extends User{
 	private Date birthDate;
 
 	@OneToMany
-	private Collection<RetailCustLimit> retailCustLimits;
+	private Collection<RetailCustLimit> rtlCustLmt;
 
 	@OneToMany(mappedBy= "user")
     private Collection<LocalBeneficiary> beneficiaries;
@@ -73,12 +73,12 @@ public class RetailUser extends User{
 		this.birthDate = birthDate;
 	}
 
-	public Collection<RetailCustLimit> getRetailCustLimits() {
-		return retailCustLimits;
+	public Collection<RetailCustLimit> getRtlCustLmt() {
+		return rtlCustLmt;
 	}
 
-	public void setRetailCustLimits(Collection<RetailCustLimit> retailCustLimits) {
-		this.retailCustLimits = retailCustLimits;
+	public void setRtlCustLmt(Collection<RetailCustLimit> rtlCustLmt) {
+		this.rtlCustLmt = rtlCustLmt;
 	}
 
 	public Collection<LocalBeneficiary> getBeneficiaries() {
@@ -96,7 +96,7 @@ public class RetailUser extends User{
 		return "RetailUser ["+super.toString()+"]" +
 				"customerId='" + customerId + '\'' +
 				", birthDate=" + birthDate +
-				", retailCustLimits=" + retailCustLimits +
+				", rtlCustLmt=" + rtlCustLmt +
 				", beneficiaries=" + beneficiaries +
 				'}';
 	}

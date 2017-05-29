@@ -20,6 +20,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Locale;
 
 @Configuration
@@ -102,5 +104,7 @@ public class WebMvcConfig   extends WebMvcConfigurerAdapter {
 	public RetailTransferAuthInterceptor retailTransferAuthInterceptor(){
 		return new RetailTransferAuthInterceptor();
 	}
+
+
 
 }

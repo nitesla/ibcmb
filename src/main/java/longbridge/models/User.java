@@ -2,9 +2,7 @@ package longbridge.models;
 
 
 
-import javax.persistence.Column;
-import javax.persistence.ManyToOne;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.*;
 import java.util.Date;
 /**
  * Created by Wunmi on 29/03/2017.
@@ -18,7 +16,7 @@ public class User extends AbstractEntity{
     protected String email;
     protected String phoneNumber;
     protected String password;
-    @Column(columnDefinition = "TEXT")
+//    @Column(columnDefinition = "TEXT")
     protected String usedPasswords;
     protected String status;
     protected Date createdOnDate;
@@ -28,6 +26,7 @@ public class User extends AbstractEntity{
     protected int noOfLoginAttempts;
 
     //@Enumerated(value = EnumType.STRING)
+    @Enumerated(EnumType.ORDINAL)
     protected UserType userType;
 
     @ManyToOne

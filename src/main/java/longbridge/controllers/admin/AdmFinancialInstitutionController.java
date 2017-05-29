@@ -49,7 +49,7 @@ public class AdmFinancialInstitutionController {
 
     @GetMapping
     public String getFinancialInstitutions() {
-        return "adm/financialinstitution/view";
+        return "/adm/financialinstitution/view";
     }
 
     @GetMapping(path = "/all")
@@ -75,7 +75,7 @@ public class AdmFinancialInstitutionController {
     @GetMapping("/new")
     public String addFinancialInstutions(Model model) {
         model.addAttribute("financialInstitution", new FinancialInstitutionDTO());
-        return "adm/financialinstitution/add";
+        return "/adm/financialinstitution/add";
     }
 
     @PostMapping
@@ -83,7 +83,7 @@ public class AdmFinancialInstitutionController {
         if (result.hasErrors()) {
             result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
             logger.error("Error occurred creating code{}", result.toString());
-            return "adm/financialinstitution/add";
+            return "/adm/financialinstitution/add";
         }
         try {
             String message = financialInstitutionService.addFinancialInstitution(financialInstitutionDTO);
@@ -96,7 +96,7 @@ public class AdmFinancialInstitutionController {
         } catch (InternetBankingException ibe) {
             logger.error("Error occurred creating financial institution {}", ibe.toString());
             result.addError(new ObjectError("error", messageSource.getMessage("institution.add.failure", null, locale)));
-            return "adm/financialinstitution/add";
+            return "/adm/financialinstitution/add";
         }
 
     }
@@ -105,14 +105,14 @@ public class AdmFinancialInstitutionController {
     public String editFinancialInstitution(@PathVariable Long id, Model model) {
         FinancialInstitutionDTO fi = financialInstitutionService.getFinancialInstitution(id);
         model.addAttribute("financialInstitution", fi);
-        return "adm/financialinstitution/edit";
+        return "/adm/financialinstitution/edit";
     }
 
     @PostMapping("/update")
     public String updateFinancialInstitution(@ModelAttribute("financialInstitution") @Valid FinancialInstitutionDTO financialInstitutionDTO, BindingResult result, RedirectAttributes redirectAttributes, Locale locale) {
         if (result.hasErrors()) {
             result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
-            return "adm/financialinstitution/edit";
+            return "/adm/financialinstitution/edit";
         }
         try {
             String message = financialInstitutionService.updateFinancialInstitution(financialInstitutionDTO);
@@ -120,7 +120,7 @@ public class AdmFinancialInstitutionController {
         } catch (InternetBankingException ibe) {
             logger.error("Error occurred updating financial institution", ibe);
             result.addError(new ObjectError("error", ibe.getMessage()));
-            return "adm/financialinstitution/edit";
+            return "/adm/financialinstitution/edit";
         }
 
         return "redirect:/admin/finst";

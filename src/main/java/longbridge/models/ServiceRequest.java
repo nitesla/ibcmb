@@ -18,7 +18,7 @@ import java.util.List;
  * Created on 3/28/2017.
  */
 @Entity
-@Audited
+@Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
 public class ServiceRequest extends AbstractEntity {
 
@@ -28,7 +28,7 @@ public class ServiceRequest extends AbstractEntity {
     private Corporate corporate;
 
     private String requestName;
-    @Column(columnDefinition = "TEXT")
+//    @Column(columnDefinition = "TEXT")
     private String body;
     private String requestStatus;
     private Date dateRequested;

@@ -13,7 +13,7 @@ import javax.persistence.Entity;
  * Created on 3/28/2017.
  */
 @Entity
-@Audited
+@Audited(withModifiedFlag=true)
 @Where(clause ="del_flag='N'")
 public class Account extends AbstractEntity{
 
@@ -181,7 +181,7 @@ public class Account extends AbstractEntity{
      * @return
      */
     public String getAccountDescription(){
-    	return String.format("%s - %s", getAccountNumber());
+    	return String.format("%s - %s", getAccountNumber(),getSchemeCode());
     }
 
 	public static OperationCode getAddCode() {

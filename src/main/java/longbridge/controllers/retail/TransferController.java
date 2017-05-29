@@ -137,9 +137,10 @@ public class TransferController {
     public
     @ResponseBody
     String getInterBankAccountName(@PathVariable String accountNo, @PathVariable String bank) {
-        // return (integrationService.doNameEnquiry(bank,accountNo)).getAccountName();
-//        return (integrationService.doNameEnquiry("000005",accountNo)).getAccountName();
-        return "AYOADE FAROOQ";
+       return (integrationService.doNameEnquiry(bank,accountNo)).getAccountName();
+      // return (integrationService.doNameEnquiry("000005",accountNo)).getAccountName();
+
+
 
     }
 
@@ -170,12 +171,13 @@ public class TransferController {
             redirectAttributes.addFlashAttribute("message", messages.getMessage("transaction.success", null, locale));
 
 
-            return index(transferRequestDTO.getTransferType());
+          //  return index(transferRequestDTO.getTransferType());
+            return "redirect:/retail/dashboard";
         } catch (InternetBankingTransferException e) {
             e.printStackTrace();
             String errorMessage = transferErrorService.getMessage(e,request);
             redirectAttributes.addFlashAttribute("error", errorMessage);
-            return index(transferRequestDTO.getTransferType());
+            return"redirect:/retail/dashboard";
         }
     }
 

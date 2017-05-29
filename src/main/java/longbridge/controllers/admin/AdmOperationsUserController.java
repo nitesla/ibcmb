@@ -215,9 +215,9 @@ public class AdmOperationsUserController {
     public String deleteUser(@PathVariable Long userId, RedirectAttributes redirectAttributes){
         try {
             String message = operationsUserService.deleteUser(userId);
-            redirectAttributes.addAttribute("message", message);
+            redirectAttributes.addFlashAttribute("message", message);
         } catch (InternetBankingException ibe) {
-            redirectAttributes.addAttribute("failure", ibe.getMessage());
+            redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
             logger.error("Error updating operations user", ibe);
         }
         return "redirect:/admin/operations/users";

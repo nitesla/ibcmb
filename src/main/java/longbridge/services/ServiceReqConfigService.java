@@ -3,7 +3,7 @@ package longbridge.services;
 import longbridge.dtos.ServiceReqConfigDTO;
 import longbridge.dtos.ServiceReqFormFieldDTO;
 import longbridge.exception.InternetBankingException;
-import longbridge.models.ServiceReqConfig;
+import longbridge.models.SRConfig;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -28,7 +28,7 @@ public interface ServiceReqConfigService{
     Page<ServiceReqConfigDTO> getServiceReqConfigs(Pageable pageDetails);
 
     @PreAuthorize("hasAuthority('GET_SERV_REQ_CONFIG')")
-    List<ServiceReqConfig> getServiceReqConfs();
+    List<SRConfig> getServiceReqConfs();
 
     Iterable<ServiceReqConfigDTO> gerServiceReqConfigsPage(Integer pageNum, Integer pageSize);
 

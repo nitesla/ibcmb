@@ -218,7 +218,7 @@ public class RequestServiceImpl implements RequestService {
         List<ServiceRequestDTO> requestsForOpsUser = new ArrayList<ServiceRequestDTO>();
         List<UserGroup> opsUserGroups = opsUser.getGroups();
         for (ServiceRequestDTO request : dtOs) {
-            ServiceReqConfig reqConfig = reqConfigRepo.findOne(request.getServiceReqConfigId());
+            SRConfig reqConfig = reqConfigRepo.findOne(request.getServiceReqConfigId());
             for (UserGroup group : opsUserGroups) {
                 if (group.equals(userGroupRepo.findOne(reqConfig.getGroupId()))) {
                     requestsForOpsUser.add(request);
@@ -236,7 +236,7 @@ public class RequestServiceImpl implements RequestService {
         List<ServiceRequest> serviceRequests = serviceRequestRepo.findByRequestStatus("S");
         List<UserGroup> opsUserGroups = opsUser.getGroups();
         for (ServiceRequest request : serviceRequests) {
-            ServiceReqConfig reqConfig = reqConfigRepo.findOne(request.getServiceReqConfigId());
+            SRConfig reqConfig = reqConfigRepo.findOne(request.getServiceReqConfigId());
             for (UserGroup group : opsUserGroups) {
                 if (group.equals(userGroupRepo.findOne(reqConfig.getGroupId()))) {
                     count+=1;
@@ -298,7 +298,7 @@ public class RequestServiceImpl implements RequestService {
         requestDTO.setId(requestHistory.getId());
         String status = codeService.getByTypeAndCode("REQUEST_STATUS", requestHistory.getStatus()).getDescription();
         requestDTO.setStatus(status);
-        requestDTO.setComment(requestHistory.getComment());
+        requestDTO.setComment(requestHistory.getComments());
         requestDTO.setCreatedBy(requestHistory.getCreatedBy().getUserName());
         requestDTO.setCreatedOn(DateFormatter.format(requestHistory.getCreatedOn()));
         requestDTO.setServiceRequestId(requestHistory.getServiceRequest().getId().toString());
@@ -308,7 +308,7 @@ public class RequestServiceImpl implements RequestService {
     private RequestHistory convertRequestHistoryDTOToEntity(RequestHistoryDTO requestHistoryDTO) {
         RequestHistory requestHistory = new RequestHistory();
         requestHistory.setServiceRequest(serviceRequestRepo.findOne(Long.parseLong(requestHistoryDTO.getServiceRequestId())));
-        requestHistory.setComment(requestHistoryDTO.getComment());
+        requestHistory.setComments(requestHistoryDTO.getComment());
         requestHistory.setStatus(requestHistoryDTO.getStatus());
         requestHistory.setCreatedBy(operationsUserService.getUserByName(requestHistoryDTO.getCreatedBy()));
         requestHistory.setCreatedOn(new Date());

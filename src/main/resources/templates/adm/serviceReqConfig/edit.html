@@ -47,7 +47,7 @@
                                 <div class="clearfix"></div>
                             </div>
                             <div class="x_content">
-                                <form method="post" th:action="@{/admin/srconfig/update}" th:object="${serviceReqConfig}" class="form-horizontal">
+                                <form method="post" th:action="@{/admin/srconfig/update}" th:object="${SRConfig}" class="form-horizontal">
                                     <div class="x_content">
                                         <br />
 
@@ -67,7 +67,7 @@
 
                                                 <select class="form-control" th:field="*{requestType}">
                                                     <option value="" name="select">Select..</option>
-                                                    <option th:each="requestType : ${requestTypes}" th:value="${requestType.code}" th:text="${requestType.description}" th:selected="${requestType.code==serviceReqConfig.requestType}"></option>
+                                                    <option th:each="requestType : ${requestTypes}" th:value="${requestType.code}" th:text="${requestType.description}" th:selected="${requestType.code==SRConfig.requestType}"></option>
                                                 </select>
 
                                             </div>
@@ -88,7 +88,7 @@
 
                                                 <select class="form-control" th:field="*{groupId}">
                                                     <option value="" name="select">Select..</option>
-                                                    <option th:each="requestGroup : ${requestGroups}" th:value="${requestGroup.id}" th:text="${requestGroup.name}" th:selected="${requestGroup.id==serviceReqConfig.groupId}"></option>
+                                                    <option th:each="requestGroup : ${requestGroups}" th:value="${requestGroup.id}" th:text="${requestGroup.name}" th:selected="${requestGroup.id==SRConfig.groupId}"></option>
                                                 </select>
 
                                             </div>
@@ -111,7 +111,7 @@
                                                     </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <tr th:each="req,stat : ${serviceReqConfig.formFields}">
+                                                        <tr th:each="req,stat : ${SRConfig.formFields}">
                                                             <td><input  th:name="${'formFields['+stat.index+'].fieldName'}" type="text" class="form-control" th:value="${req.fieldName}"/></td>
                                                             <td><input  th:name="${'formFields['+stat.index+'].fieldLabel'}" type="text" class="form-control" th:value="${req.fieldLabel}"/></td>
                                                             <td>

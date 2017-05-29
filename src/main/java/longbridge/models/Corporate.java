@@ -15,7 +15,7 @@ import java.util.List;
  * Created by Fortune on 3/29/2017.
  */
 @Entity
-@Audited
+@Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
 public class Corporate extends AbstractEntity{
 
@@ -43,10 +43,10 @@ public class Corporate extends AbstractEntity{
     private Collection<CorpLimit> corpLimits;
 
     @OneToMany(mappedBy = "corporate")
-    List<CorpTransferRequest> corpTransferRequests;
+    List<CorpTransRequest> corpTransferRequests;
 
     @OneToMany(cascade = CascadeType.ALL)
-    List<CorpTransferRule> corpTransferRules;
+    List<CorpTransRule> corpTransRules;
 
     public Collection<CorpLimit> getCorpLimits() {
         return corpLimits;
@@ -56,20 +56,20 @@ public class Corporate extends AbstractEntity{
         this.corpLimits = corpLimits;
     }
 
-    public List<CorpTransferRequest> getCorpTransferRequests() {
+    public List<CorpTransRequest> getCorpTransferRequests() {
         return corpTransferRequests;
     }
 
-    public void setCorpTransferRequests(List<CorpTransferRequest> corpTransferRequests) {
+    public void setCorpTransferRequests(List<CorpTransRequest> corpTransferRequests) {
         this.corpTransferRequests = corpTransferRequests;
     }
 
-    public List<CorpTransferRule> getCorpTransferRules() {
-        return corpTransferRules;
+    public List<CorpTransRule> getCorpTransRules() {
+        return corpTransRules;
     }
 
-    public void setCorpTransferRules(List<CorpTransferRule> corpTransferRules) {
-        this.corpTransferRules = corpTransferRules;
+    public void setCorpTransRules(List<CorpTransRule> corpTransRules) {
+        this.corpTransRules = corpTransRules;
     }
 
     public String getCustomerId() {
@@ -178,7 +178,7 @@ public class Corporate extends AbstractEntity{
                 ", users=" + users +
                 ", corpLimits=" + corpLimits +
                 ", corpTransferRequests=" + corpTransferRequests +
-                ", corpTransferRules=" + corpTransferRules +
+                ", corpTransRules=" + corpTransRules +
                 '}';
     }
 

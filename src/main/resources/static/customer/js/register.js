@@ -144,12 +144,14 @@
     }
 
 
-
     //datepicker
     $( function() {
-        $( "#datepicker" ).datepicker(
-            { dateformat : 'dd/mm/yy'}
-        );
+        $('#datepicker').datepicker(
+            { changeMonth: true,
+                changeYear: true,
+                showButtonPanel: true,
+                yearRange: "-100:+0",
+                dateFormat: 'dd-mm-yy' }).val();
 
         //load the anti phishing images from the server
         loadPhishingImages();
@@ -191,7 +193,7 @@
             var isValid = form.valid();
             if(ACCOUNT_DETAILS_STEP === currentIndex){
                 console.log("Current step is the account details step");
-                var accountNumber = $('input[name="acct"]').val();
+                var accountNumber = $('input[name="accountNumber"]').val();
                 var email = $('input[name="email"]').val();
                 var birthDate = $('input[name="birthDate"]').val();
                 return isValid && validateAccountDetails(accountNumber, email, birthDate);
@@ -217,7 +219,6 @@
         onFinished: function (event, currentIndex)
         {
 //            alert("Submitted!");
-
             window.location.href = "/login/retail";
         }
     });

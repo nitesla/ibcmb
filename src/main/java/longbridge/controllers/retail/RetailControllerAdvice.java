@@ -2,7 +2,7 @@ package longbridge.controllers.retail;
 
 import longbridge.models.Account;
 import longbridge.models.RetailUser;
-import longbridge.models.ServiceReqConfig;
+import longbridge.models.SRConfig;
 import longbridge.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
@@ -83,7 +83,7 @@ public class RetailControllerAdvice {
         String name = firstName + ' ' + lastName;
         model.addAttribute("name", name);
 
-        List<ServiceReqConfig> requestList = reqConfigService.getServiceReqConfs();
+        List<SRConfig> requestList = reqConfigService.getServiceReqConfs();
         model.addAttribute("serviceRequests", requestList);
 
         //System.out.println( new SimpleDateFormat("HH:mm:ss").format(Calendar.getInstance().getTime()) );

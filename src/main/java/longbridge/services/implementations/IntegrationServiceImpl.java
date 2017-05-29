@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import longbridge.api.*;
 import longbridge.exception.InternetBankingTransferException;
 
-import longbridge.models.TransferRequest;
+import longbridge.models.TransRequest;
 import longbridge.services.IntegrationService;
 import longbridge.utils.AccountStatement;
 import longbridge.utils.ResultType;
@@ -93,7 +93,7 @@ public class IntegrationServiceImpl implements IntegrationService {
     }
 
     @Override
-    public TransferRequest makeTransfer(TransferRequest transferRequest) throws InternetBankingTransferException {
+    public TransRequest makeTransfer(TransRequest transRequest) throws InternetBankingTransferException {
 
         TransferType type;
         type = TransferType.INTER_BANK_TRANSFER;
@@ -101,14 +101,14 @@ public class IntegrationServiceImpl implements IntegrationService {
             case CORONATION_BANK_TRANSFER:
 
             {
-                transferRequest.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
+                transRequest.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
                 TransferDetails response;
                 String uri = URI + "/transfer/local";
                 Map<String, String> params = new HashMap<>();
-                params.put("debitAccountNumber", transferRequest.getCustomerAccountNumber());
-                params.put("creditAccountNumber", transferRequest.getBeneficiaryAccountNumber());
-                params.put("tranAmount", transferRequest.getAmount().toString());
-                params.put("naration", transferRequest.getNarration());
+                params.put("debitAccountNumber", transRequest.getCustomerAccountNumber());
+                params.put("creditAccountNumber", transRequest.getBeneficiaryAccountNumber());
+                params.put("tranAmount", transRequest.getAmount().toString());
+                params.put("naration", transRequest.getNarration());
                 logger.info(params.toString());
 
                 try {
@@ -116,19 +116,19 @@ public class IntegrationServiceImpl implements IntegrationService {
 
                     if (response.getResponseCode().equalsIgnoreCase("000")) {
 
-                        transferRequest.setStatus(ResultType.SUCCESS.toString());
-                        return transferRequest;
+                        transRequest.setStatus(ResultType.SUCCESS.toString());
+                        return transRequest;
                     } else {
-                        transferRequest.setStatus(ResultType.ERROR.toString());
-                        return transferRequest;
+                        transRequest.setStatus(ResultType.ERROR.toString());
+                        return transRequest;
                     }
 
                 } catch (Exception e) {
 
                     e.printStackTrace();
 
-                    transferRequest.setStatus(ResultType.ERROR.toString());
-                    return transferRequest;
+                    transRequest.setStatus(ResultType.ERROR.toString());
+                    return transRequest;
 
                 }
 
@@ -144,28 +144,28 @@ public class IntegrationServiceImpl implements IntegrationService {
 
             }
             case OWN_ACCOUNT_TRANSFER: {
-                transferRequest.setTransferType(TransferType.OWN_ACCOUNT_TRANSFER);
+                transRequest.setTransferType(TransferType.OWN_ACCOUNT_TRANSFER);
                 TransferDetails response = null;
                 String uri = URI + "/transfer/local";
                 Map<String, String> params = new HashMap<>();
-                params.put("debitAccountNumber", transferRequest.getCustomerAccountNumber());
-                params.put("creditAccountNumber", transferRequest.getBeneficiaryAccountNumber());
-                params.put("tranAmount", transferRequest.getAmount().toString());
-                params.put("naration", transferRequest.getNarration());
+                params.put("debitAccountNumber", transRequest.getCustomerAccountNumber());
+                params.put("creditAccountNumber", transRequest.getBeneficiaryAccountNumber());
+                params.put("tranAmount", transRequest.getAmount().toString());
+                params.put("naration", transRequest.getNarration());
                 logger.info("patrams for transfer {}", params.toString());
                 try {
                     response = template.postForObject(uri, params, TransferDetails.class);
 
                     if (response.getResponseCode().equalsIgnoreCase("000")) {
 
-                        transferRequest.setStatus(ResultType.SUCCESS.toString());
-                        return transferRequest;
+                        transRequest.setStatus(ResultType.SUCCESS.toString());
+                        return transRequest;
                     }
 
                 } catch (Exception e) {
 
-                    transferRequest.setStatus(ResultType.ERROR.toString());
-                    return transferRequest;
+                    transRequest.setStatus(ResultType.ERROR.toString());
+                    return transRequest;
                 }
 
 
@@ -178,8 +178,8 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 
         logger.trace("request did not match any type");
-        transferRequest.setStatus(ResultType.ERROR.toString());
-        return transferRequest;
+        transRequest.setStatus(ResultType.ERROR.toString());
+        return transRequest;
     }
 
     @Override
@@ -207,11 +207,7 @@ public class IntegrationServiceImpl implements IntegrationService {
         params.put("email", email);
         params.put("dateOfBirth", dob);
         try {
-
-            CustomerDetails customerDetails = new CustomerDetails();
-            customerDetails.setCifId("R123");
-            result = customerDetails;
-            //result = template.postForObject(uri, params, CustomerDetails.class);
+            result = template.postForObject(uri, params, CustomerDetails.class);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -310,7 +306,7 @@ public class IntegrationServiceImpl implements IntegrationService {
         params.put("subject", subject);
         params.put("contactList",contacts);
         logger.trace("params {}", params);
-      
+
         try {
 
             result = template.postForObject(uri, params, ObjectNode.class);

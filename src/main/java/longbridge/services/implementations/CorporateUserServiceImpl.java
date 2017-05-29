@@ -1,5 +1,6 @@
 package longbridge.services.implementations;
 
+import longbridge.dtos.CorpCorporateUserDTO;
 import longbridge.dtos.CorporateUserDTO;
 import longbridge.exception.*;
 import longbridge.exception.DuplicateObjectException;
@@ -181,7 +182,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
 
     @Override
-    public String addUserFromCorporateAdmin(CorporateUserDTO user) throws InternetBankingException {
+    public String addUserFromCorporateAdmin(CorpCorporateUserDTO user) throws InternetBankingException {
 
         CorporateUser corporateUser = corporateUserRepo.findFirstByUserName(user.getUserName());
         if (corporateUser != null) {
@@ -223,6 +224,8 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         }
     }
 
+
+
     @Override
     @Transactional
     public String changeActivationStatus(Long userId) throws InternetBankingException {
@@ -263,6 +266,40 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
             logger.info("Corporate user {} status changed from {} to {}", user.getUserName(), oldStatus, newStatus);
             return messageSource.getMessage("user.status.success", null, locale);
+
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("user.status.failure", null, locale), e);
+
+        }
+    }
+
+    @Override
+    public String changeCorpActivationStatus(Long userId) throws InternetBankingException {
+        try {
+            CorporateUser user = corporateUserRepo.findOne(userId);
+            String oldStatus = user.getStatus();
+            if (!"Authorizer".equals(user.getRole().getName())){
+                String newStatus = "A".equals(oldStatus) ? "I" : "A";
+                user.setStatus(newStatus);
+                corporateUserRepo.save(user);
+                String fullName = user.getFirstName()+" "+user.getLastName();
+
+                logger.info("Corporate user {} status changed from {} to {}", fullName, oldStatus, newStatus);
+                return messageSource.getMessage("user.status.success", null, locale);
+
+            }else {
+                if (!"A".equals(user.getStatus())) {
+                    throw new InternetBankingException(messageSource.getMessage("user.status.failure.permission", null, locale));
+                } else {
+                    String newStatus = "A".equals(oldStatus) ? "I" : "A";
+                    user.setStatus(newStatus);
+                    corporateUserRepo.save(user);
+                    String fullName = user.getFirstName()+" "+user.getLastName();
+
+                    logger.info("Corporate user {} status changed from {} to {}", fullName, oldStatus, newStatus);
+                    return messageSource.getMessage("user.status.success", null, locale);
+                }
+            }
 
         } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("user.status.failure", null, locale), e);
@@ -406,7 +443,7 @@ try{
     }
 
     private CorporateUserDTO convertEntityToDTO(CorporateUser corporateUser) {
-        CorporateUserDTO corporateUserDTO =       modelMapper.map(corporateUser, CorporateUserDTO.class);
+        CorporateUserDTO corporateUserDTO = modelMapper.map(corporateUser, CorporateUserDTO.class);
         corporateUserDTO.setRoleId(corporateUser.getRole().getId().toString());
         corporateUserDTO.setRole(corporateUser.getRole().getName());
         corporateUserDTO.setCorporateType(corporateUser.getCorporate().getCorporateType());

@@ -47,8 +47,8 @@ public class CorpBeneficiaryController {
         }
         model.addAttribute("localBen", corpLocalBeneficiaries);
 
-       /* Iterable<CorpInternationalBeneficiary> intBeneficiary = corpInternationalBeneficiaryService.getCorpInternationalBeneficiaries(corporateUser);
-        for (CorpInternationalBeneficiary intBenef : intBeneficiary){
+       /* Iterable<CorpInterBen> intBeneficiary = corpInternationalBeneficiaryService.getCorpInternationalBeneficiaries(corporateUser);
+        for (CorpInterBen intBenef : intBeneficiary){
             intBenef.setBeneficiaryBank(financialInstitutionService.getFinancialInstitutionByCode(intBenef.getBeneficiaryBank()).getInstitutionName());
         }
         model.addAttribute("intBen", intBeneficiary);*/

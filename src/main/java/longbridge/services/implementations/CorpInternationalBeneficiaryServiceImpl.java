@@ -2,10 +2,9 @@ package longbridge.services.implementations;
 
 import longbridge.dtos.CorpInternationalBeneficiaryDTO;
 import longbridge.exception.InternetBankingException;
-import longbridge.models.CorpInternationalBeneficiary;
+import longbridge.models.CorpInterBen;
 import longbridge.models.CorporateUser;
 import longbridge.repositories.CorpInternationalBeneficiaryRepo;
-import longbridge.repositories.InternationalBeneficiaryRepo;
 import longbridge.services.CorpInternationalBeneficiaryService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -43,10 +42,10 @@ public class CorpInternationalBeneficiaryServiceImpl implements CorpInternationa
 
     @Override
     public String addCorpInternationalBeneficiary(CorporateUser user, CorpInternationalBeneficiaryDTO beneficiary) throws InternetBankingException {
-        CorpInternationalBeneficiary corpInternationalBeneficiary = convertDTOToEntity(beneficiary);
-        corpInternationalBeneficiary.setUser(user);
-        this.corpInternationalBeneficiaryRepo.save(corpInternationalBeneficiary);
-        logger.info("CorpInternational beneficiary {} has been added for user {}", corpInternationalBeneficiary.toString(),user.getUserName());
+        CorpInterBen corpInterBen = convertDTOToEntity(beneficiary);
+        corpInterBen.setUser(user);
+        this.corpInternationalBeneficiaryRepo.save(corpInterBen);
+        logger.info("CorpInternational beneficiary {} has been added for user {}", corpInterBen.toString(),user.getUserName());
         return messageSource.getMessage("beneficiary.add.success",null,locale);
     }
 
@@ -59,19 +58,19 @@ public class CorpInternationalBeneficiaryServiceImpl implements CorpInternationa
     }
 
     @Override
-    public CorpInternationalBeneficiary getCorpInternationalBeneficiary(Long id) {
+    public CorpInterBen getCorpInternationalBeneficiary(Long id) {
         return corpInternationalBeneficiaryRepo.findOne(id);
     }
 
     @Override
-    public Iterable<CorpInternationalBeneficiary> getCorpInternationalBeneficiaries(CorporateUser user) {
+    public Iterable<CorpInterBen> getCorpInternationalBeneficiaries(CorporateUser user) {
         return corpInternationalBeneficiaryRepo.findByUser(user);
     }
 
     @Override
-    public List<CorpInternationalBeneficiaryDTO> convertEntitiesToDTOs(Iterable<CorpInternationalBeneficiary> corpInternationalBeneficiaries) {
+    public List<CorpInternationalBeneficiaryDTO> convertEntitiesToDTOs(Iterable<CorpInterBen> corpInternationalBeneficiaries) {
         List<CorpInternationalBeneficiaryDTO> corpInternationalBeneficiaryDTOList = new ArrayList<>();
-        for(CorpInternationalBeneficiary internationalBeneficiary: corpInternationalBeneficiaries){
+        for(CorpInterBen internationalBeneficiary: corpInternationalBeneficiaries){
             CorpInternationalBeneficiaryDTO benDTO = convertEntityToDTO(internationalBeneficiary);
             corpInternationalBeneficiaryDTOList.add(benDTO);
         }
@@ -79,21 +78,21 @@ public class CorpInternationalBeneficiaryServiceImpl implements CorpInternationa
     }
 
     @Override
-    public CorpInternationalBeneficiaryDTO convertEntityToDTO(CorpInternationalBeneficiary corpInternationalBeneficiary) {
+    public CorpInternationalBeneficiaryDTO convertEntityToDTO(CorpInterBen corpInterBen) {
         CorpInternationalBeneficiaryDTO corpInternationalBeneficiaryDTO = new CorpInternationalBeneficiaryDTO();
-        corpInternationalBeneficiaryDTO.setAccountName(corpInternationalBeneficiary.getAccountName());
-        corpInternationalBeneficiaryDTO.setAccountNumber(corpInternationalBeneficiary.getAccountNumber());
-        corpInternationalBeneficiaryDTO.setBeneficiaryBank(corpInternationalBeneficiary.getBeneficiaryBank());
-        corpInternationalBeneficiaryDTO.setSwiftCode(corpInternationalBeneficiary.getSwiftCode());
-        corpInternationalBeneficiaryDTO.setSortCode(corpInternationalBeneficiary.getSortCode());
-        corpInternationalBeneficiaryDTO.setBeneficiaryAddress(corpInternationalBeneficiary.getBeneficiaryAddress());
-        corpInternationalBeneficiaryDTO.setIntermediaryBankAccountNumber(corpInternationalBeneficiary.getIntermediaryBankAccountNumber());
-        corpInternationalBeneficiaryDTO.setIntermediaryBankName(corpInternationalBeneficiary.getIntermediaryBankName());
-        return  modelMapper.map(corpInternationalBeneficiary,CorpInternationalBeneficiaryDTO.class);
+        corpInternationalBeneficiaryDTO.setAccountName(corpInterBen.getAccountName());
+        corpInternationalBeneficiaryDTO.setAccountNumber(corpInterBen.getAccountNumber());
+        corpInternationalBeneficiaryDTO.setBeneficiaryBank(corpInterBen.getBeneficiaryBank());
+        corpInternationalBeneficiaryDTO.setSwiftCode(corpInterBen.getSwiftCode());
+        corpInternationalBeneficiaryDTO.setSortCode(corpInterBen.getSortCode());
+        corpInternationalBeneficiaryDTO.setBeneficiaryAddress(corpInterBen.getBeneficiaryAddress());
+        corpInternationalBeneficiaryDTO.setIntermediaryBankAccountNumber(corpInterBen.getIntermediaryBankAcctNo());
+        corpInternationalBeneficiaryDTO.setIntermediaryBankName(corpInterBen.getIntermediaryBankName());
+        return  modelMapper.map(corpInterBen,CorpInternationalBeneficiaryDTO.class);
     }
 
     @Override
-    public CorpInternationalBeneficiary convertDTOToEntity(CorpInternationalBeneficiaryDTO internationalBeneficiaryDTO) {
-        return  modelMapper.map(internationalBeneficiaryDTO,CorpInternationalBeneficiary.class);
+    public CorpInterBen convertDTOToEntity(CorpInternationalBeneficiaryDTO internationalBeneficiaryDTO) {
+        return  modelMapper.map(internationalBeneficiaryDTO,CorpInterBen.class);
     }
 }

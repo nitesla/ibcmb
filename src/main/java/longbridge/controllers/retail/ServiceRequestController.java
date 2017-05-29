@@ -112,13 +112,13 @@ public class ServiceRequestController {
             serviceRequestDTO.setUserId(user.getId());
             serviceRequestDTO.setDateRequested(new Date());
 
-            if(serviceReqConfigDTO.isAuthenticate()){
-                if(session.getAttribute("authenticated")!="authenticated"){
-                    session.setAttribute("requestDTO",serviceRequestDTO);
-                    session.setAttribute("requestURL", "/retail/request/process");
-                    return "redirect:/token/authenticate";
-                }
-            }
+//            if(serviceReqConfigDTO.isAuthenticate()){
+//                if(session.getAttribute("authenticated")!="authenticated"){
+//                    session.setAttribute("requestDTO",serviceRequestDTO);
+//                    session.setAttribute("redirectURL", "/retail/request/process");
+//                    return "redirect:/token/authenticate";
+//                }
+//            }
             String message = requestService.addRequest(serviceRequestDTO);
             redirectAttributes.addFlashAttribute("message", message);
 

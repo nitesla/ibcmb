@@ -4,7 +4,7 @@
 
 </head>
 <body>
-<header th:replace="corp_layout :: header">
+<header th:replace="corp_layout :: corp-header">
 </header>
 
 <section class="content-wrapper">
@@ -36,14 +36,14 @@
                     </div>
                 </div>
             </div>
-            <div th:replace="corp_layout :: sidebar" class="col-md-3 sidebar">
+            <div th:replace="corp_layout :: corp-sidebar" class="col-md-3">
             </div>
         </div>
     </div>
 </section>
 
 <!-- CONTENT-WRAPPER SECTION END-->
-<footer th:replace="corp_layout ::footer">
+<footer th:replace="corp_layout :: corp-footer">
 </footer>
 <script th:inline="javascript">
     /*<![CDATA[*/

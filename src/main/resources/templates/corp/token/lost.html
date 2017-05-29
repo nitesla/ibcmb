@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="corp_layout :: site-head">
+
+</head>
+<body>
+<header th:replace="corp_layout :: corp-header">
+</header>
+
+<section class="content-wrapper">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 col-sm-4">
+                <h5 class="page_header"> Report Lost Token</h5>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-8 content-bg">
+                <div class="row form-spacing">
+                    <div class="col-md-6">
+                        <form method="post" th:action="@{/corporate/token/lost}" th:object="${tokenProp}">
+                            <div class="form-group">
+                                <label>Token Serial Number</label>
+                                <select name="serialNo" class="form-control">
+                                    <option></option>
+                                </select>
+                                <p class="errors" th:if="${#fields.hasErrors('serialNo')}" th:errors="*{serialNo}">&times;</p>
+                            </div>
+
+                            <button type="submit" class="btn btn-default">Report</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div th:replace="corp_layout :: corp-sidebar" class="col-md-3 sidebar">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CONTENT-WRAPPER SECTION END-->
+<footer th:replace="corp_layout :: corp-footer">
+</footer>
+</body>
+</html>

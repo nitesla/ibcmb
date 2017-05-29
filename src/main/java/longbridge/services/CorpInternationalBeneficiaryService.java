@@ -2,7 +2,7 @@ package longbridge.services;
 
 import longbridge.dtos.CorpInternationalBeneficiaryDTO;
 import longbridge.exception.InternetBankingException;
-import longbridge.models.CorpInternationalBeneficiary;
+import longbridge.models.CorpInterBen;
 import longbridge.models.CorporateUser;
 import org.springframework.security.access.prepost.PreAuthorize;
 
@@ -33,7 +33,7 @@ public interface CorpInternationalBeneficiaryService {
      * @return the specified beneficiary
      */
     @PreAuthorize("hasAuthority('GET_BENEFICIARIES')")
-    CorpInternationalBeneficiary getCorpInternationalBeneficiary(Long id);
+    CorpInterBen getCorpInternationalBeneficiary(Long id);
 
     /**
      * Returns a list of the corporate's beneficiaries
@@ -41,15 +41,15 @@ public interface CorpInternationalBeneficiaryService {
      * @return a list of the beneficiaries
      */
     @PreAuthorize("hasAuthority('GET_BENEFICIARIES')")
-    Iterable<CorpInternationalBeneficiary> getCorpInternationalBeneficiaries(CorporateUser user);
+    Iterable<CorpInterBen> getCorpInternationalBeneficiaries(CorporateUser user);
 
     @PreAuthorize("hasAuthority('GET_BENEFICIARIES')")
-    List<CorpInternationalBeneficiaryDTO> convertEntitiesToDTOs(Iterable<CorpInternationalBeneficiary> internationalBeneficiaries);
+    List<CorpInternationalBeneficiaryDTO> convertEntitiesToDTOs(Iterable<CorpInterBen> internationalBeneficiaries);
 
     @PreAuthorize("hasAuthority('GET_BENEFICIARIES')")
-    CorpInternationalBeneficiaryDTO convertEntityToDTO(CorpInternationalBeneficiary internationalBeneficiary);
+    CorpInternationalBeneficiaryDTO convertEntityToDTO(CorpInterBen internationalBeneficiary);
 
     @PreAuthorize("hasAuthority('GET_BENEFICIARIES')")
-    CorpInternationalBeneficiary convertDTOToEntity(CorpInternationalBeneficiaryDTO internationalBeneficiaryDTO);
+    CorpInterBen convertDTOToEntity(CorpInternationalBeneficiaryDTO internationalBeneficiaryDTO);
 
 }

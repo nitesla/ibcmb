@@ -85,7 +85,7 @@
                                             <label class="col-sm-2 control-label">Select Authorizers</label>
                                             <div class="col-sm-6">
                                                 <p th:each="user: ${authUserList}">
-                                                    <input type="checkbox" name="authorizers" th:value="${user.id}" th:checked="${user.ruleMember}" />
+                                                    <input type="checkbox" name="auths" th:value="${user.id}" th:checked="${user.ruleMember}" />
                                                     <label th:text="${user.firstName + ' ' + user.lastName}"></label>
                                                 </p>
                                             </div>
@@ -146,8 +146,8 @@
 
         $("#anyAuthorizer").change(function () {
             if ($(this).is(":checked")) {
-                if (!$("input[name='authorizers']").is(":checked")) {
-                    $("input[name='authorizers']").prop("checked", true);
+                if (!$("input[name='auths']").is(":checked")) {
+                    $("input[name='auths']").prop("checked", true);
                 }
             }
 

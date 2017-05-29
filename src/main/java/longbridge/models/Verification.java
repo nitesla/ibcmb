@@ -13,18 +13,18 @@ import java.util.Date;
  * Created by LB-PRJ-020 on 4/7/2017.
  */
 @Entity
-@Audited
+@Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
 public class Verification extends  AbstractEntity {
     public static enum VerificationStatus {
         VERIFIED, DECLINED,PENDING //EXPIRED
     }
 
-    @Column(columnDefinition = "TEXT")
+    //@Column(columnDefinition = "TEXT")
     private String beforeObject; //json
-    @Column(columnDefinition = "TEXT")
+    //@Column(columnDefinition = "TEXT")
     private String afterObject; //json
-    @Column(columnDefinition = "TEXT")
+    //@Column(columnDefinition = "TEXT")
     private String original; //json
 
     @Enumerated(value = EnumType.STRING)

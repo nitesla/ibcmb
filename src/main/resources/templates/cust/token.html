@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="cust_layout :: site-head">
+
+</head>
+<body>
+<header th:replace="cust_layout :: header">
+</header>
+
+<section class="content-wrapper">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-offset-4 col-md-4 col-sm-6">
+                <h5 class="page_header">Token Authenticaion</h5>
+            </div>
+        </div>
+        <div class="row">
+
+            <div class="col-md-offset-4 col-md-4 col-sm-6">
+                <form method="post" th:action="@{/token/authenticate}">
+                    <div class="form-group">
+                        <label>Token Code</label>
+                        <input type="text" class="form-control" placeholder="Token Code" required="required"/>
+                    </div>
+
+                    <button type="submit" class="btn btn-default">Report</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CONTENT-WRAPPER SECTION END-->
+<footer th:replace="cust_layout :: footer">
+</footer>
+</body>
+</html>

@@ -50,10 +50,11 @@ public class DirectDebitController {
     }
 
     @GetMapping("/new")
-    public String addDirectDebit(Model model, Principal principal){
+    public String addDirectDebit(Model model, Principal principal ,DirectDebitDTO directDebitDTO){
     	RetailUser retailUser = retailUserService.getUserByName(principal.getName());
         model.addAttribute("beneficiaries", localBeneficiaryService.getLocalBeneficiaries(retailUser));
         model.addAttribute("accounts", accountService.getCustomerAccounts(retailUser.getCustomerId()));
+        model.addAttribute("directDebit", directDebitDTO);
         return "cust/directdebit/add";
     }
 
