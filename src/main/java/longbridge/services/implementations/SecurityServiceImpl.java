@@ -18,7 +18,9 @@ import org.springframework.stereotype.Service;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -352,8 +354,8 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
-    public List<String> getUserQA(String username) {
-         List<String> list= new ArrayList<>();
+    public Map< List<String>, List<String>> getUserQA(String username) {
+        Map< List<String>, List<String>>  list= new HashMap<>( );
          return list;
 
 

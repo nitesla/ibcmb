@@ -46,13 +46,12 @@ public class TransferController {
     private LocaleResolver localeResolver;
     private LocalBeneficiaryService localBeneficiaryService;
     private FinancialInstitutionService financialInstitutionService;
-     private TransferErrorService transferErrorService;
-     private SecurityService securityService;
-
+    private TransferErrorService transferErrorService;
+    private SecurityService securityService;
 
 
     @Autowired
-    public TransferController(RetailUserService retailUserService, IntegrationService integrationService, TransferService transferService, AccountService accountService, MessageSource messages, LocaleResolver localeResolver, LocalBeneficiaryService localBeneficiaryService, FinancialInstitutionService financialInstitutionService,TransferErrorService transferErrorService,SecurityService securityService) {
+    public TransferController(RetailUserService retailUserService, IntegrationService integrationService, TransferService transferService, AccountService accountService, MessageSource messages, LocaleResolver localeResolver, LocalBeneficiaryService localBeneficiaryService, FinancialInstitutionService financialInstitutionService, TransferErrorService transferErrorService, SecurityService securityService) {
         this.retailUserService = retailUserService;
         this.integrationService = integrationService;
         this.transferService = transferService;
@@ -61,8 +60,8 @@ public class TransferController {
         this.localeResolver = localeResolver;
         this.localBeneficiaryService = localBeneficiaryService;
         this.financialInstitutionService = financialInstitutionService;
-        this.transferErrorService=transferErrorService;
-        this.securityService=securityService;
+        this.transferErrorService = transferErrorService;
+        this.securityService = securityService;
 
     }
 
@@ -141,23 +140,21 @@ public class TransferController {
     public
     @ResponseBody
     String getInterBankAccountName(@PathVariable String accountNo, @PathVariable String bank) {
-        System.out.println("HELLO FROM NIBBS");
-       return (integrationService.doNameEnquiry(bank,accountNo)).getAccountName();
-      // return (integrationService.doNameEnquiry("000005",accountNo)).getAccountName();
-
+        return (integrationService.doNameEnquiry(bank, accountNo)).getAccountName();
+        // return (integrationService.doNameEnquiry("000005",accountNo)).getAccountName();
 
 
     }
 
 
     @PostMapping("/process")
-    public String bankTransfer(@ModelAttribute("transferRequest") @Valid TransferRequestDTO transferRequestDTO, Model model, RedirectAttributes redirectAttributes, Locale locale, HttpServletRequest request,Principal principal) throws Exception {
+    public String bankTransfer(@ModelAttribute("transferRequest") @Valid TransferRequestDTO transferRequestDTO, Model model, RedirectAttributes redirectAttributes, Locale locale, HttpServletRequest request, Principal principal) throws Exception {
 
         try {
 
             if (request.getSession().getAttribute("AUTH") != null) {
                 String token = request.getParameter("token");
-               boolean tokenOk = securityService.performTokenValidation(principal.getName(),token);
+                boolean tokenOk = securityService.performTokenValidation(principal.getName(), token);
                 boolean ok = tokenOk;
                 if (!ok) {
                     model.addAttribute("error", messages.getMessage("auth.token.failure", null, locale));
@@ -168,7 +165,7 @@ public class TransferController {
 
 
             }
-            transferRequestDTO = (TransferRequestDTO)request.getSession().getAttribute("transferRequest");
+            transferRequestDTO = (TransferRequestDTO) request.getSession().getAttribute("transferRequest");
 
             transferRequestDTO = transferService.makeTransfer(transferRequestDTO);
             request.getSession().removeAttribute("transferRequest");
@@ -176,13 +173,13 @@ public class TransferController {
             redirectAttributes.addFlashAttribute("message", messages.getMessage("transaction.success", null, locale));
 
 
-          return index(transferRequestDTO.getTransferType());
+            return index(transferRequestDTO.getTransferType());
             //return "redirect:/retail/dashboard";
         } catch (InternetBankingTransferException e) {
             e.printStackTrace();
-            String errorMessage = transferErrorService.getMessage(e,request);
+            String errorMessage = transferErrorService.getMessage(e, request);
             redirectAttributes.addFlashAttribute("error", errorMessage);
-            return"redirect:/retail/dashboard";
+            return "redirect:/retail/dashboard";
         }
     }
 

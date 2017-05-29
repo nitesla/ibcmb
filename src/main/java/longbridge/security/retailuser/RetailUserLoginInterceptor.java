@@ -31,7 +31,7 @@ public class RetailUserLoginInterceptor extends HandlerInterceptorAdapter {
             modelAndView.addObject("changePassword", changePassword);
             modelAndView.addObject("passwordRules", passwordPolicyService.getPasswordRules());
 
-            modelAndView.setViewName("cust/settings/new-password");
+            modelAndView.setViewName("cust/settings/new-pword");
             throw new ModelAndViewDefiningException(modelAndView);
 
         }

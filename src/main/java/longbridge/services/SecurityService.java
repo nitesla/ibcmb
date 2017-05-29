@@ -1,6 +1,7 @@
 package longbridge.services;
 
 import java.util.List;
+import java.util.Map;
 
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.models.RetailUser;
@@ -68,7 +69,7 @@ public interface SecurityService {
 
     void setUserQA(String username, List<String> questions, List<String> answer) throws InternetBankingTransferException;
 
-    List<String> getUserQA(String username) throws InternetBankingTransferException;
+   Map< List<String>, List<String>> getUserQA(String username) throws InternetBankingTransferException;
 
 
 }
