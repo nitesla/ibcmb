@@ -40,7 +40,7 @@
                 <br/>
 
                 <form th:action="@{/password/reset/admin}" method="POST">
-                    <h1>Admin Password Reset</h1>
+                    <h4>Password Reset</h4>
 
                     <div>
                         <input type="text" class="form-control" placeholder="Enter username" required="" name="username" />
@@ -64,6 +64,14 @@
     <div hidden="hidden">
         <ul class="actionMessage">
             <li th:each="msg : ${message}" th:text="${msg}">Message</li>
+        </ul>
+    </div>
+</div>
+
+<div th:if="${failure}">
+    <div hidden="hidden">
+        <ul class="actionError">
+            <li th:each="msg : ${failure}" th:text="${msg}">Message</li>
         </ul>
     </div>
 </div>

@@ -14,7 +14,7 @@ import javax.servlet.http.HttpSession;
 /**
  * Created by Fortune on 5/26/2017.
  */
-
+@Controller
 @RequestMapping("/token")
 public class TokenAuthController {
 

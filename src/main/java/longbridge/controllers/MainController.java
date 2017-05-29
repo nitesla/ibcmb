@@ -178,10 +178,6 @@ public class MainController {
         return "/ops/username";
     }
 
-    @PostMapping("/password/reset/ops")
-    public String validateOpsUsername(){
-        return "/ops/token";
-    }
 
     @PostMapping("/password/reset/ops")
     public String validateOpsUsername(WebRequest request, Model model, Locale locale, HttpSession session){
