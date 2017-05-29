@@ -39,7 +39,7 @@ public class TokenManagementController {
             return "cust/token/sync";
         }
 
-       // securityService.synchronizeToken(principal.getName());
+        //securityService.synchronizeToken(principal.getName(), tokenProp.getSerialNo());
         return "redirect:/retail/token/sync";
     }
 

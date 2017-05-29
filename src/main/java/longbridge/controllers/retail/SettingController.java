@@ -141,7 +141,7 @@ public class SettingController {
         try {
             String message =retailUserService.changePassword(user, custChangePassword);
             redirectAttributes.addFlashAttribute("message", message);
-            return "redirect:/retail/rreset_password";
+            return "redirect:/retail/reset_password";
         } catch (WrongPasswordException wpe) {
             result.reject("oldPassword", wpe.getMessage());
             logger.error("Wrong password from retail user {}", user.getUserName(), wpe.toString());
@@ -166,7 +166,7 @@ public class SettingController {
             List<String> passwordPolicy = passwordPolicyService.getPasswordRules();
             logger.info("PASSWORD RULES {}", passwordPolicy);
             model.addAttribute("passwordRules", passwordPolicy);
-            return "cust/settings/new-word";
+            return "cust/settings/new-pword";
         }
     }
 

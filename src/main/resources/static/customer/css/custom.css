@@ -622,7 +622,7 @@ button, input, optgroup, select, textarea {
     margin: 0 auto;
 }
 
-.btn{
+.btn-primary{
     color: #fff;
     background-color: #032A4F;
     border: none;
