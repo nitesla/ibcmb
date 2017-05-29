@@ -1,7 +1,9 @@
 package longbridge.controllers.admin;
 
+import longbridge.exception.InternetBankingException;
 import longbridge.forms.SyncTokenForm;
 import longbridge.forms.TokenForm;
+import longbridge.services.SecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
@@ -27,6 +29,9 @@ public class AdmTokenController {
     @Autowired
     MessageSource messageSource;
 
+    @Autowired
+    SecurityService securityService;
+
 
     @GetMapping("/assign")
     public String assignToken(Model model) {
@@ -42,8 +47,16 @@ public class AdmTokenController {
             return "/adm/token/assign";
         }
 
-        //TODO call service method
+        try{
+            boolean result = securityService.assignToken(tokenForm.getUsername(),tokenForm.getSerialNumber());
+            if(result){
 
+            }
+        }
+
+        catch (InternetBankingException ibe){
+
+        }
         return "";
     }
 

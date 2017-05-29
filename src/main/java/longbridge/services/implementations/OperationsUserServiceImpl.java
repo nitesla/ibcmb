@@ -62,9 +62,9 @@ public class OperationsUserServiceImpl implements OperationsUserService {
 
 
     @Override
-    public boolean isValidUsername(String username) {
+    public boolean userExists(String username) {
         OperationsUser opsUser = operationsUserRepo.findFirstByUserName(username);
-        return (opsUser == null) ? true : false;
+        return (opsUser != null) ? true : false;
 
     }
 
@@ -221,6 +221,28 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     public String resetPassword(Long id) throws InternetBankingException {
         try {
             OperationsUser user = operationsUserRepo.findOne(id);
+            String newPassword = passwordPolicyService.generatePassword();
+            user.setPassword(passwordEncoder.encode(newPassword));
+            String fullName = user.getFirstName()+" "+user.getLastName();
+            user.setExpiryDate(new Date());
+            this.operationsUserRepo.save(user);
+            Email email = new Email.Builder()
+                    .setRecipient(user.getEmail())
+                    .setSubject(messageSource.getMessage("ops.password.reset.subject",null,locale))
+                    .setBody(String.format(messageSource.getMessage("ops.password.reset.message",null,locale), fullName, newPassword))
+                    .build();
+            mailService.send(email);
+            logger.info("Operations user {} password reset successfully", user.getUserName());
+            return messageSource.getMessage("password.reset.success", null, locale);
+        } catch (Exception e) {
+            throw new PasswordException(messageSource.getMessage("password.reset.failure", null, locale), e);
+        }
+    }
+
+    @Override
+    public String resetPassword(String username) throws InternetBankingException {
+        try {
+            OperationsUser user = operationsUserRepo.findFirstByUserName(username);
             String newPassword = passwordPolicyService.generatePassword();
             user.setPassword(passwordEncoder.encode(newPassword));
             String fullName = user.getFirstName()+" "+user.getLastName();

@@ -34,7 +34,7 @@ public interface OperationsUserService{
      * @param username the username
      * @return true if the username does not exist
      */
-    boolean isValidUsername(String username);
+    boolean userExists(String username);
 
     @PreAuthorize("hasAuthority('GET_OPS_USER')")
     OperationsUser getUserByName(String name);
@@ -121,4 +121,6 @@ public interface OperationsUserService{
 
     @PreAuthorize("hasAuthority('UPDATE_OPS_USER')")
     String changeDefaultPassword(OperationsUser user, ChangeDefaultPassword changePassword) throws PasswordException;
+
+    String resetPassword(String username) throws InternetBankingException;
 }

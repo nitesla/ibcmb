@@ -100,9 +100,9 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
     @Override
-    public boolean isUsernameExist(String username) throws InternetBankingException {
+    public boolean userExists(String username) throws InternetBankingException {
         AdminUser adminUser = adminUserRepo.findFirstByUserName(username);
-        return (adminUser == null) ? true : false;
+        return (adminUser != null) ? true : false;
     }
 
 
@@ -248,6 +248,29 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
     @Override
+    public String resetPassword(String username) throws PasswordException {
+
+        try {
+            AdminUser user = adminUserRepo.findFirstByUserName(username);
+            String newPassword = passwordPolicyService.generatePassword();
+            user.setPassword(passwordEncoder.encode(newPassword));
+            user.setExpiryDate(new Date());
+            String fullName = user.getFirstName()+" "+user.getLastName();
+            this.adminUserRepo.save(user);
+            Email email = new Email.Builder()
+                    .setRecipient(user.getEmail())
+                    .setSubject(messageSource.getMessage("admin.password.reset.subject",null,locale))
+                    .setBody(String.format(messageSource.getMessage("admin.password.reset.message",null,locale),fullName, newPassword))
+                    .build();
+            mailService.send(email);
+            logger.info("Admin user {} password reset successfully", user.getUserName());
+            return messageSource.getMessage("password.reset.success", null, locale);
+        } catch (Exception e) {
+            throw new PasswordException(messageSource.getMessage("password.reset.failure", null, locale), e);
+        }
+    }
+
+    @Override
     @Transactional
     public String changePassword(AdminUser user, ChangePassword changePassword) throws PasswordException {
 
@@ -281,7 +304,7 @@ public class AdminUserServiceImpl implements AdminUserService {
         if(oldPasswords!=null){
             builder.append(oldPasswords);
         }
-        builder.append(newPassword+",");
+        builder.append(passwordEncoder.encode(newPassword)+",");
         return builder.toString();
     }
 
