@@ -1,5 +1,5 @@
 /**
- * Created by user on 5/24/2017.
+ * Created by Kwere on 5/24/2017.
  */
 var thisDate = new Date();
 var year = thisDate.getFullYear();
