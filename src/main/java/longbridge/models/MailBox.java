@@ -20,7 +20,7 @@ import java.util.List;
 
 
 @Entity
-@Audited
+@Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
 @Table(uniqueConstraints=@UniqueConstraint(columnNames={"userId", "userType"}))
 public class MailBox extends AbstractEntity{

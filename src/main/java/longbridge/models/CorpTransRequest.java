@@ -14,7 +14,7 @@ import java.util.List;
  */
 
 @Entity
-@Audited
+@Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
 public class CorpTransRequest extends TransRequest {
 

@@ -24,14 +24,14 @@ public class RetailUserLoginInterceptor extends HandlerInterceptorAdapter {
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) throws Exception {
         String uri = httpServletRequest.getRequestURI();
 
-        if (httpServletRequest.getSession().getAttribute("expired-password") != null && !(uri.equalsIgnoreCase("/ops/users/password/new"))) {
+        if (httpServletRequest.getSession().getAttribute("expired-password") != null && !(uri.equalsIgnoreCase("/retail/reset_password"))) {
             ChangeDefaultPassword changePassword = new ChangeDefaultPassword();
             ModelAndView modelAndView = new ModelAndView("forwarded-view");
 
             modelAndView.addObject("changePassword", changePassword);
             modelAndView.addObject("passwordRules", passwordPolicyService.getPasswordRules());
 
-            modelAndView.setViewName("/adm/admin/new-pword");
+            modelAndView.setViewName("cust/settings/new-password");
             throw new ModelAndViewDefiningException(modelAndView);
 
         }

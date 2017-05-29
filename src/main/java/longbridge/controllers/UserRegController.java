@@ -59,6 +59,8 @@ public class UserRegController {
     public @ResponseBody String getAccountDetailsFromNumber(@PathVariable String accountNumber, @PathVariable String email, @PathVariable String birthDate){
         String customerId = "";
         logger.info("Account nUmber : " + accountNumber);
+        logger.info("Email : " + email);
+        logger.info("BirthDate : " + birthDate);
         CustomerDetails details = integrationService.isAccountValid(accountNumber, email, birthDate);
         if (details != null){
             customerId = details.getCifId();
@@ -66,7 +68,6 @@ public class UserRegController {
             //nothing
             customerId = "";
         }
-        System.out.println("@@@@@CUST ID :"+customerId);
         return customerId;
     }
 
@@ -136,7 +137,7 @@ public class UserRegController {
         String username = webRequest.getParameter("username");
         //TODO
         try {
-            securityService.synchronizeToken(username);
+           // securityService.synchronizeToken(username);
             redirectAttributes.addFlashAttribute("message", "Synchronize Token successful");
         } catch (Exception exc) {
             logger.error("Error", exc);

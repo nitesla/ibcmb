@@ -68,8 +68,8 @@
                                 <li sec:authorize="hasAuthority('STANDING_ORDER')"><a th:href="@{/retail/directdebit}" th:text="#{menu.transfer.order}">Standing order</a></li>
                             </ul>
                         </li>
-                        <li sec:authorize="hasAuthority('MANAGE_BILL_PAYMENT')"><a href="#" th:text="#{menu.bill}">Bill Payments</a></li>
-                        <li sec:authorize="hasAuthority('MANAGE_INVESTMENT')"><a href="#" th:text="#{menu.investment}">Investment</a></li>
+                        <!--<li sec:authorize="hasAuthority('MANAGE_BILL_PAYMENT')"><a href="#" th:text="#{menu.bill}">Bill Payments</a></li>-->
+                        <!--<li sec:authorize="hasAuthority('MANAGE_INVESTMENT')"><a href="#" th:text="#{menu.investment}">Investment</a></li>-->
                         <li class="dropdown" sec:authorize="hasAuthority('MANAGE_SERV_REQ')">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.servreq}"> Service Requests </a>
                             <ul class="dropdown-menu">
@@ -91,10 +91,10 @@
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> More </a>
                             <ul class="dropdown-menu">
-                                <li sec:authorize="hasAuthority('RET_SYNC_TOKEN')"><a th:href="@{/retail/alert_preference}" th:text="#{menu.token.sync}">Synchronize Token</a></li>
-                                <li sec:authorize="hasAuthority('RET_LOST_TOKEN')"><a th:href="@{/retail/change_password}" th:text="#{menu.token.report}">Report Lost Token</a></li>
+                                <li sec:authorize="hasAuthority('RET_SYNC_TOKEN')"><a th:href="@{/retail/token/sync}" th:text="#{menu.token.sync}">Synchronize Token</a></li>
+                                <li sec:authorize="hasAuthority('RET_LOST_TOKEN')"><a th:href="@{/retail/token/lost}" th:text="#{menu.token.report}">Report Lost Token</a></li>
                                 <li sec:authorize="hasAuthority('MANAGE_BEN')"><a th:href="@{/retail/beneficiary}" th:text="#{menu.beneficiary}">Beneficiaries</a></li>
-                                <li sec:authorize="hasAuthority('RET_MAILBOX')"><a href="#" th:text="#{menu.mail}"> Mailbox</a></li>
+                                <li sec:authorize="hasAuthority('RET_MAILBOX')"><a th:href="@{/retail/mailbox/inbox}" th:text="#{menu.mail}"> Mailbox</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -195,16 +195,15 @@
         $(document).ready(function(){
             $(".dropdown").hover(
                 function() {
-                    $('.dropdown-menu', this).not('.in .dropdown-menu').stop(true,true).slideDown("1500");
+                    $('.dropdown-menu', this).not('.in .dropdown-menu').stop(true,true).slideDown("2000");
                     $(this).toggleClass('open');
                 },
                 function() {
-                    $('.dropdown-menu', this).not('.in .dropdown-menu').stop(true,true).slideUp("1500");
+                    $('.dropdown-menu', this).not('.in .dropdown-menu').stop(true,true).slideUp("400");
                     $(this).toggleClass('open');
                 }
             );
         });
-
     </script>
     <script>
         $(document).on('click', '.mega-dropdown', function(e) {

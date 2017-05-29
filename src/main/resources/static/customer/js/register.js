@@ -144,10 +144,14 @@
     }
 
 
-
     //datepicker
     $( function() {
-        $('#datepicker').datepicker({ dateFormat: 'dd-mm-yy' }).val();
+        $('#datepicker').datepicker(
+            { changeMonth: true,
+                changeYear: true,
+                showButtonPanel: true,
+                yearRange: "-100:+0",
+                dateFormat: 'dd-mm-yy' }).val();
 
         //load the anti phishing images from the server
         loadPhishingImages();
@@ -215,7 +219,6 @@
         onFinished: function (event, currentIndex)
         {
 //            alert("Submitted!");
-
             window.location.href = "/login/retail";
         }
     });

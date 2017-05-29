@@ -9,6 +9,7 @@ import longbridge.models.Account;
 import longbridge.models.FinancialInstitutionType;
 import longbridge.models.RetailUser;
 import longbridge.services.*;
+import longbridge.utils.ResultType;
 import longbridge.utils.TransferType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -46,10 +47,12 @@ public class TransferController {
     private LocalBeneficiaryService localBeneficiaryService;
     private FinancialInstitutionService financialInstitutionService;
      private TransferErrorService transferErrorService;
+     private SecurityService securityService;
+
 
 
     @Autowired
-    public TransferController(RetailUserService retailUserService, IntegrationService integrationService, TransferService transferService, AccountService accountService, MessageSource messages, LocaleResolver localeResolver, LocalBeneficiaryService localBeneficiaryService, FinancialInstitutionService financialInstitutionService,TransferErrorService transferErrorService) {
+    public TransferController(RetailUserService retailUserService, IntegrationService integrationService, TransferService transferService, AccountService accountService, MessageSource messages, LocaleResolver localeResolver, LocalBeneficiaryService localBeneficiaryService, FinancialInstitutionService financialInstitutionService,TransferErrorService transferErrorService,SecurityService securityService) {
         this.retailUserService = retailUserService;
         this.integrationService = integrationService;
         this.transferService = transferService;
@@ -59,13 +62,14 @@ public class TransferController {
         this.localBeneficiaryService = localBeneficiaryService;
         this.financialInstitutionService = financialInstitutionService;
         this.transferErrorService=transferErrorService;
+        this.securityService=securityService;
 
     }
 
 
     @GetMapping(value = "")
     public String index(TransferType tranType) {
-        tranType = TransferType.INTER_BANK_TRANSFER;
+
         switch (tranType) {
             case CORONATION_BANK_TRANSFER:
 
@@ -147,15 +151,15 @@ public class TransferController {
 
 
     @PostMapping("/process")
-    public String bankTransfer(@ModelAttribute("transferRequest") @Valid TransferRequestDTO transferRequestDTO, Model model, RedirectAttributes redirectAttributes, Locale locale, HttpServletRequest request) throws Exception {
+    public String bankTransfer(@ModelAttribute("transferRequest") @Valid TransferRequestDTO transferRequestDTO, Model model, RedirectAttributes redirectAttributes, Locale locale, HttpServletRequest request,Principal principal) throws Exception {
 
         try {
 
             if (request.getSession().getAttribute("AUTH") != null) {
                 String token = request.getParameter("token");
-                // boolean tokenOk = integrationService.performTokenValidation(principal.getName(), token);
-                boolean tokenOk = !token.isEmpty();
-                if (!tokenOk) {
+               boolean tokenOk = securityService.performTokenValidation(principal.getName(),token);
+                boolean ok = tokenOk;
+                if (!ok) {
                     model.addAttribute("error", messages.getMessage("auth.token.failure", null, locale));
                     return "/transfer/transferauth";
                 } else {
@@ -172,8 +176,8 @@ public class TransferController {
             redirectAttributes.addFlashAttribute("message", messages.getMessage("transaction.success", null, locale));
 
 
-          //  return index(transferRequestDTO.getTransferType());
-            return "redirect:/retail/dashboard";
+          return index(transferRequestDTO.getTransferType());
+            //return "redirect:/retail/dashboard";
         } catch (InternetBankingTransferException e) {
             e.printStackTrace();
             String errorMessage = transferErrorService.getMessage(e,request);

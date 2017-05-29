@@ -24,7 +24,7 @@ import java.util.List;
  */
 @Controller
 @RequestMapping("/retail/mailbox")
-public class mailboxController {
+public class MailboxController {
 
     @Autowired
     MessageService messageService;

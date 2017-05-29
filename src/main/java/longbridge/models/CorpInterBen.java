@@ -10,7 +10,7 @@ import javax.persistence.ManyToOne;
  * Created by SYLVESTER on 5/22/2017.
  */
 @Entity
-@Audited
+@Audited(withModifiedFlag=true)
 @Where(clause="del_Flag='N")
 public class CorpInterBen extends Beneficiary{
 @ManyToOne

@@ -10,7 +10,7 @@ import javax.persistence.ManyToOne;
  * Created by Wunmi on 08/04/2017.
  */
 @Entity
-@Audited
+@Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
 public class ServiceReqFormField extends AbstractEntity {
 

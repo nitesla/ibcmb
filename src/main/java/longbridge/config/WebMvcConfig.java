@@ -2,6 +2,7 @@ package longbridge.config;
 
 import longbridge.security.adminuser.AdminAuthenticationSuccessHandler;
 import longbridge.security.adminuser.AdminUserLoginInterceptor;
+import longbridge.security.corpuser.CorporateUserLoginInterceptor;
 import longbridge.security.opsuser.OpUserLoginInterceptor;
 import longbridge.security.retailuser.RetailUserLoginInterceptor;
 import org.modelmapper.ModelMapper;
@@ -63,6 +64,7 @@ public class WebMvcConfig   extends WebMvcConfigurerAdapter {
 		registry.addInterceptor(adminUserLoginInterceptor()).addPathPatterns("/admin/**");
 		registry.addInterceptor( OpUserLoginInterceptor()).addPathPatterns("/ops/**");
 		registry.addInterceptor(retailUserLoginInterceptor()).addPathPatterns("/retail/**");
+		registry.addInterceptor( corporateUserLoginInterceptor()).addPathPatterns("/corps/**");
 		registry.addInterceptor(retailTransferAuthInterceptor()).addPathPatterns( "/retail/transfer/process");
 	}
 
@@ -123,5 +125,9 @@ public class WebMvcConfig   extends WebMvcConfigurerAdapter {
 		return new RetailUserLoginInterceptor();
   }
 
+  @Bean
+	public CorporateUserLoginInterceptor corporateUserLoginInterceptor(){
 
+		return new CorporateUserLoginInterceptor();
+  }
 }

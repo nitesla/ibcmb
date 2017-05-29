@@ -115,6 +115,61 @@ public class SettingController {
         }
     }
 
+    @GetMapping("/reset_password")
+    public String resetPaswordPage(CustChangePassword custChangePassword, Model model){
+        List<String> passwordPolicy = passwordPolicyService.getPasswordRules();
+        logger.info("PASSWORD RULES {}", passwordPolicy);
+        model.addAttribute("passwordRules", passwordPolicy);
+        return "cust/settings/new-pword";
+    }
+
+    @PostMapping("/reset_password")
+    public String resetPassword(@Valid CustChangePassword custChangePassword, BindingResult result, Principal principal, Model model, RedirectAttributes redirectAttributes) throws Exception{
+        if(result.hasErrors()){
+            model.addAttribute("failure","Pls correct the errors");
+            return "cust/settings/new-pword";
+        }
+
+        if(!custChangePassword.getNewPassword().equals(custChangePassword.getConfirmPassword())){
+            logger.info("PASSWORD MISMATCH");
+            model.addAttribute("failure","Pls correct the errors");
+            return "cust/settings/new-pword";
+        }
+
+        RetailUser user = retailUserService.getUserByName(principal.getName());
+
+        try {
+            String message =retailUserService.changePassword(user, custChangePassword);
+            redirectAttributes.addFlashAttribute("message", message);
+            return "redirect:/retail/rreset_password";
+        } catch (WrongPasswordException wpe) {
+            result.reject("oldPassword", wpe.getMessage());
+            logger.error("Wrong password from retail user {}", user.getUserName(), wpe.toString());
+            List<String> passwordPolicy = passwordPolicyService.getPasswordRules();
+            logger.info("PASSWORD RULES {}", passwordPolicy);
+            model.addAttribute("passwordRules", passwordPolicy);
+            return "cust/settings/new-pword";
+        } catch (PasswordPolicyViolationException pve) {
+            result.reject("newPassword", pve.getMessage());
+            logger.error("Password policy violation from retail user {} error {}", user.getUserName(), pve.toString());
+            List<String> passwordPolicy = passwordPolicyService.getPasswordRules();
+            logger.info("PASSWORD RULES {}", passwordPolicy);
+            model.addAttribute("passwordRules", passwordPolicy);
+            return "cust/settings/new-pword";
+        } catch (PasswordMismatchException pme) {
+            result.reject("confirmPassword", pme.getMessage());
+            logger.error("New password mismatch from retail user {}", user.getUserName(), pme.toString());
+            return "cust/settings/new-pword";
+        } catch (PasswordException pe) {
+            result.addError(new ObjectError("error", pe.getMessage()));
+            logger.error("Error changing password for retail user {}", user.getUserName(), pe);
+            List<String> passwordPolicy = passwordPolicyService.getPasswordRules();
+            logger.info("PASSWORD RULES {}", passwordPolicy);
+            model.addAttribute("passwordRules", passwordPolicy);
+            return "cust/settings/new-word";
+        }
+    }
+
     @GetMapping("/alert_preference")
     public String AlertPreferencePage(AlertPref alertPref, Model model, Principal principal){
         RetailUser user =  retailUserService.getUserByName(principal.getName());

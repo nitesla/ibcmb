@@ -10,7 +10,7 @@ import java.util.Date;
  * Created by SYLVESTER on 4/26/2017.
  */
 @Entity
-@Audited
+@Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
 public class TransactionFee extends AbstractEntity{
 

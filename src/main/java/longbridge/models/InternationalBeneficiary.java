@@ -10,7 +10,7 @@ import javax.persistence.ManyToOne;
  * Created by Wunmi on 30/03/2017.
  */
 @Entity
-@Audited
+@Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
 public class InternationalBeneficiary extends Beneficiary {
 

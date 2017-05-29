@@ -10,12 +10,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-import java.util.ArrayList;
-import java.util.List;
-
 
 @SpringBootApplication
 @EnableJpaRepositories(repositoryFactoryBeanClass = CustomJpaRepositoryFactoryBean.class)
+
 
 
 public class InternetbankingApplication  /*extends  SpringBootServletInitializer*/ implements CommandLineRunner {
@@ -26,16 +24,14 @@ public class InternetbankingApplication  /*extends  SpringBootServletInitializer
     private IntegrationService integrationService;
 
     public static void main(String[] args) {
-        //startup all jobs
-        //   Timer timer = new Timer(1000 * 60 * 60 * 12, new DirectDebitJob());
-        SpringApplication.run(InternetbankingApplication.class, args);
-
+         SpringApplication.run(InternetbankingApplication.class, args);
 
     }
 
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
         return application.sources(InternetbankingApplication.class);
     }
+
 
 
     @Override
@@ -54,6 +50,7 @@ public class InternetbankingApplication  /*extends  SpringBootServletInitializer
 
 
     }
+
 
 }
 

@@ -2,6 +2,8 @@ package longbridge.controllers.corporate;
 
 
 import longbridge.exception.InternetBankingException;
+import longbridge.exception.InvalidAuthorizationException;
+import longbridge.exception.TransferRuleException;
 import longbridge.models.CorpTransRequest;
 
 
@@ -88,11 +90,21 @@ try {
     String message = corpTransferService.authorizeTransfer(corporateUser, id);
     redirectAttributes.addFlashAttribute("message", message);
 }
+catch (InvalidAuthorizationException iae){
+    logger.error("Failed to authorize transfer",iae);
+    redirectAttributes.addFlashAttribute("failure", iae.getMessage());
+
+}
+catch (TransferRuleException tre){
+    logger.error("Failed to authorize transfer",tre);
+    redirectAttributes.addFlashAttribute("failure", tre.getMessage());
+
+}
 catch (InternetBankingException e){
-    logger.error("AN ERROR HAS OCCURRED",e);
+    logger.error("Failed to authorize transfer",e);
     redirectAttributes.addFlashAttribute("failure", e.getMessage());
 
 }
-        return "corp/transfer/pendingtransfer/view";
+        return "redirect:/corporate/pending";
     }
 }

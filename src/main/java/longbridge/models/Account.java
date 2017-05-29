@@ -13,7 +13,7 @@ import javax.persistence.Entity;
  * Created on 3/28/2017.
  */
 @Entity
-@Audited
+@Audited(withModifiedFlag=true)
 @Where(clause ="del_flag='N'")
 public class Account extends AbstractEntity{
 

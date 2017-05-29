@@ -1,5 +1,6 @@
 package longbridge.services;
 
+import longbridge.dtos.CorpCorporateUserDTO;
 import longbridge.dtos.CorporateUserDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.PasswordException;
@@ -76,6 +77,9 @@ public interface CorporateUserService{
     @Transactional
     String changeActivationStatus(Long userId) throws InternetBankingException;
 
+    @PreAuthorize("hasAuthority('CORP_USER_STATUS')")
+    String changeCorpActivationStatus(Long userId) throws InternetBankingException;
+
     /**
      * resets the password for the specified corporate user
      * @param userId
@@ -120,6 +124,6 @@ public interface CorporateUserService{
      */
     boolean changeAlertPreference(CorporateUserDTO corporateUser, AlertPref alertPreference);
 
-    public String addUserFromCorporateAdmin(CorporateUserDTO user) throws InternetBankingException;
+    public String addUserFromCorporateAdmin(CorpCorporateUserDTO user) throws InternetBankingException;
 
 }

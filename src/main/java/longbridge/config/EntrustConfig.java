@@ -27,9 +27,6 @@ public class EntrustConfig {
         URL url = null;
         EntrustMultiFactorAuthImpl port  =null;
         try {
-            System.out.println(entrustUrl);
-
-          logger.trace("@@@ ENTRUST URL {}",entrustUrl);
             url= new URL(entrustUrl);
             QName qname = new QName("http://ws.entrustplugin.expertedge.com/", "EntrustMultiFactorAuthImplService");
 

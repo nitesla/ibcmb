@@ -18,7 +18,7 @@ import java.util.List;
  * Created on 3/28/2017.
  */
 @Entity
-@Audited
+@Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
 public class ServiceRequest extends AbstractEntity {
 

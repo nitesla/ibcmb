@@ -15,7 +15,7 @@ import java.util.Date;
  */
 
 @Entity
-@Audited
+@Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
 @Table(uniqueConstraints=@UniqueConstraint(columnNames={"channel","customerType","deletedOn"}))
 public class GlobalLimit extends  AbstractEntity {

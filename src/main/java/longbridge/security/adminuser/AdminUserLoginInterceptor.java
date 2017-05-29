@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.ModelAndViewDefiningException;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,13 +24,6 @@ private PasswordPolicyService passwordPolicyService;
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) throws Exception {
 
-
-        return true;
-    }
-
-    @Override
-    public void postHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o, ModelAndView modelAndView) throws Exception {
-
         String uri=httpServletRequest.getRequestURI();
 
 
@@ -38,12 +32,24 @@ private PasswordPolicyService passwordPolicyService;
         {
             ChangeDefaultPassword changePassword = new ChangeDefaultPassword();
 
-
+            ModelAndView modelAndView = new ModelAndView("forwarded-view");
             modelAndView.addObject("changePassword", changePassword);
-            //modelAndView.addObject("passwordRules", passwordPolicyService.getPasswordRules());
+            modelAndView.addObject("passwordRules", passwordPolicyService.getPasswordRules());
 
-             modelAndView.setViewName("/adm/admin/new-pword");
+            modelAndView.setViewName("/adm/admin/new-pword");
+            throw new ModelAndViewDefiningException(modelAndView);
         }
+
+
+
+
+
+        return true;
+    }
+
+    @Override
+    public void postHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o, ModelAndView modelAndView) throws Exception {
+
 
 
 

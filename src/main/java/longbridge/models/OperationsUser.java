@@ -14,7 +14,7 @@ import javax.persistence.*;
  */
 
 @Entity
-@Audited
+@Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
 @Table(uniqueConstraints=@UniqueConstraint(columnNames={"userName","deletedOn"}))
 public class OperationsUser extends User implements Person {

@@ -24,7 +24,7 @@ private PasswordPolicyService passwordPolicyService;
 
 
 
-        if (httpServletRequest.getSession().getAttribute("expired-password")!=null&& !(uri.equalsIgnoreCase("/retail/users/password/new")))
+        if (httpServletRequest.getSession().getAttribute("expired-password")!=null&& !(uri.equalsIgnoreCase("/corporate/reset_password")))
         {
             ChangeDefaultPassword changePassword = new ChangeDefaultPassword();
 
@@ -32,7 +32,7 @@ private PasswordPolicyService passwordPolicyService;
             modelAndView.addObject("changePassword", changePassword);
             modelAndView.addObject("passwordRules", passwordPolicyService.getPasswordRules());
 
-            modelAndView.setViewName("/adm/admin/new-pword");
+            modelAndView.setViewName("corp/settings/new-password");
             throw new ModelAndViewDefiningException(modelAndView);
         }
 
