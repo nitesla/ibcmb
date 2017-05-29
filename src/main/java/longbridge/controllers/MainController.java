@@ -1,7 +1,6 @@
 package longbridge.controllers;
 
 
-import com.sun.javafx.sg.prism.NGShape;
 import longbridge.exception.PasswordException;
 import longbridge.exception.UnknownResourceException;
 import longbridge.models.RetailUser;
@@ -31,6 +30,7 @@ import java.util.Optional;
 public class MainController {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private Locale locale;
 
     @Autowired
     private RetailUserService retailUserService;
@@ -50,7 +50,7 @@ public class MainController {
 
     @RequestMapping(value = "/login/retail", method = RequestMethod.GET)
     public ModelAndView getLoginPage(@RequestParam Optional<String> error) {
-        return new ModelAndView("retaillogin", "error", error);
+        return new ModelAndView("retpage1", "error", error);
     }
 
     @RequestMapping(value = "/login/corporate", method = RequestMethod.GET)
@@ -124,8 +124,33 @@ public class MainController {
        // return "";
     }
 
-    @PostMapping("/user/exists")
-    public @ResponseBody boolean userExists(WebRequest webRequest){
+    @PostMapping("/login/u/retail")
+    public String userExists(WebRequest webRequest, Model model){
+        String username = webRequest.getParameter("username");
+        RetailUser user =  retailUserService.getUserByName(username);
+        if (user == null){
+            model.addAttribute("error", messageSource.getMessage("invalid.user", null, locale));
+            return "retpage1";
+        }
+        model.addAttribute("username", user.getUserName());
+        return "retpage2";
+    }
+
+    @PostMapping("/login/p/retail")
+    public String step2(WebRequest webRequest, Model model){
+        String username = webRequest.getParameter("username");
+//        String phishing = webRequest.getParameter("username");
+        RetailUser user =  retailUserService.getUserByName(username);
+        if (user == null){
+            model.addAttribute("error", messageSource.getMessage("invalid.user", null, locale));
+            return "retpage2";
+        }
+        model.addAttribute("username", user.getUserName());
+        return "retaillogin";
+    }
+
+    @PostMapping("/user/corporate/exists")
+    public @ResponseBody boolean corpUserExists(WebRequest webRequest){
         String username = webRequest.getParameter("username");
         RetailUser user =  retailUserService.getUserByName(username);
         if (user == null){
