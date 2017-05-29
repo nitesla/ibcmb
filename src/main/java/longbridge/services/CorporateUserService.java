@@ -5,7 +5,7 @@ import longbridge.dtos.CorporateUserDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.PasswordException;
 import longbridge.forms.AlertPref;
-import longbridge.forms.ChangePassword;
+import longbridge.forms.CustChangePassword;
 import longbridge.models.Corporate;
 import longbridge.models.CorporateUser;
 import org.springframework.data.domain.Page;
@@ -108,7 +108,7 @@ public interface CorporateUserService{
      * @param changePassword the change password
      */
     @PreAuthorize("hasAuthority('UPDATE_CORPORATE_USER')")
-    String changePassword(CorporateUser user, ChangePassword changePassword) throws PasswordException;
+    String changePassword(CorporateUser user, CustChangePassword changePassword) throws PasswordException;
 
     /**
      * Generates and sends a password to the specified user

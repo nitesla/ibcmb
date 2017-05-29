@@ -57,7 +57,7 @@ public interface AdminUserService {
 //     */
 //    Iterable<AdminUser> getAdminUsers();
 
-    boolean isUsernameExist(String username) throws InternetBankingException;
+    boolean userExists(String username) throws InternetBankingException;
 
     /**
      * Creates an Admin user
@@ -111,4 +111,5 @@ public interface AdminUserService {
     @PreAuthorize("hasAuthority('CHANGE_ADMIN_USER_PASSWD')")
     String changeDefaultPassword(AdminUser user, ChangeDefaultPassword changePassword) throws PasswordException;
 
+    String resetPassword(String username) throws PasswordException;
 }

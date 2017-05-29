@@ -3,11 +3,8 @@ package longbridge.services.implementations;
 import longbridge.dtos.CorpCorporateUserDTO;
 import longbridge.dtos.CorporateUserDTO;
 import longbridge.exception.*;
-import longbridge.exception.DuplicateObjectException;
-import longbridge.exception.InternetBankingException;
-import longbridge.exception.PasswordException;
 import longbridge.forms.AlertPref;
-import longbridge.forms.ChangePassword;
+import longbridge.forms.CustChangePassword;
 import longbridge.models.*;
 import longbridge.repositories.CorpLimitRepo;
 import longbridge.repositories.CorporateUserRepo;
@@ -347,7 +344,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     }
 
     @Override
-    public String changePassword(CorporateUser user, ChangePassword changePassword) {
+    public String changePassword(CorporateUser user, CustChangePassword changePassword) {
        if(!this.passwordEncoder.matches(changePassword.getOldPassword(),user.getPassword())){
            throw new WrongPasswordException();
        }
