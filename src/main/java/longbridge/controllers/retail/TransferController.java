@@ -137,6 +137,7 @@ public class TransferController {
     public
     @ResponseBody
     String getInterBankAccountName(@PathVariable String accountNo, @PathVariable String bank) {
+        System.out.println("HELLO FROM NIBBS");
        return (integrationService.doNameEnquiry(bank,accountNo)).getAccountName();
       // return (integrationService.doNameEnquiry("000005",accountNo)).getAccountName();
 

@@ -2,6 +2,7 @@ package longbridge.services;
 
 import java.util.List;
 
+import longbridge.exception.InternetBankingTransferException;
 import longbridge.models.RetailUser;
 
 /**
@@ -37,24 +38,26 @@ public interface SecurityService {
      * @param username The username of the user
      * @param tokenString the inputted token string
      */
-    boolean performTokenValidation(String username, String tokenString);
-    boolean performOtpValidation(String username, String otp);
+    String performTokenValidation(String username, String tokenString) throws InternetBankingTransferException;
+    String performOtpValidation(String username, String otp) throws InternetBankingTransferException;
 
     
     /** This sends a request to synchronize the token attached to the user
      * with the specified username.
      * @param username the username of the required user
      */
-    void synchronizeToken(String username);
+    void synchronizeToken(String username) throws InternetBankingTransferException ;
 
-    boolean sendOtp(String username);
+    String sendOtp(String username) throws InternetBankingTransferException;
 
-    boolean createEntrustUser(String username ,String fullName,boolean enableOtp);
-    boolean deleteEntrustUser(String username ,String fullName,boolean enableOtp);
+    String createEntrustUser(String username ,String fullName,boolean enableOtp)throws InternetBankingTransferException;
+    String deleteEntrustUser(String username ,String fullName,boolean enableOtp)throws InternetBankingTransferException;
 
-    boolean assignToken(String username,String serialNumber);
-    boolean activateToken(String username,String serialNumber);
-    boolean deActivateToken(String username,String serialNumber);
+    String assignToken(String username,String serialNumber)throws InternetBankingTransferException;
+    String activateToken(String username,String serialNumber)throws InternetBankingTransferException;
+    String deActivateToken(String username,String serialNumber)throws InternetBankingTransferException;
+    void setUserQA(String username,List<String> questions,List<String> answer)throws InternetBankingTransferException;
+    void getUserQA(String username)throws InternetBankingTransferException;
 
 
 }

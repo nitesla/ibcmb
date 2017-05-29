@@ -36,8 +36,9 @@ public class EntrustConfig {
 
             javax.xml.ws.Service     service = 	javax.xml.ws.Service.create(url, qname);
             port=    service .getPort(EntrustMultiFactorAuthImpl.class);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+          //  e.printStackTrace();
+            logger.error("Exception occurred with entrust config {}",e.getMessage() );
         }
         return port;
     }

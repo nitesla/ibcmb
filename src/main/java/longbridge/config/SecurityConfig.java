@@ -2,6 +2,7 @@ package longbridge.config;
 
 import longbridge.dtos.SettingDTO;
 import longbridge.models.UserType;
+import longbridge.security.adminuser.AdminAuthenticationSuccessHandler;
 import longbridge.security.corpuser.CorperateAuthenticationFilter;
 import longbridge.security.retailuser.RetailAuthenticationSuccessHandler;
 import longbridge.services.ConfigurationService;
@@ -54,15 +55,18 @@ public class SecurityConfig {
         UserDetailsService adminDetails;
         @Autowired
         BCryptPasswordEncoder bCryptPasswordEncoder;
-        @Autowired
-        //@Qualifier("opAuthenticationSuccessHandler")
-        @Qualifier("adminAuthenticationSuccessHandler")
-        private AuthenticationSuccessHandler adminAuthenticationSuccessHandler;
+//        @Autowired
+//        //@Qualifier("opAuthenticationSuccessHandler")
+//        @Qualifier("adminAuthenticationSuccessHandler")
+//        private AuthenticationSuccessHandler adminAuthenticationSuccessHandler;
         @Autowired
         @Qualifier("adminAuthenticationFailureHandler")
         private AuthenticationFailureHandler adminAuthenticationFailureHandler;
         @Autowired
         private ConfigurationService configService;
+
+        @Autowired
+        AdminAuthenticationSuccessHandler adminAuthenticationSuccessHandler;
 
         private Logger logger = LoggerFactory.getLogger(this.getClass());
 
