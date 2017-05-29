@@ -21,7 +21,7 @@ import java.security.Principal;
  */
 @Controller
 @RequestMapping("/corporate/token")
-public class TokenManagementController {
+public class CorpTokenManagementController {
 
     private Logger logger= LoggerFactory.getLogger(this.getClass());
 

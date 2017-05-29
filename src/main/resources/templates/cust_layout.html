@@ -195,16 +195,15 @@
         $(document).ready(function(){
             $(".dropdown").hover(
                 function() {
-                    $('.dropdown-menu', this).not('.in .dropdown-menu').stop(true,true).slideDown("1500");
+                    $('.dropdown-menu', this).not('.in .dropdown-menu').stop(true,true).slideDown("2000");
                     $(this).toggleClass('open');
                 },
                 function() {
-                    $('.dropdown-menu', this).not('.in .dropdown-menu').stop(true,true).slideUp("1500");
+                    $('.dropdown-menu', this).not('.in .dropdown-menu').stop(true,true).slideUp("400");
                     $(this).toggleClass('open');
                 }
             );
         });
-
     </script>
     <script>
         $(document).on('click', '.mega-dropdown', function(e) {

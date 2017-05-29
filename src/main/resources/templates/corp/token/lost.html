@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="cust_layout :: site-head">
+<head th:replace="corp_layout :: site-head">
 
 </head>
 <body>
-<header th:replace="cust_layout :: header">
+<header th:replace="corp_layout :: corp-header">
 </header>
 
 <section class="content-wrapper">
@@ -32,14 +32,14 @@
                     </div>
                 </div>
             </div>
-            <div th:replace="cust_layout :: sidebar" class="col-md-3 sidebar">
+            <div th:replace="corp_layout :: corp-sidebar" class="col-md-3 sidebar">
             </div>
         </div>
     </div>
 </section>
 
 <!-- CONTENT-WRAPPER SECTION END-->
-<footer th:replace="cust_layout ::footer">
+<footer th:replace="corp_layout :: corp-footer">
 </footer>
 </body>
 </html>

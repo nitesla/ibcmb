@@ -51,22 +51,19 @@
         <div class="row">
             <div class="col-md-12 col-sm-12">
                 <div class="row">
-                    <h5 class="page_header">Password Reset</h5>
+                    <h5 class="page_header col-md-offset-4 col-md-4 col-sm-6">Password Reset</h5>
 
                     <div class="col-md-offset-4 col-md-4 col-sm-6">
-                        <form method="POST" th:action="@{/retail/password_exp}" th:object="${custChangePassword}">
+                        <form method="POST" th:action="@{/retail/reset_password}" th:object="${custChangePassword}">
 
-                            <h4>Change password </h4>
-                            <p><span style="color: red;">Your current password has expired.</span> <br/>Please enter a new password.</p>
+                            <p class="alert alert-danger"><span style="color: red;">Your current password has expired.</span> <br/>Please enter a new password.</p>
                             <div class="form-group">
-                                <ul id="" th:align="left">
-                                    <li th:each="rule : ${passwordRules}" th:text="${rule}">Input is incorrect</li>
-                                </ul>
+                                <p id="">
+                                    <span th:each="rule : ${passwordRules}" th:text="${rule}">Input is incorrect</span>
+                                </p>
                             </div>
-
-                            <input class="form-control" name="accountNumber" placeholder="Account Number"/><br/>
                             <div class="form-group">
-                                <label>New Password</label>
+                                <label>Set New Password</label>
                                 <input type="password" th:field="*{newPassword}"  class="form-control"/>
                                 <p class="errors" th:if="${#fields.hasErrors('newPassword')}" th:errors="*{newPassword}">&times;</p>
                             </div>
