@@ -206,7 +206,6 @@ public class SecurityServiceImpl implements SecurityService {
         }
         logger.trace("******************END RESPONSE***********");
 
-
         throw new InternetBankingSecurityException();
     }
 
@@ -240,8 +239,7 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
-    public boolean
-    assignToken(String username, String serialNumber) {
+    public boolean assignToken(String username, String serialNumber) {
         boolean result = false;
         TokenAdminDTO user = new TokenAdminDTO();
         user.setAppCode(appCode);

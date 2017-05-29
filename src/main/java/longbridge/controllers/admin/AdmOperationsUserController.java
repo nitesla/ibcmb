@@ -118,11 +118,18 @@ public class AdmOperationsUserController {
             result.addError(new ObjectError("error", doe.getMessage()));
             logger.error("Error creating operation user {}", operationsUser.getUserName(), doe);
             return "adm/operation/add";
-        } catch (InternetBankingException ibe) {
+        }
+        catch (InternetBankingSecurityException se) {
+            result.addError(new ObjectError("error", se.getMessage()));
+            logger.error("Error creating operation user", se);
+            return "adm/operation/add";
+        }
+        catch (InternetBankingException ibe) {
             result.addError(new ObjectError("error", ibe.getMessage()));
             logger.error("Error creating operation user", ibe);
             return "adm/operation/add";
-        }}
+        }
+    }
 
 
     @GetMapping("/{id}/activation")

@@ -39,14 +39,14 @@
                 <img th:src="@{/bank/images/cmb_logo.png}" alt="Coronation Merchant Bank" />
                 <br/>
 
-                <form th:action="@{/password/reset/admin}" method="POST">
+                <form th:action="@{/general/admin/users/password/reset/}" method="POST">
                     <h4>Password Reset</h4>
 
                     <div>
                         <input type="text" class="form-control" placeholder="Enter username" required="" name="username" />
                     </div>
                     <div>
-                        <input name="submit" type="submit" value="Submit" />
+                        <input name="submit" class="btn btn-primary" type="submit" value="Next" />
                     </div>
                     <div th:if="${param.message != null}" class="alert alert-info" th:text="${param.message[0]}">message</div>
 
