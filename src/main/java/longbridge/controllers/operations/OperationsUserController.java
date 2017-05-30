@@ -2,15 +2,13 @@ package longbridge.controllers.operations;
 
 import longbridge.dtos.OperationsUserDTO;
 import longbridge.dtos.RoleDTO;
-import longbridge.exception.PasswordException;
-import longbridge.exception.PasswordMismatchException;
-import longbridge.exception.PasswordPolicyViolationException;
-import longbridge.exception.WrongPasswordException;
+import longbridge.exception.*;
 import longbridge.forms.ChangeDefaultPassword;
 import longbridge.forms.ChangePassword;
 import longbridge.models.OperationsUser;
 import longbridge.services.OperationsUserService;
 import longbridge.services.PasswordPolicyService;
+import longbridge.services.SecurityService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +31,6 @@ import java.util.Locale;
  */
 
 @Controller
-@RequestMapping("/ops/users")
 public class OperationsUserController {
     @Autowired
     OperationsUserService operationsUserService;
@@ -47,55 +44,43 @@ public class OperationsUserController {
     @Autowired
     private MessageSource messageSource;
 
+    @Autowired
+    private SecurityService securityService;
+
     private Logger logger= LoggerFactory.getLogger(this.getClass());
 
 
-    @GetMapping("/new")
-    public String addUser(){
-        return "/adm/operation/add";
+
+    @GetMapping("/ops/token")
+    public String getOpsToken(HttpServletRequest httpServletRequest){
+        httpServletRequest.getSession().setAttribute("2FA","2FA");
+
+        return "/ops/token";
     }
 
-    @PostMapping
-    public String createUser(@ModelAttribute("operationsUserForm") OperationsUserDTO operationsUser, BindingResult result, Model model) throws Exception{
-        if(result.hasErrors()){
-            return "adm/operation/add";
+    @PostMapping("/ops/token")
+    public String performTokenAuthentication(HttpServletRequest request, Principal principal, RedirectAttributes redirectAttributes, Locale locale){
+
+        String username = principal.getName();
+        String tokenCode = request.getParameter("token");
+        try{
+            boolean result = securityService.performTokenValidation(username,tokenCode);
+            if(result){
+                if( request.getSession().getAttribute("2FA") !=null) {
+                    request.getSession().removeAttribute("2FA");
+                }
+                redirectAttributes.addFlashAttribute("message",messageSource.getMessage("token.auth.success",null,locale)) ;
+                return "redirect:/ops/dashboard";
+            }
         }
-        operationsUserService.addUser(operationsUser);
-        model.addAttribute("success","Operations user created successfully");
-        return "redirect:/ops/users";
-    }
-
-    @GetMapping
-    public Iterable<OperationsUserDTO> getAllOperationsUsers(Model model){
-        Iterable<OperationsUserDTO> operationsUserList= operationsUserService.getUsers();
-        model.addAttribute("operationsUserList",operationsUserList);
-        return operationsUserList;
-    }
-
-    @GetMapping("/{userId}")
-    public String getUser(@PathVariable Long userId, Model model){
-        OperationsUserDTO user = operationsUserService.getUser(userId);
-        model.addAttribute("operationsUser",user);
-        return "operationsUserDetails";
-    }
-
-    @PostMapping("/{userId}")
-    public String UpdateUser(@ModelAttribute("operationsUserForm") OperationsUserDTO user, @PathVariable Long userId, BindingResult result,Model model) throws Exception{
-        if(result.hasErrors()){
-            return "addUser";
+        catch (InternetBankingException ibe){
+            logger.error("Error authenticating token");
         }
-        user.setId(userId);
-        String message = operationsUserService.updateUser(user);
-            model.addAttribute("message", message);
+        redirectAttributes.addFlashAttribute("failure",messageSource.getMessage("token.auth.failure",null,locale));
+        return "redirect:/ops/token";
 
-        return "updateUser";
     }
 
-    @PostMapping("/{userId}/delete")
-    public String deleteUser(@PathVariable Long userId) {
-        operationsUserService.deleteUser(userId);
-        return "redirect:/ops/users";
-    }
 
     @ModelAttribute
     public void init(Model model) {
@@ -108,7 +93,7 @@ public class OperationsUserController {
         return "/ops/pword";
     }
 
-    @PostMapping("/password")
+    @PostMapping("ops/users/password")
     public String changePassword(@ModelAttribute("changePassword") @Valid ChangePassword changePassword, BindingResult result, Principal principal, RedirectAttributes redirectAttributes,Locale locale){
         if (result.hasErrors()) {
             result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required",null,locale)));
@@ -140,16 +125,16 @@ public class OperationsUserController {
 
     }
 
-    @GetMapping("/password/new")
+    @GetMapping("ops/users/password/new")
     public String changeDefaultPassword(Model model) {
         ChangeDefaultPassword changePassword = new ChangeDefaultPassword();
         model.addAttribute("changePassword", changePassword);
         model.addAttribute("passwordRules", passwordPolicyService.getPasswordRules());
-        return "ops/new-pword";
+        return "/ops/new-pword";
     }
 
 
-    @PostMapping("/password/new")
+    @PostMapping("/ops/users/password/new")
     public String changeDefaultPassword(@ModelAttribute("changePassword") @Valid ChangeDefaultPassword changePassword, BindingResult result, Principal principal, RedirectAttributes redirectAttributes,Locale locale,HttpServletRequest httpServletRequest) {
 
         if (result.hasErrors()) {

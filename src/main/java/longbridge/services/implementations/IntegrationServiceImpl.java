@@ -96,8 +96,9 @@ public class IntegrationServiceImpl implements IntegrationService {
     public TransRequest makeTransfer(TransRequest transRequest) throws InternetBankingTransferException {
 
         TransferType type;
-        type = TransferType.INTER_BANK_TRANSFER;
-        switch (type) {
+      type = TransferType.INTER_BANK_TRANSFER;
+        //switch (type) {
+        switch (transRequest.getTransferType()) {
             case CORONATION_BANK_TRANSFER:
 
             {
@@ -310,7 +311,7 @@ public class IntegrationServiceImpl implements IntegrationService {
         try {
 
             result = template.postForObject(uri, params, ObjectNode.class);
-
+            System.out.println("@@RESULT "+result);
         } catch (Exception e) {
             e.printStackTrace();
 

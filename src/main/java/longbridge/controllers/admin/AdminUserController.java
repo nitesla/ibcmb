@@ -91,7 +91,13 @@ public class AdminUserController {
             result.addError(new ObjectError("error", doe.getMessage()));
             logger.error("Error creating admin user {}", adminUser.getUserName(), doe);
             return "adm/admin/add";
-        } catch (InternetBankingException ibe) {
+        }
+        catch (InternetBankingSecurityException se) {
+            result.addError(new ObjectError("error", se.getMessage()));
+            logger.error("Error creating admin user", se);
+            return "adm/admin/add";
+        }
+        catch (InternetBankingException ibe) {
             result.addError(new ObjectError("error", ibe.getMessage()));
             logger.error("Error creating admin user", ibe);
             return "adm/admin/add";
@@ -186,9 +192,14 @@ public class AdminUserController {
         try {
             String message = adminUserService.deleteUser(userId);
             redirectAttributes.addFlashAttribute("message", message);
-        } catch (InternetBankingException ibe) {
+        }
+        catch (InternetBankingSecurityException se) {
+            redirectAttributes.addFlashAttribute("failure", se.getMessage());
+            logger.error("Error deleting admin user", se);
+        }
+        catch (InternetBankingException ibe) {
             redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
-            logger.error("Error updating admin user", ibe);
+            logger.error("Error deleting admin user", ibe);
         }
         return "redirect:/admin/users";
     }

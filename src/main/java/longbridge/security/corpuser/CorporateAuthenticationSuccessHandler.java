@@ -2,6 +2,7 @@ package longbridge.security.corpuser;
 
 import longbridge.models.UserType;
 import longbridge.repositories.CorporateUserRepo;
+import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ import java.io.IOException;
 @Component("corporateAuthenticationSuccessHandler")
 public class CorporateAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
     private final Logger logger = LoggerFactory.getLogger(getClass());
-
+    private LocalDate today = LocalDate.now();
     private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
     @Autowired
@@ -36,7 +37,10 @@ public class CorporateAuthenticationSuccessHandler implements AuthenticationSucc
         if (session != null) {
             session.setMaxInactiveInterval(30 * 60); //TODO this cannot be static
             session.setAttribute("user",corporateUserRepo.findFirstByUserName(authentication.getName()));
-
+//            LocalDate date = new LocalDate(user.getExpiryDate());
+//            if (today.isAfter(date) || today.isEqual(date)) {
+//                session.setAttribute("expired-password", "expired-password");
+//            }
         }
         clearAuthenticationAttributes(request);
     }

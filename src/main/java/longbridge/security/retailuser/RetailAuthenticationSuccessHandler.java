@@ -3,6 +3,7 @@ package longbridge.security.retailuser;
 import longbridge.models.RetailUser;
 import longbridge.models.UserType;
 import longbridge.repositories.RetailUserRepo;
+import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +22,9 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 @Component("retailAuthenticationSuccessHandler")
-public class RetailAuthenticationSuccessHandler  extends SimpleUrlAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
+public class RetailAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
     private final Logger logger = LoggerFactory.getLogger(getClass());
-
+    private LocalDate today = LocalDate.now();
     private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
     @Autowired
@@ -41,8 +42,14 @@ public class RetailAuthenticationSuccessHandler  extends SimpleUrlAuthentication
         final HttpSession session = request.getSession(false);
         if (session != null) {
             session.setMaxInactiveInterval(30 * 60); //TODO this cannot be static
+            RetailUser user = retailUserRepo.findFirstByUserName(authentication.getName());
+            LocalDate date = new LocalDate(user.getExpiryDate());
+
+            if (today.isAfter(date) || today.isEqual(date)) {
+                session.setAttribute("expired-password", "expired-password");
+            }
             //session.setAttribute("user",retailUserRepo.findFirstByUserName(authentication.getName()));
-           retailUserRepo.updateUserAfterLogin(authentication.getName());
+            retailUserRepo.updateUserAfterLogin(authentication.getName());
 
         }
         clearAuthenticationAttributes(request);
@@ -61,11 +68,11 @@ public class RetailAuthenticationSuccessHandler  extends SimpleUrlAuthentication
 
     protected String determineTargetUrl(final Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-          boolean isUser= retailUserRepo.findFirstByUserName(userDetails.getUsername()).getUserType().equals(UserType.RETAIL);
+        boolean isUser = retailUserRepo.findFirstByUserName(userDetails.getUsername()).getUserType().equals(UserType.RETAIL);
 
         if (isUser) {
             return "/retail/dashboard";
-        }  else {
+        } else {
             throw new IllegalStateException();
         }
     }
@@ -78,11 +85,11 @@ public class RetailAuthenticationSuccessHandler  extends SimpleUrlAuthentication
 //        session.removeAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
 //    }
 
-    public void setRedirectStrategy(final RedirectStrategy redirectStrategy) {
-        this.redirectStrategy = redirectStrategy;
-    }
-
     protected RedirectStrategy getRedirectStrategy() {
         return redirectStrategy;
+    }
+
+    public void setRedirectStrategy(final RedirectStrategy redirectStrategy) {
+        this.redirectStrategy = redirectStrategy;
     }
 }

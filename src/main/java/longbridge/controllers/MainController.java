@@ -1,18 +1,26 @@
 package longbridge.controllers;
 
 
+import longbridge.exception.PasswordException;
 import longbridge.exception.UnknownResourceException;
 import longbridge.models.RetailUser;
+import longbridge.services.AdminUserService;
+import longbridge.services.OperationsUserService;
 import longbridge.services.RetailUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpSession;
 import java.security.Principal;
+import java.util.Locale;
 import java.util.Optional;
 
 /**
@@ -22,9 +30,18 @@ import java.util.Optional;
 public class MainController {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private Locale locale;
 
     @Autowired
     private RetailUserService retailUserService;
+    @Autowired
+    private AdminUserService adminUserService;
+    @Autowired
+    private OperationsUserService opsUserService;
+    @Autowired
+    private MessageSource messageSource;
+
+
 
     @RequestMapping(value = {"/", "/home"})
     public String getHomePage() {
@@ -33,7 +50,7 @@ public class MainController {
 
     @RequestMapping(value = "/login/retail", method = RequestMethod.GET)
     public ModelAndView getLoginPage(@RequestParam Optional<String> error) {
-        return new ModelAndView("retaillogin", "error", error);
+        return new ModelAndView("retpage1", "error", error);
     }
 
     @RequestMapping(value = "/login/corporate", method = RequestMethod.GET)
@@ -107,8 +124,33 @@ public class MainController {
        // return "";
     }
 
-    @PostMapping("/user/exists")
-    public @ResponseBody boolean userExists(WebRequest webRequest){
+    @PostMapping("/login/u/retail")
+    public String userExists(WebRequest webRequest, Model model){
+        String username = webRequest.getParameter("username");
+        RetailUser user =  retailUserService.getUserByName(username);
+        if (user == null){
+            model.addAttribute("error", messageSource.getMessage("invalid.user", null, locale));
+            return "retpage1";
+        }
+        model.addAttribute("username", user.getUserName());
+        return "retpage2";
+    }
+
+    @PostMapping("/login/p/retail")
+    public String step2(WebRequest webRequest, Model model){
+        String username = webRequest.getParameter("username");
+//        String phishing = webRequest.getParameter("username");
+        RetailUser user =  retailUserService.getUserByName(username);
+        if (user == null){
+            model.addAttribute("error", messageSource.getMessage("invalid.user", null, locale));
+            return "retpage2";
+        }
+        model.addAttribute("username", user.getUserName());
+        return "retaillogin";
+    }
+
+    @PostMapping("/user/corporate/exists")
+    public @ResponseBody boolean corpUserExists(WebRequest webRequest){
         String username = webRequest.getParameter("username");
         RetailUser user =  retailUserService.getUserByName(username);
         if (user == null){
@@ -116,5 +158,8 @@ public class MainController {
         }
         return true;
     }
+
+
+
 
 }

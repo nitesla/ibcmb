@@ -23,9 +23,19 @@ public class AccountDetails {
     private String schmCode;
     private String availableBalance;
     private String custId;
+    private boolean isRetail;
 
 
     public AccountDetails() {
+    }
+
+
+    public boolean isRetail() {
+        return isRetail;
+    }
+
+    public void setRetail(boolean retail) {
+        isRetail = retail;
     }
 
     public String getSolId() {
@@ -157,22 +167,23 @@ public class AccountDetails {
 
     @Override
     public String toString() {
-        return "{\"AccountDetails\":{"
-                + "                        \"solId\":\"" + solId + "\""
-                + ",                         \"acctOpenDate\":\"" + acctOpenDate + "\""
-                + ",                         \"acctCrncyCode\":\"" + acctCrncyCode + "\""
-                + ",                         \"freezeCode\":\"" + freezeCode + "\""
-                + ",                         \"acctStatus\":\"" + acctStatus + "\""
-                + ",                         \"acctType\":\"" + acctType + "\""
-                + ",                         \"unClrBalAmt\":\"" + unClrBalAmt + "\""
-                + ",                         \"ledgerBalAmt\":\"" + ledgerBalAmt + "\""
-                + ",                         \"sanctLim\":\"" + sanctLim + "\""
-                + ",                         \"drwngPower\":\"" + drwngPower + "\""
-                + ",                         \"acctName\":\"" + acctName + "\""
-                + ",                         \"acctNumber\":\"" + acctNumber + "\""
-                + ",                         \"schmCode\":\"" + schmCode + "\""
-                + ",                         \"availableBalance\":\"" + availableBalance + "\""
-                + ",                         \"custId\":\"" + custId + "\""
-                + "}}";
+        return "AccountDetails{" +
+                "solId='" + solId + '\'' +
+                ", acctOpenDate='" + acctOpenDate + '\'' +
+                ", acctCrncyCode='" + acctCrncyCode + '\'' +
+                ", freezeCode='" + freezeCode + '\'' +
+                ", acctStatus='" + acctStatus + '\'' +
+                ", acctType='" + acctType + '\'' +
+                ", unClrBalAmt='" + unClrBalAmt + '\'' +
+                ", ledgerBalAmt='" + ledgerBalAmt + '\'' +
+                ", sanctLim='" + sanctLim + '\'' +
+                ", drwngPower='" + drwngPower + '\'' +
+                ", acctName='" + acctName + '\'' +
+                ", acctNumber='" + acctNumber + '\'' +
+                ", schmCode='" + schmCode + '\'' +
+                ", availableBalance='" + availableBalance + '\'' +
+                ", custId='" + custId + '\'' +
+                ", isRetail=" + isRetail +
+                '}';
     }
 }

@@ -27,17 +27,15 @@ public class EntrustConfig {
         URL url = null;
         EntrustMultiFactorAuthImpl port  =null;
         try {
-            System.out.println(entrustUrl);
-
-          logger.trace("@@@ ENTRUST URL {}",entrustUrl);
             url= new URL(entrustUrl);
             QName qname = new QName("http://ws.entrustplugin.expertedge.com/", "EntrustMultiFactorAuthImplService");
 
 
             javax.xml.ws.Service     service = 	javax.xml.ws.Service.create(url, qname);
             port=    service .getPort(EntrustMultiFactorAuthImpl.class);
-        } catch (MalformedURLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
+            logger.error("Exception occurred with entrust config {}",e.getMessage() );
         }
         return port;
     }

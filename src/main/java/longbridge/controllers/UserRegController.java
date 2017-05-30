@@ -127,36 +127,18 @@ public class UserRegController {
     }
 
 
-    @GetMapping("/token/synchronize")
-    public String synchronizeTokenView() {
-        return "cust/settings/synchronizetoken";
-    }
-
-    @PostMapping("/token/synchronize")
-    public String synchronizeToken(WebRequest webRequest, RedirectAttributes redirectAttributes) {
-        String username = webRequest.getParameter("username");
-        //TODO
-        try {
-            securityService.synchronizeToken(username);
-            redirectAttributes.addFlashAttribute("message", "Synchronize Token successful");
-        } catch (Exception exc) {
-            logger.error("Error", exc);
-            redirectAttributes.addFlashAttribute("message", "Synchronize Token failed");
-        }
-        return "redirect:/token/synchronize";
-    }
-
-    @PostMapping("/token/authenticate")
-    public
-    @ResponseBody
-    String performTokenAuthentication(WebRequest webRequest, HttpServletResponse webResponse) {
-        String username = webRequest.getParameter("username");
-        String tokenString = webRequest.getParameter("tokenString");
-        //TODO
-        boolean result = securityService.performTokenValidation(username, tokenString);
-        webResponse.addHeader("contentType", "application/json");
-        return "{'success': " + result + "}";
-    }
+//
+//    @PostMapping("/token/authenticate")
+//    public
+//    @ResponseBody
+//    String performTokenAuthentication(WebRequest webRequest, HttpServletResponse webResponse) {
+//        String username = webRequest.getParameter("username");
+//        String tokenString = webRequest.getParameter("tokenString");
+//        //TODO
+//        boolean result = securityService.performTokenValidation(username, tokenString);
+//        webResponse.addHeader("contentType", "application/json");
+//        return "{'success': " + result + "}";
+//    }
 
 
     @GetMapping("/register")

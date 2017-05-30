@@ -93,7 +93,7 @@ public class OwnTransferController {
 
         {
             String errorMessage =errorService.getMessage(exception,servletRequest);
-           model.addAttribute("error", errorMessage);
+           model.addAttribute("failure", errorMessage);
             return page + "pagei";
 
         }

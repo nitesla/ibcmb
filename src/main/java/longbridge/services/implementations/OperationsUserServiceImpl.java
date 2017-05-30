@@ -1,6 +1,7 @@
 package longbridge.services.implementations;
 
 import longbridge.dtos.OperationsUserDTO;
+import longbridge.dtos.SettingDTO;
 import longbridge.exception.*;
 import longbridge.forms.ChangeDefaultPassword;
 import longbridge.forms.ChangePassword;
@@ -31,9 +32,11 @@ import java.util.*;
  */
 @Service
 public class OperationsUserServiceImpl implements OperationsUserService {
+
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private OperationsUserRepo operationsUserRepo;
+
     private BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
@@ -41,9 +44,6 @@ public class OperationsUserServiceImpl implements OperationsUserService {
 
     @Autowired
     MailService mailService;
-
-    @Autowired
-    ConfigurationService configService;
 
     @Autowired
     PasswordPolicyService passwordPolicyService;
@@ -54,6 +54,13 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     @Autowired
     CodeService codeService;
 
+    @Autowired
+    SecurityService securityService;
+
+    @Autowired
+    ConfigurationService configService;
+
+
     Locale locale = LocaleContextHolder.getLocale();
 
     public OperationsUserServiceImpl() {
@@ -62,9 +69,9 @@ public class OperationsUserServiceImpl implements OperationsUserService {
 
 
     @Override
-    public boolean isValidUsername(String username) {
+    public boolean userExists(String username) {
         OperationsUser opsUser = operationsUserRepo.findFirstByUserName(username);
-        return (opsUser == null) ? true : false;
+        return (opsUser != null) ? true : false;
 
     }
 
@@ -114,8 +121,8 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             String newStatus = "A".equals(oldStatus) ? "I" : "A";
             user.setStatus(newStatus);
             operationsUserRepo.save(user);
-            String fullName = user.getFirstName()+" "+user.getLastName();
-            if ((oldStatus == null) ) {//User was just created
+            String fullName = user.getFirstName() + " " + user.getLastName();
+            if ((oldStatus == null)) {//User was just created
                 String password = passwordPolicyService.generatePassword();
                 user.setPassword(passwordEncoder.encode(password));
                 user.setExpiryDate(new Date());
@@ -123,13 +130,11 @@ public class OperationsUserServiceImpl implements OperationsUserService {
 
                 Email email = new Email.Builder()
                         .setRecipient(user.getEmail())
-                        .setSubject(messageSource.getMessage("ops.create.subject",null,locale))
-                        .setBody(String.format(messageSource.getMessage("ops.create.message",null,locale),fullName, user.getUserName(), password))
+                        .setSubject(messageSource.getMessage("ops.create.subject", null, locale))
+                        .setBody(String.format(messageSource.getMessage("ops.create.message", null, locale), fullName, user.getUserName(), password))
                         .build();
                 mailService.send(email);
-            }
-
-            else if (("I".equals(oldStatus)) && "A".equals(newStatus)) {//User is being reactivated
+            } else if (("I".equals(oldStatus)) && "A".equals(newStatus)) {//User is being reactivated
                 String password = passwordPolicyService.generatePassword();
                 user.setPassword(passwordEncoder.encode(password));
                 user.setExpiryDate(new Date());
@@ -137,7 +142,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
                 Email email = new Email.Builder()
                         .setRecipient(user.getEmail())
                         .setSubject(messageSource.getMessage("ops.reactivation.subject", null, locale))
-                        .setBody(String.format(messageSource.getMessage("ops.reactivation.message", null, locale), fullName, user.getUserName(),password))
+                        .setBody(String.format(messageSource.getMessage("ops.reactivation.message", null, locale), fullName, user.getUserName(), password))
                         .build();
                 mailService.send(email);
             }
@@ -171,20 +176,30 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             opsUser.setLastName(user.getLastName());
             opsUser.setUserName(user.getUserName());
             opsUser.setEmail(user.getEmail());
+            opsUser.setPhoneNumber(user.getPhoneNumber());
             opsUser.setCreatedOnDate(new Date());
             Role role = new Role();
             role.setId(Long.parseLong(user.getRoleId()));
             opsUser.setRole(role);
             this.operationsUserRepo.save(opsUser);
+            String fullName = opsUser.getFirstName() + " " + opsUser.getLastName();
+            SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_CREATION");
+
+            if (setting != null && setting.isEnabled()) {
+                if ("YES".equalsIgnoreCase(setting.getValue())) {
+                    securityService.createEntrustUser(opsUser.getUserName(), fullName, true);
+                }
+            }
             logger.info("New Operation user  {} created", opsUser.getUserName());
             return messageSource.getMessage("user.add.success", null, LocaleContextHolder.getLocale());
+        } catch (InternetBankingSecurityException se) {
+            throw new InternetBankingSecurityException(messageSource.getMessage("entrust.create.failure", null, locale));
         } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("user.add.failure", null, locale), e);
         }
 
 
     }
-
 
 
     @Override
@@ -196,6 +211,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             opsUser.setFirstName(user.getFirstName());
             opsUser.setLastName(user.getLastName());
             opsUser.setUserName(user.getUserName());
+            opsUser.setPhoneNumber(user.getPhoneNumber());
             Role role = new Role();
             role.setId(Long.parseLong(user.getRoleId()));
             opsUser.setRole(role);
@@ -209,12 +225,28 @@ public class OperationsUserServiceImpl implements OperationsUserService {
 
 
     @Override
+
     public String deleteUser(Long userId) throws InternetBankingException {
-        operationsUserRepo.delete(userId);
-        logger.warn("Operations user with Id {} deleted", userId);
-        return messageSource.getMessage("user.delete.success", null, locale);
+        try {
+            OperationsUser opsUser = operationsUserRepo.findOne(userId);
+            operationsUserRepo.delete(userId);
+            logger.warn("Operations user with Id {} deleted", userId);
+            String fullName = opsUser.getFirstName() + " " + opsUser.getLastName();
+            SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_DELETION");
 
-
+            if (setting != null && setting.isEnabled()) {
+                if ("YES".equalsIgnoreCase(setting.getValue())) {
+                    securityService.deleteEntrustUser(opsUser.getUserName(), fullName);
+                }
+            }
+            return messageSource.getMessage("user.delete.success", null, locale);
+        }
+        catch (InternetBankingSecurityException se){
+            throw new InternetBankingSecurityException(messageSource.getMessage("entrust.delete.failure",null,locale));
+        }
+        catch (Exception e){
+            throw new InternetBankingException(messageSource.getMessage("user.delete.failure",null,locale));
+        }
     }
 
     @Override
@@ -223,13 +255,35 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             OperationsUser user = operationsUserRepo.findOne(id);
             String newPassword = passwordPolicyService.generatePassword();
             user.setPassword(passwordEncoder.encode(newPassword));
-            String fullName = user.getFirstName()+" "+user.getLastName();
+            String fullName = user.getFirstName() + " " + user.getLastName();
             user.setExpiryDate(new Date());
             this.operationsUserRepo.save(user);
             Email email = new Email.Builder()
                     .setRecipient(user.getEmail())
-                    .setSubject(messageSource.getMessage("ops.password.reset.subject",null,locale))
-                    .setBody(String.format(messageSource.getMessage("ops.password.reset.message",null,locale), fullName, newPassword))
+                    .setSubject(messageSource.getMessage("ops.password.reset.subject", null, locale))
+                    .setBody(String.format(messageSource.getMessage("ops.password.reset.message", null, locale), fullName, newPassword))
+                    .build();
+            mailService.send(email);
+            logger.info("Operations user {} password reset successfully", user.getUserName());
+            return messageSource.getMessage("password.reset.success", null, locale);
+        } catch (Exception e) {
+            throw new PasswordException(messageSource.getMessage("password.reset.failure", null, locale), e);
+        }
+    }
+
+    @Override
+    public String resetPassword(String username) throws InternetBankingException {
+        try {
+            OperationsUser user = operationsUserRepo.findFirstByUserName(username);
+            String newPassword = passwordPolicyService.generatePassword();
+            user.setPassword(passwordEncoder.encode(newPassword));
+            String fullName = user.getFirstName() + " " + user.getLastName();
+            user.setExpiryDate(new Date());
+            this.operationsUserRepo.save(user);
+            Email email = new Email.Builder()
+                    .setRecipient(user.getEmail())
+                    .setSubject(messageSource.getMessage("ops.password.reset.subject", null, locale))
+                    .setBody(String.format(messageSource.getMessage("ops.password.reset.message", null, locale), fullName, newPassword))
                     .build();
             mailService.send(email);
             logger.info("Operations user {} password reset successfully", user.getUserName());
@@ -247,7 +301,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             throw new WrongPasswordException();
         }
 
-        String errorMessage = passwordPolicyService.validate(changePassword.getNewPassword(),user.getUsedPasswords());
+        String errorMessage = passwordPolicyService.validate(changePassword.getNewPassword(), user.getUsedPasswords());
         if (!"".equals(errorMessage)) {
             throw new PasswordPolicyViolationException(errorMessage);
         }
@@ -258,7 +312,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
         try {
             OperationsUser opsUser = operationsUserRepo.findOne(user.getId());
             opsUser.setPassword(this.passwordEncoder.encode(changePassword.getNewPassword()));
-            opsUser.setUsedPasswords(getUsedPasswords(changePassword.getNewPassword(),opsUser.getUsedPasswords()));
+            opsUser.setUsedPasswords(getUsedPasswords(changePassword.getNewPassword(), opsUser.getUsedPasswords()));
             opsUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
             this.operationsUserRepo.save(opsUser);
             logger.info("User {}'s password has been updated", user.getId());
@@ -273,7 +327,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     public String changeDefaultPassword(OperationsUser user, ChangeDefaultPassword changePassword) throws PasswordException {
 
 
-        String errorMessage = passwordPolicyService.validate(changePassword.getNewPassword(),user.getUsedPasswords());
+        String errorMessage = passwordPolicyService.validate(changePassword.getNewPassword(), user.getUsedPasswords());
         if (!"".equals(errorMessage)) {
             throw new PasswordPolicyViolationException(errorMessage);
         }
@@ -284,7 +338,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
         try {
             OperationsUser opsUser = operationsUserRepo.findOne(user.getId());
             opsUser.setPassword(this.passwordEncoder.encode(changePassword.getNewPassword()));
-            opsUser.setUsedPasswords(getUsedPasswords(changePassword.getNewPassword(),opsUser.getUsedPasswords()));
+            opsUser.setUsedPasswords(getUsedPasswords(changePassword.getNewPassword(), opsUser.getUsedPasswords()));
             opsUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
             operationsUserRepo.save(opsUser);
             logger.info("User {} password has been updated", user.getId());
@@ -294,12 +348,12 @@ public class OperationsUserServiceImpl implements OperationsUserService {
         }
     }
 
-    private String getUsedPasswords(String newPassword, String oldPasswords){
+    private String getUsedPasswords(String newPassword, String oldPasswords) {
         StringBuilder builder = new StringBuilder();
-        if(oldPasswords!=null){
+        if (oldPasswords != null) {
             builder.append(oldPasswords);
         }
-        builder.append(newPassword+",");
+        builder.append(newPassword + ",");
         return builder.toString();
     }
 
@@ -307,18 +361,18 @@ public class OperationsUserServiceImpl implements OperationsUserService {
         Email email = new Email.Builder()
                 .setRecipient(user.getEmail())
                 .setSubject("Creation on Internet Banking Operations Console")
-                .setBody(String.format("You have been created on the Internet Banking Operation console.\nYour username is %s and your password is %s. \nThank you.", user.getUserName(),password))
+                .setBody(String.format("You have been created on the Internet Banking Operation console.\nYour username is %s and your password is %s. \nThank you.", user.getUserName(), password))
                 .build();
         mailService.send(email);
     }
 
     private OperationsUserDTO convertEntityToDTO(OperationsUser operationsUser) {
-        OperationsUserDTO operationsUserDTO =  modelMapper.map(operationsUser, OperationsUserDTO.class);
+        OperationsUserDTO operationsUserDTO = modelMapper.map(operationsUser, OperationsUserDTO.class);
         operationsUserDTO.setRole(operationsUser.getRole().getName());
-        if(operationsUser.getCreatedOnDate()!=null) {
+        if (operationsUser.getCreatedOnDate() != null) {
             operationsUserDTO.setCreatedOn(DateFormatter.format(operationsUser.getCreatedOnDate()));
         }
-        if(operationsUser.getLastLoginDate()!=null) {
+        if (operationsUser.getLastLoginDate() != null) {
             operationsUserDTO.setLastLogin(DateFormatter.format(operationsUser.getLastLoginDate()));
         }
         Code code = codeService.getByTypeAndCode("USER_STATUS", operationsUser.getStatus());

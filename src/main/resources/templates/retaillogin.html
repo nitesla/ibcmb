@@ -59,17 +59,17 @@
                 <div th:if="${param.error != null}" class="alert alert-danger" th:text="${session[SPRING_SECURITY_LAST_EXCEPTION]}">error</div>
                 <br/>
                 <div id="username_div" class="form-group">
-                    <input type="text" id="username" name="username" class="form-control"  placeholder="Username" />
+                    <input type="text" name="username" th:value="*{username}" class="form-control"  placeholder="Username" readonly="readonly"/>
                     <p><a href="/forgot/username">Forgot Username?</a></p>
                 </div>
 
-                <div id="password_div" class="hidden form-group">
-                    <input type="password" id="password" name="password" class="form-control"  placeholder="Password" autocomplete="off" />
+                <div id="password_div" class="form-group">
+                    <input type="password" name="password" class="form-control"  placeholder="Password" autocomplete="off" />
                     <p><a href="/forgot/password">forgot password?</a></p>
                 </div>
 
                 <div class="form-group">
-                    <button class="btn form-control">Submit</button>
+                    <button class="btn btn-primary form-control">Submit</button>
                 </div>
             </form>
         </div>
@@ -98,79 +98,79 @@
 <script th:src="@{~/customer/js/bootstrap.js}"></script>
     <script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
 
-    <script th:th:inline="javascript" type="text/javascript">
-        /*<![CDATA[*/
-        $.notifyDefaults({
-            placement: {
-                from: "top",
-                align: 'left',
-                offset: 50
-            }
-        });
+    <!--<script th:th:inline="javascript" type="text/javascript">-->
+        <!--/*<![CDATA[*/-->
+        <!--$.notifyDefaults({-->
+            <!--placement: {-->
+                <!--from: "top",-->
+                <!--align: 'left',-->
+                <!--offset: 50-->
+            <!--}-->
+        <!--});-->
 
-        $(document).ready(function(){
-            $('#loginform').submit(function(event){
-                event.preventDefault();
-                if($('#password').val()==""){
-                    confirmUser();
-                    return;
-                }
-                this.submit();
-            });
+        <!--$(document).ready(function(){-->
+            <!--$('#loginform').submit(function(event){-->
+                <!--event.preventDefault();-->
+                <!--if($('#password').val()==""){-->
+                    <!--confirmUser();-->
+                    <!--return;-->
+                <!--}-->
+                <!--this.submit();-->
+            <!--});-->
 
-        });
-        function confirmUser(){
-            //$('#loading').html("<img src='/assets/img/ajax-loader.gif' />");
-            //get the username
-            var username = $('#username').val();
-            if(username==""){
-                //("Please enter your username");
-                $.notify({
-                    title: '<strong>Oops!</strong>',
-                    message: 'Please enter your username'
-                },{
-                    type: 'danger'
-                });
-                //$('#loading').html("");
-                return;
-            }
-            var options = {
-                type: 'POST',
-                url: '/user/exists',
-                data: {"username": username},
-                error: function(xhr, textStatus, errorThrown) {
-                    $.notify({
-                        title: '<strong>Oops!</strong>',
-                        message: 'An error occurred while logging in. Please reload the page and try again'
-                    });
-                },
-                success: function(data, textStatus) {
-                    console.log(data);
-                    if(data) {
-                        $("#username_div").hide();
+        <!--});-->
+        <!--function confirmUser(){-->
+            <!--//$('#loading').html("<img src='/assets/img/ajax-loader.gif' />");-->
+            <!--//get the username-->
+            <!--var username = $('#username').val();-->
+            <!--if(username==""){-->
+                <!--//("Please enter your username");-->
+                <!--$.notify({-->
+                    <!--title: '<strong>Oops!</strong>',-->
+                    <!--message: 'Please enter your username'-->
+                <!--},{-->
+                    <!--type: 'danger'-->
+                <!--});-->
+                <!--//$('#loading').html("");-->
+                <!--return;-->
+            <!--}-->
+            <!--var options = {-->
+                <!--type: 'POST',-->
+                <!--url: '/user/exists',-->
+                <!--data: {"username": username},-->
+                <!--error: function(xhr, textStatus, errorThrown) {-->
+                    <!--$.notify({-->
+                        <!--title: '<strong>Oops!</strong>',-->
+                        <!--message: 'An error occurred while logging in. Please reload the page and try again'-->
+                    <!--});-->
+                <!--},-->
+                <!--success: function(data, textStatus) {-->
+                    <!--console.log(data);-->
+                    <!--if(data) {-->
+                        <!--$("#username_div").hide();-->
 
-                        $("#password_div").removeClass("hidden");
-                        $("#password_div").show().slideDown("fast", function () {
-                            // Animation complete.
-                            console.log("input shown");
-                        });
+                        <!--$("#password_div").removeClass("hidden");-->
+                        <!--$("#password_div").show().slideDown("fast", function () {-->
+                            <!--// Animation complete.-->
+                            <!--console.log("input shown");-->
+                        <!--});-->
 
-                        $('#label').html("Please enter your password");
-                    }else{
-                        //$('#loading').html("");
-                        $.notify({
-                            title: '<strong>Oops!</strong>',
-                            message: 'User not found'
-                        },{
-                            type: 'danger'
-                        });
-                    }
-                }
-            };
-            $.ajax(options);
+                        <!--$('#label').html("Please enter your password");-->
+                    <!--}else{-->
+                        <!--//$('#loading').html("");-->
+                        <!--$.notify({-->
+                            <!--title: '<strong>Oops!</strong>',-->
+                            <!--message: 'User not found'-->
+                        <!--},{-->
+                            <!--type: 'danger'-->
+                        <!--});-->
+                    <!--}-->
+                <!--}-->
+            <!--};-->
+            <!--$.ajax(options);-->
 
-        }
-        /*]]>*/
-    </script>
+        <!--}-->
+        <!--/*]]>*/-->
+    <!--</script>-->
 </body>
 </html>

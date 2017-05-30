@@ -5,6 +5,7 @@ import longbridge.services.PasswordPolicyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.ModelAndViewDefiningException;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,12 +21,6 @@ public class OpUserLoginInterceptor extends HandlerInterceptorAdapter {
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) throws Exception {
 
-        return true;
-    }
-
-    @Override
-    public void postHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o, ModelAndView modelAndView) throws Exception {
-
         String uri=httpServletRequest.getRequestURI();
 
 
@@ -33,14 +28,36 @@ public class OpUserLoginInterceptor extends HandlerInterceptorAdapter {
         if (httpServletRequest.getSession().getAttribute("expired-password")!=null&& !(uri.equalsIgnoreCase("/ops/users/password/new")))
         {
             ChangeDefaultPassword changePassword = new ChangeDefaultPassword();
-
+            ModelAndView modelAndView = new ModelAndView("forwarded-view");
 
             modelAndView.addObject("changePassword", changePassword);
-            //modelAndView.addObject("passwordRules", passwordPolicyService.getPasswordRules());
+          modelAndView.addObject("passwordRules", passwordPolicyService.getPasswordRules());
 
             modelAndView.setViewName("ops/new-pword");
+            throw new ModelAndViewDefiningException(modelAndView);
         }
 
+        if (httpServletRequest.getSession().getAttribute("2FA")!=null&& !(uri.equalsIgnoreCase("/ops/token")))
+        {
+
+            ModelAndView modelAndView = new ModelAndView("forwarded-view");
+
+            modelAndView.setViewName("/ops/token");
+            throw new ModelAndViewDefiningException(modelAndView);
+        }
+
+
+
+
+
+
+
+
+        return true;
+    }
+
+    @Override
+    public void postHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o, ModelAndView modelAndView) throws Exception {
 
 
 

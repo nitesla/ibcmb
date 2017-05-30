@@ -1,9 +1,11 @@
 package longbridge.security.opsuser;
 
+import longbridge.dtos.SettingDTO;
 import longbridge.models.OperationsUser;
 import longbridge.models.UserType;
 import longbridge.repositories.AdminUserRepo;
 import longbridge.repositories.OperationsUserRepo;
+import longbridge.services.ConfigurationService;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +37,9 @@ public class OpAuthenticationSuccessHandler extends SavedRequestAwareAuthenticat
 
     @Autowired
     private OperationsUserRepo operationsUserRepo;
+
+    @Autowired
+    private ConfigurationService configService;
 
 
 
@@ -74,10 +79,18 @@ public class OpAuthenticationSuccessHandler extends SavedRequestAwareAuthenticat
     }
 
 
-
     protected String determineTargetUrl(final Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
           boolean isOp= operationsUserRepo.findFirstByUserName(userDetails.getUsername()).getUserType().equals(UserType.OPERATIONS);
+        SettingDTO setting = configService.getSettingByName("ENABLE_OPS_2FA");
+        boolean tokenAuth = false;
+        if (setting != null && setting.isEnabled()) {
+            tokenAuth = (setting.getValue().equalsIgnoreCase("yes") ? true : false);
+        }
+        if (tokenAuth) {
+            return "/ops/token";
+        }
+
         if (isOp) {
             return "/ops/dashboard";
         }  else {

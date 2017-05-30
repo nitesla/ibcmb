@@ -1,7 +1,10 @@
 package longbridge.config;
 
+import longbridge.security.adminuser.AdminAuthenticationSuccessHandler;
 import longbridge.security.adminuser.AdminUserLoginInterceptor;
+import longbridge.security.corpuser.CorporateUserLoginInterceptor;
 import longbridge.security.opsuser.OpUserLoginInterceptor;
+import longbridge.security.retailuser.RetailUserLoginInterceptor;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -12,6 +15,8 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.request.RequestContextListener;
 import org.springframework.web.servlet.LocaleResolver;
@@ -56,8 +61,10 @@ public class WebMvcConfig   extends WebMvcConfigurerAdapter {
 		final LocaleChangeInterceptor localeChangeInterceptor = new LocaleChangeInterceptor();
 		localeChangeInterceptor.setParamName("lang");
 		registry.addInterceptor(localeChangeInterceptor);
-		registry.addInterceptor(new AdminUserLoginInterceptor()).addPathPatterns("/admin/**");
-		registry.addInterceptor(new OpUserLoginInterceptor()).addPathPatterns("/ops/**");
+		registry.addInterceptor(adminUserLoginInterceptor()).addPathPatterns("/admin/**");
+		registry.addInterceptor( OpUserLoginInterceptor()).addPathPatterns("/ops/**");
+		registry.addInterceptor(retailUserLoginInterceptor()).addPathPatterns("/retail/**");
+		registry.addInterceptor( corporateUserLoginInterceptor()).addPathPatterns("/corps/**");
 		registry.addInterceptor(retailTransferAuthInterceptor()).addPathPatterns( "/retail/transfer/process");
 	}
 
@@ -92,19 +99,35 @@ public class WebMvcConfig   extends WebMvcConfigurerAdapter {
 	}
 
 //
-//	@Bean
-//	public AuthenticationSuccessHandler successHandler() {
-//		SimpleUrlAuthenticationSuccessHandler handler = new SimpleUrlAuthenticationSuccessHandler();
-//		handler.setUseReferer(true);
-//		handler.setDefaultTargetUrl();
-//		return handler;
-//	}
+	@Bean
+	public AdminAuthenticationSuccessHandler successHandler() {
+		AdminAuthenticationSuccessHandler handler = new AdminAuthenticationSuccessHandler();
+		handler.setUseReferer(true);
+		return handler;
+	}
 
 	@Bean
 	public RetailTransferAuthInterceptor retailTransferAuthInterceptor(){
 		return new RetailTransferAuthInterceptor();
 	}
 
+     @Bean
+	public OpUserLoginInterceptor OpUserLoginInterceptor(){
+		return new OpUserLoginInterceptor();
+}
 
+      @Bean
+	public AdminUserLoginInterceptor adminUserLoginInterceptor(){
+		return new AdminUserLoginInterceptor();
+	  }
+  @Bean
+	public RetailUserLoginInterceptor retailUserLoginInterceptor(){
+		return new RetailUserLoginInterceptor();
+  }
 
+  @Bean
+	public CorporateUserLoginInterceptor corporateUserLoginInterceptor(){
+
+		return new CorporateUserLoginInterceptor();
+  }
 }

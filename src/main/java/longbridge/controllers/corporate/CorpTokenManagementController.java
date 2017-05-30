@@ -39,7 +39,7 @@ public class CorpTokenManagementController {
             return "corp/token/sync";
         }
 
-        securityService.synchronizeToken(principal.getName());
+       // securityService.synchronizeToken(principal.getName());
         return "redirect:/corporate/token/sync";
     }
 
@@ -55,7 +55,7 @@ public class CorpTokenManagementController {
             return "corp/token/lost";
         }
 
-        securityService.synchronizeToken(principal.getName());
+       // securityService.synchronizeToken(principal.getName());
         return "redirect:/corporate/token/lost";
     }
 
