@@ -95,10 +95,10 @@ public class IntegrationServiceImpl implements IntegrationService {
     @Override
     public TransRequest makeTransfer(TransRequest transRequest) throws InternetBankingTransferException {
 
-        TransferType type;
-      type = TransferType.INTER_BANK_TRANSFER;
+        TransferType type =transRequest.getTransferType();
+
         //switch (type) {
-        switch (transRequest.getTransferType()) {
+        switch (type) {
             case CORONATION_BANK_TRANSFER:
 
             {
@@ -116,7 +116,7 @@ public class IntegrationServiceImpl implements IntegrationService {
                     response = template.postForObject(uri, params, TransferDetails.class);
 
                     if (response.getResponseCode().equalsIgnoreCase("000")) {
-
+                        transRequest.setReferenceNumber(response.getUniqueReferenceCode());
                         transRequest.setStatus(ResultType.SUCCESS.toString());
                         return transRequest;
                     } else {
@@ -136,6 +136,32 @@ public class IntegrationServiceImpl implements IntegrationService {
 
             }
             case INTER_BANK_TRANSFER: {
+                transRequest.setTransferType(TransferType.INTER_BANK_TRANSFER);
+                TransferDetails response = null;
+                String uri = URI + "/transfer/nip";
+                Map<String, String> params = new HashMap<>();
+                params.put("debitAccountNumber", transRequest.getCustomerAccountNumber());
+                params.put("creditAccountNumber", transRequest.getBeneficiaryAccountNumber());
+                params.put("tranAmount", transRequest.getAmount().toString());
+                params.put("destinationInstitutionCode", transRequest.getFinancialInstitution().getInstitutionCode());
+                logger.info("params for transfer {}", params.toString());
+                try {
+                    response = template.postForObject(uri, params, TransferDetails.class);
+
+                    if (response.getResponseCode().equalsIgnoreCase("000")) {
+                        transRequest.setSessionId(response.getSessionId());
+                        transRequest.setStatus(ResultType.SUCCESS.toString());
+                        return transRequest;
+                    }
+
+                } catch (Exception e) {
+
+                    transRequest.setStatus(ResultType.ERROR.toString());
+                    return transRequest;
+                }
+
+
+
 
             }
             case INTERNATIONAL_TRANSFER: {
@@ -158,7 +184,7 @@ public class IntegrationServiceImpl implements IntegrationService {
                     response = template.postForObject(uri, params, TransferDetails.class);
 
                     if (response.getResponseCode().equalsIgnoreCase("000")) {
-
+                        transRequest.setReferenceNumber(response.getUniqueReferenceCode());
                         transRequest.setStatus(ResultType.SUCCESS.toString());
                         return transRequest;
                     }

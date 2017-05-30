@@ -70,6 +70,7 @@ public interface SecurityService {
     void setUserQA(String username, List<String> questions, List<String> answer) throws InternetBankingTransferException;
 
    Map< List<String>, List<String>> getUserQA(String username) throws InternetBankingTransferException;
+   Map< List<String>, List<String>> getMutualAuth(String username) throws InternetBankingTransferException;
 
    String getTokenSerials(String username);
    boolean unLockUser(String username);

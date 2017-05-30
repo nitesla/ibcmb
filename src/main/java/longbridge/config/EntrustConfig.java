@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
 
 import javax.xml.namespace.QName;
 import java.net.MalformedURLException;
@@ -22,12 +23,17 @@ public class EntrustConfig {
     private Logger logger = LoggerFactory.getLogger(getClass());
 
 
-    @Bean
+    @Bean("prototype")
+
     public   EntrustMultiFactorAuthImpl port (){
         URL url = null;
         EntrustMultiFactorAuthImpl port  =null;
         try {
-            url= new URL(entrustUrl);
+         url= new URL(entrustUrl);
+
+
+//           url = this.getClass().getClassLoader()
+//                    .getResource(entrustUrl);
             QName qname = new QName("http://ws.entrustplugin.expertedge.com/", "EntrustMultiFactorAuthImplService");
 
 

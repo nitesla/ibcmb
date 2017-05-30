@@ -15,8 +15,8 @@ public enum TransferType {
     INTER_BANK_TRANSFER("Interbank Transfer"),
     INTERNATIONAL_TRANSFER("International Transfer"),
     NIP("NIP Transfer"),
-    RTGS("RTGS Transfer"),
-    NAPS("NAPS Transfer");
+    NAPS("NAPS Transfer"),
+    RTGS("RTGS Transfer");
 
 
 

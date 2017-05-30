@@ -10,13 +10,34 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class TransferDetails {
     private String responseCode;
     private String  responseDescription;
+    private String  uniqueReferenceCode;
+    private String sessionId;
 
     public TransferDetails() {
     }
 
-    public TransferDetails(String responseCode, String responseDescription) {
+
+    public TransferDetails(String responseCode, String responseDescription, String uniqueReferenceCode, String sessionId) {
         this.responseCode = responseCode;
         this.responseDescription = responseDescription;
+        this.uniqueReferenceCode = uniqueReferenceCode;
+        this.sessionId = sessionId;
+    }
+
+    public String getUniqueReferenceCode() {
+        return uniqueReferenceCode;
+    }
+
+    public void setUniqueReferenceCode(String uniqueReferenceCode) {
+        this.uniqueReferenceCode = uniqueReferenceCode;
+    }
+
+    public String getSessionId() {
+        return sessionId;
+    }
+
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
     }
 
     public String getResponseCode() {

@@ -3,6 +3,7 @@ package longbridge.services.implementations;
 import com.expertedge.entrustplugin.ws.*;
 
 import longbridge.exception.InternetBankingSecurityException;
+import longbridge.exception.InternetBankingTransferException;
 import longbridge.models.RetailUser;
 import longbridge.services.IntegrationService;
 import longbridge.services.SecurityService;
@@ -387,31 +388,66 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
-    public String getTokenSerials(String username) {
-            String result = "";
-        TokenSerialDTO user = new TokenSerialDTO();
-            user.setAppCode(appCode);
-            user.setAppDesc(appDesc);
-            user.setGroup(appGroup);
+    public Map<List<String>, List<String>> getMutualAuth(String username) throws InternetBankingTransferException {
+        Map<List<String>, List<String>> list = new HashMap<>();
 
-            user.setUserName(username);
-            logger.trace("User  parameters {}", user);
-            logger.trace("******************BEGIN RESPONSE***********");
-        TokenSerialResponseDTO response = port.performGetTokenSerial(user);
-            if (response != null) {
-                logger.trace("status: " + response.isAuthenticationSuccessful());
-                logger.trace("  response code: " + response.getRespCode());
-                logger.trace("  response message: " + response.getRespMessage());
+        MauthDTO user = new MauthDTO();
+        user.setAppCode(appCode);
+        user.setAppDesc(appDesc);
+        user.setGroup(appGroup);
+        user.setUserName(username);
 
-                result = response.getTokenSerials();
-                return result;
+        logger.trace("QA parameters {}", user);
+        logger.trace("******************BEGIN RESPONSE***********");
+        ImageCaptionResponseDTO response = port.performMutualAuth(user);
 
+        if (response != null) {
+            logger.trace("MUTUAL AUTH status: " + response.isSuccessful());
+            logger.trace("MUTUAL AUTH response code: " + response.getRespCode());
+            logger.trace(" MUTUAL AUTH response Message: " + response.getRespMessage());
+            if (!response.isSuccessful()) {
+                throw new InternetBankingSecurityException(response.getRespMessage());
             }
-            logger.trace("******************END RESPONSE***********");
 
-
-            throw new InternetBankingSecurityException();
         }
+        logger.trace("******************END RESPONSE***********");
+
+        List<String> captionSecret = response.getCaptionSecret();
+        List<String> imageSecret = response.getImageSecret();
+
+        list.put(captionSecret, imageSecret);
+
+
+        return list;
+
+    }
+
+    @Override
+    public String getTokenSerials(String username) {
+        String result = "";
+        TokenSerialDTO user = new TokenSerialDTO();
+        user.setAppCode(appCode);
+        user.setAppDesc(appDesc);
+        user.setGroup(appGroup);
+
+        user.setUserName(username);
+        logger.trace("User  parameters {}", user);
+        logger.trace("******************BEGIN RESPONSE***********");
+        TokenSerialResponseDTO response = port.performGetTokenSerial(user);
+        if (response != null) {
+            logger.trace("status: " + response.isAuthenticationSuccessful());
+            logger.trace("  response code: " + response.getRespCode());
+            logger.trace("  response message: " + response.getRespMessage());
+
+            result = response.getTokenSerials();
+            return result;
+
+        }
+        logger.trace("******************END RESPONSE***********");
+
+
+        throw new InternetBankingSecurityException();
+    }
 
     @Override
     public boolean unLockUser(String username) {
@@ -440,7 +476,7 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
-    public boolean updateUser(String username,String fullName,boolean enableOtp) {
+    public boolean updateUser(String username, String fullName, boolean enableOtp) {
         boolean result = false;
         UserAdminDTO user = new UserAdminDTO();
         user.setAppCode(appCode);
