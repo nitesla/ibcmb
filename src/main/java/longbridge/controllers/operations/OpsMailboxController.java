@@ -120,7 +120,7 @@ public class OpsMailboxController {
         }
 
         OperationsUser opsUser = operationsUserService.getUserByName(principal.getName());
-        messageService.addMessage(opsUser,recipient,messageDTO);
+        messageService.addMessage(opsUser,messageDTO);
         redirectAttributes.addFlashAttribute("message","Message sent successfully");
         return "redirect:/ops/mailbox/outbox";
     }

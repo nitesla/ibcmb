@@ -9,6 +9,7 @@
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/jquery-ui.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/bootstrap.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/custom.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/calendar.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/select.bootstrap.css}" />
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/font-awesome/font-awesome.min.css}"/>
     <title>Coronation Merchant Bank</title>
@@ -123,31 +124,9 @@
     </header>
 
     <div th:fragment="corp-sidebar" class="col-md-3 sidebar">
+
         <div class="sidebar-bg calender">
-            <body onload="showme()">
-            <div class="container">
-                <div class="col-md-3">
-                    <div id="showdate" class="showdate">
-                        <span onclick="reduceWeek()"><i class="fa fa-chevron-left"></i></span>&nbsp;<span id="dateMonth" class="dateMonth"></span><span id="dateYear" class="dateMonth"></span>&nbsp;<span onclick="increaseWeek()"><i class="fa fa-chevron-right"></i></span>
-                        <div style="float: right;">
-                            <span id="dateDay" class="dateDay"></span>
-                            <span id="dateWeek" class="dateWeek"></span>
-                        </div>
-                        <hr class="hrhr"/>
-                        <div class="weeks" style="width: 100%">
-                            <span id="week" class="week"></span>&nbsp;&nbsp;&nbsp;
-                            <span id="day1" class="week"></span>&nbsp;&nbsp;&nbsp;
-                            <span id="day2" class="week"></span>&nbsp;&nbsp;&nbsp;
-                            <span id="day3" class="week"></span>&nbsp;&nbsp;&nbsp;
-                            <span id="day4" class="week"></span>&nbsp;&nbsp;&nbsp;
-                            <span id="day5" class="week"></span>&nbsp;&nbsp;&nbsp;
-                            <span id="day6" class="week"></span>&nbsp;&nbsp;&nbsp;
-                            <span id="day7" class="week"></span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            </body>
+            <div id="calendar" class="calendar"></div>
         </div>
         <div class="sidebar-bg">
             <img th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
@@ -191,6 +170,7 @@
     <script th:src="@{~/customer/js/jquery-1.11.1.js}"></script>
     <script th:src="@{~/customer/js/jquery-ui.js}"></script>
     <script th:src="@{~/customer/js/jquery.dataTables.js}"></script>
+    <script th:src="@{~/customer/js/momentMin.js}"></script>
     <script th:src="@{~/customer/js/calendar.js}"></script>
     <script th:src="@{~/customer/js/dataTables.bootstrap.js}"></script>
     <script th:src="@{~/customer/js/jquery.spring-friendly.min.js}"></script>
