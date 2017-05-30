@@ -39,6 +39,15 @@ public class RetailUserLoginInterceptor extends HandlerInterceptorAdapter {
 
         }
 
+        if (httpServletRequest.getSession().getAttribute("2FA")!=null&& !(uri.equalsIgnoreCase("/retail/token")))
+        {
+
+            ModelAndView modelAndView = new ModelAndView("forwarded-view");
+
+            modelAndView.setViewName("/cust/token");
+            throw new ModelAndViewDefiningException(modelAndView);
+        }
+
         return true;
 
 

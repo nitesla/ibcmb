@@ -92,6 +92,12 @@ public class AdminUserController {
             logger.error("Error creating admin user {}", adminUser.getUserName(), doe);
             return "adm/admin/add";
         }
+
+        catch (EntrustException se) {
+            result.addError(new ObjectError("error", se.getMessage()));
+            logger.error("Error creating admin user on Entrust", se);
+            return "adm/admin/add";
+        }
         catch (InternetBankingSecurityException se) {
             result.addError(new ObjectError("error", se.getMessage()));
             logger.error("Error creating admin user", se);

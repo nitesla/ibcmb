@@ -219,20 +219,20 @@ public class SecurityServiceImpl implements SecurityService {
         user.setFullname(fullName);
         user.setEnableOTP(enableOtp);
         user.setUserName(username);
-        logger.trace("User creation parameters {}", user);
-        logger.trace("******************BEGIN RESPONSE***********");
+        logger.info("User creation parameters {}", user);
+        logger.info("******************BEGIN RESPONSE***********");
         try{
         AdminResponseDTO response = port.performCreateEntrustUser(user);
         if (response != null) {
-            logger.trace("Creation status: " + response.isAdminSuccessful());
-            logger.trace(" Creation response code: " + response.getRespCode());
-            logger.trace(" Creation response message: " + response.getRespMessage());
+            logger.info("Creation status: " + response.isAdminSuccessful());
+            logger.info(" Creation response code: " + response.getRespCode());
+            logger.info(" Creation response message: " + response.getRespMessage());
 
             result = response.isAdminSuccessful();
             return result;
 
         }
-        logger.trace("******************END RESPONSE***********");
+        logger.info("******************END RESPONSE***********");
 
         }
         catch (EntrustConnectionException e){

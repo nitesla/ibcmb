@@ -170,7 +170,11 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_CREATION");
             if (setting != null && setting.isEnabled()) {
                 if ("YES".equalsIgnoreCase(setting.getValue())) {
-                    securityService.createEntrustUser(corporateUser.getUserName(), fullName, true);
+                   boolean result = securityService.createEntrustUser(corporateUser.getUserName(), fullName, true);
+                    if (!result) {
+                        throw new EntrustException(messageSource.getMessage("entrust.create.failure", null, locale));
+
+                    }
                 }
             }
             Email email = new Email.Builder()

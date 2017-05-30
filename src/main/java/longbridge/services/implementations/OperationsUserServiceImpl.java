@@ -165,10 +165,11 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     }
 
     @Override
+    @Transactional
     public String addUser(OperationsUserDTO user) throws InternetBankingException {
         OperationsUser opsUser = operationsUserRepo.findFirstByUserName(user.getUserName());
         if (opsUser != null) {
-            throw new DuplicateObjectException(messageSource.getMessage("user.exists", null, locale));
+            throw new DuplicateObjectException(messageSource.getMessage("user.exist", null, locale));
         }
         try {
             opsUser = new OperationsUser();
@@ -184,19 +185,24 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             this.operationsUserRepo.save(opsUser);
             String fullName = opsUser.getFirstName() + " " + opsUser.getLastName();
             SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_CREATION");
-
             if (setting != null && setting.isEnabled()) {
                 if ("YES".equalsIgnoreCase(setting.getValue())) {
-                    securityService.createEntrustUser(opsUser.getUserName(), fullName, true);
+                   boolean  result = securityService.createEntrustUser(opsUser.getUserName(), fullName, true);
+                    if (!result) {
+                        throw new EntrustException(messageSource.getMessage("entrust.create.failure", null, locale));
+                    }
                 }
             }
             logger.info("New Operation user  {} created", opsUser.getUserName());
             return messageSource.getMessage("user.add.success", null, LocaleContextHolder.getLocale());
         } catch (InternetBankingSecurityException se) {
-            throw new InternetBankingSecurityException(messageSource.getMessage("entrust.create.failure", null, locale));
+            throw new InternetBankingSecurityException(messageSource.getMessage("entrust.create.failure", null, locale),se);
         } catch (Exception e) {
-            throw new InternetBankingException(messageSource.getMessage("user.add.failure", null, locale), e);
-        }
+            if (e instanceof EntrustException) {
+                throw new EntrustException(messageSource.getMessage("entrust.create.failure", null, locale));
+            } else {
+                throw new InternetBankingException(messageSource.getMessage("user.add.failure", null, locale), e);
+            }        }
 
 
     }
