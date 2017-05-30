@@ -23,7 +23,6 @@ private PasswordPolicyService passwordPolicyService;
         String uri=httpServletRequest.getRequestURI();
 
 
-
         if (httpServletRequest.getSession().getAttribute("expired-password")!=null&& !(uri.equalsIgnoreCase("/corporate/reset_password")))
         {
             ChangeDefaultPassword changePassword = new ChangeDefaultPassword();

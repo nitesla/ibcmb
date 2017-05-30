@@ -43,7 +43,6 @@ public class TokenManagementController {
     @Autowired
     private MessageSource messageSource;
 
-
     @GetMapping
     public String getRetailToken(){
         return "/cust/logintoken";
@@ -129,7 +128,7 @@ public class TokenManagementController {
 
     @PostMapping("/authenticate")
     public String performAuthenticate(WebRequest webRequest, HttpSession session, Principal principal, RedirectAttributes redirectAttributes){
-        String url = "";
+        String url;
         if (webRequest.getParameter("token") == null){
             redirectAttributes.addFlashAttribute("failure", "Enter authentication code");
             return "/cust/tokenauth";
@@ -137,7 +136,6 @@ public class TokenManagementController {
         if (webRequest.getParameter("token") != null && session.getAttribute("redirectURL") != null && session.getAttribute("requestDTO") != null){
             String token = webRequest.getParameter("token");
             url = (String) session.getAttribute("redirectURL");
-            ServiceRequestDTO requestBody = (ServiceRequestDTO) session.getAttribute("requestDTO");
 
             try {
                 boolean result = securityService.performTokenValidation(principal.getName(), token);
@@ -148,15 +146,17 @@ public class TokenManagementController {
             }catch(InternetBankingException ibe){
                 logger.error("Error authenticating token", ibe);
                 redirectAttributes.addFlashAttribute("failure", "Token Authentication Failed");
-            }
+                return "redirect:/token/authenticate";
 
+            }
 
         }else {
             redirectAttributes.addFlashAttribute("failure", "Token Authentication Failed");
-            return "/cust/tokenauth";
+            return "redirect:/token/authenticate";
         }
+        session.setAttribute("authenticated","authenticated");
 
-        return url;
+        return "redirect:/"+url;
     }
 
 }

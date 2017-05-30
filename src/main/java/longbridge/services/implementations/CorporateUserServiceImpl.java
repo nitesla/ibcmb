@@ -186,10 +186,11 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             logger.info("New corporate user {} created", corporateUser.getUserName());
             return messageSource.getMessage("user.add.success", null, locale);
         }
-        catch (InternetBankingSecurityException se) {
-            throw new InternetBankingSecurityException(messageSource.getMessage("entrust.create.failure", null, locale));
-        }
+
         catch (Exception e) {
+            if(e instanceof EntrustException){
+                throw new InternetBankingSecurityException(messageSource.getMessage("entrust.create.failure", null, locale));
+            }
             throw new InternetBankingException(messageSource.getMessage("user.add.failure", null, locale), e);
         }
     }

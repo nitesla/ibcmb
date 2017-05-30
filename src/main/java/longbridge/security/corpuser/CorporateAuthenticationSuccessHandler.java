@@ -1,11 +1,14 @@
 package longbridge.security.corpuser;
 
+import longbridge.dtos.SettingDTO;
 import longbridge.models.UserType;
 import longbridge.repositories.CorporateUserRepo;
+import longbridge.services.ConfigurationService;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.DefaultRedirectStrategy;
@@ -27,6 +30,10 @@ public class CorporateAuthenticationSuccessHandler implements AuthenticationSucc
 
     @Autowired
     private CorporateUserRepo corporateUserRepo;
+    @Autowired
+    private MessageSource messageSource;
+    @Autowired
+    private ConfigurationService configService;
 
 
 
@@ -60,6 +67,15 @@ public class CorporateAuthenticationSuccessHandler implements AuthenticationSucc
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
           boolean isUser= corporateUserRepo.findFirstByUserName(userDetails.getUsername()).getUserType().equals(UserType.CORPORATE);
 
+        SettingDTO setting = configService.getSettingByName("ENABLE_CORPORATE_2FA");
+        boolean tokenAuth = false;
+        if (setting != null && setting.isEnabled()) {
+            tokenAuth = (setting.getValue().equalsIgnoreCase("YES") ? true : false);
+        }
+
+        if (tokenAuth) {
+            return "/corporate/token";
+        }
         if (isUser) {
             return "/corporate/dashboard";
         }  else {

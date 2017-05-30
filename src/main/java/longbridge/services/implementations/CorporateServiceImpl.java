@@ -2,9 +2,7 @@ package longbridge.services.implementations;
 
 import longbridge.api.AccountInfo;
 import longbridge.dtos.*;
-import longbridge.exception.DuplicateObjectException;
-import longbridge.exception.InternetBankingException;
-import longbridge.exception.TransferRuleException;
+import longbridge.exception.*;
 import longbridge.models.*;
 import longbridge.repositories.*;
 import longbridge.services.*;
@@ -46,22 +44,24 @@ public class CorporateServiceImpl implements CorporateService {
     private CodeService codeService;
     @Autowired
     private IntegrationService integrationService;
+    @Autowired
+    private ConfigurationService configService;
+    @Autowired
+    private SecurityService securityService;
 
     @Autowired
-    PasswordPolicyService passwordPolicyService;
+    private PasswordPolicyService passwordPolicyService;
 
     @Autowired
-    RoleService roleService;
-
+    private RoleService roleService;
+    @Autowired
+    private RoleRepo roleRepo;
 
     @Autowired
-    RoleRepo roleRepo;
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
-    PasswordEncoder passwordEncoder;
-
-    @Autowired
-    MailService mailService;
+    private MailService mailService;
 
 
     private Locale locale = LocaleContextHolder.getLocale();
@@ -80,8 +80,8 @@ public class CorporateServiceImpl implements CorporateService {
 
         Corporate corporate = corporateRepo.findByCustomerId(corporateDTO.getCustomerId());
 
-        if(corporate!=null){
-            throw new DuplicateObjectException(messageSource.getMessage("corporate.exist",null,locale));
+        if (corporate != null) {
+            throw new DuplicateObjectException(messageSource.getMessage("corporate.exist", null, locale));
         }
 
 
@@ -114,9 +114,22 @@ public class CorporateServiceImpl implements CorporateService {
             }
             corporateUser.setCorporate(corporate);
             corporate.getUsers().add(corporateUser);
+
+            String fullName = corporateUser.getFirstName() + " " + corporateUser.getLastName();
+            SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_CREATION");
+            if (setting != null && setting.isEnabled()) {
+                if ("YES".equalsIgnoreCase(setting.getValue())) {
+                    boolean result = securityService.createEntrustUser(corporateUser.getUserName(), fullName, true);
+                    if (!result) {
+                        throw new EntrustException(messageSource.getMessage("entrust.create.failure", null, locale));
+
+                    }
+                }
+            }
             corporateRepo.save(corporate);
-            sendUserCredentials(corporateUser,password);
+            sendUserCredentials(corporateUser, password);
             String customerId = corporate.getCustomerId();
+
             Collection<AccountInfo> accounts = integrationService.fetchAccounts(customerId);
             for (AccountInfo acct : accounts) {
                 accountService.AddFIAccount(customerId, acct);
@@ -125,6 +138,10 @@ public class CorporateServiceImpl implements CorporateService {
             logger.info("Corporate {} created", corporate.getName());
             return messageSource.getMessage("corporate.add.success", null, locale);
         } catch (Exception e) {
+            if (e instanceof EntrustException) {
+                throw new InternetBankingSecurityException(messageSource.getMessage("entrust.create.failure", null, locale));
+            }
+
             throw new InternetBankingException(messageSource.getMessage("corporate.add.failure", null, locale), e);
         }
     }
@@ -142,14 +159,15 @@ public class CorporateServiceImpl implements CorporateService {
 
 
     private void sendUserCredentials(CorporateUser user, String password) throws InternetBankingException {
-      String fullName = user.getFirstName()+" "+user.getLastName();
+        String fullName = user.getFirstName() + " " + user.getLastName();
         Email email = new Email.Builder()
                 .setRecipient(user.getEmail())
-                .setSubject(messageSource.getMessage("customer.create.subject",null,locale))
-                .setBody(String.format(messageSource.getMessage("customer.create.message",null,locale),fullName, user.getUserName(),password))
+                .setSubject(messageSource.getMessage("customer.create.subject", null, locale))
+                .setBody(String.format(messageSource.getMessage("customer.create.message", null, locale), fullName, user.getUserName(), password))
                 .build();
         mailService.send(email);
     }
+
     @Override
     public String updateCorporate(CorporateDTO corporateDTO) throws InternetBankingException {
         try {
@@ -188,11 +206,11 @@ public class CorporateServiceImpl implements CorporateService {
     @Override
     public String addAccount(Corporate corporate, AccountDTO accountDTO) throws InternetBankingException {
 
-        try{
+        try {
             boolean ok = accountService.AddAccount(corporate.getCustomerId(), accountDTO);
-            if (ok){
+            if (ok) {
                 return messageSource.getMessage("account.add.success", null, locale);
-            }else {
+            } else {
                 throw new InternetBankingException(messageSource.getMessage("corporate.account.add.failure", null, locale));
             }
 
@@ -220,10 +238,11 @@ public class CorporateServiceImpl implements CorporateService {
         }
     }
 
-    public boolean corporateExists(String customerId){
+    public boolean corporateExists(String customerId) {
         Corporate corporate = corporateRepo.findByCustomerId(customerId);
-        return (corporate!=null)?true:false;
+        return (corporate != null) ? true : false;
     }
+
     @Override
     public void setLimit(Corporate corporate, CorpLimit limit) throws InternetBankingException {
         limit.setCorporate(corporate);
@@ -489,8 +508,8 @@ public class CorporateServiceImpl implements CorporateService {
         List<CorporateDTO> corporateDTOList = new ArrayList<>();
         for (Corporate corporate : corporates) {
             CorporateDTO corporateDTO = convertEntityToDTO(corporate);
-            Code code = codeService.getByTypeAndCode("CORPORATE_TYPE",corporate.getCorporateType());
-            if(code!=null) {
+            Code code = codeService.getByTypeAndCode("CORPORATE_TYPE", corporate.getCorporateType());
+            if (code != null) {
                 corporateDTO.setCorporateType(code.getDescription());
             }
             corporateDTOList.add(corporateDTO);
