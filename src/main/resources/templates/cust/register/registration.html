@@ -130,17 +130,31 @@
                     <h3>Phishing Image</h3>
                     <section>
                         <div class="row">
-                            <div class="col-md-offset-4 col-md-4">
-                                    <div class="form-group">
-                                        <label>Question</label>
-                                        <select id="phishing" name="antiPhishingImage" class="form-control">
-                                        </select>
-                                        <div>
-											<img width="200px" height="200px" src='' id="phishing-preview" alt="Phishing Preview"/>
-										</div>
-                                        <br/>
-                                    </div>
+                            <div class="col-md-offset-3 col-md-6">
+                                <div class="form-group">
+                                    <label>Select Phishing Image</label>
+                                    <!--<select id="phishing" name="antiPhishingImage" class="form-control">-->
+                                    <!--</select>-->
+                                    <!--<div>-->
+                                        <!--<img width="200px" height="200px" src='' id="phishing-preview" alt="Phishing Preview"/>-->
+                                    <!--</div>-->
+                                    <!--<br/>-->
+
+                                    <!--.container { position: relative; width: 100px; height: 100px; float: left; margin-left: 10px; }-->
+                                    <!--.checkbox { position: absolute; bottom: 0px; right: 0px; }-->
+                                    <table>
+                                        <td th:each="image : ${images}" style="position: relative;">
+                                            <img th:src="${image}" width="100px" height="100px"/>
+                                            <input type="radio" name="phishing" th:value="${image}" id="check1" style="position: absolute; bottom: 20px; right: 20px;" />
+                                        </td>
+                                    </table>
+
+
                                 </div>
+                            </div>
+                            <div class="col-md-offset-4 col-md-4">
+                                <input type="text" name="caption" class="form-control" placeholder="Enter Image Caption"/>
+                            </div>
                         </div>
                     </section>
                     <h3>Summary</h3>

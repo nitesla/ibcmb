@@ -10,6 +10,7 @@ import longbridge.models.Account;
 import longbridge.models.Email;
 import longbridge.models.RetailUser;
 import longbridge.services.*;
+import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,10 +25,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 /**
  * Created by Wunmi Sowunmi on 18/04/2017.
@@ -63,16 +61,16 @@ public class UserRegController {
     @Autowired
     private PasswordPolicyService passwordPolicyService;
     
-    @GetMapping("/rest/json/phishingimages")
-    public @ResponseBody String antiPhishingImages(){
-        //securityService.m
-    	StringBuilder builder = new StringBuilder();
-    	builder.append("<option value=''>Select Anti Phishing Image</option>");
-    	builder.append("<option value='/assets/phishing/dog.jpg'>Dog</option>");
-    	builder.append("<option value='/assets/phishing/cheetah.jpg'>Cheetah</option>");
-    	builder.append("<option value='/assets/phishing/benz.jpg'>Car</option>");
-    	return builder.toString();
-    }
+//    @GetMapping("/rest/json/phishingimages")
+//    public @ResponseBody String antiPhishingImages(){
+//        //securityService.m
+//    	StringBuilder builder = new StringBuilder();
+//    	builder.append("<option value=''>Select Anti Phishing Image</option>");
+//    	builder.append("<option value='/assets/phishing/dog.jpg'>Dog</option>");
+//    	builder.append("<option value='/assets/phishing/cheetah.jpg'>Cheetah</option>");
+//    	builder.append("<option value='/assets/phishing/benz.jpg'>Car</option>");
+//    	return builder.toString();
+//    }
 
     @GetMapping("/rest/accountdetails/{accountNumber}/{email}/{birthDate}")
     public @ResponseBody String getAccountDetailsFromNumber(@PathVariable String accountNumber, @PathVariable String email, @PathVariable String birthDate){
@@ -103,6 +101,67 @@ public class UserRegController {
         }
 
         return customerId;
+    }
+
+    @GetMapping("/rest/secQues/{accountNumber}")
+    public @ResponseBody String getSecQuestionFromNumber(@PathVariable String accountNumber){
+        String secQuestion = "";
+        logger.info("Account nUmber : " + accountNumber);
+        Account account = accountService.getAccountByAccountNumber(accountNumber);
+        if (account != null){
+            String customerId = account.getCustomerId();
+            RetailUser user = retailUserService.getUserByCustomerId(customerId);
+            logger.info("USER NAME {}", user.getUserName());
+            Map<List<String>, List<String>> qa = securityService.getUserQA(user.getUserName());
+            //List<String> sec = null;
+            if (qa != null){
+                Set<List<String>> questions= qa.keySet();
+                Iterator it = questions.iterator();
+                while(it.hasNext()){
+                    logger.info("SEC QUESTION {}", it);
+                    List<String> question = ( List<String> )it.next();
+                    secQuestion = question.stream().filter(Objects::nonNull).findFirst().orElse("");
+                    logger.info("question {}", secQuestion);
+                }
+
+            }else {
+                secQuestion = "";
+            }
+
+
+        }else {
+            //nothing
+            secQuestion = "";
+        }
+
+        return secQuestion;
+    }
+
+    @GetMapping("/rest/secAns/{answer}")
+    public @ResponseBody String getSecQuestionFromNumber(@PathVariable String answer, HttpSession session){
+
+        //confirm security question is correct
+        String secAnswer="";
+        Map<List<String>, List<String>> qa = securityService.getUserQA((String) session.getAttribute("username"));
+        //List<String> sec = null;
+        if (qa != null){
+            Set<List<String>> questions= qa.keySet();
+            Iterator it = questions.iterator();
+            while(it.hasNext()){
+                List<String> question = qa.get(it.next());
+                secAnswer = question.stream().filter(Objects::nonNull).findFirst().orElse("");
+                logger.info("answer {}", secAnswer);
+            }
+
+            if (!secAnswer.equals(answer)){
+                return "false";
+            }
+
+        }else {
+            return "false";
+        }
+
+        return (String) session.getAttribute("username");
     }
 
     @GetMapping("/rest/regCode/{accountNumber}/{email}/{birthDate}")
@@ -183,11 +242,26 @@ public class UserRegController {
             RetailUser user = retailUserService.getUserByCustomerId(customerId);
 
             //confirm security question is correct
-            //    	isValid &= securityService.validateSecurityQuestion(retailUser, securityQuestion, securityAnswer);
-            //    	if(isValid){
-            //    		logger.error("Invalid security question / answer");
-            //    		return "false";
-            //    	}
+            String secAnswer="";
+            Map<List<String>, List<String>> qa = securityService.getUserQA(user.getUserName());
+            //List<String> sec = null;
+            if (qa != null){
+                Set<List<String>> questions= qa.keySet();
+                Iterator it = questions.iterator();
+                while(it.hasNext()){
+
+                    List<String> question = qa.get(it.next());
+                    secAnswer = question.stream().filter(Objects::nonNull).findFirst().orElse("");
+                    logger.info("answer {}", secAnswer);
+                }
+
+                if (!secAnswer.equals(securityAnswer)){
+                    return "false";
+                }
+
+            }else {
+                return "false";
+            }
 
             logger.debug("User Info {}:", user.getUserName());
             //Send Username to Email
@@ -225,10 +299,13 @@ public class UserRegController {
         RegistrationForm registrationForm = new RegistrationForm();
         registrationForm.step = "1";
         model.addAttribute("registrationForm", registrationForm);
-//        List<CodeDTO> codes = codeService.getCodesByType("SECURITY_QUESTIONS");
-//        model.addAttribute("questions", codes);
 
-        //securityService.
+        List<String> images = new ArrayList<String>();
+        images.add("/assets/phishing/dog.jpg");
+        images.add("/assets/phishing/cheetah.jpg");
+        images.add("/assets/phishing/benz.jpg");
+
+        model.addAttribute("images", images);
         return "cust/register/registration";
     }
 
@@ -249,6 +326,8 @@ public class UserRegController {
         String secQuestion = webRequest.getParameter("securityQuestion");
         String secAnswer = webRequest.getParameter("securityAnswer");
         String customerId = webRequest.getParameter("customerId");
+        String phishing = webRequest.getParameter("phishing");
+        String caption = webRequest.getParameter("caption");
 
         String bvn ="";
         logger.info("Customer Id {}:", customerId);
@@ -285,6 +364,14 @@ public class UserRegController {
         //securityService.setUserQA(userName, securityQuestion, securityAnswer);
 
         //phishing image
+        List<byte[]> phishingSec = new ArrayList<>();
+
+        byte[] encodedBytes = Base64.encodeBase64(phishing.getBytes());
+        System.out.println("encodedBytes " + new String(encodedBytes));
+
+        phishingSec.add(encodedBytes);
+        List<String> captionSec = new ArrayList<>();
+        captionSec.add(caption);
 
 
         RetailUserDTO retailUserDTO = new RetailUserDTO();
@@ -295,11 +382,15 @@ public class UserRegController {
         retailUserDTO.setBvn(bvn);
         retailUserDTO.setSecurityQuestion(securityQuestion);
         retailUserDTO.setSecurityAnswer(securityAnswer);
+        retailUserDTO.setPhishingSec(phishingSec);
+        retailUserDTO.setCaptionSec(captionSec);
         try {
             String message = retailUserService.addUser(retailUserDTO, details);
             logger.info("MESSAGE", message);
-        }catch (InternetBankingException e){
-            throw new InternetBankingException(messageSource.getMessage("user.add.failure", null, locale));
+        }
+        catch (InternetBankingException e){
+            logger.error("Error creating retail user", e);
+            redirectAttributes.addFlashAttribute(messageSource.getMessage("user.add.failure", null, locale));
         }
 
         redirectAttributes.addAttribute("success", "true");
@@ -307,12 +398,28 @@ public class UserRegController {
     }
 
     @GetMapping("/forgot/password")
-    public String showResetPassword(Model model, HttpSession session){
+    public String showResetPassword(Model model, HttpSession session, RedirectAttributes redirectAttributes){
 
         ResetPasswordForm resetPasswordForm = new ResetPasswordForm();
         resetPasswordForm.step = "1";
         resetPasswordForm.username = (String) session.getAttribute("username");
-//        List<String> QA = securityService.getUserQA((String) session.getAttribute("username"));
+        Map<List<String>, List<String>> qa = securityService.getUserQA((String) session.getAttribute("username"));
+        String secQuestion="";
+        if (qa != null){
+            Set<List<String>> questions= qa.keySet();
+            Iterator it = questions.iterator();
+            while(it.hasNext()){
+                logger.info("SEC QUESTION {}", it);
+                List<String> question = ( List<String> )it.next();
+                secQuestion = question.stream().filter(Objects::nonNull).findFirst().orElse("");
+                logger.info("question {}", secQuestion);
+            }
+            model.addAttribute("secQuestion", secQuestion);
+        }else {
+            redirectAttributes.addFlashAttribute("failure", "Invalid Credentials");
+            return "redirect:/login/retail";
+        }
+
         model.addAttribute("forgotPasswordForm", resetPasswordForm);
         return "cust/passwordreset";
     }

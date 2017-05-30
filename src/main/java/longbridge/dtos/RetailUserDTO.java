@@ -36,6 +36,8 @@ public class RetailUserDTO {
     private String antiPhishingImage;
     private List<String> securityQuestion;
     private List<String> securityAnswer;
+    private List<byte[]> phishingSec;
+    private List<String> captionSec;
     private Role role;
     private Code alertPreference;
 
@@ -215,6 +217,22 @@ public class RetailUserDTO {
 
     public void setSecurityAnswer(List<String> securityAnswer) {
         this.securityAnswer = securityAnswer;
+    }
+
+    public List<byte[]> getPhishingSec() {
+        return phishingSec;
+    }
+
+    public void setPhishingSec(List<byte[]> phishingSec) {
+        this.phishingSec = phishingSec;
+    }
+
+    public List<String> getCaptionSec() {
+        return captionSec;
+    }
+
+    public void setCaptionSec(List<String> captionSec) {
+        this.captionSec = captionSec;
     }
 
     @Override

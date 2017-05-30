@@ -80,10 +80,7 @@
                                     <div class="col-md-offset-4 col-md-4">
                                         <div class="form-group">
                                             <label>Security Question</label>
-                                            <select th:value="${retUsernameForm.securityQuestion}" name="securityQuestion" class="form-control">
-                                                <option>What is the name of your spouse?</option>
-                                                <option>What is the name of the first car you owned?</option>
-                                            </select>
+                                            <input th:value="${retUsernameForm.securityQuestion}" name="securityQuestion" readonly="readonly" class="form-control"/>
                                         </div>
                                         <div class="form-group">
                                             <label>Security Answer</label>

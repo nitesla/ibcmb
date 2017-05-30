@@ -186,15 +186,15 @@
                 dateFormat: 'dd-mm-yy' }).val();
 
         //load the anti phishing images from the server
-        loadPhishingImages();
+        //loadPhishingImages();
 
         //setup event handler on select option
-        $('#phishing').change(function(event){
-        	console.log(this);
-        	var url = $(this).val();
-        	console.log(url);
-        	$('#phishing-preview').attr('src', url);
-        });
+        // $('#phishing').change(function(event){
+        // 	console.log(this);
+        // 	var url = $(this).val();
+        // 	console.log(url);
+        // 	$('#phishing-preview').attr('src', url);
+        // });
 
 
         $('#sms').change('click', function(){

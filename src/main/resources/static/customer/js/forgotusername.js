@@ -8,6 +8,8 @@ var customerId = "null";
  */
 function validateAccountNo(accountNumber){
     var customerId;
+    var secQues;
+    $.when(
     $.ajax({
         type:'GET',
         url:"/rest/retail/accountname/"+accountNumber,
@@ -29,9 +31,30 @@ function validateAccountNo(accountNumber){
                 $('input[name=customerId]').val(customerId);
             }
         }
+    })).done(function () {
+        $.ajax({
+            url: "/rest/secQues/"+accountNumber,
+            type: 'GET',
+            async: false,
+            success:function(data2){
+                secQues = ''+String(data2);
+                if(secQues == "" ){
+                    //invalid account number
+                    $.notify({
+                        title: '<strong>Oops!</strong>',
+                        message: 'Invalid Account Number'
+                    },{
+                        type: 'danger'
+                    });
+                    //alert("Account number not found");
+                }else{
+                    $('input[name=securityQuestion]').val(secQues);
+                }
+            }
+        })
     });
 
-    if(customerId == "" || customerId === null){
+    if(customerId == "" || customerId === null || secQues == "" || secQues === null){
         return false;
     }else{
         return true;

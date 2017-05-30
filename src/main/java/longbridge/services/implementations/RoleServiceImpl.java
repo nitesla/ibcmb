@@ -138,8 +138,8 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public Role getTheRole(Long id) {
-        Role role = roleRepo.findOne(id);
+    public Role getTheRole(String roleName) {
+        Role role = roleRepo.findByName(roleName);
         return role;
     }
 
