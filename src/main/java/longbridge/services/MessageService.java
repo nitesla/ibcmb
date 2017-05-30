@@ -48,10 +48,9 @@ public interface MessageService {
     /**
      * Adds the message created by the specified user
      * @param sender the sender of the message
-     * @param recipient the recipient of the message
      * @param message the message object
      */
-    String addMessage(User sender, User recipient, MessageDTO message) throws InternetBankingException;
+    String addMessage(User sender, MessageDTO message) throws InternetBankingException;
 
     /**
      * Returns a list of messages of the specified user
@@ -171,9 +170,9 @@ public interface MessageService {
 
     /** Makes a request to send an email to using the details
      * in the {@link Email} object
-     * @param email EmailDetail object containing all the details required to send an email
+     * @param messageDTO MessageDTO object containing all the details required to send an email
      */
-    void sendEmail(Email email) throws InternetBankingException;
+    void sendEmail(MessageDTO messageDTO) throws InternetBankingException;
 
     Page<Message> getMessages(User user, java.awt.print.Pageable pageDetails);
 

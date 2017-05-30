@@ -108,23 +108,10 @@ public class CorpMailboxController {
             bindingResult.addError(new ObjectError("Invalid", "Please fill in the required fields"));
             return "corp/mailbox/compose";
         }
-        User recipient = null;
-        switch (messageDTO.getRecipientType()){
-            case OPERATIONS:
-                recipient = operationsUserService.getUserByName(messageDTO.getRecipient());
-                break;
-            case RETAIL:
-                recipient = retailUserService.getUserByName(messageDTO.getRecipient());
-                break;
-        }
 
-        if(recipient==null){
-            bindingResult.addError(new ObjectError("Invalid", "Invalid recipient username"));
-            return "corp/mailbox/compose";
-        }
 
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
-        messageService.addMessage(corporateUser,recipient,messageDTO);
+        messageService.addMessage(corporateUser, messageDTO);
         redirectAttributes.addFlashAttribute("message","Message sent successfully");
         return "redirect:/corp/mailbox/outbox";
     }

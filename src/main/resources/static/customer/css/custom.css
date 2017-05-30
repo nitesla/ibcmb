@@ -428,47 +428,47 @@ body {
     color: #9F614B;
     font-size: 12px;
 }
-.calender{
-    overflow: hidden;
-    position: inherit;
-}
-.calender .container{
-    padding: 0px;
-    margin: 0px;
-}
-.calender .col-md-3{
-    padding: 0px;
-    margin: 0px;
-}
-.showdate{
-    font-weight: 100;
-    font-size: 14px;
-    width: 100%
-}
-.showdate .fa{
-    color: #C1C1C1;
-    cursor: hand;
-}
-.dateMonth{
-    color: #032A4F;
-}
-.dateDay{
-    color: #9F614B;
-}
-.dateWeek{
-    margin: 0 65px 0 0;
-    color: #032A4F;
-}
-.week{
-    font-size: 16px;
-}
-.hrhr{
-    color: #C1C1C1;
-    margin-right: 65px;
-    border: 1px solid;
-    padding-top: 0px;
-    margin-top: 0px;
-}
+/*.calender{*/
+    /*overflow: hidden;*/
+    /*position: inherit;*/
+/*}*/
+/*.calender .container{*/
+    /*padding: 0px;*/
+    /*margin: 0px;*/
+/*}*/
+/*.calender .col-md-3{*/
+    /*padding: 0px;*/
+    /*margin: 0px;*/
+/*}*/
+/*.showdate{*/
+    /*font-weight: 100;*/
+    /*font-size: 14px;*/
+    /*width: 100%*/
+/*}*/
+/*.showdate .fa{*/
+    /*color: #C1C1C1;*/
+    /*cursor: hand;*/
+/*}*/
+/*.dateMonth{*/
+    /*color: #032A4F;*/
+/*}*/
+/*.dateDay{*/
+    /*color: #9F614B;*/
+/*}*/
+/*.dateWeek{*/
+    /*margin: 0 65px 0 0;*/
+    /*color: #032A4F;*/
+/*}*/
+/*.week{*/
+    /*font-size: 16px;*/
+/*}*/
+/*.hrhr{*/
+    /*color: #C1C1C1;*/
+    /*margin-right: 65px;*/
+    /*border: 1px solid;*/
+    /*padding-top: 0px;*/
+    /*margin-top: 0px;*/
+/*}*/
 
 .underline{
     margin: 5px 0px;

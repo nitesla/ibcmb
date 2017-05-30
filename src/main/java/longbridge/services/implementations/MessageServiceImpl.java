@@ -1,6 +1,7 @@
 package longbridge.services.implementations;
 
 import longbridge.dtos.MessageDTO;
+import longbridge.dtos.SettingDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.*;
 import longbridge.repositories.MailBoxRepo;
@@ -33,6 +34,11 @@ public class MessageServiceImpl implements MessageService {
     private ModelMapper modelMapper;
     @Autowired
     private MessageSource messageSource;
+    @Autowired
+    private ConfigurationService configurationService;
+    @Autowired
+    private MailService mailService;
+
     Locale locale = LocaleContextHolder.getLocale();
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -82,7 +88,18 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     @Transactional
-    public String addMessage(User sender, User recipient, MessageDTO messageDTO) {
+    public String addMessage(User sender, MessageDTO messageDTO) {
+
+        if (sender instanceof RetailUser){
+            SettingDTO setting = configurationService.getSettingByName("CUSTOMER_CARE_EMAIL");
+            if (setting != null && setting.isEnabled()){
+                messageDTO.setRecipient(setting.getValue());
+                Message message = convertDTOToEntity(messageDTO);
+                message.setDateCreated(new Date());
+                sendEmail(messageDTO);
+            }
+
+        }
 
         Message message = convertDTOToEntity(messageDTO);
         message.setDateCreated(new Date());
@@ -218,8 +235,13 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public void sendEmail(Email email) {
-        //todo  send email
+    public void sendEmail(MessageDTO messageDTO) {
+        Email email = new Email.Builder()
+                .setRecipient(messageDTO.getRecipient())
+                .setSubject(messageDTO.getSubject())
+                .setBody(messageDTO.getBody())
+                .build();
+        mailService.send(email);
     }
 
     @Override

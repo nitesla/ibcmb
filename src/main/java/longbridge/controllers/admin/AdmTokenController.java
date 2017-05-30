@@ -1,6 +1,7 @@
 package longbridge.controllers.admin;
 
 import longbridge.exception.InternetBankingException;
+import longbridge.exception.InternetBankingSecurityException;
 import longbridge.forms.SyncTokenForm;
 import longbridge.forms.TokenForm;
 import longbridge.services.SecurityService;
@@ -64,7 +65,7 @@ public class AdmTokenController {
                 return "redirect:/admin/dashboard";
             }
         }
-        catch (InternetBankingException ibe){
+        catch (InternetBankingSecurityException ibe){
             logger.error("Error authenticating token");
         }
         redirectAttributes.addFlashAttribute("failure",messageSource.getMessage("token.auth.failure",null,locale));
@@ -91,7 +92,7 @@ public class AdmTokenController {
                 redirectAttributes.addFlashAttribute("message", messageSource.getMessage("token.assign.success", null, locale));
                 return "redirect:/admin/token/assign";
             }
-        } catch (InternetBankingException ibe) {
+        } catch (InternetBankingSecurityException ibe) {
             logger.error("Error assigning token", ibe);
         }
         bindingResult.addError(new ObjectError("invalid", messageSource.getMessage("token.assign.failure", null, locale)));
@@ -117,7 +118,7 @@ public class AdmTokenController {
                 redirectAttributes.addFlashAttribute("message", messageSource.getMessage("token.activate.success", null, locale));
                 return "redirect:/admin/token/activate";
             }
-        } catch (InternetBankingException ibe) {
+        } catch (InternetBankingSecurityException ibe) {
             logger.error("Error activating token", ibe);
         }
         bindingResult.addError(new ObjectError("invalid", messageSource.getMessage("token.activate.failure", null, locale)));
@@ -143,7 +144,7 @@ public class AdmTokenController {
                 redirectAttributes.addFlashAttribute("message", messageSource.getMessage("token.deactivate.success", null, locale));
                 return "redirect:/admin/token/deactivate";
             }
-        } catch (InternetBankingException ibe) {
+        } catch (InternetBankingSecurityException ibe) {
             logger.error("Error deactivating token", ibe);
         }
         bindingResult.addError(new ObjectError("invalid", messageSource.getMessage("token.deactivate.failure", null, locale)));
@@ -169,7 +170,7 @@ public class AdmTokenController {
                 redirectAttributes.addFlashAttribute("message", messageSource.getMessage("token.sync.success", null, locale));
                 return "redirect:/admin/token/synchronize";
             }
-        } catch (InternetBankingException ibe) {
+        } catch (InternetBankingSecurityException ibe) {
             logger.error("Error synchronizing token", ibe);
         }
         bindingResult.addError(new ObjectError("error", messageSource.getMessage("token.sync.failure", null, locale)));

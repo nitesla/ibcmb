@@ -96,7 +96,6 @@ public class MailboxController {
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
         MessageDTO message = new MessageDTO();
         message.setSender(retailUser.getUserName());
-        message.setRecipient("kwere01");
         //if(!message.getStatus()==not sent){
         //
         model.addAttribute("messageDTO", message);
@@ -109,23 +108,10 @@ public class MailboxController {
             bindingResult.addError(new ObjectError("Invalid", "Please fill in the required fields"));
             return "cust/mailbox/compose";
         }
-        User recipient = null;
-        switch (messageDTO.getRecipientType()){
-            case OPERATIONS:
-                recipient = operationsUserService.getUserByName(messageDTO.getRecipient());
-                break;
-            case CORPORATE:
-                recipient = corporateUserService.getUserByName(messageDTO.getRecipient());
-                break;
-        }
 
-        if(recipient==null){
-            bindingResult.addError(new ObjectError("Invalid", "Invalid recipient username"));
-            return "cust/mailbox/compose";
-        }
 
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
-        messageService.addMessage(retailUser,recipient,messageDTO);
+        messageService.addMessage(retailUser,messageDTO);
         redirectAttributes.addFlashAttribute("message","Message sent successfully");
         return "redirect:/cust/mailbox/sentmail";
     }
