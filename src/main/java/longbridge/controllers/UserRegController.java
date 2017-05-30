@@ -65,6 +65,7 @@ public class UserRegController {
     
     @GetMapping("/rest/json/phishingimages")
     public @ResponseBody String antiPhishingImages(){
+        //securityService.m
     	StringBuilder builder = new StringBuilder();
     	builder.append("<option value=''>Select Anti Phishing Image</option>");
     	builder.append("<option value='/assets/phishing/dog.jpg'>Dog</option>");
@@ -294,8 +295,13 @@ public class UserRegController {
         retailUserDTO.setBvn(bvn);
         retailUserDTO.setSecurityQuestion(securityQuestion);
         retailUserDTO.setSecurityAnswer(securityAnswer);
-        String message = retailUserService.addUser(retailUserDTO, details);
-        logger.info("MESSAGE", message);
+        try {
+            String message = retailUserService.addUser(retailUserDTO, details);
+            logger.info("MESSAGE", message);
+        }catch (InternetBankingException e){
+            throw new InternetBankingException(messageSource.getMessage("user.add.failure", null, locale));
+        }
+
         redirectAttributes.addAttribute("success", "true");
         return "true";
     }

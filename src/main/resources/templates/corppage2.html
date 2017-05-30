@@ -65,7 +65,7 @@
 
                     </div>
                     <div class="col-md-4" style="padding:5px; max-height:300px; width:200px; background-color: #F2F2F1;">
-                        <img th:src="@{/customer/img/cmb_logo.png}"/>
+                        <img th:src="'data:image/jpeg;base64' + ${images}"/>
                         <input type="checkbox" name="phishing" class="form-control"/>
                     </div>
                     <div class="form-group">

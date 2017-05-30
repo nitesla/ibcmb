@@ -20,7 +20,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
 import java.security.Principal;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -44,6 +46,8 @@ public class MainController {
     private CorporateUserService corporateUserService;
     @Autowired
     private CorporateService corporateService;
+    @Autowired
+    private SecurityService securityService;
 
 
     @RequestMapping(value = {"/", "/home"})
@@ -160,12 +164,16 @@ public class MainController {
         String corpKey = webRequest.getParameter("corporateId");
         CorporateUser user =  corporateUserService.getUserByName(username);
         Corporate corporate = corporateService.getCorporateByCustomerId(corpKey);
+        Map<List<String>, List<String>> mutualAuth = securityService.getMutualAuth(user.getUserName());
+
         if (corporate != null && user != null) {
             model.addAttribute("username", user.getUserName());
             model.addAttribute("corpKey", corpKey);
             return "corppage2";
         }
 
+        model.addAttribute("images", mutualAuth.get("imageSecret"));
+        model.addAttribute("captions", mutualAuth.get("captionSecret"));
         model.addAttribute("error", messageSource.getMessage("invalid.user", null, locale));
         return "corppage1";
 

@@ -129,14 +129,6 @@ public class RetailUserServiceImpl implements RetailUserService {
                 throw new DuplicateObjectException(messageSource.getMessage("user.add.exists", null, locale));
             }
 
-
-            if(!securityService.createEntrustUser(user.getUserName(), details.getCustomerName(), true)){
-                logger.info("Failed to Create Entrust User {}", user.getUserName());
-                throw new InternetBankingException(messageSource.getMessage("user.add.failure", null, locale));
-            }
-
-            securityService.setUserQA(user.getUserName(), user.getSecurityQuestion(), user.getSecurityAnswer());
-
             retailUser = new RetailUser();
             retailUser.setUserName(user.getUserName());
             retailUser.setCustomerId(details.getCifId());
@@ -152,15 +144,23 @@ public class RetailUserServiceImpl implements RetailUserService {
             if(!"".equals(errorMsg)){
                 throw new PasswordPolicyViolationException(errorMsg);
             }
-            retailUser.setPassword(this.passwordEncoder.encode(user.getPassword()));
-            retailUserRepo.save(retailUser);
+
             String fullName = retailUser.getFirstName()+" "+retailUser.getLastName();
             SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_CREATION");
             if (setting != null && setting.isEnabled()) {
                 if ("YES".equalsIgnoreCase(setting.getValue())) {
-                    securityService.createEntrustUser(retailUser.getUserName(), fullName, true);
+                    boolean result = securityService.createEntrustUser(retailUser.getUserName(), fullName, true);
+                    if (!result) {
+                        throw new InternetBankingSecurityException(messageSource.getMessage("entrust.create.failure", null, locale));
+                    }
                 }
             }
+
+            securityService.setUserQA(user.getUserName(), user.getSecurityQuestion(), user.getSecurityAnswer());
+
+
+            retailUser.setPassword(this.passwordEncoder.encode(user.getPassword()));
+            retailUserRepo.save(retailUser);
 
             Collection<AccountInfo> accounts = integrationService.fetchAccounts(details.getCifId());
             for (AccountInfo acct : accounts) {
