@@ -428,6 +428,10 @@ body {
     color: #9F614B;
     font-size: 12px;
 }
+.calender{
+    position: inherit;
+}
+
 /*.calender{*/
     /*overflow: hidden;*/
     /*position: inherit;*/
@@ -572,8 +576,8 @@ button, input, optgroup, select, textarea {
 }
 
 .sidebar-bg{
-    margin: 15px 0 10px 10px;
-    padding: 10px;
+    margin: 15px 0 10px 0px;
+    padding: 0px;
     background-color: #F2F2F1;
 }
 

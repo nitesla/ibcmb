@@ -31,10 +31,6 @@
     line-height: 12px;
 }
 
-.calendar{
-    position: inherit;
-}
-
 .calender .header {
     height: 30px;
     width: 245px;
@@ -132,7 +128,7 @@
 }
 
 .day.other {
-    color: #6a6d71;
+    color: #C1C1C1;
 }
 
 .day.today {
