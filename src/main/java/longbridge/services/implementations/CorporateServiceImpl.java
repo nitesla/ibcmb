@@ -2,6 +2,7 @@ package longbridge.services.implementations;
 
 import longbridge.api.AccountInfo;
 import longbridge.dtos.*;
+import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.TransferRuleException;
 import longbridge.models.*;
@@ -76,10 +77,24 @@ public class CorporateServiceImpl implements CorporateService {
     @Override
     @Transactional
     public String addCorporate(CorporateDTO corporateDTO, CorporateUserDTO user) throws InternetBankingException {
+
+        Corporate corporate = corporateRepo.findByCustomerId(corporateDTO.getCustomerId());
+
+        if(corporate!=null){
+            throw new DuplicateObjectException(messageSource.getMessage("corporate.exist",null,locale));
+        }
+
+
+        CorporateUser corporateUser = corporateUserRepo.findFirstByUserName(user.getUserName());
+        if (corporateUser != null) {
+            throw new DuplicateObjectException(messageSource.getMessage("user.exist", null, locale));
+        }
+
         try {
-            Corporate corporate = convertDTOToEntity(corporateDTO);
+            corporate = convertDTOToEntity(corporateDTO);
+            corporate.setStatus("A");
             corporate.setCreatedOnDate(new Date());
-            CorporateUser corporateUser = new CorporateUser();
+            corporateUser = new CorporateUser();
             corporateUser.setFirstName(user.getFirstName());
             corporateUser.setLastName(user.getLastName());
             corporateUser.setUserName(user.getUserName());
@@ -127,10 +142,11 @@ public class CorporateServiceImpl implements CorporateService {
 
 
     private void sendUserCredentials(CorporateUser user, String password) throws InternetBankingException {
+      String fullName = user.getFirstName()+" "+user.getLastName();
         Email email = new Email.Builder()
                 .setRecipient(user.getEmail())
                 .setSubject(messageSource.getMessage("customer.create.subject",null,locale))
-                .setBody(String.format(messageSource.getMessage("customer.create.message",null,locale), user.getUserName(),password))
+                .setBody(String.format(messageSource.getMessage("customer.create.message",null,locale),fullName, user.getUserName(),password))
                 .build();
         mailService.send(email);
     }
@@ -204,6 +220,10 @@ public class CorporateServiceImpl implements CorporateService {
         }
     }
 
+    public boolean corporateExists(String customerId){
+        Corporate corporate = corporateRepo.findByCustomerId(customerId);
+        return (corporate!=null)?true:false;
+    }
     @Override
     public void setLimit(Corporate corporate, CorpLimit limit) throws InternetBankingException {
         limit.setCorporate(corporate);

@@ -143,7 +143,6 @@ public class AdminUserServiceImpl implements AdminUserService {
                     boolean result = securityService.createEntrustUser(adminUser.getUserName(), fullName, true);
                     if (!result) {
                         throw new EntrustException(messageSource.getMessage("entrust.create.failure", null, locale));
-
                     }
                 }
             }
@@ -406,10 +405,7 @@ public class AdminUserServiceImpl implements AdminUserService {
         if (adminUser.getLastLoginDate() != null) {
             adminUserDTO.setLastLogin(DateFormatter.format(adminUser.getLastLoginDate()));
         }
-        Code code = codeService.getByTypeAndCode("USER_STATUS", adminUser.getStatus());
-        if (code != null) {
-            adminUserDTO.setStatus(code.getDescription());
-        }
+
         return adminUserDTO;
     }
 

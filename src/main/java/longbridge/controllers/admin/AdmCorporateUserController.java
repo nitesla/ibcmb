@@ -73,7 +73,7 @@ public class AdmCorporateUserController {
         CorporateUserDTO corporateUserDTO = new CorporateUserDTO();
         model.addAttribute("corporate", corporateDTO);
         model.addAttribute("corporateUser", corporateUserDTO);
-        return "adm/corporate/adduser";
+        return "/adm/corporate/adduser";
     }
 
     @PostMapping("/new")
@@ -108,7 +108,7 @@ public class AdmCorporateUserController {
             }
         } catch (DuplicateObjectException doe) {
             result.addError(new ObjectError("error", doe.getMessage()));
-            logger.error("Error creating corporate user {}", corporateUserDTO.getUserName(), doe);
+            logger.error("Error creating corporate user ", doe);
             if(session.getAttribute("corporate")==null) {
                 CorporateDTO corporate = corporateService.getCorporate(Long.parseLong(corporateUserDTO.getCorporateId()));
                 model.addAttribute("corporate", corporate);

@@ -44,7 +44,7 @@ public class RetailUserLoginInterceptor extends HandlerInterceptorAdapter {
 
             ModelAndView modelAndView = new ModelAndView("forwarded-view");
 
-            modelAndView.setViewName("/cust/token");
+            modelAndView.setViewName("/cust/logintoken");
             throw new ModelAndViewDefiningException(modelAndView);
         }
 

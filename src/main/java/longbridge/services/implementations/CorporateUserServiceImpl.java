@@ -462,7 +462,6 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         corporateUserDTO.setCorporateName(corporateUser.getCorporate().getName());
         corporateUserDTO.setCorporateId(corporateUser.getCorporate().getId().toString());
 
-        Code code = codeService.getByTypeAndCode("USER_STATUS", corporateUser.getStatus());
 
         if (corporateUser.getCreatedOnDate() != null) {
             corporateUserDTO.setCreatedOn(DateFormatter.format(corporateUser.getCreatedOnDate()));
@@ -470,9 +469,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         if (corporateUser.getLastLoginDate() != null) {
             corporateUserDTO.setLastLogin(DateFormatter.format(corporateUser.getLastLoginDate()));
         }
-        if (code != null) {
-            corporateUserDTO.setStatus(code.getDescription());
-        }
+
         return corporateUserDTO;
     }
 

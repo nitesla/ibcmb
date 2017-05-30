@@ -36,6 +36,14 @@ private PasswordPolicyService passwordPolicyService;
             throw new ModelAndViewDefiningException(modelAndView);
         }
 
+        if (httpServletRequest.getSession().getAttribute("2FA")!=null&& !(uri.equalsIgnoreCase("/corporate/token")))
+        {
+
+            ModelAndView modelAndView = new ModelAndView("forwarded-view");
+
+            modelAndView.setViewName("/corp/logintoken");
+            throw new ModelAndViewDefiningException(modelAndView);
+        }
 
         return true;
     }

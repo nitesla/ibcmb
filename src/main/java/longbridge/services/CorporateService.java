@@ -69,8 +69,12 @@ public interface CorporateService{
      * @param corporate the corporate customer
      * @param limit        the corporate limit
      */
+
+
     @PreAuthorize("hasAuthority('SET_CORPORATE_LIMIT')")
     void setLimit(Corporate corporate, CorpLimit limit) throws InternetBankingException;
+
+    public boolean corporateExists(String customerId);
 
     /**
      * Updates the limit of transaction amount for the specified corporate customer
