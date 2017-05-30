@@ -116,12 +116,12 @@
                                 <input id="returnValue" type="hidden"/>
                                         <div class="form-group clearfix">
                                             <label>Question</label>
-                                            <select class="form-control">
-                                                <option>First Car?</option>
-                                                <option>First Job?</option>
-                                            </select>
+                                            <!--<select class="form-control">-->
+                                                <!--<option th:each="question : ${questions}" th:text="*{question.description}">First Car?</option>-->
+                                            <!--</select>-->
+                                            <input type="text" name="securityQuestion" class="form-control required" placeholder="Security Question"/>
                                             <br/>
-                                            <input type="text" name="ques" class="form-control required" placeholder="Answer"/>
+                                            <input type="text" name="securityAnswer" class="form-control required" placeholder="Security Answer"/>
                                         </div>
                                 </div>
                                 </div>
@@ -141,7 +141,7 @@
                                         <br/>
                                     </div>
                                 </div>
-                                </div>
+                        </div>
                     </section>
                     <h3>Summary</h3>
                     <section>

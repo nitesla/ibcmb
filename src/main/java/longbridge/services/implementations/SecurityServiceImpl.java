@@ -2,7 +2,9 @@ package longbridge.services.implementations;
 
 import com.expertedge.entrustplugin.ws.*;
 
+import longbridge.exception.EntrustConnectionException;
 import longbridge.exception.InternetBankingSecurityException;
+import longbridge.exception.InternetBankingTransferException;
 import longbridge.models.RetailUser;
 import longbridge.services.IntegrationService;
 import longbridge.services.SecurityService;
@@ -83,21 +85,26 @@ public class SecurityServiceImpl implements SecurityService {
         tauth.setUserName(username);
         logger.trace("Token validation parameters {}", tauth);
         logger.trace("******************BEGIN RESPONSE***********");
-        AuthResponseDTO response = port.performTokenAuth(tauth);
-        if (response != null) {
-            logger.trace("Authentication status: " + response.isAuthenticationSuccessful());
 
-            logger.trace("Authentication response code: " + response.getRespCode());
+        try {
+            AuthResponseDTO response = port.performTokenAuth(tauth);
+            if (response != null) {
+                logger.trace("Authentication status: " + response.isAuthenticationSuccessful());
+
+                logger.trace("Authentication response code: " + response.getRespCode());
 
             result = response.isAuthenticationSuccessful();
             return result;
 
+            }
+            logger.trace("******************END RESPONSE***********");
         }
-        logger.trace("******************END RESPONSE***********");
+        catch (EntrustConnectionException e){
+            logger.error(e.getMessage(), e);
+            throw new InternetBankingSecurityException(e.getMessage(),e);
 
-
-        throw new InternetBankingSecurityException();
-
+        }
+        return result;
     }
 
     @Override
@@ -111,6 +118,7 @@ public class SecurityServiceImpl implements SecurityService {
         tauth.setUserName(username);
         logger.trace("OTP validation parameters {}", tauth);
         logger.trace("******************BEGIN RESPONSE***********");
+        try{
         AuthResponseDTO response = port.performOTPAuthentication(tauth);
         if (response != null) {
             logger.trace("Authentication status: " + response.isAuthenticationSuccessful());
@@ -125,8 +133,13 @@ public class SecurityServiceImpl implements SecurityService {
         logger.trace("******************END RESPONSE***********");
 
 
-        throw new InternetBankingSecurityException();
     }
+        catch (EntrustConnectionException e){
+        logger.error(e.getMessage(), e);
+        throw new InternetBankingSecurityException(e.getMessage(),e);
+
+    }
+        return result;    }
 
     @Override
     public boolean synchronizeToken(String username, String sNo, String tokenResp1, String tokenResp2) {
@@ -141,6 +154,7 @@ public class SecurityServiceImpl implements SecurityService {
         sendDTO.setTokenResponse1(tokenResp1);
         sendDTO.setTokenResponse2(tokenResp2);
         logger.trace("******************BEGIN RESPONSE***********");
+        try{
         AdminResponseDTO response = port.performTokenSync(sendDTO);
         if (response != null) {
             logger.trace(" Synchronize status: " + response.isAdminSuccessful());
@@ -154,8 +168,13 @@ public class SecurityServiceImpl implements SecurityService {
         logger.trace("******************END RESPONSE***********");
 
 
-        throw new InternetBankingSecurityException();
+        }
+        catch (EntrustConnectionException e){
+            logger.error(e.getMessage(), e);
+            throw new InternetBankingSecurityException(e.getMessage(),e);
 
+        }
+        return result;
 
     }
 
@@ -169,6 +188,7 @@ public class SecurityServiceImpl implements SecurityService {
         sendDTO.setUserName(username);
         logger.trace("Perform OTP parameters {}", sendDTO);
         logger.trace("******************BEGIN RESPONSE***********");
+        try{
         AuthResponseDTO response = port.performCreateSendOTP(sendDTO);
         if (response != null) {
             logger.trace(" OTP Authentication status: " + response.isAuthenticationSuccessful());
@@ -181,8 +201,13 @@ public class SecurityServiceImpl implements SecurityService {
         logger.trace("******************END RESPONSE***********");
 
 
-        throw new InternetBankingSecurityException();
-    }
+        }
+        catch (EntrustConnectionException e){
+            logger.error(e.getMessage(), e);
+            throw new InternetBankingSecurityException(e.getMessage(),e);
+
+        }
+        return result;    }
 
     @Override
     public boolean createEntrustUser(String username, String fullName, boolean enableOtp) {
@@ -196,6 +221,7 @@ public class SecurityServiceImpl implements SecurityService {
         user.setUserName(username);
         logger.trace("User creation parameters {}", user);
         logger.trace("******************BEGIN RESPONSE***********");
+        try{
         AdminResponseDTO response = port.performCreateEntrustUser(user);
         if (response != null) {
             logger.trace("Creation status: " + response.isAdminSuccessful());
@@ -208,8 +234,13 @@ public class SecurityServiceImpl implements SecurityService {
         }
         logger.trace("******************END RESPONSE***********");
 
-        throw new InternetBankingSecurityException();
-    }
+        }
+        catch (EntrustConnectionException e){
+            logger.error(e.getMessage(), e);
+            throw new InternetBankingSecurityException(e.getMessage(),e);
+
+        }
+        return result;    }
 
     @Override
     public void deleteEntrustUser(String username, String fullName) {
@@ -220,6 +251,7 @@ public class SecurityServiceImpl implements SecurityService {
         user.setUserName(username);
         logger.trace("User Delete parameters {}", user);
         logger.trace("******************BEGIN RESPONSE***********");
+        try{
         AdminResponseDTO response = port.performDeleteEntrustUser(user);
         if (response != null) {
             logger.trace("Delete status: " + response.isAdminSuccessful());
@@ -236,6 +268,12 @@ public class SecurityServiceImpl implements SecurityService {
         }
         logger.trace("******************END RESPONSE***********");
 
+        }
+        catch (EntrustConnectionException e){
+            logger.error(e.getMessage(), e);
+            throw new InternetBankingSecurityException(e.getMessage(),e);
+
+        }
 
     }
 
@@ -250,6 +288,7 @@ public class SecurityServiceImpl implements SecurityService {
         user.setUserName(username);
         logger.trace("Token assign parameters {}", user);
         logger.trace("******************BEGIN RESPONSE***********");
+        try{
         AdminResponseDTO response = port.performAssignToken(user);
         if (response != null) {
             logger.trace("Creation status: " + response.isAdminSuccessful());
@@ -264,8 +303,13 @@ public class SecurityServiceImpl implements SecurityService {
         logger.trace("******************END RESPONSE***********");
 
 
-        throw new InternetBankingSecurityException();
-    }
+        }
+        catch (EntrustConnectionException e){
+            logger.error(e.getMessage(), e);
+            throw new InternetBankingSecurityException(e.getMessage(),e);
+
+        }
+        return result;    }
 
     @Override
     public boolean activateToken(String username, String serialNumber) {
@@ -279,6 +323,7 @@ public class SecurityServiceImpl implements SecurityService {
         logger.trace("Token activation parameters {}", user);
         logger.trace("******************BEGIN RESPONSE***********");
         AdminResponseDTO response = port.performActivateToken(user);
+        try{
         if (response != null) {
             logger.trace("Activation status: " + response.isAdminSuccessful());
             logger.trace(" Activation response code: " + response.getRespCode());
@@ -291,8 +336,13 @@ public class SecurityServiceImpl implements SecurityService {
         logger.trace("******************END RESPONSE***********");
 
 
-        throw new InternetBankingSecurityException();
-    }
+        }
+        catch (EntrustConnectionException e){
+            logger.error(e.getMessage(), e);
+            throw new InternetBankingSecurityException(e.getMessage(),e);
+
+        }
+        return result;    }
 
     @Override
     public boolean deActivateToken(String username, String serialNumber) {
@@ -305,6 +355,7 @@ public class SecurityServiceImpl implements SecurityService {
         user.setUserName(username);
         logger.trace("Token de-activation parameters {}", user);
         logger.trace("******************BEGIN RESPONSE***********");
+        try{
         AdminResponseDTO response = port.performDeactivateToken(user);
         if (response != null) {
             logger.trace("deactivate status: " + response.isAdminSuccessful());
@@ -318,8 +369,13 @@ public class SecurityServiceImpl implements SecurityService {
         logger.trace("******************END RESPONSE***********");
 
 
-        throw new InternetBankingSecurityException();
-    }
+        }
+        catch (EntrustConnectionException e){
+            logger.error(e.getMessage(), e);
+            throw new InternetBankingSecurityException(e.getMessage(),e);
+
+        }
+        return result;    }
 
     @Override
     public void setUserQA(String username, List<String> questions, List<String> answer) {
@@ -333,6 +389,8 @@ public class SecurityServiceImpl implements SecurityService {
 
         logger.trace("Token de-activation parameters {}", user);
         logger.trace("******************BEGIN RESPONSE***********");
+
+        try {
         AdminResponseDTO response = port.performSetQA(user);
 
         if (response != null) {
@@ -347,8 +405,13 @@ public class SecurityServiceImpl implements SecurityService {
         logger.trace("******************END RESPONSE***********");
 
 
-        throw new InternetBankingSecurityException();
-    }
+        }
+        catch (EntrustConnectionException e){
+            logger.error(e.getMessage(), e);
+            throw new InternetBankingSecurityException(e.getMessage(),e);
+
+        }
+        }
 
     @Override
     public Map<List<String>, List<String>> getUserQA(String username) {
@@ -387,31 +450,66 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
-    public String getTokenSerials(String username) {
-            String result = "";
-        TokenSerialDTO user = new TokenSerialDTO();
-            user.setAppCode(appCode);
-            user.setAppDesc(appDesc);
-            user.setGroup(appGroup);
+    public Map<List<String>, List<String>> getMutualAuth(String username) throws InternetBankingTransferException {
+        Map<List<String>, List<String>> list = new HashMap<>();
 
-            user.setUserName(username);
-            logger.trace("User  parameters {}", user);
-            logger.trace("******************BEGIN RESPONSE***********");
-        TokenSerialResponseDTO response = port.performGetTokenSerial(user);
-            if (response != null) {
-                logger.trace("status: " + response.isAuthenticationSuccessful());
-                logger.trace("  response code: " + response.getRespCode());
-                logger.trace("  response message: " + response.getRespMessage());
+        MauthDTO user = new MauthDTO();
+        user.setAppCode(appCode);
+        user.setAppDesc(appDesc);
+        user.setGroup(appGroup);
+        user.setUserName(username);
 
-                result = response.getTokenSerials();
-                return result;
+        logger.trace("QA parameters {}", user);
+        logger.trace("******************BEGIN RESPONSE***********");
+        ImageCaptionResponseDTO response = port.performMutualAuth(user);
 
+        if (response != null) {
+            logger.trace("MUTUAL AUTH status: " + response.isSuccessful());
+            logger.trace("MUTUAL AUTH response code: " + response.getRespCode());
+            logger.trace(" MUTUAL AUTH response Message: " + response.getRespMessage());
+            if (!response.isSuccessful()) {
+                throw new InternetBankingSecurityException(response.getRespMessage());
             }
-            logger.trace("******************END RESPONSE***********");
 
-
-            throw new InternetBankingSecurityException();
         }
+        logger.trace("******************END RESPONSE***********");
+
+        List<String> captionSecret = response.getCaptionSecret();
+        List<String> imageSecret = response.getImageSecret();
+
+        list.put(captionSecret, imageSecret);
+
+
+        return list;
+
+    }
+
+    @Override
+    public String getTokenSerials(String username) {
+        String result = "";
+        TokenSerialDTO user = new TokenSerialDTO();
+        user.setAppCode(appCode);
+        user.setAppDesc(appDesc);
+        user.setGroup(appGroup);
+
+        user.setUserName(username);
+        logger.trace("User  parameters {}", user);
+        logger.trace("******************BEGIN RESPONSE***********");
+        TokenSerialResponseDTO response = port.performGetTokenSerial(user);
+        if (response != null) {
+            logger.trace("status: " + response.isAuthenticationSuccessful());
+            logger.trace("  response code: " + response.getRespCode());
+            logger.trace("  response message: " + response.getRespMessage());
+
+            result = response.getTokenSerials();
+            return result;
+
+        }
+        logger.trace("******************END RESPONSE***********");
+
+
+        throw new InternetBankingSecurityException();
+    }
 
     @Override
     public boolean unLockUser(String username) {
@@ -440,7 +538,7 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
-    public boolean updateUser(String username,String fullName,boolean enableOtp) {
+    public boolean updateUser(String username, String fullName, boolean enableOtp) {
         boolean result = false;
         UserAdminDTO user = new UserAdminDTO();
         user.setAppCode(appCode);

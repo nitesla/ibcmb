@@ -10,7 +10,6 @@ public class ResetPasswordForm {
     public String securityQuestion;
     public String password;
     public String confirmPassword;
-    public String accountNumber;
-    public String customerId;
+    public String username;
 
 }

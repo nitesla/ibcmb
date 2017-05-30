@@ -109,6 +109,38 @@
          }
      }
 
+     function sendRegCode(cifId){
+         var result;
+         $.ajax({
+             type:'GET',
+             url:"/rest/regCode/"+cifId,
+             async:false,
+             success:function(data1){
+                 result = ''+String(data1);
+                 if(result == 'false'){
+                     //invalid account number
+                     //alert("user name not found");
+                     $.notify({
+                         title: '<strong>Oops!</strong>',
+                         message: 'Registration Code Not Valid'
+                     },{
+                         type: 'danger'
+                     });
+
+                 }else{
+                     //valid account number
+                     alert("password: " + result);
+                 }
+             }
+         });
+
+         if(result === 'true'){
+             //username is valid and available
+             return true;
+         }else{
+             return false;
+         }
+     }
 
     function registerUser(){
          var returnValue = false;
@@ -163,6 +195,12 @@
         	console.log(url);
         	$('#phishing-preview').attr('src', url);
         });
+
+
+        $('#sms').change('click', function(){
+            var cifId = $('input[name=customerId]').val(customerId);
+            sendRegCode(cifId);
+        });
     } );
 
 
@@ -181,6 +219,7 @@
     });
     var ACCOUNT_DETAILS_STEP = 0;
     var PROFILE_DETAILS_STEP = 1;
+    var SECURITY_QUESTION_STEP = 2;
     var PHISHING_IMAGE_STEP = 3;
     form.children("div").steps({
         headerTag: "h3",
@@ -203,6 +242,11 @@
                 var username = $('input[name="userName"]').val();
                 var confirm = $('input[name="confirm"]').val();
                 return isValid && validateUsername(username) && validatePassword(confirm);
+            }
+            if(SECURITY_QUESTION_STEP === currentIndex){
+                console.log("Current Step is the security question step");
+                //$("#reg-form").submit();
+                return isValid;
             }
             if(PHISHING_IMAGE_STEP === currentIndex){
                 console.log("Current Step is the phishing image step");

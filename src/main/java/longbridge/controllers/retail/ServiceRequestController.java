@@ -2,7 +2,6 @@ package longbridge.controllers.retail;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.javafx.sg.prism.NGShape;
 import longbridge.dtos.*;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.FinancialInstitutionType;
@@ -112,13 +111,13 @@ public class ServiceRequestController {
             serviceRequestDTO.setUserId(user.getId());
             serviceRequestDTO.setDateRequested(new Date());
 
-//            if(serviceReqConfigDTO.isAuthenticate()){
-//                if(session.getAttribute("authenticated")!="authenticated"){
-//                    session.setAttribute("requestDTO",serviceRequestDTO);
-//                    session.setAttribute("redirectURL", "/retail/request/process");
-//                    return "redirect:/token/authenticate";
-//                }
-//            }
+            if(serviceReqConfigDTO.isAuthenticate()){
+                if(session.getAttribute("authenticated")!="authenticated"){
+                    session.setAttribute("requestDTO",serviceRequestDTO);
+                    session.setAttribute("redirectURL", "/retail/request/process");
+                    return "redirect:/retail/token/authenticate";
+                }
+            }
             String message = requestService.addRequest(serviceRequestDTO);
             redirectAttributes.addFlashAttribute("message", message);
 

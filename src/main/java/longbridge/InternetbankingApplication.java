@@ -40,7 +40,7 @@ public class InternetbankingApplication  /*extends  SpringBootServletInitializer
 //        securityService.createEntrustUser("bridger09","longbridger",true);
 //        integrationService.sendSMS("HELLO FROM FAROOQ", "08023972141", "HELLO");
 //        integrationService.sendSMS("HELLO FROM FAROOQ", "08052237245", "HELLO");
-         integrationService.sendSMS("HELLO FROM FAROOQ", "07037708319", "HELLO");
+//         integrationService.sendSMS("HELLO FROM FAROOQ", "07037708319", "HELLO");
 //        java.util.List<String> questions = new ArrayList<>();
 //        questions.add("WHO IS THE GREATEST");
 //        List<String> answer = new ArrayList<>();
