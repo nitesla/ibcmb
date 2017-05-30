@@ -53,9 +53,10 @@ public class AdminUserGeneralController {
         boolean result = securityService.sendOtp(username);
         if(result) {
             session.setAttribute("username", username);
-            session.setAttribute("url", "/password/reset");
+            session.setAttribute("redirectUrl", "/password/reset");
+            session.setAttribute("otpUrl","/adm/admin/otp");
             model.addAttribute("message",messageSource.getMessage("otp.send.failure",null,locale));
-            return "/adm/admin/ptoken";
+            return "/adm/admin/otp";
         }
         model.addAttribute("failure",messageSource.getMessage("otp.send.failure",null,locale));
         return "/adm/admin/username";

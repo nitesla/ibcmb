@@ -9,5 +9,6 @@ public class InternetBankingSecurityException extends InternetBankingException {
 
     public InternetBankingSecurityException(String message){super(message);}
 
+    public InternetBankingSecurityException(String message, Throwable cause){super(message,cause);}
 
 }

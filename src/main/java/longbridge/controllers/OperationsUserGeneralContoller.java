@@ -31,7 +31,7 @@ import java.util.Locale;
 
 @Controller
 @RequestMapping("/general/operations/users")
-public class OperationsUserContoller {
+public class OperationsUserGeneralContoller {
 	
 	private Logger logger= LoggerFactory.getLogger(this.getClass());
     @Autowired
@@ -79,9 +79,10 @@ public class OperationsUserContoller {
         boolean result = securityService.sendOtp(username);
         if (result) {
             session.setAttribute("username", username);
-            session.setAttribute("url", "/password/reset");
+            session.setAttribute("redirectUrl", "/password/reset");
+            session.setAttribute("otpUrl","/ops/otp");
             model.addAttribute("message",messageSource.getMessage("otp.send.failure",null,locale));
-            return "/ops/ptoken";
+            return "/ops/otp";
         }
         model.addAttribute("failure", messageSource.getMessage("otp.send.failure", null, locale));
         return "/ops/username";

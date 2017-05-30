@@ -37,19 +37,26 @@ public class TokenAuthController {
     public String authenticate(HttpServletRequest request, RedirectAttributes redirectAttributes, Locale locale) {
 
         String redirectUrl = "";
+        String otpUrl="";
         String username = "";
-        String otp = "";
 
-        if (request.getSession().getAttribute("url") != null) {
-            redirectUrl = (String) request.getSession().getAttribute("url");
+
+        if (request.getSession().getAttribute("redirectUrl") != null) {
+            redirectUrl = (String) request.getSession().getAttribute("redirectUrl");
+        }
+        if (request.getSession().getAttribute("otpUrl") != null) {
+            otpUrl = (String) request.getSession().getAttribute("otpUrl");
         }
 
         if (request.getSession().getAttribute("username") != null) {
             username = (String) request.getSession().getAttribute("username");
         }
-        if (request.getSession().getAttribute("token") != null) {
-            otp = (String) request.getSession().getAttribute("token");
-        }
+            String otp = request.getParameter("otp");
+            if(otp==null||"".equals(otp)){
+                redirectAttributes.addFlashAttribute("failure",messageSource.getMessage("otp.required",null,locale));
+                return "redirect:/"+otpUrl;
+            }
+
         try {
             boolean result = securityService.performOtpValidation(username, otp);
             if (result) {
