@@ -8,6 +8,7 @@ import longbridge.dtos.RetailUserDTO;
 import longbridge.exception.*;
 import longbridge.forms.AlertPref;
 import longbridge.forms.CustChangePassword;
+import longbridge.forms.CustResetPassword;
 import longbridge.models.*;
 import longbridge.repositories.RetailUserRepo;
 import longbridge.services.*;
@@ -222,25 +223,24 @@ public class RetailUserServiceImpl implements RetailUserService {
     }
 
     @Override
-    public boolean resetPassword(RetailUser user, String newPassword) {
-        boolean ok = false;
+    public String resetPassword(RetailUser user, String password) {
+
+        String errorMessage = passwordPolicyService.validate(password, user.getUsedPasswords());
+        if (!"".equals(errorMessage)) {
+            throw new PasswordPolicyViolationException(errorMessage);
+        }
 
         try {
-            if (getUser(user.getId()) == null) {
-                logger.error("USER DOES NOT EXIST");
-                return ok;
-            } else {
-                user.setPassword(this.passwordEncoder.encode(newPassword));
-                this.retailUserRepo.save(user);
-                logger.info("PASSWORD RESET SUCCESSFULLY");
-                ok = true;
-            }
+            RetailUser retailUser = retailUserRepo.findOne(user.getId());
+            retailUser.setPassword(this.passwordEncoder.encode(password));
+            retailUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
 
+            this.retailUserRepo.save(retailUser);
+            logger.info("User {} password has been updated", user.getId());
+            return messageSource.getMessage("password.change.success", null, locale);
         } catch (Exception e) {
-            e.printStackTrace();
-            logger.error("ERROR OCCURRED {}", e.getMessage());
+            throw new PasswordException(messageSource.getMessage("password.change.failure", null, locale), e);
         }
-        return ok;
     }
 
     @Override

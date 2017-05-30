@@ -80,7 +80,7 @@ public class LocalTransferController {
 
             String errorMessage=transferErrorService.getMessage(e,servletRequest);
 
-            model.addAttribute("error", errorMessage);
+            model.addAttribute("failure", errorMessage);
           return page + "pageii";
 
       }

@@ -71,5 +71,9 @@ public interface SecurityService {
 
    Map< List<String>, List<String>> getUserQA(String username) throws InternetBankingTransferException;
 
+   String getTokenSerials(String username);
+   boolean unLockUser(String username);
+   boolean updateUser(String username,String fullName,boolean enableOtp);
+
 
 }

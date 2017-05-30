@@ -9,6 +9,7 @@ import longbridge.exception.PasswordPolicyViolationException;
 import longbridge.exception.WrongPasswordException;
 import longbridge.forms.AlertPref;
 import longbridge.forms.CustChangePassword;
+import longbridge.forms.CustResetPassword;
 import longbridge.models.RetailUser;
 import longbridge.services.AccountService;
 import longbridge.services.CodeService;
@@ -24,6 +25,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
@@ -38,7 +40,7 @@ import java.util.List;
 @RequestMapping("/retail")
 public class SettingController {
 
-    private Logger logger= LoggerFactory.getLogger(this.getClass());
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private PasswordPolicyService passwordPolicyService;
@@ -61,7 +63,7 @@ public class SettingController {
     }
 
     @GetMapping("/change_password")
-    public String ChangePaswordPage(CustChangePassword custChangePassword, Model model){
+    public String ChangePaswordPage(CustChangePassword custChangePassword, Model model) {
         List<String> passwordPolicy = passwordPolicyService.getPasswordRules();
         logger.info("PASSWORD RULES {}", passwordPolicy);
         model.addAttribute("passwordRules", passwordPolicy);
@@ -69,22 +71,22 @@ public class SettingController {
     }
 
     @PostMapping("/change_password")
-    public String ChangePassword(@Valid CustChangePassword custChangePassword, BindingResult result, Principal principal, Model model, RedirectAttributes redirectAttributes) throws Exception{
-        if(result.hasErrors()){
-            model.addAttribute("failure","Pls correct the errors");
+    public String ChangePassword(@Valid CustChangePassword custChangePassword, BindingResult result, Principal principal, Model model, RedirectAttributes redirectAttributes) throws Exception {
+        if (result.hasErrors()) {
+            model.addAttribute("failure", "Pls correct the errors");
             return "cust/settings/pword";
         }
 
-        if(!custChangePassword.getNewPassword().equals(custChangePassword.getConfirmPassword())){
+        if (!custChangePassword.getNewPassword().equals(custChangePassword.getConfirmPassword())) {
             logger.info("PASSWORD MISMATCH");
-            model.addAttribute("failure","Pls correct the errors");
+            model.addAttribute("failure", "Pls correct the errors");
             return "cust/settings/pword";
         }
 
         RetailUser user = retailUserService.getUserByName(principal.getName());
 
         try {
-            String message =retailUserService.changePassword(user, custChangePassword);
+            String message = retailUserService.changePassword(user, custChangePassword);
             redirectAttributes.addFlashAttribute("message", message);
             return "redirect:/retail/change_password";
         } catch (WrongPasswordException wpe) {
@@ -116,7 +118,7 @@ public class SettingController {
     }
 
     @GetMapping("/reset_password")
-    public String resetPaswordPage(CustChangePassword custChangePassword, Model model){
+    public String resetPaswordPage(CustResetPassword custResetPassword, Model model) {
         List<String> passwordPolicy = passwordPolicyService.getPasswordRules();
         logger.info("PASSWORD RULES {}", passwordPolicy);
         model.addAttribute("passwordRules", passwordPolicy);
@@ -124,32 +126,25 @@ public class SettingController {
     }
 
     @PostMapping("/reset_password")
-    public String resetPassword(@Valid CustChangePassword custChangePassword, BindingResult result, Principal principal, Model model, RedirectAttributes redirectAttributes) throws Exception{
-        if(result.hasErrors()){
-            model.addAttribute("failure","Pls correct the errors");
+    public String resetPassword(@Valid CustResetPassword custResetPassword,BindingResult result, Principal principal, Model model, RedirectAttributes redirectAttributes) throws Exception {
+        if (result.hasErrors()) {
+            model.addAttribute("failure", "Pls correct the errors");
             return "cust/settings/new-pword";
         }
 
-        if(!custChangePassword.getNewPassword().equals(custChangePassword.getConfirmPassword())){
+        if (!custResetPassword.getNewPassword().equals(custResetPassword.getConfirmPassword())) {
             logger.info("PASSWORD MISMATCH");
-            model.addAttribute("failure","Pls correct the errors");
+            model.addAttribute("failure", "Passwords do not match");
             return "cust/settings/new-pword";
         }
 
         RetailUser user = retailUserService.getUserByName(principal.getName());
 
         try {
-            String message =retailUserService.changePassword(user, custChangePassword);
+            String message = retailUserService.resetPassword(user, custResetPassword.getConfirmPassword());
             redirectAttributes.addFlashAttribute("message", message);
-            return "redirect:/retail/reset_password";
-        } catch (WrongPasswordException wpe) {
-            result.reject("oldPassword", wpe.getMessage());
-            logger.error("Wrong password from retail user {}", user.getUserName(), wpe.toString());
-            List<String> passwordPolicy = passwordPolicyService.getPasswordRules();
-            logger.info("PASSWORD RULES {}", passwordPolicy);
-            model.addAttribute("passwordRules", passwordPolicy);
-            return "cust/settings/new-pword";
-        } catch (PasswordPolicyViolationException pve) {
+            return "redirect:/retail/dashboard";
+        }catch (PasswordPolicyViolationException pve) {
             result.reject("newPassword", pve.getMessage());
             logger.error("Password policy violation from retail user {} error {}", user.getUserName(), pve.toString());
             List<String> passwordPolicy = passwordPolicyService.getPasswordRules();
@@ -171,8 +166,8 @@ public class SettingController {
     }
 
     @GetMapping("/alert_preference")
-    public String AlertPreferencePage(AlertPref alertPref, Model model, Principal principal){
-        RetailUser user =  retailUserService.getUserByName(principal.getName());
+    public String AlertPreferencePage(AlertPref alertPref, Model model, Principal principal) {
+        RetailUser user = retailUserService.getUserByName(principal.getName());
         Iterable<CodeDTO> pref = codeService.getCodesByType("ALERT_PREFERENCE");
         model.addAttribute("alertP", user.getAlertPreference());
         model.addAttribute("prefs", pref);
@@ -180,9 +175,9 @@ public class SettingController {
     }
 
     @PostMapping("/alert_preference")
-    public String ChangeAlertPreference(@Valid AlertPref alertPref, Principal principal, BindingResult result, Model model, RedirectAttributes redirectAttributes) throws Exception{
-        if(result.hasErrors()){
-            model.addAttribute("failure","Pls correct the errors");
+    public String ChangeAlertPreference(@Valid AlertPref alertPref, Principal principal, BindingResult result, Model model, RedirectAttributes redirectAttributes) throws Exception {
+        if (result.hasErrors()) {
+            model.addAttribute("failure", "Pls correct the errors");
             return "cust/settings/alertpref";
         }
 
@@ -192,13 +187,13 @@ public class SettingController {
         Iterable<CodeDTO> pref = codeService.getCodesByType("ALERT_PREFERENCE");
         model.addAttribute("alertP", user.getAlertPreference());
         model.addAttribute("prefs", pref);
-        model.addAttribute("message","Preference Change Successful successful");
+        model.addAttribute("message", "Preference Change Successful successful");
         return "cust/settings/alertpref";
     }
 
 
     @GetMapping("/bvn")
-    public String linkBVN(){
+    public String linkBVN() {
         return "abc";
     }
 }

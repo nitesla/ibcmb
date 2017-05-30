@@ -1,6 +1,8 @@
 package longbridge.security.retailuser;
 
 import longbridge.forms.ChangeDefaultPassword;
+import longbridge.forms.CustChangePassword;
+import longbridge.forms.CustResetPassword;
 import longbridge.services.PasswordPolicyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -25,10 +27,11 @@ public class RetailUserLoginInterceptor extends HandlerInterceptorAdapter {
         String uri = httpServletRequest.getRequestURI();
 
         if (httpServletRequest.getSession().getAttribute("expired-password") != null && !(uri.equalsIgnoreCase("/retail/reset_password"))) {
-            ChangeDefaultPassword changePassword = new ChangeDefaultPassword();
+            CustResetPassword resetPassword = new CustResetPassword();
+
             ModelAndView modelAndView = new ModelAndView("forwarded-view");
 
-            modelAndView.addObject("changePassword", changePassword);
+            modelAndView.addObject("custResetPassword", resetPassword);
             modelAndView.addObject("passwordRules", passwordPolicyService.getPasswordRules());
 
             modelAndView.setViewName("cust/settings/new-pword");

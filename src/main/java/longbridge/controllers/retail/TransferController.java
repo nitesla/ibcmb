@@ -154,8 +154,8 @@ public class TransferController {
 
             if (request.getSession().getAttribute("AUTH") != null) {
                 String token = request.getParameter("token");
-                boolean tokenOk = securityService.performTokenValidation(principal.getName(), token);
-                boolean ok = tokenOk;
+                boolean ok = securityService.performTokenValidation(principal.getName(), token);
+
                 if (!ok) {
                     model.addAttribute("error", messages.getMessage("auth.token.failure", null, locale));
                     return "/transfer/transferauth";
