@@ -9,6 +9,8 @@ public class SyncTokenForm {
 
     @NotEmpty(message = "username")
     private String username;
+    @NotEmpty(message = "serialNumber")
+    private String serialNumber;
     @NotEmpty(message = "tokenCode1")
     private String tokenCode1;
     @NotEmpty(message = "tokenCode2")
@@ -21,6 +23,14 @@ public class SyncTokenForm {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getSerialNumber() {
+        return serialNumber;
+    }
+
+    public void setSerialNumber(String serialNumber) {
+        this.serialNumber = serialNumber;
     }
 
     public String getTokenCode1() {

@@ -37,6 +37,16 @@ public class OpUserLoginInterceptor extends HandlerInterceptorAdapter {
             throw new ModelAndViewDefiningException(modelAndView);
         }
 
+        if (httpServletRequest.getSession().getAttribute("2FA")!=null&& !(uri.equalsIgnoreCase("/ops/token")))
+        {
+
+            ModelAndView modelAndView = new ModelAndView("forwarded-view");
+
+            modelAndView.setViewName("/ops/token");
+            throw new ModelAndViewDefiningException(modelAndView);
+        }
+
+
 
 
 

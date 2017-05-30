@@ -32,7 +32,7 @@
             <section class="login_content">
                 <img th:src="@{/bank/images/cmb_logo.png}" alt="Coronation Merchant Bank" />
                 <br/>
-                <form th:action="@{/ops/login}" method="POST">
+                <form th:action="@{/ops/token}" method="POST">
 
                     <h4>Token Authentication</h4>
 
@@ -40,7 +40,7 @@
                         <input type="password" class="form-control" placeholder="Token code" name="token" required="" />
                     </div>
                     <div>
-                        <input name="submit" type="submit" value="Submit" />
+                        <input name="submit" type="submit" class="btn btn-primary" value="Next" />
                         <!--<a class="reset_pass" href="#">Lost your password?</a>-->
                     </div>
                     <div th:if="${param.message != null}" class="alert alert-info" th:text="${param.message[0]}">message</div>
@@ -63,5 +63,37 @@
         </ul>
     </div>
 </div>
+<div th:if="${failure}">
+    <div hidden="hidden">
+        <ul class="actionError">
+            <li th:each="msg : ${failure}" th:text="${msg}">Message</li>
+        </ul>
+    </div>
+</div>
+<!-- jQuery -->
+<script th:src="@{~/bank/vendors/jquery/jquery.js}"></script>
+<!-- Bootstrap -->
+<script th:src="@{~/bank/vendors/bootstrap/js/bootstrap.min.js}"></script>
+<!-- FastClick -->
+<script th:src="@{~/bank/vendors/fastclick/lib/fastclick.js}"></script>
+<!-- NProgress -->
+<script th:src="@{~/bank/vendors/nprogress/nprogress.js}"></script>
+
+<script th:src="@{~/bank/vendors/bootstrap-editable/js/bootstrap-editable.min.js}"></script>
+<script th:src="@{~/bank/vendors/switchery/switchery.min.js}"></script>
+<script th:src="@{~/bank/js/bootstrap-editable-custom.js}"></script>
+<!-- Custom Theme Scripts -->
+<script th:src="@{~/bank/js/custom.js}"></script>
+<script th:src="@{~/bank/js/bootstrap-switch.min.js}"></script>
+<script th:src="@{~/bank/vendors/bootstrap-notify/bootstrap-notify.js}"></script>
+<script th:src="@{~/bank/js/coronation.js}"></script>
+<script th:src="@{~/bank/vendors/datatables.net/js/jquery.dataTables.js}"></script>
+<script th:src="@{~/bank/js/dataTables.select.js}"></script>
+<script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
+<script th:src="@{~/bank/vendors/sweetalert/sweetalert.min.js}"></script>
+<script th:src="@{~/bank/vendors/bootstrap-dialog/js/bootstrap-dialog.js}"></script>
+<script th:src="@{~/bank/js/dataTables.bootstrap.js}"></script>
+
+
 </body>
 </html>

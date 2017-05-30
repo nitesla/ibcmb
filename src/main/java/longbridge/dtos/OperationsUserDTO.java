@@ -34,6 +34,7 @@ public class OperationsUserDTO implements Person{
     @NotEmpty(message = "email")
     @Email(message = "email")
     private String email;
+    private String phoneNumber;
     @JsonIgnore
     private String password;
     private String status;
@@ -118,6 +119,14 @@ public class OperationsUserDTO implements Person{
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public String getPassword() {

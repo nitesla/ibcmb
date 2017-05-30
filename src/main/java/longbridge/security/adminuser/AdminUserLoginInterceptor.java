@@ -39,7 +39,14 @@ private PasswordPolicyService passwordPolicyService;
             modelAndView.setViewName("/adm/admin/new-pword");
             throw new ModelAndViewDefiningException(modelAndView);
         }
+        if (httpServletRequest.getSession().getAttribute("2FA")!=null&& !(uri.equalsIgnoreCase("/admin/token")))
+        {
 
+            ModelAndView modelAndView = new ModelAndView("forwarded-view");
+
+            modelAndView.setViewName("/adm/admin/token");
+            throw new ModelAndViewDefiningException(modelAndView);
+        }
 
 
 

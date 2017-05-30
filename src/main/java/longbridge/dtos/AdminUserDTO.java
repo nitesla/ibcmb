@@ -27,6 +27,7 @@ public class AdminUserDTO {
     @NotEmpty(message = "email")
     @Email(message = "email")
     private String email;
+    private String phoneNumber;
     private String password;
     private String createdOn;
     private Date expiryDate;
@@ -94,6 +95,14 @@ public class AdminUserDTO {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public String getPassword() {
