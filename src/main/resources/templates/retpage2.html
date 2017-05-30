@@ -59,12 +59,14 @@
                         <div class="form-group">
                             <input type="text" name="username" th:value="*{username}" class="form-control" readonly="readonly"/>
                         </div>
-                        <div class="form-group">
-                            <button class="btn btn-primary btn-lg"> Login </button>
-                        </div>
+
                     </div>
                     <div class="col-md-4" style="padding:5px; max-height:300px; width:200px; background-color: #F2F2F1;">
                         <img th:src="@{/customer/img/cmb_logo.png}"/>
+                        <input type="checkbox" name="phishing"/>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-primary btn-lg"> Login </button>
                     </div>
                 </div>
 

@@ -59,18 +59,51 @@
             <div class="col-md-12 col-sm-12">
                 <div class="row">
                     <h5 class="page_header">Retrieve Username</h5>
-                
-                    <div class="col-md-offset-4 col-md-4 col-sm-6">
-                        <form method="POST" action="/forgot/username">
-			                <input class="form-control" name="accountNumber" placeholder="Account Number"/><br/>
-			                <select name="securityQuestion" class="form-control">
-			                	<option>What is the name of your spouse?</option>
-			                	<option>What is the name of the first car you owned?</option>
-			                </select><br/>
-			                <input class="form-control" name="securityAnswer" placeholder="Answer to Security Question"/><br/>
-			                <button class="btn form-control"> Submit</button>
-			            </form>
-                    </div>
+
+                    <form id="reg-form" action="/forgot/password" method="post">
+
+                        <div>
+                            <h3>Account Number</h3>
+                            <section>
+                                <div class="row">
+                                    <div class="col-md-offset-4 col-md-4">
+                                        <div class="form-group">
+                                            <label>Account Number</label>
+                                            <input type="text" name="acct" class="form-control required" placeholder="Account Number"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                            <h3>Security Information</h3>
+                            <section>
+                                <div class="row">
+                                    <div class="col-md-offset-4 col-md-4">
+                                        <div class="form-group">
+                                            <label>Security Question</label>
+                                            <select th:value="${retUsernameForm.securityQuestion}" name="securityQuestion" class="form-control">
+                                                <option>What is the name of your spouse?</option>
+                                                <option>What is the name of the first car you owned?</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Security Answer</label>
+                                            <input th:value="${retUsernameForm.securityAnswer}" type="text" name="securityAnswer" class="form-control required" placeholder="Security Answer"/>
+                                        </div>
+                                        <input id="returnValue" type="hidden"/>
+                                        <input id="customerId" name="customerId" th:value="${retUsernameForm.customerId}" type="hidden"/>
+                                    </div>
+                                </div>
+                            </section>
+                            <h3>Summary</h3>
+                            <section>
+                                <div class="row">
+                                    <div class="col-md-offset-4 col-md-4">
+                                        Username Retrieval Successful
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                    </form>
                 </div>
 
             </div>
@@ -102,6 +135,7 @@
 <script th:src="@{~/customer/js/jquery.validate.min.js}"></script>
 <script th:src="@{~/customer/js/jquery-ui.js}"></script>
 <script th:src="@{~/customer/plugins/jquery-steps/js/jquery.steps.min.js}" type="text/javascript"></script>
-<script th:src="@{~/customer/js/register.js}" type="text/javascript"></script>
+<script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
+<script th:src="@{~/customer/js/forgotusername.js}" type="text/javascript"></script>
 </body>
 </html>

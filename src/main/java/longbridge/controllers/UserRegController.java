@@ -2,14 +2,18 @@ package longbridge.controllers;
 
 import longbridge.api.CustomerDetails;
 import longbridge.dtos.RetailUserDTO;
+import longbridge.exception.InternetBankingException;
 import longbridge.forms.RegistrationForm;
 import longbridge.forms.ResetPasswordForm;
+import longbridge.forms.RetrieveUsernameForm;
 import longbridge.models.Account;
+import longbridge.models.Email;
 import longbridge.models.RetailUser;
 import longbridge.services.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,8 +23,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by Wunmi Sowunmi on 18/04/2017.
@@ -39,6 +46,17 @@ public class UserRegController {
 
     @Autowired
     private AccountService accountService;
+
+    @Autowired
+    private MailService mailService;
+
+    @Autowired
+    private MessageSource messageSource;
+
+    @Autowired
+    private CodeService codeService;
+
+    private Locale locale;
 
     private Logger logger= LoggerFactory.getLogger(this.getClass());
 
@@ -86,6 +104,29 @@ public class UserRegController {
         return customerId;
     }
 
+    @GetMapping("/rest/regCode/{accountNumber}/{email}/{birthDate}")
+    public @ResponseBody String sendRegCode(@PathVariable String accountNumber, @PathVariable String email, @PathVariable String birthDate){
+        String code = "";
+        logger.info("Account nUmber : " + accountNumber);
+        logger.info("Email : " + email);
+        logger.info("BirthDate : " + birthDate);
+        CustomerDetails details = integrationService.isAccountValid(accountNumber, email, birthDate);
+        if (details != null){
+            String contact = details.getPhone();
+//            try{
+//
+//            }catch (){
+//
+//            }
+        }else {
+            //nothing
+            code = "";
+        }
+
+        return code;
+    }
+
+
     @GetMapping("/rest/username/check/{username}")
     public @ResponseBody String checkUsername(@PathVariable String username){
         RetailUser user = retailUserService.getUserByName(username);
@@ -109,7 +150,10 @@ public class UserRegController {
 
 
     @GetMapping("/forgot/username")
-    public String showForgotUsername() {
+    public String showForgotUsername(Model model) {
+        RetrieveUsernameForm retrieveUsernameForm= new RetrieveUsernameForm();
+        retrieveUsernameForm.step = "1";
+        model.addAttribute("retUsernameForm", retrieveUsernameForm);
         return "cust/forgotusername";
     }
 
@@ -117,13 +161,47 @@ public class UserRegController {
     public
     @ResponseBody
     String forgotUsername(WebRequest webRequest) {
-        String accountNumber = webRequest.getParameter("accountNumber");
+        Iterator<String> iterator = webRequest.getParameterNames();
+
+        while(iterator.hasNext()){
+            logger.info(iterator.next());
+        }
+
+
+        String accountNumber = webRequest.getParameter("acct");
         String securityQuestion = webRequest.getParameter("securityQuestion");
         String securityAnswer = webRequest.getParameter("securityAnswer");
+        String customerId = webRequest.getParameter("customerId");
 
-        String username = retailUserService.retrieveUsername(accountNumber, securityQuestion, securityAnswer);
-        logger.info("Username is: {}", username);
-        return username;
+        try {
+            if ("".equals(customerId) || customerId == null) {
+                logger.error("Account Number not valid");
+                return "false";
+            }
+
+            RetailUser user = retailUserService.getUserByCustomerId(customerId);
+
+            //confirm security question is correct
+            //    	isValid &= securityService.validateSecurityQuestion(retailUser, securityQuestion, securityAnswer);
+            //    	if(isValid){
+            //    		logger.error("Invalid security question / answer");
+            //    		return "false";
+            //    	}
+
+            logger.debug("User Info {}:", user.getUserName());
+            //Send Username to Email
+            Email email = new Email.Builder()
+                    .setRecipient(user.getEmail())
+                    .setSubject(messageSource.getMessage("retrieve.username.subject",null,locale))
+                    .setBody(String.format(messageSource.getMessage("retrieve.username.message",null,locale),user.getFirstName(), user.getUserName()))
+                    .build();
+            mailService.send(email);
+
+        }catch (InternetBankingException e){
+            return "false";
+        }
+
+        return "true";
     }
 
 
@@ -146,6 +224,10 @@ public class UserRegController {
         RegistrationForm registrationForm = new RegistrationForm();
         registrationForm.step = "1";
         model.addAttribute("registrationForm", registrationForm);
+//        List<CodeDTO> codes = codeService.getCodesByType("SECURITY_QUESTIONS");
+//        model.addAttribute("questions", codes);
+
+        //securityService.
         return "cust/register/registration";
     }
 
@@ -157,29 +239,30 @@ public class UserRegController {
             logger.info(iterator.next());
         }
 
-        String accountNumber = webRequest.getParameter("acct");
+        String accountNumber = webRequest.getParameter("accountNumber");
         String email = webRequest.getParameter("email");
         String dob = webRequest.getParameter("birthDate");
         String userName = webRequest.getParameter("userName");
         String password = webRequest.getParameter("password");
         String confirmPassword = webRequest.getParameter("confirm");
+        String secQuestion = webRequest.getParameter("securityQuestion");
+        String secAnswer = webRequest.getParameter("securityAnswer");
         String customerId = webRequest.getParameter("customerId");
+
         String bvn ="";
         logger.info("Customer Id {}:", customerId);
         CustomerDetails details = integrationService.isAccountValid(accountNumber, email, dob);
 
 
-
-        if ( details.getCifId().equals(null)||details.getCifId().isEmpty() ){
+        if (details.getCifId() == null||details.getCifId().isEmpty() ){
             logger.error("Account Number not valid");
             return "false";
         }
 
 
-        if ( !details.getBvn().equals(null)&& !details.getBvn().isEmpty() ){
+        if (details.getBvn() != null && !details.getBvn().isEmpty() ){
             logger.error("No Bvn found");
             bvn=details.getBvn();
-
         }
 
 
@@ -192,7 +275,13 @@ public class UserRegController {
 
         //password meets policy
 
+
         //security questions
+        List<String> securityQuestion = new ArrayList();
+        securityQuestion.add(secQuestion);
+        List<String> securityAnswer = new ArrayList();
+        securityAnswer.add(secAnswer);
+        //securityService.setUserQA(userName, securityQuestion, securityAnswer);
 
         //phishing image
 
@@ -203,6 +292,8 @@ public class UserRegController {
         retailUserDTO.setPassword(password);
         retailUserDTO.setCustomerId(customerId);
         retailUserDTO.setBvn(bvn);
+        retailUserDTO.setSecurityQuestion(securityQuestion);
+        retailUserDTO.setSecurityAnswer(securityAnswer);
         String message = retailUserService.addUser(retailUserDTO, details);
         logger.info("MESSAGE", message);
         redirectAttributes.addAttribute("success", "true");
@@ -210,15 +301,18 @@ public class UserRegController {
     }
 
     @GetMapping("/forgot/password")
-    public String showResetPassword(Model model){
+    public String showResetPassword(Model model, HttpSession session){
+
         ResetPasswordForm resetPasswordForm = new ResetPasswordForm();
         resetPasswordForm.step = "1";
+        resetPasswordForm.username = (String) session.getAttribute("username");
+//        List<String> QA = securityService.getUserQA((String) session.getAttribute("username"));
         model.addAttribute("forgotPasswordForm", resetPasswordForm);
         return "cust/passwordreset";
     }
 
     @PostMapping("/forgot/password")
-    public @ResponseBody  String resetPassword(WebRequest webRequest,  RedirectAttributes redirectAttributes){
+    public @ResponseBody  String resetPassword(WebRequest webRequest,  RedirectAttributes redirectAttributes, HttpSession session){
         Iterator<String> iterator = webRequest.getParameterNames();
 
         while(iterator.hasNext()){
@@ -231,10 +325,9 @@ public class UserRegController {
         String securityAnswer = webRequest.getParameter("securityAnswer");
         String password= webRequest.getParameter("password");
         String confirmPassword = webRequest.getParameter("confirm");
-        String customerId = webRequest.getParameter("customerId");
+        String username = (String) session.getAttribute("username");
 
-        if ("".equals(customerId) || customerId == null){
-            logger.error("Account Number not valid");
+        if (username.equals("")||username==null){
             return "false";
         }
 
@@ -259,7 +352,10 @@ public class UserRegController {
         //if ()
 
         //get Retail User by customerId
-        RetailUser retailUser = retailUserService.getUserByCustomerId(customerId);
+        RetailUser retailUser = retailUserService.getUserByName(username);
+        if (retailUser == null){
+            return "false";
+        }
         //change password
         retailUserService.resetPassword(retailUser, password);
         redirectAttributes.addAttribute("success", true);

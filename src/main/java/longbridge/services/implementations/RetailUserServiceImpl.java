@@ -9,8 +9,10 @@ import longbridge.dtos.SettingDTO;
 import longbridge.exception.*;
 import longbridge.forms.AlertPref;
 import longbridge.forms.CustChangePassword;
-import longbridge.forms.CustResetPassword;
-import longbridge.models.*;
+import longbridge.models.Account;
+import longbridge.models.Code;
+import longbridge.models.Email;
+import longbridge.models.RetailUser;
 import longbridge.repositories.RetailUserRepo;
 import longbridge.services.*;
 import longbridge.utils.DateFormatter;
@@ -126,6 +128,15 @@ public class RetailUserServiceImpl implements RetailUserService {
             if (retailUser != null) {
                 throw new DuplicateObjectException(messageSource.getMessage("user.add.exists", null, locale));
             }
+
+
+            if(!securityService.createEntrustUser(user.getUserName(), details.getCustomerName(), true)){
+                logger.info("Failed to Create Entrust User {}", user.getUserName());
+                throw new InternetBankingException(messageSource.getMessage("user.add.failure", null, locale));
+            }
+
+            securityService.setUserQA(user.getUserName(), user.getSecurityQuestion(), user.getSecurityAnswer());
+
             retailUser = new RetailUser();
             retailUser.setUserName(user.getUserName());
             retailUser.setCustomerId(details.getCifId());

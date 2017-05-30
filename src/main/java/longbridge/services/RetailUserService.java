@@ -7,7 +7,6 @@ import longbridge.exception.InternetBankingException;
 import longbridge.exception.PasswordException;
 import longbridge.forms.AlertPref;
 import longbridge.forms.CustChangePassword;
-import longbridge.forms.CustResetPassword;
 import longbridge.models.RetailUser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,7 +31,7 @@ public interface RetailUserService {
 //    @PreAuthorize("hasAuthority('GET_RETAIL_USER')")
     RetailUserDTO getUserDTOByName(String name);
 
-    @PreAuthorize("hasAuthority('GET_RETAIL_USER')")
+//    @PreAuthorize("hasAuthority('GET_RETAIL_USER')")
     RetailUser getUserByCustomerId(String custId);
 
     /**

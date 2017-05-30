@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <link rel="stylesheet" type="text/css" th:href="@{/customer/css/bootstrap.css}"/>
-    <link rel="stylesheet" type="text/css" th:href="@{/customer/css/custom.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/bootstrap.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/custom.css}"/>
     <title>Log in | Coronation Merchant Bank
     </title>
 </head>
@@ -30,8 +30,8 @@
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> LOG IN </a>
                         <ul class="dropdown-menu">
-                            <li><a th:href="@{/login/retail}">Retail</a></li>
-                            <li><a th:href="@{/login/corporate}">Corporate</a></li>
+                            <li><a th:href="@{/login/retail}">RETAIL</a></li>
+                            <li><a th:href="@{/login/corporate}">CORPORATE</a></li>
                         </ul>
                     </li>
                     <li><a th:href="@{/register}">REGISTER</a></li>
@@ -49,29 +49,31 @@
 <section class="content-wrapper">
     <div class="container">
         <div class="bg">
-            <form  th:action="@{/corporate/login}" method="POST" class="form-signin">
-                <h5 class="form-signin-heading">Enter Login Details</h5>
-                <br/>
-                <div th:if="${param.message != null}" class="alert alert-info" th:text="${param.message[0]}">message</div>
+            <form th:action="@{/login/p/corporate}" method="POST" class="login-form col-md-offset-3 col-md-6">
+                <br/><br/><br/><br/><br/><br/><br/><br/><br/>
+                <div class="row">
+                    <br/>
+                    <br/>
+                    <div class="col-md-7">
+                        <h5 class="form-signin-heading">Enter Login Details</h5>
+                        <div class="form-group">
+                            <input type="text" name="username" th:value="*{username}" class="form-control" readonly="readonly"/>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" name="corpKey" th:value="*{corpKey}" class="form-control" readonly="readonly"/>
+                        </div>
 
-                <div th:if="${param.error != null}" class="alert alert-danger" th:text="${session[SPRING_SECURITY_LAST_EXCEPTION]}">error</div>
-
-                <div class="form-group">
-                    <input type="text" name="username" th:value="*{username}" class="form-control" readonly="readonly"/>
+                    </div>
+                    <div class="col-md-4" style="padding:5px; max-height:300px; width:200px; background-color: #F2F2F1;">
+                        <img th:src="@{/customer/img/cmb_logo.png}"/>
+                        <input type="checkbox" name="phishing" class="form-control"/>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-primary btn-lg"> Login </button>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <input type="text" name="corporateId" th:value="*{corpKey}" class="form-control" readonly="readonly"/>
-                </div>
 
-                <div class="form-group">
-                    <input type="password" name="password" class="form-control"  placeholder="Password"/>
-                </div>
-
-                <div class="form-group">
-                    <!--<input name="submit" type="submit" value="submit" />-->
-                    <button class="btn btn-primary form-control">Submit</button>
-                </div>
             </form>
         </div>
     </div>
@@ -94,9 +96,9 @@
     </div>
 </footer>
 <!-- CORE JQUERY SCRIPTS -->
-<script th:src="@{/customer/js/jquery-1.11.1.js}"></script>
+<script th:src="@{~/customer/js/jquery-1.11.1.js}"></script>
 <!-- BOOTSTRAP SCRIPTS  -->
-<script th:src="@{/customer/js/bootstrap.js}"></script>
+<script th:src="@{~/customer/js/bootstrap.js}"></script>
 <script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
 </body>
 </html>

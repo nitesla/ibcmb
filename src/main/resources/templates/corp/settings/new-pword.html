@@ -54,7 +54,7 @@
                     <h5 class="page_header col-md-offset-4 col-md-4 col-sm-6">Password Reset</h5>
 
                     <div class="col-md-offset-4 col-md-4 col-sm-6">
-                        <form method="POST" th:action="@{/retail/reset_password}" th:object="${custChangePassword}">
+                        <form method="POST" th:action="@{/corporate/reset_password}" th:object="${custChangePassword}">
 
                             <p class="alert alert-danger"><span style="color: red;">Your current password has expired.</span> <br/>Please enter a new password.</p>
                             <div class="form-group">
@@ -102,9 +102,7 @@
 <script th:src="@{/customer/js/jquery-1.11.1.js}"></script>
 <!-- BOOTSTRAP SCRIPTS  -->
 <script th:src="@{/customer/js/bootstrap.js}"></script>
-
-<script th:src="@{~/customer/js/jquery.validate.min.js}"></script>
-<script th:src="@{~/customer/js/jquery-ui.js}"></script>
-<script th:src="@{~/customer/plugins/jquery-steps/js/jquery.steps.min.js}" type="text/javascript"></script>
+<script th:src="@{~/customer/js/coronation.js}"></script>
+<script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
 </body>
 </html>
