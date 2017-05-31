@@ -47,9 +47,9 @@
                                         </select>
                                     </p>
 
-                                    <p th:if="${field.fieldType} == 'ACCOUNT'">
+                                    <p th:if="${field.fieldType} == 'ACCT'">
                                         <select class="form-control" th:name="${field.fieldName}">
-                                            <option th:each="type : ${requestFieldType}" th:value="${type.code}" th:text="${type.description}"></option>
+                                            <option th:each="acc : ${accts}" th:value="${acc.accountNumber}" th:text="${acc.accountNumber}"></option>
                                         </select>
                                     </p>
                                     <p th:if="${field.fieldType} == 'LIST'">

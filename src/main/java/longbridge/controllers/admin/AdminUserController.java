@@ -1,12 +1,15 @@
 package longbridge.controllers.admin;
 
+import edu.umd.cs.findbugs.annotations.Confidence;
 import longbridge.dtos.AdminUserDTO;
 import longbridge.dtos.RoleDTO;
+import longbridge.dtos.SettingDTO;
 import longbridge.exception.*;
 import longbridge.forms.ChangeDefaultPassword;
 import longbridge.forms.ChangePassword;
 import longbridge.models.AdminUser;
 import longbridge.services.AdminUserService;
+import longbridge.services.ConfigurationService;
 import longbridge.services.PasswordPolicyService;
 import longbridge.services.RoleService;
 import org.slf4j.Logger;
@@ -49,10 +52,13 @@ public class AdminUserController {
     private BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
-    PasswordPolicyService passwordPolicyService;
+    private PasswordPolicyService passwordPolicyService;
 
     @Autowired
-    MessageSource messageSource;
+    private MessageSource messageSource;
+
+    @Autowired
+    ConfigurationService configService;
 
 
     /**
@@ -308,6 +314,17 @@ public class AdminUserController {
             if (httpServletRequest.getSession().getAttribute("expired-password") != null) {
                 httpServletRequest.getSession().removeAttribute("expired-password");
             }
+
+            SettingDTO setting = configService.getSettingByName("ENABLE_ADMIN_2FA");
+            boolean tokenAuth = false;
+            if (setting != null && setting.isEnabled()) {
+                tokenAuth = (setting.getValue().equalsIgnoreCase("yes") ? true : false);
+            }
+
+            if (tokenAuth) {
+                return "redirect:/admin/token";
+            }
+
             return "redirect:/admin/dashboard";
         } catch (PasswordPolicyViolationException pve) {
             result.reject("newPassword", pve.getMessage());

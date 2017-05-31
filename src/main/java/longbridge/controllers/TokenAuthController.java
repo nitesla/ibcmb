@@ -67,7 +67,7 @@ public class TokenAuthController {
             logger.error("Error authenticating token");
         }
         redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("token.auth.failure", null, locale));
-        return "redirect:/" + redirectUrl;
+        return "redirect:" + redirectUrl;
     }
 
 }

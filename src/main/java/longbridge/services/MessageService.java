@@ -104,9 +104,9 @@ public interface MessageService {
      * @param pageable the pagination
      * @return returns a list of messages
      */
-     Page<MessageDTO> getSentMessages(String recipient, UserType recipientTye, Pageable pageable);
+     Page<MessageDTO> getReceivedMessages(String recipient, UserType recipientTye, Pageable pageable);
 
-    Page<MessageDTO> getSentMessages(String recipient, UserType recipientTye, java.awt.print.Pageable pageable);
+    Page<MessageDTO> getReceivedMessages(String recipient, UserType recipientTye, java.awt.print.Pageable pageable);
 
     /**
      * Returns a list of messages received by the specified user

@@ -136,12 +136,12 @@ public class PasswordValidator {
             errorMessage.append(".\n");
         }
 
-        if (!isPasswordReuseable(password, usedPasswords)) {
-            message = String.format(
-                    "Previous passwords can only be reused after %d different passwords", numOfChanges);
-            errorMessage.append(message);
-            errorMessage.append(".\n");
-        }
+//        if (!isPasswordReuseable(password, usedPasswords)) {
+//            message = String.format(
+//                    "Previous passwords can only be reused after %d different passwords", numOfChanges);
+//            errorMessage.append(message);
+//            errorMessage.append(".\n");
+//        }
 
         return errorMessage.toString();
     }
@@ -162,12 +162,18 @@ public class PasswordValidator {
             return isReusable;
         }
         List<String> passwordHashes = Arrays.asList(StringUtils.split(usedPasswords, ","));
+        if(passwordHashes.isEmpty()||passwordHashes==null){
+            return true;
+        }
         for (String passwordHash : passwordHashes) {
             if (passwordEncoder.matches(password, passwordHash)) {
                 if (passwordHashes.size() - getPasswordHashPosition(password, usedPasswords) > numOfChanges) {
                     isReusable = true;
-                    return isReusable;
+                    break;
                 }
+            }
+            else{
+                isReusable=true;
             }
         }
         return isReusable;

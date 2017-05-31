@@ -20,10 +20,9 @@
                                     <a class="btn btn-block btn-primary compose-mail" th:href="@{/retail/mailbox/compose}">Compose Mail</a>
                                     <div class="margin-bottoms"></div>
                                     <ul class="folder-list">
-                                        <li><a th:href="@{/retail/mailbox/inbo}"> <i class="fa fa-inbox "></i> Inbox <span class="label label-warning pull-right">16</span> </a></li>
+                                        <li><a th:href="@{/retail/mailbox/inbox}"> <i class="fa fa-inbox "></i> Inbox </a></li>
                                         <li><a th:href="@{/retail/mailbox/sentmail}"> <i class="fa fa-sign-out"></i> Sent Mail</a></li>
-                                        <li><a th:href="@{/retail/mailbox/draft}"> <i class="fa fa-file-text-o"></i> Drafts <span class="label label-danger pull-right">2</span></a></li>
-                                        <li><a th:href="@{/retail/mailbox/trash}"> <i class="fa fa-trash-o"></i> Trash</a></li>
+                                        <li><a th:href="@{/retail/mailbox/draft}"> <i class="fa fa-file-text-o"></i> Drafts </a></li>
                                     </ul>
                                 </div>
                             </div>
@@ -37,24 +36,28 @@
                                     <a href="compose.html" class="btn-success btn-sm" data-toggle="tooltip" data-placement="top" title="Reply"><i class="fa fa-reply"></i> Reply</a>
                                     <a href="" class="btn-default btn-sm" data-toggle="tooltip" data-placement="top" title="Move to trash"><i class="fa fa-trash-o"></i>&nbsp;</a>
                                 </div>
-                                <h2 class="in-box">
-                                    <span class="font-noraml">Subject: </span><span th:text="${message.subject}">Aldrsions of Lorem Ipsum.</span>
-                                </h2>
+
+                                <h4 class="in-box">
+                                    <span >From: </span><span class="in-box" th:text="${messageDTO.sender}">joy.utosu@longbridgetech.com</span>
+                                </h4>
+                                <br/>
+
+                                <br/>
                                 <div class="mail-tools tooltip-demo m-t-md">
+                                    <h4 class="in-box">
+                                        <span>Subject: </span><span th:text="${messageDTO.subject}">Aldrsions of Lorem Ipsum.</span>
+                                    </h4>
                                     <h5>
-                                        <span class="pull-right font-noraml" th:text="${message.createdOn}">02 FEB 2017</span>
-                                        <span class="in-box">From: </span><span th:text="${message.sender}">joy.utosu@longbridgetech.com</span>
+                                        <span class="pull-right font-noraml" th:text="${messageDTO.createdOn}">02 FEB 2017</span>
                                     </h5>
+                                    <br/>  <br/><br/>
+
+
                                 </div>
                             </div>
-                            <div class="mail-box">
-                                <p th:text="${message.body}">
-                                    Hello Jonathan!
-                                    <br/>
-                                    <br/>
-                                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer
-                                    took a galley of type and scrambled it to make a type <strong>specimen book.</strong>It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. It has survived not only five centuries
-                                </p>
+                            <div >
+                               <h3><p th:text="${messageDTO.body}">
+                                     </p></h3>
                             </div>
                         </div>
                     </div>

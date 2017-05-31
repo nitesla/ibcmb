@@ -5,6 +5,7 @@ import longbridge.exception.InternetBankingSecurityException;
 import longbridge.forms.SyncTokenForm;
 import longbridge.forms.TokenForm;
 import longbridge.services.SecurityService;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,15 +14,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -177,4 +178,17 @@ public class AdmTokenController {
     }
 
 
+    @GetMapping("/serials")
+    public List<String> getTokenSerials(@RequestParam("username") String username){
+        List<String > serials = new ArrayList<>();
+        try {
+           String serial = securityService.getTokenSerials(username);
+            if(serial!=null && !"".equals(serial)){
+               serials = Arrays.asList(StringUtils.split(serial,","));
+            }
+        } catch (InternetBankingSecurityException ibe) {
+            logger.error("Error getting token serials", ibe);
+        }
+        return serials;
+    }
 }

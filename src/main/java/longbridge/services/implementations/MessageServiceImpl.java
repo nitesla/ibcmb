@@ -90,29 +90,35 @@ public class MessageServiceImpl implements MessageService {
     @Transactional
     public String addMessage(User sender, MessageDTO messageDTO) {
 
-        if (sender instanceof RetailUser){
-            SettingDTO setting = configurationService.getSettingByName("CUSTOMER_CARE_EMAIL");
-            if (setting != null && setting.isEnabled()){
-                messageDTO.setRecipient(setting.getValue());
-                Message message = convertDTOToEntity(messageDTO);
-                message.setDateCreated(new Date());
-                sendEmail(messageDTO);
+        try {
+            if (sender instanceof RetailUser) {
+                SettingDTO setting = configurationService.getSettingByName("CUSTOMER_CARE_EMAIL");
+                if (setting != null && setting.isEnabled()) {
+                    messageDTO.setRecipient(setting.getValue());
+                    Message message = convertDTOToEntity(messageDTO);
+                    message.setDateCreated(new Date());
+                    sendEmail(messageDTO);
+                }
+
             }
 
-        }
+            Message message = convertDTOToEntity(messageDTO);
+            message.setSender(sender.getUserName());
+            message.setDateCreated(new Date());
+            message.setStatus("Unread");
+            MailBox senderMailBox = mailBoxRepo.findByUserIdAndUserType(sender.getId(), sender.getUserType());
+            if (senderMailBox == null) {
+                senderMailBox = new MailBox(sender.getId(), sender.getUserType());
+            }
+            message.setMailBox(senderMailBox);
+            senderMailBox.getMessages().add(message);
+            mailBoxRepo.save(senderMailBox);
+            return messageSource.getMessage("message.add.success", null, locale);
 
-        Message message = convertDTOToEntity(messageDTO);
-        message.setDateCreated(new Date());
-        message.setStatus("Unread");
-        MailBox senderMailBox = mailBoxRepo.findByUserIdAndUserType(sender.getId(), sender.getUserType());
-        if (senderMailBox == null) {
-            senderMailBox = new MailBox(sender.getId(), sender.getUserType());
         }
-        message.setMailBox(senderMailBox);
-        senderMailBox.getMessages().add(message);
-        mailBoxRepo.save(senderMailBox);
-        return messageSource.getMessage("message.add.success",null,locale);
-
+        catch (Exception e){
+            throw new InternetBankingException(messageSource.getMessage("message.add.failure",null,locale));
+        }
     }
 
     public Iterable<MessageDTO> getMessages() {
@@ -190,7 +196,7 @@ public class MessageServiceImpl implements MessageService {
 
 
     @Override
-    public Page<MessageDTO> getSentMessages(String recipient, UserType recipientTye, Pageable pageable) {
+    public Page<MessageDTO> getReceivedMessages(String recipient, UserType recipientTye, Pageable pageable) {
         Page<Message> page = messageRepo.findByRecipientAndRecipientTypeOrderByIdDesc(recipient, recipientTye,pageable);
         List<MessageDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
@@ -200,7 +206,7 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public Page<MessageDTO> getSentMessages(String recipient, UserType recipientTye, java.awt.print.Pageable pageable) {
+    public Page<MessageDTO> getReceivedMessages(String recipient, UserType recipientTye, java.awt.print.Pageable pageable) {
         return null;
     }
 

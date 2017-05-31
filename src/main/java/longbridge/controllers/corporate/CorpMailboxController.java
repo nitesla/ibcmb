@@ -95,7 +95,6 @@ public class CorpMailboxController {
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
         MessageDTO message = new MessageDTO();
         message.setSender(corporateUser.getUserName());
-        message.setRecipient("joykwere@yahoo.com");
         //if(!message.getStatus()==not sent){
         //
         model.addAttribute("messageDTO", message);
@@ -113,7 +112,7 @@ public class CorpMailboxController {
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
         messageService.addMessage(corporateUser, messageDTO);
         redirectAttributes.addFlashAttribute("message","Message sent successfully");
-        return "redirect:/corp/mailbox/outbox";
+        return "redirect:/corp/mailbox/sentmail";
     }
 
     @GetMapping("/inbox/{id}/message")

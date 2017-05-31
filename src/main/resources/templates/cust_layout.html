@@ -40,7 +40,10 @@
                     <div class="row ">
                         <div class="col-md-3 col-sm-4 header_info bvn"><p>Your Bank verification number</p>
                             <h5 th:text="'BVN: ' + ${bvn}"></h5></div>
-                        <div class="col-md-5 col-sm-4 header_info"><h5><span th:text="*{greeting}"></span><br class="break"/><b th:text="*{name}"></b> &nbsp; <a th:href="@{/retail/mailbox/inbox}"><i class="fa fa-envelope"></i></a></h5>
+                        <div class="col-md-5 col-sm-4 header_info"><h5><span th:text="*{greeting}"></span><br class="break"/><b th:text="*{name}"></b> &nbsp; <a th:href="@{/retail/mailbox/inbox}">
+                            <i class="fa fa-envelope"></i>
+                            <span th:if="${numOfUnreadMessages}" class="badge bg-green"  th:text="${numOfUnreadMessages}">count</span>
+                            </a></h5>
 
                             <div class="hide-faq"><h6>FAQS &nbsp; &nbsp;<i class="fa fa-question-circle"></i><span class="date2 lorem">&nbsp; &nbsp;Login History:&nbsp;</span>&nbsp;
                                 <span class="lorem" th:text="*{lastLogin}">21st March 2017 10:30am</span></h6></div></div>

@@ -182,7 +182,7 @@ public class UserRegController {
             message += n;
 
 
-            ObjectNode sent = integrationService.sendSMS(message, "+234(70)38810752" +
+            ObjectNode sent = integrationService.sendSMS(message, contact +
                     "" +
                     " ", "Internet Banking Registration Code");
             if (sent != null){
@@ -220,8 +220,8 @@ public class UserRegController {
     }
 
     @GetMapping("/rest/regCode/check/{code}")
-    public @ResponseBody String checkRegCode(@PathVariable String code, HttpSession session){
-        String regCode = (String) session.getAttribute("regCode");
+    public @ResponseBody String checkRegCode(@PathVariable Integer code, HttpSession session){
+        Integer regCode = (Integer) session.getAttribute("regCode");
         if (!code.equals(regCode)){
             return "false";
         }
