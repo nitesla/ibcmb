@@ -32,9 +32,9 @@
             <section class="login_content">
                 <img th:src="@{/bank/images/cmb_logo.png}" alt="Coronation Merchant Bank" />
                 <br/>
-                <form th:action="@{/token/authenticate}" method="POST">
+                <form th:action="@{/otp/authenticate}" method="POST">
 
-                    <h4>Token Authentication</h4>
+                    <h4>OTP Authentication</h4>
 
                     <div>
                         <input type="password" class="form-control" placeholder="OTP code" name="token" required="" />

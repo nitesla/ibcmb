@@ -1,12 +1,15 @@
 package longbridge.security.retailuser;
 
+import longbridge.dtos.SettingDTO;
 import longbridge.models.RetailUser;
 import longbridge.models.UserType;
 import longbridge.repositories.RetailUserRepo;
+import longbridge.services.ConfigurationService;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.DefaultRedirectStrategy;
@@ -29,6 +32,9 @@ public class RetailAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
     @Autowired
     private RetailUserRepo retailUserRepo;
+
+    @Autowired
+    private ConfigurationService configService;
 
 
     public RetailAuthenticationSuccessHandler() {
@@ -70,6 +76,15 @@ public class RetailAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         boolean isUser = retailUserRepo.findFirstByUserName(userDetails.getUsername()).getUserType().equals(UserType.RETAIL);
 
+        SettingDTO setting = configService.getSettingByName("ENABLE_RETAIL_2FA");
+        boolean tokenAuth = false;
+        if (setting != null && setting.isEnabled()) {
+            tokenAuth = (setting.getValue().equalsIgnoreCase("YES") ? true : false);
+        }
+
+        if (tokenAuth) {
+            return "/retail/token";
+        }
         if (isUser) {
             return "/retail/dashboard";
         } else {

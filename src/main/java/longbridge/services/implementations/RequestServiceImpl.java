@@ -117,7 +117,7 @@ public class RequestServiceImpl implements RequestService {
                     .setBody(message)
                     .build();
             groupMessageService.send(config.getGroupId(), email);
-            return messageSource.getMessage("request.add.success", null, locale);
+            return messageSource.getMessage("req.add.success", null, locale);
         } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("req.add.failure", null, locale), e);
         }

@@ -49,21 +49,16 @@
 <section class="content-wrapper">
     <div class="container">
         <div class="bg">
-            <form id="loginform" th:action="@{/retail/login}" method="POST" class="form-signin">
-                <h5 class="form-signin-heading">Enter Login Details</h5>
+            <form id="loginform" th:action="@{/retail/token}" method="POST" class="form-signin">
+                <h1>Token Authentication</h1>
                 <br/>
 
-                <h6 id="label">Please enter your username</h6>
 
-                <div th:if="${param.message != null}" class="alert alert-info" th:text="${param.message[0]}">message</div>
-                <div th:if="${param.error != null}" class="alert alert-danger" th:text="${session[SPRING_SECURITY_LAST_EXCEPTION]}">error</div>
-                <br/>
                 <div id="username_div" class="form-group">
-                    <input type="text" id="username" name="username" class="form-control"  placeholder="Username" />
-                    <p><a href="/forgot/username">Forgot Username?</a></p>
+                    <input type="password" id="token" name="token" class="form-control"  placeholder="Token Code" />
                 </div>
                 <div class="form-group">
-                    <button class="btn btn-primary form-control"> Next </button>
+                    <button class="btn btn-primary form-control" type="submit"> Next </button>
                 </div>
             </form>
         </div>
@@ -87,6 +82,47 @@
     </div>
 </footer>
 <!-- CORE JQUERY SCRIPTS -->
+
+<div th:if="${message}">
+    <div hidden="hidden">
+        <ul class="actionMessage">
+            <li th:each="msg : ${message}" th:text="${msg}">Message</li>
+        </ul>
+    </div>
+</div>
+
+<div th:if="${failure}">
+    <div hidden="hidden">
+        <ul class="actionError">
+            <li th:each="msg : ${failure}" th:text="${msg}">Message</li>
+        </ul>
+    </div>
+</div>
+
+<!-- jQuery -->
+<script th:src="@{~/bank/vendors/jquery/jquery.js}"></script>
+<!-- Bootstrap -->
+<script th:src="@{~/bank/vendors/bootstrap/js/bootstrap.min.js}"></script>
+<!-- FastClick -->
+<script th:src="@{~/bank/vendors/fastclick/lib/fastclick.js}"></script>
+<!-- NProgress -->
+<script th:src="@{~/bank/vendors/nprogress/nprogress.js}"></script>
+
+<script th:src="@{~/bank/vendors/bootstrap-editable/js/bootstrap-editable.min.js}"></script>
+<script th:src="@{~/bank/vendors/switchery/switchery.min.js}"></script>
+<script th:src="@{~/bank/js/bootstrap-editable-custom.js}"></script>
+<!-- Custom Theme Scripts -->
+<script th:src="@{~/bank/js/custom.js}"></script>
+<script th:src="@{~/bank/js/bootstrap-switch.min.js}"></script>
+<script th:src="@{~/bank/vendors/bootstrap-notify/bootstrap-notify.js}"></script>
+<script th:src="@{~/bank/js/coronation.js}"></script>
+<script th:src="@{~/bank/vendors/datatables.net/js/jquery.dataTables.js}"></script>
+<script th:src="@{~/bank/js/dataTables.select.js}"></script>
+<script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
+<script th:src="@{~/bank/vendors/sweetalert/sweetalert.min.js}"></script>
+<script th:src="@{~/bank/vendors/bootstrap-dialog/js/bootstrap-dialog.js}"></script>
+<script th:src="@{~/bank/js/dataTables.bootstrap.js}"></script>
+
 <script th:src="@{~/customer/js/jquery-1.11.1.js}"></script>
 <!-- BOOTSTRAP SCRIPTS  -->
 <script th:src="@{~/customer/js/bootstrap.js}"></script>

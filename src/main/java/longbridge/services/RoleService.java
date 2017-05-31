@@ -33,7 +33,7 @@ public interface RoleService {
     Role getRoleByUserTypeAndName(UserType userType,String name);
 
     //@PreAuthorize("hasAuthority('GET_ROLE')")
-    Role getTheRole(Long id);
+    Role getTheRole(String roleName);
 
     /**
      * Returns all  the roles in the system

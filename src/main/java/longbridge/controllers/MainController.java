@@ -3,10 +3,10 @@ package longbridge.controllers;
 
 import longbridge.exception.PasswordException;
 import longbridge.exception.UnknownResourceException;
+import longbridge.models.Corporate;
+import longbridge.models.CorporateUser;
 import longbridge.models.RetailUser;
-import longbridge.services.AdminUserService;
-import longbridge.services.OperationsUserService;
-import longbridge.services.RetailUserService;
+import longbridge.services.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
 import java.security.Principal;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -40,7 +42,12 @@ public class MainController {
     private OperationsUserService opsUserService;
     @Autowired
     private MessageSource messageSource;
-
+    @Autowired
+    private CorporateUserService corporateUserService;
+    @Autowired
+    private CorporateService corporateService;
+    @Autowired
+    private SecurityService securityService;
 
 
     @RequestMapping(value = {"/", "/home"})
@@ -55,7 +62,7 @@ public class MainController {
 
     @RequestMapping(value = "/login/corporate", method = RequestMethod.GET)
     public ModelAndView getCorpLoginPage(@RequestParam Optional<String> error) {
-        return new ModelAndView("corplogin", "error", error);
+        return new ModelAndView("corppage1", "error", error);
     }
 
     @GetMapping(value = "/login/admin")
@@ -137,29 +144,142 @@ public class MainController {
     }
 
     @PostMapping("/login/p/retail")
-    public String step2(WebRequest webRequest, Model model){
+    public String step2(WebRequest webRequest, Model model, HttpSession session){
         String username = webRequest.getParameter("username");
 //        String phishing = webRequest.getParameter("username");
         RetailUser user =  retailUserService.getUserByName(username);
         if (user == null){
             model.addAttribute("error", messageSource.getMessage("invalid.user", null, locale));
-            return "retpage2";
+            return "redirect:/login/retail";
         }
         model.addAttribute("username", user.getUserName());
+        session.setAttribute("username", user.getUserName());
         return "retaillogin";
     }
 
-    @PostMapping("/user/corporate/exists")
-    public @ResponseBody boolean corpUserExists(WebRequest webRequest){
+
+    @PostMapping("/login/u/corporate")
+    public String userExist(WebRequest webRequest, Model model){
         String username = webRequest.getParameter("username");
-        RetailUser user =  retailUserService.getUserByName(username);
-        if (user == null){
-            return false;
+        String corpKey = webRequest.getParameter("corporateId");
+        CorporateUser user =  corporateUserService.getUserByName(username);
+        Corporate corporate = corporateService.getCorporateByCustomerId(corpKey);
+//        Map<List<String>, List<String>> mutualAuth = securityService.getMutualAuth(user.getUserName());
+
+        if (corporate != null && user != null) {
+            model.addAttribute("username", user.getUserName());
+            model.addAttribute("corpKey", corpKey);
+            return "corppage2";
         }
-        return true;
+
+//        model.addAttribute("images", mutualAuth.get("imageSecret"));
+//        model.addAttribute("captions", mutualAuth.get("captionSecret"));
+        model.addAttribute("error", messageSource.getMessage("invalid.user", null, locale));
+        return "corppage1";
+
+    }
+
+    @PostMapping("/login/p/corporate")
+    public String corpstep2(WebRequest webRequest, Model model, HttpSession session){
+        String username = webRequest.getParameter("username");
+        String phishing = webRequest.getParameter("phishing");
+        String corpKey = webRequest.getParameter("corpKey");
+        CorporateUser user =  corporateUserService.getUserByName(username);
+        Corporate corporate = corporateService.getCorporateByCustomerId(corpKey);
+        if (corporate != null && user != null && phishing != null) {
+            model.addAttribute("username", user.getUserName());
+            model.addAttribute("corpKey", corpKey);
+            return "corplogin";
+        }
+
+        model.addAttribute("error", messageSource.getMessage("invalid.user", null, locale));
+        return "redirect:/login/corporate";
     }
 
 
 
+
+
+
+
+
+    @GetMapping("/password/reset/admin")
+    public String getAdminUsername(){
+        return "/adm/admin/username";
+    }
+
+    @PostMapping("/password/reset/admin")
+    public String validateAdminUsername(WebRequest request, Model model, Locale locale, HttpSession session){
+        String username = request.getParameter("username");
+        if(username==null||"".equals(username)){
+            model.addAttribute("failure",messageSource.getMessage("form.fields.required",null,locale));
+            return "/adm/admin/username";
+        }
+        if(!adminUserService.userExists(username)){
+            model.addAttribute("failure",messageSource.getMessage("username.invalid",null,locale));
+            return "/adm/admin/username";
+        }
+        session.setAttribute("username",username);
+        session.setAttribute("url","/password/admin/reset");
+        return "redirect:/token/admin";
+    }
+
+    @GetMapping("/password/admin/reset")
+    public String resetAdminPassword(HttpSession session, RedirectAttributes redirectAttributes){
+        if(session.getAttribute("username")!=null){
+            String username =(String)session.getAttribute("username");
+            try {
+                String message = adminUserService.resetPassword(username);
+                redirectAttributes.addFlashAttribute("message",message);
+                session.removeAttribute("username");
+                session.removeAttribute("url");
+                return "redirect:/login/admin";
+            }
+            catch (PasswordException pe){
+                redirectAttributes.addFlashAttribute("failure",pe.getMessage());
+            }
+        }
+        return "redirect:/password/reset/admin";
+    }
+
+    @GetMapping("/password/reset/ops")
+    public String getOpsUsername(){
+        return "/ops/username";
+    }
+
+
+    @PostMapping("/password/reset/ops")
+    public String validateOpsUsername(WebRequest request, Model model, Locale locale, HttpSession session){
+        String username = request.getParameter("username");
+        if(username==null||"".equals(username)){
+            model.addAttribute("failure",messageSource.getMessage("form.fields.required",null,locale));
+            return "/ops/username";
+        }
+        if(!opsUserService.userExists(username)){
+            model.addAttribute("failure",messageSource.getMessage("username.invalid",null,locale));
+            return "/ops/username";
+        }
+        session.setAttribute("username",username);
+        session.setAttribute("url","/password/ops/reset");
+        return "redirect:/token/ops";
+    }
+
+    @GetMapping("/password/ops/reset")
+    public String resetOpsPassword(HttpSession session, RedirectAttributes redirectAttributes){
+        if(session.getAttribute("username")!=null){
+            String username =(String)session.getAttribute("username");
+            try {
+                String message = opsUserService.resetPassword(username);
+                redirectAttributes.addFlashAttribute("message",message);
+                session.removeAttribute("username");
+                session.removeAttribute("url");
+                return "redirect:/login/admin";
+            }
+            catch (PasswordException pe){
+                redirectAttributes.addFlashAttribute("failure",pe.getMessage());
+            }
+        }
+        return "redirect:/password/reset/ops";
+    }
 
 }

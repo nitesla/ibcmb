@@ -19,7 +19,7 @@ import java.util.Map;
 
 
 
-public class InternetbankingApplication  /*extends  SpringBootServletInitializer*/ implements CommandLineRunner {
+public class InternetbankingApplication  /*extends  SpringBootServletInitializer*/{
 
     @Autowired
     private SecurityService securityService;
@@ -37,25 +37,9 @@ public class InternetbankingApplication  /*extends  SpringBootServletInitializer
 
 
 
-    @Override
-    public void run(String... strings) throws Exception {
-        System.out.println("start of call");
-//        securityService.createEntrustUser("bridger09","longbridger",true);
-//        integrationService.sendSMS("HELLO FROM FAROOQ", "08023972141", "HELLO");
-//        integrationService.sendSMS("HELLO FROM FAROOQ", "08052237245", "HELLO");
-  //      integrationService.sendSMS("HELLO FROM FAROOQ", "08050915810", "HELLO");
-//        java.util.List<String> questions = new ArrayList<>();
-//        questions.add("WHO IS THE GREATEST");
-//        List<String> answer = new ArrayList<>();
-//        answer.add("AYAOADE FAROOQ IS ");
-//        securityService.setUserQA("bridger09", questions, answer);
-//        System.out.println("end of call");
 
-//        Map< List<String>, List<String>> a = securityService.getUserQA("wunmi");
-//
-//        System.out.println(a.size());
 
-    }
+  
 
 
 }

@@ -1,15 +1,21 @@
 package longbridge.controllers;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import longbridge.api.CustomerDetails;
 import longbridge.dtos.RetailUserDTO;
+import longbridge.exception.InternetBankingException;
 import longbridge.forms.RegistrationForm;
 import longbridge.forms.ResetPasswordForm;
+import longbridge.forms.RetrieveUsernameForm;
 import longbridge.models.Account;
+import longbridge.models.Email;
 import longbridge.models.RetailUser;
 import longbridge.services.*;
+import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,8 +25,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.servlet.http.HttpServletResponse;
-import java.util.Iterator;
+import javax.servlet.http.HttpSession;
+import java.util.*;
 
 /**
  * Created by Wunmi Sowunmi on 18/04/2017.
@@ -40,20 +46,32 @@ public class UserRegController {
     @Autowired
     private AccountService accountService;
 
+    @Autowired
+    private MailService mailService;
+
+    @Autowired
+    private MessageSource messageSource;
+
+    @Autowired
+    private CodeService codeService;
+
+    private Locale locale;
+
     private Logger logger= LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private PasswordPolicyService passwordPolicyService;
     
-    @GetMapping("/rest/json/phishingimages")
-    public @ResponseBody String antiPhishingImages(){
-    	StringBuilder builder = new StringBuilder();
-    	builder.append("<option value=''>Select Anti Phishing Image</option>");
-    	builder.append("<option value='/assets/phishing/dog.jpg'>Dog</option>");
-    	builder.append("<option value='/assets/phishing/cheetah.jpg'>Cheetah</option>");
-    	builder.append("<option value='/assets/phishing/benz.jpg'>Car</option>");
-    	return builder.toString();
-    }
+//    @GetMapping("/rest/json/phishingimages")
+//    public @ResponseBody String antiPhishingImages(){
+//        //securityService.m
+//    	StringBuilder builder = new StringBuilder();
+//    	builder.append("<option value=''>Select Anti Phishing Image</option>");
+//    	builder.append("<option value='/assets/phishing/dog.jpg'>Dog</option>");
+//    	builder.append("<option value='/assets/phishing/cheetah.jpg'>Cheetah</option>");
+//    	builder.append("<option value='/assets/phishing/benz.jpg'>Car</option>");
+//    	return builder.toString();
+//    }
 
     @GetMapping("/rest/accountdetails/{accountNumber}/{email}/{birthDate}")
     public @ResponseBody String getAccountDetailsFromNumber(@PathVariable String accountNumber, @PathVariable String email, @PathVariable String birthDate){
@@ -86,6 +104,101 @@ public class UserRegController {
         return customerId;
     }
 
+    @GetMapping("/rest/secQues/{accountNumber}")
+    public @ResponseBody String getSecQuestionFromNumber(@PathVariable String accountNumber){
+        String secQuestion = "";
+        logger.info("Account nUmber : " + accountNumber);
+        Account account = accountService.getAccountByAccountNumber(accountNumber);
+        if (account != null){
+            String customerId = account.getCustomerId();
+            RetailUser user = retailUserService.getUserByCustomerId(customerId);
+            logger.info("USER NAME {}", user.getUserName());
+            Map<List<String>, List<String>> qa = securityService.getUserQA(user.getUserName());
+            //List<String> sec = null;
+            if (qa != null){
+                Set<List<String>> questions= qa.keySet();
+                Iterator it = questions.iterator();
+                while(it.hasNext()){
+                    logger.info("SEC QUESTION {}", it);
+                    List<String> question = ( List<String> )it.next();
+                    secQuestion = question.stream().filter(Objects::nonNull).findFirst().orElse("");
+                    logger.info("question {}", secQuestion);
+                }
+
+            }else {
+                secQuestion = "";
+            }
+
+
+        }else {
+            //nothing
+            secQuestion = "";
+        }
+
+        return secQuestion;
+    }
+
+    @GetMapping("/rest/secAns/{answer}")
+    public @ResponseBody String getSecQuestionFromNumber(@PathVariable String answer, HttpSession session){
+
+        //confirm security question is correct
+        String secAnswer="";
+        Map<List<String>, List<String>> qa = securityService.getUserQA((String) session.getAttribute("username"));
+        //List<String> sec = null;
+        if (qa != null){
+            Set<List<String>> questions= qa.keySet();
+            Iterator it = questions.iterator();
+            while(it.hasNext()){
+                List<String> question = qa.get(it.next());
+                secAnswer = question.stream().filter(Objects::nonNull).findFirst().orElse("");
+                logger.info("answer {}", secAnswer);
+            }
+
+            if (!secAnswer.equals(answer)){
+                return "false";
+            }
+
+        }else {
+            return "false";
+        }
+
+        return (String) session.getAttribute("username");
+    }
+
+    @GetMapping("/rest/regCode/{accountNumber}/{email}/{birthDate}")
+    public @ResponseBody String sendRegCode(@PathVariable String accountNumber, @PathVariable String email, @PathVariable String birthDate, HttpSession session){
+        String code = "";
+        logger.info("Account nUmber : " + accountNumber);
+        logger.info("Email : " + email);
+        logger.info("BirthDate : " + birthDate);
+        CustomerDetails details = integrationService.isAccountValid(accountNumber, email, birthDate);
+        if (details != null){
+            logger.info("Reg Code : " + details);
+            String contact = details.getPhone();
+            Random rnd = new Random();
+            int n = 100000 + rnd.nextInt(900000);
+            logger.info("Reg Code : " + n);
+            String message = "Your Registration Code is : ";
+            message += n;
+
+
+            ObjectNode sent = integrationService.sendSMS(message, "+234(70)38810752" +
+                    "" +
+                    " ", "Internet Banking Registration Code");
+            if (sent != null){
+                session.setAttribute("regCode", n);
+                return "true";
+            }
+
+        }else {
+            //nothing
+            code = "";
+        }
+
+        return code;
+    }
+
+
     @GetMapping("/rest/username/check/{username}")
     public @ResponseBody String checkUsername(@PathVariable String username){
         RetailUser user = retailUserService.getUserByName(username);
@@ -106,10 +219,22 @@ public class UserRegController {
         return "true";
     }
 
+    @GetMapping("/rest/regCode/check/{code}")
+    public @ResponseBody String checkRegCode(@PathVariable String code, HttpSession session){
+        String regCode = (String) session.getAttribute("regCode");
+        if (!code.equals(regCode)){
+            return "false";
+        }
+        return "true";
+    }
+
 
 
     @GetMapping("/forgot/username")
-    public String showForgotUsername() {
+    public String showForgotUsername(Model model) {
+        RetrieveUsernameForm retrieveUsernameForm= new RetrieveUsernameForm();
+        retrieveUsernameForm.step = "1";
+        model.addAttribute("retUsernameForm", retrieveUsernameForm);
         return "cust/forgotusername";
     }
 
@@ -117,13 +242,62 @@ public class UserRegController {
     public
     @ResponseBody
     String forgotUsername(WebRequest webRequest) {
-        String accountNumber = webRequest.getParameter("accountNumber");
+        Iterator<String> iterator = webRequest.getParameterNames();
+
+        while(iterator.hasNext()){
+            logger.info(iterator.next());
+        }
+
+
+        String accountNumber = webRequest.getParameter("acct");
         String securityQuestion = webRequest.getParameter("securityQuestion");
         String securityAnswer = webRequest.getParameter("securityAnswer");
+        String customerId = webRequest.getParameter("customerId");
 
-        String username = retailUserService.retrieveUsername(accountNumber, securityQuestion, securityAnswer);
-        logger.info("Username is: {}", username);
-        return username;
+        try {
+            if ("".equals(customerId) || customerId == null) {
+                logger.error("Account Number not valid");
+                return "false";
+            }
+
+            RetailUser user = retailUserService.getUserByCustomerId(customerId);
+
+            //confirm security question is correct
+            String secAnswer="";
+            Map<List<String>, List<String>> qa = securityService.getUserQA(user.getUserName());
+            //List<String> sec = null;
+            if (qa != null){
+                Set<List<String>> questions= qa.keySet();
+                Iterator it = questions.iterator();
+                while(it.hasNext()){
+
+                    List<String> question = qa.get(it.next());
+                    secAnswer = question.stream().filter(Objects::nonNull).findFirst().orElse("");
+                    logger.info("answer {}", secAnswer);
+                }
+
+                if (!secAnswer.equals(securityAnswer)){
+                    return "false";
+                }
+
+            }else {
+                return "false";
+            }
+
+            logger.debug("User Info {}:", user.getUserName());
+            //Send Username to Email
+            Email email = new Email.Builder()
+                    .setRecipient(user.getEmail())
+                    .setSubject(messageSource.getMessage("retrieve.username.subject",null,locale))
+                    .setBody(String.format(messageSource.getMessage("retrieve.username.message",null,locale),user.getFirstName(), user.getUserName()))
+                    .build();
+            mailService.send(email);
+
+        }catch (InternetBankingException e){
+            return "false";
+        }
+
+        return "true";
     }
 
 
@@ -146,6 +320,13 @@ public class UserRegController {
         RegistrationForm registrationForm = new RegistrationForm();
         registrationForm.step = "1";
         model.addAttribute("registrationForm", registrationForm);
+
+        List<String> images = new ArrayList<String>();
+        images.add("/assets/phishing/dog.jpg");
+        images.add("/assets/phishing/cheetah.jpg");
+        images.add("/assets/phishing/benz.jpg");
+
+        model.addAttribute("images", images);
         return "cust/register/registration";
     }
 
@@ -157,29 +338,32 @@ public class UserRegController {
             logger.info(iterator.next());
         }
 
-        String accountNumber = webRequest.getParameter("acct");
+        String accountNumber = webRequest.getParameter("accountNumber");
         String email = webRequest.getParameter("email");
         String dob = webRequest.getParameter("birthDate");
         String userName = webRequest.getParameter("userName");
         String password = webRequest.getParameter("password");
         String confirmPassword = webRequest.getParameter("confirm");
+        String secQuestion = webRequest.getParameter("securityQuestion");
+        String secAnswer = webRequest.getParameter("securityAnswer");
         String customerId = webRequest.getParameter("customerId");
+        String phishing = webRequest.getParameter("phishing");
+        String caption = webRequest.getParameter("caption");
+
         String bvn ="";
         logger.info("Customer Id {}:", customerId);
         CustomerDetails details = integrationService.isAccountValid(accountNumber, email, dob);
 
 
-
-        if ( details.getCifId().equals(null)||details.getCifId().isEmpty() ){
+        if (details.getCifId() == null||details.getCifId().isEmpty() ){
             logger.error("Account Number not valid");
             return "false";
         }
 
 
-        if ( !details.getBvn().equals(null)&& !details.getBvn().isEmpty() ){
+        if (details.getBvn() != null && !details.getBvn().isEmpty() ){
             logger.error("No Bvn found");
             bvn=details.getBvn();
-
         }
 
 
@@ -192,9 +376,23 @@ public class UserRegController {
 
         //password meets policy
 
+
         //security questions
+        List<String> securityQuestion = new ArrayList();
+        securityQuestion.add(secQuestion);
+        List<String> securityAnswer = new ArrayList();
+        securityAnswer.add(secAnswer);
+        //securityService.setUserQA(userName, securityQuestion, securityAnswer);
 
         //phishing image
+        List<byte[]> phishingSec = new ArrayList<>();
+
+        byte[] encodedBytes = Base64.encodeBase64(phishing.getBytes());
+        System.out.println("encodedBytes " + new String(encodedBytes));
+
+        phishingSec.add(encodedBytes);
+        List<String> captionSec = new ArrayList<>();
+        captionSec.add(caption);
 
 
         RetailUserDTO retailUserDTO = new RetailUserDTO();
@@ -203,22 +401,52 @@ public class UserRegController {
         retailUserDTO.setPassword(password);
         retailUserDTO.setCustomerId(customerId);
         retailUserDTO.setBvn(bvn);
-        String message = retailUserService.addUser(retailUserDTO, details);
-        logger.info("MESSAGE", message);
+        retailUserDTO.setSecurityQuestion(securityQuestion);
+        retailUserDTO.setSecurityAnswer(securityAnswer);
+        retailUserDTO.setPhishingSec(phishingSec);
+        retailUserDTO.setCaptionSec(captionSec);
+        try {
+            String message = retailUserService.addUser(retailUserDTO, details);
+            logger.info("MESSAGE", message);
+        }
+        catch (InternetBankingException e){
+            logger.error("Error creating retail user", e);
+            redirectAttributes.addFlashAttribute(messageSource.getMessage("user.add.failure", null, locale));
+        }
+
         redirectAttributes.addAttribute("success", "true");
         return "true";
     }
 
     @GetMapping("/forgot/password")
-    public String showResetPassword(Model model){
+    public String showResetPassword(Model model, HttpSession session, RedirectAttributes redirectAttributes){
+
         ResetPasswordForm resetPasswordForm = new ResetPasswordForm();
         resetPasswordForm.step = "1";
+        resetPasswordForm.username = (String) session.getAttribute("username");
+        Map<List<String>, List<String>> qa = securityService.getUserQA((String) session.getAttribute("username"));
+        String secQuestion="";
+        if (qa != null){
+            Set<List<String>> questions= qa.keySet();
+            Iterator it = questions.iterator();
+            while(it.hasNext()){
+                logger.info("SEC QUESTION {}", it);
+                List<String> question = ( List<String> )it.next();
+                secQuestion = question.stream().filter(Objects::nonNull).findFirst().orElse("");
+                logger.info("question {}", secQuestion);
+            }
+            model.addAttribute("secQuestion", secQuestion);
+        }else {
+            redirectAttributes.addFlashAttribute("failure", "Invalid Credentials");
+            return "redirect:/login/retail";
+        }
+
         model.addAttribute("forgotPasswordForm", resetPasswordForm);
         return "cust/passwordreset";
     }
 
     @PostMapping("/forgot/password")
-    public @ResponseBody  String resetPassword(WebRequest webRequest,  RedirectAttributes redirectAttributes){
+    public @ResponseBody  String resetPassword(WebRequest webRequest,  RedirectAttributes redirectAttributes, HttpSession session){
         Iterator<String> iterator = webRequest.getParameterNames();
 
         while(iterator.hasNext()){
@@ -231,10 +459,9 @@ public class UserRegController {
         String securityAnswer = webRequest.getParameter("securityAnswer");
         String password= webRequest.getParameter("password");
         String confirmPassword = webRequest.getParameter("confirm");
-        String customerId = webRequest.getParameter("customerId");
+        String username = (String) session.getAttribute("username");
 
-        if ("".equals(customerId) || customerId == null){
-            logger.error("Account Number not valid");
+        if (username.equals("")||username==null){
             return "false";
         }
 
@@ -259,7 +486,10 @@ public class UserRegController {
         //if ()
 
         //get Retail User by customerId
-        RetailUser retailUser = retailUserService.getUserByCustomerId(customerId);
+        RetailUser retailUser = retailUserService.getUserByName(username);
+        if (retailUser == null){
+            return "false";
+        }
         //change password
         retailUserService.resetPassword(retailUser, password);
         redirectAttributes.addAttribute("success", true);

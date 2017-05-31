@@ -82,28 +82,33 @@ public class AdmCorporateController {
     @GetMapping("/new")
     public String addCorporate(Model model) {
         model.addAttribute("corporate", new CorporateDTO());
-        return "adm/corporate/add";
+        return "/adm/corporate/add";
     }
 
     @PostMapping
     public String createCorporate(@ModelAttribute("corporate") @Valid CorporateDTO corporate, BindingResult result, RedirectAttributes redirectAttributes, HttpSession session, Locale locale) {
         if (result.hasErrors()) {
             result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
-            return "adm/corporate/add";
+            return "/adm/corporate/add";
+        }
+
+        boolean exists = corporateService.corporateExists(corporate.getCustomerId());
+        if(exists){
+            result.addError(new ObjectError("invalid", messageSource.getMessage("corporate.exist", null, locale)));
+            return "/adm/corporate/add";
         }
 
         List<AccountInfo> accountInfos = integrationService.fetchAccounts(corporate.getCustomerId());
 
-        if(accountInfos ==null||accountInfos.isEmpty()){
+        if (accountInfos == null || accountInfos.isEmpty()) {
             result.addError(new ObjectError("invalid", messageSource.getMessage("cifid.invalid", null, locale)));
-            return "adm/corporate/add";
-        }
-        else{
+            return "/adm/corporate/add";
+        } else {
             String accountName = accountInfos.get(0).getAccountName();
-        corporate.setName(accountName);
-        session.setAttribute("corporate", corporate);
-        return "redirect:/admin/corporates/user/first";
-     }
+            corporate.setName(accountName);
+            session.setAttribute("corporate", corporate);
+            return "redirect:/admin/corporates/user/first";
+        }
 
 //        try{
 //
@@ -124,7 +129,7 @@ public class AdmCorporateController {
         CorporateUserDTO corporateUserDTO = new CorporateUserDTO();
         model.addAttribute("corporate", corporateDTO);
         model.addAttribute("corporateUser", corporateUserDTO);
-        return "adm/corporate/adduser";
+        return "/adm/corporate/addUser";
     }
 
     /**
@@ -136,20 +141,20 @@ public class AdmCorporateController {
     public String editUser(@PathVariable Long id, Model model) {
         CorporateDTO corporate = corporateService.getCorporate(id);
         model.addAttribute("corporate", corporate);
-        return "adm/corporate/edit";
+        return "/adm/corporate/edit";
     }
 
     @GetMapping("/{corporateId}")
     public String getCorporate(@PathVariable Long corporateId, Model model) {
         CorporateDTO corporate = corporateService.getCorporate(corporateId);
         model.addAttribute("corporate", corporate);
-        return "adm/corporates/details";
+        return "/adm/corporates/details";
     }
 
     @GetMapping
     public String getAllCorporates(HttpSession session) {
         session.removeAttribute("corporate");
-        return "adm/corporate/view";
+        return "/adm/corporate/view";
     }
 
 //    @GetMapping("/{reqId}/view")
@@ -215,7 +220,7 @@ public class AdmCorporateController {
     public String updateCorporate(@ModelAttribute("corporate") CorporateDTO corporate, BindingResult result, RedirectAttributes redirectAttributes, Locale locale) {
         if (result.hasErrors()) {
             result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
-            return "adm/corporate/edit";
+            return "/adm/corporate/edit";
         }
         try {
             String message = corporateService.updateCorporate(corporate);
@@ -224,7 +229,7 @@ public class AdmCorporateController {
         } catch (InternetBankingException ibe) {
             logger.error("Failed to update corporate entity", ibe);
             result.addError(new ObjectError("invalid", ibe.getMessage()));
-            return "adm/corporate/edit";
+            return "/adm/corporate/edit";
 
         }
     }
@@ -240,7 +245,6 @@ public class AdmCorporateController {
         }
         return "redirect:/admin/corporates";
     }
-
 
 
     @GetMapping("/{corporateId}/delete")
@@ -264,7 +268,7 @@ public class AdmCorporateController {
         account.setCustomerId(corporate.getCustomerId());
         model.addAttribute("account", account);
         model.addAttribute("corporate", corporate);
-        return "adm/corporate/addAccount";
+        return "/adm/corporate/addAccount";
     }
 
     @PostMapping("/account/new")
@@ -273,7 +277,7 @@ public class AdmCorporateController {
             result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
             Corporate corporate = corporateService.getCorporateByCustomerId(accountDTO.getCustomerId());
             model.addAttribute("corporate", corporate);
-            return "adm/corporate/addAccount";
+            return "/adm/corporate/addAccount";
         }
 
         try {
@@ -287,7 +291,7 @@ public class AdmCorporateController {
             model.addAttribute("account", accountDTO);
             model.addAttribute("corporate", corporate);
             result.addError(new ObjectError("exception", messageSource.getMessage("corporate.account.add.failure", null, locale)));
-            return "adm/corporate/addAccount";
+            return "/adm/corporate/addAccount";
         }
 
     }
@@ -302,7 +306,7 @@ public class AdmCorporateController {
         model.addAttribute("authUserList", authorizers);
         model.addAttribute("currencies", currencies);
         model.addAttribute("corporateRule", new CorpTransferRuleDTO());
-        return "adm/corporate/addrule";
+        return "/adm/corporate/addrule";
     }
 
     @PostMapping("/rules")
@@ -324,7 +328,7 @@ public class AdmCorporateController {
             model.addAttribute("currencies", currencies);
             bindingResult.addError(new ObjectError("exception", messageSource.getMessage("rule.amount.invalid", null, locale)));
 
-            return "adm/corporate/addrule";
+            return "/adm/corporate/addrule";
 
         }
 
@@ -360,7 +364,7 @@ public class AdmCorporateController {
             model.addAttribute("corporate", corporate);
             model.addAttribute("authUserList", authorizers);
             model.addAttribute("currencies", currencies);
-            return "adm/corporate/addrule";
+            return "/adm/corporate/addrule";
 
         } catch (InternetBankingException ibe) {
             logger.error("Failed to create transfer rule", ibe);
@@ -371,7 +375,7 @@ public class AdmCorporateController {
             model.addAttribute("corporate", corporate);
             model.addAttribute("authUserList", authorizers);
             model.addAttribute("currencies", currencies);
-            return "adm/corporate/addrule";
+            return "/adm/corporate/addrule";
         }
     }
 
@@ -392,7 +396,7 @@ public class AdmCorporateController {
         model.addAttribute("corporateRule", transferRuleDTO);
         model.addAttribute("currencies", currencies);
 
-        return "adm/corporate/editrule";
+        return "/adm/corporate/editrule";
     }
 
     @PostMapping("/rules/update")
@@ -414,7 +418,7 @@ public class AdmCorporateController {
             model.addAttribute("currencies", currencies);
             bindingResult.addError(new ObjectError("exception", messageSource.getMessage("rule.amount.invalid", null, locale)));
 
-            return "adm/corporate/editrule";
+            return "/adm/corporate/editrule";
 
         }
         String[] authorizerIds;
@@ -448,7 +452,7 @@ public class AdmCorporateController {
             model.addAttribute("corporate", corporate);
             model.addAttribute("authUserList", authorizers);
             model.addAttribute("currencies", currencies);
-            return "adm/corporate/editrule";
+            return "/adm/corporate/editrule";
 
         } catch (InternetBankingException ibe) {
             logger.error("Failed to update transfer rule", ibe);
@@ -459,7 +463,7 @@ public class AdmCorporateController {
             model.addAttribute("corporate", corporate);
             model.addAttribute("authUserList", authorizers);
             model.addAttribute("currencies", currencies);
-            return "adm/corporate/editrule";
+            return "/adm/corporate/editrule";
         }
     }
 

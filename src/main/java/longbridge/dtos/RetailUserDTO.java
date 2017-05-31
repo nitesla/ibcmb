@@ -7,6 +7,7 @@ import longbridge.models.Role;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Fortune on 4/5/2017.
@@ -33,6 +34,10 @@ public class RetailUserDTO {
     private Date lastLoginDate;
     private int noOfLoginAttempts;
     private String antiPhishingImage;
+    private List<String> securityQuestion;
+    private List<String> securityAnswer;
+    private List<byte[]> phishingSec;
+    private List<String> captionSec;
     private Role role;
     private Code alertPreference;
 
@@ -196,6 +201,38 @@ public class RetailUserDTO {
 
     public void setAlertPreference(Code alertPreference) {
         this.alertPreference = alertPreference;
+    }
+
+    public List<String> getSecurityQuestion() {
+        return securityQuestion;
+    }
+
+    public void setSecurityQuestion(List<String> securityQuestion) {
+        this.securityQuestion = securityQuestion;
+    }
+
+    public List<String> getSecurityAnswer() {
+        return securityAnswer;
+    }
+
+    public void setSecurityAnswer(List<String> securityAnswer) {
+        this.securityAnswer = securityAnswer;
+    }
+
+    public List<byte[]> getPhishingSec() {
+        return phishingSec;
+    }
+
+    public void setPhishingSec(List<byte[]> phishingSec) {
+        this.phishingSec = phishingSec;
+    }
+
+    public List<String> getCaptionSec() {
+        return captionSec;
+    }
+
+    public void setCaptionSec(List<String> captionSec) {
+        this.captionSec = captionSec;
     }
 
     @Override

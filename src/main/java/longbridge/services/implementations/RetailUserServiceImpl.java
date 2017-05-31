@@ -9,8 +9,10 @@ import longbridge.dtos.SettingDTO;
 import longbridge.exception.*;
 import longbridge.forms.AlertPref;
 import longbridge.forms.CustChangePassword;
-import longbridge.forms.CustResetPassword;
-import longbridge.models.*;
+import longbridge.models.Account;
+import longbridge.models.Code;
+import longbridge.models.Email;
+import longbridge.models.RetailUser;
 import longbridge.repositories.RetailUserRepo;
 import longbridge.services.*;
 import longbridge.utils.DateFormatter;
@@ -62,6 +64,7 @@ public class RetailUserServiceImpl implements RetailUserService {
     private SecurityService securityService;
     private RoleService roleService;
     private IntegrationService integrationService;
+    @Autowired
     private ConfigurationService configService;
 
     public RetailUserServiceImpl() {
@@ -126,6 +129,11 @@ public class RetailUserServiceImpl implements RetailUserService {
             if (retailUser != null) {
                 throw new DuplicateObjectException(messageSource.getMessage("user.add.exists", null, locale));
             }
+            RetailUser retUser = getUserByCustomerId(user.getCustomerId());
+            if (retUser != null) {
+                throw new DuplicateObjectException(messageSource.getMessage("user.add.exists", null, locale));
+            }
+
             retailUser = new RetailUser();
             retailUser.setUserName(user.getUserName());
             retailUser.setCustomerId(details.getCifId());
@@ -133,23 +141,33 @@ public class RetailUserServiceImpl implements RetailUserService {
             retailUser.setEmail(details.getEmail());
             retailUser.setCreatedOnDate(new Date());
             retailUser.setBirthDate(user.getBirthDate());
-            retailUser.setRole(roleService.getTheRole(13L));//TODO get actual role
+            retailUser.setRole(roleService.getTheRole("RETAIL"));
             retailUser.setStatus("A");
             retailUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
-            retailUser.setAlertPreference(codeService.getCodeById(39L));//TODO get actual preference
+            retailUser.setAlertPreference(codeService.getByTypeAndCode("ALERT_PREFERENCE", "BOTH"));
             String errorMsg = passwordPolicyService.validate(user.getPassword(),null);
             if(!"".equals(errorMsg)){
                 throw new PasswordPolicyViolationException(errorMsg);
             }
-            retailUser.setPassword(this.passwordEncoder.encode(user.getPassword()));
-            retailUserRepo.save(retailUser);
+
             String fullName = retailUser.getFirstName()+" "+retailUser.getLastName();
             SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_CREATION");
             if (setting != null && setting.isEnabled()) {
                 if ("YES".equalsIgnoreCase(setting.getValue())) {
-                    securityService.createEntrustUser(retailUser.getUserName(), fullName, true);
+                    boolean result = securityService.createEntrustUser(retailUser.getUserName(), fullName, true);
+                    if (!result) {
+                        throw new InternetBankingSecurityException(messageSource.getMessage("entrust.create.failure", null, locale));
+                    }
+                    securityService.setUserQA(user.getUserName(), user.getSecurityQuestion(), user.getSecurityAnswer());
+                    //securityService.
                 }
             }
+
+
+
+
+            retailUser.setPassword(this.passwordEncoder.encode(user.getPassword()));
+            retailUserRepo.save(retailUser);
 
             Collection<AccountInfo> accounts = integrationService.fetchAccounts(details.getCifId());
             for (AccountInfo acct : accounts) {
@@ -158,9 +176,6 @@ public class RetailUserServiceImpl implements RetailUserService {
 
             logger.info("Retail user {} created", user.getUserName());
             return messageSource.getMessage("user.add.success", null, locale);
-        }
-        catch (InternetBankingSecurityException se) {
-            throw new InternetBankingSecurityException(messageSource.getMessage("entrust.create.failure", null, locale));
         }
         catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("user.add.failure", null, locale), e);

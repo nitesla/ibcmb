@@ -11,10 +11,7 @@ import longbridge.forms.AlertPref;
 import longbridge.forms.ChangePassword;
 import longbridge.forms.CustChangePassword;
 import longbridge.models.CorporateUser;
-import longbridge.services.AccountService;
-import longbridge.services.CodeService;
-import longbridge.services.CorporateUserService;
-import longbridge.services.PasswordPolicyService;
+import longbridge.services.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +42,9 @@ public class CorpSettingController {
 
     @Autowired
     private CorporateUserService corporateUserService;
+
+    @Autowired
+    private CorporateService corporateService;
 
     @Autowired
     private AccountService accountService;
@@ -136,6 +136,7 @@ public class CorpSettingController {
         }
 
         CorporateUser user = corporateUserService.getUserByName(principal.getName());
+        //Corporate corporate = corporateService.
 
         try {
             String message =corporateUserService.changePassword(user, custChangePassword);

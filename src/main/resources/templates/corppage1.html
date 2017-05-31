@@ -49,27 +49,19 @@
 <section class="content-wrapper">
     <div class="container">
         <div class="bg">
-            <form  th:action="@{/corporate/login}" method="POST" class="form-signin">
+            <form  th:action="@{/login/u/corporate}" method="POST" class="form-signin">
                 <h5 class="form-signin-heading">Enter Login Details</h5>
                 <br/>
                 <div th:if="${param.message != null}" class="alert alert-info" th:text="${param.message[0]}">message</div>
 
                 <div th:if="${param.error != null}" class="alert alert-danger" th:text="${session[SPRING_SECURITY_LAST_EXCEPTION]}">error</div>
-
                 <div class="form-group">
-                    <input type="text" name="username" th:value="*{username}" class="form-control" readonly="readonly"/>
+                    <input type="text" name="username" class="form-control"  placeholder="Username" />
                 </div>
-
                 <div class="form-group">
-                    <input type="text" name="corporateId" th:value="*{corpKey}" class="form-control" readonly="readonly"/>
+                    <input type="text" name="corporateId" class="form-control"  placeholder="Corporate Key" />
                 </div>
-
                 <div class="form-group">
-                    <input type="password" name="password" class="form-control"  placeholder="Password"/>
-                </div>
-
-                <div class="form-group">
-                    <!--<input name="submit" type="submit" value="submit" />-->
                     <button class="btn btn-primary form-control">Submit</button>
                 </div>
             </form>

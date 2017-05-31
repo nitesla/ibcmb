@@ -428,6 +428,10 @@ body {
     color: #9F614B;
     font-size: 12px;
 }
+.calender{
+    position: inherit;
+}
+
 /*.calender{*/
     /*overflow: hidden;*/
     /*position: inherit;*/

@@ -1,42 +1,35 @@
     var customerId = "null";
 
-
-
-	/** This validates the input account number.
-	 * 
-	 * @param accountNumber the account number to check
-	 */
-	function validateAccountNo(accountNumber){
-		var customerId;
-		$.ajax({
+    function validateSecAnswer(secAnswer){
+        var result;
+        $.ajax({
             type:'GET',
-            url:"/rest/retail/accountname/"+accountNumber,
+            url:"/rest/secAnswer/"+secAnswer,
             async:false,
             success:function(data1){
-            	customerId = ''+String(data1);
-				if(customerId == ""){
-					//invalid account number
+                result = ''+String(data1);
+                if(result == "" || result === null){
+                    //invalid account number
                     $.notify({
                         title: '<strong>Oops!</strong>',
-                        message: 'Invalid Account Number'
+                        message: 'Wrong Answer!'
                     },{
                         type: 'danger'
                     });
-					//alert("Account number not found");
-				}else{
-					//valid account number
-					//alert("Customer Id: " + customerId);
-					$('input[name=customerId]').val(customerId);
-				}
+                    //alert("Account number not found");
+                }else{
+                    //valid account number
+                    $('input[name=username]').val(result);
+                }
             }
-        }); 
+        });
 
-        if(customerId == "" || customerId === null){
-        	return false;
+        if(result == "" || result === null){
+            return false;
         }else{
-        	return true;
+            return true;
         }
-	}
+    }
 
 	function changePassword(){
 	    var returnValue = false;
@@ -88,8 +81,8 @@
         }
     });
     
-    var ACCOUNT_DETAILS_STEP = 0;
-    var CHANGE_PASSWORD_STEP = 2;
+    var SECURITY_QUESTION_STEP = 0;
+    var CHANGE_PASSWORD_STEP = 1;
 
     //var condition = [[${success}]];
     
@@ -103,10 +96,10 @@
             form.validate().settings.ignore = ":disabled,:hidden";
 			console.log(currentIndex);
             var isValid = form.valid();
-            if(ACCOUNT_DETAILS_STEP === currentIndex){
+            if(SECURITY_QUESTION_STEP === currentIndex){
                 console.log("Current step is the account details step");
-                var accountNumber = $('input[name="acct"]').val();
-                return isValid && validateAccountNo(accountNumber);
+                var secAnswer = $('input[name="securityAnswer"]').val();
+                return isValid && validateSecAnswer(secAnswer);
             }
             if(CHANGE_PASSWORD_STEP === currentIndex){
                 console.log("Current step is the change password step");
