@@ -20,10 +20,9 @@
                                     <a class="btn btn-block btn-primary compose-mail" th:href="@{/retail/mailbox/compose}">Compose Mail</a>
                                     <div class="margin-bottoms"></div>
                                     <ul class="folder-list">
-                                        <li><a th:href="@{/retail/mailbox/inbox}"> <i class="fa fa-inbox "></i> Inbox <!--span class="label label-warning pull-right">12</span--> </a></li>
+                                        <li><a th:href="@{/retail/mailbox/inbox}"> <i class="fa fa-inbox "></i> Inbox</a></li>
                                         <li><a th:href="@{/retail/mailbox/sentmail}"> <i class="fa fa-sign-out"></i> Sent Mail</a></li>
-                                        <li><a th:href="@{/retail/mailbox/draft}"> <i class="fa fa-file-text-o"></i> Drafts <!--span-- class="label label-danger pull-right">2</span--></a></li>
-                                        <li><a th:href="@{/retail/mailbox/trash}"> <i class="fa fa-trash-o"></i> Trash</a></li>
+                                        <!--<li><a th:href="@{/retail/mailbox/draft}"> <i class="fa fa-file-text-o"></i> Drafts </a></li>-->
                                     </ul>
                                 </div>
                             </div>
@@ -36,10 +35,11 @@
                                 <h2 class="in-box">
                                     Inbox
                                 </h2>
+                                <br/>
                                 <div class="mail-tools tooltip-demo m-t-md faz">
-                                    <button class="btn-white btn-sm" data-toggle="tooltip" data-placement="left" title="Refresh inbox"><i class="fa fa-refresh"></i> Refresh</button>
-                                    <button class="btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="Mark as read"><i class="fa fa-eye" th:action="@{/retail/mailbox/trash}"></i> </button>
-                                    <button class="btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="Move to trash" th:action="@{/retail/mailbox/inbox}"><i class="fa fa-trash-o"></i> </button>
+                                    <a href="/retail/mailbox/inbox" class=" btn btn-white btn-sm" data-toggle="tooltip" data-placement="left" title="Refresh inbox"><i class="fa fa-refresh"></i> Refresh</a>
+                                    <!--<button class="btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="Mark as read"><i class="fa fa-eye" th:action="@{/retail/mailbox/trash}"></i> </button>-->
+                                    <!--<button class="btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="Move to trash" th:action="@{/retail/mailbox/inbox}"><i class="fa fa-trash-o"></i> </button>-->
                                 </div>
                             </div>
                             <div class="margin-bottoms"></div>
