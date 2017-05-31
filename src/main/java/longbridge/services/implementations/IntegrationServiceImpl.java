@@ -6,6 +6,7 @@ import longbridge.exception.InternetBankingTransferException;
 
 import longbridge.models.TransRequest;
 import longbridge.services.IntegrationService;
+import longbridge.services.MailService;
 import longbridge.utils.AccountStatement;
 import longbridge.utils.ResultType;
 import longbridge.utils.TransferType;
@@ -15,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -36,11 +39,13 @@ public class IntegrationServiceImpl implements IntegrationService {
     private String cmbAlert;
 
     private RestTemplate template;
-
-
+    private MailService mailService;
+    private TemplateEngine templateEngine;
     @Autowired
-    public IntegrationServiceImpl(RestTemplate template) {
+    public IntegrationServiceImpl(RestTemplate template,MailService mailService,TemplateEngine templateEngine) {
         this.template = template;
+        this.mailService=mailService;
+        this.templateEngine=templateEngine;
     }
 
 
@@ -345,7 +350,6 @@ public class IntegrationServiceImpl implements IntegrationService {
         try {
 
             result = template.postForObject(uri, params, ObjectNode.class);
-            System.out.println("@@RESULT " + result);
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -353,6 +357,17 @@ public class IntegrationServiceImpl implements IntegrationService {
         }
 
         return result;
+    }
+
+    public TransRequest sendTransfer(TransRequest transRequest){
+
+        Context scontext = new Context();
+        scontext.setVariable("uploadDate",new Date());
+
+//        String smail = templateEngine.process("smail", scontext);
+
+      //  mailService.send();
+        return transRequest;
     }
 
 

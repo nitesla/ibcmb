@@ -114,6 +114,9 @@ public class SecurityConfig {
                     .and().exceptionHandling().and().csrf().disable().sessionManagement().sessionFixation()
                     .migrateSession().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                     .invalidSessionUrl("/login/admin").maximumSessions(1).expiredUrl("/login/admin");
+
+            // disable page caching
+            http.headers().cacheControl();
         }
 
         @Override
@@ -183,6 +186,8 @@ public class SecurityConfig {
                     .invalidSessionUrl("/login/ops")
                     .maximumSessions(1)
                     .expiredUrl("/login/ops");
+            // disable page caching
+            http.headers().cacheControl();
         }
 
         @Override
@@ -239,6 +244,8 @@ public class SecurityConfig {
                     .sessionManagement().sessionFixation().migrateSession()
                     .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED).invalidSessionUrl("/login/retail")
                     .maximumSessions(1).expiredUrl("/login/retail");
+            // disable page caching
+            http.headers().cacheControl();
         }
 
         @Override
@@ -303,6 +310,8 @@ public class SecurityConfig {
                     .sessionManagement().sessionFixation().migrateSession()
                     .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED).invalidSessionUrl("/login/corporate")
                     .maximumSessions(1).expiredUrl("/login/corporate");
+            // disable page caching
+            http.headers().cacheControl();
         }
 
         @Override
