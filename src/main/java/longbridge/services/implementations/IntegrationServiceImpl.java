@@ -137,31 +137,32 @@ public class IntegrationServiceImpl implements IntegrationService {
             }
             case INTER_BANK_TRANSFER: {
                 transRequest.setTransferType(TransferType.INTER_BANK_TRANSFER);
-                TransferDetails response = null;
+                TransferDetails response;
                 String uri = URI + "/transfer/nip";
                 Map<String, String> params = new HashMap<>();
                 params.put("debitAccountNumber", transRequest.getCustomerAccountNumber());
                 params.put("creditAccountNumber", transRequest.getBeneficiaryAccountNumber());
                 params.put("tranAmount", transRequest.getAmount().toString());
                 params.put("destinationInstitutionCode", transRequest.getFinancialInstitution().getInstitutionCode());
+                params.put("tranType", "NIP");
                 logger.info("params for transfer {}", params.toString());
                 try {
                     response = template.postForObject(uri, params, TransferDetails.class);
                     if (response != null) {
-                        transRequest.setReferenceNumber(response.getSessionId());
+                        logger.info("response for transfer {}", response.toString());
+                        transRequest.setReferenceNumber(response.getUniqueReferenceCode());
+                        transRequest.setNarration(response.getNarration());
+                        transRequest.setStatus(response.getResponseDescription());
 
-                        if (response != null) {
-                            transRequest.setReferenceNumber(response.getUniqueReferenceCode());
-                            transRequest.setNarration(response.getNarration());
-                            transRequest.setStatus(response.getResponseDescription());
-                            return transRequest;
-                        }
+                        return transRequest;
+
 
                     }
 
 
                 } catch (Exception e) {
 
+                    e.printStackTrace();
                     transRequest.setStatus(ResultType.ERROR.toString());
                     return transRequest;
                 }
@@ -185,8 +186,8 @@ public class IntegrationServiceImpl implements IntegrationService {
                 params.put("naration", transRequest.getNarration());
                 logger.info("patrams for transfer {}", params.toString());
                 try {
-                    response = template.postForObject(uri, params,TransferDetails.class);
-                    System.out.println("@@@ RESPONSE "+response);
+                    response = template.postForObject(uri, params, TransferDetails.class);
+                    System.out.println("@@@ RESPONSE " + response);
                     if (response != null) {
                         transRequest.setNarration(response.getNarration());
                         transRequest.setReferenceNumber(response.getUniqueReferenceCode());

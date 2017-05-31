@@ -71,10 +71,12 @@ public interface SecurityService {
 
    Map< List<String>, List<String>> getUserQA(String username) throws InternetBankingTransferException;
    Map< List<String>, List<String>> getMutualAuth(String username) throws InternetBankingTransferException;
-
+    void  setMutualAuth(String username,List<String> mutualCaption, List<String> mutualImage);
+    void  setMutualAuth(String username,List<String> mutualCaption, List<String> mutualImage ,String token);
    String getTokenSerials(String username);
    boolean unLockUser(String username);
    boolean updateUser(String username,String fullName,boolean enableOtp);
+
 
 
 }

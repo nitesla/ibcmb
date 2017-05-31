@@ -71,8 +71,9 @@ public class LocalTransferController {
         try {
             System.out.println(transferRequestDTO);
             transferService.validateTransfer(transferRequestDTO);
-            servletRequest.getSession().setAttribute("transferRequest", transferRequestDTO);
             transferRequestDTO.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
+            servletRequest.getSession().setAttribute("transferRequest", transferRequestDTO);
+
             return page + "pageiii";
         } catch (InternetBankingTransferException e) {
 
