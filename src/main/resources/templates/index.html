@@ -103,15 +103,28 @@
                 <div>
                     <h5>Welcome to Internet Banking</h5>
                     <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit</p>
+                    <br/><br/>
 
-                    <ul class="lft">
-                        <li><a href="#" class="dropdown-toggle btn btn-lg" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> Login</a>
-                            <ul class="dropdown-menu">
-                                <li><a th:href="@{/login/retail}">RETAIL</a></li>
-                                <li><a th:href="@{/login/corporate}">CORPORATE</a></li>
-                            </ul></li>
-                        <li><a href="" class="btn btn-lg">Register Now</a></li>
-                    </ul>
+                    <div class="dropdown">
+                        <button class="dropbtn">LOGIN</button>
+                        <div class="dropdown-content">
+                            <a th:href="@{/login/retail}">RETAIL</a>
+                            <a th:href="@{/login/corporate}">CORPORATE</a>
+                        </div>
+                    </div>
+                    <div class="dropdown">
+                        <form action="/register">
+                            <button class="dropbtn">REGISTER NOW</button>
+                        </form>
+                    </div>
+                    <!--<ul class="lft">-->
+                        <!--<li><a href="#" class="dropdown-toggle btn btn-lg" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> Login</a>-->
+                            <!--<ul class="dropdown-menu">-->
+                                <!--<li><a th:href="@{/login/retail}">RETAIL</a></li>-->
+                                <!--<li><a th:href="@{/login/corporate}">CORPORATE</a></li>-->
+                            <!--</ul></li>-->
+                        <!--<li><a href="" class="btn btn-lg">Register Now</a></li>-->
+                    <!--</ul>-->
                 </div>
                 <div class="margin-bottom"></div>
                 <div>
@@ -158,7 +171,7 @@
                             <div class="form-group">
                                 <textarea name="Message" value="Message" class="form-control" rows="10"></textarea>
                             </div>
-                            <input type="button" value="Submit" class="btn btn-md form-control" />
+                            <input type="button" value="Submit" class="btn btn-primary btn-md form-control" />
 
                     </form>
                 </div>
@@ -187,5 +200,20 @@
 <script th:src="@{~/customer/js/jquery-1.11.1.js}"></script>
 <!-- BOOTSTRAP SCRIPTS  -->
 <script th:src="@{~/customer/js/bootstrap.js}"></script>
+
+<script>
+    $(document).ready(function(){
+        $(".dropdown").hover(
+            function() {
+                $('.dropdown-menu', this).not('.in .dropdown-menu').stop(true,true).slideDown(800);
+                $(this).toggleClass('open');
+            },
+            function() {
+                $('.dropdown-menu', this).not('.in .dropdown-menu').stop(true,true).slideUp(800);
+                $(this).toggleClass('open');
+            }
+        );
+    });
+</script>
 </body>
 </html>

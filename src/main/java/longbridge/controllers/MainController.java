@@ -20,9 +20,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
 import java.security.Principal;
-import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -132,24 +130,24 @@ public class MainController {
     }
 
     @PostMapping("/login/u/retail")
-    public String userExists(WebRequest webRequest, Model model){
+    public String userExists(WebRequest webRequest, Model model, RedirectAttributes redirectAttributes){
         String username = webRequest.getParameter("username");
         RetailUser user =  retailUserService.getUserByName(username);
         if (user == null){
-            model.addAttribute("error", messageSource.getMessage("invalid.user", null, locale));
-            return "retpage1";
+            redirectAttributes.addFlashAttribute("error", messageSource.getMessage("invalid.user", null, locale));
+            return "redirect:/login/retail";
         }
         model.addAttribute("username", user.getUserName());
         return "retpage2";
     }
 
     @PostMapping("/login/p/retail")
-    public String step2(WebRequest webRequest, Model model, HttpSession session){
+    public String step2(WebRequest webRequest, Model model, HttpSession session, RedirectAttributes redirectAttributes){
         String username = webRequest.getParameter("username");
 //        String phishing = webRequest.getParameter("username");
         RetailUser user =  retailUserService.getUserByName(username);
         if (user == null){
-            model.addAttribute("error", messageSource.getMessage("invalid.user", null, locale));
+            redirectAttributes.addFlashAttribute("error", messageSource.getMessage("invalid.user", null, locale));
             return "redirect:/login/retail";
         }
         model.addAttribute("username", user.getUserName());
@@ -159,7 +157,7 @@ public class MainController {
 
 
     @PostMapping("/login/u/corporate")
-    public String userExist(WebRequest webRequest, Model model){
+    public String userExist(WebRequest webRequest, Model model, RedirectAttributes redirectAttributes){
         String username = webRequest.getParameter("username");
         String corpKey = webRequest.getParameter("corporateId");
         CorporateUser user =  corporateUserService.getUserByName(username);
@@ -167,20 +165,21 @@ public class MainController {
 //        Map<List<String>, List<String>> mutualAuth = securityService.getMutualAuth(user.getUserName());
 
         if (corporate != null && user != null) {
+            //        model.addAttribute("images", mutualAuth.get("imageSecret"));
+//        model.addAttribute("captions", mutualAuth.get("captionSecret"));
             model.addAttribute("username", user.getUserName());
             model.addAttribute("corpKey", corpKey);
             return "corppage2";
         }
 
-//        model.addAttribute("images", mutualAuth.get("imageSecret"));
-//        model.addAttribute("captions", mutualAuth.get("captionSecret"));
-        model.addAttribute("error", messageSource.getMessage("invalid.user", null, locale));
-        return "corppage1";
+
+        redirectAttributes.addFlashAttribute("error", messageSource.getMessage("invalid.user", null, locale));
+        return "redirect:/login/corporate";
 
     }
 
     @PostMapping("/login/p/corporate")
-    public String corpstep2(WebRequest webRequest, Model model, HttpSession session){
+    public String corpstep2(WebRequest webRequest, Model model, RedirectAttributes redirectAttributes){
         String username = webRequest.getParameter("username");
         String phishing = webRequest.getParameter("phishing");
         String corpKey = webRequest.getParameter("corpKey");
@@ -192,7 +191,7 @@ public class MainController {
             return "corplogin";
         }
 
-        model.addAttribute("error", messageSource.getMessage("invalid.user", null, locale));
+        redirectAttributes.addFlashAttribute("error", messageSource.getMessage("invalid.user", null, locale));
         return "redirect:/login/corporate";
     }
 
