@@ -104,10 +104,12 @@ public class MailboxController {
 
     @PostMapping
     public String createMessage(@ModelAttribute("messageDTO") @Valid MessageDTO messageDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes, Principal principal){
-        if(bindingResult.hasErrors()){
-            bindingResult.addError(new ObjectError("Invalid", "Please fill in the required fields"));
-            return "cust/mailbox/compose";
-        }
+
+
+//        if(bindingResult.hasErrors()){
+//            bindingResult.addError(new ObjectError("Invalid", "Please fill in the required fields"));
+//            return "cust/mailbox/compose";
+//        }
 
 
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
