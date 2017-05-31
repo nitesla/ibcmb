@@ -3,9 +3,11 @@ package longbridge.services.implementations;
 import longbridge.dtos.SettingDTO;
 import longbridge.dtos.TransferRequestDTO;
 import longbridge.exception.InternetBankingTransferException;
+import longbridge.models.RetailUser;
 import longbridge.models.TransRequest;
 import longbridge.models.User;
 import longbridge.models.UserType;
+import longbridge.repositories.RetailUserRepo;
 import longbridge.repositories.TransferRequestRepo;
 import longbridge.services.*;
 import longbridge.utils.ResultType;
@@ -17,6 +19,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -31,7 +36,7 @@ import java.util.stream.StreamSupport;
 
 @Service
 public class TransferServiceImpl implements TransferService {
-
+    private RetailUserRepo retailUserRepo;
     private TransferRequestRepo transferRequestRepo;
     private IntegrationService integrationService;
     private TransactionLimitServiceImpl limitService;
@@ -42,7 +47,8 @@ public class TransferServiceImpl implements TransferService {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    public TransferServiceImpl(TransferRequestRepo transferRequestRepo, IntegrationService integrationService, TransactionLimitServiceImpl limitService, ModelMapper modelMapper, AccountService accountService, FinancialInstitutionService financialInstitutionService, ConfigurationService configurationService) {
+    public TransferServiceImpl(TransferRequestRepo transferRequestRepo, IntegrationService integrationService, TransactionLimitServiceImpl limitService, ModelMapper modelMapper, AccountService accountService, FinancialInstitutionService financialInstitutionService, ConfigurationService configurationService
+    ,RetailUserRepo retailUserRepo) {
         this.transferRequestRepo = transferRequestRepo;
         this.integrationService = integrationService;
         this.limitService = limitService;
@@ -50,6 +56,7 @@ public class TransferServiceImpl implements TransferService {
         this.accountService = accountService;
         this.financialInstitutionService = financialInstitutionService;
         this.configService = configurationService;
+        this.retailUserRepo=retailUserRepo;
     }
 
     public TransferRequestDTO makeTransfer(TransferRequestDTO transferRequestDTO) throws InternetBankingTransferException {
@@ -59,7 +66,7 @@ public class TransferServiceImpl implements TransferService {
         if (transRequest != null) {
             logger.trace("params {}", transRequest);
             saveTransfer(convertEntityToDTO(transRequest));
-            if (transRequest.getStatus().equals("000")||transRequest.getStatus().equals("00")) return convertEntityToDTO(transRequest);
+            if (transRequest.getStatus().equalsIgnoreCase("Approved or completed successfully")||transRequest.getStatus().equals("00")) return convertEntityToDTO(transRequest);
             throw new InternetBankingTransferException(TransferExceptions.ERROR.toString());
         }
         throw new InternetBankingTransferException();
@@ -74,7 +81,7 @@ public class TransferServiceImpl implements TransferService {
     public Iterable<TransRequest> getTransfers(User user) {
         return transferRequestRepo.findAll()
                 .stream()
-                .filter(i -> i.getUserReferenceNumber().equals(user.getId()))
+                .filter(i -> i.getUserReferenceNumber().equalsIgnoreCase("RET_"+user.getId()))
                 .collect(Collectors.toList());
 
     }
@@ -84,6 +91,12 @@ public class TransferServiceImpl implements TransferService {
         boolean result = false;
         try {
             TransRequest transRequest = convertDTOToEntity(transferRequestDTO);
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (!(authentication instanceof AnonymousAuthenticationToken)) {
+                String currentUserName = authentication.getName();
+                RetailUser user = retailUserRepo.findFirstByUserName(currentUserName);
+                transRequest.setReferenceNumber("RET_"+user.getId());
+            }
             transferRequestRepo.save(transRequest);
             result = true;
 
@@ -166,15 +179,22 @@ public class TransferServiceImpl implements TransferService {
         return transferRequestDTOList;
     }
 
-    private void validateAccounts(TransferRequestDTO dto) throws InternetBankingTransferException {
+    private void validateAccounts(TransferRequestDTO dto) throws InternetBankingTransferException
+    {
         if (dto.getTransferType().equals(TransferType.OWN_ACCOUNT_TRANSFER) || dto.getTransferType().equals(TransferType.CORONATION_BANK_TRANSFER)) {
+            if (integrationService.viewAccountDetails(dto.getCustomerAccountNumber()) == null)
+                throw new InternetBankingTransferException(TransferExceptions.INVALID_ACCOUNT.toString());
             if (integrationService.viewAccountDetails(dto.getBeneficiaryAccountNumber()) == null)
+                throw new InternetBankingTransferException(TransferExceptions.INVALID_BENEFICIARY.toString());
+
+
+        }
+        if (dto.getTransferType().equals(TransferType.INTER_BANK_TRANSFER)){
+            if (integrationService.doNameEnquiry(dto.getFinancialInstitution().getInstitutionCode(),dto.getBeneficiaryAccountNumber())==null)
                 throw new InternetBankingTransferException(TransferExceptions.INVALID_BENEFICIARY.toString());
             if (integrationService.viewAccountDetails(dto.getCustomerAccountNumber()) == null)
                 throw new InternetBankingTransferException(TransferExceptions.INVALID_ACCOUNT.toString());
-
         }
-
 
     }
 
