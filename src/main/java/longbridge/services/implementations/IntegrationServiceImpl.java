@@ -41,11 +41,12 @@ public class IntegrationServiceImpl implements IntegrationService {
     private RestTemplate template;
     private MailService mailService;
     private TemplateEngine templateEngine;
+
     @Autowired
-    public IntegrationServiceImpl(RestTemplate template,MailService mailService,TemplateEngine templateEngine) {
+    public IntegrationServiceImpl(RestTemplate template, MailService mailService, TemplateEngine templateEngine) {
         this.template = template;
-        this.mailService=mailService;
-        this.templateEngine=templateEngine;
+        this.mailService = mailService;
+        this.templateEngine = templateEngine;
     }
 
 
@@ -179,6 +180,7 @@ public class IntegrationServiceImpl implements IntegrationService {
             }
             case NAPS: {
 
+
             }
             case OWN_ACCOUNT_TRANSFER: {
                 transRequest.setTransferType(TransferType.OWN_ACCOUNT_TRANSFER);
@@ -212,7 +214,11 @@ public class IntegrationServiceImpl implements IntegrationService {
             }
 
             case RTGS: {
+                TransRequest request =
+                        sendTransfer(transRequest);
 
+
+                return request;
             }
         }
 
@@ -359,14 +365,16 @@ public class IntegrationServiceImpl implements IntegrationService {
         return result;
     }
 
-    public TransRequest sendTransfer(TransRequest transRequest){
+    public TransRequest sendTransfer(TransRequest transRequest) {
 
         Context scontext = new Context();
-        scontext.setVariable("uploadDate",new Date());
+        scontext.setVariable("transRequest", transRequest);
 
-//        String smail = templateEngine.process("smail", scontext);
+        String mail = templateEngine.process("/cust/transfer/mailtemplate", scontext);
+        System.out.println(mail);
 
-      //  mailService.send();
+
+        //  mailService.send();
         return transRequest;
     }
 

@@ -38,7 +38,7 @@ import org.springframework.security.web.session.HttpSessionEventPublisher;
 public class SecurityConfig {
 
     public void customConfig(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/resources *", "/static *", "/css ", "/js *", "/images *");
+        web.ignoring().antMatchers("/resources *", "/static *", "/css ", "/js *", "/images *","/customer");
     }
 
     @Bean
@@ -116,7 +116,7 @@ public class SecurityConfig {
                     .invalidSessionUrl("/login/admin").maximumSessions(1).expiredUrl("/login/admin");
 
             // disable page caching
-            http.headers().cacheControl();
+            //http.headers().cacheControl();
         }
 
         @Override
@@ -187,7 +187,7 @@ public class SecurityConfig {
                     .maximumSessions(1)
                     .expiredUrl("/login/ops");
             // disable page caching
-            http.headers().cacheControl();
+           // http.headers().cacheControl();
         }
 
         @Override
@@ -245,7 +245,7 @@ public class SecurityConfig {
                     .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED).invalidSessionUrl("/login/retail")
                     .maximumSessions(1).expiredUrl("/login/retail");
             // disable page caching
-            http.headers().cacheControl();
+          //  http.headers().cacheControl();
         }
 
         @Override
@@ -311,7 +311,7 @@ public class SecurityConfig {
                     .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED).invalidSessionUrl("/login/corporate")
                     .maximumSessions(1).expiredUrl("/login/corporate");
             // disable page caching
-            http.headers().cacheControl();
+            //http.headers().cacheControl();
         }
 
         @Override
