@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/bootstrap.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/custom.css}"/>
+    <title>Log in | Coronation Merchant Bank
+    </title>
+</head>
+<body>
+<div class="container">
+    <div class="top_bar">
+        <ul class="list_group">
+            <li><a href="#"> CORONATION MERCHANT BANK</a></li>
+        </ul>
+    </div>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header navbar-left">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">MENU</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#" data-toggle="collapse" data-target="#navbar-collapse-1">Menu</a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li><a href="/">HOME</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> LOG IN </a>
+                        <ul class="dropdown-menu">
+                            <li><a th:href="@{/login/retail}">RETAIL</a></li>
+                            <li><a th:href="@{/login/corporate}">CORPORATE</a></li>
+                        </ul>
+                    </li>
+                    <li><a th:href="@{/register}">REGISTER</a></li>
+                    <li><a href="/">CONTACT US</a></li>
+                    <li><a href="/">HELP</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <a href="#" class="logo">
+        <img th:src="@{/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
+    </a>
+</div>
+
+<section class="content-wrapper">
+    <div class="container">
+        <div class="bg">
+            <form id="loginform" th:action="@{/corporate/token}" method="POST" class="form-signin">
+                <h1>Token Authentication</h1>
+                <br/>
+
+
+                <div id="token_div" class="form-group">
+                    <input type="password" id="token" name="token" class="form-control"  placeholder="Token Code" />
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-primary form-control" type="submit"> Next </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <div class="container">
+        <div class="footer_bar">
+            <div class="col-md-6 col-xs-12">
+                <ul class="list_group">
+                    <li><a href="#" target="_blank">Privacy policy</a></li>
+                    <li><a href="#" target="_blank">Disclaimer</a></li>
+                    <li><a href="#" target="_blank">Terms &amp; Conditions</a></li>
+                </ul>
+
+            </div>
+            <div class="col-md-6 col-xs-12"><p> &copy; 2017 - All rights reserved</p></div>
+
+        </div>
+    </div>
+</footer>
+<!-- CORE JQUERY SCRIPTS -->
+
+<div th:if="${message}">
+    <div hidden="hidden">
+        <ul class="actionMessage">
+            <li th:each="msg : ${message}" th:text="${msg}">Message</li>
+        </ul>
+    </div>
+</div>
+
+<div th:if="${failure}">
+    <div hidden="hidden">
+        <ul class="actionError">
+            <li th:each="msg : ${failure}" th:text="${msg}">Message</li>
+        </ul>
+    </div>
+</div>
+
+<!-- jQuery -->
+<script th:src="@{~/bank/vendors/jquery/jquery.js}"></script>
+<!-- Bootstrap -->
+<script th:src="@{~/bank/vendors/bootstrap/js/bootstrap.min.js}"></script>
+<!-- FastClick -->
+<script th:src="@{~/bank/vendors/fastclick/lib/fastclick.js}"></script>
+<!-- NProgress -->
+<script th:src="@{~/bank/vendors/nprogress/nprogress.js}"></script>
+
+<script th:src="@{~/bank/vendors/bootstrap-editable/js/bootstrap-editable.min.js}"></script>
+<script th:src="@{~/bank/vendors/switchery/switchery.min.js}"></script>
+<script th:src="@{~/bank/js/bootstrap-editable-custom.js}"></script>
+<!-- Custom Theme Scripts -->
+<script th:src="@{~/bank/js/custom.js}"></script>
+<script th:src="@{~/bank/js/bootstrap-switch.min.js}"></script>
+<script th:src="@{~/bank/vendors/bootstrap-notify/bootstrap-notify.js}"></script>
+<script th:src="@{~/bank/js/coronation.js}"></script>
+<script th:src="@{~/bank/vendors/datatables.net/js/jquery.dataTables.js}"></script>
+<script th:src="@{~/bank/js/dataTables.select.js}"></script>
+<script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
+<script th:src="@{~/bank/vendors/sweetalert/sweetalert.min.js}"></script>
+<script th:src="@{~/bank/vendors/bootstrap-dialog/js/bootstrap-dialog.js}"></script>
+<script th:src="@{~/bank/js/dataTables.bootstrap.js}"></script>
+
+<script th:src="@{~/customer/js/jquery-1.11.1.js}"></script>
+<!-- BOOTSTRAP SCRIPTS  -->
+<script th:src="@{~/customer/js/bootstrap.js}"></script>
+<script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
+</body>
+</html>

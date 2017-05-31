@@ -8,7 +8,11 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+
+import java.util.List;
+import java.util.Map;
 
 
 @SpringBootApplication
@@ -16,7 +20,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 
 
-public class InternetbankingApplication  /*extends  SpringBootServletInitializer*/ implements CommandLineRunner {
+public class InternetbankingApplication  extends SpringBootServletInitializer{
 
     @Autowired
     private SecurityService securityService;
@@ -24,33 +28,23 @@ public class InternetbankingApplication  /*extends  SpringBootServletInitializer
     private IntegrationService integrationService;
 
     public static void main(String[] args) {
-         SpringApplication.run(InternetbankingApplication.class, args);
+        SpringApplication.run(InternetbankingApplication.class, args);
 
     }
+
+
 
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
         return application.sources(InternetbankingApplication.class);
     }
-
-
-
-    @Override
-    public void run(String... strings) throws Exception {
-        System.out.println("start of call");
-//        securityService.createEntrustUser("bridger09","longbridger",true);
-//        integrationService.sendSMS("HELLO FROM FAROOQ", "08023972141", "HELLO");
-//        integrationService.sendSMS("HELLO FROM FAROOQ", "08052237245", "HELLO");
-//         integrationService.sendSMS("HELLO FROM FAROOQ", "07037708319", "HELLO");
-//        java.util.List<String> questions = new ArrayList<>();
-//        questions.add("WHO IS THE GREATEST");
-//        List<String> answer = new ArrayList<>();
-//        answer.add("AYAOADE FAROOQ IS ");
-//        securityService.setUserQA("bridger09", questions, answer);
-//        System.out.println("end of call");
-
-
-    }
-
-
 }
+
+
+
+
+
+  
+
+
+
 

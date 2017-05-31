@@ -23,7 +23,6 @@ private PasswordPolicyService passwordPolicyService;
         String uri=httpServletRequest.getRequestURI();
 
 
-
         if (httpServletRequest.getSession().getAttribute("expired-password")!=null&& !(uri.equalsIgnoreCase("/corporate/reset_password")))
         {
             ChangeDefaultPassword changePassword = new ChangeDefaultPassword();
@@ -36,6 +35,14 @@ private PasswordPolicyService passwordPolicyService;
             throw new ModelAndViewDefiningException(modelAndView);
         }
 
+        if (httpServletRequest.getSession().getAttribute("2FA")!=null&& !(uri.equalsIgnoreCase("/corporate/token")))
+        {
+
+            ModelAndView modelAndView = new ModelAndView("forwarded-view");
+
+            modelAndView.setViewName("/corp/logintoken");
+            throw new ModelAndViewDefiningException(modelAndView);
+        }
 
         return true;
     }

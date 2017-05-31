@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="cust_layout :: site-head">
 
 </head>
@@ -9,57 +9,56 @@
 
 <section class="content-wrapper">
     <div class="container">
-
         <div class="row">
-
             <div class="col-md-4 col-sm-4">
-                <h5 class="page_header"> Select transfer type</h5>
+                <h5 class="page_header"> Coronation account transfer</h5>
+                <select class="form-control" name="coronationbeneficiaries">
+                    <option value="Overveiw">coronation beneficiaries</option>
+                </select>
             </div>
         </div>
+
         <div class="row">
+
             <div class="col-md-8 content-bg">
-                <!--<div class="row form-spacing">-->
-                <div class="col-md-6 col-sm-6">
-                    <div class="row form-spacing">
 
-                        <div th:if="${message != null}" class="alert alert-info" th:text="${message}">message</div>
-                        <div th:if="${error != null}" class="alert alert-info" th:text="${error}">message</div>
-
-                        <form method="post" th:action="@{/retail/transfer/interbank/index}"
-                              >
-
-
-
+                <div class="row spacing">
+                    <div class="col-md-12 col-sm-12">
+                        <h6 class="page_header">Interbank Transfer</h6>
+                        <form method="post" th:action="@{/retail/transfer/interbank/index}">
                             <div class="form-group">
                                 <label>Transfer Type</label>
 
                                 <span id="tran"></span>
                                 <select name="tranType" class="form-control" id="tranType">
-                                <option>select an account</option>
+                                    <option>select an account</option>
                                     <option value="NIP">NIP</option>
                                     <option value="RTGS">RTGS</option>
                                 </select></div>
-                            <button class="btn btn-primary" type="submit">NEXT</button>
-                        </form>
+                            <button class="btn btn-link" type="submit">NEXT</button>
+
+                            <!-- <button type="submit" class="btn btn-default" style="float: right">Add beneficiary</button>
+                        --> </form>
                     </div>
                 </div>
-                </div>
-
             </div>
             <div th:replace="cust_layout :: sidebar" class="col-md-3 sidebar">
             </div>
         </div>
-
-
-
+    </div>
 </section>
-
 
 
 <!-- CONTENT-WRAPPER SECTION END-->
 <footer th:replace="cust_layout ::footer">
 </footer>
-<script th:src="@{~/customer/js/accountdetails.js}"></script>
+<script>
+    //datepicker
+    $( function() {
+        $( "#datepicker" ).datepicker(
+            { dateformat : 'dd/mm/yy'}
+        );
+    } );
+</script>
 </body>
-
 </html>

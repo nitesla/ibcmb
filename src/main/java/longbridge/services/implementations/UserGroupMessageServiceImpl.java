@@ -89,22 +89,23 @@ public class UserGroupMessageServiceImpl implements UserGroupMessageService {
 
     @Override
     public String send(Long groupId, Email email) throws MessageException{
+
         List<ContactDTO> contacts = userGroupService.getContacts(groupId);
         for (ContactDTO contact : contacts) {
-//            if (!contact.isExternal()) {
-//                Message msg = new Message();
-//                try {
-//                    msg.setSender(email.getSenderEmail());
-//                    msg.setRecipient(opsUserRepo.findOne(contact.getDt_RowId()).getUserName());
-//                    msg.setSubject(email.getMessageSubject());
-//                    msg.setBody(email.getMessageBody());
-//                    msg.setRecipientType(opsUserRepo.findOne(contact.getDt_RowId()).getUserType());
-//                    msg.setDateCreated(new Date());
-//                    messageRepo.save(msg);
-//                } catch (Exception me) {
-//                    throw new MessageException(String.format(messageSource.getMessage("message.send.failure", null, locale), msg.getRecipient()), me);
-//                }
-//            }
+            if (!contact.isExternal()) {
+                Message msg = new Message();
+                try {
+                    msg.setSender(email.getSenderEmail());
+                    msg.setRecipient(opsUserRepo.findOne(contact.getDt_RowId()).getUserName());
+                    msg.setSubject(email.getMessageSubject());
+                    msg.setBody(email.getMessageBody());
+                    msg.setRecipientType(opsUserRepo.findOne(contact.getDt_RowId()).getUserType());
+                    msg.setDateCreated(new Date());
+                    messageRepo.save(msg);
+                } catch (Exception me) {
+                    throw new MessageException(String.format(messageSource.getMessage("message.send.failure", null, locale), msg.getRecipient()), me);
+                }
+            }
 
             try {
                 email.setReceiverEmail(contact.getEmail());

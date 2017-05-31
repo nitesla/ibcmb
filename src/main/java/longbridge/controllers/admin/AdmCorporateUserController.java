@@ -5,6 +5,7 @@ import longbridge.dtos.CorporateUserDTO;
 import longbridge.dtos.RoleDTO;
 import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.InternetBankingException;
+import longbridge.exception.InternetBankingSecurityException;
 import longbridge.exception.PasswordException;
 import longbridge.forms.ChangePassword;
 import longbridge.services.CorporateService;
@@ -50,88 +51,95 @@ public class AdmCorporateUserController {
 
 
     @ModelAttribute
-    public void init(Model model){
+    public void init(Model model) {
         Iterable<RoleDTO> roles = roleService.getRoles();
         Iterator<RoleDTO> roleDTOIterator = roles.iterator();
-        while (roleDTOIterator.hasNext()){
+        while (roleDTOIterator.hasNext()) {
             RoleDTO roleDTO = roleDTOIterator.next();
-            if(roleDTO.getName().equals("Sole Admin")){
+            if (roleDTO.getName().equals("Sole Admin")) {
                 roleDTOIterator.remove();
             }
         }
-        model.addAttribute("roles",roles);
+        model.addAttribute("roles", roles);
     }
 
 
     @GetMapping("{corpId}/new")
     public String addUser(@PathVariable Long corpId, Model model, RedirectAttributes redirectAttributes) {
         CorporateDTO corporateDTO = corporateService.getCorporate(corpId);
-        if(corporateDTO.getCorporateType().equals("SOLE")){
-            redirectAttributes.addFlashAttribute("failure","Corporate entity has sole user");
+        if (corporateDTO.getCorporateType().equals("SOLE")) {
+            redirectAttributes.addFlashAttribute("failure", "Corporate entity has sole user");
             return "redirect:/admin/corporates";
         }
         CorporateUserDTO corporateUserDTO = new CorporateUserDTO();
         model.addAttribute("corporate", corporateDTO);
         model.addAttribute("corporateUser", corporateUserDTO);
-        return "adm/corporate/adduser";
+        return "/adm/corporate/adduser";
     }
 
     @PostMapping("/new")
-    public String createUser(@ModelAttribute("corporateUser") @Valid CorporateUserDTO corporateUserDTO, BindingResult result, HttpSession session, Model model,RedirectAttributes redirectAttributes, Locale locale) throws Exception {
+    public String createUser(@ModelAttribute("corporateUser") @Valid CorporateUserDTO corporateUserDTO, BindingResult result, HttpSession session, Model model, RedirectAttributes redirectAttributes, Locale locale) throws Exception {
 
         if (result.hasErrors()) {
             result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
-            if(session.getAttribute("corporate")==null) {
+            if (session.getAttribute("corporate") == null) {
                 CorporateDTO corporate = corporateService.getCorporate(Long.parseLong(corporateUserDTO.getCorporateId()));
                 model.addAttribute("corporate", corporate);
-            }
-            else{
+            } else {
                 CorporateDTO corporate = (CorporateDTO) session.getAttribute("corporate");
                 model.addAttribute("corporate", corporate);
-
             }
             return "adm/corporate/adduser";
         }
         try {
 
-            if(session.getAttribute("corporate")!=null) {
+            if (session.getAttribute("corporate") != null) {
                 CorporateDTO corporate = (CorporateDTO) session.getAttribute("corporate");
-                String message = corporateService.addCorporate(corporate,corporateUserDTO);
+                String message = corporateService.addCorporate(corporate, corporateUserDTO);
                 session.removeAttribute("corporate");
                 redirectAttributes.addFlashAttribute("message", message);
                 return "redirect:/admin/corporates/";
-            }
-            else{
+            } else {
                 String message = corporateUserService.addUser(corporateUserDTO);
                 redirectAttributes.addFlashAttribute("message", message);
                 return "redirect:/admin/corporates/";
             }
         } catch (DuplicateObjectException doe) {
             result.addError(new ObjectError("error", doe.getMessage()));
-            logger.error("Error creating corporate user {}", corporateUserDTO.getUserName(), doe);
-            if(session.getAttribute("corporate")==null) {
+            logger.error("Error creating corporate user ", doe);
+            if (session.getAttribute("corporate") == null) {
                 CorporateDTO corporate = corporateService.getCorporate(Long.parseLong(corporateUserDTO.getCorporateId()));
                 model.addAttribute("corporate", corporate);
-            }
-            else{
+            } else {
                 CorporateDTO corporate = (CorporateDTO) session.getAttribute("corporate");
                 model.addAttribute("corporate", corporate);
+            }
+            return "adm/corporate/adduser";
 
+        } catch (InternetBankingSecurityException se) {
+            result.addError(new ObjectError("error", se.getMessage()));
+            logger.error("Error creating corporate user on Entrust ", se);
+            if (session.getAttribute("corporate") == null) {
+                CorporateDTO corporate = corporateService.getCorporate(Long.parseLong(corporateUserDTO.getCorporateId()));
+                model.addAttribute("corporate", corporate);
+            } else {
+                CorporateDTO corporate = (CorporateDTO) session.getAttribute("corporate");
+                model.addAttribute("corporate", corporate);
             }
             return "adm/corporate/adduser";
         } catch (InternetBankingException ibe) {
             result.addError(new ObjectError("error", ibe.getMessage()));
             logger.error("Error creating corporate user", ibe);
 
-            if(session.getAttribute("corporate")==null) {
+            if (session.getAttribute("corporate") == null) {
                 CorporateDTO corporate = corporateService.getCorporate(Long.parseLong(corporateUserDTO.getCorporateId()));
                 model.addAttribute("corporate", corporate);
-            }
-            else{
+            } else {
                 CorporateDTO corporate = (CorporateDTO) session.getAttribute("corporate");
                 model.addAttribute("corporate", corporate);
 
-            }            return "adm/corporate/adduser";
+            }
+            return "adm/corporate/adduser";
         }
     }
 
@@ -152,7 +160,7 @@ public class AdmCorporateUserController {
         String message = corporateUserService.updateUser(corporateUserDTO);
         redirectAttributes.addFlashAttribute("message", message);
 
-        return "redirect:/admin/corporates/"+corporateUserDTO.getCorporateId()+"/view";
+        return "redirect:/admin/corporates/" + corporateUserDTO.getCorporateId() + "/view";
     }
 
     @GetMapping("/{id}/activation")
@@ -166,7 +174,7 @@ public class AdmCorporateUserController {
             logger.error("Error changing corporate activation status", ibe);
             redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
         }
-        return "redirect:/admin/corporates/"+corpId+"/view";
+        return "redirect:/admin/corporates/" + corpId + "/view";
     }
 
     @GetMapping("{userId}/delete")
@@ -175,11 +183,10 @@ public class AdmCorporateUserController {
 
         try {
             String message = corporateUserService.deleteUser(userId);
-            redirectAttributes.addFlashAttribute("message",message);
-        }
-        catch (InternetBankingException ibe){
-            logger.error("Error deleting user",ibe);
-            redirectAttributes.addFlashAttribute("failure",ibe.getMessage());
+            redirectAttributes.addFlashAttribute("message", message);
+        } catch (InternetBankingException ibe) {
+            logger.error("Error deleting user", ibe);
+            redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
         }
         return "redirect:/admin/corporates/" + corpId + "/view";
 
@@ -196,7 +203,7 @@ public class AdmCorporateUserController {
             redirectAttributes.addFlashAttribute("failure", pe.getMessage());
             logger.error("Error resetting password for operation user", pe);
         }
-        return "redirect:/admin/corporates/"+corpId+"/view";
+        return "redirect:/admin/corporates/" + corpId + "/view";
     }
 
     @GetMapping("changePassword")

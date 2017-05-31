@@ -95,9 +95,9 @@ public class RequestServiceImpl implements RequestService {
     public String addRequest(ServiceRequestDTO request) throws InternetBankingException {
         try {
             ServiceRequest serviceRequest = convertDTOToEntity(request);
-            serviceRequest.setUser(retailUserRepo.findOne(serviceRequest.getUser().getId()));
+            serviceRequest.setUser(retailUserRepo.findOne(request.getUserId()));
             String name = getFullName(serviceRequest);
-            ServiceReqConfigDTO config = reqConfigService.getServiceReqConfig(serviceRequest.getServiceReqConfigId());
+            ServiceReqConfigDTO config = reqConfigService.getServiceReqConfig(request.getServiceReqConfigId());
 
             //***///
             ObjectMapper objectMapper = new ObjectMapper();
@@ -116,7 +116,9 @@ public class RequestServiceImpl implements RequestService {
                     .setSubject(String.format(messageSource.getMessage("request.subject",null,locale),name))
                     .setBody(message)
                     .build();
-            groupMessageService.send(config.getGroupId(), email);
+            if(config.getGroupId()!=null) {
+                groupMessageService.send(config.getGroupId(), email);
+            }
             return messageSource.getMessage("req.add.success", null, locale);
         } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("req.add.failure", null, locale), e);

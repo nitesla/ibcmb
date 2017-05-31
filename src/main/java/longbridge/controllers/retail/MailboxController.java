@@ -1,6 +1,7 @@
 package longbridge.controllers.retail;
 
 import longbridge.dtos.MessageDTO;
+import longbridge.exception.InternetBankingException;
 import longbridge.models.*;
 import longbridge.services.CorporateUserService;
 import longbridge.services.MessageService;
@@ -12,10 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import javax.validation.Valid;
+
 import java.security.Principal;
 import java.util.List;
 
@@ -103,9 +103,13 @@ public class MailboxController {
     }
 
     @PostMapping
+<<<<<<< HEAD
     public String createMessage(@ModelAttribute("messageDTO") @Valid MessageDTO messageDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes, Principal principal){
 
 
+=======
+    public String createMessage(@ModelAttribute("messageDTO") MessageDTO messageDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes, Principal principal){
+>>>>>>> 824935f9619cccbd93ddb7cdf2b96e2d95f74a46
 //        if(bindingResult.hasErrors()){
 //            bindingResult.addError(new ObjectError("Invalid", "Please fill in the required fields"));
 //            return "cust/mailbox/compose";
@@ -113,22 +117,31 @@ public class MailboxController {
 
 
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
-        messageService.addMessage(retailUser,messageDTO);
-        redirectAttributes.addFlashAttribute("message","Message sent successfully");
-        return "redirect:/cust/mailbox/sentmail";
+
+        try {
+            String message = messageService.addMessage(retailUser, messageDTO);
+            redirectAttributes.addFlashAttribute("message", message);
+            return "redirect:/retail/mailbox/sentmail";
+        }
+        catch (InternetBankingException ibe){
+            logger.error("Error sending message",ibe);
+            redirectAttributes.addFlashAttribute("failure", ibe.getMessage() );
+            return "cust/mailbox/compose";
+
+        }
     }
 
     @GetMapping("/inbox/{id}/message")
     public String viewReceivedMessage(@PathVariable Long id, Model model) {
         MessageDTO message = messageService.getMessage(id);
-        model.addAttribute("message", message);
+        model.addAttribute("messageDTO", message);
         return "cust/mailbox/message";
     }
 
     @GetMapping("/sent/{id}/message")
     public String viewSentMessage(@PathVariable Long id, Model model) {
         MessageDTO message = messageService.getMessage(id);
-        model.addAttribute("message", message);
+        model.addAttribute("messageDTO", message);
         return "cust/mailbox/message";
     }
 

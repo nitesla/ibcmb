@@ -1,7 +1,9 @@
 package longbridge.config;
 
+import longbridge.dtos.SettingDTO;
 import longbridge.dtos.TransferRequestDTO;
 import longbridge.forms.ChangeDefaultPassword;
+import longbridge.services.ConfigurationService;
 import longbridge.services.PasswordPolicyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -18,9 +20,15 @@ import javax.servlet.http.HttpServletResponse;
 @Component
 public class RetailTransferAuthInterceptor extends HandlerInterceptorAdapter {
 
+    @Autowired
+    private ConfigurationService configService;
+
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) throws Exception {
-             if (1==9/* service to check if token is enabled comes in here  */
+        SettingDTO setting = configService.getSettingByName("ENABLE_RETAIL_2FA");
+
+        if (/* service to check if token is enabled comes in here  */
+                ( setting!=null && setting.isEnabled())
                      &&
                      httpServletRequest.getSession().getAttribute("auth-needed")==null
 

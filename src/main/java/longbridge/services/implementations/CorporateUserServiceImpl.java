@@ -170,7 +170,11 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_CREATION");
             if (setting != null && setting.isEnabled()) {
                 if ("YES".equalsIgnoreCase(setting.getValue())) {
-                    securityService.createEntrustUser(corporateUser.getUserName(), fullName, true);
+                   boolean result = securityService.createEntrustUser(corporateUser.getUserName(), fullName, true);
+                    if (!result) {
+                        throw new EntrustException(messageSource.getMessage("entrust.create.failure", null, locale));
+
+                    }
                 }
             }
             Email email = new Email.Builder()
@@ -182,10 +186,11 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             logger.info("New corporate user {} created", corporateUser.getUserName());
             return messageSource.getMessage("user.add.success", null, locale);
         }
-        catch (InternetBankingSecurityException se) {
-            throw new InternetBankingSecurityException(messageSource.getMessage("entrust.create.failure", null, locale));
-        }
+
         catch (Exception e) {
+            if(e instanceof EntrustException){
+                throw new InternetBankingSecurityException(messageSource.getMessage("entrust.create.failure", null, locale));
+            }
             throw new InternetBankingException(messageSource.getMessage("user.add.failure", null, locale), e);
         }
     }
@@ -458,7 +463,6 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         corporateUserDTO.setCorporateName(corporateUser.getCorporate().getName());
         corporateUserDTO.setCorporateId(corporateUser.getCorporate().getId().toString());
 
-        Code code = codeService.getByTypeAndCode("USER_STATUS", corporateUser.getStatus());
 
         if (corporateUser.getCreatedOnDate() != null) {
             corporateUserDTO.setCreatedOn(DateFormatter.format(corporateUser.getCreatedOnDate()));
@@ -466,9 +470,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         if (corporateUser.getLastLoginDate() != null) {
             corporateUserDTO.setLastLogin(DateFormatter.format(corporateUser.getLastLoginDate()));
         }
-        if (code != null) {
-            corporateUserDTO.setStatus(code.getDescription());
-        }
+
         return corporateUserDTO;
     }
 

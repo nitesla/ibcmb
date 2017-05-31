@@ -63,7 +63,7 @@
                     });
 				}else{
 					//valid account number
-					alert("user name: " + result);
+					//alert("user name: " + result);
 				}
             }
         });
@@ -89,14 +89,14 @@
                      //alert("user name not found");
                      $.notify({
                          title: '<strong>Oops!</strong>',
-                         message: 'Password Reset Failed, the entered password might not meet the set password policy'
+                         message: 'the entered password might not meet the set password policy'
                      },{
                          type: 'danger'
                      });
 
                  }else{
                      //valid account number
-                     alert("password: " + result);
+                     //alert("password: " + result);
                  }
              }
          });
@@ -109,15 +109,52 @@
          }
      }
 
-     function sendRegCode(cifId){
+ function validateRegCode(code){
+     var result;
+     $.ajax({
+         type:'GET',
+         url:"/rest/regCode/check/"+code,
+         async:false,
+         success:function(data1){
+             result = ''+String(data1);
+             if(result == 'false'){
+                 //invalid account number
+                 //alert("user name not found");
+                 $.notify({
+                     title: '<strong>Oops!</strong>',
+                     message: 'Enter the Registration code sent to your mobile'
+                 },{
+                     type: 'danger'
+                 });
+
+             }else{
+                 //valid account number
+                 //alert("password: " + result);
+             }
+         }
+     });
+
+     if(result === 'true'){
+         //username is valid and available
+         return true;
+     }else{
+         return false;
+     }
+ }
+
+
+     function sendRegCode(){
+         var accountNumber = $('input[name="accountNumber"]').val();
+         var email = $('input[name="email"]').val();
+         var birthDate = $('input[name="birthDate"]').val();
          var result;
          $.ajax({
              type:'GET',
-             url:"/rest/regCode/"+cifId,
+             url:"/rest/regCode/"+accountNumber+"/"+email+"/"+birthDate,
              async:false,
              success:function(data1){
                  result = ''+String(data1);
-                 if(result == 'false'){
+                 if(result === 'false' || result=== '' || result ==null){
                      //invalid account number
                      //alert("user name not found");
                      $.notify({
@@ -129,17 +166,10 @@
 
                  }else{
                      //valid account number
-                     alert("password: " + result);
+                     //alert("code sent: " + result);
                  }
              }
          });
-
-         if(result === 'true'){
-             //username is valid and available
-             return true;
-         }else{
-             return false;
-         }
      }
 
     function registerUser(){
@@ -186,21 +216,19 @@
                 dateFormat: 'dd-mm-yy' }).val();
 
         //load the anti phishing images from the server
-        loadPhishingImages();
+        //loadPhishingImages();
 
         //setup event handler on select option
-        $('#phishing').change(function(event){
-        	console.log(this);
-        	var url = $(this).val();
-        	console.log(url);
-        	$('#phishing-preview').attr('src', url);
-        });
+        // $('#phishing').change(function(event){
+        // 	console.log(this);
+        // 	var url = $(this).val();
+        // 	console.log(url);
+        // 	$('#phishing-preview').attr('src', url);
+        // });
 
-
-        $('#sms').change('click', function(){
-            var cifId = $('input[name=customerId]').val(customerId);
-            sendRegCode(cifId);
-        });
+        // addEvent(document.getElementById('send'), 'click', function() {
+        //     sendRegCode();
+        // });
     } );
 
 
@@ -241,7 +269,8 @@
                 console.log("Current stp is the profile details step");
                 var username = $('input[name="userName"]').val();
                 var confirm = $('input[name="confirm"]').val();
-                return isValid && validateUsername(username) && validatePassword(confirm);
+                var regCode = $('input[name="regCode"]').val();
+                return isValid && validateUsername(username) && validatePassword(confirm) && validateRegCode(regCode);
             }
             if(SECURITY_QUESTION_STEP === currentIndex){
                 console.log("Current Step is the security question step");

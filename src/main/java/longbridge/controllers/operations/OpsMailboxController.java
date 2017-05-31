@@ -283,7 +283,7 @@ public class OpsMailboxController {
     DataTablesOutput<MessageDTO> getSentMessages(DataTablesInput input,Principal principal) {
         Pageable pageable = DataTablesUtils.getPageable(input);
         OperationsUser opsUser = operationsUserService.getUserByName(principal.getName());
-        Page<MessageDTO> sentMessages = messageService.getSentMessages(opsUser.getUserName(),opsUser.getUserType(),pageable);
+        Page<MessageDTO> sentMessages = messageService.getReceivedMessages(opsUser.getUserName(),opsUser.getUserType(),pageable);
         DataTablesOutput<MessageDTO> out = new DataTablesOutput<MessageDTO>();
         out.setDraw(input.getDraw());
         out.setData(sentMessages.getContent());

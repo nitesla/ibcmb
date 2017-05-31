@@ -361,6 +361,7 @@ public class TransactionLimitServiceImpl implements TransactionLimitService {
             ClassLimit classLimit = classLimitRepo.findByCustomerTypeAndAccountClassAndChannel(customerType.name(),accountClass,"CMB");
             AccountLimit accountLimit = accountLimitRepo.findByCustomerTypeAndAccountNumberAndChannel(customerType.name(),accountNumber,"CMB");
 
+            if (globalLimit==null) return false;
              if(amount.compareTo(globalLimit.getMaxLimit())>0){
                  return  true;
              }

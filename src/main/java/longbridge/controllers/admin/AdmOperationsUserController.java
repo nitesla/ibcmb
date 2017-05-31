@@ -114,7 +114,13 @@ public class AdmOperationsUserController {
             String message = operationsUserService.addUser(operationsUser);
             redirectAttributes.addFlashAttribute("message", message);
             return "redirect:/admin/operations/users";
-        } catch (DuplicateObjectException doe) {
+        }
+        catch (EntrustException se) {
+            result.addError(new ObjectError("error", se.getMessage()));
+            logger.error("Error creating Operations user on Entrust", se);
+            return "adm/admin/add";
+        }
+        catch (DuplicateObjectException doe) {
             result.addError(new ObjectError("error", doe.getMessage()));
             logger.error("Error creating operation user {}", operationsUser.getUserName(), doe);
             return "adm/operation/add";

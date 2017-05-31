@@ -123,7 +123,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     public String addUser(AdminUserDTO user) throws InternetBankingException {
         AdminUser adminUser = adminUserRepo.findFirstByUserName(user.getUserName());
         if (adminUser != null) {
-            throw new DuplicateObjectException(messageSource.getMessage("user.exists", null, locale));
+            throw new DuplicateObjectException(messageSource.getMessage("user.exist", null, locale));
         }
         try {
             adminUser = new AdminUser();
@@ -136,20 +136,27 @@ public class AdminUserServiceImpl implements AdminUserService {
             Role role = new Role();
             role.setId(Long.parseLong(user.getRoleId()));
             adminUser.setRole(role);
-            adminUserRepo.save(adminUser);
             String fullName = adminUser.getFirstName() + " " + adminUser.getLastName();
             SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_CREATION");
             if (setting != null && setting.isEnabled()) {
                 if ("YES".equalsIgnoreCase(setting.getValue())) {
-                    securityService.createEntrustUser(adminUser.getUserName(), fullName, true);
+                    boolean result = securityService.createEntrustUser(adminUser.getUserName(), fullName, true);
+                    if (!result) {
+                        throw new EntrustException(messageSource.getMessage("entrust.create.failure", null, locale));
+                    }
                 }
             }
+            adminUserRepo.save(adminUser);
             logger.info("New admin user {} created", adminUser.getUserName());
             return messageSource.getMessage("user.add.success", null, locale);
         } catch (InternetBankingSecurityException se) {
-            throw new InternetBankingSecurityException(messageSource.getMessage("entrust.create.failure", null, locale));
+            throw new InternetBankingSecurityException(messageSource.getMessage("entrust.create.failure", null, locale), se);
         } catch (Exception e) {
-            throw new InternetBankingException(messageSource.getMessage("user.add.failure", null, locale), e);
+            if (e instanceof EntrustException) {
+                throw new EntrustException(messageSource.getMessage("entrust.create.failure", null, locale));
+            } else {
+                throw new InternetBankingException(messageSource.getMessage("user.add.failure", null, locale), e);
+            }
         }
     }
 
@@ -398,10 +405,7 @@ public class AdminUserServiceImpl implements AdminUserService {
         if (adminUser.getLastLoginDate() != null) {
             adminUserDTO.setLastLogin(DateFormatter.format(adminUser.getLastLoginDate()));
         }
-        Code code = codeService.getByTypeAndCode("USER_STATUS", adminUser.getStatus());
-        if (code != null) {
-            adminUserDTO.setStatus(code.getDescription());
-        }
+
         return adminUserDTO;
     }
 

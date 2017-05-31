@@ -22,7 +22,7 @@ import java.util.Locale;
  * Created by Fortune on 5/26/2017.
  */
 @Controller
-@RequestMapping("/token")
+@RequestMapping
 public class TokenAuthController {
 
     @Autowired
@@ -33,7 +33,7 @@ public class TokenAuthController {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @PostMapping("/authenticate")
+    @PostMapping("/otp/authenticate")
     public String authenticate(HttpServletRequest request, RedirectAttributes redirectAttributes, Locale locale) {
 
         String redirectUrl = "";
@@ -67,12 +67,7 @@ public class TokenAuthController {
             logger.error("Error authenticating token");
         }
         redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("token.auth.failure", null, locale));
-        return "redirect:/" + redirectUrl;
+        return "redirect:" + redirectUrl;
     }
 
-
-    @GetMapping("/ops")
-    public String getOpsToken() {
-        return "ops/token";
-    }
 }

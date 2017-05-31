@@ -1,5 +1,35 @@
     var customerId = "null";
 
+    function validateSecAnswer(secAnswer){
+        var result;
+        $.ajax({
+            type:'GET',
+            url:"/rest/secAnswer/"+secAnswer,
+            async:false,
+            success:function(data1){
+                result = ''+String(data1);
+                if(result == "" || result === null){
+                    //invalid account number
+                    $.notify({
+                        title: '<strong>Oops!</strong>',
+                        message: 'Wrong Answer!'
+                    },{
+                        type: 'danger'
+                    });
+                    //alert("Account number not found");
+                }else{
+                    //valid account number
+                    $('input[name=username]').val(result);
+                }
+            }
+        });
+
+        if(result == "" || result === null){
+            return false;
+        }else{
+            return true;
+        }
+    }
 
 	function changePassword(){
 	    var returnValue = false;
@@ -68,8 +98,8 @@
             var isValid = form.valid();
             if(SECURITY_QUESTION_STEP === currentIndex){
                 console.log("Current step is the account details step");
-                var username = $('input[name="username"]').val();
-                return isValid;
+                var secAnswer = $('input[name="securityAnswer"]').val();
+                return isValid && validateSecAnswer(secAnswer);
             }
             if(CHANGE_PASSWORD_STEP === currentIndex){
                 console.log("Current step is the change password step");

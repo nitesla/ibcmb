@@ -2,10 +2,12 @@ package longbridge.controllers.operations;
 
 import longbridge.dtos.OperationsUserDTO;
 import longbridge.dtos.RoleDTO;
+import longbridge.dtos.SettingDTO;
 import longbridge.exception.*;
 import longbridge.forms.ChangeDefaultPassword;
 import longbridge.forms.ChangePassword;
 import longbridge.models.OperationsUser;
+import longbridge.services.ConfigurationService;
 import longbridge.services.OperationsUserService;
 import longbridge.services.PasswordPolicyService;
 import longbridge.services.SecurityService;
@@ -46,6 +48,8 @@ public class OperationsUserController {
 
     @Autowired
     private SecurityService securityService;
+    @Autowired
+    private ConfigurationService configService;
 
     private Logger logger= LoggerFactory.getLogger(this.getClass());
 
@@ -148,6 +152,15 @@ public class OperationsUserController {
             redirectAttributes.addFlashAttribute("message", message);
             if (httpServletRequest.getSession().getAttribute("expired-password") != null) {
                 httpServletRequest.getSession().removeAttribute("expired-password");
+            }
+
+            SettingDTO setting = configService.getSettingByName("ENABLE_OPS_2FA");
+            boolean tokenAuth = false;
+            if (setting != null && setting.isEnabled()) {
+                tokenAuth = (setting.getValue().equalsIgnoreCase("yes") ? true : false);
+            }
+            if (tokenAuth) {
+                return "redirect:/ops/token";
             }
             return "redirect:/ops/dashboard";
         } catch (PasswordPolicyViolationException pve) {
