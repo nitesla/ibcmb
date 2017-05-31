@@ -71,15 +71,15 @@
                         <div class="col-md-offset-4 col-md-4">
                                 <div class="form-group clearfix">
                                     <label>Account Number</label>
-                                    <input type="text" name="accountNumber"  th:value="${registrationForm.accountNumber}" class="form-control required" placeholder="Account Number"/>
+                                    <input type="text" name="accountNumber"  class="form-control required" placeholder="Account Number"/>
                                 </div>
                                 <div class="form-group clearfix">
                                     <label>Email</label>
-                                    <input type="email" name="email" th:value="${registrationForm.email}" class="form-control required" placeholder="Email"/>
+                                    <input type="email" name="email" class="form-control required" placeholder="Email"/>
                                 </div>
                                 <div class="form-group clearfix">
                                     <label>Date of Birth</label>
-                                    <input id="datepicker" type="text" name="birthDate" th:value="${registrationForm.birthDate}" class="form-control required"/>
+                                    <input id="datepicker" type="text" name="birthDate"  class="form-control required"/>
                                 </div>
                         </div>
                         </div>
@@ -90,20 +90,20 @@
                             <div class="col-md-offset-4 col-md-4">
                                         <div class="form-group clearfix">
                                             <label>Username</label>
-                                            <input type="text" name="userName" th:value="${registrationForm.userName}" class="form-control required" placeholder="Preferred Username"/>
+                                            <input type="text" name="userName" class="form-control required" placeholder="Preferred Username"/>
                                         </div>
                                         <div class="form-group clearfix">
                                             <label>Password</label>
-                                            <input type="password" id="password" name="password" th:value="${registrationForm.password}" class="form-control required" placeholder="Password"/>
+                                            <input type="password" id="password" name="password" class="form-control required" placeholder="Password"/>
                                         </div>
                                         <div class="form-group clearfix">
                                             <label>Confirm Password</label>
-                                            <input type="password" id="confirm" name="confirm" th:value="${registrationForm.confirmPassword}" class="form-control required" placeholder="Confirm Password"/>
+                                            <input type="password" id="confirm" name="confirm" class="form-control required" placeholder="Confirm Password"/>
                                         </div>
                                         <div class="form-group clearfix">
                                             <label>Registration Code</label>
-                                            <input type="text" id="code" name="code" th:value="${registrationForm.regCode}" class="form-control required" placeholder="Registration Code"/>
-                                            <button class="btn btn-link"> Send Verification Code</button>
+                                            <input type="text" id="code" name="regCode" class="col-md-8 form-control required" placeholder="Registration Code"/>
+                                            <a id="send" href="javascript:void(0)" onclick="sendRegCode();" class="btn btn-link col-md-4"> Send Verification Code</a>
                                         </div>
                                         <input id="customerId" name="customerId" th:value="${registrationForm.customerId}" type="hidden"/>
                                 </div>

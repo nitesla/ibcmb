@@ -1,5 +1,6 @@
 package longbridge.controllers;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import longbridge.api.CustomerDetails;
 import longbridge.dtos.RetailUserDTO;
 import longbridge.exception.InternetBankingException;
@@ -165,19 +166,30 @@ public class UserRegController {
     }
 
     @GetMapping("/rest/regCode/{accountNumber}/{email}/{birthDate}")
-    public @ResponseBody String sendRegCode(@PathVariable String accountNumber, @PathVariable String email, @PathVariable String birthDate){
+    public @ResponseBody String sendRegCode(@PathVariable String accountNumber, @PathVariable String email, @PathVariable String birthDate, HttpSession session){
         String code = "";
         logger.info("Account nUmber : " + accountNumber);
         logger.info("Email : " + email);
         logger.info("BirthDate : " + birthDate);
         CustomerDetails details = integrationService.isAccountValid(accountNumber, email, birthDate);
         if (details != null){
+            logger.info("Reg Code : " + details);
             String contact = details.getPhone();
-//            try{
-//
-//            }catch (){
-//
-//            }
+            Random rnd = new Random();
+            int n = 100000 + rnd.nextInt(900000);
+            logger.info("Reg Code : " + n);
+            String message = "Your Registration Code is : ";
+            message += n;
+
+
+            ObjectNode sent = integrationService.sendSMS(message, "+234(70)38810752" +
+                    "" +
+                    " ", "Internet Banking Registration Code");
+            if (sent != null){
+                session.setAttribute("regCode", n);
+                return "true";
+            }
+
         }else {
             //nothing
             code = "";
@@ -202,6 +214,15 @@ public class UserRegController {
         String message = passwordPolicyService.validate(password, null);
 
         if (!"".equals(message)){
+            return "false";
+        }
+        return "true";
+    }
+
+    @GetMapping("/rest/regCode/check/{code}")
+    public @ResponseBody String checkRegCode(@PathVariable String code, HttpSession session){
+        String regCode = (String) session.getAttribute("regCode");
+        if (!code.equals(regCode)){
             return "false";
         }
         return "true";
