@@ -29,14 +29,16 @@ public class RetailControllerAdvice {
     private TransferService transferService;
     private AccountService accountService;
     private ServiceReqConfigService reqConfigService;
+    private MessageService messageService;
 
     @Autowired
-    public RetailControllerAdvice(RetailUserService retailUserService, IntegrationService integrationService, TransferService transferService, AccountService accountService, ServiceReqConfigService reqConfigService) {
+    public RetailControllerAdvice(RetailUserService retailUserService, IntegrationService integrationService, TransferService transferService, AccountService accountService, ServiceReqConfigService reqConfigService, MessageService messageService) {
         this.retailUserService = retailUserService;
         this.integrationService = integrationService;
         this.transferService = transferService;
         this.accountService = accountService;
         this.reqConfigService = reqConfigService;
+        this.messageService = messageService;
     }
 
     @ModelAttribute
@@ -85,6 +87,12 @@ public class RetailControllerAdvice {
 
         List<SRConfig> requestList = reqConfigService.getServiceReqConfs();
         model.addAttribute("serviceRequests", requestList);
+
+
+        int numOfUnreadMessages = messageService.getNumOfUnreadMessages(user);
+        if(numOfUnreadMessages>0){
+            model.addAttribute("numOfUnreadMessages",numOfUnreadMessages);
+        }
 
         //System.out.println( new SimpleDateFormat("HH:mm:ss").format(Calendar.getInstance().getTime()) );
         return "";

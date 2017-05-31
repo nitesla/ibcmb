@@ -10,14 +10,17 @@ import longbridge.services.RetailUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by Kwere on 5/14/2017.
@@ -27,26 +30,28 @@ import java.util.List;
 public class MailboxController {
 
     @Autowired
-    MessageService messageService;
+    private MessageService messageService;
     @Autowired
-    OperationsUserService operationsUserService;
+    private OperationsUserService operationsUserService;
     @Autowired
-    CorporateUserService corporateUserService;
+    private CorporateUserService corporateUserService;
     @Autowired
-    RetailUserService retailUserService;
+    private RetailUserService retailUserService;
+    @Autowired
+    private MessageSource messageSource;
 
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @GetMapping("/inbox")
-    public String getInbox(Model model,Principal principal) {
+    public String getInbox(Model model, Principal principal) {
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
         List<MessageDTO> receivedMessages = messageService.getReceivedMessages(retailUser);
 
-      //  if (!receivedMessages.isEmpty()) {
-      //      MessageDTO message = receivedMessages.get(0);
-      //      model.addAttribute("messageDTO", message);
-      //  }
+        //  if (!receivedMessages.isEmpty()) {
+        //      MessageDTO message = receivedMessages.get(0);
+        //      model.addAttribute("messageDTO", message);
+        //  }
         model.addAttribute("receivedMessages", receivedMessages);
 
 
@@ -54,45 +59,45 @@ public class MailboxController {
     }
 
     @GetMapping("/sentmail")
-    public String getOutbox(Model model,Principal principal) {
+    public String getOutbox(Model model, Principal principal) {
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
         List<MessageDTO> sentMessages = messageService.getSentMessages(retailUser);
 
-      //  if (!sentMessages.isEmpty()) {
-      //      MessageDTO message  = sentMessages.get(0);
-      //      model.addAttribute("messageDTO", message);
-      //  }
+        //  if (!sentMessages.isEmpty()) {
+        //      MessageDTO message  = sentMessages.get(0);
+        //      model.addAttribute("messageDTO", message);
+        //  }
         model.addAttribute("sentMessages", sentMessages);
 
         return "cust/mailbox/sentmail";
     }
 
     @GetMapping("/{id}/reply")
-    public String replyMessage(@PathVariable Long id,  Model model,Principal principal) {
+    public String replyMessage(@PathVariable Long id, Model model, Principal principal) {
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
         MessageDTO message = messageService.getMessage(id);
         message.setRecipient(message.getSender());
         message.setSender(retailUser.getUserName());
-        message.setSubject("Re: "+message.getSubject());
+        message.setSubject("Re: " + message.getSubject());
         message.setBody("");
         model.addAttribute("messageDTO", message);
         return "cust/mailbox/compose";
     }
 
     @GetMapping("/{id}/forward")
-    public String forwardMessage(@PathVariable Long id,  Model model,Principal principal) {
+    public String forwardMessage(@PathVariable Long id, Model model, Principal principal) {
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
         MessageDTO message = messageService.getMessage(id);
         message.setSender(retailUser.getUserName());
         message.setRecipient("");
-        message.setSubject("Fwd: "+message.getSubject());
-        message.setBody("\n---\n"+message.getDateCreated()+"\n\""+message.getBody()+"\"");
+        message.setSubject("Fwd: " + message.getSubject());
+        message.setBody("\n---\n" + message.getDateCreated() + "\n\"" + message.getBody() + "\"");
         model.addAttribute("messageDTO", message);
         return "cust/mailbox/compose";
     }
 
     @GetMapping("/compose")
-    public String addMessage(Model model,Principal principal) {
+    public String addMessage(Model model, Principal principal) {
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
         MessageDTO message = new MessageDTO();
         message.setSender(retailUser.getUserName());
@@ -103,17 +108,11 @@ public class MailboxController {
     }
 
     @PostMapping
-<<<<<<< HEAD
-    public String createMessage(@ModelAttribute("messageDTO") @Valid MessageDTO messageDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes, Principal principal){
-
-
-=======
-    public String createMessage(@ModelAttribute("messageDTO") MessageDTO messageDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes, Principal principal){
->>>>>>> 824935f9619cccbd93ddb7cdf2b96e2d95f74a46
-//        if(bindingResult.hasErrors()){
-//            bindingResult.addError(new ObjectError("Invalid", "Please fill in the required fields"));
-//            return "cust/mailbox/compose";
-//        }
+    public String createMessage(@ModelAttribute("messageDTO") MessageDTO messageDTO, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes, Principal principal, Locale locale) {
+        if (messageDTO.getSubject() == null || messageDTO.getBody() == null) {
+            model.addAttribute("failre", messageSource.getMessage("form.fields.required",null,locale));
+            return "cust/mailbox/compose";
+        }
 
 
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
@@ -122,10 +121,9 @@ public class MailboxController {
             String message = messageService.addMessage(retailUser, messageDTO);
             redirectAttributes.addFlashAttribute("message", message);
             return "redirect:/retail/mailbox/sentmail";
-        }
-        catch (InternetBankingException ibe){
-            logger.error("Error sending message",ibe);
-            redirectAttributes.addFlashAttribute("failure", ibe.getMessage() );
+        } catch (InternetBankingException ibe) {
+            logger.error("Error sending message", ibe);
+            redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
             return "cust/mailbox/compose";
 
         }
@@ -153,9 +151,9 @@ public class MailboxController {
     }
 
     @GetMapping("/sentmail/message/{id}/delete")
-    public String deleteSentMessage(@PathVariable Long id, Principal principal,RedirectAttributes redirectAttributes) {
+    public String deleteSentMessage(@PathVariable Long id, Principal principal, RedirectAttributes redirectAttributes) {
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
-        messageService.deleteSentMessage(retailUser,id);
+        messageService.deleteSentMessage(retailUser, id);
         redirectAttributes.addFlashAttribute("message", "Message deleted successfully");
         return "redirect:/cust/mailbox/sentmail";
     }
@@ -185,14 +183,15 @@ public class MailboxController {
         return sentMessages;
 
     }
+
     @GetMapping("/message")
-    public String getMessage(Model model,Principal principal) {
+    public String getMessage(Model model, Principal principal) {
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
         List<MessageDTO> receivedMessages = messageService.getReceivedMessages(retailUser);
         if (!receivedMessages.isEmpty()) {
-             MessageDTO message = receivedMessages.get(0);
-             model.addAttribute("messageDTO", message);
-         }
+            MessageDTO message = receivedMessages.get(0);
+            model.addAttribute("messageDTO", message);
+        }
         model.addAttribute("receivedMessages", receivedMessages);
 
 
