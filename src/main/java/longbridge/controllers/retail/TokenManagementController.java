@@ -143,7 +143,7 @@ public class TokenManagementController {
                     redirectAttributes.addFlashAttribute("failure", "Token Authentication Failed");
                     return "redirect:/retail/token/authenticate";
                 }
-            }catch(InternetBankingException ibe){
+            }catch(InternetBankingSecurityException ibe){
                 logger.error("Error authenticating token", ibe);
                 redirectAttributes.addFlashAttribute("failure", "Token Authentication Failed");
                 return "redirect:/token/authenticate";
@@ -156,7 +156,7 @@ public class TokenManagementController {
         }
         session.setAttribute("authenticated","authenticated");
 
-        return "redirect:/"+url;
+        return "redirect:"+url;
     }
 
 }

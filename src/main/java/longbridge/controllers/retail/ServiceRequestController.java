@@ -112,9 +112,9 @@ public class ServiceRequestController {
             serviceRequestDTO.setDateRequested(new Date());
 
             if(serviceReqConfigDTO.isAuthenticate()){
-                if(session.getAttribute("authenticated")!="authenticated"){
+                if(session.getAttribute("authenticated")==null){
                     session.setAttribute("requestDTO",serviceRequestDTO);
-                    session.setAttribute("redirectURL", "/retail/request/process");
+                    session.setAttribute("redirectURL", "/retail/requests/process");
                     return "redirect:/retail/token/authenticate";
                 }
             }
@@ -134,16 +134,18 @@ public class ServiceRequestController {
 
     }
 
-    @GetMapping("/request/process")
+    @GetMapping("/process")
     public String processRequest(HttpSession session, RedirectAttributes redirectAttributes, Model model, Locale locale){
 
         if(session.getAttribute("requestDTO")!=null){
             ServiceRequestDTO requestDTO = (ServiceRequestDTO)session.getAttribute("requestDTO");
 
-            if(session.getAttribute("authenticated")!="authenticated"){
+            if(session.getAttribute("authenticated")!=null){
 
                 try {
                     String message = requestService.addRequest(requestDTO);
+                    session.removeAttribute("authenticated");
+                    session.removeAttribute("requestDTO");
                     redirectAttributes.addFlashAttribute("message", message);
                 }
             catch (InternetBankingException e){
@@ -173,7 +175,7 @@ public class ServiceRequestController {
                 model.addAttribute("codes", codeList);
             }
 
-            if (field.getFieldType() != null && field.getFieldType().equals("ACCOUNT")) {
+            if (field.getFieldType() != null && field.getFieldType().equals("ACCT")) {
                 List<AccountDTO> acctList = accountService.getAccountsForDebitAndCredit(user.getCustomerId());
                 model.addAttribute("accts", acctList);
             }
