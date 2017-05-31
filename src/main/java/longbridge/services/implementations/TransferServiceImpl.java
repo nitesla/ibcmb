@@ -58,7 +58,7 @@ public class TransferServiceImpl implements TransferService {
         TransRequest transRequest = integrationService.makeTransfer(convertDTOToEntity(transferRequestDTO));
         if (transRequest != null) {
             logger.trace("params {}", transRequest);
-            saveTransfer(transferRequestDTO);
+            saveTransfer(convertEntityToDTO(transRequest));
             if (transRequest.getStatus().equals(ResultType.SUCCESS)) return convertEntityToDTO(transRequest);
             throw new InternetBankingTransferException(TransferExceptions.ERROR.toString());
         }

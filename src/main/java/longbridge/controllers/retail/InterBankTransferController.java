@@ -73,6 +73,20 @@ public class InterBankTransferController {
                         .collect(Collectors.toList())
 
         );
+        TransferRequestDTO requestDTO= new TransferRequestDTO();
+        String type =request.getParameter("tranType") ;
+
+        if (type.equalsIgnoreCase("NIP"))  {
+            request.getSession().setAttribute("NIP","NIP");
+            requestDTO.setTransferType(TransferType.INTER_BANK_TRANSFER);
+        }else{
+            request.getSession().setAttribute("NIP","RTGS");
+            requestDTO.setTransferType(TransferType.RTGS);
+        }
+
+
+
+        model.addAttribute("transferRequest",requestDTO);
         return page + "pageiA";
     }
 
@@ -99,13 +113,25 @@ public class InterBankTransferController {
         TransferRequestDTO transferRequestDTO = new TransferRequestDTO();
         transferRequestDTO.setBeneficiaryAccountName(localBeneficiaryDTO.getAccountName());
         transferRequestDTO.setBeneficiaryAccountNumber(localBeneficiaryDTO.getAccountNumber());
-        transferRequestDTO.setTransferType(TransferType.INTER_BANK_TRANSFER);
+        if (servletRequest.getSession().getAttribute("NIP")!=null){
+      String type = (String)servletRequest.getSession().getAttribute("NIP");
+       if (type.equalsIgnoreCase("RTGS")){
+           transferRequestDTO.setTransferType(TransferType.RTGS);
+       }else{
+           transferRequestDTO.setTransferType(TransferType.INTER_BANK_TRANSFER);
+       }
+            servletRequest.getSession().removeAttribute("NIP");
+
+        }else{
+            transferRequestDTO.setTransferType(TransferType.INTER_BANK_TRANSFER);
+        }
+
         transferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode(localBeneficiaryDTO.getBeneficiaryBank()));
         model.addAttribute("transferRequest", transferRequestDTO);
 
 
 
-        servletRequest.getSession().setAttribute("beneficiary", localBeneficiaryDTO);
+        servletRequest.getSession().setAttribute("Lbeneficiary", localBeneficiaryDTO);
 
         return page + "pageii";
     }

@@ -5,6 +5,7 @@ import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.Entity;
+import javax.persistence.Enumerated;
 import javax.persistence.ManyToOne;
 import java.math.BigDecimal;
 
@@ -20,7 +21,7 @@ public class TransRequest extends AbstractEntity{
 
 
     private  String customerAccountNumber;
-
+   //@Enumerated
     private TransferType transferType;
 
     @ManyToOne
@@ -40,14 +41,14 @@ public class TransRequest extends AbstractEntity{
 
     private String narration;
 
-    private String sessionId;
+
 
     private BigDecimal amount;
 
     public TransRequest() {
     }
 
-    public TransRequest(String account, TransferType transferType, FinancialInstitution financialInstitution, String beneficiaryAccountNumber, String beneficiaryAccountName, String remarks, String referenceNumber, String userReferenceNumber, String narration, String sessionId, BigDecimal amount) {
+    public TransRequest(String account, TransferType transferType, FinancialInstitution financialInstitution, String beneficiaryAccountNumber, String beneficiaryAccountName, String remarks, String referenceNumber, String userReferenceNumber, String narration,  BigDecimal amount) {
         this.customerAccountNumber = account;
         this.transferType = transferType;
         this.financialInstitution = financialInstitution;
@@ -57,7 +58,7 @@ public class TransRequest extends AbstractEntity{
         this.referenceNumber = referenceNumber;
         this.userReferenceNumber = userReferenceNumber;
         this.narration = narration;
-        this.sessionId = sessionId;
+
         this.amount=amount;
     }
 
@@ -141,13 +142,7 @@ public class TransRequest extends AbstractEntity{
         this.narration = narration;
     }
 
-    public String getSessionId() {
-        return sessionId;
-    }
 
-    public void setSessionId(String sessionId) {
-        this.sessionId = sessionId;
-    }
 
     public BigDecimal getAmount() {
         return amount;
@@ -169,7 +164,6 @@ public class TransRequest extends AbstractEntity{
                 ", referenceNumber='" + referenceNumber + '\'' +
                 ", userReferenceNumber='" + userReferenceNumber + '\'' +
                 ", narration='" + narration + '\'' +
-                ", sessionId='" + sessionId + '\'' +
                 ", amount='" + amount + '\'' +
                 '}';
     }

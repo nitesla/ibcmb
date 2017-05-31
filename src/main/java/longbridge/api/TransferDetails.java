@@ -12,7 +12,7 @@ public class TransferDetails {
     private String  responseDescription;
     private String  uniqueReferenceCode;
     private String sessionId;
-
+    String narration;
     public TransferDetails() {
     }
 
@@ -22,6 +22,15 @@ public class TransferDetails {
         this.responseDescription = responseDescription;
         this.uniqueReferenceCode = uniqueReferenceCode;
         this.sessionId = sessionId;
+    }
+
+
+    public String getNarration() {
+        return narration;
+    }
+
+    public void setNarration(String narration) {
+        this.narration = narration;
     }
 
     public String getUniqueReferenceCode() {
@@ -59,9 +68,12 @@ public class TransferDetails {
 
     @Override
     public String toString() {
-        return "{\"TransferDetails\":{"
-                + "                        \"responseCode\":\"" + responseCode + "\""
-                + ",                         \"responseDescription\":\"" + responseDescription + "\""
-                + "}}";
+        return "TransferDetails{" +
+                "responseCode='" + responseCode + '\'' +
+                ", responseDescription='" + responseDescription + '\'' +
+                ", uniqueReferenceCode='" + uniqueReferenceCode + '\'' +
+                ", sessionId='" + sessionId + '\'' +
+                ", narration='" + narration + '\'' +
+                '}';
     }
 }

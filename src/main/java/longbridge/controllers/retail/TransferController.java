@@ -8,6 +8,7 @@ import longbridge.exception.TransferErrorService;
 import longbridge.models.Account;
 import longbridge.models.FinancialInstitutionType;
 import longbridge.models.RetailUser;
+import longbridge.repositories.RetailUserRepo;
 import longbridge.services.*;
 import longbridge.utils.ResultType;
 import longbridge.utils.TransferType;
@@ -157,8 +158,8 @@ public class TransferController {
                 boolean ok = securityService.performTokenValidation(principal.getName(), token);
 
                 if (!ok) {
-                    model.addAttribute("error", messages.getMessage("auth.token.failure", null, locale));
-                    return "/transfer/transferauth";
+                    model.addAttribute("failure", messages.getMessage("auth.token.failure", null, locale));
+                    return "/cust//transfer/transferauth";
                 } else {
                     request.getSession().removeAttribute("AUTH");
                 }
@@ -170,25 +171,40 @@ public class TransferController {
             transferRequestDTO = transferService.makeTransfer(transferRequestDTO);
             request.getSession().removeAttribute("transferRequest");
 
+
+            if (request.getSession().getAttribute("Lbeneficiary") != null) {
+
+                LocalBeneficiaryDTO l = (LocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary");
+                model.addAttribute("beneficiary", l);
+                return "/cust/transfer/transferbeneficiary";
+            }
+
             redirectAttributes.addFlashAttribute("message", messages.getMessage("transaction.success", null, locale));
-
-
             return index(transferRequestDTO.getTransferType());
             //return "redirect:/retail/dashboard";
         } catch (InternetBankingTransferException e) {
             e.printStackTrace();
+            if (request.getSession().getAttribute("Lbeneficiary") != null)
+                request.getSession().removeAttribute("Lbeneficiary");
             String errorMessage = transferErrorService.getMessage(e, request);
-            redirectAttributes.addFlashAttribute("error", errorMessage);
+            redirectAttributes.addFlashAttribute("failure", errorMessage);
             return "redirect:/retail/dashboard";
+
+
         }
     }
 
-//    @PostMapping("/auth")
-//    public String processTransfer(@ModelAttribute("transferRequest") @Valid TransferRequestDTO transferRequestDTO, Model model) throws Exception {
-//
-//
-//        model.addAttribute("transferRequest", transferRequestDTO);
-//        return;
-//
-//    }
+    @GetMapping("/newbeneficiaary")
+    public String newbeneficiaary(HttpServletRequest request, Model model, Principal principal, RedirectAttributes attributes) throws Exception {
+        if (request.getSession().getAttribute("Lbeneficiary") != null) {
+            RetailUser user = retailUserService.getUserByName(principal.getName());
+            LocalBeneficiaryDTO l = (LocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary");
+            localBeneficiaryService.addLocalBeneficiary(user, l);
+        }
+
+
+        attributes.addFlashAttribute("message", "New Beneficiary Added");
+        return "redirect:/retail/dashboard";
+
+    }
 }

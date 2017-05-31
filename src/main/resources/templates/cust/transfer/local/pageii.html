@@ -13,7 +13,7 @@
         <div class="row">
 
             <div class="col-md-4 col-sm-4">
-                <h5 class="page_header"> Transfer to <span th:text="${beneficiaryName}"></span></h5>
+                <h5 class="page_header"> Transfer to <span th:text="${beneficiary.preferredName}"></span></h5>
             </div>
         </div>
         <div class="row">
@@ -25,7 +25,7 @@
                         <div th:if="${error != null}" class="alert alert-info" th:text="${error}">message</div>
 
                         <form method="post" th:action="@{/retail/transfer/local/summary}"
-                              th:object="${transRequest}">
+                              th:object="${transferRequest}">
 
 
                             <div class="form-group">
@@ -60,7 +60,7 @@
                             </div>
 
 
-                            <button class="btn btn-primary" type="submit">Submit</button>
+                            <button class="btn btn-link" type="submit">Submit</button>
                         </form>
                         <!--</div>-->
                     </div>

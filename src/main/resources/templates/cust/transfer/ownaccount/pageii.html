@@ -33,30 +33,30 @@
                                 <tr>
 
                                     <th>Source account</th>
-                                    <td th:text="${transRequest.customerAccountNumber}"></td>
+                                    <td th:text="${transferRequest.customerAccountNumber}"></td>
 
                                 </tr>
                                 <tr>
 
                                     <th>Destination account</th>
-                                    <td th:text="${transRequest.beneficiaryAccountNumber}"></td>
+                                    <td th:text="${transferRequest.beneficiaryAccountNumber}"></td>
 
                                 </tr>
                                 <tr>
 
                                     <th>Amount</th>
-                                    <td th:text="${transRequest.amount}"></td>
+                                    <td th:text="${transferRequest.amount}"></td>
 
                                 </tr>
                                 <tr>
 
                                     <th>Remarks</th>
-                                    <td th:text="${transRequest.remarks}"></td>
+                                    <td th:text="${transferRequest.remarks}"></td>
 
                                 </tr>
                             </table>
 
-                            <form method="post" th:action="@{/retail/transfer/process}" th:object="${transRequest}">
+                            <form method="post" th:action="@{/retail/transfer/process}" th:object="${transferRequest}">
                                 <input type="hidden" th:field="*{customerAccountNumber}"/>
                                 <input type="hidden" th:field="*{beneficiaryAccountNumber}"/>
                                 <input type="hidden" th:field="*{beneficiaryAccountName}"/>

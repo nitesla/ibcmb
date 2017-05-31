@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -95,7 +96,7 @@ public class IntegrationServiceImpl implements IntegrationService {
     @Override
     public TransRequest makeTransfer(TransRequest transRequest) throws InternetBankingTransferException {
 
-        TransferType type =transRequest.getTransferType();
+        TransferType type = transRequest.getTransferType();
 
         //switch (type) {
         switch (type) {
@@ -115,12 +116,11 @@ public class IntegrationServiceImpl implements IntegrationService {
                 try {
                     response = template.postForObject(uri, params, TransferDetails.class);
 
-                    if (response.getResponseCode().equalsIgnoreCase("000")) {
+                    if (response != null) {
+                        transRequest.setStatus(response.getResponseDescription());
                         transRequest.setReferenceNumber(response.getUniqueReferenceCode());
-                        transRequest.setStatus(ResultType.SUCCESS.toString());
-                        return transRequest;
-                    } else {
-                        transRequest.setStatus(ResultType.ERROR.toString());
+                        transRequest.setNarration(response.getNarration());
+
                         return transRequest;
                     }
 
@@ -147,20 +147,24 @@ public class IntegrationServiceImpl implements IntegrationService {
                 logger.info("params for transfer {}", params.toString());
                 try {
                     response = template.postForObject(uri, params, TransferDetails.class);
+                    if (response != null) {
+                        transRequest.setReferenceNumber(response.getSessionId());
 
-                    if (response.getResponseCode().equalsIgnoreCase("000")) {
-                        transRequest.setSessionId(response.getSessionId());
-                        transRequest.setStatus(ResultType.SUCCESS.toString());
-                        return transRequest;
+                        if (response != null) {
+                            transRequest.setReferenceNumber(response.getUniqueReferenceCode());
+                            transRequest.setNarration(response.getNarration());
+                            transRequest.setStatus(response.getResponseDescription());
+                            return transRequest;
+                        }
+
                     }
+
 
                 } catch (Exception e) {
 
                     transRequest.setStatus(ResultType.ERROR.toString());
                     return transRequest;
                 }
-
-
 
 
             }
@@ -181,16 +185,19 @@ public class IntegrationServiceImpl implements IntegrationService {
                 params.put("naration", transRequest.getNarration());
                 logger.info("patrams for transfer {}", params.toString());
                 try {
-                    response = template.postForObject(uri, params, TransferDetails.class);
-
-                    if (response.getResponseCode().equalsIgnoreCase("000")) {
+                    response = template.postForObject(uri, params,TransferDetails.class);
+                    System.out.println("@@@ RESPONSE "+response);
+                    if (response != null) {
+                        transRequest.setNarration(response.getNarration());
                         transRequest.setReferenceNumber(response.getUniqueReferenceCode());
-                        transRequest.setStatus(ResultType.SUCCESS.toString());
+                        System.out.println(response.getResponseDescription());
+                        transRequest.setStatus(response.getResponseDescription());
                         return transRequest;
                     }
 
                 } catch (Exception e) {
 
+                    e.printStackTrace();
                     transRequest.setStatus(ResultType.ERROR.toString());
                     return transRequest;
                 }
@@ -331,13 +338,13 @@ public class IntegrationServiceImpl implements IntegrationService {
         params.put("alertType", "SMS");
         params.put("message", message);
         params.put("subject", subject);
-        params.put("contactList",contacts);
+        params.put("contactList", contacts);
         logger.trace("params {}", params);
 
         try {
 
             result = template.postForObject(uri, params, ObjectNode.class);
-            System.out.println("@@RESULT "+result);
+            System.out.println("@@RESULT " + result);
         } catch (Exception e) {
             e.printStackTrace();
 

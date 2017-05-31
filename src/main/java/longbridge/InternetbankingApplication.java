@@ -10,6 +10,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
+import java.util.List;
+import java.util.Map;
+
 
 @SpringBootApplication
 @EnableJpaRepositories(repositoryFactoryBeanClass = CustomJpaRepositoryFactoryBean.class)
@@ -40,7 +43,7 @@ public class InternetbankingApplication  /*extends  SpringBootServletInitializer
 //        securityService.createEntrustUser("bridger09","longbridger",true);
 //        integrationService.sendSMS("HELLO FROM FAROOQ", "08023972141", "HELLO");
 //        integrationService.sendSMS("HELLO FROM FAROOQ", "08052237245", "HELLO");
-         integrationService.sendSMS("HELLO FROM FAROOQ", "07037708319", "HELLO");
+  //      integrationService.sendSMS("HELLO FROM FAROOQ", "08050915810", "HELLO");
 //        java.util.List<String> questions = new ArrayList<>();
 //        questions.add("WHO IS THE GREATEST");
 //        List<String> answer = new ArrayList<>();
@@ -48,6 +51,9 @@ public class InternetbankingApplication  /*extends  SpringBootServletInitializer
 //        securityService.setUserQA("bridger09", questions, answer);
 //        System.out.println("end of call");
 
+//        Map< List<String>, List<String>> a = securityService.getUserQA("wunmi");
+//
+//        System.out.println(a.size());
 
     }
 
