@@ -38,7 +38,7 @@ public class InternationalTransferController {
     private InternationalBeneficiaryService beneficiaryService;
     private FinancialInstitutionService financialInstitutionService;
     private TransferValidator validator;
-    private String page = "cust/transfer/interbank/";
+    private String page = "cust/transfer/international/";
     @Value("${bank.code}")
     private String bankCode;
 

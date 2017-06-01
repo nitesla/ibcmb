@@ -10,6 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.thymeleaf.TemplateEngine;
 
 import java.util.List;
 import java.util.Map;
@@ -20,12 +21,13 @@ import java.util.Map;
 
 
 
-public class InternetbankingApplication  extends SpringBootServletInitializer{
+public class InternetbankingApplication  /*extends SpringBootServletInitializer*/ implements CommandLineRunner{
 
     @Autowired
     private SecurityService securityService;
     @Autowired
-    private IntegrationService integrationService;
+    private TemplateEngine templateEngine;
+   // private IntegrationService integrationService;
 
     public static void main(String[] args) {
         SpringApplication.run(InternetbankingApplication.class, args);
@@ -36,6 +38,14 @@ public class InternetbankingApplication  extends SpringBootServletInitializer{
 
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
         return application.sources(InternetbankingApplication.class);
+    }
+
+
+    @Override
+    public void run(String... strings) throws Exception {
+
+      //  System.out.println();
+
     }
 }
 
