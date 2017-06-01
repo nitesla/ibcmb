@@ -26,15 +26,16 @@ public class CorporateControllerAdvice {
     private TransferService transferService;
     private AccountService accountService;
     private ServiceReqConfigService reqConfigService;
+    private MessageService messageService;
 
     @Autowired
-
-    public CorporateControllerAdvice(CorporateUserService corporateUserService, IntegrationService integrationService, TransferService transferService, AccountService accountService, ServiceReqConfigService reqConfigService) {
+    public CorporateControllerAdvice(CorporateUserService corporateUserService, IntegrationService integrationService, TransferService transferService, AccountService accountService, ServiceReqConfigService reqConfigService, MessageService messageService) {
         this.corporateUserService = corporateUserService;
         this.integrationService = integrationService;
         this.transferService = transferService;
         this.accountService = accountService;
         this.reqConfigService = reqConfigService;
+        this.messageService = messageService;
     }
 
     @ModelAttribute
@@ -80,6 +81,13 @@ public class CorporateControllerAdvice {
 
         List<SRConfig> requestList = reqConfigService.getServiceReqConfs();
         model.addAttribute("serviceRequests", requestList);
+
+        int numOfUnreadMessages = messageService.getNumOfUnreadMessages(corporateUser);
+        if(numOfUnreadMessages>0){
+            model.addAttribute("numOfUnreadMessages",numOfUnreadMessages);
+        }
+
+
         return "";
     }
 

@@ -409,9 +409,11 @@ body {
     color: #fff;
     background-color: #032A4F;
 }
+
 .in-box{
-    font-size: 19px;
+    font-size: 14px;
 }
+
 .folder-list li a{
     list-style: none;
     font-size: 13px;

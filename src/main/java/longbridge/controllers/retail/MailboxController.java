@@ -47,14 +47,7 @@ public class MailboxController {
     public String getInbox(Model model, Principal principal) {
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
         List<MessageDTO> receivedMessages = messageService.getReceivedMessages(retailUser);
-
-        //  if (!receivedMessages.isEmpty()) {
-        //      MessageDTO message = receivedMessages.get(0);
-        //      model.addAttribute("messageDTO", message);
-        //  }
         model.addAttribute("receivedMessages", receivedMessages);
-
-
         return "cust/mailbox/inbox";
     }
 
@@ -62,13 +55,7 @@ public class MailboxController {
     public String getOutbox(Model model, Principal principal) {
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
         List<MessageDTO> sentMessages = messageService.getSentMessages(retailUser);
-
-        //  if (!sentMessages.isEmpty()) {
-        //      MessageDTO message  = sentMessages.get(0);
-        //      model.addAttribute("messageDTO", message);
-        //  }
         model.addAttribute("sentMessages", sentMessages);
-
         return "cust/mailbox/sentmail";
     }
 
@@ -101,8 +88,6 @@ public class MailboxController {
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
         MessageDTO message = new MessageDTO();
         message.setSender(retailUser.getUserName());
-        //if(!message.getStatus()==not sent){
-        //
         model.addAttribute("messageDTO", message);
         return "cust/mailbox/compose";
     }
@@ -110,7 +95,7 @@ public class MailboxController {
     @PostMapping
     public String createMessage(@ModelAttribute("messageDTO") MessageDTO messageDTO, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes, Principal principal, Locale locale) {
         if (messageDTO.getSubject() == null || messageDTO.getBody() == null) {
-            model.addAttribute("failre", messageSource.getMessage("form.fields.required",null,locale));
+            model.addAttribute("failure", messageSource.getMessage("form.fields.required", null, locale));
             return "cust/mailbox/compose";
         }
 
@@ -131,31 +116,41 @@ public class MailboxController {
 
     @GetMapping("/inbox/{id}/message")
     public String viewReceivedMessage(@PathVariable Long id, Model model) {
+        messageService.setStatus(id, "Read");
         MessageDTO message = messageService.getMessage(id);
         model.addAttribute("messageDTO", message);
-        return "cust/mailbox/message";
+        return "cust/mailbox/recievedmessage";
     }
 
     @GetMapping("/sent/{id}/message")
     public String viewSentMessage(@PathVariable Long id, Model model) {
         MessageDTO message = messageService.getMessage(id);
         model.addAttribute("messageDTO", message);
-        return "cust/mailbox/message";
+        return "cust/mailbox/sentmessage";
     }
 
-    @GetMapping("/inbox/message/{id}/delete")
+    @GetMapping("/inbox/{id}/delete")
     public String deleteReceivedMessage(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        messageService.deleteReceivedMessage(id);
-        redirectAttributes.addFlashAttribute("message", "Message deleted successfully");
-        return "redirect:/cust/mailbox/inbox";
+        try {
+            String message = messageService.deleteReceivedMessage(id);
+            redirectAttributes.addFlashAttribute("message", message);
+        } catch (InternetBankingException ibe) {
+            redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
+
+        }
+        return "redirect:/retail/mailbox/inbox";
     }
 
-    @GetMapping("/sentmail/message/{id}/delete")
+    @GetMapping("/sent/message/{id}/delete")
     public String deleteSentMessage(@PathVariable Long id, Principal principal, RedirectAttributes redirectAttributes) {
-        RetailUser retailUser = retailUserService.getUserByName(principal.getName());
-        messageService.deleteSentMessage(retailUser, id);
-        redirectAttributes.addFlashAttribute("message", "Message deleted successfully");
-        return "redirect:/cust/mailbox/sentmail";
+        try {
+            RetailUser retailUser = retailUserService.getUserByName(principal.getName());
+            String message = messageService.deleteSentMessage(retailUser, id);
+            redirectAttributes.addFlashAttribute("message", message);
+        } catch (InternetBankingException ibe) {
+            redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
+        }
+        return "redirect:/retail/mailbox/sentmail";
     }
 
     @GetMapping("/all")

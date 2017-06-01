@@ -44,7 +44,7 @@
 
                             <div class="x_content">
                                 <div class="ibox-content">
-                                    <form method="post" class="form-horizontal" th:action="@{/admin/token/block/}" th:object="${token}">
+                                    <form method="post" class="form-horizontal" th:action="@{/admin/token/deactivate/}" th:object="${token}">
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">Username</label>
 
@@ -67,7 +67,7 @@
                                         <div class="form-group">
                                             <div class="col-sm-4 col-sm-offset-2">
                                                 <button class="btn btn-white" type="reset" id="cancel">Cancel</button>
-                                                <button class="btn btn-primary" type="submit">Block</button>
+                                                <button class="btn btn-primary" type="submit">Deactivate</button>
                                             </div>
                                         </div>
                                         <div th:replace="layout :: form-validation"></div>
