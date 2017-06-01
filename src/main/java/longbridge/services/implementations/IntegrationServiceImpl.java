@@ -62,10 +62,8 @@ public class IntegrationServiceImpl implements IntegrationService {
         try {
 
             String uri = URI + "/customer/{acctId}/accounts";
-
-
             return Arrays.stream(template.getForObject(uri, AccountInfo[].class, cifid)).collect(Collectors.toList());
-            //            List list= template.getForObject(uri, ArrayList.class,cifid);
+            // List list= template.getForObject(uri, ArrayList.class,cifid);
 
         } catch (Exception e) {
             logger.error("Exception occurred {}", e.getMessage());
@@ -133,7 +131,6 @@ public class IntegrationServiceImpl implements IntegrationService {
                 } catch (Exception e) {
 
                     e.printStackTrace();
-
                     transRequest.setStatus(ResultType.ERROR.toString());
                     return transRequest;
 
@@ -219,8 +216,6 @@ public class IntegrationServiceImpl implements IntegrationService {
                 return request;
             }
         }
-
-
         logger.trace("request did not match any type");
         transRequest.setStatus(ResultType.ERROR.toString());
         return transRequest;

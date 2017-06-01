@@ -190,7 +190,7 @@ public class UserRegController {
             message += n;
 
 
-            ObjectNode sent = integrationService.sendSMS(message, "+234(70)38810752" +
+            ObjectNode sent = integrationService.sendSMS(message, contact +
                     "" +
                     " ", "Internet Banking Registration Code");
             if (sent != null){

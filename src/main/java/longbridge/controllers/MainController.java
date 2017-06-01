@@ -164,13 +164,13 @@ public class MainController {
         String corpKey = webRequest.getParameter("corporateId");
         CorporateUser user =  corporateUserService.getUserByName(username);
         Corporate corporate = corporateService.getCorporateByCustomerId(corpKey);
-        Map<List<String>, List<String>> mutualAuth = securityService.getMutualAuth(user.getUserName());
+//        Map<List<String>, List<String>> mutualAuth = securityService.getMutualAuth(user.getUserName());
 
         //get map
 
-        if (corporate != null && user != null && mutualAuth != null) {
-            model.addAttribute("images", mutualAuth.get("imageSecret"));
-            model.addAttribute("captions", mutualAuth.get("captionSecret"));
+        if (corporate != null && user != null) {
+//            model.addAttribute("images", mutualAuth.get("imageSecret"));
+//            model.addAttribute("captions", mutualAuth.get("captionSecret"));
             model.addAttribute("username", user.getUserName());
             model.addAttribute("corpKey", corpKey);
             return "corppage2";
