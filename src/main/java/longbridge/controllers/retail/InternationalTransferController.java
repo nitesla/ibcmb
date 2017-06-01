@@ -137,7 +137,7 @@ public class InternationalTransferController {
         TransferRequestDTO requestDTO = new TransferRequestDTO();
         requestDTO.setBeneficiaryAccountName(beneficiary.getAccountName());
         requestDTO.setBeneficiaryAccountNumber(beneficiary.getAccountNumber());
-        requestDTO.setTransferType(TransferType.INTER_BANK_TRANSFER);
+        requestDTO.setTransferType(TransferType.INTERNATIONAL_TRANSFER);
 
         model.addAttribute("transferRequest", requestDTO);
         model.addAttribute("beneficiary", beneficiary);

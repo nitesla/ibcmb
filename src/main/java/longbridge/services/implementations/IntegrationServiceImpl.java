@@ -191,14 +191,12 @@ public class IntegrationServiceImpl implements IntegrationService {
                 params.put("creditAccountNumber", transRequest.getBeneficiaryAccountNumber());
                 params.put("tranAmount", transRequest.getAmount().toString());
                 params.put("naration", transRequest.getNarration());
-                logger.info("patrams for transfer {}", params.toString());
+                logger.info("params for transfer {}", params.toString());
                 try {
                     response = template.postForObject(uri, params, TransferDetails.class);
-                    System.out.println("@@@ RESPONSE " + response);
                     if (response != null) {
                         transRequest.setNarration(response.getNarration());
                         transRequest.setReferenceNumber(response.getUniqueReferenceCode());
-                        System.out.println(response.getResponseDescription());
                         transRequest.setStatus(response.getResponseDescription());
                         return transRequest;
                     }
@@ -368,7 +366,7 @@ public class IntegrationServiceImpl implements IntegrationService {
     public TransRequest sendTransfer(TransRequest transRequest) {
 
         Context scontext = new Context();
-        scontext.setVariable("transRequest", transRequest);
+        scontext.setVariable("transRequest",transRequest);
 
         String mail = templateEngine.process("/cust/transfer/mailtemplate", scontext);
         System.out.println(mail);
