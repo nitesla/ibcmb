@@ -81,13 +81,21 @@ public class UserRegController {
         logger.info("BirthDate : " + birthDate);
         CustomerDetails details = integrationService.isAccountValid(accountNumber, email, birthDate);
         if (details != null){
-            customerId = details.getCifId();
+                customerId = details.getCifId();
+//            RetailUser retailUser = retailUserService.getUserByCustomerId(details.getCifId());
+//            if (retailUser != null) {
+ //               customerId = retailUser.getCustomerId();
+//            }else {
+//                customerId="";
+//            }
+
         }else {
             //nothing
             customerId = "";
         }
         return customerId;
     }
+
 
     @GetMapping("/rest/retail/accountname/{accountNumber}")
     public @ResponseBody String getAccountNameFromNumber(@PathVariable String accountNumber){
@@ -182,7 +190,7 @@ public class UserRegController {
             message += n;
 
 
-            ObjectNode sent = integrationService.sendSMS(message, contact +
+            ObjectNode sent = integrationService.sendSMS(message, "+234(70)38810752" +
                     "" +
                     " ", "Internet Banking Registration Code");
             if (sent != null){
@@ -385,12 +393,13 @@ public class UserRegController {
         //securityService.setUserQA(userName, securityQuestion, securityAnswer);
 
         //phishing image
-        List<byte[]> phishingSec = new ArrayList<>();
-
+        List<String> phishingSec = new ArrayList<>();
         byte[] encodedBytes = Base64.encodeBase64(phishing.getBytes());
         System.out.println("encodedBytes " + new String(encodedBytes));
+        String encPhishImage = new String(encodedBytes);
 
-        phishingSec.add(encodedBytes);
+        phishingSec.add(encPhishImage);
+
         List<String> captionSec = new ArrayList<>();
         captionSec.add(caption);
 
@@ -408,14 +417,15 @@ public class UserRegController {
         try {
             String message = retailUserService.addUser(retailUserDTO, details);
             logger.info("MESSAGE", message);
+            redirectAttributes.addAttribute("success", "true");
+            return "true";
         }
         catch (InternetBankingException e){
             logger.error("Error creating retail user", e);
             redirectAttributes.addFlashAttribute(messageSource.getMessage("user.add.failure", null, locale));
         }
 
-        redirectAttributes.addAttribute("success", "true");
-        return "true";
+        return "false";
     }
 
     @GetMapping("/forgot/password")

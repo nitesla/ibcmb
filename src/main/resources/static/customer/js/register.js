@@ -24,7 +24,7 @@
                  //invalid account number
                  $.notify({
                      title: '<strong>Oops!</strong>',
-                     message: 'Invalid Account Number'
+                     message: 'Invalid Account Number, Contact the bank'
                  },{
                      type: 'danger'
                  });
@@ -37,7 +37,7 @@
          }
      });
 
-     if(customerId == "" || customerId === null){
+     if(customerId == "" || customerId == null ){
          return false;
      }else{
          return true;

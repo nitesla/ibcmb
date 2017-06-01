@@ -131,7 +131,7 @@ public class RetailUserServiceImpl implements RetailUserService {
             }
             RetailUser retUser = getUserByCustomerId(user.getCustomerId());
             if (retUser != null) {
-                throw new DuplicateObjectException(messageSource.getMessage("user.add.exists", null, locale));
+                throw new DuplicateObjectException(messageSource.getMessage("user.add.exist", null, locale));
             }
 
             retailUser = new RetailUser();
@@ -154,12 +154,11 @@ public class RetailUserServiceImpl implements RetailUserService {
             SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_CREATION");
             if (setting != null && setting.isEnabled()) {
                 if ("YES".equalsIgnoreCase(setting.getValue())) {
-                    boolean result = securityService.createEntrustUser(retailUser.getUserName(), fullName, true);
-                    if (!result) {
-                        throw new InternetBankingSecurityException(messageSource.getMessage("entrust.create.failure", null, locale));
-                    }
-                    securityService.setUserQA(user.getUserName(), user.getSecurityQuestion(), user.getSecurityAnswer());
-                    //securityService.
+                    createEntrustUser(user.getUserName(), fullName, true);
+
+                    setEntrustUserQA(user.getUserName(), user.getSecurityQuestion(), user.getSecurityAnswer(), fullName);
+
+                    setEntrustUserMutualAuth(user.getUserName(), user.getCaptionSec(), user.getPhishingSec(), fullName);
                 }
             }
 
@@ -179,6 +178,32 @@ public class RetailUserServiceImpl implements RetailUserService {
         }
         catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("user.add.failure", null, locale), e);
+        }
+    }
+
+    private void createEntrustUser(String username, String fullName, boolean enableOtp){
+        try{
+            securityService.createEntrustUser(username, fullName, true);
+        }catch (InternetBankingSecurityException e){
+            throw new InternetBankingSecurityException(messageSource.getMessage("entrust.create.failure", null, locale), e);
+        }
+    }
+
+    private void setEntrustUserQA(String username, List<String> securityQuestion, List<String> securityAnswer, String fullName){
+        try{
+            securityService.setUserQA(username, securityQuestion, securityAnswer);
+        }catch (InternetBankingSecurityException e){
+            securityService.deleteEntrustUser(username, fullName);
+            throw new InternetBankingSecurityException(messageSource.getMessage("entrust.create.failure", null, locale), e);
+        }
+    }
+
+    private void setEntrustUserMutualAuth(String username, List<String> captionSec, List<String> phishingSec, String fullName){
+        try{
+            securityService.setMutualAuth(username, captionSec, phishingSec);
+        }catch (InternetBankingSecurityException e){
+            securityService.deleteEntrustUser(username, fullName);
+            throw new InternetBankingSecurityException(messageSource.getMessage("entrust.create.failure", null, locale), e);
         }
     }
 
