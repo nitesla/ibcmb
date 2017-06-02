@@ -3,6 +3,7 @@ package longbridge.security.corpuser;
 import longbridge.dtos.SettingDTO;
 import longbridge.models.UserType;
 import longbridge.repositories.CorporateUserRepo;
+import longbridge.security.SessionUtils;
 import longbridge.services.ConfigurationService;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
@@ -34,7 +35,8 @@ public class CorporateAuthenticationSuccessHandler implements AuthenticationSucc
     private MessageSource messageSource;
     @Autowired
     private ConfigurationService configService;
-
+    @Autowired
+    SessionUtils sessionUtils;
 
 
     @Override
@@ -42,8 +44,8 @@ public class CorporateAuthenticationSuccessHandler implements AuthenticationSucc
         handle(request, response, authentication);
         final HttpSession session = request.getSession(false);
         if (session != null) {
-            session.setMaxInactiveInterval(30 * 60); //TODO this cannot be static
-            session.setAttribute("user",corporateUserRepo.findFirstByUserName(authentication.getName()));
+            sessionUtils.setTimeout(session);
+
 //            LocalDate date = new LocalDate(user.getExpiryDate());
 //            if (today.isAfter(date) || today.isEqual(date)) {
 //                session.setAttribute("expired-password", "expired-password");

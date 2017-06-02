@@ -11,14 +11,17 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
 @Service
-public class CustomBruteForceService {
-     @Value("${app.brute.max}")
+public class CustomBruteForceService
+{
+    @Value("${app.brute.max}")
     private  int MAX_ATTEMPT ;
     private LoadingCache<String, Integer> attemptsCache;
 
     public CustomBruteForceService() {
         super();
-        attemptsCache = CacheBuilder.newBuilder().expireAfterWrite(5, TimeUnit.MINUTES).build(new CacheLoader<String, Integer>() {
+        attemptsCache = CacheBuilder.newBuilder().expireAfterWrite(5, TimeUnit.MINUTES)
+               // .removalListener()
+                .build(new CacheLoader<String, Integer>() {
             @Override
             public Integer load(final String key) {
                 return 0;

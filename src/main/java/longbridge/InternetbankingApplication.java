@@ -23,7 +23,7 @@ import java.util.Map;
 
 
 
-public class InternetbankingApplication  extends SpringBootServletInitializer implements CommandLineRunner{
+public class InternetbankingApplication /* extends SpringBootServletInitializer implements CommandLineRunner*/{
 
     @Autowired
     private SecurityService securityService;
@@ -44,15 +44,15 @@ public class InternetbankingApplication  extends SpringBootServletInitializer im
     }
 
 
-    @Override
-    public void run(String... strings) throws Exception {
-
-        Collection<AccountInfo> accounts = integrationService.fetchAccounts("R001959");
-        for (AccountInfo acct : accounts) {
-            System.out.print("Account recieved is: "+acct);
-        }
-
-    }
+//    @Override
+//    public void run(String... strings) throws Exception {
+//
+//        Collection<AccountInfo> accounts = integrationService.fetchAccounts("R001959");
+//        for (AccountInfo acct : accounts) {
+//            System.out.print("Account recieved is: "+acct);
+//        }
+//
+//    }
 }
 
 

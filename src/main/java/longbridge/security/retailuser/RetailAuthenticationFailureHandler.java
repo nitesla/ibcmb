@@ -3,6 +3,7 @@ package longbridge.security.retailuser;
 import longbridge.models.RetailUser;
 import longbridge.repositories.RetailUserRepo;
 import longbridge.security.AuthenticationErrorService;
+import longbridge.security.FailedLoginService;
 import longbridge.services.RetailUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.AuthenticationException;
@@ -19,31 +20,32 @@ import java.io.IOException;
 @Component("retailAuthenticationFailureHandler")
 public class RetailAuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
 
-@Autowired
-   private  AuthenticationErrorService errorService;
     @Autowired
-   private RetailUserRepo service;
-
-
-
+    FailedLoginService failedLoginService;
+    @Autowired
+    private AuthenticationErrorService errorService;
+    @Autowired
+    private RetailUserRepo service;
 
     @Override
     public void onAuthenticationFailure(final HttpServletRequest request, final HttpServletResponse response, final AuthenticationException exception) throws IOException, ServletException {
         setDefaultFailureUrl("/login/retail?error=true");
-        String userName= request.getParameter("username");
-        RetailUser user= service.findFirstByUserName(userName);
-        if (user!=null){
-            int numOfLoginAttempts= user.getNoOfLoginAttempts();
+        String userName = request.getParameter("username");
+        RetailUser user = service.findFirstByUserName(userName);
+        if (user != null) {
+         /*   int numOfLoginAttempts= user.getNoOfLoginAttempts();
             numOfLoginAttempts++;
             user.setNoOfLoginAttempts(numOfLoginAttempts);
-            service.save(user);
+            service.save(user);*/
+            failedLoginService.loginFailed(user);
+
         }
 
 
         super.onAuthenticationFailure(request, response, exception);
 
 
-        String errorMessage=errorService.getMessage(exception,request);
+        String errorMessage = errorService.getMessage(exception, request);
 
 
         request.getSession().setAttribute(WebAttributes.AUTHENTICATION_EXCEPTION, errorMessage);

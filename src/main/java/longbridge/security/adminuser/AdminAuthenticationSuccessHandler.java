@@ -4,6 +4,7 @@ import longbridge.dtos.SettingDTO;
 import longbridge.models.AdminUser;
 import longbridge.models.UserType;
 import longbridge.repositories.AdminUserRepo;
+import longbridge.security.SessionUtils;
 import longbridge.services.ConfigurationService;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
@@ -39,6 +40,8 @@ public class AdminAuthenticationSuccessHandler extends SavedRequestAwareAuthenti
 
     @Autowired
     private ConfigurationService configService;
+    @Autowired
+    SessionUtils sessionUtils;
 
 
     @Override
@@ -46,7 +49,10 @@ public class AdminAuthenticationSuccessHandler extends SavedRequestAwareAuthenti
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws ServletException, IOException {
         HttpSession session = request.getSession();
         if (session != null) {
-            session.setMaxInactiveInterval(30 * 60); //TODO this cannot be static
+
+        sessionUtils.setTimeout(session);
+
+
             AdminUser user = adminUserRepo.findFirstByUserName(authentication.getName());
             LocalDate date = new LocalDate(user.getExpiryDate());
 
@@ -56,6 +62,7 @@ public class AdminAuthenticationSuccessHandler extends SavedRequestAwareAuthenti
         }
         setUseReferer(true);
         adminUserRepo.updateUserAfterLogin(authentication.getName());
+        
         super.onAuthenticationSuccess(request, response, authentication);
 
     }
