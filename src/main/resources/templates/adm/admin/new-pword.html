@@ -48,15 +48,15 @@
                         </ul>
                     </div>
                     <div>
-                        <input type="password" class="form-control" placeholder="New Password" required=""
+                        <input id="password" type="password" class="form-control" placeholder="New Password" required=""
                                name="newPassword"/>
                     </div>
                     <div>
-                        <input type="password" class="form-control" placeholder="Confirm Password" required=""
+                        <input id="password" type="password" class="form-control" placeholder="Confirm Password" required=""
                                name="confirmPassword"/>
                     </div>
                     <div>
-                        <input name="submit" class="btn btn-primary" type="submit" value="Submit"/>
+                        <input id="password" name="submit" class="btn btn-primary" type="submit" value="Submit"/>
                     </div>
                     <div th:if="${param.message != null}" class="alert alert-info" th:text="${param.message[0]}">
                         message
@@ -103,6 +103,10 @@
 <script th:src="@{~/bank/vendors/sweetalert/sweetalert.min.js}"></script>
 <script th:src="@{~/bank/vendors/bootstrap-dialog/js/bootstrap-dialog.js}"></script>
 <script th:src="@{~/bank/js/dataTables.bootstrap.js}"></script>
-
+<script>
+    $('#password').bind("cut copy paste",function(e) {
+        e.preventDefault();
+    });
+</script>
 </body>
 </html>
