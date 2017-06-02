@@ -43,7 +43,7 @@
 //        templateResolver.setApplicationContext(appCtx);
 //        templateResolver.setPrefix("classpath:/templates/");
 //        templateResolver.setSuffix(".html");
-//        templateResolver.setTemplateMode("HTML5");
+//        templateResolver.setTemplateMode("LEGACYHTML5");
 //        templateResolver.setOrder(1);
 //        templateResolver.setCharacterEncoding(UTF_8.name());
 //        templateResolver.setCacheable(false);
