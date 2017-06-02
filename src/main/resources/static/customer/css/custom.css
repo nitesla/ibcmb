@@ -395,14 +395,21 @@ body {
     max-height: 350px;
     width: 100%;
 }
-.carousel-caption{
-    height: 350px;
-    width: 330px;
+
+.carousel-caption {
+    position: absolute;
+    top: 0%;
+    right: 0%;
+    bottom: 0px;
+    left: 70%;
+    z-index: 10;
+    padding: 40px 0 40px 0;
+    color: #fff;
     background-color: #9F614B;
-    margin: 0 0 -20px 455px;
     opacity: 0.8;
-    font-size: 24px;
-    padding: 30px 85px 30px 75px;
+    line-height: 20px;
+    text-align: center;
+    font-size: 18px;
 }
 
 .biglist{
@@ -973,5 +980,21 @@ button, input, optgroup, select, textarea {
 
     .phishing-img{
         margin: 0 0 10px 100px;
+    }
+
+    .carousel-caption {
+        display: none;
+        /*position: absolute;*/
+        /*top: 65%;*/
+        /*right: 0%;*/
+        /*bottom: -15px;*/
+        /*left: 0%;*/
+        /*z-index: 10;*/
+        /*padding: 5px 10px 0 10px;*/
+        /*color: #fff;*/
+        /*background-color: #9F614B;*/
+        /*opacity: 0.8;*/
+        /*text-align: center;*/
+        /*font-size: 10px;*/
     }
 }
