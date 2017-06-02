@@ -97,6 +97,40 @@ body {
     border-bottom: 1px solid
 }
 
+.tooltip {
+    position: absolute;
+    z-index: 1070;
+    display: block;
+    font-family: inherit;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: normal;
+    line-height: 1.42857143;
+    text-align: left;
+    text-align: start;
+    text-decoration: none;
+    text-shadow: none;
+    text-transform: none;
+    letter-spacing: normal;
+    word-break: normal;
+    word-spacing: normal;
+    word-wrap: normal;
+    white-space: normal;
+    filter: alpha(opacity=0);
+    opacity: 0;
+
+    line-break: auto;
+}
+
+.tooltip-inner {
+    max-width: 200px;
+    padding: 3px 8px;
+    color: #032A4F;
+    text-align: center;
+    background-color: #fff;
+    border-radius: 4px;
+}
+
 .container {
     padding: 0 60px;
     position: relative;

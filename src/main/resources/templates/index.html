@@ -44,7 +44,7 @@
             </div>
         </div>
     </nav>
-    <a href="#" class="logo">
+    <a href="#" class="logo" data-toggle="tooltip" data-placement="bottom" title="Coronation Merchant Bank">
         <img th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
     </a>
 </div>
@@ -108,13 +108,13 @@
                     <div class="dropdown">
                         <button class="dropbtn">LOGIN</button>
                         <div class="dropdown-content">
-                            <a th:href="@{/login/retail}">RETAIL</a>
-                            <a th:href="@{/login/corporate}">CORPORATE</a>
+                            <a th:href="@{/login/retail}" data-toggle="tooltip" data-placement="right" title="Retail Signin">RETAIL</a>
+                            <a th:href="@{/login/corporate}" data-toggle="tooltip" data-placement="right" title="Corporate Sign In">CORPORATE</a>
                         </div>
                     </div>
                     <div class="dropdown">
                         <form action="/register">
-                            <button class="dropbtn">REGISTER NOW</button>
+                            <button class="dropbtn" data-toggle="tooltip" data-placement="bottom" title="Join our internet banking platform">REGISTER NOW</button>
                         </form>
                     </div>
                     <!--<ul class="lft">-->
@@ -213,6 +213,11 @@
                 $(this).toggleClass('open');
             }
         );
+    });
+</script>
+<script>
+    $(document).ready(function(){
+        $('[data-toggle="tooltip"]').tooltip();
     });
 </script>
 </body>
