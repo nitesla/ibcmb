@@ -32,26 +32,35 @@
                         <div class="contain">
                             <div class="margin-bottom"></div>
                             <div class="mail-box-header">
-                                <h2 class="in-box">
-                                    Sent Messages
-                                </h2>
+                                <div class="pull-right tooltip-demo fas">
+                                    <a th:href="@{/corporate/mailbox/{id}/reply(id=${messageDTO.id})}" class="btn-success btn-sm" data-toggle="tooltip" data-placement="top" title="Reply"><i class="fa fa-reply"></i> Reply</a>
+                                    <a th:href="@{/corporate/mailbox/inbox/message/{id}/delete(id=${messageDTO.id})}" class="btn-default btn-sm" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fa fa-trash-o"></i>&nbsp;</a>
+                                </div>
+
+                                <h3 class="in-box">
+                                    <span >From: </span><span class="in-box" th:text="${messageDTO.sender}"></span>
+                                </h3>
                                 <br/>
-                                <div class="mail-tools tooltip-demo m-t-md faz">
-                                    <a href="/corporate/mailbox/sentmail" class=" btn btn-white btn-sm" data-toggle="tooltip" data-placement="left" title="Refresh inbox"><i class="fa fa-refresh"></i> Refresh</a>
+                                <h4 class="in-box">
+                                    <span >To: </span><span class="in-box" th:text="${messageDTO.recipient}"></span>
+                                </h4>
+                                <br/>
+
+                                <br/>
+                                <div class="mail-tools tooltip-demo m-t-md">
+                                    <h4 class="in-box">
+                                        <span>Subject: </span><span th:text="${messageDTO.subject}">Aldrsions of Lorem Ipsum.</span>
+                                    </h4>
+                                    <h5>
+                                        <span class="pull-right font-noraml" th:text="${messageDTO.createdOn}">02 FEB 2017</span>
+                                    </h5>
+                                    <br/>  <br/><br/>
+
+
                                 </div>
                             </div>
-                            <div class="margin-bottoms"></div>
                             <div class="mail-box">
-                                <table class="table table-hover table-mail">
-                                    <tbody>
-                                    <tr th:each="message: ${sentMessages}" class="unread">
-                                        <td class="mail-ontact" th:text="${message.recipient}"></td>
-                                        <td class="mail-subject"><a th:href="@{/corporate/mailbox/sent/{id}/message(id=${message.id})}" th:text="${message.subject}">Placeholder text</a></td>
-                                        <td class="text-right mail-date" th:text="${message.createdOn}">6.10 AM</td>
-                                    </tr>
-
-                                    </tbody>
-                                </table>
+                                <p th:text="${messageDTO.body}"></p>
                             </div>
                         </div>
                     </div>

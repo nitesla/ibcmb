@@ -158,7 +158,7 @@ public class RetailUserServiceImpl implements RetailUserService {
 
                     setEntrustUserQA(user.getUserName(), user.getSecurityQuestion(), user.getSecurityAnswer(), fullName);
 
-                    setEntrustUserMutualAuth(user.getUserName(), user.getCaptionSec(), user.getPhishingSec(), fullName);
+//                    setEntrustUserMutualAuth(user.getUserName(), user.getCaptionSec(), user.getPhishingSec(), fullName);
                 }
             }
 

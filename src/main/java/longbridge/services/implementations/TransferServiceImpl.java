@@ -148,9 +148,9 @@ public class TransferServiceImpl implements TransferService {
 
     }
     private boolean validateBalance() {
-        SettingDTO setting = configService.getSettingByName("BALANCE_VALIDATION");
+        SettingDTO setting = configService.getSettingByName("ACCOUNT_BALANCE_VALIDATION");
         if(setting!=null&&setting.isEnabled()) {
-            return ("1".equals(setting.getValue()));
+            return ("YES".equals(setting.getValue())?true:false);
         }
         return true;
     }
