@@ -20,7 +20,7 @@ public class AuthenticationErrorService {
 
     @Autowired
     private LocaleResolver localeResolver;
-    public String getMessage( AuthenticationException exception, HttpServletRequest request){
+    public String getMessage( /*AuthenticationException*/Exception exception, HttpServletRequest request){
         final Locale locale = localeResolver.resolveLocale(request);
         String errorMessage = messages.getMessage("message.badCredentials", null, locale);
 
@@ -30,6 +30,9 @@ public class AuthenticationErrorService {
             errorMessage = messages.getMessage("auth.message.expired", null, locale);
         } else if (exception.getMessage().equalsIgnoreCase("blocked")) {
             errorMessage = messages.getMessage("auth.message.blocked", null, locale);
+        } else if (exception.getMessage().equalsIgnoreCase("user_blocked")) {
+            System.out.println("ITS GETTING HERE");
+            errorMessage = messages.getMessage("auth.message.user.blocked", null, locale);
         }
 
         return errorMessage;

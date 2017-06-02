@@ -7,6 +7,7 @@ import longbridge.models.UserType;
 import longbridge.repositories.CorporateRepo;
 import longbridge.repositories.CorporateUserRepo;
 import longbridge.security.CustomBruteForceService;
+import longbridge.security.FailedLoginService;
 import longbridge.security.IpAddressUtils;
 import longbridge.security.userdetails.CustomUserPrincipal;
 import org.slf4j.Logger;
@@ -32,13 +33,17 @@ public class CorporateUserDetailsService implements UserDetailsService {
     private IpAddressUtils addressUtils;
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private CorporateRepo corporateRepo;
+    private FailedLoginService failedLoginService;
 
     @Autowired
-    public CorporateUserDetailsService(CorporateUserRepo corporateUserRepo, CustomBruteForceService bruteForceService, IpAddressUtils addressUtils, CorporateRepo corporateRepo) {
+    public CorporateUserDetailsService(CorporateUserRepo corporateUserRepo, CustomBruteForceService bruteForceService, IpAddressUtils addressUtils, CorporateRepo corporateRepo
+    ,FailedLoginService failedLoginService
+    ) {
         this.corporateUserRepo = corporateUserRepo;
         this.bruteForceService = bruteForceService;
         this.addressUtils = addressUtils;
         this.corporateRepo = corporateRepo;
+        this.failedLoginService=failedLoginService;
     }
 
     @Override
@@ -51,12 +56,15 @@ public class CorporateUserDetailsService implements UserDetailsService {
             logger.trace("IP -> {} has been blocked", ip);
             throw new RuntimeException("blocked");
         }
+        String userName = s.split(":")[0];
+        String corpId = s.split(":")[1];
+
+        CorporateUser user = corporateUserRepo.findByUserNameIgnoreCaseAndCorporate_CustomerIdIgnoreCase(userName,corpId);
+        if (failedLoginService.isBlocked(user)) throw new RuntimeException("user_blocked");
         try {
-            String userName = s.split(":")[0];
 
-            String corpId = s.split(":")[1];
 
-            CorporateUser user = corporateUserRepo.findFirstByUserName(userName);
+
             Corporate corporate = corporateRepo.findFirstByCustomerId(corpId);
             if (corporate != null && user != null) {
                 if(!corporate.getStatus().equalsIgnoreCase("A")){

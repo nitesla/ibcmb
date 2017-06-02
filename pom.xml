@@ -6,7 +6,7 @@
     <groupId>longbridge</groupId>
     <artifactId>internetbanking</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
 
     <name>internetbanking</name>
     <description>internet banking application</description>
@@ -102,22 +102,22 @@
 			<artifactId>mysql-connector-java</artifactId>
 			<scope>runtime</scope>
 		</dependency>
-		<dependency>
-			<groupId>com.oracle</groupId>
-			<artifactId>ojdbc7</artifactId>
-			<version>12.1.0</version>
-            <scope>system</scope>
-            <type>jar</type>
-            <systemPath>${project.basedir}/ojdbc7.jar</systemPath>
-		</dependency>
-        <dependency>
-            <groupId>com.entrust</groupId>
-            <artifactId>entrust</artifactId>
-            <version>1.0</version>
-            <scope>system</scope>
-            <type>jar</type>
-            <systemPath>${project.basedir}/entrust.jar</systemPath>
-        </dependency>
+		<!--<dependency>-->
+			<!--<groupId>com.oracle</groupId>-->
+			<!--<artifactId>ojdbc7</artifactId>-->
+			<!--<version>12.1.0</version>-->
+            <!--<scope>system</scope>-->
+            <!--<type>jar</type>-->
+            <!--<systemPath>${project.basedir}/ojdbc6.jar</systemPath>-->
+		<!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>com.entrust</groupId>-->
+            <!--<artifactId>entrust</artifactId>-->
+            <!--<version>1.0</version>-->
+            <!--<scope>system</scope>-->
+            <!--<type>jar</type>-->
+            <!--<systemPath>${project.basedir}/entrust.jar</systemPath>-->
+        <!--</dependency>-->
 		<!--<dependency>-->
 			<!--<groupId>org.springframework</groupId>-->
 			<!--<artifactId>spring-context</artifactId>-->
