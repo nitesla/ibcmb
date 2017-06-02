@@ -69,7 +69,7 @@
                     <!--<li><a href="edit.html">Edit FI</a></li>-->
                 <!--</ul>-->
             <!--</li>-->
-            <li><a><i class="fa fa-key"></i> Token Management <span class="fa fa-chevron-down"></span></a>
+            <li sec:authorize="hasAuthority('TOKEN_MANAGEMENT')"><a><i class="fa fa-key"></i> Token Management <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
                     <li><a href="/admin/token/assign">Assign Token</a></li>
                     <li><a href="/admin/token/activate/username">Activate Token</a></li>
@@ -320,6 +320,11 @@
     <script th:src="@{~/bank/vendors/sweetalert/sweetalert.min.js}"></script>
     <script th:src="@{~/bank/vendors/bootstrap-dialog/js/bootstrap-dialog.js}"></script>
     <script th:src="@{~/bank/js/dataTables.bootstrap.js}"></script>
+    <script>
+        $(document).ready(function(){
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
 </footer>
 <!-- /footer content -->
 

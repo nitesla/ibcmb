@@ -60,7 +60,7 @@
                 <br/>
                 <div id="username_div" class="form-group">
                     <input type="text" id="username" name="username" class="form-control"  placeholder="Username" />
-                    <p><a href="/forgot/username">Forgot Username?</a></p>
+                    <p><a href="/forgot/username" data-toggle="tooltip" data-placement="right" title="Forgot Username?">Forgot Username?</a></p>
                 </div>
                 <div class="form-group">
                     <button class="btn btn-primary form-control"> Next </button>
@@ -120,6 +120,11 @@
                 $(this).toggleClass('open');
             }
         );
+    });
+</script>
+<script>
+    $(document).ready(function(){
+        $('[data-toggle="tooltip"]').tooltip();
     });
 </script>
 </body>
