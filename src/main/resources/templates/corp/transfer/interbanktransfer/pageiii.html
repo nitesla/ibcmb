@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="cust_layout :: site-head">
+<head th:replace="corp_layout :: site-head">
 
 </head>
 <body>
-<header th:replace="cust_layout :: header">
+<header th:replace="corp_layout :: corp-header">
 </header>
 
 <section class="content-wrapper">
@@ -24,51 +24,48 @@
                         <tr>
 
                             <th>Source account</th>
-                            <td th:text="${transRequest.customerAccountNumber}"></td>
+                            <td th:text="${transferRequest.customerAccountNumber}"></td>
 
                         </tr>
                         <tr>
 
                             <th>Destination account</th>
-                            <td th:text="${transRequest.beneficiaryAccountNumber}"></td>
+                            <td th:text="${transferRequest.beneficiaryAccountNumber}"></td>
 
                         </tr>
                         <tr>
 
                             <th>Destination account owner</th>
-                            <td th:text="${transRequest.beneficiaryAccountName}"></td>
+                            <td th:text="${transferRequest.beneficiaryAccountName}"></td>
 
                         </tr>
                         <tr>
 
                             <th>Amount</th>
-                            <td th:text="${transRequest.amount}"></td>
+                            <td th:text="${#numbers.formatDecimal(transferRequest.amount, 0, 'COMMA', 2, 'POINT')}"></td>
 
                         </tr>
                         <tr>
 
                             <th>Remarks</th>
-                            <td th:text="${transRequest.remarks}"></td>
+                            <td th:text="${transferRequest.remarks}"></td>
 
                         </tr>
                     </table>
 
 
-                    <form method="post" th:action="@{/retail/transfer/process}" th:object="${transRequest}">
-
+                    <form method="post" th:action="@{/corporate/transfer/process}" th:object="${transferRequest}">
                         <input type="hidden" th:field="*{customerAccountNumber}"/>
                         <input type="hidden" th:field="*{beneficiaryAccountNumber}"/>
                         <input type="hidden" th:field="*{beneficiaryAccountName}"/>
                         <input type="hidden" th:field="*{amount}"/>
                         <input type="hidden" th:field="*{remarks}"/>
+
+
                         <div class="form-group">
-                            <label>Token *</label>
-                            <input type="text" name="token" placeholder="" class="form-control"/>
-                            <br/>
-                            <div class="form-group">
-                                <button type="submit" class="btn btn-default">Proceed</button>
-                                <a th:href="@{/retail/transfer/local}" >Cancel</a>
-                            </div>
+                            <a  onclick="goBack()" >Modify</a>
+                            <button type="submit" class="btn btn-link">Proceed</button>
+                            <a th:href="@{/corporate/transfer/interbank}">Cancel</a>
 
 
                         </div>
@@ -85,5 +82,6 @@
 <!-- CONTENT-WRAPPER SECTION END-->
 <footer th:replace="cust_layout ::footer">
 </footer>
+<script th:src="@{~/customer/js/corpacctdetails.js}"></script>
 </body>
 </html>
