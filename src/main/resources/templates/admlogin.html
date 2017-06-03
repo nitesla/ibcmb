@@ -46,7 +46,7 @@
                         <input type="text" class="form-control" placeholder="Username" required="" name="username" />
                     </div>
                     <div>
-                        <input type="password" class="form-control" placeholder="Password" required="" name="password"/>
+                        <input id="password" type="password" class="form-control" placeholder="Password" required="" name="password"/>
                     </div>
                     <div>
                         <input name="submit" class="btn btn-primary" type="submit" value="Next" />
@@ -98,6 +98,9 @@
 <script>
     $(document).ready(function(){
         $('[data-toggle="tooltip"]').tooltip();
+    });
+    $('#password').bind("cut copy paste",function(e) {
+        e.preventDefault();
     });
 </script>
 
