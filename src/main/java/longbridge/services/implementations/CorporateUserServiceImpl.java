@@ -62,7 +62,6 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     @Autowired
     private ConfigurationService configService;
 
-
     @Autowired
     private RoleService roleService;
 
@@ -156,7 +155,8 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             corporateUser.setPhoneNumber(user.getPhoneNumber());
             corporateUser.setCreatedOnDate(new Date());
             String password = passwordPolicyService.generatePassword();
-            user.setPassword(passwordEncoder.encode(password));
+            corporateUser.setPassword(passwordEncoder.encode(password));
+            corporateUser.setUsedPasswords(getUsedPasswords(password,corporateUser.getUsedPasswords()));
             user.setExpiryDate(new Date());
             Role role = new Role();
             role.setId(Long.parseLong(user.getRoleId()));
@@ -212,8 +212,8 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             corporateUser.setPhoneNumber(user.getPhoneNumber());
             corporateUser.setCreatedOnDate(new Date());
             String password = passwordPolicyService.generatePassword();
-            user.setPassword(passwordEncoder.encode(password));
-            user.setExpiryDate(new Date());
+            corporateUser.setPassword(passwordEncoder.encode(password));
+            corporateUser.setExpiryDate(new Date());
             Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
             if (!"Authorizer".equals(role.getName())) {
                 user.setStatus("A");
@@ -275,7 +275,6 @@ public class CorporateUserServiceImpl implements CorporateUserService {
                 mailService.send(email);
             }
 
-
             logger.info("Corporate user {} status changed from {} to {}", user.getUserName(), oldStatus, newStatus);
             return messageSource.getMessage("user.status.success", null, locale);
 
@@ -326,6 +325,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             CorporateUser user = corporateUserRepo.findOne(userId);
             String newPassword = passwordPolicyService.generatePassword();
             user.setPassword(passwordEncoder.encode(newPassword));
+            user.setUsedPasswords(getUsedPasswords(newPassword,user.getUsedPasswords()));
             user.setExpiryDate(new Date());
             String fullName = user.getFirstName() + " " + user.getLastName();
             corporateUserRepo.save(user);
@@ -373,6 +373,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         try {
             CorporateUser corporateUser = corporateUserRepo.findOne(user.getId());
             corporateUser.setPassword(this.passwordEncoder.encode(changePassword.getNewPassword()));
+            corporateUser.setUsedPasswords(getUsedPasswords(changePassword.getNewPassword(),corporateUser.getUsedPasswords()));
             corporateUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
             this.corporateUserRepo.save(corporateUser);
             logger.info("User {} password has been updated", user.getId());
@@ -391,6 +392,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
                 return;
             }
             user.setPassword(this.passwordEncoder.encode(newPassword));
+            user.setUsedPasswords(getUsedPasswords(newPassword,user.getUsedPasswords()));
             corporateUserRepo.save(user);
             logger.info("User {} password has been updated", user.getUserName());
             //todo send the email.. messagingService.sendEmail(EmailDetail);
@@ -431,11 +433,11 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             Code code = codeService.getByTypeAndCode("ALERT_PREFERENCE", alertPreference.getPreference());
             corp.setAlertPreference(code);
             this.corporateUserRepo.save(corp);
-            logger.info("USER {}'s alert preference set", corp.getId());
+            logger.info("User {}'s alert preference set", corp.getId());
             ok = true;
         } catch (Exception e) {
             e.printStackTrace();
-            logger.error("ERROR OCCURRED {}", e.getMessage());
+            logger.error("ERROR OCCURRED", e);
         }
         return ok;
     }

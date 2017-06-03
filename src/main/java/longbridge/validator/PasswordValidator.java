@@ -136,12 +136,12 @@ public class PasswordValidator {
             errorMessage.append(".\n");
         }
 
-//        if (!isPasswordReuseable(password, usedPasswords)) {
-//            message = String.format(
-//                    "Previous passwords can only be reused after %d different passwords", numOfChanges);
-//            errorMessage.append(message);
-//            errorMessage.append(".\n");
-//        }
+        if (!isPasswordReuseable(password, usedPasswords)) {
+            message = String.format(
+                    "Previous passwords can only be reused after %d different passwords", numOfChanges);
+            errorMessage.append(message);
+            errorMessage.append(".\n");
+        }
 
         return errorMessage.toString();
     }
@@ -158,22 +158,19 @@ public class PasswordValidator {
     private boolean isPasswordReuseable(String password, String usedPasswords) {
         boolean isReusable = false;
         if (usedPasswords == null) {
-            isReusable=true;
+            isReusable = true;
             return isReusable;
         }
         List<String> passwordHashes = Arrays.asList(StringUtils.split(usedPasswords, ","));
-        if(passwordHashes.isEmpty()||passwordHashes==null){
+        if (passwordHashes.isEmpty() || passwordHashes == null) {
             return true;
         }
         for (String passwordHash : passwordHashes) {
             if (passwordEncoder.matches(password, passwordHash)) {
                 if (passwordHashes.size() - getPasswordHashPosition(password, usedPasswords) > numOfChanges) {
                     isReusable = true;
-                    break;
+                    return isReusable;
                 }
-            }
-            else{
-                isReusable=true;
             }
         }
         return isReusable;
@@ -190,6 +187,7 @@ public class PasswordValidator {
         for (String passwordHash : usedPasswordHashes) {
             if (passwordEncoder.matches(password, passwordHash)) {
                 position = usedPasswordHashes.lastIndexOf(passwordHash) + 1;
+                return position;
             }
         }
         return position;

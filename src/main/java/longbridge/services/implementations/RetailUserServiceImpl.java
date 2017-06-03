@@ -143,7 +143,6 @@ public class RetailUserServiceImpl implements RetailUserService {
             retailUser.setBirthDate(user.getBirthDate());
             retailUser.setRole(roleService.getTheRole("RETAIL"));
             retailUser.setStatus("A");
-            retailUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
             retailUser.setAlertPreference(codeService.getByTypeAndCode("ALERT_PREFERENCE", "BOTH"));
             String errorMsg = passwordPolicyService.validate(user.getPassword(),null);
             if(!"".equals(errorMsg)){
@@ -163,9 +162,8 @@ public class RetailUserServiceImpl implements RetailUserService {
             }
 
 
-
-
             retailUser.setPassword(this.passwordEncoder.encode(user.getPassword()));
+            retailUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
             retailUserRepo.save(retailUser);
 
             Collection<AccountInfo> accounts = integrationService.fetchAccounts(details.getCifId());
@@ -234,10 +232,12 @@ public class RetailUserServiceImpl implements RetailUserService {
             if ((oldStatus == null) || ("I".equals(oldStatus)) && "A".equals(newStatus)) {
                 String password = passwordPolicyService.generatePassword();
                 user.setPassword(passwordEncoder.encode(password));
-                Email email = new Email.Builder().setSender("info@ibanking.coronationmb.com")
+                user.setUsedPasswords(getUsedPasswords(password,user.getUsedPasswords()));
+                String fullName = user.getFirstName()+" "+user.getLastName();
+                Email email = new Email.Builder()
                         .setRecipient(user.getEmail())
-                        .setSubject("Internet Banking Activation")
-                        .setBody(String.format("Your new password to Internet Banking is %s and your username is %s", password, user.getUserName()))
+                        .setSubject(messageSource.getMessage("customer.reactivation.subject",null,locale))
+                        .setBody(String.format(messageSource.getMessage("customer.reactivation.message",null,locale), fullName, user.getUserName(),password))
                         .build();
                 mailService.send(email);
             }
@@ -251,6 +251,14 @@ public class RetailUserServiceImpl implements RetailUserService {
         }
     }
 
+    private String getUsedPasswords(String newPassword, String oldPasswords) {
+        StringBuilder builder = new StringBuilder();
+        if (oldPasswords != null) {
+            builder.append(oldPasswords);
+        }
+        builder.append(passwordEncoder.encode(newPassword) + ",");
+        return builder.toString();
+    }
 
     @Override
     @Transactional
@@ -260,12 +268,14 @@ public class RetailUserServiceImpl implements RetailUserService {
             RetailUser user = retailUserRepo.findOne(userId);
             String newPassword = passwordPolicyService.generatePassword();
             user.setPassword(passwordEncoder.encode(newPassword));
+            user.setUsedPasswords(getUsedPasswords(newPassword,user.getUsedPasswords()));
             user.setExpiryDate(new Date());
             retailUserRepo.save(user);
-            Email email = new Email.Builder().setSender("info@ibanking.coronationmb.com")
+            String fullName = user.getFirstName()+" "+user.getLastName();
+            Email email = new Email.Builder()
                     .setRecipient(user.getEmail())
-                    .setSubject("Internet Banking Password Reset")
-                    .setBody(String.format("Your new password to Internet Banking is %s and your username is %s", newPassword, user.getUserName()))
+                    .setSubject(messageSource.getMessage("customer.password.reset.subject",null,locale))
+                    .setBody(String.format(messageSource.getMessage("customer.password.reset.message",null,locale),fullName, user.getUserName(),newPassword))
                     .build();
             mailService.send(email);
             logger.info("Retail user {} password reset successfully", user.getUserName());
@@ -287,7 +297,7 @@ public class RetailUserServiceImpl implements RetailUserService {
             RetailUser retailUser = retailUserRepo.findOne(user.getId());
             retailUser.setPassword(this.passwordEncoder.encode(password));
             retailUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
-
+            user.setUsedPasswords(getUsedPasswords(password,user.getUsedPasswords()));
             this.retailUserRepo.save(retailUser);
             logger.info("User {} password has been updated", user.getId());
             return messageSource.getMessage("password.change.success", null, locale);
@@ -313,8 +323,8 @@ public class RetailUserServiceImpl implements RetailUserService {
         try {
             RetailUser retailUser = retailUserRepo.findOne(user.getId());
             retailUser.setPassword(this.passwordEncoder.encode(changePassword.getNewPassword()));
+            user.setUsedPasswords(getUsedPasswords(changePassword.getNewPassword(),user.getUsedPasswords()));
             retailUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
-
             this.retailUserRepo.save(retailUser);
             logger.info("User {} password has been updated", user.getId());
             return messageSource.getMessage("password.change.success", null, locale);

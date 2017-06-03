@@ -90,33 +90,6 @@ public class RoleServiceImpl implements RoleService {
     // return objectNode.toString();
     // }
 
-//
-//	@Override
-//	public void updateRole(Role role) {
-//		roleRepo.save(role);
-//	}
-//
-//	@Override
-//	public void deleteRole(Role role) {
-//		role.setDelFlag("Y");
-//		roleRepo.save(role);
-//	}
-//
-//	@Override
-//	public void addPermission(Permission permission) {
-//		permissionRepo.save(permission);
-//	}
-//
-//	@Override
-//	public void updatePermission(Permission permission) {
-//		permissionRepo.save(permission);
-//	}
-//
-//	@Override
-//	public void deletePermission(Permission permission) {
-//		permission.setDelFlag("Y");
-//		permissionRepo.save(permission);
-//	}
 
     @Override
     public String addRole(RoleDTO roleDTO) throws InternetBankingException {
@@ -341,7 +314,6 @@ public class RoleServiceImpl implements RoleService {
             }
             break;
         }
-
         return pageImpl;
     }
 }

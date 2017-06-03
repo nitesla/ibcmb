@@ -16,7 +16,7 @@ public class User extends AbstractEntity{
     protected String email;
     protected String phoneNumber;
     protected String password;
-//    @Column(columnDefinition = "TEXT")
+    @Lob()
     protected String usedPasswords;
     protected String status;
     protected Date createdOnDate;

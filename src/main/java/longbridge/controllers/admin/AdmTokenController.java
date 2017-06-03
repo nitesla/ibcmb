@@ -136,20 +136,20 @@ public class AdmTokenController {
     public String performActivateToken(@ModelAttribute("token") @Valid TokenForm tokenForm, BindingResult bindingResult, RedirectAttributes redirectAttributes, Locale locale) {
         if (bindingResult.hasErrors()) {
             bindingResult.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
-            return "/adm/token/activate";
+            return "/adm/token/activate2";
         }
 
         try {
             boolean result = securityService.activateToken(tokenForm.getUsername(), tokenForm.getSerialNumber());
             if (result) {
                 redirectAttributes.addFlashAttribute("message", messageSource.getMessage("token.activate.success", null, locale));
-                return "redirect:/admin/token/activate";
+                return "redirect:/admin/token/activate2";
             }
         } catch (InternetBankingSecurityException ibe) {
             logger.error("Error activating token", ibe);
         }
         bindingResult.addError(new ObjectError("invalid", messageSource.getMessage("token.activate.failure", null, locale)));
-        return "/adm/token/activate";
+        return "/adm/token/activate2";
     }
 
     @GetMapping("/assign/activate")
@@ -227,19 +227,19 @@ public class AdmTokenController {
     public String performDeactivateToken(@ModelAttribute("token") @Valid TokenForm tokenForm, BindingResult bindingResult, RedirectAttributes redirectAttributes, Locale locale) {
         if (bindingResult.hasErrors()) {
             bindingResult.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
-            return "/adm/token/deactivate";
+            return "/adm/token/deactivate2";
         }
         try {
             boolean result = securityService.deActivateToken(tokenForm.getUsername(), tokenForm.getSerialNumber());
             if (result) {
                 redirectAttributes.addFlashAttribute("message", messageSource.getMessage("token.deactivate.success", null, locale));
-                return "redirect:/admin/token/deactivate";
+                return "redirect:/admin/token/deactivate2";
             }
         } catch (InternetBankingSecurityException ibe) {
             logger.error("Error deactivating token", ibe);
         }
         bindingResult.addError(new ObjectError("invalid", messageSource.getMessage("token.deactivate.failure", null, locale)));
-        return "/adm/token/deactivate";
+        return "/adm/token/deactivate2";
     }
 
     @GetMapping("/synchronize")
