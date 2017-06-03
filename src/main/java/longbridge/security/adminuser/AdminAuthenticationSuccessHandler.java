@@ -27,12 +27,9 @@ import java.io.IOException;
 @Component("adminAuthenticationSuccessHandler")
 public class AdminAuthenticationSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
     private final Logger logger = LoggerFactory.getLogger(getClass());
+    @Autowired
+    SessionUtils sessionUtils;
     private LocalDate today = LocalDate.now();
-
-    public AdminAuthenticationSuccessHandler() {
-        setUseReferer(true);
-    }
-
     private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
     @Autowired
@@ -40,9 +37,9 @@ public class AdminAuthenticationSuccessHandler extends SavedRequestAwareAuthenti
 
     @Autowired
     private ConfigurationService configService;
-    @Autowired
-    SessionUtils sessionUtils;
-
+    public AdminAuthenticationSuccessHandler() {
+        setUseReferer(true);
+    }
 
     @Override
     @Transactional
@@ -50,8 +47,7 @@ public class AdminAuthenticationSuccessHandler extends SavedRequestAwareAuthenti
         HttpSession session = request.getSession();
         if (session != null) {
 
-        sessionUtils.setTimeout(session);
-
+            sessionUtils.setTimeout(session);
 
             AdminUser user = adminUserRepo.findFirstByUserName(authentication.getName());
             LocalDate date = new LocalDate(user.getExpiryDate());
@@ -62,7 +58,7 @@ public class AdminAuthenticationSuccessHandler extends SavedRequestAwareAuthenti
         }
         setUseReferer(true);
         adminUserRepo.updateUserAfterLogin(authentication.getName());
-        
+
         super.onAuthenticationSuccess(request, response, authentication);
 
     }

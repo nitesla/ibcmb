@@ -20,7 +20,7 @@ public class AuthenticationErrorService {
 
     @Autowired
     private LocaleResolver localeResolver;
-    public String getMessage( /*AuthenticationException*/Exception exception, HttpServletRequest request){
+    public String getMessage( AuthenticationException exception, HttpServletRequest request){
         final Locale locale = localeResolver.resolveLocale(request);
         String errorMessage = messages.getMessage("message.badCredentials", null, locale);
 

@@ -18,6 +18,7 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 public class FailedLoginService {
+
     @Autowired
     private ConfigurationService configService;
     @Autowired
@@ -34,17 +35,13 @@ public class FailedLoginService {
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     RemovalListener<User, Integer> removalListener = removal -> {
-        System.out.println("@@@EXPIRY IN "+getExpiryTime());
-        System.out.println("trying to remove listener");
-        if (removal.wasEvicted()){
+
+        if (removal.wasEvicted()) {
             User user = removal.getKey();
             logger.trace("update user to no attempts login");
             user.setNoOfLoginAttempts(0);
             updateFailedLogin(user);
         }
-
-
-
 
 
     };
@@ -77,7 +74,7 @@ public class FailedLoginService {
     public void loginFailed(final User key) {
         int attempts = 0;
         try {
-           // attempts = key.getNoOfLoginAttempts();
+            // attempts = key.getNoOfLoginAttempts();
             attempts = attemptsCache.get(key);
 
         } catch (final Exception e) {
@@ -86,10 +83,10 @@ public class FailedLoginService {
 
         }
         attempts++;
-        int noOfAttempts=0;
+        int noOfAttempts = 0;
         try {
-            noOfAttempts= key.getNoOfLoginAttempts() ;
-        }catch (Exception e){
+            noOfAttempts = key.getNoOfLoginAttempts();
+        } catch (Exception e) {
 
         }
 
@@ -101,16 +98,11 @@ public class FailedLoginService {
 
     public boolean isBlocked(final User key) {
         try {
-          //  return attemptsCache.get(key) >= getMaxAttempt();
-
-            if ( (attemptsCache.get(key) < getMaxAttempt()) && key.getNoOfLoginAttempts()>1) {
-                key.setNoOfLoginAttempts(0);
-                updateFailedLogin(key);
-            }
+            //  return attemptsCache.get(key) >= getMaxAttempt();
 
             return attemptsCache.get(key) >= getMaxAttempt();
 
-        } catch (final ExecutionException e) {
+        } catch (final Exception e) {
             e.printStackTrace();
             return false;
         }
@@ -181,9 +173,6 @@ public class FailedLoginService {
         }
         return expiryTime;
     }
-
-
-
 
 
 }
