@@ -19,69 +19,69 @@
         <div class="row">
             <div class="col-md-8 content-bg">
                 <!--<div class="row spacing">-->
-                    <div class="col-md-6 col-sm-6">
-                     <div class="row spacing" >
+                <div class="col-md-6 col-sm-6">
+                    <div class="row spacing" >
 
 
-                            <table>
-                                <tr>
+                        <table>
+                            <tr>
 
-                                    <th colspan="2">Transaction Summary</th>
-
-
-                                </tr>
-                                <tr>
-
-                                    <th>Source account</th>
-                                    <td th:text="${transferRequest.customerAccountNumber}"></td>
-
-                                </tr>
-                                <tr>
-
-                                    <th>Destination account</th>
-                                    <td th:text="${transferRequest.beneficiaryAccountNumber}"></td>
-
-                                </tr>
-                                <tr>
-
-                                    <th>Amount</th>
-                                    <td th:text="${transferRequest.amount}"></td>
-
-                                </tr>
-                                <tr>
-
-                                    <th>Remarks</th>
-                                    <td th:text="${transferRequest.remarks}"></td>
-
-                                </tr>
-                            </table>
-
-                            <form method="post" th:action="@{/retail/transfer/process}" th:object="${transferRequest}">
-                                <input type="hidden" th:field="*{customerAccountNumber}"/>
-                                <input type="hidden" th:field="*{beneficiaryAccountNumber}"/>
-                                <input type="hidden" th:field="*{beneficiaryAccountName}"/>
-                                <input type="hidden" th:field="*{amount}"/>
-                                <input type="hidden" th:field="*{remarks}"/>
+                                <th colspan="2">Transaction Summary</th>
 
 
-                                <div class="form-group">
-                                    <a  onclick="goBack()" >Modify</a>
-                                    <button type="submit" class="btn btn-link">Proceed</button>
-                                    <a th:href="@{/retail/transfer/ownaccount}">Cancel</a>
+                            </tr>
+                            <tr>
+
+                                <th>Source account</th>
+                                <td th:text="${transferRequest.customerAccountNumber}"></td>
+
+                            </tr>
+                            <tr>
+
+                                <th>Destination account</th>
+                                <td th:text="${transferRequest.beneficiaryAccountNumber}"></td>
+
+                            </tr>
+                            <tr>
+
+                                <th>Amount</th>
+                                <td th:text="${transferRequest.amount}"></td>
+
+                            </tr>
+                            <tr>
+
+                                <th>Remarks</th>
+                                <td th:text="${transferRequest.remarks}"></td>
+
+                            </tr>
+                        </table>
+
+                        <form method="post" th:action="@{/retail/transfer/process}" th:object="${transferRequest}">
+                            <input type="hidden" th:field="*{customerAccountNumber}"/>
+                            <input type="hidden" th:field="*{beneficiaryAccountNumber}"/>
+                            <input type="hidden" th:field="*{beneficiaryAccountName}"/>
+                            <input type="hidden" th:field="*{amount}"/>
+                            <input type="hidden" th:field="*{remarks}"/>
 
 
-                                </div>
-                            </form>
+                            <div class="form-group">
+                                <a  onclick="goBack()" >Modify</a>
+                                <button type="submit" class="btn btn-link">Proceed</button>
+                                <a th:href="@{/retail/transfer/ownaccount}">Cancel</a>
 
-                        </div>
+
+                            </div>
+                        </form>
+
                     </div>
                 </div>
             </div>
-            <div th:replace="cust_layout :: sidebar" class="col-md-3 sidebar">
-            </div>
-
-
         </div>
+        <div th:replace="cust_layout :: sidebar" class="col-md-3 sidebar">
+        </div>
+
+
+    </div>
 
 </section>
 

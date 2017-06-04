@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="cust_layout :: site-head">
+<head th:replace="corp_layout :: site-head">
 
 </head>
 <body>
-<header th:replace="cust_layout :: header">
+<header th:replace="corp_layout :: corp-header">
 </header>
 
 <section class="content-wrapper">
@@ -42,7 +42,7 @@
                         <tr>
 
                             <th>Amount</th>
-                            <td th:text="${transRequest.amount}"></td>
+                            <td th:text="${#numbers.formatDecimal(transRequest.amount, 0, 'COMMA', 2, 'POINT')}"></td>
 
                         </tr>
                         <tr>
@@ -54,7 +54,7 @@
                     </table>
 
 
-                    <form method="post" th:action="@{/retail/transfer/process}" th:object="${transRequest}">
+                    <form method="post" th:action="@{/corporate/interbank/local}" th:object="${transRequest}">
 
                         <input type="hidden" th:field="*{customerAccountNumber}"/>
                         <input type="hidden" th:field="*{beneficiaryAccountNumber}"/>
@@ -67,7 +67,7 @@
                             <br/>
                             <div class="form-group">
                                 <button type="submit" class="btn btn-default">Proceed</button>
-                                <a th:href="@{/retail/transfer/local}" >Cancel</a>
+                                <a th:href="@{/corporate/transfer/local}" >Cancel</a>
                             </div>
 
 
@@ -83,7 +83,7 @@
 
 
 <!-- CONTENT-WRAPPER SECTION END-->
-<footer th:replace="cust_layout ::footer">
+<footer th:replace="corp_layout ::corp-footer">
 </footer>
 </body>
 </html>
