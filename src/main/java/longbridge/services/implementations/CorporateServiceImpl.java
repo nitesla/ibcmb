@@ -160,10 +160,11 @@ public class CorporateServiceImpl implements CorporateService {
 
     private void sendUserCredentials(CorporateUser user, String password) throws InternetBankingException {
         String fullName = user.getFirstName() + " " + user.getLastName();
+        Corporate corporate = user.getCorporate();
         Email email = new Email.Builder()
                 .setRecipient(user.getEmail())
-                .setSubject(messageSource.getMessage("customer.create.subject", null, locale))
-                .setBody(String.format(messageSource.getMessage("customer.create.message", null, locale), fullName, user.getUserName(), password))
+                .setSubject(messageSource.getMessage("corporate.customer.create.subject", null, locale))
+                .setBody(String.format(messageSource.getMessage("corporate.customer.create.message", null, locale), fullName, user.getUserName(), password,corporate.getCustomerId()))
                 .build();
         mailService.send(email);
     }

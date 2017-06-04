@@ -2,6 +2,7 @@ package longbridge.services.implementations;
 
 import longbridge.dtos.PermissionDTO;
 import longbridge.dtos.RoleDTO;
+import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.*;
 import longbridge.repositories.*;
@@ -93,8 +94,16 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public String addRole(RoleDTO roleDTO) throws InternetBankingException {
+
+        Role role = roleRepo.findByName(roleDTO.getName());
+
+        if(role!=null){
+            throw new DuplicateObjectException(messageSource.getMessage("role.exist", null, locale));
+
+        }
+
         try {
-            Role role = convertDTOToEntity(roleDTO);
+            role = convertDTOToEntity(roleDTO);
             roleRepo.save(role);
             logger.info("Added role {}", role.toString());
             return messageSource.getMessage("role.add.success", null, locale);

@@ -47,8 +47,6 @@ public class InternetbankingApplication  extends SpringBootServletInitializer im
     @Override
     public void run(String... strings) throws Exception {
 
-        System.out.print("Your password is: "+passwordEncoder.encode("password@1"));
-
     }
 }
 

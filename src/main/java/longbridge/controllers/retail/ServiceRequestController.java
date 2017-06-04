@@ -104,7 +104,6 @@ public class ServiceRequestController {
             }
 
             requestBody = objectMapper.writeValueAsString(myFormObjects);
-
             RetailUser user = userService.getUserByName(principal.getName());
             serviceRequestDTO.setBody(requestBody);
             serviceRequestDTO.setRequestStatus("S");

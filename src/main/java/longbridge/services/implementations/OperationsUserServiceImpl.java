@@ -261,7 +261,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             OperationsUser user = operationsUserRepo.findOne(id);
             String newPassword = passwordPolicyService.generatePassword();
             user.setPassword(passwordEncoder.encode(newPassword));
-            user.setUsedPasswords(getUsedPasswords(newPassword,user.getUsedPasswords()));
+            user.setUsedPasswords(getUsedPasswords(newPassword, user.getUsedPasswords()));
             String fullName = user.getFirstName() + " " + user.getLastName();
             user.setExpiryDate(new Date());
             this.operationsUserRepo.save(user);
@@ -284,7 +284,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             OperationsUser user = operationsUserRepo.findFirstByUserName(username);
             String newPassword = passwordPolicyService.generatePassword();
             user.setPassword(passwordEncoder.encode(newPassword));
-            user.setUsedPasswords(getUsedPasswords(newPassword,user.getUsedPasswords()));
+            user.setUsedPasswords(getUsedPasswords(newPassword, user.getUsedPasswords()));
             String fullName = user.getFirstName() + " " + user.getLastName();
             user.setExpiryDate(new Date());
             this.operationsUserRepo.save(user);
@@ -361,7 +361,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
         if (oldPasswords != null) {
             builder.append(oldPasswords);
         }
-        builder.append(newPassword + ",");
+        builder.append(passwordEncoder.encode(newPassword )+ ",");
         return builder.toString();
     }
 

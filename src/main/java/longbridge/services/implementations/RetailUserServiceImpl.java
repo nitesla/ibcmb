@@ -127,11 +127,11 @@ public class RetailUserServiceImpl implements RetailUserService {
         try {
             RetailUser retailUser = getUserByName(user.getUserName());
             if (retailUser != null) {
-                throw new DuplicateObjectException(messageSource.getMessage("user.add.exists", null, locale));
+                throw new DuplicateObjectException(messageSource.getMessage("user.exist", null, locale));
             }
             RetailUser retUser = getUserByCustomerId(user.getCustomerId());
             if (retUser != null) {
-                throw new DuplicateObjectException(messageSource.getMessage("user.add.exist", null, locale));
+                throw new DuplicateObjectException(messageSource.getMessage("user.exist", null, locale));
             }
 
             retailUser = new RetailUser();
@@ -163,6 +163,7 @@ public class RetailUserServiceImpl implements RetailUserService {
 
 
             retailUser.setPassword(this.passwordEncoder.encode(user.getPassword()));
+            retailUser.setUsedPasswords(getUsedPasswords(user.getPassword(),retailUser.getUsedPasswords()));
             retailUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
             retailUserRepo.save(retailUser);
 
@@ -208,11 +209,21 @@ public class RetailUserServiceImpl implements RetailUserService {
     @Override
     public String deleteUser(Long userId) throws InternetBankingException {
         try {
-            RetailUser user = retailUserRepo.findOne(userId);
-            user.setDeletedOn(new Date());
-            retailUserRepo.save(user);
+
+            RetailUser retailUser = retailUserRepo.findOne(userId);
             retailUserRepo.delete(userId);
+            String fullName = retailUser.getFirstName()+" "+retailUser.getLastName();
+            SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_DELETION");
+
+            if (setting != null && setting.isEnabled()) {
+                if ("YES".equalsIgnoreCase(setting.getValue())) {
+                    securityService.deleteEntrustUser(retailUser.getUserName(), fullName);
+                }
+            }
             return messageSource.getMessage("user.delete.success",null,locale);
+        }
+        catch (InternetBankingSecurityException se) {
+            throw new InternetBankingSecurityException(messageSource.getMessage("entrust.delete.failure", null, locale));
         }
         catch (Exception e){
             throw new InternetBankingException(messageSource.getMessage("user.delete.failure",null,locale),e);

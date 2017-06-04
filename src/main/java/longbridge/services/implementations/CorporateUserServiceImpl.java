@@ -8,6 +8,7 @@ import longbridge.forms.AlertPref;
 import longbridge.forms.CustChangePassword;
 import longbridge.models.*;
 import longbridge.repositories.CorpLimitRepo;
+import longbridge.repositories.CorporateRepo;
 import longbridge.repositories.CorporateUserRepo;
 import longbridge.repositories.RoleRepo;
 import longbridge.services.*;
@@ -23,8 +24,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -67,6 +68,9 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
     @Autowired
     private CodeService codeService;
+
+    @Autowired
+    private CorporateRepo corporateRepo;
 
     private Locale locale = LocaleContextHolder.getLocale();
 
@@ -139,6 +143,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     }
 
     @Override
+    @Transactional
     public String addUser(CorporateUserDTO user) throws InternetBankingException {
 
         CorporateUser corporateUser = corporateUserRepo.findFirstByUserName(user.getUserName());
@@ -161,8 +166,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             Role role = new Role();
             role.setId(Long.parseLong(user.getRoleId()));
             corporateUser.setRole(role);
-            Corporate corporate = new Corporate();
-            corporate.setId(Long.parseLong(user.getCorporateId()));
+            Corporate corporate = corporateRepo.findOne(Long.parseLong(user.getCorporateId()));
             corporateUser.setCorporate(corporate);
             corporateUserRepo.save(corporateUser);
 
@@ -179,8 +183,8 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             }
             Email email = new Email.Builder()
                     .setRecipient(user.getEmail())
-                    .setSubject(messageSource.getMessage("customer.create.subject", null, locale))
-                    .setBody(String.format(messageSource.getMessage("customer.create.message", null, locale), fullName, user.getUserName(), password))
+                    .setSubject(messageSource.getMessage("corporate.customer.create.subject", null, locale))
+                    .setBody(String.format(messageSource.getMessage("corporate.customer.create.message", null, locale), fullName, user.getUserName(), password,corporate.getCustomerId()))
                     .build();
             mailService.send(email);
             logger.info("New corporate user {} created", corporateUser.getUserName());
@@ -197,6 +201,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
 
     @Override
+    @Transactional
     public String addUserFromCorporateAdmin(CorpCorporateUserDTO user) throws InternetBankingException {
 
         CorporateUser corporateUser = corporateUserRepo.findFirstByUserName(user.getUserName());
@@ -213,17 +218,28 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             corporateUser.setCreatedOnDate(new Date());
             String password = passwordPolicyService.generatePassword();
             corporateUser.setPassword(passwordEncoder.encode(password));
+            corporateUser.setUsedPasswords(getUsedPasswords(password,corporateUser.getUsedPasswords()));
             corporateUser.setExpiryDate(new Date());
             Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
             if (!"Authorizer".equals(role.getName())) {
                 user.setStatus("A");
             }
             corporateUser.setRole(role);
-            Corporate corporate = new Corporate();
-            corporate.setId(Long.parseLong(user.getCorporateId()));
+            Corporate corporate = corporateRepo.findOne(Long.parseLong(user.getCorporateId()));
             corporateUser.setCorporate(corporate);
             corporateUserRepo.save(corporateUser);
+            SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_CREATION");
             String fullName = user.getFirstName() + " " + user.getLastName();
+
+            if (setting != null && setting.isEnabled()) {
+                if ("YES".equalsIgnoreCase(setting.getValue())) {
+                    boolean result = securityService.createEntrustUser(corporateUser.getUserName(), fullName, true);
+                    if (!result) {
+                        throw new EntrustException(messageSource.getMessage("entrust.create.failure", null, locale));
+
+                    }
+                }
+            }
             if (!"Authorizer".equals(role.getName())) {
                 Email email = new Email.Builder()
                         .setRecipient(user.getEmail())
@@ -253,18 +269,21 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             if ((oldStatus == null)) {//User was just created
                 String password = passwordPolicyService.generatePassword();
                 user.setPassword(passwordEncoder.encode(password));
+                user.setUsedPasswords(getUsedPasswords(password,user.getUsedPasswords()));
+
                 user.setExpiryDate(new Date());
                 corporateUserRepo.save(user);
 
                 Email email = new Email.Builder()
                         .setRecipient(user.getEmail())
-                        .setSubject(messageSource.getMessage("customer.create.subject", null, locale))
-                        .setBody(String.format(messageSource.getMessage("customer.create.message", null, locale), fullName, user.getUserName(), password))
+                        .setSubject(messageSource.getMessage("corporate.customer.create.subject", null, locale))
+                        .setBody(String.format(messageSource.getMessage("corporate.customer.create.message", null, locale), fullName, user.getUserName(), password))
                         .build();
                 mailService.send(email);
             } else if (("I".equals(oldStatus)) && "A".equals(newStatus)) {//User is being reactivated
                 String password = passwordPolicyService.generatePassword();
                 user.setPassword(passwordEncoder.encode(password));
+                user.setUsedPasswords(getUsedPasswords(password,user.getUsedPasswords()));
                 user.setExpiryDate(new Date());
                 corporateUserRepo.save(user);
                 Email email = new Email.Builder()
@@ -294,7 +313,6 @@ public class CorporateUserServiceImpl implements CorporateUserService {
                 user.setStatus(newStatus);
                 corporateUserRepo.save(user);
                 String fullName = user.getFirstName() + " " + user.getLastName();
-
                 logger.info("Corporate user {} status changed from {} to {}", fullName, oldStatus, newStatus);
                 return messageSource.getMessage("user.status.success", null, locale);
 
@@ -346,9 +364,22 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     @Override
     public String deleteUser(Long userId) throws InternetBankingException {
         try {
+            CorporateUser corporateUser = corporateUserRepo.findOne(userId);
             corporateUserRepo.delete(userId);
+            String fullName = corporateUser.getFirstName()+" "+corporateUser.getLastName();
+            SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_DELETION");
+
+            if (setting != null && setting.isEnabled()) {
+                if ("YES".equalsIgnoreCase(setting.getValue())) {
+                    securityService.deleteEntrustUser(corporateUser.getUserName(), fullName);
+                }
+            }
             return messageSource.getMessage("user.delete.success", null, locale);
-        } catch (Exception ibe) {
+        }
+        catch (InternetBankingSecurityException se) {
+            throw new InternetBankingSecurityException(messageSource.getMessage("entrust.delete.failure", null, locale));
+        }
+        catch (Exception ibe) {
             throw new InternetBankingException(messageSource.getMessage("user.delete.failure", null, locale));
         }
     }
@@ -406,7 +437,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         if (oldPasswords != null) {
             builder.append(oldPasswords);
         }
-        builder.append(newPassword + ",");
+        builder.append(passwordEncoder.encode(newPassword) + ",");
         return builder.toString();
     }
 
@@ -414,8 +445,8 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         String fullName = user.getFirstName() + " " + user.getLastName();
         Email email = new Email.Builder()
                 .setRecipient(user.getEmail())
-                .setSubject(messageSource.getMessage("customer.create.subject", null, locale))
-                .setBody(String.format(messageSource.getMessage("customer.create.message", null, locale), fullName, user.getUserName(), password))
+                .setSubject(messageSource.getMessage("corporate.customer.create.subject", null, locale))
+                .setBody(String.format(messageSource.getMessage("corporate.customer.create.message", null, locale), fullName, user.getUserName(), password))
                 .build();
         mailService.send(email);
     }

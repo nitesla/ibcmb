@@ -141,7 +141,7 @@ public class Account extends AbstractEntity{
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + accountId.hashCode();
+//        result = 31 * result + accountId.hashCode();
         result = 31 * result + accountNumber.hashCode();
         result = 31 * result + customerId.hashCode();
         result = 31 * result + (solId != null ? solId.hashCode() : 0);

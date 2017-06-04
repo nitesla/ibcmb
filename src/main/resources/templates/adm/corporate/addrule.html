@@ -91,7 +91,7 @@
                                             <div class="col-sm-6">
                                                 <p th:each="user: ${authUserList}">
                                                     <label class="checkbox-inline">
-                                                    <input type="checkbox" th:field="*{auths}"
+                                                    <input type="checkbox" th:field="*{authorizers}"
                                                            th:value="${user.id}"/>
                                                     <span th:text="${user.firstName + ' ' + user.lastName}"></span>
                                                     </label>
