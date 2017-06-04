@@ -256,6 +256,39 @@ public class IntegrationServiceImpl implements IntegrationService {
     }
 
     @Override
+    public CustomerDetails viewCustomerDetails(String accNo) {
+        CustomerDetails result = new CustomerDetails();
+        String uri = URI + "/customer/{cifId}";
+        String cifId= viewAccountDetails(accNo).getCustId();
+        Map<String, String> params = new HashMap<>();
+        params.put("cifId", cifId);
+        try {
+            result = template.getForObject(uri, CustomerDetails.class, params);
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    @Override
+    public CustomerDetails viewCustomerDetailsByCif(String cifId) {
+        CustomerDetails result = new CustomerDetails();
+        String uri = URI + "/customer/{cifId}";
+        Map<String, String> params = new HashMap<>();
+        params.put("cifId", cifId);
+        try {
+            result = template.getForObject(uri, CustomerDetails.class, params);
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    @Override
     public String getAccountName(String accountNumber) {
         logger.info(accountNumber + "account number");
 
