@@ -96,7 +96,7 @@ public class InterBankTransferController {
         model.addAttribute("localBanks",
                 financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.LOCAL)
                         .stream()
-                        .filter(i -> i.getInstitutionCode().equals(bankCode))
+                        .filter(i ->! i.getInstitutionCode().equals(bankCode))
                         .collect(Collectors.toList())
         );
         model.addAttribute("localBeneficiaryDTO", localBeneficiaryDTO);

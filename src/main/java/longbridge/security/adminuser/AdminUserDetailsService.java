@@ -56,7 +56,7 @@ public class AdminUserDetailsService implements UserDetailsService {
             if (failedLoginService.isBlocked(user)) throw new RuntimeException("user_blocked");
             try{
 
-                if(user.getUserType()== UserType.ADMIN ) {
+                if(user.getUserType()== UserType.ADMIN) {
                     if (user.getRole().getUserType()!=null ){
                         if (user.getRole().getUserType()!= UserType.ADMIN) throw new UsernameNotFoundException(s);
                     }

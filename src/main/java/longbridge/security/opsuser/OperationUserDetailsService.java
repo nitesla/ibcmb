@@ -64,7 +64,8 @@ public class OperationUserDetailsService implements UserDetailsService {
 
 
 
-            if(user!=null && user.getUserType()== UserType.OPERATIONS &&
+            if(user!=null && user.getUserType()== UserType.OPERATIONS
+                    &&
                     user.getRole().getUserType()!=null
                     && user.getRole().getUserType().equals(UserType.OPERATIONS)
                     ) {
