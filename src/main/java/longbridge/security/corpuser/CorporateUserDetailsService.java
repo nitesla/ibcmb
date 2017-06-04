@@ -56,31 +56,42 @@ public class CorporateUserDetailsService implements UserDetailsService {
             logger.trace("IP -> {} has been blocked", ip);
             throw new RuntimeException("blocked");
         }
-        String userName = s.split(":")[0];
-        String corpId = s.split(":")[1];
+        String userName = "";
+        String corpId = "";
+        if (s!=null){
+           try{
+               userName = s.split(":")[0];
+               corpId = s.split(":")[1];
 
-        CorporateUser user = corporateUserRepo.findByUserNameIgnoreCaseAndCorporate_CustomerIdIgnoreCase(userName,corpId);
-        if (failedLoginService.isBlocked(user)) throw new RuntimeException("user_blocked");
-        try {
+           }catch (Exception e){
 
-
-
-            Corporate corporate = corporateRepo.findFirstByCustomerId(corpId);
-            if (corporate != null && user != null) {
-                if(!corporate.getStatus().equalsIgnoreCase("A")){
-                    throw  new DisabledException("User is disabled");
-                }
-
-
-                if ((user.getCorporate().getCustomerId().equalsIgnoreCase(corporate.getCustomerId())) && user.getUserType() == UserType.CORPORATE) {
-                    return new CustomUserPrincipal(user);
-                }
-            }
-            throw new UsernameNotFoundException(s);
-        } catch (Exception e) {
-            logger.error("An exception occurred {}", e.getMessage());
-            throw new RuntimeException(e);
+           }
         }
+
+
+        CorporateUser user = corporateUserRepo.findFirstByUserNameIgnoreCaseAndCorporate_CustomerIdIgnoreCase(userName,corpId);
+        if (user!=null){
+
+            if (failedLoginService.isBlocked(user)) throw new RuntimeException("user_blocked");
+            try {
+                Corporate corporate = corporateRepo.findFirstByCustomerId(corpId);
+                if (corporate != null && user != null) {
+                    if(!corporate.getStatus().equalsIgnoreCase("A")){
+                        throw  new DisabledException("User is disabled");
+                    }
+
+
+                    if ((user.getCorporate().getCustomerId().equalsIgnoreCase(corporate.getCustomerId())) && user.getUserType() == UserType.CORPORATE) {
+                        return new CustomUserPrincipal(user);
+                    }
+                }
+                throw new UsernameNotFoundException(s);
+            } catch (Exception e) {
+                logger.error("An exception occurred {}", e.getMessage());
+                throw new RuntimeException(e);
+            }
+        }
+        throw new UsernameNotFoundException(s);
     }
 
 

@@ -31,7 +31,7 @@ public class CorporateAuthenticationFailureHandler extends SimpleUrlAuthenticati
         setDefaultFailureUrl("/login/corporate?error=true");
         String userName = request.getParameter("username");
         String corpId= request.getParameter("corporateId");
-        CorporateUser user = corporateUserRepo.findByUserNameIgnoreCaseAndCorporate_CustomerIdIgnoreCase(userName,corpId);
+        CorporateUser user = corporateUserRepo.findFirstByUserNameIgnoreCaseAndCorporate_CustomerIdIgnoreCase(userName,corpId);
         if (user != null) {
 
             failedLoginService.loginFailed(user);

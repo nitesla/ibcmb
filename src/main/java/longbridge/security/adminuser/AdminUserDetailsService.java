@@ -52,21 +52,27 @@ public class AdminUserDetailsService implements UserDetailsService {
             throw new RuntimeException("blocked");
         }
         AdminUser user= adminUserRepo.findFirstByUserName(s);
-        if (failedLoginService.isBlocked(user)) throw new RuntimeException("user_blocked");
-        try{
+        if (user!=null  ) {
+            if (failedLoginService.isBlocked(user)) throw new RuntimeException("user_blocked");
+            try{
 
-            if(user!=null && user.getUserType()== UserType.ADMIN) {
-            	CustomUserPrincipal userPrincipal = new CustomUserPrincipal(user);
-            	userPrincipal.setIpAddress(ip);
-                return userPrincipal;
+                if(user.getUserType()== UserType.ADMIN ) {
+                    if (user.getRole().getUserType()!=null ){
+                        if (user.getRole().getUserType()!= UserType.ADMIN) throw new UsernameNotFoundException(s);
+                    }
+                    CustomUserPrincipal userPrincipal = new CustomUserPrincipal(user);
+                    userPrincipal.setIpAddress(ip);
+                    return userPrincipal;
+                }
+                throw new UsernameNotFoundException(s);
             }
-            throw new UsernameNotFoundException(s);
-        }
-        catch (Exception e){
-            logger.error("An exception occurred {}",e.getMessage());
-            throw new RuntimeException(e);
+            catch (Exception e){
+                logger.error("An exception occurred {}",e.getMessage());
+                throw new RuntimeException(e);
+            }
         }
 
+        throw new UsernameNotFoundException(s);
     }
 
 

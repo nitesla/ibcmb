@@ -109,33 +109,37 @@ public class FailedLoginService {
     }
 
     private void updateFailedLogin(User user) {
-        if (user != null && user.getUserType() != null) {
-            UserType type = user.getUserType();
-            switch (type) {
-                case ADMIN: {
+       try{
+           if (user != null && user.getUserType() != null) {
+               UserType type = user.getUserType();
+               switch (type) {
+                   case ADMIN: {
 
-                    adminUserRepo.save((AdminUser) user);
-                    break;
-                }
+                       adminUserRepo.save((AdminUser) user);
+                       break;
+                   }
 
-                case RETAIL: {
+                   case RETAIL: {
 
-                    retailUserRepo.save((RetailUser) user);
-                    break;
-                }
-                case OPERATIONS: {
+                       retailUserRepo.save((RetailUser) user);
+                       break;
+                   }
+                   case OPERATIONS: {
 
-                    operationsUserRepo.save((OperationsUser) user);
-                    break;
-                }
-                case CORPORATE: {
+                       operationsUserRepo.save((OperationsUser) user);
+                       break;
+                   }
+                   case CORPORATE: {
 
-                    retailUserRepo.save((RetailUser) user);
-                    break;
-                }
+                       corporateUserRepo.save((CorporateUser) user);
+                       break;
+                   }
 
-            }
-        }
+               }
+           }
+       }catch (Exception e){
+logger.error("Exception occurred {}",e.getMessage());
+       }
 
 
     }

@@ -3,6 +3,8 @@ package longbridge.security;
 import longbridge.dtos.SettingDTO;
 import longbridge.models.User;
 import longbridge.services.ConfigurationService;
+import longbridge.services.IntegrationService;
+import longbridge.services.MailService;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +22,10 @@ public class SessionUtils {
     private LocalDate today = LocalDate.now();
     @Autowired
     private ConfigurationService configService;
+    @Autowired
+    IntegrationService integrationService;
+    @Autowired
+    MailService mailService;
 
 
     public void setTimeout(HttpSession session){
@@ -35,6 +41,33 @@ public class SessionUtils {
 
     }
 
+    public void sendAlert(User user){
+        try{
+            SettingDTO settingDTO=   configService.getSettingByName("LOGIN_ALERT");
+            if (settingDTO.isEnabled()){
+               String preference = user.getAlertPreference().getCode();
+               if (preference.equalsIgnoreCase("SMS")){
+              //  integrationService.sendSMS()
+               }else if(preference.equalsIgnoreCase("EMAIL")){
+                //   mailService.send();
 
+               }else if(preference.equalsIgnoreCase("BOTH")){
+
+               }
+
+            }
+        }catch (Exception e){
+            logger.error("EXCEPTION OCCURRED {}",e.getMessage());
+        }
+
+    }
+
+    public void validateExpiredPassword(User user,HttpSession session){
+        LocalDate date = new LocalDate(user.getExpiryDate());
+            if (today.isAfter(date) || today.isEqual(date)) {
+                session.setAttribute("expired-password", "expired-password");
+
+            }
+    }
 
 }

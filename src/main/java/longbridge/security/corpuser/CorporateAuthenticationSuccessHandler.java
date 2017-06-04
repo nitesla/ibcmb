@@ -1,6 +1,7 @@
 package longbridge.security.corpuser;
 
 import longbridge.dtos.SettingDTO;
+import longbridge.models.CorporateUser;
 import longbridge.models.UserType;
 import longbridge.repositories.CorporateUserRepo;
 import longbridge.security.SessionUtils;
@@ -45,11 +46,21 @@ public class CorporateAuthenticationSuccessHandler implements AuthenticationSucc
         final HttpSession session = request.getSession(false);
         if (session != null) {
             sessionUtils.setTimeout(session);
+         String s = authentication.getName();
+            String userName = "";
+            String corpId = "";
+            if (s!=null){
+                try{
+                    userName = s.split(":")[0];
+                    corpId = s.split(":")[1];
 
-//            LocalDate date = new LocalDate(user.getExpiryDate());
-//            if (today.isAfter(date) || today.isEqual(date)) {
-//                session.setAttribute("expired-password", "expired-password");
-//            }
+                }catch (Exception e){
+
+                }
+            }
+            CorporateUser user = corporateUserRepo.findByUserNameAndCorporate_CustomerId(userName,corpId);
+           sessionUtils.validateExpiredPassword(user,session);
+
         }
         clearAuthenticationAttributes(request);
     }
