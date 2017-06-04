@@ -67,13 +67,7 @@ public class CorpInterBankTransferController {
         CorpTransferRequestDTO requestDTO= new CorpTransferRequestDTO();
         String type =request.getParameter("tranType") ;
 
-        if (type.equalsIgnoreCase("NIP"))  {
-            request.getSession().setAttribute("NIP","NIP");
-            requestDTO.setTransferType(TransferType.INTER_BANK_TRANSFER);
-        }else{
-            request.getSession().setAttribute("NIP","RTGS");
-            requestDTO.setTransferType(TransferType.RTGS);
-        }
+
 
 
 

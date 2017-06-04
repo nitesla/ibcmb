@@ -59,12 +59,15 @@ public class OperationUserDetailsService implements UserDetailsService {
             throw new RuntimeException("blocked");
         }
         OperationsUser user = operationsUserRepo.findFirstByUserName(s);
-        if (failedLoginService.isBlocked(user)) throw new RuntimeException("user_blocked");
+        if (user!=null && failedLoginService.isBlocked(user)) throw new RuntimeException("user_blocked");
         try{
 
 
 
-            if(user!=null && user.getUserType()== UserType.OPERATIONS) {
+            if(user!=null && user.getUserType()== UserType.OPERATIONS &&
+                    user.getRole().getUserType()!=null
+                    && user.getRole().getUserType().equals(UserType.OPERATIONS)
+                    ) {
                 return new CustomUserPrincipal(user);
             }
             throw new UsernameNotFoundException(s);
