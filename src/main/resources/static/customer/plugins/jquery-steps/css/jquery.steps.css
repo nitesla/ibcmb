@@ -73,7 +73,7 @@
 
 .wizard > .steps > ul > li
 {
-    width: 25%;
+    width: 20%;
 }
 
 .wizard > .steps > ul > li,
@@ -133,7 +133,7 @@
 .wizard > .steps .error a:hover,
 .wizard > .steps .error a:active
 {
-    background: #ff3111;
+    background: #032A4F;
     color: #fff;
 }
 
@@ -198,7 +198,7 @@
 {
     background: rgb(251, 227, 228);
     border: 1px solid #fbc2c4;
-    color: #8a1f11;
+    /*color: #8a1f11;*/
 }
 
 .wizard > .content > .body label
@@ -210,7 +210,7 @@
 .wizard > .content > .body label.error
 {
     color: #8a1f11;
-    /*display: inline-block;*/
+    display: inline-block;
     margin-left: 1.5em;
 }
 

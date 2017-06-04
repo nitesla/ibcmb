@@ -412,6 +412,11 @@ body {
     font-size: 18px;
 }
 
+#label{
+    text-align: center;
+    font-size: 18px;
+}
+
 .biglist{
     margin: 0 auto;
     padding: 20px 0;
@@ -561,6 +566,16 @@ nav li a {
     margin-top: -10px;
 }
 
+footer {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding: 1rem;
+    background-color: #efefef;
+    text-align: center;
+}
+
 .footer_bar {
     display: block;
     padding: 37px 0 0 0;
@@ -667,7 +682,6 @@ button, input, optgroup, select, textarea {
     max-width: 330px;
     padding: 100px 15px 30px;
     margin: 0 auto;
-    text-align: center;
 }
 
 .bod{
