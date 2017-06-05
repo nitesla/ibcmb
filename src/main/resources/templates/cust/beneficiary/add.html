@@ -35,12 +35,12 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <input type="text" class="form-control" th:field="*{accountNumber}" placeholder="Account Number"/>
+                                <input type="text" id="acct_num" class="form-control" th:field="*{accountNumber}" placeholder="Account Number"/>
                                 <p class="errors" th:if="${#fields.hasErrors('accountNumber')}" th:errors="*{accountNumber}">&times;</p>
                             </div>
 
                             <div class="form-group">
-                                <input type="text" class="form-control" th:field="*{accountName}" placeholder="Beneficiary Name"/>
+                                <input type="text" id="acct_name" class="form-control" th:field="*{accountName}" placeholder="Beneficiary Name" readonly="readonly"/>
                                 <p class="errors" th:if="${#fields.hasErrors('accountName')}" th:errors="*{accountName}">&times;</p>
                             </div>
                             <div class="form-group">
@@ -108,6 +108,42 @@
             $("#foreign").hide()
         }
     });
+</script>
+<script>
+    $(document).ready(function () {
+        $('#acct_num').change(function () {
+            getAccountName();
+        });
+
+    })
+
+
+    function getAccountName() {
+        //make sure alert message is not empty
+        var acct = $('#acct_num').val();
+        // var bank = $('#bank_code').val();
+        var bank ='A';
+        console.log(acct);
+
+        var options = {
+            type: 'GET',
+            url: '/retail/transfer/' + acct + '/'+bank+'/nameEnquiry',
+//					dataType: 'jsonp',
+            error: function (xhr, textStatus, errorThrown) {
+                alert('invalid account number ');
+                $('#sub').disabled();
+            },
+            success: function (data, textStatus) {
+                console.log(data);
+                console.log(textStatus);
+                var result = data;
+                //var result = (new Function("return " + result))();
+                // $('#acct_name').val(result.message);
+                $('#acct_name').val(result);
+            }
+        };
+        $.ajax(options);
+    }
 </script>
 </body>
 </html>

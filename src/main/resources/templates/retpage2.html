@@ -41,7 +41,7 @@
             </div>
         </div>
     </nav>
-    <a href="#" class="logo">
+    <a href="/" class="logo">
         <img th:src="@{/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
     </a>
 </div>
@@ -49,24 +49,26 @@
 <section class="content-wrapper">
     <div class="container">
         <div class="bg">
-            <form th:action="@{/login/p/retail}" method="POST" class=" col-md-offset-3 col-md-6">
+            <div class="col-md-offset-4 col-md-6">
+                <form th:action="@{/login/p/retail}" method="POST" class="login-form ">
+                    <div class="row ">
+                        <div class="form-group col-md-7 col-sm-7 col-xs-7">
+                            <input type="text" name="username" th:value="*{username}" class="form-control" readonly="readonly"/>
+                        </div>
+                        <div class="col-md-7 col-sm-7 col-xs-7">
+                            <button class="btn btn-primary form-control"> Login </button>
+                        </div>
+                        <div>
+                            <div style="height:150px; ">
+                                <img width="130px" height="100px" style="padding:15px; margin-left: -50px; background-color: #F2F2F1;" th:src="@{/customer/img/cmb_logo.png}"/>
+                                <!--<input type="checkbox" name="phishing"/>-->
+                            </div>
 
-                <div class="row login-form">
-                    <h5 class="form-signin-heading">Enter Login Details</h5>
-                    <div class="form-group col-md-7 col-sm-10">
-                        <input type="text" name="username" th:value="*{username}" class="form-control" readonly="readonly"/>
+                        </div>
                     </div>
-                    <div class="phishing-img col-md-4 col-sm-4" style="padding:15px; height:150px; width:150px; background-color: #F2F2F1;">
-                        <img width="120px" height="100px" style="" th:src="@{/customer/img/cmb_logo.png}"/><br/>
-                        <input type="checkbox" name="phishing"/>
-                    </div>
-                    <div class="col-md-7 col-sm-10">
-                        <button class="btn btn-primary form-control"> Login </button>
-                    </div>
-                </div>
 
-
-            </form>
+                </form>
+            </div>
         </div>
     </div>
 </section>
