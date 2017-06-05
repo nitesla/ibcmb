@@ -394,7 +394,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         if (!this.passwordEncoder.matches(changePassword.getOldPassword(), user.getPassword())) {
             throw new WrongPasswordException();
         }
-        String errorMessage = passwordPolicyService.validate(changePassword.getNewPassword(), user.getUsedPasswords());
+        String errorMessage = passwordPolicyService.validate(changePassword.getNewPassword(), user);
         if (!"".equals(errorMessage)) {
             throw new PasswordPolicyViolationException(errorMessage);
         }

@@ -71,6 +71,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Autowired
     private ConfigurationService configService;
 
+
     private Locale locale = LocaleContextHolder.getLocale();
 
 
@@ -171,8 +172,8 @@ public class AdminUserServiceImpl implements AdminUserService {
             if ((oldStatus == null)) {//User was just created
                 String password = passwordPolicyService.generatePassword();
                 user.setPassword(passwordEncoder.encode(password));
-                user.setUsedPasswords(getUsedPasswords(password,user.getUsedPasswords()));
                 user.setExpiryDate(new Date());
+                passwordPolicyService.saveAdminPassword();
                 adminUserRepo.save(user);
 
                 Email email = new Email.Builder()
@@ -312,7 +313,7 @@ public class AdminUserServiceImpl implements AdminUserService {
             throw new WrongPasswordException();
         }
 
-        String errorMessage = passwordPolicyService.validate(changePassword.getNewPassword(), user.getUsedPasswords());
+        String errorMessage = passwordPolicyService.validate(changePassword.getNewPassword(), user);
         if (!"".equals(errorMessage)) {
             throw new PasswordPolicyViolationException(errorMessage);
         }
@@ -356,7 +357,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Transactional
     public String changeDefaultPassword(AdminUser user, ChangeDefaultPassword changePassword) throws PasswordException {
 
-        String errorMessage = passwordPolicyService.validate(changePassword.getNewPassword(), user.getUsedPasswords());
+        String errorMessage = passwordPolicyService.validate(changePassword.getNewPassword(), user);
         if (!"".equals(errorMessage)) {
             throw new PasswordPolicyViolationException(errorMessage);
         }

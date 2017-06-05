@@ -29,7 +29,6 @@ import java.util.Locale;
 @Service
 public class RoleServiceImpl implements RoleService {
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private RoleRepo roleRepo;
 
@@ -39,18 +38,32 @@ public class RoleServiceImpl implements RoleService {
 
     private MessageSource messageSource;
 
+    private AdminUserRepo adminRepo;
+
+    private RetailUserRepo retailRepo;
+
+    private OperationsUserRepo opRepo;
+
+    private CorporateUserRepo corpRepo;
+
     private ModelMapper modelMapper = new ModelMapper();
 
     private Locale locale = LocaleContextHolder.getLocale();
 
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+
+
     @Autowired
-    public RoleServiceImpl(RoleRepo roleRepo, VerificationService verificationService, PermissionRepo permissionRepo, MessageSource messageSource) {
+    public RoleServiceImpl(RoleRepo roleRepo, VerificationService verificationService, PermissionRepo permissionRepo, MessageSource messageSource, AdminUserRepo adminRepo, RetailUserRepo retailRepo, OperationsUserRepo opRepo, CorporateUserRepo corpRepo) {
         this.roleRepo = roleRepo;
         this.verificationService = verificationService;
         this.permissionRepo = permissionRepo;
         this.messageSource = messageSource;
+        this.adminRepo = adminRepo;
+        this.retailRepo = retailRepo;
+        this.opRepo = opRepo;
+        this.corpRepo = corpRepo;
     }
-
 
 // @Override
     // public Role deserialize(String data) throws IOException {
@@ -277,14 +290,6 @@ public class RoleServiceImpl implements RoleService {
     }
 
 
-    @Autowired
-    AdminUserRepo adminRepo;
-    @Autowired
-    RetailUserRepo retailRepo;
-    @Autowired
-    OperationsUserRepo opRepo;
-    @Autowired
-    CorporateUserRepo corpRepo;
 
 
     @Override
@@ -298,7 +303,7 @@ public class RoleServiceImpl implements RoleService {
                 List<User> userList = (List<User>) (List<?>) users.getContent();
                 pageImpl = new PageImpl<User>(userList, pageDetails, elements);
             }
-            ;
+
             break;
             case OPERATIONS: {
                 Page<OperationsUser> users = opRepo.findByRole(role, pageDetails);

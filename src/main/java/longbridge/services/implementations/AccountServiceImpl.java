@@ -114,7 +114,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Account getAccountByCustomerId(String customerId) {
-        return accountRepo.findAccountByCustomerId(customerId);
+        return accountRepo.findFirstAccountByCustomerId(customerId);
     }
 
     @Override
@@ -179,7 +179,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Account getAccountByAccountNumber(String accountNumber) {
-        return accountRepo.findByAccountNumber(accountNumber);
+        return accountRepo.findFirstByAccountNumber(accountNumber);
     }
 
     @Override

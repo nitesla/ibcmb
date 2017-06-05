@@ -1,9 +1,16 @@
 package longbridge.validator;
 
 import longbridge.dtos.SettingDTO;
+import longbridge.models.*;
+import longbridge.repositories.AdminPasswordRepo;
+import longbridge.repositories.CorporatePasswordRepo;
+import longbridge.repositories.OpsPasswordRepo;
+import longbridge.repositories.RetailPasswordRepo;
 import longbridge.services.ConfigurationService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,7 +29,21 @@ import java.util.regex.Pattern;
 public class PasswordValidator {
 
     @Autowired
-    PasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
+    @Autowired
+    private ConfigurationService configService;
+    @Autowired
+    private AdminPasswordRepo adminPasswordRepo;
+
+    @Autowired
+    private RetailPasswordRepo retailPasswordRepo;
+
+    @Autowired
+    private OpsPasswordRepo opsPasswordRepo;
+
+    @Autowired
+    private CorporatePasswordRepo corporatePasswordRepo;
+
 
     private Pattern digitPattern = Pattern.compile("[0-9]");
     private Pattern letterPattern = Pattern.compile("[a-zA-Z]");
@@ -43,15 +64,15 @@ public class PasswordValidator {
     private int maxLength = 255;
     private String specialCharacters = "!@#$%^)(&";
     private int numOfChanges = 0;
-    private boolean initialized = false;
     private StringBuilder errorMessage;
     private String message = "";
 
+    Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Autowired
-    ConfigurationService configService;
 
-    private void init() {
+
+
+    private void initializeSettings() {
         numOfPasswordDigits = configService.getSettingByName("PASSWORD_NUM_DIGITS");
         noSpecialChar = configService.getSettingByName("PASSWORD_NUM_SPECIAL_CHARS");
         minLengthOfPassword = configService.getSettingByName("PASSWORD_MIN_LEN");
@@ -82,13 +103,11 @@ public class PasswordValidator {
         }
 
         specialCharsPattern = Pattern.compile("[" + specialCharacters + "]");
-        initialized = true;
     }
 
-    public String validate(String password, String usedPasswords) {
-        if (!initialized) {
-            init();
-        }
+    public String validate(String password, User user) {
+
+        initializeSettings();
 
         errorMessage = new StringBuilder();
 
@@ -136,12 +155,14 @@ public class PasswordValidator {
             errorMessage.append(".\n");
         }
 
-        if (!isPasswordReuseable(password, usedPasswords)) {
-            message = String.format(
-                    "Previous passwords can only be reused after %d different passwords", numOfChanges);
-            errorMessage.append(message);
-            errorMessage.append(".\n");
-        }
+
+            if (!isPasswordReuseable(password, user)) {
+                message = String.format(
+                        "Previous passwords can only be reused after %d different passwords", numOfChanges);
+                errorMessage.append(message);
+                errorMessage.append(".\n");
+            }
+
 
         return errorMessage.toString();
     }
@@ -152,28 +173,48 @@ public class PasswordValidator {
      * passwords have been used by the user
      *
      * @param password      the password to be used
-     * @param usedPasswords the comma-separated list of used passwords
+     * @param user the user whose passwords are to be checked
      * @return true if the password can be reused
      */
-    private boolean isPasswordReuseable(String password, String usedPasswords) {
-        boolean isReusable = false;
-        if (usedPasswords == null) {
-            isReusable = true;
-            return isReusable;
-        }
-        List<String> passwordHashes = Arrays.asList(StringUtils.split(usedPasswords, ","));
-        if (passwordHashes.isEmpty() || passwordHashes == null) {
+    private boolean isPasswordReuseable(String password, User user) {
+        if (numOfChanges==0) {
             return true;
         }
-        for (String passwordHash : passwordHashes) {
-            if (passwordEncoder.matches(password, passwordHash)) {
-                if (passwordHashes.size() - getPasswordHashPosition(password, usedPasswords) > numOfChanges) {
-                    isReusable = true;
-                    return isReusable;
+
+        switch (user.getUserType()){
+            case ADMIN:
+                List<AdminPassword> adminPasswords = adminPasswordRepo.findByAdminUser((AdminUser)user);
+                for(AdminPassword adminPassword: adminPasswords){
+                    if(passwordEncoder.matches(password,adminPassword.getPassword())){
+                        return false;
+                    }
                 }
-            }
+            case OPERATIONS:
+                List<OpsPassword> opsPasswords = opsPasswordRepo.findByOperationsUser((OperationsUser)user);
+                for(OpsPassword opsPassword: opsPasswords){
+                    if(passwordEncoder.matches(password,opsPassword.getPassword())){
+                        return false;
+                    }
+                }
+            case RETAIL:
+                List<RetailPassword> retailPasswords = retailPasswordRepo.findByRetailUser((RetailUser)user);
+                for(RetailPassword retailPassword: retailPasswords){
+                    if(passwordEncoder.matches(password,retailPassword.getPassword())){
+                        return false;
+                    }
+                }
+
+            case CORPORATE:
+                List<CorporatePassword> corporatePasswords = corporatePasswordRepo.findByCorporateUser((CorporateUser)user);
+                for(CorporatePassword corporatePassword: corporatePasswords){
+                    if(passwordEncoder.matches(password,corporatePassword.getPassword())){
+                        return false;
+                    }
+                }
+
         }
-        return isReusable;
+
+        return true;
     }
 
     /**
@@ -184,6 +225,7 @@ public class PasswordValidator {
     private int getPasswordHashPosition(String password, String usedPasswords) {
         int position = 0;
         List<String> usedPasswordHashes = Arrays.asList(StringUtils.split(usedPasswords, ","));
+
         for (String passwordHash : usedPasswordHashes) {
             if (passwordEncoder.matches(password, passwordHash)) {
                 position = usedPasswordHashes.lastIndexOf(passwordHash) + 1;

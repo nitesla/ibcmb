@@ -286,7 +286,7 @@ public class RetailUserServiceImpl implements RetailUserService {
             Email email = new Email.Builder()
                     .setRecipient(user.getEmail())
                     .setSubject(messageSource.getMessage("customer.password.reset.subject",null,locale))
-                    .setBody(String.format(messageSource.getMessage("customer.password.reset.message",null,locale),fullName, user.getUserName(),newPassword))
+                    .setBody(String.format(messageSource.getMessage("customer.password.reset.message",null,locale),fullName, newPassword))
                     .build();
             mailService.send(email);
             logger.info("Retail user {} password reset successfully", user.getUserName());
@@ -299,7 +299,7 @@ public class RetailUserServiceImpl implements RetailUserService {
     @Override
     public String resetPassword(RetailUser user, String password) {
 
-        String errorMessage = passwordPolicyService.validate(password, user.getUsedPasswords());
+        String errorMessage = passwordPolicyService.validate(password, user);
         if (!"".equals(errorMessage)) {
             throw new PasswordPolicyViolationException(errorMessage);
         }
@@ -323,7 +323,7 @@ public class RetailUserServiceImpl implements RetailUserService {
             throw new WrongPasswordException();
         }
 
-        String errorMessage = passwordPolicyService.validate(changePassword.getNewPassword(), user.getUsedPasswords());
+        String errorMessage = passwordPolicyService.validate(changePassword.getNewPassword(), user);
         if (!"".equals(errorMessage)) {
             throw new PasswordPolicyViolationException(errorMessage);
         }

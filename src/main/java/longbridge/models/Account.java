@@ -132,7 +132,7 @@ public class Account extends AbstractEntity{
 
         Account account = (Account) o;
 
-        if (!accountId.equals(account.accountId)) return false;
+//        if (!accountId.equals(account.accountId)) return false;
         if (!accountNumber.equals(account.accountNumber)) return false;
         if (!customerId.equals(account.customerId)) return false;
         return solId != null ? solId.equals(account.solId) : account.solId == null;

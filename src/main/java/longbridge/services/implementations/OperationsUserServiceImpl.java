@@ -309,7 +309,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             throw new WrongPasswordException();
         }
 
-        String errorMessage = passwordPolicyService.validate(changePassword.getNewPassword(), user.getUsedPasswords());
+        String errorMessage = passwordPolicyService.validate(changePassword.getNewPassword(), user);
         if (!"".equals(errorMessage)) {
             throw new PasswordPolicyViolationException(errorMessage);
         }
@@ -335,7 +335,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     public String changeDefaultPassword(OperationsUser user, ChangeDefaultPassword changePassword) throws PasswordException {
 
 
-        String errorMessage = passwordPolicyService.validate(changePassword.getNewPassword(), user.getUsedPasswords());
+        String errorMessage = passwordPolicyService.validate(changePassword.getNewPassword(), user);
         if (!"".equals(errorMessage)) {
             throw new PasswordPolicyViolationException(errorMessage);
         }

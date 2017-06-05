@@ -61,7 +61,7 @@ public class AccountConfigServiceImpl implements AccountConfigService {
 
     @Override
     public boolean isAccountHidden(String accountNumber) {
-        Account account = accountRepo.findByAccountNumber(accountNumber);
+        Account account = accountRepo.findFirstByAccountNumber(accountNumber);
         if (account.getHiddenFlag().equals("Y")) {
             return true;
         }
