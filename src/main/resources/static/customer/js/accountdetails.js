@@ -17,7 +17,7 @@ function getDestAccounts(acct) {
     $.get("/retail/transfer/dest/"+acct+"/accounts", function( data ) {
         $("#destination").empty();
         data.forEach(function(item, i) {
-            $("#destination").get(0).options[0] = new Option("Select Account", "-1");
+           // $("#destination").get(0).options[0] = new Option("Select Account", "-1");
             var option = "<option  value = " + item + " >" + item +  "</option>";
             $("#destination").append(option);
         });
@@ -43,3 +43,22 @@ function getDestCurrency(acct) {
 function goBack() {
     window.history.back();
 }
+var sortSelect = function (select, attr, order) {
+    if(attr === 'text'){
+        if(order === 'asc'){
+            $(select).html($(select).children('option').sort(function (x, y) {
+                return $(x).text().toUpperCase() < $(y).text().toUpperCase() ? -1 : 1;
+            }));
+            $(select).get(0).selectedIndex = 0;
+            //e.preventDefault();
+        }// end asc
+        if(order === 'desc'){
+            $(select).html($(select).children('option').sort(function (y, x) {
+                return $(x).text().toUpperCase() < $(y).text().toUpperCase() ? -1 : 1;
+            }));
+            $(select).get(0).selectedIndex = 0;
+            // e.preventDefault();
+        }// end desc
+    }
+
+};

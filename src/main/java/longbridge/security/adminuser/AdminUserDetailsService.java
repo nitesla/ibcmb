@@ -51,7 +51,7 @@ public class AdminUserDetailsService implements UserDetailsService {
             logger.trace("IP -> {} has been blocked" ,ip);
             throw new RuntimeException("blocked");
         }
-        AdminUser user= adminUserRepo.findFirstByUserName(s);
+        AdminUser user= adminUserRepo.findFirstByUserNameIgnoreCase(s);
         if (user!=null  ) {
             if (failedLoginService.isBlocked(user)) throw new RuntimeException("user_blocked");
             try{

@@ -11,5 +11,6 @@ import org.springframework.stereotype.Repository;
 public interface AccountClassRestrictionRepo extends CommonRepo<AccountClassRestriction,Long> {
 
     AccountClassRestriction findByAccountClass(String accountClass);
+    AccountClassRestriction findFirstByAccountClassAndRestrictionTypeIgnoreCase(String accountClass,String type);
 
 }

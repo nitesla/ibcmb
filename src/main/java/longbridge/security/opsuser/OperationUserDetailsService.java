@@ -58,7 +58,7 @@ public class OperationUserDetailsService implements UserDetailsService {
             logger.trace("IP -> {} has been blocked" ,ip);
             throw new RuntimeException("blocked");
         }
-        OperationsUser user = operationsUserRepo.findFirstByUserName(s);
+        OperationsUser user = operationsUserRepo.findFirstByUserNameIgnoreCase(s);
         if (user!=null && failedLoginService.isBlocked(user)) throw new RuntimeException("user_blocked");
         try{
 

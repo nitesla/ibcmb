@@ -57,7 +57,7 @@ public class CorpTokenManagementController {
             }
         }
         catch (InternetBankingSecurityException ibe){
-            logger.error("Error authenticating token");
+            logger.error("Error authenticating token {} ",ibe);
         }
         redirectAttributes.addFlashAttribute("failure",messageSource.getMessage("token.auth.failure",null,locale));
         return "redirect:/corporate/token";

@@ -19,55 +19,60 @@ import javax.servlet.http.HttpSession;
 @Service
 public class SessionUtils {
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    private LocalDate today = LocalDate.now();
-    @Autowired
-    private ConfigurationService configService;
     @Autowired
     IntegrationService integrationService;
     @Autowired
     MailService mailService;
+    private LocalDate today = LocalDate.now();
+    @Autowired
+    private ConfigurationService configService;
 
-
-    public void setTimeout(HttpSession session){
-        try{
-            SettingDTO settingDTO=   configService.getSettingByName("SESSION_TIMEOUT");
-            if (settingDTO.isEnabled()){
-                int timeout= Integer.parseInt(settingDTO.getValue());
+    public void setTimeout(HttpSession session) {
+        try {
+            SettingDTO settingDTO = configService.getSettingByName("SESSION_TIMEOUT");
+            if (settingDTO.isEnabled()) {
+                int timeout = Integer.parseInt(settingDTO.getValue());
                 session.setMaxInactiveInterval(timeout * 60);
             }
-        }catch (Exception e){
-            logger.error("EXCEPTION OCCURRED {}",e.getMessage());
+        } catch (Exception e) {
+            logger.error("EXCEPTION OCCURRED {}", e.getMessage());
         }
 
     }
 
-    public void sendAlert(User user){
-        try{
-            SettingDTO settingDTO=   configService.getSettingByName("LOGIN_ALERT");
-            if (settingDTO.isEnabled()){
-               String preference = user.getAlertPreference().getCode();
-               if (preference.equalsIgnoreCase("SMS")){
-              //  integrationService.sendSMS()
-               }else if(preference.equalsIgnoreCase("EMAIL")){
-                //   mailService.send();
+    public void sendAlert(User user) {
+        try {
+            SettingDTO settingDTO = configService.getSettingByName("LOGIN_ALERT");
+            if (settingDTO.isEnabled()) {
+                String preference = user.getAlertPreference().getCode();
+                if (preference.equalsIgnoreCase("SMS")) {
+                    //  integrationService.sendSMS()
+                } else if (preference.equalsIgnoreCase("EMAIL")) {
+                    //   mailService.send();
 
-               }else if(preference.equalsIgnoreCase("BOTH")){
+                } else if (preference.equalsIgnoreCase("BOTH")) {
 
-               }
+                }
 
             }
-        }catch (Exception e){
-            logger.error("EXCEPTION OCCURRED {}",e.getMessage());
+        } catch (Exception e) {
+            logger.error("EXCEPTION OCCURRED {}", e.getMessage());
         }
 
     }
 
-    public void validateExpiredPassword(User user,HttpSession session){
-        LocalDate date = new LocalDate(user.getExpiryDate());
+    public void validateExpiredPassword(User user, HttpSession session) {
+        if (user.getExpiryDate() != null) {
+
+            LocalDate date = new LocalDate(user.getExpiryDate());
             if (today.isAfter(date) || today.isEqual(date)) {
+                session.setMaxInactiveInterval(60);
                 session.setAttribute("expired-password", "expired-password");
 
             }
+
+
+        }
     }
 
 }

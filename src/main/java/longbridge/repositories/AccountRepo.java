@@ -31,6 +31,8 @@ public interface AccountRepo extends CommonRepo<Account, Long> {
     Page<Account> findAccountByCustomerId(String customerId, Pageable pageable);
 
     List<Account> findByCustomerId(String customerId);
+    List<Account> findByCustomerIdAndCurrencyCodeIgnoreCase(String customerId,String currency);
+    List<Account>  findByCustomerIdAndHiddenFlagIgnoreCase(String s1,String s2);
 
     @Modifying
     @Query("update Account a set a.primaryFlag = 'N' where a.primaryFlag = 'Y' and a.customerId = :customer")
