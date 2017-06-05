@@ -23,6 +23,8 @@
                             <tr>
                                 <th>Account Name</th>
                                 <th>Account Number</th>
+                                <th>Currency</th>
+                                <th>Account Type</th>
                                 <th>Action</th>
                             </tr>
                             </thead>
@@ -30,6 +32,8 @@
                             <tr th:each="acct : ${accounts}">
                                 <td th:text="${acct.accountName}"></td>
                                 <td th:text="${acct.accountNumber}"></td>
+                                <td th:text="${acct.currencyCode}"></td>
+                                <td th:text="${acct.schemeCode}"></td>
                                 <td><a th:href="@{'/corporate/account/' + ${acct.id} + '/customize'}">Customise</a></td>
                             </tr>
                             </tbody>
