@@ -43,7 +43,7 @@ public class PasswordPolicyService {
     private CorporatePasswordRepo corporatePasswordRepo;
 
 
-    private List<String> passwordRules = new ArrayList<String>();
+    private List<String> passwordRules;
     String ruleMessage = "";
 
 
@@ -66,6 +66,7 @@ public class PasswordPolicyService {
 
     private void init() {
 
+        passwordRules = new ArrayList<>();
         numOfPasswordDigits = configService.getSettingByName("PASSWORD_NUM_DIGITS");
         noSpecialChar = configService.getSettingByName("PASSWORD_NUM_SPECIAL_CHARS");
         minLengthOfPassword = configService.getSettingByName("PASSWORD_MIN_LEN");
