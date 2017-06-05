@@ -100,11 +100,6 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         return corporateUserRepo.findByUserName(username);
     }
 
-    /*@Override
-    public CorporateUser getUserByCustomerId(String custId) {
-        CorporateUser corporateUser = this.corporateUserRepo.findFirstByCustomerId(custId);
-        return corporateUser;
-    }*/
 
     @Override
     public Iterable<CorporateUserDTO> getUsers(Corporate corporate) {
@@ -161,13 +156,13 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             corporateUser.setCreatedOnDate(new Date());
             String password = passwordPolicyService.generatePassword();
             corporateUser.setPassword(passwordEncoder.encode(password));
-            corporateUser.setUsedPasswords(getUsedPasswords(password,corporateUser.getUsedPasswords()));
             user.setExpiryDate(new Date());
             Role role = new Role();
             role.setId(Long.parseLong(user.getRoleId()));
             corporateUser.setRole(role);
             Corporate corporate = corporateRepo.findOne(Long.parseLong(user.getCorporateId()));
             corporateUser.setCorporate(corporate);
+            passwordPolicyService.saveCorporatePassword(corporateUser);
             corporateUserRepo.save(corporateUser);
 
             String fullName = corporateUser.getFirstName()+" "+corporateUser.getLastName();
@@ -218,7 +213,6 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             corporateUser.setCreatedOnDate(new Date());
             String password = passwordPolicyService.generatePassword();
             corporateUser.setPassword(passwordEncoder.encode(password));
-            corporateUser.setUsedPasswords(getUsedPasswords(password,corporateUser.getUsedPasswords()));
             corporateUser.setExpiryDate(new Date());
             Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
             if (!"Authorizer".equals(role.getName())) {
@@ -227,6 +221,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             corporateUser.setRole(role);
             Corporate corporate = corporateRepo.findOne(Long.parseLong(user.getCorporateId()));
             corporateUser.setCorporate(corporate);
+            passwordPolicyService.saveCorporatePassword(corporateUser);
             corporateUserRepo.save(corporateUser);
             SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_CREATION");
             String fullName = user.getFirstName() + " " + user.getLastName();
@@ -269,9 +264,8 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             if ((oldStatus == null)) {//User was just created
                 String password = passwordPolicyService.generatePassword();
                 user.setPassword(passwordEncoder.encode(password));
-                user.setUsedPasswords(getUsedPasswords(password,user.getUsedPasswords()));
-
                 user.setExpiryDate(new Date());
+                passwordPolicyService.saveCorporatePassword(user);
                 corporateUserRepo.save(user);
 
                 Email email = new Email.Builder()
@@ -283,7 +277,6 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             } else if (("I".equals(oldStatus)) && "A".equals(newStatus)) {//User is being reactivated
                 String password = passwordPolicyService.generatePassword();
                 user.setPassword(passwordEncoder.encode(password));
-                user.setUsedPasswords(getUsedPasswords(password,user.getUsedPasswords()));
                 user.setExpiryDate(new Date());
                 corporateUserRepo.save(user);
                 Email email = new Email.Builder()
@@ -343,9 +336,9 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             CorporateUser user = corporateUserRepo.findOne(userId);
             String newPassword = passwordPolicyService.generatePassword();
             user.setPassword(passwordEncoder.encode(newPassword));
-            user.setUsedPasswords(getUsedPasswords(newPassword,user.getUsedPasswords()));
             user.setExpiryDate(new Date());
             String fullName = user.getFirstName() + " " + user.getLastName();
+            passwordPolicyService.saveCorporatePassword(user);
             corporateUserRepo.save(user);
             Email email = new Email.Builder()
                     .setRecipient(user.getEmail())
@@ -404,8 +397,8 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         try {
             CorporateUser corporateUser = corporateUserRepo.findOne(user.getId());
             corporateUser.setPassword(this.passwordEncoder.encode(changePassword.getNewPassword()));
-            corporateUser.setUsedPasswords(getUsedPasswords(changePassword.getNewPassword(),corporateUser.getUsedPasswords()));
             corporateUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
+            passwordPolicyService.saveCorporatePassword(corporateUser);
             this.corporateUserRepo.save(corporateUser);
             logger.info("User {} password has been updated", user.getId());
             return messageSource.getMessage("password.change.success", null, locale);
@@ -423,7 +416,6 @@ public class CorporateUserServiceImpl implements CorporateUserService {
                 return;
             }
             user.setPassword(this.passwordEncoder.encode(newPassword));
-            user.setUsedPasswords(getUsedPasswords(newPassword,user.getUsedPasswords()));
             corporateUserRepo.save(user);
             logger.info("User {} password has been updated", user.getUserName());
             //todo send the email.. messagingService.sendEmail(EmailDetail);

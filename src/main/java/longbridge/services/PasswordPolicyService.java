@@ -128,78 +128,106 @@ public class PasswordPolicyService {
 
 
     public List<String> getPasswordRules() {
-        init();
+        if (!initialized) {
+            init();
+        }
         return passwordRules;
     }
 
     public String generatePassword() {
-            init();
+        init();
 
         return passwordCreator.generatePassword(minLength, numOfDigits, noOfSpecial, specialCharacters);
     }
 
 
-    public void saveAdminPassword(AdminUser adminUser){
-        int count = adminPasswordRepo.countByAdminUser(adminUser);
+    public void saveAdminPassword(AdminUser adminUser) {
 
-        AdminPassword adminPassword = new AdminPassword();
-        adminPassword.setAdminUser(adminUser);
-        adminPassword.setPassword(adminUser.getPassword());
-        if(count<numOfChanges) {
-            adminPasswordRepo.save(adminPassword);
-        }
-        else {
-            AdminPassword firstPassword = adminPasswordRepo.findFirstByAdminUser(adminPassword.getAdminUser());
-            adminPasswordRepo.delete(firstPassword);
-            adminPasswordRepo.save(adminPassword);
-        }
-    }
+        SettingDTO numOfChangesBeforeReuse = configService.getSettingByName("PASSWORD_REUSE");
+        if (numOfChangesBeforeReuse != null && numOfChangesBeforeReuse.isEnabled()) {
+            int count = adminPasswordRepo.countByUserId(adminUser.getId());
+            int numOfChanges = NumberUtils.toInt(numOfChangesBeforeReuse.getValue());
 
-    public void saveOpsPassword(OperationsUser operationsUser){
-        int count = opsPasswordRepo.countByOperationsUser(operationsUser);
-
-        OpsPassword opsPassword = new OpsPassword();
-        opsPassword.setOperationsUser(operationsUser);
-        opsPassword.setPassword(operationsUser.getPassword());
-        if(count<numOfChanges) {
-            opsPasswordRepo.save(opsPassword);
-        }
-        else {
-            OpsPassword firstPassword = opsPasswordRepo.findFirstByOperationsUser(opsPassword.getOperationsUser());
-            opsPasswordRepo.delete(firstPassword);
-            opsPasswordRepo.save(opsPassword);
+            AdminPassword adminPassword = new AdminPassword();
+            adminPassword.setUserId(adminUser.getId());
+            adminPassword.setPassword(adminUser.getPassword());
+            if (numOfChanges != 0) {
+                if (count < numOfChanges) {
+                    adminPasswordRepo.save(adminPassword);
+                } else {
+                    AdminPassword firstPassword = adminPasswordRepo.findFirstByUserId(adminUser.getId());
+                    adminPasswordRepo.delete(firstPassword);
+                    adminPasswordRepo.save(adminPassword);
+                }
+            }
         }
     }
 
-    public void saveRetailPassword(RetailUser retailUser){
-        int count = retailPasswordRepo.countByRetailUser(retailUser);
+    public void saveOpsPassword(OperationsUser operationsUser) {
 
-        RetailPassword retailPassword = new RetailPassword();
-        retailPassword.setRetailUser(retailUser);
-        retailPassword.setPassword(retailUser.getPassword());
-        if(count<numOfChanges) {
-            retailPasswordRepo.save(retailPassword);
-        }
-        else {
-            RetailPassword firstPassword = retailPasswordRepo.findFirstByRetailUser(retailPassword.getRetailUser());
-            retailPasswordRepo.delete(firstPassword);
-            retailPasswordRepo.save(retailPassword);
+        SettingDTO numOfChangesBeforeReuse = configService.getSettingByName("PASSWORD_REUSE");
+        if (numOfChangesBeforeReuse != null && numOfChangesBeforeReuse.isEnabled()) {
+            int count = opsPasswordRepo.countByUserId(operationsUser.getId());
+            int numOfChanges = NumberUtils.toInt(numOfChangesBeforeReuse.getValue());
+
+            OpsPassword opsPassword = new OpsPassword();
+            opsPassword.setUserId(operationsUser.getId());
+            opsPassword.setPassword(operationsUser.getPassword());
+            if (numOfChanges != 0) {
+                if (count < numOfChanges) {
+                    opsPasswordRepo.save(opsPassword);
+                } else {
+                    OpsPassword firstPassword = opsPasswordRepo.findFirstByUserId(operationsUser.getId());
+                    opsPasswordRepo.delete(firstPassword);
+                    opsPasswordRepo.save(opsPassword);
+                }
+            }
         }
     }
 
-    public void saveCorporatePassword(CorporateUser corporateUser){
-        int count = corporatePasswordRepo.countByCorporateUser(corporateUser);
+    public void saveRetailPassword(RetailUser retailUser) {
 
-        CorporatePassword corporatePassword = new CorporatePassword();
-        corporatePassword.setCorporateUser(corporateUser);
-        corporatePassword.setPassword(corporateUser.getPassword());
-        if(count<numOfChanges) {
-            corporatePasswordRepo.save(corporatePassword);
+        SettingDTO numOfChangesBeforeReuse = configService.getSettingByName("PASSWORD_REUSE");
+        if (numOfChangesBeforeReuse != null && numOfChangesBeforeReuse.isEnabled()) {
+            int count = retailPasswordRepo.countByUserId(retailUser.getId());
+            int numOfChanges = NumberUtils.toInt(numOfChangesBeforeReuse.getValue());
+
+            if (numOfChanges != 0) {
+                RetailPassword retailPassword = new RetailPassword();
+                retailPassword.setUserId(retailUser.getId());
+                retailPassword.setPassword(retailUser.getPassword());
+                if (count < numOfChanges) {
+                    retailPasswordRepo.save(retailPassword);
+                } else {
+                    RetailPassword firstPassword = retailPasswordRepo.findFirstByUserId(retailUser.getId());
+                    retailPasswordRepo.delete(firstPassword);
+                    retailPasswordRepo.save(retailPassword);
+                }
+            }
         }
-        else {
-            CorporatePassword firstPassword = corporatePasswordRepo.findFirstByCorporateUser(corporatePassword.getCorporateUser());
-            corporatePasswordRepo.delete(firstPassword);
-            corporatePasswordRepo.save(corporatePassword);
+    }
+
+    public void saveCorporatePassword(CorporateUser corporateUser) {
+
+        SettingDTO numOfChangesBeforeReuse = configService.getSettingByName("PASSWORD_REUSE");
+        if (numOfChangesBeforeReuse != null && numOfChangesBeforeReuse.isEnabled()) {
+            int count = corporatePasswordRepo.countByUserId(corporateUser.getId());
+            int numOfChanges = NumberUtils.toInt(numOfChangesBeforeReuse.getValue());
+
+
+            CorporatePassword corporatePassword = new CorporatePassword();
+            corporatePassword.setUserId(corporateUser.getId());
+            corporatePassword.setPassword(corporateUser.getPassword());
+
+            if (numOfChanges != 0) {
+                if (count < numOfChanges) {
+                    corporatePasswordRepo.save(corporatePassword);
+                } else {
+                    CorporatePassword firstPassword = corporatePasswordRepo.findFirstByUserId(corporateUser.getId());
+                    corporatePasswordRepo.delete(firstPassword);
+                    corporatePasswordRepo.save(corporatePassword);
+                }
+            }
         }
     }
 

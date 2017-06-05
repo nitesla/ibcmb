@@ -13,11 +13,11 @@ import java.util.List;
 @Repository
 public interface OpsPasswordRepo extends CommonRepo<OpsPassword,Long> {
 
-    List<OpsPassword> findByOperationsUser(OperationsUser opsUser);
+    List<OpsPassword> findByUserId(Long userId);
 
-    int countByOperationsUser(OperationsUser opsUser);
+    int countByUserId(Long userId);
 
-    OpsPassword findFirstByOperationsUser(OperationsUser operationsUser);
+    OpsPassword findFirstByUserId(Long userId);
 
 
 }

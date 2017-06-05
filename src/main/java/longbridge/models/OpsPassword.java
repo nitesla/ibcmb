@@ -14,15 +14,16 @@ import javax.persistence.Entity;
 @Where(clause ="del_Flag='N'" )
 public class OpsPassword  extends  AbstractEntity{
 
-    OperationsUser operationsUser;
+    Long userId;
     String password;
 
-    public OperationsUser getOperationsUser() {
-        return operationsUser;
+
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setOperationsUser(OperationsUser operationsUser) {
-        this.operationsUser = operationsUser;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public String getPassword() {

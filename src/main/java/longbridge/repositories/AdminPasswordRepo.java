@@ -12,10 +12,10 @@ import java.util.List;
 @Repository
 public interface AdminPasswordRepo extends CommonRepo<AdminPassword,Long> {
 
-    List<AdminPassword> findByAdminUser(AdminUser adminUser);
+    List<AdminPassword> findByUserId(Long userId);
 
-    int countByAdminUser(AdminUser user);
+    int countByUserId(Long userId);
 
-    AdminPassword findFirstByAdminUser(AdminUser adminUser);
+    AdminPassword findFirstByUserId(Long userId);
 
 }

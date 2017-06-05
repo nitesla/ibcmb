@@ -163,8 +163,8 @@ public class RetailUserServiceImpl implements RetailUserService {
 
 
             retailUser.setPassword(this.passwordEncoder.encode(user.getPassword()));
-            retailUser.setUsedPasswords(getUsedPasswords(user.getPassword(),retailUser.getUsedPasswords()));
             retailUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
+            passwordPolicyService.saveRetailPassword(retailUser);
             retailUserRepo.save(retailUser);
 
             Collection<AccountInfo> accounts = integrationService.fetchAccounts(details.getCifId());
@@ -243,7 +243,7 @@ public class RetailUserServiceImpl implements RetailUserService {
             if ((oldStatus == null) || ("I".equals(oldStatus)) && "A".equals(newStatus)) {
                 String password = passwordPolicyService.generatePassword();
                 user.setPassword(passwordEncoder.encode(password));
-                user.setUsedPasswords(getUsedPasswords(password,user.getUsedPasswords()));
+                passwordPolicyService.saveRetailPassword(user);
                 String fullName = user.getFirstName()+" "+user.getLastName();
                 Email email = new Email.Builder()
                         .setRecipient(user.getEmail())
@@ -279,8 +279,8 @@ public class RetailUserServiceImpl implements RetailUserService {
             RetailUser user = retailUserRepo.findOne(userId);
             String newPassword = passwordPolicyService.generatePassword();
             user.setPassword(passwordEncoder.encode(newPassword));
-            user.setUsedPasswords(getUsedPasswords(newPassword,user.getUsedPasswords()));
             user.setExpiryDate(new Date());
+            passwordPolicyService.saveRetailPassword(user);
             retailUserRepo.save(user);
             String fullName = user.getFirstName()+" "+user.getLastName();
             Email email = new Email.Builder()
@@ -308,7 +308,7 @@ public class RetailUserServiceImpl implements RetailUserService {
             RetailUser retailUser = retailUserRepo.findOne(user.getId());
             retailUser.setPassword(this.passwordEncoder.encode(password));
             retailUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
-            user.setUsedPasswords(getUsedPasswords(password,user.getUsedPasswords()));
+            passwordPolicyService.saveRetailPassword(retailUser);
             this.retailUserRepo.save(retailUser);
             logger.info("User {} password has been updated", user.getId());
             return messageSource.getMessage("password.change.success", null, locale);
@@ -334,8 +334,8 @@ public class RetailUserServiceImpl implements RetailUserService {
         try {
             RetailUser retailUser = retailUserRepo.findOne(user.getId());
             retailUser.setPassword(this.passwordEncoder.encode(changePassword.getNewPassword()));
-            user.setUsedPasswords(getUsedPasswords(changePassword.getNewPassword(),user.getUsedPasswords()));
             retailUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
+            passwordPolicyService.saveRetailPassword(retailUser);
             this.retailUserRepo.save(retailUser);
             logger.info("User {} password has been updated", user.getId());
             return messageSource.getMessage("password.change.success", null, locale);
@@ -364,25 +364,6 @@ public class RetailUserServiceImpl implements RetailUserService {
         return accountService.AddAccount(user.getCustomerId(), accountDTO);
     }
 
-//    @Override
-//    public boolean generateAndSendPassword(RetailUser user) {
-//        boolean ok = false;
-//
-//        try {
-//            String newPassword = generatePassword();
-//            setPassword(user, newPassword);
-//            retailUserRepo.save(user);
-//
-//            sendPassword(user);
-//            logger.info("PASSWORD GENERATED AND SENT");
-//        } catch (Exception e) {
-//            logger.error("ERROR OCCURRED {}", e.getMessage());
-//        }
-//
-//
-//        return ok;
-//
-//    }
 
     @Override
     public boolean changeAlertPreference(RetailUserDTO user, AlertPref alertPreference) {
@@ -406,17 +387,8 @@ public class RetailUserServiceImpl implements RetailUserService {
         return ok;
     }
 
-    public String generatePassword() {
-        /*String password=   RandomStringUtils.randomNumeric(10);
-        return password!=null? password: "";*/
-        return null;
-    }
 
 
-    public boolean sendPassword(RetailUser user) {
-        //TODO use an smtp server to send new password to user via mail
-        return false;
-    }
 
     private RetailUserDTO convertEntityToDTO(RetailUser retailUser) {
         RetailUserDTO retailUserDTO =  modelMapper.map(retailUser, RetailUserDTO.class);

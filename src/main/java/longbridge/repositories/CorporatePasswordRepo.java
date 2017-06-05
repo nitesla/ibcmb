@@ -12,10 +12,10 @@ import java.util.List;
 @Repository
 public interface CorporatePasswordRepo extends CommonRepo<CorporatePassword,Long>{
 
-    List<CorporatePassword> findByCorporateUser(CorporateUser corporateUser);
+    List<CorporatePassword> findByUserId(Long userId);
 
-    int countByCorporateUser(CorporateUser user);
+    int countByUserId(Long userId);
 
-    CorporatePassword findFirstByCorporateUser(CorporateUser corporateUser);
+    CorporatePassword findFirstByUserId(Long userId);
 
 }

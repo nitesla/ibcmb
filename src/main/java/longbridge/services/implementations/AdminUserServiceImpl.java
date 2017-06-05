@@ -173,7 +173,7 @@ public class AdminUserServiceImpl implements AdminUserService {
                 String password = passwordPolicyService.generatePassword();
                 user.setPassword(passwordEncoder.encode(password));
                 user.setExpiryDate(new Date());
-                passwordPolicyService.saveAdminPassword();
+                passwordPolicyService.saveAdminPassword(user);
                 adminUserRepo.save(user);
 
                 Email email = new Email.Builder()
@@ -187,7 +187,7 @@ public class AdminUserServiceImpl implements AdminUserService {
             } else if (("I".equals(oldStatus)) && "A".equals(newStatus)) {//User is being reactivated
                 String password = passwordPolicyService.generatePassword();
                 user.setPassword(passwordEncoder.encode(password));
-                user.setUsedPasswords(getUsedPasswords(password,user.getUsedPasswords()));
+                passwordPolicyService.saveAdminPassword(user);
                 user.setExpiryDate(new Date());
                 adminUserRepo.save(user);
                 Email email = new Email.Builder()
@@ -264,7 +264,7 @@ public class AdminUserServiceImpl implements AdminUserService {
             AdminUser user = adminUserRepo.findOne(userId);
             String newPassword = passwordPolicyService.generatePassword();
             user.setPassword(passwordEncoder.encode(newPassword));
-            user.setUsedPasswords(getUsedPasswords(newPassword,user.getUsedPasswords()));
+            passwordPolicyService.saveAdminPassword(user);
             user.setExpiryDate(new Date());
             String fullName = user.getFirstName() + " " + user.getLastName();
             this.adminUserRepo.save(user);
@@ -288,8 +288,8 @@ public class AdminUserServiceImpl implements AdminUserService {
             AdminUser user = adminUserRepo.findFirstByUserName(username);
             String newPassword = passwordPolicyService.generatePassword();
             user.setPassword(passwordEncoder.encode(newPassword));
-            user.setUsedPasswords(getUsedPasswords(newPassword,user.getUsedPasswords()));
             user.setExpiryDate(new Date());
+            passwordPolicyService.saveAdminPassword(user);
             String fullName = user.getFirstName() + " " + user.getLastName();
             this.adminUserRepo.save(user);
             Email email = new Email.Builder()
@@ -324,8 +324,8 @@ public class AdminUserServiceImpl implements AdminUserService {
         try {
             AdminUser adminUser = adminUserRepo.findOne(user.getId());
             adminUser.setPassword(this.passwordEncoder.encode(changePassword.getNewPassword()));
-            adminUser.setUsedPasswords(getUsedPasswords(changePassword.getNewPassword(), adminUser.getUsedPasswords()));
             adminUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
+            passwordPolicyService.saveAdminPassword(user);
             this.adminUserRepo.save(adminUser);
             logger.info("User {} password has been updated", user.getId());
             return messageSource.getMessage("password.change.success", null, locale);
@@ -368,8 +368,8 @@ public class AdminUserServiceImpl implements AdminUserService {
         try {
             AdminUser adminUser = adminUserRepo.findOne(user.getId());
             adminUser.setPassword(this.passwordEncoder.encode(changePassword.getNewPassword()));
-            adminUser.setUsedPasswords(getUsedPasswords(changePassword.getNewPassword(), adminUser.getUsedPasswords()));
             adminUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
+            passwordPolicyService.saveAdminPassword(user);
             this.adminUserRepo.save(adminUser);
             logger.info("User {}'s password has been updated", user.getId());
             return messageSource.getMessage("password.change.success", null, locale);

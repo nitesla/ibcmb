@@ -12,15 +12,16 @@ import javax.persistence.Entity;
 @Where(clause ="del_Flag='N'" )
 public class CorporatePassword extends AbstractEntity {
 
-    CorporateUser corporateUser;
+    Long userId;
     String password;
 
-    public CorporateUser getCorporateUser() {
-        return corporateUser;
+
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setCorporateUser(CorporateUser corporateUser) {
-        this.corporateUser = corporateUser;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public String getPassword() {

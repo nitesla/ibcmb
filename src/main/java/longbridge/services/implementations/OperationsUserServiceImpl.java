@@ -124,8 +124,8 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             if ((oldStatus == null)) {//User was just created
                 String password = passwordPolicyService.generatePassword();
                 user.setPassword(passwordEncoder.encode(password));
-                user.setUsedPasswords(getUsedPasswords(password, user.getUsedPasswords()));
                 user.setExpiryDate(new Date());
+                passwordPolicyService.saveOpsPassword(user);
                 operationsUserRepo.save(user);
 
                 Email email = new Email.Builder()
@@ -137,8 +137,8 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             } else if (("I".equals(oldStatus)) && "A".equals(newStatus)) {//User is being reactivated
                 String password = passwordPolicyService.generatePassword();
                 user.setPassword(passwordEncoder.encode(password));
-                user.setUsedPasswords(getUsedPasswords(password, user.getUsedPasswords()));
                 user.setExpiryDate(new Date());
+                passwordPolicyService.saveOpsPassword(user);
                 operationsUserRepo.save(user);
                 Email email = new Email.Builder()
                         .setRecipient(user.getEmail())
@@ -261,9 +261,9 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             OperationsUser user = operationsUserRepo.findOne(id);
             String newPassword = passwordPolicyService.generatePassword();
             user.setPassword(passwordEncoder.encode(newPassword));
-            user.setUsedPasswords(getUsedPasswords(newPassword, user.getUsedPasswords()));
             String fullName = user.getFirstName() + " " + user.getLastName();
             user.setExpiryDate(new Date());
+            passwordPolicyService.saveOpsPassword(user);
             this.operationsUserRepo.save(user);
             Email email = new Email.Builder()
                     .setRecipient(user.getEmail())
@@ -284,9 +284,9 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             OperationsUser user = operationsUserRepo.findFirstByUserName(username);
             String newPassword = passwordPolicyService.generatePassword();
             user.setPassword(passwordEncoder.encode(newPassword));
-            user.setUsedPasswords(getUsedPasswords(newPassword, user.getUsedPasswords()));
             String fullName = user.getFirstName() + " " + user.getLastName();
             user.setExpiryDate(new Date());
+            passwordPolicyService.saveOpsPassword(user);
             this.operationsUserRepo.save(user);
             Email email = new Email.Builder()
                     .setRecipient(user.getEmail())
@@ -320,8 +320,8 @@ public class OperationsUserServiceImpl implements OperationsUserService {
         try {
             OperationsUser opsUser = operationsUserRepo.findOne(user.getId());
             opsUser.setPassword(this.passwordEncoder.encode(changePassword.getNewPassword()));
-            opsUser.setUsedPasswords(getUsedPasswords(changePassword.getNewPassword(), opsUser.getUsedPasswords()));
             opsUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
+            passwordPolicyService.saveOpsPassword(user);
             this.operationsUserRepo.save(opsUser);
             logger.info("User {}'s password has been updated", user.getId());
             return messageSource.getMessage("password.change.success", null, locale);
@@ -346,8 +346,8 @@ public class OperationsUserServiceImpl implements OperationsUserService {
         try {
             OperationsUser opsUser = operationsUserRepo.findOne(user.getId());
             opsUser.setPassword(this.passwordEncoder.encode(changePassword.getNewPassword()));
-            opsUser.setUsedPasswords(getUsedPasswords(changePassword.getNewPassword(), opsUser.getUsedPasswords()));
             opsUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
+            passwordPolicyService.saveOpsPassword(user);
             operationsUserRepo.save(opsUser);
             logger.info("User {} password has been updated", user.getId());
             return messageSource.getMessage("password.change.success", null, locale);

@@ -183,21 +183,21 @@ public class PasswordValidator {
 
         switch (user.getUserType()){
             case ADMIN:
-                List<AdminPassword> adminPasswords = adminPasswordRepo.findByAdminUser((AdminUser)user);
+                List<AdminPassword> adminPasswords = adminPasswordRepo.findByUserId(user.getId());
                 for(AdminPassword adminPassword: adminPasswords){
                     if(passwordEncoder.matches(password,adminPassword.getPassword())){
                         return false;
                     }
                 }
             case OPERATIONS:
-                List<OpsPassword> opsPasswords = opsPasswordRepo.findByOperationsUser((OperationsUser)user);
+                List<OpsPassword> opsPasswords = opsPasswordRepo.findByUserId(user.getId());
                 for(OpsPassword opsPassword: opsPasswords){
                     if(passwordEncoder.matches(password,opsPassword.getPassword())){
                         return false;
                     }
                 }
             case RETAIL:
-                List<RetailPassword> retailPasswords = retailPasswordRepo.findByRetailUser((RetailUser)user);
+                List<RetailPassword> retailPasswords = retailPasswordRepo.findByUserId(user.getId());
                 for(RetailPassword retailPassword: retailPasswords){
                     if(passwordEncoder.matches(password,retailPassword.getPassword())){
                         return false;
@@ -205,7 +205,7 @@ public class PasswordValidator {
                 }
 
             case CORPORATE:
-                List<CorporatePassword> corporatePasswords = corporatePasswordRepo.findByCorporateUser((CorporateUser)user);
+                List<CorporatePassword> corporatePasswords = corporatePasswordRepo.findByUserId(user.getId());
                 for(CorporatePassword corporatePassword: corporatePasswords){
                     if(passwordEncoder.matches(password,corporatePassword.getPassword())){
                         return false;
@@ -217,21 +217,5 @@ public class PasswordValidator {
         return true;
     }
 
-    /**
-     * Gets the position of the passwordHash from the list of password hashes
-     * The first entry in our list is given a value of 1 even though Java List starts with an index of 0.
-     * If the password is not found, we return 0
-     */
-    private int getPasswordHashPosition(String password, String usedPasswords) {
-        int position = 0;
-        List<String> usedPasswordHashes = Arrays.asList(StringUtils.split(usedPasswords, ","));
 
-        for (String passwordHash : usedPasswordHashes) {
-            if (passwordEncoder.matches(password, passwordHash)) {
-                position = usedPasswordHashes.lastIndexOf(passwordHash) + 1;
-                return position;
-            }
-        }
-        return position;
-    }
 }

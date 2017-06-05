@@ -1,22 +1,27 @@
 package longbridge.models;
 
+import org.hibernate.annotations.Where;
+import org.hibernate.envers.Audited;
+
 import javax.persistence.Entity;
 
 /**
  * Created by Fortune on 6/5/2017.
  */
 @Entity
+@Where(clause ="del_Flag='N'" )
 public class AdminPassword extends AbstractEntity {
 
-    AdminUser adminUser;
+    Long userId;
     String password;
 
-    public AdminUser getAdminUser() {
-        return adminUser;
+
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setAdminUser(AdminUser adminUser) {
-        this.adminUser = adminUser;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public String getPassword() {
