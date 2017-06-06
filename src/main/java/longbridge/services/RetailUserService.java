@@ -7,6 +7,7 @@ import longbridge.exception.InternetBankingException;
 import longbridge.exception.PasswordException;
 import longbridge.forms.AlertPref;
 import longbridge.forms.CustChangePassword;
+import longbridge.forms.CustResetPassword;
 import longbridge.models.RetailUser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -62,7 +63,7 @@ public interface RetailUserService {
 
 
     @PreAuthorize("hasAuthority('UPDATE_RETAIL_USER')")
-    String resetPassword(RetailUser user, String password);
+    String resetPassword(RetailUser user, CustResetPassword custResetPassword);
 
     /**
      * Updates the details of the specified retail user

@@ -190,17 +190,17 @@ public class PasswordPolicyService {
 
         SettingDTO numOfChangesBeforeReuse = configService.getSettingByName("PASSWORD_REUSE");
         if (numOfChangesBeforeReuse != null && numOfChangesBeforeReuse.isEnabled()) {
-            int count = retailPasswordRepo.countByUserId(retailUser.getId());
+            int count = retailPasswordRepo.countByUsername(retailUser.getUserName());
             int numOfChanges = NumberUtils.toInt(numOfChangesBeforeReuse.getValue());
 
             if (numOfChanges != 0) {
                 RetailPassword retailPassword = new RetailPassword();
-                retailPassword.setUserId(retailUser.getId());
+                retailPassword.setUsername(retailUser.getUserName());
                 retailPassword.setPassword(retailUser.getPassword());
                 if (count < numOfChanges) {
                     retailPasswordRepo.save(retailPassword);
                 } else {
-                    RetailPassword firstPassword = retailPasswordRepo.findFirstByUserId(retailUser.getId());
+                    RetailPassword firstPassword = retailPasswordRepo.findFirstByUsername(retailUser.getUserName());
                     retailPasswordRepo.delete(firstPassword);
                     retailPasswordRepo.save(retailPassword);
                 }
@@ -212,19 +212,19 @@ public class PasswordPolicyService {
 
         SettingDTO numOfChangesBeforeReuse = configService.getSettingByName("PASSWORD_REUSE");
         if (numOfChangesBeforeReuse != null && numOfChangesBeforeReuse.isEnabled()) {
-            int count = corporatePasswordRepo.countByUserId(corporateUser.getId());
+            int count = corporatePasswordRepo.countByUsername(corporateUser.getUserName());
             int numOfChanges = NumberUtils.toInt(numOfChangesBeforeReuse.getValue());
 
 
             CorporatePassword corporatePassword = new CorporatePassword();
-            corporatePassword.setUserId(corporateUser.getId());
+            corporatePassword.setUsername(corporateUser.getUserName());
             corporatePassword.setPassword(corporateUser.getPassword());
 
             if (numOfChanges != 0) {
                 if (count < numOfChanges) {
                     corporatePasswordRepo.save(corporatePassword);
                 } else {
-                    CorporatePassword firstPassword = corporatePasswordRepo.findFirstByUserId(corporateUser.getId());
+                    CorporatePassword firstPassword = corporatePasswordRepo.findFirstByUsername(corporateUser.getUserName());
                     corporatePasswordRepo.delete(firstPassword);
                     corporatePasswordRepo.save(corporatePassword);
                 }

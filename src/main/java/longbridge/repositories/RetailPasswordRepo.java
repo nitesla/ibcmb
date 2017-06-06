@@ -12,9 +12,9 @@ import java.util.List;
 @Repository
 public interface RetailPasswordRepo extends CommonRepo<RetailPassword,Long> {
 
-    List<RetailPassword> findByUserId(Long userId);
+    List<RetailPassword> findByUsername(String username);
 
-    RetailPassword findFirstByUserId(Long userId);
+    RetailPassword findFirstByUsername(String username);
 
-    int countByUserId(Long userId);
+    int countByUsername(String username);
 }

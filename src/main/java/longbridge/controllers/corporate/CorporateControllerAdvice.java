@@ -4,6 +4,7 @@ import longbridge.models.Account;
 import longbridge.models.CorporateUser;
 import longbridge.models.SRConfig;
 import longbridge.services.*;
+import longbridge.utils.DateFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -62,7 +63,13 @@ public class CorporateControllerAdvice {
 
 //        model.addAttribute("compName",corporateName);
 
-        model.addAttribute("lastLogin",corporateUser.getLastLoginDate());
+        if(corporateUser.getLastLoginDate()!=null) {
+            model.addAttribute("lastLogin", DateFormatter.format(corporateUser.getLastLoginDate()));
+        }
+        else{
+            model.addAttribute("lastLogin", corporateUser.getLastLoginDate());
+        }
+
         Calendar calendar=Calendar.getInstance();
         int timeOfDay=calendar.get(Calendar.HOUR_OF_DAY);
         if(timeOfDay>=0 && timeOfDay<12){

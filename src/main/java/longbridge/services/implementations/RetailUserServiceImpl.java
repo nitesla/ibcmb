@@ -9,6 +9,7 @@ import longbridge.dtos.SettingDTO;
 import longbridge.exception.*;
 import longbridge.forms.AlertPref;
 import longbridge.forms.CustChangePassword;
+import longbridge.forms.CustResetPassword;
 import longbridge.models.Account;
 import longbridge.models.Code;
 import longbridge.models.Email;
@@ -297,16 +298,19 @@ public class RetailUserServiceImpl implements RetailUserService {
     }
 
     @Override
-    public String resetPassword(RetailUser user, String password) {
+    public String resetPassword(RetailUser user, CustResetPassword custResetPassword) {
 
-        String errorMessage = passwordPolicyService.validate(password, user);
+        String errorMessage = passwordPolicyService.validate(custResetPassword.getNewPassword(), user);
         if (!"".equals(errorMessage)) {
             throw new PasswordPolicyViolationException(errorMessage);
         }
 
+        if (!custResetPassword.getNewPassword().equals(custResetPassword.getConfirmPassword())) {
+            throw new PasswordMismatchException();
+        }
         try {
             RetailUser retailUser = retailUserRepo.findOne(user.getId());
-            retailUser.setPassword(this.passwordEncoder.encode(password));
+            retailUser.setPassword(this.passwordEncoder.encode(custResetPassword.getNewPassword()));
             retailUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
             passwordPolicyService.saveRetailPassword(retailUser);
             this.retailUserRepo.save(retailUser);
