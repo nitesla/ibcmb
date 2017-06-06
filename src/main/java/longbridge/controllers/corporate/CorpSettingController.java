@@ -161,18 +161,18 @@ public class CorpSettingController {
 
         }
         catch (PasswordPolicyViolationException pve) {
-            result.reject("newPassword", pve.getMessage());
+            model.addAttribute("failure",pve.getMessage());
             logger.error("Password policy violation from retail user {} error {}", user.getUserName(), pve.toString());
             List<String> passwordPolicy = passwordPolicyService.getPasswordRules();
             logger.info("PASSWORD RULES {}", passwordPolicy);
             model.addAttribute("passwordRules", passwordPolicy);
             return "corp/settings/new-pword";
         } catch (PasswordMismatchException pme) {
-            result.reject("confirmPassword", pme.getMessage());
+            model.addAttribute("failure",pme.getMessage());
             logger.error("New password mismatch from retail user {}", user.getUserName(), pme.toString());
             return "corp/settings/new-pword";
         } catch (PasswordException pe) {
-            result.addError(new ObjectError("error", pe.getMessage()));
+            model.addAttribute("failure",pe.getMessage());
             logger.error("Error changing password for retail user {}", user.getUserName(), pe);
             List<String> passwordPolicy = passwordPolicyService.getPasswordRules();
             logger.info("PASSWORD RULES {}", passwordPolicy);
