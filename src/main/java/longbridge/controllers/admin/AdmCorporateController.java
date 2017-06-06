@@ -98,13 +98,13 @@ public class AdmCorporateController {
             return "/adm/corporate/add";
         }
 
-        List<AccountInfo> accountInfos = integrationService.fetchAccounts(corporate.getCustomerId());
+       List<AccountInfo> accountInfos = integrationService.fetchAccounts(corporate.getCustomerId());
 
         if (accountInfos == null || accountInfos.isEmpty()) {
             result.addError(new ObjectError("invalid", messageSource.getMessage("cifid.invalid", null, locale)));
             return "/adm/corporate/add";
         } else {
-            String accountName = accountInfos.get(0).getAccountName();
+            String accountName = integrationService.viewCustomerDetails(accountInfos.get(0).getAccountNumber()).getCustomerName();
             corporate.setName(accountName);
             session.setAttribute("corporate", corporate);
             return "redirect:/admin/corporates/user/first";

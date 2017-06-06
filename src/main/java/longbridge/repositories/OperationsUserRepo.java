@@ -19,9 +19,11 @@ import org.springframework.transaction.annotation.Transactional;
 public interface OperationsUserRepo extends CommonRepo<OperationsUser, Long> {
 
     OperationsUser findFirstByUserName(String s);
+    OperationsUser findFirstByUserNameIgnoreCase (String s);
     Iterable<OperationsUser> findByRole(Role r);
     Page<OperationsUser> findByRole(Role r, Pageable pageDetail);
     @Modifying
     @Query("update OperationsUser  u set u.lastLoginDate = current_timestamp() , u.lockedUntilDate = NULL, u.noOfLoginAttempts = 0 where u.userName = :name")
     void updateUserAfterLogin(@Param("name") String userName);
+	Integer countByRole(Role role);
 }

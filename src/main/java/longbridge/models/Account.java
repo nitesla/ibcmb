@@ -132,7 +132,7 @@ public class Account extends AbstractEntity{
 
         Account account = (Account) o;
 
-        if (!accountId.equals(account.accountId)) return false;
+//        if (!accountId.equals(account.accountId)) return false;
         if (!accountNumber.equals(account.accountNumber)) return false;
         if (!customerId.equals(account.customerId)) return false;
         return solId != null ? solId.equals(account.solId) : account.solId == null;
@@ -141,7 +141,7 @@ public class Account extends AbstractEntity{
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + accountId.hashCode();
+//        result = 31 * result + accountId.hashCode();
         result = 31 * result + accountNumber.hashCode();
         result = 31 * result + customerId.hashCode();
         result = 31 * result + (solId != null ? solId.hashCode() : 0);

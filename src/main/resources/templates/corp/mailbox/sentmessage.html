@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="cust_layout :: site-head">
+
+</head>
+<body>
+<header th:replace="cust_layout :: header">
+</header>
+
+<section class="content-wrapper">
+    <div class="container conts">
+        <div class="wrapper wrapper-content">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-3">
+                        <div class="ibox float-e-margins">
+                            <div class="ibox-content mailbox-content">
+                                <div class="margin-bottoms"></div>
+                                <div class="file-manager">
+                                    <a class="btn btn-block btn-primary compose-mail" th:href="@{/corporate/mailbox/compose}">Compose Mail</a>
+                                    <div class="margin-bottoms"></div>
+                                    <ul class="folder-list">
+                                        <li><a th:href="@{/corporate/mailbox/inbox}"> <i class="fa fa-inbox "></i> Inbox </a></li>
+                                        <li><a th:href="@{/corporate/mailbox/sentmail}"> <i class="fa fa-sign-out"></i> Sent Mail</a></li>
+                                        <!--<li><a th:href="@{/corporate/mailbox/draft}"> <i class="fa fa-file-text-o"></i> Drafts </a></li>-->
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-9 animated fadeInRight">
+                        <div class="contain">
+                            <div class="margin-bottom"></div>
+                            <div class="mail-box-header">
+                                <div class="pull-right tooltip-demo fas">
+                                    <a th:href="@{/corporate/mailbox/sent/message/{id}/delete(id=${messageDTO.id})}" class="btn-default btn-sm" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fa fa-trash-o"></i>&nbsp;</a>
+                                </div>
+
+                                <h3 class="in-box">
+                                    <span >From: </span><span class="in-box" th:text="${messageDTO.sender}"></span>
+                                </h3>
+                                <br/>
+                                <h4 class="in-box">
+                                    <span >To: </span><span class="in-box" th:text="${messageDTO.recipient}"></span>
+                                </h4>
+                                <br/>
+
+                                <br/>
+                                <div class="mail-tools tooltip-demo m-t-md">
+                                    <h4 class="in-box">
+                                        <span>Subject: </span><span th:text="${messageDTO.subject}">Aldrsions of Lorem Ipsum.</span>
+                                    </h4>
+                                    <h5>
+                                        <span class="pull-right font-noraml" th:text="${messageDTO.createdOn}">02 FEB 2017</span>
+                                    </h5>
+                                    <br/>  <br/><br/>
+
+
+                                </div>
+                            </div>
+                            <div class="mail-box">
+                                <p th:text="${messageDTO.body}"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+<!-- CONTENT-WRAPPER SECTION END-->
+<footer th:replace="cust_layout ::footer">
+</footer>
+</body>
+</html>

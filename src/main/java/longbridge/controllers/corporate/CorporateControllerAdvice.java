@@ -4,6 +4,7 @@ import longbridge.models.Account;
 import longbridge.models.CorporateUser;
 import longbridge.models.SRConfig;
 import longbridge.services.*;
+import longbridge.utils.DateFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -26,15 +27,16 @@ public class CorporateControllerAdvice {
     private TransferService transferService;
     private AccountService accountService;
     private ServiceReqConfigService reqConfigService;
+    private MessageService messageService;
 
     @Autowired
-
-    public CorporateControllerAdvice(CorporateUserService corporateUserService, IntegrationService integrationService, TransferService transferService, AccountService accountService, ServiceReqConfigService reqConfigService) {
+    public CorporateControllerAdvice(CorporateUserService corporateUserService, IntegrationService integrationService, TransferService transferService, AccountService accountService, ServiceReqConfigService reqConfigService, MessageService messageService) {
         this.corporateUserService = corporateUserService;
         this.integrationService = integrationService;
         this.transferService = transferService;
         this.accountService = accountService;
         this.reqConfigService = reqConfigService;
+        this.messageService = messageService;
     }
 
     @ModelAttribute
@@ -45,14 +47,29 @@ public class CorporateControllerAdvice {
         }
 
         CorporateUser corporateUser=corporateUserService.getUserByName(principal.getName());
-        String bankVerificationNumber;
-        if(corporateUser.getCorporate().getBvn()==null)
-        {bankVerificationNumber="";}
+        String RCNumber;
+        if(corporateUser.getCorporate().getRcNumber()==null)
+        {RCNumber="Not registered";}
         else
-        {bankVerificationNumber=corporateUser.getCorporate().getBvn();}
+        {RCNumber=corporateUser.getCorporate().getRcNumber();}
 
-        model.addAttribute("bvn",bankVerificationNumber);
-        model.addAttribute("lastLogin",corporateUser.getLastLoginDate());
+        model.addAttribute("RcNo",RCNumber);
+
+        String corporateName;
+        if(corporateUser.getCorporate().getName()==null)
+        {corporateName="";}
+        else
+        {corporateName=corporateUser.getCorporate().getName();}
+
+//        model.addAttribute("compName",corporateName);
+
+        if(corporateUser.getLastLoginDate()!=null) {
+            model.addAttribute("lastLogin", DateFormatter.format(corporateUser.getLastLoginDate()));
+        }
+        else{
+            model.addAttribute("lastLogin", corporateUser.getLastLoginDate());
+        }
+
         Calendar calendar=Calendar.getInstance();
         int timeOfDay=calendar.get(Calendar.HOUR_OF_DAY);
         if(timeOfDay>=0 && timeOfDay<12){
@@ -80,6 +97,13 @@ public class CorporateControllerAdvice {
 
         List<SRConfig> requestList = reqConfigService.getServiceReqConfs();
         model.addAttribute("serviceRequests", requestList);
+
+        int numOfUnreadMessages = messageService.getNumOfUnreadMessages(corporateUser);
+        if(numOfUnreadMessages>0){
+            model.addAttribute("numOfUnreadMessages",numOfUnreadMessages);
+        }
+
+
         return "";
     }
 

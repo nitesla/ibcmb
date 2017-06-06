@@ -24,10 +24,12 @@ import org.springframework.stereotype.Repository;
 
 public interface AdminUserRepo extends CommonRepo<AdminUser, Long>{
     AdminUser findFirstByUserName(String s);
+    AdminUser findFirstByUserNameIgnoreCase(String s);
     Iterable<AdminUser> findByRole(Role r);
     Page<AdminUser> findByRole(Role r, Pageable pageDetail);
 
     @Modifying
     @Query("update AdminUser u set u.lastLoginDate = current_timestamp() , u.lockedUntilDate = NULL, u.noOfLoginAttempts = 0 where u.userName = :name")
     void updateUserAfterLogin(@Param("name") String userName);
+	Integer countByRole(Role role);
 }

@@ -5,6 +5,8 @@ import longbridge.models.OperationsUser;
 import longbridge.models.UserType;
 import longbridge.repositories.AdminUserRepo;
 import longbridge.repositories.OperationsUserRepo;
+import longbridge.security.FailedLoginService;
+import longbridge.security.SessionUtils;
 import longbridge.services.ConfigurationService;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
@@ -27,12 +29,11 @@ import java.io.IOException;
 @Component("opAuthenticationSuccessHandler")
 public class OpAuthenticationSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
     private final Logger logger = LoggerFactory.getLogger(getClass());
+    @Autowired
+    SessionUtils sessionUtils;
+    @Autowired
+    FailedLoginService failedLoginService;
     private LocalDate today = LocalDate.now();
-
-    public OpAuthenticationSuccessHandler() {
-        setUseReferer(true);
-    }
-
     private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
     @Autowired
@@ -40,10 +41,9 @@ public class OpAuthenticationSuccessHandler extends SavedRequestAwareAuthenticat
 
     @Autowired
     private ConfigurationService configService;
-
-
-
-
+    public OpAuthenticationSuccessHandler() {
+        setUseReferer(true);
+    }
 
     @Override
     @Transactional
@@ -51,15 +51,12 @@ public class OpAuthenticationSuccessHandler extends SavedRequestAwareAuthenticat
         HttpSession session = request.getSession();
         if (session != null) {
             setUseReferer(true);
-        	session.setMaxInactiveInterval(30 *60);
-            OperationsUser user= operationsUserRepo.findFirstByUserName(authentication.getName());
-            LocalDate date = new LocalDate(user.getExpiryDate());
-
-            if (today.isAfter(date) || today.isEqual(date)) {
-                session.setAttribute("expired-password","expired-password");
-            }
+            sessionUtils.setTimeout(session);
+            OperationsUser user = operationsUserRepo.findFirstByUserNameIgnoreCase(authentication.getName());
+            sessionUtils.setTimeout(session);
+            sessionUtils.validateExpiredPassword(user, session);
+            failedLoginService.loginSucceeded(user);
         }
-
         operationsUserRepo.updateUserAfterLogin(authentication.getName());
         super.onAuthenticationSuccess(request, response, authentication);
 
@@ -68,7 +65,7 @@ public class OpAuthenticationSuccessHandler extends SavedRequestAwareAuthenticat
     @Override
     protected void handle(final HttpServletRequest request, final HttpServletResponse response, final Authentication authentication) throws IOException {
 
-         String targetUrl = determineTargetUrl(authentication);
+        String targetUrl = determineTargetUrl(authentication);
 
         if (response.isCommitted()) {
             logger.debug("Response has already been committed. Unable to redirect to " + targetUrl);
@@ -81,7 +78,7 @@ public class OpAuthenticationSuccessHandler extends SavedRequestAwareAuthenticat
 
     protected String determineTargetUrl(final Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-          boolean isOp= operationsUserRepo.findFirstByUserName(userDetails.getUsername()).getUserType().equals(UserType.OPERATIONS);
+        boolean isOp = operationsUserRepo.findFirstByUserName(userDetails.getUsername()).getUserType().equals(UserType.OPERATIONS);
         SettingDTO setting = configService.getSettingByName("ENABLE_OPS_2FA");
         boolean tokenAuth = false;
         if (setting != null && setting.isEnabled()) {
@@ -93,11 +90,10 @@ public class OpAuthenticationSuccessHandler extends SavedRequestAwareAuthenticat
 
         if (isOp) {
             return "/ops/dashboard";
-        }  else {
+        } else {
             throw new IllegalStateException();
         }
     }
 
-    
-   
+
 }

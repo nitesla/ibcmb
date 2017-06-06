@@ -1,15 +1,18 @@
 package longbridge.controllers.corporate;
 
 import longbridge.dtos.CorpLocalBeneficiaryDTO;
+import longbridge.dtos.CorpTransferRequestDTO;
 import longbridge.dtos.LocalBeneficiaryDTO;
 import longbridge.dtos.TransferRequestDTO;
 import longbridge.exception.InternetBankingTransferException;
+import longbridge.exception.TransferErrorService;
 import longbridge.models.Account;
 import longbridge.models.CorpLocalBeneficiary;
 import longbridge.models.CorporateUser;
 import longbridge.models.FinancialInstitutionType;
 import longbridge.services.*;
 import longbridge.utils.TransferType;
+import longbridge.validator.transfer.TransferValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
@@ -37,29 +40,32 @@ import java.util.stream.StreamSupport;
 public class CorpLocalTransferController {
 
     private CorporateUserService corporateUserService;
-    private IntegrationService integrationService;
-    private TransferService transferService;
-    private AccountService accountService;
+    private CorpTransferService corpTransferService;
     private MessageSource messages;
     private LocaleResolver localeResolver;
     private CorpLocalBeneficiaryService corpLocalBeneficiaryService;
     private FinancialInstitutionService financialInstitutionService;
+    private TransferValidator validator;
+    private TransferErrorService transferErrorService;
     private String page ="corp/transfer/local/";
     @Value("${bank.code}")
     private String bankCode;
 
     @Autowired
-
-    public CorpLocalTransferController(CorporateUserService corporateUserService, IntegrationService integrationService, TransferService transferService, AccountService accountService, MessageSource messages, LocaleResolver localeResolver, CorpLocalBeneficiaryService corpLocalBeneficiaryService, FinancialInstitutionService financialInstitutionService) {
+    public CorpLocalTransferController(CorporateUserService corporateUserService, CorpTransferService corpTransferService, MessageSource messages, LocaleResolver localeResolver, CorpLocalBeneficiaryService corpLocalBeneficiaryService, FinancialInstitutionService financialInstitutionService, TransferValidator validator, TransferErrorService transferErrorService) {
         this.corporateUserService = corporateUserService;
-        this.integrationService = integrationService;
-        this.transferService = transferService;
-        this.accountService = accountService;
+        this.corpTransferService = corpTransferService;
         this.messages = messages;
         this.localeResolver = localeResolver;
         this.corpLocalBeneficiaryService = corpLocalBeneficiaryService;
         this.financialInstitutionService = financialInstitutionService;
+        this.validator = validator;
+        this.transferErrorService = transferErrorService;
     }
+
+
+
+
     @GetMapping("")
     public String index(Model model, Principal principal) throws Exception {
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
@@ -68,45 +74,42 @@ public class CorpLocalTransferController {
         return page + "pagei";
     }
 
-    @PostMapping("")
-    public String bankTransfer(@ModelAttribute("transferRequest") @Valid TransferRequestDTO transferRequestDTO, Model model, RedirectAttributes redirectAttributes, Locale locale, HttpServletRequest request) throws Exception {
-
-        try {
-
-            String token = request.getParameter("token");
-            // boolean tokenOk = integrationService.performTokenValidation(principal.getName(), token);
-            boolean tokenOk = !token.isEmpty();
-            if (!tokenOk) {
-                redirectAttributes.addFlashAttribute("message", messages.getMessage("auth.token.failure", null, locale));
-                return page + "pageiv";
-            }
-              transferService.makeTransfer(transferRequestDTO);
-
-
-
-            return "redirect:/retail/transfer/local";
-        } catch (InternetBankingTransferException e) {
-            redirectAttributes.addFlashAttribute("error", e.getMessage());
-            return "redirect:/retail/transfer/local";
-        }
-    }
 
     @PostMapping("/summary")
-    public String transferSummary(@ModelAttribute("transferRequest") @Valid TransferRequestDTO transferRequestDTO, Model model) throws Exception {
-        model.addAttribute("transferRequest", transferRequestDTO);
-        return page + "pageiii";
+    public String transferSummary(@ModelAttribute("corpTransferRequest") @Valid CorpTransferRequestDTO corpTransferRequestDTO, BindingResult result, Model model, HttpServletRequest servletRequest) throws Exception {
+        model.addAttribute("corpTransferRequest", corpTransferRequestDTO);
+        validator.validate(corpTransferRequestDTO, result);
+        if (result.hasErrors()) {
+            return page + "pageii";
+        }
+        try {
+            System.out.println(corpTransferRequestDTO);
+            corpTransferService.validateTransfer(corpTransferRequestDTO);
+            corpTransferRequestDTO.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
+            servletRequest.getSession().setAttribute("corpTransferRequest", corpTransferRequestDTO);
+
+            return page + "pageiii";
+        } catch (InternetBankingTransferException e) {
+
+            String errorMessage = transferErrorService.getMessage(e, servletRequest);
+
+            model.addAttribute("failure", errorMessage);
+            return page + "pageii";
+
+        }
+
     }
 
 
     @GetMapping("/{id}")
     public String transfer(@PathVariable Long id, Model model) throws Exception {
         CorpLocalBeneficiary beneficiary = corpLocalBeneficiaryService.getCorpLocalBeneficiary(id);
-        TransferRequestDTO transferRequestDTO = new TransferRequestDTO();
-        transferRequestDTO.setBeneficiaryAccountName(beneficiary.getAccountName());
-        transferRequestDTO.setBeneficiaryAccountNumber(beneficiary.getAccountNumber());
-        transferRequestDTO.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
-        transferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode(bankCode));
-        model.addAttribute("transferRequest", transferRequestDTO);
+        CorpTransferRequestDTO corpTransferRequestDTO = new CorpTransferRequestDTO();
+        corpTransferRequestDTO.setBeneficiaryAccountName(beneficiary.getAccountName());
+        corpTransferRequestDTO.setBeneficiaryAccountNumber(beneficiary.getAccountNumber());
+        corpTransferRequestDTO.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
+        corpTransferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode(bankCode));
+        model.addAttribute("corpTransferRequest", corpTransferRequestDTO);
         model.addAttribute("beneficiary", beneficiary);
         return page + "pageii";
     }
@@ -115,23 +118,23 @@ public class CorpLocalTransferController {
     @GetMapping("/new")
     public String addCoronationBeneficiary(Model model, CorpLocalBeneficiaryDTO corpLocalBeneficiaryDTO) throws Exception {
         model.addAttribute("localBanks", financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.LOCAL));
-
+        model.addAttribute("corpLocalBeneficiaryDTO", corpLocalBeneficiaryDTO);
         return page + "pageiA";
     }
 
     @PostMapping("/new")
-    public String newBeneficiary(@ModelAttribute("corpLocalBeneficiary") @Valid CorpLocalBeneficiaryDTO corpLocalBeneficiaryDTO, BindingResult result, Model model) throws Exception {
+    public String newBeneficiary(@ModelAttribute("corpLocalBeneficiary") @Valid CorpLocalBeneficiaryDTO corpLocalBeneficiaryDTO, BindingResult result, Model model,HttpServletRequest request) throws Exception {
         if (result.hasErrors()) {
             return page + "pageiA";
         }
 
-        TransferRequestDTO transferRequestDTO = new TransferRequestDTO();
-        transferRequestDTO.setBeneficiaryAccountName(corpLocalBeneficiaryDTO.getAccountName());
-        transferRequestDTO.setBeneficiaryAccountNumber(corpLocalBeneficiaryDTO.getAccountNumber());
-        transferRequestDTO.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
-        transferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode(bankCode));
-        model.addAttribute("transferRequest", transferRequestDTO);
-
+        CorpTransferRequestDTO corpTransferRequestDTO = new CorpTransferRequestDTO();
+        corpTransferRequestDTO.setBeneficiaryAccountName(corpLocalBeneficiaryDTO.getAccountName());
+        corpTransferRequestDTO.setBeneficiaryAccountNumber(corpLocalBeneficiaryDTO.getAccountNumber());
+        corpTransferRequestDTO.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
+        corpTransferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode(bankCode));
+        model.addAttribute("corpTransferRequest", corpTransferRequestDTO);
+        request.getSession().setAttribute("Lbeneficiary", corpLocalBeneficiaryDTO);
         model.addAttribute("beneficiary", corpLocalBeneficiaryDTO);
 
 
@@ -140,10 +143,10 @@ public class CorpLocalTransferController {
 
 
     @PostMapping("/auth")
-    public String processTransfer(@ModelAttribute("transferRequest") @Valid TransferRequestDTO transferRequestDTO, Model model) throws Exception {
+    public String processTransfer(@ModelAttribute("corpTransferRequest") @Valid CorpTransferRequestDTO corpTransferRequestDTO, Model model) throws Exception {
 
 
-        model.addAttribute("transferRequest", transferRequestDTO);
+        model.addAttribute("corpTransferRequest", corpTransferRequestDTO);
         return page + "pageiv";
 
     }

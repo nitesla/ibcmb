@@ -12,84 +12,82 @@
 
         <div class="row">
 
-            <div class="col-md-4 col-sm-4" >
+            <div class="col-md-4 col-sm-4">
                 <h5 class="page_header"> Own Account Transaction</h5>
             </div>
         </div>
         <div class="row">
             <div class="col-md-8 content-bg">
-                <!--<div class="row spacing">-->
-                    <div class="col-md-6 col-sm-6">
-                     <div class="row spacing" >
+                <!--<div class="row form-spacing">-->
+                <div class="col-md-6 col-sm-6">
+                    <div class="row form-spacing">
+
+                        <table>
+                            <tr>
+
+                                <th colspan="2">Transaction Summary</th>
 
 
-                            <table>
-                                <tr>
+                            </tr>
+                            <tr>
 
-                                    <th colspan="2">Transaction Summary</th>
+                                <th>Source account</th>
+                                <td th:text="${corpTransferRequest.customerAccountNumber}"></td>
 
+                            </tr>
+                            <tr>
 
-                                </tr>
-                                <tr>
+                                <th>Destination account</th>
+                                <td th:text="${corpTransferRequest.beneficiaryAccountNumber}"></td>
 
-                                    <th>Source account</th>
-                                    <td th:text="${transRequest.customerAccountNumber}"></td>
+                            </tr>
+                            <tr>
 
-                                </tr>
-                                <tr>
+                                <th>Amount</th>
+                                <td th:text="${corpTransferRequest.amount}"></td>
 
-                                    <th>Destination account</th>
-                                    <td th:text="${transRequest.beneficiaryAccountNumber}"></td>
+                            </tr>
+                            <tr>
 
-                                </tr>
-                                <tr>
+                                <th>Remarks</th>
+                                <td th:text="${corpTransferRequest.remarks}"></td>
 
-                                    <th>Amount</th>
-                                    <td th:text="${transRequest.amount}"></td>
+                            </tr>
+                        </table>
 
-                                </tr>
-                                <tr>
-
-                                    <th>Remarks</th>
-                                    <td th:text="${transRequest.remarks}"></td>
-
-                                </tr>
-                            </table>
-
-                            <form method="post" th:action="@{/corp/transfer/ownaccount/auth}" th:object="${transRequest}">
-                                <input type="hidden" th:field="*{customerAccountNumber}"/>
-                                <input type="hidden" th:field="*{beneficiaryAccountNumber}"/>
-                                <input type="hidden" th:field="*{beneficiaryAccountName}"/>
-                                <input type="hidden" th:field="*{amount}"/>
-                                <input type="hidden" th:field="*{remarks}"/>
+                        <form method="post" th:action="@{/corporate/transfer/process}" th:object="${corpTransferRequest}">
+                            <input type="hidden" th:field="*{customerAccountNumber}"/>
+                            <input type="hidden" th:field="*{beneficiaryAccountNumber}"/>
+                            <input type="hidden" th:field="*{beneficiaryAccountName}"/>
+                            <input type="hidden" th:field="*{amount}"/>
+                            <input type="hidden" th:field="*{remarks}"/>
 
 
-                                <div class="form-group">
-                                    <a  onclick="goBack()" >Modify</a>
-                                    <button type="submit" class="btn btn-default">Proceed</button>
-                                    <a th:href="@{/corp/transfer/ownaccount}">Cancel</a>
+                            <div class="form-group">
+                                <a  onclick="goBack()" >Modify</a>
+                                <button type="submit" class="btn btn-link">Proceed</button>
+                                <a th:href="@{/corporate/transfer/ownaccount}">Cancel</a>
 
 
-                                </div>
-                            </form>
-
-                        </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
+
             </div>
             <div th:replace="corp_layout :: corp-sidebar" class="col-md-3 sidebar">
             </div>
-
-
         </div>
+
+    </div>
 
 </section>
 
 
+
 <!-- CONTENT-WRAPPER SECTION END-->
-<footer th:replace="corp_layout ::corp_footer">
+<footer th:replace="corp_layout ::corp-footer">
 </footer>
-<script th:src="@{~/customer/js/accountdetails.js}"></script>
 </body>
 
 </html>

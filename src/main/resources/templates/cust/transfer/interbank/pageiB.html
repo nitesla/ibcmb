@@ -22,20 +22,24 @@
                               th:object="${localBeneficiaryDTO}">
                             <div class="form-group">
                                 <label>Beneficiary Bank</label>
-                                <select name="beneficiaryBank" class="form-control" th:field="*{beneficiaryBank}" id="bank_code">
+                                <select name="beneficiaryBank" class="form-control" th:field="*{beneficiaryBank}" id="bank_code" required="required">
                                     <option th:each="bank : ${localBanks}" th:value="${bank.institutionCode}" th:text="${bank.institutionName}"></option>
                                 </select>
+                                <p th:if="${#fields.hasErrors('beneficiaryBank')}" th:errors="*{beneficiaryBank}"
+                                   class="errors"></p>
                             </div>
                             <div class="form-group">
                                 <label>Account Number</label>
                                 <input type="text" class="form-control" name="accountNumber" th:field="*{accountNumber}"
-                                       id="acct_num" placeholder="Account Number"/>
+                                       id="acct_num" placeholder="Account Number" required="required"/>
+                                <p class="errors" th:if="${#fields.hasErrors('accountNumber')}" th:errors="*{accountNumber}">&times;</p>
                             </div>
 
                             <div class="form-group">
                                 <label>Account Name</label>
-                                <input type="text" class="form-control" name="accountNumber" th:field="*{accountName}"
+                                <input type="text" class="form-control" name="accountName" th:field="*{accountName}"
                                        id="acct_name" readonly="readonly" required="required"/>
+                                <p class="errors" th:if="${#fields.hasErrors('accountName')}" th:errors="*{accountName}">&times;</p>
                             </div>
                             <div class="form-group">
                                 <input type="text" class="form-control" name="preferredName"
@@ -58,13 +62,17 @@
 <footer th:replace="cust_layout ::footer">
 </footer>
 
-<script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
     $(document).ready(function () {
         $('#acct_num').change(function () {
             getAccountName();
         });
+        sortSelect('#bank_code', 'text', 'asc');
 
-    })
+        $("#bank_code").prop("selectedIndex", -1);
+
+    });
 
 
     function getAccountName() {
@@ -92,7 +100,31 @@
             }
         };
         $.ajax(options);
-    }
+    };
+
+
+
+
+    var sortSelect = function (select, attr, order) {
+        if(attr === 'text'){
+            if(order === 'asc'){
+                $(select).html($(select).children('option').sort(function (x, y) {
+                    return $(x).text().toUpperCase() < $(y).text().toUpperCase() ? -1 : 1;
+                }));
+                $(select).get(0).selectedIndex = 0;
+                //e.preventDefault();
+            }// end asc
+            if(order === 'desc'){
+                $(select).html($(select).children('option').sort(function (y, x) {
+                    return $(x).text().toUpperCase() < $(y).text().toUpperCase() ? -1 : 1;
+                }));
+                $(select).get(0).selectedIndex = 0;
+                // e.preventDefault();
+            }// end desc
+        }
+
+    };
+    /*]]>*/
 </script>
 </body>
 </html>

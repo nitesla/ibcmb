@@ -21,37 +21,44 @@ public interface IntegrationService {
 
 
     AccountInfo fetchAccount(String accountNumber);
+
     /**
      * Returns all the accounts of a customer
+     *
      * @param cifid the customer's id
-     * @return  a list of accounts
+     * @return a list of accounts
      */
     List<AccountInfo> fetchAccounts(String cifid);
 
 
-    /** Fetches the {@link longbridge.utils.AccountStatement} of the account identified by
+    /**
+     * Fetches the {@link longbridge.utils.AccountStatement} of the account identified by
      * {@code accountId} for the period between {@code fromDate} and {@code toDate}
+     *
      * @param accountId the finacle acid of the Account
-     * @param fromDate the Date from where to begin fetching the account statement
-     * @param toDate the Date to stop fetching the account statement (inclusive)
+     * @param fromDate  the Date from where to begin fetching the account statement
+     * @param toDate    the Date to stop fetching the account statement (inclusive)
      * @return {@code AccountStatement} object
      */
     AccountStatement getAccountStatements(String accountId, Date fromDate, Date toDate);
 
 
-    /** Fetches the account Balance of the account specified by accountId
+    /**
+     * Fetches the account Balance of the account specified by accountId
+     *
      * @param accountId accountId of the account
      * @return Map containing the available balance and ledger balance of the account
      */
     Map<String, BigDecimal> getBalance(String accountId);
 
 
-    /** Initiates a transfer request to the relevant Transfer service.
-     *
+    /**
+     * Initiates a transfer request to the relevant Transfer service.
      */
     TransRequest makeTransfer(TransRequest transRequest) throws InternetBankingTransferException;
 
-    /**Fetches the account Name, Balance , Type from the account table specified by account Number
+    /**
+     * Fetches the account Name, Balance , Type from the account table specified by account Number
      *
      * @param acctNo account number of the account
      * @return Map containing the available details of the account
@@ -59,6 +66,9 @@ public interface IntegrationService {
     AccountDetails viewAccountDetails(String acctNo);
 
     CustomerDetails isAccountValid(String accNo, String email, String dob);
+
+    CustomerDetails viewCustomerDetails(String accNo);
+    CustomerDetails viewCustomerDetailsByCif(String cifId);
 
 
     /** Validate the account, with a valid account number, email and dob
@@ -70,14 +80,17 @@ public interface IntegrationService {
      */
 
 
-    /** This fetches the full name of the customer connected to the
+    /**
+     * This fetches the full name of the customer connected to the
      * specified account number
+     *
      * @param accountNumber
      * @return The full name of the customer or null
      */
     String getAccountName(String accountNumber);
 
-    /** This method make an API that fetches the daily transactions with accountNo
+    /**
+     * This method make an API that fetches the daily transactions with accountNo
      *
      * @param acctNo account number
      * @return map containing the total transaction amount
@@ -85,23 +98,22 @@ public interface IntegrationService {
 
     BigDecimal getDailyDebitTransaction(String acctNo);
 
-    /** This method make an API that fetches the Daily Account Limit with accountNo and Channel
+    /**
+     * This method make an API that fetches the Daily Account Limit with accountNo and Channel
      *
-     * @param accNo the account number
+     * @param accNo   the account number
      * @param channel the transaction channel
      * @return map containing the total transaction limit
      */
-    BigDecimal getDailyAccountLimit(String accNo,String channel);
+    BigDecimal getDailyAccountLimit(String accNo, String channel);
 
 
-
-    NEnquiryDetails doNameEnquiry( String destinationInstitutionCode, String accountNumber);
+    NEnquiryDetails doNameEnquiry(String destinationInstitutionCode, String accountNumber);
 
 
     BigDecimal getAvailableBalance(String s);
-     ObjectNode  sendSMS(String message , String contact ,String subject);
 
-
+    ObjectNode sendSMS(String message, String contact, String subject);
 
 
 }

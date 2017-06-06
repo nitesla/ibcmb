@@ -4,6 +4,7 @@ import longbridge.dtos.SettingDTO;
 import longbridge.models.RetailUser;
 import longbridge.models.UserType;
 import longbridge.repositories.RetailUserRepo;
+import longbridge.security.SessionUtils;
 import longbridge.services.ConfigurationService;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
@@ -27,15 +28,15 @@ import java.io.IOException;
 @Component("retailAuthenticationSuccessHandler")
 public class RetailAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    private LocalDate today = LocalDate.now();
-    private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
+
+    private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
     @Autowired
     private RetailUserRepo retailUserRepo;
-
     @Autowired
     private ConfigurationService configService;
-
+    @Autowired
+    private SessionUtils sessionUtils;
 
     public RetailAuthenticationSuccessHandler() {
         super();
@@ -47,13 +48,9 @@ public class RetailAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         handle(request, response, authentication);
         final HttpSession session = request.getSession(false);
         if (session != null) {
-            session.setMaxInactiveInterval(30 * 60); //TODO this cannot be static
-            RetailUser user = retailUserRepo.findFirstByUserName(authentication.getName());
-            LocalDate date = new LocalDate(user.getExpiryDate());
-
-            if (today.isAfter(date) || today.isEqual(date)) {
-                session.setAttribute("expired-password", "expired-password");
-            }
+            sessionUtils.setTimeout(session);
+            RetailUser user = retailUserRepo.findFirstByUserNameIgnoreCase(authentication.getName());
+            sessionUtils.validateExpiredPassword(user,session);
             //session.setAttribute("user",retailUserRepo.findFirstByUserName(authentication.getName()));
             retailUserRepo.updateUserAfterLogin(authentication.getName());
 

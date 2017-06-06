@@ -3,6 +3,7 @@ package longbridge.controllers.retail;
 import longbridge.dtos.LocalBeneficiaryDTO;
 import longbridge.dtos.TransferRequestDTO;
 import longbridge.exception.InternetBankingTransferException;
+import longbridge.models.FinancialInstitution;
 import longbridge.models.FinancialInstitutionType;
 import longbridge.models.LocalBeneficiary;
 import longbridge.models.RetailUser;
@@ -24,6 +25,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.Comparator;
 import java.util.Locale;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -69,24 +71,23 @@ public class InterBankTransferController {
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
         model.addAttribute("localBen",
                 StreamSupport.stream(localBeneficiaryService.getLocalBeneficiaries(retailUser).spliterator(), false)
-                        .filter(i -> i.getBeneficiaryBank().equalsIgnoreCase(financialInstitutionService.getFinancialInstitutionByCode(bankCode).getInstitutionCode()))
+                        .filter(i -> !i.getBeneficiaryBank().equalsIgnoreCase(financialInstitutionService.getFinancialInstitutionByCode(bankCode).getInstitutionCode()))
                         .collect(Collectors.toList())
 
         );
-        TransferRequestDTO requestDTO= new TransferRequestDTO();
-        String type =request.getParameter("tranType") ;
+        TransferRequestDTO requestDTO = new TransferRequestDTO();
+        String type = request.getParameter("tranType");
 
-        if (type.equalsIgnoreCase("NIP"))  {
-            request.getSession().setAttribute("NIP","NIP");
+        if (type.equalsIgnoreCase("NIP")) {
+            request.getSession().setAttribute("NIP", "NIP");
             requestDTO.setTransferType(TransferType.INTER_BANK_TRANSFER);
-        }else{
-            request.getSession().setAttribute("NIP","RTGS");
+        } else {
+            request.getSession().setAttribute("NIP", "RTGS");
             requestDTO.setTransferType(TransferType.RTGS);
         }
 
 
-
-        model.addAttribute("transferRequest",requestDTO);
+        model.addAttribute("transferRequest", requestDTO);
         return page + "pageiA";
     }
 
@@ -96,16 +97,17 @@ public class InterBankTransferController {
         model.addAttribute("localBanks",
                 financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.LOCAL)
                         .stream()
-                        .filter(i -> i.getInstitutionCode().equals(bankCode))
+                        .filter(i ->! i.getInstitutionCode().equals(bankCode))
                         .collect(Collectors.toList())
-        );
 
+        );
+        model.addAttribute("localBeneficiaryDTO", localBeneficiaryDTO);
         return page + "pageiB";
     }
 
     @PostMapping("/new")
     public String getBeneficiary(@ModelAttribute("localBeneficiary") @Valid LocalBeneficiaryDTO localBeneficiaryDTO, BindingResult result, Model model, HttpServletRequest servletRequest) throws Exception {
-        model.addAttribute("beneficiary", localBeneficiaryDTO);
+        model.addAttribute("localBeneficiaryDTO", localBeneficiaryDTO);
         if (result.hasErrors()) {
             return page + "pageiB";
         }
@@ -113,25 +115,15 @@ public class InterBankTransferController {
         TransferRequestDTO transferRequestDTO = new TransferRequestDTO();
         transferRequestDTO.setBeneficiaryAccountName(localBeneficiaryDTO.getAccountName());
         transferRequestDTO.setBeneficiaryAccountNumber(localBeneficiaryDTO.getAccountNumber());
-        if (servletRequest.getSession().getAttribute("NIP")!=null){
-      String type = (String)servletRequest.getSession().getAttribute("NIP");
-       if (type.equalsIgnoreCase("RTGS")){
-           transferRequestDTO.setTransferType(TransferType.RTGS);
-       }else{
-           transferRequestDTO.setTransferType(TransferType.INTER_BANK_TRANSFER);
-       }
-            servletRequest.getSession().removeAttribute("NIP");
-
-        }else{
-            transferRequestDTO.setTransferType(TransferType.INTER_BANK_TRANSFER);
-        }
 
         transferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode(localBeneficiaryDTO.getBeneficiaryBank()));
         model.addAttribute("transferRequest", transferRequestDTO);
-
-
+        model.addAttribute("benName",localBeneficiaryDTO.getPreferredName());
 
         servletRequest.getSession().setAttribute("Lbeneficiary", localBeneficiaryDTO);
+        servletRequest.getSession().setAttribute("benName", localBeneficiaryDTO.getPreferredName());
+
+
 
         return page + "pageii";
     }
@@ -145,10 +137,25 @@ public class InterBankTransferController {
         model.addAttribute("benName", benName);
 
         validator.validate(transferRequestDTO, result);
-        if (result.hasErrors()) {
 
+        if (result.hasErrors()) {
+            System.out.println(result.getErrorCount());
             return page + "pageii";
         }
+
+        if (request.getSession().getAttribute("NIP") != null) {
+            String type = (String) request.getSession().getAttribute("NIP");
+            if (type.equalsIgnoreCase("RTGS")) {
+                transferRequestDTO.setTransferType(TransferType.RTGS);
+            } else {
+                transferRequestDTO.setTransferType(TransferType.INTER_BANK_TRANSFER);
+            }
+            request.getSession().removeAttribute("NIP");
+
+        } else {
+            transferRequestDTO.setTransferType(TransferType.INTER_BANK_TRANSFER);
+        }
+        request.getSession().setAttribute("transferRequest", transferRequestDTO);
         return page + "pageiii";
     }
 
@@ -159,6 +166,8 @@ public class InterBankTransferController {
         requestDTO.setBeneficiaryAccountName(beneficiary.getAccountName());
         requestDTO.setBeneficiaryAccountNumber(beneficiary.getAccountNumber());
         requestDTO.setTransferType(TransferType.INTER_BANK_TRANSFER);
+        FinancialInstitution institution = financialInstitutionService.getFinancialInstitutionByCode(beneficiary.getBeneficiaryBank());
+        requestDTO.setFinancialInstitution(institution);
 
         model.addAttribute("transferRequest", requestDTO);
         model.addAttribute("beneficiary", beneficiary);

@@ -33,10 +33,9 @@ public class RetailUserDTO {
     private String lastLogin;
     private Date lastLoginDate;
     private int noOfLoginAttempts;
-    private String antiPhishingImage;
     private List<String> securityQuestion;
     private List<String> securityAnswer;
-    private List<byte[]> phishingSec;
+    private List<String> phishingSec;
     private List<String> captionSec;
     private Role role;
     private Code alertPreference;
@@ -63,14 +62,6 @@ public class RetailUserDTO {
 
 	public void setUserName(String username) {
 		this.userName = username;
-	}
-
-	public String getAntiPhishingImage() {
-		return antiPhishingImage;
-	}
-
-	public void setAntiPhishingImage(String antiPhishingImage) {
-		this.antiPhishingImage = antiPhishingImage;
 	}
 
 	public String getVersion() {
@@ -219,11 +210,11 @@ public class RetailUserDTO {
         this.securityAnswer = securityAnswer;
     }
 
-    public List<byte[]> getPhishingSec() {
+    public List<String> getPhishingSec() {
         return phishingSec;
     }
 
-    public void setPhishingSec(List<byte[]> phishingSec) {
+    public void setPhishingSec(List<String> phishingSec) {
         this.phishingSec = phishingSec;
     }
 

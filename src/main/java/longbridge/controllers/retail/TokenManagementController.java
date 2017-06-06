@@ -44,7 +44,8 @@ public class TokenManagementController {
     private MessageSource messageSource;
 
     @GetMapping
-    public String getRetailToken(){
+    public String getRetailToken( HttpServletRequest httpServletRequest){
+        httpServletRequest.getSession().setAttribute("2FA", "2FA");
         return "/cust/logintoken";
     }
 

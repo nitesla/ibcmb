@@ -7,6 +7,7 @@ import longbridge.models.UserType;
 import longbridge.repositories.OperationsUserRepo;
 
 import longbridge.security.CustomBruteForceService;
+import longbridge.security.FailedLoginService;
 import longbridge.security.IpAddressUtils;
 import longbridge.security.userdetails.CustomUserPrincipal;
 import org.slf4j.Logger;
@@ -34,12 +35,16 @@ public class OperationUserDetailsService implements UserDetailsService {
     private CustomBruteForceService bruteForceService;
     private IpAddressUtils addressUtils;
     private Logger logger= LoggerFactory.getLogger(this.getClass());
+    private FailedLoginService failedLoginService;
 
      @Autowired
-    public OperationUserDetailsService(OperationsUserRepo operationsUserRepo, CustomBruteForceService bruteForceService, IpAddressUtils addressUtils) {
+    public OperationUserDetailsService(OperationsUserRepo operationsUserRepo, CustomBruteForceService bruteForceService, IpAddressUtils addressUtils
+     ,FailedLoginService failedLoginService
+     ) {
         this.operationsUserRepo = operationsUserRepo;
         this.bruteForceService = bruteForceService;
         this.addressUtils = addressUtils;
+        this.failedLoginService=failedLoginService;
     }
 
     @Override
@@ -53,11 +58,17 @@ public class OperationUserDetailsService implements UserDetailsService {
             logger.trace("IP -> {} has been blocked" ,ip);
             throw new RuntimeException("blocked");
         }
+        OperationsUser user = operationsUserRepo.findFirstByUserNameIgnoreCase(s);
+        if (user!=null && failedLoginService.isBlocked(user)) throw new RuntimeException("user_blocked");
         try{
 
-          OperationsUser user = operationsUserRepo.findFirstByUserName(s);
 
-            if(user!=null && user.getUserType()== UserType.OPERATIONS) {
+
+            if(user!=null && user.getUserType()== UserType.OPERATIONS
+                    &&
+                    user.getRole().getUserType()!=null
+                    && user.getRole().getUserType().equals(UserType.OPERATIONS)
+                    ) {
                 return new CustomUserPrincipal(user);
             }
             throw new UsernameNotFoundException(s);

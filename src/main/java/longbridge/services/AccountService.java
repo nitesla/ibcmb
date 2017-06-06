@@ -98,6 +98,7 @@ public interface AccountService {
 
 
     List<AccountDTO> getAccountsForDebitAndCredit(String customerId);
+    List<AccountDTO> getAccountsAndBalances(String customerId);
 
 
     /**

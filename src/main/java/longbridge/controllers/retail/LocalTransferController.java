@@ -65,14 +65,20 @@ public class LocalTransferController {
     public String transferSummary(@ModelAttribute("transferRequest") @Valid TransferRequestDTO transferRequestDTO, BindingResult result, Model model, HttpServletRequest servletRequest) {
         model.addAttribute("transferRequest", transferRequestDTO);
         validator.validate(transferRequestDTO, result);
+
+        if (servletRequest.getSession().getAttribute("Lbeneficiary") !=null ){
+            LocalBeneficiaryDTO beneficiary= (LocalBeneficiaryDTO) servletRequest.getSession().getAttribute("Lbeneficiary");
+            model.addAttribute("beneficiary", beneficiary);
+        }
         if (result.hasErrors()) {
             return page + "pageii";
         }
         try {
             System.out.println(transferRequestDTO);
             transferService.validateTransfer(transferRequestDTO);
-            servletRequest.getSession().setAttribute("transferRequest", transferRequestDTO);
             transferRequestDTO.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
+            servletRequest.getSession().setAttribute("transferRequest", transferRequestDTO);
+
             return page + "pageiii";
         } catch (InternetBankingTransferException e) {
 
@@ -88,7 +94,7 @@ public class LocalTransferController {
 
     @GetMapping("/{id}")
     public String transfer(@PathVariable Long id, Model model, HttpServletRequest request) throws Exception {
-        LocalBeneficiary beneficiary = localBeneficiaryService.getLocalBeneficiary(id);
+        LocalBeneficiaryDTO beneficiary = localBeneficiaryService.convertEntityToDTO(localBeneficiaryService.getLocalBeneficiary(id));
         TransferRequestDTO transferRequestDTO = new TransferRequestDTO();
         transferRequestDTO.setBeneficiaryAccountName(beneficiary.getAccountName());
         transferRequestDTO.setBeneficiaryAccountNumber(beneficiary.getAccountNumber());
@@ -97,7 +103,7 @@ public class LocalTransferController {
         model.addAttribute("transferRequest", transferRequestDTO);
         model.addAttribute("beneficiary", beneficiary);
         model.addAttribute("beneficiaryName", beneficiary.getPreferredName());
-        // request.getSession().setAttribute("beneficiary", beneficiary);
+        request.getSession().setAttribute("Lbeneficiary", beneficiary);
         return page + "pageii";
     }
 

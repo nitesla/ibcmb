@@ -37,7 +37,9 @@ public class CorpTokenManagementController {
 
 
     @GetMapping
-    public String getRetailToken(){
+    public String getCorporateToken(HttpServletRequest httpServletRequest){
+        httpServletRequest.getSession().setAttribute("2FA", "2FA");
+
         return "/corp/logintoken";
     }
 
@@ -57,7 +59,7 @@ public class CorpTokenManagementController {
             }
         }
         catch (InternetBankingSecurityException ibe){
-            logger.error("Error authenticating token");
+            logger.error("Error authenticating token {} ",ibe);
         }
         redirectAttributes.addFlashAttribute("failure",messageSource.getMessage("token.auth.failure",null,locale));
         return "redirect:/corporate/token";

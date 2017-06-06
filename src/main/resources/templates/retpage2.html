@@ -41,7 +41,7 @@
             </div>
         </div>
     </nav>
-    <a href="#" class="logo">
+    <a href="/" class="logo">
         <img th:src="@{/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
     </a>
 </div>
@@ -49,29 +49,28 @@
 <section class="content-wrapper">
     <div class="container">
         <div class="bg">
-            <form th:action="@{/login/p/retail}" method="POST" class="login-form col-md-offset-3 col-md-6">
-                <br/><br/><br/><br/><br/><br/><br/><br/><br/>
-                <div class="row">
+            <div class="col-md-offset-4 col-md-6">
+                <form th:action="@{/login/p/retail}" method="POST" class="login-form ">
+                    <h5 class="form-signin-heading">Enter Login Details</h5>
                     <br/>
-                    <br/>
-                    <div class="col-md-7">
-                        <h5 class="form-signin-heading">Enter Login Details</h5>
-                        <div class="form-group">
+                    <div class="row ">
+                        <div class="form-group col-md-7 col-sm-7 col-xs-7">
                             <input type="text" name="username" th:value="*{username}" class="form-control" readonly="readonly"/>
                         </div>
+                        <div class="col-md-7 col-sm-7 col-xs-7">
+                            <button class="btn btn-primary form-control"> Login </button>
+                        </div>
+                        <div>
+                            <div style="height:150px; ">
+                                <img width="130px" height="100px" style="padding:15px; margin-left: -50px; background-color: #F2F2F1;" th:src="@{/customer/img/cmb_logo.png}"/>
+                                <!--<input type="checkbox" name="phishing"/>-->
+                            </div>
 
+                        </div>
                     </div>
-                    <div class="col-md-4" style="padding:5px; max-height:300px; width:200px; background-color: #F2F2F1;">
-                        <img th:src="@{/customer/img/cmb_logo.png}"/>
-                        <input type="checkbox" name="phishing"/>
-                    </div>
-                    <div class="form-group">
-                        <button class="btn btn-primary btn-lg"> Login </button>
-                    </div>
-                </div>
 
-
-            </form>
+                </form>
+            </div>
         </div>
     </div>
 </section>
@@ -91,11 +90,47 @@
 
         </div>
     </div>
+
+    <div th:if="${message}">
+        <div hidden="hidden">
+            <ul class="actionMessage">
+                <li th:each="msg : ${message}" th:text="${msg}">Message</li>
+            </ul>
+        </div>
+    </div>
+
+    <div th:if="${failure}">
+        <div hidden="hidden">
+            <ul class="actionError">
+                <li th:each="msg : ${failure}" th:text="${msg}">Message</li>
+            </ul>
+        </div>
+    </div>
 </footer>
 <!-- CORE JQUERY SCRIPTS -->
 <script th:src="@{~/customer/js/jquery-1.11.1.js}"></script>
 <!-- BOOTSTRAP SCRIPTS  -->
 <script th:src="@{~/customer/js/bootstrap.js}"></script>
 <script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
+
+<script>
+    $(document).ready(function(){
+        $(".dropdown").hover(
+            function() {
+                $('.dropdown-menu', this).not('.in .dropdown-menu').stop(true,true).slideDown(800);
+                $(this).toggleClass('open');
+            },
+            function() {
+                $('.dropdown-menu', this).not('.in .dropdown-menu').stop(true,true).slideUp(800);
+                $(this).toggleClass('open');
+            }
+        );
+    });
+</script>
+<script>
+    $(document).ready(function(){
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>
 </body>
 </html>

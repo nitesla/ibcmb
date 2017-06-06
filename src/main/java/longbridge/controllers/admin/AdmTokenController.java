@@ -42,33 +42,31 @@ public class AdmTokenController {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
-
     @GetMapping
-    public String getAdminToken(HttpServletRequest httpServletRequest){
-        httpServletRequest.getSession().setAttribute("2FA","2FA");
+    public String getAdminToken(HttpServletRequest httpServletRequest) {
+        httpServletRequest.getSession().setAttribute("2FA", "2FA");
 
         return "adm/admin/token";
     }
 
     @PostMapping
-    public String performTokenAuthentication(HttpServletRequest request, Principal principal, RedirectAttributes redirectAttributes, Locale locale){
+    public String performTokenAuthentication(HttpServletRequest request, Principal principal, RedirectAttributes redirectAttributes, Locale locale) {
 
-    String username = principal.getName();
-    String tokenCode = request.getParameter("token");
-        try{
-            boolean result = securityService.performTokenValidation(username,tokenCode);
-            if(result){
-                if( request.getSession().getAttribute("2FA") !=null) {
+        String username = principal.getName();
+        String tokenCode = request.getParameter("token");
+        try {
+            boolean result = securityService.performTokenValidation(username, tokenCode);
+            if (result) {
+                if (request.getSession().getAttribute("2FA") != null) {
                     request.getSession().removeAttribute("2FA");
                 }
-                redirectAttributes.addFlashAttribute("message",messageSource.getMessage("token.auth.success",null,locale)) ;
+                redirectAttributes.addFlashAttribute("message", messageSource.getMessage("token.auth.success", null, locale));
                 return "redirect:/admin/dashboard";
             }
-        }
-        catch (InternetBankingSecurityException ibe){
+        } catch (InternetBankingSecurityException ibe) {
             logger.error("Error authenticating token");
         }
-        redirectAttributes.addFlashAttribute("failure",messageSource.getMessage("token.auth.failure",null,locale));
+        redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("token.auth.failure", null, locale));
         return "redirect:/admin/token";
 
     }
@@ -99,30 +97,123 @@ public class AdmTokenController {
         return "/adm/token/assign";
     }
 
-    @GetMapping("/activate")
-    public String activateToken(Model model) {
-        model.addAttribute("token", new TokenForm());
-        return "/adm/token/activate";
+    @GetMapping("/activate/username")
+    public String getTokenUsernameForActivation() {
+        return "/adm/token/activate1";
+    }
+
+
+    @PostMapping("/activate/username")
+    public String getTokenSerialsForActivation(@RequestParam("username") String username, Model model, Locale locale, RedirectAttributes redirectAttributes) {
+        if (username == null || "".equals(username)) {
+            model.addAttribute("failure", messageSource.getMessage("form.fields.required", null, locale));
+            return "/adm/token/activate1";
+        }
+
+        try {
+            String serials = securityService.getTokenSerials(username);
+            logger.info("Serials recieved are "+serials);
+            if (serials != null && !"".equals(serials)) {
+                List<String> serialNos = Arrays.asList(StringUtils.split(serials, ","));
+                model.addAttribute("serials", serialNos);
+                TokenForm tokenForm = new TokenForm();
+                tokenForm.setUsername(username);
+                model.addAttribute("token", tokenForm);
+            }
+            else{
+                redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("token.serials.failure", null, locale));
+                return "redirect:/admin/token/activate/username";
+            }
+        } catch (InternetBankingSecurityException se) {
+            logger.error("Error getting token serials", se);
+            redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("token.serials.failure", null, locale));
+            return "redirect:/admin/token/activate/username";
+        }
+        return "/adm/token/activate2";
     }
 
     @PostMapping("/activate")
     public String performActivateToken(@ModelAttribute("token") @Valid TokenForm tokenForm, BindingResult bindingResult, RedirectAttributes redirectAttributes, Locale locale) {
         if (bindingResult.hasErrors()) {
             bindingResult.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
-            return "/adm/token/activate";
+            return "/adm/token/activate2";
         }
 
         try {
             boolean result = securityService.activateToken(tokenForm.getUsername(), tokenForm.getSerialNumber());
             if (result) {
                 redirectAttributes.addFlashAttribute("message", messageSource.getMessage("token.activate.success", null, locale));
-                return "redirect:/admin/token/activate";
+                return "redirect:/admin/token/activate2";
             }
         } catch (InternetBankingSecurityException ibe) {
             logger.error("Error activating token", ibe);
         }
         bindingResult.addError(new ObjectError("invalid", messageSource.getMessage("token.activate.failure", null, locale)));
-        return "/adm/token/activate";
+        return "/adm/token/activate2";
+    }
+
+    @GetMapping("/assign/activate")
+    public String assignActivateToken(Model model) {
+        model.addAttribute("token", new TokenForm());
+        return "/adm/token/assignactivate";
+    }
+
+    @PostMapping("/assign/activate")
+    public String assignActivateToken(@ModelAttribute("token") @Valid TokenForm tokenForm, BindingResult bindingResult, RedirectAttributes redirectAttributes, Locale locale) {
+        if (bindingResult.hasErrors()) {
+            bindingResult.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
+            return "/adm/token/assignactivate";
+        }
+
+        try {
+            boolean result1 = securityService.assignToken(tokenForm.getUsername(), tokenForm.getSerialNumber());
+            if (result1) {
+                redirectAttributes.addFlashAttribute("message", messageSource.getMessage("token.assign.success", null, locale));
+                boolean result2 = securityService.activateToken(tokenForm.getUsername(), tokenForm.getSerialNumber());
+                if (result2) {
+                    redirectAttributes.addFlashAttribute("message", messageSource.getMessage("token.activate.success", null, locale));
+                }
+                return "redirect:/admin/token/assign/activate";
+            }
+        } catch (InternetBankingSecurityException ibe) {
+            logger.error("Error assigning and activating token", ibe);
+        }
+        bindingResult.addError(new ObjectError("invalid", messageSource.getMessage("token.assign.failure", null, locale)));
+        return "/adm/token/assignactivate";
+    }
+
+    @GetMapping("/deactivate/username")
+    public String getTokenUsernameForDeactivation() {
+        return "/adm/token/deactivate1";
+    }
+
+
+    @PostMapping("/deactivate/username")
+    public String getTokenSerialsForDeactivation(@RequestParam("username") String username, Model model, Locale locale, RedirectAttributes redirectAttributes) {
+        if (username == null || "".equals(username)) {
+            model.addAttribute("failure", messageSource.getMessage("form.fields.required", null, locale));
+            return "/adm/token/deactivate1";
+        }
+
+        try {
+            String serials = securityService.getTokenSerials(username);
+            if (serials != null && !"".equals(serials)) {
+                List<String> serialNos = Arrays.asList(StringUtils.split(serials, ","));
+                model.addAttribute("serials", serialNos);
+                TokenForm tokenForm = new TokenForm();
+                tokenForm.setUsername(username);
+                model.addAttribute("token", tokenForm);
+            }
+            else{
+                redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("token.serials.failure", null, locale));
+                return "redirect:/admin/token/deactivate/username";
+            }
+        } catch (InternetBankingSecurityException se) {
+            logger.error("Error getting token serials", se);
+            redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("token.serials.failure", null, locale));
+            return "redirect:/admin/token/deactivate/username";
+        }
+        return "/adm/token/deactivate2";
     }
 
     @GetMapping("/deactivate")
@@ -136,19 +227,19 @@ public class AdmTokenController {
     public String performDeactivateToken(@ModelAttribute("token") @Valid TokenForm tokenForm, BindingResult bindingResult, RedirectAttributes redirectAttributes, Locale locale) {
         if (bindingResult.hasErrors()) {
             bindingResult.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
-            return "/adm/token/deactivate";
+            return "/adm/token/deactivate2";
         }
         try {
             boolean result = securityService.deActivateToken(tokenForm.getUsername(), tokenForm.getSerialNumber());
             if (result) {
                 redirectAttributes.addFlashAttribute("message", messageSource.getMessage("token.deactivate.success", null, locale));
-                return "redirect:/admin/token/deactivate";
+                return "redirect:/admin/token/deactivate2";
             }
         } catch (InternetBankingSecurityException ibe) {
             logger.error("Error deactivating token", ibe);
         }
         bindingResult.addError(new ObjectError("invalid", messageSource.getMessage("token.deactivate.failure", null, locale)));
-        return "/adm/token/deactivate";
+        return "/adm/token/deactivate2";
     }
 
     @GetMapping("/synchronize")
@@ -179,12 +270,12 @@ public class AdmTokenController {
 
 
     @GetMapping("/serials")
-    public List<String> getTokenSerials(@RequestParam("username") String username){
-        List<String > serials = new ArrayList<>();
+    public List<String> getTokenSerials(@RequestParam("username") String username) {
+        List<String> serials = new ArrayList<>();
         try {
-           String serial = securityService.getTokenSerials(username);
-            if(serial!=null && !"".equals(serial)){
-               serials = Arrays.asList(StringUtils.split(serial,","));
+            String serial = securityService.getTokenSerials(username);
+            if (serial != null && !"".equals(serial)) {
+                serials = Arrays.asList(StringUtils.split(serial, ","));
             }
         } catch (InternetBankingSecurityException ibe) {
             logger.error("Error getting token serials", ibe);

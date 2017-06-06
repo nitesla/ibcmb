@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import longbridge.api.CustomerDetails;
 import longbridge.dtos.RetailUserDTO;
 import longbridge.exception.InternetBankingException;
+import longbridge.forms.CustResetPassword;
 import longbridge.forms.RegistrationForm;
 import longbridge.forms.ResetPasswordForm;
 import longbridge.forms.RetrieveUsernameForm;
@@ -81,13 +82,21 @@ public class UserRegController {
         logger.info("BirthDate : " + birthDate);
         CustomerDetails details = integrationService.isAccountValid(accountNumber, email, birthDate);
         if (details != null){
-            customerId = details.getCifId();
+                customerId = details.getCifId();
+//            RetailUser retailUser = retailUserService.getUserByCustomerId(details.getCifId());
+//            if (retailUser != null) {
+ //               customerId = retailUser.getCustomerId();
+//            }else {
+//                customerId="";
+//            }
+
         }else {
             //nothing
             customerId = "";
         }
         return customerId;
     }
+
 
     @GetMapping("/rest/retail/accountname/{accountNumber}")
     public @ResponseBody String getAccountNameFromNumber(@PathVariable String accountNumber){
@@ -181,13 +190,13 @@ public class UserRegController {
             String message = "Your Registration Code is : ";
             message += n;
 
-
             ObjectNode sent = integrationService.sendSMS(message, contact +
                     "" +
                     " ", "Internet Banking Registration Code");
             if (sent != null){
                 session.setAttribute("regCode", n);
-                return "true";
+
+                return String.valueOf(n);
             }
 
         }else {
@@ -385,12 +394,13 @@ public class UserRegController {
         //securityService.setUserQA(userName, securityQuestion, securityAnswer);
 
         //phishing image
-        List<byte[]> phishingSec = new ArrayList<>();
-
+        List<String> phishingSec = new ArrayList<>();
         byte[] encodedBytes = Base64.encodeBase64(phishing.getBytes());
         System.out.println("encodedBytes " + new String(encodedBytes));
+        String encPhishImage = new String(encodedBytes);
 
-        phishingSec.add(encodedBytes);
+        phishingSec.add(encPhishImage);
+
         List<String> captionSec = new ArrayList<>();
         captionSec.add(caption);
 
@@ -408,14 +418,15 @@ public class UserRegController {
         try {
             String message = retailUserService.addUser(retailUserDTO, details);
             logger.info("MESSAGE", message);
+            redirectAttributes.addAttribute("success", "true");
+            return "true";
         }
         catch (InternetBankingException e){
             logger.error("Error creating retail user", e);
             redirectAttributes.addFlashAttribute(messageSource.getMessage("user.add.failure", null, locale));
         }
 
-        redirectAttributes.addAttribute("success", "true");
-        return "true";
+        return "false";
     }
 
     @GetMapping("/forgot/password")
@@ -491,7 +502,10 @@ public class UserRegController {
             return "false";
         }
         //change password
-        retailUserService.resetPassword(retailUser, password);
+        CustResetPassword custResetPassword = new CustResetPassword();
+        custResetPassword.setNewPassword(password);
+        custResetPassword.setConfirmPassword(confirmPassword);
+        retailUserService.resetPassword(retailUser,custResetPassword);
         redirectAttributes.addAttribute("success", true);
 
         return "true";

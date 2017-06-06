@@ -54,7 +54,7 @@ public class AdmPermissionController {
             redirectAttributes.addFlashAttribute("message", message);
             return "redirect:/admin/permissions";
         } catch (InternetBankingException ibe) {
-            result.addError(new ObjectError("error", messageSource.getMessage(null, locale)));
+            result.addError(new ObjectError("error", messageSource.getMessage(ibe.getMessage(),null, locale)));
             logger.error("Error creating permission", ibe);
             return "adm/permission/add";
         }

@@ -46,7 +46,7 @@
 
                                 <span id="dcurency"></span>
                                 <select name="destination" class="form-control" id="destination"
-                                        th:field="*{beneficiaryAccountNumber}">
+                                        th:field="*{beneficiaryAccountNumber}" required="required">
 
                                 </select>
                                 <label	th:if="${#fields.hasErrors('beneficiaryAccountNumber')}" th:errors="*{beneficiaryAccountNumber}"
@@ -55,7 +55,7 @@
 
                             <div class="form-group">
                                 <label>Amount</label>
-                                <input type="number" name="textname" step="any" placeholder="Enter an amount"
+                                <input type="number" name="textname" min="0" step="0.01" placeholder="Enter an amount"
                                        th:field="*{amount}"
                                        class="form-control"/>
                                 <label	th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}"
@@ -90,6 +90,48 @@
 <!-- CONTENT-WRAPPER SECTION END-->
 <footer th:replace="cust_layout ::footer">
 </footer>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+
+    $(document).ready(function(){
+        document.getElementById("source").selectedIndex = -1;
+        document.getElementById("destination").selectedIndex = -1;
+
+        sortSelect('#source', 'text', 'asc');
+
+        $("#source").prop("selectedIndex", -1);
+        $("#destination").prop("selectedIndex", -1);
+
+    })
+
+
+
+    var sortSelect = function (select, attr, order) {
+        if(attr === 'text'){
+            if(order === 'asc'){
+                $(select).html($(select).children('option').sort(function (x, y) {
+                    return $(x).text().toUpperCase() < $(y).text().toUpperCase() ? -1 : 1;
+                }));
+                $(select).get(0).selectedIndex = 0;
+                //e.preventDefault();
+            }// end asc
+            if(order === 'desc'){
+                $(select).html($(select).children('option').sort(function (y, x) {
+                    return $(x).text().toUpperCase() < $(y).text().toUpperCase() ? -1 : 1;
+                }));
+                $(select).get(0).selectedIndex = 0;
+                // e.preventDefault();
+            }// end desc
+        }
+
+    };
+
+
+    /*]]>*/
+
+
+</script>
 <script th:src="@{~/customer/js/accountdetails.js}"></script>
 </body>
 

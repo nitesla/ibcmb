@@ -17,6 +17,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.request.RequestContextListener;
 import org.springframework.web.servlet.LocaleResolver;
@@ -30,104 +31,111 @@ import java.net.URL;
 import java.util.Locale;
 
 @Configuration
-public class WebMvcConfig   extends WebMvcConfigurerAdapter {
+public class WebMvcConfig extends WebMvcConfigurerAdapter {
 
-	@Bean
-	public BCryptPasswordEncoder passwordEncoder() {
-		BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-		return bCryptPasswordEncoder;
-	}
+    @Bean
+    public BCryptPasswordEncoder passwordEncoder() {
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        return bCryptPasswordEncoder;
+    }
 
-	@Bean
-	public CommonAnnotationBeanPostProcessor initCommonAnnotationBeanPostProcessor(){
-		return new CommonAnnotationBeanPostProcessor();
-	}
+    @Bean
+    public CommonAnnotationBeanPostProcessor initCommonAnnotationBeanPostProcessor() {
+        return new CommonAnnotationBeanPostProcessor();
+    }
 
-	@Bean()
-	public ModelMapper modelMapper() {
-		return new ModelMapper();
-	}
-
-
-	@Bean
-	public RestTemplate restTemplate(RestTemplateBuilder builder) {
-		return builder.build();
-	}
+    @Bean()
+    public ModelMapper modelMapper() {
+        return new ModelMapper();
+    }
 
 
-//
-	@Override
-	public void addInterceptors(final InterceptorRegistry registry) {
-		final LocaleChangeInterceptor localeChangeInterceptor = new LocaleChangeInterceptor();
-		localeChangeInterceptor.setParamName("lang");
-		registry.addInterceptor(localeChangeInterceptor);
-		registry.addInterceptor(adminUserLoginInterceptor()).addPathPatterns("/admin/**");
-		registry.addInterceptor( OpUserLoginInterceptor()).addPathPatterns("/ops/**");
-		registry.addInterceptor(retailUserLoginInterceptor()).addPathPatterns("/retail/**");
-		registry.addInterceptor( corporateUserLoginInterceptor()).addPathPatterns("/corps/**");
-		registry.addInterceptor(retailTransferAuthInterceptor()).addPathPatterns( "/retail/transfer/process");
-	}
+    @Bean
+    public RestTemplate restTemplate(RestTemplateBuilder builder) {
+        builder.setConnectTimeout(1*60);
+        builder.setReadTimeout(1*60);
+        return builder.build();
+    }
 
-	@Bean
-	public LocaleResolver localeResolver() {
-		final CookieLocaleResolver cookieLocaleResolver = new CookieLocaleResolver();
-		cookieLocaleResolver.setDefaultLocale(Locale.ENGLISH);
-		return cookieLocaleResolver;
-	}
 
-	@Bean
-	public LocaleChangeInterceptor localeChangeInterceptor() {
-		LocaleChangeInterceptor lci = new LocaleChangeInterceptor();
-		lci.setParamName("lang");
-		return lci;
-	}
-	
-	@Bean
-	@ConditionalOnMissingBean(RequestContextListener.class)
-	public RequestContextListener requestContextListener() {
-		return new RequestContextListener();
-	}
+    //
+    @Override
+    public void addInterceptors(final InterceptorRegistry registry) {
+        final LocaleChangeInterceptor localeChangeInterceptor = new LocaleChangeInterceptor();
+        localeChangeInterceptor.setParamName("lang");
+        registry.addInterceptor(localeChangeInterceptor);
+        registry.addInterceptor(adminUserLoginInterceptor()).addPathPatterns("/admin/**");
+        registry.addInterceptor(OpUserLoginInterceptor()).addPathPatterns("/ops/**");
+        registry.addInterceptor(retailUserLoginInterceptor()).addPathPatterns("/retail/**");
+        registry.addInterceptor(corporateUserLoginInterceptor()).addPathPatterns("/corporate/**");
+        registry.addInterceptor(retailTransferAuthInterceptor()).addPathPatterns("/retail/transfer/process");
+    }
 
-	@Bean
-	public ResourceBundleMessageSource messageSource() {
-		ResourceBundleMessageSource source = new ResourceBundleMessageSource();
-		String[] baseNames= new String[]{"i18n/messages","i18n/menu"};
-		source.setBasenames(baseNames);  // name of the resource bundle
-		source.setCacheSeconds(1000);
-		source.setUseCodeAsDefaultMessage(true);
-		return source;
-	}
+    @Bean
+    public LocaleResolver localeResolver() {
+        final CookieLocaleResolver cookieLocaleResolver = new CookieLocaleResolver();
+        cookieLocaleResolver.setDefaultLocale(Locale.ENGLISH);
+        return cookieLocaleResolver;
+    }
 
-//
-	@Bean
-	public AdminAuthenticationSuccessHandler successHandler() {
-		AdminAuthenticationSuccessHandler handler = new AdminAuthenticationSuccessHandler();
-		handler.setUseReferer(true);
-		return handler;
-	}
+    @Bean
+    public LocaleChangeInterceptor localeChangeInterceptor() {
+        LocaleChangeInterceptor lci = new LocaleChangeInterceptor();
+        lci.setParamName("lang");
+        return lci;
+    }
 
-	@Bean
-	public RetailTransferAuthInterceptor retailTransferAuthInterceptor(){
-		return new RetailTransferAuthInterceptor();
-	}
+    @Bean
+    @ConditionalOnMissingBean(RequestContextListener.class)
+    public RequestContextListener requestContextListener() {
+        return new RequestContextListener();
+    }
 
-     @Bean
-	public OpUserLoginInterceptor OpUserLoginInterceptor(){
-		return new OpUserLoginInterceptor();
-}
+    @Bean
+    public ResourceBundleMessageSource messageSource() {
+        ResourceBundleMessageSource source = new ResourceBundleMessageSource();
+        String[] baseNames = new String[]{"i18n/messages", "i18n/menu"};
+        source.setBasenames(baseNames);  // name of the resource bundle
+        source.setCacheSeconds(1000);
+        source.setUseCodeAsDefaultMessage(true);
+        return source;
+    }
 
-      @Bean
-	public AdminUserLoginInterceptor adminUserLoginInterceptor(){
-		return new AdminUserLoginInterceptor();
-	  }
-  @Bean
-	public RetailUserLoginInterceptor retailUserLoginInterceptor(){
-		return new RetailUserLoginInterceptor();
-  }
+    //
+    @Bean
+    public AdminAuthenticationSuccessHandler successHandler() {
+        AdminAuthenticationSuccessHandler handler = new AdminAuthenticationSuccessHandler();
+        handler.setUseReferer(true);
+        return handler;
+    }
 
-  @Bean
-	public CorporateUserLoginInterceptor corporateUserLoginInterceptor(){
+    @Bean
+    public RetailTransferAuthInterceptor retailTransferAuthInterceptor() {
+        return new RetailTransferAuthInterceptor();
+    }
 
-		return new CorporateUserLoginInterceptor();
-  }
+    @Bean
+    public OpUserLoginInterceptor OpUserLoginInterceptor() {
+        return new OpUserLoginInterceptor();
+    }
+
+    @Bean
+    public AdminUserLoginInterceptor adminUserLoginInterceptor() {
+        return new AdminUserLoginInterceptor();
+    }
+
+    @Bean
+    public RetailUserLoginInterceptor retailUserLoginInterceptor() {
+        return new RetailUserLoginInterceptor();
+    }
+
+    @Bean
+    public CorporateUserLoginInterceptor corporateUserLoginInterceptor() {
+
+        return new CorporateUserLoginInterceptor();
+    }
+    @Bean
+    public HttpSessionEventPublisher httpSessionEventPublisher() {
+        return new HttpSessionEventPublisher();
+    }
 }

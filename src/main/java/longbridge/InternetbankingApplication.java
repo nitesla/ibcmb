@@ -1,5 +1,6 @@
 package longbridge;
 
+import longbridge.api.AccountInfo;
 import longbridge.repositories.CustomJpaRepositoryFactoryBean;
 import longbridge.services.IntegrationService;
 import longbridge.services.SecurityService;
@@ -10,7 +11,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.thymeleaf.TemplateEngine;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -20,30 +24,39 @@ import java.util.Map;
 
 
 
-public class InternetbankingApplication  extends SpringBootServletInitializer{
+public class InternetbankingApplication  /*extends SpringBootServletInitializer implements CommandLineRunner */{
 
     @Autowired
     private SecurityService securityService;
     @Autowired
+    private TemplateEngine templateEngine;
+    @Autowired
     private IntegrationService integrationService;
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     public static void main(String[] args) {
         SpringApplication.run(InternetbankingApplication.class, args);
 
     }
 
-
-
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
         return application.sources(InternetbankingApplication.class);
     }
+
+//    @Override
+//    public void run(String... strings) throws Exception {
+//
+//        System.out.print("Your password is :"+passwordEncoder.encode("password@1"));
+//
+//    }
 }
 
 
 
 
 
-  
+
 
 
 

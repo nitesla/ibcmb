@@ -61,9 +61,12 @@ public class AccountConfigServiceImpl implements AccountConfigService {
 
     @Override
     public boolean isAccountHidden(String accountNumber) {
-        Account account = accountRepo.findByAccountNumber(accountNumber);
-        if (account.getHiddenFlag().equals("Y")) {
-            return true;
+
+        Account account = accountRepo.findFirstByAccountNumber(accountNumber);
+        if(account!=null) {
+            if ("Y".equals(account.getHiddenFlag())) {
+                return true;
+            }
         }
         return false;
     }
@@ -213,11 +216,11 @@ public class AccountConfigServiceImpl implements AccountConfigService {
     @Override
     public boolean isAccountRestrictedForView(String accountNumber) {
         boolean isRestricted = false;
-        AccountRestriction accountRestriction = accountRestrictionRepo.findByAccountNumber(accountNumber);
+        AccountRestriction accountRestriction = accountRestrictionRepo.findFirstByAccountNumberAndRestrictionTypeIgnoreCase(accountNumber,"V");
         if (accountRestriction != null) {
-            if (accountRestriction.getRestrictionType().equals("V")) {
+
                 isRestricted = true;
-            }
+
         }
         return isRestricted;
     }
@@ -225,11 +228,11 @@ public class AccountConfigServiceImpl implements AccountConfigService {
     @Override
     public boolean isAccountClassRestrictedForDebit(String accountClass) {
         boolean isRestricted = false;
-        AccountClassRestriction accountClassRestriction = accountClassRestrictionRepo.findByAccountClass(accountClass);
+        AccountClassRestriction accountClassRestriction = accountClassRestrictionRepo.findFirstByAccountClassAndRestrictionTypeIgnoreCase(accountClass,"D");
         if (accountClassRestriction != null) {
-            if (accountClassRestriction.getRestrictionType().equals("D")) {
+
                 isRestricted = true;
-            }
+
         }
         return isRestricted;
     }
@@ -237,11 +240,11 @@ public class AccountConfigServiceImpl implements AccountConfigService {
     @Override
     public boolean isAccountClassRestrictedForCredit(String accountClass) {
         boolean isRestricted = false;
-        AccountClassRestriction accountClassRestriction = accountClassRestrictionRepo.findByAccountClass(accountClass);
+        AccountClassRestriction accountClassRestriction = accountClassRestrictionRepo.findFirstByAccountClassAndRestrictionTypeIgnoreCase(accountClass,"C");
         if (accountClassRestriction != null) {
-            if (accountClassRestriction.getRestrictionType().equals("C")) {
+
                 isRestricted = true;
-            }
+
         }
         return isRestricted;
     }
@@ -249,11 +252,11 @@ public class AccountConfigServiceImpl implements AccountConfigService {
     @Override
     public boolean isAccountClassRestrictedForDebitAndCredit(String accountClass) {
         boolean isRestricted = false;
-        AccountClassRestriction accountClassRestriction = accountClassRestrictionRepo.findByAccountClass(accountClass);
+        AccountClassRestriction accountClassRestriction = accountClassRestrictionRepo.findFirstByAccountClassAndRestrictionTypeIgnoreCase(accountClass,"CD");
         if (accountClassRestriction != null) {
-            if (accountClassRestriction.getRestrictionType().equals("CD")) {
+
                 isRestricted = true;
-            }
+
         }
         return isRestricted;
     }
@@ -261,11 +264,11 @@ public class AccountConfigServiceImpl implements AccountConfigService {
     @Override
     public boolean isAccountClassRestrictedForView(String accountClass) {
         boolean isRestricted = false;
-        AccountClassRestriction accountClassRestriction = accountClassRestrictionRepo.findByAccountClass(accountClass);
+        AccountClassRestriction accountClassRestriction = accountClassRestrictionRepo.findFirstByAccountClassAndRestrictionTypeIgnoreCase(accountClass,"V");
         if (accountClassRestriction != null) {
-            if (accountClassRestriction.getRestrictionType().equals("V")) {
+
                 isRestricted = true;
-            }
+
         }
         return isRestricted;
     }
@@ -287,7 +290,7 @@ public class AccountConfigServiceImpl implements AccountConfigService {
         Page<AccountRestriction> accountRestrictionPageable = accountRestrictionRepo.findAll(pageable);
         List<AccountRestrictionDTO> dtos = convertAccountRestrictionEntitiesToDTOs(accountRestrictionPageable.getContent());
         long t = accountRestrictionPageable.getTotalElements();
-        return new PageImpl<AccountRestrictionDTO>(dtos, pageable, t);
+        return new PageImpl<>(dtos, pageable, t);
 
 
     }

@@ -3,12 +3,11 @@ package longbridge.services;
 import longbridge.dtos.CorpTransferRequestDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingTransferException;
-import longbridge.models.CorpTransRequest;
-import longbridge.models.Corporate;
-import longbridge.models.CorporateUser;
-import longbridge.models.TransRequest;
+import longbridge.exception.TransferException;
+import longbridge.models.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 
@@ -17,13 +16,22 @@ import java.util.List;
  */
 public interface CorpTransferService {
 
-    String addTransferRequest(CorpTransferRequestDTO transferRequestDTO) throws InternetBankingException;
+    @PreAuthorize("hasAuthority('MAKE_TRANSFER')")
+    CorpTransferRequestDTO makeTransfer(CorpTransferRequestDTO corpTransferRequest) throws TransferException;
 
-    String authorizeTransfer(CorporateUser authorizer, Long authorizationId);
+    @PreAuthorize("hasAuthority('GET_TRANSFER')")
+    CorpTransRequest getTransfer(Long id);
 
-    List<CorpTransferRequestDTO> getTransfers(Corporate corporate);
+    @PreAuthorize("hasAuthority('GET_TRANSFER')")
+    Iterable<CorpTransRequest> getTransfers(User user);
 
-    Page<CorpTransferRequestDTO> getTransfes(Corporate corporate, Pageable pageable);
+    @PreAuthorize("hasAuthority('GET_TRANSFER')")
+    Page<CorpTransRequest> getTransfers(User user, Pageable pageDetails);
 
-    CorpTransferRequestDTO getTransfer(Long id);
+    @PreAuthorize("hasAuthority('MAKE_TRANSFER')")
+    boolean saveTransfer(CorpTransferRequestDTO corpTransferRequestDTO) throws TransferException;
+    @PreAuthorize("hasAuthority('MAKE_TRANSFER')")
+    void validateTransfer(CorpTransferRequestDTO corpTransferRequestDTO) throws InternetBankingTransferException;
+
+
 }

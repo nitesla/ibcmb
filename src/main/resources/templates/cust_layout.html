@@ -10,40 +10,49 @@
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/bootstrap.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/custom.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/calendar.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/select.bootstrap.css}" />
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/font-awesome/font-awesome.min.css}"/>
+
     <title>Coronation Merchant Bank</title>
 
 </head>
 
 <body>
 
-    <header class="header" th:fragment="header">
-        <div class="container">
-            <div class="top_bar">
-                <ul class="list_group">
-                    <li><a href="#"> Contact Us&nbsp;</a></li>
-                    <li><a href="#"> Coronation merchnat bank&nbsp;</a></li>
-                    <li><a href="#"> Help&nbsp;</a></li>
-                </ul>
-            </div>
-            <nav class="navbar yamm navbar-default">
-                <div class="container-fluid">
-                    <div class="navbar-header navbar-left">
-                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
-                            <span class="sr-only">MENU</span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                        </button>
-                        <a class="navbar-brand" href="#" data-toggle="collapse" data-target="#navbar-collapse-1">Menu</a>
-                    </div>
-                    <div class="row ">
-                        <div class="col-md-3 col-sm-4 header_info bvn"><p>Your Bank verification number</p>
-                            <h5 th:text="'BVN: ' + ${bvn}"></h5></div>
-                        <div class="col-md-5 col-sm-4 header_info"><h5><span th:text="*{greeting}"></span><br class="break"/><b th:text="*{name}"></b> &nbsp; <a th:href="@{/retail/mailbox/inbox}"><i class="fa fa-envelope"></i></a></h5>
+<header class="header" th:fragment="header">
+    <div class="container">
+        <div class="top_bar">
+            <ul class="list_group">
+                <li><a href="#"> Contact Us&nbsp;</a></li>
+                <li><a href="#"> Coronation merchnat bank&nbsp;</a></li>
+                <li><a href="#"> Help&nbsp;</a></li>
+            </ul>
+        </div>
+        <nav class="navbar yamm navbar-default">
+            <div class="container-fluid">
+                <div class="navbar-header navbar-left">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                            data-target="#navbar-collapse-1" aria-expanded="false">
+                        <span class="sr-only">MENU</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#" data-toggle="collapse" data-target="#navbar-collapse-1">Menu</a>
+                </div>
+                <div class="row ">
+                    <div class="col-md-3 col-sm-4 header_info bvn"><p>Your Bank verification number</p>
+                        <h5 th:text="'BVN: ' + ${bvn}"></h5></div>
+                    <div class="col-md-5 col-sm-4 header_info"><h5><span th:text="*{greeting}"></span><br
+                            class="break"/><b th:text="*{name}"></b> &nbsp; <a th:href="@{/retail/mailbox/inbox}">
+                        <i class="fa fa-envelope"></i>
+                        <span th:if="${numOfUnreadMessages}" class="badge bg-green" th:text="${numOfUnreadMessages}">count</span>
+                    </a>
+                    </h5>
 
-                            <div class="hide-faq"><h6>FAQS &nbsp; &nbsp;<i class="fa fa-question-circle"></i><span class="date2 lorem">&nbsp; &nbsp;Login History:&nbsp;</span>&nbsp;
-                                <span class="lorem" th:text="*{lastLogin}">21st March 2017 10:30am</span></h6></div></div>
+                        <div class="hide-faq"><h6>FAQS &nbsp; &nbsp;<i class="fa fa-question-circle"></i><span
+                                class="date2 lorem">&nbsp; &nbsp;Login History:&nbsp;</span>&nbsp;
+                            <span class="lorem" th:text="*{lastLogin}">21st March 2017 10:30am</span></h6></div>
                     </div>
                     <div class="row">
                 <div class="collapse navbar-collapse links" id="navbar-collapse-1">
@@ -64,8 +73,8 @@
                                 <li sec:authorize="hasAuthority('OWN_ACCOUNT_TRANSFER')"><a th:href="@{/retail/transfer/ownaccount}" th:text="#{menu.transfer.own}">Own account transfers </a></li>
                                 <li sec:authorize="hasAuthority('CMB_CMB_TRANSFER')"><a th:href="@{/retail/transfer/local}" th:text="#{menu.transfer.cmb}">Transfer to Coronation account </a></li>
                                 <li sec:authorize="hasAuthority('INTERBANK_TRANSFER')"><a th:href="@{/retail/transfer/interbank}" th:text="#{menu.transfer.other}">Transfer to other banks</a></li>
-                                <li sec:authorize="hasAuthority('INTERNATIONAL_TRANSFER')"><a th:href="@{/retail/transfer}" th:text="#{menu.transfer.int}">International transfer</a></li>
-                                <li sec:authorize="hasAuthority('RET_TRANSACTION_LIMIT')"><a th:href="@{/retail/transfer/settransferlimit}" th:text="#{menu.transfer.limit}">Set transfer limit</a></li>
+                                <li sec:authorize="hasAuthority('INTERNATIONAL_TRANSFERs')"><a th:href="@{/retail/transfer/international}" th:text="#{menu.transfer.int}">International transfer</a></li>
+                                <li sec:authorize="hasAuthority('RET_TRANSACTION_LIMITs.')"><a th:href="@{/retail/transfer/settransferlimit}" th:text="#{menu.transfer.limit}">Set transfer limit</a></li>
                                 <li sec:authorize="hasAuthority('STANDING_ORDER')"><a th:href="@{/retail/directdebit}" th:text="#{menu.transfer.order}">Standing order</a></li>
                             </ul>
                         </li>
@@ -110,9 +119,10 @@
                 </div>
                     </div>
                 </div>
+                </div>
             </nav>
         </div>
-        <a href="#" class="logo">
+        <a href="/retail/dashboard" class="logo">
             <img th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
         </a>
     </header>
@@ -182,18 +192,14 @@
                 function() {
                     $('.dropdown-menu', this).not('.in .dropdown-menu').stop(true,true).slideDown(800);
                     $(this).toggleClass('open');
-                },
-                function() {
-                    $('.dropdown-menu', this).not('.in .dropdown-menu').stop(true,true).slideUp(800);
-                    $(this).toggleClass('open');
                 }
             );
         });
     </script>
     <script>
-        $(document).on('click', '.mega-dropdown', function(e) {
-            e.stopPropagation()
-        })
+        $(document).ready(function(){
+            $('[data-toggle="tooltip"]').tooltip();
+        });
     </script>
 </footer>
 <!-- /footer content -->

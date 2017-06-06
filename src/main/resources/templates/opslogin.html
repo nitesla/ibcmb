@@ -39,7 +39,7 @@
                         <input type="text" class="form-control" placeholder="Username" name="username" required="" />
                     </div>
                     <div>
-                        <input type="password" class="form-control" placeholder="Password" name="password" required="" />
+                        <input id="password" type="password" class="form-control" placeholder="Password" name="password" required="" />
                     </div>
                     <div>
                         <input name="submit" class=" btn btn-primary" type="submit" value="Next" />
@@ -65,5 +65,41 @@
         </ul>
     </div>
 </div>
+
+<!-- jQuery -->
+<script th:src="@{~/bank/vendors/jquery/jquery.js}"></script>
+<!-- Bootstrap -->
+<script th:src="@{~/bank/vendors/bootstrap/js/bootstrap.min.js}"></script>
+<!-- FastClick -->
+<script th:src="@{~/bank/vendors/fastclick/lib/fastclick.js}"></script>
+<!-- NProgress -->
+<script th:src="@{~/bank/vendors/nprogress/nprogress.js}"></script>
+
+<script th:src="@{~/bank/vendors/bootstrap-editable/js/bootstrap-editable.min.js}"></script>
+<script th:src="@{~/bank/vendors/switchery/switchery.min.js}"></script>
+<script th:src="@{~/bank/js/bootstrap-editable-custom.js}"></script>
+<!-- Custom Theme Scripts -->
+<script th:src="@{~/bank/js/custom.js}"></script>
+<script th:src="@{~/bank/js/bootstrap-switch.min.js}"></script>
+<script th:src="@{~/bank/vendors/bootstrap-notify/bootstrap-notify.js}"></script>
+<script th:src="@{~/bank/js/coronation.js}"></script>
+<script th:src="@{~/bank/vendors/datatables.net/js/jquery.dataTables.js}"></script>
+<script th:src="@{~/bank/js/dataTables.select.js}"></script>
+<script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
+<script th:src="@{~/bank/vendors/sweetalert/sweetalert.min.js}"></script>
+<script th:src="@{~/bank/vendors/bootstrap-dialog/js/bootstrap-dialog.js}"></script>
+<script th:src="@{~/bank/js/dataTables.bootstrap.js}"></script>
+<script>
+    $(document).ready(function(){
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+
+    $('#password').bind("cut copy paste",function(e) {
+        e.preventDefault();
+    });
+</script>
+<script>
+
+</script>
 </body>
 </html>

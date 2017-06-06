@@ -6,6 +6,7 @@ import longbridge.exception.InternetBankingException;
 import longbridge.exception.PasswordException;
 import longbridge.forms.AlertPref;
 import longbridge.forms.CustChangePassword;
+import longbridge.forms.CustResetPassword;
 import longbridge.models.Corporate;
 import longbridge.models.CorporateUser;
 import org.springframework.data.domain.Page;
@@ -125,5 +126,7 @@ public interface CorporateUserService{
     boolean changeAlertPreference(CorporateUserDTO corporateUser, AlertPref alertPreference);
 
     public String addUserFromCorporateAdmin(CorpCorporateUserDTO user) throws InternetBankingException;
+
+    public String resetPassword(CorporateUser user, CustResetPassword changePassword);
 
 }

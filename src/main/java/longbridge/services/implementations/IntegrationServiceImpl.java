@@ -6,6 +6,7 @@ import longbridge.exception.InternetBankingTransferException;
 
 import longbridge.models.TransRequest;
 import longbridge.services.IntegrationService;
+import longbridge.services.MailService;
 import longbridge.utils.AccountStatement;
 import longbridge.utils.ResultType;
 import longbridge.utils.TransferType;
@@ -15,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -36,11 +39,14 @@ public class IntegrationServiceImpl implements IntegrationService {
     private String cmbAlert;
 
     private RestTemplate template;
-
+    private MailService mailService;
+    private TemplateEngine templateEngine;
 
     @Autowired
-    public IntegrationServiceImpl(RestTemplate template) {
+    public IntegrationServiceImpl(RestTemplate template, MailService mailService, TemplateEngine templateEngine) {
         this.template = template;
+        this.mailService = mailService;
+        this.templateEngine = templateEngine;
     }
 
 
@@ -56,10 +62,8 @@ public class IntegrationServiceImpl implements IntegrationService {
         try {
 
             String uri = URI + "/customer/{acctId}/accounts";
-
-
             return Arrays.stream(template.getForObject(uri, AccountInfo[].class, cifid)).collect(Collectors.toList());
-            //            List list= template.getForObject(uri, ArrayList.class,cifid);
+            // List list= template.getForObject(uri, ArrayList.class,cifid);
 
         } catch (Exception e) {
             logger.error("Exception occurred {}", e.getMessage());
@@ -123,11 +127,10 @@ public class IntegrationServiceImpl implements IntegrationService {
 
                         return transRequest;
                     }
-
+                    return transRequest;
                 } catch (Exception e) {
 
                     e.printStackTrace();
-
                     transRequest.setStatus(ResultType.ERROR.toString());
                     return transRequest;
 
@@ -137,31 +140,32 @@ public class IntegrationServiceImpl implements IntegrationService {
             }
             case INTER_BANK_TRANSFER: {
                 transRequest.setTransferType(TransferType.INTER_BANK_TRANSFER);
-                TransferDetails response = null;
+                TransferDetails response;
                 String uri = URI + "/transfer/nip";
                 Map<String, String> params = new HashMap<>();
                 params.put("debitAccountNumber", transRequest.getCustomerAccountNumber());
                 params.put("creditAccountNumber", transRequest.getBeneficiaryAccountNumber());
                 params.put("tranAmount", transRequest.getAmount().toString());
                 params.put("destinationInstitutionCode", transRequest.getFinancialInstitution().getInstitutionCode());
+                params.put("tranType", "NIP");
                 logger.info("params for transfer {}", params.toString());
                 try {
                     response = template.postForObject(uri, params, TransferDetails.class);
                     if (response != null) {
-                        transRequest.setReferenceNumber(response.getSessionId());
+                        logger.info("response for transfer {}", response.toString());
+                        transRequest.setReferenceNumber(response.getUniqueReferenceCode());
+                        transRequest.setNarration(response.getNarration());
+                        transRequest.setStatus(response.getResponseDescription());
 
-                        if (response != null) {
-                            transRequest.setReferenceNumber(response.getUniqueReferenceCode());
-                            transRequest.setNarration(response.getNarration());
-                            transRequest.setStatus(response.getResponseDescription());
-                            return transRequest;
-                        }
+                        return transRequest;
+
 
                     }
 
 
                 } catch (Exception e) {
 
+                    e.printStackTrace();
                     transRequest.setStatus(ResultType.ERROR.toString());
                     return transRequest;
                 }
@@ -173,6 +177,7 @@ public class IntegrationServiceImpl implements IntegrationService {
             }
             case NAPS: {
 
+
             }
             case OWN_ACCOUNT_TRANSFER: {
                 transRequest.setTransferType(TransferType.OWN_ACCOUNT_TRANSFER);
@@ -183,14 +188,12 @@ public class IntegrationServiceImpl implements IntegrationService {
                 params.put("creditAccountNumber", transRequest.getBeneficiaryAccountNumber());
                 params.put("tranAmount", transRequest.getAmount().toString());
                 params.put("naration", transRequest.getNarration());
-                logger.info("patrams for transfer {}", params.toString());
+                logger.info("params for transfer {}", params.toString());
                 try {
-                    response = template.postForObject(uri, params,TransferDetails.class);
-                    System.out.println("@@@ RESPONSE "+response);
+                    response = template.postForObject(uri, params, TransferDetails.class);
                     if (response != null) {
                         transRequest.setNarration(response.getNarration());
                         transRequest.setReferenceNumber(response.getUniqueReferenceCode());
-                        System.out.println(response.getResponseDescription());
                         transRequest.setStatus(response.getResponseDescription());
                         return transRequest;
                     }
@@ -206,11 +209,13 @@ public class IntegrationServiceImpl implements IntegrationService {
             }
 
             case RTGS: {
+                TransRequest request =
+                        sendTransfer(transRequest);
 
+
+                return request;
             }
         }
-
-
         logger.trace("request did not match any type");
         transRequest.setStatus(ResultType.ERROR.toString());
         return transRequest;
@@ -243,6 +248,39 @@ public class IntegrationServiceImpl implements IntegrationService {
         try {
             result = template.postForObject(uri, params, CustomerDetails.class);
 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    @Override
+    public CustomerDetails viewCustomerDetails(String accNo) {
+        CustomerDetails result = new CustomerDetails();
+        String uri = URI + "/customer/{cifId}";
+        String cifId= viewAccountDetails(accNo).getCustId();
+        Map<String, String> params = new HashMap<>();
+        params.put("cifId", cifId);
+        try {
+            result = template.getForObject(uri, CustomerDetails.class, params);
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    @Override
+    public CustomerDetails viewCustomerDetailsByCif(String cifId) {
+        CustomerDetails result = new CustomerDetails();
+        String uri = URI + "/customer/{cifId}";
+        Map<String, String> params = new HashMap<>();
+        params.put("cifId", cifId);
+        try {
+            result = template.getForObject(uri, CustomerDetails.class, params);
+            return result;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -300,7 +338,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 
     @Override
     public NEnquiryDetails doNameEnquiry(String destinationInstitutionCode, String accountNumber) {
-        NEnquiryDetails result = null;
+        NEnquiryDetails result = new NEnquiryDetails();
         String uri = URI + "/transfer/nameEnquiry";
         Map<String, String> params = new HashMap<>();
         params.put("destinationInstitutionCode", destinationInstitutionCode);
@@ -344,7 +382,6 @@ public class IntegrationServiceImpl implements IntegrationService {
         try {
 
             result = template.postForObject(uri, params, ObjectNode.class);
-            System.out.println("@@RESULT " + result);
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -352,6 +389,19 @@ public class IntegrationServiceImpl implements IntegrationService {
         }
 
         return result;
+    }
+
+    public TransRequest sendTransfer(TransRequest transRequest) {
+
+        Context scontext = new Context();
+        scontext.setVariable("transRequest",transRequest);
+
+        String mail = templateEngine.process("/cust/transfer/mailtemplate", scontext);
+        System.out.println(mail);
+
+
+        //  mailService.send();
+        return transRequest;
     }
 
 

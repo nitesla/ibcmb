@@ -35,6 +35,7 @@ import java.util.*;
 @RequestMapping("/retail/requests")
 public class ServiceRequestController {
 
+    @Autowired
     private MessageSource messageSource;
     @Autowired
     private RequestService requestService;
@@ -56,7 +57,6 @@ public class ServiceRequestController {
     @Autowired
     private AccountService accountService;
 
-    //private RetailUser retailUser = new RetailUser();//TODO user must be authenticated
 
     @GetMapping
     public String getServiceRequests(Model model) {
@@ -104,7 +104,6 @@ public class ServiceRequestController {
             }
 
             requestBody = objectMapper.writeValueAsString(myFormObjects);
-
             RetailUser user = userService.getUserByName(principal.getName());
             serviceRequestDTO.setBody(requestBody);
             serviceRequestDTO.setRequestStatus("S");

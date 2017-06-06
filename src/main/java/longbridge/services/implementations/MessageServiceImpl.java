@@ -91,7 +91,7 @@ public class MessageServiceImpl implements MessageService {
     public String addMessage(User sender, MessageDTO messageDTO) {
 
         try {
-            if (sender instanceof RetailUser) {
+            if (sender instanceof RetailUser||sender instanceof CorporateUser) {
                 SettingDTO setting = configurationService.getSettingByName("CUSTOMER_CARE_EMAIL");
                 if (setting != null && setting.isEnabled()) {
                     messageDTO.setRecipient(setting.getValue());
@@ -117,7 +117,7 @@ public class MessageServiceImpl implements MessageService {
 
         }
         catch (Exception e){
-            throw new InternetBankingException(messageSource.getMessage("message.add.failure",null,locale));
+            throw new InternetBankingException(messageSource.getMessage("message.add.failure",null,locale),e);
         }
     }
 
@@ -133,12 +133,10 @@ public class MessageServiceImpl implements MessageService {
     }
 
 
-
     @Override
     public Iterable<Message> getMessages(User user, Date date) {
         return null;
     }
-
 
 
     @Override
@@ -161,19 +159,29 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public String deleteSentMessage(User user,Long id)throws InternetBankingException{
-        Message message = new Message();
-        message.setId(id);
-        MailBox mailBox = mailBoxRepo.findByUserIdAndUserType(user.getId(),user.getUserType());
-        mailBox.getMessages().remove(message);
-        mailBoxRepo.save(mailBox);
-        return messageSource.getMessage("message.delete.success",null,locale);
+        try {
+            Message message = new Message();
+            message.setId(id);
+            MailBox mailBox = mailBoxRepo.findByUserIdAndUserType(user.getId(), user.getUserType());
+            mailBox.getMessages().remove(message);
+            mailBoxRepo.save(mailBox);
+            return messageSource.getMessage("message.delete.success", null, locale);
+        }
+        catch (Exception e){
+            throw new InternetBankingException(messageSource.getMessage("message.delete.failure",null,locale),e);
+        }
+
     }
 
     @Override
     public String deleteReceivedMessage(Long id)throws InternetBankingException {
-        this.messageRepo.delete(id);
-        return messageSource.getMessage("message.delete.success",null,locale);
-
+        try {
+            this.messageRepo.delete(id);
+            return messageSource.getMessage("message.delete.success", null, locale);
+        }
+        catch (Exception e){
+            throw new InternetBankingException(messageSource.getMessage("message.delete.failure",null,locale),e);
+        }
     }
 
     @Override

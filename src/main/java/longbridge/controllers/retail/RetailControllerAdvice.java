@@ -1,10 +1,13 @@
 package longbridge.controllers.retail;
 
 import longbridge.models.Account;
+import longbridge.models.FinancialInstitutionType;
 import longbridge.models.RetailUser;
 import longbridge.models.SRConfig;
 import longbridge.services.*;
+import longbridge.utils.DateFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -14,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 /**
@@ -23,20 +27,27 @@ import java.util.stream.StreamSupport;
 
 @ControllerAdvice(basePackages = {"longbridge.controllers.retail"})
 public class RetailControllerAdvice {
-
+    @Value("${bank.code}")
+    private String bankCode;
     private RetailUserService retailUserService;
     private IntegrationService integrationService;
     private TransferService transferService;
     private AccountService accountService;
     private ServiceReqConfigService reqConfigService;
+    private MessageService messageService;
+    private FinancialInstitutionService financialInstitutionService;
 
     @Autowired
-    public RetailControllerAdvice(RetailUserService retailUserService, IntegrationService integrationService, TransferService transferService, AccountService accountService, ServiceReqConfigService reqConfigService) {
+    public RetailControllerAdvice(RetailUserService retailUserService, IntegrationService integrationService, TransferService transferService, AccountService accountService, ServiceReqConfigService reqConfigService, MessageService messageService
+            , FinancialInstitutionService financialInstitutionService
+    ) {
         this.retailUserService = retailUserService;
         this.integrationService = integrationService;
         this.transferService = transferService;
         this.accountService = accountService;
         this.reqConfigService = reqConfigService;
+        this.messageService = messageService;
+        this.financialInstitutionService = financialInstitutionService;
     }
 
     @ModelAttribute
@@ -49,14 +60,20 @@ public class RetailControllerAdvice {
 
         RetailUser user = retailUserService.getUserByName(principal.getName());
         String bvn = "";
-        if (user.getBvn() == null){
+        if (user.getBvn() == null) {
             bvn = "Not registered";
-        }else {
+        } else {
             bvn = user.getBvn();
         }
         model.addAttribute("bvn", bvn);
 
-        model.addAttribute("lastLogin", user.getLastLoginDate());
+        if(user.getLastLoginDate()!=null) {
+            model.addAttribute("lastLogin", DateFormatter.format(user.getLastLoginDate()));
+        }
+        else {
+            model.addAttribute("lastLogin", user.getLastLoginDate());
+
+        }
 
         Calendar c = Calendar.getInstance();
         int timeOfDay = c.get(Calendar.HOUR_OF_DAY);
@@ -86,6 +103,12 @@ public class RetailControllerAdvice {
         List<SRConfig> requestList = reqConfigService.getServiceReqConfs();
         model.addAttribute("serviceRequests", requestList);
 
+
+        int numOfUnreadMessages = messageService.getNumOfUnreadMessages(user);
+        if (numOfUnreadMessages > 0) {
+            model.addAttribute("numOfUnreadMessages", numOfUnreadMessages);
+        }
+
         //System.out.println( new SimpleDateFormat("HH:mm:ss").format(Calendar.getInstance().getTime()) );
         return "";
     }
@@ -97,7 +120,6 @@ public class RetailControllerAdvice {
         if (principal == null || principal.getName() == null) {
             return "redirect:/login/retail";
         }
-
 
 
         RetailUser user = retailUserService.getUserByName(principal.getName());
@@ -117,6 +139,19 @@ public class RetailControllerAdvice {
         return "";
     }
 
+    @ModelAttribute
+    public void getLocalFinancialInstitutions(Model model) {
+
+
+        model.addAttribute("localBanks",
+                financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.LOCAL)
+                        .stream()
+                        .filter(i -> !i.getInstitutionCode().equals(bankCode))
+                        .collect(Collectors.toList())
+        );
+
+
+    }
 
 
 }

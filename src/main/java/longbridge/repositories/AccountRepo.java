@@ -16,21 +16,25 @@ import java.util.List;
  */
 @Repository
 @Transactional
-public interface AccountRepo extends CommonRepo<Account, Long> {
+public interface AccountRepo extends CommonRepo<Account,Long> {
 
     Account findById(Long id);
 
     Account findFirstById(Long id);
 
-    Account findByAccountNumber(String accountNumber);
+    Account findFirstByAccountNumber(String accountNumber);
 
-    Account findByAccountId(String accountId);
+    Account findFirstByAccountId(String accountId);
 
-    Account findAccountByCustomerId(String customerId);
+    Account findFirstAccountByCustomerId(String customerId);
 
     Page<Account> findAccountByCustomerId(String customerId, Pageable pageable);
 
     List<Account> findByCustomerId(String customerId);
+    List<Account> findByCustomerIdAndCurrencyCodeIgnoreCase(String customerId,String currency);
+    List<Account>  findByCustomerIdAndHiddenFlagIgnoreCase(String s1,String s2);
+
+    List<Account> findByCustomerIdAndCurrencyCode(String customerId, String currency);
 
     @Modifying
     @Query("update Account a set a.primaryFlag = 'N' where a.primaryFlag = 'Y' and a.customerId = :customer")

@@ -91,7 +91,7 @@ public class OperationsUserController {
         model.addAttribute("passwordRules", passwordPolicyService.getPasswordRules());
     }
 
-    @GetMapping("/password")
+    @GetMapping("ops/users/password")
     public String changePassword(Model model){
         model.addAttribute("changePassword",new ChangePassword());
         return "/ops/pword";

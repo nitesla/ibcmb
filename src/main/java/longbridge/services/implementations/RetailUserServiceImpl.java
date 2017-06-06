@@ -9,6 +9,7 @@ import longbridge.dtos.SettingDTO;
 import longbridge.exception.*;
 import longbridge.forms.AlertPref;
 import longbridge.forms.CustChangePassword;
+import longbridge.forms.CustResetPassword;
 import longbridge.models.Account;
 import longbridge.models.Code;
 import longbridge.models.Email;
@@ -87,13 +88,13 @@ public class RetailUserServiceImpl implements RetailUserService {
 
     @Override
     public RetailUser getUserByName(String name) {
-        RetailUser retailUser = this.retailUserRepo.findFirstByUserName(name);
+        RetailUser retailUser = this.retailUserRepo.findFirstByUserNameIgnoreCase(name);
         return retailUser;
     }
 
     @Override
     public RetailUserDTO getUserDTOByName(String name) {
-        RetailUser retailUser = this.retailUserRepo.findFirstByUserName(name);
+        RetailUser retailUser = this.retailUserRepo.findFirstByUserNameIgnoreCase(name);
         return convertEntityToDTO(retailUser);
     }
 
@@ -127,11 +128,11 @@ public class RetailUserServiceImpl implements RetailUserService {
         try {
             RetailUser retailUser = getUserByName(user.getUserName());
             if (retailUser != null) {
-                throw new DuplicateObjectException(messageSource.getMessage("user.add.exists", null, locale));
+                throw new DuplicateObjectException(messageSource.getMessage("user.exist", null, locale));
             }
             RetailUser retUser = getUserByCustomerId(user.getCustomerId());
             if (retUser != null) {
-                throw new DuplicateObjectException(messageSource.getMessage("user.add.exists", null, locale));
+                throw new DuplicateObjectException(messageSource.getMessage("user.exist", null, locale));
             }
 
             retailUser = new RetailUser();
@@ -143,7 +144,6 @@ public class RetailUserServiceImpl implements RetailUserService {
             retailUser.setBirthDate(user.getBirthDate());
             retailUser.setRole(roleService.getTheRole("RETAIL"));
             retailUser.setStatus("A");
-            retailUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
             retailUser.setAlertPreference(codeService.getByTypeAndCode("ALERT_PREFERENCE", "BOTH"));
             String errorMsg = passwordPolicyService.validate(user.getPassword(),null);
             if(!"".equals(errorMsg)){
@@ -154,19 +154,18 @@ public class RetailUserServiceImpl implements RetailUserService {
             SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_CREATION");
             if (setting != null && setting.isEnabled()) {
                 if ("YES".equalsIgnoreCase(setting.getValue())) {
-                    boolean result = securityService.createEntrustUser(retailUser.getUserName(), fullName, true);
-                    if (!result) {
-                        throw new InternetBankingSecurityException(messageSource.getMessage("entrust.create.failure", null, locale));
-                    }
-                    securityService.setUserQA(user.getUserName(), user.getSecurityQuestion(), user.getSecurityAnswer());
-                    //securityService.
+                    createEntrustUser(user.getUserName(), fullName, true);
+
+                    setEntrustUserQA(user.getUserName(), user.getSecurityQuestion(), user.getSecurityAnswer(), fullName);
+
+//                    setEntrustUserMutualAuth(user.getUserName(), user.getCaptionSec(), user.getPhishingSec(), fullName);
                 }
             }
 
 
-
-
             retailUser.setPassword(this.passwordEncoder.encode(user.getPassword()));
+            retailUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
+            passwordPolicyService.saveRetailPassword(retailUser);
             retailUserRepo.save(retailUser);
 
             Collection<AccountInfo> accounts = integrationService.fetchAccounts(details.getCifId());
@@ -182,14 +181,50 @@ public class RetailUserServiceImpl implements RetailUserService {
         }
     }
 
+    private void createEntrustUser(String username, String fullName, boolean enableOtp){
+        try{
+            securityService.createEntrustUser(username, fullName, true);
+        }catch (InternetBankingSecurityException e){
+            throw new InternetBankingSecurityException(messageSource.getMessage("entrust.create.failure", null, locale), e);
+        }
+    }
+
+    private void setEntrustUserQA(String username, List<String> securityQuestion, List<String> securityAnswer, String fullName){
+        try{
+            securityService.setUserQA(username, securityQuestion, securityAnswer);
+        }catch (InternetBankingSecurityException e){
+            securityService.deleteEntrustUser(username, fullName);
+            throw new InternetBankingSecurityException(messageSource.getMessage("entrust.create.failure", null, locale), e);
+        }
+    }
+
+    private void setEntrustUserMutualAuth(String username, List<String> captionSec, List<String> phishingSec, String fullName){
+        try{
+            securityService.setMutualAuth(username, captionSec, phishingSec);
+        }catch (InternetBankingSecurityException e){
+            securityService.deleteEntrustUser(username, fullName);
+            throw new InternetBankingSecurityException(messageSource.getMessage("entrust.create.failure", null, locale), e);
+        }
+    }
+
     @Override
     public String deleteUser(Long userId) throws InternetBankingException {
         try {
-            RetailUser user = retailUserRepo.findOne(userId);
-            user.setDeletedOn(new Date());
-            retailUserRepo.save(user);
+
+            RetailUser retailUser = retailUserRepo.findOne(userId);
             retailUserRepo.delete(userId);
+            String fullName = retailUser.getFirstName()+" "+retailUser.getLastName();
+            SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_DELETION");
+
+            if (setting != null && setting.isEnabled()) {
+                if ("YES".equalsIgnoreCase(setting.getValue())) {
+                    securityService.deleteEntrustUser(retailUser.getUserName(), fullName);
+                }
+            }
             return messageSource.getMessage("user.delete.success",null,locale);
+        }
+        catch (InternetBankingSecurityException se) {
+            throw new InternetBankingSecurityException(messageSource.getMessage("entrust.delete.failure", null, locale));
         }
         catch (Exception e){
             throw new InternetBankingException(messageSource.getMessage("user.delete.failure",null,locale),e);
@@ -209,10 +244,12 @@ public class RetailUserServiceImpl implements RetailUserService {
             if ((oldStatus == null) || ("I".equals(oldStatus)) && "A".equals(newStatus)) {
                 String password = passwordPolicyService.generatePassword();
                 user.setPassword(passwordEncoder.encode(password));
-                Email email = new Email.Builder().setSender("info@ibanking.coronationmb.com")
+                passwordPolicyService.saveRetailPassword(user);
+                String fullName = user.getFirstName()+" "+user.getLastName();
+                Email email = new Email.Builder()
                         .setRecipient(user.getEmail())
-                        .setSubject("Internet Banking Activation")
-                        .setBody(String.format("Your new password to Internet Banking is %s and your username is %s", password, user.getUserName()))
+                        .setSubject(messageSource.getMessage("customer.reactivation.subject",null,locale))
+                        .setBody(String.format(messageSource.getMessage("customer.reactivation.message",null,locale), fullName, user.getUserName(),password))
                         .build();
                 mailService.send(email);
             }
@@ -226,6 +263,14 @@ public class RetailUserServiceImpl implements RetailUserService {
         }
     }
 
+    private String getUsedPasswords(String newPassword, String oldPasswords) {
+        StringBuilder builder = new StringBuilder();
+        if (oldPasswords != null) {
+            builder.append(oldPasswords);
+        }
+        builder.append(passwordEncoder.encode(newPassword) + ",");
+        return builder.toString();
+    }
 
     @Override
     @Transactional
@@ -236,11 +281,13 @@ public class RetailUserServiceImpl implements RetailUserService {
             String newPassword = passwordPolicyService.generatePassword();
             user.setPassword(passwordEncoder.encode(newPassword));
             user.setExpiryDate(new Date());
+            passwordPolicyService.saveRetailPassword(user);
             retailUserRepo.save(user);
-            Email email = new Email.Builder().setSender("info@ibanking.coronationmb.com")
+            String fullName = user.getFirstName()+" "+user.getLastName();
+            Email email = new Email.Builder()
                     .setRecipient(user.getEmail())
-                    .setSubject("Internet Banking Password Reset")
-                    .setBody(String.format("Your new password to Internet Banking is %s and your username is %s", newPassword, user.getUserName()))
+                    .setSubject(messageSource.getMessage("customer.password.reset.subject",null,locale))
+                    .setBody(String.format(messageSource.getMessage("customer.password.reset.message",null,locale),fullName, newPassword))
                     .build();
             mailService.send(email);
             logger.info("Retail user {} password reset successfully", user.getUserName());
@@ -251,18 +298,21 @@ public class RetailUserServiceImpl implements RetailUserService {
     }
 
     @Override
-    public String resetPassword(RetailUser user, String password) {
+    public String resetPassword(RetailUser user, CustResetPassword custResetPassword) {
 
-        String errorMessage = passwordPolicyService.validate(password, user.getUsedPasswords());
+        String errorMessage = passwordPolicyService.validate(custResetPassword.getNewPassword(), user);
         if (!"".equals(errorMessage)) {
             throw new PasswordPolicyViolationException(errorMessage);
         }
 
+        if (!custResetPassword.getNewPassword().equals(custResetPassword.getConfirmPassword())) {
+            throw new PasswordMismatchException();
+        }
         try {
             RetailUser retailUser = retailUserRepo.findOne(user.getId());
-            retailUser.setPassword(this.passwordEncoder.encode(password));
+            retailUser.setPassword(this.passwordEncoder.encode(custResetPassword.getNewPassword()));
             retailUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
-
+            passwordPolicyService.saveRetailPassword(retailUser);
             this.retailUserRepo.save(retailUser);
             logger.info("User {} password has been updated", user.getId());
             return messageSource.getMessage("password.change.success", null, locale);
@@ -277,7 +327,7 @@ public class RetailUserServiceImpl implements RetailUserService {
             throw new WrongPasswordException();
         }
 
-        String errorMessage = passwordPolicyService.validate(changePassword.getNewPassword(), user.getUsedPasswords());
+        String errorMessage = passwordPolicyService.validate(changePassword.getNewPassword(), user);
         if (!"".equals(errorMessage)) {
             throw new PasswordPolicyViolationException(errorMessage);
         }
@@ -289,7 +339,7 @@ public class RetailUserServiceImpl implements RetailUserService {
             RetailUser retailUser = retailUserRepo.findOne(user.getId());
             retailUser.setPassword(this.passwordEncoder.encode(changePassword.getNewPassword()));
             retailUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
-
+            passwordPolicyService.saveRetailPassword(retailUser);
             this.retailUserRepo.save(retailUser);
             logger.info("User {} password has been updated", user.getId());
             return messageSource.getMessage("password.change.success", null, locale);
@@ -318,25 +368,6 @@ public class RetailUserServiceImpl implements RetailUserService {
         return accountService.AddAccount(user.getCustomerId(), accountDTO);
     }
 
-//    @Override
-//    public boolean generateAndSendPassword(RetailUser user) {
-//        boolean ok = false;
-//
-//        try {
-//            String newPassword = generatePassword();
-//            setPassword(user, newPassword);
-//            retailUserRepo.save(user);
-//
-//            sendPassword(user);
-//            logger.info("PASSWORD GENERATED AND SENT");
-//        } catch (Exception e) {
-//            logger.error("ERROR OCCURRED {}", e.getMessage());
-//        }
-//
-//
-//        return ok;
-//
-//    }
 
     @Override
     public boolean changeAlertPreference(RetailUserDTO user, AlertPref alertPreference) {
@@ -360,17 +391,8 @@ public class RetailUserServiceImpl implements RetailUserService {
         return ok;
     }
 
-    public String generatePassword() {
-        /*String password=   RandomStringUtils.randomNumeric(10);
-        return password!=null? password: "";*/
-        return null;
-    }
 
 
-    public boolean sendPassword(RetailUser user) {
-        //TODO use an smtp server to send new password to user via mail
-        return false;
-    }
 
     private RetailUserDTO convertEntityToDTO(RetailUser retailUser) {
         RetailUserDTO retailUserDTO =  modelMapper.map(retailUser, RetailUserDTO.class);

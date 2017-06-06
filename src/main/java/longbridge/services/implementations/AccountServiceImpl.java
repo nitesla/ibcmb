@@ -13,6 +13,7 @@ import longbridge.utils.AccountStatement;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.StreamSupport;
 
 /**
  * Created by chigozirim on 3/29/17.
@@ -43,6 +45,7 @@ public class AccountServiceImpl implements AccountService {
 
     Locale locale = LocaleContextHolder.getLocale();
 
+    @Autowired
     public AccountServiceImpl(AccountRepo accountRepo, IntegrationService integrationService, ModelMapper modelMapper, AccountConfigService accountConfigService, MessageSource messageSource) {
         this.accountRepo = accountRepo;
         this.integrationService = integrationService;
@@ -65,7 +68,6 @@ public class AccountServiceImpl implements AccountService {
         account.setSolId(acct.getSolId());
         account.setSchemeCode(acct.getSchemeCode());
         account.setSchemeType(acct.getSchemeType());
-        account.setAccountId(acct.getAccountId());
         accountRepo.save(account);
         return true;
     }
@@ -112,7 +114,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Account getAccountByCustomerId(String customerId) {
-        return accountRepo.findAccountByCustomerId(customerId);
+        return accountRepo.findFirstAccountByCustomerId(customerId);
     }
 
     @Override
@@ -129,14 +131,10 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public List<Account> getCustomerAccounts(String customerId, String currencyCode) {
-        List<Account> accounts = new ArrayList<Account>();
-        List<Account> accountList = accountRepo.findByCustomerId(customerId);
-        for (Account account : accountList) {
-            if (account.getCurrencyCode().equals(currencyCode)) {
-                accounts.add(account);
-            }
-        }
-        return accounts;
+
+        List<Account> accountList = accountRepo.findByCustomerIdAndCurrencyCodeIgnoreCase(customerId,currencyCode);
+
+        return accountList;
     }
 
     @Override
@@ -181,7 +179,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Account getAccountByAccountNumber(String accountNumber) {
-        return accountRepo.findByAccountNumber(accountNumber);
+        return accountRepo.findFirstByAccountNumber(accountNumber);
     }
 
     @Override
@@ -256,27 +254,57 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public List<AccountDTO> getAccountsForDebitAndCredit(String customerId) {
-        List<AccountDTO> accountsForDebitAndCredit = new ArrayList<AccountDTO>();
+        List<AccountDTO> accountsForDebitAndCredit = new ArrayList<>();
         //Iterable<Account> accounts = this.getCustomerAccounts(customerId);
         Iterable<AccountDTO> accountDTOS = convertEntitiesToDTOs(this.getCustomerAccounts(customerId));
-        for (AccountDTO account : accountDTOS) {
-            if (!accountConfigService.isAccountHidden(account.getAccountNumber())
-                    && (!accountConfigService.isAccountRestrictedForView(account.getAccountNumber())) && !accountConfigService.isAccountRestrictedForDebitAndCredit(account.getAccountNumber()) && (!accountConfigService.isAccountClassRestrictedForView(account.getSchemeCode()) && (!accountConfigService.isAccountClassRestrictedForDebitAndCredit(account.getSchemeCode())))) {
+        StreamSupport
+                .stream(accountDTOS.spliterator(),false)
+                .filter(i -> !accountConfigService.isAccountHidden(i.getAccountNumber()))
+                .filter(i->!accountConfigService.isAccountRestrictedForView(i.getAccountNumber()))
+                .filter(i -> !accountConfigService.isAccountRestrictedForDebitAndCredit(i.getAccountNumber()))
+                .filter(i -> !accountConfigService.isAccountClassRestrictedForView(i.getSchemeCode()))
+                .filter(i -> !accountConfigService.isAccountClassRestrictedForDebitAndCredit(i.getSchemeCode()))
+                .forEach(i->accountsForDebitAndCredit.add(i) );
 
-                Map<String, BigDecimal> balance = integrationService.getBalance(account.getAccountNumber());
-                String availbalance ="0";
-                String ledBalance="0";
-                  if (balance!=null){
-                       availbalance = balance.get("AvailableBalance").toString();
-                     ledBalance = balance.get("LedgerBalance").toString();
-                  }
 
-                account.setAccountBalance(availbalance);
-                account.setLedgerBalance(ledBalance);
-                accountsForDebitAndCredit.add(account);
-            }
 
-        }
+
+
+
+
+        return accountsForDebitAndCredit;
+    }
+
+    @Override
+    public List<AccountDTO> getAccountsAndBalances(String customerId) {
+        List<AccountDTO> accountsForDebitAndCredit = new ArrayList<>();
+        //Iterable<Account> accounts = this.getCustomerAccounts(customerId);
+        Iterable<AccountDTO> accountDTOS = convertEntitiesToDTOs(this.getCustomerAccounts(customerId));
+        StreamSupport
+                .stream(accountDTOS.spliterator(),false)
+                .filter(i -> !accountConfigService.isAccountHidden(i.getAccountNumber()))
+                .filter(i->!accountConfigService.isAccountRestrictedForView(i.getAccountNumber()))
+                .filter(i -> !accountConfigService.isAccountRestrictedForDebitAndCredit(i.getAccountNumber()))
+                .filter(i -> !accountConfigService.isAccountClassRestrictedForView(i.getSchemeCode()))
+                .filter(i -> !accountConfigService.isAccountClassRestrictedForDebitAndCredit(i.getSchemeCode()))
+                .forEach(i->{
+                    Map<String, BigDecimal> balance = integrationService.getBalance(i.getAccountNumber());
+                    String availbalance ="0";
+                    String ledBalance="0";
+                    if (balance!=null){
+                        availbalance = balance.get("AvailableBalance").toString();
+                        ledBalance = balance.get("LedgerBalance").toString();
+                    }
+
+                    i.setAccountBalance(availbalance);
+                    i.setLedgerBalance(ledBalance);
+                    accountsForDebitAndCredit.add(i);
+
+
+                } );
+
+
+
         return accountsForDebitAndCredit;
     }
 

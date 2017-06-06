@@ -3,10 +3,12 @@ package longbridge.security.retailuser;
 import longbridge.models.RetailUser;
 import longbridge.repositories.RetailUserRepo;
 import longbridge.security.AuthenticationErrorService;
+import longbridge.security.FailedLoginService;
 import longbridge.services.RetailUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.WebAttributes;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
@@ -19,31 +21,30 @@ import java.io.IOException;
 @Component("retailAuthenticationFailureHandler")
 public class RetailAuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
 
-@Autowired
-   private  AuthenticationErrorService errorService;
     @Autowired
-   private RetailUserRepo service;
-
-
-
+    FailedLoginService failedLoginService;
+    @Autowired
+    private AuthenticationErrorService errorService;
+    @Autowired
+    private RetailUserRepo service;
 
     @Override
     public void onAuthenticationFailure(final HttpServletRequest request, final HttpServletResponse response, final AuthenticationException exception) throws IOException, ServletException {
         setDefaultFailureUrl("/login/retail?error=true");
-        String userName= request.getParameter("username");
-        RetailUser user= service.findFirstByUserName(userName);
-        if (user!=null){
-            int numOfLoginAttempts= user.getNoOfLoginAttempts();
-            numOfLoginAttempts++;
-            user.setNoOfLoginAttempts(numOfLoginAttempts);
-            service.save(user);
-        }
+        String userName = request.getParameter("username");
+        RetailUser user = service.findFirstByUserNameIgnoreCase(userName);
+        String errorMessage = errorService.getMessage(exception, request);
+        if (user != null && exception.getMessage().equalsIgnoreCase("Bad credentials"))
+
+            failedLoginService.loginFailed(user);
+
+
 
 
         super.onAuthenticationFailure(request, response, exception);
 
 
-        String errorMessage=errorService.getMessage(exception,request);
+
 
 
         request.getSession().setAttribute(WebAttributes.AUTHENTICATION_EXCEPTION, errorMessage);

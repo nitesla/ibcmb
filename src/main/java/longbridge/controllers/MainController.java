@@ -18,6 +18,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.security.Principal;
 import java.util.List;
@@ -51,29 +52,51 @@ public class MainController {
 
 
     @RequestMapping(value = {"/", "/home"})
-    public String getHomePage() {
+    public String getHomePage(HttpServletRequest request) {
+       HttpSession session = request.getSession(false);
+       if (session!=null){
+           session.invalidate();
+       }
+
         return "index";
     }
 
     @RequestMapping(value = "/login/retail", method = RequestMethod.GET)
-    public ModelAndView getLoginPage(@RequestParam Optional<String> error) {
+    public ModelAndView getLoginPage(@RequestParam Optional<String> error,HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session!=null){
+            session.invalidate();
+        }
         return new ModelAndView("retpage1", "error", error);
     }
 
     @RequestMapping(value = "/login/corporate", method = RequestMethod.GET)
-    public ModelAndView getCorpLoginPage(@RequestParam Optional<String> error) {
+    public ModelAndView getCorpLoginPage(@RequestParam Optional<String> error,HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session!=null){
+            session.invalidate();
+        }
         return new ModelAndView("corppage1", "error", error);
     }
 
     @GetMapping(value = "/login/admin")
-    public ModelAndView adminLogin() {
+    public ModelAndView adminLogin(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session!=null){
+            session.invalidate();
+        }
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("admlogin");
         return modelAndView;
     }
 
     @GetMapping(value = "/login/ops")
-    public ModelAndView opsLogin() {
+    public ModelAndView opsLogin(HttpServletRequest request) {
+
+        HttpSession session = request.getSession(false);
+        if (session!=null){
+            session.invalidate();
+        }
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("opslogin");
         return modelAndView;
@@ -132,24 +155,24 @@ public class MainController {
     }
 
     @PostMapping("/login/u/retail")
-    public String userExists(WebRequest webRequest, Model model){
+    public String userExists(WebRequest webRequest, Model model, RedirectAttributes redirectAttributes){
         String username = webRequest.getParameter("username");
         RetailUser user =  retailUserService.getUserByName(username);
         if (user == null){
-            model.addAttribute("error", messageSource.getMessage("invalid.user", null, locale));
-            return "retpage1";
+            redirectAttributes.addFlashAttribute("error", messageSource.getMessage("invalid.user", null, locale));
+            return "redirect:/login/retail";
         }
         model.addAttribute("username", user.getUserName());
         return "retpage2";
     }
 
     @PostMapping("/login/p/retail")
-    public String step2(WebRequest webRequest, Model model, HttpSession session){
+    public String step2(WebRequest webRequest, Model model, HttpSession session, RedirectAttributes redirectAttributes){
         String username = webRequest.getParameter("username");
 //        String phishing = webRequest.getParameter("username");
         RetailUser user =  retailUserService.getUserByName(username);
         if (user == null){
-            model.addAttribute("error", messageSource.getMessage("invalid.user", null, locale));
+            redirectAttributes.addFlashAttribute("error", messageSource.getMessage("invalid.user", null, locale));
             return "redirect:/login/retail";
         }
         model.addAttribute("username", user.getUserName());
@@ -159,28 +182,31 @@ public class MainController {
 
 
     @PostMapping("/login/u/corporate")
-    public String userExist(WebRequest webRequest, Model model){
+    public String userExist(WebRequest webRequest, Model model, RedirectAttributes redirectAttributes){
         String username = webRequest.getParameter("username");
         String corpKey = webRequest.getParameter("corporateId");
         CorporateUser user =  corporateUserService.getUserByName(username);
         Corporate corporate = corporateService.getCorporateByCustomerId(corpKey);
 //        Map<List<String>, List<String>> mutualAuth = securityService.getMutualAuth(user.getUserName());
 
+        //get map
+
         if (corporate != null && user != null) {
+//            model.addAttribute("images", mutualAuth.get("imageSecret"));
+//            model.addAttribute("captions", mutualAuth.get("captionSecret"));
             model.addAttribute("username", user.getUserName());
             model.addAttribute("corpKey", corpKey);
             return "corppage2";
         }
 
-//        model.addAttribute("images", mutualAuth.get("imageSecret"));
-//        model.addAttribute("captions", mutualAuth.get("captionSecret"));
-        model.addAttribute("error", messageSource.getMessage("invalid.user", null, locale));
-        return "corppage1";
+
+        redirectAttributes.addFlashAttribute("error", messageSource.getMessage("invalid.user", null, locale));
+        return "redirect:/login/corporate";
 
     }
 
     @PostMapping("/login/p/corporate")
-    public String corpstep2(WebRequest webRequest, Model model, HttpSession session){
+    public String corpstep2(WebRequest webRequest, Model model, RedirectAttributes redirectAttributes){
         String username = webRequest.getParameter("username");
         String phishing = webRequest.getParameter("phishing");
         String corpKey = webRequest.getParameter("corpKey");
@@ -192,7 +218,7 @@ public class MainController {
             return "corplogin";
         }
 
-        model.addAttribute("error", messageSource.getMessage("invalid.user", null, locale));
+        redirectAttributes.addFlashAttribute("error", messageSource.getMessage("invalid.user", null, locale));
         return "redirect:/login/corporate";
     }
 

@@ -28,6 +28,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 /**
@@ -37,235 +38,150 @@ import java.util.stream.StreamSupport;
 @Service
 public class CorpTransferServiceImpl implements CorpTransferService {
 
-
-    Locale locale = LocaleContextHolder.getLocale();
-    private CorporateService corporateService;
     private CorpTransferRequestRepo corpTransferRequestRepo;
-    private PendingAuthorizationRepo pendingAuthorizationRepo;
-    private CorporateUserRepo corporateUserRepo;
-    private MessageSource messageSource;
-    private ModelMapper modelMapper;
     private IntegrationService integrationService;
+    private TransactionLimitServiceImpl limitService;
+    private ModelMapper modelMapper;
     private AccountService accountService;
-    private TransactionLimitService limitService;
-    private CorporateRepo corporateRepo;
+    private FinancialInstitutionService financialInstitutionService;
     private ConfigurationService configService;
-
-
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    public CorpTransferServiceImpl(CorporateService corporateService, CorpTransferRequestRepo corpTransferRequestRepo, PendingAuthorizationRepo pendingAuthorizationRepo, CorporateUserRepo corporateUserRepo, MessageSource messageSource, ModelMapper modelMapper, IntegrationService integrationService, AccountService accountService, TransactionLimitService limitService, CorporateRepo corporateRepo, ConfigurationService configService) {
-        this.corporateService = corporateService;
+
+    public CorpTransferServiceImpl(CorpTransferRequestRepo corpTransferRequestRepo, IntegrationService integrationService, TransactionLimitServiceImpl limitService, ModelMapper modelMapper, AccountService accountService, FinancialInstitutionService financialInstitutionService, ConfigurationService configService) {
         this.corpTransferRequestRepo = corpTransferRequestRepo;
-        this.pendingAuthorizationRepo = pendingAuthorizationRepo;
-        this.corporateUserRepo = corporateUserRepo;
-        this.messageSource = messageSource;
-        this.modelMapper = modelMapper;
         this.integrationService = integrationService;
-        this.accountService = accountService;
         this.limitService = limitService;
-        this.corporateRepo = corporateRepo;
+        this.modelMapper = modelMapper;
+        this.accountService = accountService;
+        this.financialInstitutionService = financialInstitutionService;
         this.configService = configService;
     }
-
-    @Override
-    @Transactional
-    public String addTransferRequest(CorpTransferRequestDTO transferRequestDTO) throws InternetBankingException {
-
-        CorpTransRequest transferRequest = convertDTOToEntity(transferRequestDTO);
-
-        if (transferRequest.getCorporate().getCorporateType().equals("SOLE")) {
-            makeTransfer(transferRequest);
-            return messageSource.getMessage("transaction.success", null, locale);
-        }
-
-        if (corporateService.getCorporateRules(transferRequest.getCorporate().getId()).isEmpty()) {
-            throw new TransferRuleException(messageSource.getMessage("rule.unavailable", null, locale));
-        }
-        if (corporateService.getQualifiedAuthorizers(transferRequest).isEmpty()) {
-            throw new NoAuthorizerException(transferRequestDTO.getAmount());
-        }
-
-        try {
-
-            transferRequest.setStatus("PENDING");
-            //TODO do some other validations before saving
-
-            List<CorporateUser> authorizers = corporateService.getQualifiedAuthorizers(transferRequest);
-            List<PendAuth> pendAuths = new ArrayList<>();
-            for (CorporateUser authorizer : authorizers) {
-                PendAuth pendAuth = new PendAuth();
-                pendAuth.setAuthorizer(authorizer);
-                pendAuths.add(pendAuth);
-            }
-
-            transferRequest.setPendAuths(pendAuths);
-            corpTransferRequestRepo.save(transferRequest);
-
-        } catch (Exception e) {
-            throw new InternetBankingTransferException();
-        }
-        return messageSource.getMessage("transfer.add.success", null, locale);
-    }
-
-
-    @Override
-    @Transactional
-    public String authorizeTransfer(CorporateUser authorizer, Long authorizationId) {
-        PendAuth pendAuth = pendingAuthorizationRepo.findOne(authorizationId);
-        if (!authorizer.getPendAuths().contains(pendAuth)) {
-            throw new InvalidAuthorizationException(messageSource.getMessage("transfer.auth.invalid", null, locale));
-        }
-
-        if (corporateService.getApplicableTransferRule(pendAuth.getCorpTransferRequest()) == null) {
-            throw new TransferRuleException(messageSource.getMessage("rule.unavailable", null, locale));
-
-        }
-        try {
-            CorpTransRequest transferRequest = pendAuth.getCorpTransferRequest();
-            transferRequest.getPendAuths().remove(pendAuth);
-
-            if (corporateService.getApplicableTransferRule(transferRequest).isAnyCanAuthorize()) {
-                makeTransfer(transferRequest);
-                transferRequest.getPendAuths().clear();
-            } else if (transferRequest.getPendAuths().isEmpty()) {
-                makeTransfer(transferRequest);
-            }
-            corpTransferRequestRepo.save(transferRequest);
-
-        } catch (Exception e) {
-            throw new InternetBankingException(messageSource.getMessage("transfer.auth.failure", null, locale), e);
-        }
-
-        return messageSource.getMessage("transfer.auth.success", null, locale);
-
-    }
-
-    private CorpTransferRequestDTO makeTransfer(CorpTransRequest transferRequest) throws InternetBankingTransferException {
-
-        validateTransfer(transferRequest);
-        TransRequest transRequest = integrationService.makeTransfer(transferRequest);
-        if (transRequest != null) {
-            saveTransfer(transferRequest);
-            if (transRequest.getStatus() != null && transferRequest.getStatus().equals(ResultType.SUCCESS)) {
-                return convertEntityToDTO(transRequest);
-            }
+    public CorpTransferRequestDTO makeTransfer(CorpTransferRequestDTO corpTransferRequestDTO) throws InternetBankingTransferException {
+        validateTransfer(corpTransferRequestDTO);
+        logger.trace("Transfer details valid {}", corpTransferRequestDTO);
+        CorpTransRequest corpTransRequest = (CorpTransRequest) integrationService.makeTransfer(convertDTOToEntity(corpTransferRequestDTO));
+        if (corpTransRequest != null) {
+            logger.trace("params {}", corpTransRequest);
+            saveTransfer(convertEntityToDTO(corpTransRequest));
+            if (corpTransRequest.getStatus().equals("000")||corpTransRequest.getStatus().equals("00")) return convertEntityToDTO(corpTransRequest);
             throw new InternetBankingTransferException(TransferExceptions.ERROR.toString());
         }
         throw new InternetBankingTransferException();
     }
 
-    private boolean saveTransfer(CorpTransRequest transferRequest) throws InternetBankingTransferException {
+
+    @Override
+    public CorpTransRequest getTransfer(Long id) {
+        return corpTransferRequestRepo.findById(id);
+    }
+
+    @Override
+    public Iterable<CorpTransRequest> getTransfers(User user) {
+        return corpTransferRequestRepo.findAll()
+                .stream()
+                .filter(i -> i.getUserReferenceNumber().equals(user.getId()))
+                .collect(Collectors.toList());
+
+    }
+
+    @Override
+    public boolean saveTransfer(CorpTransferRequestDTO corpTransferRequestDTO) throws InternetBankingTransferException {
         boolean result = false;
         try {
-            corpTransferRequestRepo.save(transferRequest);
+            CorpTransRequest transRequest = convertDTOToEntity(corpTransferRequestDTO);
+            corpTransferRequestRepo.save(transRequest);
             result = true;
+
         } catch (Exception e) {
             logger.error("Exception occurred {}", e.getMessage());
         }
         return result;
     }
 
-    private void validateBalance(CorpTransRequest transferRequest) throws InternetBankingTransferException {
 
-        BigDecimal balance = integrationService.getAvailableBalance(transferRequest.getCustomerAccountNumber());
+    private void validateBalance(CorpTransferRequestDTO corpTransferRequest) throws InternetBankingTransferException {
+
+        BigDecimal balance = integrationService.getAvailableBalance(corpTransferRequest.getCustomerAccountNumber());
         if (balance != null) {
-            if (!(balance.compareTo(transferRequest.getAmount()) == 0 || (balance.compareTo(transferRequest.getAmount()) == 1))) {
+            if (!(balance.compareTo(corpTransferRequest.getAmount()) == 0 || (balance.compareTo(corpTransferRequest.getAmount()) == 1))) {
                 throw new InternetBankingTransferException(TransferExceptions.BALANCE.toString());
             }
         }
 
     }
 
-
-    private void validateTransfer(CorpTransRequest transferRequest) throws InternetBankingTransferException {
-        if (transferRequest.getBeneficiaryAccountNumber().equalsIgnoreCase(transferRequest.getCustomerAccountNumber())) {
+    @Override
+    public void validateTransfer(CorpTransferRequestDTO dto) throws InternetBankingTransferException {
+        if (dto.getBeneficiaryAccountNumber().equalsIgnoreCase(dto.getCustomerAccountNumber())) {
             throw new InternetBankingTransferException(TransferExceptions.SAME_ACCOUNT.toString());
         }
-        validateAccounts(transferRequest);
+        validateAccounts(dto);
         boolean limitExceeded = limitService.isAboveInternetBankingLimit(
-                transferRequest.getTransferType(),
+                dto.getTransferType(),
                 UserType.CORPORATE,
-                transferRequest.getCustomerAccountNumber(),
-                transferRequest.getAmount()
+                dto.getCustomerAccountNumber(),
+                dto.getAmount()
 
         );
         if (limitExceeded) throw new InternetBankingTransferException(TransferExceptions.LIMIT_EXCEEDED.toString());
 
-        String cif = accountService.getAccountByAccountNumber(transferRequest.getCustomerAccountNumber()).getCustomerId();
+        String cif = accountService.getAccountByAccountNumber(dto.getCustomerAccountNumber()).getCustomerId();
         boolean acctPresent = StreamSupport.stream(accountService.getAccountsForDebit(cif).spliterator(), false)
-                .anyMatch(i -> i.getAccountNumber().equalsIgnoreCase(transferRequest.getCustomerAccountNumber()));
+                .anyMatch(i -> i.getAccountNumber().equalsIgnoreCase(dto.getCustomerAccountNumber()));
 
 
         if (!acctPresent) {
             throw new InternetBankingTransferException(TransferExceptions.NO_DEBIT_ACCOUNT.toString());
         }
-        if (validateBalance()) {
-            validateBalance(transferRequest);
+        if(validateBalance()) {
+            validateBalance(dto);
         }
 
 
     }
-
     private boolean validateBalance() {
         SettingDTO setting = configService.getSettingByName("BALANCE_VALIDATION");
-        if (setting != null && setting.isEnabled()) {
+        if(setting!=null&&setting.isEnabled()) {
             return ("1".equals(setting.getValue()));
         }
         return true;
     }
 
-    private void validateAccounts(CorpTransRequest transferRequest) throws InternetBankingTransferException {
-        if (transferRequest.getTransferType().equals(TransferType.OWN_ACCOUNT_TRANSFER) || transferRequest.getTransferType().equals(TransferType.CORONATION_BANK_TRANSFER)) {
-            if (integrationService.viewAccountDetails(transferRequest.getBeneficiaryAccountNumber()) == null)
-                throw new InternetBankingTransferException(TransferExceptions.INVALID_BENEFICIARY.toString());
-            if (integrationService.viewAccountDetails(transferRequest.getCustomerAccountNumber()) == null)
-                throw new InternetBankingTransferException(TransferExceptions.INVALID_ACCOUNT.toString());
-        }
-    }
-
     @Override
-    public List<CorpTransferRequestDTO> getTransfers(Corporate corporate) {
-        List<CorpTransRequest> transRequests = corporate.getCorpTransferRequests();
-        return convertEntitiesToDTOs(transRequests);
+    public Page<CorpTransRequest> getTransfers(User user, Pageable pageDetails) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
-    @Override
-    public Page<CorpTransferRequestDTO> getTransfes(Corporate corporate, Pageable pageable) {
-        Page<CorpTransRequest> page = corpTransferRequestRepo.findByCorporate(corporate, pageable);
-        List<CorpTransferRequestDTO> dtos = convertEntitiesToDTOs(page.getContent());
-        long t = page.getTotalElements();
-        Page<CorpTransferRequestDTO> pageImpl = new PageImpl<CorpTransferRequestDTO>(dtos, pageable, t);
-        return pageImpl;
-    }
-
-    @Override
-    public CorpTransferRequestDTO getTransfer(Long id) {
-        CorpTransRequest transRequest = corpTransferRequestRepo.findOne(id);
-        return convertEntityToDTO(transRequest);
-    }
-
-    public CorpTransferRequestDTO convertEntityToDTO(TransRequest transferRequest) {
-        CorpTransferRequestDTO transferRequestDTO = modelMapper.map(transferRequest, CorpTransferRequestDTO.class);
-        CorpTransRequest transRequest = (CorpTransRequest) transferRequest;
-        transferRequestDTO.setCorporateId(transRequest.getCorporate().getId().toString());
-        return transferRequestDTO;
+    public CorpTransferRequestDTO convertEntityToDTO(CorpTransRequest corpTransRequest) {
+        return modelMapper.map(corpTransRequest, CorpTransferRequestDTO.class);
     }
 
 
-    public CorpTransRequest convertDTOToEntity(CorpTransferRequestDTO transferRequestDTO) {
-        CorpTransRequest transferRequest = modelMapper.map(transferRequestDTO, CorpTransRequest.class);
-        transferRequest.setCorporate(corporateRepo.findOne(Long.parseLong(transferRequestDTO.getCorporateId())));
-        return transferRequest;
+    public CorpTransRequest convertDTOToEntity(CorpTransferRequestDTO corpTransferRequestDTO) {
+        return modelMapper.map(corpTransferRequestDTO, CorpTransRequest.class);
     }
 
-    public List<CorpTransferRequestDTO> convertEntitiesToDTOs(Iterable<CorpTransRequest> transferRequests) {
+    public List<CorpTransferRequestDTO> convertEntitiesToDTOs(Iterable<CorpTransRequest> corpTransferRequests) {
         List<CorpTransferRequestDTO> transferRequestDTOList = new ArrayList<>();
-        for (CorpTransRequest transferRequest : transferRequests) {
-            CorpTransferRequestDTO transferRequestDTO = convertEntityToDTO(transferRequest);
+        for (CorpTransRequest transRequest : corpTransferRequests) {
+            CorpTransferRequestDTO transferRequestDTO = convertEntityToDTO(transRequest);
             transferRequestDTOList.add(transferRequestDTO);
         }
         return transferRequestDTOList;
+    }
+
+    private void validateAccounts(CorpTransferRequestDTO dto) throws InternetBankingTransferException {
+        if (dto.getTransferType().equals(TransferType.OWN_ACCOUNT_TRANSFER) || dto.getTransferType().equals(TransferType.CORONATION_BANK_TRANSFER)) {
+            if (integrationService.viewAccountDetails(dto.getBeneficiaryAccountNumber()) == null)
+                throw new InternetBankingTransferException(TransferExceptions.INVALID_BENEFICIARY.toString());
+            if (integrationService.viewAccountDetails(dto.getCustomerAccountNumber()) == null)
+                throw new InternetBankingTransferException(TransferExceptions.INVALID_ACCOUNT.toString());
+
+        }
+
+
     }
 }

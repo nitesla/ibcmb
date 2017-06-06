@@ -22,8 +22,7 @@
                                     <ul class="folder-list">
                                         <li><a th:href="@{/corporate/mailbox/inbox}"> <i class="fa fa-inbox "></i> Inbox </a></li>
                                         <li><a th:href="@{/corporate/mailbox/sentmail}"> <i class="fa fa-sign-out"></i> Sent Mail</a></li>
-                                        <li><a th:href="@{/corporate/mailbox/draft}"> <i class="fa fa-file-text-o"></i> Drafts </a></li>
-                                        <li><a th:href="@{/corporate/mailbox/trash}"> <i class="fa fa-trash-o"></i> Trash</a></li>
+                                        <!--<li><a th:href="@{/corporate/mailbox/draft}"> <i class="fa fa-file-text-o"></i> Drafts </a></li>-->
                                     </ul>
                                 </div>
                             </div>
@@ -36,18 +35,17 @@
                                 <h2 class="in-box">
                                     Sent Messages
                                 </h2>
+                                <br/>
                                 <div class="mail-tools tooltip-demo m-t-md faz">
-                                    <button class="btn-success btn-sm" data-toggle="tooltip" data-placement="left" title="Refresh inbox"><i class="fa fa-refresh"></i> Refresh</button>
-                                    <button class="btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="Mark as read"><i class="fa fa-eye"></i> </button>
-                                    <button class="btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="Move to trash"><i class="fa fa-trash-o"></i> </button>
+                                    <a href="/corporate/mailbox/sentmail" class=" btn btn-white btn-sm" data-toggle="tooltip" data-placement="left" title="Refresh inbox"><i class="fa fa-refresh"></i> Refresh</a>
                                 </div>
                             </div>
                             <div class="margin-bottoms"></div>
                             <div class="mail-box">
                                 <table class="table table-hover table-mail">
                                     <tbody>
-                                    <tr th:each="message: ${receivedMessages}" class="unread">
-                                        <td class="mail-ontact" th:text="${message.sender}"></td>
+                                    <tr th:each="message: ${sentMessages}" class="unread">
+                                        <td class="mail-ontact" th:text="${message.recipient}"></td>
                                         <td class="mail-subject"><a th:href="@{/corporate/mailbox/sent/{id}/message(id=${message.id})}" th:text="${message.subject}">Placeholder text</a></td>
                                         <td class="text-right mail-date" th:text="${message.createdOn}">6.10 AM</td>
                                     </tr>

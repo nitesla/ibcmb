@@ -1,8 +1,11 @@
 package longbridge.security.corpuser;
 
 import longbridge.dtos.SettingDTO;
+import longbridge.models.CorporateUser;
 import longbridge.models.UserType;
 import longbridge.repositories.CorporateUserRepo;
+import longbridge.security.FailedLoginService;
+import longbridge.security.SessionUtils;
 import longbridge.services.ConfigurationService;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
@@ -25,9 +28,12 @@ import java.io.IOException;
 @Component("corporateAuthenticationSuccessHandler")
 public class CorporateAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
     private final Logger logger = LoggerFactory.getLogger(getClass());
+    @Autowired
+    SessionUtils sessionUtils;
+    @Autowired
+    FailedLoginService failedLoginService;
     private LocalDate today = LocalDate.now();
     private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
-
     @Autowired
     private CorporateUserRepo corporateUserRepo;
     @Autowired
@@ -35,19 +41,33 @@ public class CorporateAuthenticationSuccessHandler implements AuthenticationSucc
     @Autowired
     private ConfigurationService configService;
 
-
-
     @Override
     public void onAuthenticationSuccess(final HttpServletRequest request, final HttpServletResponse response, final Authentication authentication) throws IOException {
         handle(request, response, authentication);
         final HttpSession session = request.getSession(false);
         if (session != null) {
-            session.setMaxInactiveInterval(30 * 60); //TODO this cannot be static
-            session.setAttribute("user",corporateUserRepo.findFirstByUserName(authentication.getName()));
-//            LocalDate date = new LocalDate(user.getExpiryDate());
-//            if (today.isAfter(date) || today.isEqual(date)) {
-//                session.setAttribute("expired-password", "expired-password");
-//            }
+            sessionUtils.setTimeout(session);
+            String s = authentication.getName();
+
+            String userName = "";
+            String corpId = "";
+            if (s != null) {
+                try {
+                    userName = s;
+
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    userName=authentication.getName();
+
+                }
+            }
+          //  CorporateUser user = corporateUserRepo.findFirstByUserNameIgnoreCaseAndCorporate_CustomerIdIgnoreCase(userName, corpId);
+            CorporateUser user = corporateUserRepo.findFirstByUserNameIgnoreCase(userName);
+            if (user != null)
+                sessionUtils.validateExpiredPassword(user, session);
+                failedLoginService.loginSucceeded(user);
+
         }
         clearAuthenticationAttributes(request);
     }
@@ -65,7 +85,7 @@ public class CorporateAuthenticationSuccessHandler implements AuthenticationSucc
 
     protected String determineTargetUrl(final Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-          boolean isUser= corporateUserRepo.findFirstByUserName(userDetails.getUsername()).getUserType().equals(UserType.CORPORATE);
+        boolean isUser = corporateUserRepo.findFirstByUserName(userDetails.getUsername()).getUserType().equals(UserType.CORPORATE);
 
         SettingDTO setting = configService.getSettingByName("ENABLE_CORPORATE_2FA");
         boolean tokenAuth = false;
@@ -78,7 +98,7 @@ public class CorporateAuthenticationSuccessHandler implements AuthenticationSucc
         }
         if (isUser) {
             return "/corporate/dashboard";
-        }  else {
+        } else {
             throw new IllegalStateException();
         }
     }
@@ -91,11 +111,11 @@ public class CorporateAuthenticationSuccessHandler implements AuthenticationSucc
         session.removeAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
     }
 
-    public void setRedirectStrategy(final RedirectStrategy redirectStrategy) {
-        this.redirectStrategy = redirectStrategy;
-    }
-
     protected RedirectStrategy getRedirectStrategy() {
         return redirectStrategy;
+    }
+
+    public void setRedirectStrategy(final RedirectStrategy redirectStrategy) {
+        this.redirectStrategy = redirectStrategy;
     }
 }

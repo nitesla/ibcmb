@@ -13,6 +13,12 @@
   * @param accountNumber the account number to check
   */
  function validateAccountDetails(accountNumber, email, birthDate){
+     if(email == ""){
+         email = "ib@coronationmb.com"
+     }
+     if(birthDate == ""){
+         birthDate = "11-12-1970"
+     }
      var customerId;
      $.ajax({
          type:'GET',
@@ -24,7 +30,7 @@
                  //invalid account number
                  $.notify({
                      title: '<strong>Oops!</strong>',
-                     message: 'Invalid Account Number'
+                     message: 'Invalid Account Number, Contact the bank'
                  },{
                      type: 'danger'
                  });
@@ -37,7 +43,7 @@
          }
      });
 
-     if(customerId == "" || customerId === null){
+     if(customerId == "" || customerId == null ){
          return false;
      }else{
          return true;
@@ -146,7 +152,13 @@
      function sendRegCode(){
          var accountNumber = $('input[name="accountNumber"]').val();
          var email = $('input[name="email"]').val();
+         if(email == ""){
+             email = "ib@coronationmb.com"
+         }
          var birthDate = $('input[name="birthDate"]').val();
+         if(birthDate == ""){
+             birthDate = "11-12-1970"
+         }
          var result;
          $.ajax({
              type:'GET',
@@ -166,7 +178,7 @@
 
                  }else{
                      //valid account number
-                     //alert("code sent: " + result);
+                     alert("code sent: " + result);
                  }
              }
          });
@@ -258,10 +270,13 @@
             form.validate().settings.ignore = ":disabled,:hidden";
 			console.log(currentIndex);
             var isValid = form.valid();
+            var email="@gmail.com";
             if(ACCOUNT_DETAILS_STEP === currentIndex){
                 console.log("Current step is the account details step");
                 var accountNumber = $('input[name="accountNumber"]').val();
-                var email = $('input[name="email"]').val();
+
+                email = $('input[name="email"]').val();
+                console.log(email);
                 var birthDate = $('input[name="birthDate"]').val();
                 return isValid && validateAccountDetails(accountNumber, email, birthDate);
             }
