@@ -55,21 +55,9 @@
                                             </ul>
                                         </div>
 
-                                        <div th:if="${#fields.hasErrors('*')}">
-                                            <div hidden="hidden" >
-                                                <ul id="fielderrors">
-                                                    <li th:each="err : ${#fields.errors('*')}" th:text="${err}">Input is incorrect</li>
-                                                </ul>
-                                            </div></div>
 
-                                        <div hidden="hidden">
-                                            <ul class="actionError" th:if="${#fields.hasErrors('global')}">
-                                                <li th:each="err : ${#fields.errors('global')}" th:text="${err}">Global error message</li>
-                                            </ul>
-                                        </div>
-                                        <div th:replace="layout :: form-validation">
 
-                                        </div>
+
 
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">Old Password</label>
@@ -97,16 +85,10 @@
                                             </div>
                                         </div>
 
-                                        <div th:if="${#fields.hasErrors('*')}">
-                                            <div hidden="hidden" >
-                                                <ul id="fielderrors">
-                                                    <li th:each="err : ${#fields.errors('*')}" th:text="${err}">Input is incorrect</li>
-                                                </ul>
-                                            </div></div>
+                                <div th:replace="layout :: form-validation">
+                                </div>
 
-
-
-                                    </form>
+                                </form>
                                 </div>
                             </div>
                         </div>
