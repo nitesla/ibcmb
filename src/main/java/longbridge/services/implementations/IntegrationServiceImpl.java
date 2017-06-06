@@ -338,7 +338,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 
     @Override
     public NEnquiryDetails doNameEnquiry(String destinationInstitutionCode, String accountNumber) {
-        NEnquiryDetails result = null;
+        NEnquiryDetails result = new NEnquiryDetails();
         String uri = URI + "/transfer/nameEnquiry";
         Map<String, String> params = new HashMap<>();
         params.put("destinationInstitutionCode", destinationInstitutionCode);
