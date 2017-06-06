@@ -190,13 +190,13 @@ public class UserRegController {
             String message = "Your Registration Code is : ";
             message += n;
 
-
             ObjectNode sent = integrationService.sendSMS(message, contact +
                     "" +
                     " ", "Internet Banking Registration Code");
             if (sent != null){
                 session.setAttribute("regCode", n);
-                return "true";
+
+                return String.valueOf(n);
             }
 
         }else {

@@ -9,6 +9,39 @@
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/custom.css}"/>
 
     <title>Test</title>
+
+    <!--<style>-->
+        <!--/* Start by setting display:none to make this hidden.-->
+   <!--Then we position it in relation to the viewport window-->
+   <!--with position:fixed. Width, height, top and left speak-->
+   <!--for themselves. Background we set to 80% white with-->
+   <!--our animation centered, and no-repeating */-->
+        <!--.modal {-->
+            <!--display:    none;-->
+            <!--position:   fixed;-->
+            <!--z-index:    1000;-->
+            <!--top:        0;-->
+            <!--left:       0;-->
+            <!--height:     100%;-->
+            <!--width:      100%;-->
+            <!--background: rgba( 255, 255, 255, .8 )-->
+            <!--url('http://i.stack.imgur.com/FhHRx.gif')-->
+            <!--50% 50%-->
+            <!--no-repeat;-->
+        <!--}-->
+
+        <!--/* When the body has the loading class, we turn-->
+           <!--the scrollbar off with overflow:hidden */-->
+        <!--body.loading {-->
+            <!--overflow: hidden;-->
+        <!--}-->
+
+        <!--/* Anytime the body has the loading class, our-->
+           <!--modal element will be visible */-->
+        <!--body.loading .modal {-->
+            <!--display: block;-->
+        <!--}-->
+    <!--</style>-->
 </head>
 <body>
 
@@ -68,6 +101,7 @@
                     <h3>Account Details</h3>
                     <section>
                         <div class="row">
+                            <br/>
                         <div class="col-md-offset-4 col-md-4">
                                 <div class="form-group clearfix">
                                     <label>Account Number</label>
@@ -78,24 +112,9 @@
                                     <input type="email" name="email" class="form-control" placeholder="Email"/>
                                 </div>
                                 <div class="form-group clearfix">
-                                    <label class="col-md-12">Date of Birth</label>
+                                    <label>Date of Birth</label>
                                     <br/>
-                                    <div class="col-md-3 col-sm-3 col-xs-3" style="margin-left: -15px;">
-                                        <select name="day" class="form-control">
-                                            <option th:each=" i : ${#numbers.sequence(1,31)}" th:value="${i}" th:text="${i}"></option>
-                                        </select>
-                                    </div>
-
-                                    <div class="col-md-4 col-sm-4 col-xs-4">
-                                        <select id="month" name="month" class="form-control">
-                                            <option th:each="i,id : ${ {'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'} }" th:text="${i}" th:value="${id.count}">January</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="col-md-4 col-sm-4 col-xs-4">
-                                        <input name="year" class="form-control" type="text" placeholder="YYYY"/>
-                                    </div>
-
+                                    <input name="birthDate" type="text" class="form-control" data-mask="99-99-9999" placeholder="DD-MM-YYYY"/>
                                 </div>
                         </div>
                         </div>
@@ -104,26 +123,33 @@
                     <section>
                         <div class="row">
                             <div class="col-md-offset-4 col-md-4">
-                                        <div class="form-group clearfix">
-                                            <label>Username</label>
-                                            <input type="text" name="userName" class="form-control required" placeholder="Preferred Username"/>
-                                        </div>
-                                        <div class="form-group clearfix">
-                                            <label>Password</label>
-                                            <input type="password" id="password" name="password" class="form-control required" placeholder="Password"/>
-                                        </div>
-                                        <div class="form-group clearfix">
-                                            <label>Confirm Password</label>
-                                            <input type="password" id="confirm" name="confirm" class="form-control required" placeholder="Confirm Password"/>
-                                        </div>
-                                        <div class="form-group clearfix">
-                                            <label>Registration Code</label>
-                                            <input type="text" id="code" name="regCode" class="col-md-8 form-control required" placeholder="Registration Code"/>
-                                            <a id="send" href="javascript:void(0)" onclick="sendRegCode();" class="btn btn-link col-md-4"> Send Verification Code</a>
-                                        </div>
-                                        <input id="customerId" name="customerId" type="hidden"/>
+                                <br/>
+                                <div class="form-group clearfix">
+                                    <label>Username</label>
+                                    <div>
+                                        <input type="text" name="userName" class="form-control col-md-2 required" placeholder="Preferred Username"/>
+                                    </div>
+                                    <span>*</span>
                                 </div>
+                                <div class="form-group clearfix">
+                                    <label>Password</label>
+                                    <input type="password" id="password" name="password" class="form-control required" placeholder="Password"/>
                                 </div>
+                                <div class="form-group clearfix">
+                                    <label>Confirm Password</label>
+                                    <input type="password" id="confirm" name="confirm" class="form-control required" placeholder="Confirm Password"/>
+                                </div>
+                                <div class="form-group clearfix">
+                                    <label>Registration Code</label>
+                                    <a id="send" href="javascript:void(0)" onclick="sendRegCode()"> Send Verification Code</a>
+                                    <!--<div id="spinner" class="spinner"><img th:src='@{~/customer/img/loading.gif}' width="64" height="64" /><br/>Loading..</div>-->
+
+                                    <input type="text" id="code" name="regCode" class="col-md-8 form-control required" placeholder="Registration Code"/>
+
+                                </div>
+                                <input id="customerId" name="customerId" type="hidden"/>
+                            </div>
+                        </div>
                     </section>
                     <h3>Security Questions</h3>
                     <section>
@@ -183,11 +209,15 @@
                     </section>
                 </div>
                 </form>
+
+
+
             </div>
         </div>
     </div>
     <!-- End row-->
 
+        <div class="modal"><!-- Place at bottom of page --></div>
     </div>
 </section>
 
@@ -217,7 +247,7 @@
 <script th:src="@{~/customer/js/jquery-ui.js}"></script>
 <script th:src="@{~/customer/plugins/jquery-steps/js/jquery.steps.min.js}" type="text/javascript"></script>
 <script th:src="@{~/customer/js/register.js}" type="text/javascript"></script>
-<script th:src="@{~/customer/js/jquery.inputmask.bundle.min.js}"></script>
+<script th:src="@{~/customer/js/jasny-bootstrap.min.js}"></script>
 <script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
 
 <script th:th:inline="javascript" type="text/javascript">
@@ -239,6 +269,14 @@
     $('#confirm').bind("cut copy paste",function(e) {
         e.preventDefault();
     });
+
+//    $body = $("body");
+//
+//    $(document).on({
+//        ajaxStart: function() { $body.addClass("loading");    },
+//        ajaxStop: function() { $body.removeClass("loading"); }
+//    });
+
 </script>
 </body>
 </html>

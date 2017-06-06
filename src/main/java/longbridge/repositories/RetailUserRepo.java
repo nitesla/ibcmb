@@ -27,5 +27,6 @@ public interface RetailUserRepo extends CommonRepo<RetailUser, Long> {
     @Modifying
     @Query("update RetailUser  u set u.lastLoginDate = current_timestamp() , u.lockedUntilDate = NULL, u.noOfLoginAttempts = 0, u.status='A' where u.userName = :name")
     void updateUserAfterLogin(@Param("name") String userName);
+	Integer countByRole(Role role);
 
 }
