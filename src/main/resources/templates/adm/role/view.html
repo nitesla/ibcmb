@@ -204,7 +204,7 @@
         e.preventDefault();
         var link = $(e.currentTarget);
         if($(link).attr("disabled")){
-            return;
+            return ;
         }
         var dt = $('#role').DataTable();
         var id = $(dt.row({
@@ -219,8 +219,9 @@
         e.preventDefault();
         var link = $(e.currentTarget);
         if($(link).attr("disabled")){
-            return;
+            return false;
         }
+        //return false;
 
     });
     
