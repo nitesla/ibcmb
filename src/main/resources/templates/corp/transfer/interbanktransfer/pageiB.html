@@ -19,7 +19,7 @@
                 <div class="row form-spacing">
                     <div class="col-md-6 col-sm-6">
                         <form id="local" method="post" th:action="@{/corporate/transfer/interbank/new}"
-                              th:object="${localBeneficiaryDTO}">
+                              th:object="${corpLocalBeneficiary}">
                             <div class="form-group">
                                 <label>Beneficiary Bank</label>
                                 <select name="beneficiaryBank" class="form-control" th:field="*{beneficiaryBank}" id="bank_code">

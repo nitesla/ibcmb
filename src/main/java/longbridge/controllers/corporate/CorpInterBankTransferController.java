@@ -77,11 +77,11 @@ public class CorpInterBankTransferController {
 
 
     @GetMapping("/new")
-    public String newBeneficiary(Model model, CorpLocalBeneficiaryDTO corpLocalBeneficiaryDTO) throws Exception {
+    public String newBeneficiary(@ModelAttribute("corpLocalBeneficiary") CorpLocalBeneficiaryDTO corpLocalBeneficiaryDTO,Model model ) throws Exception {
         model.addAttribute("localBanks",
                 financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.LOCAL)
                         .stream()
-                        .filter(i -> i.getInstitutionCode().equals(bankCode))
+                        .filter(i -> !i.getInstitutionCode().equals(bankCode))
                         .collect(Collectors.toList())
         );
 
