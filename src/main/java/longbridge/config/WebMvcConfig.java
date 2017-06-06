@@ -67,7 +67,7 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
         registry.addInterceptor(adminUserLoginInterceptor()).addPathPatterns("/admin/**");
         registry.addInterceptor(OpUserLoginInterceptor()).addPathPatterns("/ops/**");
         registry.addInterceptor(retailUserLoginInterceptor()).addPathPatterns("/retail/**");
-        registry.addInterceptor(corporateUserLoginInterceptor()).addPathPatterns("/corps/**");
+        registry.addInterceptor(corporateUserLoginInterceptor()).addPathPatterns("/corporate/**");
         registry.addInterceptor(retailTransferAuthInterceptor()).addPathPatterns("/retail/transfer/process");
     }
 

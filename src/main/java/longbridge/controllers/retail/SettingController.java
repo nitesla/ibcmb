@@ -3,6 +3,7 @@ package longbridge.controllers.retail;
 import longbridge.dtos.AccountDTO;
 import longbridge.dtos.CodeDTO;
 import longbridge.dtos.RetailUserDTO;
+import longbridge.dtos.SettingDTO;
 import longbridge.exception.PasswordException;
 import longbridge.exception.PasswordMismatchException;
 import longbridge.exception.PasswordPolicyViolationException;
@@ -11,10 +12,7 @@ import longbridge.forms.AlertPref;
 import longbridge.forms.CustChangePassword;
 import longbridge.forms.CustResetPassword;
 import longbridge.models.RetailUser;
-import longbridge.services.AccountService;
-import longbridge.services.CodeService;
-import longbridge.services.PasswordPolicyService;
-import longbridge.services.RetailUserService;
+import longbridge.services.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +24,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
@@ -55,6 +52,9 @@ public class SettingController {
 
     @Autowired
     private AccountService accountService;
+
+    @Autowired
+    private ConfigurationService configService;
 
     @RequestMapping("/dashboard")
     public String getRetailDashboard(Model model, Principal principal) {
@@ -136,10 +136,20 @@ public class SettingController {
         RetailUser user = retailUserService.getUserByName(principal.getName());
 
         try {
-            String message = retailUserService.resetPassword(user, custResetPassword.getConfirmPassword());
+            String message = retailUserService.resetPassword(user, custResetPassword);
             redirectAttributes.addFlashAttribute("message", message);
             if (httpServletRequest.getSession().getAttribute("expired-password") != null) {
                 httpServletRequest.getSession().removeAttribute("expired-password");
+            }
+
+            SettingDTO setting = configService.getSettingByName("ENABLE_RETAIL_2FA");
+            boolean tokenAuth = false;
+            if (setting != null && setting.isEnabled()) {
+                tokenAuth = (setting.getValue().equalsIgnoreCase("YES") ? true : false);
+            }
+
+            if (tokenAuth) {
+                return "redirect:/retail/token";
             }
             return "redirect:/retail/dashboard";
         }catch (PasswordPolicyViolationException pve) {
@@ -151,6 +161,8 @@ public class SettingController {
             return "cust/settings/new-pword";
         } catch (PasswordMismatchException pme) {
             model.addAttribute("failure",pme.getMessage());
+            List<String> passwordPolicy = passwordPolicyService.getPasswordRules();
+            model.addAttribute("passwordRules", passwordPolicy);
             logger.error("New password mismatch from retail user {}", user.getUserName(), pme.toString());
             return "cust/settings/new-pword";
         } catch (PasswordException pe) {

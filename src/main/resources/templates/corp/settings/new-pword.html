@@ -54,7 +54,7 @@
                     <h5 class="page_header col-md-offset-4 col-md-4 col-sm-6">Password Reset</h5>
 
                     <div class="col-md-offset-4 col-md-4 col-sm-6">
-                        <form method="POST" th:action="@{/corporate/reset_password}" th:object="${custChangePassword}">
+                        <form method="POST" th:action="@{/corporate/reset_password}" th:object="${custResetPassword}">
 
                             <p class="alert alert-danger"><span style="color: red;">Your current password has expired.</span> <br/>Please enter a new password.</p>
                             <div class="form-group">
@@ -72,7 +72,7 @@
                                 <input id="password" type="password" th:field="*{confirmPassword}"  class="form-control"/>
                                 <p class="errors" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}">&times;</p>
                             </div>
-                            <button class="btn form-control"> Submit</button>
+                            <button class="btn btn-primary form-control"> Submit</button>
                         </form>
                     </div>
                 </div>
@@ -98,12 +98,35 @@
         </div>
     </div>
 </footer>
+
+<div th:if="${message}">
+    <div hidden="hidden">
+        <ul class="actionMessage">
+            <li th:each="msg : ${message}" th:text="${msg}">Message</li>
+        </ul>
+    </div>
+</div>
+
+<div th:if="${failure}">
+    <div hidden="hidden">
+        <ul class="actionError">
+            <li th:each="msg : ${failure}" th:text="${msg}">Message</li>
+        </ul>
+    </div>
+</div>
+
 <!-- CORE JQUERY SCRIPTS -->
-<script th:src="@{/customer/js/jquery-1.11.1.js}"></script>
-<!-- BOOTSTRAP SCRIPTS  -->
-<script th:src="@{/customer/js/bootstrap.js}"></script>
-<script th:src="@{~/customer/js/coronation.js}"></script>
+<script th:src="@{~/customer/js/jquery-1.11.1.js}"></script>
+<script th:src="@{~/customer/js/jquery-ui.js}"></script>
+<script th:src="@{~/customer/js/jquery.dataTables.js}"></script>
+<script th:src="@{~/customer/js/momentMin.js}"></script>
+<script th:src="@{~/customer/js/calendar.js}"></script>
+<script th:src="@{~/customer/js/jquery.spring-friendly.min.js}"></script>
 <script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
+<script th:src="@{~/customer/js/coronation.js}"></script>
+<!-- BOOTSTRAP SCRIPTS  -->
+<script th:src="@{~/customer/js/bootstrap.js}"></script>
+
 <script>
     $('#password').bind("cut copy paste",function(e) {
         e.preventDefault();

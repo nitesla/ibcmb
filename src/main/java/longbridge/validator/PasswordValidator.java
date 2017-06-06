@@ -197,7 +197,7 @@ public class PasswordValidator {
                     }
                 }
             case RETAIL:
-                List<RetailPassword> retailPasswords = retailPasswordRepo.findByUserId(user.getId());
+                List<RetailPassword> retailPasswords = retailPasswordRepo.findByUsername(user.getUserName());
                 for(RetailPassword retailPassword: retailPasswords){
                     if(passwordEncoder.matches(password,retailPassword.getPassword())){
                         return false;
@@ -205,7 +205,7 @@ public class PasswordValidator {
                 }
 
             case CORPORATE:
-                List<CorporatePassword> corporatePasswords = corporatePasswordRepo.findByUserId(user.getId());
+                List<CorporatePassword> corporatePasswords = corporatePasswordRepo.findByUsername(user.getUserName());
                 for(CorporatePassword corporatePassword: corporatePasswords){
                     if(passwordEncoder.matches(password,corporatePassword.getPassword())){
                         return false;
