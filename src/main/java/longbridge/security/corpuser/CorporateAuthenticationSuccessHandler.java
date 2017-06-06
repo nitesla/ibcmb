@@ -48,12 +48,13 @@ public class CorporateAuthenticationSuccessHandler implements AuthenticationSucc
         if (session != null) {
             sessionUtils.setTimeout(session);
             String s = authentication.getName();
+
             String userName = "";
             String corpId = "";
             if (s != null) {
                 try {
-                    userName = s.split(":")[0];
-                    corpId = s.split(":")[1];
+                    userName = s;
+
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -61,7 +62,8 @@ public class CorporateAuthenticationSuccessHandler implements AuthenticationSucc
 
                 }
             }
-            CorporateUser user = corporateUserRepo.findFirstByUserNameIgnoreCaseAndCorporate_CustomerIdIgnoreCase(userName, corpId);
+          //  CorporateUser user = corporateUserRepo.findFirstByUserNameIgnoreCaseAndCorporate_CustomerIdIgnoreCase(userName, corpId);
+            CorporateUser user = corporateUserRepo.findFirstByUserNameIgnoreCase(userName);
             if (user != null)
                 sessionUtils.validateExpiredPassword(user, session);
                 failedLoginService.loginSucceeded(user);

@@ -64,6 +64,7 @@ public class CorporateUserDetailsService implements UserDetailsService {
                corpId = s.split(":")[1];
 
            }catch (Exception e){
+               e.printStackTrace();
 
            }
         }

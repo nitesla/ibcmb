@@ -67,7 +67,13 @@ public class RetailControllerAdvice {
         }
         model.addAttribute("bvn", bvn);
 
-        model.addAttribute("lastLogin", DateFormatter.format(user.getLastLoginDate()));
+        if(user.getLastLoginDate()!=null) {
+            model.addAttribute("lastLogin", DateFormatter.format(user.getLastLoginDate()));
+        }
+        else {
+            model.addAttribute("lastLogin", user.getLastLoginDate());
+
+        }
 
         Calendar c = Calendar.getInstance();
         int timeOfDay = c.get(Calendar.HOUR_OF_DAY);

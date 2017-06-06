@@ -67,7 +67,9 @@ public class SessionUtils {
             if (user.getExpiryDate() != null && session != null) {
 
                 LocalDate date = new LocalDate(user.getExpiryDate());
+
                 if (LocalDate.now().isAfter(date) || LocalDate.now().isEqual(date)) {
+
                     session.setAttribute("expired-password", "expired-password");
                  //   session.setMaxInactiveInterval(60);
 

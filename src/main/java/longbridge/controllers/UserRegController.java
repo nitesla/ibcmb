@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import longbridge.api.CustomerDetails;
 import longbridge.dtos.RetailUserDTO;
 import longbridge.exception.InternetBankingException;
+import longbridge.forms.CustResetPassword;
 import longbridge.forms.RegistrationForm;
 import longbridge.forms.ResetPasswordForm;
 import longbridge.forms.RetrieveUsernameForm;
@@ -501,7 +502,10 @@ public class UserRegController {
             return "false";
         }
         //change password
-        retailUserService.resetPassword(retailUser, password);
+        CustResetPassword custResetPassword = new CustResetPassword();
+        custResetPassword.setNewPassword(password);
+        custResetPassword.setConfirmPassword(confirmPassword);
+        retailUserService.resetPassword(retailUser,custResetPassword);
         redirectAttributes.addAttribute("success", true);
 
         return "true";

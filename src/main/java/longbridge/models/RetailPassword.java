@@ -13,16 +13,16 @@ import javax.persistence.Entity;
 @Where(clause ="del_Flag='N'" )
 public class RetailPassword extends AbstractEntity{
 
-    Long userId;
+    String username;
     String password;
 
 
-    public Long getUserId() {
-        return userId;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getPassword() {
