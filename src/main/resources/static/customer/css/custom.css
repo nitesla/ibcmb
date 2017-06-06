@@ -413,9 +413,14 @@ body {
     font-size: 18px;
 }
 
+.form-signin-heading{
+    text-align: center;
+    font-size: 14px;
+}
+
 #label{
     text-align: center;
-    font-size: 18px;
+    font-size: 14px;
 }
 
 .biglist{

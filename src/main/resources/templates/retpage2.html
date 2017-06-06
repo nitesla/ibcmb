@@ -51,6 +51,8 @@
         <div class="bg">
             <div class="col-md-offset-4 col-md-6">
                 <form th:action="@{/login/p/retail}" method="POST" class="login-form ">
+                    <h5 class="form-signin-heading">Enter Login Details</h5>
+                    <br/>
                     <div class="row ">
                         <div class="form-group col-md-7 col-sm-7 col-xs-7">
                             <input type="text" name="username" th:value="*{username}" class="form-control" readonly="readonly"/>
