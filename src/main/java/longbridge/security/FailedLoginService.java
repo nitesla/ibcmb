@@ -98,7 +98,10 @@ public class FailedLoginService {
         return ok;
 
     }
+    public void loginSucceeded(final User key) {
+        unLockUser(key);
 
+    }
 
     public void loginFailed(final User key) {
         int attempts = 0;
