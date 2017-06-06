@@ -25,6 +25,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.Comparator;
 import java.util.Locale;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -98,6 +99,7 @@ public class InterBankTransferController {
                         .stream()
                         .filter(i ->! i.getInstitutionCode().equals(bankCode))
                         .collect(Collectors.toList())
+
         );
         model.addAttribute("localBeneficiaryDTO", localBeneficiaryDTO);
         return page + "pageiB";
@@ -116,9 +118,12 @@ public class InterBankTransferController {
 
         transferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode(localBeneficiaryDTO.getBeneficiaryBank()));
         model.addAttribute("transferRequest", transferRequestDTO);
-
+        model.addAttribute("benName",localBeneficiaryDTO.getPreferredName());
 
         servletRequest.getSession().setAttribute("Lbeneficiary", localBeneficiaryDTO);
+        servletRequest.getSession().setAttribute("benName", localBeneficiaryDTO.getPreferredName());
+
+
 
         return page + "pageii";
     }

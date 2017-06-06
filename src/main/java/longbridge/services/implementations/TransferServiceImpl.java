@@ -95,7 +95,7 @@ public class TransferServiceImpl implements TransferService {
             if (!(authentication instanceof AnonymousAuthenticationToken)) {
                 String currentUserName = authentication.getName();
                 RetailUser user = retailUserRepo.findFirstByUserName(currentUserName);
-                transRequest.setReferenceNumber("RET_"+user.getId());
+                transRequest.setUserReferenceNumber("RET_"+user.getId());
             }
             transferRequestRepo.save(transRequest);
             result = true;
@@ -120,6 +120,12 @@ public class TransferServiceImpl implements TransferService {
 
 @Override
     public void validateTransfer(TransferRequestDTO dto) throws InternetBankingTransferException {
+        if (dto.getAmount().compareTo(new BigDecimal(0))<=0){
+
+        }
+
+
+
         if (dto.getBeneficiaryAccountNumber().equalsIgnoreCase(dto.getCustomerAccountNumber())) {
             throw new InternetBankingTransferException(TransferExceptions.SAME_ACCOUNT.toString());
         }

@@ -24,7 +24,7 @@ import java.util.Map;
 
 
 
-public class InternetbankingApplication  extends SpringBootServletInitializer implements CommandLineRunner {
+public class InternetbankingApplication  /*extends SpringBootServletInitializer implements CommandLineRunner */{
 
     @Autowired
     private SecurityService securityService;
@@ -44,12 +44,12 @@ public class InternetbankingApplication  extends SpringBootServletInitializer im
         return application.sources(InternetbankingApplication.class);
     }
 
-    @Override
-    public void run(String... strings) throws Exception {
-
-        System.out.print("Your password is :"+passwordEncoder.encode("password@1"));
-
-    }
+//    @Override
+//    public void run(String... strings) throws Exception {
+//
+//        System.out.print("Your password is :"+passwordEncoder.encode("password@1"));
+//
+//    }
 }
 
 

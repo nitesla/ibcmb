@@ -40,7 +40,8 @@
 
 
                                 </select>
-
+                                <p th:if="${#fields.hasErrors('customerAccountNumber')}" th:errors="*{customerAccountNumber}"
+                                   class="errors"></p>
                             </div>
 
                             <input type="hidden" th:field="*{financialInstitution}" />
@@ -50,12 +51,14 @@
 
                             <div class="form-group">
                                 <label>Amount</label>
-                                <input type="number" name="textname" step="any" placeholder="Enter an amount"
+                                <input type="number" name="amount" step="any" placeholder="Enter an amount"
                                        th:field="*{amount}" class="form-control"/>
+                                <p th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}"
+                                   class="errors"></p>
                             </div>
                             <div class="form-group">
                                 <label>Remark</label>
-                                <input type="text" name="textname" placeholder="" th:field="*{remarks}"
+                                <input type="text" name="remarks" placeholder="" th:field="*{remarks}"
                                        class="form-control"/>
                             </div>
 

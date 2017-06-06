@@ -58,8 +58,9 @@ public class CorporateAuthenticationSuccessHandler implements AuthenticationSucc
 
                 }
             }
-            CorporateUser user = corporateUserRepo.findByUserNameAndCorporate_CustomerId(userName,corpId);
-//           sessionUtils.validateExpiredPassword(user,session);
+            CorporateUser user = corporateUserRepo.findFirstByUserNameIgnoreCaseAndCorporate_CustomerIdIgnoreCase(userName,corpId);
+             if (user!=null)
+              sessionUtils.validateExpiredPassword(user,session);
 
         }
         clearAuthenticationAttributes(request);

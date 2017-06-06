@@ -87,13 +87,13 @@ public class RetailUserServiceImpl implements RetailUserService {
 
     @Override
     public RetailUser getUserByName(String name) {
-        RetailUser retailUser = this.retailUserRepo.findFirstByUserName(name);
+        RetailUser retailUser = this.retailUserRepo.findFirstByUserNameIgnoreCase(name);
         return retailUser;
     }
 
     @Override
     public RetailUserDTO getUserDTOByName(String name) {
-        RetailUser retailUser = this.retailUserRepo.findFirstByUserName(name);
+        RetailUser retailUser = this.retailUserRepo.findFirstByUserNameIgnoreCase(name);
         return convertEntityToDTO(retailUser);
     }
 
