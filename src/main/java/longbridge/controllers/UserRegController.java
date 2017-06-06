@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import longbridge.api.CustomerDetails;
 import longbridge.dtos.RetailUserDTO;
 import longbridge.exception.InternetBankingException;
+import longbridge.forms.CustResetPassword;
 import longbridge.forms.RegistrationForm;
 import longbridge.forms.ResetPasswordForm;
 import longbridge.forms.RetrieveUsernameForm;
@@ -189,13 +190,13 @@ public class UserRegController {
             String message = "Your Registration Code is : ";
             message += n;
 
-
             ObjectNode sent = integrationService.sendSMS(message, contact +
                     "" +
                     " ", "Internet Banking Registration Code");
             if (sent != null){
                 session.setAttribute("regCode", n);
-                return "true";
+
+                return String.valueOf(n);
             }
 
         }else {
@@ -501,7 +502,10 @@ public class UserRegController {
             return "false";
         }
         //change password
-        retailUserService.resetPassword(retailUser, password);
+        CustResetPassword custResetPassword = new CustResetPassword();
+        custResetPassword.setNewPassword(password);
+        custResetPassword.setConfirmPassword(confirmPassword);
+        retailUserService.resetPassword(retailUser,custResetPassword);
         redirectAttributes.addAttribute("success", true);
 
         return "true";

@@ -6,6 +6,7 @@ import longbridge.dtos.SettingDTO;
 import longbridge.exception.*;
 import longbridge.forms.AlertPref;
 import longbridge.forms.CustChangePassword;
+import longbridge.forms.CustResetPassword;
 import longbridge.models.*;
 import longbridge.repositories.CorpLimitRepo;
 import longbridge.repositories.CorporateRepo;
@@ -271,7 +272,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
                 Email email = new Email.Builder()
                         .setRecipient(user.getEmail())
                         .setSubject(messageSource.getMessage("corporate.customer.create.subject", null, locale))
-                        .setBody(String.format(messageSource.getMessage("corporate.customer.create.message", null, locale), fullName, user.getUserName(), password))
+                        .setBody(String.format(messageSource.getMessage("corporate.customer.create.message", null, locale), fullName, user.getUserName(), password,user.getCorporate().getCustomerId()))
                         .build();
                 mailService.send(email);
             } else if (("I".equals(oldStatus)) && "A".equals(newStatus)) {//User is being reactivated
@@ -281,8 +282,8 @@ public class CorporateUserServiceImpl implements CorporateUserService {
                 corporateUserRepo.save(user);
                 Email email = new Email.Builder()
                         .setRecipient(user.getEmail())
-                        .setSubject(messageSource.getMessage("customer.reactivation.subject", null, locale))
-                        .setBody(String.format(messageSource.getMessage("customer.reactivation.message", null, locale), fullName, user.getUserName(), password))
+                        .setSubject(messageSource.getMessage("corporate.customer.reactivation.subject", null, locale))
+                        .setBody(String.format(messageSource.getMessage("corporate.customer.reactivation.message", null, locale), fullName, user.getUserName(), password,user.getCorporate().getCustomerId()))
                         .build();
                 mailService.send(email);
             }
@@ -384,9 +385,35 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
     @Override
     public String changePassword(CorporateUser user, CustChangePassword changePassword) {
+
         if (!this.passwordEncoder.matches(changePassword.getOldPassword(), user.getPassword())) {
             throw new WrongPasswordException();
         }
+
+        String errorMessage = passwordPolicyService.validate(changePassword.getNewPassword(), user);
+        if (!"".equals(errorMessage)) {
+            throw new PasswordPolicyViolationException(errorMessage);
+        }
+        if (!changePassword.getNewPassword().equals(changePassword.getConfirmPassword())) {
+            throw new PasswordMismatchException();
+        }
+        try {
+            CorporateUser corporateUser = corporateUserRepo.findOne(user.getId());
+            corporateUser.setPassword(this.passwordEncoder.encode(changePassword.getNewPassword()));
+            corporateUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
+            passwordPolicyService.saveCorporatePassword(corporateUser);
+            this.corporateUserRepo.save(corporateUser);
+            logger.info("User {} password has been updated", user.getId());
+            return messageSource.getMessage("password.change.success", null, locale);
+        } catch (Exception e) {
+            throw new PasswordException(messageSource.getMessage("password.change.failure", null, locale), e);
+        }
+    }
+
+
+    @Override
+    public String resetPassword(CorporateUser user, CustResetPassword changePassword) {
+
         String errorMessage = passwordPolicyService.validate(changePassword.getNewPassword(), user);
         if (!"".equals(errorMessage)) {
             throw new PasswordPolicyViolationException(errorMessage);
