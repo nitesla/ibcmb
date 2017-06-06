@@ -18,6 +18,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.security.Principal;
 import java.util.List;
@@ -51,29 +52,51 @@ public class MainController {
 
 
     @RequestMapping(value = {"/", "/home"})
-    public String getHomePage() {
+    public String getHomePage(HttpServletRequest request) {
+       HttpSession session = request.getSession(false);
+       if (session!=null){
+           session.invalidate();
+       }
+
         return "index";
     }
 
     @RequestMapping(value = "/login/retail", method = RequestMethod.GET)
-    public ModelAndView getLoginPage(@RequestParam Optional<String> error) {
+    public ModelAndView getLoginPage(@RequestParam Optional<String> error,HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session!=null){
+            session.invalidate();
+        }
         return new ModelAndView("retpage1", "error", error);
     }
 
     @RequestMapping(value = "/login/corporate", method = RequestMethod.GET)
-    public ModelAndView getCorpLoginPage(@RequestParam Optional<String> error) {
+    public ModelAndView getCorpLoginPage(@RequestParam Optional<String> error,HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session!=null){
+            session.invalidate();
+        }
         return new ModelAndView("corppage1", "error", error);
     }
 
     @GetMapping(value = "/login/admin")
-    public ModelAndView adminLogin() {
+    public ModelAndView adminLogin(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session!=null){
+            session.invalidate();
+        }
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("admlogin");
         return modelAndView;
     }
 
     @GetMapping(value = "/login/ops")
-    public ModelAndView opsLogin() {
+    public ModelAndView opsLogin(HttpServletRequest request) {
+
+        HttpSession session = request.getSession(false);
+        if (session!=null){
+            session.invalidate();
+        }
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("opslogin");
         return modelAndView;

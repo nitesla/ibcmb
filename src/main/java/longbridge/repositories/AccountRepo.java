@@ -16,7 +16,7 @@ import java.util.List;
  */
 @Repository
 @Transactional
-public interface AccountRepo extends CommonRepo<Account, Long> {
+public interface AccountRepo extends CommonRepo<Account,Long> {
 
     Account findById(Long id);
 

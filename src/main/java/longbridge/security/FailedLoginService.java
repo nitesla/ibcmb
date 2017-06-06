@@ -1,20 +1,18 @@
 package longbridge.security;
 
-import com.google.common.cache.*;
 import longbridge.dtos.SettingDTO;
 import longbridge.models.*;
 import longbridge.repositories.*;
-
-
 import longbridge.services.ConfigurationService;
+import org.joda.time.DateTime;
+import org.joda.time.Duration;
+import org.joda.time.LocalTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
+import java.util.Date;
 
 @Service
 public class FailedLoginService {
@@ -33,49 +31,79 @@ public class FailedLoginService {
     private CorporateRepo corporateRepo;
 
     private Logger logger = LoggerFactory.getLogger(getClass());
+    private int MAX_ATTEMPT = 3;
 
-    RemovalListener<User, Integer> removalListener = removal -> {
 
-        if (removal.wasEvicted()) {
-            User user = removal.getKey();
-            logger.trace("update user to no attempts login");
+    private int expiryTime = 2;
+
+
+    public FailedLoginService() {
+    }
+    //
+
+
+    public boolean unLockUser(User user) {
+        boolean ok = false;
+        try {
             user.setNoOfLoginAttempts(0);
+            user.setStatus("A");
+            user.setLockedUntilDate(null);
             updateFailedLogin(user);
+            ok = true;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
+
+        }
+        return ok;
+
+
+    }
+
+
+    public boolean removalListener(User user) {
+        boolean ok = false;
+
+        if (user != null) {
+            try {
+
+                if (user.getLockedUntilDate() == null) {
+                    unLockUser(user);
+                    return true;
+                }
+
+
+                DateTime dateTime = new DateTime(user.getLockedUntilDate());
+                Duration duration = new Duration(dateTime, DateTime.now());
+                if (duration.getStandardMinutes() >= getExpiryTime()) {
+                    logger.trace("update user to no attempts login");
+
+                    unLockUser(user);
+                    ok = true;
+
+                }
+
+
+            } catch (Exception e) {
+                logger.trace("Exception occurred   {}", e);
+                e.printStackTrace();
+
+
+            }
+
         }
 
 
-    };
-    private int MAX_ATTEMPT = 2;
-    private int expiryTime = 5;
-    private LoadingCache<User, Integer> attemptsCache;
-
-    //
-
-    public FailedLoginService() {
-        super();
-
-        attemptsCache = CacheBuilder.newBuilder().expireAfterWrite(getExpiryTime(), TimeUnit.MINUTES)
-                .removalListener(removalListener)
-                .build(new CacheLoader<User, Integer>() {
-                    @Override
-                    public Integer load(final User key) {
-                        return 0;
-                    }
-                });
-    }
-
-    public void loginSucceeded(final User key) {
-        key.setNoOfLoginAttempts(0);
-        updateFailedLogin(key);
-        attemptsCache.invalidate(key);
+        return ok;
 
     }
+
 
     public void loginFailed(final User key) {
         int attempts = 0;
         try {
-            // attempts = key.getNoOfLoginAttempts();
-            attempts = attemptsCache.get(key);
+            attempts = key.getNoOfLoginAttempts();
 
         } catch (final Exception e) {
             e.printStackTrace();
@@ -83,63 +111,73 @@ public class FailedLoginService {
 
         }
         attempts++;
-        int noOfAttempts = 0;
-        try {
-            noOfAttempts = key.getNoOfLoginAttempts();
-        } catch (Exception e) {
 
+
+        key.setNoOfLoginAttempts(attempts);
+        if (key.getNoOfLoginAttempts() >= getMaxAttempt()) {
+            key.setStatus("L");
+            key.setLockedUntilDate( new DateTime().plusMinutes(getExpiryTime()).toDate());
         }
 
-        key.setNoOfLoginAttempts(noOfAttempts + attempts);
         updateFailedLogin(key);
 
-        attemptsCache.put(key, attempts);
+
     }
 
     public boolean isBlocked(final User key) {
         try {
             //  return attemptsCache.get(key) >= getMaxAttempt();
 
-            return attemptsCache.get(key) >= getMaxAttempt();
+            boolean ok = key.getStatus().equalsIgnoreCase("L");
+            if (ok && !removalListener(key))
+
+
+                return
+                        key.getStatus().equalsIgnoreCase("L");
+
+
+            // return key.getStatus()>= getMaxAttempt();
 
         } catch (final Exception e) {
             e.printStackTrace();
             return false;
         }
+        return false;
     }
 
     private void updateFailedLogin(User user) {
-       try{
-           if (user != null && user.getUserType() != null) {
-               UserType type = user.getUserType();
-               switch (type) {
-                   case ADMIN: {
+        try {
+            if (user != null && user.getUserType() != null) {
+                UserType type = user.getUserType();
+                switch (type) {
+                    case ADMIN: {
 
-                       adminUserRepo.save((AdminUser) user);
-                       break;
-                   }
+                        adminUserRepo.save((AdminUser) user);
+                        break;
+                    }
 
-                   case RETAIL: {
+                    case RETAIL: {
 
-                       retailUserRepo.save((RetailUser) user);
-                       break;
-                   }
-                   case OPERATIONS: {
+                        retailUserRepo.save((RetailUser) user);
+                        break;
+                    }
+                    case OPERATIONS: {
 
-                       operationsUserRepo.save((OperationsUser) user);
-                       break;
-                   }
-                   case CORPORATE: {
+                        operationsUserRepo.save((OperationsUser) user);
+                        break;
+                    }
+                    case CORPORATE: {
 
-                       corporateUserRepo.save((CorporateUser) user);
-                       break;
-                   }
+                        corporateUserRepo.save((CorporateUser) user);
+                        break;
+                    }
 
-               }
-           }
-       }catch (Exception e){
-logger.error("Exception occurred {}",e.getMessage());
-       }
+                }
+            }
+        } catch (Exception e) {
+            logger.error("Exception occurred {}", e.getMessage());
+            e.printStackTrace();
+        }
 
 
     }

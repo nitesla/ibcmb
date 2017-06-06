@@ -23,7 +23,7 @@ public class AuthenticationErrorService {
     public String getMessage( AuthenticationException exception, HttpServletRequest request){
         final Locale locale = localeResolver.resolveLocale(request);
         String errorMessage = messages.getMessage("message.badCredentials", null, locale);
-
+        System.out.println(exception.getMessage());
         if (exception.getMessage().equalsIgnoreCase("User is disabled")) {
             errorMessage = messages.getMessage("auth.message.disabled", null, locale);
         } else if (exception.getMessage().equalsIgnoreCase("User account has expired")) {
@@ -31,7 +31,7 @@ public class AuthenticationErrorService {
         } else if (exception.getMessage().equalsIgnoreCase("blocked")) {
             errorMessage = messages.getMessage("auth.message.blocked", null, locale);
         } else if (exception.getMessage().equalsIgnoreCase("user_blocked")) {
-            System.out.println("ITS GETTING HERE");
+
             errorMessage = messages.getMessage("auth.message.user.blocked", null, locale);
         }
 

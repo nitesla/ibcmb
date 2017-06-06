@@ -23,7 +23,7 @@ public class SessionUtils {
     IntegrationService integrationService;
     @Autowired
     MailService mailService;
-    private LocalDate today = LocalDate.now();
+
     @Autowired
     private ConfigurationService configService;
 
@@ -62,17 +62,27 @@ public class SessionUtils {
     }
 
     public void validateExpiredPassword(User user, HttpSession session) {
-        if (user.getExpiryDate() != null) {
+        try {
 
-            LocalDate date = new LocalDate(user.getExpiryDate());
-            if (today.isAfter(date) || today.isEqual(date)) {
-                session.setMaxInactiveInterval(60);
-                session.setAttribute("expired-password", "expired-password");
+            if (user.getExpiryDate() != null && session != null) {
+
+                LocalDate date = new LocalDate(user.getExpiryDate());
+                if (LocalDate.now().isAfter(date) || LocalDate.now().isEqual(date)) {
+                    session.setAttribute("expired-password", "expired-password");
+                 //   session.setMaxInactiveInterval(60);
+
+
+                }
+
 
             }
 
 
+        } catch (Exception e) {
+            e.printStackTrace();
+
         }
+
     }
 
 }

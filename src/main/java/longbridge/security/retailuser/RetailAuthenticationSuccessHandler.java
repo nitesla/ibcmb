@@ -28,14 +28,15 @@ import java.io.IOException;
 @Component("retailAuthenticationSuccessHandler")
 public class RetailAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    @Autowired
-    SessionUtils sessionUtils;
-    private LocalDate today = LocalDate.now();
+
+
     private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
     @Autowired
     private RetailUserRepo retailUserRepo;
     @Autowired
     private ConfigurationService configService;
+    @Autowired
+    private SessionUtils sessionUtils;
 
     public RetailAuthenticationSuccessHandler() {
         super();
@@ -48,12 +49,8 @@ public class RetailAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         final HttpSession session = request.getSession(false);
         if (session != null) {
             sessionUtils.setTimeout(session);
-            RetailUser user = retailUserRepo.findFirstByUserName(authentication.getName());
-            LocalDate date = new LocalDate(user.getExpiryDate());
-
-            if (today.isAfter(date) || today.isEqual(date)) {
-                session.setAttribute("expired-password", "expired-password");
-            }
+            RetailUser user = retailUserRepo.findFirstByUserNameIgnoreCase(authentication.getName());
+            sessionUtils.validateExpiredPassword(user,session);
             //session.setAttribute("user",retailUserRepo.findFirstByUserName(authentication.getName()));
             retailUserRepo.updateUserAfterLogin(authentication.getName());
 
