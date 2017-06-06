@@ -277,16 +277,8 @@
 
                 email = $('input[name="email"]').val();
                 console.log(email);
-                if (email == null || email === '') {
-                    email = "@gmail.com";
-                    console.log(email);
-                }
                 var birthDate = $('input[name="birthDate"]').val();
-                if (typeof birthDate == 'undefined' && !email) {
-                    birthDate = "";
-                }
-                //return isValid && validateAccountDetails(accountNumber, email, birthDate);
-                return isValid;
+                return isValid && validateAccountDetails(accountNumber, email, birthDate);
             }
             if(PROFILE_DETAILS_STEP === currentIndex){
                 console.log("Current stp is the profile details step");
