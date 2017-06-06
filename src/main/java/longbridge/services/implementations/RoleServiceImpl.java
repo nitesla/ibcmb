@@ -164,6 +164,11 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public String deleteRole(Long id) throws InternetBankingException {
         try {
+        	Role role = roleRepo.getOne(id);
+        	Integer users = countUsers(role);
+        	if(users > 0){
+        		throw new InternetBankingException(messageSource.getMessage("role.delete.users.exist", null, locale));
+        	}
             roleRepo.delete(id);
             logger.warn("Deleted role with Id {}", id);
             return messageSource.getMessage("role.delete.success", null, locale);
@@ -329,5 +334,31 @@ public class RoleServiceImpl implements RoleService {
             break;
         }
         return pageImpl;
+    }
+    
+    
+    private Integer countUsers(Role role) {
+        Integer cnt = 0 ;
+        switch (role.getUserType()) {
+            case ADMIN: {
+                cnt = adminRepo.countByRole(role);
+            }
+
+            break;
+            case OPERATIONS: {
+            	cnt = opRepo.countByRole(role);
+            }
+            break;
+
+            case RETAIL: {
+            	cnt = retailRepo.countByRole(role);
+            }
+            break;
+            case CORPORATE: {
+            	cnt = corpRepo.countByRole(role);
+            }
+            break;
+        }
+        return cnt;
     }
 }
