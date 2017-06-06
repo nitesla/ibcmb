@@ -200,7 +200,7 @@ public class AdmRoleController {
             return "redirect:/admin/roles";
         } catch (InternetBankingException ibe) {
             logger.error("Error deleting role", ibe);
-            redirectAttributes.addFlashAttribute("message", messageSource.getMessage("role.update.failure", null, locale));
+            redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
             return "redirect:/admin/roles";
 
         }

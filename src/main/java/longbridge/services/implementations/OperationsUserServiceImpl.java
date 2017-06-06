@@ -168,7 +168,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     @Override
     @Transactional
     public String addUser(OperationsUserDTO user) throws InternetBankingException {
-        OperationsUser opsUser = operationsUserRepo.findFirstByUserName(user.getUserName());
+        OperationsUser opsUser = operationsUserRepo.findFirstByUserNameIgnoreCase(user.getUserName());
         if (opsUser != null) {
             throw new DuplicateObjectException(messageSource.getMessage("user.exist", null, locale));
         }
