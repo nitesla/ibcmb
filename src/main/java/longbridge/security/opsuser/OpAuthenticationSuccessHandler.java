@@ -5,6 +5,7 @@ import longbridge.models.OperationsUser;
 import longbridge.models.UserType;
 import longbridge.repositories.AdminUserRepo;
 import longbridge.repositories.OperationsUserRepo;
+import longbridge.security.FailedLoginService;
 import longbridge.security.SessionUtils;
 import longbridge.services.ConfigurationService;
 import org.joda.time.LocalDate;
@@ -30,6 +31,8 @@ public class OpAuthenticationSuccessHandler extends SavedRequestAwareAuthenticat
     private final Logger logger = LoggerFactory.getLogger(getClass());
     @Autowired
     SessionUtils sessionUtils;
+    @Autowired
+    FailedLoginService failedLoginService;
     private LocalDate today = LocalDate.now();
     private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
@@ -49,14 +52,11 @@ public class OpAuthenticationSuccessHandler extends SavedRequestAwareAuthenticat
         if (session != null) {
             setUseReferer(true);
             sessionUtils.setTimeout(session);
-            OperationsUser user = operationsUserRepo.findFirstByUserName(authentication.getName());
-            LocalDate date = new LocalDate(user.getExpiryDate());
-
-            if (today.isAfter(date) || today.isEqual(date)) {
-                session.setAttribute("expired-password", "expired-password");
-            }
+            OperationsUser user = operationsUserRepo.findFirstByUserNameIgnoreCase(authentication.getName());
+            sessionUtils.setTimeout(session);
+            sessionUtils.validateExpiredPassword(user, session);
+            failedLoginService.loginSucceeded(user);
         }
-
         operationsUserRepo.updateUserAfterLogin(authentication.getName());
         super.onAuthenticationSuccess(request, response, authentication);
 
