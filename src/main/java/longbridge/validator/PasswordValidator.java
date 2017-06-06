@@ -177,7 +177,7 @@ public class PasswordValidator {
      * @return true if the password can be reused
      */
     private boolean isPasswordReuseable(String password, User user) {
-        if (numOfChanges==0) {
+        if (numOfChanges==0 || user==null) {
             return true;
         }
 
