@@ -17,6 +17,7 @@ public class Permission extends AbstractEntity{
     private String name;
     private String description;
     private String code;
+    private String category;
     private String userType;
 
     public Permission(){
@@ -63,6 +64,14 @@ public class Permission extends AbstractEntity{
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     @Override

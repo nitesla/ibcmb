@@ -114,27 +114,29 @@
 <script th:src="@{~/customer/js/bootstrap.js}"></script>
     <script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
 
-    <script>
-        $(document).ready(function(){
-            $(".dropdown").hover(
-                function() {
-                    $('.dropdown-menu', this).not('.in .dropdown-menu').stop(true,true).slideDown(800);
-                    $(this).toggleClass('open');
-                },
-                function() {
-                    $('.dropdown-menu', this).not('.in .dropdown-menu').stop(true,true).slideUp(800);
-                    $(this).toggleClass('open');
-                }
-            );
-        });
-    </script>
+    <!--<script>-->
+        <!--$(document).ready(function(){-->
+            <!--$(".dropdown").hover(-->
+                <!--function() {-->
+                    <!--$('.dropdown-menu', this).not('.in .dropdown-menu').stop(true,true).slideDown(800);-->
+                    <!--$(this).toggleClass('open');-->
+                <!--},-->
+                <!--function() {-->
+                    <!--$('.dropdown-menu', this).not('.in .dropdown-menu').stop(true,true).slideUp(800);-->
+                    <!--$(this).toggleClass('open');-->
+                <!--}-->
+            <!--);-->
+        <!--});-->
+    <!--</script>-->
     <script>
         $(document).ready(function(){
             $('[data-toggle="tooltip"]').tooltip();
+
+            $('#password').bind("cut copy paste",function(e) {
+                e.preventDefault();
+            });
         });
-        $('#password').bind("cut copy paste",function(e) {
-            e.preventDefault();
-        });
+
     </script>
 </body>
 </html>

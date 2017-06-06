@@ -118,7 +118,7 @@ public class AdmOperationsUserController {
         catch (EntrustException se) {
             result.addError(new ObjectError("error", se.getMessage()));
             logger.error("Error creating Operations user on Entrust", se);
-            return "adm/admin/add";
+            return "adm/operation/add";
         }
         catch (DuplicateObjectException doe) {
             result.addError(new ObjectError("error", doe.getMessage()));

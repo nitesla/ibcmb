@@ -43,25 +43,24 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     private ModelMapper modelMapper;
 
     @Autowired
-    MailService mailService;
+    private MailService mailService;
 
     @Autowired
-    PasswordPolicyService passwordPolicyService;
+    private PasswordPolicyService passwordPolicyService;
 
     @Autowired
-    MessageSource messageSource;
+    private MessageSource messageSource;
 
     @Autowired
-    CodeService codeService;
+    private CodeService codeService;
 
     @Autowired
-    SecurityService securityService;
+    private SecurityService securityService;
 
     @Autowired
-    ConfigurationService configService;
+    private ConfigurationService configService;
 
-
-    Locale locale = LocaleContextHolder.getLocale();
+    private Locale locale = LocaleContextHolder.getLocale();
 
     public OperationsUserServiceImpl() {
 
@@ -126,6 +125,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
                 String password = passwordPolicyService.generatePassword();
                 user.setPassword(passwordEncoder.encode(password));
                 user.setExpiryDate(new Date());
+                passwordPolicyService.saveOpsPassword(user);
                 operationsUserRepo.save(user);
 
                 Email email = new Email.Builder()
@@ -138,6 +138,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
                 String password = passwordPolicyService.generatePassword();
                 user.setPassword(passwordEncoder.encode(password));
                 user.setExpiryDate(new Date());
+                passwordPolicyService.saveOpsPassword(user);
                 operationsUserRepo.save(user);
                 Email email = new Email.Builder()
                         .setRecipient(user.getEmail())
@@ -187,7 +188,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_CREATION");
             if (setting != null && setting.isEnabled()) {
                 if ("YES".equalsIgnoreCase(setting.getValue())) {
-                   boolean  result = securityService.createEntrustUser(opsUser.getUserName(), fullName, true);
+                    boolean result = securityService.createEntrustUser(opsUser.getUserName(), fullName, true);
                     if (!result) {
                         throw new EntrustException(messageSource.getMessage("entrust.create.failure", null, locale));
                     }
@@ -196,13 +197,14 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             logger.info("New Operation user  {} created", opsUser.getUserName());
             return messageSource.getMessage("user.add.success", null, LocaleContextHolder.getLocale());
         } catch (InternetBankingSecurityException se) {
-            throw new InternetBankingSecurityException(messageSource.getMessage("entrust.create.failure", null, locale),se);
+            throw new InternetBankingSecurityException(messageSource.getMessage("entrust.create.failure", null, locale), se);
         } catch (Exception e) {
             if (e instanceof EntrustException) {
                 throw new EntrustException(messageSource.getMessage("entrust.create.failure", null, locale));
             } else {
                 throw new InternetBankingException(messageSource.getMessage("user.add.failure", null, locale), e);
-            }        }
+            }
+        }
 
 
     }
@@ -246,12 +248,10 @@ public class OperationsUserServiceImpl implements OperationsUserService {
                 }
             }
             return messageSource.getMessage("user.delete.success", null, locale);
-        }
-        catch (InternetBankingSecurityException se){
-            throw new InternetBankingSecurityException(messageSource.getMessage("entrust.delete.failure",null,locale));
-        }
-        catch (Exception e){
-            throw new InternetBankingException(messageSource.getMessage("user.delete.failure",null,locale));
+        } catch (InternetBankingSecurityException se) {
+            throw new InternetBankingSecurityException(messageSource.getMessage("entrust.delete.failure", null, locale));
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("user.delete.failure", null, locale));
         }
     }
 
@@ -263,6 +263,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             user.setPassword(passwordEncoder.encode(newPassword));
             String fullName = user.getFirstName() + " " + user.getLastName();
             user.setExpiryDate(new Date());
+            passwordPolicyService.saveOpsPassword(user);
             this.operationsUserRepo.save(user);
             Email email = new Email.Builder()
                     .setRecipient(user.getEmail())
@@ -285,6 +286,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             user.setPassword(passwordEncoder.encode(newPassword));
             String fullName = user.getFirstName() + " " + user.getLastName();
             user.setExpiryDate(new Date());
+            passwordPolicyService.saveOpsPassword(user);
             this.operationsUserRepo.save(user);
             Email email = new Email.Builder()
                     .setRecipient(user.getEmail())
@@ -307,7 +309,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             throw new WrongPasswordException();
         }
 
-        String errorMessage = passwordPolicyService.validate(changePassword.getNewPassword(), user.getUsedPasswords());
+        String errorMessage = passwordPolicyService.validate(changePassword.getNewPassword(), user);
         if (!"".equals(errorMessage)) {
             throw new PasswordPolicyViolationException(errorMessage);
         }
@@ -318,8 +320,8 @@ public class OperationsUserServiceImpl implements OperationsUserService {
         try {
             OperationsUser opsUser = operationsUserRepo.findOne(user.getId());
             opsUser.setPassword(this.passwordEncoder.encode(changePassword.getNewPassword()));
-            opsUser.setUsedPasswords(getUsedPasswords(changePassword.getNewPassword(), opsUser.getUsedPasswords()));
             opsUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
+            passwordPolicyService.saveOpsPassword(user);
             this.operationsUserRepo.save(opsUser);
             logger.info("User {}'s password has been updated", user.getId());
             return messageSource.getMessage("password.change.success", null, locale);
@@ -333,7 +335,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     public String changeDefaultPassword(OperationsUser user, ChangeDefaultPassword changePassword) throws PasswordException {
 
 
-        String errorMessage = passwordPolicyService.validate(changePassword.getNewPassword(), user.getUsedPasswords());
+        String errorMessage = passwordPolicyService.validate(changePassword.getNewPassword(), user);
         if (!"".equals(errorMessage)) {
             throw new PasswordPolicyViolationException(errorMessage);
         }
@@ -344,8 +346,8 @@ public class OperationsUserServiceImpl implements OperationsUserService {
         try {
             OperationsUser opsUser = operationsUserRepo.findOne(user.getId());
             opsUser.setPassword(this.passwordEncoder.encode(changePassword.getNewPassword()));
-            opsUser.setUsedPasswords(getUsedPasswords(changePassword.getNewPassword(), opsUser.getUsedPasswords()));
             opsUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
+            passwordPolicyService.saveOpsPassword(user);
             operationsUserRepo.save(opsUser);
             logger.info("User {} password has been updated", user.getId());
             return messageSource.getMessage("password.change.success", null, locale);
@@ -359,7 +361,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
         if (oldPasswords != null) {
             builder.append(oldPasswords);
         }
-        builder.append(newPassword + ",");
+        builder.append(passwordEncoder.encode(newPassword )+ ",");
         return builder.toString();
     }
 

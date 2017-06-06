@@ -155,6 +155,7 @@ body {
 }
 
 .login-form{
+    position: relative;
     margin: 150px 0 0 0;
     text-align: center;
 }
@@ -566,16 +567,6 @@ nav li a {
     margin-top: -10px;
 }
 
-footer {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    padding: 1rem;
-    background-color: #efefef;
-    text-align: center;
-}
-
 .footer_bar {
     display: block;
     padding: 37px 0 0 0;
@@ -634,7 +625,7 @@ button, input, optgroup, select, textarea {
 
 .content-wrapper {
     /*margin: 0 60px;*/
-    min-height: 450px;
+    min-height: 500px;
     background: #FFF;
 }
 
@@ -818,16 +809,25 @@ button, input, optgroup, select, textarea {
     }
 
     .login-form{
+        position: relative;
         padding: 120px;
         margin: 50px 0 0 0;
     }
 
-    .phishing-img{
-        margin: 0 0 10px 10px;
-        padding: 10px;
-        width: 400px;
-        max-height: 400px;
-    }
+    /*.phishing-img{*/
+        /*clear: both;*/
+        /*display: block;*/
+        /*position: relative;*/
+        /*z-index: 999;*/
+        /*!*left: -100px;*!*/
+        /*!*right: 45px;*!*/
+        /*!*top: -20px;*!*/
+        /*!*width: 100px;*!*/
+        /*!*margin: 0 0 10px 10px;*!*/
+        /*!*padding: 10px;*!*/
+        /*!*width: 400px;*!*/
+        /*!*height: 400px;*!*/
+    /*}*/
 
     .sidebar{
         display: none;
@@ -988,13 +988,14 @@ button, input, optgroup, select, textarea {
     }
 
     .login-form{
+        position: relative;
         padding: 100px 0;
         margin: 30px 0 0 0;
     }
 
-    .phishing-img{
-        margin: 0 0 10px 100px;
-    }
+    /*.phishing-img{*/
+        /*margin: 0 0 10px 100px;*/
+    /*}*/
 
     .carousel-caption {
         display: none;

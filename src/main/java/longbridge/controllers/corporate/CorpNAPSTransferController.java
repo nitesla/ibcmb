@@ -29,7 +29,7 @@ public class CorpNAPSTransferController {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private static String UPLOAD_FOLDER = "c://";
+    private static String UPLOAD_FOLDER = "C://";
 
     @GetMapping("/bulk")
     public String getBulkTransfer() {

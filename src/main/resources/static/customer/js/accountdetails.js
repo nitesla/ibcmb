@@ -1,9 +1,15 @@
 /**
  * Created by ayoade_farooq@yahoo.com on 5/7/2017.
  */
-$('#source').on('change',function(){
+
+$(document).ready(function () {
     var acct = $('#source').val();
     getDestAccounts(acct)
+    getSourceCurrency(acct);
+});
+
+$('#source').on('change',function(){
+    var acct = $('#source').val();
     getSourceCurrency(acct);
 });
 $('#destination').on('change',function(){
@@ -30,7 +36,6 @@ function getSourceCurrency(acct) {
 
     $.get("/retail/transfer/" + acct + "/currency", function (data) {
         document.getElementById("scurency").innerHTML = data;
-
     });
 }
 function getDestCurrency(acct) {

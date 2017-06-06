@@ -70,7 +70,7 @@ public class InterBankTransferController {
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
         model.addAttribute("localBen",
                 StreamSupport.stream(localBeneficiaryService.getLocalBeneficiaries(retailUser).spliterator(), false)
-                        .filter(i -> i.getBeneficiaryBank().equalsIgnoreCase(financialInstitutionService.getFinancialInstitutionByCode(bankCode).getInstitutionCode()))
+                        .filter(i -> !i.getBeneficiaryBank().equalsIgnoreCase(financialInstitutionService.getFinancialInstitutionByCode(bankCode).getInstitutionCode()))
                         .collect(Collectors.toList())
 
         );

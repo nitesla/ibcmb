@@ -71,10 +71,12 @@ public class AdmCorporateUserController {
             redirectAttributes.addFlashAttribute("failure", "Corporate entity has sole user");
             return "redirect:/admin/corporates";
         }
+
+
         CorporateUserDTO corporateUserDTO = new CorporateUserDTO();
         model.addAttribute("corporate", corporateDTO);
         model.addAttribute("corporateUser", corporateUserDTO);
-        return "/adm/corporate/adduser";
+        return "/adm/corporate/addUser";
     }
 
     @PostMapping("/new")
@@ -89,7 +91,7 @@ public class AdmCorporateUserController {
                 CorporateDTO corporate = (CorporateDTO) session.getAttribute("corporate");
                 model.addAttribute("corporate", corporate);
             }
-            return "adm/corporate/adduser";
+            return "/adm/corporate/addUser";
         }
         try {
 
@@ -114,7 +116,7 @@ public class AdmCorporateUserController {
                 CorporateDTO corporate = (CorporateDTO) session.getAttribute("corporate");
                 model.addAttribute("corporate", corporate);
             }
-            return "adm/corporate/adduser";
+            return "/adm/corporate/addUser";
 
         } catch (InternetBankingSecurityException se) {
             result.addError(new ObjectError("error", se.getMessage()));
@@ -126,7 +128,7 @@ public class AdmCorporateUserController {
                 CorporateDTO corporate = (CorporateDTO) session.getAttribute("corporate");
                 model.addAttribute("corporate", corporate);
             }
-            return "adm/corporate/adduser";
+            return "/adm/corporate/addUser";
         } catch (InternetBankingException ibe) {
             result.addError(new ObjectError("error", ibe.getMessage()));
             logger.error("Error creating corporate user", ibe);
@@ -139,7 +141,7 @@ public class AdmCorporateUserController {
                 model.addAttribute("corporate", corporate);
 
             }
-            return "adm/corporate/adduser";
+            return "/adm/corporate/addUser";
         }
     }
 
@@ -148,13 +150,13 @@ public class AdmCorporateUserController {
     public String getUser(@PathVariable Long userId, Model model) {
         CorporateUserDTO user = corporateUserService.getUser(userId);
         model.addAttribute("corporateUser", user);
-        return "adm/corporate/edituser";
+        return "/adm/corporate/editUser";
     }
 
     @PostMapping("edit")
     public String UpdateUser(@ModelAttribute("corporateUser") CorporateUserDTO corporateUserDTO, BindingResult result, RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
-            return "adm/corporate/edituser";
+            return "/adm/corporate/editUser";
         }
 
         String message = corporateUserService.updateUser(corporateUserDTO);

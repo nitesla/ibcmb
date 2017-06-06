@@ -126,12 +126,12 @@ public class CorpOwnTransferController {
                 request.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode(bankCode));
                 request.setBeneficiaryAccountName(accountService.getAccountByAccountNumber(request.getBeneficiaryAccountNumber()).getAccountName());
                 model.addAttribute("corpTransferRequest", request);
-               /* validator.validate(request, result);
-                if (result.hasErrors()) {
-                    return page + "pagei";
-                }*/
+//                validator.validate(request, result);
+//                if (result.hasErrors()) {
+//                    return page + "pagei";
+//                }
                 request.setTransferType(TransferType.OWN_ACCOUNT_TRANSFER);
-//                corpTransferService.validateTransfer(request);
+              //  corpTransferService.validateTransfer(request);
                 model.addAttribute("corpTransferRequest", request);
                 servletRequest.getSession().setAttribute("corpTransferRequest", request);
 
@@ -140,8 +140,8 @@ public class CorpOwnTransferController {
             } catch (InternetBankingTransferException exception)
 
             {
-//                String errorMessage =errorService.getMessage(exception,servletRequest);
-                model.addAttribute("failure", "Failed top process transaction");
+                String errorMessage =errorService.getMessage(exception,servletRequest);
+              //  model.addAttribute("failure", errorMessage);
                 return page + "pagei";
 
             }

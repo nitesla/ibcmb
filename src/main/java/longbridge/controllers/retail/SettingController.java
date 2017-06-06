@@ -23,11 +23,13 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.security.Principal;
 import java.util.List;
@@ -63,48 +65,44 @@ public class SettingController {
     }
 
     @GetMapping("/change_password")
-    public String ChangePaswordPage(CustChangePassword custChangePassword, Model model) {
+    public String ChangePaswordPage(Model model) {
         List<String> passwordPolicy = passwordPolicyService.getPasswordRules();
         logger.info("PASSWORD RULES {}", passwordPolicy);
         model.addAttribute("passwordRules", passwordPolicy);
+        model.addAttribute("custChangePassword", new CustChangePassword());
         return "cust/settings/pword";
     }
 
     @PostMapping("/change_password")
-    public String ChangePassword(@Valid CustChangePassword custChangePassword, BindingResult result, Principal principal, Model model, RedirectAttributes redirectAttributes) throws Exception {
+    public String ChangePassword(@ModelAttribute("custChangePassword") @Valid CustChangePassword custChangePassword, BindingResult result, Principal principal, Model model, RedirectAttributes redirectAttributes) throws Exception {
         if (result.hasErrors()) {
-            model.addAttribute("failure", "Pls correct the errors");
+            model.addAttribute("failure", "Please fill in the required fields");
             return "cust/settings/pword";
         }
 
-        if (!custChangePassword.getNewPassword().equals(custChangePassword.getConfirmPassword())) {
-            logger.info("PASSWORD MISMATCH");
-            model.addAttribute("failure", "Pls correct the errors");
-            return "cust/settings/pword";
-        }
 
         RetailUser user = retailUserService.getUserByName(principal.getName());
 
         try {
             String message = retailUserService.changePassword(user, custChangePassword);
             redirectAttributes.addFlashAttribute("message", message);
-            return "redirect:/retail/change_password";
+            return "redirect:/retail/dashboard";
         } catch (WrongPasswordException wpe) {
-            result.reject("oldPassword", wpe.getMessage());
+            model.addAttribute("failure",wpe.getMessage());
             logger.error("Wrong password from retail user {}", user.getUserName(), wpe.toString());
             List<String> passwordPolicy = passwordPolicyService.getPasswordRules();
             logger.info("PASSWORD RULES {}", passwordPolicy);
             model.addAttribute("passwordRules", passwordPolicy);
             return "cust/settings/pword";
         } catch (PasswordPolicyViolationException pve) {
-            result.reject("newPassword", pve.getMessage());
+            model.addAttribute("failure",pve.getMessage());
             logger.error("Password policy violation from retail user {} error {}", user.getUserName(), pve.toString());
             List<String> passwordPolicy = passwordPolicyService.getPasswordRules();
             logger.info("PASSWORD RULES {}", passwordPolicy);
             model.addAttribute("passwordRules", passwordPolicy);
             return "cust/settings/pword";
         } catch (PasswordMismatchException pme) {
-            result.reject("confirmPassword", pme.getMessage());
+            model.addAttribute("failure",pme.getMessage());
             logger.error("New password mismatch from retail user {}", user.getUserName(), pme.toString());
             return "cust/settings/pword";
         } catch (PasswordException pe) {
@@ -118,23 +116,20 @@ public class SettingController {
     }
 
     @GetMapping("/reset_password")
-    public String resetPaswordPage(CustResetPassword custResetPassword, Model model) {
+    public String resetPaswordPage(Model model) {
         List<String> passwordPolicy = passwordPolicyService.getPasswordRules();
         logger.info("PASSWORD RULES {}", passwordPolicy);
         model.addAttribute("passwordRules", passwordPolicy);
+        model.addAttribute("custResetPassword", new CustResetPassword());
         return "cust/settings/new-pword";
     }
 
     @PostMapping("/reset_password")
-    public String resetPassword(@Valid CustResetPassword custResetPassword,BindingResult result, Principal principal, Model model, RedirectAttributes redirectAttributes) throws Exception {
+    public String resetPassword(@ModelAttribute("custResetPassword") @Valid CustResetPassword custResetPassword, BindingResult result, Principal principal, Model model, RedirectAttributes redirectAttributes, HttpServletRequest httpServletRequest) throws Exception {
         if (result.hasErrors()) {
-            model.addAttribute("failure", "Pls correct the errors");
-            return "cust/settings/new-pword";
-        }
-
-        if (!custResetPassword.getNewPassword().equals(custResetPassword.getConfirmPassword())) {
-            logger.info("PASSWORD MISMATCH");
-            model.addAttribute("failure", "Passwords do not match");
+            List<String> passwordPolicy = passwordPolicyService.getPasswordRules();
+            model.addAttribute("passwordRules", passwordPolicy);
+            model.addAttribute("failure", "Please fill in the required fields");
             return "cust/settings/new-pword";
         }
 
@@ -143,20 +138,23 @@ public class SettingController {
         try {
             String message = retailUserService.resetPassword(user, custResetPassword.getConfirmPassword());
             redirectAttributes.addFlashAttribute("message", message);
+            if (httpServletRequest.getSession().getAttribute("expired-password") != null) {
+                httpServletRequest.getSession().removeAttribute("expired-password");
+            }
             return "redirect:/retail/dashboard";
         }catch (PasswordPolicyViolationException pve) {
-            result.reject("newPassword", pve.getMessage());
+            model.addAttribute("failure",pve.getMessage());
             logger.error("Password policy violation from retail user {} error {}", user.getUserName(), pve.toString());
             List<String> passwordPolicy = passwordPolicyService.getPasswordRules();
             logger.info("PASSWORD RULES {}", passwordPolicy);
             model.addAttribute("passwordRules", passwordPolicy);
             return "cust/settings/new-pword";
         } catch (PasswordMismatchException pme) {
-            result.reject("confirmPassword", pme.getMessage());
+            model.addAttribute("failure",pme.getMessage());
             logger.error("New password mismatch from retail user {}", user.getUserName(), pme.toString());
             return "cust/settings/new-pword";
         } catch (PasswordException pe) {
-            result.addError(new ObjectError("error", pe.getMessage()));
+            model.addAttribute("failure",pe.getMessage());
             logger.error("Error changing password for retail user {}", user.getUserName(), pe);
             List<String> passwordPolicy = passwordPolicyService.getPasswordRules();
             logger.info("PASSWORD RULES {}", passwordPolicy);

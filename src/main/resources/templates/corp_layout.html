@@ -39,8 +39,8 @@
                         <a class="navbar-brand" href="#" data-toggle="collapse" data-target="#navbar-collapse-1">Menu</a>
                     </div>
                     <div class="row ">
-                        <div class="col-md-3 col-sm-4 header_info bvn"><p>Your Bank verification number</p>
-                            <h5 th:text="'BVN: ' + ${bvn}"></h5></div>
+                        <div class="col-md-3 col-sm-4 header_info bvn"><p>Your RC Number</p>
+                            <h5 th:text="'RC N0: ' + ${RcNo}"></h5></div>
                         <div class="col-md-5 col-sm-4 header_info"><h5><span th:text="*{greeting}"></span><br class="break"/><b th:text="*{name}"></b> &nbsp; <a th:href="@{/corporate/mailbox/inbox}"><i class="fa fa-envelope"></i>
                             <span th:if="${numOfUnreadMessages}" class="badge bg-green" th:text="${numOfUnreadMessages}">count</span>
 
@@ -66,7 +66,7 @@
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.transfer}"> Transfers</a>
                             <ul class="dropdown-menu">
                                 <li><a th:href="@{/corporate/transfer/ownaccount}" th:text="#{menu.transfer.own}">Own account transfers </a></li>
-                                <li><a th:href="@{/corporate/transfer/local/new}" th:text="#{menu.transfer.cmb}">Transfer to Coronation account </a></li>
+                                <li><a th:href="@{/corporate/transfer/local}" th:text="#{menu.transfer.cmb}">Transfer to Coronation account </a></li>
                                 <li><a th:href="@{/corporate/transfer/interbank}" th:text="#{menu.transfer.other}">Transfer to other banks</a></li>
                                 <li><a th:href="@{/corporate/transfer}" th:text="#{menu.transfer.int}">International transfer</a></li>
                                 <li><a th:href="@{/corporate/transfer/bulk}" th:text="#{menu.transfer.bulk}">Bulk transfer</a></li>
@@ -120,10 +120,10 @@
                     </div>
                 </div>
                     </div>
-                </div>
+</div>
             </nav>
         </div>
-        <a href="#" class="logo">
+        <a href="corporate/dashboard" class="logo">
             <img th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
         </a>
     </header>
@@ -140,20 +140,20 @@
 
 <!-- footer content -->
 <footer th:fragment="corp-footer">
-    <div class="container">
-        <div class="footer_bar">
-            <div class="col-md-6 col-xs-12">
-                <ul class="list_group">
-                    <li><a href="#" target="_blank">Privacy policy</a></li>
-                    <li><a href="#" target="_blank">Disclaimer</a></li>
-                    <li><a href="#" target="_blank">Terms &amp; Conditions</a></li>
-                </ul>
+    <!--<div class="container">-->
+        <!--<div class="footer_bar">-->
+            <!--<div class="col-md-6 col-xs-12">-->
+                <!--<ul class="list_group">-->
+                    <!--<li><a href="#" target="_blank">Privacy policy</a></li>-->
+                    <!--<li><a href="#" target="_blank">Disclaimer</a></li>-->
+                    <!--<li><a href="#" target="_blank">Terms &amp; Conditions</a></li>-->
+                <!--</ul>-->
 
-            </div>
-            <div class="col-md-6 col-xs-12"><p> &copy; 2017 Coronation Merchant Bank. All rights reserved</p></div>
+            <!--</div>-->
+            <!--<div class="col-md-6 col-xs-12"><p> &copy; 2017 Coronation Merchant Bank. All rights reserved</p></div>-->
 
-        </div>
-    </div>
+        <!--</div>-->
+    <!--</div>-->
 
     <div th:if="${message}">
         <div hidden="hidden">

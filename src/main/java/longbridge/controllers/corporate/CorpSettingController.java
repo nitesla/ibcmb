@@ -20,6 +20,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -58,17 +59,18 @@ public class CorpSettingController {
     }
 
     @GetMapping("/change_password")
-    public String ChangePaswordPage(ChangePassword changePassword, Model model)
+    public String ChangePaswordPage( Model model)
     {
         List<String> passwordPolicy = passwordPolicyService.getPasswordRules();
         logger.info("PASSWORD RULES {}", passwordPolicy);
+        model.addAttribute("custChangePassword", new CustChangePassword());
         model.addAttribute("passwordRules", passwordPolicy);
         return "corp/settings/pword";
 
     }
 
    @PostMapping("/change_password")
-    public String ChangePassword(@Valid CustChangePassword custChangePassword, Principal principal, BindingResult result, Model model, RedirectAttributes redirectAttributes) throws Exception{
+    public String ChangePassword(@ModelAttribute("custChangePassword") @Valid CustChangePassword custChangePassword, Principal principal, BindingResult result, Model model, RedirectAttributes redirectAttributes) throws Exception{
         if(result.hasErrors()){
             model.addAttribute("failure","please provide the appropriate input");
             return "corp/settings/pword";

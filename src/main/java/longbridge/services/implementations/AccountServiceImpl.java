@@ -56,9 +56,9 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public boolean AddFIAccount(String customerId, AccountInfo acct) {
-//        if (!customerId.equals(acct.getCustomerId())) {
-//            return false;
-//        }
+        if (!customerId.equals(acct.getCustomerId())) {
+            return false;
+        }
         Account account = new Account();
         account.setPrimaryFlag("N");
         account.setHiddenFlag("N");
@@ -114,7 +114,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Account getAccountByCustomerId(String customerId) {
-        return accountRepo.findAccountByCustomerId(customerId);
+        return accountRepo.findFirstAccountByCustomerId(customerId);
     }
 
     @Override
@@ -179,7 +179,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Account getAccountByAccountNumber(String accountNumber) {
-        return accountRepo.findByAccountNumber(accountNumber);
+        return accountRepo.findFirstByAccountNumber(accountNumber);
     }
 
     @Override

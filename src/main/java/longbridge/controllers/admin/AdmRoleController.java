@@ -2,6 +2,7 @@ package longbridge.controllers.admin;
 
 import longbridge.dtos.PermissionDTO;
 import longbridge.dtos.RoleDTO;
+import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.User;
 import longbridge.services.RoleService;
@@ -149,7 +150,13 @@ public class AdmRoleController {
             String message = roleService.addRole(roleDTO);
             redirectAttributes.addFlashAttribute("message", message);
             return "redirect:/admin/roles";
-        } catch (InternetBankingException ibe) {
+        }
+        catch (DuplicateObjectException ibe) {
+            result.addError(new ObjectError("error", ibe.getMessage()));
+            logger.error("Error creating role", ibe);
+            return "adm/role/add";
+        }
+        catch (InternetBankingException ibe) {
             result.addError(new ObjectError("error", messageSource.getMessage("role.add.failure", null, locale)));
             logger.error("Error creating role", ibe);
             return "adm/role/add";

@@ -1,6 +1,8 @@
 package longbridge.services;
 
 import longbridge.dtos.SettingDTO;
+import longbridge.models.*;
+import longbridge.repositories.*;
 import longbridge.utils.PasswordCreator;
 import longbridge.validator.PasswordValidator;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -20,15 +22,28 @@ import java.util.List;
 public class PasswordPolicyService {
 
     @Autowired
-    ConfigurationService configService;
+    private ConfigurationService configService;
 
     @Autowired
-    PasswordValidator passwordValidator;
+    private PasswordValidator passwordValidator;
 
     @Autowired
-    PasswordCreator passwordCreator;
+    private PasswordCreator passwordCreator;
 
-    private List<String> passwordRules = new ArrayList<String>();
+    @Autowired
+    private AdminPasswordRepo adminPasswordRepo;
+
+    @Autowired
+    private RetailPasswordRepo retailPasswordRepo;
+
+    @Autowired
+    private OpsPasswordRepo opsPasswordRepo;
+
+    @Autowired
+    private CorporatePasswordRepo corporatePasswordRepo;
+
+
+    private List<String> passwordRules;
     String ruleMessage = "";
 
 
@@ -44,13 +59,14 @@ public class PasswordPolicyService {
     private int noOfSpecial = 0;
     private int minLength = 8;
     private int maxLength = 255;
-    private String specialCharacters = "~!@#$%^&*()+{};'?.";
-    private int numOfChanges=0;
+    private String specialCharacters = "~!@#$%^&;'?.";
+    private int numOfChanges = 0;
     private boolean initialized = false;
 
 
     private void init() {
 
+        passwordRules = new ArrayList<>();
         numOfPasswordDigits = configService.getSettingByName("PASSWORD_NUM_DIGITS");
         noSpecialChar = configService.getSettingByName("PASSWORD_NUM_SPECIAL_CHARS");
         minLengthOfPassword = configService.getSettingByName("PASSWORD_MIN_LEN");
@@ -59,11 +75,10 @@ public class PasswordPolicyService {
         numOfChangesBeforeReuse = configService.getSettingByName("PASSWORD_REUSE");
 
 
-
         if (numOfPasswordDigits != null && numOfPasswordDigits.isEnabled()) {
             numOfDigits = NumberUtils.toInt(numOfPasswordDigits.getValue());
 
-            if(numOfDigits>0) {
+            if (numOfDigits > 0) {
                 ruleMessage = String.format("Minimum number of digits required in password is %d", numOfDigits);
                 passwordRules.add(ruleMessage);
             }
@@ -72,7 +87,7 @@ public class PasswordPolicyService {
         if (noSpecialChar != null && noSpecialChar.isEnabled()) {
             noOfSpecial = NumberUtils.toInt(noSpecialChar.getValue());
 
-            if(noOfSpecial>0) {
+            if (noOfSpecial > 0) {
                 ruleMessage = String.format("Minimum number of special characters required is %d", noOfSpecial);
                 passwordRules.add(ruleMessage);
             }
@@ -98,18 +113,18 @@ public class PasswordPolicyService {
             passwordRules.add(ruleMessage);
 
         }
-        if(numOfChangesBeforeReuse!=null&&numOfChangesBeforeReuse.isEnabled()){
+        if (numOfChangesBeforeReuse != null && numOfChangesBeforeReuse.isEnabled()) {
             numOfChanges = NumberUtils.toInt(numOfChangesBeforeReuse.getValue());
-            ruleMessage = String.format("Password reuse must be after %d usages of different passwords",numOfChanges);
+            ruleMessage = String.format("Password reuse must be after %d usages of different passwords", numOfChanges);
             passwordRules.add(ruleMessage);
 
         }
-            initialized = true;
+        initialized = true;
 
     }
 
-    public String validate(String password,String usedPasswords) {
-        return passwordValidator.validate(password, usedPasswords);
+    public String validate(String password, User user) {
+        return passwordValidator.validate(password, user);
     }
 
 
@@ -120,22 +135,111 @@ public class PasswordPolicyService {
         return passwordRules;
     }
 
-    public String generatePassword(){
-        if (!initialized) {
-            init();
-        }
-        return passwordCreator.generatePassword(minLength,numOfDigits,noOfSpecial,specialCharacters);
+    public String generatePassword() {
+        init();
+
+        return passwordCreator.generatePassword(minLength, numOfDigits, noOfSpecial, specialCharacters);
     }
 
-    public Date getPasswordExpiryDate(){
+
+    public void saveAdminPassword(AdminUser adminUser) {
+
+        SettingDTO numOfChangesBeforeReuse = configService.getSettingByName("PASSWORD_REUSE");
+        if (numOfChangesBeforeReuse != null && numOfChangesBeforeReuse.isEnabled()) {
+            int count = adminPasswordRepo.countByUserId(adminUser.getId());
+            int numOfChanges = NumberUtils.toInt(numOfChangesBeforeReuse.getValue());
+
+            AdminPassword adminPassword = new AdminPassword();
+            adminPassword.setUserId(adminUser.getId());
+            adminPassword.setPassword(adminUser.getPassword());
+            if (numOfChanges != 0) {
+                if (count < numOfChanges) {
+                    adminPasswordRepo.save(adminPassword);
+                } else {
+                    AdminPassword firstPassword = adminPasswordRepo.findFirstByUserId(adminUser.getId());
+                    adminPasswordRepo.delete(firstPassword);
+                    adminPasswordRepo.save(adminPassword);
+                }
+            }
+        }
+    }
+
+    public void saveOpsPassword(OperationsUser operationsUser) {
+
+        SettingDTO numOfChangesBeforeReuse = configService.getSettingByName("PASSWORD_REUSE");
+        if (numOfChangesBeforeReuse != null && numOfChangesBeforeReuse.isEnabled()) {
+            int count = opsPasswordRepo.countByUserId(operationsUser.getId());
+            int numOfChanges = NumberUtils.toInt(numOfChangesBeforeReuse.getValue());
+
+            OpsPassword opsPassword = new OpsPassword();
+            opsPassword.setUserId(operationsUser.getId());
+            opsPassword.setPassword(operationsUser.getPassword());
+            if (numOfChanges != 0) {
+                if (count < numOfChanges) {
+                    opsPasswordRepo.save(opsPassword);
+                } else {
+                    OpsPassword firstPassword = opsPasswordRepo.findFirstByUserId(operationsUser.getId());
+                    opsPasswordRepo.delete(firstPassword);
+                    opsPasswordRepo.save(opsPassword);
+                }
+            }
+        }
+    }
+
+    public void saveRetailPassword(RetailUser retailUser) {
+
+        SettingDTO numOfChangesBeforeReuse = configService.getSettingByName("PASSWORD_REUSE");
+        if (numOfChangesBeforeReuse != null && numOfChangesBeforeReuse.isEnabled()) {
+            int count = retailPasswordRepo.countByUserId(retailUser.getId());
+            int numOfChanges = NumberUtils.toInt(numOfChangesBeforeReuse.getValue());
+
+            if (numOfChanges != 0) {
+                RetailPassword retailPassword = new RetailPassword();
+                retailPassword.setUserId(retailUser.getId());
+                retailPassword.setPassword(retailUser.getPassword());
+                if (count < numOfChanges) {
+                    retailPasswordRepo.save(retailPassword);
+                } else {
+                    RetailPassword firstPassword = retailPasswordRepo.findFirstByUserId(retailUser.getId());
+                    retailPasswordRepo.delete(firstPassword);
+                    retailPasswordRepo.save(retailPassword);
+                }
+            }
+        }
+    }
+
+    public void saveCorporatePassword(CorporateUser corporateUser) {
+
+        SettingDTO numOfChangesBeforeReuse = configService.getSettingByName("PASSWORD_REUSE");
+        if (numOfChangesBeforeReuse != null && numOfChangesBeforeReuse.isEnabled()) {
+            int count = corporatePasswordRepo.countByUserId(corporateUser.getId());
+            int numOfChanges = NumberUtils.toInt(numOfChangesBeforeReuse.getValue());
+
+
+            CorporatePassword corporatePassword = new CorporatePassword();
+            corporatePassword.setUserId(corporateUser.getId());
+            corporatePassword.setPassword(corporateUser.getPassword());
+
+            if (numOfChanges != 0) {
+                if (count < numOfChanges) {
+                    corporatePasswordRepo.save(corporatePassword);
+                } else {
+                    CorporatePassword firstPassword = corporatePasswordRepo.findFirstByUserId(corporateUser.getId());
+                    corporatePasswordRepo.delete(firstPassword);
+                    corporatePasswordRepo.save(corporatePassword);
+                }
+            }
+        }
+    }
+
+    public Date getPasswordExpiryDate() {
         Calendar calendar = Calendar.getInstance();
-        int days = 60;//default
         SettingDTO setting = configService.getSettingByName("PASSWORD_EXPIRY");
-        if(setting!=null&&setting.isEnabled() ){
-            days = NumberUtils.toInt(setting.getValue());
+        if (setting != null && setting.isEnabled()) {
+            int days = NumberUtils.toInt(setting.getValue());
+            calendar.add(Calendar.DAY_OF_YEAR, days);
+            return calendar.getTime();
         }
-        calendar.add(Calendar.DAY_OF_YEAR,days);
-        return  calendar.getTime();
+        return null;
     }
-
 }

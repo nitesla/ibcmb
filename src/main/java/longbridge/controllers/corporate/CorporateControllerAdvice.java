@@ -46,13 +46,22 @@ public class CorporateControllerAdvice {
         }
 
         CorporateUser corporateUser=corporateUserService.getUserByName(principal.getName());
-        String bankVerificationNumber;
-        if(corporateUser.getCorporate().getBvn()==null)
-        {bankVerificationNumber="";}
+        String RCNumber;
+        if(corporateUser.getCorporate().getRcNumber()==null)
+        {RCNumber="Not registered";}
         else
-        {bankVerificationNumber=corporateUser.getCorporate().getBvn();}
+        {RCNumber=corporateUser.getCorporate().getRcNumber();}
 
-        model.addAttribute("bvn",bankVerificationNumber);
+        model.addAttribute("RcNo",RCNumber);
+
+        String corporateName;
+        if(corporateUser.getCorporate().getName()==null)
+        {corporateName="";}
+        else
+        {corporateName=corporateUser.getCorporate().getName();}
+
+//        model.addAttribute("compName",corporateName);
+
         model.addAttribute("lastLogin",corporateUser.getLastLoginDate());
         Calendar calendar=Calendar.getInstance();
         int timeOfDay=calendar.get(Calendar.HOUR_OF_DAY);

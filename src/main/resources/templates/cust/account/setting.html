@@ -23,14 +23,18 @@
                             <tr>
                                 <th>Account Name</th>
                                 <th>Account Number</th>
+                                <th>Currency</th>
+                                <th>Account Type</th>
                                 <th>Primary</th>
                                 <th>Hide / Unhide</th>
                             </tr>
                             </thead>
                             <tbody>
-                                <tr th:each="acct : ${accounts}">
-                                    <td th:text="${acct.accountName}"></td>
-                                    <td th:text="${acct.accountNumber}"></td>
+                            <tr th:each="acct : ${accounts}">
+                                <td th:text="${acct.accountName}"></td>
+                                <td th:text="${acct.accountNumber}"></td>
+                                <td th:text="${acct.currencyCode}"></td>
+                                <td th:text="${acct.schemeType}"></td>
                                     <td><a th:href="@{'/retail/account/' + ${acct.id} + '/primary'}" th:if="${acct.primaryFlag == 'N'}">Make Primary</a>
                                         <span th:if="${acct.primaryFlag == 'Y'}" th:text="*{'Primary'}">Primary</span></td>
                                     <td><a th:href="@{'/retail/account/' + ${acct.id} + '/hide'}" th:if="${acct.hiddenFlag == 'N'}">Hide</a>

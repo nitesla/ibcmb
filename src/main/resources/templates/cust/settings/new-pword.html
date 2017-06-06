@@ -2,11 +2,13 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <!-- BEGIN PAGE LEVEL STYLES -->
-    <link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/jquery-steps/css/jquery.steps.css}" />
-    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/jquery-ui.css}" />
-    <link rel="stylesheet" type="text/css" th:href="@{~/customer/font-awesome/font-awesome.min.css}"/>
+
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/jquery-ui.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/bootstrap.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/custom.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/calendar.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/select.bootstrap.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/font-awesome/font-awesome.min.css}"/>
 
     <title>Password Reset</title>
 </head>
@@ -54,7 +56,7 @@
                     <h5 class="page_header col-md-offset-4 col-md-4 col-sm-6">Password Reset</h5>
 
                     <div class="col-md-offset-4 col-md-4 col-sm-6">
-                        <form method="POST" th:action="@{/retail/reset_password}" th:object="${custChangePassword}">
+                        <form method="POST" th:action="@{/retail/reset_password}" th:object="${custResetPassword}">
 
                             <p class="alert alert-danger"><span style="color: red;">Your current password has expired.</span> <br/>Please enter a new password.</p>
                             <div class="form-group">
@@ -71,6 +73,8 @@
                                 <input id="password" type="password" th:field="*{confirmPassword}"  class="form-control"/>
                             </div>
                             <button class="btn btn-primary form-control"> Submit</button>
+                            <div th:replace="layout :: form-validation"></div>
+
                         </form>
                     </div>
                 </div>
@@ -97,18 +101,39 @@
     </div>
 </footer>
 <!-- CORE JQUERY SCRIPTS -->
+<script th:src="@{~/customer/js/jquery-ui.js}"></script>
+<script th:src="@{~/customer/js/jquery.dataTables.js}"></script>
+<script th:src="@{~/customer/js/momentMin.js}"></script>
+<script th:src="@{~/customer/js/calendar.js}"></script>
+<script th:src="@{~/customer/js/jquery.spring-friendly.min.js}"></script>
+<script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
 <script th:src="@{/customer/js/jquery-1.11.1.js}"></script>
-<!-- BOOTSTRAP SCRIPTS  -->
+<script th:src="@{~/customer/js/jquery.validate.min.js}"></script>
+<script th:src="@{~/customer/plugins/jquery-steps/js/jquery.steps.min.js}" type="text/javascript"></script>
+<script th:src="@{~/customer/js/coronation.js}"></script>
 <script th:src="@{/customer/js/bootstrap.js}"></script>
 
-<script th:src="@{~/customer/js/jquery.validate.min.js}"></script>
-<script th:src="@{~/customer/js/jquery-ui.js}"></script>
-<script th:src="@{~/customer/plugins/jquery-steps/js/jquery.steps.min.js}" type="text/javascript"></script>
 
 <script>
     $('#password').bind("cut copy paste",function(e) {
         e.preventDefault();
     });
 </script>
+
+<div th:if="${message}">
+    <div hidden="hidden">
+        <ul class="actionMessage">
+            <li th:each="msg : ${message}" th:text="${msg}">Message</li>
+        </ul>
+    </div>
+</div>
+
+<div th:if="${failure}">
+    <div hidden="hidden">
+        <ul class="actionError">
+            <li th:each="msg : ${failure}" th:text="${msg}">Message</li>
+        </ul>
+    </div>
+</div>
 </body>
 </html>

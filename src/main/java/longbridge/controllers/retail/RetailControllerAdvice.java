@@ -5,6 +5,7 @@ import longbridge.models.FinancialInstitutionType;
 import longbridge.models.RetailUser;
 import longbridge.models.SRConfig;
 import longbridge.services.*;
+import longbridge.utils.DateFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.ui.Model;
@@ -66,7 +67,7 @@ public class RetailControllerAdvice {
         }
         model.addAttribute("bvn", bvn);
 
-        model.addAttribute("lastLogin", user.getLastLoginDate());
+        model.addAttribute("lastLogin", DateFormatter.format(user.getLastLoginDate()));
 
         Calendar c = Calendar.getInstance();
         int timeOfDay = c.get(Calendar.HOUR_OF_DAY);
