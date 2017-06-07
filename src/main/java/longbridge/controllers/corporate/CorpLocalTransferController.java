@@ -69,7 +69,7 @@ public class CorpLocalTransferController {
     @GetMapping("")
     public String index(Model model, Principal principal) throws Exception {
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
-        model.addAttribute("localBen", corpLocalBeneficiaryService.getCorpLocalBeneficiaries(corporateUser));
+        model.addAttribute("localBen", corpLocalBeneficiaryService.getCorpLocalBeneficiaries(corporateUser.getCorporate()));
 
         return page + "pagei";
     }

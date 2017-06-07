@@ -120,7 +120,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Transactional
 //    @Verifiable(operation="Add Admin",description="Adding a new User")
     public String addUser(AdminUserDTO user) throws InternetBankingException {
-        AdminUser adminUser = adminUserRepo.findFirstByUserName(user.getUserName());
+        AdminUser adminUser = adminUserRepo.findFirstByUserNameIgnoreCase(user.getUserName());
         if (adminUser != null) {
             throw new DuplicateObjectException(messageSource.getMessage("user.exist", null, locale));
         }

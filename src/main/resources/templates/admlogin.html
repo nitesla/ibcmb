@@ -39,14 +39,14 @@
                 <img th:src="@{/bank/images/cmb_logo.png}" alt="Coronation Merchant Bank" />
                 <br/>
                 
-                <form th:action="@{/admin/login}" method="POST">
+                <form th:action="@{/admin/login}" method="POST" autocomplete="off">
                     <h1>Admin Login </h1>
 
                     <div>
-                        <input type="text" class="form-control" placeholder="Username" required="" name="username" />
+                        <input type="text" class="form-control" placeholder="Username" required="" name="username" autocomplete="off" />
                     </div>
                     <div>
-                        <input id="password" type="password" class="form-control" placeholder="Password" required="" name="password"/>
+                        <input id="password" type="password" class="form-control" placeholder="Password" required="" name="password" autocomplete="off"/>
                     </div>
                     <div>
                         <input name="submit" class="btn btn-primary" type="submit" value="Next" />

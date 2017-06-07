@@ -244,6 +244,7 @@ public class RetailUserServiceImpl implements RetailUserService {
             if ((oldStatus == null) || ("I".equals(oldStatus)) && "A".equals(newStatus)) {
                 String password = passwordPolicyService.generatePassword();
                 user.setPassword(passwordEncoder.encode(password));
+                user.setExpiryDate(new Date());
                 passwordPolicyService.saveRetailPassword(user);
                 String fullName = user.getFirstName()+" "+user.getLastName();
                 Email email = new Email.Builder()

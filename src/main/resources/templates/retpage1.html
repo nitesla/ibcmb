@@ -49,7 +49,7 @@
 <section class="content-wrapper">
     <div class="container">
         <div class="bg">
-            <form id="loginform" th:action="@{/login/u/retail}" method="POST" class="form-signin">
+            <form id="loginform" th:action="@{/login/u/retail}" method="POST" class="form-signin" autocomplete="off">
                 <h5 class="form-signin-heading">Enter Login Details</h5>
                 <br/>
 
@@ -59,8 +59,8 @@
                 <div th:if="${param.error != null}" class="alert alert-danger" th:text="${session[SPRING_SECURITY_LAST_EXCEPTION]}">error</div>
                 <br/>
                 <div class="form-group ">
-                    <input type="text" id="username" name="username" class="form-control"  placeholder="Username" />
-                    <p><a href="/forgot/username" data-toggle="tooltip" data-placement="right" title="Forgot Username?">Forgot Username?</a></p>
+                    <input type="text" id="username" name="username" class="form-control"  placeholder="Username" autocomplete="off" />
+                    <p><a href="/forgot/username" data-toggle="tooltip" data-placement="right" title="Forgot Username?" autocomplete="off">Forgot Username?</a></p>
                 </div>
                 <div class="form-group">
                     <button class="btn btn-primary form-control"> Next </button>

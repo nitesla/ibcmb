@@ -2,6 +2,7 @@ package longbridge.services;
 
 import longbridge.dtos.CorpLocalBeneficiaryDTO;
 import longbridge.models.CorpLocalBeneficiary;
+import longbridge.models.Corporate;
 import longbridge.models.CorporateUser;
 import org.springframework.security.access.prepost.PreAuthorize;
 
@@ -16,11 +17,11 @@ import java.util.List;
 public interface CorpLocalBeneficiaryService {
     /**
      * Adds a new beneficiary of a transfer
-     * @param user the corporate user
+     * @param corporate the corporate
      * @param  beneficiary  the beneficiary
      */
     @PreAuthorize("hasAuthority('ADD_BENEFICIARY')")
-    String addCorpLocalBeneficiary(CorporateUser user, CorpLocalBeneficiaryDTO beneficiary);
+    String addCorpLocalBeneficiary(Corporate corporate, CorpLocalBeneficiaryDTO beneficiary);
 
     /**
      * Deletes a beneficiary that has been created by the user
@@ -39,17 +40,18 @@ public interface CorpLocalBeneficiaryService {
 
     /**
      * Returns a list of the customer's beneficiaries
-     * @param user the corporate user
+     * @param corporate the corporate
      * @return a list of the beneficiaries
      */
     @PreAuthorize("hasAuthority('GET_BENEFICIARIES')")
-    Iterable<CorpLocalBeneficiary> getCorpLocalBeneficiaries(CorporateUser user);
+    Iterable<CorpLocalBeneficiary> getCorpLocalBeneficiaries(Corporate corporate);
 
     List<CorpLocalBeneficiaryDTO> convertEntitiesToDTOs(Iterable<CorpLocalBeneficiary> corpLocalBeneficiaries);
 
     CorpLocalBeneficiaryDTO convertEntityToDTO(CorpLocalBeneficiary corpLocalBeneficiary);
 
     CorpLocalBeneficiary convertDTOToEntity(CorpLocalBeneficiaryDTO corpLocalBeneficiaryDTO);
+
 
 
 }

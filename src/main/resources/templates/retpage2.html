@@ -50,12 +50,12 @@
     <div class="container">
         <div class="bg">
             <div class="col-md-offset-4 col-md-6">
-                <form th:action="@{/login/p/retail}" method="POST" class="login-form ">
+                <form th:action="@{/login/p/retail}" method="POST" class="login-form" autocomplete="off">
                     <h5 class="form-signin-heading">Enter Login Details</h5>
                     <br/>
                     <div class="row ">
                         <div class="form-group col-md-7 col-sm-7 col-xs-7">
-                            <input type="text" name="username" th:value="*{username}" class="form-control" readonly="readonly"/>
+                            <input type="text" name="username" th:value="*{username}" class="form-control" readonly="readonly" autocomplete="off"/>
                         </div>
                         <div class="col-md-7 col-sm-7 col-xs-7">
                             <button class="btn btn-primary form-control"> Login </button>
