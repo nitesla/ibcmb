@@ -13,6 +13,9 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.thymeleaf.TemplateEngine;
 
+import java.io.File;
+import java.io.FileWriter;
+
 
 @SpringBootApplication
 @EnableJpaRepositories(repositoryFactoryBeanClass = CustomJpaRepositoryFactoryBean.class)
@@ -42,12 +45,11 @@ public class InternetbankingApplication /* extends SpringBootServletInitializer*
     @Override
    public void run(String... strings) throws Exception {
 
-//      securityService.createEntrustUser("wumiTofu01","Wunmi baba ",true);
-//        securityService.addUserContacts("soluwawunmi@gmail.com","07038810752",true,"wumiTofu01");
-//         securityService.sendOtp("wumiTofu01");
+
+
 //        System.out.println("Your password is "+passwordEncoder.encode("password123"));
 
-    }
+
 }
 
 
