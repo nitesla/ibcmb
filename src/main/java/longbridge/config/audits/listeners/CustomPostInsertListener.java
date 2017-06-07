@@ -4,11 +4,12 @@ import longbridge.config.audits.CustomJdbcUtil;
 import org.hibernate.envers.boot.internal.EnversService;
 import org.hibernate.envers.event.spi.EnversPostInsertEventListenerImpl;
 import org.hibernate.event.spi.PostInsertEvent;
+import org.springframework.stereotype.Component;
 
 /**
  * Created by ayoade_farooq@yahoo.com on 4/8/2017.
  */
-
+//@Component
 public class CustomPostInsertListener extends EnversPostInsertEventListenerImpl {
 
 	/**

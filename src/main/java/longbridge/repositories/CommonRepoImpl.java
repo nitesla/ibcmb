@@ -33,7 +33,6 @@ public class CommonRepoImpl<T extends AbstractEntity, ID extends Serializable> e
 
 
 
-
     @Override
     @Transactional
     public void delete(ID id) {

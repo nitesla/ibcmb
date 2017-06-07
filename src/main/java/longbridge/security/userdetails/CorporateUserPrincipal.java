@@ -1,5 +1,6 @@
 package longbridge.security.userdetails;
 
+import longbridge.models.CorporateUser;
 import longbridge.models.Role;
 import longbridge.models.User;
 import org.joda.time.LocalDate;
@@ -13,15 +14,15 @@ import java.util.Collection;
 import java.util.List;
 
 @Transactional
-public class CustomUserPrincipal implements UserDetails {
+public class CorporateUserPrincipal implements UserDetails {
 
 	private static final long serialVersionUID = 1L;
 
-	private final User user;
+	private final CorporateUser user;
 	private String ipAddress;
 	private LocalDate today = LocalDate.now();
 
-	public CustomUserPrincipal(User user) {
+	public CorporateUserPrincipal(CorporateUser  user) {
 		this.user = user;
 
 	}
@@ -36,7 +37,7 @@ public class CustomUserPrincipal implements UserDetails {
 
 	@Override
 	public String getUsername() {
-		return user.getUserName();
+		return user.getUserName() + ":" +user.getCorporate().getCustomerId();
 	}
 
 	@Override
@@ -84,7 +85,7 @@ public class CustomUserPrincipal implements UserDetails {
 	@Override
 	public boolean isEnabled() {
 		try {
-			return user.getStatus().equalsIgnoreCase("A");
+			return user.getStatus().equalsIgnoreCase("A") && user.getCorporate().getStatus().equalsIgnoreCase("A");
 		} catch (Exception e) {
 			return false;
 		}
@@ -104,13 +105,4 @@ public class CustomUserPrincipal implements UserDetails {
 		return privileges;
 	}
 
-	@Override
-	public int hashCode() {
-		return super.hashCode();
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		return super.equals(obj);
-	}
 }

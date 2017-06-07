@@ -71,11 +71,11 @@ public class MainController {
     }
 
     @RequestMapping(value = "/login/corporate", method = RequestMethod.GET)
-    public ModelAndView getCorpLoginPage(@RequestParam Optional<String> error,HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-        if (session!=null){
-            session.invalidate();
-        }
+    public ModelAndView getCorpLoginPage(@RequestParam Optional<String> error/*,HttpServletRequest request*/) {
+//        HttpSession session = request.getSession(false);
+//        if (session!=null){
+//            session.invalidate();
+//        }
         return new ModelAndView("corppage1", "error", error);
     }
 
