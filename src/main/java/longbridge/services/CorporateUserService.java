@@ -34,7 +34,7 @@ public interface CorporateUserService{
     @PreAuthorize("hasAuthority('GET_CORPORATE_USER')")
     CorporateUserDTO getUserDTOByName(String name);
 
-    @PreAuthorize("hasAuthority('GET_CORPORATE_USER')")
+    //@PreAuthorize("hasAuthority('GET_CORPORATE_USER')")
     CorporateUser getUserByName(String username);
 
     /*CorporateUser getUserByCustomerId(String custId);*/

@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="layout :: site-head">
-  
 </head>
 
 
@@ -30,7 +29,7 @@
             <div class="">
                 <div class="page-title">
                     <div class="title_left">
-                        <h3>Service Request Configuration</h3>
+                        <h3>Security Questions</h3>
                     </div>
 
                 </div>
@@ -41,28 +40,34 @@
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="x_panel">
                             <div class="x_title">
-                            <ul class="nav navbar-left panel_toolbox">
+                                <ul class="nav navbar-left panel_toolbox">
                                     <li >
                                         <div class="col-lg-4">
                                             <div class="title-action">
-                                                <a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/srconfig/index/edit" disabled="disabled" ><i class="fa fa-pencil"></i> Edit</a>
+                                                <a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/secquestions/index/edit" disabled="disabled" ><i class="fa fa-pencil"></i> Edit</a>
                                             </div>
                                         </div>
                                     </li>
-                                <li >
-                                    <div class="col-lg-4">
-                                        <div class="title-action">
-                                            <a id="delete-btn" class="btn btn-danger bt-select btn-sm" href="/admin/srconfig/index/delete" disabled="disabled" ><i class="fa fa-trash"></i> Delete</a>
-                                        </div>
-                                    </div>
-                                </li>
-
-                                </ul>
-                                <ul class="nav navbar-right panel_toolbox">
                                     <li >
                                         <div class="col-lg-4">
                                             <div class="title-action">
-                                                <a th:href="@{/admin/srconfig/new}" class="btn btn-sm btn-primary"><i class="fa fa-plus"></i> Add</a>
+                                                <a id="delete-btn" class="btn btn-danger btn-sm bt-select" href="/admin/secquestions/index/delete" disabled="disabled" ><i class="fa fa-trash"></i> Delete</a>
+                                            </div>
+                                        </div>
+                                    </li>
+
+                                </ul>
+                                <ul class="nav navbar-right panel_toolbox">
+
+                                    <!-- <li>
+                                         <div class="col-lg-8">
+                                             <h2>Admin Management</h2>
+                                         </div>
+                                     </li>-->
+                                    <li >
+                                        <div class="col-lg-4">
+                                            <div class="title-action">
+                                                <a href="/admin/secquestions/new" class="btn btn-sm btn-primary"><i class="fa fa-plus"></i> Add</a>
                                             </div>
                                         </div>
                                     </li>
@@ -70,27 +75,29 @@
 
                                     <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                                     </li>
+
                                 </ul>
                                 <div class="clearfix"></div>
                             </div>
                             <div class="x_content">
 
-                            <table class="table table-striped table-bordered table-hover" id="srconfig" >
-                                <thead>
-                                <tr>
-                                    <th>Service Request Name</th>
-                                </tr>
-                                </thead>
-                                <tbody>
+                                <table class="table table-striped table-bordered table-hover" id="sq">
+                                    <thead>
+                                    <tr>
+                                        <th>Security Questions</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
 
 
-                                </tbody>
-                                <tfoot>
-                                <tr>
-                                    <th>Service Request Name</th>
-                                </tr>
-                                </tfoot>
-                            </table>
+                                    </tbody>
+                                    <tfoot>
+                                    <tr>
+                                        <th>Security Questions</th>
+                                    </tr>
+                                    </tfoot>
+                                </table>
+
                             </div>
                         </div>
                     </div>
@@ -106,61 +113,56 @@
         <!-- /footer content -->
     </div>
 </div>
-<script th:src="@{~/bank/vendors/datatables.net/js/jquery.dataTables.js}"></script>
-<script th:src="@{~/bank/js/dataTables.bootstrap.js}"></script>
-<script th:src="@{~/bank/js/dataTables.select.js}"></script>
-<script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
+
 
 <!-- Page-Level Scripts -->
-<script>
+<script th:inline="javascript">
     /*<![CDATA[*/
     $(document).ready(function() {
-
-    	var table = $('#srconfig').DataTable({
-        	"pagingType" : "simple_numbers",
-        	select: true,
+        var table = $('#sq').DataTable({
+            select:true,
             responsive: true,
-            "lengthMenu" : [ [ 5, 10, 20 ],	[ 5, 10, 20 ] ],
+            "lengthMenu" : [ [ 5, 10, 20],	[ 5, 10, 20 ] ],
+            "pagingType" : "simple_numbers",
             "searching": false,
             "paging": true,
             "serverSide" : true,
-            "ajax": "/admin/srconfig/all",
+            "ajax": "/admin/secquestions/all",
             "dom": 'T<"clear">frtlp',
             "columns": [
-                { "data": "requestName" }
-            ] 
-        });
+                { "data": "securityQuestion" }
+            ] });
 
         table.on('select', function() {
-    		if (table.rows({
-    			selected : true
-    		}).indexes().length === 0) {
-    			$('.bt-select').attr("disabled", true);
-    		} else {
-    			$('.bt-select').removeAttr("disabled");
-    		}
+            if (table.rows({
+                    selected : true
+                }).indexes().length === 0) {
+                $('.bt-select').attr("disabled", true);
+            } else {
+                $('.bt-select').removeAttr("disabled");
+            }
 
-    	});
+        });
 
-    	table.on('deselect', function() {
-    		if (table.rows({
-    			selected : true
-    		}).indexes().length === 0) {
-    			$('.bt-select').attr("disabled", true);
-    		} else {
-    			$('.bt-select').removeAttr("disabled");
-    		}
-    	});
-    	
+        table.on('deselect', function() {
+            if (table.rows({
+                    selected : true
+                }).indexes().length === 0) {
+                $('.bt-select').attr("disabled", true);
+            } else {
+                $('.bt-select').removeAttr("disabled");
+            }
+        });
+
     });
-    
+
     $("a.bt-link-act").on("click", function(e) {
-    	e.preventDefault();
+        e.preventDefault();
         var link = $(e.currentTarget);
         if($(link).attr("disabled")){
             return;
         }
-        var dt = $('#srconfig').DataTable();
+        var dt = $('#sq').DataTable();
         var id = $(dt.row({
             selected: true
         }).node()).attr("id");
@@ -168,8 +170,8 @@
         //replace {id} with id
         var ooo = link.attr("href").replace("index",id);
         window.location.assign(ooo);
-        //goto url
-    });
+
+    } );
 
     $("#delete-btn").on("click", function(e) {
         e.preventDefault();
@@ -177,7 +179,7 @@
         if($(link).attr("disabled")){
             return;
         }
-        var dt = $('#srconfig').DataTable();
+        var dt = $('#sq').DataTable();
         var id = $(dt.row({
             selected: true
         }).node()).attr("id");
@@ -192,7 +194,7 @@
     function warnBeforeRedirect(ooo) {
         swal({
             title: "Are you sure?",
-            text: "Are you sure that you want to delete this config?",
+            text: "Are you sure that you want to delete this Security Question?",
             type: "warning",
             showCancelButton: true,
             confirmButtonColor: "#DD6B55",
@@ -205,6 +207,8 @@
     }
     /*]]>*/
 </script>
+
+
 
 </body>
 </html>
