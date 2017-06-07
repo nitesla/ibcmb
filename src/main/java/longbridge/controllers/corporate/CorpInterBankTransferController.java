@@ -59,7 +59,7 @@ public class CorpInterBankTransferController {
     public String startTransfer(HttpServletRequest request, Model model, Principal principal) {
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
         model.addAttribute("localBen",
-                StreamSupport.stream(corpLocalBeneficiaryService.getCorpLocalBeneficiaries(corporateUser).spliterator(), false)
+                StreamSupport.stream(corpLocalBeneficiaryService.getCorpLocalBeneficiaries(corporateUser.getCorporate()).spliterator(), false)
                         .filter(i -> i.getBeneficiaryBank().equalsIgnoreCase(financialInstitutionService.getFinancialInstitutionByCode(bankCode).getInstitutionCode()))
                         .collect(Collectors.toList())
 

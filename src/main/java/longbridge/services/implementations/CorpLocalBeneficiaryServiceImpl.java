@@ -2,6 +2,7 @@ package longbridge.services.implementations;
 
 import longbridge.dtos.CorpLocalBeneficiaryDTO;
 import longbridge.models.CorpLocalBeneficiary;
+import longbridge.models.Corporate;
 import longbridge.models.CorporateUser;
 import longbridge.repositories.CorpLocalBeneficiaryRepo;
 import longbridge.services.CorpLocalBeneficiaryService;
@@ -43,9 +44,9 @@ public class CorpLocalBeneficiaryServiceImpl implements CorpLocalBeneficiaryServ
 
 
     @Override
-    public String addCorpLocalBeneficiary(CorporateUser user, CorpLocalBeneficiaryDTO beneficiary) {
+    public String addCorpLocalBeneficiary(Corporate corporate, CorpLocalBeneficiaryDTO beneficiary) {
         CorpLocalBeneficiary corpLocalBeneficiary=convertDTOToEntity(beneficiary);
-        corpLocalBeneficiary.setUser(user);
+        corpLocalBeneficiary.setCorporate(corporate);
         this.corpLocalBeneficiaryRepo.save(corpLocalBeneficiary);
         logger.trace("Beneficiary {} has been added");
         return messageSource.getMessage("beneficiary.add.success",null,locale);
@@ -66,8 +67,8 @@ public class CorpLocalBeneficiaryServiceImpl implements CorpLocalBeneficiaryServ
     }
 
     @Override
-    public Iterable<CorpLocalBeneficiary> getCorpLocalBeneficiaries(CorporateUser user) {
-        return corpLocalBeneficiaryRepo.findByUser(user);
+    public Iterable<CorpLocalBeneficiary> getCorpLocalBeneficiaries(Corporate corporate) {
+        return corpLocalBeneficiaryRepo.findByCorporate(corporate);
 
     }
 

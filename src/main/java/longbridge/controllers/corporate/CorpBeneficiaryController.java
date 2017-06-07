@@ -39,8 +39,8 @@ public class CorpBeneficiaryController {
     @GetMapping
     public String getBeneficiaries(Model model, Principal principal){
        CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
-        logger.info("local BEN {}", corpLocalBeneficiaryService.getCorpLocalBeneficiaries(corporateUser));
-        Iterable<CorpLocalBeneficiary> corpLocalBeneficiaries = corpLocalBeneficiaryService.getCorpLocalBeneficiaries(corporateUser);
+        logger.info("local BEN {}", corpLocalBeneficiaryService.getCorpLocalBeneficiaries(corporateUser.getCorporate()));
+        Iterable<CorpLocalBeneficiary> corpLocalBeneficiaries = corpLocalBeneficiaryService.getCorpLocalBeneficiaries(corporateUser.getCorporate());
 
         for (CorpLocalBeneficiary localBenef : corpLocalBeneficiaries){
             localBenef.setBeneficiaryBank(financialInstitutionService.getFinancialInstitutionByCode(localBenef.getBeneficiaryBank()).getInstitutionName());
@@ -74,7 +74,7 @@ public class CorpBeneficiaryController {
         }
 
         CorporateUser user = corporateUserService.getUserByName(principal.getName());
-        corpLocalBeneficiaryService.addCorpLocalBeneficiary(user,corpLocalBeneficiaryDTO);
+        corpLocalBeneficiaryService.addCorpLocalBeneficiary(user.getCorporate(),corpLocalBeneficiaryDTO);
         model.addAttribute("success","Beneficiary added successfully");
         return "redirect:/corporate/beneficiary";
     }
