@@ -175,7 +175,8 @@ public class ServiceRequestController {
             }
 
             if (field.getFieldType() != null && field.getFieldType().equals("ACCT")) {
-                List<AccountDTO> acctList = accountService.getAccountsForDebitAndCredit(user.getCustomerId());
+                //List<AccountDTO> acctList = accountService.getAccountsForDebitAndCredit(user.getCustomerId());
+                List<AccountDTO> acctList = accountService.getAccountsAndBalances(user.getCustomerId());
                 model.addAttribute("accts", acctList);
             }
 

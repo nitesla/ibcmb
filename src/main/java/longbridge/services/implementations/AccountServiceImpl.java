@@ -266,12 +266,6 @@ public class AccountServiceImpl implements AccountService {
                 .filter(i -> !accountConfigService.isAccountClassRestrictedForDebitAndCredit(i.getSchemeCode()))
                 .forEach(i->accountsForDebitAndCredit.add(i) );
 
-
-
-
-
-
-
         return accountsForDebitAndCredit;
     }
 

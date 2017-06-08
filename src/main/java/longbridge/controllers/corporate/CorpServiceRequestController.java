@@ -132,7 +132,7 @@ public class CorpServiceRequestController {
                 model.addAttribute("codes", codeList);
             }
 
-            if (field.getFieldType() != null && field.getFieldType().equals("ACCOUNT")) {
+            if (field.getFieldType() != null && field.getFieldType().equals("ACCT")) {
                 List<AccountDTO> acctList = accountService.getAccountsForDebitAndCredit(corporate.getCustomerId());
                 model.addAttribute("accts", acctList);
             }
