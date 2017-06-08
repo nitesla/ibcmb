@@ -191,4 +191,15 @@ public interface CorporateService{
     @PreAuthorize("hasAuthority('GET_TRANSFER_RULE')")
     CorpTransRule getApplicableTransferRule(CorpTransRequest transferRequest);
 
+
+    String addCorporateRole(CorporateRoleDTO roleDTO) throws InternetBankingException;
+
+    String updateCorporateRole(CorporateRoleDTO roleDTO) throws  InternetBankingException;
+
+    CorporateRoleDTO getCorporateRole(Long id);
+
+    List<CorporateRoleDTO> getCorporateRoles(Long corporateId);
+
+    String deleteCorporateRole(Long id) throws InternetBankingException;
+
 }

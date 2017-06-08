@@ -157,7 +157,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             corporateUser.setCreatedOnDate(new Date());
             String password = passwordPolicyService.generatePassword();
             corporateUser.setPassword(passwordEncoder.encode(password));
-            user.setExpiryDate(new Date());
+            corporateUser.setExpiryDate(new Date());
             Role role = new Role();
             role.setId(Long.parseLong(user.getRoleId()));
             corporateUser.setRole(role);

@@ -1,15 +1,13 @@
 package longbridge.models;
 
+import longbridge.repositories.CorporateRepo;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Fortune on 3/29/2017.
@@ -31,6 +29,9 @@ public class Corporate extends AbstractEntity{
     private String bvn;
 
 
+
+    @OneToMany
+    Set<CorporateRole> corporateRoles;
 
 
     @OneToMany(mappedBy = "corporate",cascade = CascadeType.ALL)
