@@ -26,34 +26,34 @@
                                 <div class="form-group">
                                     <label th:text="${field.fieldLabel}"></label>
 
-                                    <p th:if="${field.fieldType} == 'TEXT'"><input class="form-control" type="text" th:name="${field.fieldName}"/></p>
+                                    <p th:if="${field.fieldType} == 'TEXT'"><input class="form-control" type="text" th:name="${field.fieldName}" required="required"/></p>
 
-                                    <p th:if="${field.fieldType} == 'TEXTAREA'">
+                                    <p th:if="${field.fieldType} == 'TEXTAREA'" required="required">
                                         <textarea class="form-control" th:name="${field.fieldName}">
                                         </textarea>
                                     </p>
 
-                                    <p th:if="${field.fieldType} == 'DATE'"><input class="form-control" id="datepicker" type="text" th:name="${field.fieldName}"/></p>
+                                    <p th:if="${field.fieldType} == 'DATE'"><input class="form-control" id="datepicker" type="text" th:name="${field.fieldName}" required="required"/></p>
 
                                     <p th:if="${field.fieldType} == 'CODE'">
-                                        <select class="form-control" th:name="${field.fieldName}">
+                                        <select class="form-control" th:name="${field.fieldName}" required="required">
                                             <option th:each="code : ${codes}" th:value="${code.code}" th:text="${code.description}"></option>
                                         </select>
                                     </p>
 
                                     <p th:if="${field.fieldType} == 'FI'">
-                                        <select class="form-control" th:name="${field.fieldName}">
+                                        <select class="form-control" th:name="${field.fieldName}" required="required">
                                             <option th:each="bank : ${banks}" th:value="${bank.institutionCode}" th:text="${bank.institutionName}"></option>
                                         </select>
                                     </p>
 
                                     <p th:if="${field.fieldType} == 'ACCT'">
-                                        <select class="form-control" th:name="${field.fieldName}">
+                                        <select class="form-control" th:name="${field.fieldName}" required="required">
                                             <option th:each="acc : ${accts}" th:value="${acc.accountNumber}" th:text="${acc.accountNumber}"></option>
                                         </select>
                                     </p>
                                     <p th:if="${field.fieldType} == 'LIST'">
-                                        <select class="form-control" th:name="${field.fieldName}">
+                                        <select class="form-control" th:name="${field.fieldName}" required="required">
                                             <option th:each="type : ${fixedList}" th:value="${type}" th:text="${type}"></option>
                                         </select>
                                     </p>
