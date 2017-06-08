@@ -137,7 +137,6 @@ public class RetailControllerAdvice {
 
     @ModelAttribute
     public void getLocalFinancialInstitutions(Model model) {
-        Collator collator = Collator.getInstance(Locale.US);
 
         model.addAttribute("localBanks",
                 financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.LOCAL)
@@ -150,6 +149,11 @@ public class RetailControllerAdvice {
         );
 
 
+    }
+
+    @ModelAttribute
+    public void getBankCode(Model model){
+        model.addAttribute("bankCode",bankCode);
     }
 
 

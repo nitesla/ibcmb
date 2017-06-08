@@ -67,14 +67,7 @@ public class BeneficiaryController {
         model.addAttribute("localBeneficiaryDTO", new LocalBeneficiaryDTO());
         model.addAttribute("internationalBeneficiaryDTO", new InternationalBeneficiaryDTO());
         model.addAttribute("foreignBanks", financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.FOREIGN));
-        model.addAttribute("localBanks",
-                financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.LOCAL)
-                        .stream()
-                        .collect(Collectors.toList())
-                        .stream()
-                        .sorted(Comparator.comparing(FinancialInstitutionDTO::getInstitutionName))
-                    .collect(Collectors.toList())
-        );
+
 
         return "cust/beneficiary/add";
     }
