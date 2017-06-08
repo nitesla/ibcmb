@@ -306,9 +306,9 @@ body {
     padding-bottom: 0px;
 }
 
-/*.navbar-nav li.dropdown:hover > ul.dropdown-menu {*/
-    /*display: block;*/
-/*}*/
+.navbar-nav li.dropdown:hover > ul.dropdown-menu {
+    display: block;
+}
 
 .lft li.dropdown:hover > ul.dropdown-menu {
     display: block;
@@ -929,6 +929,10 @@ button, input, optgroup, select, textarea {
     .header_info{
         display: none;
         border: 1px solid blue;
+    }
+
+    .nav{
+        margin-left: 10px;
     }
 
     .navbar {
