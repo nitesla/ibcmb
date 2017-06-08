@@ -105,12 +105,17 @@ public class CustomUserPrincipal implements UserDetails {
 	}
 
 	@Override
-	public int hashCode() {
-		return super.hashCode();
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		CustomUserPrincipal that = (CustomUserPrincipal) o;
+
+		return user.equals(that.user);
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		return super.equals(obj);
+	public int hashCode() {
+		return user.hashCode();
 	}
 }
