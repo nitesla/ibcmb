@@ -156,7 +156,7 @@
     <div th:if="${message}">
         <div hidden="hidden">
             <ul class="actionMessage">
-                <li th:each="msg : ${message}" th:text="${msg}">Message</li>
+                <li th:each="msg : ${message}" th:text="${msg}" >Message</li>
             </ul>
         </div>
     </div>
@@ -164,7 +164,7 @@
     <div th:if="${failure}">
         <div hidden="hidden">
             <ul class="actionError">
-                <li th:each="msg : ${failure}" th:text="${msg}">Message</li>
+                <li th:each="msg : ${failure}" th:text="${msg}" id="error">Message</li>
             </ul>
         </div>
     </div>
@@ -180,16 +180,21 @@
     <script th:src="@{~/customer/js/coronation.js}"></script>
     <!-- BOOTSTRAP SCRIPTS  -->
     <script th:src="@{~/customer/js/bootstrap.js}"></script>
-    <!--<script>-->
-        <!--$(document).ready(function(){-->
-            <!--$(".dropdown").hover(-->
-                <!--function() {-->
-                    <!--$('.dropdown-menu', this).not('.in .dropdown-menu').stop(true,true).slideDown(800);-->
-                    <!--$(this).toggleClass('open');-->
-                <!--}-->
-            <!--);-->
-        <!--});-->
-    <!--</script>-->
+    <script>
+        $(document).ready(function(){
+            $(".dropdown").hover(
+                function() {
+                    $('.dropdown-menu', this).not('.in .dropdown-menu').stop(true,true);
+                    $(this).toggleClass('open');
+                },
+                function() {
+                    $('.dropdown-menu', this).not('.in .dropdown-menu').stop(true,true);
+                    $(this).toggleClass('open');
+                }
+            );
+        });
+
+    </script>
     <script>
         $(document).ready(function(){
             $('[data-toggle="tooltip"]').tooltip();

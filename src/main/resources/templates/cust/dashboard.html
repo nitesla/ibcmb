@@ -26,12 +26,17 @@
                             <td>Account Number</td>
                             <td>Available Balance</td>
                             <td>Ledger Balance</td>
+                            <td>Currency</td>
+                            <td>Account Type</td>
+
                             </thead>
                             <tbody>
                             <tr th:each="list : ${accountList}">
                                 <td th:text="${list.accountNumber}"></td>
                                 <td th:text="${list.accountBalance}"></td>
                                 <td th:text="${list.ledgerBalance}"></td>
+                                <td th:text="${list.currencyCode}"></td>
+                                <td th:text="${list.schemeType}"></td>
                                 <td>
                                     <a th:href="@{'#' + ${list.id} }"><i class=" fa fa-angle-right"></i></a>
                                 </td>

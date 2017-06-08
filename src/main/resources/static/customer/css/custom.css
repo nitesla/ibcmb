@@ -834,6 +834,10 @@ button, input, optgroup, select, textarea {
         /*!*height: 400px;*!*/
     /*}*/
 
+    .blue-bg{
+        background-color: #02223A;
+    }
+
     .sidebar{
         display: none;
     }

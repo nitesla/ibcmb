@@ -45,6 +45,7 @@ public class FinancialInstitutionDTO {
     }
 
     public String getInstitutionName() {
+        if (institutionName!=null) return institutionName.toUpperCase();
         return institutionName;
     }
 

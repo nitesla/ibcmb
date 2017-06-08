@@ -37,6 +37,7 @@
                             <div class="form-group">
                                 <input type="text" id="acct_num"  name="acct_num" class="form-control" th:field="*{accountNumber}" placeholder="Account Number"/>
                                 <p class="errors" th:if="${#fields.hasErrors('accountNumber')}" th:errors="*{accountNumber}">&times;</p>
+                                <p class="acctError" style="display:none;">invalid account number or Bank details</p>
                             </div>
 
                             <div class="form-group">
@@ -46,7 +47,9 @@
                             <div class="form-group">
                                 <input type="text" class="form-control" name="preferredName" placeholder="Preferred Name"/>
                             </div>
-                            <button class="btn btn-primary">Save</button>
+                            <button id="localsave" style="display: none;" class="btn btn-link">Save</button>
+                            <button id="neq" type="button" class="btn btn-link" onclick="getAccountName();">Name Enquiry</button>
+                            <a  th:href="@{/retail/benficiary}"  class="btn btn-link"  >Cancel</a>
                         </form>
 
                         <form id="foreign" method="post" th:action="@{/retail/beneficiary/foreign}" th:object="${internationalBeneficiaryDTO}" style="display: none">
@@ -112,12 +115,13 @@
 <script th:inline="javascript">
     /*<![CDATA[*/
     $(document).ready(function () {
-        $('#acct_num').change(function () {
-            getAccountName();
+        $('#beneficiaryBank').change(function () {
+            $('#acct_name').val("");
+            $('.acctError').hide();
         });
-        sortSelect('#beneficiaryBank', 'text', 'asc');
+//        sortSelect('#beneficiaryBank', 'text', 'asc');
 
-        $("#beneficiaryBank").prop("selectedIndex", -1);
+           $("#beneficiaryBank").prop("selectedIndex", -1);
 
     });
 
@@ -134,16 +138,22 @@
             url: '/retail/transfer/' + acct + '/'+bank+'/nameEnquiry',
 //					dataType: 'jsonp',
             error: function (xhr, textStatus, errorThrown) {
-                alert('invalid account number ');
-                $('#sub').disabled();
+                $('.acctError').show().css("color", "red");
+
             },
             success: function (data, textStatus) {
-                console.log(data);
-                console.log(textStatus);
+
                 var result = data;
-                //var result = (new Function("return " + result))();
-                // $('#acct_name').val(result.message);
                 $('#acct_name').val(result);
+
+                if( result!=null && result!='' ) {
+
+                    $('#localsave').show();
+                    $('#neq').hide();
+                }else{
+
+                    $('.acctError').show().css("color", "red");
+                }
             }
         };
         $.ajax(options);

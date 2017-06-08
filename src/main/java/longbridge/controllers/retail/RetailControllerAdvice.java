@@ -1,9 +1,7 @@
 package longbridge.controllers.retail;
 
-import longbridge.models.Account;
-import longbridge.models.FinancialInstitutionType;
-import longbridge.models.RetailUser;
-import longbridge.models.SRConfig;
+import longbridge.dtos.FinancialInstitutionDTO;
+import longbridge.models.*;
 import longbridge.services.*;
 import longbridge.utils.DateFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +11,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Objects;
+import java.text.Collator;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -141,12 +137,15 @@ public class RetailControllerAdvice {
 
     @ModelAttribute
     public void getLocalFinancialInstitutions(Model model) {
-
+        Collator collator = Collator.getInstance(Locale.US);
 
         model.addAttribute("localBanks",
                 financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.LOCAL)
                         .stream()
                         .filter(i -> !i.getInstitutionCode().equals(bankCode))
+                        .collect(Collectors.toList())
+                        .stream()
+                        .sorted(Comparator.comparing(FinancialInstitutionDTO::getInstitutionName) )
                         .collect(Collectors.toList())
         );
 

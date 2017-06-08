@@ -74,6 +74,7 @@ public class InterBankTransferController {
                         .filter(i -> !i.getBeneficiaryBank().equalsIgnoreCase(financialInstitutionService.getFinancialInstitutionByCode(bankCode).getInstitutionCode()))
                         .collect(Collectors.toList())
 
+
         );
         TransferRequestDTO requestDTO = new TransferRequestDTO();
         String type = request.getParameter("tranType");
@@ -94,13 +95,7 @@ public class InterBankTransferController {
 
     @GetMapping("/new")
     public String newBeneficiary(Model model, LocalBeneficiaryDTO localBeneficiaryDTO) throws Exception {
-        model.addAttribute("localBanks",
-                financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.LOCAL)
-                        .stream()
-                        .filter(i ->! i.getInstitutionCode().equals(bankCode))
-                        .collect(Collectors.toList())
 
-        );
         model.addAttribute("localBeneficiaryDTO", localBeneficiaryDTO);
         return page + "pageiB";
     }

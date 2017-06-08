@@ -13,6 +13,7 @@ import longbridge.services.*;
 import longbridge.utils.ResultType;
 import longbridge.utils.TransferType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -49,6 +50,9 @@ public class TransferController {
     private FinancialInstitutionService financialInstitutionService;
     private TransferErrorService transferErrorService;
     private SecurityService securityService;
+
+    @Value("${bank.code}")
+    private String bankCode;
 
 
     @Autowired

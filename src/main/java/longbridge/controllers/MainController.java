@@ -21,9 +21,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.security.Principal;
-import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -101,10 +99,24 @@ public class MainController {
         return "cust/faqs"; //TODO
     }
 
+    @GetMapping("/login/retail/failure")
+    public String retLoginFailure() {
 
-    @GetMapping(value = {"/retail/{path:(?!static).*$}", "/retail/{path:(?!static).*$}/**"})
-    public String retailUnknown(Principal principal) {
-        if (principal != null) {
+
+        return "retloginfailure";
+    }
+
+    @GetMapping("/login/corporate/failure")
+    public String corpLoginFailure() {
+
+        return "corploginfailure";
+    }
+
+
+    @GetMapping(value = {"/retail/{path:(?!static).*$}","/retail/{path:(?!static).*$}/**" })
+    public String retailUnknown(Principal principal){
+        if (principal!=null){
+
             return "redirect:/retail/dashboard";
 
         }
@@ -141,10 +153,11 @@ public class MainController {
     @PostMapping("/login/u/retail")
     public String userExists(WebRequest webRequest, Model model, RedirectAttributes redirectAttributes) {
         String username = webRequest.getParameter("username");
-        RetailUser user = retailUserService.getUserByName(username);
-        if (user == null) {
-            redirectAttributes.addFlashAttribute("error", messageSource.getMessage("invalid.user", null, locale));
-            return "redirect:/login/retail";
+
+        RetailUser user =  retailUserService.getUserByName(username);
+        if (user == null){
+            return "redirect:/login/retail/failure";
+
         }
         model.addAttribute("username", user.getUserName());
         return "retpage2";
@@ -154,10 +167,11 @@ public class MainController {
     public String step2(WebRequest webRequest, Model model, HttpSession session, RedirectAttributes redirectAttributes) {
         String username = webRequest.getParameter("username");
 //        String phishing = webRequest.getParameter("username");
-        RetailUser user = retailUserService.getUserByName(username);
-        if (user == null) {
-            redirectAttributes.addFlashAttribute("error", messageSource.getMessage("invalid.user", null, locale));
-            return "redirect:/login/retail";
+
+        RetailUser user =  retailUserService.getUserByName(username);
+        if (user == null){
+            return "redirect:/login/retail/failure";
+
         }
         model.addAttribute("username", user.getUserName());
         session.setAttribute("username", user.getUserName());
@@ -185,7 +199,7 @@ public class MainController {
 
 
         redirectAttributes.addFlashAttribute("error", messageSource.getMessage("invalid.user", null, locale));
-        return "redirect:/login/corporate";
+        return "redirect:/login/corporate/failure";
 
     }
 
@@ -203,7 +217,7 @@ public class MainController {
         }
 
         redirectAttributes.addFlashAttribute("error", messageSource.getMessage("invalid.user", null, locale));
-        return "redirect:/login/corporate";
+        return "redirect:/login/corporate/failure";
     }
 
 
