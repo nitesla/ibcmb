@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -198,8 +199,10 @@ public interface CorporateService{
 
     CorporateRoleDTO getCorporateRole(Long id);
 
-    List<CorporateRoleDTO> getCorporateRoles(Long corporateId);
+    Set<CorporateRoleDTO> getCorporateRoles(Long corporateId);
 
     String deleteCorporateRole(Long id) throws InternetBankingException;
+
+
 
 }

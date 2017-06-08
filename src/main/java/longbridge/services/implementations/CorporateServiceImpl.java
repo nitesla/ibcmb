@@ -63,6 +63,9 @@ public class CorporateServiceImpl implements CorporateService {
     @Autowired
     private MailService mailService;
 
+    @Autowired
+    private CorporateRoleRepo corporateRoleRepo;
+
 
     private Locale locale = LocaleContextHolder.getLocale();
     private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -371,27 +374,59 @@ public class CorporateServiceImpl implements CorporateService {
 
     @Override
     public String addCorporateRole(CorporateRoleDTO roleDTO) throws InternetBankingException {
-        return null;
+
+
+        try {
+            CorporateRole role = convertCorporateRoleDTOToEntity(roleDTO);
+            corporateRoleRepo.save(role);
+            return messageSource.getMessage("corporate.role.add.success",null,locale);
+
+        }
+        catch (Exception e){
+            throw new InternetBankingException(messageSource.getMessage("corporate.role.add.failure",null,locale));
+
+        }
     }
 
     @Override
     public String updateCorporateRole(CorporateRoleDTO roleDTO) throws InternetBankingException {
-        return null;
+        try {
+            CorporateRole role = convertCorporateRoleDTOToEntity(roleDTO);
+            corporateRoleRepo.save(role);
+            return messageSource.getMessage("corporate.role.add.success",null,locale);
+
+        }
+        catch (Exception e){
+            throw new InternetBankingException(messageSource.getMessage("corporate.role.add.failure",null,locale));
+
+        }
     }
 
     @Override
     public CorporateRoleDTO getCorporateRole(Long id) {
-        return null;
+        CorporateRole corporateRole = corporateRoleRepo.findOne(id);
+        CorporateRoleDTO roleDTO = convertCorporateRoleEntityToDTO(corporateRole);
+        return roleDTO;
+
     }
 
     @Override
-    public List<CorporateRoleDTO> getCorporateRoles(Long corporateId) {
-        return null;
+    public Set<CorporateRoleDTO> getCorporateRoles(Long corporateId) {
+        Corporate corporate = corporateRepo.findOne(corporateId);
+        Set<CorporateRole> corporateRoles = corporate.getCorporateRoles();
+        return  convertCorporateRoleEntitiesToDTOs(corporateRoles);
     }
 
     @Override
     public String deleteCorporateRole(Long id) throws InternetBankingException {
-        return null;
+
+        try{
+            corporateRoleRepo.delete(id);
+            return messageSource.getMessage("corporate.role.delete.success",null,locale);
+        }
+        catch (Exception e){
+            throw new InternetBankingException(messageSource.getMessage("corporate.role.delete.failure",null,locale));
+        }
     }
 
     @Override
@@ -499,8 +534,8 @@ public class CorporateServiceImpl implements CorporateService {
         return roleDTO;
     }
 
-    private List<CorporateRoleDTO> convertCorporateRoleEntitiesToDTOs(List<CorporateRole> roles){
-        List<CorporateRoleDTO> roleDTOs = new ArrayList<CorporateRoleDTO>();
+    private Set<CorporateRoleDTO> convertCorporateRoleEntitiesToDTOs(Set<CorporateRole> roles){
+        Set<CorporateRoleDTO> roleDTOs = new HashSet<>();
         for(CorporateRole role: roles){
             CorporateRoleDTO roleDTO  =  convertCorporateRoleEntityToDTO(role);
             roleDTOs.add(roleDTO);

@@ -65,6 +65,14 @@ public class Corporate extends AbstractEntity{
         this.corpTransferRequests = corpTransferRequests;
     }
 
+    public Set<CorporateRole> getCorporateRoles() {
+        return corporateRoles;
+    }
+
+    public void setCorporateRoles(Set<CorporateRole> corporateRoles) {
+        this.corporateRoles = corporateRoles;
+    }
+
     public List<CorpTransRule> getCorpTransRules() {
         return corpTransRules;
     }
