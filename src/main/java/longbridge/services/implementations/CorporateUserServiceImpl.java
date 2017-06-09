@@ -365,7 +365,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
             if (setting != null && setting.isEnabled()) {
                 if ("YES".equalsIgnoreCase(setting.getValue())) {
-                    securityService.deleteEntrustUser(corporateUser.getUserName(), fullName);
+                    securityService.deleteEntrustUser(corporateUser.getUserName());
                 }
             }
             return messageSource.getMessage("user.delete.success", null, locale);
