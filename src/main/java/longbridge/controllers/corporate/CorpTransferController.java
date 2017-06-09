@@ -198,7 +198,7 @@ public class CorpTransferController {
             corpTransferRequestDTO = (CorpTransferRequestDTO) request.getSession().getAttribute("corpTransferRequest");
 
             corpTransferRequestDTO = (CorpTransferRequestDTO) transferService.makeTransfer(corpTransferRequestDTO);
-            request.getSession().removeAttribute("transferRequest");
+            request.getSession().removeAttribute("corpTransferRequest");
 
 
             if (request.getSession().getAttribute("Lbeneficiary") != null) {
