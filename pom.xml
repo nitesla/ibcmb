@@ -207,6 +207,9 @@
             <groupId>com.oracle</groupId>
             <artifactId>ojdbc7</artifactId>
             <version>12.1.0</version>
+            <scope>system</scope>
+            <type>jar</type>
+            <systemPath>${project.basedir}/ojdbc7.jar</systemPath>
         </dependency>
 
         <dependency>
@@ -214,7 +217,7 @@
             <artifactId>jackson-core-asl</artifactId>
             <version>1.9.13</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/com.sun.xml.ws/jaxws-rt -->
+        <!-- https://mvnrepository.com/artifaitory.csun.xml.ws/jaxws-rt -->
         <!--<dependency>-->
             <!--<groupId>com.sun.xml.ws</groupId>-->
             <!--<artifactId>jaxws-rt</artifactId>-->
