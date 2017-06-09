@@ -22,7 +22,7 @@ html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockq
 
 /* Dropdown Button */
 .dropbtn {
-    background-color: #032A4F;
+    background-color: #003056;
     color: white;
     padding: 16px;
     font-size: 16px;
@@ -67,7 +67,7 @@ html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockq
 
 /* Change the background color of the dropdown button when the dropdown content is shown */
 .dropdown:hover .dropbtn {
-    background-color: #032A4F;
+    background-color: #003056;
 }
 
 /*********** END OF YAMN STYLE ******/
@@ -125,7 +125,7 @@ body {
 .tooltip-inner {
     max-width: 200px;
     padding: 3px 8px;
-    color: #032A4F;
+    color: #003056;
     text-align: center;
     background-color: #fff;
     border-radius: 4px;
@@ -161,8 +161,8 @@ body {
 }
 
 .header-title {
-    color: #032A4F;
-    font-size: 16px;
+    color: #003056;
+    font-size: 20px;
     font-weight: 400;
     line-height: 19px;
     margin-bottom: 25px;
@@ -182,7 +182,7 @@ body {
     background: none;
     border-right: 1px solid #77777a;
     float: left;
-    font-size: 10px;
+    font-size: 12px;
     line-height: 14px;
     list-style: none;
     margin: 0 6px 0 0;
@@ -206,7 +206,7 @@ body {
 }
 
 .header_info h5{
-    color: #02223A;
+    color: #003056;
     font-size: 18px;
     font-weight: 100;
     padding-bottom: 5px;
@@ -217,7 +217,7 @@ body {
 }
 
 .header_info h5>b{
-    color: #02223A;
+    color: #003056;
     font-size: 18px;
     font-weight: 100;
 }
@@ -226,7 +226,7 @@ body {
     display: none;
 }
 .header_info h5>i{
-    color: #02223A;
+    color: #003056;
 
 }
 .lorem
@@ -235,7 +235,7 @@ body {
 }
 
 .page_header{
-    color: #02223A;
+    color: #003056;
     font-size: 16px;
     font-weight: 100;
     margin-top: 40px;
@@ -244,7 +244,7 @@ body {
 }
 
 .sub_header{
-    color: #02223A;
+    color: #003056;
     font-size: 14px;
     font-weight: 100;
     margin-top: 10px;
@@ -253,7 +253,7 @@ body {
 }
 
 .bvn{
-    background-color: #F2F2F1;
+    background-color: #ebecef;
 }
 .stb{
     margin-top: 10px;
@@ -301,6 +301,7 @@ body {
 }
 
 .navbar-nav li a{
+    color: #777;
     margin-top: 5px;
     padding-top: 8px;
     padding-bottom: 0px;
@@ -314,6 +315,22 @@ body {
     display: block;
 }
 
+.navbar-nav>li>.dropdown-menu {
+    margin-top: 0;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+
+.open>.dropdown-menu {
+    display: block;
+}
+
+.dropdown-menu {
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+}
+
 .body-texts{
     text-align: center;
     margin: 0 auto;
@@ -321,26 +338,29 @@ body {
 }
 
 .body-texts h4{
-    font-size: 18px;
+    font-size: 24px;
+    font-weight: bold;
     color: #9F614B;
     margin: 20px 0 10px 0;
 }
 
 .body-texts h5{
-    font-size: 18px;
+    font-size: 28px;
+    font-weight: bold;
     color: #868B8F;
     margin: 20px 0 10px 0;
 }
 
 .body-texts h6{
-    font-size: 18px;
-    color: #032A4F;
+    font-size: 20px;
+    font-weight: bold;
+    color: #003056;
     margin: 20px 0 10px 0;
 }
 
 .body-texts p{
-    line-height: 16px;
-    font-size: 12px;
+    line-height: 22px;
+    font-size: 16px;
     color: #868B8F;
 }
 
@@ -388,12 +408,12 @@ body {
     max-width: 500px;
 }
 .slider{
-    height: 350px;
-    margin: 0 15px 0 15px;
+    height: 450px;
+    /*margin: 0 15px 0 15px;*/
     overflow: hidden;
 }
 .sliding{
-    max-height: 350px;
+    max-height: 450px;
     width: 100%;
 }
 
@@ -459,7 +479,7 @@ body {
 }
 .btn-default{
     color: #fff;
-    background-color: #032A4F;
+    background-color: #003056;
 }
 
 .in-box{
@@ -470,20 +490,20 @@ body {
     list-style: none;
     font-size: 13px;
     font-weight: 100;
-    color: #032A4F;
+    color: #003056;
 }
 .folder-list li{
     list-style: none;
     padding-bottom: 5px;
 }
 .folder-list .fa{
-    color: #032A4F;
+    color: #003056;
 }
 .fas .fa{
     color: #fff;
 }
 .faz .fa{
-    color: #032A4F;
+    color: #003056;
 }
 .txtarea{
     padding: 0 15px 0 15px;
@@ -636,14 +656,14 @@ button, input, optgroup, select, textarea {
 
 .content-bg{
     margin: 20px 10px 10px 0;
-    background-color: #F2F2F1;
+    background-color: #ebecef;
     min-height: 350px;
 }
 
 .sidebar-bg{
     margin: 15px 0 10px 0px;
     padding: 0px;
-    background-color: #F2F2F1;
+    background-color: #ebecef;
 }
 
 .bg{
@@ -692,7 +712,7 @@ button, input, optgroup, select, textarea {
 
 .btn-primary{
     color: #fff;
-    background-color: #032A4F;
+    background-color: #003056;
     border: none;
 }
 
@@ -726,7 +746,7 @@ button, input, optgroup, select, textarea {
 }
 .bluehead{
     color: #ffffff;
-    background-color: #032A4F;
+    background-color: #003056;
     font-size: 20px;
     margin: 5px 0 5px 0;
     padding: 3px;
@@ -739,7 +759,7 @@ button, input, optgroup, select, textarea {
 
 .hder2{
     font-size: 22px;
-    color: #032A4F;
+    color: #003056;
     margin: 50px 0 5px 17px;
 }
 
@@ -758,7 +778,7 @@ button, input, optgroup, select, textarea {
 /*}*/
 .table tbody tr{
     background-color: #fff;
-    border-top: 2px solid #032A4F;
+    border-top: 2px solid #003056;
 }
 .table th, td{
     padding: 15px;
@@ -767,7 +787,7 @@ button, input, optgroup, select, textarea {
 
 .date1{
     font-size: 16px;
-    color: #032A4F;
+    color: #003056;
 }
 .date4{
     color: #ffffff;
@@ -835,7 +855,7 @@ button, input, optgroup, select, textarea {
     /*}*/
 
     .blue-bg{
-        background-color: #02223A;
+        background-color: #003056;
     }
 
     .sidebar{
@@ -852,14 +872,14 @@ button, input, optgroup, select, textarea {
     }
 
     .header_info h5{
-        color: #02223A;
+        color: #003056;
         font-size: 16px;
         font-weight: 100;
         padding-bottom: 5px;
     }
 
     .header_info h5>b{
-        color: #02223A;
+        color: #003056;
         font-size: 16px;
         font-weight: 100;
     }
