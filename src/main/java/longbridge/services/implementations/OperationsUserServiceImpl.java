@@ -244,7 +244,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
 
             if (setting != null && setting.isEnabled()) {
                 if ("YES".equalsIgnoreCase(setting.getValue())) {
-                    securityService.deleteEntrustUser(opsUser.getUserName(), fullName);
+                    securityService.deleteEntrustUser(opsUser.getUserName());
                 }
             }
             return messageSource.getMessage("user.delete.success", null, locale);

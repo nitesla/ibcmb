@@ -193,7 +193,7 @@ public class RetailUserServiceImpl implements RetailUserService {
         try{
             securityService.setUserQA(username, securityQuestion, securityAnswer);
         }catch (InternetBankingSecurityException e){
-            securityService.deleteEntrustUser(username, fullName);
+            securityService.deleteEntrustUser(username);
             throw new InternetBankingSecurityException(messageSource.getMessage("entrust.create.failure", null, locale), e);
         }
     }
@@ -202,7 +202,7 @@ public class RetailUserServiceImpl implements RetailUserService {
         try{
             securityService.setMutualAuth(username, captionSec, phishingSec);
         }catch (InternetBankingSecurityException e){
-            securityService.deleteEntrustUser(username, fullName);
+            securityService.deleteEntrustUser(username);
             throw new InternetBankingSecurityException(messageSource.getMessage("entrust.create.failure", null, locale), e);
         }
     }
@@ -218,7 +218,7 @@ public class RetailUserServiceImpl implements RetailUserService {
 
             if (setting != null && setting.isEnabled()) {
                 if ("YES".equalsIgnoreCase(setting.getValue())) {
-                    securityService.deleteEntrustUser(retailUser.getUserName(), fullName);
+                    securityService.deleteEntrustUser(retailUser.getUserName());
                 }
             }
             return messageSource.getMessage("user.delete.success",null,locale);

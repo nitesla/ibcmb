@@ -220,7 +220,7 @@ public class AdminUserServiceImpl implements AdminUserService {
             SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_DELETION");
             if (setting != null && setting.isEnabled()) {
                 if ("YES".equalsIgnoreCase(setting.getValue())) {
-                    securityService.deleteEntrustUser(user.getUserName(), fullName);
+                    securityService.deleteEntrustUser(user.getUserName());
                 }
             }
             logger.warn("Admin user {} deleted", user.getUserName());

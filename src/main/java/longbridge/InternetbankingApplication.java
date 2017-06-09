@@ -3,7 +3,6 @@ package longbridge;
 import longbridge.repositories.CustomJpaRepositoryFactoryBean;
 import longbridge.services.IntegrationService;
 import longbridge.services.SecurityService;
-import longbridge.utils.ImageWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -13,9 +12,6 @@ import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.thymeleaf.TemplateEngine;
-
-import java.io.File;
-import java.io.FileWriter;
 
 
 @SpringBootApplication
@@ -46,13 +42,9 @@ public class InternetbankingApplication  extends SpringBootServletInitializer im
     @Override
    public void run(String... strings) throws Exception {
 
-        ImageWriter image = new ImageWriter();
-        String newImage = image.writeImage("/Users/Showboy/Documents/Longbridge/Projects/InternetBanking/ibcmb/src/main/resources/static/assets/phishing/dog.jpg", "wunmi");
-        java.io.File img = new File("Sampleimage");
-        java.io.FileWriter fw = new FileWriter(img);
-        fw.write(newImage);
-        fw.close();
-
+//      securityService.createEntrustUser("wumiTofu01","Wunmi baba ",true);
+//        securityService.addUserContacts("soluwawunmi@gmail.com","07038810752",true,"wumiTofu01");
+//         securityService.sendOtp("wumiTofu01");
 //        System.out.println("Your password is "+passwordEncoder.encode("password123"));
 
     }

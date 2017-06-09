@@ -1,0 +1,14 @@
+<Envelope xmlns="http://schemas.xmlsoap.org/soap/envelope/">
+    <Body>
+    <performOTPAuthentication xmlns="http://ws.entrustplugin.expertedge.com/">
+        <!-- Optional -->
+        <arg0 xmlns="">
+            <appCode>${appCode}</appCode>
+            <appDesc>${appDesc}</appDesc>
+            <group>${appGroup}</group>
+            <otpResponse>${otp}</otpResponse>
+            <userName>${userName}</userName>
+        </arg0>
+    </performOTPAuthentication>
+    </Body>
+</Envelope>

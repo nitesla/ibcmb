@@ -30,18 +30,18 @@
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> LOG IN </a>
                         <ul class="dropdown-menu">
-                            <li><a th:href="@{/login/retail}">RETAIL</a></li>
-                            <li><a th:href="@{/login/corporate}">CORPORATE</a></li>
+                            <li><a th:href="@{/login/retail}"> INDIVIDUAL </a></li>
+                            <li><a th:href="@{/login/corporate}"> CORPORATE</a></li>
                         </ul>
                     </li>
                     <li><a th:href="@{/register}">REGISTER</a></li>
-                    <li><a href="/">CONTACT US</a></li>
+                    <li><a href="/#contact_us">CONTACT US</a></li>
                     <li><a href="/">HELP</a></li>
                 </ul>
             </div>
         </div>
     </nav>
-    <a href="#" class="logo">
+    <a href="/" class="logo">
         <img th:src="@{/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
     </a>
 </div>
@@ -52,8 +52,6 @@
             <form id="loginform" th:action="@{/login/u/retail}" method="POST" class="form-signin" autocomplete="off">
                 <h5 class="form-signin-heading">Enter Login Details</h5>
                 <br/>
-
-                <h6 id="label">Please enter your username</h6>
 
                 <div th:if="${param.message != null}" class="alert alert-info" th:text="${param.message[0]}">message</div>
                 <div th:if="${param.error != null}" class="alert alert-danger" th:text="${session[SPRING_SECURITY_LAST_EXCEPTION]}">error</div>

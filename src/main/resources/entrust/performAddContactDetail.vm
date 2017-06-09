@@ -1,0 +1,19 @@
+<Envelope xmlns="http://schemas.xmlsoap.org/soap/envelope/">
+    <Body>
+    <performAddContactDetail xmlns="http://ws.entrustplugin.expertedge.com/">
+        <!-- Optional -->
+        <arg0 xmlns="">
+            <appCode>${appCode}</appCode>
+            <appDesc>${appDesc}</appDesc>
+            <emailAddress>${email}</emailAddress>
+            <emailAddressDeliveryLabel>${emailDevLabel}</emailAddressDeliveryLabel>
+            <emailAddressdefault>${emailDefault}</emailAddressdefault>
+            <group>${appGroup}</group>
+            <phoneNo>${phone}</phoneNo>
+            <phoneNoDeliveryLabel>${PhoneDevLabel}</phoneNoDeliveryLabel>
+            <phoneNodefault>${phoneDefault}</phoneNodefault>
+            <userName>${userName}</userName>
+        </arg0>
+    </performAddContactDetail>
+    </Body>
+</Envelope>

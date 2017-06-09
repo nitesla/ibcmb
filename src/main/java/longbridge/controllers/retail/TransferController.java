@@ -145,6 +145,10 @@ public class TransferController {
     public
     @ResponseBody
     String getInterBankAccountName(@PathVariable String accountNo, @PathVariable String bank) {
+
+
+        if (bank.equalsIgnoreCase(bankCode))  return integrationService.viewAccountDetails(accountNo).getAcctName();
+
         return (integrationService.doNameEnquiry(bank, accountNo)).getAccountName();
         // return (integrationService.doNameEnquiry("000005",accountNo)).getAccountName();
 

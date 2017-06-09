@@ -1,0 +1,15 @@
+<Envelope xmlns="http://schemas.xmlsoap.org/soap/envelope/">
+    <Body>
+    <performCreateEntrustUser xmlns="http://ws.entrustplugin.expertedge.com/">
+        <!-- Optional -->
+        <arg0 xmlns="">
+            <appCode>${appCode}</appCode>
+            <appDesc>${appDesc}</appDesc>
+            <enableOTP>${otp}</enableOTP>
+            <fullname>${fullname}</fullname>
+            <group>${appGroup}</group>
+            <userName>${userName}</userName>
+        </arg0>
+    </performCreateEntrustUser>
+    </Body>
+</Envelope>
