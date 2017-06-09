@@ -2,6 +2,7 @@ package longbridge.services.implementations;
 
 import longbridge.dtos.CorpCorporateUserDTO;
 import longbridge.dtos.CorporateUserDTO;
+import longbridge.dtos.ServiceReqConfigDTO;
 import longbridge.dtos.SettingDTO;
 import longbridge.exception.*;
 import longbridge.forms.AlertPref;
@@ -15,6 +16,7 @@ import longbridge.repositories.RoleRepo;
 import longbridge.services.*;
 import longbridge.utils.DateFormatter;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -114,6 +116,12 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         return corporateUserRepo.findAll();
     }
 
+    @Override
+    public Iterable<CorporateUserDTO> getUsers(Long corpId) {
+        Corporate corporate = corporateRepo.findOne(corpId);
+        List<CorporateUser> users = corporate.getUsers();
+        return convertEntitiesToDTOs(users);
+    }
 
     @Override
     public String updateUser(CorporateUserDTO user) throws InternetBankingException {
@@ -451,13 +459,12 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         }
     }
 
-    private String getUsedPasswords(String newPassword, String oldPasswords) {
-        StringBuilder builder = new StringBuilder();
-        if (oldPasswords != null) {
-            builder.append(oldPasswords);
-        }
-        builder.append(passwordEncoder.encode(newPassword) + ",");
-        return builder.toString();
+
+    @Override
+    public List<CorporateUserDTO> getUsersWithoutRole(Long corpId) {
+        Corporate corporate = corporateRepo.findOne(corpId);
+        List<CorporateUser> usersWithoutRoles = corporateUserRepo.findByCorporateAndCorporateRoleIsNull(corporate);
+        return  convertEntitiesToDTOs(usersWithoutRoles);
     }
 
     private void sendUserCredentials(CorporateUser user, String password) throws InternetBankingException {
@@ -508,6 +515,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     }
 
     private CorporateUserDTO convertEntityToDTO(CorporateUser corporateUser) {
+
         CorporateUserDTO corporateUserDTO = modelMapper.map(corporateUser, CorporateUserDTO.class);
         corporateUserDTO.setRoleId(corporateUser.getRole().getId().toString());
         corporateUserDTO.setRole(corporateUser.getRole().getName());

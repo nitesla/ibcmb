@@ -183,11 +183,12 @@ public interface CorporateService{
     @PreAuthorize("hasAuthority('DELETE_CORPORATE_RULE')")
    String deleteCorporateRule(Long id) throws InternetBankingException;
 
-    @PreAuthorize("hasAuthority('GET_CORPORATE_USER')")
-    List<CorporateUserDTO> getAuthorizers(Long corpId);
+    Set<CorporateRoleDTO> getRoles(Long corpId);
+
+    Page<CorporateRoleDTO> getRoles(Long corpId, Pageable pageable);
 
     @PreAuthorize("hasAuthority('GET_CORPORATE_USER')")
-    List<CorporateUser> getQualifiedAuthorizers(CorpTransRequest transferRequest);
+    List<CorporateRole> getQualifiedRoles(CorpTransRequest transferRequest);
 
     @PreAuthorize("hasAuthority('GET_TRANSFER_RULE')")
     CorpTransRule getApplicableTransferRule(CorpTransRequest transferRequest);

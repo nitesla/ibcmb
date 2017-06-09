@@ -18,7 +18,6 @@ import java.util.List;
 @Where(clause ="del_Flag='N'" )
 public class CorpTransRequest extends TransRequest {
 
-
     @ManyToOne
     private Corporate corporate;
 

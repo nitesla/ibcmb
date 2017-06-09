@@ -23,12 +23,14 @@ public class CorpTransRule extends AbstractEntity {
     private String currency;
     private boolean unlimited;
     private boolean anyCanAuthorize;
+    private boolean rank=false;
+
 
     @ManyToOne
     private Corporate corporate;
 
     @ManyToMany
-    private List<CorporateUser> auths;
+    private List<CorporateRole> roles;
 
     public BigDecimal getLowerLimitAmount() {
         return lowerLimitAmount;
@@ -78,11 +80,20 @@ public class CorpTransRule extends AbstractEntity {
         this.corporate = corporate;
     }
 
-    public List<CorporateUser> getAuths() {
-        return auths;
+
+    public List<CorporateRole> getRoles() {
+        return roles;
     }
 
-    public void setAuths(List<CorporateUser> auths) {
-        this.auths = auths;
+    public void setRoles(List<CorporateRole> roles) {
+        this.roles = roles;
+    }
+
+    public boolean isRank() {
+        return rank;
+    }
+
+    public void setRank(boolean rank) {
+        this.rank = rank;
     }
 }

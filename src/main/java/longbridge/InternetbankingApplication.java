@@ -43,13 +43,20 @@ public class InternetbankingApplication /* extends SpringBootServletInitializer*
     }
 
     @Override
-   public void run(String... strings) throws Exception {
+    public void run(String... strings) throws Exception {
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> corpTransferRule
 
 //        System.out.println("Your password is "+passwordEncoder.encode("password123"));
 
 
+<<<<<<< HEAD
+=======
+    }
+>>>>>>> corpTransferRule
 }
 
 

@@ -104,6 +104,10 @@ public class CustomUserPrincipal implements UserDetails {
 		return privileges;
 	}
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> corpTransferRule
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;

@@ -36,6 +36,7 @@ public class CorporateUserDTO {
     private int noOfLoginAttempts;
     private Code alertPreference;
     private String createdOn;
+    private String corporateRole;
 
     public Long getId() {return id;}
 
@@ -202,6 +203,14 @@ public class CorporateUserDTO {
 
     public void setCreatedOn(String createdOn) {
         this.createdOn = createdOn;
+    }
+
+    public String getCorporateRole() {
+        return corporateRole;
+    }
+
+    public void setCorporateRole(String corporateRole) {
+        this.corporateRole = corporateRole;
     }
 
     @Override

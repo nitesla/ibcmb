@@ -3,6 +3,7 @@ package longbridge.dtos;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Fortune on 5/18/2017.
@@ -18,9 +19,9 @@ public class CorpTransferRuleDTO {
     private boolean unlimited;
     private boolean anyCanAuthorize;
     private String corporateId;
-    private int numOfAuthorizers;
+    private int numOfRoles;
     private String corporateName;
-    private List<CorporateUserDTO> authorizers;
+    private Set<CorporateRoleDTO> roles;
 
     public Long getId() {
         return id;
@@ -86,9 +87,6 @@ public class CorpTransferRuleDTO {
         this.corporateId = corporateId;
     }
 
-    public int getNumOfAuthorizers() {
-        return numOfAuthorizers;
-    }
 
     public String getCorporateName() {
         return corporateName;
@@ -98,15 +96,20 @@ public class CorpTransferRuleDTO {
         this.corporateName = corporateName;
     }
 
-    public void setNumOfAuthorizers(int numOfAuthorizers) {
-        this.numOfAuthorizers = numOfAuthorizers;
+
+    public int getNumOfRoles() {
+        return numOfRoles;
     }
 
-    public List<CorporateUserDTO> getAuthorizers() {
-        return authorizers;
+    public void setNumOfRoles(int numOfRoles) {
+        this.numOfRoles = numOfRoles;
     }
 
-    public void setAuthorizers(List<CorporateUserDTO> authorizers) {
-        this.authorizers = authorizers;
+    public Set<CorporateRoleDTO> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<CorporateRoleDTO> roles) {
+        this.roles = roles;
     }
 }

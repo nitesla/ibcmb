@@ -3,7 +3,6 @@ package longbridge.controllers.corporate;
 
 import longbridge.dtos.CorpLocalBeneficiaryDTO;
 import longbridge.dtos.CorpTransferRequestDTO;
-import longbridge.dtos.TransferRequestDTO;
 import longbridge.exception.*;
 import longbridge.models.*;
 
@@ -26,10 +25,7 @@ import javax.validation.Valid;
 
 import java.math.BigDecimal;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.StreamSupport;
 
 /**
@@ -77,18 +73,18 @@ public class CorpTransferController {
     CorpTransferRequestRepo transferRequestRepo;
     @Autowired private CorpTransferService corpTransferService;
 
-    @GetMapping("/{id}/{amount}")
-    public void getQualifiedAuthorizers(@PathVariable Long id, @PathVariable String amount) {
+    @GetMapping("/{corpId}/{amount}")
+    public void getQualifiedRoles(@PathVariable Long corpId, @PathVariable String amount) {
 
         CorpTransRequest transferRequest = new CorpTransRequest();
         transferRequest.setAmount(new BigDecimal(amount));
-        Corporate corporate = corporateRepo.findOne(id);
+        Corporate corporate = corporateRepo.findOne(corpId);
         transferRequest.setCorporate(corporate);
-        List<CorporateUser> authorizers = corporateService.getQualifiedAuthorizers(transferRequest);
+        List<CorporateRole> roles = corporateService.getQualifiedRoles(transferRequest);
         PendAuth pendAuth = new PendAuth();
         List<PendAuth> pendAuths = new ArrayList<>();
-        for (CorporateUser authorizer : authorizers) {
-            pendAuth.setAuthorizer(authorizer);
+        for (CorporateRole role : roles) {
+            pendAuth.setRole(role);
             pendAuths.add(pendAuth);
         }
         transferRequest.setPendAuths(pendAuths);
@@ -240,7 +236,7 @@ public class CorpTransferController {
     public String getPendingTransfer(Principal principal,Model model){
 
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
-        List<PendAuth> pendAuths =corporateUser.getPendAuths();
+        List<PendAuth> pendAuths =corporateUser.getCorporateRole().getPendAuths();
         model.addAttribute("pendAuths", pendAuths);
         return "corp/transfer/pendingtransfer/view";
     }
@@ -248,8 +244,8 @@ public class CorpTransferController {
     public String authorizeTransfer(@PathVariable Long id, Principal principal, Model model, RedirectAttributes redirectAttributes){
 try {
     CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
-   /* String message = corpTransferService.authorizeTransfer(corporateUser, id);
-    redirectAttributes.addFlashAttribute("message", message);*/
+    String message = corpTransferService.authorizeTransfer(corporateUser.getCorporateRole(), id);
+    redirectAttributes.addFlashAttribute("message", message);
 }
 catch (InvalidAuthorizationException iae){
     logger.error("Failed to authorize transfer",iae);

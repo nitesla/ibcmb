@@ -6,6 +6,7 @@ import org.hibernate.envers.Audited;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -19,13 +20,18 @@ public class CorporateRole extends  AbstractEntity {
 
     String name;
 
+
+
     Integer rank;
+    String roleType;
 
     @ManyToOne
     Corporate corporate;
 
     @OneToMany
     Set<CorporateUser> users;
+   @OneToMany
+    List<PendAuth> pendAuths;
 
     public String getName() {
         return name;
@@ -57,5 +63,21 @@ public class CorporateRole extends  AbstractEntity {
 
     public void setUsers(Set<CorporateUser> users) {
         this.users = users;
+    }
+
+    public String getRoleType() {
+        return roleType;
+    }
+
+    public void setRoleType(String roleType) {
+        this.roleType = roleType;
+    }
+
+    public List<PendAuth> getPendAuths() {
+        return pendAuths;
+    }
+
+    public void setPendAuths(List<PendAuth> pendAuths) {
+        this.pendAuths = pendAuths;
     }
 }

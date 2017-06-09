@@ -1,7 +1,13 @@
 package longbridge.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+<<<<<<< HEAD
 
+=======
+import org.hibernate.validator.constraints.NotEmpty;
+
+import javax.validation.constraints.NotNull;
+>>>>>>> corpTransferRule
 import java.util.Set;
 
 /**
@@ -14,11 +20,23 @@ public class CorporateRoleDTO {
 
     private int version;
 
+<<<<<<< HEAD
     private String name;
 
     Integer rank;
 
     Long corporateId;
+=======
+    @NotEmpty(message = "name")
+    private String name;
+
+    @NotNull(message = "rank")
+    Integer rank;
+
+    String corporateId;
+
+    boolean ruleMember;
+>>>>>>> corpTransferRule
 
     Set<CorporateUserDTO> users;
 
@@ -55,11 +73,19 @@ public class CorporateRoleDTO {
         this.rank = rank;
     }
 
+<<<<<<< HEAD
     public Long getCorporateId() {
         return corporateId;
     }
 
     public void setCorporateId(Long corporateId) {
+=======
+    public String getCorporateId() {
+        return corporateId;
+    }
+
+    public void setCorporateId(String corporateId) {
+>>>>>>> corpTransferRule
         this.corporateId = corporateId;
     }
 
@@ -70,4 +96,15 @@ public class CorporateRoleDTO {
     public void setUsers(Set<CorporateUserDTO> users) {
         this.users = users;
     }
+<<<<<<< HEAD
+=======
+
+    public boolean isRuleMember() {
+        return ruleMember;
+    }
+
+    public void setRuleMember(boolean ruleMember) {
+        this.ruleMember = ruleMember;
+    }
+>>>>>>> corpTransferRule
 }
