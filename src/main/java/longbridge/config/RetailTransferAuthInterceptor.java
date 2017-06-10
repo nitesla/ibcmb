@@ -31,10 +31,10 @@ public class RetailTransferAuthInterceptor extends HandlerInterceptorAdapter {
 
         if (/* service to check if token is enabled comes in here  */
 
-                ( setting!=null && setting.isEnabled())
+            /*    ( setting!=null && setting.isEnabled())
                      &&
                      httpServletRequest.getSession().getAttribute("auth-needed")==null
-
+*/true
                      )  {
 
 
