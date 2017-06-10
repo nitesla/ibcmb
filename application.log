@@ -1580,3 +1580,5 @@ java.lang.NullPointerException: null
 	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) [tomcat-embed-core-8.5.11.jar:8.5.11]
 	at java.lang.Thread.run(Thread.java:745) [na:1.8.0_121]
 
+2017-06-10 19:25:08.694  INFO 4432 --- [http-nio-8085-exec-7] l.c.retail.BeneficiaryController         : local BEN []
+2017-06-10 19:30:21.542  INFO 4432 --- [http-nio-8085-exec-9] l.c.retail.BeneficiaryController         : local BEN []

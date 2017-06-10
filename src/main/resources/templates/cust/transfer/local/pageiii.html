@@ -73,10 +73,15 @@
                     <!--</div>-->
                 </div>
             </div>
-            <div class="col-md-3 sidebar">
-                <div class="sidebar-bg">hfdhgk</div>
-                <div class="sidebar-bg">jgjgjk</div>
+            <div th:fragment="sidebar" class="col-md-3 sidebar">
+                <div class="sidebar-bg calender">
+                    <div id="calendar" class="calendar"></div>
+                </div>
+                <div class="sidebar-bg">
+                    <img th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
+                </div>
             </div>
+
         </div>
     </div>
 </section>
