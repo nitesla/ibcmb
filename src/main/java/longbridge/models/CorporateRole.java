@@ -6,6 +6,7 @@ import org.hibernate.envers.Audited;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -14,14 +15,11 @@ import java.util.Set;
  */
 
 @Entity
-@Audited(withModifiedFlag=true)
-@Where(clause ="del_Flag='N'" )
-public class CorporateRole extends  AbstractEntity {
+@Audited(withModifiedFlag = true)
+@Where(clause = "del_Flag='N'")
+public class CorporateRole extends AbstractEntity {
 
     String name;
-
-
-
     Integer rank;
     String roleType;
 
@@ -29,8 +27,9 @@ public class CorporateRole extends  AbstractEntity {
     Corporate corporate;
 
     @OneToMany
-    Set<CorporateUser> users;
-   @OneToMany
+    Set<CorporateUser> users = new HashSet<CorporateUser>();
+
+    @OneToMany
     List<PendAuth> pendAuths;
 
     public String getName() {

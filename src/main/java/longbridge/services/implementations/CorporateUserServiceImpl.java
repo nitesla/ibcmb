@@ -29,10 +29,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 /**
  * Created by Fortune on 4/4/2017.
@@ -462,9 +459,27 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
     @Override
     public List<CorporateUserDTO> getUsersWithoutRole(Long corpId) {
+        boolean withoutRole = true;
         Corporate corporate = corporateRepo.findOne(corpId);
-        List<CorporateUser> usersWithoutRoles = corporateUserRepo.findByCorporateAndCorporateRoleIsNull(corporate);
-        return  convertEntitiesToDTOs(usersWithoutRoles);
+        List<CorporateUser> users = corporate.getUsers();
+        Set<CorporateRole> roles =  corporate.getCorporateRoles();
+        Set<CorporateUser> usersWithoutCorpRole = new HashSet<CorporateUser>();
+        for(CorporateUser corporateUser: users){
+            for(CorporateRole corporateRole: roles){
+                if(!corporateRole.getUsers().contains(corporateUser)){
+                   withoutRole= true;
+                }
+                else {
+                  withoutRole=false;
+                }
+            }
+            if(withoutRole){
+                usersWithoutCorpRole.add(corporateUser);
+            }
+        }
+
+//        List<CorporateUser> usersWithoutRoles = corporateUserRepo.findByCorporateAndCorporateRoleIsNull(corporate);
+        return  convertEntitiesToDTOs(usersWithoutCorpRole);
     }
 
     private void sendUserCredentials(CorporateUser user, String password) throws InternetBankingException {

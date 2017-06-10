@@ -31,7 +31,7 @@ public class Corporate extends AbstractEntity{
 
 
     @OneToMany
-    Set<CorporateRole> corporateRoles;
+    Set<CorporateRole> corporateRoles = new HashSet<CorporateRole>();
 
 
     @OneToMany(mappedBy = "corporate",cascade = CascadeType.ALL)
