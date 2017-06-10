@@ -37,6 +37,8 @@ public class MessageServiceImpl implements MessageService {
     @Autowired
     private ConfigurationService configurationService;
     @Autowired
+    private UserGroupService userGroupService;
+    @Autowired
     private MailService mailService;
 
     Locale locale = LocaleContextHolder.getLocale();
@@ -188,6 +190,26 @@ public class MessageServiceImpl implements MessageService {
     public String purge(int daysOld) throws InternetBankingException {
         return null;
     }
+
+    @Override
+    public String sendRetailContact(String msg, RetailUser user) {
+        try {
+            SettingDTO settingDTO = configurationService.getSettingByName("CUSTOMER_CARE_EMAIL");
+            String email = settingDTO.getValue();
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append("Customer Name:  " + user.getFirstName() + " " + user.getLastName() + "\n\n");
+            stringBuilder.append("Customer Email:  " + user.getEmail() + "\n\n");
+            stringBuilder.append("Request Time:  " + new Date() + "\n\n\n\n");
+            stringBuilder.append(" " + msg + "\n\n");
+            String message = stringBuilder.toString();
+
+            mailService.send(email, "CUSTOMER SUPPORT REQUEST", message);
+            return messageSource.getMessage("contactus.failure", null, locale);
+        }catch (InternetBankingException e){
+            throw new InternetBankingException(messageSource.getMessage("contactus.failure", null, locale),e);
+        }
+    }
+
 
     @Override
     @Transactional
