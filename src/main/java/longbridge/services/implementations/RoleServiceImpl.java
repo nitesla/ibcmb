@@ -16,6 +16,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -163,12 +164,13 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public String deleteRole(Long id) throws InternetBankingException {
-        try {
+
         	Role role = roleRepo.getOne(id);
         	Integer users = countUsers(role);
         	if(users > 0){
         		throw new InternetBankingException(messageSource.getMessage("role.delete.users.exist", null, locale));
         	}
+        	try{
             roleRepo.delete(id);
             logger.warn("Deleted role with Id {}", id);
             return messageSource.getMessage("role.delete.success", null, locale);
@@ -335,8 +337,8 @@ public class RoleServiceImpl implements RoleService {
         }
         return pageImpl;
     }
-    
-    
+
+
     private Integer countUsers(Role role) {
         Integer cnt = 0 ;
         switch (role.getUserType()) {

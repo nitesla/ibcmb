@@ -22,7 +22,8 @@
                               th:object="${localBeneficiaryDTO}">
                             <div class="form-group">
                                 <label>Beneficiary Bank</label>
-                                <select name="beneficiaryBank" class="form-control" th:field="*{beneficiaryBank}" required="required">
+                                <select name="beneficiaryBank" class="form-control" th:field="*{beneficiaryBank}"
+                                        required="required">
                                     <option value="Coronation">Coronation Merchant Bank</option>
                                 </select>
                             </div>
@@ -30,7 +31,7 @@
                                 <label>Account Number</label>
                                 <input type="text" class="form-control" name="accountNumber" th:field="*{accountNumber}"
                                        id="acct_num" placeholder="Account Number" required="required"/>
-
+                                <p class="acctError" style="display:none;">invalid account number or Bank details</p>
                             </div>
 
                             <div class="form-group">
@@ -45,8 +46,11 @@
                                 <input type="text" class="form-control" name="preferredName"
                                        placeholder="Beneficiary Alias" th:field="*{preferredName}"/>
                             </div>
-                            <button class="btn btn-link" id="sub">Next</button>
+                            <button id="localsave" style="display: none;" class="btn btn-link">NEXT</button>
+                            <button id="neq" type="button" class="btn btn-link" onclick="getAccountName();">Name Enquiry</button>
+                            <a  th:href="@{/retail/benficiary}"  class="btn btn-link"  >Cancel</a>
                         </form>
+
 
                     </div>
                 </div>
@@ -62,11 +66,12 @@
 <footer th:replace="cust_layout ::footer">
 </footer>
 
-<script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
     $(document).ready(function () {
-        $('#acct_num').change(function () {
-            getAccountName();
-        });
+//        $('#acct_num').change(function () {
+//            getAccountName();
+//        });
 
     })
 
@@ -81,20 +86,31 @@
             url: '/retail/transfer/local/' + acct + '/nameEnquiry',
 //					dataType: 'jsonp',
             error: function (xhr, textStatus, errorThrown) {
-                alert('invalid account number ');
-                $('#sub').disabled();
+                $('.acctError').show().css("color", "red");
             },
             success: function (data, textStatus) {
                 console.log(data);
                 console.log(textStatus);
                 var result = data;
                 //var result = (new Function("return " + result))();
-               // $('#acct_name').val(result.message);
+                // $('#acct_name').val(result.message);
                 $('#acct_name').val(result);
+                $('.acctError').hide();
+
+                if( result!=null && result!='' ) {
+
+                    $('#localsave').show();
+                    $('#neq').hide();
+                }else{
+
+                    $('.acctError').show().css("color", "red");
+                }
+
             }
         };
         $.ajax(options);
     }
+    /*]]>*/
 </script>
 </body>
 </html>

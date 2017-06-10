@@ -59,7 +59,7 @@ public class CorpInterBankTransferController {
     public String startTransfer(HttpServletRequest request, Model model, Principal principal) {
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
         model.addAttribute("localBen",
-                StreamSupport.stream(corpLocalBeneficiaryService.getCorpLocalBeneficiaries(corporateUser).spliterator(), false)
+                StreamSupport.stream(corpLocalBeneficiaryService.getCorpLocalBeneficiaries(corporateUser.getCorporate()).spliterator(), false)
                         .filter(i -> i.getBeneficiaryBank().equalsIgnoreCase(financialInstitutionService.getFinancialInstitutionByCode(bankCode).getInstitutionCode()))
                         .collect(Collectors.toList())
 
@@ -77,11 +77,11 @@ public class CorpInterBankTransferController {
 
 
     @GetMapping("/new")
-    public String newBeneficiary(Model model, CorpLocalBeneficiaryDTO corpLocalBeneficiaryDTO) throws Exception {
+    public String newBeneficiary(@ModelAttribute("corpLocalBeneficiary") CorpLocalBeneficiaryDTO corpLocalBeneficiaryDTO,Model model ) throws Exception {
         model.addAttribute("localBanks",
                 financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.LOCAL)
                         .stream()
-                        .filter(i -> i.getInstitutionCode().equals(bankCode))
+                        .filter(i -> !i.getInstitutionCode().equals(bankCode))
                         .collect(Collectors.toList())
         );
 

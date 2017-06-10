@@ -13,6 +13,8 @@
             <li><a href="#"> CORONATION MERCHANT BANK</a></li>
         </ul>
     </div>
+    <br/>
+    <br/>
     <nav class="navbar navbar-default">
         <div class="container-fluid">
             <div class="navbar-header navbar-left">
@@ -30,18 +32,18 @@
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> LOG IN </a>
                         <ul class="dropdown-menu">
-                            <li><a th:href="@{/login/retail}">Retail</a></li>
-                            <li><a th:href="@{/login/corporate}">Corporate</a></li>
+                            <li><a th:href="@{/login/retail}"> INDIVIDUAL </a></li>
+                            <li><a th:href="@{/login/corporate}"> CORPORATE</a></li>
                         </ul>
                     </li>
                     <li><a th:href="@{/register}">REGISTER</a></li>
-                    <li><a href="/">CONTACT US</a></li>
+                    <li><a href="/#contact_us">CONTACT US</a></li>
                     <li><a href="/">HELP</a></li>
                 </ul>
             </div>
         </div>
     </nav>
-    <a href="#" class="logo">
+    <a href="/" class="logo">
         <img th:src="@{/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
     </a>
 </div>
@@ -49,17 +51,17 @@
 <section class="content-wrapper">
     <div class="container">
         <div class="bg">
-            <form  th:action="@{/login/u/corporate}" method="POST" class="form-signin">
+            <form  th:action="@{/login/u/corporate}" method="POST" class="form-signin" autocomplete="off">
                 <h5 class="form-signin-heading">Enter Login Details</h5>
                 <br/>
                 <div th:if="${param.message != null}" class="alert alert-info" th:text="${param.message[0]}">message</div>
 
                 <div th:if="${param.error != null}" class="alert alert-danger" th:text="${session[SPRING_SECURITY_LAST_EXCEPTION]}">error</div>
                 <div class="form-group">
-                    <input type="text" name="username" class="form-control"  placeholder="Username" />
+                    <input type="text" name="username" class="form-control"  placeholder="Username" autocomplete="off" />
                 </div>
                 <div class="form-group">
-                    <input type="text" name="corporateId" class="form-control"  placeholder="Corporate Key" />
+                    <input type="text" name="corporateId" class="form-control"  placeholder="Corporate Key" autocomplete="off"/>
                 </div>
                 <div class="form-group">
                     <button class="btn btn-primary form-control">Submit</button>
@@ -107,20 +109,20 @@
 <script th:src="@{/customer/js/bootstrap.js}"></script>
 <script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
 
-<script>
-    $(document).ready(function(){
-        $(".dropdown").hover(
-            function() {
-                $('.dropdown-menu', this).not('.in .dropdown-menu').stop(true,true).slideDown(800);
-                $(this).toggleClass('open');
-            },
-            function() {
-                $('.dropdown-menu', this).not('.in .dropdown-menu').stop(true,true).slideUp(800);
-                $(this).toggleClass('open');
-            }
-        );
-    });
-</script>
+<!--<script>-->
+    <!--$(document).ready(function(){-->
+        <!--$(".dropdown").hover(-->
+            <!--function() {-->
+                <!--$('.dropdown-menu', this).not('.in .dropdown-menu').stop(true,true).slideDown(800);-->
+                <!--$(this).toggleClass('open');-->
+            <!--},-->
+            <!--function() {-->
+                <!--$('.dropdown-menu', this).not('.in .dropdown-menu').stop(true,true).slideUp(800);-->
+                <!--$(this).toggleClass('open');-->
+            <!--}-->
+        <!--);-->
+    <!--});-->
+<!--</script>-->
 <script>
     $(document).ready(function(){
         $('[data-toggle="tooltip"]').tooltip();

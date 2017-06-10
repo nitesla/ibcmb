@@ -11,6 +11,7 @@ import longbridge.forms.RetrieveUsernameForm;
 import longbridge.models.Account;
 import longbridge.models.Email;
 import longbridge.models.RetailUser;
+import longbridge.models.SecurityQuestions;
 import longbridge.services.*;
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
@@ -49,6 +50,9 @@ public class UserRegController {
 
     @Autowired
     private MailService mailService;
+
+    @Autowired
+    private SecurityQuestionService securityQuestionService;
 
     @Autowired
     private MessageSource messageSource;
@@ -121,20 +125,25 @@ public class UserRegController {
         if (account != null){
             String customerId = account.getCustomerId();
             RetailUser user = retailUserService.getUserByCustomerId(customerId);
-            logger.info("USER NAME {}", user.getUserName());
-            Map<List<String>, List<String>> qa = securityService.getUserQA(user.getUserName());
-            //List<String> sec = null;
-            if (qa != null){
-                Set<List<String>> questions= qa.keySet();
-                Iterator it = questions.iterator();
-                while(it.hasNext()){
-                    logger.info("SEC QUESTION {}", it);
-                    List<String> question = ( List<String> )it.next();
-                    secQuestion = question.stream().filter(Objects::nonNull).findFirst().orElse("");
-                    logger.info("question {}", secQuestion);
-                }
+            if (user != null){
+                logger.info("USER NAME {}", user.getUserName());
+                Map<List<String>, List<String>> qa = securityService.getUserQA(user.getUserName());
+                //List<String> sec = null;
+                if (qa != null){
+                    Set<List<String>> questions= qa.keySet();
+                    Iterator it = questions.iterator();
+                    while(it.hasNext()){
+                        logger.info("SEC QUESTION {}", it);
+                        List<String> question = ( List<String> )it.next();
+                        secQuestion = question.stream().filter(Objects::nonNull).findFirst().orElse("");
+                        logger.info("question {}", secQuestion);
+                    }
 
-            }else {
+                }else {
+                    secQuestion = "";
+                }
+            }
+            else {
                 secQuestion = "";
             }
 
@@ -336,6 +345,11 @@ public class UserRegController {
         images.add("/assets/phishing/benz.jpg");
 
         model.addAttribute("images", images);
+
+        List<String> policies = passwordPolicyService.getPasswordRules();
+        model.addAttribute("policies", policies);
+
+        List<SecurityQuestions> securityQuestionss = securityQuestionService.getSecQuestions();
         return "cust/register/registration";
     }
 
@@ -369,6 +383,7 @@ public class UserRegController {
             return "false";
         }
 
+        doesUserExist(customerId);
 
         if (details.getBvn() != null && !details.getBvn().isEmpty() ){
             logger.error("No Bvn found");
@@ -427,6 +442,13 @@ public class UserRegController {
         }
 
         return "false";
+    }
+
+    private void doesUserExist(String customerId){
+        RetailUser user = retailUserService.getUserByCustomerId(customerId);
+        if (user != null || !"".equals(user)){
+            throw new InternetBankingException(messageSource.getMessage("user.reg.exists", null, locale));
+        }
     }
 
     @GetMapping("/forgot/password")

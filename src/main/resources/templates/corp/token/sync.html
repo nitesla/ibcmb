@@ -18,13 +18,30 @@
             <div class="col-md-8 content-bg">
                 <div class="row form-spacing">
                     <div class="col-md-6">
-                        <form method="post" th:action="@{/corporate/token/sync}" th:object="${tokenProp}">
+                        <form method="post" th:action="@{/corporate/token/sync}" th:object="${tokenSync}">
                             <div class="form-group">
                                 <label>Token Serial Number</label>
                                 <select name="serialNo" class="form-control">
-                                    <option></option>
+                                    <option th:each="serial: ${serials}" th:value="${serial}" th:text="${serial}"></option>
                                 </select>
                                 <p class="errors" th:if="${#fields.hasErrors('serialNo')}" th:errors="*{serialNo}">&times;</p>
+                            </div>
+
+                            <div class="form-group">
+                                <label>First Token Code </label>
+
+                                <div >
+                                    <input type="password" id="serial1" class="form-control" th:field="*{tokenCode1}"/>
+                                </div>
+
+                            </div>
+                            <div class="form-group">
+                                <label>Second Token Code</label>
+
+                                <div >
+                                    <input type="password" id="serial2" class="form-control" th:field="*{tokenCode2}"/>
+                                </div>
+
                             </div>
 
                             <button type="submit" class="btn btn-default">Synchronize</button>

@@ -1,0 +1,13 @@
+<Envelope xmlns="http://schemas.xmlsoap.org/soap/envelope/">
+    <Body>
+    <performGetTokenSerial xmlns="http://ws.entrustplugin.expertedge.com/">
+        <!-- Optional -->
+        <arg0 xmlns="">
+            <appCode>${appCode}</appCode>
+            <appDesc>${appDesc}</appDesc>
+            <group>${appGroup}</group>
+            <userName>${userName}</userName>
+        </arg0>
+    </performGetTokenSerial>
+    </Body>
+</Envelope>

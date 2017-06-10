@@ -59,7 +59,7 @@ public interface SecurityService {
 
     boolean createEntrustUser(String username, String fullName, boolean enableOtp) throws InternetBankingTransferException;
 
-    void deleteEntrustUser(String username, String fullName) throws InternetBankingTransferException;
+    void deleteEntrustUser(String username) throws InternetBankingTransferException;
 
     boolean assignToken(String username, String serialNumber) throws InternetBankingTransferException;
 
@@ -71,11 +71,15 @@ public interface SecurityService {
 
    Map< List<String>, List<String>> getUserQA(String username) throws InternetBankingTransferException;
    Map< List<String>, List<String>> getMutualAuth(String username) throws InternetBankingTransferException;
+
     void  setMutualAuth(String username,List<String> mutualCaption, List<String> mutualImage);
+    void  setMutualAuthX(String username,String mutualCaption, String mutualImagePath);
     void  setMutualAuth(String username,List<String> mutualCaption, List<String> mutualImage ,String token);
    String getTokenSerials(String username);
    boolean unLockUser(String username);
    boolean updateUser(String username,String fullName,boolean enableOtp);
+   boolean addUserContacts(String email,String phone,boolean phoneDefault,String userName);
+
 
 
 

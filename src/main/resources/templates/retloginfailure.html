@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- BEGIN PAGE LEVEL STYLES -->
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/jquery-steps/css/jquery.steps.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/jquery-ui.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/font-awesome/font-awesome.min.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/bootstrap.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/custom.css}"/>
+
+    <title>Test</title>
+</head>
+<body>
+
+<header class="header">
+    <div class="container">
+        <div class="top_bar">
+            <ul class="list_group">
+                <li><a href="#"> CORONATION MERCHANT BANK</a></li>
+            </ul>
+        </div>
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <div class="navbar-header navbar-left">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
+                        <span class="sr-only">MENU</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#" data-toggle="collapse" data-target="#navbar-collapse-1">Menu</a>
+                </div>
+                <div class="collapse navbar-collapse" id="navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                        <li><a href="/">HOME</a></li>
+                        <li><a href="/#contact_us">CONTACT US</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <a href="/" class="logo">
+            <img th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
+        </a>
+    </div>
+</header>
+<br/>
+<br/>
+<br/>
+
+<section class="content-wrapper">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="white-box">
+                    <br/>
+                    <br/>
+                    <h2 class="header-title" style="font-size: 18px;"> Login Failure</h2>
+
+                    <p>1. &nbsp; Make sure you have entered the correct Username and Password.</p>
+                    <br/>
+                    <p>2. &nbsp; If the problem persists please call Customer Care at 01-2712005-7 012802500 or send us an email at enquiries @coronationmb.com</p>
+                    <br/>
+                    <a href="/login/retail" class="btn btn-primary btn-xs">Back to Login</a>
+                </div>
+            </div>
+        </div>
+        <!-- End row-->
+    </div>
+</section>
+
+
+<footer class="blue-bg">
+    <div class="container">
+        <div class="footer_bar">
+            <div class="col-md-6 col-xs-12">
+                <ul class="list_group">
+                    <li><a href="#" target="_blank">Privacy policy</a></li>
+                    <li><a href="#" target="_blank">Disclaimer</a></li>
+                    <li><a href="#" target="_blank">Terms &amp; Conditions</a></li>
+                </ul>
+
+            </div>
+            <div class="col-md-6 col-xs-12"><p> &copy; 2017 - All rights reserved</p></div>
+
+        </div>
+    </div>
+</footer>
+<!-- CORE JQUERY SCRIPTS -->
+<script th:src="@{/customer/js/jquery-1.11.1.js}"></script>
+<!-- BOOTSTRAP SCRIPTS  -->
+<script th:src="@{/customer/js/bootstrap.js}"></script>
+
+<script th:src="@{~/customer/js/jquery.validate.min.js}"></script>
+<script th:src="@{~/customer/js/jquery-ui.js}"></script>
+<script th:src="@{~/customer/plugins/jquery-steps/js/jquery.steps.min.js}" type="text/javascript"></script>
+<script th:src="@{~/customer/js/jasny-bootstrap.min.js}"></script>
+<script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
+
+
+</body>
+</html>

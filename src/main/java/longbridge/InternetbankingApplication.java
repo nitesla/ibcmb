@@ -1,6 +1,5 @@
 package longbridge;
 
-import longbridge.api.AccountInfo;
 import longbridge.repositories.CustomJpaRepositoryFactoryBean;
 import longbridge.services.IntegrationService;
 import longbridge.services.SecurityService;
@@ -14,17 +13,13 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.thymeleaf.TemplateEngine;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
 
 @SpringBootApplication
 @EnableJpaRepositories(repositoryFactoryBeanClass = CustomJpaRepositoryFactoryBean.class)
 
 
 
-public class InternetbankingApplication  /*extends SpringBootServletInitializer implements CommandLineRunner */{
+public class InternetbankingApplication  extends SpringBootServletInitializer implements CommandLineRunner {
 
     @Autowired
     private SecurityService securityService;
@@ -44,12 +39,15 @@ public class InternetbankingApplication  /*extends SpringBootServletInitializer 
         return application.sources(InternetbankingApplication.class);
     }
 
-//    @Override
-//    public void run(String... strings) throws Exception {
-//
-//        System.out.print("Your password is :"+passwordEncoder.encode("password@1"));
-//
-//    }
+    @Override
+   public void run(String... strings) throws Exception {
+
+//      securityService.createEntrustUser("wumiTofu01","Wunmi baba ",true);
+//        securityService.addUserContacts("soluwawunmi@gmail.com","07038810752",true,"wumiTofu01");
+//         securityService.sendOtp("wumiTofu01");
+//        System.out.println("Your password is "+passwordEncoder.encode("password123"));
+
+    }
 }
 
 

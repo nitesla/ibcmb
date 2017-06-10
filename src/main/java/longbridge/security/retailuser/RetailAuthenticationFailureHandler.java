@@ -33,7 +33,7 @@ public class RetailAuthenticationFailureHandler extends SimpleUrlAuthenticationF
         setDefaultFailureUrl("/login/retail?error=true");
         String userName = request.getParameter("username");
         RetailUser user = service.findFirstByUserNameIgnoreCase(userName);
-        String errorMessage = errorService.getMessage(exception, request);
+
         if (user != null && exception.getMessage().equalsIgnoreCase("Bad credentials"))
 
             failedLoginService.loginFailed(user);
@@ -44,7 +44,7 @@ public class RetailAuthenticationFailureHandler extends SimpleUrlAuthenticationF
         super.onAuthenticationFailure(request, response, exception);
 
 
-
+        String errorMessage = errorService.getMessage(exception, request);
 
 
         request.getSession().setAttribute(WebAttributes.AUTHENTICATION_EXCEPTION, errorMessage);

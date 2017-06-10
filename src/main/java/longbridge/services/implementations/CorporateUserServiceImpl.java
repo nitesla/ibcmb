@@ -142,7 +142,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     @Transactional
     public String addUser(CorporateUserDTO user) throws InternetBankingException {
 
-        CorporateUser corporateUser = corporateUserRepo.findFirstByUserName(user.getUserName());
+        CorporateUser corporateUser = corporateUserRepo.findFirstByUserNameIgnoreCase(user.getUserName());
         if (corporateUser != null) {
             throw new DuplicateObjectException(messageSource.getMessage("user.exists", null, locale));
         }
@@ -200,7 +200,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     @Transactional
     public String addUserFromCorporateAdmin(CorpCorporateUserDTO user) throws InternetBankingException {
 
-        CorporateUser corporateUser = corporateUserRepo.findFirstByUserName(user.getUserName());
+        CorporateUser corporateUser = corporateUserRepo.findFirstByUserNameIgnoreCase(user.getUserName());
         if (corporateUser != null) {
             throw new DuplicateObjectException(messageSource.getMessage("user.exists", null, locale));
         }
@@ -365,7 +365,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
             if (setting != null && setting.isEnabled()) {
                 if ("YES".equalsIgnoreCase(setting.getValue())) {
-                    securityService.deleteEntrustUser(corporateUser.getUserName(), fullName);
+                    securityService.deleteEntrustUser(corporateUser.getUserName());
                 }
             }
             return messageSource.getMessage("user.delete.success", null, locale);

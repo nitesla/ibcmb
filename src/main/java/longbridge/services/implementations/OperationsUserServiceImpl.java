@@ -168,7 +168,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     @Override
     @Transactional
     public String addUser(OperationsUserDTO user) throws InternetBankingException {
-        OperationsUser opsUser = operationsUserRepo.findFirstByUserName(user.getUserName());
+        OperationsUser opsUser = operationsUserRepo.findFirstByUserNameIgnoreCase(user.getUserName());
         if (opsUser != null) {
             throw new DuplicateObjectException(messageSource.getMessage("user.exist", null, locale));
         }
@@ -244,7 +244,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
 
             if (setting != null && setting.isEnabled()) {
                 if ("YES".equalsIgnoreCase(setting.getValue())) {
-                    securityService.deleteEntrustUser(opsUser.getUserName(), fullName);
+                    securityService.deleteEntrustUser(opsUser.getUserName());
                 }
             }
             return messageSource.getMessage("user.delete.success", null, locale);

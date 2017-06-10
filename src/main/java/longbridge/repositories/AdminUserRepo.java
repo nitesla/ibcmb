@@ -27,6 +27,7 @@ public interface AdminUserRepo extends CommonRepo<AdminUser, Long>{
     AdminUser findFirstByUserNameIgnoreCase(String s);
     Iterable<AdminUser> findByRole(Role r);
     Page<AdminUser> findByRole(Role r, Pageable pageDetail);
+//    Integer countByRole(Role r);
 
     @Modifying
     @Query("update AdminUser u set u.lastLoginDate = current_timestamp() , u.lockedUntilDate = NULL, u.noOfLoginAttempts = 0 where u.userName = :name")

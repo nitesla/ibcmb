@@ -21,9 +21,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.security.Principal;
-import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -52,51 +50,39 @@ public class MainController {
 
 
     @RequestMapping(value = {"/", "/home"})
-    public String getHomePage(HttpServletRequest request) {
-       HttpSession session = request.getSession(false);
-       if (session!=null){
-           session.invalidate();
-       }
+    public String getHomePage(@RequestParam Optional<HttpSession> session) {
+
+        if (session.isPresent()) session.get().invalidate();
 
         return "index";
     }
 
     @RequestMapping(value = "/login/retail", method = RequestMethod.GET)
-    public ModelAndView getLoginPage(@RequestParam Optional<String> error,HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-        if (session!=null){
-            session.invalidate();
-        }
+    public ModelAndView getLoginPage(@RequestParam Optional<String> error, @RequestParam Optional<HttpSession> session) {
+        if (session.isPresent()) session.get().invalidate();
+
+
         return new ModelAndView("retpage1", "error", error);
     }
 
     @RequestMapping(value = "/login/corporate", method = RequestMethod.GET)
-    public ModelAndView getCorpLoginPage(@RequestParam Optional<String> error,HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-        if (session!=null){
-            session.invalidate();
-        }
+    public ModelAndView getCorpLoginPage(@RequestParam Optional<String> error) {
+
         return new ModelAndView("corppage1", "error", error);
     }
 
     @GetMapping(value = "/login/admin")
-    public ModelAndView adminLogin(HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-        if (session!=null){
-            session.invalidate();
-        }
+    public ModelAndView adminLogin(@RequestParam Optional<HttpSession> session) {
+        if (session.isPresent()) session.get().invalidate();
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("admlogin");
         return modelAndView;
     }
 
     @GetMapping(value = "/login/ops")
-    public ModelAndView opsLogin(HttpServletRequest request) {
+    public ModelAndView opsLogin(@RequestParam Optional<HttpSession> session) {
 
-        HttpSession session = request.getSession(false);
-        if (session!=null){
-            session.invalidate();
-        }
+        if (session.isPresent()) session.get().invalidate();
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("opslogin");
         return modelAndView;
@@ -108,72 +94,84 @@ public class MainController {
     }
 
 
-
-
     @GetMapping("/faqs")
     public String viewFAQs() {
         return "cust/faqs"; //TODO
     }
 
+    @GetMapping("/login/retail/failure")
+    public String retLoginFailure() {
 
+
+        return "retloginfailure";
+    }
+
+    @GetMapping("/login/corporate/failure")
+    public String corpLoginFailure() {
+
+        return "corploginfailure";
+    }
 
 
     @GetMapping(value = {"/retail/{path:(?!static).*$}","/retail/{path:(?!static).*$}/**" })
     public String retailUnknown(Principal principal){
         if (principal!=null){
+
             return "redirect:/retail/dashboard";
 
         }
 
-       throw new UnknownResourceException();
-     //   return "";
+        throw new UnknownResourceException();
+        //   return "";
     }
 
 
-    @GetMapping(value = {"/admin/{path:(?!static).*$}","/admin/{path:(?!static).*$}/**" })
-    public String adminUnknown(Principal principal){
-        if (principal!=null){
+    @GetMapping(value = {"/admin/{path:(?!static).*$}", "/admin/{path:(?!static).*$}/**"})
+    public String adminUnknown(Principal principal) {
+        if (principal != null) {
 
             return "redirect:/admin/dashboard";
 
         }
 
-     throw new UnknownResourceException();
-       // return "";
+        throw new UnknownResourceException();
+        // return "";
     }
 
-    @GetMapping(value = {"/ops/{path:(?!static).*$}","/ops/{path:(?!static).*$}/**" })
-    public String opsUnknown(Principal principal){
-        if (principal!=null){
+    @GetMapping(value = {"/ops/{path:(?!static).*$}", "/ops/{path:(?!static).*$}/**"})
+    public String opsUnknown(Principal principal) {
+        if (principal != null) {
 
             return "redirect:/ops/dashboard";
 
         }
 
         throw new UnknownResourceException();
-       // return "";
+        // return "";
     }
 
     @PostMapping("/login/u/retail")
-    public String userExists(WebRequest webRequest, Model model, RedirectAttributes redirectAttributes){
+    public String userExists(WebRequest webRequest, Model model, RedirectAttributes redirectAttributes) {
         String username = webRequest.getParameter("username");
+
         RetailUser user =  retailUserService.getUserByName(username);
         if (user == null){
-            redirectAttributes.addFlashAttribute("error", messageSource.getMessage("invalid.user", null, locale));
-            return "redirect:/login/retail";
+            return "redirect:/login/retail/failure";
+
         }
         model.addAttribute("username", user.getUserName());
         return "retpage2";
     }
 
     @PostMapping("/login/p/retail")
-    public String step2(WebRequest webRequest, Model model, HttpSession session, RedirectAttributes redirectAttributes){
+    public String step2(WebRequest webRequest, Model model, HttpSession session, RedirectAttributes redirectAttributes) {
         String username = webRequest.getParameter("username");
 //        String phishing = webRequest.getParameter("username");
+
         RetailUser user =  retailUserService.getUserByName(username);
         if (user == null){
-            redirectAttributes.addFlashAttribute("error", messageSource.getMessage("invalid.user", null, locale));
-            return "redirect:/login/retail";
+            return "redirect:/login/retail/failure";
+
         }
         model.addAttribute("username", user.getUserName());
         session.setAttribute("username", user.getUserName());
@@ -182,10 +180,10 @@ public class MainController {
 
 
     @PostMapping("/login/u/corporate")
-    public String userExist(WebRequest webRequest, Model model, RedirectAttributes redirectAttributes){
+    public String userExist(WebRequest webRequest, Model model, RedirectAttributes redirectAttributes) {
         String username = webRequest.getParameter("username");
         String corpKey = webRequest.getParameter("corporateId");
-        CorporateUser user =  corporateUserService.getUserByName(username);
+        CorporateUser user = corporateUserService.getUserByName(username);
         Corporate corporate = corporateService.getCorporateByCustomerId(corpKey);
 //        Map<List<String>, List<String>> mutualAuth = securityService.getMutualAuth(user.getUserName());
 
@@ -201,16 +199,16 @@ public class MainController {
 
 
         redirectAttributes.addFlashAttribute("error", messageSource.getMessage("invalid.user", null, locale));
-        return "redirect:/login/corporate";
+        return "redirect:/login/corporate/failure";
 
     }
 
     @PostMapping("/login/p/corporate")
-    public String corpstep2(WebRequest webRequest, Model model, RedirectAttributes redirectAttributes){
+    public String corpstep2(WebRequest webRequest, Model model, RedirectAttributes redirectAttributes) {
         String username = webRequest.getParameter("username");
         String phishing = webRequest.getParameter("phishing");
         String corpKey = webRequest.getParameter("corpKey");
-        CorporateUser user =  corporateUserService.getUserByName(username);
+        CorporateUser user = corporateUserService.getUserByName(username);
         Corporate corporate = corporateService.getCorporateByCustomerId(corpKey);
         if (corporate != null && user != null && phishing != null) {
             model.addAttribute("username", user.getUserName());
@@ -219,90 +217,82 @@ public class MainController {
         }
 
         redirectAttributes.addFlashAttribute("error", messageSource.getMessage("invalid.user", null, locale));
-        return "redirect:/login/corporate";
+        return "redirect:/login/corporate/failure";
     }
 
 
-
-
-
-
-
-
     @GetMapping("/password/reset/admin")
-    public String getAdminUsername(){
+    public String getAdminUsername() {
         return "/adm/admin/username";
     }
 
     @PostMapping("/password/reset/admin")
-    public String validateAdminUsername(WebRequest request, Model model, Locale locale, HttpSession session){
+    public String validateAdminUsername(WebRequest request, Model model, Locale locale, HttpSession session) {
         String username = request.getParameter("username");
-        if(username==null||"".equals(username)){
-            model.addAttribute("failure",messageSource.getMessage("form.fields.required",null,locale));
+        if (username == null || "".equals(username)) {
+            model.addAttribute("failure", messageSource.getMessage("form.fields.required", null, locale));
             return "/adm/admin/username";
         }
-        if(!adminUserService.userExists(username)){
-            model.addAttribute("failure",messageSource.getMessage("username.invalid",null,locale));
+        if (!adminUserService.userExists(username)) {
+            model.addAttribute("failure", messageSource.getMessage("username.invalid", null, locale));
             return "/adm/admin/username";
         }
-        session.setAttribute("username",username);
-        session.setAttribute("url","/password/admin/reset");
+        session.setAttribute("username", username);
+        session.setAttribute("url", "/password/admin/reset");
         return "redirect:/token/admin";
     }
 
     @GetMapping("/password/admin/reset")
-    public String resetAdminPassword(HttpSession session, RedirectAttributes redirectAttributes){
-        if(session.getAttribute("username")!=null){
-            String username =(String)session.getAttribute("username");
+    public String resetAdminPassword(HttpSession session, RedirectAttributes redirectAttributes) {
+        if (session.getAttribute("username") != null) {
+            String username = (String) session.getAttribute("username");
             try {
                 String message = adminUserService.resetPassword(username);
-                redirectAttributes.addFlashAttribute("message",message);
+                redirectAttributes.addFlashAttribute("message", message);
                 session.removeAttribute("username");
                 session.removeAttribute("url");
                 return "redirect:/login/admin";
-            }
-            catch (PasswordException pe){
-                redirectAttributes.addFlashAttribute("failure",pe.getMessage());
+            } catch (PasswordException pe) {
+                redirectAttributes.addFlashAttribute("failure", pe.getMessage());
             }
         }
         return "redirect:/password/reset/admin";
     }
 
     @GetMapping("/password/reset/ops")
-    public String getOpsUsername(){
+    public String getOpsUsername() {
         return "/ops/username";
     }
 
 
     @PostMapping("/password/reset/ops")
-    public String validateOpsUsername(WebRequest request, Model model, Locale locale, HttpSession session){
+    public String validateOpsUsername(WebRequest request, Model model, Locale locale, HttpSession session) {
         String username = request.getParameter("username");
-        if(username==null||"".equals(username)){
-            model.addAttribute("failure",messageSource.getMessage("form.fields.required",null,locale));
+        if (username == null || "".equals(username)) {
+            model.addAttribute("failure", messageSource.getMessage("form.fields.required", null, locale));
             return "/ops/username";
         }
-        if(!opsUserService.userExists(username)){
-            model.addAttribute("failure",messageSource.getMessage("username.invalid",null,locale));
+        if (!opsUserService.userExists(username)) {
+            model.addAttribute("failure", messageSource.getMessage("username.invalid", null, locale));
             return "/ops/username";
         }
-        session.setAttribute("username",username);
-        session.setAttribute("url","/password/ops/reset");
+        session.setAttribute("username", username);
+        session.setAttribute("url", "/password/ops/reset");
         return "redirect:/token/ops";
     }
 
     @GetMapping("/password/ops/reset")
-    public String resetOpsPassword(HttpSession session, RedirectAttributes redirectAttributes){
-        if(session.getAttribute("username")!=null){
-            String username =(String)session.getAttribute("username");
+    public String resetOpsPassword(HttpSession session, RedirectAttributes redirectAttributes) {
+        if (session.getAttribute("username") != null) {
+            String username = (String) session.getAttribute("username");
             try {
                 String message = opsUserService.resetPassword(username);
-                redirectAttributes.addFlashAttribute("message",message);
+                redirectAttributes.addFlashAttribute("message", message);
                 session.removeAttribute("username");
                 session.removeAttribute("url");
                 return "redirect:/login/admin";
-            }
-            catch (PasswordException pe){
-                redirectAttributes.addFlashAttribute("failure",pe.getMessage());
+            } catch (PasswordException pe) {
+                redirectAttributes.addFlashAttribute("failure", pe.getMessage());
             }
         }
         return "redirect:/password/reset/ops";

@@ -16,27 +16,33 @@ import longbridge.repositories.AuditConfigRepo;
 public class AuditConfigInitializer implements InitializingBean {
 
 
-	@Autowired
-	private AuditConfigRepo configRepo;
-	@Autowired
-	EntityManager entityManager;
+    @Autowired
+    EntityManager entityManager;
+    @Autowired
+    private AuditConfigRepo configRepo;
 
+    @Transactional
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        try {
 
-	@Transactional
-	@Override
-	public void afterPropertiesSet() throws Exception {
-//		entityManager.getEntityManagerFactory().getMetamodel().getEntities().stream()
-//		.filter(i -> !i.getName().endsWith("AUD")).filter(i -> !i.getName().endsWith("Entity"))
-//		.filter(i -> !i.getName().equalsIgnoreCase("AuditConfig")).map(i -> i.getName())
-//		.collect(Collectors.toList()).forEach(e -> {
-//			if (!configRepo.existsByEntityName(e)) {
-//				AuditConfig entity = new AuditConfig();
-//				entity.setEnabled("N");
-//				entity.setEntityName(e);
-//				configRepo.save(entity);
-//			}
-//		});
-	}
+            entityManager.getEntityManagerFactory().getMetamodel().getEntities().stream()
+                    .filter(i -> !i.getName().endsWith("AUD")).filter(i -> !i.getName().endsWith("Entity"))
+                    .filter(i -> !i.getName().equalsIgnoreCase("AuditConfig")).map(i -> i.getName())
+                    .collect(Collectors.toList()).forEach(e -> {
+                if (!configRepo.existsByEntityName(e)) {
+                    AuditConfig entity = new AuditConfig();
+                    entity.setEnabled("N");
+                    entity.setEntityName(e);
+                    configRepo.save(entity);
+                }
+            });
+
+        } catch (Exception e) {
+            System.out.println("@@@ "+e.getMessage());
+            e.printStackTrace();
+        }
+    }
 
 
 }

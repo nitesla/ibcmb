@@ -1,7 +1,9 @@
 package longbridge.services.implementations;
 
-import com.expertedge.entrustplugin.ws.*;
 
+
+import longbridge.config.entrust.CustomHttpClient;
+import longbridge.config.entrust.EntrustServiceResponse;
 import longbridge.exception.EntrustConnectionException;
 import longbridge.exception.InternetBankingSecurityException;
 import longbridge.exception.InternetBankingTransferException;
@@ -10,6 +12,11 @@ import longbridge.security.IpAddressUtils;
 import longbridge.services.IntegrationService;
 import longbridge.services.SecurityService;
 import longbridge.utils.ResultType;
+import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.velocity.Template;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.VelocityEngine;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,12 +25,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.StringWriter;
 import java.math.BigInteger;
 import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 
 /**
@@ -40,24 +46,34 @@ public class SecurityServiceImpl implements SecurityService {
     private String appGroup;
     @Value("${ENTRUST.app.desc}")
     private String appDesc;
-    private EntrustMultiFactorAuthImpl port;
+    ;
 
     private BCryptPasswordEncoder passwordEncoder;
     private ModelMapper modelMapper;
     private IpAddressUtils ipAddressUtils;
     private IntegrationService integrationService;
     private Logger logger = LoggerFactory.getLogger(getClass());
-
+    private VelocityEngine ve;
+    private Template t;
+    private VelocityContext context;
+    private CustomHttpClient httpClient;
 
     @Autowired
-    public SecurityServiceImpl(BCryptPasswordEncoder passwordEncoder, IntegrationService integrationService, EntrustMultiFactorAuthImpl port, ModelMapper modelMapper
-    ,IpAddressUtils ipAddressUtils
+    public SecurityServiceImpl(BCryptPasswordEncoder passwordEncoder, IntegrationService integrationService, ModelMapper modelMapper
+            , IpAddressUtils ipAddressUtils, CustomHttpClient httpClient
     ) {
         this.passwordEncoder = passwordEncoder;
         this.integrationService = integrationService;
-        this.port = port;
+
         this.modelMapper = modelMapper;
-        this.ipAddressUtils=ipAddressUtils;
+        this.ipAddressUtils = ipAddressUtils;
+        Properties props = new Properties();
+        props.put("resource.loader", "class");
+        props.put("class.resource.loader.class", "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
+        this.ve = new VelocityEngine();
+        this.ve.init(props);
+        this.context = new VelocityContext();
+        this.httpClient = httpClient;
     }
 
     @Override
@@ -81,162 +97,184 @@ public class SecurityServiceImpl implements SecurityService {
     @Override
     public boolean performTokenValidation(String username, String tokenString) {
         boolean result = false;
-        TokenAuthDTO tauth = new TokenAuthDTO();
-        tauth.setAppCode(appCode);
-        tauth.setAppDesc(appDesc);
-        tauth.setGroup(appGroup);
-        tauth.setTokenPin(tokenString);
-        tauth.setUserName(username);
-        logger.trace("Token validation parameters {}", tauth);
-        logger.trace("******************BEGIN RESPONSE***********");
 
         try {
-            AuthResponseDTO response = port.performTokenAuth(tauth);
-            if (response != null) {
-                logger.trace("Authentication status: " + response.isAuthenticationSuccessful());
+            StringWriter writer = new StringWriter();
+            this.t = this.ve.getTemplate("entrust/performTokenAuth.vm");
+            this.context.put("appCode", appCode);
+            this.context.put("appDesc", appDesc);
+            this.context.put("appGroup", appGroup);
+            this.context.put("userName", username);
+            this.context.put("token", tokenString);
 
-                logger.trace("Authentication response code: " + response.getRespCode());
 
-                result = response.isAuthenticationSuccessful();
-                return result;
+            this.t.merge(this.context, writer);
+            String payload = writer.toString();
+            EntrustServiceResponse webServiceResponse = httpClient.sendHttpRequest(payload);
+            String responseMessage = webServiceResponse.getResponseMessage();
+            logger.trace("response {}", responseMessage);
+            CharSequence charSequence = "<respCode>1</respCode>";
+            boolean isSuccessful = responseMessage.contains(charSequence);
+            result = isSuccessful;
 
-            }
-            logger.trace("******************END RESPONSE***********");
-        } catch (EntrustConnectionException e) {
+            String respMesg = StringUtils.substringBetween(responseMessage, "  <respMessageCode>", "</respMessageCode>");
+            logger.trace("response is {}", respMesg);
+
+
+            logger.info("******************END RESPONSE***********");
+
+        } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new InternetBankingSecurityException(e.getMessage(), e);
 
         }
         return result;
+
+
     }
 
     @Override
     public boolean performOtpValidation(String username, String otp) {
         boolean result = false;
-        OtpAuthDTO tauth = new OtpAuthDTO();
-        tauth.setAppCode(appCode);
-        tauth.setAppDesc(appDesc);
-        tauth.setGroup(appGroup);
-        tauth.setOtpResponse(otp);
-        tauth.setUserName(username);
-        logger.trace("OTP validation parameters {}", tauth);
-        logger.trace("******************BEGIN RESPONSE***********");
+
         try {
-            AuthResponseDTO response = port.performOTPAuthentication(tauth);
-            if (response != null) {
-                logger.trace("Authentication status: " + response.isAuthenticationSuccessful());
-                logger.trace("Authentication response code: " + response.getRespCode());
-                logger.trace("Authentication Message: " + response.getRespMessage());
+            StringWriter writer = new StringWriter();
+            this.t = this.ve.getTemplate("entrust/performOTPAuthentication.vm");
+            this.context.put("appCode", appCode);
+            this.context.put("appDesc", appDesc);
+            this.context.put("otp", otp);
+            this.context.put("appGroup", appGroup);
+            this.context.put("userName", username);
 
-                result = response.isAuthenticationSuccessful();
+            this.t.merge(this.context, writer);
+            String payload = writer.toString();
+            EntrustServiceResponse webServiceResponse = httpClient.sendHttpRequest(payload);
+            String responseMessage = webServiceResponse.getResponseMessage();
+            logger.trace("response {}", responseMessage);
+            CharSequence charSequence = "<respCode>1</respCode>";
+            boolean isSuccessful = responseMessage.contains(charSequence);
+            result = isSuccessful;
+
+            String respMesg = StringUtils.substringBetween(responseMessage, "  <respMessageCode>", "</respMessageCode>");
+
+            logger.trace("response is {}", respMesg);
 
 
-                return result;
-            }
-            logger.trace("******************END RESPONSE***********");
+            logger.info("******************END RESPONSE***********");
 
-
-        } catch (EntrustConnectionException e) {
+        } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new InternetBankingSecurityException(e.getMessage(), e);
 
         }
         return result;
+
+
     }
 
     @Override
     public boolean synchronizeToken(String username, String sNo, String tokenResp1, String tokenResp2) {
-
         boolean result = false;
-        TokenSynDTO sendDTO = new TokenSynDTO();
-        sendDTO.setAppCode(appCode);
-        sendDTO.setAppDesc(appDesc);
-        sendDTO.setGroup(appGroup);
-        sendDTO.setUserName(username);
-        sendDTO.setSerialNumber(sNo);
-        sendDTO.setTokenResponse1(tokenResp1);
-        sendDTO.setTokenResponse2(tokenResp2);
-        logger.trace("******************BEGIN RESPONSE***********");
+
         try {
-            AdminResponseDTO response = port.performTokenSync(sendDTO);
-            if (response != null) {
-                logger.trace(" Synchronize status: " + response.isAdminSuccessful());
-                logger.trace("Synchronize response code: " + response.getRespCode());
-                logger.trace("Synchronize response message: " + response.getRespMessage());
-
-                result = response.isAdminSuccessful();
-                return result;
-            }
-
-            logger.trace("******************END RESPONSE***********");
+            StringWriter writer = new StringWriter();
+            this.t = this.ve.getTemplate("entrust/performTokenSync.vm");
+            this.context.put("appCode", appCode);
+            this.context.put("appDesc", appDesc);
+            this.context.put("token1", tokenResp1);
+            this.context.put("token2", tokenResp2);
+            this.context.put("appGroup", appGroup);
+            this.context.put("userName", username);
+            this.context.put("sn", sNo);
 
 
-        } catch (EntrustConnectionException e) {
+            this.t.merge(this.context, writer);
+            String payload = writer.toString();
+            EntrustServiceResponse webServiceResponse = httpClient.sendHttpRequest(payload);
+            String responseMessage = webServiceResponse.getResponseMessage();
+            logger.trace("response {}", responseMessage);
+            CharSequence charSequence = "<respCode>1</respCode>";
+            boolean isSuccessful = responseMessage.contains(charSequence);
+            result = isSuccessful;
+
+            String respMesg = StringUtils.substringBetween(responseMessage, "  <respMessageCode>", "</respMessageCode>");
+
+            logger.trace("response is {}", respMesg);
+
+
+            logger.info("******************END RESPONSE***********");
+
+        } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new InternetBankingSecurityException(e.getMessage(), e);
 
         }
         return result;
+
 
     }
 
     @Override
     public boolean sendOtp(String username) {
-        boolean result = false;
-        OtpCreateSendDTO sendDTO = new OtpCreateSendDTO();
-        sendDTO.setAppCode(appCode);
-        sendDTO.setAppDesc(appDesc);
-        sendDTO.setGroup(appGroup);
-        sendDTO.setUserName(username);
-        logger.trace("Perform OTP parameters {}", sendDTO);
-        logger.trace("******************BEGIN RESPONSE***********");
+        boolean result;
+
         try {
-            AuthResponseDTO response = port.performCreateSendOTP(sendDTO);
-            if (response != null) {
-                logger.trace(" OTP Authentication status: " + response.isAuthenticationSuccessful());
-                logger.trace("Authentication response code: " + response.getRespCode());
+            StringWriter writer = new StringWriter();
+            this.t = this.ve.getTemplate("entrust/performCreateSendOTP.vm");
+            this.context.put("appCode", appCode);
+            this.context.put("appDesc", appDesc);
+            this.context.put("appGroup", appGroup);
+            this.context.put("userName", username);
+            this.t.merge(this.context, writer);
+            String payload = writer.toString();
+            EntrustServiceResponse webServiceResponse = httpClient.sendHttpRequest(payload);
+            String responseMessage = webServiceResponse.getResponseMessage();
+            logger.trace("response {}", responseMessage);
+            CharSequence charSequence = "<respCode>1</respCode>";
+            boolean isSuccessful = responseMessage.contains(charSequence);
+            result = isSuccessful;
+            String respMesg = StringUtils.substringBetween(responseMessage, "  <respMessageCode>", "</respMessageCode>");
+            logger.trace("response code is {}", respMesg);
 
-                result = response.isAuthenticationSuccessful();
-                return result;
-            }
 
-            logger.trace("******************END RESPONSE***********");
+            logger.info("******************END RESPONSE***********");
 
-
-        } catch (EntrustConnectionException e) {
+        } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new InternetBankingSecurityException(e.getMessage(), e);
 
         }
         return result;
+
     }
 
     @Override
     public boolean createEntrustUser(String username, String fullName, boolean enableOtp) {
         boolean result = false;
-        UserAdminDTO user = new UserAdminDTO();
-        user.setAppCode(appCode);
-        user.setAppDesc(appDesc);
-        user.setGroup(appGroup);
-        user.setFullname(fullName);
-        user.setEnableOTP(enableOtp);
-        user.setUserName(username);
-        logger.info("User creation parameters {}", user);
-        logger.info("******************BEGIN RESPONSE***********");
+
         try {
-            AdminResponseDTO response = port.performCreateEntrustUser(user);
-            if (response != null) {
-                logger.info("Creation status: " + response.isAdminSuccessful());
-                logger.info(" Creation response code: " + response.getRespCode());
-                logger.info(" Creation response message: " + response.getRespMessage());
+            StringWriter writer = new StringWriter();
+            this.t = this.ve.getTemplate("entrust/performCreateEntrustUser.vm");
+            this.context.put("appCode", appCode);
+            this.context.put("appDesc", appDesc);
+            this.context.put("otp", enableOtp);
+            this.context.put("fullname", fullName);
+            this.context.put("appGroup", appGroup);
+            this.context.put("userName", username);
+            this.t.merge(this.context, writer);
+            String payload = writer.toString();
+            EntrustServiceResponse webServiceResponse = httpClient.sendHttpRequest(payload);
+            String responseMessage = webServiceResponse.getResponseMessage();
+            CharSequence charSequence = "<respCode>1</respCode>";
+            boolean isSuccessful = responseMessage.contains(charSequence);
+            result = isSuccessful;
+            String resp = StringUtils.substringBetween(responseMessage, "<respCode>", "</respCode>");
+            System.out.println("Response from webservice: " + resp + " Successful status is : " + isSuccessful);
 
-                result = response.isAdminSuccessful();
-                return result;
 
-            }
             logger.info("******************END RESPONSE***********");
 
-        } catch (EntrustConnectionException e) {
+        } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new InternetBankingSecurityException(e.getMessage(), e);
 
@@ -245,66 +283,71 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
-    public void deleteEntrustUser(String username, String fullName) {
-        UserDelAdminDTO user = new UserDelAdminDTO();
-        user.setAppCode(appCode);
-        user.setAppDesc(appDesc);
-        user.setGroup(appGroup);
-        user.setUserName(username);
-        logger.trace("User Delete parameters {}", user);
-        logger.trace("******************BEGIN RESPONSE***********");
+    public void deleteEntrustUser(String username) {
+
+
         try {
-            AdminResponseDTO response = port.performDeleteEntrustUser(user);
-            if (response != null) {
-                logger.trace("Delete status: " + response.isAdminSuccessful());
-                logger.trace(" Delete response code: " + response.getRespCode());
-                logger.trace(" Delete response message: " + response.getRespMessage());
-                if (!response.isAdminSuccessful()) {
+            StringWriter writer = new StringWriter();
+            this.t = this.ve.getTemplate("entrust/performDeleteEntrustUser.vm");
+            this.context.put("appCode", appCode);
+            this.context.put("appDesc", appDesc);
+            this.context.put("userName", username);
+            this.context.put("appGroup", appGroup);
+            this.t.merge(this.context, writer);
+            String payload = writer.toString();
+            EntrustServiceResponse webServiceResponse = httpClient.sendHttpRequest(payload);
+            String responseMessage = webServiceResponse.getResponseMessage();
+            logger.trace("response {}", responseMessage);
+            CharSequence charSequence = "<respCode>1</respCode>";
+            boolean isSuccessful = responseMessage.contains(charSequence);
 
-                    throw new InternetBankingSecurityException("Unable to delete user");
 
-                }
+            String respMesg = StringUtils.substringBetween(responseMessage, "  <respMessageCode>", "</respMessageCode>");
 
-            } else {
-                throw new InternetBankingSecurityException();
-            }
-            logger.trace("******************END RESPONSE***********");
 
-        } catch (EntrustConnectionException e) {
+            logger.trace("response is {}", respMesg);
+            if (!isSuccessful) throw new InternetBankingSecurityException(respMesg);
+
+            logger.info("******************END RESPONSE***********");
+
+        } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new InternetBankingSecurityException(e.getMessage(), e);
 
         }
+
 
     }
 
     @Override
     public boolean assignToken(String username, String serialNumber) {
         boolean result = false;
-        TokenAdminDTO user = new TokenAdminDTO();
-        user.setAppCode(appCode);
-        user.setAppDesc(appDesc);
-        user.setGroup(appGroup);
-        user.setSerialNumber(serialNumber);
-        user.setUserName(username);
-        logger.trace("Token assign parameters {}", user);
-        logger.trace("******************BEGIN RESPONSE***********");
+
         try {
-            AdminResponseDTO response = port.performAssignToken(user);
-            if (response != null) {
-                logger.trace("Creation status: " + response.isAdminSuccessful());
-                logger.trace(" Creation response code: " + response.getRespCode());
-                logger.trace(" Creation response message: " + response.getRespCode());
+            StringWriter writer = new StringWriter();
+            this.t = this.ve.getTemplate("entrust/performAssignToken.vm");
+            this.context.put("appCode", appCode);
+            this.context.put("appDesc", appDesc);
+            this.context.put("sn", serialNumber);
+            this.context.put("appGroup", appGroup);
+            this.context.put("userName", username);
+            this.t.merge(this.context, writer);
+            String payload = writer.toString();
+            EntrustServiceResponse webServiceResponse = httpClient.sendHttpRequest(payload);
+            String responseMessage = webServiceResponse.getResponseMessage();
+            logger.trace("response {}", responseMessage);
+            CharSequence charSequence = "<respCode>1</respCode>";
+            boolean isSuccessful = responseMessage.contains(charSequence);
+            result = isSuccessful;
 
-                result = response.isAdminSuccessful();
-                return result;
-            }
+            String respMesg = StringUtils.substringBetween(responseMessage, "  <respMessageCode>", "</respMessageCode>");
+            String resp = StringUtils.substringBetween(responseMessage, "<respCode>", "</respCode>");
+            logger.trace("response is {}", respMesg);
 
 
-            logger.trace("******************END RESPONSE***********");
+            logger.info("******************END RESPONSE***********");
 
-
-        } catch (EntrustConnectionException e) {
+        } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new InternetBankingSecurityException(e.getMessage(), e);
 
@@ -314,134 +357,90 @@ public class SecurityServiceImpl implements SecurityService {
 
     @Override
     public boolean activateToken(String username, String serialNumber) {
+
         boolean result = false;
-        TokenAdminDTO user = new TokenAdminDTO();
-        user.setAppCode(appCode);
-        user.setAppDesc(appDesc);
-        user.setGroup(appGroup);
-        user.setSerialNumber(serialNumber);
-        user.setUserName(username);
-        logger.trace("Token activation parameters {}", user);
-        logger.trace("******************BEGIN RESPONSE***********");
-        AdminResponseDTO response = port.performActivateToken(user);
+
         try {
-            if (response != null) {
-                logger.trace("Activation status: " + response.isAdminSuccessful());
-                logger.trace(" Activation response code: " + response.getRespCode());
+            StringWriter writer = new StringWriter();
+            this.t = this.ve.getTemplate("entrust/performActivateToken.vm");
+            this.context.put("appCode", appCode);
+            this.context.put("appDesc", appDesc);
+            this.context.put("sn", serialNumber);
+            this.context.put("appGroup", appGroup);
+            this.context.put("userName", username);
 
-                result = response.isAdminSuccessful();
-                return result;
-            }
+            this.t.merge(this.context, writer);
+            String payload = writer.toString();
+            EntrustServiceResponse webServiceResponse = httpClient.sendHttpRequest(payload);
+            String responseMessage = webServiceResponse.getResponseMessage();
+            logger.trace("response {}", responseMessage);
+            CharSequence charSequence = "<respCode>1</respCode>";
+            boolean isSuccessful = responseMessage.contains(charSequence);
+            result = isSuccessful;
+
+            String respMesg = StringUtils.substringBetween(responseMessage, "  <respMessageCode>", "</respMessageCode>");
+            String resp = StringUtils.substringBetween(responseMessage, "<respCode>", "</respCode>");
+            logger.trace("response is {}", respMesg);
 
 
-            logger.trace("******************END RESPONSE***********");
+            logger.info("******************END RESPONSE***********");
 
-
-        } catch (EntrustConnectionException e) {
+        } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new InternetBankingSecurityException(e.getMessage(), e);
 
         }
         return result;
+
+
     }
 
     @Override
     public boolean deActivateToken(String username, String serialNumber) {
+
         boolean result = false;
-        TokenAdminDTO user = new TokenAdminDTO();
-        user.setAppCode(appCode);
-        user.setAppDesc(appDesc);
-        user.setGroup(appGroup);
-        user.setSerialNumber(serialNumber);
-        user.setUserName(username);
-        logger.trace("Token de-activation parameters {}", user);
-        logger.trace("******************BEGIN RESPONSE***********");
+
         try {
-            AdminResponseDTO response = port.performDeactivateToken(user);
-            if (response != null) {
-                logger.trace("deactivate status: " + response.isAdminSuccessful());
-                logger.trace(" deactivate response code: " + response.getRespCode());
+            StringWriter writer = new StringWriter();
+            this.t = this.ve.getTemplate("entrust/performDeactivateToken.vm");
+            this.context.put("appCode", appCode);
+            this.context.put("appDesc", appDesc);
+            this.context.put("sn", serialNumber);
+            this.context.put("appGroup", appGroup);
+            this.context.put("userName", username);
+            this.t.merge(this.context, writer);
+            String payload = writer.toString();
+            EntrustServiceResponse webServiceResponse = httpClient.sendHttpRequest(payload);
+            String responseMessage = webServiceResponse.getResponseMessage();
+            logger.trace("response {}", responseMessage);
+            CharSequence charSequence = "<respCode>1</respCode>";
+            boolean isSuccessful = responseMessage.contains(charSequence);
+            result = isSuccessful;
 
-                result = response.isAdminSuccessful();
-                return result;
-            }
+            String respMesg = StringUtils.substringBetween(responseMessage, "  <respMessageCode>", "</respMessageCode>");
+            logger.trace("response is {}", respMesg);
 
 
-            logger.trace("******************END RESPONSE***********");
+            logger.info("******************END RESPONSE***********");
 
-
-        } catch (EntrustConnectionException e) {
+        } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new InternetBankingSecurityException(e.getMessage(), e);
 
         }
         return result;
+
+
     }
 
     @Override
     public void setUserQA(String username, List<String> questions, List<String> answer) {
-        QaSetDTO user = new QaSetDTO();
-        user.setAppCode(appCode);
-        user.setAppDesc(appDesc);
-        user.setGroup(appGroup);
-        user.setAnswers(answer);
-        user.setQuestions(questions);
-        user.setUserName(username);
 
-        logger.trace("Token de-activation parameters {}", user);
-        logger.trace("******************BEGIN RESPONSE***********");
-
-        try {
-            AdminResponseDTO response = port.performSetQA(user);
-
-            if (response != null) {
-                logger.trace("Creation status: " + response.isAdminSuccessful());
-                logger.trace(" Creation response code: " + response.getRespCode());
-                logger.trace(" Creation response Message: " + response.getRespMessage());
-                if (!response.isAdminSuccessful()) {
-                    throw new InternetBankingSecurityException(response.getRespMessage());
-                }
-
-            }
-            logger.trace("******************END RESPONSE***********");
-
-
-        } catch (EntrustConnectionException e) {
-            logger.error(e.getMessage(), e);
-            throw new InternetBankingSecurityException(e.getMessage(), e);
-
-        }
     }
 
     @Override
     public Map<List<String>, List<String>> getUserQA(String username) {
         Map<List<String>, List<String>> list = new HashMap<>();
-
-        QaGetDTO user = new QaGetDTO();
-        user.setAppCode(appCode);
-        user.setAppDesc(appDesc);
-        user.setGroup(appGroup);
-        user.setUserName(username);
-
-        logger.trace("QA parameters {}", user);
-        logger.trace("******************BEGIN RESPONSE***********");
-        QaGetResponseDTO response = port.performGetQA(user);
-
-        if (response != null) {
-            logger.trace("QA status: " + response.isAdminSuccessful());
-            logger.trace(" QA response code: " + response.getRespCode());
-            logger.trace(" QA response Message: " + response.getRespMessage());
-            if (!response.isAdminSuccessful()) {
-                throw new InternetBankingSecurityException(response.getRespMessage());
-            }
-
-        }
-        logger.trace("******************END RESPONSE***********");
-
-        List<String> questions = response.getQuestions();
-        List<String> answers = response.getAnswers();
-
-        list.put(questions, answers);
 
 
         return list;
@@ -453,31 +452,40 @@ public class SecurityServiceImpl implements SecurityService {
     public Map<List<String>, List<String>> getMutualAuth(String username) throws InternetBankingTransferException {
         Map<List<String>, List<String>> list = new HashMap<>();
 
-        MauthDTO user = new MauthDTO();
-        user.setAppCode(appCode);
-        user.setAppDesc(appDesc);
-        user.setGroup(appGroup);
-        user.setUserName(username);
+        try {
+            StringWriter writer = new StringWriter();
+            this.t = this.ve.getTemplate("entrust/performSetMutualAuthX.vm");
+            this.context.put("appCode", appCode);
+            this.context.put("appDesc", appDesc);
+            this.context.put("appGroup", appGroup);
+            this.context.put("userName", username);
+            this.t.merge(this.context, writer);
+            String payload = writer.toString();
+            EntrustServiceResponse webServiceResponse = httpClient.sendHttpRequest(payload);
+            String responseMessage = webServiceResponse.getResponseMessage();
+            logger.trace("response {}", responseMessage);
+            CharSequence charSequence = "<respCode>1</respCode>";
+            boolean isSuccessful = responseMessage.contains(charSequence);
+            String msg = StringUtils.substringBetween(responseMessage, "<respMessageCode>", "</respMessageCode>");
 
-        logger.trace("QA parameters {}", user);
-        logger.trace("******************BEGIN RESPONSE***********");
-        ImageCaptionResponseDTO response = port.performMutualAuth(user);
+            logger.trace("response message code : {}", msg);
+            if (!isSuccessful) throw new InternetBankingSecurityException(msg);
 
-        if (response != null) {
-            logger.trace("MUTUAL AUTH status: " + response.isSuccessful());
-            logger.trace("MUTUAL AUTH response code: " + response.getRespCode());
-            logger.trace(" MUTUAL AUTH response Message: " + response.getRespMessage());
-            if (!response.isSuccessful()) {
-                throw new InternetBankingSecurityException(response.getRespMessage());
-            }
+            String[] captions = StringUtils.substringsBetween(responseMessage, "  <captionSecret>", "</captionSecret>");
+            String[] images = StringUtils.substringsBetween(responseMessage, "  <imageSecret>", "</imageSecret>");
+            List<String> captionSecret = Arrays.asList(captions);
+            List<String> imageSecret = Arrays.asList(images);
+
+            list.put(captionSecret, imageSecret);
+
+
+            logger.info("******************END RESPONSE***********");
+
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new InternetBankingSecurityException(e.getMessage(), e);
 
         }
-        logger.trace("******************END RESPONSE***********");
-
-        List<String> captionSecret = response.getCaptionSecret();
-        List<String> imageSecret = response.getImageSecret();
-
-        list.put(captionSecret, imageSecret);
 
 
         return list;
@@ -486,44 +494,47 @@ public class SecurityServiceImpl implements SecurityService {
 
     @Override
     public void setMutualAuth(String username, List<String> mutualCaption, List<String> mutualImage) {
-        SetMutualSecretDTO secretDTO = new SetMutualSecretDTO();
-        secretDTO.setAppCode(appCode);
-        secretDTO.setAppDesc(appDesc);
-        secretDTO.setGroup(appGroup);
-        secretDTO.setUserName(username);
-        secretDTO.setIp(ipAddressUtils.getClientIP());
-        secretDTO.setMutualCaption(mutualCaption);
-        secretDTO.setMutualImage(mutualImage);
-        AuthMutResponseDTO  response = port.performSetMutualAuth2(secretDTO);
-        if (response!=null){
-         if (!response.isAuthenticationSuccessful()) throw new InternetBankingSecurityException(response.getRespMessage());
 
-        }else{
-            throw new InternetBankingSecurityException();
+
+    }
+
+    @Override
+    public void setMutualAuthX(String username, String mutualCaption, String mutualImagePath) {
+
+        try {
+            StringWriter writer = new StringWriter();
+            this.t = this.ve.getTemplate("entrust/performSetMutualAuthX.vm");
+            this.context.put("appCode", appCode);
+            this.context.put("appDesc", appDesc);
+            this.context.put("appGroup", appGroup);
+            this.context.put("caption", mutualCaption);
+            this.context.put("image", mutualImagePath);
+            this.t.merge(this.context, writer);
+            String payload = writer.toString();
+            EntrustServiceResponse webServiceResponse = httpClient.sendHttpRequest(payload);
+            String responseMessage = webServiceResponse.getResponseMessage();
+            logger.trace("response {}", responseMessage);
+            CharSequence charSequence = "<respCode>1</respCode>";
+            boolean isSuccessful = responseMessage.contains(charSequence);
+            String msg = StringUtils.substringBetween(responseMessage, "<respMessageCode>", "</respMessageCode>");
+
+            logger.trace("response message code : {}", msg);
+            if (!isSuccessful) throw new InternetBankingSecurityException(msg);
+
+
+            logger.info("******************END RESPONSE***********");
+
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new InternetBankingSecurityException(e.getMessage(), e);
+
         }
+
 
     }
 
     @Override
     public void setMutualAuth(String username, List<String> mutualCaption, List<String> mutualImage, String token) {
-        SetMutualSecretRespDTO secretDTO = new SetMutualSecretRespDTO();
-        secretDTO.setAppCode(appCode);
-        secretDTO.setAppDesc(appDesc);
-        secretDTO.setGroup(appGroup);
-        secretDTO.setUserName(username);
-        secretDTO.setResponse(token);
-        secretDTO.setMutualCaption(mutualCaption);
-        secretDTO.setMutualImage(mutualImage);
-        AuthMutResponseDTO  response = port.performSetMutualAuth(secretDTO);
-        if (response!=null){
-            if (!response.isAuthenticationSuccessful()) throw new InternetBankingSecurityException(response.getRespMessage());
-
-        }else{
-            throw new InternetBankingSecurityException();
-        }
-
-
-
 
 
     }
@@ -531,83 +542,156 @@ public class SecurityServiceImpl implements SecurityService {
     @Override
     public String getTokenSerials(String username) {
         String result = "";
-        TokenSerialDTO user = new TokenSerialDTO();
-        user.setAppCode(appCode);
-        user.setAppDesc(appDesc);
-        user.setGroup(appGroup);
 
-        user.setUserName(username);
-        logger.trace("User  parameters {}", user);
-        logger.trace("******************BEGIN RESPONSE***********");
-        TokenSerialResponseDTO response = port.performGetTokenSerial(user);
-        if (response != null) {
-            logger.trace("status: " + response.isAuthenticationSuccessful());
-            logger.trace("  response code: " + response.getRespCode());
-            logger.trace("  response message: " + response.getRespMessage());
+        try {
+            StringWriter writer = new StringWriter();
+            this.t = this.ve.getTemplate("entrust/performGetTokenSerial.vm");
+            this.context.put("appCode", appCode);
+            this.context.put("appDesc", appDesc);
+            this.context.put("appGroup", appGroup);
+            this.context.put("userName", username);
 
-            result = response.getTokenSerials();
-            return result;
+
+            this.t.merge(this.context, writer);
+            String payload = writer.toString();
+            EntrustServiceResponse webServiceResponse = httpClient.sendHttpRequest(payload);
+            String responseMessage = webServiceResponse.getResponseMessage();
+            logger.trace("response {}", responseMessage);
+            CharSequence charSequence = "<respCode>1</respCode>";
+            boolean isSuccessful = responseMessage.contains(charSequence);
+
+
+            String respMesg = StringUtils.substringBetween(responseMessage, "  <respMessageCode>", "</respMessageCode>");
+
+            logger.trace("response is {}", respMesg);
+            if (!isSuccessful) throw new InternetBankingSecurityException(respMesg);
+
+            result = StringUtils.substringBetween(responseMessage, "  <tokenSerials>", "</tokenSerials>");
+            logger.info("******************END RESPONSE***********");
+
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new InternetBankingSecurityException(e.getMessage(), e);
 
         }
-        logger.trace("******************END RESPONSE***********");
-
-
-        throw new InternetBankingSecurityException();
+        return result;
     }
 
     @Override
     public boolean unLockUser(String username) {
-        boolean result = false;
-        UserUnLockDTO user = new UserUnLockDTO();
-        user.setAppCode(appCode);
-        user.setAppDesc(appDesc);
-        user.setGroup(appGroup);
-        user.setUserName(username);
-        logger.trace("User Unlock parameters {}", user);
-        logger.trace("******************BEGIN RESPONSE***********");
-        AdminResponseDTO response = port.performUnLockUser(user);
-        if (response != null) {
-            logger.trace("Unlock status: " + response.isAdminSuccessful());
-            logger.trace(" Unlock response code: " + response.getRespCode());
-            logger.trace(" Unlock response message: " + response.getRespMessage());
 
-            result = response.isAdminSuccessful();
-            return result;
+        boolean result = false;
+
+        try {
+            StringWriter writer = new StringWriter();
+            this.t = this.ve.getTemplate("entrust/performUnLockUser.vm");
+            this.context.put("appCode", appCode);
+            this.context.put("appDesc", appDesc);
+            this.context.put("appGroup", appGroup);
+            this.context.put("userName", username);
+            this.t.merge(this.context, writer);
+            String payload = writer.toString();
+            EntrustServiceResponse webServiceResponse = httpClient.sendHttpRequest(payload);
+            String responseMessage = webServiceResponse.getResponseMessage();
+            logger.trace("response {}", responseMessage);
+            CharSequence charSequence = "<respCode>1</respCode>";
+            boolean isSuccessful = responseMessage.contains(charSequence);
+            result = isSuccessful;
+
+            String respMesg = StringUtils.substringBetween(responseMessage, "  <respMessageCode>", "</respMessageCode>");
+            logger.trace("response is {}", respMesg);
+
+
+            logger.info("******************END RESPONSE***********");
+
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new InternetBankingSecurityException(e.getMessage(), e);
 
         }
-        logger.trace("******************END RESPONSE***********");
+        return result;
 
 
-        throw new InternetBankingSecurityException();
     }
 
     @Override
     public boolean updateUser(String username, String fullName, boolean enableOtp) {
         boolean result = false;
-        UserAdminDTO user = new UserAdminDTO();
-        user.setAppCode(appCode);
-        user.setAppDesc(appDesc);
-        user.setFullname(fullName);
-        user.setGroup(appGroup);
 
-        user.setEnableOTP(enableOtp);
-        user.setUserName(username);
-        logger.trace("User Update parameters {}", user);
-        logger.trace("******************BEGIN RESPONSE***********");
-        AdminResponseDTO response = port.performCreateEntrustUser(user);
-        if (response != null) {
-            logger.trace("Update status: " + response.isAdminSuccessful());
-            logger.trace(" Update response code: " + response.getRespCode());
-            logger.trace(" Update response message: " + response.getRespMessage());
+        try {
+            StringWriter writer = new StringWriter();
+            this.t = this.ve.getTemplate("entrust/performUpdateEntrustUser.vm");
+            this.context.put("appCode", appCode);
+            this.context.put("appDesc", appDesc);
+            this.context.put("fullName", fullName);
+            this.context.put("otp", enableOtp);
+            this.context.put("appGroup", appGroup);
+            this.context.put("userName", username);
+            this.t.merge(this.context, writer);
+            String payload = writer.toString();
+            EntrustServiceResponse webServiceResponse = httpClient.sendHttpRequest(payload);
+            String responseMessage = webServiceResponse.getResponseMessage();
+            logger.trace("response {}", responseMessage);
+            CharSequence charSequence = "<respCode>1</respCode>";
+            boolean isSuccessful = responseMessage.contains(charSequence);
+            result = isSuccessful;
 
-            result = response.isAdminSuccessful();
-            return result;
+            String respMesg = StringUtils.substringBetween(responseMessage, "  <respMessageCode>", "</respMessageCode>");
+            logger.trace("response is {}", respMesg);
+
+
+            logger.info("******************END RESPONSE***********");
+
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new InternetBankingSecurityException(e.getMessage(), e);
 
         }
-        logger.trace("******************END RESPONSE***********");
+        return result;
 
 
-        throw new InternetBankingSecurityException();
+    }
+
+    @Override
+    public boolean addUserContacts(String email, String phone, boolean phoneDefault, String userName) {
+        boolean result = false;
+
+        try {
+            StringWriter writer = new StringWriter();
+            this.t = this.ve.getTemplate("entrust/performAddContactDetail.vm");
+            this.context.put("appCode", appCode);
+            this.context.put("appDesc", appDesc);
+            this.context.put("phoneDefault", phoneDefault);
+            this.context.put("email", email);
+            this.context.put("appGroup", appGroup);
+            this.context.put("userName", userName);
+            this.context.put("emailDevLabel", "CmbEmailOtp");
+            this.context.put("emailDefault", false);
+            this.context.put("PhoneDevLabel", "Vanso");
+            this.context.put("phone", phone);
+
+            this.t.merge(this.context, writer);
+            String payload = writer.toString();
+            EntrustServiceResponse webServiceResponse = httpClient.sendHttpRequest(payload);
+            String responseMessage = webServiceResponse.getResponseMessage();
+            logger.trace("response {}", responseMessage);
+            CharSequence charSequence = "<respCode>1</respCode>";
+            boolean isSuccessful = responseMessage.contains(charSequence);
+            result = isSuccessful;
+
+            String respMesg = StringUtils.substringBetween(responseMessage, "  <respMessageCode>", "</respMessageCode>");
+            String resp = StringUtils.substringBetween(responseMessage, "<respCode>", "</respCode>");
+            logger.trace("response is {}", respMesg);
+
+
+            logger.info("******************END RESPONSE***********");
+
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new InternetBankingSecurityException(e.getMessage(), e);
+
+        }
+        return result;
     }
 }
 

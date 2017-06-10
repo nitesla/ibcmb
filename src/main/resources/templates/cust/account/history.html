@@ -11,7 +11,7 @@
     <div class="container">
         <div class="row">
             <div class="col-md-4 col-sm-4">
-                <h5 class="page_header"> Account Statement/Transaction History</h5>
+                <h5 class="page_header"> Transaction History</h5>
             </div>
         </div>
         <div class="row">
@@ -21,20 +21,16 @@
                         <table class="table">
                             <thead>
                             <tr>
-                                <th>Account Name</th>
-                                <th>Account Number</th>
-
+                                <th>Transaction Narration </th>
+                                <th>Posting Date </th>
+                                <th>Value Date</th>
+                                <th>Debit/ Credit </th>
+                                <th>Transaction Reference ID</th>
+                                <th>Account Balance</th>
                             </tr>
                             </thead>
                             <tbody>
-                            <tr th:each="acct : ${accounts}">
-                                <td th:text="${acct.accountName}"></td>
-                                <td th:text="${acct.accountNumber}"></td>
-                                <td><a th:href="@{'/retail/account/' + ${acct.id} + '/primary'}" th:if="${acct.primaryFlag == 'N'}">Make Primary</a>
-                                    <span th:if="${acct.primaryFlag == 'Y'}" th:text="*{'Primary'}">Primary</span></td>
-                                <td><a th:href="@{'/retail/account/' + ${acct.id} + '/hide'}" th:if="${acct.hiddenFlag == 'N'}">Hide</a>
-                                    <a th:href="@{'/retail/account/' + ${acct.id} + '/unhide'}" th:if="${acct.hiddenFlag == 'Y'}">Unhide</a></td>
-                            </tr>
+
                             </tbody>
                         </table>
                     </div>

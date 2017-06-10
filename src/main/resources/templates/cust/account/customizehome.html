@@ -21,7 +21,7 @@
                         <table class="table">
                             <thead>
                             <tr>
-                                <th>Account Name</th>
+                                <th>ALIAS</th>
                                 <th>Account Number</th>
                                 <th>Currency</th>
                                 <th>Account Type</th>
@@ -33,7 +33,7 @@
                                 <td th:text="${acct.accountName}"></td>
                                 <td th:text="${acct.accountNumber}"></td>
                                 <td th:text="${acct.currencyCode}"></td>
-                                <td th:text="${acct.schemeCode}"></td>
+                                <td th:text="${acct.schemeType}"></td>
                                 <td><a th:href="@{'/retail/account/' + ${acct.id} + '/customize'}">Customise</a></td>
                             </tr>
                             </tbody>

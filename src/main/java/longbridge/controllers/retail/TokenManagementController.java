@@ -6,6 +6,7 @@ import longbridge.exception.InternetBankingSecurityException;
 import longbridge.forms.CustSyncTokenForm;
 import longbridge.forms.TokenProp;
 import longbridge.services.SecurityService;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.security.Principal;
 import java.security.PublicKey;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -73,12 +76,24 @@ public class TokenManagementController {
     }
 
     @GetMapping("/sync")
-    public String syncToken(CustSyncTokenForm custSyncTokenForm, Principal principal, Model model){
-        return "cust/token/sync";
-    }
+    public String syncToken(Principal principal, Model model){
+        try {
+            String serials = securityService.getTokenSerials(principal.getName());
+            if (serials != null && !"".equals(serials)) {
+                List<String> serialNos = Arrays.asList(StringUtils.split(serials, ","));
+                model.addAttribute("serials", serialNos);
+            }
+        }
+        catch (InternetBankingSecurityException ibe){
+            logger.error("Failed to load corp user {} token serials", principal.getName(),ibe);
+            model.addAttribute("failure", "Failed to load token serial numbers");
+        }
+
+        model.addAttribute("tokenSync", new CustSyncTokenForm());
+        return "cust/token/sync";    }
 
     @PostMapping("/sync")
-    public String synchroniseToken(@Valid CustSyncTokenForm custSyncTokenForm, BindingResult result, Principal principal, RedirectAttributes redirectAttributes){
+    public String synchroniseToken(@ModelAttribute("tokenSync") @Valid CustSyncTokenForm custSyncTokenForm, BindingResult result, Principal principal, RedirectAttributes redirectAttributes){
         if (result.hasErrors()){
             return "cust/token/sync";
         }
@@ -89,16 +104,32 @@ public class TokenManagementController {
                 redirectAttributes.addFlashAttribute("message", messageSource.getMessage("token.sync.success", null, locale));
                 return "redirect:/retail/token/sync";
             }
-        }catch (InternetBankingException ibe){
+        }catch (InternetBankingSecurityException ibe){
             logger.error("Error Synchronizing Token", ibe);
+
         }
-        result.addError(new ObjectError("error", messageSource.getMessage("token.sync.failure", null, locale)));
-        return "/cust/token/sync";
+        redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("token.sync.failure", null, locale));
+        return "redirect:/retail/token/sync";
+
     }
 
 
     @GetMapping("/lost")
-    public String lostToken(TokenProp tokenProp, Principal principal, Model model){
+    public String lostToken(Principal principal, Model model){
+
+        try {
+            String serials = securityService.getTokenSerials(principal.getName());
+            if (serials != null && !"".equals(serials)) {
+                List<String> serialNos = Arrays.asList(StringUtils.split(serials, ","));
+                model.addAttribute("serials", serialNos);
+            }
+        }
+        catch (InternetBankingSecurityException ibe){
+            logger.error("Failed to load corp user {} token serials", principal.getName(),ibe);
+            model.addAttribute("failure", "Failed to load token serial numbers");
+        }
+
+        model.addAttribute("tokenProp", new TokenProp());
         return "cust/token/lost";
     }
 
@@ -115,11 +146,12 @@ public class TokenManagementController {
                 redirectAttributes.addFlashAttribute("message", messageSource.getMessage("token.deactivate.success", null, locale));
                 return "redirect:/retail/token/lost";
             }
-        } catch (InternetBankingException ibe) {
+        } catch (InternetBankingSecurityException ibe) {
             logger.error("Error deactivating token", ibe);
+            redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("token.deactivate.failure", null, locale));
         }
-        bindingResult.addError(new ObjectError("invalid", messageSource.getMessage("token.deactivate.failure", null, locale)));
-        return "/cust/token/lost";
+        redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("token.deactivate.failure", null, locale));
+        return "redirect:/retail/token/lost";
     }
 
     @GetMapping("/authenticate")

@@ -13,6 +13,8 @@
                 <li><a href="#"> CORONATION MERCHANT BANK</a></li>
             </ul>
         </div>
+        <br/>
+        <br/>
         <nav class="navbar navbar-default">
             <div class="container-fluid">
                 <div class="navbar-header navbar-left">
@@ -30,18 +32,18 @@
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> LOG IN </a>
                             <ul class="dropdown-menu">
-                                <li><a th:href="@{/login/retail}">RETAIL</a></li>
-                                <li><a th:href="@{/login/corporate}">CORPORATE</a></li>
+                                <li><a th:href="@{/login/retail}"> INDIVIDUAL </a></li>
+                                <li><a th:href="@{/login/corporate}"> CORPORATE</a></li>
                             </ul>
                         </li>
                         <li><a th:href="@{/register}">REGISTER</a></li>
-                        <li><a href="/">CONTACT US</a></li>
+                        <li><a href="/#contact_us">CONTACT US</a></li>
                         <li><a href="/">HELP</a></li>
                     </ul>
                 </div>
             </div>
         </nav>
-        <a href="#" class="logo">
+        <a href="/" class="logo">
             <img th:src="@{/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
         </a>
     </div>
@@ -49,7 +51,7 @@
 <section class="content-wrapper">
     <div class="container">
         <div class="bg">
-            <form id="loginform" th:action="@{/retail/login}" method="POST" class="form-signin">
+            <form id="loginform" th:action="@{/retail/login}" method="POST" class="form-signin" autocomplete="off">
                 <h5 class="form-signin-heading">Enter Login Details</h5>
                 <br/>
 
@@ -59,7 +61,7 @@
                 <div th:if="${param.error != null}" class="alert alert-danger" th:text="${session[SPRING_SECURITY_LAST_EXCEPTION]}">error</div>
                 <br/>
                 <div id="username_div" class="form-group">
-                    <input type="text" name="username" th:value="*{username}" class="form-control"  placeholder="Username" readonly="readonly"/>
+                    <input type="text" name="username" th:value="*{username}" class="form-control"  placeholder="Username" readonly="readonly" autocomplete="off"/>
                     <p><a href="/forgot/username">Forgot Username?</a></p>
                 </div>
 

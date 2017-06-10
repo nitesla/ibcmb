@@ -10,50 +10,54 @@
 <section class="content-wrapper">
     <div class="container">
         <div class="row">
-            <div class="col-md-8 col-sm-8">
-                <h5 class="page_header"> Beneficiary List</h5>
-                <a th:href="@{/retail/beneficiary/new}" class="pull-right">Add New Beneficiary</a>
+            <div class="col-md-4 col-sm-4">
+                <h5 class="page_header"> Account Statement</h5>
             </div>
         </div>
         <div class="row">
             <div class="col-md-8 content-bg">
                 <div class="row spacing">
-                    <div class="col-md-10">
-                        <h4 class="sub_header">Local Beneficiaries</h4>
-                        <table class="table">
+                    <div class="col-md-12">
+                        <br/>
+                        <div class="form-group col-md-6 col-sm-6">
+                            <label>Date Range</label>
+                            <div class="input-daterange input-group" id="date-range">
+                                <input type="text" class="form-control" name="start" placeholder="Start date" />
+                                <span class="input-group-addon no-border text-white">to</span>
+                                <input type="text" class="form-control" name="end" placeholder="End date" />
+                            </div>
+                        </div>
+
+                        <div class="form-group col-md-6 col-sm-6">
+                            <label>Transaction Type</label>
+                            <select id="transType"  class="form-control">
+                                <option></option>
+                            </select>
+                        </div>
+<div class="row-spacing col-md-12">
+                        <a th:href="@{'#'}" class="btn pull-right"><i class="fa fa-search" style="color: white" ></i>&nbsp; find</a>
+</div>
+
+<p>
+                        <a th:href="@{'#'}" class="btn bt-select bt-link-act" disabled="disabled"><i class="fa fa-print" style="color: white" ></i>&nbsp; print</a>
+                        <a th:href="@{'#'}" class="btn " disabled="disabled"><i class="fa fa-envelope" style="color: white" ></i>&nbsp; send mail</a>
+</p>
+                        <table class="table" id="users">
                             <thead>
-                                <td>Name</td>
-                                <td>Account Number</td>
-                                <td>Bank</td>
-                                <td>Delete</td>
+                            <tr>
+                                <th>Transaction Narration</th>
+                                <th>Posting Date</th>
+                                <th>Value Date</th>
+                                <th>Debit/Credit</th>
+                                <th>Transaction Reference Id</th>
+                                <th>Account Balance</th>
+
+                            </tr>
                             </thead>
                             <tbody>
-                                <tr th:each="loc : ${localBen}">
-                                    <td th:text="${loc.accountName}"></td>
-                                    <td th:text="${loc.accountNumber}"></td>
-                                    <td th:text="${loc.beneficiaryBank}"></td>
-                                    <td><a th:href="@{'/retail/beneficiary/' + ${loc.id} + '/loc/delete'}"><i class="fa fa-trash"></i></a></td>
-                                </tr>
                             </tbody>
                         </table>
 
-                        <h4 class="sub_header">International Beneficiaries</h4>
-                        <table class="table">
-                            <thead>
-                                <td>Name</td>
-                                <td>Account Number</td>
-                                <td>Bank</td>
-                                <td>Delete</td>
-                            </thead>
-                            <tbody>
-                                <tr th:each="int : ${intBen}">
-                                    <td th:text="${int.accountName}"></td>
-                                    <td th:text="${int.accountNumber}"></td>
-                                    <td th:text="${int.beneficiaryBank}"></td>
-                                    <td><a th:href="@{'/retail/beneficiary/' + ${int.id} + '/int/delete'}"><i class="fa fa-trash"></i></a></td>
-                                </tr>
-                            </tbody>
-                        </table>
                     </div>
                 </div>
             </div>
@@ -66,5 +70,70 @@
 <!-- CONTENT-WRAPPER SECTION END-->
 <footer th:replace="cust_layout ::footer">
 </footer>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    $(document).ready(function() {
+        var url = "/retail/account/all";
+        var table = $('#users').DataTable({
+            select: true,
+            responsive: true,
+            "lengthMenu": [[5, 10], [5, 10]],
+            "pagingType": "simple_numbers",
+            "searching": false,
+            "paging": true,
+            "serverSide": true,
+            "ajax": url,
+            "dom": 'T<"clear">frtlp',
+            "columns": [
+                {"data": "transactionNarration"},
+                {"data": "postingDate"},
+                {"data": "valueDate"},
+                {"data": "debitCredit"},
+                {"data": "transRefId"},
+                {"data": "accountBalance"}
+            ]
+        });
+
+        table.on('select', function() {
+            if (table.rows({
+                        selected : true
+                    }).indexes().length === 0) {
+                $('.bt-select').attr("disabled", true);
+            } else {
+                $('.bt-select').removeAttr("disabled");
+            }
+
+
+        });
+
+        table.on('deselect', function() {
+            if (table.rows({
+                        selected : true
+                    }).indexes().length === 0) {
+                $('.bt-select').attr("disabled", true);
+            } else {
+                $('.bt-select').removeAttr("disabled");
+            }
+        });
+    });
+
+    $("a.bt-link-act").on("click", function(e) {
+        e.preventDefault();
+        var link = $(e.currentTarget);
+        if($(link).attr("disabled")){
+            return;
+        }
+
+        var dt = $('#users').DataTable();
+        var id = $(dt.row({
+            selected: true
+        }).node()).attr("id");
+        var ooo = link.attr("href").replace("index",id);
+        window.location.assign(ooo);
+
+    } );
+
+    /*]]>*/
+</script>
 </body>
 </html>

@@ -58,7 +58,12 @@ public class AdmRoleController {
     public Iterable<PermissionDTO> getPermissions(NativeWebRequest request) {
         HttpServletRequest httpServletRequest = request.getNativeRequest(HttpServletRequest.class);
         Map<String, String> map = (Map<String, String>) httpServletRequest.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
-        Long reqId = NumberUtils.createLong(map.get("reqId"));
+        Long reqId = null;
+		try {
+			reqId = NumberUtils.createLong(map.get("reqId"));
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
         Iterable<PermissionDTO> permissions;
         if (reqId != null) {
             RoleDTO role = roleService.getRole(reqId);
@@ -200,7 +205,7 @@ public class AdmRoleController {
             return "redirect:/admin/roles";
         } catch (InternetBankingException ibe) {
             logger.error("Error deleting role", ibe);
-            redirectAttributes.addFlashAttribute("message", messageSource.getMessage("role.update.failure", null, locale));
+            redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
             return "redirect:/admin/roles";
 
         }

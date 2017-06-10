@@ -198,7 +198,7 @@ public class CorpTransferController {
             corpTransferRequestDTO = (CorpTransferRequestDTO) request.getSession().getAttribute("corpTransferRequest");
 
             corpTransferRequestDTO = (CorpTransferRequestDTO) transferService.makeTransfer(corpTransferRequestDTO);
-            request.getSession().removeAttribute("transferRequest");
+            request.getSession().removeAttribute("corpTransferRequest");
 
 
             if (request.getSession().getAttribute("Lbeneficiary") != null) {
@@ -228,7 +228,7 @@ public class CorpTransferController {
         if (request.getSession().getAttribute("Lbeneficiary") != null) {
             CorporateUser user = corporateUserService.getUserByName(principal.getName());
             CorpLocalBeneficiaryDTO l = (CorpLocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary");
-            corpLocalBeneficiaryService.addCorpLocalBeneficiary(user, l);
+            corpLocalBeneficiaryService.addCorpLocalBeneficiary(user.getCorporate(), l);
         }
 
 

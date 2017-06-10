@@ -15,6 +15,8 @@
             <li><a href="#"> Coronation merchnat bank</a></li>
         </ul>
     </div>
+    <br/>
+    <br/>
     <nav class="navbar navbar-default">
         <div class="container-fluid">
             <div class="navbar-header navbar-left">
@@ -28,23 +30,23 @@
             </div>
             <div class="collapse navbar-collapse" id="navbar-collapse-1">
                 <ul class="nav navbar-nav">
-                    <li><a href="#"> HOME</a></li>
+                    <li><a href="/"> HOME</a></li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> LOGIN</a>
                         <ul class="dropdown-menu">
-                            <li><a th:href="@{/login/retail}"> RETAIL </a></li>
+                            <li><a th:href="@{/login/retail}"> INDIVIDUAL </a></li>
                             <li><a th:href="@{/login/corporate}"> CORPORATE </a></li>
                         </ul>
                     </li>
-                    <li><a href="/"> REGISTER</a></li>
-                    <li><a href="/"> CONTACT US</a></li>
+                    <li><a href="/register"> REGISTER</a></li>
+                    <li><a href="#contact_us"> CONTACT US</a></li>
                     <li><a href="/"> HELP</a></li>
                 </ul>
 
             </div>
         </div>
     </nav>
-    <a href="#" class="logo" data-toggle="tooltip" data-placement="bottom" title="Coronation Merchant Bank">
+    <a href="/" class="logo" data-toggle="tooltip" data-placement="bottom" title="Coronation Merchant Bank">
         <img th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
     </a>
 </div>
@@ -106,6 +108,7 @@
 
         <div class="row">
             <div class="body-texts">
+                <br/>
                 <div>
                     <h5>Welcome to Internet Banking</h5>
                     <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit</p>
@@ -114,8 +117,8 @@
                     <div class="dropdown">
                         <button class="dropbtn">LOGIN</button>
                         <div class="dropdown-content">
-                            <a th:href="@{/login/retail}">RETAIL</a>
-                            <a th:href="@{/login/corporate}">CORPORATE</a>
+                            <a th:href="@{/login/retail}"> INDIVIDUAL </a>
+                            <a th:href="@{/login/corporate}"> CORPORATE </a>
                         </div>
                     </div>
                     <div class="dropdown">
@@ -123,14 +126,6 @@
                             <button class="dropbtn" data-toggle="tooltip" data-placement="bottom" title="Join our internet banking platform">REGISTER NOW</button>
                         </form>
                     </div>
-                    <!--<ul class="lft">-->
-                        <!--<li><a href="#" class="dropdown-toggle btn btn-lg" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> Login</a>-->
-                            <!--<ul class="dropdown-menu">-->
-                                <!--<li><a th:href="@{/login/retail}">RETAIL</a></li>-->
-                                <!--<li><a th:href="@{/login/corporate}">CORPORATE</a></li>-->
-                            <!--</ul></li>-->
-                        <!--<li><a href="" class="btn btn-lg">Register Now</a></li>-->
-                    <!--</ul>-->
                 </div>
                 <div class="margin-bottom"></div>
                 <div>
@@ -155,7 +150,8 @@
                     </div>
 
                 </div>
-                <div>
+                <div class="margin-bottom"></div>
+                <div id="contact_us">
                     <h4>Contact Us</h4>
                     <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi e</p>
                     <div class="icon">
@@ -214,16 +210,16 @@
 <!-- BOOTSTRAP SCRIPTS  -->
 <script th:src="@{~/customer/js/bootstrap.js}"></script>
 
-<script>
-    $(document).ready(function(){
-        $(".dropdown").hover(
-            function() {
-                $('.dropdown-menu', this).not('.in .dropdown-menu').stop(true,true);
-                $(this).toggleClass('open');
-            }
-        );
-    });
-</script>
+<!--<script>-->
+    <!--$(document).ready(function(){-->
+        <!--$(".dropdown").hover(-->
+            <!--function() {-->
+                <!--$('.dropdown-menu', this).not('.in .dropdown-menu').stop(true,true);-->
+                <!--$(this).toggleClass('open');-->
+            <!--}-->
+        <!--);-->
+    <!--});-->
+<!--</script>-->
 <script>
     $(document).ready(function(){
         $('[data-toggle="tooltip"]').tooltip();

@@ -120,7 +120,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Transactional
 //    @Verifiable(operation="Add Admin",description="Adding a new User")
     public String addUser(AdminUserDTO user) throws InternetBankingException {
-        AdminUser adminUser = adminUserRepo.findFirstByUserName(user.getUserName());
+        AdminUser adminUser = adminUserRepo.findFirstByUserNameIgnoreCase(user.getUserName());
         if (adminUser != null) {
             throw new DuplicateObjectException(messageSource.getMessage("user.exist", null, locale));
         }
@@ -220,7 +220,7 @@ public class AdminUserServiceImpl implements AdminUserService {
             SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_DELETION");
             if (setting != null && setting.isEnabled()) {
                 if ("YES".equalsIgnoreCase(setting.getValue())) {
-                    securityService.deleteEntrustUser(user.getUserName(), fullName);
+                    securityService.deleteEntrustUser(user.getUserName());
                 }
             }
             logger.warn("Admin user {} deleted", user.getUserName());

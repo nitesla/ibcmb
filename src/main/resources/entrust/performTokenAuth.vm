@@ -1,0 +1,14 @@
+<Envelope xmlns="http://schemas.xmlsoap.org/soap/envelope/">
+    <Body>
+    <performTokenAuth xmlns="http://ws.entrustplugin.expertedge.com/">
+        <!-- Optional -->
+        <arg0 xmlns="">
+            <appCode>${appCode}</appCode>
+            <appDesc>${appDesc}</appDesc>
+            <group>${appGroup}</group>
+            <tokenPin>${token}</tokenPin>
+            <userName>${userName}</userName>
+        </arg0>
+    </performTokenAuth>
+    </Body>
+</Envelope>

@@ -12,6 +12,7 @@
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/calendar.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/select.bootstrap.css}" />
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/font-awesome/font-awesome.min.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/bootstrap-daterangepicker/daterangepicker.css}"/>
 
     <title>Coronation Merchant Bank</title>
 
@@ -23,12 +24,12 @@
     <div class="container">
         <div class="top_bar">
             <ul class="list_group">
-                <li><a href="#"> Contact Us&nbsp;</a></li>
-                <li><a href="#"> Coronation merchnat bank&nbsp;</a></li>
+                <li><a href="#" data-toggle="modal" data-target="#myModal"> Contact Us</a>&nbsp;</li>
+                <li><a href="https://coronationmb.com"> Coronation merchnat bank</a>&nbsp;</li>
                 <li><a href="#"> Help&nbsp;</a></li>
             </ul>
         </div>
-        <nav class="navbar yamm navbar-default">
+        <nav class="navbar navbar-default">
             <div class="container-fluid">
                 <div class="navbar-header navbar-left">
                     <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
@@ -56,7 +57,6 @@
                     </div>
                     <div class="row">
                 <div class="collapse navbar-collapse links" id="navbar-collapse-1">
-                    <div class="container">
                     <ul class="nav navbar-nav">
                         <li class="dropdown" sec:authorize="hasAuthority('MANAGE_ACCOUNT')">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.account}"> My Accounts</a>
@@ -65,6 +65,7 @@
                                 <li sec:authorize="hasAuthority('ACCOUNT_SETTINGS')"><a th:href="@{/retail/account/settings}" th:text="#{menu.account.settings}">Account Settings</a></li>
                                 <li sec:authorize="hasAuthority('VIEW_ACCOUNT_OFFICER')"><a th:href="@{/retail/account/officer}" th:text="#{menu.account.officer}">Account Officer</a></li>
                                 <li sec:authorize="hasAuthority('CREATE_ACCOUNT')"><a th:href="@{'#'}" th:text="#{menu.account.create}">Create New Acoount</a></li>
+                                <li sec:authorize="hasAuthority('CREATE_ACCOUNT')"><a th:href="@{/retail/account/viewstatement}" >Account Statement</a></li>
                             </ul>
                         </li>
                         <li class="dropdown" sec:authorize="hasAuthority('MANAGE_TRANSFERS')">
@@ -117,15 +118,14 @@
                     </ul>
                     </div>
                 </div>
-                    </div>
                 </div>
-                </div>
-            </nav>
-        </div>
-        <a href="/retail/dashboard" class="logo">
-            <img th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
-        </a>
-    </header>
+            </div>
+        </nav>
+    </div>
+    <a href="/retail/dashboard" class="logo">
+        <img th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
+    </a>
+</header>
 
 
     <div class="row">
@@ -159,10 +159,31 @@
         </div>
     </div>
 
+    <!-- Trigger the modal with a button -->
+    <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Open Modal</button>
+
+    <!-- Modal -->
+    <div id="myModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-body">
+                    <h1 style="font-size: 20px">Contact Us</h1>
+                    <p>Some text in the modal.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
     <div th:if="${message}">
         <div hidden="hidden">
             <ul class="actionMessage">
-                <li th:each="msg : ${message}" th:text="${msg}">Message</li>
+                <li th:each="msg : ${message}" th:text="${msg}" >Message</li>
             </ul>
         </div>
     </div>
@@ -170,7 +191,7 @@
     <div th:if="${failure}">
         <div hidden="hidden">
             <ul class="actionError">
-                <li th:each="msg : ${failure}" th:text="${msg}">Message</li>
+                <li th:each="msg : ${failure}" th:text="${msg}" id="error">Message</li>
             </ul>
         </div>
     </div>
@@ -183,19 +204,25 @@
     <script th:src="@{~/customer/js/calendar.js}"></script>
     <script th:src="@{~/customer/js/jquery.spring-friendly.min.js}"></script>
     <script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
+    <script th:src="@{~/customer/plugins/bootstrap-daterangepicker/daterangepicker.js}"></script>
     <script th:src="@{~/customer/js/coronation.js}"></script>
     <!-- BOOTSTRAP SCRIPTS  -->
     <script th:src="@{~/customer/js/bootstrap.js}"></script>
-    <script>
-        $(document).ready(function(){
-            $(".dropdown").hover(
-                function() {
-                    $('.dropdown-menu', this).not('.in .dropdown-menu').stop(true,true).slideDown(800);
-                    $(this).toggleClass('open');
-                }
-            );
-        });
-    </script>
+    <!--<script>-->
+        <!--$(document).ready(function(){-->
+            <!--$(".dropdown").hover(-->
+                <!--function() {-->
+                    <!--$('.dropdown-menu', this).not('.in .dropdown-menu').stop(true,true);-->
+                    <!--$(this).toggleClass('open');-->
+                <!--},-->
+                <!--function() {-->
+                    <!--$('.dropdown-menu', this).not('.in .dropdown-menu').stop(true,true);-->
+                    <!--$(this).toggleClass('open');-->
+                <!--}-->
+            <!--);-->
+        <!--});-->
+
+    <!--</script>-->
     <script>
         $(document).ready(function(){
             $('[data-toggle="tooltip"]').tooltip();

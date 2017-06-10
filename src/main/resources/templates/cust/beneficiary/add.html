@@ -21,10 +21,13 @@
                         <div class="form-group">
                             <label>Beneficiary Type</label>
                             <select name="beneficiaryType" id="benType" class="form-control">
-                                <option th:value="local">Local</option>
-                                <option th:value="foreign">Foreign</option>
+                                <option th:value="local">Other Banks</option>
+                                <option th:value="foreign">Foreign Banks</option>
+                                <option th:value="intrabank">Coronation Bank</option>
                             </select>
                         </div>
+
+
 
                         <form id="local" method="post" th:action="@{/retail/beneficiary/local}" th:object="${localBeneficiaryDTO}">
                             <input type="hidden" th:value="local" class="form-control"/>
@@ -35,18 +38,24 @@
                                 </select>
                             </div>
                             <div class="form-group">
+                                <label>Account Number</label>
                                 <input type="text" id="acct_num"  name="acct_num" class="form-control" th:field="*{accountNumber}" placeholder="Account Number"/>
                                 <p class="errors" th:if="${#fields.hasErrors('accountNumber')}" th:errors="*{accountNumber}">&times;</p>
+                                <p class="acctError" style="display:none;">invalid account number or Bank details</p>
                             </div>
 
                             <div class="form-group">
+                                <label>Account Name</label>
                                 <input type="text" id="acct_name"  name="acct_name" class="form-control" th:field="*{accountName}" placeholder="Beneficiary Name" readonly="readonly"/>
                                 <p class="errors" th:if="${#fields.hasErrors('accountName')}" th:errors="*{accountName}">&times;</p>
                             </div>
                             <div class="form-group">
+                                <label>Preferred Name</label>
                                 <input type="text" class="form-control" name="preferredName" placeholder="Preferred Name"/>
                             </div>
-                            <button class="btn btn-primary">Save</button>
+                            <button id="localsave" style="display: none;" class="btn btn-link">Save</button>
+                            <button id="neq" type="button" class="btn btn-link" onclick="getAccountName();">Name Enquiry</button>
+                            <a  th:href="@{/retail/benficiary}"  class="btn btn-link"  >Cancel</a>
                         </form>
 
                         <form id="foreign" method="post" th:action="@{/retail/beneficiary/foreign}" th:object="${internationalBeneficiaryDTO}" style="display: none">
@@ -59,6 +68,7 @@
                                 </select>
                             </div>
                             <div class="form-group">
+                                <label>Swift Code</label>
                                 <input type="text" class="form-control" name="swiftCode" placeholder="Bank SWIFT Code"/>
                             </div>
                             <div class="form-group">
@@ -83,6 +93,40 @@
                             </div>
                             <button class="btn btn-primary">Save</button>
                         </form>
+                        <form id="intrabank" method="post" th:action="@{/retail/beneficiary/local}" th:object="${localBeneficiaryDTO}"  style="display: none">
+                            <input type="hidden" th:value="intrabank" class="form-control"/>
+                            <div class="form-group">
+                                <label>Beneficiary Bank</label>
+                                <select name="beneficiaryBank" class="form-control" th:field="*{beneficiaryBank}"
+                                        required="required">
+                                    <option th:value="${bankCode}">Coronation Merchant Bank</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Account Number</label>
+                                <input type="text" class="form-control" name="accountNumber" th:field="*{accountNumber}"
+                                       id="iacct_num" placeholder="Account Number" required="required"/>
+                                <p class="iacctError" style="display:none;">invalid account number or Bank details</p>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Account Name</label>
+                                <input type="text" class="form-control" name="accountNumber" th:field="*{accountName}"
+                                       id="iacct_name" readonly="readonly" required="required"/>
+                                <label
+                                        th:if="${#fields.hasErrors('accountName')}" th:errors="*{accountName}"
+                                        class="validation-message"></label>
+                            </div>
+                            <div class="form-group">
+                                <label>Preferred Name</label>
+                                <input type="text" class="form-control" name="preferredName"
+                                       placeholder="Beneficiary Alias" th:field="*{preferredName}" required="required"/>
+                            </div>
+                            <button id="ilocalsave" style="display: none;" class="btn btn-link">NEXT</button>
+                            <button id="ineq" type="button" class="btn btn-link" onclick="getIntraBankAccountName();">Name Enquiry</button>
+                            <a  th:href="@{/retail/benficiary}"  class="btn btn-link"  >Cancel</a>
+                        </form>
+
                     </div>
                 </div>
             </div>
@@ -100,24 +144,31 @@
 <script>
     $('#benType').on('change',function(){
         if( $(this).val()==="foreign"){
-            $("#foreign").show()
-            $("#local").hide()
+            $("#foreign").show();
+            $("#local").hide();
+            $("#intrabank").hide();
         }
         else if( $(this).val()==="local"){
-            $("#local").show()
-            $("#foreign").hide()
+            $("#local").show();
+            $("#foreign").hide();
+            $("#intrabank").hide();
+        }else if( $(this).val()==="intrabank"){
+            $("#local").hide();
+            $("#foreign").hide();
+            $("#intrabank").show();
         }
     });
 </script>
 <script th:inline="javascript">
     /*<![CDATA[*/
     $(document).ready(function () {
-        $('#acct_num').change(function () {
-            getAccountName();
+        $('#beneficiaryBank').change(function () {
+            $('#acct_name').val("");
+            $('.acctError').hide();
         });
-        sortSelect('#beneficiaryBank', 'text', 'asc');
+//        sortSelect('#beneficiaryBank', 'text', 'asc');
 
-        $("#beneficiaryBank").prop("selectedIndex", -1);
+           $("#beneficiaryBank").prop("selectedIndex", -1);
 
     });
 
@@ -125,8 +176,8 @@
     function getAccountName() {
         //make sure alert message is not empty
         var acct = $('#acct_num').val();
-        // var bank = $('#bank_code').val();
-        var bank ='A';
+        var bank = $('#beneficiaryBank').val();
+
         console.log(acct);
 
         var options = {
@@ -134,8 +185,38 @@
             url: '/retail/transfer/' + acct + '/'+bank+'/nameEnquiry',
 //					dataType: 'jsonp',
             error: function (xhr, textStatus, errorThrown) {
-                alert('invalid account number ');
-                $('#sub').disabled();
+                $('.acctError').show().css("color", "red");
+
+            },
+            success: function (data, textStatus) {
+
+                var result = data;
+                $('#acct_name').val(result);
+
+                if( result!=null && result!='' ) {
+
+                    $('#localsave').show();
+                    $('#neq').hide();
+                }else{
+
+                    $('.acctError').show().css("color", "red");
+                }
+            }
+        };
+        $.ajax(options);
+    };
+
+    function getIntraBankAccountName() {
+        //make sure alert message is not empty
+        var acct = $('#iacct_num').val();
+        console.log(acct);
+
+        var options = {
+            type: 'GET',
+            url: '/retail/transfer/local/' + acct + '/nameEnquiry',
+//					dataType: 'jsonp',
+            error: function (xhr, textStatus, errorThrown) {
+                $('.acctError').show().css("color", "red");
             },
             success: function (data, textStatus) {
                 console.log(data);
@@ -143,34 +224,25 @@
                 var result = data;
                 //var result = (new Function("return " + result))();
                 // $('#acct_name').val(result.message);
-                $('#acct_name').val(result);
+                $('#iacct_name').val(result);
+                $('.iacctError').hide();
+
+                if( result!=null && result!='' ) {
+
+                    $('#ilocalsave').show();
+                    $('#ineq').hide();
+                }else{
+
+                    $('.iacctError').show().css("color", "red");
+                }
+
             }
         };
         $.ajax(options);
-    };
+    }
 
 
 
-
-    var sortSelect = function (select, attr, order) {
-        if(attr === 'text'){
-            if(order === 'asc'){
-                $(select).html($(select).children('option').sort(function (x, y) {
-                    return $(x).text().toUpperCase() < $(y).text().toUpperCase() ? -1 : 1;
-                }));
-                $(select).get(0).selectedIndex = 0;
-                //e.preventDefault();
-            }// end asc
-            if(order === 'desc'){
-                $(select).html($(select).children('option').sort(function (y, x) {
-                    return $(x).text().toUpperCase() < $(y).text().toUpperCase() ? -1 : 1;
-                }));
-                $(select).get(0).selectedIndex = 0;
-                // e.preventDefault();
-            }// end desc
-        }
-
-    };
     /*]]>*/
 </script>
 </body>

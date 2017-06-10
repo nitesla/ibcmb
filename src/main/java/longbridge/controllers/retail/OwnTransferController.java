@@ -42,13 +42,14 @@ public class OwnTransferController {
     private TransferValidator validator;
     private FinancialInstitutionService financialInstitutionService;
     private ApplicationContext appContext;
-   private TransferErrorService errorService;
+    private TransferErrorService errorService;
 
     private String page = "cust/transfer/ownaccount/";
     @Value("${bank.code}")
     private String bankCode;
+
     @Autowired
-    public OwnTransferController(TransferService transferService, AccountService accountService, MessageSource messages, LocaleResolver localeResolver, LocalBeneficiaryService localBeneficiaryService, TransferValidator validator, FinancialInstitutionService financialInstitutionService, ApplicationContext appContext,TransferErrorService errorService) {
+    public OwnTransferController(TransferService transferService, AccountService accountService, MessageSource messages, LocaleResolver localeResolver, LocalBeneficiaryService localBeneficiaryService, TransferValidator validator, FinancialInstitutionService financialInstitutionService, ApplicationContext appContext, TransferErrorService errorService) {
         this.transferService = transferService;
         this.accountService = accountService;
         this.messages = messages;
@@ -57,7 +58,7 @@ public class OwnTransferController {
         this.validator = validator;
         this.financialInstitutionService = financialInstitutionService;
         this.appContext = appContext;
-        this.errorService=errorService;
+        this.errorService = errorService;
     }
 
 
@@ -72,7 +73,7 @@ public class OwnTransferController {
     }
 
 
-@PostMapping("/summary")
+    @PostMapping("/summary")
     public String transferSummary(@ModelAttribute("transferRequest") @Valid TransferRequestDTO request, Locale locale, BindingResult result, Model model, HttpServletRequest servletRequest) {
         try {
             request.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode(bankCode));
@@ -92,8 +93,8 @@ public class OwnTransferController {
         } catch (InternetBankingTransferException exception)
 
         {
-            String errorMessage =errorService.getMessage(exception,servletRequest);
-           model.addAttribute("failure", errorMessage);
+            String errorMessage = errorService.getMessage(exception, servletRequest);
+            model.addAttribute("failure", errorMessage);
             return page + "pagei";
 
         }

@@ -20,6 +20,8 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
@@ -38,7 +40,7 @@ import org.springframework.security.web.session.HttpSessionEventPublisher;
 public class SecurityConfig {
 
     public void customConfig(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/resources *", "/static *", "/css ", "/js *", "/images *","/customer");
+        web.ignoring().antMatchers("/resources *", "/static *", "/css ", "/js *", "/images *", "/customer");
     }
 
     @Bean
@@ -49,13 +51,14 @@ public class SecurityConfig {
     @Configuration
     @Order(1)
     public static class AdminUserConfigurationAdapter extends WebSecurityConfigurerAdapter {
-
         @Autowired
         @Qualifier("adminUserDetails")
         UserDetailsService adminDetails;
         @Autowired
         BCryptPasswordEncoder bCryptPasswordEncoder;
-//        @Autowired
+        @Autowired
+        AdminAuthenticationSuccessHandler adminAuthenticationSuccessHandler;
+        //        @Autowired
 //        //@Qualifier("opAuthenticationSuccessHandler")
 //        @Qualifier("adminAuthenticationSuccessHandler")
 //        private AuthenticationSuccessHandler adminAuthenticationSuccessHandler;
@@ -64,10 +67,6 @@ public class SecurityConfig {
         private AuthenticationFailureHandler adminAuthenticationFailureHandler;
         @Autowired
         private ConfigurationService configService;
-
-        @Autowired
-        AdminAuthenticationSuccessHandler adminAuthenticationSuccessHandler;
-
         private Logger logger = LoggerFactory.getLogger(this.getClass());
 
         public AdminUserConfigurationAdapter() {
@@ -75,6 +74,10 @@ public class SecurityConfig {
 
         }
 
+        @Bean
+        public SessionRegistry sessionRegistry() {
+            return new SessionRegistryImpl();
+        }
 
         @Override
         protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -101,22 +104,25 @@ public class SecurityConfig {
 
 
                     .and().authorizeRequests().and()
-                   // .access("hasAuthority('" + UserType.ADMIN.toString() + "') and " + ipRange.toString()) .and()
+                    // .access("hasAuthority('" + UserType.ADMIN.toString() + "') and " + ipRange.toString()) .and()
 
                     // log in
-                   .formLogin().loginPage("/login/admin").loginProcessingUrl("/admin/login")
+                    .formLogin().loginPage("/login/admin").loginProcessingUrl("/admin/login")
                     .failureUrl("/login/admin?error=login_error").defaultSuccessUrl("/admin/dashboard")
                     .successHandler(adminAuthenticationSuccessHandler).failureHandler(adminAuthenticationFailureHandler)
                     .and()
-
+                    .sessionManagement()
+                    .invalidSessionUrl("/login/admin")
+                    .maximumSessions(1).sessionRegistry(sessionRegistry()).and()
+                    .sessionFixation().migrateSession().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                    .and()
                     .logout().logoutUrl("/admin/logout").logoutSuccessUrl("/login/admin").deleteCookies("JSESSIONID")
                     .and().requestCache()
-                    .and().exceptionHandling().and().csrf().disable().sessionManagement().sessionFixation()
-                    .migrateSession().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                    .invalidSessionUrl("/login/admin").maximumSessions(1).expiredUrl("/login/admin");
+                    .and().exceptionHandling().and().csrf().disable();
+
 
             // disable page caching
-            //http.headers().cacheControl();
+            http.headers().cacheControl();
         }
 
         @Override
@@ -176,23 +182,27 @@ public class SecurityConfig {
 
                     .and()
 
-
+                    .sessionManagement()
+                    .invalidSessionUrl("/invalidSession.html")
+                    .maximumSessions(1).sessionRegistry(sessionRegistry()).and()
+                    .sessionFixation().migrateSession().invalidSessionUrl("/login/ops")
+                    .and()
                     // logout
                     .logout().logoutUrl("/ops/logout").logoutSuccessUrl("/login/ops").deleteCookies("JSESSIONID").and().exceptionHandling().and().csrf().disable()
 
-                    .sessionManagement()
-                    .sessionFixation().migrateSession()
-                    .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                    .invalidSessionUrl("/login/ops")
-                    .maximumSessions(1)
-                    .expiredUrl("/login/ops");
+            ;
             // disable page caching
-           // http.headers().cacheControl();
+            http.headers().cacheControl();
         }
 
         @Override
         public void configure(WebSecurity web) throws Exception {
             new SecurityConfig().customConfig(web);
+        }
+
+        @Bean
+        public SessionRegistry sessionRegistry() {
+            return new SessionRegistryImpl();
         }
     }
 
@@ -230,22 +240,27 @@ public class SecurityConfig {
                     // log in
                     .and().formLogin().loginPage("/login/retail").loginProcessingUrl("/retail/login")
                     .failureUrl("/login/retail?error=true").defaultSuccessUrl("/retail/dashboard")
-                   //.successHandler(retailAuthenticationSuccessHandler)
-                   .successHandler(retailAuthenticationSuccessHandler)
+                    //.successHandler(retailAuthenticationSuccessHandler)
+                    .successHandler(retailAuthenticationSuccessHandler)
                     .failureHandler(retailAuthenticationFailureHandler)
 
                     //.failureForwardUrl()
+                    .and()
+                    .sessionManagement()
+                    .invalidSessionUrl("/login/retail")
+                    .maximumSessions(1).sessionRegistry(sessionRegistry()).and()
+                    .sessionFixation().migrateSession()
+                    .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                    .invalidSessionUrl("/login/retail")
 
                     .and()
 
                     // logout
                     .logout().logoutUrl("/retail/logout").logoutSuccessUrl("/login/retail").deleteCookies("JSESSIONID").invalidateHttpSession(true).and().exceptionHandling().and().csrf().disable()
 
-                    .sessionManagement().sessionFixation().migrateSession()
-                    .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED).invalidSessionUrl("/login/retail")
-                    .maximumSessions(1).expiredUrl("/login/retail");
+            ;
             // disable page caching
-          //  http.headers().cacheControl();
+            http.headers().cacheControl();
         }
 
         @Override
@@ -253,7 +268,17 @@ public class SecurityConfig {
             new SecurityConfig().customConfig(web);
         }
 
+        @Bean
+        public SessionRegistry sessionRegistry() {
+            return new SessionRegistryImpl();
+        }
+        @Bean
+        public HttpSessionEventPublisher httpSessionEventPublisher() {
+            return new HttpSessionEventPublisher();
+        }
+
     }
+
     @Configuration
     @Order(4)
     public static class CorpUserConfigurationAdapter extends WebSecurityConfigurerAdapter {
@@ -283,7 +308,7 @@ public class SecurityConfig {
 
 
             http
-           .addFilterBefore(customFilter() , UsernamePasswordAuthenticationFilter.class);
+                    .addFilterBefore(customFilter(), UsernamePasswordAuthenticationFilter.class);
 
             http
                     .antMatcher("/corporate/**").authorizeRequests()
@@ -303,15 +328,17 @@ public class SecurityConfig {
                     //.failureForwardUrl()
 
                     .and()
-
+                    .sessionManagement()
+                    .invalidSessionUrl("/login/corporate")
+                    .maximumSessions(1).expiredUrl("/login/corporate").sessionRegistry(sessionRegistry()).and()
+                    .sessionFixation().migrateSession()
+                    .and()
                     // logout
-                    .logout().logoutUrl("/corporate/logout").logoutSuccessUrl("/login/corporate").deleteCookies("JSESSIONID").invalidateHttpSession(true).and().exceptionHandling().and().csrf().disable()
+                    .logout().logoutUrl("/corporate/logout").logoutSuccessUrl("/login/corporate").deleteCookies("JSESSIONID").invalidateHttpSession(true).and().exceptionHandling().and().csrf().disable();
 
-                    .sessionManagement().sessionFixation().migrateSession()
-                    .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED).invalidSessionUrl("/login/corporate")
-                    .maximumSessions(1).expiredUrl("/login/corporate");
+
             // disable page caching
-            //http.headers().cacheControl();
+            http.headers().cacheControl();
         }
 
         @Override
@@ -320,27 +347,23 @@ public class SecurityConfig {
         }
 
 
-
-
         @Bean
-        public CorperateAuthenticationFilter customFilter() throws Exception{
-            CorperateAuthenticationFilter  customFilter = new CorperateAuthenticationFilter();
+        public CorperateAuthenticationFilter customFilter() throws Exception {
+            CorperateAuthenticationFilter customFilter = new CorperateAuthenticationFilter();
             customFilter.setAuthenticationManager(authenticationManagerBean());
             customFilter.setAuthenticationSuccessHandler(corpAuthenticationSuccessHandler);
             customFilter.setAuthenticationFailureHandler(corpAuthenticationFailureHandler);
             return customFilter;
 
 
-
         }
 
-
+        @Bean
+        public SessionRegistry sessionRegistry() {
+            return new SessionRegistryImpl();
+        }
 
     }
-
-
-
-
 
 
 }

@@ -112,14 +112,12 @@ public class FinancialInstitutionServiceImpl implements FinancialInstitutionServ
     @Override
     public List<FinancialInstitutionDTO> getFinancialInstitutions() {
         Iterable<FinancialInstitution> fis = financialInstitutionRepo.findAll();
-        logger.info("FinancialInstitutions {}", fis.toString());
         return convertEntitiesToDTOs(fis);
     }
 
     @Override
     public List<FinancialInstitutionDTO> getFinancialInstitutionsByType(FinancialInstitutionType institutionType) {
         Iterable<FinancialInstitution> fis = financialInstitutionRepo.findByInstitutionType(institutionType);
-        logger.info("FinancialInstitutions {}", fis.toString());
         return convertEntitiesToDTOs(fis);
     }
 
