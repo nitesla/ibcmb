@@ -177,26 +177,6 @@ end
     background-color: #003056;
 }
 
-
-.icon{
-    background-color: #868B8F;
-    margin-top: 20px;
-}
-
-.icon a{
-
-    font-size: 30px;
-    padding: 5px 10px;
-    margin: 20px 15px 10px 15px;
-    border: none;
-    cursor: pointer;
-}
-
-.icon a i{
-    /*font-size: 36px;*/
-    color: #FFF;
-
-}
 /*********** END OF YAMN STYLE ******/
 
 *, *:before, *:after {
@@ -491,7 +471,22 @@ body {
     color: #868B8F;
 }
 
+.icon{
+    margin-top: 20px;
+}
 
+.icon a{
+    background-color: #868B8F;
+    font-size: 30px;
+    padding: 5px 10px;
+    margin: 20px 15px 10px 15px;
+}
+
+.icon a i{
+    /*font-size: 36px;*/
+    color: #FFF;
+
+}
 
 .lft{
     display: inline-block;
