@@ -88,26 +88,32 @@
                     <section>
                         <div class="row">
                             <div class="col-md-offset-4 col-md-4">
-                                        <div class="form-group clearfix">
-                                            <label>Username</label>
-                                            <input type="text" name="userName" class="form-control required" placeholder="Preferred Username"/>
-                                        </div>
-                                        <div class="form-group clearfix">
-                                            <label>Password</label>
-                                            <input type="password" id="password" name="password" class="form-control required" placeholder="Password"/>
-                                        </div>
-                                        <div class="form-group clearfix">
-                                            <label>Confirm Password</label>
-                                            <input type="password" id="confirm" name="confirm" class="form-control required" placeholder="Confirm Password"/>
-                                        </div>
-                                        <div class="form-group clearfix">
-                                            <label>Registration Code</label>
-                                            <input type="text" id="code" name="regCode" class="col-md-8 form-control required" placeholder="Registration Code"/>
-                                            <a id="send" href="javascript:void(0)" onclick="sendRegCode();" class="btn "> Send Verification Code</a>
-                                        </div>
-                                        <input id="customerId" name="customerId" type="hidden"/>
+                                <div class="form-group clearfix">
+                                    <label>Username</label>
+                                    <input type="text" name="userName" class="form-control required" placeholder="Preferred Username"/>
                                 </div>
+                                <div class="form-group clearfix">
+                                    <label>Password</label>
+                                    <input type="password" id="password" name="password" class="form-control required" placeholder="Password"/>
                                 </div>
+                                <div class="form-group clearfix">
+                                    <label>Confirm Password</label>
+                                    <input type="password" id="confirm" name="confirm" class="form-control required" placeholder="Confirm Password"/>
+                                </div>
+                                <div class="form-group clearfix">
+                                    <label>Registration Code</label>
+                                    <input type="text" id="code" name="regCode" class="col-md-8 form-control required" placeholder="Registration Code"/>
+                                    <a id="send" href="javascript:void(0)" onclick="sendRegCode();" class="btn "> Send Verification Code</a>
+                                </div>
+                                <input id="customerId" name="customerId" type="hidden"/>
+                            </div>
+
+                            <div class="col-md-4">
+                                <br/>
+                                <h5 style="font-size: 16px; font-weight: bolder;">Password tips</h5>
+                                <p th:each="rule : ${policies}" th:text="${rule}"></p>
+                            </div>
+                        </div>
                     </section>
                     <h3>Security Questions</h3>
                     <section>

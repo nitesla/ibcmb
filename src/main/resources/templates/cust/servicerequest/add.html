@@ -28,6 +28,9 @@
 
                                     <p th:if="${field.fieldType} == 'TEXT'"><input class="form-control" type="text" th:name="${field.fieldName}" required="required"/></p>
 
+                                    <p th:if="${field.fieldType} == 'NUMBER'"><input class="form-control" type="number" th:name="${field.fieldName}" required="required"/></p>
+
+
                                     <p th:if="${field.fieldType} == 'TEXTAREA'" required="required">
                                         <textarea class="form-control" th:name="${field.fieldName}">
                                         </textarea>

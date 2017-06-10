@@ -346,6 +346,9 @@ public class UserRegController {
 
         model.addAttribute("images", images);
 
+        List<String> policies = passwordPolicyService.getPasswordRules();
+        model.addAttribute("policies", policies);
+
         List<SecurityQuestions> securityQuestionss = securityQuestionService.getSecQuestions();
         return "cust/register/registration";
     }
