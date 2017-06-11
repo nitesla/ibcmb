@@ -41,16 +41,8 @@ public class InternetbankingApplication /* extends SpringBootServletInitializer*
     @Override
     public void run(String... strings) throws Exception {
 
-<<<<<<< HEAD
-//        System.out.println("Your password is "+passwordEncoder.encode("password123"));
-
-
-
     }
 
-=======
-    }
->>>>>>> 9e9c333e1c542e2ead64635fd2861c044400c448
 }
 
 
