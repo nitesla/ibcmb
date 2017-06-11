@@ -158,7 +158,7 @@ public class RetailUserServiceImpl implements RetailUserService {
 
                     setEntrustUserQA(user.getUserName(), user.getSecurityQuestion(), user.getSecurityAnswer(), fullName);
 
-//                    setEntrustUserMutualAuth(user.getUserName(), user.getCaptionSec(), user.getPhishingSec(), fullName);
+                    setEntrustUserMutualAuth(user.getUserName(), user.getCaptionSec(), user.getPhishingSec(), fullName);
                 }
             }
 
@@ -198,9 +198,10 @@ public class RetailUserServiceImpl implements RetailUserService {
         }
     }
 
-    private void setEntrustUserMutualAuth(String username, List<String> captionSec, List<String> phishingSec, String fullName){
+    private void setEntrustUserMutualAuth(String username, String captionSec, String phishingSec, String fullName){
         try{
             securityService.setMutualAuth(username, captionSec, phishingSec);
+
         }catch (InternetBankingSecurityException e){
             securityService.deleteEntrustUser(username);
             throw new InternetBankingSecurityException(messageSource.getMessage("entrust.create.failure", null, locale), e);

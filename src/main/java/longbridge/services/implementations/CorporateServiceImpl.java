@@ -7,6 +7,7 @@ import longbridge.models.*;
 import longbridge.repositories.*;
 import longbridge.services.*;
 import longbridge.utils.DateFormatter;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,6 +63,9 @@ public class CorporateServiceImpl implements CorporateService {
 
     @Autowired
     private MailService mailService;
+
+    @Autowired
+    private CorporateRoleRepo corporateRoleRepo;
 
 
     private Locale locale = LocaleContextHolder.getLocale();
@@ -164,7 +168,7 @@ public class CorporateServiceImpl implements CorporateService {
         Email email = new Email.Builder()
                 .setRecipient(user.getEmail())
                 .setSubject(messageSource.getMessage("corporate.customer.create.subject", null, locale))
-                .setBody(String.format(messageSource.getMessage("corporate.customer.create.message", null, locale), fullName, user.getUserName(), password,corporate.getCustomerId()))
+                .setBody(String.format(messageSource.getMessage("corporate.customer.create.message", null, locale), fullName, user.getUserName(), password, corporate.getCustomerId()))
                 .build();
         mailService.send(email);
     }
@@ -341,6 +345,16 @@ public class CorporateServiceImpl implements CorporateService {
     }
 
     @Override
+    public Page<CorporateRoleDTO> getRoles(Long corpId, Pageable pageable) {
+        Corporate corporate = corporateRepo.findOne(corpId);
+        Page<CorporateRole> page = corporateRoleRepo.findByCorporate(corporate, pageable);
+        List<CorporateRoleDTO> dtOs = convertCorporateRoleEntitiesToDTOs(page.getContent());
+        long t = page.getTotalElements();
+        Page<CorporateRoleDTO> pageImpl = new PageImpl<CorporateRoleDTO>(dtOs, pageable, t);
+        return pageImpl;
+    }
+
+    @Override
     public List<CorpTransferRuleDTO> getCorporateRules() {
         List<CorpTransRule> transferRules = corpTransferRuleRepo.findAll();
         return convertTransferRuleEntitiesToDTOs(transferRules);
@@ -360,7 +374,6 @@ public class CorporateServiceImpl implements CorporateService {
         try {
             CorpTransRule transferRule = corpTransferRuleRepo.findOne(id);
             Corporate corporate = corporateRepo.findOne(transferRule.getCorporate().getId());
-
             corporate.getCorpTransRules().remove(transferRule);
             corporateRepo.save(corporate);
             logger.info("Updated transfer rule  with Id {}", id);
@@ -371,24 +384,86 @@ public class CorporateServiceImpl implements CorporateService {
     }
 
     @Override
-    @Transactional
-    public List<CorporateUserDTO> getAuthorizers(Long corpId) {
-        Corporate corporate = corporateRepo.findOne(corpId);
-        Collection<CorporateUser> corporateUsers = corporate.getUsers();
-        List<CorporateUserDTO> authorizers = new ArrayList<CorporateUserDTO>();
-        CorporateUserDTO userDTO;
-        for (CorporateUser user : corporateUsers) {
-            if ("Authorizer".equalsIgnoreCase(user.getRole().getName())) {
-                userDTO = new CorporateUserDTO();
-                userDTO.setId(user.getId());
-                userDTO.setUserName(user.getUserName());
-                userDTO.setFirstName(user.getFirstName());
-                userDTO.setLastName(user.getLastName());
-                authorizers.add(userDTO);
+    public String addCorporateRole(CorporateRoleDTO roleDTO) throws InternetBankingException {
 
+
+        try {
+            Corporate corporate = corporateRepo.findOne(NumberUtils.toLong(roleDTO.getCorporateId()));
+            CorporateRole role = convertCorporateRoleDTOToEntity(roleDTO);
+            CorporateRole corporateRole = corporateRoleRepo.save(role);
+            corporate.getCorporateRoles().add(corporateRole);
+            corporateRepo.save(corporate);
+            Set<CorporateUserDTO> users = roleDTO.getUsers();
+            for (CorporateUserDTO user : users) {
+                CorporateUser corporateUser = corporateUserRepo.findOne(user.getId());
+                corporateUser.setCorporateRole(corporateRole);
+                corporateUserRepo.save(corporateUser);
             }
+            return messageSource.getMessage("role.add.success", null, locale);
+
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("role.add.failure", null, locale));
+
         }
-        return authorizers;
+    }
+
+    @Override
+    public String updateCorporateRole(CorporateRoleDTO roleDTO) throws InternetBankingException {
+        try {
+            Set<CorporateUser> oldUsers = corporateRoleRepo.findOne(roleDTO.getId()).getUsers();
+            CorporateRole role = convertCorporateRoleDTOToEntity(roleDTO);
+            Set<CorporateUser> newUsers = role.getUsers();
+            for (CorporateUser user : oldUsers) {
+                CorporateUser corporateUser = corporateUserRepo.findOne(user.getId());
+                if (!newUsers.contains(corporateUser)) {
+                    corporateUser.setCorporateRole(null);
+                    corporateUserRepo.save(corporateUser);
+                }
+            }
+            corporateRoleRepo.save(role);
+
+            return messageSource.getMessage("role.update.success", null, locale);
+
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("role.update.failure", null, locale));
+
+        }
+    }
+
+    @Override
+    public CorporateRoleDTO getCorporateRole(Long id) {
+        CorporateRole corporateRole = corporateRoleRepo.findOne(id);
+        CorporateRoleDTO roleDTO = convertCorporateRoleEntityToDTO(corporateRole);
+        return roleDTO;
+
+    }
+
+    @Override
+    public Set<CorporateRoleDTO> getCorporateRoles(Long corporateId) {
+        Corporate corporate = corporateRepo.findOne(corporateId);
+        Set<CorporateRole> corporateRoles = corporate.getCorporateRoles();
+        return convertCorporateRoleEntitiesToDTOs(corporateRoles);
+    }
+
+    @Override
+    public String deleteCorporateRole(Long id) throws InternetBankingException {
+
+        try {
+            corporateRoleRepo.delete(id);
+            return messageSource.getMessage("role.delete.success", null, locale);
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("role.delete.failure", null, locale));
+        }
+    }
+
+
+    @Override
+    @Transactional
+    public Set<CorporateRoleDTO> getRoles(Long corpId) {
+        Corporate corporate = corporateRepo.findOne(corpId);
+        Set<CorporateRole> corporateRoles = corporate.getCorporateRoles();
+        Set<CorporateRoleDTO> roles = convertCorporateRoleEntitiesToDTOs(corporateRoles);
+        return roles;
     }
 
     @Override
@@ -415,7 +490,7 @@ public class CorporateServiceImpl implements CorporateService {
 
     @Override
     @Transactional
-    public List<CorporateUser> getQualifiedAuthorizers(CorpTransRequest transferRequest) {
+    public List<CorporateRole> getQualifiedRoles(CorpTransRequest transferRequest) {
         Corporate corporate = transferRequest.getCorporate();
         List<CorpTransRule> transferRules = corporate.getCorpTransRules();
         Collections.sort(transferRules, new TransferRuleComparator());
@@ -431,13 +506,71 @@ public class CorporateServiceImpl implements CorporateService {
                 applicableTransferRule = transferRule;
             }
         }
-        List<CorporateUser> authorizers = new ArrayList<>();
+        List<CorporateRole> roles = new ArrayList<>();
         if (applicableTransferRule != null) {
-            authorizers = applicableTransferRule.getAuths();
+            roles = applicableTransferRule.getRoles();
         }
-        return authorizers;
+        return roles;
     }
 
+
+    private CorporateRole convertCorporateRoleDTOToEntity(CorporateRoleDTO roleDTO) {
+        CorporateRole corporateRole = new CorporateRole();
+        corporateRole.setId(roleDTO.getId());
+        corporateRole.setVersion(roleDTO.getVersion());
+        corporateRole.setName(roleDTO.getName());
+        corporateRole.setRank(roleDTO.getRank());
+        corporateRole.setCorporate(corporateRepo.findOne(NumberUtils.toLong(roleDTO.getCorporateId())));
+        Set<CorporateUserDTO> userDTOs = roleDTO.getUsers();
+        Set<CorporateUser> users = new HashSet<CorporateUser>();
+        for (CorporateUserDTO user : userDTOs) {
+            CorporateUser corporateUser = new CorporateUser();
+            corporateUser.setId(user.getId());
+            users.add(corporateUser);
+        }
+        corporateRole.setUsers(users);
+        return corporateRole;
+    }
+
+    private CorporateRoleDTO convertCorporateRoleEntityToDTO(CorporateRole role) {
+        CorporateRoleDTO roleDTO = new CorporateRoleDTO();
+        roleDTO.setId(role.getId());
+        roleDTO.setVersion(role.getVersion());
+        roleDTO.setName(role.getName());
+        roleDTO.setRank(role.getRank());
+        roleDTO.setCorporateId(role.getCorporate().getId().toString());
+        Set<CorporateUserDTO> userDTOs = new HashSet<CorporateUserDTO>();
+        for (CorporateUser user : role.getUsers()) {
+            CorporateUserDTO userDTO = new CorporateUserDTO();
+            userDTO.setId(user.getId());
+            userDTO.setUserName(user.getUserName());
+            userDTO.setFirstName(user.getFirstName());
+            userDTO.setLastName(user.getLastName());
+            userDTOs.add(userDTO);
+
+        }
+        roleDTO.setUsers(userDTOs);
+
+        return roleDTO;
+    }
+
+    private Set<CorporateRoleDTO> convertCorporateRoleEntitiesToDTOs(Set<CorporateRole> roles) {
+        Set<CorporateRoleDTO> roleDTOs = new HashSet<>();
+        for (CorporateRole role : roles) {
+            CorporateRoleDTO roleDTO = convertCorporateRoleEntityToDTO(role);
+            roleDTOs.add(roleDTO);
+        }
+        return roleDTOs;
+    }
+
+    private List<CorporateRoleDTO> convertCorporateRoleEntitiesToDTOs(List<CorporateRole> roles) {
+        List<CorporateRoleDTO> roleDTOs = new ArrayList<>();
+        for (CorporateRole role : roles) {
+            CorporateRoleDTO roleDTO = convertCorporateRoleEntityToDTO(role);
+            roleDTOs.add(roleDTO);
+        }
+        return roleDTOs;
+    }
 
     private CorpTransferRuleDTO convertTransferRuleEntityToDTO(CorpTransRule transferRule) {
         CorpTransferRuleDTO corpTransferRuleDTO = new CorpTransferRuleDTO();
@@ -448,21 +581,21 @@ public class CorporateServiceImpl implements CorporateService {
         corpTransferRuleDTO.setUnlimited(transferRule.isUnlimited());
         corpTransferRuleDTO.setCurrency(transferRule.getCurrency());
         corpTransferRuleDTO.setAnyCanAuthorize(transferRule.isAnyCanAuthorize());
+        corpTransferRuleDTO.setRank(transferRule.isRank());
         corpTransferRuleDTO.setCorporateId(transferRule.getCorporate().getId().toString());
         corpTransferRuleDTO.setCorporateName(transferRule.getCorporate().getName());
 
-        List<CorporateUserDTO> authorizerList = new ArrayList<CorporateUserDTO>();
-        for (CorporateUser authorizer : transferRule.getAuths()) {
-            CorporateUserDTO authorizerDTO = new CorporateUserDTO();
-            authorizerDTO.setId(authorizer.getId());
-            authorizerDTO.setUserName(authorizer.getUserName());
-            authorizerDTO.setFirstName(authorizer.getFirstName());
-            authorizerDTO.setLastName(authorizer.getLastName());
-            authorizerDTO.setRole(authorizer.getRole().getName());
-            authorizerList.add(authorizerDTO);
+        Set<CorporateRoleDTO> roleDTOs = new HashSet<CorporateRoleDTO>();
+        for (CorporateRole role : transferRule.getRoles()) {
+            CorporateRoleDTO roleDTO = new CorporateRoleDTO();
+            roleDTO.setId(role.getId());
+            roleDTO.setName(role.getName());
+            roleDTO.setRank(role.getRank());
+            roleDTOs.add(roleDTO);
         }
-        corpTransferRuleDTO.setNumOfAuthorizers(authorizerList.size());
-        corpTransferRuleDTO.setAuthorizers(authorizerList);
+        corpTransferRuleDTO.setNumOfRoles(roleDTOs.size());
+        corpTransferRuleDTO.setRoleNames(roleDTOs.toString());
+        corpTransferRuleDTO.setRoles(roleDTOs);
         return corpTransferRuleDTO;
     }
 
@@ -473,13 +606,14 @@ public class CorporateServiceImpl implements CorporateService {
         corpTransRule.setUnlimited(transferRuleDTO.isUnlimited());
         corpTransRule.setCurrency(transferRuleDTO.getCurrency());
         corpTransRule.setAnyCanAuthorize(transferRuleDTO.isAnyCanAuthorize());
+        corpTransRule.setRank(transferRuleDTO.isRank());
         corpTransRule.setCorporate(corporateRepo.findOne(Long.parseLong(transferRuleDTO.getCorporateId())));
 
-        List<CorporateUser> authorizerList = new ArrayList<CorporateUser>();
-        for (CorporateUserDTO authorizer : transferRuleDTO.getAuthorizers()) {
-            authorizerList.add(corporateUserRepo.findOne(authorizer.getId()));
+        List<CorporateRole> roleList = new ArrayList<CorporateRole>();
+        for (CorporateRoleDTO roleDTO : transferRuleDTO.getRoles()) {
+            roleList.add(corporateRoleRepo.findOne((roleDTO.getId())));
         }
-        corpTransRule.setAuths(authorizerList);
+        corpTransRule.setRoles(roleList);
         return corpTransRule;
     }
 

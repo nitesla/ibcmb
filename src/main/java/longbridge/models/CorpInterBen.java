@@ -14,19 +14,20 @@ import javax.persistence.ManyToOne;
 @Where(clause="del_Flag='N")
 public class CorpInterBen extends Beneficiary{
 @ManyToOne
-    private CorporateUser user;
+    private Corporate corporate;
     private String swiftCode;
     private String sortCode;
     private String beneficiaryAddress;
     private String intermediaryBankName;
     private String intermediaryBankAcctNo;
 
-    public CorporateUser getUser() {
-        return user;
+
+    public Corporate getCorporate() {
+        return corporate;
     }
 
-    public void setUser(CorporateUser user) {
-        this.user = user;
+    public void setCorporate(Corporate corporate) {
+        this.corporate = corporate;
     }
 
     public String getSwiftCode() {

@@ -22,6 +22,8 @@ import org.springframework.web.servlet.LocaleResolver;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 /**
  * Created by ayoade_farooq@yahoo.com on 5/4/2017.
@@ -55,7 +57,15 @@ public class LocalTransferController {
     @GetMapping("")
     public String index(Model model, Principal principal) throws Exception {
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
-        model.addAttribute("localBen", localBeneficiaryService.getLocalBeneficiaries(retailUser));
+        Iterable<LocalBeneficiary> cmbBeneficiaries= localBeneficiaryService.getBankBeneficiaries(retailUser);
+        model.addAttribute("localBen",
+                StreamSupport.stream(cmbBeneficiaries.spliterator(),false)
+                .collect(Collectors.toList()));
+
+
+
+
+
 
         return page + "pagei";
     }
@@ -74,7 +84,6 @@ public class LocalTransferController {
             return page + "pageii";
         }
         try {
-            System.out.println(transferRequestDTO);
             transferService.validateTransfer(transferRequestDTO);
             transferRequestDTO.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
             servletRequest.getSession().setAttribute("transferRequest", transferRequestDTO);

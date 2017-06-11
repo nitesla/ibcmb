@@ -43,7 +43,7 @@ public class CorpInternationalBeneficiaryServiceImpl implements CorpInternationa
     @Override
     public String addCorpInternationalBeneficiary(CorporateUser user, CorpInternationalBeneficiaryDTO beneficiary) throws InternetBankingException {
         CorpInterBen corpInterBen = convertDTOToEntity(beneficiary);
-        corpInterBen.setUser(user);
+        corpInterBen.setCorporate(user.getCorporate());
         this.corpInternationalBeneficiaryRepo.save(corpInterBen);
         logger.info("CorpInternational beneficiary {} has been added for user {}", corpInterBen.toString(),user.getUserName());
         return messageSource.getMessage("beneficiary.add.success",null,locale);
@@ -64,7 +64,7 @@ public class CorpInternationalBeneficiaryServiceImpl implements CorpInternationa
 
     @Override
     public Iterable<CorpInterBen> getCorpInternationalBeneficiaries(CorporateUser user) {
-        return corpInternationalBeneficiaryRepo.findByUser(user);
+        return corpInternationalBeneficiaryRepo.findByCorporate(user.getCorporate());
     }
 
     @Override

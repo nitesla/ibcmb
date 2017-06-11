@@ -33,11 +33,12 @@ public class CustomHttpClient {
 //    private static  String FI_WSDL_URL = getServerUrl();
     private final int CONNECTION_TIMEOUT = 20000;//in milli seconds
 
-   // @Value("${ENTRUST.URL}")
-    private String ENTRUST_WSDL_URL = "http://132.10.200.201:8080/cmb-entrust-webservicetest/ws?wsdl";
+    @Value("${ENTRUST.URL}")
+    private String ENTRUST_WSDL_URL ;//="http://132.10.200.201:8080/cmb-entrust-webservicetest/ws?wsdl";
 
 
     public CustomHttpClient() {
+
     }
 
     public boolean stringIsNullOrEmpty(String arg) {
@@ -55,7 +56,7 @@ public class CustomHttpClient {
         try {
 
             LOGGER.trace("sending http request with EndPoint URL : " + ENTRUST_WSDL_URL);
-            LOGGER.trace("sending formated message  : \n\n" + xmlFormatedMessage);
+            LOGGER.trace("sending formatted message  : \n\n" + xmlFormatedMessage);
             LOGGER.trace("Timeout for plugin-adapter : " + CONNECTION_TIMEOUT / 1000 + "s");
 
             System.setProperty("javax.net.debug", "false");

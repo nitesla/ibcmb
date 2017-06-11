@@ -3,6 +3,7 @@ package longbridge.controllers.retail;
 
 import longbridge.dtos.LocalBeneficiaryDTO;
 import longbridge.dtos.TransferRequestDTO;
+import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferErrorService;
 import longbridge.models.Account;
@@ -110,14 +111,20 @@ public class TransferController {
 
         List<String> accountList = new ArrayList<>();
 
+        try {
+            Iterable<Account> accounts = accountService.getAccountsForCredit(accountService.getAccountByAccountNumber(accountId).getCustomerId());
 
-        Iterable<Account> accounts = accountService.getAccountsForCredit(accountService.getAccountByAccountNumber(accountId).getCustomerId());
+            StreamSupport.stream(accounts.spliterator(), false)
+                    .filter(Objects::nonNull)
+                    .filter(i -> !i.getAccountNumber().equalsIgnoreCase(accountId))
+                    .forEach(i -> accountList.add(i.getAccountNumber()))
+            ;
 
-        StreamSupport.stream(accounts.spliterator(), false)
-                .filter(Objects::nonNull)
-                .filter(i -> !i.getAccountNumber().equalsIgnoreCase(accountId))
-                .forEach(i -> accountList.add(i.getAccountNumber()))
-        ;
+        } catch (Exception e) {
+
+        }
+
+
         return accountList;
 
 
@@ -128,7 +135,13 @@ public class TransferController {
     public
     @ResponseBody
     String getAccountCurrency(@PathVariable String accountId) {
-        return accountService.getAccountByAccountNumber(accountId).getCurrencyCode();
+
+        try {
+            return accountService.getAccountByAccountNumber(accountId).getCurrencyCode();
+        } catch (Exception e) {
+            return "";
+        }
+
     }
 
 
@@ -136,7 +149,13 @@ public class TransferController {
     public
     @ResponseBody
     String getBankAccountName(@PathVariable String accountNo) {
-        return integrationService.viewAccountDetails(accountNo).getAcctName();
+
+        try {
+            return integrationService.viewAccountDetails(accountNo).getAcctName();
+        } catch (Exception e) {
+            return "";
+        }
+
 
     }
 
@@ -146,11 +165,15 @@ public class TransferController {
     @ResponseBody
     String getInterBankAccountName(@PathVariable String accountNo, @PathVariable String bank) {
 
+        try {
 
-        if (bank.equalsIgnoreCase(bankCode))  return integrationService.viewAccountDetails(accountNo).getAcctName();
+            if (bank.equalsIgnoreCase(bankCode)) return integrationService.viewAccountDetails(accountNo).getAcctName();
 
-        return (integrationService.doNameEnquiry(bank, accountNo)).getAccountName();
-        // return (integrationService.doNameEnquiry("000005",accountNo)).getAccountName();
+            return (integrationService.doNameEnquiry(bank, accountNo)).getAccountName();
+
+        } catch (Exception e) {
+            return "";
+        }
 
 
     }
@@ -161,28 +184,31 @@ public class TransferController {
 
         try {
 
-            if (request.getSession().getAttribute("AUTH") != null) {
+            if (request.getSession().getAttribute("auth-needed") != null) {
                 String token = request.getParameter("token");
                 boolean ok = securityService.performTokenValidation(principal.getName(), token);
 
                 if (!ok) {
                     model.addAttribute("failure", messages.getMessage("auth.token.failure", null, locale));
-                    return "/cust//transfer/transferauth";
+                    return "/cust/transfer/transferauth";
                 } else {
-                    request.getSession().removeAttribute("AUTH");
+                    request.getSession().removeAttribute("auth-needed");
                 }
 
 
             }
             transferRequestDTO = (TransferRequestDTO) request.getSession().getAttribute("transferRequest");
 
+
             transferRequestDTO = transferService.makeTransfer(transferRequestDTO);
+
             request.getSession().removeAttribute("transferRequest");
 
 
             if (request.getSession().getAttribute("Lbeneficiary") != null) {
 
                 LocalBeneficiaryDTO l = (LocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary");
+                model.addAttribute("message", messages.getMessage("transaction.success", null, locale));
                 model.addAttribute("beneficiary", l);
                 return "/cust/transfer/transferbeneficiary";
             }
@@ -202,17 +228,38 @@ public class TransferController {
         }
     }
 
-    @GetMapping("/newbeneficiaary")
-    public String newbeneficiaary(HttpServletRequest request, Model model, Principal principal, RedirectAttributes attributes) throws Exception {
-        if (request.getSession().getAttribute("Lbeneficiary") != null) {
-            RetailUser user = retailUserService.getUserByName(principal.getName());
-            LocalBeneficiaryDTO l = (LocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary");
-            localBeneficiaryService.addLocalBeneficiary(user, l);
+    @GetMapping("/newbeneficiary")
+    public String newbeneficiaary(HttpServletRequest request, Locale locale, Principal principal, RedirectAttributes attributes) throws Exception {
+
+
+        try {
+
+            if (request.getSession().getAttribute("Lbeneficiary") != null) {
+                RetailUser user = retailUserService.getUserByName(principal.getName());
+                LocalBeneficiaryDTO l = (LocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary");
+                localBeneficiaryService.addLocalBeneficiary(user, l);
+                request.getSession().removeAttribute("Lbeneficiary");
+            }
+
+
+            attributes.addFlashAttribute("message", "New Beneficiary Added");
+
+        } catch (InternetBankingException e) {
+
+            if (e.getMessage().equalsIgnoreCase("beneficiary.exist")) {
+
+                attributes.addFlashAttribute("failure", messages.getMessage("beneficiary.exist", null, locale));
+            } else {
+                messages.getMessage("beneficiary.add.failure", null, locale);
+                attributes.addFlashAttribute("failure", e.getMessage());
+            }
+
+
         }
 
 
-        attributes.addFlashAttribute("message", "New Beneficiary Added");
         return "redirect:/retail/dashboard";
+    }
 
     }
-}
+

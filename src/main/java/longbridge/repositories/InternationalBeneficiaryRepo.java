@@ -15,6 +15,7 @@ import java.io.Serializable;
 public interface InternationalBeneficiaryRepo extends CommonRepo<InternationalBeneficiary, Long>{
 
     Iterable<InternationalBeneficiary> findByUser(RetailUser user);
+    InternationalBeneficiary findByUser_IdAndAccountNumber(Long id,String acctNo);
 
     Iterable<InternationalBeneficiary> findByUserAndDelFlag(RetailUser user, String delFlag);
 

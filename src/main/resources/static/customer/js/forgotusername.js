@@ -9,7 +9,6 @@ var customerId = "null";
 function validateAccountNo(accountNumber){
     var customerId;
     var secQues;
-    $.when(
     $.ajax({
         type:'GET',
         url:"/rest/retail/accountname/"+accountNumber,
@@ -18,12 +17,8 @@ function validateAccountNo(accountNumber){
             customerId = ''+String(data1);
             if(customerId == ""){
                 //invalid account number
-                $.notify({
-                    title: '<strong>Oops!</strong>',
-                    message: 'Invalid Account Number'
-                },{
-                    type: 'danger'
-                });
+                document.getElementById("myspan").textContent="Ensure you put in a valid account number";
+                $("#myspan").show();
                 //alert("Account number not found");
             }else{
                 //valid account number
@@ -31,7 +26,11 @@ function validateAccountNo(accountNumber){
                 $('input[name=customerId]').val(customerId);
             }
         }
-    })).done(function () {
+    })
+
+    if(customerId == "" || customerId === null){
+        return false;
+    }else{
         $.ajax({
             url: "/rest/secQues/"+accountNumber,
             type: 'GET',
@@ -39,20 +38,15 @@ function validateAccountNo(accountNumber){
             success:function(data2){
                 secQues = ''+String(data2);
                 if(secQues == "" ){
-                    //invalid account number
-                    $.notify({
-                        title: '<strong>Oops!</strong>',
-                        message: 'Invalid Account Number'
-                    },{
-                        type: 'danger'
-                    });
-                    //alert("Account number not found");
+                    document.getElementById("myspan").textContent="Could not get Security Question from server, please try again.";
+                    $("#myspan").show();
                 }else{
                     $('input[name=securityQuestion]').val(secQues);
                 }
             }
         })
-    });
+    }
+
 
     if(customerId == "" || customerId === null || secQues == "" || secQues === null){
         return false;
@@ -78,12 +72,8 @@ function sendUsername(){
                 if(data==="true"){
                     $('#returnValue').val(true);
                 }else {
-                    $.notify({
-                        title: '<strong>Oops!</strong>',
-                        message: 'Username retrieval Failed'
-                    },{
-                        type: 'danger'
-                    });
+                    document.getElementById("myspan").textContent="Failed to send username, please try again later.";
+                    $("#myspan").show();
                 }
             }
         });

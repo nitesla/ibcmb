@@ -68,10 +68,15 @@
                             <h3>Account Number</h3>
                             <section>
                                 <div class="row">
+
                                     <div class="col-md-offset-4 col-md-4">
+                                        <br/>
+                                        <span id="myspan" style="display: none;"></span>
+                                        <br/>
+                                        <br/>
                                         <div class="form-group">
                                             <label>Account Number</label>
-                                            <input type="text" name="acct" class="form-control required" placeholder="Account Number"/>
+                                            <span class="required"></span><input type="text" name="acct" class="form-control required" placeholder="Account Number"/>
                                         </div>
                                     </div>
                                 </div>
@@ -80,13 +85,17 @@
                             <section>
                                 <div class="row">
                                     <div class="col-md-offset-4 col-md-4">
+                                        <br/>
+                                        <span id="myspan" style="display: none;"></span>
+                                        <br/>
+                                        <br/>
                                         <div class="form-group">
                                             <label>Security Question</label>
                                             <input th:value="${retUsernameForm.securityQuestion}" name="securityQuestion" readonly="readonly" class="form-control"/>
                                         </div>
                                         <div class="form-group">
                                             <label>Security Answer</label>
-                                            <input th:value="${retUsernameForm.securityAnswer}" type="text" name="securityAnswer" class="form-control required" placeholder="Security Answer"/>
+                                            <span class="required"></span><input th:value="${retUsernameForm.securityAnswer}" type="text" name="securityAnswer" class="form-control required" placeholder="Security Answer"/>
                                         </div>
                                         <input id="returnValue" type="hidden"/>
                                         <input id="customerId" name="customerId" th:value="${retUsernameForm.customerId}" type="hidden"/>
