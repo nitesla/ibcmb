@@ -13,7 +13,6 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -31,7 +30,8 @@ public class CustomHttpClient {
     private final Logger LOGGER = LoggerFactory.getLogger(CustomHttpClient.class);
     //    private static final int CONNECTION_TIMEOUT = Integer.parseInt(getTimeOut());
 //    private static  String FI_WSDL_URL = getServerUrl();
-    private final int CONNECTION_TIMEOUT = 20000;//in milli seconds
+    //private final int CONNECTION_TIMEOUT = 20000;//in milli seconds
+    private final int CONNECTION_TIMEOUT = 800000;//in milli seconds
 
     // @Value("${ENTRUST.URL}")
     private String ENTRUST_WSDL_URL = "http://132.10.200.201:8080/cmb-entrust-webservicetest/ws?wsdl";
