@@ -1,5 +1,7 @@
 package longbridge.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
@@ -23,9 +25,11 @@ public class UserGroup extends AbstractEntity {
     private Date dateCreated;
 
 
+    @JsonIgnore
     @ManyToMany(cascade = CascadeType.ALL)
     private List<OperationsUser> users;
 
+    @JsonProperty
     @OneToMany(cascade = CascadeType.ALL)
     private List<Contact> contacts;
 

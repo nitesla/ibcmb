@@ -2,9 +2,11 @@ package longbridge.services.implementations;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import longbridge.api.*;
+import longbridge.dtos.SettingDTO;
 import longbridge.exception.InternetBankingTransferException;
 
 import longbridge.models.TransRequest;
+import longbridge.services.ConfigurationService;
 import longbridge.services.IntegrationService;
 import longbridge.services.MailService;
 import longbridge.utils.AccountStatement;
@@ -41,12 +43,15 @@ public class IntegrationServiceImpl implements IntegrationService {
     private RestTemplate template;
     private MailService mailService;
     private TemplateEngine templateEngine;
+    private ConfigurationService configService;
 
     @Autowired
-    public IntegrationServiceImpl(RestTemplate template, MailService mailService, TemplateEngine templateEngine) {
+    public IntegrationServiceImpl(RestTemplate template, MailService mailService, TemplateEngine templateEngine
+    ,ConfigurationService configService) {
         this.template = template;
         this.mailService = mailService;
         this.templateEngine = templateEngine;
+        this.configService=configService;
     }
 
 
@@ -127,6 +132,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 
                         return transRequest;
                     }
+                    transRequest.setStatus(ResultType.ERROR.toString());
                     return transRequest;
                 } catch (Exception e) {
 
@@ -192,9 +198,14 @@ public class IntegrationServiceImpl implements IntegrationService {
                 try {
                     response = template.postForObject(uri, params, TransferDetails.class);
                     if (response != null) {
+                        System.out.println("@@@@@ response " +response.getResponseDescription());
                         transRequest.setNarration(response.getNarration());
                         transRequest.setReferenceNumber(response.getUniqueReferenceCode());
                         transRequest.setStatus(response.getResponseDescription());
+                        return transRequest;
+                    }else{
+
+                        transRequest.setStatus(ResultType.ERROR.toString());
                         return transRequest;
                     }
 
@@ -259,7 +270,7 @@ public class IntegrationServiceImpl implements IntegrationService {
     public CustomerDetails viewCustomerDetails(String accNo) {
         CustomerDetails result = new CustomerDetails();
         String uri = URI + "/customer/{cifId}";
-        String cifId= viewAccountDetails(accNo).getCustId();
+        String cifId = viewAccountDetails(accNo).getCustId();
         Map<String, String> params = new HashMap<>();
         params.put("cifId", cifId);
         try {
@@ -393,14 +404,25 @@ public class IntegrationServiceImpl implements IntegrationService {
 
     public TransRequest sendTransfer(TransRequest transRequest) {
 
-        Context scontext = new Context();
-        scontext.setVariable("transRequest",transRequest);
+        try{
 
-        String mail = templateEngine.process("/cust/transfer/mailtemplate", scontext);
-        System.out.println(mail);
+            Context scontext = new Context();
+            scontext.setVariable("transRequest", transRequest);
+            String recipient="";
 
+            String mail = templateEngine.process("/cust/transfer/mailtemplate", scontext);
+            SettingDTO setting = configService.getSettingByName("BACK_OFFICE_EMAIL");
+            if ((setting.isEnabled())){
+                recipient= setting.getValue();
+            }
 
-        //  mailService.send();
+            mailService.send(recipient,transRequest.getTransferType().toString(),mail);
+            transRequest.setStatus("Approved or completed successfully");
+        }catch (Exception e){
+            e.printStackTrace();
+            transRequest.setStatus("FAILED TO SEND MAIL");
+        }
+
         return transRequest;
     }
 

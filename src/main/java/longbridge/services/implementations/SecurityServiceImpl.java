@@ -476,6 +476,7 @@ public class SecurityServiceImpl implements SecurityService {
             List<String> captionSecret = Arrays.asList(captions);
             List<String> imageSecret = Arrays.asList(images);
 
+
             list.put(captionSecret, imageSecret);
 
 

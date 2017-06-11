@@ -446,7 +446,7 @@ public class UserRegController {
 
     private void doesUserExist(String customerId){
         RetailUser user = retailUserService.getUserByCustomerId(customerId);
-        if (user != null || !"".equals(user)){
+        if (user != null){
             throw new InternetBankingException(messageSource.getMessage("user.reg.exists", null, locale));
         }
     }

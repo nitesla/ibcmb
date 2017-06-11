@@ -18,11 +18,11 @@ public class InternationalBeneficiaryDTO {
     private String beneficiaryBank;
     @NotEmpty(message = "Please enter a Swift Code")
     private String swiftCode;
-    @NotEmpty(message = "Please enter a Swift Code")
+    @NotEmpty(message = "Please enter a Sort Code")
     private String sortCode;
     private String beneficiaryAddress;
     private String intermediaryBankName;
-    private String intermediaryBankAccountNumber;
+    private String intermediaryBankAcctNo;
 
     public Long getId() {
         return id;
@@ -88,11 +88,11 @@ public class InternationalBeneficiaryDTO {
         this.intermediaryBankName = intermediaryBankName;
     }
 
-    public String getIntermediaryBankAccountNumber() {
-        return intermediaryBankAccountNumber;
+    public String getIntermediaryBankAcctNo() {
+        return intermediaryBankAcctNo;
     }
 
-    public void setIntermediaryBankAccountNumber(String intermediaryBankAccountNumber) {
-        this.intermediaryBankAccountNumber = intermediaryBankAccountNumber;
+    public void setIntermediaryBankAcctNo(String intermediaryBankAcctNo) {
+        this.intermediaryBankAcctNo = intermediaryBankAcctNo;
     }
 }

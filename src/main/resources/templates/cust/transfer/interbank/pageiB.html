@@ -83,7 +83,13 @@
         var acct = $('#acct_num').val();
         var bank = $('#bank_code').val();
 
-        console.log(acct);
+        if(( acct==null || acct=='' ) || ( bank==null || bank=='' )) {
+            console.log('AYOADE')
+
+            $('.acctError').show().css("color", "red");
+            return false;
+        }
+
 
         var options = {
             type: 'GET',
@@ -114,25 +120,7 @@
 
 
 
-    var sortSelect = function (select, attr, order) {
-        if(attr === 'text'){
-            if(order === 'asc'){
-                $(select).html($(select).children('option').sort(function (x, y) {
-                    return $(x).text().toUpperCase() < $(y).text().toUpperCase() ? -1 : 1;
-                }));
-                $(select).get(0).selectedIndex = 0;
-                //e.preventDefault();
-            }// end asc
-            if(order === 'desc'){
-                $(select).html($(select).children('option').sort(function (y, x) {
-                    return $(x).text().toUpperCase() < $(y).text().toUpperCase() ? -1 : 1;
-                }));
-                $(select).get(0).selectedIndex = 0;
-                // e.preventDefault();
-            }// end desc
-        }
 
-    };
     /*]]>*/
 </script>
 </body>

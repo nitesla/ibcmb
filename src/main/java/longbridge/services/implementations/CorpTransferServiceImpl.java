@@ -46,9 +46,16 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     private FinancialInstitutionService financialInstitutionService;
     private ConfigurationService configService;
     private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private Locale locale = LocaleContextHolder.getLocale();
 
     @Autowired
+    private PendingAuthorizationRepo pendAuthRepo;
+    @Autowired
+    private CorporateService corporateService;
+    @Autowired
+    private MessageSource messageSource;
 
+    @Autowired
     public CorpTransferServiceImpl(CorpTransferRequestRepo corpTransferRequestRepo, IntegrationService integrationService, TransactionLimitServiceImpl limitService, ModelMapper modelMapper, AccountService accountService, FinancialInstitutionService financialInstitutionService, ConfigurationService configService) {
         this.corpTransferRequestRepo = corpTransferRequestRepo;
         this.integrationService = integrationService;
@@ -100,6 +107,32 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         return result;
     }
 
+
+    @Override
+    @Transactional
+    public String authorizeTransfer(CorporateRole role, Long authId) throws InternetBankingException {
+        PendAuth pendAuth = pendAuthRepo.findOne(authId);
+        if (!role.getPendAuths().contains(pendAuth)) {
+            throw new InvalidAuthorizationException(messageSource.getMessage("transfer.auth.invalid", null, locale));
+        }
+        try {
+            CorpTransRequest transferRequest = pendAuth.getCorpTransferRequest();
+            transferRequest.getPendAuths().remove(transferRequest);
+            if (corporateService.getApplicableTransferRule(transferRequest).isAnyCanAuthorize()) {
+                makeTransfer(convertEntityToDTO(transferRequest));
+                transferRequest.getPendAuths().clear();
+            }
+            else if (transferRequest.getPendAuths().isEmpty()) {
+                makeTransfer(convertEntityToDTO(transferRequest));
+            }
+            corpTransferRequestRepo.save(transferRequest);
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("transfer.auth.failure", null, locale), e);
+        }
+
+        return messageSource.getMessage("transfer.auth.success", null, locale);
+
+    }
 
     private void validateBalance(CorpTransferRequestDTO corpTransferRequest) throws InternetBankingTransferException {
 
@@ -181,7 +214,5 @@ public class CorpTransferServiceImpl implements CorpTransferService {
                 throw new InternetBankingTransferException(TransferExceptions.INVALID_ACCOUNT.toString());
 
         }
-
-
     }
 }

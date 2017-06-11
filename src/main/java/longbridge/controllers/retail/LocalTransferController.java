@@ -74,7 +74,6 @@ public class LocalTransferController {
             return page + "pageii";
         }
         try {
-            System.out.println(transferRequestDTO);
             transferService.validateTransfer(transferRequestDTO);
             transferRequestDTO.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
             servletRequest.getSession().setAttribute("transferRequest", transferRequestDTO);
