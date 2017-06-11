@@ -581,6 +581,7 @@ public class CorporateServiceImpl implements CorporateService {
         corpTransferRuleDTO.setUnlimited(transferRule.isUnlimited());
         corpTransferRuleDTO.setCurrency(transferRule.getCurrency());
         corpTransferRuleDTO.setAnyCanAuthorize(transferRule.isAnyCanAuthorize());
+        corpTransferRuleDTO.setRank(transferRule.isRank());
         corpTransferRuleDTO.setCorporateId(transferRule.getCorporate().getId().toString());
         corpTransferRuleDTO.setCorporateName(transferRule.getCorporate().getName());
 
@@ -593,6 +594,7 @@ public class CorporateServiceImpl implements CorporateService {
             roleDTOs.add(roleDTO);
         }
         corpTransferRuleDTO.setNumOfRoles(roleDTOs.size());
+        corpTransferRuleDTO.setRoleNames(roleDTOs.toString());
         corpTransferRuleDTO.setRoles(roleDTOs);
         return corpTransferRuleDTO;
     }
@@ -604,6 +606,7 @@ public class CorporateServiceImpl implements CorporateService {
         corpTransRule.setUnlimited(transferRuleDTO.isUnlimited());
         corpTransRule.setCurrency(transferRuleDTO.getCurrency());
         corpTransRule.setAnyCanAuthorize(transferRuleDTO.isAnyCanAuthorize());
+        corpTransRule.setRank(transferRuleDTO.isRank());
         corpTransRule.setCorporate(corporateRepo.findOne(Long.parseLong(transferRuleDTO.getCorporateId())));
 
         List<CorporateRole> roleList = new ArrayList<CorporateRole>();

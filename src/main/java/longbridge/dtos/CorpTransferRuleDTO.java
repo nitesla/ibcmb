@@ -20,7 +20,9 @@ public class CorpTransferRuleDTO {
     private boolean anyCanAuthorize;
     private String corporateId;
     private int numOfRoles;
+    private String roleNames;
     private String corporateName;
+    private boolean rank;
     private Set<CorporateRoleDTO> roles;
 
     public Long getId() {
@@ -88,6 +90,14 @@ public class CorpTransferRuleDTO {
     }
 
 
+    public String getRoleNames() {
+        return roleNames;
+    }
+
+    public void setRoleNames(String roleNames) {
+        this.roleNames = roleNames;
+    }
+
     public String getCorporateName() {
         return corporateName;
     }
@@ -103,6 +113,14 @@ public class CorpTransferRuleDTO {
 
     public void setNumOfRoles(int numOfRoles) {
         this.numOfRoles = numOfRoles;
+    }
+
+    public boolean isRank() {
+        return rank;
+    }
+
+    public void setRank(boolean rank) {
+        this.rank = rank;
     }
 
     public Set<CorporateRoleDTO> getRoles() {

@@ -89,14 +89,6 @@ public class CorporateRoleDTO {
 
     @Override
     public String toString() {
-        return "CorporateRoleDTO{" +
-                "id=" + id +
-                ", version=" + version +
-                ", name='" + name + '\'' +
-                ", rank=" + rank +
-                ", corporateId='" + corporateId + '\'' +
-                ", ruleMember=" + ruleMember +
-                ", users=" + users +
-                '}';
+       return name+" "+rank;
     }
 }

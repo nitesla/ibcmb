@@ -23,7 +23,7 @@ public class CorpTransRule extends AbstractEntity {
     private String currency;
     private boolean unlimited;
     private boolean anyCanAuthorize;
-    private boolean rank=false;
+    private boolean rank;
 
 
     @ManyToOne

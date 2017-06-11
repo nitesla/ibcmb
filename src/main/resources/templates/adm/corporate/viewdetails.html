@@ -38,13 +38,13 @@
                         <div class="x_panel">
                                 <div class="" role="tabpanel" data-example-id="togglable-tabs">
                                     <ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
-                                        <li role="presentation" class="active"><a href="#tab_content1" id="home-tab" role="tab" data-toggle="tab" aria-expanded="true">User Management</a>
+                                        <li role="presentation" class="active"><a href="#tab_content1" id="home-tab" role="tab" data-toggle="tab" aria-expanded="true">Users</a>
                                         </li>
-                                        <li role="presentation" class=""><a href="#tab_content2" role="tab" id="account-tab" data-toggle="tab" aria-expanded="false">Account Management</a>
+                                        <li role="presentation" class=""><a href="#tab_content2" role="tab" id="account-tab" data-toggle="tab" aria-expanded="false">Accounts</a>
                                         </li>
-                                        <li th:if="${corporate.corporateType=='MULTI'}" role="presentation" class=""><a href="#tab_content4" role="tab" id="role-tab" data-toggle="tab" aria-expanded="false">Role Management</a>
+                                        <li th:if="${corporate.corporateType=='MULTI'}" role="presentation" class=""><a href="#tab_content4" role="tab" id="role-tab" data-toggle="tab" aria-expanded="false">Roles</a>
                                         </li>
-                                        <li th:if="${corporate.corporateType=='MULTI'}" role="presentation" class=""><a href="#tab_content3" role="tab" id="mandate-tab" data-toggle="tab" aria-expanded="false">Mandate Management</a>
+                                        <li th:if="${corporate.corporateType=='MULTI'}" role="presentation" class=""><a href="#tab_content3" role="tab" id="mandate-tab" data-toggle="tab" aria-expanded="false">Transaction Rules</a>
                                         </li>
                                     </ul>
                                     <div id="myTabContent" class="tab-content">
@@ -292,8 +292,10 @@
                                                                             <th>Lower Limit</th>
                                                                             <th>Upper Limit</th>
                                                                             <th>Currency</th>
-                                                                            <th>No of Roles</th>
+                                                                            <th>Roles</th>
                                                                             <th>Any Role</th>
+                                                                            <th>Follow Rank</th>
+
                                                                         </tr>
                                                                         </thead>
                                                                         <tbody>
@@ -303,8 +305,10 @@
                                                                             <th>Lower Limit</th>
                                                                             <th>Upper Limit</th>
                                                                             <th>Currency</th>
-                                                                            <th>No of Roles</th>
+                                                                            <th>Roles</th>
                                                                             <th>Any Role</th>
+                                                                            <th>Follow Rank</th>
+
                                                                         </tr>
                                                                         </tfoot>
                                                                     </table>
@@ -631,8 +635,10 @@
                 { "data" : "lowerLimitAmount" },
                 { "data" : "upperLimitAmount" },
                 { "data" : "currency" },
-                { "data" : "numOfRoles" },
-                { "data" : "anyCanAuthorize" }
+                { "data" : "roleNames" },
+                { "data" : "anyCanAuthorize" },
+                { "data" : "rank" }
+
             ],
             "columnDefs" : [ {
                 "targets" : 4,
@@ -648,17 +654,23 @@
                     return data;
                 }
 
-            },{
-                "targets" : 3,
-                "data" : "numOfAuthorizers",
-                "render" : function(data, type,full, meta) {
-                    if (type === 'display') {
-                            return "<span class='dt-body-center' style='display:block;text-align:center; margin:0 auto;'>"+data+"</span>";
+            } ,
+                {
+                    "targets" : 5,
+                    "data" : "rank",
+                    "render" : function(data, type,full, meta) {
+                        if (type === 'display') {
+                            if (data == true) {
+                                return "<i class='fa fa-check dt-body-center' style='color:green;display:block; text-align:center; margin:0 auto;'></i>";
+                            } else{
+                                return "<i class='fa fa-times dt-body-center' style='color:red;display:block; text-align:center; margin:0 auto;'></i>";
+                            }
+                        }
+                        return data;
                     }
-                    return data;
-                }
 
-            } ]
+                }
+            ]
 
         });
 
