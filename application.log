@@ -2234,3 +2234,7 @@ java.lang.NullPointerException: null
 2017-06-11 19:23:20.156 TRACE 3876 --- [http-nio-8085-exec-1] l.s.retailuser.RetailUserDetailsService  : User with IP Address 0:0:0:0:0:0:0:1 trying to login
 2017-06-11 19:23:23.486 ERROR 3876 --- [http-nio-8085-exec-1] longbridge.security.SessionUtils         : EXCEPTION OCCURRED null
 2017-06-11 19:27:36.292  INFO 3876 --- [http-nio-8085-exec-5] l.controllers.retail.SettingController   : PASSWORD RULES []
+2017-06-11 19:44:19.411 TRACE 3876 --- [http-nio-8085-exec-2] l.s.retailuser.RetailUserDetailsService  : User with IP Address 0:0:0:0:0:0:0:1 trying to login
+2017-06-11 19:44:23.265 ERROR 3876 --- [http-nio-8085-exec-2] longbridge.security.SessionUtils         : EXCEPTION OCCURRED null
+2017-06-11 20:09:28.522 TRACE 3876 --- [http-nio-8085-exec-1] l.s.retailuser.RetailUserDetailsService  : User with IP Address 127.0.0.1 trying to login
+2017-06-11 20:09:33.770 ERROR 3876 --- [http-nio-8085-exec-1] longbridge.security.SessionUtils         : EXCEPTION OCCURRED null
