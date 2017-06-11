@@ -13,15 +13,15 @@
             <div class="col-md-4 col-sm-4">
                 <h5 class="page_header"> Customize Account</h5>
             </div>
-        </div>
+        </div>d
         <div class="row">
             <div class="col-md-8 content-bg">
                 <div class="row form-spacing">
                     <div class="col-md-6">
                         <form method="post" th:action="@{/retail/account/customize}" th:object="${customizeAccount}">
                             <div class="form-group">
-                                <label>Account Name</label>
-                                <input class="form-control" name="accountName" th:value="${account}" />
+                                <label>Preferred Name</label>
+                                <input class="form-control"  placeholder="Preferred name" name="accountName" th:value="${account}" />
                                 <p class="errors close" data-dismiss="alert" aria-label="close" th:if="${#fields.hasErrors('accountName')}" th:errors="*{accountName}">&times;</p>
                             </div>
 

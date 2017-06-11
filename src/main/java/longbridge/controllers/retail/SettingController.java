@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
@@ -53,6 +54,8 @@ public class SettingController {
     @Autowired
     private AccountService accountService;
 
+    @Autowired
+    private MessageService messageService;
     @Autowired
     private ConfigurationService configService;
 
@@ -205,5 +208,24 @@ public class SettingController {
     @GetMapping("/bvn")
     public String linkBVN() {
         return "abc";
+    }
+
+
+    @GetMapping("/contact")
+    public String contactUs(){
+        return "cust/contact";
+    }
+
+    @PostMapping("/contact")
+    public String sendContactForm(WebRequest webRequest, Principal principal, Model model){
+        String message = webRequest.getParameter("message");
+        if (message == null){
+            model.addAttribute("failure", "Field is required");
+            return "cust/contact";
+        }
+        RetailUser user = retailUserService.getUserByName(principal.getName());
+        messageService.sendRetailContact(message, user);
+        return "redirect:/retail/dashboard";
+
     }
 }

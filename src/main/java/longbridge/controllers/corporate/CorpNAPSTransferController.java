@@ -33,7 +33,7 @@ public class CorpNAPSTransferController {
 
     @GetMapping("/bulk")
     public String getBulkTransfer() {
-        return "/corp/bulktransfer/add";
+        return "/corp/transfer/bulktransfer/add";
     }
 
     @PostMapping("/bulk/upload")
@@ -41,7 +41,7 @@ public class CorpNAPSTransferController {
 
         if (file.isEmpty()) {
             model.addAttribute("failure", messageSource.getMessage("file.required", null, locale));
-            return "/corp/bulktransfer/add";
+            return "/corp/transfer/bulktransfer/add";
         }
 
         try {

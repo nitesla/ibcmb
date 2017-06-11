@@ -14,6 +14,113 @@ html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockq
     vertical-align: baseline;
 }
 
+/*
+all css below were written by me Etoka Francis O. 09-06-17
+start
+*/
+
+
+.required:after { content:" * ";color:#ff6666;font-size: 13px;font-weight: bolder }
+
+
+.required ~ input
+{
+    width:80% !important;
+    display: inline !important;
+}
+
+label
+{
+    display: block !important;
+    width:100% !important;
+    margin:0px !important;
+    padding:0px !important;
+
+}
+.text-white
+{
+    color:white;
+}
+
+.bg-grey
+{
+    background: #F3F3F4;
+}
+
+span.required
+{
+    position: absolute;
+    top:18px;
+    left:-7px;
+    display: inline-block;
+
+}
+
+.form-group
+{
+    position: relative !important;
+}
+.mt-sm
+{
+    margin-bottom: 10px;
+}
+
+.display-none
+{
+    display: none;
+}
+
+
+#passwordStrength
+{
+    height:10px;
+    display:block;
+    float:left;
+}
+
+.strength0
+{
+    width:250px;
+    background:#cccccc;
+}
+
+.strength1
+{
+    width:50px;
+    background:#ff0000;
+}
+
+.strength2
+{
+    width:100px;
+    background:#ff5f5f;
+}
+
+.strength3
+{
+    width:150px;
+    background:#56e500;
+}
+
+.strength4
+{
+    background:#4dcd00;
+    width:200px;
+}
+
+.strength5
+{
+    background:#399800;
+    width:250px;
+}
+
+
+
+
+/*
+
+end
+*/
 
 .wizard > .content > .body {
     float: none !important;
@@ -504,6 +611,9 @@ body {
 }
 .faz .fa{
     color: #003056;
+}
+fa-floppy-o{
+    color: #032A4F;
 }
 .txtarea{
     padding: 0 15px 0 15px;

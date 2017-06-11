@@ -153,6 +153,7 @@ public interface MessageService {
      */
     String purge(int daysOld) throws InternetBankingException;
 
+    String sendRetailContact(String User, RetailUser user);
     /**
      *Purges the messages with the given date range
      * @param fromDate the start date

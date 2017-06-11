@@ -12,6 +12,7 @@
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/calendar.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/select.bootstrap.css}" />
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/font-awesome/font-awesome.min.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/bootstrap-daterangepicker/daterangepicker.css}"/>
 
     <title>Coronation Merchant Bank</title>
 
@@ -23,8 +24,8 @@
     <div class="container">
         <div class="top_bar">
             <ul class="list_group">
-                <li><a href="/#contact_us"> Contact Us&nbsp;</a></li>
-                <li><a href="https://coronationmb.com"> Coronation merchnat bank&nbsp;</a></li>
+                <li><a href="/retail/contact"> Contact Us</a>&nbsp;</li>
+                <li><a href="https://coronationmb.com"> Coronation merchnat bank</a>&nbsp;</li>
                 <li><a href="#"> Help&nbsp;</a></li>
             </ul>
         </div>
@@ -64,6 +65,7 @@
                                 <li sec:authorize="hasAuthority('ACCOUNT_SETTINGS')"><a th:href="@{/retail/account/settings}" th:text="#{menu.account.settings}">Account Settings</a></li>
                                 <li sec:authorize="hasAuthority('VIEW_ACCOUNT_OFFICER')"><a th:href="@{/retail/account/officer}" th:text="#{menu.account.officer}">Account Officer</a></li>
                                 <li sec:authorize="hasAuthority('CREATE_ACCOUNT')"><a th:href="@{'#'}" th:text="#{menu.account.create}">Create New Acoount</a></li>
+                                <li sec:authorize="hasAuthority('CREATE_ACCOUNT')"><a th:href="@{/retail/account/viewstatement}" >Account Statement</a></li>
                             </ul>
                         </li>
                         <li class="dropdown" sec:authorize="hasAuthority('MANAGE_TRANSFERS')">
@@ -125,6 +127,8 @@
     </a>
 </header>
 
+
+
     <div th:fragment="sidebar" class="col-md-3 sidebar">
         <div class="sidebar-bg calender">
             <div id="calendar" class="calendar"></div>
@@ -133,6 +137,7 @@
             <img th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
         </div>
     </div>
+
 
 <!-- footer content -->
 <footer th:fragment="footer">
@@ -175,6 +180,7 @@
     <script th:src="@{~/customer/js/calendar.js}"></script>
     <script th:src="@{~/customer/js/jquery.spring-friendly.min.js}"></script>
     <script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
+    <script th:src="@{~/customer/plugins/bootstrap-daterangepicker/daterangepicker.js}"></script>
     <script th:src="@{~/customer/js/coronation.js}"></script>
     <!-- BOOTSTRAP SCRIPTS  -->
     <script th:src="@{~/customer/js/bootstrap.js}"></script>
