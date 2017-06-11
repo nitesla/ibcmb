@@ -86,4 +86,17 @@ public class CorporateRoleDTO {
     public void setRuleMember(boolean ruleMember) {
         this.ruleMember = ruleMember;
     }
+
+    @Override
+    public String toString() {
+        return "CorporateRoleDTO{" +
+                "id=" + id +
+                ", version=" + version +
+                ", name='" + name + '\'' +
+                ", rank=" + rank +
+                ", corporateId='" + corporateId + '\'' +
+                ", ruleMember=" + ruleMember +
+                ", users=" + users +
+                '}';
+    }
 }

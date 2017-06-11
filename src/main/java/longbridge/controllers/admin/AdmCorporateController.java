@@ -311,7 +311,6 @@ public class AdmCorporateController {
         CorporateDTO corporate = corporateService.getCorporate(corpId);
         Set<CorporateRoleDTO> roles = corporateService.getRoles(corpId);
         Iterable<CodeDTO> currencies = codeService.getCodesByType("CURRENCY");
-
         model.addAttribute("corporate", corporate);
         model.addAttribute("roleList", roles);
         model.addAttribute("currencies", currencies);
@@ -398,8 +397,10 @@ public class AdmCorporateController {
         for (CorporateRoleDTO role : roles) {
             for (CorporateRoleDTO roleDTO : transferRuleDTO.getRoles()) {
                 if (roleDTO.getId().equals(role.getId())) {
-                    roleDTO.setRuleMember(true);
+                    role.setRuleMember(true);
                 }
+                logger.info("Roles are "+roleDTO.toString());
+
             }
         }
         model.addAttribute("roleList", roles);
