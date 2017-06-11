@@ -137,10 +137,11 @@
 }
 
 .day-name {
-    font-size: 9px;
+    font-size: 7px;
     text-transform: uppercase;
-    color: #9F614B;
+    color: #C1C1C1;
     letter-spacing: .7px;
+    opacity: 0.6;
 }
 
 .day-number {
