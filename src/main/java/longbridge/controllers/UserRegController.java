@@ -109,6 +109,7 @@ public class UserRegController {
         Account account = accountService.getAccountByAccountNumber(accountNumber);
         if (account != null){
             customerId = account.getCustomerId();
+            logger.info("Account number : " + customerId);
         }else {
             //nothing
             customerId = "";
@@ -124,12 +125,13 @@ public class UserRegController {
         Account account = accountService.getAccountByAccountNumber(accountNumber);
         if (account != null){
             String customerId = account.getCustomerId();
+            logger.info("Cif: " + customerId);
             RetailUser user = retailUserService.getUserByCustomerId(customerId);
             if (user != null){
                 logger.info("USER NAME {}", user.getUserName());
                 Map<List<String>, List<String>> qa = securityService.getUserQA(user.getUserName());
                 //List<String> sec = null;
-                if (qa != null){
+                if (qa != null || !qa.isEmpty()){
                     Set<List<String>> questions= qa.keySet();
                     Iterator it = questions.iterator();
                     while(it.hasNext()){
@@ -138,7 +140,6 @@ public class UserRegController {
                         secQuestion = question.stream().filter(Objects::nonNull).findFirst().orElse("");
                         logger.info("question {}", secQuestion);
                     }
-
                 }else {
                     secQuestion = "";
                 }
@@ -458,17 +459,23 @@ public class UserRegController {
         resetPasswordForm.step = "1";
         resetPasswordForm.username = (String) session.getAttribute("username");
         Map<List<String>, List<String>> qa = securityService.getUserQA((String) session.getAttribute("username"));
-        String secQuestion="";
-        if (qa != null){
+        if (qa != null || !qa.isEmpty()){
             Set<List<String>> questions= qa.keySet();
             Iterator it = questions.iterator();
+            String secQuestion = "";
             while(it.hasNext()){
                 logger.info("SEC QUESTION {}", it);
                 List<String> question = ( List<String> )it.next();
                 secQuestion = question.stream().filter(Objects::nonNull).findFirst().orElse("");
                 logger.info("question {}", secQuestion);
             }
-            model.addAttribute("secQuestion", secQuestion);
+            if (secQuestion.equals("") || secQuestion == null){
+                redirectAttributes.addFlashAttribute("failure", "Invalid Credentials");
+                return "redirect:/login/retail";
+            }else{
+                model.addAttribute("secQuestion", secQuestion);
+            }
+
         }else {
             redirectAttributes.addFlashAttribute("failure", "Invalid Credentials");
             return "redirect:/login/retail";
