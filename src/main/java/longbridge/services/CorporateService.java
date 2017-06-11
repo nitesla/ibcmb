@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -182,13 +183,27 @@ public interface CorporateService{
     @PreAuthorize("hasAuthority('DELETE_CORPORATE_RULE')")
    String deleteCorporateRule(Long id) throws InternetBankingException;
 
-    @PreAuthorize("hasAuthority('GET_CORPORATE_USER')")
-    List<CorporateUserDTO> getAuthorizers(Long corpId);
+    Set<CorporateRoleDTO> getRoles(Long corpId);
+
+    Page<CorporateRoleDTO> getRoles(Long corpId, Pageable pageable);
 
     @PreAuthorize("hasAuthority('GET_CORPORATE_USER')")
-    List<CorporateUser> getQualifiedAuthorizers(CorpTransRequest transferRequest);
+    List<CorporateRole> getQualifiedRoles(CorpTransRequest transferRequest);
 
     @PreAuthorize("hasAuthority('GET_TRANSFER_RULE')")
     CorpTransRule getApplicableTransferRule(CorpTransRequest transferRequest);
+
+
+    String addCorporateRole(CorporateRoleDTO roleDTO) throws InternetBankingException;
+
+    String updateCorporateRole(CorporateRoleDTO roleDTO) throws  InternetBankingException;
+
+    CorporateRoleDTO getCorporateRole(Long id);
+
+    Set<CorporateRoleDTO> getCorporateRoles(Long corporateId);
+
+    String deleteCorporateRole(Long id) throws InternetBankingException;
+
+
 
 }

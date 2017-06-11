@@ -1,10 +1,10 @@
 package longbridge.services;
 
-import java.util.List;
-import java.util.Map;
-
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.models.RetailUser;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * The {@code SecurityService} interface provides the methods for managing roles, profiles and permissions
@@ -71,7 +71,9 @@ public interface SecurityService {
 
     Map<List<String>, List<String>> getUserQA(String username) throws InternetBankingTransferException;
 
+
     Map<List<String>, List<String>> getMutualAuth(String username) throws InternetBankingTransferException;
+
 
     void setMutualAuth(String username, List<String> mutualCaption, List<String> mutualImage);
 

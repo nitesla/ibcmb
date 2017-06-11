@@ -1,6 +1,7 @@
 package longbridge.repositories;
 
 import longbridge.models.CorpInterBen;
+import longbridge.models.Corporate;
 import longbridge.models.CorporateUser;
 
 /**
@@ -8,9 +9,8 @@ import longbridge.models.CorporateUser;
  */
 public interface CorpInternationalBeneficiaryRepo extends CommonRepo<CorpInterBen,Long>{
 
-    Iterable<CorpInterBen> findByUser(CorporateUser user);
+    Iterable<CorpInterBen> findByCorporate(Corporate corporate);
 
-    Iterable<CorpInterBen> findByUserAndDelFlag(CorporateUser user, String delFlag);
 
 }
 

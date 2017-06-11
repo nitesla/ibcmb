@@ -4,15 +4,12 @@ package longbridge.services.implementations;
 
 import longbridge.config.entrust.CustomHttpClient;
 import longbridge.config.entrust.EntrustServiceResponse;
-import longbridge.exception.EntrustConnectionException;
 import longbridge.exception.InternetBankingSecurityException;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.models.RetailUser;
 import longbridge.security.IpAddressUtils;
 import longbridge.services.IntegrationService;
 import longbridge.services.SecurityService;
-import longbridge.utils.ResultType;
-import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -28,7 +25,6 @@ import org.springframework.stereotype.Service;
 import java.io.StringWriter;
 import java.math.BigInteger;
 import java.security.SecureRandom;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 

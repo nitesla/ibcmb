@@ -8,7 +8,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.thymeleaf.TemplateEngine;
@@ -40,12 +39,7 @@ public class InternetbankingApplication /* extends SpringBootServletInitializer*
     }
 
     @Override
-   public void run(String... strings) throws Exception {
-
-//      securityService.createEntrustUser("wumiTofu01","Wunmi baba ",true);
-//        securityService.addUserContacts("soluwawunmi@gmail.com","07038810752",true,"wumiTofu01");
-//         securityService.sendOtp("wumiTofu01");
-//        System.out.println("Your password is "+passwordEncoder.encode("password123"));
+    public void run(String... strings) throws Exception {
 
     }
 }

@@ -109,6 +109,7 @@ public class UserRegController {
         Account account = accountService.getAccountByAccountNumber(accountNumber);
         if (account != null){
             customerId = account.getCustomerId();
+            logger.info("Account number : " + customerId);
         }else {
             //nothing
             customerId = "";
@@ -124,12 +125,13 @@ public class UserRegController {
         Account account = accountService.getAccountByAccountNumber(accountNumber);
         if (account != null){
             String customerId = account.getCustomerId();
+            logger.info("Cif: " + customerId);
             RetailUser user = retailUserService.getUserByCustomerId(customerId);
             if (user != null){
                 logger.info("USER NAME {}", user.getUserName());
                 Map<List<String>, List<String>> qa = securityService.getUserQA(user.getUserName());
                 //List<String> sec = null;
-                if (qa != null){
+                if (qa != null || !qa.isEmpty()){
                     Set<List<String>> questions= qa.keySet();
                     Iterator it = questions.iterator();
                     while(it.hasNext()){
@@ -138,7 +140,6 @@ public class UserRegController {
                         secQuestion = question.stream().filter(Objects::nonNull).findFirst().orElse("");
                         logger.info("question {}", secQuestion);
                     }
-
                 }else {
                     secQuestion = "";
                 }
@@ -198,12 +199,13 @@ public class UserRegController {
             logger.info("Reg Code : " + n);
             String message = "Your Registration Code is : ";
             message += n;
+            session.setAttribute("regCode", n);
 
             ObjectNode sent = integrationService.sendSMS(message, contact +
                     "" +
                     " ", "Internet Banking Registration Code");
             if (sent != null){
-                session.setAttribute("regCode", n);
+
 
                 return String.valueOf(n);
             }
@@ -214,6 +216,15 @@ public class UserRegController {
         }
 
         return code;
+    }
+
+    @GetMapping("/rest/regCode/check/{code}")
+    public @ResponseBody String checkRegCode(@PathVariable Integer code, HttpSession session){
+        Integer regCode = (Integer) session.getAttribute("regCode");
+        if (!code.equals(regCode)){
+            return "false";
+        }
+        return "true";
     }
 
 
@@ -237,14 +248,7 @@ public class UserRegController {
         return "true";
     }
 
-    @GetMapping("/rest/regCode/check/{code}")
-    public @ResponseBody String checkRegCode(@PathVariable Integer code, HttpSession session){
-        Integer regCode = (Integer) session.getAttribute("regCode");
-        if (!code.equals(regCode)){
-            return "false";
-        }
-        return "true";
-    }
+
 
 
 
@@ -349,7 +353,8 @@ public class UserRegController {
         List<String> policies = passwordPolicyService.getPasswordRules();
         model.addAttribute("policies", policies);
 
-        List<SecurityQuestions> securityQuestionss = securityQuestionService.getSecQuestions();
+        List<SecurityQuestions> securityQuestions = securityQuestionService.getSecQuestions();
+        model.addAttribute("secQuestions", securityQuestions);
         return "cust/register/registration";
     }
 
@@ -406,19 +411,11 @@ public class UserRegController {
         securityQuestion.add(secQuestion);
         List<String> securityAnswer = new ArrayList();
         securityAnswer.add(secAnswer);
-        //securityService.setUserQA(userName, securityQuestion, securityAnswer);
 
         //phishing image
-        List<String> phishingSec = new ArrayList<>();
         byte[] encodedBytes = Base64.encodeBase64(phishing.getBytes());
         System.out.println("encodedBytes " + new String(encodedBytes));
         String encPhishImage = new String(encodedBytes);
-
-        phishingSec.add(encPhishImage);
-
-        List<String> captionSec = new ArrayList<>();
-        captionSec.add(caption);
-
 
         RetailUserDTO retailUserDTO = new RetailUserDTO();
         retailUserDTO.setUserName(userName);
@@ -428,8 +425,8 @@ public class UserRegController {
         retailUserDTO.setBvn(bvn);
         retailUserDTO.setSecurityQuestion(securityQuestion);
         retailUserDTO.setSecurityAnswer(securityAnswer);
-        retailUserDTO.setPhishingSec(phishingSec);
-        retailUserDTO.setCaptionSec(captionSec);
+        retailUserDTO.setPhishingSec(encPhishImage);
+        retailUserDTO.setCaptionSec(caption);
         try {
             String message = retailUserService.addUser(retailUserDTO, details);
             logger.info("MESSAGE", message);
@@ -446,7 +443,7 @@ public class UserRegController {
 
     private void doesUserExist(String customerId){
         RetailUser user = retailUserService.getUserByCustomerId(customerId);
-        if (user != null || !"".equals(user)){
+        if (user != null){
             throw new InternetBankingException(messageSource.getMessage("user.reg.exists", null, locale));
         }
     }
@@ -458,17 +455,23 @@ public class UserRegController {
         resetPasswordForm.step = "1";
         resetPasswordForm.username = (String) session.getAttribute("username");
         Map<List<String>, List<String>> qa = securityService.getUserQA((String) session.getAttribute("username"));
-        String secQuestion="";
-        if (qa != null){
+        if (qa != null || !qa.isEmpty()){
             Set<List<String>> questions= qa.keySet();
             Iterator it = questions.iterator();
+            String secQuestion = "";
             while(it.hasNext()){
                 logger.info("SEC QUESTION {}", it);
                 List<String> question = ( List<String> )it.next();
                 secQuestion = question.stream().filter(Objects::nonNull).findFirst().orElse("");
                 logger.info("question {}", secQuestion);
             }
-            model.addAttribute("secQuestion", secQuestion);
+            if (secQuestion.equals("") || secQuestion == null){
+                redirectAttributes.addFlashAttribute("failure", "Invalid Credentials");
+                return "redirect:/login/retail";
+            }else{
+                model.addAttribute("secQuestion", secQuestion);
+            }
+
         }else {
             redirectAttributes.addFlashAttribute("failure", "Invalid Credentials");
             return "redirect:/login/retail";

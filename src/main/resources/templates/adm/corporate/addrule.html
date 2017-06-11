@@ -27,7 +27,7 @@
             <div class="">
                 <div class="page-title">
                     <div class="title_left">
-                        <!--<h3 th:text="${corporate.companyName}"></h3>-->
+                        <h3 th:text="${corporate.name}"></h3>
                     </div>
 
                 </div>
@@ -85,28 +85,38 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <br/>
+                                        <hr/>
                                         <div class="form-group">
-                                            <label class="col-sm-2 control-label">Select Authorizers</label>
+                                            <label class="col-sm-2 control-label">Select Roles</label>
                                             <div class="col-sm-6">
-                                                <p th:each="user: ${authUserList}">
+                                                <p th:each="role: ${roleList}">
                                                     <label class="checkbox-inline">
-                                                    <input type="checkbox" th:field="*{authorizers}"
-                                                           th:value="${user.id}"/>
-                                                    <span th:text="${user.firstName + ' ' + user.lastName}"></span>
+                                                    <input type="checkbox" th:field="*{roles}"
+                                                           th:value="${role.id}"/>
+                                                    <span th:text="${role.name}+' '+${role.rank}"></span>
                                                     </label>
                                                 </p>
                                             </div>
                                         </div>
-
+<hr/>
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">Check If</label>
                                             <div class="col-sm-8">
-
+                                                <p>
+                                                <label class="checkbox-inline">
                                                 <input id="anyAuthorizer" type="checkbox" class="checkbox-inline"
                                                        th:field="*{anyCanAuthorize}"/>
-                                                <label><strong>Any of the users selected above can authorize
-                                                    transactions</strong></label>
+                                                    <span>Any of the roles selected above can authorize
+                                                    transactions</span>
+                                                </label>
+                                                </p><p>
+                                                    <label class="checkbox-inline">
+
+                                                    <input id="rank" type="checkbox" class="checkbox-inline" th:field="*{rank}"/>
+                                                    <span>Follow role order for authorization</span>
+                                                    </label>
+                                            </p>
+
                                             </div>
                                         </div>
 

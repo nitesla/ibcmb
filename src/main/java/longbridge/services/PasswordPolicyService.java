@@ -59,7 +59,7 @@ public class PasswordPolicyService {
     private int noOfSpecial = 0;
     private int minLength = 8;
     private int maxLength = 255;
-    private String specialCharacters = "~!@#$%^&;'?.";
+    private String specialCharacters = "@#$%&";
     private int numOfChanges = 0;
     private boolean initialized = false;
 
@@ -137,7 +137,6 @@ public class PasswordPolicyService {
 
     public String generatePassword() {
         init();
-
         return passwordCreator.generatePassword(minLength, numOfDigits, noOfSpecial, specialCharacters);
     }
 

@@ -20,7 +20,7 @@
                     <div class="col-md-6 col-sm-6">
                         <div class="form-group">
                             <label>Beneficiary Type</label>
-                            <select name="beneficiaryType" id="benType" class="form-control">
+                            <span class="req"></span><select name="beneficiaryType" id="benType" class="form-control">
                                 <option th:value="local">Other Banks</option>
                                 <option th:value="foreign">Foreign Banks</option>
                                 <option th:value="intrabank">Coronation Bank</option>
@@ -33,6 +33,7 @@
                             <input type="hidden" th:value="local" class="form-control"/>
                             <div class="form-group">
                                 <label>Bank Details</label>
+                                <span class="req"></span>
                                 <select name="beneficiaryBank" id="beneficiaryBank" class="form-control"
                                         th:field="*{beneficiaryBank}" required="required">
                                     <option th:each="bank : ${localBanks}" th:value="${bank.institutionCode}"
@@ -41,7 +42,7 @@
                             </div>
                             <div class="form-group">
                                 <label>Account Number</label>
-                                <input type="text" id="acct_num" name="acct_num" class="form-control"
+                                <span class="req"></span><input type="text" id="acct_num" name="acct_num" class="form-control"
                                        th:field="*{accountNumber}" placeholder="Account Number"/>
                                 <p class="errors" th:if="${#fields.hasErrors('accountNumber')}"
                                    th:errors="*{accountNumber}">&times;</p>
@@ -50,7 +51,7 @@
 
                             <div class="form-group">
                                 <label>Account Name</label>
-                                <input type="text" id="acct_name" name="acct_name" class="form-control"
+                                <span class="req"></span><input type="text" id="acct_name" name="acct_name" class="form-control"
                                        th:field="*{accountName}" placeholder="Beneficiary Name" readonly="readonly"/>
                                 <p class="errors" th:if="${#fields.hasErrors('accountName')}"
                                    th:errors="*{accountName}">&times;</p>
@@ -72,7 +73,7 @@
                             <input type="hidden" th:value="foreign" class="form-control"/>
                             <div class="form-group">
                                 <label>Bank Details</label>
-                                <select th:field="*{beneficiaryBank}" class="form-control">
+                                <span class="req"></span><select th:field="*{beneficiaryBank}" class="form-control">
                                     <option th:each="bank : ${foreignBanks}" th:value="${bank.institutionCode}"
                                             th:text="${bank.institutionName}"></option>
 
@@ -81,35 +82,38 @@
                             <div class="form-group">
 
                                 <label>Swift Code</label>
-                                <input type="text" class="form-control" name="swiftCode" placeholder="Bank SWIFT Code"
+                                <span class="req"></span><input type="text" class="form-control" name="swiftCode" placeholder="Bank SWIFT Code"
                                        th:field="*{swiftCode}" required="required"/>
                             </div>
                             <div class="form-group">
-                                <input type="text" class="form-control" name="sortCode" placeholder="Bank Sort Code"
+                                <label>Sort Code</label>
+                                <span class="req"></span><input type="text" class="form-control" name="sortCode" placeholder="Bank Sort Code"
                                        th:field="*{sortCode}" required="required"/>
                             </div>
                             <div class="form-group">
-                                <input type="text" class="form-control" name="accountName"
+                                <span class="req"></span><input type="text" class="form-control" name="accountName"
                                        placeholder="Beneficiary Name" th:field="*{accountName}" required="required"/>
                             </div>
 
                             <div class="form-group">
+
                                 <input type="text" class="form-control" name="accountNumber"
                                        placeholder="Beneficiary Account Number" th:field="*{accountNumber}"
                                        required="required"/>
+
                             </div>
                             <div class="form-group">
                                 <label>Beneficiary Address</label>
-                                <textarea name="beneficiaryAddress" class="form-control"
+                                <span class="req"></span><textarea name="beneficiaryAddress" class="form-control"
                                           th:field="*{beneficiaryAddress}"></textarea>
                             </div>
                             <div class="form-group">
 
-                                <input type="text" class="form-control" name="intermediaryBankName"
+                                <span class="req"></span><input type="text" class="form-control" name="intermediaryBankName"
                                        placeholder="Intermediary Bank Name" th:field="*{intermediaryBankName}"/>
                             </div>
                             <div class="form-group">
-                                <input type="text" class="form-control" name="intermediaryBankAcctNo"
+                                <span class="req"></span><input type="text" class="form-control" name="intermediaryBankAcctNo"
                                        placeholder="Intermediary Bank Account Number"
                                        th:field="*{intermediaryBankAcctNo}"/>
 
@@ -121,7 +125,7 @@
                             <input type="hidden" th:value="intrabank" class="form-control"/>
                             <div class="form-group">
                                 <label>Beneficiary Bank</label>
-                                <select name="beneficiaryBank" class="form-control" th:field="*{beneficiaryBank}"
+                                <span class="required"></span><select name="beneficiaryBank" class="form-control" th:field="*{beneficiaryBank}"
                                         required="required">
                                     <option th:value="${bankCode}">Coronation Merchant Bank</option>
                                 </select>
@@ -129,14 +133,14 @@
                             </div>
                             <div class="form-group">
                                 <label>Account Number</label>
-                                <input type="text" class="form-control" name="accountNumber" th:field="*{accountNumber}"
+                                <span class="required"></span><input type="text" class="form-control" name="accountNumber" th:field="*{accountNumber}"
                                        id="iacct_num" placeholder="Account Number" required="required"/>
 
                             </div>
 
                             <div class="form-group">
                                 <label>Account Name</label>
-                                <input type="text" class="form-control" name="accountNumber" th:field="*{accountName}"
+                                <span class="required"></span><input type="text" class="form-control" name="accountNumber" th:field="*{accountName}"
                                        id="iacct_name" readonly="readonly" required="required"/>
                                 <label
                                         th:if="${#fields.hasErrors('accountName')}" th:errors="*{accountName}"

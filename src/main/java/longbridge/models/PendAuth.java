@@ -16,17 +16,18 @@ import javax.persistence.ManyToOne;
 public class PendAuth extends AbstractEntity {
 
     @ManyToOne
-    private CorporateUser authorizer;
+    private CorporateRole role;
 
     @ManyToOne
     CorpTransRequest corpTransferRequest;
 
-    public CorporateUser getAuthorizer() {
-        return authorizer;
+
+    public CorporateRole getRole() {
+        return role;
     }
 
-    public void setAuthorizer(CorporateUser authorizer) {
-        this.authorizer = authorizer;
+    public void setRole(CorporateRole role) {
+        this.role = role;
     }
 
     public CorpTransRequest getCorpTransferRequest() {
