@@ -53,7 +53,7 @@ public interface SecurityService {
      *
      * @param username the username of the required user
      */
-    boolean synchronizeToken(String username,String sNo,String tokenResp1,String tokenResp2) throws InternetBankingTransferException;
+    boolean synchronizeToken(String username, String sNo, String tokenResp1, String tokenResp2) throws InternetBankingTransferException;
 
     boolean sendOtp(String username) throws InternetBankingTransferException;
 
@@ -69,18 +69,23 @@ public interface SecurityService {
 
     void setUserQA(String username, List<String> questions, List<String> answer) throws InternetBankingTransferException;
 
-   Map< List<String>, List<String>> getUserQA(String username) throws InternetBankingTransferException;
-   Map< List<String>, List<String>> getMutualAuth(String username) throws InternetBankingTransferException;
+    Map<List<String>, List<String>> getUserQA(String username) throws InternetBankingTransferException;
 
-    void  setMutualAuth(String username,List<String> mutualCaption, List<String> mutualImage);
-    void  setMutualAuthX(String username,String mutualCaption, String mutualImagePath);
-    void  setMutualAuth(String username,List<String> mutualCaption, List<String> mutualImage ,String token);
-   String getTokenSerials(String username);
-   boolean unLockUser(String username);
-   boolean updateUser(String username,String fullName,boolean enableOtp);
-   boolean addUserContacts(String email,String phone,boolean phoneDefault,String userName);
+    Map<List<String>, List<String>> getMutualAuth(String username) throws InternetBankingTransferException;
 
+    void setMutualAuth(String username, List<String> mutualCaption, List<String> mutualImage);
 
+    void setMutualAuth(String username, String mutualCaption, String mutualImagePath);
+
+    void setMutualAuth(String username, List<String> mutualCaption, List<String> mutualImage, String token);
+
+    String getTokenSerials(String username);
+
+    boolean unLockUser(String username);
+
+    boolean updateUser(String username, String fullName, boolean enableOtp);
+
+    boolean addUserContacts(String email, String phone, boolean phoneDefault, String userName);
 
 
 }

@@ -49,6 +49,7 @@ public interface LocalBeneficiaryService {
      */
     @PreAuthorize("hasAuthority('GET_BENEFICIARIES')")
     Iterable<LocalBeneficiary> getLocalBeneficiaries(RetailUser user);
+    Iterable<LocalBeneficiary> getBankBeneficiaries(RetailUser user);
 
 
     List<LocalBeneficiaryDTO> convertEntitiesToDTOs(Iterable<LocalBeneficiary> localBeneficiaries);

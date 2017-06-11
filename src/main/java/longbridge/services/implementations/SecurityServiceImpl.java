@@ -500,7 +500,7 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
-    public void setMutualAuthX(String username, String mutualCaption, String mutualImagePath) {
+    public void setMutualAuth(String username, String mutualCaption, String mutualImagePath) {
 
         try {
             StringWriter writer = new StringWriter();

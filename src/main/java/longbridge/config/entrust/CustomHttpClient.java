@@ -33,8 +33,8 @@ public class CustomHttpClient {
 //    private static  String FI_WSDL_URL = getServerUrl();
     private final int CONNECTION_TIMEOUT = 20000;//in milli seconds
 
-    // @Value("${ENTRUST.URL}")
-    private String ENTRUST_WSDL_URL = "http://132.10.200.201:8080/cmb-entrust-webservicetest/ws?wsdl";
+    @Value("${ENTRUST.URL}")
+    private String ENTRUST_WSDL_URL ;//="http://132.10.200.201:8080/cmb-entrust-webservicetest/ws?wsdl";
 
 
     public CustomHttpClient() {
