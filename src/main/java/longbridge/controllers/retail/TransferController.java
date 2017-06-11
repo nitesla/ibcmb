@@ -110,14 +110,20 @@ public class TransferController {
 
         List<String> accountList = new ArrayList<>();
 
+        try {
+            Iterable<Account> accounts = accountService.getAccountsForCredit(accountService.getAccountByAccountNumber(accountId).getCustomerId());
 
-        Iterable<Account> accounts = accountService.getAccountsForCredit(accountService.getAccountByAccountNumber(accountId).getCustomerId());
+            StreamSupport.stream(accounts.spliterator(), false)
+                    .filter(Objects::nonNull)
+                    .filter(i -> !i.getAccountNumber().equalsIgnoreCase(accountId))
+                    .forEach(i -> accountList.add(i.getAccountNumber()))
+            ;
 
-        StreamSupport.stream(accounts.spliterator(), false)
-                .filter(Objects::nonNull)
-                .filter(i -> !i.getAccountNumber().equalsIgnoreCase(accountId))
-                .forEach(i -> accountList.add(i.getAccountNumber()))
-        ;
+        } catch (Exception e) {
+
+        }
+
+
         return accountList;
 
 
@@ -128,7 +134,13 @@ public class TransferController {
     public
     @ResponseBody
     String getAccountCurrency(@PathVariable String accountId) {
-        return accountService.getAccountByAccountNumber(accountId).getCurrencyCode();
+
+        try {
+            return accountService.getAccountByAccountNumber(accountId).getCurrencyCode();
+        } catch (Exception e) {
+            return "";
+        }
+
     }
 
 
@@ -136,7 +148,13 @@ public class TransferController {
     public
     @ResponseBody
     String getBankAccountName(@PathVariable String accountNo) {
-        return integrationService.viewAccountDetails(accountNo).getAcctName();
+
+        try {
+            return integrationService.viewAccountDetails(accountNo).getAcctName();
+        } catch (Exception e) {
+            return "";
+        }
+
 
     }
 
@@ -146,11 +164,15 @@ public class TransferController {
     @ResponseBody
     String getInterBankAccountName(@PathVariable String accountNo, @PathVariable String bank) {
 
+        try {
 
-        if (bank.equalsIgnoreCase(bankCode))  return integrationService.viewAccountDetails(accountNo).getAcctName();
+            if (bank.equalsIgnoreCase(bankCode)) return integrationService.viewAccountDetails(accountNo).getAcctName();
 
-        return (integrationService.doNameEnquiry(bank, accountNo)).getAccountName();
-        // return (integrationService.doNameEnquiry("000005",accountNo)).getAccountName();
+            return (integrationService.doNameEnquiry(bank, accountNo)).getAccountName();
+
+        } catch (Exception e) {
+            return "";
+        }
 
 
     }
@@ -175,7 +197,6 @@ public class TransferController {
 
             }
             transferRequestDTO = (TransferRequestDTO) request.getSession().getAttribute("transferRequest");
-
 
 
             transferRequestDTO = transferService.makeTransfer(transferRequestDTO);
