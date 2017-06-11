@@ -69,10 +69,10 @@ public interface SecurityService {
 
     void setUserQA(String username, List<String> questions, List<String> answer) throws InternetBankingTransferException;
 
-    Map<List<String>, List<String>> getUserQA(String username) throws InternetBankingTransferException;
+    Map<String, List<String>> getUserQA(String username) throws InternetBankingTransferException;
 
 
-    Map<List<String>, List<String>> getMutualAuth(String username) throws InternetBankingTransferException;
+    Map<String, List<String>> getMutualAuth(String username) throws InternetBankingTransferException;
 
 
     void setMutualAuth(String username, List<String> mutualCaption, List<String> mutualImage);

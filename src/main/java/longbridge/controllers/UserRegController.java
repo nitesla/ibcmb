@@ -129,10 +129,10 @@ public class UserRegController {
             RetailUser user = retailUserService.getUserByCustomerId(customerId);
             if (user != null){
                 logger.info("USER NAME {}", user.getUserName());
-                Map<List<String>, List<String>> qa = securityService.getUserQA(user.getUserName());
+                Map<String, List<String>> qa = securityService.getUserQA(user.getUserName());
                 //List<String> sec = null;
                 if (qa != null || !qa.isEmpty()){
-                    Set<List<String>> questions= qa.keySet();
+                   Set<String> questions= qa.keySet();
                     Iterator it = questions.iterator();
                     while(it.hasNext()){
                         logger.info("SEC QUESTION {}", it);
@@ -162,10 +162,10 @@ public class UserRegController {
 
         //confirm security question is correct
         String secAnswer="";
-        Map<List<String>, List<String>> qa = securityService.getUserQA((String) session.getAttribute("username"));
+        Map<String, List<String>> qa = securityService.getUserQA((String) session.getAttribute("username"));
         //List<String> sec = null;
         if (qa != null){
-            Set<List<String>> questions= qa.keySet();
+            Set<String> questions= qa.keySet();
             Iterator it = questions.iterator();
             while(it.hasNext()){
                 List<String> question = qa.get(it.next());
@@ -286,10 +286,10 @@ public class UserRegController {
 
             //confirm security question is correct
             String secAnswer="";
-            Map<List<String>, List<String>> qa = securityService.getUserQA(user.getUserName());
+            Map<String, List<String>> qa = securityService.getUserQA(user.getUserName());
             //List<String> sec = null;
             if (qa != null){
-                Set<List<String>> questions= qa.keySet();
+                Set<String> questions= qa.keySet();
                 Iterator it = questions.iterator();
                 while(it.hasNext()){
 
@@ -454,9 +454,9 @@ public class UserRegController {
         ResetPasswordForm resetPasswordForm = new ResetPasswordForm();
         resetPasswordForm.step = "1";
         resetPasswordForm.username = (String) session.getAttribute("username");
-        Map<List<String>, List<String>> qa = securityService.getUserQA((String) session.getAttribute("username"));
+        Map<String, List<String>> qa = securityService.getUserQA((String) session.getAttribute("username"));
         if (qa != null || !qa.isEmpty()){
-            Set<List<String>> questions= qa.keySet();
+            Set<String> questions= qa.keySet();
             Iterator it = questions.iterator();
             String secQuestion = "";
             while(it.hasNext()){
