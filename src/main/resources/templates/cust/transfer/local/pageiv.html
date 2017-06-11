@@ -76,15 +76,8 @@
                     <!--</div>-->
                 </div>
             </div>
-            <div th:fragment="sidebar" class="col-md-3 sidebar">
-                <div class="sidebar-bg calender">
-                    <div id="calendar" class="calendar"></div>
-                </div>
-                <div class="sidebar-bg">
-                    <img th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
-                </div>
+            <div th:replace="cust_layout :: sidebar" class="col-md-3 sidebar">
             </div>
-
         </div>
     </div>
 </section>
