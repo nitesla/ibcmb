@@ -47,11 +47,11 @@ public class IntegrationServiceImpl implements IntegrationService {
 
     @Autowired
     public IntegrationServiceImpl(RestTemplate template, MailService mailService, TemplateEngine templateEngine
-    ,ConfigurationService configService) {
+            , ConfigurationService configService) {
         this.template = template;
         this.mailService = mailService;
         this.templateEngine = templateEngine;
-        this.configService=configService;
+        this.configService = configService;
     }
 
 
@@ -126,7 +126,9 @@ public class IntegrationServiceImpl implements IntegrationService {
                     response = template.postForObject(uri, params, TransferDetails.class);
 
                     if (response != null) {
-                        transRequest.setStatus(response.getResponseDescription());
+
+                        transRequest.setStatus(response.getResponseCode());
+                         transRequest.setStatusDescription(response.getResponseDescription());
                         transRequest.setReferenceNumber(response.getUniqueReferenceCode());
                         transRequest.setNarration(response.getNarration());
 
@@ -198,12 +200,12 @@ public class IntegrationServiceImpl implements IntegrationService {
                 try {
                     response = template.postForObject(uri, params, TransferDetails.class);
                     if (response != null) {
-                        System.out.println("@@@@@ response " +response.getResponseDescription());
+                        System.out.println("@@@@@ response " + response.getResponseDescription());
                         transRequest.setNarration(response.getNarration());
                         transRequest.setReferenceNumber(response.getUniqueReferenceCode());
                         transRequest.setStatus(response.getResponseDescription());
                         return transRequest;
-                    }else{
+                    } else {
 
                         transRequest.setStatus(ResultType.ERROR.toString());
                         return transRequest;
@@ -404,23 +406,24 @@ public class IntegrationServiceImpl implements IntegrationService {
 
     public TransRequest sendTransfer(TransRequest transRequest) {
 
-        try{
+        try {
 
             Context scontext = new Context();
             scontext.setVariable("transRequest", transRequest);
-            String recipient="";
+            String recipient = "";
 
             String mail = templateEngine.process("/cust/transfer/mailtemplate", scontext);
             SettingDTO setting = configService.getSettingByName("BACK_OFFICE_EMAIL");
-            if ((setting.isEnabled())){
-                recipient= setting.getValue();
+            if ((setting.isEnabled())) {
+                recipient = setting.getValue();
             }
 
-            mailService.send(recipient,transRequest.getTransferType().toString(),mail);
+            mailService.send(recipient, transRequest.getTransferType().toString(), mail);
             transRequest.setStatus("Approved or completed successfully");
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-            transRequest.setStatus("FAILED TO SEND MAIL");
+            transRequest.setStatus("96");
+            transRequest.setStatusDescription("FAILED TO SEND A MAIL");
         }
 
         return transRequest;

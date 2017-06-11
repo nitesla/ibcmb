@@ -111,7 +111,9 @@ public class SecurityConfig {
                     .and()
                     .sessionManagement()
                     .invalidSessionUrl("/login/admin")
-                    .maximumSessions(1).sessionRegistry(sessionRegistry()).and()
+                    .maximumSessions(1)
+                    .expiredUrl("/login/admin?expired=true")
+                    .sessionRegistry(sessionRegistry()).and()
                     .sessionFixation().migrateSession().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                     .and()
                     .logout().logoutUrl("/admin/logout").logoutSuccessUrl("/login/admin").deleteCookies("JSESSIONID")
@@ -127,14 +129,7 @@ public class SecurityConfig {
         public void configure(WebSecurity web) throws Exception {
             new SecurityConfig().customConfig(web);
 
-//            web.expressionHandler(new DefaultWebSecurityExpressionHandler() {
-//                @Override
-//                protected SecurityExpressionOperations createSecurityExpressionRoot(Authentication authentication, FilterInvocation fi) {
-//                    WebSecurityExpressionRoot root = (WebSecurityExpressionRoot) super.createSecurityExpressionRoot(authentication, fi);
-//                    root.setDefaultRolePrefix(""); //remove the prefix ROLE_
-//                    return root;
-//                }
-//            });
+
         }
 
     }
@@ -182,7 +177,9 @@ public class SecurityConfig {
 
                     .sessionManagement()
                     .invalidSessionUrl("/invalidSession.html")
-                    .maximumSessions(1).sessionRegistry(sessionRegistry()).and()
+                    .maximumSessions(1)
+                    .expiredUrl("/login/ops")
+                    .sessionRegistry(sessionRegistry()).and()
                     .sessionFixation().migrateSession().invalidSessionUrl("/login/ops")
                     .and()
                     // logout
@@ -245,8 +242,10 @@ public class SecurityConfig {
                     //.failureForwardUrl()
                     .and()
                     .sessionManagement()
+
                     .invalidSessionUrl("/login/retail")
-                    .maximumSessions(1).sessionRegistry(sessionRegistry()).and()
+                    .maximumSessions(1)
+                    .expiredUrl("/login/retail?expired=true").sessionRegistry(sessionRegistry()).and()
                     .sessionFixation().migrateSession()
                     .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                     .invalidSessionUrl("/login/retail")

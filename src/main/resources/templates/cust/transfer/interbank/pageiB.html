@@ -71,6 +71,11 @@
             $('#acct_name').val("");
             $('.acctError').hide();
         });
+
+        $('#acct_num').change(function () {
+            $('#acct_name').val("");
+            $('.acctError').hide();
+        });
 //        sortSelect('#bank_code', 'text', 'asc');
 
         $("#bank_code").prop("selectedIndex", -1);
@@ -84,7 +89,7 @@
         var bank = $('#bank_code').val();
 
         if(( acct==null || acct=='' ) || ( bank==null || bank=='' )) {
-            console.log('AYOADE')
+
 
             $('.acctError').show().css("color", "red");
             return false;

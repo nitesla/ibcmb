@@ -18,7 +18,6 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.security.Principal;
 import java.util.Locale;
@@ -166,16 +165,18 @@ public class MainController {
     @PostMapping("/login/p/retail")
     public String step2(WebRequest webRequest, Model model, HttpSession session, RedirectAttributes redirectAttributes) {
         String username = webRequest.getParameter("username");
-//        String phishing = webRequest.getParameter("username");
+        String phishing = webRequest.getParameter("phishing");
 
         RetailUser user =  retailUserService.getUserByName(username);
-        if (user == null){
-            return "redirect:/login/retail/failure";
-
+        if (user != null && phishing != null) {
+            model.addAttribute("username", user.getUserName());
+            session.setAttribute("username", user.getUserName());
+            return "retaillogin";
         }
-        model.addAttribute("username", user.getUserName());
-        session.setAttribute("username", user.getUserName());
-        return "retaillogin";
+
+        redirectAttributes.addFlashAttribute("error", messageSource.getMessage("invalid.user", null, locale));
+        return "redirect:/login/retail/failure";
+
     }
 
 

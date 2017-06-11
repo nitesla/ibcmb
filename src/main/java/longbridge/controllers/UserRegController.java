@@ -199,12 +199,13 @@ public class UserRegController {
             logger.info("Reg Code : " + n);
             String message = "Your Registration Code is : ";
             message += n;
+            session.setAttribute("regCode", n);
 
             ObjectNode sent = integrationService.sendSMS(message, contact +
                     "" +
                     " ", "Internet Banking Registration Code");
             if (sent != null){
-                session.setAttribute("regCode", n);
+
 
                 return String.valueOf(n);
             }
@@ -215,6 +216,15 @@ public class UserRegController {
         }
 
         return code;
+    }
+
+    @GetMapping("/rest/regCode/check/{code}")
+    public @ResponseBody String checkRegCode(@PathVariable Integer code, HttpSession session){
+        Integer regCode = (Integer) session.getAttribute("regCode");
+        if (!code.equals(regCode)){
+            return "false";
+        }
+        return "true";
     }
 
 
@@ -238,14 +248,7 @@ public class UserRegController {
         return "true";
     }
 
-    @GetMapping("/rest/regCode/check/{code}")
-    public @ResponseBody String checkRegCode(@PathVariable Integer code, HttpSession session){
-        Integer regCode = (Integer) session.getAttribute("regCode");
-        if (!code.equals(regCode)){
-            return "false";
-        }
-        return "true";
-    }
+
 
 
 
@@ -350,7 +353,8 @@ public class UserRegController {
         List<String> policies = passwordPolicyService.getPasswordRules();
         model.addAttribute("policies", policies);
 
-        List<SecurityQuestions> securityQuestionss = securityQuestionService.getSecQuestions();
+        List<SecurityQuestions> securityQuestions = securityQuestionService.getSecQuestions();
+        model.addAttribute("secQuestions", securityQuestions);
         return "cust/register/registration";
     }
 
@@ -407,19 +411,11 @@ public class UserRegController {
         securityQuestion.add(secQuestion);
         List<String> securityAnswer = new ArrayList();
         securityAnswer.add(secAnswer);
-        //securityService.setUserQA(userName, securityQuestion, securityAnswer);
 
         //phishing image
-        List<String> phishingSec = new ArrayList<>();
         byte[] encodedBytes = Base64.encodeBase64(phishing.getBytes());
         System.out.println("encodedBytes " + new String(encodedBytes));
         String encPhishImage = new String(encodedBytes);
-
-        phishingSec.add(encPhishImage);
-
-        List<String> captionSec = new ArrayList<>();
-        captionSec.add(caption);
-
 
         RetailUserDTO retailUserDTO = new RetailUserDTO();
         retailUserDTO.setUserName(userName);
@@ -429,8 +425,8 @@ public class UserRegController {
         retailUserDTO.setBvn(bvn);
         retailUserDTO.setSecurityQuestion(securityQuestion);
         retailUserDTO.setSecurityAnswer(securityAnswer);
-        retailUserDTO.setPhishingSec(phishingSec);
-        retailUserDTO.setCaptionSec(captionSec);
+        retailUserDTO.setPhishingSec(encPhishImage);
+        retailUserDTO.setCaptionSec(caption);
         try {
             String message = retailUserService.addUser(retailUserDTO, details);
             logger.info("MESSAGE", message);

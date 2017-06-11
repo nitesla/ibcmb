@@ -138,6 +138,7 @@
                                         <p th:each="rule : ${policies}" th:text="${rule}"></p>
                                     </div>
                                 </div>
+<<<<<<< HEAD
                             </section>
                             <h3>Security Questions</h3>
                             <section>
@@ -155,6 +156,32 @@
                                             <br/>
                                             <span class='req'></span><input type="text" name="securityAnswer" class="form-control required" placeholder="Security Answer"/>
                                         </div>
+=======
+                                <input id="customerId" name="customerId" type="hidden"/>
+                            </div>
+
+                            <div class="col-md-4">
+                                <br/>
+                                <h5 style="font-size: 16px; font-weight: bolder;">Password tips</h5>
+                                <p th:each="rule : ${policies}" th:text="${rule}"></p>
+                            </div>
+                        </div>
+                    </section>
+                    <h3>Security Questions</h3>
+                    <section>
+                        <div class="row">
+                            <div class="col-md-offset-4 col-md-4">
+                                <input id="returnValue" type="hidden"/>
+                                    <div class="form-group clearfix">
+                                        <label>Question</label>
+                                        <select name="securityQuestion" class="form-control required">
+                                            <option th:each="question : ${secQuestions}" th:text="*{question.securityQuestion}"></option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group clearfix">
+                                        <label>Question</label>
+                                        <input type="text" name="securityAnswer" class="form-control required" placeholder="Security Answer"/>
+>>>>>>> 9e9c333e1c542e2ead64635fd2861c044400c448
                                     </div>
                                 </div>
                             </section>
@@ -168,12 +195,21 @@
                                         <div class="form-group">
                                             <label>Select Phishing Image</label>
 
+<<<<<<< HEAD
                                             <table>
                                                 <td th:each="image : ${images}" style="position: relative;">
                                                     <img th:src="${image}" width="100px" height="100px"/>
                                                     <input type="radio" name="phishing" th:value="${image}" id="check1" class="required" style="position: absolute; bottom: 20px; right: 20px;" />
                                                 </td>
                                             </table>
+=======
+                                    <table>
+                                        <td th:each="image : ${images}" style="position: relative;">
+                                            <img th:src="${image}" width="100px" height="100px"/>
+                                            <input type="radio" name="phishing" th:value="${image}" id="check1" class="req" style="position: absolute; bottom: 20px; right: 20px;" />
+                                        </td>
+                                    </table>
+>>>>>>> 9e9c333e1c542e2ead64635fd2861c044400c448
 
 
                                         </div>

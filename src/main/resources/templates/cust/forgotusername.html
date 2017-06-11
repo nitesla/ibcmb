@@ -77,7 +77,11 @@
                                         <br/>
                                         <div class="form-group">
                                             <label>Account Number</label>
+<<<<<<< HEAD
                                             <span class='req'></span><input style="width:100% !important" type="text" name="acct" class="form-control required" placeholder="Account Number"/>
+=======
+                                            <span class="required"></span><input type="text" name="acct" class="form-control required" placeholder="Account Number"/>
+>>>>>>> 9e9c333e1c542e2ead64635fd2861c044400c448
                                         </div>
                                     </div>
                                 </div>
@@ -97,7 +101,7 @@
                                         </div>
                                         <div class="form-group">
                                             <label>Security Answer</label>
-                                            <input th:value="${retUsernameForm.securityAnswer}" type="text" name="securityAnswer" class="form-control required" placeholder="Security Answer"/>
+                                            <span class="required"></span><input th:value="${retUsernameForm.securityAnswer}" type="text" name="securityAnswer" class="form-control required" placeholder="Security Answer"/>
                                         </div>
                                         <input id="returnValue" type="hidden"/>
                                         <input id="customerId" name="customerId" th:value="${retUsernameForm.customerId}" type="hidden"/>

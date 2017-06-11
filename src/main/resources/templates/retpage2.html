@@ -51,6 +51,7 @@
 <section class="content-wrapper">
     <div class="container">
         <div class="bg">
+<<<<<<< HEAD
             <div class="col-md-offset-3  col-sm-offset-2 col-md-6 col-sm-8 col-xs-12" style="margin-top:150px;" >
 
                 <div class='alert col-md-7 col-sm-7 col-xs-12' style="border:none">
@@ -65,6 +66,23 @@
                             </div>
                             <div class="">
                                 <button class="btn btn-primary form-control"> Login </button>
+=======
+            <div class="col-md-offset-4 col-md-6">
+                <form th:action="@{/login/p/retail}" method="POST" class="login-form" autocomplete="off">
+                    <h5 class="form-signin-heading">Enter Login Details</h5>
+                    <br/>
+                    <div class="row ">
+                        <div class="form-group col-md-7 col-sm-7 col-xs-7">
+                            <input type="text" name="username" th:value="*{username}" class="form-control" readonly="readonly" autocomplete="off"/>
+                        </div>
+                        <div class="col-md-7 col-sm-7 col-xs-7">
+                            <button class="btn btn-primary form-control"> Login </button>
+                        </div>
+                        <div>
+                            <div style="height:150px; ">
+                                <img width="130px" height="100px" style="padding:15px; margin-left: -50px; background-color: #F2F2F1;" th:src="@{/customer/img/cmb_logo.png}"/>
+                                <input type="checkbox" name="phishing" />
+>>>>>>> 9e9c333e1c542e2ead64635fd2861c044400c448
                             </div>
 
                         </div>
