@@ -80,9 +80,11 @@ public class InterBankTransferController {
         String type = request.getParameter("tranType");
 
         if (type.equalsIgnoreCase("NIP")) {
+
             request.getSession().setAttribute("NIP", "NIP");
             requestDTO.setTransferType(TransferType.INTER_BANK_TRANSFER);
         } else {
+            System.out.println("RTGS");
             request.getSession().setAttribute("NIP", "RTGS");
             requestDTO.setTransferType(TransferType.RTGS);
         }
@@ -140,9 +142,9 @@ public class InterBankTransferController {
 
         if (request.getSession().getAttribute("NIP") != null) {
             String type = (String) request.getSession().getAttribute("NIP");
-            if (type.equalsIgnoreCase("RTGS")) {
+            if (type.equalsIgnoreCase("RTGS"))
                 transferRequestDTO.setTransferType(TransferType.RTGS);
-            } else {
+            else {
                 transferRequestDTO.setTransferType(TransferType.INTER_BANK_TRANSFER);
             }
             request.getSession().removeAttribute("NIP");

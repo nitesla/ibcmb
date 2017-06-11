@@ -48,7 +48,7 @@ public class TransferServiceImpl implements TransferService {
 
     @Autowired
     public TransferServiceImpl(TransferRequestRepo transferRequestRepo, IntegrationService integrationService, TransactionLimitServiceImpl limitService, ModelMapper modelMapper, AccountService accountService, FinancialInstitutionService financialInstitutionService, ConfigurationService configurationService
-    ,RetailUserRepo retailUserRepo) {
+            , RetailUserRepo retailUserRepo) {
         this.transferRequestRepo = transferRequestRepo;
         this.integrationService = integrationService;
         this.limitService = limitService;
@@ -56,7 +56,7 @@ public class TransferServiceImpl implements TransferService {
         this.accountService = accountService;
         this.financialInstitutionService = financialInstitutionService;
         this.configService = configurationService;
-        this.retailUserRepo=retailUserRepo;
+        this.retailUserRepo = retailUserRepo;
     }
 
     public TransferRequestDTO makeTransfer(TransferRequestDTO transferRequestDTO) throws InternetBankingTransferException {
@@ -64,9 +64,16 @@ public class TransferServiceImpl implements TransferService {
         logger.trace("Transfer details valid {}", transferRequestDTO);
         TransRequest transRequest = integrationService.makeTransfer(convertDTOToEntity(transferRequestDTO));
         if (transRequest != null) {
+
             logger.trace("params {}", transRequest);
             saveTransfer(convertEntityToDTO(transRequest));
-            if (transRequest.getStatus().equalsIgnoreCase("Approved or completed successfully")||transRequest.getStatus().equals("00")) return convertEntityToDTO(transRequest);
+
+            if (transRequest.getStatus() != null){
+                if ( transRequest.getStatus().equalsIgnoreCase("Approved or completed successfully") || transRequest.getStatus().equals("00"))
+                    return convertEntityToDTO(transRequest);
+            }
+
+
             throw new InternetBankingTransferException(TransferExceptions.ERROR.toString());
         }
         throw new InternetBankingTransferException();
@@ -81,7 +88,7 @@ public class TransferServiceImpl implements TransferService {
     public Iterable<TransRequest> getTransfers(User user) {
         return transferRequestRepo.findAll()
                 .stream()
-                .filter(i -> i.getUserReferenceNumber().equalsIgnoreCase("RET_"+user.getId()))
+                .filter(i -> i.getUserReferenceNumber().equalsIgnoreCase("RET_" + user.getId()))
                 .collect(Collectors.toList());
 
     }
@@ -95,7 +102,7 @@ public class TransferServiceImpl implements TransferService {
             if (!(authentication instanceof AnonymousAuthenticationToken)) {
                 String currentUserName = authentication.getName();
                 RetailUser user = retailUserRepo.findFirstByUserName(currentUserName);
-                transRequest.setUserReferenceNumber("RET_"+user.getId());
+                transRequest.setUserReferenceNumber("RET_" + user.getId());
             }
             transferRequestRepo.save(transRequest);
             result = true;
@@ -118,12 +125,11 @@ public class TransferServiceImpl implements TransferService {
 
     }
 
-@Override
+    @Override
     public void validateTransfer(TransferRequestDTO dto) throws InternetBankingTransferException {
-        if (dto.getAmount().compareTo(new BigDecimal(0))<=0){
+        if (dto.getAmount().compareTo(new BigDecimal(0)) <= 0) {
 
         }
-
 
 
         if (dto.getBeneficiaryAccountNumber().equalsIgnoreCase(dto.getCustomerAccountNumber())) {
@@ -147,16 +153,17 @@ public class TransferServiceImpl implements TransferService {
         if (!acctPresent) {
             throw new InternetBankingTransferException(TransferExceptions.NO_DEBIT_ACCOUNT.toString());
         }
-       if(validateBalance()) {
-           validateBalance(dto);
-       }
+        if (validateBalance()) {
+            validateBalance(dto);
+        }
 
 
     }
+
     private boolean validateBalance() {
         SettingDTO setting = configService.getSettingByName("ACCOUNT_BALANCE_VALIDATION");
-        if(setting!=null&&setting.isEnabled()) {
-            return ("YES".equals(setting.getValue())?true:false);
+        if (setting != null && setting.isEnabled()) {
+            return ("YES".equals(setting.getValue()) ? true : false);
         }
         return true;
     }
@@ -185,8 +192,7 @@ public class TransferServiceImpl implements TransferService {
         return transferRequestDTOList;
     }
 
-    private void validateAccounts(TransferRequestDTO dto) throws InternetBankingTransferException
-    {
+    private void validateAccounts(TransferRequestDTO dto) throws InternetBankingTransferException {
         if (dto.getTransferType().equals(TransferType.OWN_ACCOUNT_TRANSFER) || dto.getTransferType().equals(TransferType.CORONATION_BANK_TRANSFER)) {
             if (integrationService.viewAccountDetails(dto.getCustomerAccountNumber()) == null)
                 throw new InternetBankingTransferException(TransferExceptions.INVALID_ACCOUNT.toString());
@@ -195,8 +201,8 @@ public class TransferServiceImpl implements TransferService {
 
 
         }
-        if (dto.getTransferType().equals(TransferType.INTER_BANK_TRANSFER)){
-            if (integrationService.doNameEnquiry(dto.getFinancialInstitution().getInstitutionCode(),dto.getBeneficiaryAccountNumber())==null)
+        if (dto.getTransferType().equals(TransferType.INTER_BANK_TRANSFER)) {
+            if (integrationService.doNameEnquiry(dto.getFinancialInstitution().getInstitutionCode(), dto.getBeneficiaryAccountNumber()) == null)
                 throw new InternetBankingTransferException(TransferExceptions.INVALID_BENEFICIARY.toString());
             if (integrationService.viewAccountDetails(dto.getCustomerAccountNumber()) == null)
                 throw new InternetBankingTransferException(TransferExceptions.INVALID_ACCOUNT.toString());

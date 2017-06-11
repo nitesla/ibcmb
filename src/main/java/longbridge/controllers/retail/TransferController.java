@@ -161,28 +161,32 @@ public class TransferController {
 
         try {
 
-            if (request.getSession().getAttribute("AUTH") != null) {
+            if (request.getSession().getAttribute("auth-needed") != null) {
                 String token = request.getParameter("token");
                 boolean ok = securityService.performTokenValidation(principal.getName(), token);
 
                 if (!ok) {
                     model.addAttribute("failure", messages.getMessage("auth.token.failure", null, locale));
-                    return "/cust//transfer/transferauth";
+                    return "/cust/transfer/transferauth";
                 } else {
-                    request.getSession().removeAttribute("AUTH");
+                    request.getSession().removeAttribute("auth-needed");
                 }
 
 
             }
             transferRequestDTO = (TransferRequestDTO) request.getSession().getAttribute("transferRequest");
 
+
+
             transferRequestDTO = transferService.makeTransfer(transferRequestDTO);
+
             request.getSession().removeAttribute("transferRequest");
 
 
             if (request.getSession().getAttribute("Lbeneficiary") != null) {
 
                 LocalBeneficiaryDTO l = (LocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary");
+                model.addAttribute("message", messages.getMessage("transaction.success", null, locale));
                 model.addAttribute("beneficiary", l);
                 return "/cust/transfer/transferbeneficiary";
             }
@@ -202,12 +206,13 @@ public class TransferController {
         }
     }
 
-    @GetMapping("/newbeneficiaary")
+    @GetMapping("/newbeneficiary")
     public String newbeneficiaary(HttpServletRequest request, Model model, Principal principal, RedirectAttributes attributes) throws Exception {
         if (request.getSession().getAttribute("Lbeneficiary") != null) {
             RetailUser user = retailUserService.getUserByName(principal.getName());
             LocalBeneficiaryDTO l = (LocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary");
             localBeneficiaryService.addLocalBeneficiary(user, l);
+            request.getSession().removeAttribute("Lbeneficiary");
         }
 
 

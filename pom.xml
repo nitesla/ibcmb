@@ -203,18 +203,14 @@
             <version>1.2.0</version>
         </dependency>
 
-        <dependency>
-            <groupId>com.oracle</groupId>
-            <artifactId>ojdbc7</artifactId>
-            <version>12.1.0</version>
-        </dependency>
+
 
         <dependency>
             <groupId>org.codehaus.jackson</groupId>
             <artifactId>jackson-core-asl</artifactId>
             <version>1.9.13</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/com.sun.xml.ws/jaxws-rt -->
+        <!-- https://mvnrepository.com/artifaitory.csun.xml.ws/jaxws-rt -->
         <!--<dependency>-->
             <!--<groupId>com.sun.xml.ws</groupId>-->
             <!--<artifactId>jaxws-rt</artifactId>-->
@@ -233,6 +229,12 @@
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
             <version>4.5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.oracle</groupId>
+            <artifactId>ojdbc6</artifactId>
+            <version>11.2.0</version>
         </dependency>
     </dependencies>
 

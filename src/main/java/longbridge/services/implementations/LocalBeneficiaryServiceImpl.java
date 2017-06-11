@@ -2,8 +2,10 @@ package longbridge.services.implementations;
 
 import longbridge.dtos.LocalBeneficiaryDTO;
 import longbridge.exception.InternetBankingException;
+import longbridge.exception.InternetBankingTransferException;
 import longbridge.models.LocalBeneficiary;
 import longbridge.models.RetailUser;
+import longbridge.models.User;
 import longbridge.repositories.LocalBeneficiaryRepo;
 import longbridge.services.LocalBeneficiaryService;
 import org.modelmapper.ModelMapper;
@@ -46,11 +48,13 @@ public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
         try {
             LocalBeneficiary localBeneficiary = convertDTOToEntity(beneficiary);
             localBeneficiary.setUser(user);
+            validateBeneficiary(localBeneficiary,user);
             this.localBeneficiaryRepo.save(localBeneficiary);
             logger.trace("Beneficiary {} has been added", localBeneficiary.toString());
             return messageSource.getMessage("beneficiary.add.success",null,locale);
         }catch (Exception e){
-            throw new InternetBankingException(messageSource.getMessage("beneficiary.add.failure",null, locale), e);
+            //throw new InternetBankingException(messageSource.getMessage("beneficiary.add.failure",null, locale), e);
+            throw new InternetBankingException(e.getMessage());
         }
 
 
@@ -103,6 +107,12 @@ public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
     @Override
     public LocalBeneficiary convertDTOToEntity(LocalBeneficiaryDTO localBeneficiaryDTO){
         return  modelMapper.map(localBeneficiaryDTO,LocalBeneficiary.class);
+    }
+
+    public void validateBeneficiary( LocalBeneficiary localBeneficiary,User user ){
+        if (localBeneficiaryRepo.findByUser_IdAndAccountNumber(user.getId(),localBeneficiary.getAccountNumber())!=null)
+            throw new InternetBankingException("beneficiary.exist");
+
     }
 
 }

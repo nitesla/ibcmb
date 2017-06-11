@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface LocalBeneficiaryRepo extends CommonRepo<LocalBeneficiary,Long>{
 
     Iterable<LocalBeneficiary> findByUser(RetailUser user);
+    LocalBeneficiary findByUser_IdAndAccountNumber(Long id,String acctNo);
 
     Iterable<LocalBeneficiary> findByUserAndDelFlag(RetailUser user, String delFlag);
 
