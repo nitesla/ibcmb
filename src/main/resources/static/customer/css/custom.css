@@ -154,6 +154,25 @@ span.req
     100% { transform: rotate(360deg); }
 }
 
+
+.tokenHeader
+{
+    font-size: 20px;
+    margin-bottom: 30px;
+}
+.text-black-req
+{
+    color: black !important;
+}
+
+
+.modal-box
+{
+    border-radius: 0px !important;
+    padding: 10px !important;
+    margin: 0px auto !important;
+    width:65%;
+}
 #load {
     position: absolute;
     left: 50%;

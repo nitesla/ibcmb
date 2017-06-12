@@ -160,7 +160,7 @@ public class TokenManagementController {
     }
 
     @PostMapping("/authenticate")
-    public String performAuthenticate(WebRequest webRequest, HttpSession session, Principal principal, RedirectAttributes redirectAttributes){
+    public String performAuthenticate(WebRequest webRequest, HttpSession session, Principal principal, Model model, RedirectAttributes redirectAttributes){
         String url;
         if (webRequest.getParameter("token") == null){
             redirectAttributes.addFlashAttribute("failure", "Enter authentication code");
@@ -173,13 +173,15 @@ public class TokenManagementController {
             try {
                 boolean result = securityService.performTokenValidation(principal.getName(), token);
                 if (!result){
-                    redirectAttributes.addFlashAttribute("failure", "Token Authentication Failed");
-                    return "redirect:/retail/token/authenticate";
+                    model.addAttribute("failure", "Token Authentication Failed");
+                    return "/cust/tokenauth";
+
                 }
             }catch(InternetBankingSecurityException ibe){
                 logger.error("Error authenticating token", ibe);
-                redirectAttributes.addFlashAttribute("failure", "Token Authentication Failed");
-                return "redirect:/token/authenticate";
+                model.addAttribute("failure", "Token Authentication Failed");
+                return "/cust/tokenauth";
+
 
             }
 
