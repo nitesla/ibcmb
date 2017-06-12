@@ -236,7 +236,21 @@ public class CorpTransferController {
     public String getPendingTransfer(Principal principal,Model model){
 
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
-        List<PendAuth> pendAuths =corporateUser.getCorporateRole().getPendAuths();
+
+        Corporate corporate = corporateUser.getCorporate();
+        Set<CorporateRole> roles = corporate.getCorporateRoles();
+        List<PendAuth> pendAuths = new ArrayList<>();
+        for(CorporateRole role: roles){
+            if(!role.getPendAuths().isEmpty()){
+                Set<CorporateUser> users = role.getUsers();
+                if(users.contains(corporateUser)) {
+                    pendAuths = role.getPendAuths();
+
+                }
+            }
+        }
+
+//        List<PendAuth> pendAuths =corporateUser.getCorporate().getCorporateRole().getPendAuths();
         model.addAttribute("pendAuths", pendAuths);
         return "corp/transfer/pendingtransfer/view";
     }
