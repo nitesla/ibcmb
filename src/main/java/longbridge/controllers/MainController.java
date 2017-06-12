@@ -18,10 +18,10 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.security.Principal;
-import java.util.Locale;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Created by Wunmi on 27/03/2017.
@@ -49,16 +49,17 @@ public class MainController {
 
 
     @RequestMapping(value = {"/", "/home"})
-    public String getHomePage(@RequestParam Optional<HttpSession> session) {
+    public String getHomePage(@RequestParam Optional<HttpServletRequest> request) {
 
-        if (session.isPresent()) session.get().invalidate();
+        if (request.isPresent()) request.get().getSession().invalidate();
 
         return "index";
     }
 
     @RequestMapping(value = "/login/retail", method = RequestMethod.GET)
-    public ModelAndView getLoginPage(@RequestParam Optional<String> error, @RequestParam Optional<HttpSession> session) {
-        if (session.isPresent()) session.get().invalidate();
+    public ModelAndView getLoginPage(@RequestParam Optional<String> error, @RequestParam Optional<HttpServletRequest> request) {
+
+        if (request.isPresent()) request.get().getSession().invalidate();
 
 
         return new ModelAndView("retpage1", "error", error);
@@ -156,8 +157,18 @@ public class MainController {
         RetailUser user =  retailUserService.getUserByName(username);
         if (user == null){
             return "redirect:/login/retail/failure";
-
         }
+
+//        Map<String, List<String>> mutualAuth =  securityService.getMutualAuth(username);
+//        String image = mutualAuth.get("imageSecret")
+//        .stream()
+//        .filter(Objects::nonNull)
+//        .findFirst()
+//        .orElse("");
+//
+//        logger.info("SECIMAGE{}", image);
+//
+//        model.addAttribute("secImage", image);
         model.addAttribute("username", user.getUserName());
         return "retpage2";
     }

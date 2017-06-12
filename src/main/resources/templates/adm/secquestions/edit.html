@@ -27,7 +27,7 @@
             <div class="">
                 <div class="page-title">
                     <div class="title_left">
-                        <h3>Financial Institution</h3>
+                        <h3>Security Question</h3>
                     </div>
 
                 </div>
@@ -46,14 +46,14 @@
                                         </ul>
                                         <div class="clearfix"></div>
                                     </div>
-                                    <form method="post" class="form-horizontal" th:action="@{/admin/secquestions/update}">
+                                    <form method="post" class="form-horizontal" th:action="@{/admin/secquestions/update}" th:object="${secQuestion}">
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">Security Question</label>
 
                                             <div class="col-sm-4">
-                                                <input type="hidden" class="form-control" th:field="${secQuestion.id}"/>
-                                                <input type="hidden" class="form-control" th:field="${secQuestion.version}"/>
-                                                <input type="text" class="form-control" th:field="${secQuestion.securityQuestion}"/>
+                                                <input type="hidden" class="form-control" th:field="*{id}"/>
+                                                <input type="hidden" class="form-control" th:field="*{version}"/>
+                                                <input type="text" class="form-control" th:field="*{securityQuestion}"/>
                                             </div>
                                         </div>
 
@@ -83,7 +83,7 @@
 <script>
 
     document.getElementById("cancel").onclick = function () {
-        location.href = "/admin/finst";
+        location.href = "/admin/secquestions";
     }
 </script>
 </body>

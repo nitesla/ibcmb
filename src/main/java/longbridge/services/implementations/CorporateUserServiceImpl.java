@@ -461,17 +461,16 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     public List<CorporateUserDTO> getUsersWithoutRole(Long corpId) {
         boolean withoutRole = true;
         Corporate corporate = corporateRepo.findOne(corpId);
-        List<CorporateUser> users = corporate.getUsers();
+        List<CorporateUser> users = corporateUserRepo.findByCorporate(corporate);
         Set<CorporateRole> roles =  corporate.getCorporateRoles();
         Set<CorporateUser> usersWithoutCorpRole = new HashSet<CorporateUser>();
         for(CorporateUser corporateUser: users){
             for(CorporateRole corporateRole: roles){
-                if(!corporateRole.getUsers().contains(corporateUser)){
-                   withoutRole= true;
+                if(corporateRole.getUsers().contains(corporateUser)){
+                   withoutRole= false;
+                   break;
                 }
-                else {
-                  withoutRole=false;
-                }
+
             }
             if(withoutRole){
                 usersWithoutCorpRole.add(corporateUser);

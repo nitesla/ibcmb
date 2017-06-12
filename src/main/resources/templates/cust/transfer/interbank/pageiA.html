@@ -30,7 +30,9 @@
                                 <thead>
                                 <tr>
                                 <th>Beneficiary name</th>
+                                    <th>Preferred name</th>
                                 <th>Bank</th>
+                                    <th>Account number</th>
 
                                 </tr>
                                 </thead>
@@ -39,6 +41,8 @@
 
                                 <tr th:each="loc : ${localBen}">
                                     <td th:text="${loc.accountName}"></td>
+                                    <td th:text="${loc.prefferedName}"></td>
+                                    <td th:text="${loc.beneficiaryBank}"></td>
                                      <td th:text="${loc.accountNumber}"></td>
 
                                     <td>

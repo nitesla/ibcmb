@@ -5,7 +5,7 @@ package longbridge.exception;
  */
 public enum TransferExceptions {
     BALANCE("transfer.balance.insufficient"), SAME_ACCOUNT("transfer.account.same"), NO_DEBIT_ACCOUNT("transfer.debit.invalid"), ERROR("transfer.send.failure")
-    ,INVALID_ACCOUNT("transfer.account.invalid"), INVALID_BENEFICIARY("transfer.beneficiary.invalid"),LIMIT_EXCEEDED("transfer.limit");
+    ,INVALID_ACCOUNT("transfer.account.invalid"), INVALID_BENEFICIARY("transfer.beneficiary.invalid"),LIMIT_EXCEEDED("transfer.limit"),INVALID_AMOUNT("");
 
 
     ;

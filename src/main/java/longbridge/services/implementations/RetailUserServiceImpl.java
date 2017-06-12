@@ -150,7 +150,7 @@ public class RetailUserServiceImpl implements RetailUserService {
                 throw new PasswordPolicyViolationException(errorMsg);
             }
 
-            String fullName = retailUser.getFirstName()+" "+retailUser.getLastName();
+            String fullName = user.getFirstName()+" "+user.getLastName();
             SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_CREATION");
             if (setting != null && setting.isEnabled()) {
                 if ("YES".equalsIgnoreCase(setting.getValue())) {
@@ -189,7 +189,7 @@ public class RetailUserServiceImpl implements RetailUserService {
         }
     }
 
-    private void setEntrustUserQA(String username, List<String> securityQuestion, List<String> securityAnswer, String fullName){
+    private void setEntrustUserQA(String username, String securityQuestion, String securityAnswer, String fullName){
         try{
             securityService.setUserQA(username, securityQuestion, securityAnswer);
         }catch (InternetBankingSecurityException e){

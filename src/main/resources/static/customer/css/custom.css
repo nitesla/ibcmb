@@ -20,12 +20,12 @@ start
 */
 
 
-.required:after { content:" * ";color:#ff6666;font-size: 13px;font-weight: bolder }
+.req:after { content:" * ";color:#ff6666;font-size: 13px;font-weight: bolder }
 
 
-.required ~ input
+.req ~ input
 {
-    width:80% !important;
+    width:100% !important;
     display: inline !important;
 }
 
@@ -47,7 +47,7 @@ label
     background: #F3F3F4;
 }
 
-span.required
+span.req
 {
     position: absolute;
     top:18px;
@@ -68,6 +68,62 @@ span.required
 .display-none
 {
     display: none;
+}
+
+
+#loader {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    z-index: 1;
+    width: 70px;
+    height: 70px;
+    margin: -75px 0 0 -75px;
+    border: 6px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 2px solid #D3B2A4;
+    background: rgba(200,200,200, 0.1);
+
+    -webkit-animation: spin 2s linear infinite;
+    animation: spin 2s linear infinite;
+}
+
+
+
+
+#myspan
+{
+    display: none;
+    width:100%;
+    margin-bottom: 10px;
+
+}
+
+#loa {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    z-index: 1;
+    width: 70px;
+    height: 70px;
+    margin: -75px 0 0 -75px;
+    border: 6px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 2px solid #D3B2A4;
+    background: rgba(200,200,200, 0.1);
+
+    -webkit-animation: spin 2s linear infinite;
+    animation: spin 2s linear infinite;
+}
+
+@-webkit-keyframes spin {
+    0% { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 
@@ -629,45 +685,45 @@ body {
 }
 
 /*.calender{*/
-    /*overflow: hidden;*/
-    /*position: inherit;*/
+/*overflow: hidden;*/
+/*position: inherit;*/
 /*}*/
 /*.calender .container{*/
-    /*padding: 0px;*/
-    /*margin: 0px;*/
+/*padding: 0px;*/
+/*margin: 0px;*/
 /*}*/
 /*.calender .col-md-3{*/
-    /*padding: 0px;*/
-    /*margin: 0px;*/
+/*padding: 0px;*/
+/*margin: 0px;*/
 /*}*/
 /*.showdate{*/
-    /*font-weight: 100;*/
-    /*font-size: 14px;*/
-    /*width: 100%*/
+/*font-weight: 100;*/
+/*font-size: 14px;*/
+/*width: 100%*/
 /*}*/
 /*.showdate .fa{*/
-    /*color: #C1C1C1;*/
-    /*cursor: hand;*/
+/*color: #C1C1C1;*/
+/*cursor: hand;*/
 /*}*/
 /*.dateMonth{*/
-    /*color: #032A4F;*/
+/*color: #032A4F;*/
 /*}*/
 /*.dateDay{*/
-    /*color: #9F614B;*/
+/*color: #9F614B;*/
 /*}*/
 /*.dateWeek{*/
-    /*margin: 0 65px 0 0;*/
-    /*color: #032A4F;*/
+/*margin: 0 65px 0 0;*/
+/*color: #032A4F;*/
 /*}*/
 /*.week{*/
-    /*font-size: 16px;*/
+/*font-size: 16px;*/
 /*}*/
 /*.hrhr{*/
-    /*color: #C1C1C1;*/
-    /*margin-right: 65px;*/
-    /*border: 1px solid;*/
-    /*padding-top: 0px;*/
-    /*margin-top: 0px;*/
+/*color: #C1C1C1;*/
+/*margin-right: 65px;*/
+/*border: 1px solid;*/
+/*padding-top: 0px;*/
+/*margin-top: 0px;*/
 /*}*/
 
 .underline{
@@ -884,8 +940,8 @@ button, input, optgroup, select, textarea {
 }
 
 /*table{*/
-    /*border-collapse:separate;*/
-    /*border-spacing:0 5px;*/
+/*border-collapse:separate;*/
+/*border-spacing:0 5px;*/
 /*}*/
 .table tbody tr{
     background-color: #fff;
@@ -951,18 +1007,18 @@ button, input, optgroup, select, textarea {
     }
 
     /*.phishing-img{*/
-        /*clear: both;*/
-        /*display: block;*/
-        /*position: relative;*/
-        /*z-index: 999;*/
-        /*!*left: -100px;*!*/
-        /*!*right: 45px;*!*/
-        /*!*top: -20px;*!*/
-        /*!*width: 100px;*!*/
-        /*!*margin: 0 0 10px 10px;*!*/
-        /*!*padding: 10px;*!*/
-        /*!*width: 400px;*!*/
-        /*!*height: 400px;*!*/
+    /*clear: both;*/
+    /*display: block;*/
+    /*position: relative;*/
+    /*z-index: 999;*/
+    /*!*left: -100px;*!*/
+    /*!*right: 45px;*!*/
+    /*!*top: -20px;*!*/
+    /*!*width: 100px;*!*/
+    /*!*margin: 0 0 10px 10px;*!*/
+    /*!*padding: 10px;*!*/
+    /*!*width: 400px;*!*/
+    /*!*height: 400px;*!*/
     /*}*/
 
     .blue-bg{
@@ -1138,7 +1194,7 @@ button, input, optgroup, select, textarea {
     }
 
     /*.phishing-img{*/
-        /*margin: 0 0 10px 100px;*/
+    /*margin: 0 0 10px 100px;*/
     /*}*/
 
     .carousel-caption {

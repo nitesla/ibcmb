@@ -21,31 +21,37 @@ form.children("div").steps({
     transitionEffect: "slideLeft",
     onStepChanging: function (event, currentIndex, newIndex)
     {
+
+
         form.validate().settings.ignore = ":disabled,:hidden";
         console.log(currentIndex);
         var isValid = form.valid();
+
         // Allways allow previous action even if the current form is not valid!
         if (currentIndex > newIndex)
         {
+            $("#myspan").hide();
+            loader.style.display = "none";
             return true;
         }
 
         // Needed in some cases if the user went back (clean up)
         if (currentIndex < newIndex)
-        {
+        {    $("#myspan").hide();
             // To remove error styles
             form.find(".body:eq(" + newIndex + ") label.error").remove();
             form.find(".body:eq(" + newIndex + ") .error").removeClass("error");
         }
 
         if(ACCOUNT_DETAILS_STEP === currentIndex){
+
             console.log("Current step is the account details step");
             var accountNumber = $('input[name="accountNumber"]').val();
 
             var email = $('input[name="email"]').val();
             console.log(email);
             var birthDate = $('input[name="birthDate"]').val();
-            return validateAccountDetails(accountNumber, email, birthDate);
+            return isValid && validateAccountDetails(accountNumber, email, birthDate);
 
         }
         if(PROFILE_DETAILS_STEP === currentIndex){
@@ -68,7 +74,11 @@ form.children("div").steps({
 
 
         form.validate().settings.ignore = ":disabled,:hidden";
+
+
         return form.valid();
+
+
     },
     onStepChanged: function (event, currentIndex, priorIndex)
     {
@@ -110,6 +120,8 @@ var customerId = "null";
  * @param accountNumber the account number to check
  */
 function validateAccountDetails(accountNumber, email, birthDate){
+    var loader = document.getElementById('loader');
+    loader.style.display = "block";
     if(email == ""){
         email = "ib@coronationmb.com"
     }
@@ -123,16 +135,26 @@ function validateAccountDetails(accountNumber, email, birthDate){
         async:false,
         success:function(data1){
             customerId = ''+String(data1);
+
             if(customerId == "" || customerId === null){
+
+                loader.style.display = "none";
                 //invalid account number
-                $.notify({
-                    title: '<strong></strong>',
-                    message: 'Invalid Account Number, Contact the bank'
-                },{
-                    type: 'danger'
-                });
+                // $.notify({
+                //     title: '<strong></strong>',
+                //     message: 'Invalid Account Number, Contact the bank'
+                // },{
+                //     type: 'danger'
+                // });
+
+                document.getElementById("myspan").textContent="Invalid Accouunt Credentials, Contact the bank";
+                $("#myspan").show();
+                loader.style.display = "none";
+
                 //alert("Account number not found");
             }else{
+                loader.style.display = "none";
+
                 //valid account number
                 //alert("Customer Id: " + customerId);
                 $('input[name=customerId]').val(customerId);
@@ -158,12 +180,15 @@ function validateUsername(username){
             if(result == 'false'){
                 //invalid account number
                 //alert("user name not found");
-                $.notify({
-                    title: '<strong></strong>',
-                    message: 'Username already exists'
-                },{
-                    type: 'danger'
-                });
+                // $.notify({
+                //     title: '<strong></strong>',
+                //     message: 'Username already exists'
+                // },{
+                //     type: 'danger'
+                // });
+
+                document.getElementById("myspan1").textContent="Username already exists";
+                $("#myspan1").show();
             }else{
                 //valid account number
                 //alert("user name: " + result);
@@ -190,12 +215,15 @@ function validatePassword(password){
             if(result == 'false'){
                 //invalid account number
                 //alert("user name not found");
-                $.notify({
-                    title: '<strong></strong>',
-                    message: 'the entered password might not meet the set password policy'
-                },{
-                    type: 'danger'
-                });
+                // $.notify({
+                //     title: '<strong></strong>',
+                //     message: 'The entered password might not meet the set password policy'
+                // },{
+                //     type: 'danger'
+                // });
+
+                document.getElementById("myspan1").textContent="The entered password might not meet the set password policy";
+                $("#myspan").show();
 
             }else{
                 //valid account number
@@ -223,12 +251,15 @@ function validateRegCode(code){
             if(result == 'false'){
                 //invalid account number
                 //alert("user name not found");
-                $.notify({
-                    title: '<strong></strong>',
-                    message: 'Enter the Registration code sent to your mobile'
-                },{
-                    type: 'danger'
-                });
+                // $.notify({
+                //     title: '<strong></strong>',
+                //     message: 'Enter the Registration code sent to your mobile'
+                // },{
+                //     type: 'danger'
+                // });
+
+                document.getElementById("myspan").textContent="Enter the Registration code sent to your mobile";
+                $("#myspan").show();
 
             }else{
                 //valid account number
@@ -247,6 +278,7 @@ function validateRegCode(code){
 
 
 function sendRegCode(){
+
     var accountNumber = $('input[name="accountNumber"]').val();
     var email = $('input[name="email"]').val();
     if(email == ""){
@@ -258,25 +290,11 @@ function sendRegCode(){
     }
     var result;
 
+    var loader = document.getElementById('loa');
+    loader.style.display = "block";
 
-    // $.notify({
-    //     title: '<strong>Oops!</strong>',
-    //     message: 'Registration Code has been sent to your phone'
-    // },{
-    //     type: 'success'
-    // });
 
-    //alert("sending reg code");
-    // $.notify({
-    //     title: '<strong>Oops!</strong>',
-    //     message: 'Registration Code has been sent to your phone'
-    // },{
-    //     type: 'message',
-    //     offset: {
-    //         x: $('#send').offset().left,
-    //         y: $('#send').offset().top
-    //     }
-    // });
+
 
 
 
@@ -286,17 +304,28 @@ function sendRegCode(){
         async:false,
         success:function(data1){
             result = ''+String(data1);
-            if(result === 'false' || result=== '' || result ==null){
+            if(result === 'false' || result=== '' || result === null){
+                loader.style.display = "none";
                 //invalid account number
                 //alert("user name not found");
-                $.notify({
-                    title: '<strong></strong>',
-                    message: 'Registration Code Not Valid'
-                },{
-                    type: 'danger'
-                });
+                // $.notify({
+                //     title: '<strong></strong>',
+                //     message: 'Failed to send registration code. Please try again.'
+                // },{
+                //     type: 'danger'
+                // });
+                document.getElementById("myspan2").textContent="Failed to send registration code. Please try again.";
+                $("#myspan2").show();
+
 
             }else{
+                loader.style.display = "none";
+                $("#myspan2").hide();
+                var showreg = document.getElementById('regcodebox');
+                showreg.style.display = "block";
+
+
+
                 //valid account number
                 //alert("code sent: " + result);
                 console.log(result);
@@ -322,12 +351,15 @@ function registerUser(){
                 if(data==="true"){
                     $('#returnValue').val(true);
                 }else {
-                    $.notify({
-                        title: '<strong></strong>',
-                        message: 'Self Registration Failed'
-                    },{
-                        type: 'danger'
-                    });
+                    // $.notify({
+                    //     title: '<strong></strong>',
+                    //     message: 'Self Registration Failed'
+                    // },{
+                    //     type: 'danger'
+                    // });
+
+                    document.getElementById("myspan").textContent="Self Registration Failed";
+                    $("#myspan").show();
                 }
             }
         });

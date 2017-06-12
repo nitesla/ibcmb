@@ -13,7 +13,6 @@ import longbridge.models.Email;
 import longbridge.models.RetailUser;
 import longbridge.models.SecurityQuestions;
 import longbridge.services.*;
-import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -129,10 +128,10 @@ public class UserRegController {
             RetailUser user = retailUserService.getUserByCustomerId(customerId);
             if (user != null){
                 logger.info("USER NAME {}", user.getUserName());
-                Map<List<String>, List<String>> qa = securityService.getUserQA(user.getUserName());
+                Map<String, List<String>> qa = securityService.getUserQA(user.getUserName());
                 //List<String> sec = null;
                 if (qa != null || !qa.isEmpty()){
-                    Set<List<String>> questions= qa.keySet();
+                   Set<String> questions= qa.keySet();
                     Iterator it = questions.iterator();
                     while(it.hasNext()){
                         logger.info("SEC QUESTION {}", it);
@@ -162,10 +161,10 @@ public class UserRegController {
 
         //confirm security question is correct
         String secAnswer="";
-        Map<List<String>, List<String>> qa = securityService.getUserQA((String) session.getAttribute("username"));
+        Map<String, List<String>> qa = securityService.getUserQA((String) session.getAttribute("username"));
         //List<String> sec = null;
         if (qa != null){
-            Set<List<String>> questions= qa.keySet();
+            Set<String> questions= qa.keySet();
             Iterator it = questions.iterator();
             while(it.hasNext()){
                 List<String> question = qa.get(it.next());
@@ -286,10 +285,10 @@ public class UserRegController {
 
             //confirm security question is correct
             String secAnswer="";
-            Map<List<String>, List<String>> qa = securityService.getUserQA(user.getUserName());
+            Map<String, List<String>> qa = securityService.getUserQA(user.getUserName());
             //List<String> sec = null;
             if (qa != null){
-                Set<List<String>> questions= qa.keySet();
+                Set<String> questions= qa.keySet();
                 Iterator it = questions.iterator();
                 while(it.hasNext()){
 
@@ -407,15 +406,16 @@ public class UserRegController {
 
 
         //security questions
-        List<String> securityQuestion = new ArrayList();
-        securityQuestion.add(secQuestion);
-        List<String> securityAnswer = new ArrayList();
-        securityAnswer.add(secAnswer);
+        String securityQuestion = secQuestion;
+        String securityAnswer = secAnswer;
 
         //phishing image
-        byte[] encodedBytes = Base64.encodeBase64(phishing.getBytes());
-        System.out.println("encodedBytes " + new String(encodedBytes));
-        String encPhishImage = new String(encodedBytes);
+        //byte[] encodedBytes = Base64.encodeBase64(phishing.getBytes());
+
+        String encPhishImage = java.util.Base64.getEncoder().encodeToString(phishing.getBytes());
+        logger.info("ENCODED STRING", encPhishImage);
+//        System.out.println("encodedBytes " + new String(encodedBytes));
+//        String encPhishImage = new String(encodedBytes);
 
         RetailUserDTO retailUserDTO = new RetailUserDTO();
         retailUserDTO.setUserName(userName);
@@ -454,9 +454,9 @@ public class UserRegController {
         ResetPasswordForm resetPasswordForm = new ResetPasswordForm();
         resetPasswordForm.step = "1";
         resetPasswordForm.username = (String) session.getAttribute("username");
-        Map<List<String>, List<String>> qa = securityService.getUserQA((String) session.getAttribute("username"));
+        Map<String, List<String>> qa = securityService.getUserQA((String) session.getAttribute("username"));
         if (qa != null || !qa.isEmpty()){
-            Set<List<String>> questions= qa.keySet();
+            Set<String> questions= qa.keySet();
             Iterator it = questions.iterator();
             String secQuestion = "";
             while(it.hasNext()){
