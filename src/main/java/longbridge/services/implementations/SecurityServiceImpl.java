@@ -463,13 +463,6 @@ public class SecurityServiceImpl implements SecurityService {
 
         }
 
-
-
-
-
-
-
-
     }
 
     @Override
@@ -494,8 +487,8 @@ public class SecurityServiceImpl implements SecurityService {
             logger.trace("response message code : {}", msg);
             if (!isSuccessful) throw new InternetBankingSecurityException(msg);
 
-            String questions = StringUtils.substringBetween(responseMessage, "  <questions>", "</questions>");
-            String answers = StringUtils.substringBetween(responseMessage, "  <answers>", "</answers>");
+            String questions = StringUtils.substringBetween(responseMessage, "<questions>", "</questions>");
+            String answers = StringUtils.substringBetween(responseMessage, "<answers>", "</answers>");
             List<String> questionList = Arrays.asList(questions);
             List<String> answerList = Arrays.asList(answers);
 
@@ -541,11 +534,11 @@ public class SecurityServiceImpl implements SecurityService {
             logger.trace("response message code : {}", msg);
             if (!isSuccessful) throw new InternetBankingSecurityException(msg);
 
-            String captions = StringUtils.substringBetween(responseMessage, "  <captionSecret>", "</captionSecret>");
-            String images = StringUtils.substringBetween(responseMessage, "  <imageSecret>", "</imageSecret>");
+            String captions = StringUtils.substringBetween(responseMessage, "<captionSecret>", "</captionSecret>");
+            String images = StringUtils.substringBetween(responseMessage, "<imageSecret>", "</imageSecret>");
             List<String> captionSecret= new ArrayList<>();
             List<String> imageSecret = new ArrayList<>();
-
+      logger.info("caption {}",captions);
           if (captions!=null)
               captionSecret.add(captions);
 

@@ -480,19 +480,15 @@ public class UserRegController {
         resetPasswordForm.username = (String) session.getAttribute("username");
         Map<String, List<String>> qa = securityService.getUserQA((String) session.getAttribute("username"));
         if (qa != null || !qa.isEmpty()){
-            Set<String> questions= qa.keySet();
-            Iterator it = questions.iterator();
-            String secQuestion = "";
-            while(it.hasNext()){
-                logger.info("SEC QUESTION {}", it);
-                List<String> question = ( List<String> )it.next();
-                secQuestion = question.stream().filter(Objects::nonNull).findFirst().orElse("");
-                logger.info("question {}", secQuestion);
-            }
-            if (secQuestion.equals("") || secQuestion == null){
+            List<String> questions= qa.get("questions");
+            List<String> answers= qa.get("answers");
+            String secQuestion = questions.get(0);
+
+            if (secQuestion == null || secQuestion.equals("")){
                 redirectAttributes.addFlashAttribute("failure", "Invalid Credentials");
                 return "redirect:/login/retail";
             }else{
+                session.setAttribute("secretAnswer", answers);
                 model.addAttribute("secQuestion", secQuestion);
             }
 
