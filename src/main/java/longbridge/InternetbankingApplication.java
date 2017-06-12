@@ -42,6 +42,7 @@ public class InternetbankingApplication /* extends SpringBootServletInitializer*
     public void run(String... strings) throws Exception {
 
     }
+
 }
 
 

@@ -17,6 +17,7 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -46,6 +47,7 @@ public class TransferServiceImpl implements TransferService {
     private ConfigurationService configService;
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
+
     @Autowired
     public TransferServiceImpl(TransferRequestRepo transferRequestRepo, IntegrationService integrationService, TransactionLimitServiceImpl limitService, ModelMapper modelMapper, AccountService accountService, FinancialInstitutionService financialInstitutionService, ConfigurationService configurationService
             , RetailUserRepo retailUserRepo) {
@@ -59,6 +61,8 @@ public class TransferServiceImpl implements TransferService {
         this.retailUserRepo = retailUserRepo;
     }
 
+
+
     public TransferRequestDTO makeTransfer(TransferRequestDTO transferRequestDTO) throws InternetBankingTransferException {
         validateTransfer(transferRequestDTO);
         logger.trace("Transfer details valid {}", transferRequestDTO);
@@ -69,7 +73,7 @@ public class TransferServiceImpl implements TransferService {
             saveTransfer(convertEntityToDTO(transRequest));
 
             if (transRequest.getStatus() != null){
-                if ( transRequest.getStatus().equalsIgnoreCase("Approved or completed successfully") || transRequest.getStatus().equals("00"))
+                if ( transRequest.getStatus().equalsIgnoreCase("000") || transRequest.getStatus().equals("00"))
                     return convertEntityToDTO(transRequest);
             }
 

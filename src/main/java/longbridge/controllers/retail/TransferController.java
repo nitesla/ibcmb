@@ -3,6 +3,7 @@ package longbridge.controllers.retail;
 
 import longbridge.dtos.LocalBeneficiaryDTO;
 import longbridge.dtos.TransferRequestDTO;
+import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferErrorService;
 import longbridge.models.Account;
@@ -228,17 +229,37 @@ public class TransferController {
     }
 
     @GetMapping("/newbeneficiary")
-    public String newbeneficiaary(HttpServletRequest request, Model model, Principal principal, RedirectAttributes attributes) throws Exception {
-        if (request.getSession().getAttribute("Lbeneficiary") != null) {
-            RetailUser user = retailUserService.getUserByName(principal.getName());
-            LocalBeneficiaryDTO l = (LocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary");
-            localBeneficiaryService.addLocalBeneficiary(user, l);
-            request.getSession().removeAttribute("Lbeneficiary");
+    public String newbeneficiaary(HttpServletRequest request, Locale locale, Principal principal, RedirectAttributes attributes) throws Exception {
+
+
+        try {
+
+            if (request.getSession().getAttribute("Lbeneficiary") != null) {
+                RetailUser user = retailUserService.getUserByName(principal.getName());
+                LocalBeneficiaryDTO l = (LocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary");
+                localBeneficiaryService.addLocalBeneficiary(user, l);
+                request.getSession().removeAttribute("Lbeneficiary");
+            }
+
+
+            attributes.addFlashAttribute("message", "New Beneficiary Added");
+
+        } catch (InternetBankingException e) {
+
+            if (e.getMessage().equalsIgnoreCase("beneficiary.exist")) {
+
+                attributes.addFlashAttribute("failure", messages.getMessage("beneficiary.exist", null, locale));
+            } else {
+                messages.getMessage("beneficiary.add.failure", null, locale);
+                attributes.addFlashAttribute("failure", e.getMessage());
+            }
+
+
         }
 
 
-        attributes.addFlashAttribute("message", "New Beneficiary Added");
         return "redirect:/retail/dashboard";
+    }
 
     }
-}
+

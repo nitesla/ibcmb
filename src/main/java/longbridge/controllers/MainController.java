@@ -20,8 +20,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
 import java.security.Principal;
-import java.util.Locale;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Created by Wunmi on 27/03/2017.
@@ -156,8 +155,18 @@ public class MainController {
         RetailUser user =  retailUserService.getUserByName(username);
         if (user == null){
             return "redirect:/login/retail/failure";
-
         }
+
+//        Map<String, List<String>> mutualAuth =  securityService.getMutualAuth(username);
+//        String image = mutualAuth.get("imageSecret")
+//        .stream()
+//        .filter(Objects::nonNull)
+//        .findFirst()
+//        .orElse("");
+//
+//        logger.info("SECIMAGE{}", image);
+//
+//        model.addAttribute("secImage", image);
         model.addAttribute("username", user.getUserName());
         return "retpage2";
     }

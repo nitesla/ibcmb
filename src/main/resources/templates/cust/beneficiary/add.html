@@ -96,8 +96,11 @@
                             </div>
 
                             <div class="form-group">
-                                <span class="req"></span><input type="text" class="form-control" name="accountNumber"
-                                       placeholder="Beneficiary Account Number" th:field="*{accountNumber}" required="required"/>
+
+                                <input type="text" class="form-control" name="accountNumber"
+                                       placeholder="Beneficiary Account Number" th:field="*{accountNumber}"
+                                       required="required"/>
+
                             </div>
                             <div class="form-group">
                                 <label>Beneficiary Address</label>
@@ -126,12 +129,13 @@
                                         required="required">
                                     <option th:value="${bankCode}">Coronation Merchant Bank</option>
                                 </select>
+                                <p class="iacctError" style="display:none;">invalid account number or Bank details</p>
                             </div>
                             <div class="form-group">
                                 <label>Account Number</label>
                                 <span class="required"></span><input type="text" class="form-control" name="accountNumber" th:field="*{accountNumber}"
                                        id="iacct_num" placeholder="Account Number" required="required"/>
-                                <p class="iacctError" style="display:none;">invalid account number or Bank details</p>
+
                             </div>
 
                             <div class="form-group">
@@ -193,6 +197,11 @@
             $('#acct_name').val("");
             $('.acctError').hide();
         });
+
+        $('#acct_num').change(function () {
+            $('#acct_name').val("");
+            $('.acctError').hide();
+        });
 //        sortSelect('#beneficiaryBank', 'text', 'asc');
 
         $("#beneficiaryBank").prop("selectedIndex", -1);
@@ -205,7 +214,12 @@
         var acct = $('#acct_num').val();
         var bank = $('#beneficiaryBank').val();
 
-        console.log(acct);
+        if (( acct == null || acct == '' ) || ( bank == null || bank == '' )) {
+
+
+            $('.acctError').show().css("color", "red");
+            return false;
+        }
 
         var options = {
             type: 'GET',
@@ -237,14 +251,19 @@
     function getIntraBankAccountName() {
         //make sure alert message is not empty
         var acct = $('#iacct_num').val();
-        console.log(acct);
+        if (( acct == null || acct == '' )) {
+
+
+            $('.acctError').show().css("color", "red");
+            return false;
+        }
 
         var options = {
             type: 'GET',
             url: '/retail/transfer/local/' + acct + '/nameEnquiry',
 //					dataType: 'jsonp',
             error: function (xhr, textStatus, errorThrown) {
-                $('.acctError').show().css("color", "red");
+                $('.iacctError').show().css("color", "red");
             },
             success: function (data, textStatus) {
                 console.log(data);
