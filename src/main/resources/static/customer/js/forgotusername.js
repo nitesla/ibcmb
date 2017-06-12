@@ -17,8 +17,12 @@ function validateAccountNo(accountNumber){
             customerId = ''+String(data1);
             if(customerId == ""){
                 //invalid account number
-                document.getElementById("myspan").textContent="Ensure you put in a valid account number";
-                $("#myspan").show();
+                var error = document.getElementById("myspan");
+                    error.textContent="Ensure you put in a valid account number";
+               // $("#myspan").show();
+
+                error.style.display = "inline-block";
+
                 //alert("Account number not found");
             }else{
                 //valid account number

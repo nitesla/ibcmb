@@ -21,7 +21,8 @@ form.children("div").steps({
     transitionEffect: "slideLeft",
     onStepChanging: function (event, currentIndex, newIndex)
     {
-
+        var loader = document.getElementById('loader');
+        loader.style.display = "block";
 
         form.validate().settings.ignore = ":disabled,:hidden";
         console.log(currentIndex);
@@ -279,6 +280,9 @@ function validateRegCode(code){
 
 function sendRegCode(){
 
+
+
+
     var accountNumber = $('input[name="accountNumber"]').val();
     var email = $('input[name="email"]').val();
     if(email == ""){
@@ -290,7 +294,7 @@ function sendRegCode(){
     }
     var result;
 
-    var loader = document.getElementById('loa');
+    var loader = document.getElementById('load');
     loader.style.display = "block";
 
 
@@ -314,8 +318,9 @@ function sendRegCode(){
                 // },{
                 //     type: 'danger'
                 // });
-                document.getElementById("myspan2").textContent="Failed to send registration code. Please try again.";
+                document.getElementById("myspan1").textContent="Failed to send registration code. Please try again.";
                 $("#myspan2").show();
+
 
 
             }else{
