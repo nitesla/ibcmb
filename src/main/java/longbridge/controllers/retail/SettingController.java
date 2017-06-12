@@ -4,10 +4,7 @@ import longbridge.dtos.AccountDTO;
 import longbridge.dtos.CodeDTO;
 import longbridge.dtos.RetailUserDTO;
 import longbridge.dtos.SettingDTO;
-import longbridge.exception.PasswordException;
-import longbridge.exception.PasswordMismatchException;
-import longbridge.exception.PasswordPolicyViolationException;
-import longbridge.exception.WrongPasswordException;
+import longbridge.exception.*;
 import longbridge.forms.AlertPref;
 import longbridge.forms.CustChangePassword;
 import longbridge.forms.CustResetPassword;
@@ -63,9 +60,12 @@ public class SettingController {
     @Autowired
     private ConfigurationService configService;
 
-    @Autowired private FinancialInstitutionService financialInstitutionService;
-    @Autowired private MailService mailService;
-    @Autowired private MessageSource messageSource;
+    @Autowired
+    private FinancialInstitutionService financialInstitutionService;
+    @Autowired
+    private MailService mailService;
+    @Autowired
+    private MessageSource messageSource;
 
     @RequestMapping("/dashboard")
     public String getRetailDashboard(Model model, Principal principal) {
@@ -99,21 +99,21 @@ public class SettingController {
             redirectAttributes.addFlashAttribute("message", message);
             return "redirect:/retail/dashboard";
         } catch (WrongPasswordException wpe) {
-            model.addAttribute("failure",wpe.getMessage());
+            model.addAttribute("failure", wpe.getMessage());
             logger.error("Wrong password from retail user {}", user.getUserName(), wpe.toString());
             List<String> passwordPolicy = passwordPolicyService.getPasswordRules();
             logger.info("PASSWORD RULES {}", passwordPolicy);
             model.addAttribute("passwordRules", passwordPolicy);
             return "cust/settings/pword";
         } catch (PasswordPolicyViolationException pve) {
-            model.addAttribute("failure",pve.getMessage());
+            model.addAttribute("failure", pve.getMessage());
             logger.error("Password policy violation from retail user {} error {}", user.getUserName(), pve.toString());
             List<String> passwordPolicy = passwordPolicyService.getPasswordRules();
             logger.info("PASSWORD RULES {}", passwordPolicy);
             model.addAttribute("passwordRules", passwordPolicy);
             return "cust/settings/pword";
         } catch (PasswordMismatchException pme) {
-            model.addAttribute("failure",pme.getMessage());
+            model.addAttribute("failure", pme.getMessage());
             logger.error("New password mismatch from retail user {}", user.getUserName(), pme.toString());
             return "cust/settings/pword";
         } catch (PasswordException pe) {
@@ -163,21 +163,21 @@ public class SettingController {
                 return "redirect:/retail/token";
             }
             return "redirect:/retail/dashboard";
-        }catch (PasswordPolicyViolationException pve) {
-            model.addAttribute("failure",pve.getMessage());
+        } catch (PasswordPolicyViolationException pve) {
+            model.addAttribute("failure", pve.getMessage());
             logger.error("Password policy violation from retail user {} error {}", user.getUserName(), pve.toString());
             List<String> passwordPolicy = passwordPolicyService.getPasswordRules();
             logger.info("PASSWORD RULES {}", passwordPolicy);
             model.addAttribute("passwordRules", passwordPolicy);
             return "cust/settings/new-pword";
         } catch (PasswordMismatchException pme) {
-            model.addAttribute("failure",pme.getMessage());
+            model.addAttribute("failure", pme.getMessage());
             List<String> passwordPolicy = passwordPolicyService.getPasswordRules();
             model.addAttribute("passwordRules", passwordPolicy);
             logger.error("New password mismatch from retail user {}", user.getUserName(), pme.toString());
             return "cust/settings/new-pword";
         } catch (PasswordException pe) {
-            model.addAttribute("failure",pe.getMessage());
+            model.addAttribute("failure", pe.getMessage());
             logger.error("Error changing password for retail user {}", user.getUserName(), pe);
             List<String> passwordPolicy = passwordPolicyService.getPasswordRules();
             logger.info("PASSWORD RULES {}", passwordPolicy);
@@ -219,26 +219,34 @@ public class SettingController {
 
         return "cust/account/linkbvn";
     }
+
     @PostMapping("/bvn")
-    public String addBVN(Model model,Principal principal, HttpServletRequest request,Locale locale) {
-        String bvn=request.getParameter("bvn");
-        logger.info("BVN:"+bvn);
-        String beneBank=request.getParameter("beneficiaryBank");
-        logger.info("Bank:"+beneBank);
+    public String addBVN(Model model, Principal principal, HttpServletRequest request, Locale locale) {
+        String bvn = request.getParameter("bvn");
+        logger.info("BVN:" + bvn);
+        String beneBank = request.getParameter("beneficiaryBank");
+        logger.info("Bank:" + beneBank);
+
 
         RetailUser user = retailUserService.getUserByName(principal.getName());
 
-        SettingDTO setting = configService.getSettingByName("CUSTOMER_CARE_EMAIL");
-        if (setting != null && setting.isEnabled()) {
 
-            Email email = new Email.Builder()
-                    .setRecipient(setting.getValue())
-                    .setSubject(messageSource.getMessage("customer.bvn.link.subject", null, locale))
-                    .setBody(String.format(messageSource.getMessage("customer.bvn.link.message", null, locale), bvn, user))
-                    .build();
-            mailService.send(email);
-        }
-        return "cust/dashboard";
+            SettingDTO setting = configService.getSettingByName("CUSTOMER_CARE_EMAIL");
+            if (setting != null && setting.isEnabled()) {
+                try {
+                Email email = new Email.Builder()
+                        .setRecipient(setting.getValue())
+                        .setSubject(messageSource.getMessage("customer.bvn.link.subject", null, locale))
+                        .setBody(String.format(messageSource.getMessage("customer.bvn.link.message", null, locale), bvn, user))
+                        .build();
+                mailService.send(email);
+                    return messageSource.getMessage("bvn.add.success", null, locale);
+                } catch (Exception e) {
+                    throw new InternetBankingException(messageSource.getMessage("bvn.add.failure", null, locale), e);
+                }
+            }
+
+            return "redirect:/retail/dashboard";
     }
 
 
