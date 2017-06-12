@@ -71,7 +71,7 @@
 
                         <div class="col-md-5 col-sm-5 col-xs-12" style="margin-top:0px;border:none" >
                             <div>
-                                <img class='bg-danger' style='display:block;margin:0px auto;margin-top:0px;width:150px;padding:20px;' th:src="@{/customer/img/cmb_logo.png}"/>
+                                <img class='bg-danger' style='display:block;margin:0px auto;margin-top:0px;width:150px;padding:20px;' th:src="@{'data:image/jpeg;base64,' + ${secImage}}" />
                                 <input type="checkbox" style='display:block;margin:0px auto;' name="phishing"/>
                             </div>
                         </div>

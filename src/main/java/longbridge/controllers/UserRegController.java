@@ -16,6 +16,7 @@ import longbridge.services.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,6 +28,8 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.*;
 
 /**
@@ -62,6 +65,12 @@ public class UserRegController {
     private Locale locale;
 
     private Logger logger= LoggerFactory.getLogger(this.getClass());
+
+    @Value("${antiphishingimagepath}")
+    private String imagePath;
+
+    @Value("${antiphishingimagepath2}")
+    private String fullImagePath;
 
     @Autowired
     private PasswordPolicyService passwordPolicyService;
@@ -131,14 +140,11 @@ public class UserRegController {
                 Map<String, List<String>> qa = securityService.getUserQA(user.getUserName());
                 //List<String> sec = null;
                 if (qa != null || !qa.isEmpty()){
-                   Set<String> questions= qa.keySet();
-                    Iterator it = questions.iterator();
-                    while(it.hasNext()){
-                        logger.info("SEC QUESTION {}", it);
-                        List<String> question = ( List<String> )it.next();
-                        secQuestion = question.stream().filter(Objects::nonNull).findFirst().orElse("");
-                        logger.info("question {}", secQuestion);
-                    }
+
+                    List<String> question = qa.get("questions");
+                    secQuestion = question.stream().filter(Objects::nonNull).findFirst().orElse("");
+                    logger.info("question {}", secQuestion);
+
                 }else {
                     secQuestion = "";
                 }
@@ -242,7 +248,7 @@ public class UserRegController {
         String message = passwordPolicyService.validate(password, null);
 
         if (!"".equals(message)){
-            return "false";
+            return message;
         }
         return "true";
     }
@@ -288,14 +294,13 @@ public class UserRegController {
             Map<String, List<String>> qa = securityService.getUserQA(user.getUserName());
             //List<String> sec = null;
             if (qa != null){
-                Set<String> questions= qa.keySet();
-                Iterator it = questions.iterator();
-                while(it.hasNext()){
+                List<String> questions= qa.get("questions");
+                List<String> answers= qa.get("answers");
 
-                    List<String> question = qa.get(it.next());
-                    secAnswer = question.stream().filter(Objects::nonNull).findFirst().orElse("");
+
+                    secAnswer = answers.stream().filter(Objects::nonNull).findFirst().orElse("");
                     logger.info("answer {}", secAnswer);
-                }
+
 
                 if (!secAnswer.equals(securityAnswer)){
                     return "false";
@@ -343,11 +348,12 @@ public class UserRegController {
         model.addAttribute("registrationForm", registrationForm);
 
         List<String> images = new ArrayList<String>();
-        images.add("/assets/phishing/dog.jpg");
-        images.add("/assets/phishing/cheetah.jpg");
-        images.add("/assets/phishing/benz.jpg");
+        images.add("dog.jpg");
+        images.add("cheetah.jpg");
+        images.add("benz.jpg");
 
         model.addAttribute("images", images);
+        model.addAttribute("imagePath", imagePath);
 
         List<String> policies = passwordPolicyService.getPasswordRules();
         model.addAttribute("policies", policies);
@@ -409,11 +415,29 @@ public class UserRegController {
         String securityQuestion = secQuestion;
         String securityAnswer = secAnswer;
 
+        logger.info("Question" + secQuestion);
+        logger.info("Answer" + secAnswer);
+
         //phishing image
         //byte[] encodedBytes = Base64.encodeBase64(phishing.getBytes());
+        File image = new File(fullImagePath, phishing);
+        Long length = image.length();
+       // length <= Integer.MAX_VALUE;
+//TODO: check file is not bigger than max int
+        byte buffer[] = new byte[length.intValue()];
 
-        String encPhishImage = java.util.Base64.getEncoder().encodeToString(phishing.getBytes());
-        logger.info("ENCODED STRING", encPhishImage);
+
+        try {
+            FileInputStream fis = new FileInputStream(image);
+                int cnt = fis.read(buffer);
+                //ensure cnt == length
+        }catch (Exception e){
+            //TODO: handle exception
+        }
+
+        String encPhishImage = java.util.Base64.getEncoder().encodeToString(buffer);
+        logger.info("ENCODED STRING " + encPhishImage);
+
 //        System.out.println("encodedBytes " + new String(encodedBytes));
 //        String encPhishImage = new String(encodedBytes);
 

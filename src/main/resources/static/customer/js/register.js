@@ -212,22 +212,11 @@ function validatePassword(password){
         async:false,
         success:function(data1){
             result = ''+String(data1);
-            if(result == 'false'){
-                //invalid account number
-                //alert("user name not found");
-                // $.notify({
-                //     title: '<strong></strong>',
-                //     message: 'The entered password might not meet the set password policy'
-                // },{
-                //     type: 'danger'
-                // });
-
+            if(result === 'true'){
+                //success
+            }else{
                 document.getElementById("myspan1").textContent="The entered password might not meet the set password policy";
                 $("#myspan").show();
-
-            }else{
-                //valid account number
-                //alert("password: " + result);
             }
         }
     });
