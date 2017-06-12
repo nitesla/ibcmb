@@ -509,10 +509,23 @@ public class CorporateServiceImpl implements CorporateService {
         List<CorporateRole> roles = new ArrayList<>();
         if (applicableTransferRule != null) {
             roles = applicableTransferRule.getRoles();
+
+            if(applicableTransferRule.isRank()){
+                sortRolesByRank(roles);
+            }
         }
         return roles;
     }
 
+
+    private void sortRolesByRank(List<CorporateRole> roles){
+        Collections.sort(roles,new Comparator<CorporateRole>(){
+            @Override
+            public int compare(CorporateRole o1, CorporateRole o2) {
+                return o1.getRank().compareTo(o2.getRank());
+            }
+        });
+    }
 
     private CorporateRole convertCorporateRoleDTOToEntity(CorporateRoleDTO roleDTO) {
         CorporateRole corporateRole = new CorporateRole();

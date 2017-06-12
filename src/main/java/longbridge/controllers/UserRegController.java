@@ -13,7 +13,6 @@ import longbridge.models.Email;
 import longbridge.models.RetailUser;
 import longbridge.models.SecurityQuestions;
 import longbridge.services.*;
-import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -411,9 +410,12 @@ public class UserRegController {
         String securityAnswer = secAnswer;
 
         //phishing image
-        byte[] encodedBytes = Base64.encodeBase64(phishing.getBytes());
-        System.out.println("encodedBytes " + new String(encodedBytes));
-        String encPhishImage = new String(encodedBytes);
+        //byte[] encodedBytes = Base64.encodeBase64(phishing.getBytes());
+
+        String encPhishImage = java.util.Base64.getEncoder().encodeToString(phishing.getBytes());
+        logger.info("ENCODED STRING", encPhishImage);
+//        System.out.println("encodedBytes " + new String(encodedBytes));
+//        String encPhishImage = new String(encodedBytes);
 
         RetailUserDTO retailUserDTO = new RetailUserDTO();
         retailUserDTO.setUserName(userName);
