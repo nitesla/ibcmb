@@ -407,10 +407,8 @@ public class UserRegController {
 
 
         //security questions
-        List<String> securityQuestion = new ArrayList();
-        securityQuestion.add(secQuestion);
-        List<String> securityAnswer = new ArrayList();
-        securityAnswer.add(secAnswer);
+        String securityQuestion = secQuestion;
+        String securityAnswer = secAnswer;
 
         //phishing image
         byte[] encodedBytes = Base64.encodeBase64(phishing.getBytes());

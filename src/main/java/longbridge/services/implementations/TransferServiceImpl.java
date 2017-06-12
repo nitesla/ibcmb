@@ -13,6 +13,7 @@ import longbridge.services.*;
 import longbridge.utils.ResultType;
 import longbridge.exception.TransferExceptions;
 import longbridge.utils.TransferType;
+import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -197,6 +198,12 @@ public class TransferServiceImpl implements TransferService {
     }
 
     private void validateAccounts(TransferRequestDTO dto) throws InternetBankingTransferException {
+
+        if (!StringUtils.isNumeric(dto.getAmount().toString()) || dto.getAmount().compareTo(new BigDecimal(0))==0)
+            throw new InternetBankingTransferException(TransferExceptions.INVALID_AMOUNT.toString());
+
+
+
         if (dto.getTransferType().equals(TransferType.OWN_ACCOUNT_TRANSFER) || dto.getTransferType().equals(TransferType.CORONATION_BANK_TRANSFER)) {
             if (integrationService.viewAccountDetails(dto.getCustomerAccountNumber()) == null)
                 throw new InternetBankingTransferException(TransferExceptions.INVALID_ACCOUNT.toString());

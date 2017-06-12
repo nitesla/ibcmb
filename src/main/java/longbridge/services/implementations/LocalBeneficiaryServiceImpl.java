@@ -6,6 +6,7 @@ import longbridge.exception.InternetBankingTransferException;
 import longbridge.models.LocalBeneficiary;
 import longbridge.models.RetailUser;
 import longbridge.models.User;
+import longbridge.repositories.FinancialInstitutionRepo;
 import longbridge.repositories.LocalBeneficiaryRepo;
 import longbridge.services.LocalBeneficiaryService;
 import org.modelmapper.ModelMapper;
@@ -31,6 +32,8 @@ public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
     ModelMapper modelMapper;
     @Autowired
     MessageSource messageSource;
+    @Autowired
+    FinancialInstitutionRepo financialInstitutionRepo;
     Locale locale = LocaleContextHolder.getLocale();
     private LocalBeneficiaryRepo localBeneficiaryRepo;
     private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -65,7 +68,6 @@ public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
 
         try {
             this.localBeneficiaryRepo.delete(beneficiaryId);
-            logger.info("Beneficiary with Id {} deleted", beneficiaryId);
             return messageSource.getMessage("beneficiary.delete.success", null, locale);
         } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("beneficiary.delete.failure", null, locale), e);
@@ -118,6 +120,8 @@ public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
         if (localBeneficiaryRepo.findByUser_IdAndAccountNumber(user.getId(), localBeneficiary.getAccountNumber()) != null)
             throw new InternetBankingException("beneficiary.exist");
 
+        if (financialInstitutionRepo.findByInstitutionCode(localBeneficiary.getBeneficiaryBank())==null)
+            throw new InternetBankingException("transfer.beneficiary.invalid");
     }
 
 }
