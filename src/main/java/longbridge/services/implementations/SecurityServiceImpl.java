@@ -430,7 +430,43 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
-    public void setUserQA(String username, List<String> questions, List<String> answer) {
+    public void setUserQA(String username, String questions, String answer) {
+        try {
+            StringWriter writer = new StringWriter();
+            this.t = this.ve.getTemplate("entrust/performSetQA.vm");
+            this.context.put("appCode", appCode);
+            this.context.put("appDesc", appDesc);
+            this.context.put("userName", username);
+            this.context.put("appGroup", appGroup);
+            this.context.put("question", questions);
+            this.context.put("answer", answer);
+            this.t.merge(this.context, writer);
+            String payload = writer.toString();
+            EntrustServiceResponse webServiceResponse = httpClient.sendHttpRequest(payload);
+            String responseMessage = webServiceResponse.getResponseMessage();
+            logger.trace("response {}", responseMessage);
+            CharSequence charSequence = "<respCode>1</respCode>";
+            boolean isSuccessful = responseMessage.contains(charSequence);
+
+
+            String respMesg = StringUtils.substringBetween(responseMessage, "  <respMessageCode>", "</respMessageCode>");
+
+
+            logger.trace("response is {}", respMesg);
+            if (!isSuccessful) throw new InternetBankingSecurityException(respMesg);
+
+            logger.info("******************END RESPONSE***********");
+
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new InternetBankingSecurityException(e.getMessage(), e);
+
+        }
+
+
+
+
+
 
     }
 

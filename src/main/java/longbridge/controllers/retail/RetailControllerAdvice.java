@@ -135,26 +135,7 @@ public class RetailControllerAdvice {
         return "";
     }
 
-    @ModelAttribute
-    public void getLocalFinancialInstitutions(Model model) {
 
-        model.addAttribute("localBanks",
-                financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.LOCAL)
-                        .stream()
-                        .filter(i -> !i.getInstitutionCode().equals(bankCode))
-                        .collect(Collectors.toList())
-                        .stream()
-                        .sorted(Comparator.comparing(FinancialInstitutionDTO::getInstitutionName) )
-                        .collect(Collectors.toList())
-        );
-
-
-    }
-
-    @ModelAttribute
-    public void getBankCode(Model model){
-        model.addAttribute("bankCode",bankCode);
-    }
 
 
 }

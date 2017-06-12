@@ -18,6 +18,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.security.Principal;
 import java.util.*;
@@ -48,16 +49,17 @@ public class MainController {
 
 
     @RequestMapping(value = {"/", "/home"})
-    public String getHomePage(@RequestParam Optional<HttpSession> session) {
+    public String getHomePage(@RequestParam Optional<HttpServletRequest> request) {
 
-        if (session.isPresent()) session.get().invalidate();
+        if (request.isPresent()) request.get().getSession().invalidate();
 
         return "index";
     }
 
     @RequestMapping(value = "/login/retail", method = RequestMethod.GET)
-    public ModelAndView getLoginPage(@RequestParam Optional<String> error, @RequestParam Optional<HttpSession> session) {
-        if (session.isPresent()) session.get().invalidate();
+    public ModelAndView getLoginPage(@RequestParam Optional<String> error, @RequestParam Optional<HttpServletRequest> request) {
+
+        if (request.isPresent()) request.get().getSession().invalidate();
 
 
         return new ModelAndView("retpage1", "error", error);
