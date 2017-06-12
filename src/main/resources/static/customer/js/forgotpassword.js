@@ -4,7 +4,7 @@
         var result;
         $.ajax({
             type:'GET',
-            url:"/rest/secAnswer/"+secAnswer,
+            url:"/rest/secAns/"+secAnswer,
             async:false,
             success:function(data1){
                 result = ''+String(data1);
@@ -114,7 +114,7 @@
             if(SECURITY_QUESTION_STEP === currentIndex){
                 console.log("Current step is the account details step");
                 var secAnswer = $('input[name="securityAnswer"]').val();
-                return validateSecAnswer(secAnswer);
+                return isValid && validateSecAnswer(secAnswer);
             }
             if(CHANGE_PASSWORD_STEP === currentIndex){
                 console.log("Current step is the change password step");

@@ -502,13 +502,9 @@ public class SecurityServiceImpl implements SecurityService {
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new InternetBankingSecurityException(e.getMessage(), e);
-
         }
 
-
         return list;
-
-
     }
 
     @Override

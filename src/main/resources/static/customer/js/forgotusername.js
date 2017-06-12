@@ -32,7 +32,7 @@ function validateAccountNo(accountNumber){
         return false;
     }else{
         $.ajax({
-            url: "/rest/secQues/"+accountNumber,
+            url: "/rest/secQues/"+customerId,
             type: 'GET',
             async: false,
             success:function(data2){
@@ -116,6 +116,20 @@ form.children("div").steps({
         form.validate().settings.ignore = ":disabled,:hidden";
         console.log(currentIndex);
         var isValid = form.valid();
+        // Allways allow previous action even if the current form is not valid!
+        if (currentIndex > newIndex)
+        {
+            return true;
+        }
+
+        // Needed in some cases if the user went back (clean up)
+        if (currentIndex < newIndex)
+        {
+            // To remove error styles
+            form.find(".body:eq(" + newIndex + ") label.error").remove();
+            form.find(".body:eq(" + newIndex + ") .error").removeClass("error");
+        }
+
         if(ACCOUNT_DETAILS_STEP === currentIndex){
             console.log("Current step is the account details step");
             var accountNumber = $('input[name="acct"]').val();
