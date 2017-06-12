@@ -11,11 +11,14 @@ import longbridge.exception.WrongPasswordException;
 import longbridge.forms.AlertPref;
 import longbridge.forms.CustChangePassword;
 import longbridge.forms.CustResetPassword;
+import longbridge.models.Email;
+import longbridge.models.FinancialInstitutionType;
 import longbridge.models.RetailUser;
 import longbridge.services.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -31,6 +34,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.security.Principal;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by Fortune on 4/5/2017.
@@ -58,6 +62,10 @@ public class SettingController {
     private MessageService messageService;
     @Autowired
     private ConfigurationService configService;
+
+    @Autowired private FinancialInstitutionService financialInstitutionService;
+    @Autowired private MailService mailService;
+    @Autowired private MessageSource messageSource;
 
     @RequestMapping("/dashboard")
     public String getRetailDashboard(Model model, Principal principal) {
@@ -206,8 +214,31 @@ public class SettingController {
 
 
     @GetMapping("/bvn")
-    public String linkBVN() {
-        return "abc";
+    public String linkBVN(Model model) {
+        model.addAttribute("localBanks", financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.LOCAL));
+
+        return "cust/account/linkbvn";
+    }
+    @PostMapping("/bvn")
+    public String addBVN(Model model,Principal principal, HttpServletRequest request,Locale locale) {
+        String bvn=request.getParameter("bvn");
+        logger.info("BVN:"+bvn);
+        String beneBank=request.getParameter("beneficiaryBank");
+        logger.info("Bank:"+beneBank);
+
+        RetailUser user = retailUserService.getUserByName(principal.getName());
+
+        SettingDTO setting = configService.getSettingByName("CUSTOMER_CARE_EMAIL");
+        if (setting != null && setting.isEnabled()) {
+
+            Email email = new Email.Builder()
+                    .setRecipient(setting.getValue())
+                    .setSubject(messageSource.getMessage("customer.bvn.link.subject", null, locale))
+                    .setBody(String.format(messageSource.getMessage("customer.bvn.link.message", null, locale), bvn, user))
+                    .build();
+            mailService.send(email);
+        }
+        return "cust/dashboard";
     }
 
 

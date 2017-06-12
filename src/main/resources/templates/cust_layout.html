@@ -107,7 +107,7 @@
                 </div>
                 <div class="row ">
                     <div class="col-md-3 col-sm-4 header_info bvn"><p>Your Bank verification number</p>
-                        <h5 th:text="'BVN: ' + ${bvn}"></h5></div>
+                        <h5><a th:href="@{/retail/bvn}" th:text="'BVN: ' + ${bvn}"></a></h5></div>
                     <div class="col-md-5 col-sm-4 header_info"><h5><span th:text="*{greeting}"></span><br
                     class="break"/><b th:text="*{name}"></b> &nbsp; <a th:href="@{/retail/mailbox/inbox}">
                     <i class="fa fa-envelope"></i>
