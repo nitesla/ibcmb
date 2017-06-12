@@ -419,6 +419,7 @@ public class IntegrationServiceImpl implements IntegrationService {
             }
 
             mailService.send(recipient, transRequest.getTransferType().toString(), mail);
+            transRequest.setStatus("000");
             transRequest.setStatus("Approved or completed successfully");
         } catch (Exception e) {
             e.printStackTrace();

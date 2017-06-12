@@ -24,7 +24,7 @@
                                 <label>Beneficiary Bank</label>
                                 <select name="beneficiaryBank" class="form-control" th:field="*{beneficiaryBank}"
                                         required="required">
-                                    <option value="Coronation">Coronation Merchant Bank</option>
+                                    <option th:value="${bankCode}" >Coronation Merchant Bank</option>
                                 </select>
                             </div>
                             <div class="form-group">

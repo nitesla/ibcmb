@@ -37,6 +37,9 @@ public class TransferErrorService {
         else if (exception.getMessage().equalsIgnoreCase(TransferExceptions.LIMIT_EXCEEDED.toString())) {
             errorMessage = messages.getMessage(TransferExceptions.LIMIT_EXCEEDED.toString(), null, locale);
         }
+        else if (exception.getMessage().equalsIgnoreCase(TransferExceptions.INVALID_AMOUNT.toString())) {
+            errorMessage = messages.getMessage(TransferExceptions.INVALID_AMOUNT.toString(), null, locale);
+        }
         return errorMessage;
 
     }

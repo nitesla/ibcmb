@@ -97,19 +97,19 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<!--<dependency>-->
-			<!--<groupId>mysql</groupId>-->
-			<!--<artifactId>mysql-connector-java</artifactId>-->
-			<!--<scope>runtime</scope>-->
-		<!--</dependency>-->
 		<dependency>
-			<groupId>com.oracle</groupId>
-			<artifactId>ojdbc7</artifactId>
-			<version>12.1.0</version>
-            <scope>system</scope>
-            <type>jar</type>
-            <systemPath>${project.basedir}/ojdbc7.jar</systemPath>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<scope>runtime</scope>
 		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>com.oracle</groupId>-->
+			<!--<artifactId>ojdbc7</artifactId>-->
+			<!--<version>12.1.0</version>-->
+            <!--<scope>system</scope>-->
+            <!--<type>jar</type>-->
+            <!--<systemPath>${project.basedir}/ojdbc7.jar</systemPath>-->
+		<!--</dependency>-->
         <dependency>
             <groupId>com.entrust</groupId>
             <artifactId>entrust</artifactId>
