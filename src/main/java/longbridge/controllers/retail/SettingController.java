@@ -221,7 +221,7 @@ public class SettingController {
     }
 
     @PostMapping("/bvn")
-    public String addBVN(Model model, Principal principal, HttpServletRequest request, Locale locale) {
+    public String addBVN(Model model, Principal principal, HttpServletRequest request, Locale locale, RedirectAttributes redirectAttributes) {
         String bvn = request.getParameter("bvn");
         logger.info("BVN:" + bvn);
         String beneBank = request.getParameter("beneficiaryBank");
@@ -237,12 +237,16 @@ public class SettingController {
                 Email email = new Email.Builder()
                         .setRecipient(setting.getValue())
                         .setSubject(messageSource.getMessage("customer.bvn.link.subject", null, locale))
-                        .setBody(String.format(messageSource.getMessage("customer.bvn.link.message", null, locale), bvn, user))
+                        .setBody(String.format(messageSource.getMessage("customer.bvn.link.message", null, locale), bvn, user.getUserName()))
                         .build();
                 mailService.send(email);
-                    return messageSource.getMessage("bvn.add.success", null, locale);
-                } catch (Exception e) {
-                    throw new InternetBankingException(messageSource.getMessage("bvn.add.failure", null, locale), e);
+                    String message =  messageSource.getMessage("bvn.add.success", null, locale);
+                    redirectAttributes.addFlashAttribute("message", message);
+
+                } catch (Exception ex) {
+                    logger.error("Failed to send BVN request", ex);
+                    String message = messageSource.getMessage("bvn.add.failure", null, locale);
+                    redirectAttributes.addFlashAttribute("failure", message);
                 }
             }
 

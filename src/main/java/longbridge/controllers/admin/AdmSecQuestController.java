@@ -99,7 +99,7 @@ public class AdmSecQuestController {
     }
 
     @PostMapping("/update")
-    public String updateFinancialInstitution(@Valid SecQuestionDTO secQuestionDTO, BindingResult result, Model model, RedirectAttributes redirectAttributes, Locale locale) {
+    public String updateFinancialInstitution(@ModelAttribute("secQuestion")  @Valid SecQuestionDTO secQuestionDTO, BindingResult result, Model model, RedirectAttributes redirectAttributes, Locale locale) {
         if (result.hasErrors()) {
             result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
             return "/adm/secquestions/edit";
