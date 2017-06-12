@@ -1,7 +1,6 @@
 package longbridge.services.implementations;
 
 
-
 import longbridge.config.entrust.CustomHttpClient;
 import longbridge.config.entrust.EntrustServiceResponse;
 import longbridge.exception.InternetBankingSecurityException;
@@ -113,7 +112,7 @@ public class SecurityServiceImpl implements SecurityService {
             boolean isSuccessful = responseMessage.contains(charSequence);
             result = isSuccessful;
 
-            String respMesg = StringUtils.substringBetween(responseMessage, "  <respMessageCode>", "</respMessageCode>");
+            String respMesg = StringUtils.substringBetween(responseMessage, "<respMessageCode>", "</respMessageCode>");
             logger.trace("response is {}", respMesg);
 
 
@@ -635,7 +634,7 @@ public class SecurityServiceImpl implements SecurityService {
             logger.trace("response is {}", respMesg);
             if (!isSuccessful) throw new InternetBankingSecurityException(respMesg);
 
-            result = StringUtils.substringBetween(responseMessage, "  <tokenSerials>", "</tokenSerials>");
+            result = StringUtils.substringBetween(responseMessage, "<tokenSerials>", "</tokenSerials>");
             logger.info("******************END RESPONSE***********");
 
         } catch (Exception e) {

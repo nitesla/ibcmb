@@ -79,6 +79,8 @@ public class TokenManagementController {
     public String syncToken(Principal principal, Model model){
         try {
             String serials = securityService.getTokenSerials(principal.getName());
+
+            logger.info("Serial received :"+serials);
             if (serials != null && !"".equals(serials)) {
                 List<String> serialNos = Arrays.asList(StringUtils.split(serials, ","));
                 model.addAttribute("serials", serialNos);

@@ -6,6 +6,7 @@ import longbridge.repositories.*;
 import longbridge.utils.PasswordCreator;
 import longbridge.validator.PasswordValidator;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.joda.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,32 +22,22 @@ import java.util.List;
 @Service
 public class PasswordPolicyService {
 
+    String ruleMessage = "";
     @Autowired
     private ConfigurationService configService;
-
     @Autowired
     private PasswordValidator passwordValidator;
-
     @Autowired
     private PasswordCreator passwordCreator;
-
     @Autowired
     private AdminPasswordRepo adminPasswordRepo;
-
     @Autowired
     private RetailPasswordRepo retailPasswordRepo;
-
     @Autowired
     private OpsPasswordRepo opsPasswordRepo;
-
     @Autowired
     private CorporatePasswordRepo corporatePasswordRepo;
-
-
     private List<String> passwordRules;
-    String ruleMessage = "";
-
-
     private SettingDTO numOfPasswordDigits;
     private SettingDTO minLengthOfPassword;
     private SettingDTO maxLengthOfPassword;
@@ -240,5 +231,21 @@ public class PasswordPolicyService {
             return calendar.getTime();
         }
         return null;
+    }
+
+
+    public boolean displayPasswordExpiryDate(Date expiryDate) {
+        SettingDTO setting = configService.getSettingByName("PASSWORD_AUTO_RESET");
+        if (setting != null && setting.isEnabled()) {
+            int days = NumberUtils.toInt(setting.getValue());
+            LocalDateTime dateToExpire = LocalDateTime.fromDateFields(expiryDate);
+            LocalDateTime dateToStartNotifying = dateToExpire.minusDays(days);
+            LocalDateTime now = LocalDateTime.now();
+
+            if (dateToStartNotifying.isAfter(now) && !dateToStartNotifying.isAfter(dateToExpire)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
