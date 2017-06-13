@@ -3761,3 +3761,35 @@ Consider defining a bean of type 'longbridge.api.AccountDetails' in your configu
 2017-06-13 09:25:55.835 TRACE 8728 --- [http-nio-8085-exec-2] l.s.implementations.SecurityServiceImpl  : response <?xml version='1.0' encoding='UTF-8'?><S:Envelope xmlns:S="http://schemas.xmlsoap.org/soap/envelope/"><S:Body><ns2:performTokenAuthResponse xmlns:ns2="http://ws.entrustplugin.expertedge.com/"><return><authenticationSuccessful>false</authenticationSuccessful><respCode>-1</respCode><respMessage>Maximum authentication attempts exceeded. User default/ibteam is locked.</respMessage><respMessageCode>USER_LOCKED,</respMessageCode></return></ns2:performTokenAuthResponse></S:Body></S:Envelope>
 2017-06-13 09:25:55.836 TRACE 8728 --- [http-nio-8085-exec-2] l.s.implementations.SecurityServiceImpl  : response is null
 2017-06-13 09:25:55.882  INFO 8728 --- [http-nio-8085-exec-2] l.s.implementations.SecurityServiceImpl  : ******************END RESPONSE***********
+2017-06-13 09:27:03.743 DEBUG 8728 --- [http-nio-8085-exec-9] l.config.entrust.CustomHttpClient        : 
+ ********************************************************************
+
+2017-06-13 09:27:03.744 TRACE 8728 --- [http-nio-8085-exec-9] l.config.entrust.CustomHttpClient        : sending http request with EndPoint URL : http://132.10.200.201:8080/cmb-entrust-webservicetest/ws?wsdl
+2017-06-13 09:27:03.744 TRACE 8728 --- [http-nio-8085-exec-9] l.config.entrust.CustomHttpClient        : sending formated message  : 
+
+<Envelope xmlns="http://schemas.xmlsoap.org/soap/envelope/">
+    <Body>
+    <performTokenAuth xmlns="http://ws.entrustplugin.expertedge.com/">
+        <!-- Optional -->
+        <arg0 xmlns="">
+            <appCode>ib</appCode>
+            <appDesc>Internet Banking</appDesc>
+            <group>default</group>
+            <tokenPin>50245437</tokenPin>
+            <userName>ibteam</userName>
+        </arg0>
+    </performTokenAuth>
+    </Body>
+</Envelope>
+2017-06-13 09:27:03.745 TRACE 8728 --- [http-nio-8085-exec-9] l.config.entrust.CustomHttpClient        : Timeout for plugin-adapter : 20s
+2017-06-13 09:27:03.974 DEBUG 8728 --- [http-nio-8085-exec-9] l.config.entrust.CustomHttpClient        : 
+ the response from Service 
+
+<?xml version='1.0' encoding='UTF-8'?><S:Envelope xmlns:S="http://schemas.xmlsoap.org/soap/envelope/"><S:Body><ns2:performTokenAuthResponse xmlns:ns2="http://ws.entrustplugin.expertedge.com/"><return><authenticationSuccessful>false</authenticationSuccessful><respCode>-1</respCode><respMessage>Maximum authentication attempts exceeded. User default/ibteam is locked.</respMessage><respMessageCode>USER_LOCKED,</respMessageCode></return></ns2:performTokenAuthResponse></S:Body></S:Envelope>
+
+2017-06-13 09:27:04.068 DEBUG 8728 --- [http-nio-8085-exec-9] l.config.entrust.CustomHttpClient        : 
+ ********************************************************************
+
+2017-06-13 09:27:04.068 TRACE 8728 --- [http-nio-8085-exec-9] l.s.implementations.SecurityServiceImpl  : response <?xml version='1.0' encoding='UTF-8'?><S:Envelope xmlns:S="http://schemas.xmlsoap.org/soap/envelope/"><S:Body><ns2:performTokenAuthResponse xmlns:ns2="http://ws.entrustplugin.expertedge.com/"><return><authenticationSuccessful>false</authenticationSuccessful><respCode>-1</respCode><respMessage>Maximum authentication attempts exceeded. User default/ibteam is locked.</respMessage><respMessageCode>USER_LOCKED,</respMessageCode></return></ns2:performTokenAuthResponse></S:Body></S:Envelope>
+2017-06-13 09:27:04.068 TRACE 8728 --- [http-nio-8085-exec-9] l.s.implementations.SecurityServiceImpl  : response is null
+2017-06-13 09:27:04.069  INFO 8728 --- [http-nio-8085-exec-9] l.s.implementations.SecurityServiceImpl  : ******************END RESPONSE***********
