@@ -128,7 +128,7 @@ public class IntegrationServiceImpl implements IntegrationService {
                     if (response != null) {
 
                         transRequest.setStatus(response.getResponseCode());
-                        transRequest.setStatusDescription(response.getResponseDescription());
+                         transRequest.setStatusDescription(response.getResponseDescription());
                         transRequest.setReferenceNumber(response.getUniqueReferenceCode());
                         transRequest.setNarration(response.getNarration());
 
@@ -402,23 +402,6 @@ public class IntegrationServiceImpl implements IntegrationService {
         }
 
         return result;
-    }
-
-    @Override
-    public Rate getFee(String channel) {
-
-        String uri = URI + "/transfer/fee";
-        Map<String, String> params = new HashMap<>();
-        params.put("transactionChannel", channel);
-        try {
-            Rate details = template.postForObject(uri, params, Rate.class);
-            return details;
-        } catch (Exception e) {
-
-            return new Rate();
-        }
-
-
     }
 
     public TransRequest sendTransfer(TransRequest transRequest) {

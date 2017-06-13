@@ -150,7 +150,7 @@ public class SecurityServiceImpl implements SecurityService {
             boolean isSuccessful = responseMessage.contains(charSequence);
             result = isSuccessful;
 
-            String respMesg = StringUtils.substringBetween(responseMessage, "<respMessageCode>", "</respMessageCode>");
+            String respMesg = StringUtils.substringBetween(responseMessage, "  <respMessageCode>", "</respMessageCode>");
 
             logger.trace("response is {}", respMesg);
 
@@ -192,7 +192,7 @@ public class SecurityServiceImpl implements SecurityService {
             boolean isSuccessful = responseMessage.contains(charSequence);
             result = isSuccessful;
 
-            String respMesg = StringUtils.substringBetween(responseMessage, "<respMessageCode>", "</respMessageCode>");
+            String respMesg = StringUtils.substringBetween(responseMessage, "  <respMessageCode>", "</respMessageCode>");
 
             logger.trace("response is {}", respMesg);
 
@@ -228,7 +228,7 @@ public class SecurityServiceImpl implements SecurityService {
             CharSequence charSequence = "<respCode>1</respCode>";
             boolean isSuccessful = responseMessage.contains(charSequence);
             result = isSuccessful;
-            String respMesg = StringUtils.substringBetween(responseMessage, "<respMessageCode>", "</respMessageCode>");
+            String respMesg = StringUtils.substringBetween(responseMessage, "  <respMessageCode>", "</respMessageCode>");
             logger.trace("response code is {}", respMesg);
 
 
@@ -297,7 +297,7 @@ public class SecurityServiceImpl implements SecurityService {
             boolean isSuccessful = responseMessage.contains(charSequence);
 
 
-            String respMesg = StringUtils.substringBetween(responseMessage, "<respMessageCode>", "</respMessageCode>");
+            String respMesg = StringUtils.substringBetween(responseMessage, "  <respMessageCode>", "</respMessageCode>");
 
 
             logger.trace("response is {}", respMesg);
@@ -335,7 +335,7 @@ public class SecurityServiceImpl implements SecurityService {
             boolean isSuccessful = responseMessage.contains(charSequence);
             result = isSuccessful;
 
-            String respMesg = StringUtils.substringBetween(responseMessage, "<respMessageCode>", "</respMessageCode>");
+            String respMesg = StringUtils.substringBetween(responseMessage, "  <respMessageCode>", "</respMessageCode>");
             String resp = StringUtils.substringBetween(responseMessage, "<respCode>", "</respCode>");
             logger.trace("response is {}", respMesg);
 
@@ -373,7 +373,7 @@ public class SecurityServiceImpl implements SecurityService {
             boolean isSuccessful = responseMessage.contains(charSequence);
             result = isSuccessful;
 
-            String respMesg = StringUtils.substringBetween(responseMessage, "<respMessageCode>", "</respMessageCode>");
+            String respMesg = StringUtils.substringBetween(responseMessage, "  <respMessageCode>", "</respMessageCode>");
             String resp = StringUtils.substringBetween(responseMessage, "<respCode>", "</respCode>");
             logger.trace("response is {}", respMesg);
 
@@ -412,7 +412,7 @@ public class SecurityServiceImpl implements SecurityService {
             boolean isSuccessful = responseMessage.contains(charSequence);
             result = isSuccessful;
 
-            String respMesg = StringUtils.substringBetween(responseMessage, "<respMessageCode>", "</respMessageCode>");
+            String respMesg = StringUtils.substringBetween(responseMessage, "  <respMessageCode>", "</respMessageCode>");
             logger.trace("response is {}", respMesg);
 
 
@@ -448,7 +448,7 @@ public class SecurityServiceImpl implements SecurityService {
             boolean isSuccessful = responseMessage.contains(charSequence);
 
 
-            String respMesg = StringUtils.substringBetween(responseMessage, "<respMessageCode>", "</respMessageCode>");
+            String respMesg = StringUtils.substringBetween(responseMessage, "  <respMessageCode>", "</respMessageCode>");
 
 
             logger.trace("response is {}", respMesg);
@@ -480,8 +480,6 @@ public class SecurityServiceImpl implements SecurityService {
             String responseMessage = webServiceResponse.getResponseMessage();
             logger.trace("response {}", responseMessage);
             CharSequence charSequence = "<respCode>1</respCode>";
-
-
             boolean isSuccessful = responseMessage.contains(charSequence);
             String msg = StringUtils.substringBetween(responseMessage, "<respMessageCode>", "</respMessageCode>");
 
@@ -490,7 +488,6 @@ public class SecurityServiceImpl implements SecurityService {
 
             String questions = StringUtils.substringBetween(responseMessage, "<questions>", "</questions>");
             String answers = StringUtils.substringBetween(responseMessage, "<answers>", "</answers>");
-
 
             List<String> questionList = Arrays.asList(questions);
             List<String> answerList = Arrays.asList(answers);
@@ -629,7 +626,7 @@ public class SecurityServiceImpl implements SecurityService {
             boolean isSuccessful = responseMessage.contains(charSequence);
 
 
-            String respMesg = StringUtils.substringBetween(responseMessage, "<respMessageCode>", "</respMessageCode>");
+            String respMesg = StringUtils.substringBetween(responseMessage, "  <respMessageCode>", "</respMessageCode>");
 
             logger.trace("response is {}", respMesg);
             if (!isSuccessful) throw new InternetBankingSecurityException(respMesg);
@@ -666,7 +663,7 @@ public class SecurityServiceImpl implements SecurityService {
             boolean isSuccessful = responseMessage.contains(charSequence);
             result = isSuccessful;
 
-            String respMesg = StringUtils.substringBetween(responseMessage, "<respMessageCode>", "</respMessageCode>");
+            String respMesg = StringUtils.substringBetween(responseMessage, "  <respMessageCode>", "</respMessageCode>");
             logger.trace("response is {}", respMesg);
 
 
@@ -704,7 +701,7 @@ public class SecurityServiceImpl implements SecurityService {
             boolean isSuccessful = responseMessage.contains(charSequence);
             result = isSuccessful;
 
-            String respMesg = StringUtils.substringBetween(responseMessage, "<respMessageCode>", "</respMessageCode>");
+            String respMesg = StringUtils.substringBetween(responseMessage, "  <respMessageCode>", "</respMessageCode>");
             logger.trace("response is {}", respMesg);
 
 
@@ -747,7 +744,7 @@ public class SecurityServiceImpl implements SecurityService {
             boolean isSuccessful = responseMessage.contains(charSequence);
             result = isSuccessful;
 
-            String respMesg = StringUtils.substringBetween(responseMessage, "<respMessageCode>", "</respMessageCode>");
+            String respMesg = StringUtils.substringBetween(responseMessage, "  <respMessageCode>", "</respMessageCode>");
             String resp = StringUtils.substringBetween(responseMessage, "<respCode>", "</respCode>");
             logger.trace("response is {}", respMesg);
 

@@ -112,7 +112,5 @@ public interface IntegrationService {
 
     ObjectNode sendSMS(String message, String contact, String subject);
 
-    Rate  getFee(String channel);
-
 
 }

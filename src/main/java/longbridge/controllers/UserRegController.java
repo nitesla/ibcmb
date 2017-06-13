@@ -280,31 +280,32 @@ public class UserRegController {
 
 
                     secAnswer = answers.stream().filter(Objects::nonNull).findFirst().orElse("");
-                    logger.info("answer {}", secAnswer);
+                    logger.info("answerSec {}", secAnswer);
 
 
-                if (!secAnswer.equals(securityAnswer)){
-                    return "false";
+                if (secAnswer.equalsIgnoreCase(securityAnswer)){
+                    logger.debug("User Info {}:", user.getUserName());
+                    //Send Username to Email
+                    Email email = new Email.Builder()
+                            .setRecipient(user.getEmail())
+                            .setSubject(messageSource.getMessage("retrieve.username.subject",null,locale))
+                            .setBody(String.format(messageSource.getMessage("retrieve.username.message",null,locale),user.getFirstName(), user.getUserName()))
+                            .build();
+                    mailService.send(email);
+                    return "true";
                 }
 
             }else {
                 return "false";
             }
 
-            logger.debug("User Info {}:", user.getUserName());
-            //Send Username to Email
-            Email email = new Email.Builder()
-                    .setRecipient(user.getEmail())
-                    .setSubject(messageSource.getMessage("retrieve.username.subject",null,locale))
-                    .setBody(String.format(messageSource.getMessage("retrieve.username.message",null,locale),user.getFirstName(), user.getUserName()))
-                    .build();
-            mailService.send(email);
+
 
         }catch (InternetBankingException e){
             return "false";
         }
 
-        return "true";
+        return "false";
     }
 
 
@@ -464,27 +465,31 @@ public class UserRegController {
         ResetPasswordForm resetPasswordForm = new ResetPasswordForm();
         resetPasswordForm.step = "1";
         resetPasswordForm.username = (String) session.getAttribute("username");
-        Map<String, List<String>> qa = securityService.getUserQA((String) session.getAttribute("username"));
-        if (qa != null || !qa.isEmpty()){
-            List<String> questions= qa.get("questions");
-            List<String> answers= qa.get("answers");
-            String secQuestion = questions.get(0);
+        try{
+            Map<String, List<String>> qa = securityService.getUserQA((String) session.getAttribute("username"));
+            if (qa != null || !qa.isEmpty()){
+                List<String> questions= qa.get("questions");
+                List<String> answers= qa.get("answers");
+                String secQuestion = questions.get(0);
 
-            if (secQuestion == null || secQuestion.equals("")){
+                if (secQuestion == null || secQuestion.equals("")){
+                    redirectAttributes.addFlashAttribute("failure", "Invalid Credentials");
+                    return "redirect:/login/retail";
+                }else{
+                    session.setAttribute("secretAnswer", answers);
+                    model.addAttribute("secQuestion", secQuestion);
+                }
+
+            }else {
                 redirectAttributes.addFlashAttribute("failure", "Invalid Credentials");
                 return "redirect:/login/retail";
-            }else{
-                session.setAttribute("secretAnswer", answers);
-                model.addAttribute("secQuestion", secQuestion);
             }
 
-        }else {
-            redirectAttributes.addFlashAttribute("failure", "Invalid Credentials");
+            model.addAttribute("forgotPasswordForm", resetPasswordForm);
+            return "cust/passwordreset";
+        }catch (InternetBankingException e){
             return "redirect:/login/retail";
         }
-
-        model.addAttribute("forgotPasswordForm", resetPasswordForm);
-        return "cust/passwordreset";
     }
 
     @PostMapping("/forgot/password")

@@ -3,6 +3,7 @@ package longbridge.controllers;
 import longbridge.dtos.SettingDTO;
 import longbridge.dtos.UserGroupDTO;
 
+import longbridge.dtos.SettingDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.PasswordException;
 import longbridge.exception.UnknownResourceException;
@@ -357,7 +358,5 @@ public class MainController {
         return "redirect:/index";
 
     }
-
-
 
 }
