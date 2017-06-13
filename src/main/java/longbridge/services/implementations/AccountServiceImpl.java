@@ -318,8 +318,10 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Iterable<Account> getAccountsForCredit(String customerId) {
+        logger.info("the customer is "+customerId);
         List<Account> accountsForCredit = new ArrayList<Account>();
         Iterable<Account> accounts = this.getCustomerAccounts(customerId);
+        logger.info("accounts are {}",accounts);
         for (Account account : accounts) {
             if (!accountConfigService.isAccountHidden(account.getAccountNumber())
                     && (!accountConfigService.isAccountRestrictedForView(account.getAccountNumber())) && !accountConfigService.isAccountRestrictedForCredit(account.getAccountNumber()) && (!accountConfigService.isAccountClassRestrictedForView(account.getSchemeCode()) && (!accountConfigService.isAccountClassRestrictedForCredit(account.getSchemeCode())))) {
@@ -329,8 +331,20 @@ public class AccountServiceImpl implements AccountService {
         }
         return accountsForCredit;
     }
-
-
+@Override
+public Boolean updateAccountDetails(){
+    List<Account> allAccounts = accountRepo.findAll();
+    for (Account account:allAccounts) {
+        System.out.println("the account name on our db is"+account.getAccountName());
+        AccountDetails accountDetails = integrationService.viewAccountDetails(account.getAccountNumber());
+        System.out.println("the account name on finacle is"+accountDetails.getAcctName());
+        if(accountDetails.getAcctName().equalsIgnoreCase("MARTINS")) {
+            account.setAccountName(accountDetails.getAcctName());
+            accountRepo.save(account);
+        }
+    }
+    return false;
+}
 
 
 //    private Account mockAccount;

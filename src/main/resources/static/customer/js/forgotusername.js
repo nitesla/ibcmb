@@ -42,7 +42,7 @@ function validateAccountNo(accountNumber){
                     //invalid account number
                     $.notify({
                         title: '<strong>Oops!</strong>',
-                        message: 'Invalid Account Number'
+                        message: 'Security Question Not '
                     },{
                         type: 'danger'
                     });
