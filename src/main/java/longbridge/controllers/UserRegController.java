@@ -126,37 +126,28 @@ public class UserRegController {
         return customerId;
     }
 
-    @GetMapping("/rest/secQues/{accountNumber}")
-    public @ResponseBody String getSecQuestionFromNumber(@PathVariable String accountNumber){
+    @GetMapping("/rest/secQues/{cifId}")
+    public @ResponseBody String getSecQuestionFromNumber(@PathVariable String cifId){
         String secQuestion = "";
-        logger.info("Account number : " + accountNumber);
-        Account account = accountService.getAccountByAccountNumber(accountNumber);
-        if (account != null){
-            String customerId = account.getCustomerId();
-            logger.info("Cif: " + customerId);
-            RetailUser user = retailUserService.getUserByCustomerId(customerId);
-            logger.info("USER NAME {}", user);
-            if (user != null){
-                logger.info("USER NAME {}", user.getUserName());
-                Map<String, List<String>> qa = securityService.getUserQA(user.getUserName());
-                //List<String> sec = null;
-                if (qa != null || !qa.isEmpty()){
+        logger.info("cifId : " + cifId);
 
-                    List<String> question = qa.get("questions");
-                    secQuestion = question.stream().filter(Objects::nonNull).findFirst().orElse("");
-                    logger.info("question {}", secQuestion);
+        RetailUser user = retailUserService.getUserByCustomerId(cifId);
+        logger.info("USER NAME {}", user);
+        if (user != null){
+            logger.info("USER NAME {}", user.getUserName());
+            Map<String, List<String>> qa = securityService.getUserQA(user.getUserName());
+            //List<String> sec = null;
+            if (qa != null || !qa.isEmpty()){
 
-                }else {
-                    secQuestion = "";
-                }
-            }
-            else {
+                List<String> question = qa.get("questions");
+                secQuestion = question.stream().filter(Objects::nonNull).findFirst().orElse("");
+                logger.info("question {}", secQuestion);
+
+            }else {
                 secQuestion = "";
             }
-
-
-        }else {
-            //nothing
+        }
+        else {
             secQuestion = "";
         }
 

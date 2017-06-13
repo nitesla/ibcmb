@@ -28,6 +28,8 @@ function validateAccountNo(accountNumber){
         }
     })
 
+    console.log(customerId);
+
     if(customerId == "" || customerId === null){
         return false;
     }else{
@@ -47,6 +49,7 @@ function validateAccountNo(accountNumber){
         })
     }
 
+    console.log(customerId);
 
     if(customerId == "" || customerId === null || secQues == "" || secQues === null){
         return false;
