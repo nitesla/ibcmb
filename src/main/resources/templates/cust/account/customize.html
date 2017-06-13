@@ -20,8 +20,8 @@
                     <div class="col-md-6">
                         <form method="post" th:action="@{/retail/account/customize}" th:object="${customizeAccount}">
                             <div class="form-group">
-                                <label>Account Name</label>
-                                <input class="form-control" name="accountName" th:value="${account}" />
+                                <label>Preferred Name</label>
+                                <span class="required"></span><input class="form-control"  placeholder="Preferred name" name="accountName" th:value="${account}" />
                                 <p class="errors close" data-dismiss="alert" aria-label="close" th:if="${#fields.hasErrors('accountName')}" th:errors="*{accountName}">&times;</p>
                             </div>
 

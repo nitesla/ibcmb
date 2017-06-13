@@ -23,6 +23,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -164,5 +165,27 @@ public class AccountController {
     @GetMapping("/officer")
     public String getAccountOfficer(){
         return "cust/account/officer";
+    }
+
+    @GetMapping("/{id}/statement")
+    public String getAccountStatement(@PathVariable Long id, Model model,Principal principal){
+        RetailUser retailUser = retailUserService.getUserByName(principal.getName());
+        List<AccountDTO> accountList = accountService.getAccountsAndBalances(retailUser.getCustomerId());
+        model.addAttribute("accountList", accountList);
+        model.addAttribute("retailUser", retailUser);
+
+        return "cust/account/accountstatement";
+    }
+
+    @PostMapping("/history")
+    public String getAccountHistory( Model model,Principal principal){
+
+        return "cust/account/history";
+    }
+
+    @GetMapping("/viewstatement")
+    public String getViewStatement( Model model,Principal principal){
+
+        return "cust/account/view";
     }
 }

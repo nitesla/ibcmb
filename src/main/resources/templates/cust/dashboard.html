@@ -21,40 +21,61 @@
             <div class="col-md-8 content-bg">
                 <div class="row spacing">
                     <div class="col-md-10">
-                        <table class="table">
+                        <table class="table" id="users">
                             <thead>
-                            <td>Account Number</td>
-                            <td>Available Balance</td>
-                            <td>Ledger Balance</td>
-                            <td>Currency</td>
-                            <td>Account Type</td>
-
+                            <tr>
+                                <th>Account Number</th>
+                                <th>Account type</th>
+                                <th>Currency</th>
+                                <th>Available Balance</th>
+                                <th>Ledger Balance</th>
+                            </tr>
                             </thead>
                             <tbody>
                             <tr th:each="list : ${accountList}">
-                                <td th:text="${list.accountNumber}"></td>
-                                <td th:text="${list.accountBalance}"></td>
-                                <td th:text="${list.ledgerBalance}"></td>
-                                <td th:text="${list.currencyCode}"></td>
-                                <td th:text="${list.schemeType}"></td>
-                                <td>
-                                    <a th:href="@{'#' + ${list.id} }"><i class=" fa fa-angle-right"></i></a>
+                                <td th:align="center" th:text="${list.accountNumber}"></td>
+                                <td th:align="center" th:text="${list.schemeType}"></td>
+                                <td th:align="center" th:text="${list.currencyCode}"></td>
+                                <td th:align="center" th:text="${list.accountBalance}"></td>
+                                <td th:align="center" th:text="${list.ledgerBalance}"></td>
+
+                                <td th:align="center" ><a th:href="@{'/retail/account/' + ${list.id} + '/statement'}"><i class=" fa fa-angle-right"></i></a>
+
                                 </td>
-                            </tr>
+                                  </tr>
                             </tbody>
                         </table>
-
                     </div>
                 </div>
             </div>
-            <div th:replace="cust_layout :: sidebar" class="col-md-3 sidebar">
+            <br/>
+            <!--<div class="col-md-3 sidebar" style="overflow:scroll; height:200x; ">-->
+                <!--<div class="sidebar-bg">-->
+                    <!--<table class="table " style="border:dotted; border-style:none;  outline-style:none;" id="users" >-->
+                        <!--<thead>-->
+                        <!--<tr>-->
+                            <!--<th>Date</th>-->
+                            <!--<th>Narration</th>-->
+                            <!--<th>Amount</th>-->
+                        <!--</tr>-->
+                        <!--</thead>-->
+                        <!--<tbody>-->
+                        <!--</tbody>-->
+                    <!--</table>-->
+
+                <!--</div>-->
+            <!--</div>-->
+            <div th:replace="cust_layout :: sidebar" class="col-md-3">
             </div>
         </div>
     </div>
 </section>
 
 <!-- CONTENT-WRAPPER SECTION END-->
-<footer th:replace="cust_layout ::footer">
+<footer th:replace="cust_layout :: footer">
 </footer>
+<script>
+
+</script>
 </body>
 </html>

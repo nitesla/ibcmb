@@ -20,7 +20,7 @@ import org.thymeleaf.TemplateEngine;
 
 
 
-public class InternetbankingApplication  extends SpringBootServletInitializer implements CommandLineRunner {
+public class InternetbankingApplication extends SpringBootServletInitializer implements CommandLineRunner {
 
     @Autowired
     private SecurityService securityService;
@@ -50,6 +50,7 @@ public class InternetbankingApplication  extends SpringBootServletInitializer im
 //        System.out.println("Your password is "+passwordEncoder.encode("password123"));
 
     }
+
 }
 
 

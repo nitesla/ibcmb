@@ -1,0 +1,15 @@
+<Envelope xmlns="http://schemas.xmlsoap.org/soap/envelope/">
+    <Body>
+    <performSetQA xmlns="http://ws.entrustplugin.expertedge.com/">
+        <!-- Optional -->
+        <arg0 xmlns="">
+            <answers>${answer}</answers>
+            <appCode>${appCode}</appCode>
+            <appDesc>${appDesc}</appDesc>
+            <group>${appGroup}</group>
+            <questions>${question}</questions>
+            <userName>${userName}</userName>
+        </arg0>
+    </performSetQA>
+    </Body>
+</Envelope>

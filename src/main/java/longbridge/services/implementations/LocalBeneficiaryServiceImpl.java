@@ -2,14 +2,18 @@ package longbridge.services.implementations;
 
 import longbridge.dtos.LocalBeneficiaryDTO;
 import longbridge.exception.InternetBankingException;
+import longbridge.exception.InternetBankingTransferException;
 import longbridge.models.LocalBeneficiary;
 import longbridge.models.RetailUser;
+import longbridge.models.User;
+import longbridge.repositories.FinancialInstitutionRepo;
 import longbridge.repositories.LocalBeneficiaryRepo;
 import longbridge.services.LocalBeneficiaryService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
@@ -24,16 +28,17 @@ import java.util.Locale;
 @Service
 public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
 
-    private LocalBeneficiaryRepo localBeneficiaryRepo;
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
-
     @Autowired
     ModelMapper modelMapper;
-
     @Autowired
     MessageSource messageSource;
-
+    @Autowired
+    FinancialInstitutionRepo financialInstitutionRepo;
     Locale locale = LocaleContextHolder.getLocale();
+    private LocalBeneficiaryRepo localBeneficiaryRepo;
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    @Value("${bank.code}")
+    private String bankCode;
 
     @Autowired
     public LocalBeneficiaryServiceImpl(LocalBeneficiaryRepo localBeneficiaryRepo) {
@@ -41,16 +46,18 @@ public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
     }
 
     @Override
-    public String addLocalBeneficiary(RetailUser user, LocalBeneficiaryDTO beneficiary) throws InternetBankingException{
+    public String addLocalBeneficiary(RetailUser user, LocalBeneficiaryDTO beneficiary) throws InternetBankingException {
 
         try {
             LocalBeneficiary localBeneficiary = convertDTOToEntity(beneficiary);
             localBeneficiary.setUser(user);
+            validateBeneficiary(localBeneficiary, user);
             this.localBeneficiaryRepo.save(localBeneficiary);
             logger.trace("Beneficiary {} has been added", localBeneficiary.toString());
-            return messageSource.getMessage("beneficiary.add.success",null,locale);
-        }catch (Exception e){
-            throw new InternetBankingException(messageSource.getMessage("beneficiary.add.failure",null, locale), e);
+            return messageSource.getMessage("beneficiary.add.success", null, locale);
+        } catch (Exception e) {
+            //throw new InternetBankingException(messageSource.getMessage("beneficiary.add.failure",null, locale), e);
+            throw new InternetBankingException(e.getMessage());
         }
 
 
@@ -61,10 +68,9 @@ public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
 
         try {
             this.localBeneficiaryRepo.delete(beneficiaryId);
-            logger.info("Beneficiary with Id {} deleted", beneficiaryId);
-            return messageSource.getMessage("beneficiary.delete.success",null,locale);
-        }catch (Exception e){
-            throw new InternetBankingException(messageSource.getMessage("beneficiary.delete.failure",null, locale), e);
+            return messageSource.getMessage("beneficiary.delete.success", null, locale);
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("beneficiary.delete.failure", null, locale), e);
         }
 
 
@@ -81,9 +87,14 @@ public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
     }
 
     @Override
-    public List<LocalBeneficiaryDTO> convertEntitiesToDTOs(Iterable<LocalBeneficiary> localBeneficiaries){
+    public Iterable<LocalBeneficiary> getBankBeneficiaries(RetailUser user) {
+        return localBeneficiaryRepo.findByUserAndBeneficiaryBankIgnoreCase(user,bankCode );
+    }
+
+    @Override
+    public List<LocalBeneficiaryDTO> convertEntitiesToDTOs(Iterable<LocalBeneficiary> localBeneficiaries) {
         List<LocalBeneficiaryDTO> localBeneficiaryDTOList = new ArrayList<>();
-        for(LocalBeneficiary localBeneficiary: localBeneficiaries){
+        for (LocalBeneficiary localBeneficiary : localBeneficiaries) {
             LocalBeneficiaryDTO benDTO = convertEntityToDTO(localBeneficiary);
             localBeneficiaryDTOList.add(benDTO);
         }
@@ -91,18 +102,26 @@ public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
     }
 
     @Override
-    public LocalBeneficiaryDTO convertEntityToDTO(LocalBeneficiary localBeneficiary){
+    public LocalBeneficiaryDTO convertEntityToDTO(LocalBeneficiary localBeneficiary) {
         LocalBeneficiaryDTO localBeneficiaryDTO = new LocalBeneficiaryDTO();
         localBeneficiaryDTO.setAccountName(localBeneficiary.getAccountName());
         localBeneficiaryDTO.setAccountNumber(localBeneficiary.getAccountNumber());
         localBeneficiaryDTO.setBeneficiaryBank(localBeneficiary.getBeneficiaryBank());
         localBeneficiaryDTO.setPreferredName(localBeneficiary.getPreferredName());
-        return  modelMapper.map(localBeneficiary,LocalBeneficiaryDTO.class);
+        return modelMapper.map(localBeneficiary, LocalBeneficiaryDTO.class);
     }
 
     @Override
-    public LocalBeneficiary convertDTOToEntity(LocalBeneficiaryDTO localBeneficiaryDTO){
-        return  modelMapper.map(localBeneficiaryDTO,LocalBeneficiary.class);
+    public LocalBeneficiary convertDTOToEntity(LocalBeneficiaryDTO localBeneficiaryDTO) {
+        return modelMapper.map(localBeneficiaryDTO, LocalBeneficiary.class);
+    }
+
+    public void validateBeneficiary(LocalBeneficiary localBeneficiary, User user) {
+        if (localBeneficiaryRepo.findByUser_IdAndAccountNumber(user.getId(), localBeneficiary.getAccountNumber()) != null)
+            throw new InternetBankingException("beneficiary.exist");
+
+        if (financialInstitutionRepo.findByInstitutionCode(localBeneficiary.getBeneficiaryBank())==null)
+            throw new InternetBankingException("transfer.beneficiary.invalid");
     }
 
 }

@@ -6,7 +6,7 @@
     <groupId>longbridge</groupId>
     <artifactId>internetbanking</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <packaging>jar</packaging>
+    <packaging>war</packaging>
 
     <name>internetbanking</name>
     <description>internet banking application</description>
@@ -97,11 +97,11 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<!--<dependency>-->
-			<!--<groupId>mysql</groupId>-->
-			<!--<artifactId>mysql-connector-java</artifactId>-->
-			<!--<scope>runtime</scope>-->
-		<!--</dependency>-->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<scope>runtime</scope>
+		</dependency>
 		<!--<dependency>-->
 			<!--<groupId>com.oracle</groupId>-->
 			<!--<artifactId>ojdbc7</artifactId>-->
@@ -110,14 +110,14 @@
             <!--<type>jar</type>-->
             <!--<systemPath>${project.basedir}/ojdbc7.jar</systemPath>-->
 		<!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>com.entrust</groupId>-->
-            <!--<artifactId>entrust</artifactId>-->
-            <!--<version>1.0</version>-->
-            <!--<scope>system</scope>-->
-            <!--<type>jar</type>-->
-            <!--<systemPath>${project.basedir}/entrust.jar</systemPath>-->
-        <!--</dependency>-->
+        <dependency>
+            <groupId>com.entrust</groupId>
+            <artifactId>entrust</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <type>jar</type>
+            <systemPath>${project.basedir}/entrust.jar</systemPath>
+        </dependency>
 		<!--<dependency>-->
 			<!--<groupId>org.springframework</groupId>-->
 			<!--<artifactId>spring-context</artifactId>-->
@@ -125,9 +125,9 @@
 		<!--</dependency>-->
 
         <!--<dependency>-->
-        <!--<groupId>org.springframework.boot</groupId>-->
-        <!--<artifactId>spring-boot-starter-tomcat</artifactId>-->
-        <!--<scope>provided</scope>-->
+            <!--<groupId>org.springframework.boot</groupId>-->
+            <!--<artifactId>spring-boot-starter-tomcat</artifactId>-->
+            <!--<scope>provided</scope>-->
          <!--</dependency>-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -203,21 +203,14 @@
             <version>1.2.0</version>
         </dependency>
 
-        <dependency>
-            <groupId>com.oracle</groupId>
-            <artifactId>ojdbc7</artifactId>
-            <version>12.1.0</version>
-            <scope>system</scope>
-            <type>jar</type>
-            <systemPath>${project.basedir}/ojdbc7.jar</systemPath>
-        </dependency>
+
 
         <dependency>
             <groupId>org.codehaus.jackson</groupId>
             <artifactId>jackson-core-asl</artifactId>
             <version>1.9.13</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifaitory.csun.xml.ws/jaxws-rt -->
+        <!-- https://mvnrepository.com/artifact/com.sun.xml.ws/jaxws-rt -->
         <!--<dependency>-->
             <!--<groupId>com.sun.xml.ws</groupId>-->
             <!--<artifactId>jaxws-rt</artifactId>-->
@@ -236,6 +229,12 @@
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
             <version>4.5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.oracle</groupId>
+            <artifactId>ojdbc6</artifactId>
+            <version>11.2.0</version>
         </dependency>
     </dependencies>
 

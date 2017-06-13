@@ -15,6 +15,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 import javax.transaction.Transactional;
 import java.util.Date;
+import java.util.List;
 
 
 /**The {@code CorporateUserService} interface provides the methods for managing a corporate user
@@ -56,6 +57,9 @@ public interface CorporateUserService{
      */
     @PreAuthorize("hasAuthority('GET_CORPORATE_USER')")
     Iterable<CorporateUser> getUsers();
+
+    @PreAuthorize("hasAuthority('GET_CORPORATE_USER')")
+    Iterable<CorporateUserDTO> getUsers(Long corpId);
 
     @PreAuthorize("hasAuthority('GET_CORPORATE_USER')")
     Page<CorporateUserDTO> getUsers(Pageable pageDetails);
@@ -128,5 +132,8 @@ public interface CorporateUserService{
     public String addUserFromCorporateAdmin(CorpCorporateUserDTO user) throws InternetBankingException;
 
     public String resetPassword(CorporateUser user, CustResetPassword changePassword);
+
+    List<CorporateUserDTO> getUsersWithoutRole(Long corpId);
+
 
 }

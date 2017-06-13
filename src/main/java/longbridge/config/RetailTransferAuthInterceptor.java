@@ -26,12 +26,12 @@ public class RetailTransferAuthInterceptor extends HandlerInterceptorAdapter {
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) throws Exception {
         SettingDTO setting = configService.getSettingByName("ENABLE_RETAIL_2FA");
-        System.out.println("Ayoade it is gettting here");
+
 
 
         if (/* service to check if token is enabled comes in here  */
 
-                ( setting!=null && setting.isEnabled())
+               ( setting!=null && setting.isEnabled())
                      &&
                      httpServletRequest.getSession().getAttribute("auth-needed")==null
 

@@ -4,7 +4,7 @@
         var result;
         $.ajax({
             type:'GET',
-            url:"/rest/secAnswer/"+secAnswer,
+            url:"/rest/secAns/"+secAnswer,
             async:false,
             success:function(data1){
                 result = ''+String(data1);
@@ -93,9 +93,24 @@
         transitionEffect: "slideLeft",
         onStepChanging: function (event, currentIndex, newIndex)
         {
+
             form.validate().settings.ignore = ":disabled,:hidden";
-			console.log(currentIndex);
+            console.log(currentIndex);
             var isValid = form.valid();
+            // Allways allow previous action even if the current form is not valid!
+            if (currentIndex > newIndex)
+            {
+                return true;
+            }
+
+            // Needed in some cases if the user went back (clean up)
+            if (currentIndex < newIndex)
+            {
+                // To remove error styles
+                form.find(".body:eq(" + newIndex + ") label.error").remove();
+                form.find(".body:eq(" + newIndex + ") .error").removeClass("error");
+            }
+
             if(SECURITY_QUESTION_STEP === currentIndex){
                 console.log("Current step is the account details step");
                 var secAnswer = $('input[name="securityAnswer"]').val();
@@ -106,6 +121,8 @@
                 //form.submit();
                return isValid && changePassword();
             }
+
+            form.validate().settings.ignore = ":disabled,:hidden";
             return form.valid();
         },
         onFinishing: function (event, currentIndex)

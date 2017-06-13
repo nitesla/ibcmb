@@ -24,7 +24,7 @@
                                 <label>Beneficiary Bank</label>
                                 <select name="beneficiaryBank" class="form-control" th:field="*{beneficiaryBank}"
                                         required="required">
-                                    <option value="Coronation">Coronation Merchant Bank</option>
+                                    <option th:value="${bankCode}" >Coronation Merchant Bank</option>
                                 </select>
                             </div>
                             <div class="form-group">
@@ -37,7 +37,7 @@
                             <div class="form-group">
                                 <label>Account Name</label>
                                 <input type="text" class="form-control" name="accountNumber" th:field="*{accountName}"
-                                       id="acct_name" readonly="readonly" required="required"/>
+                                       id="acct_name" onblur="clearFields()" readonly="readonly" required="required"/>
                                 <label
                                         th:if="${#fields.hasErrors('accountName')}" th:errors="*{accountName}"
                                         class="validation-message"></label>
@@ -69,8 +69,9 @@
 <script th:inline="javascript">
     /*<![CDATA[*/
     $(document).ready(function () {
-//        $('#acct_num').change(function () {
-//            getAccountName();
+//        $('#acct_num').keypress(function () {
+//            $('#neq').hide();
+//
 //        });
 
     })
@@ -79,7 +80,15 @@
     function getAccountName() {
         //make sure alert message is not empty
         var acct = $('#acct_num').val();
-        console.log(acct);
+        if(( acct==null || acct=='' ) ) {
+
+
+            $('.acctError').show().css("color", "red");
+            return false;
+        }
+
+
+
 
         var options = {
             type: 'GET',
@@ -109,6 +118,15 @@
             }
         };
         $.ajax(options);
+    }
+
+
+
+    function clearFields() {
+        $('#localsave').hide();
+        $('.acctError').hide();
+        $('#neq').show();
+        $('#acct_name').val();
     }
     /*]]>*/
 </script>

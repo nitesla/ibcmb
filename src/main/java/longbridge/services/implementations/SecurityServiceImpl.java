@@ -4,15 +4,12 @@ package longbridge.services.implementations;
 
 import longbridge.config.entrust.CustomHttpClient;
 import longbridge.config.entrust.EntrustServiceResponse;
-import longbridge.exception.EntrustConnectionException;
 import longbridge.exception.InternetBankingSecurityException;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.models.RetailUser;
 import longbridge.security.IpAddressUtils;
 import longbridge.services.IntegrationService;
 import longbridge.services.SecurityService;
-import longbridge.utils.ResultType;
-import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -28,7 +25,6 @@ import org.springframework.stereotype.Service;
 import java.io.StringWriter;
 import java.math.BigInteger;
 import java.security.SecureRandom;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 
@@ -434,27 +430,47 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
-    public void setUserQA(String username, List<String> questions, List<String> answer) {
-
-    }
-
-    @Override
-    public Map<List<String>, List<String>> getUserQA(String username) {
-        Map<List<String>, List<String>> list = new HashMap<>();
-
-
-        return list;
-
-
-    }
-
-    @Override
-    public Map<List<String>, List<String>> getMutualAuth(String username) throws InternetBankingTransferException {
-        Map<List<String>, List<String>> list = new HashMap<>();
-
+    public void setUserQA(String username, String questions, String answer) {
         try {
             StringWriter writer = new StringWriter();
-            this.t = this.ve.getTemplate("entrust/performSetMutualAuthX.vm");
+            this.t = this.ve.getTemplate("entrust/performSetQA.vm");
+            this.context.put("appCode", appCode);
+            this.context.put("appDesc", appDesc);
+            this.context.put("userName", username);
+            this.context.put("appGroup", appGroup);
+            this.context.put("question", questions);
+            this.context.put("answer", answer);
+            this.t.merge(this.context, writer);
+            String payload = writer.toString();
+            EntrustServiceResponse webServiceResponse = httpClient.sendHttpRequest(payload);
+            String responseMessage = webServiceResponse.getResponseMessage();
+            logger.trace("response {}", responseMessage);
+            CharSequence charSequence = "<respCode>1</respCode>";
+            boolean isSuccessful = responseMessage.contains(charSequence);
+
+
+            String respMesg = StringUtils.substringBetween(responseMessage, "  <respMessageCode>", "</respMessageCode>");
+
+
+            logger.trace("response is {}", respMesg);
+            if (!isSuccessful) throw new InternetBankingSecurityException(respMesg);
+
+            logger.info("******************END RESPONSE***********");
+
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new InternetBankingSecurityException(e.getMessage(), e);
+
+        }
+
+    }
+
+    @Override
+    public Map<String, List<String>> getUserQA(String username) {
+        Map<String, List<String>> list = new HashMap<>();
+        try {
+            StringWriter writer = new StringWriter();
+            this.t = this.ve.getTemplate("entrust/performGetQA.vm");
             this.context.put("appCode", appCode);
             this.context.put("appDesc", appDesc);
             this.context.put("appGroup", appGroup);
@@ -471,12 +487,65 @@ public class SecurityServiceImpl implements SecurityService {
             logger.trace("response message code : {}", msg);
             if (!isSuccessful) throw new InternetBankingSecurityException(msg);
 
-            String[] captions = StringUtils.substringsBetween(responseMessage, "  <captionSecret>", "</captionSecret>");
-            String[] images = StringUtils.substringsBetween(responseMessage, "  <imageSecret>", "</imageSecret>");
-            List<String> captionSecret = Arrays.asList(captions);
-            List<String> imageSecret = Arrays.asList(images);
+            String questions = StringUtils.substringBetween(responseMessage, "<questions>", "</questions>");
+            String answers = StringUtils.substringBetween(responseMessage, "<answers>", "</answers>");
+            List<String> questionList = Arrays.asList(questions);
+            List<String> answerList = Arrays.asList(answers);
 
-            list.put(captionSecret, imageSecret);
+
+            list.put("questions", questionList);
+            list.put("answers", answerList);
+
+
+            logger.info("******************END RESPONSE***********");
+
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new InternetBankingSecurityException(e.getMessage(), e);
+        }
+
+        return list;
+    }
+
+    @Override
+    public Map<String, List<String>> getMutualAuth(String username) throws InternetBankingTransferException {
+        Map<String, List<String>> list = new HashMap<>();
+
+        try {
+            StringWriter writer = new StringWriter();
+            this.t = this.ve.getTemplate("entrust/performGetMutualAuth.vm");
+            this.context.put("appCode", appCode);
+            this.context.put("appDesc", appDesc);
+            this.context.put("appGroup", appGroup);
+            this.context.put("userName", username);
+            this.t.merge(this.context, writer);
+            String payload = writer.toString();
+            EntrustServiceResponse webServiceResponse = httpClient.sendHttpRequest(payload);
+            String responseMessage = webServiceResponse.getResponseMessage();
+            logger.trace("response {}", responseMessage);
+            CharSequence charSequence = "<respCode>1</respCode>";
+            boolean isSuccessful = responseMessage.contains(charSequence);
+            String msg = StringUtils.substringBetween(responseMessage, "<respMessageCode>", "</respMessageCode>");
+
+            logger.trace("response message code : {}", msg);
+            if (!isSuccessful) throw new InternetBankingSecurityException(msg);
+
+            String captions = StringUtils.substringBetween(responseMessage, "<captionSecret>", "</captionSecret>");
+            String images = StringUtils.substringBetween(responseMessage, "<imageSecret>", "</imageSecret>");
+            List<String> captionSecret= new ArrayList<>();
+            List<String> imageSecret = new ArrayList<>();
+      logger.info("caption {}",captions);
+          if (captions!=null)
+              captionSecret.add(captions);
+
+
+            if (images!=null)
+            imageSecret.add(images);
+
+
+
+            list.put("imageSecret", imageSecret);
+            list.put("captionSecret", captionSecret);
 
 
             logger.info("******************END RESPONSE***********");
@@ -499,7 +568,7 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
-    public void setMutualAuthX(String username, String mutualCaption, String mutualImagePath) {
+    public void setMutualAuth(String username, String mutualCaption, String mutualImagePath) {
 
         try {
             StringWriter writer = new StringWriter();

@@ -138,7 +138,8 @@ public class RetailUserServiceImpl implements RetailUserService {
             retailUser = new RetailUser();
             retailUser.setUserName(user.getUserName());
             retailUser.setCustomerId(details.getCifId());
-            retailUser.setFirstName(details.getCustomerName());
+            retailUser.setFirstName(details.getFirstName());
+            retailUser.setLastName(details.getLastName());
             retailUser.setEmail(details.getEmail());
             retailUser.setCreatedOnDate(new Date());
             retailUser.setBirthDate(user.getBirthDate());
@@ -150,15 +151,18 @@ public class RetailUserServiceImpl implements RetailUserService {
                 throw new PasswordPolicyViolationException(errorMsg);
             }
 
-            String fullName = retailUser.getFirstName()+" "+retailUser.getLastName();
+            String phoneNo = details.getPhone();
+            String fullName = details.getFirstName()+" "+details.getLastName();
             SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_CREATION");
             if (setting != null && setting.isEnabled()) {
                 if ("YES".equalsIgnoreCase(setting.getValue())) {
                     createEntrustUser(user.getUserName(), fullName, true);
 
-                    setEntrustUserQA(user.getUserName(), user.getSecurityQuestion(), user.getSecurityAnswer(), fullName);
+                    addUserContact(user.getUserName(), phoneNo, user.getEmail());
 
-//                    setEntrustUserMutualAuth(user.getUserName(), user.getCaptionSec(), user.getPhishingSec(), fullName);
+                    setEntrustUserQA(user.getUserName(), user.getSecurityQuestion(), user.getSecurityAnswer());
+
+                    setEntrustUserMutualAuth(user.getUserName(), user.getCaptionSec(), user.getPhishingSec());
                 }
             }
 
@@ -189,7 +193,15 @@ public class RetailUserServiceImpl implements RetailUserService {
         }
     }
 
-    private void setEntrustUserQA(String username, List<String> securityQuestion, List<String> securityAnswer, String fullName){
+    private void addUserContact(String username, String phone, String email){
+        try{
+            securityService.addUserContacts(email, phone, true, username);
+        }catch (InternetBankingSecurityException e){
+            throw new InternetBankingSecurityException(messageSource.getMessage("entrust.create.failure", null, locale), e);
+        }
+    }
+
+    private void setEntrustUserQA(String username, String securityQuestion, String securityAnswer){
         try{
             securityService.setUserQA(username, securityQuestion, securityAnswer);
         }catch (InternetBankingSecurityException e){
@@ -198,9 +210,10 @@ public class RetailUserServiceImpl implements RetailUserService {
         }
     }
 
-    private void setEntrustUserMutualAuth(String username, List<String> captionSec, List<String> phishingSec, String fullName){
+    private void setEntrustUserMutualAuth(String username, String captionSec, String phishingSec){
         try{
             securityService.setMutualAuth(username, captionSec, phishingSec);
+
         }catch (InternetBankingSecurityException e){
             securityService.deleteEntrustUser(username);
             throw new InternetBankingSecurityException(messageSource.getMessage("entrust.create.failure", null, locale), e);

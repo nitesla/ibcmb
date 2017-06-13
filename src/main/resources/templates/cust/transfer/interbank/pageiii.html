@@ -63,7 +63,7 @@
 
 
                         <div class="form-group">
-                            <a  onclick="goBack()" >Modify</a>
+                            <a style="cursor: pointer;" onclick="goBack()" >Modify</a>
                             <button type="submit" class="btn btn-link">Proceed</button>
                             <a th:href="@{/retail/transfer/interbank}">Cancel</a>
 
@@ -73,9 +73,7 @@
                     <!--</div>-->
                 </div>
             </div>
-            <div class="col-md-3 sidebar">
-                <div class="sidebar-bg">hfdhgk</div>
-                <div class="sidebar-bg">jgjgjk</div>
+            <div th:replace="cust_layout :: sidebar" class="col-md-3 sidebar">
             </div>
         </div>
     </div>

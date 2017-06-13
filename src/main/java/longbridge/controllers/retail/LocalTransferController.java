@@ -1,5 +1,6 @@
 package longbridge.controllers.retail;
 
+import longbridge.dtos.FinancialInstitutionDTO;
 import longbridge.dtos.LocalBeneficiaryDTO;
 import longbridge.dtos.TransferRequestDTO;
 import longbridge.exception.InternetBankingTransferException;
@@ -22,6 +23,9 @@ import org.springframework.web.servlet.LocaleResolver;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.Comparator;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 /**
  * Created by ayoade_farooq@yahoo.com on 5/4/2017.
@@ -55,7 +59,11 @@ public class LocalTransferController {
     @GetMapping("")
     public String index(Model model, Principal principal) throws Exception {
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
-        model.addAttribute("localBen", localBeneficiaryService.getLocalBeneficiaries(retailUser));
+        Iterable<LocalBeneficiary> cmbBeneficiaries = localBeneficiaryService.getBankBeneficiaries(retailUser);
+        model.addAttribute("localBen",
+                StreamSupport.stream(cmbBeneficiaries.spliterator(), false)
+                        .collect(Collectors.toList()));
+
 
         return page + "pagei";
     }
@@ -66,15 +74,14 @@ public class LocalTransferController {
         model.addAttribute("transferRequest", transferRequestDTO);
         validator.validate(transferRequestDTO, result);
 
-        if (servletRequest.getSession().getAttribute("Lbeneficiary") !=null ){
-            LocalBeneficiaryDTO beneficiary= (LocalBeneficiaryDTO) servletRequest.getSession().getAttribute("Lbeneficiary");
+        if (servletRequest.getSession().getAttribute("Lbeneficiary") != null) {
+            LocalBeneficiaryDTO beneficiary = (LocalBeneficiaryDTO) servletRequest.getSession().getAttribute("Lbeneficiary");
             model.addAttribute("beneficiary", beneficiary);
         }
         if (result.hasErrors()) {
             return page + "pageii";
         }
         try {
-            System.out.println(transferRequestDTO);
             transferService.validateTransfer(transferRequestDTO);
             transferRequestDTO.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
             servletRequest.getSession().setAttribute("transferRequest", transferRequestDTO);
@@ -133,6 +140,27 @@ public class LocalTransferController {
 
 
         return page + "pageii";
+    }
+
+    @ModelAttribute
+    public void getLocalFinancialInstitutions(Model model) {
+
+        model.addAttribute("localBanks",
+                financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.LOCAL)
+                        .stream()
+                        .filter(i -> !i.getInstitutionCode().equals(bankCode))
+                        .collect(Collectors.toList())
+                        .stream()
+                        .sorted(Comparator.comparing(FinancialInstitutionDTO::getInstitutionName))
+                        .collect(Collectors.toList())
+        );
+
+
+    }
+
+    @ModelAttribute
+    public void getBankCode(Model model) {
+        model.addAttribute("bankCode", bankCode);
     }
 
 

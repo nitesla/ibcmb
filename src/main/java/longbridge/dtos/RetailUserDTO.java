@@ -33,10 +33,10 @@ public class RetailUserDTO {
     private String lastLogin;
     private Date lastLoginDate;
     private int noOfLoginAttempts;
-    private List<String> securityQuestion;
-    private List<String> securityAnswer;
-    private List<String> phishingSec;
-    private List<String> captionSec;
+    private String securityQuestion;
+    private String securityAnswer;
+    private String phishingSec;
+    private String captionSec;
     private Role role;
     private Code alertPreference;
 
@@ -194,35 +194,35 @@ public class RetailUserDTO {
         this.alertPreference = alertPreference;
     }
 
-    public List<String> getSecurityQuestion() {
+    public String getSecurityQuestion() {
         return securityQuestion;
     }
 
-    public void setSecurityQuestion(List<String> securityQuestion) {
+    public void setSecurityQuestion(String securityQuestion) {
         this.securityQuestion = securityQuestion;
     }
 
-    public List<String> getSecurityAnswer() {
+    public String getSecurityAnswer() {
         return securityAnswer;
     }
 
-    public void setSecurityAnswer(List<String> securityAnswer) {
+    public void setSecurityAnswer(String securityAnswer) {
         this.securityAnswer = securityAnswer;
     }
 
-    public List<String> getPhishingSec() {
+    public String getPhishingSec() {
         return phishingSec;
     }
 
-    public void setPhishingSec(List<String> phishingSec) {
+    public void setPhishingSec(String phishingSec) {
         this.phishingSec = phishingSec;
     }
 
-    public List<String> getCaptionSec() {
+    public String getCaptionSec() {
         return captionSec;
     }
 
-    public void setCaptionSec(List<String> captionSec) {
+    public void setCaptionSec(String captionSec) {
         this.captionSec = captionSec;
     }
 

@@ -2,6 +2,7 @@ package longbridge.services.implementations;
 
 import longbridge.dtos.CorpCorporateUserDTO;
 import longbridge.dtos.CorporateUserDTO;
+import longbridge.dtos.ServiceReqConfigDTO;
 import longbridge.dtos.SettingDTO;
 import longbridge.exception.*;
 import longbridge.forms.AlertPref;
@@ -15,6 +16,7 @@ import longbridge.repositories.RoleRepo;
 import longbridge.services.*;
 import longbridge.utils.DateFormatter;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,10 +29,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 /**
  * Created by Fortune on 4/4/2017.
@@ -114,6 +113,12 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         return corporateUserRepo.findAll();
     }
 
+    @Override
+    public Iterable<CorporateUserDTO> getUsers(Long corpId) {
+        Corporate corporate = corporateRepo.findOne(corpId);
+        List<CorporateUser> users = corporate.getUsers();
+        return convertEntitiesToDTOs(users);
+    }
 
     @Override
     public String updateUser(CorporateUserDTO user) throws InternetBankingException {
@@ -157,7 +162,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             corporateUser.setCreatedOnDate(new Date());
             String password = passwordPolicyService.generatePassword();
             corporateUser.setPassword(passwordEncoder.encode(password));
-            user.setExpiryDate(new Date());
+            corporateUser.setExpiryDate(new Date());
             Role role = new Role();
             role.setId(Long.parseLong(user.getRoleId()));
             corporateUser.setRole(role);
@@ -451,13 +456,29 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         }
     }
 
-    private String getUsedPasswords(String newPassword, String oldPasswords) {
-        StringBuilder builder = new StringBuilder();
-        if (oldPasswords != null) {
-            builder.append(oldPasswords);
+
+    @Override
+    public List<CorporateUserDTO> getUsersWithoutRole(Long corpId) {
+        boolean withoutRole = true;
+        Corporate corporate = corporateRepo.findOne(corpId);
+        List<CorporateUser> users = corporateUserRepo.findByCorporate(corporate);
+        Set<CorporateRole> roles =  corporate.getCorporateRoles();
+        Set<CorporateUser> usersWithoutCorpRole = new HashSet<CorporateUser>();
+        for(CorporateUser corporateUser: users){
+            for(CorporateRole corporateRole: roles){
+                if(corporateRole.getUsers().contains(corporateUser)){
+                   withoutRole= false;
+                   break;
+                }
+
+            }
+            if(withoutRole){
+                usersWithoutCorpRole.add(corporateUser);
+            }
         }
-        builder.append(passwordEncoder.encode(newPassword) + ",");
-        return builder.toString();
+
+//        List<CorporateUser> usersWithoutRoles = corporateUserRepo.findByCorporateAndCorporateRoleIsNull(corporate);
+        return  convertEntitiesToDTOs(usersWithoutCorpRole);
     }
 
     private void sendUserCredentials(CorporateUser user, String password) throws InternetBankingException {
@@ -508,6 +529,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     }
 
     private CorporateUserDTO convertEntityToDTO(CorporateUser corporateUser) {
+
         CorporateUserDTO corporateUserDTO = modelMapper.map(corporateUser, CorporateUserDTO.class);
         corporateUserDTO.setRoleId(corporateUser.getRole().getId().toString());
         corporateUserDTO.setRole(corporateUser.getRole().getName());

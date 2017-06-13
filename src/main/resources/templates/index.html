@@ -126,14 +126,6 @@
                             <button class="dropbtn" data-toggle="tooltip" data-placement="bottom" title="Join our internet banking platform">REGISTER NOW</button>
                         </form>
                     </div>
-                    <!--<ul class="lft">-->
-                        <!--<li><a href="#" class="dropdown-toggle btn btn-lg" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> Login</a>-->
-                            <!--<ul class="dropdown-menu">-->
-                                <!--<li><a th:href="@{/login/retail}">RETAIL</a></li>-->
-                                <!--<li><a th:href="@{/login/corporate}">CORPORATE</a></li>-->
-                            <!--</ul></li>-->
-                        <!--<li><a href="" class="btn btn-lg">Register Now</a></li>-->
-                    <!--</ul>-->
                 </div>
                 <div class="margin-bottom"></div>
                 <div>
@@ -163,32 +155,118 @@
                     <h4>Contact Us</h4>
                     <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi e</p>
                     <div class="icon">
-                        <!--<div class="dropdown">-->
-                            <!--<button class="dropbtn"><i class="fa fa-phone"></i></button>-->
-                            <!--<div class="dropdown-content">-->
-                                <!--<a th:href="@{/login/retail}">RETAIL</a>-->
-                                <!--<a th:href="@{/login/corporate}">CORPORATE</a>-->
-                            <!--</div>-->
-                        <!--</div>-->
-                        <a href="#"><i class="fa fa-phone"></i></a>
-                        <a href="#"><i class="fa fa-envelope"></i></a>
-                        <a href="#"><i class="fa fa-comments-o"></i></a>
+                        <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-phone"></i></a>
+                        <ul class="dropdown-menu">
+                            <li>T +234 (0)818 831 4939</li>
+                            <li>T +234 (0)802 891 3262</li>
+                            <li class="icontext" data-toggle="modal" data-target="#myModal">Call back</li>
+                        </ul>
+                        </li>
+                        <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-envelope"></i></a>
+                        <ul class="dropdown-menu">
+                            <li>Send us an email</li>
+                            <li>enquiries@coronationmb.com</li>
+                            <li class="icontext">Copy email</li>
+                        </ul>
+                        </li>
+                        <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-comments-o"></i> </a>
+                        <ul class="dropdown-menu faz">
+                            <li>Need instant help?</li>
+                            <li>Chat with us</li>
+                            <li class="icontext"><i class="fa fa-comments-o"></i>Live chat</li>
+                        </ul>
+                        </li>
                     </div>
                 </div>
+
+                <!-- Trigger the modal with a button -->
+                <!--<button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#myModal">Call back</button>-->
+
+                <!-- Modal -->
+                <div id="myModal" class="modal fade" role="dialog">
+                    <div class="modal-dialog">
+
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                <h1 style="font-size: 20px">Request Callback</h1>
+                                <br/>
+<<<<<<< HEAD
+                                <form method="post" action="/request/callback" class="form-horizontal">
+                                    <div class="row">
+                                        <div class="col-sm-3 control-label"><label>Full Name:</label></div>
+                                        <div class="col-sm-9 form-group">
+                                            <input type="text" class="form-control" name="name"/>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-3 control-label"><label>Preferred Phone Number:</label></div>
+                                        <div class="col-sm-9 form-group">
+                                            <input type="text" class="form-control" name="phone"/>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <button class="btn btn-link">Make Request</button>
+                                    </div>
+                                </form>
+=======
+                                <!--<form method="post" action="/request/callback" class="form-horizontal">-->
+                                <!--<div>-->
+                                <!--<label class="col-sm-3 control-label">Full Name</label>-->
+                                <!--<div class="col-sm-8">-->
+                                <!--<input type="text" class="form-control" name="name"/>-->
+                                <!--</div>-->
+                                <!--</div>-->
+                                <!--<div>-->
+                                <!--<label class="col-sm-3 control-label">Preferred Phone Number</label>-->
+                                <!--<div class="col-sm-8">-->
+                                <!--<input type="text" class="form-control" name="phone"/>-->
+                                <!--</div>-->
+                                <!--</div>-->
+                                <!--<div>-->
+                                <!--<button class="btn btn-link">Make Request</button>-->
+                                <!--</div>-->
+                                <!--</form>-->
+>>>>>>> dd79c2d9ab995279497de12d4243516164d7fa57
+                            </div>
+                            <!--<div class="modal-footer">-->
+                            <!--<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>-->
+                            <!--</div>-->
+                        </div>
+
+                    </div>
+                </div>
+
                 <div class="margin-bottom"></div>
                 <div>
                     <p>Enter details below</p>
                     <form action="" method="get" class="contact-form">
+<<<<<<< HEAD
                             <div class="form-group">
-                                <input type="text" name="Name" class="form-control"  value="Name"/>
+                                <input type="text" name="name" class="form-control" placeholder="Name"/>
                             </div>
                             <div class="form-group">
-                                <input type="text" name="Email" class="form-control" value="Email"/>
+                                <input type="text" name="email" class="form-control" placeholder="Email"/>
                             </div>
                             <div class="form-group">
-                                <textarea name="Message" value="Message" class="form-control" rows="10"></textarea>
+                                <textarea name="message" value="Message" class="form-control" rows="10"></textarea>
                             </div>
                             <input type="button" value="Submit" class="btn btn-primary btn-md form-control" />
+=======
+                        <div class="form-group">
+                            <input type="text" name="Name" class="form-control"  value="Name"/>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" name="Email" class="form-control" value="Email"/>
+                        </div>
+                        <div class="form-group">
+                            <textarea name="Message" value="Message" class="form-control" rows="10"></textarea>
+                        </div>
+                        <input type="button" value="Submit" class="btn btn-primary btn-md form-control" />
+>>>>>>> dd79c2d9ab995279497de12d4243516164d7fa57
 
                     </form>
                 </div>
@@ -206,10 +284,11 @@
                     <li><a href="#" target="_blank">Disclaimer</a></li>
                     <li><a href="#" target="_blank">Terms &amp; Conditions</a></li>
                 </ul>
-
             </div>
-            <div class="col-md-6"><p> &copy; 2017 - All rights reserved</p></div>
 
+
+
+            <div class="col-md-6"><p> &copy; 2017 - All rights reserved</p></div>
         </div>
     </div>
 </footer>
@@ -219,19 +298,19 @@
 <script th:src="@{~/customer/js/bootstrap.js}"></script>
 
 <!--<script>-->
+<!--$(document).ready(function(){-->
+<!--$(".dropdown").hover(-->
+<!--function() {-->
+<!--$('.dropdown-menu', this).not('.in .dropdown-menu').stop(true,true);-->
+<!--$(this).toggleClass('open');-->
+<!--}-->
+<!--);-->
+<!--});-->
+<!--</script>-->
+<!--<script>-->
     <!--$(document).ready(function(){-->
-        <!--$(".dropdown").hover(-->
-            <!--function() {-->
-                <!--$('.dropdown-menu', this).not('.in .dropdown-menu').stop(true,true);-->
-                <!--$(this).toggleClass('open');-->
-            <!--}-->
-        <!--);-->
+        <!--$('[data-toggle="tooltip"]').tooltip();-->
     <!--});-->
 <!--</script>-->
-<script>
-    $(document).ready(function(){
-        $('[data-toggle="tooltip"]').tooltip();
-    });
-</script>
 </body>
 </html>

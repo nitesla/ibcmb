@@ -40,6 +40,7 @@ public class TransRequest extends AbstractEntity{
     private String userReferenceNumber;
 
     private String narration;
+    private String statusDescription;
 
 
 
@@ -48,19 +49,21 @@ public class TransRequest extends AbstractEntity{
     public TransRequest() {
     }
 
-    public TransRequest(String account, TransferType transferType, FinancialInstitution financialInstitution, String beneficiaryAccountNumber, String beneficiaryAccountName, String remarks, String referenceNumber, String userReferenceNumber, String narration,  BigDecimal amount) {
-        this.customerAccountNumber = account;
+    public TransRequest(String customerAccountNumber, TransferType transferType, FinancialInstitution financialInstitution, String beneficiaryAccountNumber, String beneficiaryAccountName, String remarks, String status, String referenceNumber, String userReferenceNumber, String narration, String statusDescription, BigDecimal amount) {
+        this.customerAccountNumber = customerAccountNumber;
         this.transferType = transferType;
         this.financialInstitution = financialInstitution;
         this.beneficiaryAccountNumber = beneficiaryAccountNumber;
         this.beneficiaryAccountName = beneficiaryAccountName;
         this.remarks = remarks;
+        this.status = status;
         this.referenceNumber = referenceNumber;
         this.userReferenceNumber = userReferenceNumber;
         this.narration = narration;
-
-        this.amount=amount;
+        this.statusDescription = statusDescription;
+        this.amount = amount;
     }
+
 
     public String getCustomerAccountNumber() {
         return customerAccountNumber;
@@ -142,7 +145,13 @@ public class TransRequest extends AbstractEntity{
         this.narration = narration;
     }
 
+    public String getStatusDescription() {
+        return statusDescription;
+    }
 
+    public void setStatusDescription(String statusDescription) {
+        this.statusDescription = statusDescription;
+    }
 
     public BigDecimal getAmount() {
         return amount;
@@ -152,23 +161,26 @@ public class TransRequest extends AbstractEntity{
         this.amount = amount;
     }
 
+
     @Override
     public String toString() {
-        return "Transfer{" +
-                "account=" + customerAccountNumber +
+        return "TransRequest{" +
+                "customerAccountNumber='" + customerAccountNumber + '\'' +
                 ", transferType=" + transferType +
-                ", financialinstitution=" + financialInstitution +
+                ", financialInstitution=" + financialInstitution +
                 ", beneficiaryAccountNumber='" + beneficiaryAccountNumber + '\'' +
                 ", beneficiaryAccountName='" + beneficiaryAccountName + '\'' +
                 ", remarks='" + remarks + '\'' +
+                ", status='" + status + '\'' +
                 ", referenceNumber='" + referenceNumber + '\'' +
                 ", userReferenceNumber='" + userReferenceNumber + '\'' +
                 ", narration='" + narration + '\'' +
-                ", amount='" + amount + '\'' +
+                ", statusDescription='" + statusDescription + '\'' +
+                ", amount=" + amount +
                 '}';
     }
 
-	public static OperationCode getAddCode() {
+    public static OperationCode getAddCode() {
 		// TODO Auto-generated method stub
 		return null;
 	}
