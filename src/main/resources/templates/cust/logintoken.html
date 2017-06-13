@@ -3,10 +3,12 @@
 <head>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/bootstrap.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/custom.css}"/>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
     <title>Log in | Coronation Merchant Bank
     </title>
 </head>
-<body>
+<body onload="loadToken()">
 <div class="container">
     <div class="top_bar">
         <ul class="list_group">
@@ -49,18 +51,53 @@
 <section class="content-wrapper">
     <div class="container">
         <div class="bg">
-            <form id="loginform" th:action="@{/retail/token}" method="POST" class="form-signin">
-                <h1>Token Authentication</h1>
-                <br/>
+            <!--<form id="loginform" th:action="@{/retail/token}" method="POST" class="form-signin">-->
+                <!--<h1>Token Authentication</h1>-->
+                <!--<br/>-->
 
 
-                <div id="username_div" class="form-group">
-                    <input type="password" id="token" name="token" class="form-control"  placeholder="Token Code" />
+                <!--<div id="username_div" class="form-group">-->
+                    <!--<input type="password" id="token" name="token" class="form-control"  placeholder="Token Code" />-->
+                <!--</div>-->
+                <!--<div class="form-group">-->
+                    <!--<button class="btn btn-primary form-control" type="submit"> Next </button>-->
+                <!--</div>-->
+            <!--</form>-->
+        </div>
+    </div>
+
+    <div id="myModal" class="modal fade" role="dialog" style="margin-top: 150px;" disabled="disabled">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content modal-box" style="">
+                <form id="loginform" th:action="@{/retail/token}" method="POST" class="form-signi">
+                <div class="modal-body">
+                    <h4 class=" text-danger tokenHeader" >Hello, <span class="text-black-req">Tolu!</span></h4>
+                    <div  class='alert alert-danger alert-dismissable'  id="myspan" style="display:n">
+
+                    </div>
+                    <p class="text-mute">Kindly enter the OTP from your device</p>
+
+                    <input placeholder="Enter your One-Time PIN" type="text" class="form-control" style="width:100% !important;display: block;margin: 0px auto;margin-top:30px;border: 1px solid rgba(0,0,0,0.4);"/>
+
+
+
+                    <div style="margin-top: 70px;">
+                        <p>
+                            Don't have a token?
+                        </p>
+                        <a href="#" class="k" style="color:black">Send me an OTP <i class="fa fa-angle-down" style="font-size:18px;color:black"></i> </a>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <button class="btn btn-primary form-control" type="submit"> Next </button>
+
+                <div class="modal-footer" style="border-top: 0px;">
+                    <a type="button" class="b" data-dismiss="modal" style="padding:10px;color:black">Back</a>
+                    <input type="submit"  class="btn btn-link" style="padding:10px;color:black;" value="Continue"/>
                 </div>
-            </form>
+                </form>
+            </div>
+
         </div>
     </div>
 </section>
@@ -83,6 +120,9 @@
 </footer>
 <!-- CORE JQUERY SCRIPTS -->
 
+
+
+
 <div th:if="${message}">
     <div hidden="hidden">
         <ul class="actionMessage">
@@ -94,10 +134,33 @@
 <div th:if="${failure}">
     <div hidden="hidden">
         <ul class="actionError">
-            <li th:each="msg : ${failure}" th:text="${msg}">Message</li>
+            <li id="errorMess" th:each="msg : ${failure}" th:text="${msg}">Message</li>
         </ul>
     </div>
 </div>
+
+<script>
+
+    function loadToken()
+    {
+        $('#myModal').modal({
+            backdrop: 'static',
+            keyboard: false
+        });
+
+
+
+
+
+
+
+
+
+    }
+
+
+
+</script>
 
 <!-- jQuery -->
 <!-- Bootstrap -->

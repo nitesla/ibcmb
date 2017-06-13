@@ -1,8 +1,12 @@
 package longbridge.controllers;
 
 
+<<<<<<< HEAD
 import longbridge.dtos.SettingDTO;
 import longbridge.dtos.UserGroupDTO;
+=======
+import longbridge.exception.InternetBankingException;
+>>>>>>> 4fd54f8ed2f208d779c4be23818117a4217698a6
 import longbridge.exception.PasswordException;
 import longbridge.exception.UnknownResourceException;
 import longbridge.models.Corporate;
@@ -166,16 +170,23 @@ public class MainController {
             return "redirect:/login/retail/failure";
         }
 
-//        Map<String, List<String>> mutualAuth =  securityService.getMutualAuth(username);
-//        String image = mutualAuth.get("imageSecret")
-//        .stream()
-//        .filter(Objects::nonNull)
-//        .findFirst()
-//        .orElse("");
-//
-//        logger.info("SECIMAGE{}", image);
-//
-//        model.addAttribute("secImage", image);
+        try{
+            Map<String, List<String>> mutualAuth =  securityService.getMutualAuth(username);
+            if (mutualAuth != null){
+                String image = mutualAuth.get("imageSecret")
+                        .stream()
+                        .filter(Objects::nonNull)
+                        .findFirst()
+                        .orElse("");
+
+                logger.info("SECIMAGE"+ image);
+
+                model.addAttribute("secImage", image);
+            }
+        }catch (InternetBankingException e){
+            model.addAttribute("imageException", "You are yet to set your antiphishing image");
+        }
+
         model.addAttribute("username", user.getUserName());
         return "retpage2";
     }

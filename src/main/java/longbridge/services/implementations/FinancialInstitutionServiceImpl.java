@@ -122,6 +122,12 @@ public class FinancialInstitutionServiceImpl implements FinancialInstitutionServ
     }
 
     @Override
+    public List<FinancialInstitutionDTO> getOtherLocalBanks( String bankCode) {
+       List<FinancialInstitution>  fis = financialInstitutionRepo.findByInstitutionTypeAndInstitutionCodeIgnoreCaseNot(FinancialInstitutionType.LOCAL,bankCode);
+        return convertEntitiesToDTOs(fis);
+    }
+
+    @Override
     public FinancialInstitutionDTO getFinancialInstitution(Long id) {
         return convertEntityToDTO(financialInstitutionRepo.findOne(id));
     }
