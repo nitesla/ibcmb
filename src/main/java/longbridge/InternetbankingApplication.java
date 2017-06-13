@@ -1,5 +1,6 @@
 package longbridge;
 
+import longbridge.jobs.CronJobs;
 import longbridge.repositories.CustomJpaRepositoryFactoryBean;
 import longbridge.services.IntegrationService;
 import longbridge.services.SecurityService;
@@ -29,7 +30,8 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
     private IntegrationService integrationService;
     @Autowired
     PasswordEncoder passwordEncoder;
-
+    @Autowired
+    private CronJobs cronJobs;
     public static void main(String[] args) {
         SpringApplication.run(InternetbankingApplication.class, args);
 
@@ -40,7 +42,12 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
     }
 
     @Override
-    public void run(String... strings) throws Exception {
+   public void run(String... strings) throws Exception {
+        cronJobs.startJob();
+//      securityService.createEntrustUser("wumiTofu01","Wunmi baba ",true);
+//        securityService.addUserContacts("soluwawunmi@gmail.com","07038810752",true,"wumiTofu01");
+//         securityService.sendOtp("wumiTofu01");
+//        System.out.println("Your password is "+passwordEncoder.encode("password123"));
 
     }
 

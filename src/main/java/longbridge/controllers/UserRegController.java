@@ -129,12 +129,13 @@ public class UserRegController {
     @GetMapping("/rest/secQues/{accountNumber}")
     public @ResponseBody String getSecQuestionFromNumber(@PathVariable String accountNumber){
         String secQuestion = "";
-        logger.info("Account nUmber : " + accountNumber);
+        logger.info("Account number : " + accountNumber);
         Account account = accountService.getAccountByAccountNumber(accountNumber);
         if (account != null){
             String customerId = account.getCustomerId();
             logger.info("Cif: " + customerId);
             RetailUser user = retailUserService.getUserByCustomerId(customerId);
+            logger.info("USER NAME {}", user);
             if (user != null){
                 logger.info("USER NAME {}", user.getUserName());
                 Map<String, List<String>> qa = securityService.getUserQA(user.getUserName());
@@ -170,23 +171,21 @@ public class UserRegController {
         Map<String, List<String>> qa = securityService.getUserQA((String) session.getAttribute("username"));
         //List<String> sec = null;
         if (qa != null){
-            Set<String> questions= qa.keySet();
-            Iterator it = questions.iterator();
-            while(it.hasNext()){
-                List<String> question = qa.get(it.next());
-                secAnswer = question.stream().filter(Objects::nonNull).findFirst().orElse("");
-                logger.info("answer {}", secAnswer);
-            }
+            List<String> question = qa.get("answers");
+            secAnswer = question.stream().filter(Objects::nonNull).findFirst().orElse("");
+            logger.info("user answer {}", answer);
+            logger.info("answer {}", secAnswer);
 
-            if (!secAnswer.equals(answer)){
-                return "false";
+            if (!secAnswer.equalsIgnoreCase(answer)){
+                return "";
+            }else {
+                return "true";
             }
 
         }else {
-            return "false";
+            return "";
         }
-
-        return (String) session.getAttribute("username");
+        //return (String) session.getAttribute("username");
     }
 
     @GetMapping("/rest/regCode/{accountNumber}/{email}/{birthDate}")

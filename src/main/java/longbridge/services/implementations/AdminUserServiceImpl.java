@@ -135,16 +135,7 @@ public class AdminUserServiceImpl implements AdminUserService {
             Role role = new Role();
             role.setId(Long.parseLong(user.getRoleId()));
             adminUser.setRole(role);
-            String fullName = adminUser.getFirstName() + " " + adminUser.getLastName();
-            SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_CREATION");
-            if (setting != null && setting.isEnabled()) {
-                if ("YES".equalsIgnoreCase(setting.getValue())) {
-                    boolean result = securityService.createEntrustUser(adminUser.getUserName(), fullName, true);
-                    if (!result) {
-                        throw new EntrustException(messageSource.getMessage("entrust.create.failure", null, locale));
-                    }
-                }
-            }
+            creatUserOnEntrust(adminUser);
             adminUserRepo.save(adminUser);
             logger.info("New admin user {} created", adminUser.getUserName());
             return messageSource.getMessage("user.add.success", null, locale);
@@ -152,9 +143,27 @@ public class AdminUserServiceImpl implements AdminUserService {
             throw new InternetBankingSecurityException(messageSource.getMessage("entrust.create.failure", null, locale), se);
         } catch (Exception e) {
             if (e instanceof EntrustException) {
-                throw new EntrustException(messageSource.getMessage("entrust.create.failure", null, locale));
+                throw new EntrustException(e.getMessage());
             } else {
                 throw new InternetBankingException(messageSource.getMessage("user.add.failure", null, locale), e);
+            }
+        }
+    }
+
+    private void creatUserOnEntrust(AdminUser adminUser){
+        String fullName = adminUser.getFirstName() + " " + adminUser.getLastName();
+        SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_CREATION");
+        if (setting != null && setting.isEnabled()) {
+            if ("YES".equalsIgnoreCase(setting.getValue())) {
+                boolean creatResult = securityService.createEntrustUser(adminUser.getUserName(), fullName, true);
+                if (!creatResult) {
+                    throw new EntrustException(messageSource.getMessage("entrust.create.failure", null, locale));
+                }
+
+                boolean contactResult = securityService.addUserContacts(adminUser.getEmail(),adminUser.getPhoneNumber(),true,adminUser.getUserName());
+                if(!contactResult){
+                    logger.error("Failed to add user contacts on Entrust");
+                }
             }
         }
     }
