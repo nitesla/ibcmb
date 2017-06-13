@@ -8,6 +8,7 @@ import longbridge.repositories.OperationsUserRepo;
 import longbridge.security.FailedLoginService;
 import longbridge.security.SessionUtils;
 import longbridge.services.ConfigurationService;
+import longbridge.services.PasswordPolicyService;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +19,7 @@ import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
+import org.springframework.ui.Model;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -38,6 +40,9 @@ public class OpAuthenticationSuccessHandler extends SavedRequestAwareAuthenticat
 
     @Autowired
     private OperationsUserRepo operationsUserRepo;
+
+    @Autowired
+    private PasswordPolicyService passwordPolicyService;
 
     @Autowired
     private ConfigurationService configService;
@@ -63,7 +68,7 @@ public class OpAuthenticationSuccessHandler extends SavedRequestAwareAuthenticat
     }
 
     @Override
-    protected void handle(final HttpServletRequest request, final HttpServletResponse response, final Authentication authentication) throws IOException {
+    protected void handle(final HttpServletRequest request, final HttpServletResponse response, final Authentication authentication ) throws IOException {
 
         String targetUrl = determineTargetUrl(authentication);
 

@@ -51,9 +51,7 @@ public class OperationsControllerAdvice {
         if(numOfUnreadMessages>0){
             model.addAttribute("numOfUnreadMessages",numOfUnreadMessages);
         }
-        if (passwordPolicyService.displayPasswordExpiryDate(operationsUser.getExpiryDate())){
-            model.addAttribute("expiryDate",operationsUser.getExpiryDate());
-        }
+
 
         return "";
     }
