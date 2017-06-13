@@ -8,6 +8,7 @@ import longbridge.exception.*;
 import longbridge.forms.AlertPref;
 import longbridge.forms.CustChangePassword;
 import longbridge.forms.CustResetPassword;
+import longbridge.models.Account;
 import longbridge.models.Email;
 import longbridge.models.FinancialInstitutionType;
 import longbridge.models.RetailUser;
@@ -229,6 +230,11 @@ public class SettingController {
 
 
         RetailUser user = retailUserService.getUserByName(principal.getName());
+        String fullname=user.getFirstName()+' '+user.getLastName();
+        String custemail=user.getEmail();
+        String custId=user.getCustomerId();
+        String acctNumber=request.getParameter("acctNumber");
+
 
 
             SettingDTO setting = configService.getSettingByName("CUSTOMER_CARE_EMAIL");
@@ -237,7 +243,7 @@ public class SettingController {
                 Email email = new Email.Builder()
                         .setRecipient(setting.getValue())
                         .setSubject(messageSource.getMessage("customer.bvn.link.subject", null, locale))
-                        .setBody(String.format(messageSource.getMessage("customer.bvn.link.message", null, locale), bvn, user.getUserName()))
+                        .setBody(String.format(messageSource.getMessage("customer.bvn.link.message", null, locale),user.getUserName(),fullname, bvn,acctNumber,custId,custemail))
                         .build();
                 mailService.send(email);
                     String message =  messageSource.getMessage("bvn.add.success", null, locale);

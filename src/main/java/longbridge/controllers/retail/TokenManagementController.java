@@ -53,7 +53,7 @@ public class TokenManagementController {
     }
 
     @PostMapping
-    public String performTokenAuthentication(HttpServletRequest request, Principal principal, RedirectAttributes redirectAttributes, Locale locale){
+    public String performTokenAuthentication(HttpServletRequest request, Principal principal, RedirectAttributes redirectAttributes, Locale locale, Model model){
 
         String username = principal.getName();
         String tokenCode = request.getParameter("token");
@@ -69,9 +69,10 @@ public class TokenManagementController {
         }
         catch (InternetBankingSecurityException ibe){
             logger.error("Error authenticating token");
+            model.addAttribute("failure",messageSource.getMessage("token.auth.failure",null,locale));
         }
-        redirectAttributes.addFlashAttribute("failure",messageSource.getMessage("token.auth.failure",null,locale));
-        return "redirect:/retail/token";
+         model.addAttribute("failure",messageSource.getMessage("token.auth.failure",null,locale));
+        return "/cust/logintoken";
 
     }
 
@@ -79,6 +80,8 @@ public class TokenManagementController {
     public String syncToken(Principal principal, Model model){
         try {
             String serials = securityService.getTokenSerials(principal.getName());
+
+            logger.info("Serial received :"+serials);
             if (serials != null && !"".equals(serials)) {
                 List<String> serialNos = Arrays.asList(StringUtils.split(serials, ","));
                 model.addAttribute("serials", serialNos);
@@ -160,7 +163,7 @@ public class TokenManagementController {
     }
 
     @PostMapping("/authenticate")
-    public String performAuthenticate(WebRequest webRequest, HttpSession session, Principal principal, RedirectAttributes redirectAttributes){
+    public String performAuthenticate(WebRequest webRequest, HttpSession session, Principal principal, Model model, RedirectAttributes redirectAttributes){
         String url;
         if (webRequest.getParameter("token") == null){
             redirectAttributes.addFlashAttribute("failure", "Enter authentication code");
@@ -173,13 +176,15 @@ public class TokenManagementController {
             try {
                 boolean result = securityService.performTokenValidation(principal.getName(), token);
                 if (!result){
-                    redirectAttributes.addFlashAttribute("failure", "Token Authentication Failed");
-                    return "redirect:/retail/token/authenticate";
+                    model.addAttribute("failure", "Token Authentication Failed");
+                    return "/cust/tokenauth";
+
                 }
             }catch(InternetBankingSecurityException ibe){
                 logger.error("Error authenticating token", ibe);
-                redirectAttributes.addFlashAttribute("failure", "Token Authentication Failed");
-                return "redirect:/token/authenticate";
+                model.addAttribute("failure", "Token Authentication Failed");
+                return "/cust/tokenauth";
+
 
             }
 

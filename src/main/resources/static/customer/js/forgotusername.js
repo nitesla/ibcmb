@@ -17,8 +17,12 @@ function validateAccountNo(accountNumber){
             customerId = ''+String(data1);
             if(customerId == ""){
                 //invalid account number
-                document.getElementById("myspan").textContent="Ensure you put in a valid account number";
-                $("#myspan").show();
+                var error = document.getElementById("myspan");
+                    error.textContent="Ensure you put in a valid account number";
+               // $("#myspan").show();
+
+                error.style.display = "inline-block";
+
                 //alert("Account number not found");
             }else{
                 //valid account number
@@ -28,11 +32,13 @@ function validateAccountNo(accountNumber){
         }
     })
 
+    console.log(customerId);
+
     if(customerId == "" || customerId === null){
         return false;
     }else{
         $.ajax({
-            url: "/rest/secQues/"+accountNumber,
+            url: "/rest/secQues/"+customerId,
             type: 'GET',
             async: false,
             success:function(data2){
@@ -47,6 +53,7 @@ function validateAccountNo(accountNumber){
         })
     }
 
+    console.log(customerId);
 
     if(customerId == "" || customerId === null || secQues == "" || secQues === null){
         return false;
@@ -116,6 +123,20 @@ form.children("div").steps({
         form.validate().settings.ignore = ":disabled,:hidden";
         console.log(currentIndex);
         var isValid = form.valid();
+        // Allways allow previous action even if the current form is not valid!
+        if (currentIndex > newIndex)
+        {
+            return true;
+        }
+
+        // Needed in some cases if the user went back (clean up)
+        if (currentIndex < newIndex)
+        {
+            // To remove error styles
+            form.find(".body:eq(" + newIndex + ") label.error").remove();
+            form.find(".body:eq(" + newIndex + ") .error").removeClass("error");
+        }
+
         if(ACCOUNT_DETAILS_STEP === currentIndex){
             console.log("Current step is the account details step");
             var accountNumber = $('input[name="acct"]').val();

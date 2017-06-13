@@ -1,3 +1,310 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- BEGIN PAGE LEVEL STYLES -->
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/jquery-steps/css/jquery.steps.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/jquery-ui.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/font-awesome/font-awesome.min.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/bootstrap.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/custom.css}"/>
+
+    <title>Test</title>
+</head>
+<body>
+
+<header class="header">
+    <div class="container">
+        <div class="top_bar">
+            <ul class="list_group">
+                <li><a href="#"> CORONATION MERCHANT BANK</a></li>
+            </ul>
+        </div>
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <div class="navbar-header navbar-left">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
+                        <span class="sr-only">MENU</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#" data-toggle="collapse" data-target="#navbar-collapse-1">Menu</a>
+                </div>
+                <div class="collapse navbar-collapse" id="navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                        <li><a href="/">HOME</a></li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> LOG IN </a>
+                            <ul class="dropdown-menu">
+                                <li><a th:href="@{/login/retail}"> INDIVIDUAL </a></li>
+                                <li><a th:href="@{/login/corporate}"> CORPORATE</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="/register">REGISTER</a></li>
+                        <li><a href="/">CONTACT US</a></li>
+                        <li><a href="/">HELP</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <a href="#" class="logo">
+            <img th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
+        </a>
+    </div>
+</header>
+<br/>
+<br/>
+<br/>
+
+<section class="content-wrapper">
+    <div class="container">
+        <!-- Start row-->
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="white-box">
+                    <h2 class="header-title"> Self Registration</h2>
+                    <form id="reg-form"  action="/register" method="post">
+
+                        <div>
+                            <h3>Account Details</h3>
+                            <section>
+
+
+
+
+                                <div class="row">
+                                    <div class="col-md-offset-4 col-md-4">
+                                        <div class='alert alert-danger' id="myspan">
+                                        </div>
+                                        <div class="form-group clearfix">
+
+                                            <label>Account Number</label>
+                                            <span class='req'></span><input type="text" name="accountNumber"  class="form-control required" placeholder="Account Number"/>
+                                        </div>
+                                        <div id="loader" style='display:none'>
+
+                                        </div>
+
+
+                                        <div class="form-group clearfix">
+                                            <label>Email</label>
+                                            <span class='req'></span><input type="email" name="email" class="form-control" placeholder="Email"/>
+                                        </div>
+                                        <div class="form-group clearfix">
+                                            <label>Date of Birth</label>
+                                            <span class='req'></span><input name="birthDate" type="text" class="form-control" data-mask="99-99-9999" placeholder="DD-MM-YYYY"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                            <h3>Profile Details</h3>
+                            <section>
+                                <div class="row">
+                                    <div class="col-md-offset-4 col-md-4">
+                                        <div class='alert alert-danger alert-dismissable' id="myspan1" style="display:none">
+                                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                        </div>
+
+                                        <div class="form-group clearfix">
+                                            <label>Username</label>
+                                            <span class='req'></span><input type="text" name="userName" class="form-control required" placeholder="Preferred Username"/>
+                                            <div id="myModal" class="modal fade" role="dialog">
+
+
+
+                                                    <!-- Modal content-->
+                                                    <div id="load" style='display:none'></div>
+
+
+
+                                                </div>
+
+                                        </div>
+
+                                        <div class="form-group clearfix">
+                                            <label>Password</label>
+                                            <span class='req'></span><input onKeyUp="passwordStrength(this.value)" type="password" id="password" name="password" class="form-control required" placeholder="Password"/>
+
+                                            <label for="passwordStrength">Password strength</label>
+                                            <div id="passwordDescription">Password not entered</div>
+                                            <div id="passwordStrength" class="strength0"></div>
+                                        </div>
+                                        <div class="form-group clearfix">
+                                            <label>Confirm Password</label>
+                                            <span class='req'></span><input type="password" id="confirm" name="confirm" class="form-control required" placeholder="Confirm Password"/>
+                                        </div>
+
+                                        <a id="send" href="javascript:void(0)" onclick="sendRegCode();" class="btn "> Send Verification Code</a>
+
+                                        <div id='regcodebox' class="form-group clearfix display-none">
+                                            <label>Registration Code</label>
+                                            <span class='req'></span><input type="text" id="code" name="regCode" class="col-md-8 form-control required" placeholder="Registration Code"/>
+                                        </div>
+                                        <input id="customerId" name="customerId" type="hidden"/>
+                                    </div>
+                                    <div id="loa"  class='loader' style='display:none'>
+
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <br/>
+                                        <h5 style="font-size: 16px; font-weight: bolder;">Password tips</h5>
+                                        <p th:each="rule : ${policies}" th:text="${rule}"></p>
+                                    </div>
+                                </div>
+                            </section>
+                            <h3>Security Questions</h3>
+                            <section>
+                                <div class="row">
+                                    <div class="col-md-offset-4 col-md-4">
+                                        <div class='alert alert-danger' id="myspan">
+                                        </div>
+                                        <input id="returnValue" type="hidden"/>
+                                        <div class="form-group clearfix">
+                                            <label>Question</label>
+                                            <select name="securityQuestion" class="form-control required">
+                                                <option th:each="question : ${secQuestions}" th:text="*{question.securityQuestion}"></option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group clearfix">
+                                            <label>Question</label>
+                                            <input type="text" name="securityAnswer" class="form-control required" placeholder="Security Answer"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                            <h3>Phishing Image</h3>
+                            <section>
+                                <div class="row">
+                                    <div class="col-md-offset-3 col-md-6">
+                                        <div class='alert alert-danger' id="myspan">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Select Phishing Image</label>
+
+                                            <table>
+                                                <td th:each="image : ${images}" style="position: relative;">
+                                                    <img th:src="${image}" width="100px" height="100px"/>
+                                                    <input type="radio" name="phishing" th:value="${image}" id="check1" class="required" style="position: absolute; bottom: 20px; right: 20px;" />
+                                                </td>
+                                            </table>
+
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-offset-4 col-md-4">
+                                        <input type="text" name="caption" class="form-control" placeholder="Enter Image Caption"/>
+                                    </div>
+                                </div>
+                            </section>
+                            <h3>Summary</h3>
+                            <section>
+                                <div class="row">
+                                    <div class="col-md-offset-4 col-md-4">
+                                        Self Registration Successful
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- End row-->
+
+    </div>
+</section>
+
+
+
+<footer>
+
+
+
+    <div class="container">
+        <div class="footer_bar">
+            <div class="col-md-6 col-xs-12">
+                <ul class="list_group">
+                    <li><a href="#" target="_blank">Privacy policy</a></li>
+                    <li><a href="#" target="_blank">Disclaimer</a></li>
+                    <li><a href="#" target="_blank">Terms &amp; Conditions</a></li>
+                </ul>
+
+            </div>
+            <div class="col-md-6 col-xs-12"><p> &copy; 2017 - All rights reserved</p></div>
+
+        </div>
+    </div>
+</footer>
+<!-- CORE JQUERY SCRIPTS -->
+<script th:src="@{/customer/js/jquery-1.11.1.js}"></script>
+<!-- BOOTSTRAP SCRIPTS  -->
+<script th:src="@{/customer/js/bootstrap.js}"></script>
+
+<script th:src="@{~/customer/js/jquery.validate.min.js}"></script>
+<script th:src="@{~/customer/js/jquery-ui.js}"></script>
+<script th:src="@{~/customer/plugins/jquery-steps/js/jquery.steps.min.js}" type="text/javascript"></script>
+<script th:src="@{~/customer/js/jasny-bootstrap.min.js}"></script>
+<script th:src="@{~/customer/js/register.js}" type="text/javascript"></script>
+<script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
+
+<script th:th:inline="javascript" type="text/javascript">
+    /*<![CDATA[*/
+
+
+    function passwordStrength(password)
+    {
+        var desc = new Array();
+        desc[0] = "Very Weak";
+        desc[1] = "Weak";
+        desc[2] = "Better";
+        desc[3] = "Medium";
+        desc[4] = "Strong";
+        desc[5] = "Strongest";
+
+        var score   = 0;
+
+        //if password bigger than 6 give 1 point
+        if (password.length > 6) score++;
+
+        //if password has both lower and uppercase characters give 1 point
+        if ( ( password.match(/[a-z]/) ) && ( password.match(/[A-Z]/) ) ) score++;
+
+        //if password has at least one number give 1 point
+        if (password.match(/\d+/)) score++;
+
+        //if password has at least one special caracther give 1 point
+        if ( password.match(/.[!,@,#,$,%,^,&,*,?,_,~,-,(,)]/) ) score++;
+
+        //if password bigger than 12 give another 1 point
+        if (password.length > 12) score++;
+
+        document.getElementById("passwordDescription").innerHTML = desc[score];
+        document.getElementById("passwordStrength").className = "strength" + score;
+    }
+    $.notifyDefaults({
+        placement: {
+            from: "top",
+            align: 'left',
+            offset: 50
+        }
+    });
+
+    $('#password').bind("cut copy paste",function(e) {
+        e.preventDefault();
+    });
+    $('#password').bind("cut copy paste",function(e) {
+        e.preventDefault();
+    });
+    $('#confirm').bind("cut copy paste",function(e) {
+        e.preventDefault();
+    });
+
+    /*]]>*/
+</script>
+</body>
+=======
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -170,7 +477,7 @@
 
                                             <table>
                                                 <td th:each="image : ${images}" style="position: relative;">
-                                                    <img th:src="${image}" width="100px" height="100px"/>
+                                                    <img th:src="${imagePath} + ${image}" width="100px" height="100px"/>
                                                     <input type="radio" name="phishing" th:value="${image}" id="check1" class="required" style="position: absolute; bottom: 20px; right: 20px;" />
                                                 </td>
                                             </table>
@@ -289,4 +596,5 @@
     /*]]>*/
 </script>
 </body>
+
 </html>
