@@ -83,7 +83,7 @@ public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
 
     @Override
     public Iterable<LocalBeneficiary> getLocalBeneficiaries(RetailUser user) {
-        return localBeneficiaryRepo.findByUserAndBeneficiaryBankIsNotNull(user);
+        return localBeneficiaryRepo.findByUser(user);
     }
 
     @Override

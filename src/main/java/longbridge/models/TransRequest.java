@@ -8,7 +8,6 @@ import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.ManyToOne;
 import java.math.BigDecimal;
-import java.util.Date;
 
 /**The {@code Transfer} class model represents a single transfer transaction.
  * This model can be used to represent intra-bank and inter-bank transfers
@@ -24,7 +23,6 @@ public class TransRequest extends AbstractEntity{
     private  String customerAccountNumber;
    //@Enumerated
     private TransferType transferType;
-    private Date tranDate= new Date();
 
     @ManyToOne
     private FinancialInstitution financialInstitution;
@@ -51,11 +49,9 @@ public class TransRequest extends AbstractEntity{
     public TransRequest() {
     }
 
-
-    public TransRequest(String customerAccountNumber, TransferType transferType, Date tranDate, FinancialInstitution financialInstitution, String beneficiaryAccountNumber, String beneficiaryAccountName, String remarks, String status, String referenceNumber, String userReferenceNumber, String narration, String statusDescription, BigDecimal amount) {
+    public TransRequest(String customerAccountNumber, TransferType transferType, FinancialInstitution financialInstitution, String beneficiaryAccountNumber, String beneficiaryAccountName, String remarks, String status, String referenceNumber, String userReferenceNumber, String narration, String statusDescription, BigDecimal amount) {
         this.customerAccountNumber = customerAccountNumber;
         this.transferType = transferType;
-        this.tranDate = tranDate;
         this.financialInstitution = financialInstitution;
         this.beneficiaryAccountNumber = beneficiaryAccountNumber;
         this.beneficiaryAccountName = beneficiaryAccountName;
@@ -83,14 +79,6 @@ public class TransRequest extends AbstractEntity{
 
     public void setTransferType(TransferType transferType) {
         this.transferType = transferType;
-    }
-
-    public Date getTranDate() {
-        return tranDate;
-    }
-
-    public void setTranDate(Date tranDate) {
-        this.tranDate = tranDate;
     }
 
     public FinancialInstitution getFinancialInstitution() {
@@ -179,7 +167,6 @@ public class TransRequest extends AbstractEntity{
         return "TransRequest{" +
                 "customerAccountNumber='" + customerAccountNumber + '\'' +
                 ", transferType=" + transferType +
-                ", tranDate=" + tranDate +
                 ", financialInstitution=" + financialInstitution +
                 ", beneficiaryAccountNumber='" + beneficiaryAccountNumber + '\'' +
                 ", beneficiaryAccountName='" + beneficiaryAccountName + '\'' +
@@ -192,5 +179,16 @@ public class TransRequest extends AbstractEntity{
                 ", amount=" + amount +
                 '}';
     }
+
+    public static OperationCode getAddCode() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public static OperationCode getModifyCode() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
 

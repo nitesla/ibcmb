@@ -1,7 +1,10 @@
 package longbridge.services;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import longbridge.api.*;
+import longbridge.api.AccountDetails;
+import longbridge.api.AccountInfo;
+import longbridge.api.CustomerDetails;
+import longbridge.api.NEnquiryDetails;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.models.TransRequest;
 import longbridge.utils.AccountStatement;
@@ -111,8 +114,6 @@ public interface IntegrationService {
     BigDecimal getAvailableBalance(String s);
 
     ObjectNode sendSMS(String message, String contact, String subject);
-
-    Rate  getFee(String channel);
 
 
 }

@@ -92,6 +92,7 @@ public class BeneficiaryController {
         model.addAttribute("internationalBeneficiaryDTO", new InternationalBeneficiaryDTO());
         model.addAttribute("foreignBanks", financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.FOREIGN));
 
+
         return "cust/beneficiary/add";
     }
 
@@ -100,7 +101,7 @@ public class BeneficiaryController {
         if (result.hasErrors()) {
             model.addAttribute("internationalBeneficiaryDTO", new InternationalBeneficiaryDTO());
             model.addAttribute("foreignBanks", financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.FOREIGN));
-
+            model.addAttribute("localBanks", financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.LOCAL));
             return "cust/beneficiary/add";
         }
 
@@ -194,11 +195,6 @@ public class BeneficiaryController {
         model.addAttribute("bankCode", bankCode);
     }
 
-   @ModelAttribute
-    public void getLocalBanks(Model model){
-        List<FinancialInstitutionDTO> dtos = financialInstitutionService.getOtherLocalBanks(bankCode);
-        dtos.sort(Comparator.comparing(FinancialInstitutionDTO::getInstitutionName));
-       model.addAttribute("localBanks",dtos );
-   }
+
 
 }

@@ -165,11 +165,6 @@ public class TransferServiceImpl implements TransferService {
 
     }
 
-    @Override
-    public List<TransRequest> getLastTenTransactionsForAccount(String s) {
-        return transferRequestRepo.findTop10ByCustomerAccountNumberOrderByTranDateDesc(s);
-    }
-
     private boolean validateBalance() {
         SettingDTO setting = configService.getSettingByName("ACCOUNT_BALANCE_VALIDATION");
         if (setting != null && setting.isEnabled()) {

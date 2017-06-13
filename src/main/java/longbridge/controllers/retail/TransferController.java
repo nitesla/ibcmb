@@ -148,43 +148,34 @@ public class TransferController {
     @GetMapping("/local/{accountNo}/nameEnquiry")
     public
     @ResponseBody
-    String getBankAccountName(@PathVariable String accountNo,Principal principal) {
+    String getBankAccountName(@PathVariable String accountNo) {
 
         try {
-            if (principal!=null){
-                return integrationService.viewAccountDetails(accountNo).getAcctName();
-            }
-
+            return integrationService.viewAccountDetails(accountNo).getAcctName();
         } catch (Exception e) {
-          e.printStackTrace();
+            return "";
         }
 
-        return "";
+
     }
 
 
     @GetMapping("/{accountNo}/{bank}/nameEnquiry")
     public
     @ResponseBody
-    String getInterBankAccountName(@PathVariable String accountNo, @PathVariable String bank,Principal principal) {
+    String getInterBankAccountName(@PathVariable String accountNo, @PathVariable String bank) {
 
         try {
 
-            if (principal!=null)
-            {
-                if (bank.equalsIgnoreCase(bankCode)) return integrationService.viewAccountDetails(accountNo).getAcctName();
+            if (bank.equalsIgnoreCase(bankCode)) return integrationService.viewAccountDetails(accountNo).getAcctName();
 
-                return (integrationService.doNameEnquiry(bank, accountNo)).getAccountName();
-
-            }
-
-
+            return (integrationService.doNameEnquiry(bank, accountNo)).getAccountName();
 
         } catch (Exception e) {
-
+            return "";
         }
 
-        return "";
+
     }
 
 

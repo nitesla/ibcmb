@@ -27,7 +27,6 @@ public interface FinancialInstitutionService {
 
     @PreAuthorize("hasAuthority('GET_FIN_INST')")
     List<FinancialInstitutionDTO> getFinancialInstitutionsByType(FinancialInstitutionType institutionType);
-    List<FinancialInstitutionDTO> getOtherLocalBanks(String bankCode);
 
     @PreAuthorize("hasAuthority('GET_FIN_INST')")
     FinancialInstitutionDTO getFinancialInstitution(Long id);
@@ -40,7 +39,6 @@ public interface FinancialInstitutionService {
 
     @PreAuthorize("hasAuthority('GET_FIN_INST')")
     FinancialInstitution getFinancialInstitutionByCode(String institutionCode);
-
 
     FinancialInstitutionDTO convertEntityToDTO(FinancialInstitution financialInstitution);
 

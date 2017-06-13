@@ -14,11 +14,8 @@ function initnotices(){
 
     $('.actionError li').each(function(index, value) {
         var tt = $(this).text();
-
         var notify = $.notify({message:tt}, { allow_dismiss: true ,type: 'danger'});
     });
-
-
 
     $('.fieldError li').each(function(index, value) {
         var tt = $(this).text();
