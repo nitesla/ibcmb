@@ -170,6 +170,15 @@ span.req
     color: black !important;
 }
 
+#myspan2
+{
+    display: none;
+    width:100%;
+    margin-bottom: 10px;
+
+}
+
+#loa {
 
 .modal-box
 {

@@ -1,7 +1,5 @@
 var customerId = "null";
 
-
-
 /** This validates the input account number.
  *
  * @param accountNumber the account number to check
@@ -62,6 +60,35 @@ function validateAccountNo(accountNumber){
     }
 }
 
+function validateSecAnswer(secAnswer){
+    var result;
+    $.ajax({
+        type:'GET',
+        url:"/rest/secAns/"+secAnswer,
+        async:false,
+        success:function(data1){
+            result = ''+String(data1);
+            if(result == "" || result === null){
+                //invalid account number
+
+                //alert("Account number not found");
+                document.getElementById("myspan2").textContent="Wrong answer provided for security question.";
+                $("#myspan2").show();
+            }else{
+                //valid account number
+                $('input[name=username]').val(result);
+            }
+        }
+    });
+
+    if(result == "" || result === null){
+        return false;
+    }else{
+        sendUsername();
+        return true;
+    }
+}
+
 function sendUsername(){
     var returnValue = false;
     $('#reg-form').submit(function(e){
@@ -79,8 +106,8 @@ function sendUsername(){
                 if(data==="true"){
                     $('#returnValue').val(true);
                 }else {
-                    document.getElementById("myspan").textContent="Failed to send username, please try again later.";
-                    $("#myspan").show();
+                    document.getElementById("myspan2").textContent="Failed to send username, please try again later.";
+                    $("#myspan2").show();
                 }
             }
         });
@@ -145,7 +172,8 @@ form.children("div").steps({
         if(SEND_USERNAME_STEP === currentIndex){
             console.log("Current step is the change password step");
             //form.submit();
-            return isValid && sendUsername();
+            var secAnswer = $('input[name="securityAnswer"]').val();
+            return isValid && validateSecAnswer(secAnswer);
         }
         return form.valid();
     },
