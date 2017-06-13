@@ -11,6 +11,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 
+import java.util.List;
+
 /**
 <
  * The {@code TransferService} interface provides the methods for making transfers.
@@ -39,6 +41,8 @@ public interface TransferService {
     boolean saveTransfer(TransferRequestDTO transferRequestDTO) throws TransferException;
     @PreAuthorize("hasAuthority('MAKE_TRANSFER')")
     void validateTransfer(TransferRequestDTO transferRequestDTO) throws InternetBankingTransferException;
+
+    List<TransRequest> getLastTenTransactionsForAccount(String s);
 
 
 }

@@ -1,5 +1,6 @@
 package longbridge;
 
+import longbridge.api.Rate;
 import longbridge.repositories.CustomJpaRepositoryFactoryBean;
 import longbridge.services.IntegrationService;
 import longbridge.services.SecurityService;
@@ -41,6 +42,9 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
 
     @Override
     public void run(String... strings) throws Exception {
+
+Rate    rate=  integrationService.getFee("NIP");
+        System.out.println("Rate "+rate);
 
     }
 
