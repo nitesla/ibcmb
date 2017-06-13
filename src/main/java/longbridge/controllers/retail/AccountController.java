@@ -5,9 +5,11 @@ import longbridge.dtos.AccountDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.forms.CustomizeAccount;
 import longbridge.models.RetailUser;
+import longbridge.models.TransRequest;
 import longbridge.services.AccountService;
 import longbridge.services.IntegrationService;
 import longbridge.services.RetailUserService;
+import longbridge.services.TransferService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +48,8 @@ public class AccountController {
 
     @Autowired
     private MessageSource messageSource;
+
+    @Autowired private TransferService transferService;
 
     private Long customizeAccountId;
 
@@ -171,7 +175,9 @@ public class AccountController {
     public String getAccountStatement(@PathVariable Long id, Model model,Principal principal){
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
         List<AccountDTO> accountList = accountService.getAccountsAndBalances(retailUser.getCustomerId());
+        List<TransRequest> transRequestList=transferService.getLastTenTransactionsForAccount(retailUser.getCustomerId());
         model.addAttribute("accountList", accountList);
+        model.addAttribute("transRequestList", transRequestList);
         model.addAttribute("retailUser", retailUser);
 
         return "cust/account/accountstatement";
