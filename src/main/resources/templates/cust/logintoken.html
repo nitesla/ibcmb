@@ -3,6 +3,8 @@
 <head>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/bootstrap.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/custom.css}"/>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
     <title>Log in | Coronation Merchant Bank
     </title>
 </head>
@@ -64,7 +66,7 @@
         </div>
     </div>
 
-    <div id="myModal" class="modal fade" role="dialog" style="margin-top: 150px;">
+    <div id="myModal" class="modal fade" role="dialog" style="margin-top: 150px;" disabled="disabled">
         <div class="modal-dialog">
 
             <!-- Modal content-->
@@ -72,14 +74,8 @@
                 <form id="loginform" th:action="@{/retail/token}" method="POST" class="form-signi">
                 <div class="modal-body">
                     <h4 class=" text-danger tokenHeader" >Hello, <span class="text-black-req">Tolu!</span></h4>
-                    <div class='alert alert-danger alert-dismissable' id="myspa" style="display:non">
-                        <div th:if="${failure}">
-                            <div hidden="hidden">
-                                <ul class="">
-                                    <li th:each="msg : ${failure}" th:text="${msg}">Message</li>
-                                </ul>
-                            </div>
-                        </div>
+                    <div  class='alert alert-danger alert-dismissable'  id="myspan" style="display:n">
+
                     </div>
                     <p class="text-mute">Kindly enter the OTP from your device</p>
 
@@ -91,7 +87,7 @@
                         <p>
                             Don't have a token?
                         </p>
-                        <a href="#" class="k" style="color:black">Send me an OTP <i class="fa fa-money"></i> </a>
+                        <a href="#" class="k" style="color:black">Send me an OTP <i class="fa fa-angle-down" style="font-size:18px;color:black"></i> </a>
                     </div>
                 </div>
 
@@ -135,14 +131,35 @@
     </div>
 </div>
 
-
+<div th:if="${failure}">
+    <div hidden="hidden">
+        <ul class="actionError">
+            <li id="errorMess" th:each="msg : ${failure}" th:text="${msg}">Message</li>
+        </ul>
+    </div>
+</div>
 
 <script>
 
     function loadToken()
     {
-        $('#myModal').modal('show');
+        $('#myModal').modal({
+            backdrop: 'static',
+            keyboard: false
+        });
+
+
+
+
+
+
+
+
+
     }
+
+
+
 </script>
 
 <!-- jQuery -->

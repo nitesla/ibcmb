@@ -53,7 +53,7 @@ public class TokenManagementController {
     }
 
     @PostMapping
-    public String performTokenAuthentication(HttpServletRequest request, Principal principal, RedirectAttributes redirectAttributes, Locale locale){
+    public String performTokenAuthentication(HttpServletRequest request, Principal principal, RedirectAttributes redirectAttributes, Locale locale, Model model){
 
         String username = principal.getName();
         String tokenCode = request.getParameter("token");
@@ -69,9 +69,10 @@ public class TokenManagementController {
         }
         catch (InternetBankingSecurityException ibe){
             logger.error("Error authenticating token");
+            model.addAttribute("failure",messageSource.getMessage("token.auth.failure",null,locale));
         }
-        redirectAttributes.addFlashAttribute("failure",messageSource.getMessage("token.auth.failure",null,locale));
-        return "redirect:/retail/token";
+         model.addAttribute("failure",messageSource.getMessage("token.auth.failure",null,locale));
+        return "/cust/logintoken";
 
     }
 

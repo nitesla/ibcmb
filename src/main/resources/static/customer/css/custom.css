@@ -154,6 +154,11 @@ span.req
     100% { transform: rotate(360deg); }
 }
 
+.text-white
+{
+    color:white;
+}
+
 
 .tokenHeader
 {
