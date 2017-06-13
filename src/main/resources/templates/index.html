@@ -194,7 +194,6 @@
                             <div class="modal-body">
                                 <h1 style="font-size: 20px">Request Callback</h1>
                                 <br/>
-<<<<<<< HEAD
                                 <form method="post" action="/request/callback" class="form-horizontal">
                                     <div class="row">
                                         <div class="col-sm-3 control-label"><label>Full Name:</label></div>
@@ -212,25 +211,7 @@
                                         <button class="btn btn-link">Make Request</button>
                                     </div>
                                 </form>
-=======
-                                <!--<form method="post" action="/request/callback" class="form-horizontal">-->
-                                <!--<div>-->
-                                <!--<label class="col-sm-3 control-label">Full Name</label>-->
-                                <!--<div class="col-sm-8">-->
-                                <!--<input type="text" class="form-control" name="name"/>-->
-                                <!--</div>-->
-                                <!--</div>-->
-                                <!--<div>-->
-                                <!--<label class="col-sm-3 control-label">Preferred Phone Number</label>-->
-                                <!--<div class="col-sm-8">-->
-                                <!--<input type="text" class="form-control" name="phone"/>-->
-                                <!--</div>-->
-                                <!--</div>-->
-                                <!--<div>-->
-                                <!--<button class="btn btn-link">Make Request</button>-->
-                                <!--</div>-->
-                                <!--</form>-->
->>>>>>> dd79c2d9ab995279497de12d4243516164d7fa57
+
                             </div>
                             <!--<div class="modal-footer">-->
                             <!--<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>-->
@@ -243,30 +224,19 @@
                 <div class="margin-bottom"></div>
                 <div>
                     <p>Enter details below</p>
-                    <form action="" method="get" class="contact-form">
-<<<<<<< HEAD
+                    <form method="post" th:action="@{/home}" th:object="${message}" class="contact-form">
+
                             <div class="form-group">
-                                <input type="text" name="name" class="form-control" placeholder="Name"/>
+                                <input id="name" type="text" name="name" class="form-control" placeholder="Name"/>
                             </div>
                             <div class="form-group">
-                                <input type="text" name="email" class="form-control" placeholder="Email"/>
+                                <input id="email" type="text" name="email" class="form-control" placeholder="Email"/>
                             </div>
                             <div class="form-group">
-                                <textarea name="message" value="Message" class="form-control" rows="10"></textarea>
+                                <textarea name="message" value="Message" class="form-control" rows="10" ></textarea>
                             </div>
-                            <input type="button" value="Submit" class="btn btn-primary btn-md form-control" />
-=======
-                        <div class="form-group">
-                            <input type="text" name="Name" class="form-control"  value="Name"/>
-                        </div>
-                        <div class="form-group">
-                            <input type="text" name="Email" class="form-control" value="Email"/>
-                        </div>
-                        <div class="form-group">
-                            <textarea name="Message" value="Message" class="form-control" rows="10"></textarea>
-                        </div>
-                        <input type="button" value="Submit" class="btn btn-primary btn-md form-control" />
->>>>>>> dd79c2d9ab995279497de12d4243516164d7fa57
+                        <input type="submit" value="Submit" class="btn btn-primary btn-md form-control" />
+
 
                     </form>
                 </div>
