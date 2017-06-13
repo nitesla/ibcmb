@@ -2,6 +2,7 @@ package longbridge.controllers;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import longbridge.api.CustomerDetails;
+import longbridge.dtos.AccountDTO;
 import longbridge.dtos.RetailUserDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.forms.CustResetPassword;
@@ -74,17 +75,6 @@ public class UserRegController {
 
     @Autowired
     private PasswordPolicyService passwordPolicyService;
-    
-//    @GetMapping("/rest/json/phishingimages")
-//    public @ResponseBody String antiPhishingImages(){
-//        //securityService.m
-//    	StringBuilder builder = new StringBuilder();
-//    	builder.append("<option value=''>Select Anti Phishing Image</option>");
-//    	builder.append("<option value='/assets/phishing/dog.jpg'>Dog</option>");
-//    	builder.append("<option value='/assets/phishing/cheetah.jpg'>Cheetah</option>");
-//    	builder.append("<option value='/assets/phishing/benz.jpg'>Car</option>");
-//    	return builder.toString();
-//    }
 
     @GetMapping("/rest/accountdetails/{accountNumber}/{email}/{birthDate}")
     public @ResponseBody String getAccountDetailsFromNumber(@PathVariable String accountNumber, @PathVariable String email, @PathVariable String birthDate){
@@ -94,7 +84,7 @@ public class UserRegController {
         logger.info("BirthDate : " + birthDate);
         CustomerDetails details = integrationService.isAccountValid(accountNumber, email, birthDate);
         if (details != null){
-                customerId = details.getCifId();
+              customerId = details.getCifId();
 //            RetailUser retailUser = retailUserService.getUserByCustomerId(details.getCifId());
 //            if (retailUser != null) {
  //               customerId = retailUser.getCustomerId();
@@ -126,37 +116,29 @@ public class UserRegController {
         return customerId;
     }
 
-    @GetMapping("/rest/secQues/{accountNumber}")
-    public @ResponseBody String getSecQuestionFromNumber(@PathVariable String accountNumber){
+    @GetMapping("/rest/secQues/{cifId}")
+    public @ResponseBody String getSecQuestionFromNumber(@PathVariable String cifId, HttpSession session){
         String secQuestion = "";
-        logger.info("Account number : " + accountNumber);
-        Account account = accountService.getAccountByAccountNumber(accountNumber);
-        if (account != null){
-            String customerId = account.getCustomerId();
-            logger.info("Cif: " + customerId);
-            RetailUser user = retailUserService.getUserByCustomerId(customerId);
-            logger.info("USER NAME {}", user);
-            if (user != null){
-                logger.info("USER NAME {}", user.getUserName());
-                Map<String, List<String>> qa = securityService.getUserQA(user.getUserName());
-                //List<String> sec = null;
-                if (qa != null || !qa.isEmpty()){
+        logger.info("cifId : " + cifId);
 
-                    List<String> question = qa.get("questions");
-                    secQuestion = question.stream().filter(Objects::nonNull).findFirst().orElse("");
-                    logger.info("question {}", secQuestion);
+        RetailUser user = retailUserService.getUserByCustomerId(cifId);
+        logger.info("USER NAME {}", user);
 
-                }else {
-                    secQuestion = "";
-                }
-            }
-            else {
+        if (user != null){
+            logger.info("USER NAME {}", user.getUserName());
+            session.setAttribute("username", user.getUserName());
+            Map<String, List<String>> qa = securityService.getUserQA(user.getUserName());
+            //List<String> sec = null;
+            if (qa != null || !qa.isEmpty()){
+                List<String> question = qa.get("questions");
+                secQuestion = question.stream().filter(Objects::nonNull).findFirst().orElse("");
+                logger.info("question {}", secQuestion);
+
+            }else {
                 secQuestion = "";
             }
-
-
-        }else {
-            //nothing
+        }
+        else {
             secQuestion = "";
         }
 
@@ -164,7 +146,7 @@ public class UserRegController {
     }
 
     @GetMapping("/rest/secAns/{answer}")
-    public @ResponseBody String getSecQuestionFromNumber(@PathVariable String answer, HttpSession session){
+    public @ResponseBody String getSecAns(@PathVariable String answer, HttpSession session){
 
         //confirm security question is correct
         String secAnswer="";
@@ -467,6 +449,11 @@ public class UserRegController {
     private void doesUserExist(String customerId){
         RetailUser user = retailUserService.getUserByCustomerId(customerId);
         if (user != null){
+            throw new InternetBankingException(messageSource.getMessage("user.reg.exists", null, locale));
+        }
+
+        Iterable<AccountDTO> account = accountService.getAccounts(customerId);
+        if (account != null){
             throw new InternetBankingException(messageSource.getMessage("user.reg.exists", null, locale));
         }
     }

@@ -170,18 +170,8 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             corporateUser.setCorporate(corporate);
             passwordPolicyService.saveCorporatePassword(corporateUser);
             corporateUserRepo.save(corporateUser);
-
+            createUserOnEntrust(corporateUser);
             String fullName = corporateUser.getFirstName()+" "+corporateUser.getLastName();
-            SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_CREATION");
-            if (setting != null && setting.isEnabled()) {
-                if ("YES".equalsIgnoreCase(setting.getValue())) {
-                   boolean result = securityService.createEntrustUser(corporateUser.getUserName(), fullName, true);
-                    if (!result) {
-                        throw new EntrustException(messageSource.getMessage("entrust.create.failure", null, locale));
-
-                    }
-                }
-            }
             Email email = new Email.Builder()
                     .setRecipient(user.getEmail())
                     .setSubject(messageSource.getMessage("corporate.customer.create.subject", null, locale))
@@ -199,6 +189,21 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             throw new InternetBankingException(messageSource.getMessage("user.add.failure", null, locale), e);
         }
     }
+
+    private void createUserOnEntrust(CorporateUser corporateUser){
+        String fullName = corporateUser.getFirstName()+" "+corporateUser.getLastName();
+        SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_CREATION");
+        if (setting != null && setting.isEnabled()) {
+            if ("YES".equalsIgnoreCase(setting.getValue())) {
+                boolean result = securityService.createEntrustUser(corporateUser.getUserName(), fullName, true);
+                if (!result) {
+                    throw new EntrustException(messageSource.getMessage("entrust.create.failure", null, locale));
+
+                }
+            }
+        }
+    }
+
 
 
     @Override
@@ -231,16 +236,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             corporateUserRepo.save(corporateUser);
             SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_CREATION");
             String fullName = user.getFirstName() + " " + user.getLastName();
-
-            if (setting != null && setting.isEnabled()) {
-                if ("YES".equalsIgnoreCase(setting.getValue())) {
-                    boolean result = securityService.createEntrustUser(corporateUser.getUserName(), fullName, true);
-                    if (!result) {
-                        throw new EntrustException(messageSource.getMessage("entrust.create.failure", null, locale));
-
-                    }
-                }
-            }
+            createUserOnEntrust(corporateUser);
             if (!"Authorizer".equals(role.getName())) {
                 Email email = new Email.Builder()
                         .setRecipient(user.getEmail())
@@ -499,7 +495,6 @@ public class CorporateUserServiceImpl implements CorporateUserService {
                 logger.error("USER DOES NOT EXIST");
                 return ok;
             }
-
             CorporateUser corp = convertDTOToEntity(corporateUser);
             Code code = codeService.getByTypeAndCode("ALERT_PREFERENCE", alertPreference.getPreference());
             corp.setAlertPreference(code);
@@ -572,6 +567,4 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         Page<CorporateUserDTO> pageImpl = new PageImpl<CorporateUserDTO>(dtOs, pageDetails, t);
         return pageImpl;
     }
-
-
 }

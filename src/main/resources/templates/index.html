@@ -194,7 +194,14 @@
                             <div class="modal-body">
                                 <h1 style="font-size: 20px">Request Callback</h1>
                                 <br/>
+<<<<<<< HEAD
 
+=======
+<<<<<<< HEAD
+=======
+
+>>>>>>> 4fd54f8ed2f208d779c4be23818117a4217698a6
+>>>>>>> 2e3b25f41e9a2b0e982a39e6b1962ce67149a0c7
                                 <form method="post" action="/request/callback" class="form-horizontal">
                                     <div class="row">
                                         <div class="col-sm-3 control-label"><label>Full Name:</label></div>
@@ -225,19 +232,19 @@
                 <div class="margin-bottom"></div>
                 <div>
                     <p>Enter details below</p>
-                    <form action="" method="get" class="contact-form">
 
+                    <form method="post" th:action="@{/home}" th:object="${message}" class="contact-form">
                             <div class="form-group">
-                                <input type="text" name="name" class="form-control" placeholder="Name"/>
+                                <input id="name" type="text" name="name" class="form-control" placeholder="Name"/>
                             </div>
                             <div class="form-group">
-                                <input type="text" name="email" class="form-control" placeholder="Email"/>
+                                <input id="email" type="text" name="email" class="form-control" placeholder="Email"/>
                             </div>
                             <div class="form-group">
-                                <textarea name="message" value="Message" class="form-control" rows="10"></textarea>
+                                <textarea name="message" value="Message" class="form-control" rows="10" ></textarea>
                             </div>
+
                             <input type="button" value="Submit" class="btn btn-primary btn-md form-control" />
-
 
                     </form>
                 </div>
@@ -268,20 +275,5 @@
 <!-- BOOTSTRAP SCRIPTS  -->
 <script th:src="@{~/customer/js/bootstrap.js}"></script>
 
-<!--<script>-->
-<!--$(document).ready(function(){-->
-<!--$(".dropdown").hover(-->
-<!--function() {-->
-<!--$('.dropdown-menu', this).not('.in .dropdown-menu').stop(true,true);-->
-<!--$(this).toggleClass('open');-->
-<!--}-->
-<!--);-->
-<!--});-->
-<!--</script>-->
-<!--<script>-->
-    <!--$(document).ready(function(){-->
-        <!--$('[data-toggle="tooltip"]').tooltip();-->
-    <!--});-->
-<!--</script>-->
 </body>
 </html>

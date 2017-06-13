@@ -64,9 +64,14 @@
                 <div class="white-box">
                     <h2 class="header-title"> Self Registration</h2>
                     <form id="reg-form"  action="/register" method="post">
+
                         <div>
                             <h3>Account Details</h3>
                             <section>
+
+
+
+
                                 <div class="row">
                                     <div class="col-md-offset-4 col-md-4">
                                         <div class='alert alert-danger' id="myspan">
@@ -99,14 +104,23 @@
                                         <div class='alert alert-danger alert-dismissable' id="myspan1" style="display:none">
                                             <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
                                         </div>
-                                        <div class='alert alert-danger' id="myspan2" style="display:none">
-                                        </div>
+
                                         <div class="form-group clearfix">
                                             <label>Username</label>
                                             <span class='req'></span><input type="text" name="userName" class="form-control required" placeholder="Preferred Username"/>
+                                            <div id="myModal" class="modal fade" role="dialog">
 
+
+
+                                                    <!-- Modal content-->
+                                                    <div id="load" style='display:none'></div>
+
+
+
+                                                </div>
 
                                         </div>
+
                                         <div class="form-group clearfix">
                                             <label>Password</label>
                                             <span class='req'></span><input onKeyUp="passwordStrength(this.value)" type="password" id="password" name="password" class="form-control required" placeholder="Password"/>
@@ -122,7 +136,7 @@
 
                                         <a id="send" href="javascript:void(0)" onclick="sendRegCode();" class="btn "> Send Verification Code</a>
 
-                                        <div id='regcodebox' class="form-group clearfix">
+                                        <div id='regcodebox' class="form-group clearfix display-none">
                                             <label>Registration Code</label>
                                             <span class='req'></span><input type="text" id="code" name="regCode" class="col-md-8 form-control required" placeholder="Registration Code"/>
                                         </div>
@@ -170,7 +184,7 @@
 
                                             <table>
                                                 <td th:each="image : ${images}" style="position: relative;">
-                                                    <img th:src="${imagePath} + ${image}" width="100px" height="100px"/>
+                                                    <img th:src="${image}" width="100px" height="100px"/>
                                                     <input type="radio" name="phishing" th:value="${image}" id="check1" class="required" style="position: absolute; bottom: 20px; right: 20px;" />
                                                 </td>
                                             </table>

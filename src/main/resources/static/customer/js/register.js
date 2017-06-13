@@ -21,7 +21,8 @@ form.children("div").steps({
     transitionEffect: "slideLeft",
     onStepChanging: function (event, currentIndex, newIndex)
     {
-
+        var loader = document.getElementById('loader');
+        loader.style.display = "block";
 
         form.validate().settings.ignore = ":disabled,:hidden";
         console.log(currentIndex);
@@ -82,6 +83,8 @@ form.children("div").steps({
     },
     onStepChanged: function (event, currentIndex, priorIndex)
     {
+        var loader = document.getElementById('loader');
+        loader.style.display = "none";
         // Used to skip the "Warning" step if the user is old enough and wants to the previous step.
         if (currentIndex === 2 && priorIndex === 3)
         {
@@ -268,6 +271,9 @@ function validateRegCode(code){
 
 function sendRegCode(){
 
+
+    $('#myModal').modal('show');
+
     var accountNumber = $('input[name="accountNumber"]').val();
     var email = $('input[name="email"]').val();
     if(email == ""){
@@ -279,7 +285,7 @@ function sendRegCode(){
     }
     var result;
 
-    var loader = document.getElementById('loa');
+    var loader = document.getElementById('load');
     loader.style.display = "block";
 
 
@@ -303,15 +309,18 @@ function sendRegCode(){
                 // },{
                 //     type: 'danger'
                 // });
-                document.getElementById("myspan2").textContent="Failed to send registration code. Please try again.";
-                $("#myspan2").show();
+                document.getElementById("myspan1").textContent="Failed to send registration code. Please try again.";
+                $("#myspan1").show();
+                $('#myModal').modal('hide');
+
 
 
             }else{
                 loader.style.display = "none";
-                $("#myspan2").hide();
+                $("#myspan1").hide();
                 var showreg = document.getElementById('regcodebox');
                 showreg.style.display = "block";
+                $('#myModal').modal('hide');
 
 
 
