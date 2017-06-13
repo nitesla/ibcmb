@@ -212,7 +212,6 @@
                                         <button class="btn btn-link">Make Request</button>
                                     </div>
                                 </form>
-
                             </div>
                             <!--<div class="modal-footer">-->
                             <!--<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>-->
@@ -225,18 +224,20 @@
                 <div class="margin-bottom"></div>
                 <div>
                     <p>Enter details below</p>
-                    <form action="" method="get" class="contact-form">
 
+                    <form method="post" th:action="@{/home}" th:object="${message}" class="contact-form">
                             <div class="form-group">
-                                <input type="text" name="name" class="form-control" placeholder="Name"/>
+                                <input id="name" type="text" name="name" class="form-control" placeholder="Name"/>
                             </div>
                             <div class="form-group">
-                                <input type="text" name="email" class="form-control" placeholder="Email"/>
+                                <input id="email" type="text" name="email" class="form-control" placeholder="Email"/>
                             </div>
                             <div class="form-group">
-                                <textarea name="message" value="Message" class="form-control" rows="10"></textarea>
+                                <textarea name="message" value="Message" class="form-control" rows="10" ></textarea>
                             </div>
+
                             <input type="button" value="Submit" class="btn btn-primary btn-md form-control" />
+
 
                     </form>
                 </div>
@@ -267,20 +268,5 @@
 <!-- BOOTSTRAP SCRIPTS  -->
 <script th:src="@{~/customer/js/bootstrap.js}"></script>
 
-<!--<script>-->
-<!--$(document).ready(function(){-->
-<!--$(".dropdown").hover(-->
-<!--function() {-->
-<!--$('.dropdown-menu', this).not('.in .dropdown-menu').stop(true,true);-->
-<!--$(this).toggleClass('open');-->
-<!--}-->
-<!--);-->
-<!--});-->
-<!--</script>-->
-<!--<script>-->
-    <!--$(document).ready(function(){-->
-        <!--$('[data-toggle="tooltip"]').tooltip();-->
-    <!--});-->
-<!--</script>-->
 </body>
 </html>

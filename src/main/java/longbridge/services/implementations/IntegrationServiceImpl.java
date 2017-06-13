@@ -414,7 +414,6 @@ public class IntegrationServiceImpl implements IntegrationService {
             Rate details = template.postForObject(uri, params, Rate.class);
             return details;
         } catch (Exception e) {
-            e.printStackTrace();
 
             return new Rate();
         }

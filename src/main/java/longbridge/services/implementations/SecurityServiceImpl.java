@@ -1,6 +1,7 @@
 package longbridge.services.implementations;
 
 
+
 import longbridge.config.entrust.CustomHttpClient;
 import longbridge.config.entrust.EntrustServiceResponse;
 import longbridge.exception.InternetBankingSecurityException;
@@ -462,6 +463,11 @@ public class SecurityServiceImpl implements SecurityService {
 
         }
 
+
+
+
+
+
     }
 
     @Override
@@ -488,10 +494,8 @@ public class SecurityServiceImpl implements SecurityService {
             logger.trace("response message code : {}", msg);
             if (!isSuccessful) throw new InternetBankingSecurityException(msg);
 
-
-            String questions = StringUtils.substringBetween(responseMessage, "<questions>", "</questions>");
-            String answers = StringUtils.substringBetween(responseMessage, "<answers>", "</answers>");
-
+            String[] questions = StringUtils.substringsBetween(responseMessage, "<questions>", "</questions>");
+            String[] answers = StringUtils.substringsBetween(responseMessage, "<answers>", "</answers>");
             List<String> questionList = Arrays.asList(questions);
             List<String> answerList = Arrays.asList(answers);
 
@@ -505,9 +509,13 @@ public class SecurityServiceImpl implements SecurityService {
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new InternetBankingSecurityException(e.getMessage(), e);
+
         }
 
+
         return list;
+
+
     }
 
     @Override
@@ -516,7 +524,7 @@ public class SecurityServiceImpl implements SecurityService {
 
         try {
             StringWriter writer = new StringWriter();
-            this.t = this.ve.getTemplate("entrust/performGetMutualAuth.vm");
+            this.t = this.ve.getTemplate("entrust/performSetMutualAuthX.vm");
             this.context.put("appCode", appCode);
             this.context.put("appDesc", appDesc);
             this.context.put("appGroup", appGroup);
@@ -533,18 +541,10 @@ public class SecurityServiceImpl implements SecurityService {
             logger.trace("response message code : {}", msg);
             if (!isSuccessful) throw new InternetBankingSecurityException(msg);
 
-            String captions = StringUtils.substringBetween(responseMessage, "<captionSecret>", "</captionSecret>");
-            String images = StringUtils.substringBetween(responseMessage, "<imageSecret>", "</imageSecret>");
-            List<String> captionSecret= new ArrayList<>();
-            List<String> imageSecret = new ArrayList<>();
-      logger.info("caption {}",captions);
-          if (captions!=null)
-              captionSecret.add(captions);
-
-
-            if (images!=null)
-            imageSecret.add(images);
-
+            String[] captions = StringUtils.substringsBetween(responseMessage, "  <captionSecret>", "</captionSecret>");
+            String[] images = StringUtils.substringsBetween(responseMessage, "  <imageSecret>", "</imageSecret>");
+            List<String> captionSecret = Arrays.asList(captions);
+            List<String> imageSecret = Arrays.asList(images);
 
 
             list.put("imageSecret", imageSecret);
@@ -638,7 +638,7 @@ public class SecurityServiceImpl implements SecurityService {
             logger.trace("response is {}", respMesg);
             if (!isSuccessful) throw new InternetBankingSecurityException(respMesg);
 
-            result = StringUtils.substringBetween(responseMessage, "<tokenSerials>", "</tokenSerials>");
+            result = StringUtils.substringBetween(responseMessage, "  <tokenSerials>", "</tokenSerials>");
             logger.info("******************END RESPONSE***********");
 
         } catch (Exception e) {

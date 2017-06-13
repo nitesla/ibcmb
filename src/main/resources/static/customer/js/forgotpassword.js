@@ -10,13 +10,9 @@
                 result = ''+String(data1);
                 if(result == "" || result === null){
                     //invalid account number
-                    $.notify({
-                        title: '<strong>Oops!</strong>',
-                        message: 'Wrong Answer!'
-                    },{
-                        type: 'danger'
-                    });
                     //alert("Account number not found");
+                    document.getElementById("myspan").textContent="Wrong Answer to Security Question Provided.";
+                    $("#myspan").show();
                 }else{
                     //valid account number
                     $('input[name=username]').val(result);

@@ -8,7 +8,10 @@ import longbridge.models.FinancialInstitution;
 import longbridge.models.FinancialInstitutionType;
 import longbridge.models.LocalBeneficiary;
 import longbridge.models.RetailUser;
-import longbridge.services.*;
+import longbridge.services.FinancialInstitutionService;
+import longbridge.services.LocalBeneficiaryService;
+import longbridge.services.RetailUserService;
+import longbridge.services.TransferService;
 import longbridge.utils.TransferType;
 import longbridge.validator.transfer.TransferValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +41,6 @@ public class InterBankTransferController {
 
 
     private RetailUserService retailUserService;
-    private IntegrationService integrationService;
     private TransferService transferService;
     private MessageSource messages;
     private LocalBeneficiaryService localBeneficiaryService;
@@ -49,16 +51,13 @@ public class InterBankTransferController {
     private String bankCode;
 
     @Autowired
-    public InterBankTransferController(RetailUserService retailUserService, TransferService transferService, MessageSource messages, LocalBeneficiaryService localBeneficiaryService, FinancialInstitutionService financialInstitutionService, TransferValidator validator
-,IntegrationService integrationService
-    ) {
+    public InterBankTransferController(RetailUserService retailUserService, TransferService transferService, MessageSource messages, LocalBeneficiaryService localBeneficiaryService, FinancialInstitutionService financialInstitutionService, TransferValidator validator) {
         this.retailUserService = retailUserService;
         this.transferService = transferService;
         this.messages = messages;
         this.localBeneficiaryService = localBeneficiaryService;
         this.financialInstitutionService = financialInstitutionService;
         this.validator = validator;
-        this.integrationService=integrationService;
     }
 
     @GetMapping(value = "")
@@ -91,15 +90,7 @@ public class InterBankTransferController {
         return page + "pageiA";
     }
 
-    @PostMapping("/edit")
-    public String editTransfer(Model model, LocalBeneficiaryDTO localBeneficiaryDTO) throws Exception {
 
-        model.addAttribute("localBeneficiaryDTO", localBeneficiaryDTO);
-        return page + "pageiB";
-
-
-
-    }
     @GetMapping("/new")
     public String newBeneficiary(Model model, LocalBeneficiaryDTO localBeneficiaryDTO) throws Exception {
 
@@ -186,7 +177,7 @@ public class InterBankTransferController {
 
 
     @ModelAttribute
-    public void getCommonProperties(Model model,Principal principal){
+    public void getOtherBankBeneficiaries(Model model,Principal principal){
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
         model.addAttribute("localBen",
                 StreamSupport.stream(localBeneficiaryService.getLocalBeneficiaries(retailUser).spliterator(), false)
@@ -204,8 +195,6 @@ public class InterBankTransferController {
 
 
         );
-        model.addAttribute("nip",integrationService.getFee("NIP"));
-        model.addAttribute("rtgs",integrationService.getFee("RTGS"));
 
     }
 

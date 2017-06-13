@@ -1,11 +1,15 @@
 package longbridge.controllers;
 
+import longbridge.dtos.SettingDTO;
+import longbridge.dtos.UserGroupDTO;
 
+import longbridge.dtos.SettingDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.PasswordException;
 import longbridge.exception.UnknownResourceException;
 import longbridge.models.Corporate;
 import longbridge.models.CorporateUser;
+import longbridge.models.Email;
 import longbridge.models.RetailUser;
 import longbridge.services.*;
 import org.slf4j.Logger;
@@ -47,6 +51,10 @@ public class MainController {
     private CorporateService corporateService;
     @Autowired
     private SecurityService securityService;
+    @Autowired
+    private ConfigurationService configurationService;
+    @Autowired
+    private MailService mailService;
 
 
     @RequestMapping(value = {"/", "/home"})
@@ -316,6 +324,39 @@ public class MainController {
             }
         }
         return "redirect:/password/reset/ops";
+    }
+
+    @GetMapping("/contact")
+    public String contactUs(){
+        return "/index";
+    }
+
+    @PostMapping("/contact")
+    public String sendContactForm(WebRequest webRequest, Principal principal, Model model,RedirectAttributes redirectAttributes){
+        String name = webRequest.getParameter("name");
+        String email = webRequest.getParameter("email");
+        String message = webRequest.getParameter("message");
+        if (message == null){
+            model.addAttribute("failure", "Field is required");
+            return "/home";
+        }
+        SettingDTO setting = configurationService.getSettingByName("CUSTOMER_CARE_EMAIL");
+        if (setting != null && setting.isEnabled()) {
+            try {
+                Email mail = new Email.Builder()
+                        .setRecipient(setting.getValue())
+                        .setBody(String.format(name + email + message))
+                        .build();
+                mailService.send(mail);
+                redirectAttributes.addFlashAttribute("message", message);
+
+            } catch (Exception ex) {
+                logger.error("Failed to send Email", ex);
+                redirectAttributes.addFlashAttribute("failure", message);
+            }
+        }
+        return "redirect:/index";
+
     }
 
 }
