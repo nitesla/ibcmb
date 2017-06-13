@@ -1,6 +1,7 @@
 package longbridge.controllers;
 
 
+import longbridge.exception.InternetBankingException;
 import longbridge.exception.PasswordException;
 import longbridge.exception.UnknownResourceException;
 import longbridge.models.Corporate;
@@ -159,16 +160,23 @@ public class MainController {
             return "redirect:/login/retail/failure";
         }
 
-        Map<String, List<String>> mutualAuth =  securityService.getMutualAuth(username);
-        String image = mutualAuth.get("imageSecret")
-        .stream()
-        .filter(Objects::nonNull)
-        .findFirst()
-        .orElse("");
+        try{
+            Map<String, List<String>> mutualAuth =  securityService.getMutualAuth(username);
+            if (mutualAuth != null){
+                String image = mutualAuth.get("imageSecret")
+                        .stream()
+                        .filter(Objects::nonNull)
+                        .findFirst()
+                        .orElse("");
 
-        logger.info("SECIMAGE"+ image);
+                logger.info("SECIMAGE"+ image);
 
-        model.addAttribute("secImage", image);
+                model.addAttribute("secImage", image);
+            }
+        }catch (InternetBankingException e){
+            model.addAttribute("imageException", "You are yet to set your antiphishing image");
+        }
+
         model.addAttribute("username", user.getUserName());
         return "retpage2";
     }
