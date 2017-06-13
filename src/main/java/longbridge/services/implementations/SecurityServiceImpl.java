@@ -463,11 +463,6 @@ public class SecurityServiceImpl implements SecurityService {
 
         }
 
-
-
-
-
-
     }
 
     @Override
@@ -492,8 +487,8 @@ public class SecurityServiceImpl implements SecurityService {
             logger.trace("response message code : {}", msg);
             if (!isSuccessful) throw new InternetBankingSecurityException(msg);
 
-            String[] questions = StringUtils.substringsBetween(responseMessage, "  <questions>", "</questions>");
-            String[] answers = StringUtils.substringsBetween(responseMessage, "  <answers>", "</answers>");
+            String questions = StringUtils.substringBetween(responseMessage, "<questions>", "</questions>");
+            String answers = StringUtils.substringBetween(responseMessage, "<answers>", "</answers>");
             List<String> questionList = Arrays.asList(questions);
             List<String> answerList = Arrays.asList(answers);
 
@@ -522,7 +517,7 @@ public class SecurityServiceImpl implements SecurityService {
 
         try {
             StringWriter writer = new StringWriter();
-            this.t = this.ve.getTemplate("entrust/performSetMutualAuthX.vm");
+            this.t = this.ve.getTemplate("entrust/performGetMutualAuth.vm");
             this.context.put("appCode", appCode);
             this.context.put("appDesc", appDesc);
             this.context.put("appGroup", appGroup);
@@ -539,10 +534,18 @@ public class SecurityServiceImpl implements SecurityService {
             logger.trace("response message code : {}", msg);
             if (!isSuccessful) throw new InternetBankingSecurityException(msg);
 
-            String[] captions = StringUtils.substringsBetween(responseMessage, "  <captionSecret>", "</captionSecret>");
-            String[] images = StringUtils.substringsBetween(responseMessage, "  <imageSecret>", "</imageSecret>");
-            List<String> captionSecret = Arrays.asList(captions);
-            List<String> imageSecret = Arrays.asList(images);
+            String captions = StringUtils.substringBetween(responseMessage, "<captionSecret>", "</captionSecret>");
+            String images = StringUtils.substringBetween(responseMessage, "<imageSecret>", "</imageSecret>");
+            List<String> captionSecret= new ArrayList<>();
+            List<String> imageSecret = new ArrayList<>();
+      logger.info("caption {}",captions);
+          if (captions!=null)
+              captionSecret.add(captions);
+
+
+            if (images!=null)
+            imageSecret.add(images);
+
 
 
             list.put("imageSecret", imageSecret);

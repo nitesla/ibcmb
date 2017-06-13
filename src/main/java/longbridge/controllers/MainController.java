@@ -159,16 +159,16 @@ public class MainController {
             return "redirect:/login/retail/failure";
         }
 
-//        Map<String, List<String>> mutualAuth =  securityService.getMutualAuth(username);
-//        String image = mutualAuth.get("imageSecret")
-//        .stream()
-//        .filter(Objects::nonNull)
-//        .findFirst()
-//        .orElse("");
-//
-//        logger.info("SECIMAGE{}", image);
-//
-//        model.addAttribute("secImage", image);
+        Map<String, List<String>> mutualAuth =  securityService.getMutualAuth(username);
+        String image = mutualAuth.get("imageSecret")
+        .stream()
+        .filter(Objects::nonNull)
+        .findFirst()
+        .orElse("");
+
+        logger.info("SECIMAGE"+ image);
+
+        model.addAttribute("secImage", image);
         model.addAttribute("username", user.getUserName());
         return "retpage2";
     }
