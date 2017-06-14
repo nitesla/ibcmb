@@ -13,7 +13,6 @@ import longbridge.services.MailService;
 import longbridge.utils.AccountStatement;
 import longbridge.utils.ResultType;
 import longbridge.utils.TransferType;
-import org.apache.catalina.core.ApplicationContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +52,8 @@ public class IntegrationServiceImpl implements IntegrationService {
     private MailService mailService;
     private TemplateEngine templateEngine;
     private ConfigurationService configService;
-
+    @Autowired
+    ApplicationContext appContext;
 
     @Autowired
     public IntegrationServiceImpl(RestTemplate template, MailService mailService, TemplateEngine templateEngine
@@ -207,13 +207,11 @@ public class IntegrationServiceImpl implements IntegrationService {
                         return transRequest;
                     }
                     transRequest.setStatus(ResultType.ERROR.toString());
-                    transRequest.setStatus("No Valid Response");
                     return transRequest;
                 } catch (Exception e) {
 
                     e.printStackTrace();
                     transRequest.setStatus(ResultType.ERROR.toString());
-                    transRequest.setStatusDescription(e.getMessage());
                     return transRequest;
 
                 }
@@ -237,8 +235,7 @@ public class IntegrationServiceImpl implements IntegrationService {
                         logger.info("response for transfer {}", response.toString());
                         transRequest.setReferenceNumber(response.getUniqueReferenceCode());
                         transRequest.setNarration(response.getNarration());
-                        transRequest.setStatus(response.getResponseCode());
-                        transRequest.setStatusDescription(response.getResponseDescription());
+                        transRequest.setStatus(response.getResponseDescription());
 
                         return transRequest;
 
@@ -250,7 +247,6 @@ public class IntegrationServiceImpl implements IntegrationService {
 
                     e.printStackTrace();
                     transRequest.setStatus(ResultType.ERROR.toString());
-                    transRequest.setStatusDescription(e.getMessage());
                     return transRequest;
                 }
 
@@ -279,20 +275,17 @@ public class IntegrationServiceImpl implements IntegrationService {
                         System.out.println("@@@@@ response " + response.getResponseDescription());
                         transRequest.setNarration(response.getNarration());
                         transRequest.setReferenceNumber(response.getUniqueReferenceCode());
-                        transRequest.setStatus(response.getResponseCode());
-                        transRequest.setStatusDescription(response.getResponseDescription());
+                        transRequest.setStatus(response.getResponseDescription());
                         return transRequest;
                     } else {
 
                         transRequest.setStatus(ResultType.ERROR.toString());
-
                         return transRequest;
                     }
 
                 } catch (Exception e) {
 
                     e.printStackTrace();
-                    transRequest.setStatusDescription(e.getMessage());
                     transRequest.setStatus(ResultType.ERROR.toString());
                     return transRequest;
                 }
