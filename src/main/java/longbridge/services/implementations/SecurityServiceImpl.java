@@ -638,7 +638,7 @@ public class SecurityServiceImpl implements SecurityService {
             logger.trace("response is {}", respMesg);
             if (!isSuccessful) throw new InternetBankingSecurityException(respMesg);
 
-            result = StringUtils.substringBetween(responseMessage, "  <tokenSerials>", "</tokenSerials>");
+            result = StringUtils.substringBetween(responseMessage, "<tokenSerials>", "</tokenSerials>");
             logger.info("******************END RESPONSE***********");
 
         } catch (Exception e) {
