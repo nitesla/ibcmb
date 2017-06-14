@@ -4,12 +4,11 @@
 
 </head>
 <body>
-<div class="container">
-    <header th:replace="cust_layout :: header">
-    </header>
+<header th:replace="cust_layout :: header">
+</header>
 
 <section class="content-wrapper">
-    <div class="containe">
+    <div class="container">
         <div class="row">
             <div class="col-md-4 col-sm-4">
                 <h5 class="page_header"> Coronation account transfer</h5>
@@ -32,8 +31,8 @@
 
                                 <span id="tran"></span>
                                 <select name="tranType" class="form-control" id="tranType">
-                                    <option value="NIP">NIP</option>
-                                    <option value="RTGS">RTGS</option>
+                                    <option value="nip">NIP</option>
+                                    <option value="rtgs">RTGS</option>
                                 </select></div>
                             <button class="btn btn-link" type="submit">NEXT</button>
 
@@ -45,9 +44,10 @@
             <div class="col-md-3 sidebar">
                 <div class="sidebar-bg">
                     <p class="related" style="text-align: center; padding-top: 2%">Related Information</p>
-                    <hr class="hrhr"/>
-                    <!--<p th:each="rule : ${passwordRules}" th:text="${rule}"></p>-->
-                    <p>Hello, This part should contain charge details</p>
+                    <!--<hr class="hrhr"/>-->
+                    <!--<p th:text="${nip.feeValue}" id="nip"></p>-->
+                    <p id="nip" style="padding: 5%">Fee applicable: <span th:text="'N'+${nip.feeValue}"></span></p>
+                    <p id="rtgs" style="display: none; padding: 5%">Fee applicable: <span th:text="'N'+${rtgs.feeValue}"></span></p>
                 </div>
             </div>
             <div th:replace="cust_layout :: sidebar" class="col-md-3 sidebar">
@@ -62,12 +62,24 @@
 </footer>
 <script>
     //datepicker
-    $( function() {
-        $( "#datepicker" ).datepicker(
-            { dateformat : 'dd/mm/yy'}
+    $(function () {
+        $("#datepicker").datepicker(
+            {dateformat: 'dd/mm/yy'}
         );
-    } );
+    });
+
+
+    $('#tranType').on('change', function () {
+        if ($(this).val() === "nip") {
+            $("#nip").show();
+            $("#rtgs").hide();
+
+        }
+        else if ($(this).val() === "rtgs") {
+            $("#rtgs").show();
+            $("#nip").hide();
+        }
+    });
 </script>
-</div>
 </body>
 </html>
