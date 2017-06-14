@@ -4,10 +4,13 @@ import longbridge.dtos.RetailUserDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.PasswordException;
 import longbridge.forms.ChangePassword;
+import longbridge.models.RetailUser;
+import longbridge.security.FailedLoginService;
 import longbridge.services.RetailUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
@@ -21,6 +24,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.Locale;
+
 /**
  * Created by Fortune on 4/3/2017.
  */
@@ -30,6 +35,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class AdmRetailUserController {
     @Autowired
     private RetailUserService retailUserService;
+
+    @Autowired
+    private FailedLoginService failedLoginService;
+
+    @Autowired
+    MessageSource messageSource;
 
     private Logger logger= LoggerFactory.getLogger(this.getClass());
 
@@ -55,6 +66,8 @@ public class AdmRetailUserController {
         model.addAttribute("retailUser", retailUser);
         return "/adm/retail/edit";
     }
+
+
 
     @GetMapping
     public String getAllRetailUsers(Model model){
@@ -115,6 +128,23 @@ public class AdmRetailUserController {
         return "redirect:/admin/retail/users";
     }
 
+
+    @GetMapping("/{userId}/unlock")
+    public String unlockUser(@PathVariable Long userId, RedirectAttributes redirectAttributes,Locale locale){
+
+        try{
+            String message = retailUserService.unlockUser(userId);
+            redirectAttributes.addFlashAttribute("message",message);
+
+        }
+        catch (InternetBankingException e){
+            logger.error("Error unlocking user",e.getMessage());
+            redirectAttributes.addFlashAttribute("failure",e.getMessage());
+
+        }
+
+        return "redirect:/admin/retail/users";
+    }
 
     @GetMapping("/{id}/password/reset")
     public String resetPassword(@PathVariable Long id, RedirectAttributes redirectAttributes) {

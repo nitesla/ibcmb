@@ -87,11 +87,11 @@
             <!--</div>-->
         <!--</nav>-->
     <!--</div>-->
-    <div class="container">
+    <div class="containe">
         <div class="top_bar">
             <ul class="list_group">
                 <li><a href="/retail/contact"> Contact Us</a>&nbsp;</li>
-                <li><a href="https://coronationmb.com"> Coronation merchnat bank</a>&nbsp;</li>
+                <li><a href="https://coronationmb.com"> Coronation merchant bank</a>&nbsp;</li>
                 <li><a href="#"> Help&nbsp;</a></li>
             </ul>
         </div>
@@ -108,12 +108,12 @@
                 </div>
                 <div class="row ">
                     <div class="col-md-3 col-sm-4 header_info bvn"><p>Your Bank verification number</p>
-                        <h5 th:if="${bvn=='Not available'}"><a th:href="@{/retail/bvn}" th:text="'BVN: ' + ${bvn}"></a></h5>
+                        <h5 th:if="${bvn=='Not available'}"><a style ='color:#003056' th:href="@{/retail/bvn}" th:text="'BVN: ' + ${bvn}"></a></h5>
                         <h5 th:unless="${bvn=='Not available'}"><div th:text="'BVN: ' + ${bvn}"></div></h5>
 
                     </div><div class="col-md-5 col-sm-4 header_info"><h5><span th:text="*{greeting}"></span><br
                     class="break"/><b th:text="*{name}"></b> &nbsp; <a th:href="@{/retail/mailbox/inbox}">
-                    <i class="fa fa-envelope"></i>
+                    <i class="fa fa-envelope" style="color:#003056"></i>
                     <span th:if="${numOfUnreadMessages}" class="badge bg-green" th:text="${numOfUnreadMessages}">count</span>
                     </a>
                     </h5>
@@ -186,20 +186,33 @@
                         </ul>
                     </div>
                 </div>
+
+
+
+
             </div>
+
+
+
         </nav>
+
+
+
     </div>
-    <a href="/retail/dashboard" class="logo">
+
+    <a href="/retail/dashboard" class="logo navbar-right">
         <img th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
     </a>
+
+
 </header>
 
-    <div th:fragment="sidebar" class="col-md-3 sidebar">
-        <div class="sidebar-bg calender">
-            <div id="calendar" class="calendar"></div>
+    <div th:fragment="sidebar" class="sideba">
+        <div class="sidebar-b calende cal  ">
+            <div  id="calendar" style="display: block; margin: 0px auto;" class=" calendar hidden-xs hidden-sm "></div>
         </div>
-        <div class="sidebar-bg">
-            <img th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
+        <div class="sidebar- hidden-xs hidden-sm" >
+            <img style="display: block; margin: 0px auto;" class="center" th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
         </div>
     </div>
 

@@ -4,11 +4,12 @@
 
 </head>
 <body>
-<header th:replace="cust_layout :: header">
+<div class="container">
+    <header th:replace="cust_layout :: header">
 </header>
 
 <section class="content-wrapper">
-    <div class="container">
+    <div class="containe">
         <div class="row">
             <div class="col-md-1"></div>
             <div class="col-md-8 col-sm-8">
@@ -35,5 +36,6 @@
 <!-- CONTENT-WRAPPER SECTION END-->
 <footer th:replace="cust_layout ::footer">
 </footer>
+</div>
 </body>
 </html>

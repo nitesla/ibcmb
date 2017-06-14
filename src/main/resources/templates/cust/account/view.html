@@ -4,11 +4,12 @@
 
 </head>
 <body>
-<header th:replace="cust_layout :: header">
-</header>
+<div class="container">
+    <header th:replace="cust_layout :: header">
+    </header>
 
 <section class="content-wrapper">
-    <div class="container">
+    <div class="containe">
         <div class="row">
             <div class="col-md-4 col-sm-4">
                 <h5 class="page_header"> Account Statement</h5>
@@ -38,10 +39,10 @@
                         <a th:href="@{'#'}" class="btn pull-right"><i class="fa fa-search" style="color: white" ></i>&nbsp; find</a>
 </div>
 
-<!--<p>
+<p>
                         <a th:href="@{'#'}" class="btn bt-select bt-link-act" disabled="disabled"><i class="fa fa-print" style="color: white" ></i>&nbsp; print</a>
                         <a th:href="@{'#'}" class="btn " disabled="disabled"><i class="fa fa-envelope" style="color: white" ></i>&nbsp; send mail</a>
-</p>-->
+</p>
                         <table class="table" id="users">
                             <thead>
                             <tr>
@@ -55,7 +56,6 @@
                             </tr>
                             </thead>
                             <tbody>
-
                             </tbody>
                         </table>
 
@@ -71,7 +71,7 @@
 <!-- CONTENT-WRAPPER SECTION END-->
 <footer th:replace="cust_layout ::footer">
 </footer>
-<!--<script th:inline="javascript">
+<script th:inline="javascript">
     /*<![CDATA[*/
     $(document).ready(function() {
         var url = "/retail/account/all";
@@ -135,6 +135,6 @@
     } );
 
     /*]]>*/
-</script>-->
+</script>
 </body>
 </html>
