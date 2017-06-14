@@ -53,8 +53,7 @@ public class IntegrationServiceImpl implements IntegrationService {
     private MailService mailService;
     private TemplateEngine templateEngine;
     private ConfigurationService configService;
-    @Autowired
-    ApplicationContext appContext;
+
 
     @Autowired
     public IntegrationServiceImpl(RestTemplate template, MailService mailService, TemplateEngine templateEngine
@@ -236,7 +235,8 @@ public class IntegrationServiceImpl implements IntegrationService {
                         logger.info("response for transfer {}", response.toString());
                         transRequest.setReferenceNumber(response.getUniqueReferenceCode());
                         transRequest.setNarration(response.getNarration());
-                        transRequest.setStatus(response.getResponseDescription());
+                        transRequest.setStatus(response.getResponseCode());
+                        transRequest.setStatusDescription(response.getResponseDescription());
 
                         return transRequest;
 
