@@ -194,6 +194,7 @@
                             <div class="modal-body">
                                 <h1 style="font-size: 20px">Request Callback</h1>
                                 <br/>
+
                                 <form method="post" action="/request/callback" class="form-horizontal">
                                     <div class="row">
                                         <div class="col-sm-3 control-label"><label>Full Name:</label></div>
@@ -223,17 +224,21 @@
                 <div class="margin-bottom"></div>
                 <div>
                     <p>Enter details below</p>
-                    <form method="post" th:action="@{/contact}" th:object="${message}" class="contact-form">
-                        <div class="form-group">
-                            <input id="name" type="text" name="name" class="form-control" placeholder="Name"/>
-                        </div>
-                        <div class="form-group">
-                            <input id="email" type="text" name="email" class="form-control" placeholder="Email"/>
-                        </div>
-                        <div class="form-group">
-                            <textarea name="message" value="Message" class="form-control" rows="10" ></textarea>
-                        </div>
-                        <input type="submit" value="Submit" class="btn btn-primary btn-md form-control" />
+
+                    <form method="post" th:action="@{/home}" th:object="${message}" class="contact-form">
+                            <div class="form-group">
+                                <input id="name" type="text" name="name" class="form-control" placeholder="Name"/>
+                            </div>
+                            <div class="form-group">
+                                <input id="email" type="text" name="email" class="form-control" placeholder="Email"/>
+                            </div>
+                            <div class="form-group">
+                                <textarea name="message" value="Message" class="form-control" rows="10" ></textarea>
+                            </div>
+
+                            <input type="button" value="Submit" class="btn btn-primary btn-md form-control" />
+
+
                     </form>
                 </div>
             </div>

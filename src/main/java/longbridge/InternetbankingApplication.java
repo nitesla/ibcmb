@@ -1,8 +1,10 @@
 package longbridge;
 
+import longbridge.api.Rate;
 import longbridge.jobs.CronJobs;
 import longbridge.repositories.CustomJpaRepositoryFactoryBean;
 import longbridge.services.IntegrationService;
+
 import longbridge.services.SecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -17,6 +19,7 @@ import org.thymeleaf.TemplateEngine;
 
 @SpringBootApplication
 @EnableJpaRepositories(repositoryFactoryBeanClass = CustomJpaRepositoryFactoryBean.class)
+
 public class InternetbankingApplication extends SpringBootServletInitializer implements CommandLineRunner {
 
     @Autowired
@@ -29,6 +32,7 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
     PasswordEncoder passwordEncoder;
     @Autowired
     private CronJobs cronJobs;
+
     public static void main(String[] args) {
         SpringApplication.run(InternetbankingApplication.class, args);
 
@@ -47,6 +51,16 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
 //        System.out.println("Your password is "+passwordEncoder.encode("password123"));
 
     }
+
+//    @Override
+//    public void run(String... strings) throws Exception {
+//
+//    Rate    rate=  integrationService.getFee("NIP");
+//        System.out.println("Rate "+rate);
+//
+//    }
+
+
 
 }
 

@@ -1,7 +1,9 @@
 package longbridge.controllers.retail;
 
 import longbridge.dtos.DirectDebitDTO;
+import longbridge.dtos.FinancialInstitutionDTO;
 import longbridge.models.DirectDebit;
+import longbridge.models.FinancialInstitutionType;
 import longbridge.models.RetailUser;
 import longbridge.services.*;
 import org.slf4j.Logger;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -77,6 +80,20 @@ public class DirectDebitController {
         return "redirect:/retail/directdebit";
     }
 
+
+    @ModelAttribute
+    public void commonParams(Model model){
+
+        List<FinancialInstitutionDTO> sortedNames = financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.LOCAL);
+        sortedNames.sort(Comparator.comparing(FinancialInstitutionDTO::getInstitutionName));
+
+        model.addAttribute("localBanks"
+                ,sortedNames
+
+
+        );
+
+    }
    
 
 }

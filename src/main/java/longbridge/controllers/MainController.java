@@ -1,5 +1,7 @@
 package longbridge.controllers;
 
+import longbridge.dtos.SettingDTO;
+import longbridge.dtos.UserGroupDTO;
 
 import longbridge.dtos.SettingDTO;
 import longbridge.exception.InternetBankingException;
@@ -49,12 +51,10 @@ public class MainController {
     private CorporateService corporateService;
     @Autowired
     private SecurityService securityService;
-
     @Autowired
     private ConfigurationService configurationService;
-
     @Autowired
-    MailService mailService;
+    private MailService mailService;
 
 
     @RequestMapping(value = {"/", "/home"})
@@ -328,7 +328,6 @@ public class MainController {
         }
         return "redirect:/password/reset/ops";
     }
-
 
     @GetMapping("/contact")
     public String contactUs(){
