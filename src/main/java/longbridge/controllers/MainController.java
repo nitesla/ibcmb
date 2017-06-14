@@ -348,14 +348,15 @@ public class MainController {
             try {
                 Email mail = new Email.Builder()
                         .setRecipient(setting.getValue())
-                        .setBody(String.format(name + email + message))
+                        .setSubject("Message from "+name+" ("+email+")")
+                        .setBody(message)
                         .build();
                 mailService.send(mail);
-                redirectAttributes.addFlashAttribute("message", message);
+                redirectAttributes.addFlashAttribute("message", "Message sent successfully");
 
             } catch (Exception ex) {
                 logger.error("Failed to send Email", ex);
-                redirectAttributes.addFlashAttribute("failure", message);
+                redirectAttributes.addFlashAttribute("failure", "Failed to send message");
             }
         }
         return "redirect:/index";
