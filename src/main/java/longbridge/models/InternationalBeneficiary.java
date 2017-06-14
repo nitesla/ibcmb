@@ -22,6 +22,7 @@ public class InternationalBeneficiary extends Beneficiary {
     private String beneficiaryAddress;
     private String intermediaryBankName;
     private String intermediaryBankAcctNo;
+    private String currencyCode;
 
     public RetailUser getUser() {
         return user;
@@ -69,5 +70,13 @@ public class InternationalBeneficiary extends Beneficiary {
 
     public void setIntermediaryBankAcctNo(String intermediaryBankAcctNo) {
         this.intermediaryBankAcctNo = intermediaryBankAcctNo;
+    }
+
+    public String getCurrencyCode() {
+        return currencyCode;
+    }
+
+    public void setCurrencyCode(String currencyCode) {
+        this.currencyCode = currencyCode;
     }
 }

@@ -2,7 +2,27 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="corp_layout :: site-head">
 
+    <link rel="stylesheet" type="text/css" href="css/jquery.dataTables.css"/>
+    <link rel="stylesheet" type="text/css" href="css/select.bootstrap.css"/>
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="css/dataTables.bootstrap.css"/>
 </head>
+
+<style>
+    .hstyle{
+        width: 100%;
+        text-align: center;
+        border-bottom: 1px solid #000;
+        line-height: 0.1em;
+        margin: 10px 0 20px;
+    }
+
+    .hstyle span {
+        background:#fff;
+        padding:0 10px;
+    }
+</style>
+
 <body>
 <header th:replace="corp_layout ::corp-header">
 </header>
@@ -16,42 +36,67 @@
         </div>
         <div class="row">
             <div class="col-md-8 content-bg">
-                <div class="row form-spacing">
+                <form>
+                <div class="row spacing">
                     <div>
-                        <p>To make a bulk transfer, You are required to download a pre-formatted file and fill
-                         in the details of the beneficiaries</p>
+                        <p>To make a bulk transfer, Enter the request fields below</p>
                     </div>
-                        <p><a href="">Download File</a></p><br/>
 
-                        <p>Upload the completed file through the link below</p>
+                    <br/>
 
-
-
-                    <div class="col-md-6 col-sm-6">
-                        <form method="post" th:action="@{/corporate/transfer/bulk/upload}" enctype="multipart/form-data">
-
-
-                            <div class="form-group">
-                                <label>Bulk Transfer file</label>
-                                <input  type="file" name="transferFile"/>
-                                <input  type="submit" value="Upload"/>
-
-                            </div>
-
-                        </form>
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                        <button type="submit" id="button_add" class="btn-xs btn-success btn">Add Field</button>
+                        <button type="submit" id="button_del" class="btn-xs btn-warning btn">Remove</button>
                     </div>
+                    <br/>
+
+                        <br/>
+
+                        <table id="mytab" class="table table-striped table-bordered table-hover" cellspacing="0"  >
+                            <thead>
+                            <tr>
+                                <th>Serial</th>
+                                <th>Ref</th>
+                                <th>Account Number</th>
+                                <th>Sort Code</th>
+                                <th>Beneficiary Name</th>
+                                <th>Amount (N)</th>
+                                <th>Narration</th>
+                            </tr>
+                            </thead>
+
+                        </table>
+
+
+                    <br/>
+                    <button class="btn btn-link" type="submit">Upload</button>
+                    </div>
+                </form>
                 </div>
-            </div>
+
             <div th:replace="corp_layout :: corp-sidebar" class="col-md-3 sidebar">
             </div>
+            </div>
         </div>
-    </div>
+
 </section>
 
 
 <!-- CONTENT-WRAPPER SECTION END-->
 <footer th:replace="corp_layout ::corp-footer">
 </footer>
+<script type="text/javascript" language="javascript" src="js/jquery.js">
+</script>
+
+<script type="text/javascript" language="javascript" src="js/jquery.dataTables.js">
+</script>
+
+<script type="text/javascript" language="javascript" src="js/dataTables.select.js">
+</script>
+<script type="text/javascript" language="javascript" src="js/bootstrap.js">
+</script>
+
+
 <script>
     //datepicker
     $( function() {
@@ -59,6 +104,41 @@
             { dateformat : 'dd/mm/yy'}
         );
     } );
+
+
+
+    $(document).ready(function() {
+        var t = $('#mytab').DataTable({dom : 'rt',
+            select : {style:'single'},
+            ordering : false,
+            "language": {
+                "emptyTable": "Enter Bulk transfer request fields"
+            }
+        });
+
+        $('#button_add').on( 'click', function (e) {
+            e.preventDefault();
+            t.row.add( [
+                '<input name="serial" />',
+                '<input name="reference" />',
+                '<input name="accountNumber" />',
+                '<input name="sortCode" />',
+                '<input name="accountName"/>',
+                '<input name="amount"/>',
+                '<input name="narration"/>'
+            ] ).draw( false );
+
+        } );
+
+        $('#button_del').click( function (e) {
+            e.preventDefault()
+            var dt = $('#mytab').DataTable();
+            dt.row('.selected').remove().draw( false );
+
+
+        } );
+    } );
+
 </script>
 </body>
 </html>

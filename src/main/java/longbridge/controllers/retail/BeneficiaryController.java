@@ -5,10 +5,7 @@ import longbridge.dtos.InternationalBeneficiaryDTO;
 import longbridge.dtos.LocalBeneficiaryDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.*;
-import longbridge.services.FinancialInstitutionService;
-import longbridge.services.InternationalBeneficiaryService;
-import longbridge.services.LocalBeneficiaryService;
-import longbridge.services.RetailUserService;
+import longbridge.services.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,14 +43,17 @@ public class BeneficiaryController {
 
     private RetailUserService retailUserService;
 
+    private CodeService codeService;
+
 
     @Autowired
-    public BeneficiaryController(LocalBeneficiaryService localBeneficiaryService, MessageSource messages, InternationalBeneficiaryService internationalBeneficiaryService, FinancialInstitutionService financialInstitutionService, RetailUserService retailUserService) {
+    public BeneficiaryController(LocalBeneficiaryService localBeneficiaryService, MessageSource messages, InternationalBeneficiaryService internationalBeneficiaryService, FinancialInstitutionService financialInstitutionService, RetailUserService retailUserService, CodeService codeService) {
         this.localBeneficiaryService = localBeneficiaryService;
         this.messages = messages;
         this.internationalBeneficiaryService = internationalBeneficiaryService;
         this.financialInstitutionService = financialInstitutionService;
         this.retailUserService = retailUserService;
+        this.codeService = codeService;
     }
 
     @GetMapping
@@ -79,6 +79,7 @@ public class BeneficiaryController {
         model.addAttribute("localBeneficiaryDTO", new LocalBeneficiaryDTO());
         model.addAttribute("internationalBeneficiaryDTO", new InternationalBeneficiaryDTO());
         model.addAttribute("foreignBanks", financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.FOREIGN));
+        model.addAttribute("foreignCurrencyCodes", codeService.getCodesByType("CURRENCY"));
 
 
         return "cust/beneficiary/add";
