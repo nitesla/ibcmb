@@ -16,11 +16,13 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.thymeleaf.TemplateEngine;
 
+import java.util.Date;
+
 
 @SpringBootApplication
 @EnableJpaRepositories(repositoryFactoryBeanClass = CustomJpaRepositoryFactoryBean.class)
 
-public class InternetbankingApplication extends SpringBootServletInitializer implements CommandLineRunner {
+public class InternetbankingApplication /*extends SpringBootServletInitializer */implements CommandLineRunner {
 
     @Autowired
     private SecurityService securityService;
@@ -49,7 +51,8 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
 //        securityService.addUserContacts("soluwawunmi@gmail.com","07038810752",true,"wumiTofu01");
 //         securityService.sendOtp("wumiTofu01");
 //        System.out.println("Your password is "+passwordEncoder.encode("password123"));
-
+        integrationService.getAccountStatements("1234",new Date(),new Date());
+        System.out.println("end process");
     }
 
 //    @Override
