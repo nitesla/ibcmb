@@ -2,6 +2,7 @@ package longbridge.controllers;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import longbridge.api.CustomerDetails;
+import longbridge.dtos.AccountDTO;
 import longbridge.dtos.RetailUserDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.forms.CustResetPassword;
@@ -74,17 +75,6 @@ public class UserRegController {
 
     @Autowired
     private PasswordPolicyService passwordPolicyService;
-    
-//    @GetMapping("/rest/json/phishingimages")
-//    public @ResponseBody String antiPhishingImages(){
-//        //securityService.m
-//    	StringBuilder builder = new StringBuilder();
-//    	builder.append("<option value=''>Select Anti Phishing Image</option>");
-//    	builder.append("<option value='/assets/phishing/dog.jpg'>Dog</option>");
-//    	builder.append("<option value='/assets/phishing/cheetah.jpg'>Cheetah</option>");
-//    	builder.append("<option value='/assets/phishing/benz.jpg'>Car</option>");
-//    	return builder.toString();
-//    }
 
     @GetMapping("/rest/accountdetails/{accountNumber}/{email}/{birthDate}")
     public @ResponseBody String getAccountDetailsFromNumber(@PathVariable String accountNumber, @PathVariable String email, @PathVariable String birthDate){
@@ -94,7 +84,7 @@ public class UserRegController {
         logger.info("BirthDate : " + birthDate);
         CustomerDetails details = integrationService.isAccountValid(accountNumber, email, birthDate);
         if (details != null){
-                customerId = details.getCifId();
+              customerId = details.getCifId();
 //            RetailUser retailUser = retailUserService.getUserByCustomerId(details.getCifId());
 //            if (retailUser != null) {
  //               customerId = retailUser.getCustomerId();
@@ -127,18 +117,19 @@ public class UserRegController {
     }
 
     @GetMapping("/rest/secQues/{cifId}")
-    public @ResponseBody String getSecQuestionFromNumber(@PathVariable String cifId){
+    public @ResponseBody String getSecQuestionFromNumber(@PathVariable String cifId, HttpSession session){
         String secQuestion = "";
         logger.info("cifId : " + cifId);
 
         RetailUser user = retailUserService.getUserByCustomerId(cifId);
         logger.info("USER NAME {}", user);
+
         if (user != null){
             logger.info("USER NAME {}", user.getUserName());
+            session.setAttribute("username", user.getUserName());
             Map<String, List<String>> qa = securityService.getUserQA(user.getUserName());
             //List<String> sec = null;
             if (qa != null || !qa.isEmpty()){
-
                 List<String> question = qa.get("questions");
                 secQuestion = question.stream().filter(Objects::nonNull).findFirst().orElse("");
                 logger.info("question {}", secQuestion);
@@ -155,7 +146,7 @@ public class UserRegController {
     }
 
     @GetMapping("/rest/secAns/{answer}")
-    public @ResponseBody String getSecQuestionFromNumber(@PathVariable String answer, HttpSession session){
+    public @ResponseBody String getSecAns(@PathVariable String answer, HttpSession session){
 
         //confirm security question is correct
         String secAnswer="";
@@ -289,31 +280,32 @@ public class UserRegController {
 
 
                     secAnswer = answers.stream().filter(Objects::nonNull).findFirst().orElse("");
-                    logger.info("answer {}", secAnswer);
+                    logger.info("answerSec {}", secAnswer);
 
 
-                if (!secAnswer.equals(securityAnswer)){
-                    return "false";
+                if (secAnswer.equalsIgnoreCase(securityAnswer)){
+                    logger.debug("User Info {}:", user.getUserName());
+                    //Send Username to Email
+                    Email email = new Email.Builder()
+                            .setRecipient(user.getEmail())
+                            .setSubject(messageSource.getMessage("retrieve.username.subject",null,locale))
+                            .setBody(String.format(messageSource.getMessage("retrieve.username.message",null,locale),user.getFirstName(), user.getUserName()))
+                            .build();
+                    mailService.send(email);
+                    return "true";
                 }
 
             }else {
                 return "false";
             }
 
-            logger.debug("User Info {}:", user.getUserName());
-            //Send Username to Email
-            Email email = new Email.Builder()
-                    .setRecipient(user.getEmail())
-                    .setSubject(messageSource.getMessage("retrieve.username.subject",null,locale))
-                    .setBody(String.format(messageSource.getMessage("retrieve.username.message",null,locale),user.getFirstName(), user.getUserName()))
-                    .build();
-            mailService.send(email);
+
 
         }catch (InternetBankingException e){
             return "false";
         }
 
-        return "true";
+        return "false";
     }
 
 
@@ -460,6 +452,11 @@ public class UserRegController {
         if (user != null){
             throw new InternetBankingException(messageSource.getMessage("user.reg.exists", null, locale));
         }
+
+        Iterable<AccountDTO> account = accountService.getAccounts(customerId);
+        if (account != null){
+            throw new InternetBankingException(messageSource.getMessage("user.reg.exists", null, locale));
+        }
     }
 
     @GetMapping("/forgot/password")
@@ -468,27 +465,31 @@ public class UserRegController {
         ResetPasswordForm resetPasswordForm = new ResetPasswordForm();
         resetPasswordForm.step = "1";
         resetPasswordForm.username = (String) session.getAttribute("username");
-        Map<String, List<String>> qa = securityService.getUserQA((String) session.getAttribute("username"));
-        if (qa != null || !qa.isEmpty()){
-            List<String> questions= qa.get("questions");
-            List<String> answers= qa.get("answers");
-            String secQuestion = questions.get(0);
+        try{
+            Map<String, List<String>> qa = securityService.getUserQA((String) session.getAttribute("username"));
+            if (qa != null || !qa.isEmpty()){
+                List<String> questions= qa.get("questions");
+                List<String> answers= qa.get("answers");
+                String secQuestion = questions.get(0);
 
-            if (secQuestion == null || secQuestion.equals("")){
+                if (secQuestion == null || secQuestion.equals("")){
+                    redirectAttributes.addFlashAttribute("failure", "Invalid Credentials");
+                    return "redirect:/login/retail";
+                }else{
+                    session.setAttribute("secretAnswer", answers);
+                    model.addAttribute("secQuestion", secQuestion);
+                }
+
+            }else {
                 redirectAttributes.addFlashAttribute("failure", "Invalid Credentials");
                 return "redirect:/login/retail";
-            }else{
-                session.setAttribute("secretAnswer", answers);
-                model.addAttribute("secQuestion", secQuestion);
             }
 
-        }else {
-            redirectAttributes.addFlashAttribute("failure", "Invalid Credentials");
+            model.addAttribute("forgotPasswordForm", resetPasswordForm);
+            return "cust/passwordreset";
+        }catch (InternetBankingException e){
             return "redirect:/login/retail";
         }
-
-        model.addAttribute("forgotPasswordForm", resetPasswordForm);
-        return "cust/passwordreset";
     }
 
     @PostMapping("/forgot/password")

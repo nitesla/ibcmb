@@ -4,11 +4,12 @@
 
 </head>
 <body>
-<header th:replace="cust_layout :: header">
-</header>
+<div class="container">
+    <header th:replace="cust_layout :: header">
+    </header>
 
 <section class="content-wrapper">
-    <div class="container">
+    <div class="containe">
         <div class="row">
             <div class="col-md-4 col-sm-4">
                 <h5 class="page_header"> Coronation account transfer</h5>
@@ -41,6 +42,14 @@
                     </div>
                 </div>
             </div>
+            <div class="col-md-3 sidebar">
+                <div class="sidebar-bg">
+                    <p class="related" style="text-align: center; padding-top: 2%">Related Information</p>
+                    <hr class="hrhr"/>
+                    <!--<p th:each="rule : ${passwordRules}" th:text="${rule}"></p>-->
+                    <p>Hello, This part should contain charge details</p>
+                </div>
+            </div>
             <div th:replace="cust_layout :: sidebar" class="col-md-3 sidebar">
             </div>
         </div>
@@ -59,5 +68,6 @@
         );
     } );
 </script>
+</div>
 </body>
 </html>

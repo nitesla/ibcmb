@@ -108,12 +108,12 @@
                 </div>
                 <div class="row ">
                     <div class="col-md-3 col-sm-4 header_info bvn"><p>Your Bank verification number</p>
-                        <h5 th:if="${bvn=='Not available'}"><a th:href="@{/retail/bvn}" th:text="'BVN: ' + ${bvn}"></a></h5>
+                        <h5 th:if="${bvn=='Not available'}"><a style ='color:#003056' th:href="@{/retail/bvn}" th:text="'BVN: ' + ${bvn}"></a></h5>
                         <h5 th:unless="${bvn=='Not available'}"><div th:text="'BVN: ' + ${bvn}"></div></h5>
 
                     </div><div class="col-md-5 col-sm-4 header_info"><h5><span th:text="*{greeting}"></span><br
                     class="break"/><b th:text="*{name}"></b> &nbsp; <a th:href="@{/retail/mailbox/inbox}">
-                    <i class="fa fa-envelope"></i>
+                    <i class="fa fa-envelope" style="color:#003056"></i>
                     <span th:if="${numOfUnreadMessages}" class="badge bg-green" th:text="${numOfUnreadMessages}">count</span>
                     </a>
                     </h5>
