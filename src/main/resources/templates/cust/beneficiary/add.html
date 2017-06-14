@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="cust_layout :: site-head">
-
 </head>
 <body>
-<header th:replace="cust_layout :: header">
-</header>
+<div class="container">
+    <header th:replace="cust_layout :: header">
+    </header>
 
-<section class="content-wrapper">
-    <div class="container">
+    <section class="content-wrapper">
+    <div>
         <div class="row">
             <div class="col-md-4 col-sm-4">
                 <h5 class="page_header"> New Beneficiary</h5>
@@ -67,7 +67,6 @@
                             </button>
                             <a th:href="@{/retail/benficiary}" class="btn btn-link">Cancel</a>
                         </form>
-
                         <form id="foreign" method="post" th:action="@{/retail/beneficiary/foreign}"
                               th:object="${internationalBeneficiaryDTO}" style="display: none">
                             <input type="hidden" th:value="foreign" class="form-control"/>
@@ -151,7 +150,7 @@
                                 <input type="text" class="form-control" name="preferredName"
                                        placeholder="Beneficiary Alias" th:field="*{preferredName}" required="required"/>
                             </div>
-                            <button id="ilocalsave" style="display: none;" class="btn btn-link">NEXT</button>
+                            <button id="ilocalsave" style="display: none;" class="btn btn-link">Save</button>
                             <button id="ineq" type="button" class="btn btn-link" onclick="getIntraBankAccountName();">
                                 Name Enquiry
                             </button>
@@ -173,125 +172,127 @@
 <footer th:replace="cust_layout ::footer">
 </footer>
 
-<script>
-    $('#benType').on('change', function () {
-        if ($(this).val() === "foreign") {
-            $("#foreign").show();
-            $("#local").hide();
-            $("#intrabank").hide();
-        }
-        else if ($(this).val() === "local") {
-            $("#local").show();
-            $("#foreign").hide();
-            $("#intrabank").hide();
-        } else if ($(this).val() === "intrabank") {
-            $("#local").hide();
-            $("#foreign").hide();
-            $("#intrabank").show();
-        }
-    });
-</script>
-<script th:inline="javascript">
-    /*<![CDATA[*/
-    $(document).ready(function () {
-        $('#beneficiaryBank').change(function () {
-            $('#acct_name').val("");
-            $('.acctError').hide();
+    <script>
+        $('#benType').on('change', function () {
+            if ($(this).val() === "foreign") {
+                $("#foreign").show();
+                $("#local").hide();
+                $("#intrabank").hide();
+            }
+            else if ($(this).val() === "local") {
+                $("#local").show();
+                $("#foreign").hide();
+                $("#intrabank").hide();
+            } else if ($(this).val() === "intrabank") {
+                $("#local").hide();
+                $("#foreign").hide();
+                $("#intrabank").show();
+            }
+        });
+    </script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        $(document).ready(function () {
+            $('#beneficiaryBank').change(function () {
+                $('#acct_name').val("");
+                $('.acctError').hide();
+            });
+
+            $('#acct_num').change(function () {
+                $('#acct_name').val("");
+                $('.acctError').hide();
+            });
+    //        sortSelect('#beneficiaryBank', 'text', 'asc');
+
+            $("#beneficiaryBank").prop("selectedIndex", -1);
+
         });
 
-        $('#acct_num').change(function () {
-            $('#acct_name').val("");
-            $('.acctError').hide();
-        });
-//        sortSelect('#beneficiaryBank', 'text', 'asc');
 
-        $("#beneficiaryBank").prop("selectedIndex", -1);
+        function getAccountName() {
+            //make sure alert message is not empty
+            var acct = $('#acct_num').val();
+            var bank = $('#beneficiaryBank').val();
 
-    });
+            if (( acct == null || acct == '' ) || ( bank == null || bank == '' )) {
 
 
-    function getAccountName() {
-        //make sure alert message is not empty
-        var acct = $('#acct_num').val();
-        var bank = $('#beneficiaryBank').val();
-
-        if (( acct == null || acct == '' ) || ( bank == null || bank == '' )) {
-
-
-            $('.acctError').show().css("color", "red");
-            return false;
-        }
-
-        var options = {
-            type: 'GET',
-            url: '/retail/transfer/' + acct + '/' + bank + '/nameEnquiry',
-//					dataType: 'jsonp',
-            error: function (xhr, textStatus, errorThrown) {
                 $('.acctError').show().css("color", "red");
-
-            },
-            success: function (data, textStatus) {
-
-                var result = data;
-                $('#acct_name').val(result);
-
-                if (result != null && result != '') {
-
-                    $('#localsave').show();
-                    $('#neq').hide();
-                } else {
-
-                    $('.acctError').show().css("color", "red");
-                }
+                return false;
             }
-        };
-        $.ajax(options);
-    }
-    ;
 
-    function getIntraBankAccountName() {
-        //make sure alert message is not empty
-        var acct = $('#iacct_num').val();
-        if (( acct == null || acct == '' )) {
+            var options = {
+                type: 'GET',
+                url: '/retail/transfer/' + acct + '/' + bank + '/nameEnquiry',
+    //					dataType: 'jsonp',
+                error: function (xhr, textStatus, errorThrown) {
+                    $('.acctError').show().css("color", "red");
+
+                },
+                success: function (data, textStatus) {
+
+                    var result = data;
+                    $('#acct_name').val(result);
+
+                    if (result != null && result != '') {
+
+                        $('#localsave').show();
+                        $('#neq').hide();
+                    } else {
+
+                        $('.acctError').show().css("color", "red");
+                    }
+                }
+            };
+            $.ajax(options);
+        }
+        ;
+
+        function getIntraBankAccountName() {
+            //make sure alert message is not empty
+            var acct = $('#iacct_num').val();
+            if (( acct == null || acct == '' )) {
 
 
-            $('.acctError').show().css("color", "red");
-            return false;
+                $('.acctError').show().css("color", "red");
+                return false;
+            }
+
+            var options = {
+                type: 'GET',
+                url: '/retail/transfer/local/' + acct + '/nameEnquiry',
+    //					dataType: 'jsonp',
+                error: function (xhr, textStatus, errorThrown) {
+                    $('.iacctError').show().css("color", "red");
+                },
+                success: function (data, textStatus) {
+                    console.log(data);
+                    console.log(textStatus);
+                    var result = data;
+                    //var result = (new Function("return " + result))();
+                    // $('#acct_name').val(result.message);
+                    $('#iacct_name').val(result);
+                    $('.iacctError').hide();
+
+                    if (result != null && result != '') {
+
+                        $('#ilocalsave').show();
+                        $('#ineq').hide();
+                    } else {
+
+                        $('.iacctError').show().css("color", "red");
+                    }
+
+                }
+            };
+            $.ajax(options);
         }
 
-        var options = {
-            type: 'GET',
-            url: '/retail/transfer/local/' + acct + '/nameEnquiry',
-//					dataType: 'jsonp',
-            error: function (xhr, textStatus, errorThrown) {
-                $('.iacctError').show().css("color", "red");
-            },
-            success: function (data, textStatus) {
-                console.log(data);
-                console.log(textStatus);
-                var result = data;
-                //var result = (new Function("return " + result))();
-                // $('#acct_name').val(result.message);
-                $('#iacct_name').val(result);
-                $('.iacctError').hide();
-
-                if (result != null && result != '') {
-
-                    $('#ilocalsave').show();
-                    $('#ineq').hide();
-                } else {
-
-                    $('.iacctError').show().css("color", "red");
-                }
-
-            }
-        };
-        $.ajax(options);
-    }
 
 
     /*]]>*/
 </script>
 
+</div>
 </body>
 </html>
