@@ -431,15 +431,11 @@ public class RetailUserServiceImpl implements RetailUserService {
 
     private RetailUserDTO convertEntityToDTO(RetailUser retailUser) {
         RetailUserDTO retailUserDTO =  modelMapper.map(retailUser, RetailUserDTO.class);
-        Code code = codeService.getByTypeAndCode("USER_STATUS", retailUser.getStatus());
         if(retailUser.getCreatedOnDate()!=null) {
             retailUserDTO.setCreatedOn(DateFormatter.format(retailUser.getCreatedOnDate()));
         }
         if(retailUser.getLastLoginDate()!=null) {
             retailUserDTO.setLastLogin(DateFormatter.format(retailUser.getLastLoginDate()));
-        }
-        if (code != null) {
-            retailUserDTO.setStatus(code.getDescription());
         }
         return retailUserDTO;
     }
