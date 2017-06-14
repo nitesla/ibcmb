@@ -13,6 +13,7 @@ import longbridge.repositories.CorpLimitRepo;
 import longbridge.repositories.CorporateRepo;
 import longbridge.repositories.CorporateUserRepo;
 import longbridge.repositories.RoleRepo;
+import longbridge.security.FailedLoginService;
 import longbridge.services.*;
 import longbridge.utils.DateFormatter;
 import org.modelmapper.ModelMapper;
@@ -71,6 +72,9 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
     @Autowired
     private CorporateRepo corporateRepo;
+
+    @Autowired
+    private FailedLoginService failedLoginService;
 
     private Locale locale = LocaleContextHolder.getLocale();
 
@@ -382,6 +386,23 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     @Override
     public void lockUser(CorporateUser user, Date unlockat) {
         //todo
+    }
+
+    @Override
+    public String unlockUser(Long id) throws InternetBankingException {
+
+        CorporateUser user = corporateUserRepo.findOne(id);
+        if (!"L".equals(user.getStatus())) {
+            throw new InternetBankingException(messageSource.getMessage("user.unlocked", null, locale));
+        }
+        try {
+            failedLoginService.unLockUser(user);
+            return messageSource.getMessage("unlock.success",null,locale);
+        }
+        catch (Exception e){
+            throw new InternetBankingException(messageSource.getMessage("unlock.failure", null, locale));
+
+        }
     }
 
     @Override
