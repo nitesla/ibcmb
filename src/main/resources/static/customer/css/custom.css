@@ -91,7 +91,13 @@ span.req
 
 
 
-#myspan
+#myspan {
+    display: none;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+#myspan2
 {
     display: none;
     width:100%;

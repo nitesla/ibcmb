@@ -34,7 +34,7 @@
                             <div class="form-group">
                                 <label>Bank Details</label>
                                 <span class="req"></span>
-                                <select name="beneficiaryBank" id="beneficiaryBank" class="form-control" placeholder="select"
+                                <select name="beneficiaryBank" id="beneficiaryBank" class="form-control"
                                         th:field="*{beneficiaryBank}" required="required">
                                     <option th:each="bank : ${localBanks}" th:value="${bank.institutionCode}"
                                             th:text="${bank.institutionName}"></option>

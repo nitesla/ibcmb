@@ -3,9 +3,14 @@ package longbridge.controllers.retail;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import longbridge.api.AccountDetails;
 import longbridge.dtos.AccountDTO;
+import longbridge.dtos.CorporateDTO;
+import longbridge.dtos.CorporateUserDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.forms.CustomizeAccount;
+import longbridge.models.Account;
 import longbridge.models.RetailUser;
+import longbridge.models.TransRequest;
+import longbridge.repositories.AccountRepo;
 import longbridge.services.AccountService;
 import longbridge.services.IntegrationService;
 import longbridge.services.RetailUserService;
@@ -15,6 +20,7 @@ import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.export.JRXlsExporter;
 import net.sf.jasperreports.engine.export.JRXlsExporterParameter;
 import net.sf.jasperreports.engine.xml.JRXmlLoader;
+import longbridge.services.TransferService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,13 +29,15 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+import org.springframework.data.jpa.datatables.repository.DataTablesUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView;
 
@@ -65,6 +73,11 @@ public class AccountController {
 
     @Autowired
     private MessageSource messageSource;
+
+    @Autowired private TransferService transferService;
+
+    @Autowired
+    AccountRepo accountRepo;
 
     private Long customizeAccountId;
 
@@ -197,12 +210,36 @@ public class AccountController {
     @GetMapping("/{id}/statement")
     public String getAccountStatement(@PathVariable Long id, Model model,Principal principal){
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
-        List<AccountDTO> accountList = accountService.getAccountsAndBalances(retailUser.getCustomerId());
-        model.addAttribute("accountList", accountList);
-        model.addAttribute("retailUser", retailUser);
 
+       Account account = accountRepo.findOne(id);
+
+        List<AccountDTO> accountList = accountService.getAccountsAndBalances(retailUser.getCustomerId());
+        List<TransRequest> transRequestList=transferService.getLastTenTransactionsForAccount(account.getAccountNumber());
+
+        model.addAttribute("accountList", accountList);
+        model.addAttribute("transRequestList", transRequestList);
+        System.out.println("what is the "+transRequestList);
         return "cust/account/accountstatement";
     }
+
+    /*@GetMapping(path = "/all")
+    public
+    @ResponseBody
+    DataTablesOutput<TransRequest> getUsers(Principal principal, DataTablesInput input) {
+        RetailUser retailUser = retailUserService.getUserByName(principal.getName());
+
+//        CorporateDTO corporate = corporateService.getCorporate(corporateUser.getCorporate().getId());
+
+        Pageable pageable = DataTablesUtils.getPageable(input);
+        Page<TransRequest> users = transferService.getLastTenTransactionsForAccount( pageable);
+        DataTablesOutput<CorporateUserDTO> out = new DataTablesOutput<CorporateUserDTO>();
+        out.setDraw(input.getDraw());
+        out.setData(users.getContent());
+        out.setRecordsFiltered(users.getTotalElements());
+        out.setRecordsTotal(users.getTotalElements());
+        return out;
+    }
+    */
 
     @PostMapping("/history")
     public String getAccountHistory( Model model,Principal principal){

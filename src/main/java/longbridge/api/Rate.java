@@ -1,0 +1,48 @@
+package longbridge.api;
+
+
+/**
+ * Created by ayoade_farooq@yahoo.com on 6/12/2017.
+ */
+
+public class Rate {
+
+    private String feeName;
+    private String feeValue;
+    private String feeDescription;
+
+
+    public String getFeeName() {
+        return feeName;
+    }
+
+    public void setFeeName(String feeName) {
+        this.feeName = feeName;
+    }
+
+    public String getFeeValue() {
+        return feeValue;
+    }
+
+    public void setFeeValue(String feeValue) {
+        this.feeValue = feeValue;
+    }
+
+    public String getFeeDescription() {
+        return feeDescription;
+    }
+
+    public void setFeeDescription(String feeDescription) {
+        this.feeDescription = feeDescription;
+    }
+
+
+    @Override
+    public String toString() {
+        return "Rate{" +
+                "feeName='" + feeName + '\'' +
+                ", feeValue='" + feeValue + '\'' +
+                ", feeDescription='" + feeDescription + '\'' +
+                '}';
+    }
+}

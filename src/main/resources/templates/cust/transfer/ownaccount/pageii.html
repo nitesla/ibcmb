@@ -65,7 +65,7 @@
 
 
                             <div class="form-group">
-                                <a  onclick="goBack()" >Modify</a>
+                                <a style="cursor: pointer;" onclick="goBack()" >Modify</a>
                                 <button type="submit" class="btn btn-link">Proceed</button>
                                 <a th:href="@{/retail/transfer/ownaccount}">Cancel</a>
 
@@ -76,10 +76,9 @@
                     </div>
                 </div>
             </div>
-        </div>
         <div th:replace="cust_layout :: sidebar" class="col-md-3 sidebar">
         </div>
-
+        </div>
 
     </div>
 
