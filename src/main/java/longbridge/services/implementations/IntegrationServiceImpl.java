@@ -13,11 +13,11 @@ import longbridge.services.MailService;
 import longbridge.utils.AccountStatement;
 import longbridge.utils.ResultType;
 import longbridge.utils.TransferType;
+import org.apache.catalina.core.ApplicationContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.thymeleaf.TemplateEngine;
@@ -212,7 +212,7 @@ public class IntegrationServiceImpl implements IntegrationService {
                 } catch (Exception e) {
 
                     e.printStackTrace();
-                    transRequest.setStatus(e.getMessage());
+                    transRequest.setStatus(ResultType.ERROR.toString());
                     return transRequest;
 
                 }
@@ -281,14 +281,13 @@ public class IntegrationServiceImpl implements IntegrationService {
                     } else {
 
                         transRequest.setStatus(ResultType.ERROR.toString());
-
                         return transRequest;
                     }
 
                 } catch (Exception e) {
 
                     e.printStackTrace();
-                    transRequest.setStatus(e.getMessage());
+                    transRequest.setStatus(ResultType.ERROR.toString());
                     return transRequest;
                 }
 
