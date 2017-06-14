@@ -184,7 +184,7 @@
 
                                             <table>
                                                 <td th:each="image : ${images}" style="position: relative;">
-                                                    <img th:src="${image}" width="100px" height="100px"/>
+                                                    <img th:src="${imagePath} + ${image}" width="100px" height="100px"/>
                                                     <input type="radio" name="phishing" th:value="${image}" id="check1" class="required" style="position: absolute; bottom: 20px; right: 20px;" />
                                                 </td>
                                             </table>
@@ -193,7 +193,7 @@
                                         </div>
                                     </div>
                                     <div class="col-md-offset-4 col-md-4">
-                                        <input type="text" name="caption" class="form-control" placeholder="Enter Image Caption"/>
+                                        <input type="text" name="caption" class="form-control required" placeholder="Enter Image Caption"/>
                                     </div>
                                 </div>
                             </section>
