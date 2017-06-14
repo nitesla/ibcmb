@@ -139,7 +139,7 @@ public class AdmRetailUserController {
         }
         catch (InternetBankingException e){
             logger.error("Error unlocking user",e.getMessage());
-            redirectAttributes.addFlashAttribute("message",messageSource.getMessage("unlock.failure",null, locale));
+            redirectAttributes.addFlashAttribute("failure",e.getMessage());
 
         }
 
