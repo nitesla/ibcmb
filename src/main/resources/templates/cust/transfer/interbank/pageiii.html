@@ -4,12 +4,11 @@
 
 </head>
 <body>
-<div class="container">
-    <header th:replace="cust_layout :: header">
-    </header>
+<header th:replace="cust_layout :: header">
+</header>
 
 <section class="content-wrapper">
-    <div class="containe">
+    <div class="container">
         <div class="row">
             <div class="col-md-4 col-sm-4">
                 <h5 class="page_header"> Transaction Summary</h5>
@@ -101,6 +100,5 @@
 <footer th:replace="cust_layout ::footer">
 </footer>
 <script th:src="@{~/customer/js/accountdetails.js}"></script>
-</div>
 </body>
 </html>

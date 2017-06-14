@@ -212,7 +212,7 @@ public class IntegrationServiceImpl implements IntegrationService {
                 } catch (Exception e) {
 
                     e.printStackTrace();
-                    transRequest.setStatus(ResultType.ERROR.toString());
+                    transRequest.setStatus(e.getMessage());
                     return transRequest;
 
                 }
@@ -281,13 +281,14 @@ public class IntegrationServiceImpl implements IntegrationService {
                     } else {
 
                         transRequest.setStatus(ResultType.ERROR.toString());
+
                         return transRequest;
                     }
 
                 } catch (Exception e) {
 
                     e.printStackTrace();
-                    transRequest.setStatus(ResultType.ERROR.toString());
+                    transRequest.setStatus(e.getMessage());
                     return transRequest;
                 }
 
