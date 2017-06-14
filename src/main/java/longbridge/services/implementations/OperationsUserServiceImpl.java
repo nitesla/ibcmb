@@ -183,17 +183,8 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             Role role = new Role();
             role.setId(Long.parseLong(user.getRoleId()));
             opsUser.setRole(role);
-            this.operationsUserRepo.save(opsUser);
-            String fullName = opsUser.getFirstName() + " " + opsUser.getLastName();
-            SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_CREATION");
-            if (setting != null && setting.isEnabled()) {
-                if ("YES".equalsIgnoreCase(setting.getValue())) {
-                    boolean result = securityService.createEntrustUser(opsUser.getUserName(), fullName, true);
-                    if (!result) {
-                        throw new EntrustException(messageSource.getMessage("entrust.create.failure", null, locale));
-                    }
-                }
-            }
+            creatUserOnEntrust(opsUser);
+            operationsUserRepo.save(opsUser);
             logger.info("New Operation user  {} created", opsUser.getUserName());
             return messageSource.getMessage("user.add.success", null, LocaleContextHolder.getLocale());
         } catch (InternetBankingSecurityException se) {
@@ -209,6 +200,24 @@ public class OperationsUserServiceImpl implements OperationsUserService {
 
     }
 
+    private void creatUserOnEntrust(OperationsUser opsUser) throws EntrustException{
+        String fullName = opsUser.getFirstName() + " " + opsUser.getLastName();
+        SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_CREATION");
+
+        if (setting != null && setting.isEnabled()) {
+            if ("YES".equalsIgnoreCase(setting.getValue())) {
+                boolean result = securityService.createEntrustUser(opsUser.getUserName(), fullName, true);
+                if (!result) {
+                    throw new EntrustException(messageSource.getMessage("entrust.create.failure", null, locale));
+                }
+
+                boolean contactResult = securityService.addUserContacts(opsUser.getEmail(),opsUser.getPhoneNumber(),true,opsUser.getUserName());
+                if(!contactResult){
+                    logger.error("Failed to add user contacts on Entrust");
+                }
+            }
+        }
+    }
 
     @Override
     @Transactional

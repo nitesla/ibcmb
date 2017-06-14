@@ -6,6 +6,9 @@ import longbridge.repositories.*;
 import longbridge.utils.PasswordCreator;
 import longbridge.validator.PasswordValidator;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.joda.time.LocalDateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,32 +24,22 @@ import java.util.List;
 @Service
 public class PasswordPolicyService {
 
+    String ruleMessage = "";
     @Autowired
     private ConfigurationService configService;
-
     @Autowired
     private PasswordValidator passwordValidator;
-
     @Autowired
     private PasswordCreator passwordCreator;
-
     @Autowired
     private AdminPasswordRepo adminPasswordRepo;
-
     @Autowired
     private RetailPasswordRepo retailPasswordRepo;
-
     @Autowired
     private OpsPasswordRepo opsPasswordRepo;
-
     @Autowired
     private CorporatePasswordRepo corporatePasswordRepo;
-
-
     private List<String> passwordRules;
-    String ruleMessage = "";
-
-
     private SettingDTO numOfPasswordDigits;
     private SettingDTO minLengthOfPassword;
     private SettingDTO maxLengthOfPassword;
@@ -63,6 +56,7 @@ public class PasswordPolicyService {
     private int numOfChanges = 0;
     private boolean initialized = false;
 
+    Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private void init() {
 
@@ -240,5 +234,31 @@ public class PasswordPolicyService {
             return calendar.getTime();
         }
         return null;
+    }
+
+
+    public boolean displayPasswordExpiryDate(Date expiryDate) {
+        SettingDTO setting = configService.getSettingByName("PASSWORD_AUTO_RESET");
+        if (setting != null && setting.isEnabled()) {
+
+            int days = NumberUtils.toInt(setting.getValue());
+            logger.info("Password auto reset is enabled with days {}",days);
+
+            LocalDateTime dateToExpire = LocalDateTime.fromDateFields(expiryDate);
+
+            logger.info("Date to expire is {}",dateToExpire);
+            LocalDateTime dateToStartNotifying = dateToExpire.minusDays(days);
+
+            logger.info("Date to start notifying is {}",dateToStartNotifying);
+
+            LocalDateTime now = LocalDateTime.now();
+
+            if (now.isAfter(dateToStartNotifying) && !now.isAfter(dateToExpire)) {
+                logger.info("The  return value is true");
+
+                return true;
+            }
+        }
+        return false;
     }
 }

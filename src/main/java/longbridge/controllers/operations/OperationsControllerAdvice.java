@@ -3,6 +3,7 @@ package longbridge.controllers.operations;
 import longbridge.models.OperationsUser;
 import longbridge.services.MessageService;
 import longbridge.services.OperationsUserService;
+import longbridge.services.PasswordPolicyService;
 import longbridge.services.RequestService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,9 +26,12 @@ public class OperationsControllerAdvice {
     private RequestService requestService;
 
     @Autowired
-    MessageService  messageService;
+    private MessageService  messageService;
 
-    Logger logger = LoggerFactory.getLogger(this.getClass());
+    @Autowired
+    private PasswordPolicyService passwordPolicyService;
+
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
 
@@ -47,6 +51,7 @@ public class OperationsControllerAdvice {
         if(numOfUnreadMessages>0){
             model.addAttribute("numOfUnreadMessages",numOfUnreadMessages);
         }
+
 
         return "";
     }

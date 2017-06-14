@@ -1,5 +1,6 @@
 package longbridge.controllers.retail;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import longbridge.api.AccountDetails;
 import longbridge.dtos.AccountDTO;
 import longbridge.exception.InternetBankingException;
@@ -8,10 +9,20 @@ import longbridge.models.RetailUser;
 import longbridge.services.AccountService;
 import longbridge.services.IntegrationService;
 import longbridge.services.RetailUserService;
+import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.data.JsonDataSource;
+import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.export.JRXlsExporter;
+import net.sf.jasperreports.engine.export.JRXlsExporterParameter;
+import net.sf.jasperreports.engine.xml.JRXmlLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -20,11 +31,19 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView;
 
 import javax.validation.Valid;
+import java.io.File;
+import java.io.IOException;
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+
+import static net.sf.jasperreports.engine.JasperExportManager.*;
+import static org.springframework.data.repository.init.ResourceReader.Type.JSON;
 
 /**
  * Created by Fortune on 4/3/2017.
@@ -48,6 +67,14 @@ public class AccountController {
     private MessageSource messageSource;
 
     private Long customizeAccountId;
+
+    private ApplicationContext appContext;
+    @Value("${jsonFile.path}")
+    private String JOSNpath;
+    @Value("${jrxmlFile.path}")
+    private String jrxmlPath;
+    @Value("${savedDocFile.path}")
+    private String savedDoc;
 
     @GetMapping
     public String listAccounts(){
@@ -187,5 +214,51 @@ public class AccountController {
     public String getViewStatement( Model model,Principal principal){
 
         return "cust/account/view";
+    }
+    @GetMapping("/print/statement")
+    public String getAcctStmtPDF(){
+        logger.info("account statement running");
+        File file = new File("classpath:pdf");
+        Map<String,Object> parameters = new HashMap<String, Object>();
+        parameters.put("AccountNum","10112332");
+        parameters.put("date","01-08-2017");
+        String destination = "C:\\Users\\Longbridge\\Documents\\InternetBanking\\master\\src\\main\\resources\\pdf\\";
+        Resource resource = new ClassPathXmlApplicationContext().getResource(jrxmlPath);
+        try {
+            JsonDataSource ds = new JsonDataSource(new File("C:\\Users\\Longbridge\\Documents\\InternetBanking\\master\\src\\main\\resources\\pdf\\MOCK_DATA2.json"));
+            JasperDesign jasperDesign = JRXmlLoader.load(resource.getInputStream());
+            JasperReport jasperReport  = JasperCompileManager.compileReport(jasperDesign);
+            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport,  parameters,  ds);
+            exportReportToPdfFile(jasperPrint, destination+"accountStatement"+".pdf");
+            File destFile = new File(destination+"accountStatement"+".xlsx");
+            try {
+                JRXlsExporter exporter = new JRXlsExporter();
+                exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
+                exporter.setParameter(JRXlsExporterParameter.IS_ONE_PAGE_PER_SHEET, Boolean.TRUE);
+                exporter.setParameter(JRXlsExporterParameter.IS_DETECT_CELL_TYPE, Boolean.TRUE);
+                exporter.setParameter(JRXlsExporterParameter.IS_WHITE_PAGE_BACKGROUND, Boolean.FALSE);
+                exporter.setParameter(JRXlsExporterParameter.IS_REMOVE_EMPTY_SPACE_BETWEEN_ROWS, Boolean.TRUE);
+                exporter.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, destFile.toString());
+                exporter.setParameter(JRXlsExporterParameter.IS_ONE_PAGE_PER_SHEET, Boolean.FALSE);
+                exporter.exportReport();
+            } catch (JRException e) {
+                e.printStackTrace();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+//        try {
+//            JRDataSource dataSource = new JREmptyDataSource();
+//            File outDir = new File("classpath: pdf/outputFile");
+//            outDir.mkdirs();
+//            logger.info("conpilation successful");
+//            JasperReport jasperReport = JasperCompileManager.compileReport("classpath:pdf/accountStatement.jrxml");
+//            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport,parameters, dataSource);
+//
+//            JasperExportManager.exportReportToPdfFile(jasperPrint,"pdf/outputFile/test.pdf");
+//        } catch (JRException e) {
+//            e.printStackTrace();
+//        }
+        return null;
     }
 }
