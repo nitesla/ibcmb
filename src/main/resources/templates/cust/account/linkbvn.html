@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="cust_layout :: site-head">
+
+</head>
+<body>
+<div class="container">
+    <header th:replace="cust_layout :: header">
+    </header>
+
+<section class="content-wrapper">
+    <div class="containe">
+        <div class="row">
+            <div class="col-md-4 col-sm-4">
+                <h5 class="page_header"> Link BVN</h5>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-8 content-bg">
+                <div class="row form-spacing">
+                    <div class="col-md-6 col-sm-6">
+                        <form method="post" th:action="@{/retail/bvn}" >
+
+                            <div class="form-group">
+                                <label>Account Number</label>
+                                <span class="req"></span>
+                                <select name="acctNumber" id="acctNumber" class="form-control"
+                                        required="required">
+                                    <option th:each="s: ${accounts}" th:value="${s}" th:text="${s}"></option></select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Select Bank</label>
+                                <span class="req"></span>
+                                <select name="beneficiaryBank" id="beneficiaryBank" class="form-control"
+                                        required="required">
+                                    <option th:each="bank : ${localBanks}" th:value="${bank.institutionCode}"
+                                            th:text="${bank.institutionName}"></option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>BVN</label>
+                                <span class="req"></span>
+                                <input type="number" placeholder="Enter BVN" class="form-control" min="0" step="1" id="bvn" name="bvn" required="required" onkeypress="phoneno()" maxlength="10"/>
+                            </div>
+
+                            <button type="submit" class="btn btn-default">Submit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div th:replace="cust_layout :: sidebar" class="col-md-3 sidebar">
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- CONTENT-WRAPPER SECTION END-->
+<footer th:replace="cust_layout ::footer">
+</footer>
+</div>
+</body>
+
+</html>

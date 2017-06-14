@@ -4,11 +4,12 @@
 
 </head>
 <body>
-<header th:replace="cust_layout :: header">
-</header>
+<div class="container">
+    <header th:replace="cust_layout :: header">
+    </header>
 
 <section class="content-wrapper">
-    <div class="container">
+    <div class="containe">
         <div class="row">
             <div class="col-md-4 col-sm-4">
                 <h5 class="page_header"> Transfers to other banks through NIP</h5>
@@ -30,7 +31,9 @@
                                 <thead>
                                 <tr>
                                 <th>Beneficiary name</th>
+                                    <th>Preferred name</th>
                                 <th>Bank</th>
+                                    <th>Account number</th>
 
                                 </tr>
                                 </thead>
@@ -38,7 +41,9 @@
 
 
                                 <tr th:each="loc : ${localBen}">
-                                    <td th:text="${loc.accountName}"></td>
+                                    <td   th:text="${loc.accountName}"></td>
+                                    <td th:text="${loc.preferredName}"></td>
+                                    <td th:text="${loc.beneficiaryBank}"></td>
                                      <td th:text="${loc.accountNumber}"></td>
 
                                     <td>
@@ -83,5 +88,6 @@
         );
     } );
 </script>
+</div>
 </body>
 </html>

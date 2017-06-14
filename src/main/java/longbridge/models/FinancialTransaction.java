@@ -2,6 +2,8 @@ package longbridge.models;
 
 
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -16,6 +18,33 @@ public class FinancialTransaction{
     private String accountId;
     private Date valueDate;
     private Date postDate;
+
+private SimpleDateFormat format=new SimpleDateFormat("DD/MM/YYYY");
+
+
+
+    public FinancialTransaction(String tranBreak)
+    {
+
+        String [] tranToken = tranBreak.split(",");
+        this.accountId=tranToken[0].trim();
+        this.amount=new BigDecimal(tranToken[1].trim().replaceAll(" ", ""));
+        this.currencyCode=tranToken[2].trim();
+        this.currentBalance=new BigDecimal(tranToken[3].trim().replaceAll(" ", ""));
+        try {
+            this.postDate=format.parse(tranToken[4].trim());
+            this.valueDate=format.parse(tranToken[7].trim());
+        } catch (ParseException e) {
+            this.postDate= new Date();
+            this.valueDate= new Date();
+        }
+        this.transactionParticulars=tranToken[5].trim();
+        this.tranType=tranToken[6].trim();
+
+
+
+
+    }
 
     public String getTransactionParticulars() {
         return transactionParticulars;

@@ -318,8 +318,10 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Iterable<Account> getAccountsForCredit(String customerId) {
+        logger.info("the customer is "+customerId);
         List<Account> accountsForCredit = new ArrayList<Account>();
         Iterable<Account> accounts = this.getCustomerAccounts(customerId);
+        logger.info("accounts are {}",accounts);
         for (Account account : accounts) {
             if (!accountConfigService.isAccountHidden(account.getAccountNumber())
                     && (!accountConfigService.isAccountRestrictedForView(account.getAccountNumber())) && !accountConfigService.isAccountRestrictedForCredit(account.getAccountNumber()) && (!accountConfigService.isAccountClassRestrictedForView(account.getSchemeCode()) && (!accountConfigService.isAccountClassRestrictedForCredit(account.getSchemeCode())))) {
@@ -329,8 +331,27 @@ public class AccountServiceImpl implements AccountService {
         }
         return accountsForCredit;
     }
+@Override
+public Boolean updateAccountDetails(){
+    //1010007408
+    List<Account> allAccounts = accountRepo.findAll();
+    for (Account account:allAccounts) {
+        logger.info("the account name on our db is {} and account number {}",account.getAccountName(),account.getAccountNumber());
+        AccountDetails accountDetails = integrationService.viewAccountDetails(account.getAccountNumber());
+        System.out.println("the account name on finacle is"+accountDetails.getAcctName());
+        if(account.getCurrencyCode() != null){
+        if(account.getAccountName().equalsIgnoreCase("ADEDOKUN  OLUTOPE")&&account.getCurrencyCode().equalsIgnoreCase("NGN")) {
+//            account.setAccountName(accountDetails.getAcctName());
+            account.setAccountName("MARTINS");
+            System.out.println("the account name after setting is"+account.getAccountName());
+//            accountRepo.save(account);
+        }
+//            accountDetails.;
 
-
+        }
+    }
+    return false;
+}
 
 
 //    private Account mockAccount;

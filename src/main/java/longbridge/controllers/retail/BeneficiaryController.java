@@ -9,6 +9,7 @@ import longbridge.services.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,7 +22,9 @@ import java.security.Principal;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 /**
  * Created by Fortune on 4/3/2017.
@@ -42,6 +45,8 @@ public class BeneficiaryController {
     private FinancialInstitutionService financialInstitutionService;
 
     private RetailUserService retailUserService;
+    @Value("${bank.code}")
+    private String bankCode;
 
     private CodeService codeService;
 
@@ -59,12 +64,19 @@ public class BeneficiaryController {
     @GetMapping
     public String getBeneficiaries(Model model, Principal principal) {
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
-        logger.info("local BEN {}", localBeneficiaryService.getLocalBeneficiaries(retailUser));
+
+
         Iterable<LocalBeneficiary> localBeneficiary = localBeneficiaryService.getLocalBeneficiaries(retailUser);
-        for (LocalBeneficiary localBenef : localBeneficiary) {
-            localBenef.setBeneficiaryBank(financialInstitutionService.getFinancialInstitutionByCode(localBenef.getBeneficiaryBank()).getInstitutionName());
-        }
-        model.addAttribute("localBen", localBeneficiary);
+        List<LocalBeneficiary> localBeneficiaries = StreamSupport.stream(localBeneficiary.spliterator(), false)
+                .filter(Objects::nonNull)
+                .filter(i -> financialInstitutionService.getFinancialInstitutionByCode(i.getBeneficiaryBank()) != null)
+                 .collect(Collectors.toList());
+
+        localBeneficiaries.forEach(i-> i.setBeneficiaryBank(financialInstitutionService.getFinancialInstitutionByCode(i.getBeneficiaryBank()).getInstitutionName()));
+
+
+        model.addAttribute("localBen",
+                localBeneficiaries);
 
         Iterable<InternationalBeneficiary> intBeneficiary = internationalBeneficiaryService.getInternationalBeneficiaries(retailUser);
         for (InternationalBeneficiary intBenef : intBeneficiary) {
@@ -81,7 +93,6 @@ public class BeneficiaryController {
         model.addAttribute("foreignBanks", financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.FOREIGN));
         model.addAttribute("foreignCurrencyCodes", codeService.getCodesByType("CURRENCY"));
 
-
         return "cust/beneficiary/add";
     }
 
@@ -90,7 +101,7 @@ public class BeneficiaryController {
         if (result.hasErrors()) {
             model.addAttribute("internationalBeneficiaryDTO", new InternationalBeneficiaryDTO());
             model.addAttribute("foreignBanks", financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.FOREIGN));
-            model.addAttribute("localBanks", financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.LOCAL));
+
             return "cust/beneficiary/add";
         }
 
@@ -99,15 +110,17 @@ public class BeneficiaryController {
             String message = localBeneficiaryService.addLocalBeneficiary(user, localBeneficiaryDTO);
             redirectAttributes.addFlashAttribute("message", message);
         } catch (InternetBankingException e) {
-            logger.error("International Beneficiary Error", e);
 
-            if (e.getMessage().equalsIgnoreCase("beneficiary.exist")) {
+            try{
+                redirectAttributes.addFlashAttribute("failure", messages.getMessage(e.getMessage(), null, locale));
+            }catch (Exception ex){
+                redirectAttributes.addFlashAttribute("failure", messages.getMessage("beneficiary.add.failure", null, locale));
 
-                redirectAttributes.addFlashAttribute("failure", messages.getMessage("beneficiary.exist", null, locale));
-            } else {
-                messages.getMessage("beneficiary.add.failure", null, locale);
-                redirectAttributes.addFlashAttribute("failure", e.getMessage());
             }
+
+
+
+
 
 
         }
@@ -176,5 +189,17 @@ public class BeneficiaryController {
         }
         return "redirect:/retail/beneficiary";
     }
+
+    @ModelAttribute
+    public void getBankCode(Model model) {
+        model.addAttribute("bankCode", bankCode);
+    }
+
+   @ModelAttribute
+    public void getLocalBanks(Model model){
+        List<FinancialInstitutionDTO> dtos = financialInstitutionService.getOtherLocalBanks(bankCode);
+        dtos.sort(Comparator.comparing(FinancialInstitutionDTO::getInstitutionName));
+       model.addAttribute("localBanks",dtos );
+   }
 
 }

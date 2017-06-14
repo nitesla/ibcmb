@@ -1,5 +1,6 @@
 package longbridge.controllers.retail;
 
+import longbridge.dtos.FinancialInstitutionDTO;
 import longbridge.dtos.LocalBeneficiaryDTO;
 import longbridge.dtos.TransferRequestDTO;
 import longbridge.exception.InternetBankingTransferException;
@@ -26,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.security.Principal;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -68,14 +70,8 @@ public class InterBankTransferController {
     @PostMapping(value = "/index")
 
     public String startTransfer(HttpServletRequest request, Model model, Principal principal) {
-        RetailUser retailUser = retailUserService.getUserByName(principal.getName());
-        model.addAttribute("localBen",
-                StreamSupport.stream(localBeneficiaryService.getLocalBeneficiaries(retailUser).spliterator(), false)
-                        .filter(i -> !i.getBeneficiaryBank().equalsIgnoreCase(financialInstitutionService.getFinancialInstitutionByCode(bankCode).getInstitutionCode()))
-                        .collect(Collectors.toList())
 
 
-        );
         TransferRequestDTO requestDTO = new TransferRequestDTO();
         String type = request.getParameter("tranType");
 
@@ -157,13 +153,18 @@ public class InterBankTransferController {
     }
 
     @GetMapping("/{id}")
-    public String transfer(@PathVariable Long id, Model model, HttpServletRequest request) throws Exception {
+    public String transfer(@PathVariable Long id, Model model, HttpServletRequest request,Locale locale,RedirectAttributes attributes) throws Exception {
         LocalBeneficiary beneficiary = localBeneficiaryService.getLocalBeneficiary(id);
         TransferRequestDTO requestDTO = new TransferRequestDTO();
         requestDTO.setBeneficiaryAccountName(beneficiary.getAccountName());
         requestDTO.setBeneficiaryAccountNumber(beneficiary.getAccountNumber());
         requestDTO.setTransferType(TransferType.INTER_BANK_TRANSFER);
         FinancialInstitution institution = financialInstitutionService.getFinancialInstitutionByCode(beneficiary.getBeneficiaryBank());
+        if (institution==null ){
+
+           model.addAttribute("failure",messages.getMessage("transfer.beneficiary.invalid", null,locale));
+            return page + "pageiA";
+        }
         requestDTO.setFinancialInstitution(institution);
 
         model.addAttribute("transferRequest", requestDTO);
@@ -173,5 +174,28 @@ public class InterBankTransferController {
         return page + "pageii";
     }
 
+
+
+    @ModelAttribute
+    public void getOtherBankBeneficiaries(Model model,Principal principal){
+        RetailUser retailUser = retailUserService.getUserByName(principal.getName());
+        model.addAttribute("localBen",
+                StreamSupport.stream(localBeneficiaryService.getLocalBeneficiaries(retailUser).spliterator(), false)
+                        .filter(i -> !i.getBeneficiaryBank().equalsIgnoreCase(financialInstitutionService.getFinancialInstitutionByCode(bankCode).getInstitutionCode()))
+                        .collect(Collectors.toList())
+
+
+        );
+
+        List<FinancialInstitutionDTO> sortedNames = financialInstitutionService.getOtherLocalBanks(bankCode);
+        sortedNames.sort(Comparator.comparing(FinancialInstitutionDTO::getInstitutionName));
+
+        model.addAttribute("localBanks"
+        ,sortedNames
+
+
+        );
+
+    }
 
 }

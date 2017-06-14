@@ -1,5 +1,6 @@
 package longbridge.controllers.retail;
 
+import longbridge.dtos.FinancialInstitutionDTO;
 import longbridge.dtos.LocalBeneficiaryDTO;
 import longbridge.dtos.TransferRequestDTO;
 import longbridge.exception.InternetBankingTransferException;
@@ -22,6 +23,7 @@ import org.springframework.web.servlet.LocaleResolver;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.Comparator;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -57,14 +59,10 @@ public class LocalTransferController {
     @GetMapping("")
     public String index(Model model, Principal principal) throws Exception {
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
-        Iterable<LocalBeneficiary> cmbBeneficiaries= localBeneficiaryService.getBankBeneficiaries(retailUser);
+        Iterable<LocalBeneficiary> cmbBeneficiaries = localBeneficiaryService.getBankBeneficiaries(retailUser);
         model.addAttribute("localBen",
-                StreamSupport.stream(cmbBeneficiaries.spliterator(),false)
-                .collect(Collectors.toList()));
-
-
-
-
+                StreamSupport.stream(cmbBeneficiaries.spliterator(), false)
+                        .collect(Collectors.toList()));
 
 
         return page + "pagei";
@@ -76,8 +74,8 @@ public class LocalTransferController {
         model.addAttribute("transferRequest", transferRequestDTO);
         validator.validate(transferRequestDTO, result);
 
-        if (servletRequest.getSession().getAttribute("Lbeneficiary") !=null ){
-            LocalBeneficiaryDTO beneficiary= (LocalBeneficiaryDTO) servletRequest.getSession().getAttribute("Lbeneficiary");
+        if (servletRequest.getSession().getAttribute("Lbeneficiary") != null) {
+            LocalBeneficiaryDTO beneficiary = (LocalBeneficiaryDTO) servletRequest.getSession().getAttribute("Lbeneficiary");
             model.addAttribute("beneficiary", beneficiary);
         }
         if (result.hasErrors()) {
@@ -142,6 +140,27 @@ public class LocalTransferController {
 
 
         return page + "pageii";
+    }
+
+    @ModelAttribute
+    public void getLocalFinancialInstitutions(Model model) {
+
+        model.addAttribute("localBanks",
+                financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.LOCAL)
+                        .stream()
+                        .filter(i -> !i.getInstitutionCode().equals(bankCode))
+                        .collect(Collectors.toList())
+                        .stream()
+                        .sorted(Comparator.comparing(FinancialInstitutionDTO::getInstitutionName))
+                        .collect(Collectors.toList())
+        );
+
+
+    }
+
+    @ModelAttribute
+    public void getBankCode(Model model) {
+        model.addAttribute("bankCode", bankCode);
     }
 
 

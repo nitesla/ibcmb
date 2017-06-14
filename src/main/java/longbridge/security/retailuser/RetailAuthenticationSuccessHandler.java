@@ -56,6 +56,7 @@ public class RetailAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
         }
         clearAuthenticationAttributes(request);
+        //request.setAttribute("");
     }
 
     protected void handle(final HttpServletRequest request, final HttpServletResponse response, final Authentication authentication) throws IOException {

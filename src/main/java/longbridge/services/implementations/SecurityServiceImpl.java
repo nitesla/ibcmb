@@ -113,7 +113,7 @@ public class SecurityServiceImpl implements SecurityService {
             boolean isSuccessful = responseMessage.contains(charSequence);
             result = isSuccessful;
 
-            String respMesg = StringUtils.substringBetween(responseMessage, "  <respMessageCode>", "</respMessageCode>");
+            String respMesg = StringUtils.substringBetween(responseMessage, "<respMessageCode>", "</respMessageCode>");
             logger.trace("response is {}", respMesg);
 
 
@@ -151,7 +151,7 @@ public class SecurityServiceImpl implements SecurityService {
             boolean isSuccessful = responseMessage.contains(charSequence);
             result = isSuccessful;
 
-            String respMesg = StringUtils.substringBetween(responseMessage, "  <respMessageCode>", "</respMessageCode>");
+            String respMesg = StringUtils.substringBetween(responseMessage, "<respMessageCode>", "</respMessageCode>");
 
             logger.trace("response is {}", respMesg);
 
@@ -193,7 +193,7 @@ public class SecurityServiceImpl implements SecurityService {
             boolean isSuccessful = responseMessage.contains(charSequence);
             result = isSuccessful;
 
-            String respMesg = StringUtils.substringBetween(responseMessage, "  <respMessageCode>", "</respMessageCode>");
+            String respMesg = StringUtils.substringBetween(responseMessage, "<respMessageCode>", "</respMessageCode>");
 
             logger.trace("response is {}", respMesg);
 
@@ -229,7 +229,7 @@ public class SecurityServiceImpl implements SecurityService {
             CharSequence charSequence = "<respCode>1</respCode>";
             boolean isSuccessful = responseMessage.contains(charSequence);
             result = isSuccessful;
-            String respMesg = StringUtils.substringBetween(responseMessage, "  <respMessageCode>", "</respMessageCode>");
+            String respMesg = StringUtils.substringBetween(responseMessage, "<respMessageCode>", "</respMessageCode>");
             logger.trace("response code is {}", respMesg);
 
 
@@ -298,7 +298,7 @@ public class SecurityServiceImpl implements SecurityService {
             boolean isSuccessful = responseMessage.contains(charSequence);
 
 
-            String respMesg = StringUtils.substringBetween(responseMessage, "  <respMessageCode>", "</respMessageCode>");
+            String respMesg = StringUtils.substringBetween(responseMessage, "<respMessageCode>", "</respMessageCode>");
 
 
             logger.trace("response is {}", respMesg);
@@ -336,7 +336,7 @@ public class SecurityServiceImpl implements SecurityService {
             boolean isSuccessful = responseMessage.contains(charSequence);
             result = isSuccessful;
 
-            String respMesg = StringUtils.substringBetween(responseMessage, "  <respMessageCode>", "</respMessageCode>");
+            String respMesg = StringUtils.substringBetween(responseMessage, "<respMessageCode>", "</respMessageCode>");
             String resp = StringUtils.substringBetween(responseMessage, "<respCode>", "</respCode>");
             logger.trace("response is {}", respMesg);
 
@@ -374,7 +374,7 @@ public class SecurityServiceImpl implements SecurityService {
             boolean isSuccessful = responseMessage.contains(charSequence);
             result = isSuccessful;
 
-            String respMesg = StringUtils.substringBetween(responseMessage, "  <respMessageCode>", "</respMessageCode>");
+            String respMesg = StringUtils.substringBetween(responseMessage, "<respMessageCode>", "</respMessageCode>");
             String resp = StringUtils.substringBetween(responseMessage, "<respCode>", "</respCode>");
             logger.trace("response is {}", respMesg);
 
@@ -413,7 +413,7 @@ public class SecurityServiceImpl implements SecurityService {
             boolean isSuccessful = responseMessage.contains(charSequence);
             result = isSuccessful;
 
-            String respMesg = StringUtils.substringBetween(responseMessage, "  <respMessageCode>", "</respMessageCode>");
+            String respMesg = StringUtils.substringBetween(responseMessage, "<respMessageCode>", "</respMessageCode>");
             logger.trace("response is {}", respMesg);
 
 
@@ -430,7 +430,43 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
-    public void setUserQA(String username, List<String> questions, List<String> answer) {
+    public void setUserQA(String username, String questions, String answer) {
+        try {
+            StringWriter writer = new StringWriter();
+            this.t = this.ve.getTemplate("entrust/performSetQA.vm");
+            this.context.put("appCode", appCode);
+            this.context.put("appDesc", appDesc);
+            this.context.put("userName", username);
+            this.context.put("appGroup", appGroup);
+            this.context.put("question", questions);
+            this.context.put("answer", answer);
+            this.t.merge(this.context, writer);
+            String payload = writer.toString();
+            EntrustServiceResponse webServiceResponse = httpClient.sendHttpRequest(payload);
+            String responseMessage = webServiceResponse.getResponseMessage();
+            logger.trace("response {}", responseMessage);
+            CharSequence charSequence = "<respCode>1</respCode>";
+            boolean isSuccessful = responseMessage.contains(charSequence);
+
+
+            String respMesg = StringUtils.substringBetween(responseMessage, "<respMessageCode>", "</respMessageCode>");
+
+
+            logger.trace("response is {}", respMesg);
+            if (!isSuccessful) throw new InternetBankingSecurityException(respMesg);
+
+            logger.info("******************END RESPONSE***********");
+
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new InternetBankingSecurityException(e.getMessage(), e);
+
+        }
+
+
+
+
+
 
     }
 
@@ -450,14 +486,16 @@ public class SecurityServiceImpl implements SecurityService {
             String responseMessage = webServiceResponse.getResponseMessage();
             logger.trace("response {}", responseMessage);
             CharSequence charSequence = "<respCode>1</respCode>";
+
+
             boolean isSuccessful = responseMessage.contains(charSequence);
             String msg = StringUtils.substringBetween(responseMessage, "<respMessageCode>", "</respMessageCode>");
 
             logger.trace("response message code : {}", msg);
             if (!isSuccessful) throw new InternetBankingSecurityException(msg);
 
-            String[] questions = StringUtils.substringsBetween(responseMessage, "  <questions>", "</questions>");
-            String[] answers = StringUtils.substringsBetween(responseMessage, "  <answers>", "</answers>");
+            String[] questions = StringUtils.substringsBetween(responseMessage, "<questions>", "</questions>");
+            String[] answers = StringUtils.substringsBetween(responseMessage, "<answers>", "</answers>");
             List<String> questionList = Arrays.asList(questions);
             List<String> answerList = Arrays.asList(answers);
 
@@ -486,7 +524,7 @@ public class SecurityServiceImpl implements SecurityService {
 
         try {
             StringWriter writer = new StringWriter();
-            this.t = this.ve.getTemplate("entrust/performSetMutualAuthX.vm");
+            this.t = this.ve.getTemplate("entrust/performGetMutualAuth.vm");
             this.context.put("appCode", appCode);
             this.context.put("appDesc", appDesc);
             this.context.put("appGroup", appGroup);
@@ -503,8 +541,8 @@ public class SecurityServiceImpl implements SecurityService {
             logger.trace("response message code : {}", msg);
             if (!isSuccessful) throw new InternetBankingSecurityException(msg);
 
-            String[] captions = StringUtils.substringsBetween(responseMessage, "  <captionSecret>", "</captionSecret>");
-            String[] images = StringUtils.substringsBetween(responseMessage, "  <imageSecret>", "</imageSecret>");
+            String[] captions = StringUtils.substringsBetween(responseMessage, "<captionSecret>", "</captionSecret>");
+            String[] images = StringUtils.substringsBetween(responseMessage, "<imageSecret>", "</imageSecret>");
             List<String> captionSecret = Arrays.asList(captions);
             List<String> imageSecret = Arrays.asList(images);
 
@@ -595,7 +633,7 @@ public class SecurityServiceImpl implements SecurityService {
             boolean isSuccessful = responseMessage.contains(charSequence);
 
 
-            String respMesg = StringUtils.substringBetween(responseMessage, "  <respMessageCode>", "</respMessageCode>");
+            String respMesg = StringUtils.substringBetween(responseMessage, "<respMessageCode>", "</respMessageCode>");
 
             logger.trace("response is {}", respMesg);
             if (!isSuccessful) throw new InternetBankingSecurityException(respMesg);
@@ -632,7 +670,7 @@ public class SecurityServiceImpl implements SecurityService {
             boolean isSuccessful = responseMessage.contains(charSequence);
             result = isSuccessful;
 
-            String respMesg = StringUtils.substringBetween(responseMessage, "  <respMessageCode>", "</respMessageCode>");
+            String respMesg = StringUtils.substringBetween(responseMessage, "<respMessageCode>", "</respMessageCode>");
             logger.trace("response is {}", respMesg);
 
 
@@ -670,7 +708,7 @@ public class SecurityServiceImpl implements SecurityService {
             boolean isSuccessful = responseMessage.contains(charSequence);
             result = isSuccessful;
 
-            String respMesg = StringUtils.substringBetween(responseMessage, "  <respMessageCode>", "</respMessageCode>");
+            String respMesg = StringUtils.substringBetween(responseMessage, "<respMessageCode>", "</respMessageCode>");
             logger.trace("response is {}", respMesg);
 
 
@@ -713,7 +751,7 @@ public class SecurityServiceImpl implements SecurityService {
             boolean isSuccessful = responseMessage.contains(charSequence);
             result = isSuccessful;
 
-            String respMesg = StringUtils.substringBetween(responseMessage, "  <respMessageCode>", "</respMessageCode>");
+            String respMesg = StringUtils.substringBetween(responseMessage, "<respMessageCode>", "</respMessageCode>");
             String resp = StringUtils.substringBetween(responseMessage, "<respCode>", "</respCode>");
             logger.trace("response is {}", respMesg);
 

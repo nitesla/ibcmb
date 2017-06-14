@@ -189,6 +189,7 @@ public class ServiceRequestController {
                 String list = field.getTypeData();
                 String myList[] = list.split(",");
                 model.addAttribute("fixedList", myList);
+
             }
         }
         System.out.println(serviceReqConfig);

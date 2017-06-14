@@ -1,10 +1,15 @@
 package longbridge.controllers;
 
+import longbridge.dtos.SettingDTO;
+import longbridge.dtos.UserGroupDTO;
 
+import longbridge.dtos.SettingDTO;
+import longbridge.exception.InternetBankingException;
 import longbridge.exception.PasswordException;
 import longbridge.exception.UnknownResourceException;
 import longbridge.models.Corporate;
 import longbridge.models.CorporateUser;
+import longbridge.models.Email;
 import longbridge.models.RetailUser;
 import longbridge.services.*;
 import org.slf4j.Logger;
@@ -18,6 +23,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.security.Principal;
 import java.util.*;
@@ -45,19 +51,24 @@ public class MainController {
     private CorporateService corporateService;
     @Autowired
     private SecurityService securityService;
+    @Autowired
+    private ConfigurationService configurationService;
+    @Autowired
+    private MailService mailService;
 
 
     @RequestMapping(value = {"/", "/home"})
-    public String getHomePage(@RequestParam Optional<HttpSession> session) {
+    public String getHomePage(@RequestParam Optional<HttpServletRequest> request) {
 
-        if (session.isPresent()) session.get().invalidate();
+        if (request.isPresent()) request.get().getSession().invalidate();
 
         return "index";
     }
 
     @RequestMapping(value = "/login/retail", method = RequestMethod.GET)
-    public ModelAndView getLoginPage(@RequestParam Optional<String> error, @RequestParam Optional<HttpSession> session) {
-        if (session.isPresent()) session.get().invalidate();
+    public ModelAndView getLoginPage(@RequestParam Optional<String> error, @RequestParam Optional<HttpServletRequest> request) {
+
+        if (request.isPresent()) request.get().getSession().invalidate();
 
 
         return new ModelAndView("retpage1", "error", error);
@@ -151,22 +162,32 @@ public class MainController {
     @PostMapping("/login/u/retail")
     public String userExists(WebRequest webRequest, Model model, RedirectAttributes redirectAttributes) {
         String username = webRequest.getParameter("username");
+        if (username== null){
+            return "retpage1";
+        }
 
         RetailUser user =  retailUserService.getUserByName(username);
         if (user == null){
             return "redirect:/login/retail/failure";
         }
 
-//        Map<String, List<String>> mutualAuth =  securityService.getMutualAuth(username);
-//        String image = mutualAuth.get("imageSecret")
-//        .stream()
-//        .filter(Objects::nonNull)
-//        .findFirst()
-//        .orElse("");
-//
-//        logger.info("SECIMAGE{}", image);
-//
-//        model.addAttribute("secImage", image);
+        try{
+            Map<String, List<String>> mutualAuth =  securityService.getMutualAuth(username);
+            if (mutualAuth != null){
+                String image = mutualAuth.get("imageSecret")
+                        .stream()
+                        .filter(Objects::nonNull)
+                        .findFirst()
+                        .orElse("");
+
+                logger.info("SECIMAGE"+ image);
+
+                model.addAttribute("secImage", image);
+            }
+        }catch (InternetBankingException e){
+            model.addAttribute("imageException", "You are yet to set your antiphishing image");
+        }
+
         model.addAttribute("username", user.getUserName());
         return "retpage2";
     }
@@ -306,6 +327,40 @@ public class MainController {
             }
         }
         return "redirect:/password/reset/ops";
+    }
+
+    @GetMapping("/contact")
+    public String contactUs(){
+        return "/index";
+    }
+
+    @PostMapping("/contact")
+    public String sendContactForm(WebRequest webRequest, Principal principal, Model model,RedirectAttributes redirectAttributes){
+        String name = webRequest.getParameter("name");
+        String email = webRequest.getParameter("email");
+        String message = webRequest.getParameter("message");
+        if (message == null){
+            model.addAttribute("failure", "Field is required");
+            return "/home";
+        }
+        SettingDTO setting = configurationService.getSettingByName("CUSTOMER_CARE_EMAIL");
+        if (setting != null && setting.isEnabled()) {
+            try {
+                Email mail = new Email.Builder()
+                        .setRecipient(setting.getValue())
+                        .setSubject("Message from "+name+" ("+email+")")
+                        .setBody(message)
+                        .build();
+                mailService.send(mail);
+                redirectAttributes.addFlashAttribute("message", "Message sent successfully");
+
+            } catch (Exception ex) {
+                logger.error("Failed to send Email", ex);
+                redirectAttributes.addFlashAttribute("failure", "Failed to send message");
+            }
+        }
+        return "redirect:/index";
+
     }
 
 }

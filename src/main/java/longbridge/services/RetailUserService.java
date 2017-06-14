@@ -26,6 +26,10 @@ public interface RetailUserService {
     @PreAuthorize("hasAuthority('GET_RETAIL_USER')")
     RetailUserDTO getUser(Long id);
 
+
+    String unlockUser(Long id) throws InternetBankingException;
+
+
 //    @PreAuthorize("hasAuthority('GET_RETAIL_USER')")
     RetailUser getUserByName(String name);
 

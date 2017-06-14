@@ -1,5 +1,6 @@
 package longbridge.services;
 
+import longbridge.api.AccountDetails;
 import longbridge.api.AccountInfo;
 import longbridge.dtos.AccountDTO;
 import longbridge.exception.InternetBankingException;
@@ -145,5 +146,5 @@ public interface AccountService {
      * @return
      */
     String makePrimaryAccount(Long id, String customerId) throws InternetBankingException;
-
+    Boolean updateAccountDetails() throws InternetBankingException;
    }

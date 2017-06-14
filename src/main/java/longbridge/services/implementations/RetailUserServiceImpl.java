@@ -15,6 +15,7 @@ import longbridge.models.Code;
 import longbridge.models.Email;
 import longbridge.models.RetailUser;
 import longbridge.repositories.RetailUserRepo;
+import longbridge.security.FailedLoginService;
 import longbridge.services.*;
 import longbridge.utils.DateFormatter;
 import org.modelmapper.ModelMapper;
@@ -58,6 +59,9 @@ public class RetailUserServiceImpl implements RetailUserService {
     @Autowired
     MailService mailService;
 
+    @Autowired
+    FailedLoginService failedLoginService;
+
     Locale locale = LocaleContextHolder.getLocale();
 
     private CodeService codeService;
@@ -84,6 +88,23 @@ public class RetailUserServiceImpl implements RetailUserService {
     public RetailUserDTO getUser(Long id) {
         RetailUser retailUser = this.retailUserRepo.findOne(id);
         return convertEntityToDTO(retailUser);
+    }
+
+    @Override
+    public String unlockUser(Long id) throws InternetBankingException {
+
+        RetailUser user = retailUserRepo.findOne(id);
+        if (!"L".equals(user.getStatus())) {
+            throw new InternetBankingException(messageSource.getMessage("user.unlocked", null, locale));
+        }
+        try {
+            failedLoginService.unLockUser(user);
+            return messageSource.getMessage("unlock.success",null,locale);
+        }
+        catch (Exception e){
+            throw new InternetBankingException(messageSource.getMessage("unlock.failure", null, locale));
+
+        }
     }
 
     @Override
@@ -138,7 +159,8 @@ public class RetailUserServiceImpl implements RetailUserService {
             retailUser = new RetailUser();
             retailUser.setUserName(user.getUserName());
             retailUser.setCustomerId(details.getCifId());
-            retailUser.setFirstName(details.getCustomerName());
+            retailUser.setFirstName(details.getFirstName());
+            retailUser.setLastName(details.getLastName());
             retailUser.setEmail(details.getEmail());
             retailUser.setCreatedOnDate(new Date());
             retailUser.setBirthDate(user.getBirthDate());
@@ -150,15 +172,18 @@ public class RetailUserServiceImpl implements RetailUserService {
                 throw new PasswordPolicyViolationException(errorMsg);
             }
 
-            String fullName = user.getFirstName()+" "+user.getLastName();
+            String phoneNo = details.getPhone();
+            String fullName = details.getFirstName()+" "+details.getLastName();
             SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_CREATION");
             if (setting != null && setting.isEnabled()) {
                 if ("YES".equalsIgnoreCase(setting.getValue())) {
                     createEntrustUser(user.getUserName(), fullName, true);
 
-                    setEntrustUserQA(user.getUserName(), user.getSecurityQuestion(), user.getSecurityAnswer(), fullName);
+                    addUserContact(user.getUserName(), phoneNo, user.getEmail());
 
-                    setEntrustUserMutualAuth(user.getUserName(), user.getCaptionSec(), user.getPhishingSec(), fullName);
+                    setEntrustUserQA(user.getUserName(), user.getSecurityQuestion(), user.getSecurityAnswer());
+
+                    setEntrustUserMutualAuth(user.getUserName(), user.getCaptionSec(), user.getPhishingSec());
                 }
             }
 
@@ -189,7 +214,15 @@ public class RetailUserServiceImpl implements RetailUserService {
         }
     }
 
-    private void setEntrustUserQA(String username, List<String> securityQuestion, List<String> securityAnswer, String fullName){
+    private void addUserContact(String username, String phone, String email){
+        try{
+            securityService.addUserContacts(email, phone, true, username);
+        }catch (InternetBankingSecurityException e){
+            throw new InternetBankingSecurityException(messageSource.getMessage("entrust.create.failure", null, locale), e);
+        }
+    }
+
+    private void setEntrustUserQA(String username, String securityQuestion, String securityAnswer){
         try{
             securityService.setUserQA(username, securityQuestion, securityAnswer);
         }catch (InternetBankingSecurityException e){
@@ -198,7 +231,7 @@ public class RetailUserServiceImpl implements RetailUserService {
         }
     }
 
-    private void setEntrustUserMutualAuth(String username, String captionSec, String phishingSec, String fullName){
+    private void setEntrustUserMutualAuth(String username, String captionSec, String phishingSec){
         try{
             securityService.setMutualAuth(username, captionSec, phishingSec);
 

@@ -4,40 +4,43 @@
 
 </head>
 <body>
-<header th:replace="cust_layout :: header">
-</header>
 
-<section class="content-wrapper">
     <div class="container">
-        <div class="row">
-            <div class="col-md-4 col-sm-4">
-                <h5 class="page_header"> Customize Account</h5>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-8 content-bg">
-                <div class="row form-spacing">
-                    <div class="col-md-6">
-                        <form method="post" th:action="@{/retail/account/customize}" th:object="${customizeAccount}">
-                            <div class="form-group">
-                                <label>Preferred Name</label>
-                                <span class="required"></span><input class="form-control"  placeholder="Preferred name" name="accountName" th:value="${account}" />
-                                <p class="errors close" data-dismiss="alert" aria-label="close" th:if="${#fields.hasErrors('accountName')}" th:errors="*{accountName}">&times;</p>
-                            </div>
+    <header th:replace="cust_layout :: header">
+    </header>
 
-                            <button type="submit" class="btn btn-default">Save</button>
-                        </form>
-                    </div>
+    <section class="content-wrapper">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 col-sm-4">
+                    <h5 class="page_header"> Customize Account</h5>
                 </div>
             </div>
-            <div th:replace="cust_layout :: sidebar" class="col-md-3 sidebar">
+            <div class="row">
+                <div class="col-md-8 content-bg">
+                    <div class="row form-spacing">
+                        <div class="col-md-6">
+                            <form method="post" th:action="@{/retail/account/customize}" th:object="${customizeAccount}">
+                                <div class="form-group">
+                                    <label>Preferred Name</label>
+                                    <span class="required"></span><input class="form-control"  placeholder="Preferred name" name="accountName" th:value="${account}" />
+                                    <p class="errors close" data-dismiss="alert" aria-label="close" th:if="${#fields.hasErrors('accountName')}" th:errors="*{accountName}">&times;</p>
+                                </div>
+
+                                <button type="submit" class="btn btn-default">Save</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div th:replace="cust_layout :: sidebar" class="col-md-3 sidebar">
+                </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<!-- CONTENT-WRAPPER SECTION END-->
-<footer th:replace="cust_layout ::footer">
-</footer>
+    <!-- CONTENT-WRAPPER SECTION END-->
+    <footer th:replace="cust_layout ::footer">
+    </footer>
+    </div>
 </body>
 </html>

@@ -4,11 +4,12 @@
 
 </head>
 <body>
-<header th:replace="cust_layout :: header">
-</header>
+<div class="container">
+    <header th:replace="cust_layout :: header">
+    </header>
 
 <section class="content-wrapper">
-    <div class="container">
+    <div class="containe">
         <div class="row">
             <div class="col-md-4 col-sm-4">
                 <h5 class="page_header"> Transaction Summary</h5>
@@ -41,7 +42,7 @@
                         </tr>
                         <tr>
 
-                            <th>Amount</th>
+                            <th>Amounts</th>
                             <td th:text="${#numbers.formatDecimal(transferRequest.amount, 0, 'COMMA', 2, 'POINT')}"></td>
 
                         </tr>
@@ -54,6 +55,22 @@
                     </table>
 
 
+
+
+                    <form method="post" th:action="@{/retail/transfer/interbank/edit}" th:object="${transferRequest}" style="display:none;">
+                        <input type="hidden" th:field="*{customerAccountNumber}"/>
+                        <input type="hidden" th:field="*{beneficiaryAccountNumber}"/>
+                        <input type="hidden" th:field="*{beneficiaryAccountName}"/>
+                        <input type="hidden" th:field="*{amount}"/>
+                        <input type="hidden" th:field="*{remarks}"/>
+
+                    </form>
+
+
+
+
+
+
                     <form method="post" th:action="@{/retail/transfer/process}" th:object="${transferRequest}">
                         <input type="hidden" th:field="*{customerAccountNumber}"/>
                         <input type="hidden" th:field="*{beneficiaryAccountNumber}"/>
@@ -63,7 +80,7 @@
 
 
                         <div class="form-group">
-                            <a  onclick="goBack()" >Modify</a>
+                            <input value="Modify" style="cursor: pointer;" type="button" onclick="history.go(-1);" />
                             <button type="submit" class="btn btn-link">Proceed</button>
                             <a th:href="@{/retail/transfer/interbank}">Cancel</a>
 
@@ -84,5 +101,6 @@
 <footer th:replace="cust_layout ::footer">
 </footer>
 <script th:src="@{~/customer/js/accountdetails.js}"></script>
+</div>
 </body>
 </html>

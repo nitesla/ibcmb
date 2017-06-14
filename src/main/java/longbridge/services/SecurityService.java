@@ -67,7 +67,7 @@ public interface SecurityService {
 
     boolean deActivateToken(String username, String serialNumber) throws InternetBankingTransferException;
 
-    void setUserQA(String username, List<String> questions, List<String> answer) throws InternetBankingTransferException;
+    void setUserQA(String username, String question, String answer) throws InternetBankingTransferException;
 
     Map<String, List<String>> getUserQA(String username) throws InternetBankingTransferException;
 

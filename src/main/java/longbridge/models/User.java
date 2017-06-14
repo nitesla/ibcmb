@@ -16,8 +16,6 @@ public class User extends AbstractEntity{
     protected String email;
     protected String phoneNumber;
     protected String password;
-    @Column(length = 4000)
-    protected String usedPasswords;
     protected String status;
     protected Date createdOnDate;
     protected Date expiryDate;
@@ -93,13 +91,6 @@ public class User extends AbstractEntity{
         this.password = password;
     }
 
-    public String getUsedPasswords() {
-        return usedPasswords;
-    }
-
-    public void setUsedPasswords(String usedPasswords) {
-        this.usedPasswords = usedPasswords;
-    }
 
     public String getStatus() {
 		return status;
@@ -164,6 +155,16 @@ public class User extends AbstractEntity{
     }
 
     @Override
+    public int hashCode(){
+        return super.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object o){
+        return super.equals(o);
+    }
+
+    @Override
     public String toString() {
         return "User{" +
                 "userName='" + userName + '\'' +
@@ -191,6 +192,7 @@ public class User extends AbstractEntity{
 		// TODO Auto-generated method stub
 		return null;
 	}
+
 
 
 }

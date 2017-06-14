@@ -5,6 +5,7 @@ import longbridge.api.*;
 import longbridge.dtos.SettingDTO;
 import longbridge.exception.InternetBankingTransferException;
 
+import longbridge.models.FinancialTransaction;
 import longbridge.models.TransRequest;
 import longbridge.services.ConfigurationService;
 import longbridge.services.IntegrationService;
@@ -16,11 +17,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -37,13 +43,18 @@ public class IntegrationServiceImpl implements IntegrationService {
 
     @Value("${ebank.service.uri}")
     private String URI;
+    @Value("${excel.path}")
+    String PROPERTY_EXCEL_SOURCE_FILE_PATH;
     @Value("${CMB.ALERT.URL}")
     private String cmbAlert;
+
 
     private RestTemplate template;
     private MailService mailService;
     private TemplateEngine templateEngine;
     private ConfigurationService configService;
+    @Autowired
+    ApplicationContext appContext;
 
     @Autowired
     public IntegrationServiceImpl(RestTemplate template, MailService mailService, TemplateEngine templateEngine
@@ -78,7 +89,69 @@ public class IntegrationServiceImpl implements IntegrationService {
 
     @Override
     public AccountStatement getAccountStatements(String accountId, Date fromDate, Date toDate) {
-        return null;
+     AccountStatement statement = new AccountStatement();
+     List<FinancialTransaction> financialTransactions= new ArrayList<>();
+        FileInputStream fis = null;
+        InputStreamReader isr = null;
+        BufferedReader bf = null;
+        File csv = new File(PROPERTY_EXCEL_SOURCE_FILE_PATH);
+
+
+
+        try {
+
+            logger.info("*****************************FILE PROCESSING STARTED******************************");
+
+            fis =  new FileInputStream(csv);
+            isr = new InputStreamReader(
+                    fis);
+            bf = new BufferedReader(isr);
+           String skipped ;
+
+
+
+                /*FinancialTransaction td = new FinancialTransaction(tranStr);
+                financialTransactions.add(td);
+
+                 isr = new InputStreamReader(
+                    fis, "UTF-16");*/
+               int read = 0;
+            while ((skipped = bf.readLine()) != null ) {
+
+                if (read==0){
+
+                    read++;
+                    continue;
+                }
+                FinancialTransaction td = new FinancialTransaction(skipped);
+                financialTransactions.add(td);
+                read++;
+
+            }
+
+
+
+
+
+
+
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
+    }
+
+
+        statement.setClosingBalance(new BigDecimal(2000));
+        statement.setTransactionList(financialTransactions);
+        statement.setCreditCount(20);
+        statement.setCreditCount(20);
+        statement.setOpeningBalance(new BigDecimal(3000));
+        statement.setTotalCredit(new BigDecimal(4000));
+        statement.setTotalDebit(new BigDecimal(5000));
+        System.out.println("ACCOUNT STATEMENT "+statement);
+        return statement;
     }
 
     @Override
@@ -128,7 +201,7 @@ public class IntegrationServiceImpl implements IntegrationService {
                     if (response != null) {
 
                         transRequest.setStatus(response.getResponseCode());
-                         transRequest.setStatusDescription(response.getResponseDescription());
+                        transRequest.setStatusDescription(response.getResponseDescription());
                         transRequest.setReferenceNumber(response.getUniqueReferenceCode());
                         transRequest.setNarration(response.getNarration());
 
@@ -404,6 +477,23 @@ public class IntegrationServiceImpl implements IntegrationService {
         return result;
     }
 
+    @Override
+    public Rate getFee(String channel) {
+
+        String uri = URI + "/transfer/fee";
+        Map<String, String> params = new HashMap<>();
+        params.put("transactionChannel", channel);
+        try {
+            Rate details = template.postForObject(uri, params, Rate.class);
+            return details;
+        } catch (Exception e) {
+
+            return new Rate();
+        }
+
+
+    }
+
     public TransRequest sendTransfer(TransRequest transRequest) {
 
         try {
@@ -419,6 +509,7 @@ public class IntegrationServiceImpl implements IntegrationService {
             }
 
             mailService.send(recipient, transRequest.getTransferType().toString(), mail);
+            transRequest.setStatus("000");
             transRequest.setStatus("Approved or completed successfully");
         } catch (Exception e) {
             e.printStackTrace();

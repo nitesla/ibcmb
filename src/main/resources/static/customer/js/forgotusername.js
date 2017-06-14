@@ -1,7 +1,5 @@
 var customerId = "null";
 
-
-
 /** This validates the input account number.
  *
  * @param accountNumber the account number to check
@@ -17,8 +15,12 @@ function validateAccountNo(accountNumber){
             customerId = ''+String(data1);
             if(customerId == ""){
                 //invalid account number
-                document.getElementById("myspan").textContent="Ensure you put in a valid account number";
-                $("#myspan").show();
+                var error = document.getElementById("myspan");
+                    error.textContent="Ensure you put in a valid account number";
+               // $("#myspan").show();
+
+                error.style.display = "inline-block";
+
                 //alert("Account number not found");
             }else{
                 //valid account number
@@ -28,11 +30,13 @@ function validateAccountNo(accountNumber){
         }
     })
 
+    console.log(customerId);
+
     if(customerId == "" || customerId === null){
         return false;
     }else{
         $.ajax({
-            url: "/rest/secQues/"+accountNumber,
+            url: "/rest/secQues/"+customerId,
             type: 'GET',
             async: false,
             success:function(data2){
@@ -47,6 +51,7 @@ function validateAccountNo(accountNumber){
         })
     }
 
+    console.log(customerId);
 
     if(customerId == "" || customerId === null || secQues == "" || secQues === null){
         return false;
@@ -55,8 +60,37 @@ function validateAccountNo(accountNumber){
     }
 }
 
+function validateSecAnswer(secAnswer){
+    var result;
+    $.ajax({
+        type:'GET',
+        url:"/rest/secAns/"+secAnswer,
+        async:false,
+        success:function(data1){
+            result = ''+String(data1);
+            if(result == "" || result === null){
+                //invalid account number
+
+                //alert("Account number not found");
+                document.getElementById("myspan2").textContent="Wrong answer provided for security question.";
+                $("#myspan2").show();
+            }else{
+                //valid account number
+                $('input[name=username]').val(result);
+            }
+        }
+    });
+
+    if(result == "" || result === null){
+        return false;
+    }else{
+        result = sendUsername();
+        return result;
+    }
+}
+
 function sendUsername(){
-    var returnValue = false;
+    var returnValue;
     $('#reg-form').submit(function(e){
         e.preventDefault();
 
@@ -67,21 +101,30 @@ function sendUsername(){
             data: $(this).serialize(),
             success: function(data)
             {
+                returnValue = ''+String(data);
                 //alert(data+" return ");
                 //callback methods go right here
                 if(data==="true"){
-                    $('#returnValue').val(true);
+                    $('#returnValue').val(returnValue);
+                    returnValue = true;
                 }else {
-                    document.getElementById("myspan").textContent="Failed to send username, please try again later.";
-                    $("#myspan").show();
+                    document.getElementById("myspan2").textContent="Failed to send username, please try again later.";
+                    $("#myspan2").show();
+                    $('#returnValue').val(returnValue);
+                    returnValue= false;
                 }
             }
         });
     });
     $('#reg-form').submit();
-    returnValue = $('#returnValue').val();
+    //returnValue = $('#returnValue').val();
     //alert(returnValue);
-    return Boolean(returnValue);
+    //return Boolean(returnValue);
+    if(returnValue == "" || returnValue === null || returnValue == false){
+        return false;
+    }else{
+        return true;
+    }
 }
 
 
@@ -116,6 +159,20 @@ form.children("div").steps({
         form.validate().settings.ignore = ":disabled,:hidden";
         console.log(currentIndex);
         var isValid = form.valid();
+        // Allways allow previous action even if the current form is not valid!
+        if (currentIndex > newIndex)
+        {
+            return true;
+        }
+
+        // Needed in some cases if the user went back (clean up)
+        if (currentIndex < newIndex)
+        {
+            // To remove error styles
+            form.find(".body:eq(" + newIndex + ") label.error").remove();
+            form.find(".body:eq(" + newIndex + ") .error").removeClass("error");
+        }
+
         if(ACCOUNT_DETAILS_STEP === currentIndex){
             console.log("Current step is the account details step");
             var accountNumber = $('input[name="acct"]').val();
@@ -124,7 +181,8 @@ form.children("div").steps({
         if(SEND_USERNAME_STEP === currentIndex){
             console.log("Current step is the change password step");
             //form.submit();
-            return isValid && sendUsername();
+            var secAnswer = $('input[name="securityAnswer"]').val();
+            return isValid && validateSecAnswer(secAnswer);
         }
         return form.valid();
     },

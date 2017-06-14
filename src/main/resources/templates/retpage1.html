@@ -60,7 +60,7 @@
                 <div th:if="${param.expired != null}" class="alert alert-danger" th:text="#{session.expired}">error</div>
                 <br/>
                 <div class="form-group ">
-                    <span id='reqspan' class='required text-white' style='top:1px;'></span><input style="width:100% !important" type="text" id="username" name="username" class="form-control"  placeholder="Username" autocomplete="off" />
+                    <span id='reqspan' class='required text-white' style='top:1px;'></span><input style="width:100% !important" type="text" id="username" name="username" class="form-control"  required="required" placeholder="Username" autocomplete="off" />
                     <p><a href="/forgot/username" class='text-white' data-toggle="tooltip" data-placement="right" title="Forgot Username?" autocomplete="off">Forgot Username?</a></p>
                 </div>
                 <div class="form-group">
