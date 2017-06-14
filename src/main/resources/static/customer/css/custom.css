@@ -208,6 +208,42 @@ span.req
 
 
 
+.contact
+{
+    position:relative !important;
+
+
+}
+
+.contact:hover, .contact:visited
+{
+    background: #003056 !important;
+}
+
+
+.contact:hover ~ .contact-drop
+{
+    display: block;
+}
+.contact-drop li
+{
+    padding: 7px;
+    padding-top: 5px;
+
+}
+
+.contact-drop
+{
+    position: absolute !important;
+    left:0px !important;
+    background-color: #e7e7e7 !important;
+    top: 140% !important;
+    //padding: 10px 5px 10px 5px;
+    display: none;
+}
+
+
+
 
 #passwordStrength
 {
@@ -397,6 +433,7 @@ body {
     right: 80px;
     top: 30px;
     width: 200px;
+
 }
 
 .login-form{
@@ -617,8 +654,10 @@ body {
     background-color: #868B8F;
     font-size: 30px;
     padding: 5px 10px;
-    margin: 20px 15px 10px 15px;
+    margin: 20px 15px 10px 0px;
 }
+
+
 
 .icon a i{
     /*font-size: 36px;*/
@@ -763,7 +802,7 @@ body {
     font-size: 12px;
 }
 .calender{
-    position: inherit;
+    /*//position: inherit;*/
 }
 
 /*.calender{*/
@@ -904,13 +943,13 @@ button, input, optgroup, select, textarea {
 }
 
 .content-bg{
-    margin: 20px 10px 10px 0;
+    /*margin: 20px 10px 10px 0;*/
     background-color: #ebecef;
     min-height: 350px;
 }
 
 .sidebar-bg{
-    margin: 15px 0 10px 0px;
+    margin: 0px;
     padding: 0px;
     background-color: #ebecef;
 }
@@ -1158,6 +1197,12 @@ button, input, optgroup, select, textarea {
 
     .header .container {
         padding: 0;
+    }
+
+    .center
+    {
+        display: block !important;
+        margin: 0px auto !important;
     }
 
     .content-wrapper {

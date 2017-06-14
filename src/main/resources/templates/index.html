@@ -155,28 +155,28 @@
                     <h4>Contact Us</h4>
                     <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi e</p>
                     <div class="icon">
-                        <li class="dropdown">
-                        <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-phone"></i></a>
-                        <ul class="dropdown-menu">
+                        <li class="dropdown" >
+                        <a href ='javascript:void' class="dropdown-toggle contact" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-phone"></i></a>
+                        <ul class="dropdown-menu contact-drop" >
                             <li>T +234 (0)818 831 4939</li>
                             <li>T +234 (0)802 891 3262</li>
-                            <li class="icontext" data-toggle="modal" data-target="#myModal">Call back</li>
+                            <li class="icontext pull-right" data-toggle="modal" data-target="#myModal"><button class="btn btn-link">Call back</button></li>
                         </ul>
                         </li>
                         <li class="dropdown">
-                        <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-envelope"></i></a>
-                        <ul class="dropdown-menu">
+                        <a href ='javascript:void' class="dropdown-toggle contact" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-envelope"></i></a>
+                        <ul class="dropdown-menu contact-drop">
                             <li>Send us an email</li>
                             <li>enquiries@coronationmb.com</li>
-                            <li class="icontext">Copy email</li>
+                            <li class="icontext pull-right">Copy email</li>
                         </ul>
                         </li>
                         <li class="dropdown">
-                        <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-comments-o"></i> </a>
-                        <ul class="dropdown-menu faz">
+                        <a href="javascript:void" class="dropdown-toggle contact" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-comments-o"></i> </a>
+                        <ul class="dropdown-menu faz contact-drop">
                             <li>Need instant help?</li>
                             <li>Chat with us</li>
-                            <li class="icontext"><i class="fa fa-comments-o"></i>Live chat</li>
+                            <li class="icontext pull-right"><button class="btn btn-link"><i class="fa fa-comments-o"></i> Live chat</button></li>
                         </ul>
                         </li>
                     </div>
@@ -236,7 +236,7 @@
                             <div class="form-group">
                                 <textarea name="message" value="Message" class="form-control" rows="10"></textarea>
                             </div>
-                            <input type="button" value="Submit" class="btn btn-primary btn-md form-control" />
+                            <input type="submit" value="Submit" class="btn btn-primary btn-md form-control" />
 
                     </form>
                 </div>
@@ -266,6 +266,11 @@
 <script th:src="@{~/customer/js/jquery-1.11.1.js}"></script>
 <!-- BOOTSTRAP SCRIPTS  -->
 <script th:src="@{~/customer/js/bootstrap.js}"></script>
+
+
+<script>
+
+</script>
 
 <!--<script>-->
 <!--$(document).ready(function(){-->

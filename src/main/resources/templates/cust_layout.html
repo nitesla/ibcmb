@@ -87,11 +87,11 @@
             <!--</div>-->
         <!--</nav>-->
     <!--</div>-->
-    <div class="container">
+    <div class="containe">
         <div class="top_bar">
             <ul class="list_group">
                 <li><a href="/retail/contact"> Contact Us</a>&nbsp;</li>
-                <li><a href="https://coronationmb.com"> Coronation merchnat bank</a>&nbsp;</li>
+                <li><a href="https://coronationmb.com"> Coronation merchant bank</a>&nbsp;</li>
                 <li><a href="#"> Help&nbsp;</a></li>
             </ul>
         </div>
@@ -186,20 +186,33 @@
                         </ul>
                     </div>
                 </div>
+
+
+
+
             </div>
+
+
+
         </nav>
+
+
+
     </div>
-    <a href="/retail/dashboard" class="logo">
+
+    <a href="/retail/dashboard" class="logo navbar-right">
         <img th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
     </a>
+
+
 </header>
 
-    <div th:fragment="sidebar" class="col-md-3 sidebar">
-        <div class="sidebar-bg calender">
-            <div id="calendar" class="calendar"></div>
+    <div th:fragment="sidebar" class="sideba">
+        <div class="sidebar-b calende cal  ">
+            <div  id="calendar" style="display: block; margin: 0px auto;" class=" calendar hidden-xs hidden-sm "></div>
         </div>
-        <div class="sidebar-bg">
-            <img th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
+        <div class="sidebar- hidden-xs hidden-sm" >
+            <img style="display: block; margin: 0px auto;" class="center" th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
         </div>
     </div>
 

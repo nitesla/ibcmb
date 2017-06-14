@@ -25,13 +25,13 @@
     font-weight: 100;
     color: rgba(255, 255, 255, 1);
     width: 245px;
-    margin: 0 auto;
+    /*margin: 0 auto;*/
     height: 255px;
     overflow: hidden;
     line-height: 12px;
 }
 
-.calender .header {
+.cal .header {
     height: 30px;
     width: 245px;
     background: #C1C1C1;
@@ -41,7 +41,7 @@
     color: #032A4F;
 }
 
-.calender .header h1 {
+.cal .header h1 {
     margin: 0;
     padding: 0;
     font-size: 17px;
