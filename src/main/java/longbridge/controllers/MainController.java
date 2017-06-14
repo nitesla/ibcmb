@@ -162,6 +162,9 @@ public class MainController {
     @PostMapping("/login/u/retail")
     public String userExists(WebRequest webRequest, Model model, RedirectAttributes redirectAttributes) {
         String username = webRequest.getParameter("username");
+        if (username== null){
+            return "retpage1";
+        }
 
         RetailUser user =  retailUserService.getUserByName(username);
         if (user == null){
