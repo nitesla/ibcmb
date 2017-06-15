@@ -283,10 +283,6 @@ function sendRegCode(){
     loader.style.display = "block";
 
 
-
-
-
-
     $.ajax({
         type:'GET',
         url:"/rest/regCode/"+accountNumber+"/"+email+"/"+birthDate,
@@ -296,24 +292,15 @@ function sendRegCode(){
             if(result === 'false' || result=== '' || result === null){
                 loader.style.display = "none";
                 //invalid account number
-                //alert("user name not found");
-                // $.notify({
-                //     title: '<strong></strong>',
-                //     message: 'Failed to send registration code. Please try again.'
-                // },{
-                //     type: 'danger'
-                // });
                 document.getElementById("myspan2").textContent="Failed to send registration code. Please try again.";
                 $("#myspan2").show();
 
-
             }else{
+
                 loader.style.display = "none";
                 $("#myspan2").hide();
                 var showreg = document.getElementById('regcodebox');
                 showreg.style.display = "block";
-
-
 
                 //valid account number
                 //alert("code sent: " + result);
@@ -358,3 +345,4 @@ function registerUser(){
     //alert(returnValue);
     return Boolean(returnValue);
 }
+

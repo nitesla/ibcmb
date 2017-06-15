@@ -2,7 +2,6 @@ package longbridge.controllers;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import longbridge.api.CustomerDetails;
-import longbridge.dtos.AccountDTO;
 import longbridge.dtos.RetailUserDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.forms.CustResetPassword;
@@ -453,10 +452,10 @@ public class UserRegController {
             throw new InternetBankingException(messageSource.getMessage("user.reg.exists", null, locale));
         }
 
-        Iterable<AccountDTO> account = accountService.getAccounts(customerId);
-        if (account != null){
-            throw new InternetBankingException(messageSource.getMessage("user.reg.exists", null, locale));
-        }
+//        Iterable<AccountDTO> account = accountService.getAccounts(customerId);
+//        if (account != null || account.isEmpty){
+//            throw new InternetBankingException(messageSource.getMessage("user.reg.exists", null, locale));
+//        }
     }
 
     @GetMapping("/forgot/password")

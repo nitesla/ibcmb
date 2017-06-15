@@ -52,8 +52,6 @@ public class IntegrationServiceImpl implements IntegrationService {
     private MailService mailService;
     private TemplateEngine templateEngine;
     private ConfigurationService configService;
-    @Autowired
-    ApplicationContext appContext;
 
     @Autowired
     public IntegrationServiceImpl(RestTemplate template, MailService mailService, TemplateEngine templateEngine
