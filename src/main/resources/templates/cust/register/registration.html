@@ -188,9 +188,19 @@
                                     <div class="col-md-offset-3 col-md-6">
                                         <div class='alert alert-danger' id="myspan3" style="display: none;">
                                         </div>
+
                                         <div class="form-group">
                                             <label>Select Phishing Image</label>
+                                            <div id="myMode" class="modal fade" role="dialog">
 
+
+
+                                                <!-- Modal content-->
+                                                <div id="loads" style='display:none'></div>
+
+
+
+                                            </div>
                                             <table>
                                                 <td th:each="image : ${images}" style="position: relative;">
                                                     <img th:src="${imagePath} + ${image}" width="100px" height="100px"/>

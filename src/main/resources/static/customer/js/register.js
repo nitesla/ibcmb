@@ -359,6 +359,8 @@ function sendRegCode(){
 }
 
 function registerUser(){
+    $("#myMode").modal("show");
+
     var returnValue = false;
     $('#reg-form').submit(function(e){
         e.preventDefault();
@@ -373,7 +375,9 @@ function registerUser(){
                 //alert(data+" return ");
                 //callback methods go right here
                 if(data==="true"){
+                    $("#myMode").modal("hide");
                     $('#returnValue').val(true);
+
                 }else {
                     // $.notify({
                     //     title: '<strong></strong>',
@@ -384,6 +388,8 @@ function registerUser(){
 
                     document.getElementById("myspan3").textContent="Self Registration Failed";
                     $("#myspan3").show();
+                    $("#myMode").modal("hide");
+
                 }
             }
         });
