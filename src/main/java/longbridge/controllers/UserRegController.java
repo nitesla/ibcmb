@@ -5,6 +5,9 @@ import longbridge.api.CustomerDetails;
 import longbridge.dtos.AccountDTO;
 import longbridge.dtos.RetailUserDTO;
 import longbridge.exception.InternetBankingException;
+import longbridge.exception.PasswordException;
+import longbridge.exception.PasswordMismatchException;
+import longbridge.exception.PasswordPolicyViolationException;
 import longbridge.forms.CustResetPassword;
 import longbridge.forms.RegistrationForm;
 import longbridge.forms.ResetPasswordForm;
@@ -538,17 +541,6 @@ public class UserRegController {
             return "false";
         }
 
-//    	String username = retailUserService.retrieveUsername(accountNumber, securityQuestion, securityAnswer);
-//        RetailUser retailUser = retailUserService.getUserByName(username);
-
-        //confirm security question is correct
-//    	isValid &= securityService.validateSecurityQuestion(retailUser, securityQuestion, securityAnswer);
-//    	if(isValid){
-//    		logger.error("Invalid security question / answer");
-//    		return "false";
-//    	}
-
-
         //confirm passwords are the same
         boolean isValid = password.trim().equalsIgnoreCase(confirmPassword.trim());
         if(!isValid){
@@ -558,20 +550,27 @@ public class UserRegController {
 
         //if ()
 
-        //get Retail User by customerId
+        //get Retail User by username
         RetailUser retailUser = retailUserService.getUserByName(username);
         if (retailUser == null){
             return "false";
         }
+
         //change password
         CustResetPassword custResetPassword = new CustResetPassword();
         custResetPassword.setNewPassword(password);
         custResetPassword.setConfirmPassword(confirmPassword);
-        retailUserService.resetPassword(retailUser,custResetPassword);
-        redirectAttributes.addAttribute("success", true);
-
-        return "true";
-
+        try{
+            String message = retailUserService.resetPassword(retailUser,custResetPassword);
+            redirectAttributes.addAttribute("success", message);
+            return "true";
+        }catch (PasswordPolicyViolationException e){
+            return e.getMessage();
+        }catch (PasswordMismatchException e){
+            return e.getMessage();
+        }catch (PasswordException e){
+            return e.getMessage();
+        }
     }
 
 }

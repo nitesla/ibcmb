@@ -337,12 +337,15 @@ public class RetailUserServiceImpl implements RetailUserService {
 
         String errorMessage = passwordPolicyService.validate(custResetPassword.getNewPassword(), user);
         if (!"".equals(errorMessage)) {
+            logger.info("Password violation");
             throw new PasswordPolicyViolationException(errorMessage);
         }
 
         if (!custResetPassword.getNewPassword().equals(custResetPassword.getConfirmPassword())) {
+            logger.info("Password mismatch");
             throw new PasswordMismatchException();
         }
+
         try {
             RetailUser retailUser = retailUserRepo.findOne(user.getId());
             retailUser.setPassword(this.passwordEncoder.encode(custResetPassword.getNewPassword()));
