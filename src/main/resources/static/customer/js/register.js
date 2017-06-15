@@ -21,6 +21,7 @@ form.children("div").steps({
     transitionEffect: "slideLeft",
     onStepChanging: function (event, currentIndex, newIndex)
     {
+        $("#myspan").hide();
 
 
         form.validate().settings.ignore = ":disabled,:hidden";
@@ -31,7 +32,8 @@ form.children("div").steps({
         if (currentIndex > newIndex)
         {
             $("#myspan").hide();
-            loader.style.display = "none";
+            $("#loader").hide();
+
             return true;
         }
 
@@ -48,10 +50,14 @@ form.children("div").steps({
             console.log("Current step is the account details step");
             var accountNumber = $('input[name="accountNumber"]').val();
 
+
             var email = $('input[name="email"]').val();
+
             console.log(email);
             var birthDate = $('input[name="birthDate"]').val();
+
             return isValid && validateAccountDetails(accountNumber, email, birthDate);
+
 
         }
         if(PROFILE_DETAILS_STEP === currentIndex){
@@ -77,6 +83,7 @@ form.children("div").steps({
 
 
         return form.valid();
+
 
 
     },
@@ -120,8 +127,9 @@ var customerId = "null";
  * @param accountNumber the account number to check
  */
 function validateAccountDetails(accountNumber, email, birthDate){
-    var loader = document.getElementById('loader');
-    loader.style.display = "block";
+    // var loader = document.getElementById('loader');
+    // loader.style.display = "block";
+    $("#loader").show();
     if(email == ""){
         email = "ib@coronationmb.com"
     }
@@ -138,7 +146,7 @@ function validateAccountDetails(accountNumber, email, birthDate){
 
             if(customerId == "" || customerId === null){
 
-                loader.style.display = "none";
+                // loader.style.display = "none";
                 //invalid account number
                 // $.notify({
                 //     title: '<strong></strong>',
@@ -147,14 +155,16 @@ function validateAccountDetails(accountNumber, email, birthDate){
                 //     type: 'danger'
                 // });
 
-                document.getElementById("myspan").textContent="Invalid Accouunt Credentials, Contact the bank";
+                document.getElementById("myspan").textContent="Invalid Account Credentials, Contact the bank";
                 $("#myspan").show();
-                loader.style.display = "none";
+                $("#loader").hide();
+                //loader.style.display = "block";
 
                 //alert("Account number not found");
             }else{
-                loader.style.display = "none";
 
+                // loader.style.display = "none";
+                // $("#loader").hide();
                 //valid account number
                 //alert("Customer Id: " + customerId);
                 $('input[name=customerId]').val(customerId);
@@ -279,6 +289,8 @@ function sendRegCode(){
     }
     var result;
 
+    $('#myModal').modal('show');
+
     var loader = document.getElementById('loa');
     loader.style.display = "block";
 
@@ -303,17 +315,18 @@ function sendRegCode(){
                 // },{
                 //     type: 'danger'
                 // });
-                document.getElementById("myspan2").textContent="Failed to send registration code. Please try again.";
-                $("#myspan2").show();
+                document.getElementById("myspan1").textContent="Failed to send registration code. Please try again.";
+                $("#myspan1").show();
+                $('#myModal').modal('hide');
 
 
             }else{
                 loader.style.display = "none";
-                $("#myspan2").hide();
+                $("#myspan1").hide();
                 var showreg = document.getElementById('regcodebox');
                 showreg.style.display = "block";
 
-
+                $('#myModal').modal('hide');
 
                 //valid account number
                 //alert("code sent: " + result);

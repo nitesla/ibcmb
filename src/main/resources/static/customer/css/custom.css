@@ -138,6 +138,7 @@ span.req
     border-radius: 50%;
     border-top: 2px solid #032A4F;
     border-bottom: 2px solid #D3B2A4;
+    display: none;
     width: 80px;
     height: 80px;
     -webkit-animation: spin 2s linear infinite;
@@ -169,6 +170,17 @@ span.req
 {
     color: black !important;
 }
+
+
+.modal-box
+{
+    border-radius: 0px !important;
+    padding: 10px !important;
+    margin: 0px auto !important;
+    width:65%;
+}
+
+
 
 #myspan2
 {
@@ -203,6 +215,42 @@ span.req
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+
+
+.contact
+{
+    position:relative !important;
+
+
+}
+
+.contact:hover, .contact:visited
+{
+    background: #003056 !important;
+}
+
+
+.contact:hover ~ .contact-drop
+{
+    display: block;
+}
+.contact-drop li
+{
+    padding: 7px;
+    padding-top: 5px;
+
+}
+
+.contact-drop
+{
+    position: absolute !important;
+    left:0px !important;
+    background-color: #e7e7e7 !important;
+    top: 140% !important;
+    //padding: 10px 5px 10px 5px;
+    display: none;
 }
 
 
