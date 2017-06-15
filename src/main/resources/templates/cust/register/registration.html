@@ -109,6 +109,11 @@
                                             <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
                                         </div>
 
+                                        <div class='alert alert-success alert-dismissable' id="successReg" style="display:none">
+                                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                        </div>
+
+
                                         <div class="form-group clearfix">
                                             <label>Username</label>
                                             <span class='req'></span><input type="text" name="userName" class="form-control required" placeholder="Preferred Username"/>
@@ -117,7 +122,7 @@
 
 
                                                     <!-- Modal content-->
-                                                    <div id="load" style='display:none'></div>
+                                                <div id="load" style='display:none'></div>
 
 
 
@@ -140,7 +145,7 @@
 
                                         <a id="send" href="javascript:void(0)" onclick="sendRegCode();" class="btn "> Send Verification Code</a>
 
-                                        <div id='regcodebox' class="form-group clearfix display-none">
+                                        <div id='regcodebox' class="form-group clearfix">
                                             <label>Registration Code</label>
                                             <span class='req'></span><input type="text" id="code" name="regCode" class="col-md-8 form-control required" placeholder="Registration Code"/>
                                         </div>
@@ -161,7 +166,7 @@
                             <section>
                                 <div class="row">
                                     <div class="col-md-offset-4 col-md-4">
-                                        <div class='alert alert-danger' id="myspan">
+                                        <div class='alert alert-danger' id="myspan2">
                                         </div>
                                         <input id="returnValue" type="hidden"/>
                                         <div class="form-group clearfix">
@@ -181,7 +186,7 @@
                             <section>
                                 <div class="row">
                                     <div class="col-md-offset-3 col-md-6">
-                                        <div class='alert alert-danger' id="myspan">
+                                        <div class='alert alert-danger' id="myspan3" style="display: none;">
                                         </div>
                                         <div class="form-group">
                                             <label>Select Phishing Image</label>

@@ -84,9 +84,10 @@ public class UserRegController {
         CustomerDetails details = integrationService.isAccountValid(accountNumber, email, birthDate);
         if (details != null){
               customerId = details.getCifId();
+                logger.info("CustomerId", customerId);
 //            RetailUser retailUser = retailUserService.getUserByCustomerId(details.getCifId());
 //            if (retailUser != null) {
- //               customerId = retailUser.getCustomerId();
+//               customerId = retailUser.getCustomerId();
 //            }else {
 //                customerId="";
 //            }
@@ -98,6 +99,29 @@ public class UserRegController {
         return customerId;
     }
 
+    @GetMapping("/rest/accountexists/{accountNumber}/{email}/{birthDate}")
+    public @ResponseBody String validateExists(@PathVariable String accountNumber, @PathVariable String email, @PathVariable String birthDate){
+        String customerId = "";
+        logger.info("Account nUmber : " + accountNumber);
+        logger.info("Email : " + email);
+        logger.info("BirthDate : " + birthDate);
+        CustomerDetails details = integrationService.isAccountValid(accountNumber, email, birthDate);
+        if (details != null){
+            RetailUser user = retailUserService.getUserByCustomerId(details.getCifId());
+            if (user != null) {
+                customerId="";
+
+            }else {
+                customerId = user.getCustomerId();
+                logger.info("customerId" + customerId);
+            }
+
+        }else {
+            //nothing
+            customerId = "";
+        }
+        return customerId;
+    }
 
     @GetMapping("/rest/retail/accountname/{accountNumber}")
     public @ResponseBody String getAccountNameFromNumber(@PathVariable String accountNumber){
@@ -232,6 +256,7 @@ public class UserRegController {
         }
         return "true";
     }
+
 
 
 
