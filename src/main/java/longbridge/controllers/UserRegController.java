@@ -453,8 +453,8 @@ public class UserRegController {
             throw new InternetBankingException(messageSource.getMessage("user.reg.exists", null, locale));
         }
 
-        Iterable<AccountDTO> account = accountService.getAccounts(customerId);
-        if (account != null){
+        List<AccountDTO> accounts = accountService.getAccounts(customerId);
+        if (accounts.isEmpty()){
             throw new InternetBankingException(messageSource.getMessage("user.reg.exists", null, locale));
         }
     }
