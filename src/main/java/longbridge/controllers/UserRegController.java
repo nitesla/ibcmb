@@ -112,8 +112,8 @@ public class UserRegController {
                 customerId="";
 
             }else {
-                customerId = user.getCustomerId();
-                logger.info("customerId" + customerId);
+                customerId="does not exsist";
+                logger.info("customer is null");
             }
 
         }else {
