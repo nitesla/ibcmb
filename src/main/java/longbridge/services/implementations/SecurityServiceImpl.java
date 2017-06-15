@@ -114,7 +114,13 @@ public class SecurityServiceImpl implements SecurityService {
             result = isSuccessful;
 
             String respMesg = StringUtils.substringBetween(responseMessage, "<respMessageCode>", "</respMessageCode>");
+
             logger.trace("response is {}", respMesg);
+
+            if (!isSuccessful){
+                String erroMessg = StringUtils.substringBetween(responseMessage, "<respMessage>", "</respMessage>");
+                throw new InternetBankingSecurityException(erroMessg);
+            }
 
 
             logger.info("******************END RESPONSE***********");
@@ -157,6 +163,10 @@ public class SecurityServiceImpl implements SecurityService {
 
 
             logger.info("******************END RESPONSE***********");
+            if (!isSuccessful){
+                String erroMessg = StringUtils.substringBetween(responseMessage, "<respMessage>", "</respMessage>");
+                throw new InternetBankingSecurityException(erroMessg);
+            }
 
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -199,6 +209,10 @@ public class SecurityServiceImpl implements SecurityService {
 
 
             logger.info("******************END RESPONSE***********");
+            if (!isSuccessful){
+                String erroMessg = StringUtils.substringBetween(responseMessage, "<respMessage>", "</respMessage>");
+                throw new InternetBankingSecurityException(erroMessg);
+            }
 
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -234,6 +248,10 @@ public class SecurityServiceImpl implements SecurityService {
 
 
             logger.info("******************END RESPONSE***********");
+            if (!isSuccessful){
+                String erroMessg = StringUtils.substringBetween(responseMessage, "<respMessage>", "</respMessage>");
+                throw new InternetBankingSecurityException(erroMessg);
+            }
 
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -269,6 +287,10 @@ public class SecurityServiceImpl implements SecurityService {
 
 
             logger.info("******************END RESPONSE***********");
+            if (!isSuccessful){
+                String erroMessg = StringUtils.substringBetween(responseMessage, "<respMessage>", "</respMessage>");
+                throw new InternetBankingSecurityException(erroMessg);
+            }
 
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -302,9 +324,13 @@ public class SecurityServiceImpl implements SecurityService {
 
 
             logger.trace("response is {}", respMesg);
-            if (!isSuccessful) throw new InternetBankingSecurityException(respMesg);
+
 
             logger.info("******************END RESPONSE***********");
+            if (!isSuccessful){
+                String erroMessg = StringUtils.substringBetween(responseMessage, "<respMessage>", "</respMessage>");
+                throw new InternetBankingSecurityException(erroMessg);
+            }
 
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -342,6 +368,10 @@ public class SecurityServiceImpl implements SecurityService {
 
 
             logger.info("******************END RESPONSE***********");
+            if (!isSuccessful){
+                String erroMessg = StringUtils.substringBetween(responseMessage, "<respMessage>", "</respMessage>");
+                throw new InternetBankingSecurityException(erroMessg);
+            }
 
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -380,6 +410,10 @@ public class SecurityServiceImpl implements SecurityService {
 
 
             logger.info("******************END RESPONSE***********");
+            if (!isSuccessful){
+                String erroMessg = StringUtils.substringBetween(responseMessage, "<respMessage>", "</respMessage>");
+                throw new InternetBankingSecurityException(erroMessg);
+            }
 
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -418,6 +452,10 @@ public class SecurityServiceImpl implements SecurityService {
 
 
             logger.info("******************END RESPONSE***********");
+            if (!isSuccessful){
+                String erroMessg = StringUtils.substringBetween(responseMessage, "<respMessage>", "</respMessage>");
+                throw new InternetBankingSecurityException(erroMessg);
+            }
 
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -453,9 +491,13 @@ public class SecurityServiceImpl implements SecurityService {
 
 
             logger.trace("response is {}", respMesg);
-            if (!isSuccessful) throw new InternetBankingSecurityException(respMesg);
+
 
             logger.info("******************END RESPONSE***********");
+            if (!isSuccessful){
+                String erroMessg = StringUtils.substringBetween(responseMessage, "<respMessage>", "</respMessage>");
+                throw new InternetBankingSecurityException(erroMessg);
+            }
 
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -505,6 +547,10 @@ public class SecurityServiceImpl implements SecurityService {
 
 
             logger.info("******************END RESPONSE***********");
+            if (!isSuccessful){
+                String erroMessg = StringUtils.substringBetween(responseMessage, "<respMessage>", "</respMessage>");
+                throw new InternetBankingSecurityException(erroMessg);
+            }
 
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -539,7 +585,10 @@ public class SecurityServiceImpl implements SecurityService {
             String msg = StringUtils.substringBetween(responseMessage, "<respMessageCode>", "</respMessageCode>");
 
             logger.trace("response message code : {}", msg);
-            if (!isSuccessful) throw new InternetBankingSecurityException(msg);
+            if (!isSuccessful){
+                String erroMessg = StringUtils.substringBetween(responseMessage, "<respMessage>", "</respMessage>");
+                throw new InternetBankingSecurityException(erroMessg);
+            }
 
             String[] captions = StringUtils.substringsBetween(responseMessage, "<captionSecret>", "</captionSecret>");
             String[] images = StringUtils.substringsBetween(responseMessage, "<imageSecret>", "</imageSecret>");
@@ -591,10 +640,14 @@ public class SecurityServiceImpl implements SecurityService {
             String msg = StringUtils.substringBetween(responseMessage, "<respMessageCode>", "</respMessageCode>");
 
             logger.trace("response message code : {}", msg);
-            if (!isSuccessful) throw new InternetBankingSecurityException(msg);
+
 
 
             logger.info("******************END RESPONSE***********");
+            if (!isSuccessful){
+                String erroMessg = StringUtils.substringBetween(responseMessage, "<respMessage>", "</respMessage>");
+                throw new InternetBankingSecurityException(erroMessg);
+            }
 
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -636,7 +689,10 @@ public class SecurityServiceImpl implements SecurityService {
             String respMesg = StringUtils.substringBetween(responseMessage, "<respMessageCode>", "</respMessageCode>");
 
             logger.trace("response is {}", respMesg);
-            if (!isSuccessful) throw new InternetBankingSecurityException(respMesg);
+            if (!isSuccessful){
+                String erroMessg = StringUtils.substringBetween(responseMessage, "<respMessage>", "</respMessage>");
+                throw new InternetBankingSecurityException(erroMessg);
+            }
 
             result = StringUtils.substringBetween(responseMessage, "<tokenSerials>", "</tokenSerials>");
             logger.info("******************END RESPONSE***********");
@@ -675,6 +731,10 @@ public class SecurityServiceImpl implements SecurityService {
 
 
             logger.info("******************END RESPONSE***********");
+            if (!isSuccessful){
+                String erroMessg = StringUtils.substringBetween(responseMessage, "<respMessage>", "</respMessage>");
+                throw new InternetBankingSecurityException(erroMessg);
+            }
 
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -713,6 +773,10 @@ public class SecurityServiceImpl implements SecurityService {
 
 
             logger.info("******************END RESPONSE***********");
+            if (!isSuccessful){
+                String erroMessg = StringUtils.substringBetween(responseMessage, "<respMessage>", "</respMessage>");
+                throw new InternetBankingSecurityException(erroMessg);
+            }
 
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -757,6 +821,10 @@ public class SecurityServiceImpl implements SecurityService {
 
 
             logger.info("******************END RESPONSE***********");
+            if (!isSuccessful){
+                String erroMessg = StringUtils.substringBetween(responseMessage, "<respMessage>", "</respMessage>");
+                throw new InternetBankingSecurityException(erroMessg);
+            }
 
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

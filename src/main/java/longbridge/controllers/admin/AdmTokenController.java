@@ -64,9 +64,11 @@ public class AdmTokenController {
                 return "redirect:/admin/dashboard";
             }
         } catch (InternetBankingSecurityException ibe) {
-            logger.error("Error authenticating token");
+            logger.error("Error authenticating token",ibe);
+            redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
+
+
         }
-        redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("token.auth.failure", null, locale));
         return "redirect:/admin/token";
 
     }

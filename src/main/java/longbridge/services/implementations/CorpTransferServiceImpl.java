@@ -65,6 +65,47 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         this.financialInstitutionService = financialInstitutionService;
         this.configService = configService;
     }
+
+
+    @Override
+    @Transactional
+    public String addTransferRequest(CorpTransferRequestDTO transferRequestDTO) throws InternetBankingException {
+
+        CorpTransRequest transferRequest = convertDTOToEntity(transferRequestDTO);
+
+
+        if (transferRequest.getCorporate().getCorporateType().equals("SOLE")) {
+            makeTransfer(transferRequestDTO);
+            return messageSource.getMessage("transaction.success", null, locale);
+        }
+
+        if (corporateService.getCorporateRules(transferRequest.getCorporate().getId()).isEmpty()) {
+            throw new TransferRuleException(messageSource.getMessage("rule.unavailable", null, locale));
+        }
+        if (corporateService.getQualifiedRoles(transferRequest).isEmpty()) {
+            throw new NoDefinedRoleException(transferRequestDTO.getAmount());
+        }
+
+        try {
+
+            transferRequest.setStatus("PENDING");
+            List<CorporateRole> roles = corporateService.getQualifiedRoles(transferRequest);
+            List<PendAuth> pendAuths = new ArrayList<>();
+            for (CorporateRole role : roles) {
+                PendAuth pendAuth = new PendAuth();
+                pendAuth.setRole(role);
+                pendAuths.add(pendAuth);
+            }
+
+            transferRequest.setPendAuths(pendAuths);
+            corpTransferRequestRepo.save(transferRequest);
+
+        } catch (Exception e) {
+            throw new InternetBankingTransferException();
+        }
+        return messageSource.getMessage("transfer.add.success", null, locale);
+    }
+
     public CorpTransferRequestDTO makeTransfer(CorpTransferRequestDTO corpTransferRequestDTO) throws InternetBankingTransferException {
         validateTransfer(corpTransferRequestDTO);
         logger.trace("Transfer details valid {}", corpTransferRequestDTO);
@@ -175,9 +216,9 @@ public class CorpTransferServiceImpl implements CorpTransferService {
 
     }
     private boolean validateBalance() {
-        SettingDTO setting = configService.getSettingByName("BALANCE_VALIDATION");
+        SettingDTO setting = configService.getSettingByName("ACCOUNT_BALANCE_VALIDATION");
         if(setting!=null&&setting.isEnabled()) {
-            return ("1".equals(setting.getValue()));
+            return ("YES".equals(setting.getValue()));
         }
         return true;
     }
