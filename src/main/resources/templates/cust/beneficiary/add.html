@@ -72,12 +72,11 @@
                               th:object="${internationalBeneficiaryDTO}" style="display: none">
                             <input type="hidden" th:value="foreign" class="form-control"/>
                             <div class="form-group">
-                                <label>Bank Details</label>
+                                <label>Beneficiary Bank</label>
                                 <span class="req"></span>
                                 <select th:field="*{beneficiaryBank}" class="form-control">
                                     <option th:each="bank : ${foreignBanks}" th:value="${bank.institutionCode}"
                                             th:text="${bank.institutionName}"></option>
-
                                 </select>
 
                             </div>
