@@ -36,9 +36,9 @@
 
                                 <span id="scurency"></span>
                                 <select name="source" class="form-control" id="source"
-                                        th:field="*{customerAccountNumber}">
+                                        th:field="*{customerAccountNumber}" onchange="getBalance()">
                                     <!--<option value=""> select an account</option>-->
-                                    <option th:each="s: ${accounts}" th:value="${s}" th:text="${s}"></option>
+                                    <option th:each="s: ${accounts}" th:value="${s}" th:text="${s}" ></option>
                                 </select>
 
                             </div>
@@ -137,6 +137,27 @@
 
     };
 
+
+    function getBalance(){
+        var accountNumber = $('#source').val();
+        $.ajax({
+            url: "/retail/transfer/ownaccount/balance/"+accountNumber,
+            type: 'GET',
+            async: false,
+            success:function(availBal){
+                bal = ''+String(availBal);
+                if(bal == "" ){
+                    document.getElementById("myspan").textContent="Could not get balance from server, please try again.";
+                    $("#myspan").show();
+                }else{
+//                    $('input[name=availBal]').val(bal);
+
+                    $('#availBal').text("Available Balance: "+bal);
+
+                }
+            }
+        })
+    }
 
     /*]]>*/
 

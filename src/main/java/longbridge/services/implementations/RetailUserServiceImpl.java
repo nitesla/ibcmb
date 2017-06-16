@@ -218,6 +218,7 @@ public class RetailUserServiceImpl implements RetailUserService {
         try{
             securityService.addUserContacts(email, phone, true, username);
         }catch (InternetBankingSecurityException e){
+            securityService.deleteEntrustUser(username);
             throw new InternetBankingSecurityException(messageSource.getMessage("entrust.create.failure", null, locale), e);
         }
     }

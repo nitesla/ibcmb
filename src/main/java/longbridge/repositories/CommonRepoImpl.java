@@ -50,7 +50,6 @@ public class CommonRepoImpl<T extends AbstractEntity, ID extends Serializable> e
 
         if (originalEntity1.getId() == null) {
             if (isMakerChecker) {
-
                 String message = verificationService.addNewVerificationRequest(entity);
                 return message;
             }
