@@ -1,6 +1,7 @@
 package longbridge.services.implementations;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.VerificationException;
 import longbridge.models.AbstractEntity;
 import longbridge.models.SerializableEntity;
@@ -125,12 +126,17 @@ public class VerificationServiceImpl implements VerificationService {
 	}
 
 
-
-
 	@Override
-	public <T extends SerializableEntity<T>> String addModifyVerificationRequest(T originalEntity, T entity) throws JsonProcessingException {
+	public <T extends SerializableEntity<T>> String addModifyVerificationRequest(T originalEntity, T entity) throws JsonProcessingException,DuplicateObjectException {
+
 		String classSimpleName = entity.getClass().getSimpleName();
-		Verification verification = new Verification();
+
+		Verification verification = verificationRepo.findFirstByEntityNameAndVerificationStatus(classSimpleName,VerificationStatus.PENDING);
+
+		if(verification!=null){
+			throw new DuplicateObjectException("Entity has pending verification");
+		}
+		verification.setEntityName(classSimpleName);
 		verification.setBeforeObject(originalEntity.serialize());
 		verification.setAfterObject(entity.serialize());
 		verification.setOriginal(originalEntity.serialize());

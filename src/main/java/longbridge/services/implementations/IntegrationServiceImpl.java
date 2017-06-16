@@ -231,9 +231,10 @@ public class IntegrationServiceImpl implements IntegrationService {
                     response = template.postForObject(uri, params, TransferDetails.class);
                     if (response != null) {
                         logger.info("response for transfer {}", response.toString());
+                        transRequest.setStatus(response.getResponseCode());
+                        transRequest.setStatusDescription(response.getResponseDescription());
                         transRequest.setReferenceNumber(response.getUniqueReferenceCode());
                         transRequest.setNarration(response.getNarration());
-                        transRequest.setStatus(response.getResponseDescription());
 
                         return transRequest;
 
@@ -271,9 +272,10 @@ public class IntegrationServiceImpl implements IntegrationService {
                     response = template.postForObject(uri, params, TransferDetails.class);
                     if (response != null) {
                         System.out.println("@@@@@ response " + response.getResponseDescription());
-                        transRequest.setNarration(response.getNarration());
+                        transRequest.setStatus(response.getResponseCode());
+                        transRequest.setStatusDescription(response.getResponseDescription());
                         transRequest.setReferenceNumber(response.getUniqueReferenceCode());
-                        transRequest.setStatus(response.getResponseDescription());
+                        transRequest.setNarration(response.getNarration());
                         return transRequest;
                     } else {
 

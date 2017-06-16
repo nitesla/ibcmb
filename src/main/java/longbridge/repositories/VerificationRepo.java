@@ -8,4 +8,6 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface VerificationRepo extends CommonRepo<Verification, Long>{
+
+    Verification findFirstByEntityNameAndVerificationStatus(String name, Verification.VerificationStatus status);
 }

@@ -480,7 +480,7 @@ public class UserRegController {
         }
 
         List<AccountDTO> accounts = accountService.getAccounts(customerId);
-        if (accounts.isEmpty()){
+        if (!accounts.isEmpty()){
             throw new InternetBankingException(messageSource.getMessage("user.reg.exists", null, locale));
         }
     }
