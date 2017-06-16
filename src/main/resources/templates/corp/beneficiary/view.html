@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="corp_layout :: site-head">
-
+    <link th:href="@{~/bank/vendors/sweetalert/sweetalert.css}" rel="stylesheet"/>
 </head>
 <body>
 <header th:replace="corp_layout :: corp-header">
@@ -20,7 +20,7 @@
                 <div class="row spacing">
                     <div class="col-md-10">
                         <h4 class="sub_header">Local Beneficiaries</h4>
-                        <table class="table">
+                        <table class="table" id="dt">
                             <thead>
                             <td>Name</td>
                             <td>Account Number</td>
@@ -32,7 +32,7 @@
                                 <td th:text="${loc.accountName}"></td>
                                 <td th:text="${loc.accountNumber}"></td>
                                 <td th:text="${loc.beneficiaryBank}"></td>
-                                <td><a th:href="@{'/corporate/beneficiary/' + ${loc.id} + '/loc/delete'}"><i class="fa fa-trash"></i></a></td>
+                                <td><a th:href="@{'/corporate/beneficiary/' + ${loc.id} + '/loc/delete'}"><i class="delete-btn fa fa-trash"></i></a></td>
                             </tr>
                             </tbody>
                         </table>
@@ -50,7 +50,7 @@
                                 <td th:text="${int.accountName}"></td>
                                 <td th:text="${int.accountNumber}"></td>
                                 <td th:text="${int.beneficiaryBank}"></td>
-                                <td><a th:href="@{'/corporate/beneficiary/' + ${int.id} + '/int/delete'}"><i class="fa fa-trash"></i></a></td>
+                                <td><a th:href="@{'/corporate/beneficiary/' + ${int.id} + '/int/delete'}"><i class="delete-btn fa fa-trash"></i></a></td>
                             </tr>
                             </tbody>
                         </table>
@@ -66,5 +66,43 @@
 <!-- CONTENT-WRAPPER SECTION END-->
 <footer th:replace="corp_layout :: corp-footer">
 </footer>
+
+
+<script th:src="@{~/bank/vendors/sweetalert/sweetalert.min.js}"></script>
+<script th:src="@{~/bank/vendors/bootstrap-dialog/js/bootstrap-dialog.js}"></script>
+<script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
+
+<!-- Page-Level Scripts -->
+<script th:inline="javascript">
+    /*<![CDATA[*/
+
+    $(".delete-btn").on("click", function (e) {
+        e.preventDefault();
+        var link = $(e.currentTarget);
+
+        var ooo = link.attr("href");
+
+        //goto url
+        warnBeforeRedirect(ooo);
+    });
+
+    function warnBeforeRedirect(ooo) {
+        swal({
+            title: "Are you sure?",
+            text: "Are you sure that you want to delete this user?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes, delete user!",
+            closeOnConfirm: false
+        }, function () {
+            // Redirect the user
+            window.location.assign(ooo);
+        });
+    }
+
+    /*]]>*/
+    </script>
+
 </body>
 </html>

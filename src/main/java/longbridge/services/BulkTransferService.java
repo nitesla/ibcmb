@@ -2,7 +2,11 @@ package longbridge.services;
 
 
 import longbridge.models.BulkTransfer;
+import longbridge.models.Corporate;
 import longbridge.models.CreditRequest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 
 import java.util.List;
 
@@ -11,7 +15,8 @@ import java.util.List;
  */
 public interface BulkTransferService {
     String makeBulkTransferRequest(BulkTransfer bulkTransfer);
-    List<BulkTransfer> getAllBulkTransferRequests();
+    Page<BulkTransfer> getAllBulkTransferRequests(Corporate corporate, Pageable details);
     String cancelBulkTransferRequest(Long id);
+    BulkTransfer getBulkTransferRequest(Long id);
 
 }

@@ -143,22 +143,23 @@
                         <li sec:authorize="hasAuthority('CMB_CMB_TRANSFER')"><a th:href="@{/retail/transfer/local}" th:text="#{menu.transfer.cmb}">Transfer to Coronation account </a></li>
                         <li sec:authorize="hasAuthority('INTERBANK_TRANSFER')"><a th:href="@{/retail/transfer/interbank}" th:text="#{menu.transfer.other}">Transfer to other banks</a></li>
                         <li sec:authorize="hasAuthority('INTERNATIONAL_TRANSFERs')"><a th:href="@{/retail/transfer/international}" th:text="#{menu.transfer.int}">International transfer</a></li>
-                        <li sec:authorize="hasAuthority('RET_TRANSACTION_LIMITs.')"><a th:href="@{/retail/transfer/settransferlimit}" th:text="#{menu.transfer.limit}">Set transfer limit</a></li>
+                        <li sec:authorize="hasAuthority('RET_TRANSACTION_LIMITs.')"><a th:href="@{/retail/transfer/settransferlimit}" th:text="#{menu.transf
+                        er.limit}">Set transfer limit</a></li>
                         <li sec:authorize="hasAuthority('STANDING_ORDER')"><a th:href="@{/retail/directdebit}" th:text="#{menu.transfer.order}">Standing order</a></li>
                         </ul>
                         </li>
                         <!--<li sec:authorize="hasAuthority('MANAGE_BILL_PAYMENT')"><a href="#" th:text="#{menu.bill}">Bill Payments</a></li>-->
                         <!--<li sec:authorize="hasAuthority('MANAGE_INVESTMENT')"><a href="#" th:text="#{menu.investment}">Investment</a></li>-->
-                        <li class="dropdown" sec:authorize="hasAuthority('MANAGE_SERV_REQ')">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.servreq}"> Service Requests </a>
-                        <ul class="dropdown-menu">
-                        <li sec:authorize="hasAuthority('TRACK_SERV_REQ')"><a th:href="@{/retail/requests/track}" th:text="#{menu.servreq.track}">Track Requests</a></li>
-                        <li role="separator" class="divider"></li>
-                        <p th:each="requests : ${serviceRequests}">
-                        <li sec:authorize="hasAuthority('MAKE_SERV_REQ')"><a th:href="@{/retail/requests/} + ${requests.id}" th:text="${requests.requestName}"></a></li>
-                        </p>
-                        </ul>
-                        </li>
+                        <!--<li class="dropdown" sec:authorize="hasAuthority('MANAGE_SERV_REQ')">-->
+                        <!--<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.servreq}"> Service Requests </a>-->
+                        <!--<ul class="dropdown-menu">-->
+                        <!--<li sec:authorize="hasAuthority('TRACK_SERV_REQ')"><a th:href="@{/retail/requests/track}" th:text="#{menu.servreq.track}">Track Requests</a></li>-->
+                        <!--<li role="separator" class="divider"></li>-->
+                        <!--<p th:each="requests : ${serviceRequests}">-->
+                        <!--<li sec:authorize="hasAuthority('MAKE_SERV_REQ')"><a th:href="@{/retail/requests/} + ${requests.id}" th:text="${requests.requestName}"></a></li>-->
+                        <!--</p>-->
+                        <!--</ul>-->
+                        <!--</li>-->
 
                         <li class="dropdown" sec:authorize="hasAuthority('RET_USER_SETTINGS')">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.settings}"> Settings </a>

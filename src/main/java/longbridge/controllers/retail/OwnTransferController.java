@@ -3,6 +3,7 @@ package longbridge.controllers.retail;
 import longbridge.dtos.TransferRequestDTO;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferErrorService;
+import longbridge.models.Account;
 import longbridge.services.*;
 import longbridge.utils.ResultType;
 import longbridge.utils.TransferType;
@@ -22,6 +23,7 @@ import org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.HashMap;
 import java.util.Locale;
@@ -70,6 +72,16 @@ public class OwnTransferController {
         view.addObject("transferRequest", requestDTO);
         view.setViewName(page + "pagei");
         return view;
+    }
+
+
+    @RequestMapping(value="/balance/{accountNumber}", method=RequestMethod.GET , produces="application/json")
+    @ResponseBody
+    public BigDecimal getBalance(@PathVariable String accountNumber) throws Exception {
+        Account account = accountService.getAccountByAccountNumber(accountNumber);
+        Map<String, BigDecimal> balance = accountService.getBalance(account);
+        BigDecimal availBal = balance.get("AvailableBalance");
+        return availBal;
     }
 
 

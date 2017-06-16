@@ -34,12 +34,12 @@
                             <div class="form-group">
                                 <label>Bank Details</label>
                                 <span class="req"></span>
-                                <select name="beneficiaryBank" id="beneficiaryBank" class="form-control" placeholder="select"
-                                        th:field="*{beneficiaryBank}" required="required">
-
+                                <select th:field="*{beneficiaryBank}" class="form-control">
                                     <option th:each="bank : ${localBanks}" th:value="${bank.institutionCode}"
                                             th:text="${bank.institutionName}"></option>
                                 </select>
+
+
                             </div>
                             <div class="form-group">
                                 <label>Account Number</label>
@@ -76,11 +76,13 @@
                             <input type="hidden" th:value="foreign" class="form-control"/>
                             <div class="form-group">
                                 <label>Bank Details</label>
-                                <span class="req"></span><select th:field="*{beneficiaryBank}" class="form-control">
+                                <span class="req"></span>
+                                <select th:field="*{beneficiaryBank}" class="form-control">
                                     <option th:each="bank : ${foreignBanks}" th:value="${bank.institutionCode}"
                                             th:text="${bank.institutionName}"></option>
 
                                 </select>
+
                             </div>
                             <div class="form-group">
 
@@ -101,6 +103,7 @@
 
                             <div class="form-group">
                                 <label>Beneficiary Account Number</label>
+                                <span class="req"></span>
                                 <input type="text" class="form-control" name="accountNumber"
                                        placeholder="Beneficiary Account Number" th:field="*{accountNumber}"
                                        required="required"/>

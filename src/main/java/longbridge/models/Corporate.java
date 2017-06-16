@@ -28,6 +28,8 @@ public class Corporate extends AbstractEntity{
     private Date createdOnDate;
     private String bvn;
 
+    @OneToMany(mappedBy = "corporate")
+    private List<BulkTransfer> transfers;
 
 
     @OneToMany
@@ -48,6 +50,14 @@ public class Corporate extends AbstractEntity{
 
     @OneToMany(cascade = CascadeType.ALL)
     List<CorpTransRule> corpTransRules;
+
+    public List<BulkTransfer> getTransfers() {
+        return transfers;
+    }
+
+    public void setTransfers(List<BulkTransfer> transfers) {
+        this.transfers = transfers;
+    }
 
     public Collection<CorpLimit> getCorpLimits() {
         return corpLimits;

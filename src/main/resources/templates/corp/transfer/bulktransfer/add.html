@@ -21,6 +21,10 @@
         background:#fff;
         padding:0 10px;
     }
+    table.dataTable tbody > tr.selected{
+        color: black;
+        background-color: #d7bdb3;
+    }
 </style>
 
 <body>
@@ -35,14 +39,26 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-8 content-bg">
-                <form>
+            <div class="col-md-12 content-bg">
+                <form method="post" th:action="@{/corporate/bulktransfer}" id="" class="form-horizontal">
                 <div class="row spacing">
                     <div>
                         <p>To make a bulk transfer, Enter the request fields below</p>
                     </div>
 
                     <br/>
+                    <div class="form-group">
+                        <label>Source account</label>
+
+
+                        <span id="scurency"></span>
+                        <select name="debitAccount" class="form-control" id="debitAccount">
+                            <!--<option value=""> select an account</option>-->
+                            <option th:each="s: ${accounts}" th:value="${s}" th:text="${s}"></option>
+                        </select>
+                        <input type="hidden" name="requests"/>
+                    </div></div>
+                </form>
 
                     <div class="col-md-6 col-sm-6 col-xs-12">
                         <button type="submit" id="button_add" class="btn-xs btn-success btn">Add Field</button>
@@ -51,10 +67,9 @@
                     <br/>
 
                         <br/>
-
                         <table id="mytab" class="table table-striped table-bordered table-hover" cellspacing="0"  >
                             <thead>
-                            <tr>
+
                                 <th>Serial</th>
                                 <th>Ref</th>
                                 <th>Account Number</th>
@@ -62,20 +77,18 @@
                                 <th>Beneficiary Name</th>
                                 <th>Amount (N)</th>
                                 <th>Narration</th>
-                            </tr>
                             </thead>
 
                         </table>
 
-
                     <br/>
-                    <button class="btn btn-link" type="submit">Upload</button>
+                    <button class="btn btn-link" type="submit" id="button_submit">Upload</button>
                     </div>
-                </form>
-                </div>
 
-            <div th:replace="corp_layout :: corp-sidebar" class="col-md-3 sidebar">
-            </div>
+
+
+            <!--<div th:replace="corp_layout :: corp-sidebar" class="col-md-3 sidebar">-->
+            <!--</div>-->
             </div>
         </div>
 
@@ -97,7 +110,8 @@
 </script>
 
 
-<script>
+<script th:inline="javascript">
+    //<![CDATA[
     //datepicker
     $( function() {
         $( "#datepicker" ).datepicker(
@@ -108,7 +122,7 @@
 
 
     $(document).ready(function() {
-        var t = $('#mytab').DataTable({dom : 'rt',
+        t = $('#mytab').DataTable({dom : 'rt',
             select : {style:'single'},
             ordering : false,
             "language": {
@@ -116,16 +130,65 @@
             }
         });
 
+        t.on('select', function (e,dt,type, indexed) {
+            if(type == 'row'){
+
+                dt.rows({selected: true}).every(function (rowIdx,tableLoop,rowLoop) {
+                    this.data();
+                    inparray = [];
+                    for(i =0; i < this.data().length; i++){
+                        inp = '<input value="' +this.data()[i]+'"/>';
+                        inparray.push(inp);
+                    }
+                    this.data(inparray).draw();
+                });
+
+//                dt.rows({selected: true}).each(function (value,index) {
+//                    rw = value;//dt.row(index);
+//                    arr = rw.data;
+//                    inparray = [];
+//                    for(i =0; i < arr.length; i++){
+//                        inp = '<input value="' +arr[i]+'"/>';
+//                        inparray.push(inp);
+//                    }
+//                    //rw.add(inparray);
+//                });
+
+
+            }
+        });
+
+        t.on('deselect', function (e,dt,type, indexed) {
+            if(type == 'row'){
+
+                dt.rows({selected: false}).every(function (rowIdx,tableLoop,rowLoop) {
+                    rw = dt.row(index);
+                    arr = rw.data;
+                    inparray = [];
+
+                    for(i =0  ; i < arr.length; i++){
+
+                        d= $(arr[i]).val();
+                        inparray.push(d);
+                    }
+
+                    rw.add(inparray);
+                });
+
+
+            }
+        });
+
         $('#button_add').on( 'click', function (e) {
             e.preventDefault();
             t.row.add( [
-                '<input name="serial" />',
-                '<input name="reference" />',
-                '<input name="accountNumber" />',
-                '<input name="sortCode" />',
-                '<input name="accountName"/>',
-                '<input name="amount"/>',
-                '<input name="narration"/>'
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                ''
             ] ).draw( false );
 
         } );
@@ -137,7 +200,17 @@
 
 
         } );
+
+        $('#button_submit').click(function(e) {
+            e.preventDefault()
+            bulkTab = $('#mytab').DataTable();
+            data = JSON.stringify(bulkTab.data().toArray());
+            $("input[name='requests']").val(data);
+            $('form').submit();
+        });
     } );
+
+    //]]>
 
 </script>
 </body>

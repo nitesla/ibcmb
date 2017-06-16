@@ -5,6 +5,7 @@ import longbridge.dtos.LocalBeneficiaryDTO;
 import longbridge.dtos.TransferRequestDTO;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferErrorService;
+import longbridge.models.Account;
 import longbridge.models.FinancialInstitutionType;
 import longbridge.models.LocalBeneficiary;
 import longbridge.models.RetailUser;
@@ -22,8 +23,10 @@ import org.springframework.web.servlet.LocaleResolver;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.Comparator;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -36,6 +39,7 @@ public class LocalTransferController {
 
     private RetailUserService retailUserService;
     private TransferService transferService;
+    private AccountService accountService;
     private MessageSource messages;
     private LocalBeneficiaryService localBeneficiaryService;
     private FinancialInstitutionService financialInstitutionService;
@@ -157,6 +161,17 @@ public class LocalTransferController {
 
 
     }
+
+
+    @RequestMapping(value="/balance/{accountNumber}", method=RequestMethod.GET , produces="application/json")
+    @ResponseBody
+    public BigDecimal getBalance(@PathVariable String accountNumber) throws Exception {
+        Account account = accountService.getAccountByAccountNumber(accountNumber);
+        Map<String, BigDecimal> balance = accountService.getBalance(account);
+        BigDecimal availBal = balance.get("AvailableBalance");
+        return availBal;
+    }
+
 
     @ModelAttribute
     public void getBankCode(Model model) {

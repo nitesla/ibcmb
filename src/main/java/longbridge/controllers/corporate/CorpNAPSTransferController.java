@@ -1,5 +1,10 @@
 package longbridge.controllers.corporate;
 
+import longbridge.models.Account;
+import longbridge.models.Corporate;
+import longbridge.models.CorporateUser;
+import longbridge.services.AccountService;
+import longbridge.services.CorporateUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +23,12 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.Principal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
+import java.util.stream.StreamSupport;
 
 /**
  * Created by Fortune on 5/30/2017.
@@ -31,15 +41,49 @@ public class CorpNAPSTransferController {
     @Autowired
     private MessageSource messageSource;
 
+    private AccountService accountService;
+    private CorporateUserService corporateUserService;
+
+    @Autowired
+    public CorpNAPSTransferController(AccountService accountService,CorporateUserService corporateUserService) {
+        this.accountService = accountService;
+        this.corporateUserService = corporateUserService;
+    }
+
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
     //private static String UPLOAD_FOLDER = "C:\\ibanking\\upload\\";
     private static String UPLOAD_FOLDER = "/Users/user/Documents/UPLOAD_FOLDER/";
 
+
+
+
     @GetMapping("/bulk")
-    public String getBulkTransfer() {
+    public String getBulkTransfer(Model model, Principal principal) {
+        if (principal == null || principal.getName() == null) {
+            return "redirect:/login/corporate";
+        }
+        CorporateUser user = corporateUserService.getUserByName(principal.getName());
+        if (user != null) {
+
+            List<String> accountList = new ArrayList<>();
+
+            Iterable<Account> accountNumbers = accountService.getAccountsForDebit(user.getCorporate().getCustomerId());
+
+            StreamSupport.stream(accountNumbers.spliterator(), false)
+                    .filter(Objects::nonNull)
+                    .forEach(i -> accountList.add(i.getAccountNumber()));
+
+
+            model.addAttribute("accounts", accountList);
+        }
+
         return "/corp/transfer/bulktransfer/add";
     }
+
+
+
+
 
     /*
         * Download a file from
@@ -123,4 +167,15 @@ public class CorpNAPSTransferController {
 
         return "/corp/transfer/bulktransfer/add";
     }
+
+
+
+
+
+
+
+
+
+
+
 }

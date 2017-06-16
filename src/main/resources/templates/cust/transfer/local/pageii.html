@@ -37,7 +37,7 @@
                                 <select name="source" class="form-control" id="source"
                                         th:field="*{customerAccountNumber}" required="required">
                                     <option value=""> select an account</option>
-                                    <option th:each="s: ${accounts}" th:value="${s}" th:text="${s}"></option>
+                                    <option th:each="s: ${accounts}" th:value="${s}" th:text="${s}" ></option>
 
 
                                 </select>
@@ -66,6 +66,12 @@
                         </form>
                         <!--</div>-->
                     </div>
+
+                </div>
+                <div class="col-md-6 col-sm-6">
+                    <p class="related">Related Information</p>
+                    <hr/>
+                    <!--<p th:each="rule : ${passwordRules}" th:text="${rule}"></p>-->
                 </div>
             </div>
             <div th:replace="cust_layout :: sidebar" class="col-md-3 sidebar">
