@@ -42,7 +42,7 @@
                             </div>
                             <div class="form-group">
                                 <label>Account Number</label>
-                                <span class="req"></span><input type="text" id="acct_num" name="acct_num" class="form-control"
+                                <span class="req"></span><input type="number" min="0" id="acct_num" name="acct_num" class="form-control"
                                        th:field="*{accountNumber}" placeholder="Account Number"/>
                                 <p class="errors" th:if="${#fields.hasErrors('accountNumber')}"
                                    th:errors="*{accountNumber}">&times;</p>
@@ -100,7 +100,7 @@
                             <div class="form-group">
                                 <label>Beneficiary Account Number</label>
                                 <span class="req"></span>
-                                <input type="text" class="form-control" name="accountNumber"
+                                <input min="0" type="number" class="form-control" name="accountNumber"
                                        placeholder="Beneficiary Account Number" th:field="*{accountNumber}"
                                        required="required"/>
 
@@ -126,7 +126,7 @@
                             </div>
                             <div class="form-group">
                                 <label>Intermediary Account Number</label>
-                                <span class="req"></span><input type="text" class="form-control" name="intermediaryBankAcctNo"
+                                <span class="req"></span><input min="0" type="number" class="form-control" name="intermediaryBankAcctNo"
                                                                 placeholder="Intermediary Bank Account Number"
                                                                 th:field="*{intermediaryBankAcctNo}"/>
 
@@ -147,7 +147,7 @@
                             </div>
                             <div class="form-group">
                                 <label>Account Number</label>
-                                <span class="required"></span><input type="text" class="form-control" name="accountNumber" th:field="*{accountNumber}"
+                                <span class="required"></span><input type="number" min="0" class="form-control" name="accountNumber" th:field="*{accountNumber}"
                                        id="iacct_num" placeholder="Account Number" required="required"/>
 
                             </div>
