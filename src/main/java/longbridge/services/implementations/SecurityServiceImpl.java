@@ -810,6 +810,7 @@ public class SecurityServiceImpl implements SecurityService {
             String payload = writer.toString();
             EntrustServiceResponse webServiceResponse = httpClient.sendHttpRequest(payload);
             String responseMessage = webServiceResponse.getResponseMessage();
+            logger.trace("User Contact Details",context);
             logger.trace("response {}", responseMessage);
             CharSequence charSequence = "<respCode>1</respCode>";
             boolean isSuccessful = responseMessage.contains(charSequence);

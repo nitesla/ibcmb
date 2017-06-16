@@ -70,7 +70,7 @@
                                     <li >
                                         <div class="col-lg-4">
                                             <div class="title-action">
-                                                <a id="delete-btn"  class="btn btn-danger btn-sm bt-select bt-link-act" href="/admin/retail/users/index/delete" disabled="disabled" ><i class="fa fa-trash"></i> Delete</a>
+                                                <a id="delete-btn"  class="btn btn-danger btn-sm bt-select" href="/admin/retail/users/index/delete" disabled="disabled" ><i class="fa fa-trash"></i> Delete</a>
                                             </div>
                                         </div>
                                     </li>
@@ -197,12 +197,12 @@
                 "data" : "status",
                 "render" : function(data, type,full, meta) {
                     if (type === 'display') {
-                        if (data == "ACTIVE") {
+                        if (data == "A") {
                             return "<i class='fa fa-check dt-body-center' style='color:green;display:block; text-align:center; margin:0 auto;'></i>";
-                        } else if (data == "INACTIVE") {
+                        } else if (data == "I") {
                             return "<i class='fa fa-ban  dt-body-center' style='color:red;display:block; text-align:center; margin:0 auto;'></i>";
                         }
-                        else if (data == "LOCKED") {
+                        else if (data == "L") {
                             return "<i class='fa fa-lock  dt-body-center' style='color:red;display:block; text-align:center; margin:0 auto;'></i>";
                         }else {
                             return "<i class='fa fa-question  dt-body-center' style='color:red;display:block; text-align:center; margin:0 auto;'></i>";

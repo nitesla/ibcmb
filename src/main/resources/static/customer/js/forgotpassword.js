@@ -28,23 +28,23 @@
     }
 
     function validatePassword(password){
-        var result;
+        var res;
         $.ajax({
             type:'GET',
             url:"/rest/password/check/"+password,
             async:false,
             success:function(data1){
-                result = ''+String(data1);
-                if(result === 'true'){
+                res = ''+String(data1);
+                if(res === 'true'){
                     //success
                 }else{
                     document.getElementById("myspan1").textContent="The entered password might not meet the set password policy";
-                    $("#myspan").show();
+                    $("#myspan1").show();
                 }
             }
         });
 
-        if(result === 'true'){
+        if(res === 'true'){
             //username is valid and available
             return true;
         }else{
@@ -69,12 +69,8 @@
                     if(data==="true"){
                         $('#returnValue').val(true);
                     }else {
-                        $.notify({
-                            title: '<strong>Oops!</strong>',
-                            message: 'Password Reset Failed, the entered password might not meet the set password policy'
-                        },{
-                            type: 'danger'
-                        });
+                        document.getElementById("myspan1").textContent=data;
+                        $("#myspan1").show();
                     }
                 }
             });
@@ -84,8 +80,6 @@
         //alert(returnValue);
         return Boolean(returnValue);
     }
-
-
 	
 
     //steps with form
@@ -141,7 +135,7 @@
                 console.log("Current step is the change password step");
                 //form.submit();
                 var confirm = $('input[name="confirm"]').val();
-               return isValid && validatePassword(confirm);
+               return isValid && validatePassword(confirm) && changePassword();
             }
 
             form.validate().settings.ignore = ":disabled,:hidden";

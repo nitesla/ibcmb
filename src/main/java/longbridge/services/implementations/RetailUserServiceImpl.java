@@ -218,6 +218,7 @@ public class RetailUserServiceImpl implements RetailUserService {
         try{
             securityService.addUserContacts(email, phone, true, username);
         }catch (InternetBankingSecurityException e){
+            securityService.deleteEntrustUser(username);
             throw new InternetBankingSecurityException(messageSource.getMessage("entrust.create.failure", null, locale), e);
         }
     }
@@ -337,12 +338,15 @@ public class RetailUserServiceImpl implements RetailUserService {
 
         String errorMessage = passwordPolicyService.validate(custResetPassword.getNewPassword(), user);
         if (!"".equals(errorMessage)) {
+            logger.info("Password violation");
             throw new PasswordPolicyViolationException(errorMessage);
         }
 
         if (!custResetPassword.getNewPassword().equals(custResetPassword.getConfirmPassword())) {
+            logger.info("Password mismatch");
             throw new PasswordMismatchException();
         }
+
         try {
             RetailUser retailUser = retailUserRepo.findOne(user.getId());
             retailUser.setPassword(this.passwordEncoder.encode(custResetPassword.getNewPassword()));
