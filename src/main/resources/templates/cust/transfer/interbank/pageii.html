@@ -35,7 +35,7 @@
 
                                 <span id="scurency"></span>
                                 <select name="source" class="form-control" id="source"
-                                        th:field="*{customerAccountNumber}">
+                                        th:field="*{customerAccountNumber}" onchange="getBalance()">
                                     <option value=""> select an account</option>
                                     <option th:each="s: ${accounts}" th:value="${s}" th:text="${s}"></option>
 
@@ -69,6 +69,12 @@
                         <!--</div>-->
                     </div>
                 </div>
+                <div class="col-md-6 col-sm-6">
+                    <!--<p class="related" style="padding-top: 5%">Related Information</p>-->
+                    <hr/>
+                    <!--<input type="availBal" name="availBal"/>-->
+                    <p id="availBal"><b></b></p>
+                </div>
             </div>
             <div th:replace="cust_layout :: sidebar" class="col-md-3 sidebar">
             </div>
@@ -81,6 +87,35 @@
 <footer th:replace="cust_layout ::footer">
 </footer>
 <!--<script th:src="@{~/customer/js/accountdetails.js}"></script>-->
+    <script th:src="@{~/customer/js/jquery-1.11.1.js}"></script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        function getBalance(){
+
+            var accountNumber = $('#source').val();
+            $.ajax({
+                url: "/retail/transfer/interbank/balance/"+accountNumber,
+                type: 'GET',
+                async: false,
+                success:function(availBal){
+                    bal = ''+String(availBal);
+                    if(bal == "" ){
+                        document.getElementById("myspan").textContent="Could not get balance from server, please try again.";
+                        $("#myspan").show();
+                    }else{
+//                    $('input[name=availBal]').val(bal);
+
+                        $('#availBal').text("Available Balance: "+bal);
+
+                    }
+                }
+            })
+        }
+
+        /*]]>*/
+
+
+    </script>
 </div>
 </body>
 
