@@ -1,6 +1,7 @@
 package longbridge.repositories;
 
 import longbridge.models.Verification;
+import longbridge.utils.verificationStatus;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -9,5 +10,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface VerificationRepo extends CommonRepo<Verification, Long>{
 
-    Verification findFirstByEntityNameAndVerificationStatus(String name, Verification.VerificationStatus status);
+    Verification findFirstByEntityNameAndStatus(String name, verificationStatus status);
 }
