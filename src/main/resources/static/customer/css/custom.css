@@ -23,6 +23,15 @@ start
 .req:after { content:" * ";color:#ff6666;font-size: 13px;font-weight: bolder }
 
 
+.no-bd-rad
+{
+    border-radius:0px !important;
+}
+.no-bd-top
+{
+    border-top:none !important;
+}
+
 .req ~ input
 {
     width:100% !important;
@@ -126,6 +135,10 @@ span.req
     /*0% { transform: rotate(0deg); }*/
     /*100% { transform: rotate(360deg); }*/
 /*}*/
+
+
+
+
 
 #loader {
     position: absolute;
@@ -692,16 +705,35 @@ body {
     font-size: 14px;
 }
 
+.demo
+{
+    font-size: 12px;
+    margin-top: 5px;
+    padding: 15px;
+    text-align: left;
+    background-color: #f1f1f1;
+}
+
+
+.time
+{
+    padding: 15px;
+    width:100%;
+    background-color: #ebecef;
+    font-weight: bolder;
+    font-size:14px;
+}
+
 .biglist{
     margin: 0 auto;
-    padding: 20px 0;
-    min-height: 80px;
-    max-width: 500px;
+    /*padding: 20px 0;*/
+    /*min-height: 80px;*/
+    /*max-width: 500px;*/
 
 }
 .lists{
     float: left;
-    margin: 0 20px 0 20px;
+    /*margin: 0 20px 0 20px;*/
     font-size: 14px;
     text-align: left;
 }
@@ -908,7 +940,7 @@ button, input, optgroup, select, textarea {
 }
 
 .content-bg{
-    margin: 20px 10px 10px 0;
+    /*margin: 20px 10px 10px 0;*/
     background-color: #ebecef;
     min-height: 350px;
 }

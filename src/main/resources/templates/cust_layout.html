@@ -7,6 +7,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/jquery-ui.css}"/>
+    <!--<link rel="stylesheet" type="text/css" th:href="@{~/customer/css/date/css/bootstrap-datepicker.css}"/>-->
+    <!--<link rel="stylesheet" type="text/css" th:href="@{~/customer/css/date/css/bootstrap-datepicker.standalone.css}"/>-->
+
+
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/bootstrap.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/custom.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/calendar.css}"/>
@@ -208,9 +212,41 @@
 </header>
 
     <div th:fragment="sidebar" class="sideba">
+
+
         <div class="sidebar-b calende cal  ">
-            <div  id="calendar" style="display: block; margin: 0px auto;" class=" calendar hidden-xs hidden-sm "></div>
-        </div>
+            <div  class="alert  time" style="margin-top: 0px !important;">
+                <span id="time_">
+                <script>
+                    setInterval(
+                        function()
+                        {
+
+                            var time_function = moment().format('Do MMMM YYYY, h:mm:ss a');
+                            var holder = document.getElementById('time_');
+                            holder.innerHTML = time_function;
+                        },
+                        1000) ;
+
+                    function showCal()
+                    {
+                        alert();
+
+                        $( function() {
+                            $( "#datepicker" ).datepicker();
+                        } );
+                        alert();
+                    }
+                </script>
+                </span>
+
+                <i class="fa fa-calendar pull-right" id ='datepicker' onclick="showCal()"></i>
+
+
+            </div>
+
+            <!--<div  id="calendar" style="display: block; margin: 0px auto;" class=" calendar hidden-xs hidden-sm "></div>-->
+       </div>
         <div class="sidebar- hidden-xs hidden-sm" >
             <img style="display: block; margin: 0px auto;" class="center" th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
         </div>
@@ -250,9 +286,11 @@
     </div>
 
     <!-- CORE JQUERY SCRIPTS -->
+
     <script th:src="@{~/customer/js/jquery-1.11.1.js}"></script>
     <script th:src="@{~/customer/js/jquery-ui.js}"></script>
     <script th:src="@{~/customer/js/jquery.dataTables.js}"></script>
+    <!--<script th:src="@{~/customer/js/date/js/bootstrap-datepicker.js}"></script>-->
     <script th:src="@{~/customer/js/momentMin.js}"></script>
     <script th:src="@{~/customer/js/calendar.js}"></script>
     <script th:src="@{~/customer/js/jquery.spring-friendly.min.js}"></script>
@@ -279,6 +317,9 @@
     <script>
         $(document).ready(function(){
             $('[data-toggle="tooltip"]').tooltip();
+
+
+
         });
     </script>
 </footer>

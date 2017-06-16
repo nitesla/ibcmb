@@ -4,6 +4,7 @@
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/bootstrap.css}" />
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/custom.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/font-awesome/font-awesome.min.css}"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Test</title>
 </head>
 <body>
@@ -106,6 +107,16 @@
         </div>
 
 
+
+
+
+
+
+
+
+
+
+
         <div class="row">
             <div class="body-texts">
                 <br/>
@@ -128,23 +139,47 @@
                     </div>
                 </div>
                 <div class="margin-bottom"></div>
-                <div>
+                <div class="row ">
                     <h6>Manage your money anywhere, anytime</h6>
                     <p>Fast and easy to use.</p>
                     <p>Our Internet Banking lets you access your account 24 hours a day!</p>
-                    <div class="biglist">
-                        <div class="lists">
-                            <ul>
-                                <li><i class="fa fa-plus-square"></i>&nbsp; View account statements</li>
-                                <li><i class="fa fa-plus-square"></i>&nbsp; Transfer money</li>
-                                <li><i class="fa fa-plus-square"></i>&nbsp; Make payment</li>
+                    <div class="biglit  col-md-offset-2 col-md-8 center">
+                        <div class="lists col-md-6  text-cente" >
+                            <ul >
+                                <li data-toggle="collapse" data-target="#list1"><i class="fa fa-plus-square"></i>&nbsp; View account statements</li>
+                                <div id="list1" class="collapse demo bg-success">
+                                    Lorem ipsum dolor sit amet, consectetur adipisicing elit,
+                                    sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                                </div>
+                                <li  data-toggle="collapse" data-target="#list2"><i class="fa fa-plus-square"></i>&nbsp; Transfer money</li>
+                                <div id="list2" class="collapse demo bg-success">
+                                    Lorem ipsum dolor sit amet, consectetur adipisicing elit,
+                                    sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                                </div>
+                                <li  data-toggle="collapse" data-target="#list3"><i class="fa fa-plus-square"></i>&nbsp; Make payment</li>
+                                <div id="list3" class="collapse demo bg-success">
+                                    Lorem ipsum dolor sit amet, consectetur adipisicing elit,
+                                    sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                                </div>
                             </ul>
                         </div>
-                        <div class="lists">
+                        <div class="lists col-md-6">
                             <ul>
-                                <li><i class="fa fa-plus-square"></i>&nbsp; Pay bills</li>
-                                <li><i class="fa fa-plus-square"></i>&nbsp; Manage your payments</li>
-                                <li><i class="fa fa-plus-square"></i>&nbsp; Credit card management</li>
+                                <li  data-toggle="collapse" data-target="#list4"><i class="fa fa-plus-square"></i>&nbsp; Pay bills</li>
+                                <div id="list4" class="collapse demo bg-success">
+                                    Lorem ipsum dolor sit amet, consectetur adipisicing elit,
+                                    sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                                </div>
+                                <li  data-toggle="collapse" data-target="#list5"><i class="fa fa-plus-square"></i>&nbsp; Manage your payments</li>
+                                <div id="list5" class="collapse demo bg-success">
+                                    Lorem ipsum dolor sit amet, consectetur adipisicing elit,
+                                    sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                                </div>
+                                <li  data-toggle="collapse" data-target="#list6"><i class="fa fa-plus-square"></i>&nbsp; Credit card management</li>
+                                <div id="list6" class="collapse demo bg-success">
+                                    Lorem ipsum dolor sit amet, consectetur adipisicing elit,
+                                    sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                                </div>
                             </ul>
                         </div>
                     </div>
@@ -155,31 +190,53 @@
                     <h4>Contact Us</h4>
                     <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi e</p>
                     <div class="icon">
-                        <li class="dropdown" >
-                        <a href ='javascript:void' class="dropdown-toggle contact" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-phone"></i></a>
-                        <ul class="dropdown-menu contact-drop" >
+
+                        <div class="dropdown" style="background-color: #d4d4d4 !important;padding:12px !important;">
+                            <a class="dropdown-toggle" type="button" data-toggle="dropdown" style="background-color:transparent !important;">
+                                <i class="fa fa-phone"></i></a>
+                            <ul class="dropdown-menu" style="background-color: red !important;">
+                                <li><a href="#">HTML</a></li>
+                                <li><a href="#">CSS</a></li>
+                                <li><a href="#">JavaScrip</a></li>
+                            </ul>
+                        </div>
+                        <!--<li class="dropdown" >-->
+                        <!--<a href ='javascript:void' class=""  role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-phone"></i>-->
+                        <!--</a>-->
+                        <!--<div id="list99" class="bg-success contact-drop">-->
+                            <ul class="dropdown-menu contact-drop" >
                             <li>T +234 (0)818 831 4939</li>
                             <li>T +234 (0)802 891 3262</li>
                             <li class="icontext pull-right" data-toggle="modal" data-target="#myModal"><button class="btn btn-link">Call back</button></li>
-                        </ul>
-                        </li>
-                        <li class="dropdown">
-                        <a href ='javascript:void' class="dropdown-toggle contact" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-envelope"></i></a>
-                        <ul class="dropdown-menu contact-drop">
-                            <li>Send us an email</li>
-                            <li>enquiries@coronationmb.com</li>
-                            <li class="icontext pull-right">Copy email</li>
-                        </ul>
-                        </li>
-                        <li class="dropdown">
+                            </ul>
+                        <!--</div>-->
+                        <!--<ul class="dropdown-menu contact-drop" >-->
+                            <!--<li>T +234 (0)818 831 4939</li>-->
+                            <!--<li>T +234 (0)802 891 3262</li>-->
+                            <!--<li class="icontext pull-right" data-toggle="modal" data-target="#myModal"><button class="btn btn-link">Call back</button></li>-->
+                        <!--</ul>-->
+                        <!--</li>-->
+                        <!--<li class="dropdown">-->
+                        <a href ='javascript:void' class="dropdown-toggle contact" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-envelope"></i>
+                        </a>
+                        <!--<ul class="dropdown-menu contact-drop">-->
+                            <!--<li>Send us an email</li>-->
+                            <!--<li>enquiries@coronationmb.com</li>-->
+                            <!--<li class="icontext pull-right">Copy email</li>-->
+                        <!--</ul>-->
+                        <!--</li>-->
+                        <!--<li class="dropdown">-->
                         <a href="javascript:void" class="dropdown-toggle contact" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-comments-o"></i> </a>
-                        <ul class="dropdown-menu faz contact-drop">
-                            <li>Need instant help?</li>
-                            <li>Chat with us</li>
-                            <li class="icontext pull-right"><button class="btn btn-link"><i class="fa fa-comments-o"></i> Live chat</button></li>
-                        </ul>
-                        </li>
+                        <!--<ul class="dropdown-menu faz contact-drop">-->
+                            <!--<li>Need instant help?</li>-->
+                            <!--<li>Chat with us</li>-->
+                            <!--<li class="icontext pull-right"><button class="btn btn-link"><i class="fa fa-comments-o"></i> Live chat</button></li>-->
+                        <!--</ul>-->
+                        <!--</li>-->
                     </div>
+
+
+
                 </div>
 
                 <!-- Trigger the modal with a button -->

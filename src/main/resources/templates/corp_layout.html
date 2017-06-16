@@ -129,6 +129,7 @@
     </header>
 
     <div th:fragment="corp-sidebar" class="col-md-3 sidebar">
+       
 
         <div class="sidebar-bg calender">
             <div id="calendar" class="calendar"></div>
@@ -140,20 +141,20 @@
 
 <!-- footer content -->
 <footer th:fragment="corp-footer">
-    <!--<div class="container">-->
-        <!--<div class="footer_bar">-->
-            <!--<div class="col-md-6 col-xs-12">-->
-                <!--<ul class="list_group">-->
-                    <!--<li><a href="#" target="_blank">Privacy policy</a></li>-->
-                    <!--<li><a href="#" target="_blank">Disclaimer</a></li>-->
-                    <!--<li><a href="#" target="_blank">Terms &amp; Conditions</a></li>-->
-                <!--</ul>-->
+    <div class="container">
+        <div class="footer_bar">
+            <div class="col-md-6 col-xs-12">
+                <ul class="list_group">
+                    <li><a href="#" target="_blank">Privacy policy</a></li>
+                    <li><a href="#" target="_blank">Disclaimer</a></li>
+                    <li><a href="#" target="_blank">Terms &amp; Conditions</a></li>
+                </ul>
 
-            <!--</div>-->
-            <!--<div class="col-md-6 col-xs-12"><p> &copy; 2017 Coronation Merchant Bank. All rights reserved</p></div>-->
+            </div>
+            <div class="col-md-6 col-xs-12"><p> &copy; 2017 Coronation Merchant Bank. All rights reserved</p></div>
 
-        <!--</div>-->
-    <!--</div>-->
+        </div>
+    </div>
 
     <div th:if="${message}">
         <div hidden="hidden">
@@ -176,6 +177,7 @@
     <script th:src="@{~/customer/js/jquery-ui.js}"></script>
     <script th:src="@{~/customer/js/jquery.dataTables.js}"></script>
     <script th:src="@{~/customer/js/momentMin.js}"></script>
+    <script th:src="@{~/customer/js/moment.js}"></script>
     <script th:src="@{~/customer/js/calendar.js}"></script>
     <script th:src="@{~/customer/js/dataTables.bootstrap.js}"></script>
     <script th:src="@{~/customer/js/jquery.spring-friendly.min.js}"></script>
