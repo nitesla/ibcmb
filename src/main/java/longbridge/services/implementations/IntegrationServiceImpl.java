@@ -39,12 +39,11 @@ import java.util.stream.Collectors;
 @Service
 public class IntegrationServiceImpl implements IntegrationService {
 
-    private Logger logger = LoggerFactory.getLogger(getClass());
-
-    @Value("${ebank.service.uri}")
-    private String URI;
     @Value("${excel.path}")
     String PROPERTY_EXCEL_SOURCE_FILE_PATH;
+    private Logger logger = LoggerFactory.getLogger(getClass());
+    @Value("${ebank.service.uri}")
+    private String URI;
     @Value("${CMB.ALERT.URL}")
     private String cmbAlert;
 
@@ -88,24 +87,23 @@ public class IntegrationServiceImpl implements IntegrationService {
 
     @Override
     public AccountStatement getAccountStatements(String accountId, Date fromDate, Date toDate) {
-     AccountStatement statement = new AccountStatement();
-     List<FinancialTransaction> financialTransactions= new ArrayList<>();
+        AccountStatement statement = new AccountStatement();
+        List<FinancialTransaction> financialTransactions = new ArrayList<>();
         FileInputStream fis = null;
         InputStreamReader isr = null;
         BufferedReader bf = null;
         File csv = new File(PROPERTY_EXCEL_SOURCE_FILE_PATH);
 
 
-
         try {
 
             logger.info("*****************************FILE PROCESSING STARTED******************************");
 
-            fis =  new FileInputStream(csv);
+            fis = new FileInputStream(csv);
             isr = new InputStreamReader(
                     fis);
             bf = new BufferedReader(isr);
-           String skipped ;
+            String skipped;
 
 
 
@@ -114,10 +112,10 @@ public class IntegrationServiceImpl implements IntegrationService {
 
                  isr = new InputStreamReader(
                     fis, "UTF-16");*/
-               int read = 0;
-            while ((skipped = bf.readLine()) != null ) {
+            int read = 0;
+            while ((skipped = bf.readLine()) != null) {
 
-                if (read==0){
+                if (read == 0) {
 
                     read++;
                     continue;
@@ -129,17 +127,10 @@ public class IntegrationServiceImpl implements IntegrationService {
             }
 
 
-
-
-
-
-
-
-
         } catch (Exception e) {
             e.printStackTrace();
 
-    }
+        }
 
 
         statement.setClosingBalance(new BigDecimal(2000));
@@ -149,7 +140,7 @@ public class IntegrationServiceImpl implements IntegrationService {
         statement.setOpeningBalance(new BigDecimal(3000));
         statement.setTotalCredit(new BigDecimal(4000));
         statement.setTotalDebit(new BigDecimal(5000));
-        System.out.println("ACCOUNT STATEMENT "+statement);
+        System.out.println("ACCOUNT STATEMENT " + statement);
         return statement;
     }
 
@@ -197,18 +188,14 @@ public class IntegrationServiceImpl implements IntegrationService {
                 try {
                     response = template.postForObject(uri, params, TransferDetails.class);
 
-                    if (response != null) {
 
-                        transRequest.setStatus(response.getResponseCode());
-                        transRequest.setStatusDescription(response.getResponseDescription());
-                        transRequest.setReferenceNumber(response.getUniqueReferenceCode());
-                        transRequest.setNarration(response.getNarration());
+                    transRequest.setStatus(response.getResponseCode());
+                    transRequest.setStatusDescription(response.getResponseDescription());
+                    transRequest.setReferenceNumber(response.getUniqueReferenceCode());
+                    transRequest.setNarration(response.getNarration());
 
-                        return transRequest;
-                    }
-                    transRequest.setStatus(ResultType.ERROR.toString());
-                    transRequest.setStatus("No Valid Response");
                     return transRequest;
+
                 } catch (Exception e) {
 
                     e.printStackTrace();
@@ -233,17 +220,14 @@ public class IntegrationServiceImpl implements IntegrationService {
                 logger.info("params for transfer {}", params.toString());
                 try {
                     response = template.postForObject(uri, params, TransferDetails.class);
-                    if (response != null) {
-                        logger.info("response for transfer {}", response.toString());
-                        transRequest.setReferenceNumber(response.getUniqueReferenceCode());
-                        transRequest.setNarration(response.getNarration());
-                        transRequest.setStatus(response.getResponseCode());
-                        transRequest.setStatusDescription(response.getResponseDescription());
 
-                        return transRequest;
+                    logger.info("response for transfer {}", response.toString());
+                    transRequest.setReferenceNumber(response.getUniqueReferenceCode());
+                    transRequest.setNarration(response.getNarration());
+                    transRequest.setStatus(response.getResponseCode());
+                    transRequest.setStatusDescription(response.getResponseDescription());
 
-
-                    }
+                    return transRequest;
 
 
                 } catch (Exception e) {
@@ -259,13 +243,10 @@ public class IntegrationServiceImpl implements IntegrationService {
             case INTERNATIONAL_TRANSFER: {
 
             }
-            case NAPS: {
 
-
-            }
             case OWN_ACCOUNT_TRANSFER: {
                 transRequest.setTransferType(TransferType.OWN_ACCOUNT_TRANSFER);
-                TransferDetails response = null;
+                TransferDetails response;
                 String uri = URI + "/transfer/local";
                 Map<String, String> params = new HashMap<>();
                 params.put("debitAccountNumber", transRequest.getCustomerAccountNumber());
@@ -275,19 +256,13 @@ public class IntegrationServiceImpl implements IntegrationService {
                 logger.info("params for transfer {}", params.toString());
                 try {
                     response = template.postForObject(uri, params, TransferDetails.class);
-                    if (response != null) {
-                        System.out.println("@@@@@ response " + response.getResponseDescription());
-                        transRequest.setNarration(response.getNarration());
-                        transRequest.setReferenceNumber(response.getUniqueReferenceCode());
-                        transRequest.setStatus(response.getResponseCode());
-                        transRequest.setStatusDescription(response.getResponseDescription());
-                        return transRequest;
-                    } else {
 
-                        transRequest.setStatus(ResultType.ERROR.toString());
+                    transRequest.setNarration(response.getNarration());
+                    transRequest.setReferenceNumber(response.getUniqueReferenceCode());
+                    transRequest.setStatus(response.getResponseCode());
+                    transRequest.setStatusDescription(response.getResponseDescription());
+                    return transRequest;
 
-                        return transRequest;
-                    }
 
                 } catch (Exception e) {
 
@@ -323,7 +298,7 @@ public class IntegrationServiceImpl implements IntegrationService {
             AccountDetails details = template.getForObject(uri, AccountDetails.class, params);
             return details;
         } catch (Exception e) {
-            return null;
+            return new AccountDetails();
         }
 
 
@@ -331,7 +306,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 
     @Override
     public CustomerDetails isAccountValid(String accNo, String email, String dob) {
-        CustomerDetails result = null;
+        CustomerDetails result = new CustomerDetails();
         String uri = URI + "/account/verification";
         Map<String, String> params = new HashMap<>();
         params.put("accountNumber", accNo);
@@ -391,7 +366,7 @@ public class IntegrationServiceImpl implements IntegrationService {
     @Override
     public BigDecimal getDailyDebitTransaction(String acctNo) {
 
-        BigDecimal result = null;
+        BigDecimal result = new BigDecimal(0);
         String uri = URI + "/transfer/dailyTransaction";
         Map<String, String> params = new HashMap<>();
         params.put("accountNumber", acctNo);
@@ -411,7 +386,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 
     @Override
     public BigDecimal getDailyAccountLimit(String accNo, String channel) {
-        BigDecimal result = null;
+        BigDecimal result = new BigDecimal(0);
         String uri = URI + "/transfer/limit";
         Map<String, String> params = new HashMap<>();
         params.put("accountNumber", accNo);
@@ -519,6 +494,7 @@ public class IntegrationServiceImpl implements IntegrationService {
             transRequest.setStatus("Approved or completed successfully");
         } catch (Exception e) {
             e.printStackTrace();
+            logger.error("Exception occurred {}", e);
             transRequest.setStatus("96");
             transRequest.setStatusDescription("FAILED TO SEND A MAIL");
         }

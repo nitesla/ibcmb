@@ -1,21 +1,22 @@
 package longbridge.security.retailuser;
 
+import longbridge.api.CustomerDetails;
 import longbridge.dtos.SettingDTO;
 import longbridge.models.RetailUser;
 import longbridge.models.UserType;
 import longbridge.repositories.RetailUserRepo;
 import longbridge.security.SessionUtils;
 import longbridge.services.ConfigurationService;
-import org.joda.time.LocalDate;
+import longbridge.services.IntegrationService;
+import longbridge.services.MailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.context.MessageSource;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
-import org.springframework.security.web.WebAttributes;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -24,12 +25,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.Locale;
 
 @Component("retailAuthenticationSuccessHandler")
 public class RetailAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
     private final Logger logger = LoggerFactory.getLogger(getClass());
-
-
+    @Autowired
+    IntegrationService integrationService;
+    @Autowired
+    MailService mailService;
     private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
     @Autowired
     private RetailUserRepo retailUserRepo;
@@ -37,6 +41,10 @@ public class RetailAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     private ConfigurationService configService;
     @Autowired
     private SessionUtils sessionUtils;
+    @Autowired
+    private MessageSource messageSource;
+    @Autowired
+    private Locale locale;
 
     public RetailAuthenticationSuccessHandler() {
         super();
@@ -50,9 +58,10 @@ public class RetailAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         if (session != null) {
             sessionUtils.setTimeout(session);
             RetailUser user = retailUserRepo.findFirstByUserNameIgnoreCase(authentication.getName());
-            sessionUtils.validateExpiredPassword(user,session);
+            sessionUtils.validateExpiredPassword(user, session);
             //session.setAttribute("user",retailUserRepo.findFirstByUserName(authentication.getName()));
             retailUserRepo.updateUserAfterLogin(authentication.getName());
+            sendAlert(user);
 
         }
         clearAuthenticationAttributes(request);
@@ -104,5 +113,34 @@ public class RetailAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
     public void setRedirectStrategy(final RedirectStrategy redirectStrategy) {
         this.redirectStrategy = redirectStrategy;
+    }
+
+
+    private  void sendAlert(RetailUser user) {
+        try {
+            SettingDTO settingDTO = configService.getSettingByName("LOGIN_ALERT");
+            if (settingDTO.isEnabled()) {
+                String preference = user.getAlertPreference().getCode();
+                CustomerDetails details = integrationService.viewCustomerDetailsByCif(user.getCustomerId());
+                String alertMessage = String.format(messageSource.getMessage("login.alert.message", null, locale),details.getCustomerName());
+
+                String alertSubject = String.format(messageSource.getMessage("login.alert.subject", null, locale),details.getCustomerName());
+                if (preference.equalsIgnoreCase("SMS")) {
+
+                    integrationService.sendSMS(alertMessage,details.getPhone(),  alertSubject);
+
+                } else if (preference.equalsIgnoreCase("EMAIL")) {
+                    mailService.send(details.getEmail(),alertSubject,alertMessage);
+
+                } else if (preference.equalsIgnoreCase("BOTH")) {
+                    integrationService.sendSMS(alertMessage,details.getPhone(),  alertSubject);
+                    mailService.send(details.getEmail(),alertSubject,alertMessage);
+                }
+
+            }
+        } catch (Exception e) {
+            logger.error("EXCEPTION OCCURRED {}", e.getMessage());
+        }
+
     }
 }
