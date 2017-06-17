@@ -4,20 +4,19 @@
 
 </head>
 <body>
-<div class="container">
-    <header th:replace="cust_layout :: header">
-    </header>
+<header th:replace="cust_layout :: header">
+</header>
 
 <section class="content-wrapper">
-    <div class="containe">
+    <div class="container">
         <div class="row">
             <div class="col-md-4 col-sm-4">
                 <h5 class="page_header"> Transaction Summary</h5>
             </div>
         </div>
         <div class="row">
-            <div class="col-md-8 content-bg">
-                <div class="row form-spacing">
+            <div class="col-md-9 content-bg">
+
                     <!--<div class="col-md-6 col-sm-6">-->
 
 
@@ -80,7 +79,7 @@
 
 
                         <div class="form-group">
-                            <input value="Modify" style="cursor: pointer;" type="button" onclick="history.go(-1);" />
+                            <!--<input value="Modify" style="cursor: pointer;" type="button" onclick="history.go(-1);" />-->
                             <button type="submit" class="btn btn-link">Proceed</button>
                             <a th:href="@{/retail/transfer/interbank}">Cancel</a>
 
@@ -88,9 +87,11 @@
                         </div>
                     </form>
                     <!--</div>-->
-                </div>
+
             </div>
-            <div th:replace="cust_layout :: sidebar" class="col-md-3 sidebar">
+            <div class="col-md-3 pull-right " >
+                <div th:replace="cust_layout :: sidebar" class="" >
+                </div>
             </div>
         </div>
     </div>
@@ -101,6 +102,5 @@
 <footer th:replace="cust_layout ::footer">
 </footer>
 <script th:src="@{~/customer/js/accountdetails.js}"></script>
-</div>
 </body>
 </html>

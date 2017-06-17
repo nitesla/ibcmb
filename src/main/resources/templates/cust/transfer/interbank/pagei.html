@@ -5,8 +5,8 @@
 </head>
 <body>
 <div class="container">
-    <header th:replace="cust_layout :: header">
-    </header>
+<header th:replace="cust_layout :: header">
+</header>
 
 <section class="content-wrapper">
     <div class="containe">
@@ -21,10 +21,10 @@
 
         <div class="row">
 
-            <div class="col-md-8 content-bg">
+            <div class="col-md-9 content-bg">
 
-                <div class="row spacing">
-                    <div class="col-md-12 col-sm-12">
+
+                    <div class="col-md-8 col-sm-12">
                         <h6 class="page_header">Interbank Transfer</h6>
                         <form method="post" th:action="@{/retail/transfer/interbank/index}">
                             <div class="form-group">
@@ -32,42 +32,59 @@
 
                                 <span id="tran"></span>
                                 <select name="tranType" class="form-control" id="tranType">
-                                    <option value="NIP">NIP</option>
-                                    <option value="RTGS">RTGS</option>
+                                    <option value="nip">NIP</option>
+                                    <option value="rtgs">RTGS</option>
                                 </select></div>
                             <button class="btn btn-link" type="submit">NEXT</button>
 
                             <!-- <button type="submit" class="btn btn-default" style="float: right">Add beneficiary</button>
                         --> </form>
                     </div>
-                </div>
+
+                    <div class="col-md-4 sidebar">
+                        <div class="sidebar-bg">
+                            <h3 class="related page_header" style="font-weight:bolder">Related Information</h3>
+                            <!--<hr class="hrhr"/>-->
+                            <!--<p th:text="${nip.feeValue}" id="nip"></p>-->
+                            <p id="nip" >Fee applicable: <span th:text="'N'+${nip.feeValue}"></span></p>
+                            <p id="rtgs" >Fee applicable: <span th:text="'N'+${rtgs.feeValue}"></span></p>
+                        </div>
+                    </div>
+
             </div>
-            <div class="col-md-3 sidebar">
-                <div class="sidebar-bg">
-                    <p class="related" style="text-align: center; padding-top: 2%">Related Information</p>
-                    <hr class="hrhr"/>
-                    <!--<p th:each="rule : ${passwordRules}" th:text="${rule}"></p>-->
-                    <p>Hello, This part should contain charge details</p>
+
+            <div class="col-md-3 pull-right " >
+                <div th:replace="cust_layout :: sidebar" class="" >
                 </div>
-            </div>
-            <div th:replace="cust_layout :: sidebar" class="col-md-3 sidebar">
             </div>
         </div>
     </div>
 </section>
-
+</div>
 
 <!-- CONTENT-WRAPPER SECTION END-->
 <footer th:replace="cust_layout ::footer">
 </footer>
 <script>
     //datepicker
-    $( function() {
-        $( "#datepicker" ).datepicker(
-            { dateformat : 'dd/mm/yy'}
+    $(function () {
+        $("#datepicker").datepicker(
+            {dateformat: 'dd/mm/yy'}
         );
-    } );
+    });
+
+
+    $('#tranType').on('change', function () {
+        if ($(this).val() === "nip") {
+            $("#nip").show();
+            $("#rtgs").hide();
+
+        }
+        else if ($(this).val() === "rtgs") {
+            $("#rtgs").show();
+            $("#nip").hide();
+        }
+    });
 </script>
-</div>
 </body>
 </html>

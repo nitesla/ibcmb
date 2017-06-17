@@ -1,23 +1,22 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="cust_layout :: site-head">
-
 </head>
 <body>
 <div class="container">
     <header th:replace="cust_layout :: header">
     </header>
 
-<section class="content-wrapper">
-    <div class="containe">
+    <section class="content-wrapper">
+    <div>
         <div class="row">
             <div class="col-md-4 col-sm-4">
                 <h5 class="page_header"> New Beneficiary</h5>
             </div>
         </div>
         <div class="row">
-            <div class="col-md-8 content-bg">
-                <div class="row form-spacing">
+            <div class="col-md-9 content-bg">
+
                     <div class="col-md-6 col-sm-6">
                         <div class="form-group">
                             <label>Beneficiary Type</label>
@@ -35,7 +34,7 @@
                             <div class="form-group">
                                 <label>Bank Details</label>
                                 <span class="req"></span>
-                                <select name="beneficiaryBank" id="beneficiaryBank" class="form-control"
+                                <select name="beneficiaryBank" id="beneficiaryBank" class="form-control" placeholder="select"
                                         th:field="*{beneficiaryBank}" required="required">
                                     <option th:each="bank : ${localBanks}" th:value="${bank.institutionCode}"
                                             th:text="${bank.institutionName}"></option>
@@ -43,7 +42,7 @@
                             </div>
                             <div class="form-group">
                                 <label>Account Number</label>
-                                <span class="req"></span><input type="text" id="acct_num" name="acct_num" class="form-control"
+                                <span class="req"></span><input type="number" min="0" id="acct_num" name="acct_num" class="form-control"
                                        th:field="*{accountNumber}" placeholder="Account Number"/>
                                 <p class="errors" th:if="${#fields.hasErrors('accountNumber')}"
                                    th:errors="*{accountNumber}">&times;</p>
@@ -73,54 +72,68 @@
                               th:object="${internationalBeneficiaryDTO}" style="display: none">
                             <input type="hidden" th:value="foreign" class="form-control"/>
                             <div class="form-group">
-                                <label>Bank Details</label>
-                                <span class="req"></span><select th:field="*{beneficiaryBank}" class="form-control">
+                                <label>Beneficiary Bank</label>
+                                <span class="req"></span>
+                                <select th:field="*{beneficiaryBank}" class="form-control">
                                     <option th:each="bank : ${foreignBanks}" th:value="${bank.institutionCode}"
                                             th:text="${bank.institutionName}"></option>
-
                                 </select>
+
                             </div>
                             <div class="form-group">
 
                                 <label>Swift Code</label>
                                 <span class="req"></span><input type="text" class="form-control" name="swiftCode" placeholder="Bank SWIFT Code"
-                                       th:field="*{swiftCode}" required="required"/>
+                                                                th:field="*{swiftCode}" required="required"/>
                             </div>
                             <div class="form-group">
                                 <label>Sort Code</label>
                                 <span class="req"></span><input type="text" class="form-control" name="sortCode" placeholder="Bank Sort Code"
-                                       th:field="*{sortCode}" required="required"/>
+                                                                th:field="*{sortCode}" required="required"/>
                             </div>
                             <div class="form-group">
+                                <label>Beneficiary Name</label>
                                 <span class="req"></span><input type="text" class="form-control" name="accountName"
-                                       placeholder="Beneficiary Name" th:field="*{accountName}" required="required"/>
+                                                                placeholder="Beneficiary Name" th:field="*{accountName}" required="required"/>
                             </div>
 
                             <div class="form-group">
-
-                                <input type="text" class="form-control" name="accountNumber"
+                                <label>Beneficiary Account Number</label>
+                                <span class="req"></span>
+                                <input min="0" type="number" class="form-control" name="accountNumber"
                                        placeholder="Beneficiary Account Number" th:field="*{accountNumber}"
                                        required="required"/>
 
                             </div>
                             <div class="form-group">
+                                <label>Currency Code</label>
+                                <span class="req"></span>
+                                <select name="currencyCode" id="currencyCode" class="form-control" required="required">
+
+                                    <option th:each="ccyCode : ${foreignCurrencyCodes}" th:value="${ccyCode.code}"
+                                            th:text="${ccyCode.code}"></option>
+                                </select>
+                            </div>
+                            <div class="form-group">
                                 <label>Beneficiary Address</label>
                                 <span class="req"></span><textarea name="beneficiaryAddress" class="form-control"
-                                          th:field="*{beneficiaryAddress}"></textarea>
+                                                                   th:field="*{beneficiaryAddress}"></textarea>
                             </div>
                             <div class="form-group">
-
+                                <label>Intermediary Bank Name</label>
                                 <span class="req"></span><input type="text" class="form-control" name="intermediaryBankName"
-                                       placeholder="Intermediary Bank Name" th:field="*{intermediaryBankName}"/>
+                                                                placeholder="Intermediary Bank Name" th:field="*{intermediaryBankName}"/>
                             </div>
                             <div class="form-group">
-                                <span class="req"></span><input type="text" class="form-control" name="intermediaryBankAcctNo"
-                                       placeholder="Intermediary Bank Account Number"
-                                       th:field="*{intermediaryBankAcctNo}"/>
+                                <label>Intermediary Account Number</label>
+                                <span class="req"></span><input min="0" type="number" class="form-control" name="intermediaryBankAcctNo"
+                                                                placeholder="Intermediary Bank Account Number"
+                                                                th:field="*{intermediaryBankAcctNo}"/>
 
                             </div>
                             <button class="btn btn-primary">Save</button>
                         </form>
+
                         <form id="intrabank" method="post" th:action="@{/retail/beneficiary/local}"
                               th:object="${localBeneficiaryDTO}" style="display: none">
                             <input type="hidden" th:value="intrabank" class="form-control"/>
@@ -134,7 +147,7 @@
                             </div>
                             <div class="form-group">
                                 <label>Account Number</label>
-                                <span class="required"></span><input type="text" class="form-control" name="accountNumber" th:field="*{accountNumber}"
+                                <span class="required"></span><input type="number" min="0" class="form-control" name="accountNumber" th:field="*{accountNumber}"
                                        id="iacct_num" placeholder="Account Number" required="required"/>
 
                             </div>
@@ -152,7 +165,7 @@
                                 <input type="text" class="form-control" name="preferredName"
                                        placeholder="Beneficiary Alias" th:field="*{preferredName}" required="required"/>
                             </div>
-                            <button id="ilocalsave" style="display: none;" class="btn btn-link">NEXT</button>
+                            <button id="ilocalsave" style="display: none;" class="btn btn-link">Save</button>
                             <button id="ineq" type="button" class="btn btn-link" onclick="getIntraBankAccountName();">
                                 Name Enquiry
                             </button>
@@ -160,12 +173,15 @@
                         </form>
 
                     </div>
-                </div>
+
             </div>
-            <div th:replace="cust_layout :: sidebar" class="col-md-3 sidebar">
+            <div class="col-md-3 pull-right " >
+                <div th:replace="cust_layout :: sidebar" class="" >
+                </div>
             </div>
         </div>
     </div>
+    <!--</div>-->
 </section>
 
 
@@ -173,125 +189,124 @@
 <footer th:replace="cust_layout ::footer">
 </footer>
 
-<script>
-    $('#benType').on('change', function () {
-        if ($(this).val() === "foreign") {
-            $("#foreign").show();
-            $("#local").hide();
-            $("#intrabank").hide();
-        }
-        else if ($(this).val() === "local") {
-            $("#local").show();
-            $("#foreign").hide();
-            $("#intrabank").hide();
-        } else if ($(this).val() === "intrabank") {
-            $("#local").hide();
-            $("#foreign").hide();
-            $("#intrabank").show();
-        }
-    });
-</script>
-<script th:inline="javascript">
-    /*<![CDATA[*/
-    $(document).ready(function () {
-        $('#beneficiaryBank').change(function () {
-            $('#acct_name').val("");
-            $('.acctError').hide();
+    <script>
+        $('#benType').on('change', function () {
+            if ($(this).val() === "foreign") {
+                $("#foreign").show();
+                $("#local").hide();
+                $("#intrabank").hide();
+            }
+            else if ($(this).val() === "local") {
+                $("#local").show();
+                $("#foreign").hide();
+                $("#intrabank").hide();
+            } else if ($(this).val() === "intrabank") {
+                $("#local").hide();
+                $("#foreign").hide();
+                $("#intrabank").show();
+            }
+        });
+    </script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        $(document).ready(function () {
+            $('#beneficiaryBank').change(function () {
+                $('#acct_name').val("");
+                $('.acctError').hide();
+            });
+
+            $('#acct_num').change(function () {
+                $('#acct_name').val("");
+                $('.acctError').hide();
+            });
+    //        sortSelect('#beneficiaryBank', 'text', 'asc');
+
+            $("#beneficiaryBank").prop("selectedIndex", -1);
+
         });
 
-        $('#acct_num').change(function () {
-            $('#acct_name').val("");
-            $('.acctError').hide();
-        });
-//        sortSelect('#beneficiaryBank', 'text', 'asc');
 
-        $("#beneficiaryBank").prop("selectedIndex", -1);
+        function getAccountName() {
+            //make sure alert message is not empty
+            var acct = $('#acct_num').val();
+            var bank = $('#beneficiaryBank').val();
 
-    });
+            if (( acct == null || acct == '' ) || ( bank == null || bank == '' )) {
 
 
-    function getAccountName() {
-        //make sure alert message is not empty
-        var acct = $('#acct_num').val();
-        var bank = $('#beneficiaryBank').val();
-
-        if (( acct == null || acct == '' ) || ( bank == null || bank == '' )) {
-
-
-            $('.acctError').show().css("color", "red");
-            return false;
-        }
-
-        var options = {
-            type: 'GET',
-            url: '/retail/transfer/' + acct + '/' + bank + '/nameEnquiry',
-//					dataType: 'jsonp',
-            error: function (xhr, textStatus, errorThrown) {
                 $('.acctError').show().css("color", "red");
+                return false;
+            }
 
-            },
-            success: function (data, textStatus) {
-
-                var result = data;
-                $('#acct_name').val(result);
-
-                if (result != null && result != '') {
-
-                    $('#localsave').show();
-                    $('#neq').hide();
-                } else {
-
+            var options = {
+                type: 'GET',
+                url: '/retail/transfer/' + acct + '/' + bank + '/nameEnquiry',
+    //					dataType: 'jsonp',
+                error: function (xhr, textStatus, errorThrown) {
                     $('.acctError').show().css("color", "red");
+
+                },
+                success: function (data, textStatus) {
+
+                    var result = data;
+                    $('#acct_name').val(result);
+
+                    if (result != null && result != '') {
+
+                        $('#localsave').show();
+                        $('#neq').hide();
+                    } else {
+
+                        $('.acctError').show().css("color", "red");
+                    }
                 }
-            }
-        };
-        $.ajax(options);
-    }
-    ;
-
-    function getIntraBankAccountName() {
-        //make sure alert message is not empty
-        var acct = $('#iacct_num').val();
-        if (( acct == null || acct == '' )) {
-
-
-            $('.acctError').show().css("color", "red");
-            return false;
+            };
+            $.ajax(options);
         }
+        ;
 
-        var options = {
-            type: 'GET',
-            url: '/retail/transfer/local/' + acct + '/nameEnquiry',
-//					dataType: 'jsonp',
-            error: function (xhr, textStatus, errorThrown) {
-                $('.iacctError').show().css("color", "red");
-            },
-            success: function (data, textStatus) {
-                console.log(data);
-                console.log(textStatus);
-                var result = data;
-                //var result = (new Function("return " + result))();
-                // $('#acct_name').val(result.message);
-                $('#iacct_name').val(result);
-                $('.iacctError').hide();
+        function getIntraBankAccountName() {
+            //make sure alert message is not empty
+            var acct = $('#iacct_num').val();
+            if (( acct == null || acct == '' )) {
 
-                if (result != null && result != '') {
 
-                    $('#ilocalsave').show();
-                    $('#ineq').hide();
-                } else {
-
-                    $('.iacctError').show().css("color", "red");
-                }
-
+                $('.acctError').show().css("color", "red");
+                return false;
             }
-        };
-        $.ajax(options);
-    }
 
+            var options = {
+                type: 'GET',
+                url: '/retail/transfer/local/' + acct + '/nameEnquiry',
+    //					dataType: 'jsonp',
+                error: function (xhr, textStatus, errorThrown) {
+                    $('.iacctError').show().css("color", "red");
+                },
+                success: function (data, textStatus) {
+                    console.log(data);
+                    console.log(textStatus);
+                    var result = data;
+                    //var result = (new Function("return " + result))();
+                    // $('#acct_name').val(result.message);
+                    $('#iacct_name').val(result);
+                    $('.iacctError').hide();
 
+                    if (result != null && result != '') {
+
+                        $('#ilocalsave').show();
+                        $('#ineq').hide();
+                    } else {
+
+                        $('.iacctError').show().css("color", "red");
+                    }
+
+                }
+            };
+            $.ajax(options);
+        }
     /*]]>*/
 </script>
+
 </div>
 </body>
 </html>

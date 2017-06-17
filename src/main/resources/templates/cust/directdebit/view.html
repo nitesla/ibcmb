@@ -18,9 +18,9 @@
         </div>
         <div class="row">
             <div class="col-md-8 content-bg">
-                <div class="row spacing">
+
                     <div class="col-md-10">
-                        <table class="table">
+                        <table class="table table-responsive">
                             <thead>
                                 <td>Beneficiary</td>
                                 <td>Debit Account</td>
@@ -38,9 +38,11 @@
                             </tbody>
                         </table>
                     </div>
-                </div>
+
             </div>
-            <div th:replace="cust_layout :: sidebar" class="col-md-3 sidebar">
+            <div class="col-md-3 pull-right " >
+                <div th:replace="cust_layout :: sidebar" class="" >
+                </div>
             </div>
         </div>
     </div>

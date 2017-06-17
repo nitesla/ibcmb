@@ -16,7 +16,7 @@
         </div>
         <div class="row">
             <div class="col-md-8 content-bg">
-                <div class="row form-spacing">
+
                     <div class="col-md-6 col-sm-6">
                         <form method="post" th:action="@{/retail/change_password}" th:object="${custChangePassword}">
                             <div class="form-group">
@@ -30,9 +30,9 @@
                                 <p class="errors" th:if="${#fields.hasErrors('newPassword')}" th:errors="*{newPassword}">&times;</p>
                             </div>
                             <div class="form-group">
-                                <label >Confirm New Password</label>
-                                <input  data-toggle="tooltip" title="Hooray!" data-placement="right" id="password" type="password" th:field="*{confirmPassword}"  class="form-control"/>
-                                <p  class="errors" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}">&times;</p>
+                                <label>Confirm New Password</label>
+                                <input id="password" type="password" th:field="*{confirmPassword}"  class="form-control"/>
+                                <p class="errors" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}">&times;</p>
                             </div>
 
                             <button type="submit" class="btn btn-default">Submit</button>
@@ -47,9 +47,11 @@
                         <hr/>
                         <p th:each="rule : ${passwordRules}" th:text="${rule}"></p>
                     </div>
-                </div>
+
             </div>
-            <div th:replace="cust_layout :: sidebar" class="col-md-3 sidebar">
+            <div class="col-md-3 pull-right " >
+                <div th:replace="cust_layout :: sidebar" class="" >
+                </div>
             </div>
         </div>
     </div>
@@ -61,11 +63,6 @@
 <script>
     $('#password').bind("cut copy paste",function(e) {
         e.preventDefault();
-    });
-
-
-    $(document).ready(function(){
-        $('[data-toggle="tooltip"]').tooltip();
     });
 </script>
 </div>

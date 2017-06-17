@@ -18,23 +18,23 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-8 content-bg">
-                <div class="row spacing">
-                    <div class="col-md-10">
+            <div class="col-md-9 content-bg">
+
+                    <div class="c">
                         <h4 class="sub_header">Local Beneficiaries</h4>
-                        <table class="table">
+                        <table class="table table-responsive">
                             <thead>
-                                <td>Name</td>
-                                <td>Account Number</td>
-                                <td>Bank</td>
-                                <td>Delete</td>
+                                <td >Name</td>
+                                <td class="text-center">Account Number</td>
+                                <td class="text-center">Bank</td>
+                                <td class="text-center">Delete</td>
                             </thead>
                             <tbody>
                                 <tr th:each="loc : ${localBen}">
-                                    <td th:text="${loc.accountName}"></td>
-                                    <td th:text="${loc.accountNumber}"></td>
-                                    <td th:text="${loc.beneficiaryBank}"></td>
-                                    <td><a th:href="@{'/retail/beneficiary/' + ${loc.id} + '/loc/delete'}"><i class="fa fa-trash"></i></a></td>
+                                    <td  th:text="${loc.accountName}"></td>
+                                    <td class="text-center" th:text="${loc.accountNumber}"></td>
+                                    <td class="text-center" th:text="${loc.beneficiaryBank}"></td>
+                                    <td class="text-center"><a th:href="@{'/retail/beneficiary/' + ${loc.id} + '/loc/delete'}"><i class="fa fa-trash"></i></a></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -57,9 +57,11 @@
                             </tbody>
                         </table>
                     </div>
-                </div>
+
             </div>
-            <div th:replace="cust_layout :: sidebar" class="col-md-3 sidebar">
+            <div class="col-md-3 pull-right " >
+                <div th:replace="cust_layout :: sidebar" class="" >
+                </div>
             </div>
         </div>
     </div>

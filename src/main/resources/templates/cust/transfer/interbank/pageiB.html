@@ -16,9 +16,9 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-8 content-bg">
-                <div class="row form-spacing">
-                    <div class="col-md-6 col-sm-6">
+            <div class="col-md-9 content-bg">
+
+                    <div class="">
                         <form id="local" method="post" th:action="@{/retail/transfer/interbank/new}"
                               th:object="${localBeneficiaryDTO}">
                             <div class="form-group">
@@ -47,14 +47,16 @@
                                 <input type="text" class="form-control" name="preferredName"
                                        placeholder="Beneficiary Alias" th:field="*{preferredName}"/>
                             </div>
-                            <button id="localsave" style="display: none;" class="btn btn-link" >Next</button>
+                            <button id="localsave" style="display: none;" class="btn btn-link" >Save</button>
                             <button id="neq" type="button" class="btn btn-link" onclick="getAccountName();">Name Enquiry</button>
                         </form>
 
                     </div>
-                </div>
+
             </div>
-            <div th:replace="cust_layout :: sidebar" class="col-md-3 sidebar">
+            <div class="col-md-3 pull-right " >
+                <div th:replace="cust_layout :: sidebar" class="" >
+                </div>
             </div>
         </div>
     </div>
