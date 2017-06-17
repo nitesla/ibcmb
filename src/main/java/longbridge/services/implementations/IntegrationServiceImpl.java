@@ -13,7 +13,6 @@ import longbridge.services.MailService;
 import longbridge.utils.AccountStatement;
 import longbridge.utils.ResultType;
 import longbridge.utils.TransferType;
-import org.apache.catalina.core.ApplicationContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +51,6 @@ public class IntegrationServiceImpl implements IntegrationService {
     private MailService mailService;
     private TemplateEngine templateEngine;
     private ConfigurationService configService;
-
 
     @Autowired
     public IntegrationServiceImpl(RestTemplate template, MailService mailService, TemplateEngine templateEngine
@@ -194,13 +192,13 @@ public class IntegrationServiceImpl implements IntegrationService {
                     transRequest.setReferenceNumber(response.getUniqueReferenceCode());
                     transRequest.setNarration(response.getNarration());
 
+
                     return transRequest;
 
                 } catch (Exception e) {
 
                     e.printStackTrace();
                     transRequest.setStatus(ResultType.ERROR.toString());
-                    transRequest.setStatusDescription(e.getMessage());
                     return transRequest;
 
                 }
@@ -221,6 +219,7 @@ public class IntegrationServiceImpl implements IntegrationService {
                 try {
                     response = template.postForObject(uri, params, TransferDetails.class);
 
+
                     logger.info("response for transfer {}", response.toString());
                     transRequest.setReferenceNumber(response.getUniqueReferenceCode());
                     transRequest.setNarration(response.getNarration());
@@ -234,7 +233,6 @@ public class IntegrationServiceImpl implements IntegrationService {
 
                     e.printStackTrace();
                     transRequest.setStatus(ResultType.ERROR.toString());
-                    transRequest.setStatusDescription(e.getMessage());
                     return transRequest;
                 }
 
@@ -256,7 +254,6 @@ public class IntegrationServiceImpl implements IntegrationService {
                 logger.info("params for transfer {}", params.toString());
                 try {
                     response = template.postForObject(uri, params, TransferDetails.class);
-
                     transRequest.setNarration(response.getNarration());
                     transRequest.setReferenceNumber(response.getUniqueReferenceCode());
                     transRequest.setStatus(response.getResponseCode());
@@ -267,7 +264,6 @@ public class IntegrationServiceImpl implements IntegrationService {
                 } catch (Exception e) {
 
                     e.printStackTrace();
-                    transRequest.setStatusDescription(e.getMessage());
                     transRequest.setStatus(ResultType.ERROR.toString());
                     return transRequest;
                 }

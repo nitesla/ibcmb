@@ -32,7 +32,7 @@
                               th:object="${localBeneficiaryDTO}">
                             <input type="hidden" th:value="local" class="form-control"/>
                             <div class="form-group">
-                                <label>Bank Details</label>
+                                <label>Beneficiary Bank</label>
                                 <span class="req"></span>
                                 <select name="beneficiaryBank" id="beneficiaryBank" class="form-control" placeholder="select"
                                         th:field="*{beneficiaryBank}" required="required">
@@ -42,7 +42,7 @@
                             </div>
                             <div class="form-group">
                                 <label>Account Number</label>
-                                <span class="req"></span><input type="text" id="acct_num" name="acct_num" class="form-control"
+                                <span class="req"></span><input type="number" min="0" id="acct_num" name="acct_num" class="form-control"
                                        th:field="*{accountNumber}" placeholder="Account Number"/>
                                 <p class="errors" th:if="${#fields.hasErrors('accountNumber')}"
                                    th:errors="*{accountNumber}">&times;</p>
@@ -67,58 +67,73 @@
                             </button>
                             <a th:href="@{/retail/benficiary}" class="btn btn-link">Cancel</a>
                         </form>
+
                         <form id="foreign" method="post" th:action="@{/retail/beneficiary/foreign}"
                               th:object="${internationalBeneficiaryDTO}" style="display: none">
                             <input type="hidden" th:value="foreign" class="form-control"/>
                             <div class="form-group">
-                                <label>Bank Details</label>
-                                <span class="req"></span><select th:field="*{beneficiaryBank}" class="form-control">
+                                <label>Beneficiary Bank</label>
+                                <span class="req"></span>
+                                <select th:field="*{beneficiaryBank}" class="form-control">
                                     <option th:each="bank : ${foreignBanks}" th:value="${bank.institutionCode}"
                                             th:text="${bank.institutionName}"></option>
-
                                 </select>
+
                             </div>
                             <div class="form-group">
 
                                 <label>Swift Code</label>
                                 <span class="req"></span><input type="text" class="form-control" name="swiftCode" placeholder="Bank SWIFT Code"
-                                       th:field="*{swiftCode}" required="required"/>
+                                                                th:field="*{swiftCode}" required="required"/>
                             </div>
                             <div class="form-group">
                                 <label>Sort Code</label>
                                 <span class="req"></span><input type="text" class="form-control" name="sortCode" placeholder="Bank Sort Code"
-                                       th:field="*{sortCode}" required="required"/>
+                                                                th:field="*{sortCode}" required="required"/>
                             </div>
                             <div class="form-group">
+                                <label>Beneficiary Name</label>
                                 <span class="req"></span><input type="text" class="form-control" name="accountName"
-                                       placeholder="Beneficiary Name" th:field="*{accountName}" required="required"/>
+                                                                placeholder="Beneficiary Name" th:field="*{accountName}" required="required"/>
                             </div>
 
                             <div class="form-group">
-
-                                <input type="text" class="form-control" name="accountNumber"
+                                <label>Beneficiary Account Number</label>
+                                <span class="req"></span>
+                                <input min="0" type="number" class="form-control" name="accountNumber"
                                        placeholder="Beneficiary Account Number" th:field="*{accountNumber}"
                                        required="required"/>
 
                             </div>
                             <div class="form-group">
+                                <label>Currency Code</label>
+                                <span class="req"></span>
+                                <select name="currencyCode" id="currencyCode" class="form-control" required="required">
+
+                                    <option th:each="ccyCode : ${foreignCurrencyCodes}" th:value="${ccyCode.code}"
+                                            th:text="${ccyCode.code}"></option>
+                                </select>
+                            </div>
+                            <div class="form-group">
                                 <label>Beneficiary Address</label>
                                 <span class="req"></span><textarea name="beneficiaryAddress" class="form-control"
-                                          th:field="*{beneficiaryAddress}"></textarea>
+                                                                   th:field="*{beneficiaryAddress}"></textarea>
                             </div>
                             <div class="form-group">
-
+                                <label>Intermediary Bank Name</label>
                                 <span class="req"></span><input type="text" class="form-control" name="intermediaryBankName"
-                                       placeholder="Intermediary Bank Name" th:field="*{intermediaryBankName}"/>
+                                                                placeholder="Intermediary Bank Name" th:field="*{intermediaryBankName}"/>
                             </div>
                             <div class="form-group">
-                                <span class="req"></span><input type="text" class="form-control" name="intermediaryBankAcctNo"
-                                       placeholder="Intermediary Bank Account Number"
-                                       th:field="*{intermediaryBankAcctNo}"/>
+                                <label>Intermediary Account Number</label>
+                                <span class="req"></span><input min="0" type="number" class="form-control" name="intermediaryBankAcctNo"
+                                                                placeholder="Intermediary Bank Account Number"
+                                                                th:field="*{intermediaryBankAcctNo}"/>
 
                             </div>
                             <button class="btn btn-primary">Save</button>
                         </form>
+
                         <form id="intrabank" method="post" th:action="@{/retail/beneficiary/local}"
                               th:object="${localBeneficiaryDTO}" style="display: none">
                             <input type="hidden" th:value="intrabank" class="form-control"/>
@@ -132,7 +147,7 @@
                             </div>
                             <div class="form-group">
                                 <label>Account Number</label>
-                                <span class="required"></span><input type="text" class="form-control" name="accountNumber" th:field="*{accountNumber}"
+                                <span class="required"></span><input type="number" min="0" class="form-control" name="accountNumber" th:field="*{accountNumber}"
                                        id="iacct_num" placeholder="Account Number" required="required"/>
 
                             </div>
@@ -287,9 +302,6 @@
             };
             $.ajax(options);
         }
-
-
-
     /*]]>*/
 </script>
 
