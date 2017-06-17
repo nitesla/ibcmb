@@ -52,10 +52,9 @@
     <div class="container">
         <div class="bg">
             <form id="loginform" th:action="@{/retail/login}" method="POST" class="form-signin" autocomplete="off">
-                <h5 class="form-signin-heading">Enter Login Details</h5>
+                <h5 class="form-signin-heading text-white">Enter Login Details</h5>
                 <br/>
 
-                <h6 id="label">Please enter your username</h6>
 
                 <div th:if="${param.message != null}" class="alert alert-info" th:text="${param.message[0]}">message</div>
                 <div th:if="${param.expired != null}" class="alert alert-danger" th:text="#{session.expired}">error</div>
@@ -63,12 +62,12 @@
                 <br/>
                 <div id="username_div" class="form-group">
                     <input type="text" name="username" th:value="*{username}" class="form-control"  placeholder="Username" readonly="readonly" autocomplete="off"/>
-                    <p><a href="/forgot/username">Forgot Username?</a></p>
+                    <p><a class="text-white" href="/forgot/username">Forgot Username?</a></p>
                 </div>
 
                 <div id="password_div" class="form-group">
                     <input id="password" type="password" name="password" class="form-control"  placeholder="Password" required="required" autocomplete="off" />
-                    <p><a href="/forgot/password">forgot password?</a></p>
+                    <p><a class="text-white" href="/forgot/password">forgot password?</a></p>
                 </div>
 
                 <div class="form-group">
