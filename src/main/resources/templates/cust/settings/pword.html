@@ -16,7 +16,7 @@
         </div>
         <div class="row">
             <div class="col-md-8 content-bg">
-                <div class="row form-spacing">
+
                     <div class="col-md-6 col-sm-6">
                         <form method="post" th:action="@{/retail/change_password}" th:object="${custChangePassword}">
                             <div class="form-group">
@@ -47,9 +47,11 @@
                         <hr/>
                         <p th:each="rule : ${passwordRules}" th:text="${rule}"></p>
                     </div>
-                </div>
+
             </div>
-            <div th:replace="cust_layout :: sidebar" class="col-md-3 sidebar">
+            <div class="col-md-3 pull-right " >
+                <div th:replace="cust_layout :: sidebar" class="" >
+                </div>
             </div>
         </div>
     </div>
