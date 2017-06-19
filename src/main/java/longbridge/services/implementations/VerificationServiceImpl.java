@@ -48,8 +48,9 @@ public class VerificationServiceImpl implements VerificationService {
 	}
 
 	@Override
-	public String verify(Verification t) throws VerificationException {
+	public String verify(Long verId) throws VerificationException {
 		//check if it is verified
+		Verification t = verificationRepo.findOne(verId);
 		if(t.getVerifiedBy() != null){
 			//already verified
 			logger.debug("Already verified");
@@ -70,6 +71,7 @@ public class VerificationServiceImpl implements VerificationService {
 
 			Object returned = cc.newInstance();
 			method.invoke(returned, t.getAfterObject());
+			logger.info("Object retrieved {}", t.getAfterObject());
 			logger.info("Object returned {}", returned.toString());
 			logger.debug("Class {} ", returned.toString() );
 			eman.persist(cc.cast(returned));
@@ -129,18 +131,22 @@ public class VerificationServiceImpl implements VerificationService {
 	@Override
 	public <T extends SerializableEntity<T>> String addModifyVerificationRequest(T originalEntity, T entity) throws JsonProcessingException,DuplicateObjectException {
 
-		String classSimpleName = entity.getClass().getSimpleName();
+		String className = entity.getClass().getSimpleName();
 
-		Verification verification = verificationRepo.findFirstByEntityNameAndStatus(classSimpleName, verificationStatus.PENDING);
+		AbstractEntity originalEntity1 = (AbstractEntity)originalEntity;
+
+		Verification verification = verificationRepo.findFirstByEntityNameAndEntityIdAndStatus(className,originalEntity1.getId(),verificationStatus.PENDING);
 
 		if(verification!=null){
 			throw new DuplicateObjectException("Entity has pending verification");
 		}
-		verification.setEntityName(classSimpleName);
+		verification = new Verification();
+		verification.setEntityName(className);
+		verification.setEntityId(originalEntity1.getId());
 		verification.setBeforeObject(originalEntity.serialize());
 		verification.setAfterObject(entity.serialize());
 		verification.setOriginal(originalEntity.serialize());
-		verification.setDescription("Modified " + classSimpleName);
+		verification.setDescription("Modified " + className);
 		//TODO get the Operation Code
 //		verification.setOperationCode(entity.getModifyCode());
 		verification.setStatus(verificationStatus.PENDING);
@@ -148,7 +154,7 @@ public class VerificationServiceImpl implements VerificationService {
         //verification.setInitiatedBy(initiator);
         verification.setInitiatedOn(new Date());
         verificationRepo.save(verification);
-        logger.info(classSimpleName + " Modification request has been added. Before {}, After {}", verification.getBeforeObject(), verification.getAfterObject());
-		return String.format(messageSource.getMessage("verification.modify.success",null,locale),classSimpleName);
+        logger.info(className + " Modification request has been added. Before {}, After {}", verification.getBeforeObject(), verification.getAfterObject());
+		return String.format(messageSource.getMessage("verification.modify.success",null,locale),className);
 	}
 }
