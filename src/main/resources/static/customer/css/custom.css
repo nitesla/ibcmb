@@ -984,6 +984,7 @@ button, input, optgroup, select, textarea {
     margin: 20px 0 10px 0;
     background-color: #ebecef;
     min-height: 350px;
+    padding-top:20px;
 }
 
 .sidebar-bg{
