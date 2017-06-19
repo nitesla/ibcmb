@@ -214,12 +214,17 @@ public class TransferController {
             request.getSession().removeAttribute("transferRequest");
 
 
-            if (request.getSession().getAttribute("Lbeneficiary") != null) {
-
-                LocalBeneficiaryDTO l = (LocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary");
-                model.addAttribute("message", messages.getMessage("transaction.success", null, locale));
-                model.addAttribute("beneficiary", l);
-                return "/cust/transfer/transferbeneficiary";
+            if(request.getParameter("add") != null){
+                //checkbox  checked
+                System.out.println("checkbox checked");
+                if (request.getSession().getAttribute("Lbeneficiary") != null) {
+                    LocalBeneficiaryDTO l = (LocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary");
+                    RetailUser user = retailUserService.getUserByName(principal.getName());
+                    model.addAttribute("message", messages.getMessage("transaction.success", null, locale));
+                    localBeneficiaryService.addLocalBeneficiary(user, l);
+                    request.getSession().removeAttribute("Lbeneficiary");
+                    model.addAttribute("beneficiary", l);
+                }
             }
 
             redirectAttributes.addFlashAttribute("message", messages.getMessage("transaction.success", null, locale));
@@ -227,6 +232,19 @@ public class TransferController {
             //return "redirect:/retail/dashboard";
         } catch (InternetBankingTransferException e) {
             e.printStackTrace();
+
+            if(request.getParameter("add") != null){
+                //checkbox  checked
+                System.out.println("checkbox checked");
+                if (request.getSession().getAttribute("Lbeneficiary") != null) {
+                    LocalBeneficiaryDTO l = (LocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary");
+                    RetailUser user = retailUserService.getUserByName(principal.getName());
+                    model.addAttribute("message", messages.getMessage("transaction.success", null, locale));
+                    localBeneficiaryService.addLocalBeneficiary(user, l);
+                    request.getSession().removeAttribute("Lbeneficiary");
+                    model.addAttribute("beneficiary", l);
+                }
+            }
             if (request.getSession().getAttribute("Lbeneficiary") != null)
                 request.getSession().removeAttribute("Lbeneficiary");
             String errorMessage = transferErrorService.getMessage(e, request);

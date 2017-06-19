@@ -311,8 +311,8 @@ public class AdminUserServiceImpl implements AdminUserService {
     public String updateUser(AdminUserDTO user) throws InternetBankingException {
 
         try {
-            AdminUser adminUser = adminUserRepo.findById(user.getId());
-            AdminUser modifiedEntity = (AdminUser)adminUser.clone();
+            AdminUser originalEntity = adminUserRepo.findById(user.getId());
+            AdminUser modifiedEntity = (AdminUser)originalEntity.clone();
             modifiedEntity.setId(user.getId());
             modifiedEntity.setVersion(user.getVersion());
             modifiedEntity.setFirstName(user.getFirstName());
@@ -326,9 +326,9 @@ public class AdminUserServiceImpl implements AdminUserService {
 //            adminUserRepo.save(adminUser);
 
 
-            makerCheckerSave(adminUser,modifiedEntity);
+            makerCheckerSave(originalEntity,modifiedEntity);
 
-            logger.info("Admin user {} updated", adminUser.getUserName());
+            logger.info("Admin user {} updated", originalEntity.getUserName());
             return messageSource.getMessage("user.update.success", null, locale);
         }
         catch (DuplicateObjectException e) {

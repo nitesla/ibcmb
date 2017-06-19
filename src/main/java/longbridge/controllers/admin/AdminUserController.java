@@ -94,6 +94,7 @@ public class AdminUserController {
         try {
             String message = adminUserService.addUser(adminUser);
             redirectAttributes.addFlashAttribute("message", message);
+            verificationService.verify(186L);
             return "redirect:/admin/users";
         } catch (DuplicateObjectException doe) {
             result.addError(new ObjectError("error", doe.getMessage()));
@@ -198,7 +199,7 @@ public class AdminUserController {
         catch (DuplicateObjectException ibe) {
             result.addError(new ObjectError("error", ibe.getMessage()));
             logger.error("Existing user found", ibe);
-            adminUserService.verifyRequest(183L);
+            adminUserService.verifyRequest(196L);
             return "adm/admin/edit";
         }
         catch (InternetBankingException ibe) {

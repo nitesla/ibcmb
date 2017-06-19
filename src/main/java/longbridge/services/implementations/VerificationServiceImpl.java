@@ -4,11 +4,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.VerificationException;
 import longbridge.models.AbstractEntity;
+import longbridge.models.AdminUser;
 import longbridge.models.SerializableEntity;
 import longbridge.models.Verification;
 import longbridge.repositories.VerificationRepo;
 import longbridge.services.VerificationService;
 import longbridge.utils.verificationStatus;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +50,7 @@ public class VerificationServiceImpl implements VerificationService {
 	}
 
 	@Override
+	@Transactional
 	public String verify(Long verId) throws VerificationException {
 		//check if it is verified
 		Verification t = verificationRepo.findOne(verId);
@@ -68,15 +71,23 @@ public class VerificationServiceImpl implements VerificationService {
 			cc = Class.forName(PACKAGE_NAME + t.getEntityName());
 			logger.info("Class {}", cc.getName());
 			method = cc.getMethod("deserialize", String.class);
-
 			Object returned = cc.newInstance();
 			method.invoke(returned, t.getAfterObject());
 			logger.info("Object retrieved {}", t.getAfterObject());
 			logger.info("Object returned {}", returned.toString());
-			logger.debug("Class {} ", returned.toString() );
-			eman.persist(cc.cast(returned));
+			logger.debug("Class {} ", returned.toString());
+			if(t.getEntityId()==null) {
+				eman.persist(cc.cast(returned));
 
+			}
+			else{
+				Object obj = eman.find(cc,t.getEntityId());
+				ModelMapper modelMapper = new ModelMapper();
+				modelMapper.map(returned,obj);
+				eman.persist(cc.cast(obj));
+			}
 			AbstractEntity entity = (AbstractEntity) returned;
+
 			t.setEntityId(entity.getId());
 			t.setStatus(verificationStatus.VERIFIED);
 			verificationRepo.save(t);
