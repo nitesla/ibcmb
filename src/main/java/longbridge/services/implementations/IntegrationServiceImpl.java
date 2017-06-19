@@ -5,14 +5,15 @@ import longbridge.api.*;
 import longbridge.dtos.SettingDTO;
 import longbridge.exception.InternetBankingTransferException;
 
+import longbridge.exception.TransferExceptions;
 import longbridge.models.FinancialTransaction;
 import longbridge.models.TransRequest;
 import longbridge.services.ConfigurationService;
 import longbridge.services.IntegrationService;
 import longbridge.services.MailService;
-import longbridge.utils.AccountStatement;
 import longbridge.utils.ResultType;
 import longbridge.utils.TransferType;
+import longbridge.utils.statement.AccountStatement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -84,72 +86,40 @@ public class IntegrationServiceImpl implements IntegrationService {
     }
 
     @Override
-    public AccountStatement getAccountStatements(String accountId, Date fromDate, Date toDate) {
+    public AccountStatement getAccountStatements(String accountNo, Date fromDate, Date toDate) {
         AccountStatement statement = new AccountStatement();
-        List<FinancialTransaction> financialTransactions = new ArrayList<>();
-        FileInputStream fis = null;
-        InputStreamReader isr = null;
-        BufferedReader bf = null;
-        File csv = new File(PROPERTY_EXCEL_SOURCE_FILE_PATH);
-
-
         try {
-
-            logger.info("*****************************FILE PROCESSING STARTED******************************");
-
-            fis = new FileInputStream(csv);
-            isr = new InputStreamReader(
-                    fis);
-            bf = new BufferedReader(isr);
-            String skipped;
-
-
-
-                /*FinancialTransaction td = new FinancialTransaction(tranStr);
-                financialTransactions.add(td);
-
-                 isr = new InputStreamReader(
-                    fis, "UTF-16");*/
-            int read = 0;
-            while ((skipped = bf.readLine()) != null) {
-
-                if (read == 0) {
-
-                    read++;
-                    continue;
-                }
-                FinancialTransaction td = new FinancialTransaction(skipped);
-                financialTransactions.add(td);
-                read++;
-
-            }
+            SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
+       /* String dateInString = "7-Jun-2013";
+        Date date = formatter.parse(dateInString);*/
+            String uri = URI + "/statement";
+            Map<String, String> params = new HashMap<>();
+            params.put("accountNumber", accountNo);
+            params.put("fromDate", formatter.format(fromDate));
+            if (toDate!=null) params.put("toDate",formatter.format(toDate));
 
 
-        } catch (Exception e) {
-            e.printStackTrace();
+
+            statement = template.getForObject(uri, AccountStatement.class, params);
+
+
+
+
+
+        } catch (Exception e){
 
         }
 
 
-        statement.setClosingBalance(new BigDecimal(2000));
-        statement.setTransactionList(financialTransactions);
-        statement.setCreditCount(20);
-        statement.setCreditCount(20);
-        statement.setOpeningBalance(new BigDecimal(3000));
-        statement.setTotalCredit(new BigDecimal(4000));
-        statement.setTotalDebit(new BigDecimal(5000));
-        System.out.println("ACCOUNT STATEMENT " + statement);
         return statement;
     }
 
     @Override
     public Map<String, BigDecimal> getBalance(String accountId) {
-        String uri = URI + "/account/{acctId}";
-        Map<String, String> params = new HashMap<>();
-        params.put("acctId", accountId);
+
         Map<String, BigDecimal> response = new HashMap<>();
         try {
-            AccountDetails details = template.getForObject(uri, AccountDetails.class, params);
+            AccountDetails details = viewAccountDetails(accountId);
 
             BigDecimal availBal = new BigDecimal(details.getAvailableBalance());
             BigDecimal ledgBal = new BigDecimal(details.getLedgerBalAmt());
@@ -158,8 +128,10 @@ public class IntegrationServiceImpl implements IntegrationService {
 
             return response;
         } catch (Exception e) {
+            response.put("AvailableBalance", new BigDecimal(0));
+            response.put("LedgerBalance", new BigDecimal(0));
             e.printStackTrace();
-            return null;
+            return response;
         }
     }
 
@@ -199,6 +171,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 
                     e.printStackTrace();
                     transRequest.setStatus(ResultType.ERROR.toString());
+                    transRequest.setStatusDescription(TransferExceptions.ERROR.toString());
                     return transRequest;
 
                 }
@@ -233,6 +206,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 
                     e.printStackTrace();
                     transRequest.setStatus(ResultType.ERROR.toString());
+                    transRequest.setStatusDescription(TransferExceptions.ERROR.toString());
                     return transRequest;
                 }
 
@@ -265,6 +239,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 
                     e.printStackTrace();
                     transRequest.setStatus(ResultType.ERROR.toString());
+                    transRequest.setStatusDescription(TransferExceptions.ERROR.toString());
                     return transRequest;
                 }
 
@@ -285,11 +260,27 @@ public class IntegrationServiceImpl implements IntegrationService {
     }
 
     @Override
+    public TransferDetails makeNapsTransfer(Naps naps) throws InternetBankingTransferException {
+        String uri = URI + "/naps";
+
+        try {
+            TransferDetails details = template.getForObject(uri, TransferDetails.class, naps);
+            return details;
+        } catch (Exception e) {
+            return new TransferDetails();
+        }
+
+
+
+
+    }
+
+    @Override
     public AccountDetails viewAccountDetails(String acctNo) {
 
-        String uri = URI + "/account/{acctId}";
+        String uri = URI + "/account/{acctNo}";
         Map<String, String> params = new HashMap<>();
-        params.put("acctId", acctNo);
+        params.put("acctNo", acctNo);
         try {
             AccountDetails details = template.getForObject(uri, AccountDetails.class, params);
             return details;
@@ -420,11 +411,15 @@ public class IntegrationServiceImpl implements IntegrationService {
 
     @Override
     public BigDecimal getAvailableBalance(String s) {
-        Map<String, BigDecimal> getBalance = getBalance(s);
-        BigDecimal balance = getBalance.get("AvailableBalance");
-        if (balance != null) {
-            return balance;
-        }
+       try{
+           Map<String, BigDecimal> getBalance = getBalance(s);
+           BigDecimal balance = getBalance.get("AvailableBalance");
+           if (balance != null) {
+               return balance;
+           }
+       }catch (Exception e){
+       e.printStackTrace();
+       }
         return new BigDecimal(0);
     }
 
