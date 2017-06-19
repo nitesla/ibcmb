@@ -28,6 +28,7 @@ public interface TransferService {
     @PreAuthorize("hasAuthority('MAKE_TRANSFER')")
     TransferRequestDTO makeTransfer(TransferRequestDTO transferRequest) throws TransferException;
 
+
     @PreAuthorize("hasAuthority('GET_TRANSFER')")
     TransRequest getTransfer(Long id);
 

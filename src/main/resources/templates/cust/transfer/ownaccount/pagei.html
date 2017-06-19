@@ -4,11 +4,12 @@
 
 </head>
 <body>
-<header th:replace="cust_layout :: header">
-</header>
+<div class="container">
+    <header th:replace="cust_layout :: header">
+    </header>
 
 <section class="content-wrapper">
-    <div class="container">
+    <div class="containe">
 
         <div class="row">
 
@@ -35,9 +36,9 @@
 
                                 <span id="scurency"></span>
                                 <select name="source" class="form-control" id="source"
-                                        th:field="*{customerAccountNumber}">
+                                        th:field="*{customerAccountNumber}" onchange="getBalance()">
                                     <!--<option value=""> select an account</option>-->
-                                    <option th:each="s: ${accounts}" th:value="${s}" th:text="${s}"></option>
+                                    <option th:each="s: ${accounts}" th:value="${s}" th:text="${s}" ></option>
                                 </select>
 
                             </div>
@@ -77,15 +78,14 @@
 
                     </div>
                 </div>
-
-            </div>
-            <div class="col-md-3 sidebar" >
-                <div class="sidebar-bg">
-
-                    <p class="related">Related Information</p>
-                    <hr class="hrhr"/>
+                <div class="col-md-6 col-sm-6">
+                    <!--<p class="related" style="padding-top: 5%">Related Information</p>-->
+                    <hr/>
+                    <!--<input type="availBal" name="availBal"/>-->
+                    <p id="availBal"><b></b></p>
                 </div>
             </div>
+
             <div th:replace="cust_layout :: sidebar" class="col-md-3 sidebar">
             </div>
         </div>
@@ -137,10 +137,32 @@
     };
 
 
+    function getBalance(){
+        var accountNumber = $('#source').val();
+        $.ajax({
+            url: "/retail/transfer/ownaccount/balance/"+accountNumber,
+            type: 'GET',
+            async: false,
+            success:function(availBal){
+                bal = ''+String(availBal);
+                if(bal == "" ){
+                    document.getElementById("myspan").textContent="Could not get balance from server, please try again.";
+                    $("#myspan").show();
+                }else{
+//                    $('input[name=availBal]').val(bal);
+
+                    $('#availBal').text("Available Balance: "+bal);
+
+                }
+            }
+        })
+    }
+
     /*]]>*/
 
 
 </script>
+</div>
 
 </body>
 

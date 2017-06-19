@@ -4,11 +4,12 @@
 
 </head>
 <body>
-<header th:replace="cust_layout :: header">
-</header>
+<div class="container">
+    <header th:replace="cust_layout :: header">
+    </header>
 
 <section class="content-wrapper">
-    <div class="container">
+    <div class="containe">
         <div class="row">
             <div class="col-md-4 col-sm-4">
                 <h5 class="page_header"> Contact Us</h5>
@@ -16,8 +17,13 @@
         </div>
         <div class="row">
             <div class="col-md-8 content-bg">
-                <div class="row form-spacing">
-                    <div class="col-md-10">
+                <div class="row ">
+                    <div class="col-md-4">
+                        <p>+234 (70) 3881 0752</p>
+                        <p></p>
+                        <p></p>
+                    </div>
+                    <div class="col-md-8">
                         <form action="/retail/contact" method="post">
                             <div class="form-group">
                                 <label>Message</label>
@@ -39,5 +45,6 @@
 <!-- CONTENT-WRAPPER SECTION END-->
 <footer th:replace="cust_layout ::footer">
 </footer>
+</div>
 </body>
 </html>

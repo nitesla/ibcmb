@@ -1,6 +1,5 @@
 package longbridge.services;
 
-import longbridge.api.AccountDetails;
 import longbridge.api.AccountInfo;
 import longbridge.dtos.AccountDTO;
 import longbridge.exception.InternetBankingException;
@@ -54,7 +53,7 @@ public interface AccountService {
      * @param customerId the customer id of particular customer
      * @return a list of {@link Account}
      */
-    Iterable<AccountDTO> getAccounts(String customerId);
+    List<AccountDTO> getAccounts(String customerId);
 
     Iterable<Account> getCustomerAccounts(String customerId);
 

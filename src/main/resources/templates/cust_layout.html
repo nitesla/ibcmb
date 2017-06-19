@@ -21,77 +21,11 @@
 <body>
 
 <header class="header" th:fragment="header">
-            <!--<div class="row">-->
-                <!--<div class="collapse navbar-collapse links" id="navbar-collapse-1">-->
-                    <!--<ul class="nav navbar-nav">-->
-                        <!--<li class="dropdown" sec:authorize="hasAuthority('MANAGE_ACCOUNT')">-->
-                            <!--<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.account}"> My Accounts</a>-->
-                            <!--<ul class="dropdown-menu">-->
-                                <!--<li sec:authorize="hasAuthority('CUSTOMIZE_ACCOUNT')"><a th:href="@{/retail/account/customize}" th:text="#{menu.account.customize}">Customise Accounts</a></li>-->
-                                <!--<li sec:authorize="hasAuthority('ACCOUNT_SETTINGS')"><a th:href="@{/retail/account/settings}" th:text="#{menu.account.settings}">Account Settings</a></li>-->
-                                <!--<li sec:authorize="hasAuthority('VIEW_ACCOUNT_OFFICER')"><a th:href="@{/retail/account/officer}" th:text="#{menu.account.officer}">Account Officer</a></li>-->
-                                <!--<li sec:authorize="hasAuthority('CREATE_ACCOUNT')"><a th:href="@{'#'}" th:text="#{menu.account.create}">Create New Acoount</a></li>-->
-                            <!--</ul>-->
-                        <!--</li>-->
-                        <!--<li class="dropdown" sec:authorize="hasAuthority('MANAGE_TRANSFERS')">-->
-                            <!--<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.transfer}"> Transfers</a>-->
-                            <!--<ul class="dropdown-menu">-->
-                                <!--<li sec:authorize="hasAuthority('OWN_ACCOUNT_TRANSFER')"><a th:href="@{/retail/transfer/ownaccount}" th:text="#{menu.transfer.own}">Own account transfers </a></li>-->
-                                <!--<li sec:authorize="hasAuthority('CMB_CMB_TRANSFER')"><a th:href="@{/retail/transfer/local}" th:text="#{menu.transfer.cmb}">Transfer to Coronation account </a></li>-->
-                                <!--<li sec:authorize="hasAuthority('INTERBANK_TRANSFER')"><a th:href="@{/retail/transfer/interbank}" th:text="#{menu.transfer.other}">Transfer to other banks</a></li>-->
-                                <!--<li sec:authorize="hasAuthority('INTERNATIONAL_TRANSFERs')"><a th:href="@{/retail/transfer/international}" th:text="#{menu.transfer.int}">International transfer</a></li>-->
-                                <!--<li sec:authorize="hasAuthority('RET_TRANSACTION_LIMITs.')"><a th:href="@{/retail/transfer/settransferlimit}" th:text="#{menu.transfer.limit}">Set transfer limit</a></li>-->
-                                <!--<li sec:authorize="hasAuthority('STANDING_ORDER')"><a th:href="@{/retail/directdebit}" th:text="#{menu.transfer.order}">Standing order</a></li>-->
-                            <!--</ul>-->
-                        <!--</li>-->
-                        <!--&lt;!&ndash;<li sec:authorize="hasAuthority('MANAGE_BILL_PAYMENT')"><a href="#" th:text="#{menu.bill}">Bill Payments</a></li>&ndash;&gt;-->
-                        <!--&lt;!&ndash;<li sec:authorize="hasAuthority('MANAGE_INVESTMENT')"><a href="#" th:text="#{menu.investment}">Investment</a></li>&ndash;&gt;-->
-                        <!--<li class="dropdown" sec:authorize="hasAuthority('MANAGE_SERV_REQ')">-->
-                            <!--<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.servreq}"> Service Requests </a>-->
-                            <!--<ul class="dropdown-menu">-->
-                                <!--<li sec:authorize="hasAuthority('TRACK_SERV_REQ')"><a th:href="@{/retail/requests/track}" th:text="#{menu.servreq.track}">Track Requests</a></li>-->
-                                <!--<li role="separator" class="divider"></li>-->
-                                <!--<p th:each="requests : ${serviceRequests}">-->
-                                <!--<li sec:authorize="hasAuthority('MAKE_SERV_REQ')"><a th:href="@{/retail/requests/} + ${requests.id}" th:text="${requests.requestName}"></a></li>-->
-                                <!--</p>-->
-                            <!--</ul>-->
-                        <!--</li>-->
-
-                        <!--<li class="dropdown" sec:authorize="hasAuthority('RET_USER_SETTINGS')">-->
-                            <!--<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.settings}"> Settings </a>-->
-                            <!--<ul class="dropdown-menu">-->
-                                <!--<li sec:authorize="hasAuthority('SET_ALERT_PREFERENCE')"><a th:href="@{/retail/alert_preference}" th:text="#{menu.settings.alert}">Alert Preference</a></li>-->
-                                <!--<li sec:authorize="hasAuthority('RET_CHANGE_PASSWORD')"><a th:href="@{/retail/change_password}" th:text="#{menu.settings.password}">Change Password</a></li>-->
-                            <!--</ul>-->
-                        <!--</li>-->
-                        <!--<li class="dropdown">-->
-                            <!--<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> More </a>-->
-                            <!--<ul class="dropdown-menu">-->
-                                <!--<li sec:authorize="hasAuthority('RET_SYNC_TOKEN')"><a th:href="@{/retail/token/sync}" th:text="#{menu.token.sync}">Synchronize Token</a></li>-->
-                                <!--<li sec:authorize="hasAuthority('RET_LOST_TOKEN')"><a th:href="@{/retail/token/lost}" th:text="#{menu.token.report}">Report Lost Token</a></li>-->
-                                <!--<li sec:authorize="hasAuthority('MANAGE_BEN')"><a th:href="@{/retail/beneficiary}" th:text="#{menu.beneficiary}">Beneficiaries</a></li>-->
-                                <!--<li sec:authorize="hasAuthority('RET_MAILBOX')"><a th:href="@{/retail/mailbox/inbox}" th:text="#{menu.mail}"> Mailbox</a></li>-->
-                            <!--</ul>-->
-                        <!--</li>-->
-                    <!--</ul>-->
-
-                    <!--<ul class="nav navbar-nav navbar-right">-->
-                        <!--<li><a th:href="@{/retail/logout}"> Log out <span class="fa-stack fa-lg">-->
-                                  <!--<i class="fa fa-square fa-stack-1x fa-lg"></i>-->
-                                  <!--<i class="fa fa-power-off fa-stack-1x fa-inverse"></i>-->
-                                <!--</span></a></li>-->
-                    <!--</ul>-->
-                    <!--</div>-->
-                <!--</div>-->
-                <!--</div>-->
-            <!--</div>-->
-        <!--</nav>-->
-    <!--</div>-->
-    <div class="container">
+    <div class="containe">
         <div class="top_bar">
             <ul class="list_group">
                 <li><a href="/retail/contact"> Contact Us</a>&nbsp;</li>
-                <li><a href="https://coronationmb.com"> Coronation merchnat bank</a>&nbsp;</li>
+                <li><a href="https://coronationmb.com" target="_blank"> Coronation merchant bank</a>&nbsp;</li>
                 <li><a href="#"> Help&nbsp;</a></li>
             </ul>
         </div>
@@ -108,12 +42,12 @@
                 </div>
                 <div class="row ">
                     <div class="col-md-3 col-sm-4 header_info bvn"><p>Your Bank verification number</p>
-                        <h5 th:if="${bvn=='Not available'}"><a th:href="@{/retail/bvn}" th:text="'BVN: ' + ${bvn}"></a></h5>
+                        <h5 th:if="${bvn=='Not available'}"><a style ='color:#003056' th:href="@{/retail/bvn}" th:text="'BVN: ' + ${bvn}"></a></h5>
                         <h5 th:unless="${bvn=='Not available'}"><div th:text="'BVN: ' + ${bvn}"></div></h5>
 
                     </div><div class="col-md-5 col-sm-4 header_info"><h5><span th:text="*{greeting}"></span><br
                     class="break"/><b th:text="*{name}"></b> &nbsp; <a th:href="@{/retail/mailbox/inbox}">
-                    <i class="fa fa-envelope"></i>
+                    <i class="fa fa-envelope" style="color:#003056"></i>
                     <span th:if="${numOfUnreadMessages}" class="badge bg-green" th:text="${numOfUnreadMessages}">count</span>
                     </a>
                     </h5>
@@ -126,14 +60,15 @@
                 <div class="row">
                     <div class="collapse navbar-collapse links" id="navbar-collapse-1">
                         <ul class="nav navbar-nav">
+                            <li><a th:href="@{/retail/dashboard}" >Dashboard</a></li>
                             <li class="dropdown" sec:authorize="hasAuthority('MANAGE_ACCOUNT')">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.account}"> My Accounts</a>
                                 <ul class="dropdown-menu">
                                     <li sec:authorize="hasAuthority('CUSTOMIZE_ACCOUNT')"><a th:href="@{/retail/account/customize}" th:text="#{menu.account.customize}">Customise Accounts</a></li>
                                     <li sec:authorize="hasAuthority('ACCOUNT_SETTINGS')"><a th:href="@{/retail/account/settings}" th:text="#{menu.account.settings}">Account Settings</a></li>
                                     <li sec:authorize="hasAuthority('VIEW_ACCOUNT_OFFICER')"><a th:href="@{/retail/account/officer}" th:text="#{menu.account.officer}">Account Officer</a></li>
-                                    <li sec:authorize="hasAuthority('CREATE_ACCOUNT')"><a th:href="@{/retail/account/viewstatement}" >Account Statement</a></li>
-                                    <li sec:authorize="hasAuthority('CREATE_ACCOUNT')"><a th:href="@{'#'}" th:text="#{menu.account.create}">Create New Acoount</a></li>
+                                    <!--<li sec:authorize="hasAuthority('CREATE_ACCOUNT')"><a th:href="@{/retail/account/viewstatement}" >Account Statement</a></li>-->
+                                    <!--<li sec:authorize="hasAuthority('CREATE_ACCOUNT')"><a th:href="@{'#'}" th:text="#{menu.account.create}">Create New Acoount</a></li>-->
                                 </ul>
                             </li>
                         <li class="dropdown" sec:authorize="hasAuthority('MANAGE_TRANSFERS')">
@@ -186,20 +121,33 @@
                         </ul>
                     </div>
                 </div>
+
+
+
+
             </div>
+
+
+
         </nav>
+
+
+
     </div>
-    <a href="/retail/dashboard" class="logo">
+
+    <a href="/retail/dashboard" class="logo navbar-right">
         <img th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
     </a>
+
+
 </header>
 
-    <div th:fragment="sidebar" class="col-md-3 sidebar">
-        <div class="sidebar-bg calender">
-            <div id="calendar" class="calendar"></div>
+    <div th:fragment="sidebar" class="sideba">
+        <div class="sidebar-b calende cal  ">
+            <div  id="calendar" style="display: block; margin: 0px auto;" class=" calendar hidden-xs hidden-sm "></div>
         </div>
-        <div class="sidebar-bg">
-            <img th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
+        <div class="sidebar- hidden-xs hidden-sm" >
+            <img style="display: block; margin: 0px auto;" class="center" th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
         </div>
     </div>
 

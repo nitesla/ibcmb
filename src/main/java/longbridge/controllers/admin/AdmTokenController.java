@@ -64,9 +64,11 @@ public class AdmTokenController {
                 return "redirect:/admin/dashboard";
             }
         } catch (InternetBankingSecurityException ibe) {
-            logger.error("Error authenticating token");
+            logger.error("Error authenticating token",ibe);
+            redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
+
+
         }
-        redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("token.auth.failure", null, locale));
         return "redirect:/admin/token";
 
     }
@@ -240,6 +242,33 @@ public class AdmTokenController {
         }
         bindingResult.addError(new ObjectError("invalid", messageSource.getMessage("token.deactivate.failure", null, locale)));
         return "/adm/token/deactivate2";
+    }
+
+
+    @GetMapping("/unlock")
+    public String unlockToken(Model model) {
+        model.addAttribute("token", new TokenForm());
+        return "/adm/token/unlock";
+
+    }
+
+    @PostMapping("/unlock")
+    public String UnlockToken(@RequestParam("username") String username, RedirectAttributes redirectAttributes, Locale locale, Model model) {
+        if (username == null || "".equals(username)) {
+            model.addAttribute("failure", messageSource.getMessage("form.fields.required", null, locale));
+            return "/adm/token/unlock";
+        }
+        try {
+            boolean result = securityService.unLockUser(username);
+            if (result) {
+                redirectAttributes.addFlashAttribute("message", messageSource.getMessage("token.unlock.success", null, locale));
+                return "redirect:/admin/token/unlock";
+            }
+        } catch (InternetBankingSecurityException ibe) {
+            logger.error("Error unlocking token", ibe);
+        }
+        redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("token.unlock.failure", null, locale));
+        return "redirect:/admin/token/unlock";
     }
 
     @GetMapping("/synchronize")

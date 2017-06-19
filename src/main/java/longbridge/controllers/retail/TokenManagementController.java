@@ -53,7 +53,7 @@ public class TokenManagementController {
     }
 
     @PostMapping
-    public String performTokenAuthentication(HttpServletRequest request, Principal principal, RedirectAttributes redirectAttributes, Locale locale, Model model){
+    public String performTokenAuthentication(HttpServletRequest request, Principal principal, RedirectAttributes redirectAttributes, Locale locale){
 
         String username = principal.getName();
         String tokenCode = request.getParameter("token");
@@ -68,11 +68,11 @@ public class TokenManagementController {
             }
         }
         catch (InternetBankingSecurityException ibe){
-            logger.error("Error authenticating token");
-            model.addAttribute("failure",messageSource.getMessage("token.auth.failure",null,locale));
+            logger.error("Error authenticating token",ibe);
+            redirectAttributes.addFlashAttribute("failure",ibe.getMessage());
+
         }
-         model.addAttribute("failure",messageSource.getMessage("token.auth.failure",null,locale));
-        return "/cust/logintoken";
+        return "redirect:/retail/token";
 
     }
 
@@ -89,7 +89,7 @@ public class TokenManagementController {
         }
         catch (InternetBankingSecurityException ibe){
             logger.error("Failed to load corp user {} token serials", principal.getName(),ibe);
-            model.addAttribute("failure", "Failed to load token serial numbers");
+            model.addAttribute("failure", ibe.getMessage());
         }
 
         model.addAttribute("tokenSync", new CustSyncTokenForm());
@@ -109,9 +109,10 @@ public class TokenManagementController {
             }
         }catch (InternetBankingSecurityException ibe){
             logger.error("Error Synchronizing Token", ibe);
+            redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("token.sync.failure", null, locale));
+
 
         }
-        redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("token.sync.failure", null, locale));
         return "redirect:/retail/token/sync";
 
     }
@@ -163,7 +164,7 @@ public class TokenManagementController {
     }
 
     @PostMapping("/authenticate")
-    public String performAuthenticate(WebRequest webRequest, HttpSession session, Principal principal, Model model, RedirectAttributes redirectAttributes){
+    public String performAuthenticate(WebRequest webRequest, HttpSession session, Principal principal, RedirectAttributes redirectAttributes){
         String url;
         if (webRequest.getParameter("token") == null){
             redirectAttributes.addFlashAttribute("failure", "Enter authentication code");
@@ -176,15 +177,13 @@ public class TokenManagementController {
             try {
                 boolean result = securityService.performTokenValidation(principal.getName(), token);
                 if (!result){
-                    model.addAttribute("failure", "Token Authentication Failed");
-                    return "/cust/tokenauth";
-
+                    redirectAttributes.addFlashAttribute("failure", "Token Authentication Failed");
+                    return "redirect:/retail/token/authenticate";
                 }
             }catch(InternetBankingSecurityException ibe){
                 logger.error("Error authenticating token", ibe);
-                model.addAttribute("failure", "Token Authentication Failed");
-                return "/cust/tokenauth";
-
+                redirectAttributes.addFlashAttribute("failure", "Token Authentication Failed");
+                return "redirect:/token/authenticate";
 
             }
 

@@ -47,6 +47,7 @@ label
     background: #F3F3F4;
 }
 
+
 span.req
 {
     position: absolute;
@@ -170,22 +171,16 @@ span.req
     color: black !important;
 }
 
+.margin-xs{
+    margin-top:180px;
+}
+
 #myspan2
 {
     display: none;
     width:100%;
     margin-bottom: 10px;
 
-}
-
-#loa {
-
-.modal-box
-{
-    border-radius: 0px !important;
-    padding: 10px !important;
-    margin: 0px auto !important;
-    width:65%;
 }
 #load {
     position: absolute;
@@ -1175,6 +1170,10 @@ button, input, optgroup, select, textarea {
         background: #FFF;
     }
 
+    .margin-xs{
+        margin-top: 0px;
+    }
+
     .logo {
         clear: both;
         display: block;
@@ -1288,6 +1287,9 @@ button, input, optgroup, select, textarea {
     /*margin: 0 0 10px 100px;*/
     /*}*/
 
+    .mtop{
+        margin-top: 20px;
+    }
     .carousel-caption {
         display: none;
         /*position: absolute;*/

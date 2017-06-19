@@ -4,11 +4,12 @@
 
 </head>
 <body>
-<header th:replace="cust_layout :: header">
-</header>
+<div class="container">
+    <header th:replace="cust_layout :: header">
+    </header>
 
 <section class="content-wrapper">
-    <div class="container">
+    <div class="containe">
         <div class="row">
             <div class="col-md-4 col-sm-4">
                 <h5 class="page_header"> New Beneficiary</h5>
@@ -46,7 +47,7 @@
                                 <input type="text" class="form-control" name="preferredName"
                                        placeholder="Beneficiary Alias" th:field="*{preferredName}"/>
                             </div>
-                            <button id="localsave" style="display: none;" class="btn btn-link" >Next</button>
+                            <button id="localsave" style="display: none;" class="btn btn-link" >Save</button>
                             <button id="neq" type="button" class="btn btn-link" onclick="getAccountName();">Name Enquiry</button>
                         </form>
 
@@ -128,5 +129,6 @@
 
     /*]]>*/
 </script>
+</div>
 </body>
 </html>

@@ -84,13 +84,13 @@ function validateSecAnswer(secAnswer){
     if(result == "" || result === null){
         return false;
     }else{
-        sendUsername();
-        return true;
+        result = sendUsername();
+        return result;
     }
 }
 
 function sendUsername(){
-    var returnValue = false;
+    var returnValue;
     $('#reg-form').submit(function(e){
         e.preventDefault();
 
@@ -101,21 +101,30 @@ function sendUsername(){
             data: $(this).serialize(),
             success: function(data)
             {
+                returnValue = ''+String(data);
                 //alert(data+" return ");
                 //callback methods go right here
                 if(data==="true"){
-                    $('#returnValue').val(true);
+                    $('#returnValue').val(returnValue);
+                    returnValue = true;
                 }else {
                     document.getElementById("myspan2").textContent="Failed to send username, please try again later.";
                     $("#myspan2").show();
+                    $('#returnValue').val(returnValue);
+                    returnValue= false;
                 }
             }
         });
     });
     $('#reg-form').submit();
-    returnValue = $('#returnValue').val();
+    //returnValue = $('#returnValue').val();
     //alert(returnValue);
-    return Boolean(returnValue);
+    //return Boolean(returnValue);
+    if(returnValue == "" || returnValue === null || returnValue == false){
+        return false;
+    }else{
+        return true;
+    }
 }
 
 

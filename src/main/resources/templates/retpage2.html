@@ -51,20 +51,21 @@
 <section class="content-wrapper">
     <div class="container">
         <div class="bg">
-            <div class="col-md-offset-3 col-md-6 col-sm-offset-1 col-sm-10" style="margin-top:180px">
+            <div class="col-md-offset-3 col-md-6 col-sm-offset-1 col-sm-10 margin-xs">
                 <form th:action="@{/login/p/retail}" method="POST" class="login-for" autocomplete="off">
 
 
-                <div class="col-xs-12 visible-xs" style="margin-top:1px;border:none;padding: 20px" >
-                    <div>
-                        <img th:if="${secImage}" class='bg-danger' style='display:block;margin:0px auto;margin-top:0px;width:150px;padding:20px;' th:src="@{'data:image/jpeg;base64,' + ${secImage}}" />
-                        <img th:unless="${secImage}" class='bg-danger' style='display:block;margin:0px auto;margin-top:0px;width:150px;padding:20px;'  th:src="@{/customer/img/cmb_logo.png}" />
-                        <input type="checkbox" style='display:block;margin:0px auto;' name="phishing"/>
-                    </div>
-                </div>
                 <div class="col-md-7 col-sm-7 col-xs-12 ">
 
-                        <h5 class="form-signin-heading text-white">Confirm Security Image</h5>
+                        <h5 class="form-signin-heading text-white mtop">Check the box to Confirm Security Image</h5>
+
+                    <div class="col-xs-12 visible-xs" style="margin:5px;border:none;" >
+                        <div class="bg-danger col-xs-offset-4 col-xs-4" style="max-height:auto; padding: 5px">
+                            <img th:if="${secImage}" class='bg-danger img-responsive center'  style="height:100px;display: block;margin: 0px auto; margin-bottom: 5px;" th:src="@{'data:image/jpeg;base64,' + ${secImage}}" />
+                            <img th:unless="${secImage}" class='bg-danger img-responsive center' style="height:100px;display: block;margin: 0px auto; margin-bottom: 5px;" th:src="@{/customer/img/cmb_logo.png}" />
+                            <input type="checkbox" style='display:block;margin:0px auto;' name="phishing"/>
+                        </div>
+                    </div>
                         <br/>
                     <h5 th:if="${imageException}" th:text="${imageException}"></h5>
                         <div class="row ">
@@ -72,15 +73,15 @@
                                 <input type="text" name="username" th:value="*{username}" class="form-control" readonly="readonly" autocomplete="off"/>
                             </div>
                             <div class="">
-                                <button class="btn btn-primary form-control"> Login </button>
+                                <button class="btn btn-primary form-control"> Continue </button>
                             </div>
                         </div>
                 </div>
                 <div class="col-md-5 col-sm-5 col-xs-12 hidden-xs" style="border:none;paddng: 20px;">
-                    <div class="bg-danger"  style="padding: 20px;">
-                        <div>
-                            <img th:if="${secImage}" class='bg-danger img-responsive' th:src="@{'data:image/jpeg;base64,' + ${secImage}}" />
-                            <img th:unless="${secImage}" class='bg-danger img-responsive' th:src="@{/customer/img/cmb_logo.png}" />
+                    <div class="bg-danger"  style="padding: 10px;">
+                        <div style="max-height:auto">
+                            <img th:if="${secImage}" class='bg-danger img-responsive center'  style="height:100px;display: block;margin: 0px auto; margin-bottom: 5px;" th:src="@{'data:image/jpeg;base64,' + ${secImage}}" />
+                            <img th:unless="${secImage}" class='bg-danger img-responsive center' style="height:100px;display: block;margin: 0px auto; margin-bottom: 5px;" th:src="@{/customer/img/cmb_logo.png}" />
                             <input type="checkbox" style='display:block;margin:0px auto;' name="phishing"/>
                         </div>
                     </div>

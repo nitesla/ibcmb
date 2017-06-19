@@ -4,11 +4,13 @@
 
 </head>
 <body>
-<header th:replace="cust_layout :: header">
-</header>
+<div class="container">
+    <header th:replace="cust_layout :: header">
+    </header>
+
 
 <section class="content-wrapper">
-    <div class="container">
+    <div class="containe">
         <div class="row">
             <div class="col-md-4 col-sm-4">
                 <h5 class="page_header"> Transaction History</h5>
@@ -17,12 +19,27 @@
         <div class="row">
             <div class="col-md-8 content-bg">
                 <div class="row form-spacing">
-                    <div class="col-md-6 col-sm-6">
+                    <div class="col-md-10 col-sm-10">
                         <form method="post" th:action="@{/retail/account/history}">
 
+                            <table class="table" id="users">
+                                <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th >Remarks</th>
+                                    <th>Amount</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="list : ${transRequestList}">
+                                    <td  th:text="${list.tranDate}"></td>
+                                    <td  th:text="${list.remarks}"></td>
+                                    <td th:text="${list.amount}"></td>
+                                </tr>
+                                </tbody>
+                            </table>
 
-
-                               </form>
+                        </form>
 
                     </div>
                 </div>
@@ -194,5 +211,6 @@
         return true;*/
     }
 </script>-->
+</div>
 </body>
 </html>

@@ -4,11 +4,12 @@
 
 </head>
 <body>
-<header th:replace="cust_layout :: header">
-</header>
+<div class="container">
+    <header th:replace="cust_layout :: header">
+    </header>
 
 <section class="content-wrapper">
-    <div class="container">
+    <div class="containe">
 
         <div class="row">
 
@@ -65,7 +66,7 @@
 
 
                             <div class="form-group">
-                                <a style="cursor: pointer;" onclick="goBack()" >Modify</a>
+                                <!--<a style="cursor: pointer;" onclick="goBack()" >Modify</a>-->
                                 <button type="submit" class="btn btn-link">Proceed</button>
                                 <a th:href="@{/retail/transfer/ownaccount}">Cancel</a>
 
@@ -88,6 +89,7 @@
 <!-- CONTENT-WRAPPER SECTION END-->
 <footer th:replace="cust_layout ::footer">
 </footer>
+</div>
 
 </body>
 

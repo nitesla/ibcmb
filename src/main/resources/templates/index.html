@@ -155,28 +155,28 @@
                     <h4>Contact Us</h4>
                     <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi e</p>
                     <div class="icon">
-                        <li class="dropdown">
-                        <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-phone"></i></a>
-                        <ul class="dropdown-menu">
+                        <li class="dropdown" >
+                        <a href ='javascript:void' class="dropdown-toggle contact" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-phone"></i></a>
+                        <ul class="dropdown-menu contact-drop" >
                             <li>T +234 (0)818 831 4939</li>
                             <li>T +234 (0)802 891 3262</li>
-                            <li class="icontext" data-toggle="modal" data-target="#myModal">Call back</li>
+                            <li class="icontext pull-right" data-toggle="modal" data-target="#myModal"><button class="btn btn-link">Call back</button></li>
                         </ul>
                         </li>
                         <li class="dropdown">
-                        <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-envelope"></i></a>
-                        <ul class="dropdown-menu">
+                        <a href ='javascript:void' class="dropdown-toggle contact" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-envelope"></i></a>
+                        <ul class="dropdown-menu contact-drop">
                             <li>Send us an email</li>
                             <li>enquiries@coronationmb.com</li>
-                            <li class="icontext">Copy email</li>
+                            <li class="icontext pull-right">Copy email</li>
                         </ul>
                         </li>
                         <li class="dropdown">
-                        <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-comments-o"></i> </a>
-                        <ul class="dropdown-menu faz">
+                        <a href="javascript:void" class="dropdown-toggle contact" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-comments-o"></i> </a>
+                        <ul class="dropdown-menu faz contact-drop">
                             <li>Need instant help?</li>
                             <li>Chat with us</li>
-                            <li class="icontext"><i class="fa fa-comments-o"></i>Live chat</li>
+                            <li class="icontext pull-right"><button class="btn btn-link"><i class="fa fa-comments-o"></i> Live chat</button></li>
                         </ul>
                         </li>
                     </div>
@@ -194,21 +194,18 @@
                             <div class="modal-body">
                                 <h1 style="font-size: 20px">Request Callback</h1>
                                 <br/>
-<<<<<<< HEAD
-=======
 
->>>>>>> 4fd54f8ed2f208d779c4be23818117a4217698a6
                                 <form method="post" action="/request/callback" class="form-horizontal">
                                     <div class="row">
                                         <div class="col-sm-3 control-label"><label>Full Name:</label></div>
                                         <div class="col-sm-9 form-group">
-                                            <input type="text" class="form-control" name="name"/>
+                                            <input type="text" class="form-control" name="name" required="required"/>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-sm-3 control-label"><label>Preferred Phone Number:</label></div>
                                         <div class="col-sm-9 form-group">
-                                            <input type="text" class="form-control" name="phone"/>
+                                            <input type="text" class="form-control" name="phone" required="required"/>
                                         </div>
                                     </div>
                                     <div class="row">
@@ -224,21 +221,39 @@
 
                     </div>
                 </div>
-
+v
                 <div class="margin-bottom"></div>
                 <div>
+                    <div th:if="${message}" class="alert alert-success alert-dismissable">
+                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                        <strong>Success!</strong> Email successfully sent.
+                    </div>
+                    <div th:if="${failure}" class="alert alert-danger alert-dismissable">
+                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                        <strong>We are Sorry!</strong> Email could not be sent.
+                    </div>
                     <p>Enter details below</p>
+<<<<<<< HEAD
                     <form method="post" th:action="@{/home}" th:object="${message}" class="contact-form">
+=======
+
+                    <form action="/contact" method="post" class="contact-form">
+
+>>>>>>> 623a2b1ad9714f7f3360acdf2e6854c05a436368
                             <div class="form-group">
-                                <input id="name" type="text" name="name" class="form-control" placeholder="Name"/>
+                                <input type="text" name="name" class="form-control" placeholder="Name"/>
                             </div>
                             <div class="form-group">
-                                <input id="email" type="text" name="email" class="form-control" placeholder="Email"/>
+                                <input type="text" name="email" class="form-control" placeholder="Email"/>
                             </div>
                             <div class="form-group">
-                                <textarea name="message" value="Message" class="form-control" rows="10" ></textarea>
+                                <textarea name="message" value="Message" class="form-control" rows="10"></textarea>
                             </div>
+<<<<<<< HEAD
                         <input type="submit" value="Submit" class="btn btn-primary btn-md form-control" />
+=======
+                            <input type="submit" value="Submit" class="btn btn-primary btn-md form-control" />
+>>>>>>> 623a2b1ad9714f7f3360acdf2e6854c05a436368
 
                     </form>
                 </div>
@@ -269,5 +284,25 @@
 <!-- BOOTSTRAP SCRIPTS  -->
 <script th:src="@{~/customer/js/bootstrap.js}"></script>
 
+
+<script>
+
+</script>
+
+<!--<script>-->
+<!--$(document).ready(function(){-->
+<!--$(".dropdown").hover(-->
+<!--function() {-->
+<!--$('.dropdown-menu', this).not('.in .dropdown-menu').stop(true,true);-->
+<!--$(this).toggleClass('open');-->
+<!--}-->
+<!--);-->
+<!--});-->
+<!--</script>-->
+<!--<script>-->
+    <!--$(document).ready(function(){-->
+        <!--$('[data-toggle="tooltip"]').tooltip();-->
+    <!--});-->
+<!--</script>-->
 </body>
 </html>

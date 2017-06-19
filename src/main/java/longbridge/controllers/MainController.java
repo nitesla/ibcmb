@@ -1,12 +1,7 @@
 package longbridge.controllers;
 
-
-<<<<<<< HEAD
 import longbridge.dtos.SettingDTO;
-import longbridge.dtos.UserGroupDTO;
-=======
 import longbridge.exception.InternetBankingException;
->>>>>>> 4fd54f8ed2f208d779c4be23818117a4217698a6
 import longbridge.exception.PasswordException;
 import longbridge.exception.UnknownResourceException;
 import longbridge.models.Corporate;
@@ -164,6 +159,9 @@ public class MainController {
     @PostMapping("/login/u/retail")
     public String userExists(WebRequest webRequest, Model model, RedirectAttributes redirectAttributes) {
         String username = webRequest.getParameter("username");
+        if (username== null){
+            return "retpage1";
+        }
 
         RetailUser user =  retailUserService.getUserByName(username);
         if (user == null){
@@ -330,11 +328,11 @@ public class MainController {
 
     @GetMapping("/contact")
     public String contactUs(){
-        return "/index";
+        return "index";
     }
 
     @PostMapping("/contact")
-    public String sendContactForm(WebRequest webRequest, Principal principal, Model model,RedirectAttributes redirectAttributes){
+    public String sendContactForm(WebRequest webRequest, Model model,RedirectAttributes redirectAttributes){
         String name = webRequest.getParameter("name");
         String email = webRequest.getParameter("email");
         String message = webRequest.getParameter("message");
@@ -343,24 +341,51 @@ public class MainController {
             return "/home";
         }
         SettingDTO setting = configurationService.getSettingByName("CUSTOMER_CARE_EMAIL");
+        logger.info("SETTING RETRIEVED");
         if (setting != null && setting.isEnabled()) {
             try {
                 Email mail = new Email.Builder()
                         .setRecipient(setting.getValue())
-                        .setBody(String.format(name + email + message))
+                        .setSubject("Message from "+name+" ("+email+")")
+                        .setBody(message)
                         .build();
                 mailService.send(mail);
-                redirectAttributes.addFlashAttribute("message", message);
+                redirectAttributes.addFlashAttribute("message", "Message sent successfully");
 
             } catch (Exception ex) {
                 logger.error("Failed to send Email", ex);
-                redirectAttributes.addFlashAttribute("failure", message);
+                redirectAttributes.addFlashAttribute("failure", "Failed to send message");
             }
         }
-        return "redirect:/index";
-
+        return "redirect:/";
     }
 
+    @PostMapping("/request/callback")
+    public String requestCallback(WebRequest webRequest, Model model,RedirectAttributes redirectAttributes){
+        String name = webRequest.getParameter("name");
+        String phone = webRequest.getParameter("phone");
+        if (phone == null){
+            model.addAttribute("failure", "Field is required");
+            return "/home";
+        }
+        SettingDTO setting = configurationService.getSettingByName("CUSTOMER_CARE_EMAIL");
+        logger.info("SETTING RETRIEVED");
+        if (setting != null && setting.isEnabled()) {
+            try {
+                Email mail = new Email.Builder()
+                        .setRecipient(setting.getValue())
+                        .setSubject("Call back Request from "+name )
+                        .setBody("Preferred phone number for call back is " + phone)
+                        .build();
+                mailService.send(mail);
+                redirectAttributes.addFlashAttribute("message", "Message sent successfully");
 
+            } catch (Exception ex) {
+                logger.error("Failed to send Email", ex);
+                redirectAttributes.addFlashAttribute("failure", "Failed to send message");
+            }
+        }
+        return "redirect:/";
+    }
 
 }

@@ -74,10 +74,12 @@ public class AccountStatement {
         this.totalCredit = totalCredit;
     }
 
+
     @Override
     public String toString() {
         return "AccountStatement{" +
-                "openingBalance=" + openingBalance +
+                "transactionList=" + transactionList +
+                ", openingBalance=" + openingBalance +
                 ", closingBalance=" + closingBalance +
                 ", debitCount=" + debitCount +
                 ", creditCount=" + creditCount +

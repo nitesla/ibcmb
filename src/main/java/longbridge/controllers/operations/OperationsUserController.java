@@ -66,7 +66,9 @@ public class OperationsUserController {
     public String performTokenAuthentication(HttpServletRequest request, Principal principal, RedirectAttributes redirectAttributes, Locale locale){
 
         String username = principal.getName();
+        OperationsUser opsUser = operationsUserService.getUserByName(username);
         String tokenCode = request.getParameter("token");
+
         try{
             boolean result = securityService.performTokenValidation(username,tokenCode);
             if(result){
@@ -74,6 +76,13 @@ public class OperationsUserController {
                     request.getSession().removeAttribute("2FA");
                 }
                 redirectAttributes.addFlashAttribute("message",messageSource.getMessage("token.auth.success",null,locale)) ;
+
+                if(opsUser.getExpiryDate()!=null) {
+                    if (passwordPolicyService.displayPasswordExpiryDate(opsUser.getExpiryDate())) {
+                        redirectAttributes.addFlashAttribute("expireDate", opsUser.getExpiryDate());
+                    }
+                }
+
                 return "redirect:/ops/dashboard";
             }
         }

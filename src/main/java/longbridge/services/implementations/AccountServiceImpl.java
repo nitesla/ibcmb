@@ -118,7 +118,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Iterable<AccountDTO> getAccounts(String customerId) {
+    public List<AccountDTO> getAccounts(String customerId) {
         List<Account> accountList = accountRepo.findByCustomerId(customerId);
         return convertEntitiesToDTOs(accountList);
     }
@@ -333,14 +333,21 @@ public class AccountServiceImpl implements AccountService {
     }
 @Override
 public Boolean updateAccountDetails(){
+    //1010007408
     List<Account> allAccounts = accountRepo.findAll();
     for (Account account:allAccounts) {
-        System.out.println("the account name on our db is"+account.getAccountName());
+        logger.info("the account name on our db is {} and account number {}",account.getAccountName(),account.getAccountNumber());
         AccountDetails accountDetails = integrationService.viewAccountDetails(account.getAccountNumber());
         System.out.println("the account name on finacle is"+accountDetails.getAcctName());
-        if(accountDetails.getAcctName().equalsIgnoreCase("MARTINS")) {
-            account.setAccountName(accountDetails.getAcctName());
-            accountRepo.save(account);
+        if(account.getCurrencyCode() != null){
+        if(account.getAccountName().equalsIgnoreCase("ADEDOKUN  OLUTOPE")&&account.getCurrencyCode().equalsIgnoreCase("NGN")) {
+//            account.setAccountName(accountDetails.getAcctName());
+            account.setAccountName("MARTINS");
+            System.out.println("the account name after setting is"+account.getAccountName());
+//            accountRepo.save(account);
+        }
+//            accountDetails.;
+
         }
     }
     return false;
