@@ -3,10 +3,7 @@ package longbridge.controllers.retail;
 
 import longbridge.dtos.LocalBeneficiaryDTO;
 import longbridge.dtos.TransferRequestDTO;
-import longbridge.exception.InternetBankingException;
-import longbridge.exception.InternetBankingSecurityException;
-import longbridge.exception.InternetBankingTransferException;
-import longbridge.exception.TransferErrorService;
+import longbridge.exception.*;
 import longbridge.models.Account;
 import longbridge.models.FinancialInstitutionType;
 import longbridge.models.RetailUser;
@@ -196,16 +193,15 @@ public class TransferController {
 
             if (request.getSession().getAttribute("auth-needed") != null) {
                 String token = request.getParameter("token");
-                boolean ok=false;
+                boolean ok = false;
                 try {
-                  ok = securityService.performTokenValidation(principal.getName(), token);
-                }catch (InternetBankingSecurityException ibse){
+                    ok = securityService.performTokenValidation(principal.getName(), token);
+                } catch (InternetBankingSecurityException ibse) {
                     model.addAttribute("failure", ibse.getMessage());
                     return "/cust/transfer/transferauth";
                 }
 
-                    request.getSession().removeAttribute("auth-needed");
-
+                request.getSession().removeAttribute("auth-needed");
 
 
             }
@@ -217,23 +213,36 @@ public class TransferController {
             request.getSession().removeAttribute("transferRequest");
 
 
-            if(request.getParameter("add") != null){
+
+            if (request.getParameter("add") != null) {
                 //checkbox  checked
                 System.out.println("checkbox checked");
                 if (request.getSession().getAttribute("Lbeneficiary") != null) {
                     LocalBeneficiaryDTO l = (LocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary");
                     RetailUser user = retailUserService.getUserByName(principal.getName());
                     model.addAttribute("message", messages.getMessage("transaction.success", null, locale));
-                    localBeneficiaryService.addLocalBeneficiary(user, l);
-                    request.getSession().removeAttribute("Lbeneficiary");
-                    model.addAttribute("beneficiary", l);
+
+                   try {
+                       localBeneficiaryService.addLocalBeneficiary(user, l);
+                       request.getSession().removeAttribute("Lbeneficiary");
+                       model.addAttribute("beneficiary", l);
+                   }
+                   catch (InternetBankingException de){
+                       redirectAttributes.addFlashAttribute("message", messages.getMessage("transaction.success", null, locale));
+                       return index(transferRequestDTO.getTransferType());
+
+                   }
                 }
             }
 
             redirectAttributes.addFlashAttribute("message", messages.getMessage("transaction.success", null, locale));
             return index(transferRequestDTO.getTransferType());
             //return "redirect:/retail/dashboard";
-        } catch (InternetBankingTransferException e) {
+        }
+
+
+
+        catch (InternetBankingTransferException e) {
             e.printStackTrace();
 
             if(request.getParameter("add") != null){
@@ -243,9 +252,16 @@ public class TransferController {
                     LocalBeneficiaryDTO l = (LocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary");
                     RetailUser user = retailUserService.getUserByName(principal.getName());
                     model.addAttribute("message", messages.getMessage("transaction.success", null, locale));
-                    localBeneficiaryService.addLocalBeneficiary(user, l);
-                    request.getSession().removeAttribute("Lbeneficiary");
-                    model.addAttribute("beneficiary", l);
+                    try {
+                        localBeneficiaryService.addLocalBeneficiary(user, l);
+                        request.getSession().removeAttribute("Lbeneficiary");
+                        model.addAttribute("beneficiary", l);
+                    }
+                    catch (InternetBankingException de){
+                        String errorMessage = transferErrorService.getMessage(e, request);
+                        redirectAttributes.addFlashAttribute("failure", errorMessage);
+                        return "redirect:/retail/dashboard";
+                    }
                 }
             }
             if (request.getSession().getAttribute("Lbeneficiary") != null)
