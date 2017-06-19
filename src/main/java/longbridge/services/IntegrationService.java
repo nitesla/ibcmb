@@ -4,8 +4,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import longbridge.api.*;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.models.TransRequest;
-import longbridge.utils.AccountStatement;
-
+import longbridge.utils.statement.*;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -29,7 +28,7 @@ public interface IntegrationService {
 
 
     /**
-     * Fetches the {@link longbridge.utils.AccountStatement} of the account identified by
+     * Fetches the {@link AccountStatement} of the account identified by
      * {@code accountId} for the period between {@code fromDate} and {@code toDate}
      *
      * @param accountId the finacle acid of the Account
@@ -37,7 +36,7 @@ public interface IntegrationService {
      * @param toDate    the Date to stop fetching the account statement (inclusive)
      * @return {@code AccountStatement} object
      */
-    AccountStatement getAccountStatements(String accountId, Date fromDate, Date toDate);
+    AccountStatement getAccountStatements(String accountNo, Date fromDate, Date toDate);
 
 
     /**

@@ -12,7 +12,7 @@ import longbridge.services.AccountService;
 import longbridge.services.IntegrationService;
 import longbridge.services.RetailUserService;
 import longbridge.services.TransferService;
-import longbridge.utils.AccountStatement;
+import longbridge.utils.statement.AccountStatement;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JsonDataSource;
 import net.sf.jasperreports.engine.design.JasperDesign;
@@ -239,11 +239,9 @@ public class AccountController {
 
     @GetMapping("/viewstatement/{account}")
     public String getViewStatement( Model model,Principal principal,@PathVariable Account account){
-        RetailUser retailUser=retailUserService.getUserByName(principal.getName());
-
         AccountStatement accountStatement = integrationService.getAccountStatements(account.getAccountId(),new Date(),new Date());
         model.addAttribute("accountStatement",accountStatement);
-        System.out.println("PRINT ACCOUNT STAT:"+accountStatement);
+
 
         return "cust/account/view";
     }
