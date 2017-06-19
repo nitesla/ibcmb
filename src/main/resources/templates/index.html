@@ -233,13 +233,8 @@ v
                         <strong>We are Sorry!</strong> Email could not be sent.
                     </div>
                     <p>Enter details below</p>
-<<<<<<< HEAD
-                    <form method="post" th:action="@{/home}" th:object="${message}" class="contact-form">
-=======
+                    <form method="post" th:action="@{/home#contact_us}" th:object="${message}" class="contact-form">
 
-                    <form action="/contact" method="post" class="contact-form">
-
->>>>>>> 623a2b1ad9714f7f3360acdf2e6854c05a436368
                             <div class="form-group">
                                 <input type="text" name="name" class="form-control" placeholder="Name"/>
                             </div>
@@ -249,11 +244,7 @@ v
                             <div class="form-group">
                                 <textarea name="message" value="Message" class="form-control" rows="10"></textarea>
                             </div>
-<<<<<<< HEAD
                         <input type="submit" value="Submit" class="btn btn-primary btn-md form-control" />
-=======
-                            <input type="submit" value="Submit" class="btn btn-primary btn-md form-control" />
->>>>>>> 623a2b1ad9714f7f3360acdf2e6854c05a436368
 
                     </form>
                 </div>
