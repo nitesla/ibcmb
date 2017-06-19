@@ -15,8 +15,8 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-9 content-bg">
-
+            <div class="col-md-8 content-bg">
+                <div class="row form-spacing">
                     <div class="col-md-6 col-sm-6">
                         <div class="form-group">
                             <label>Beneficiary Type</label>
@@ -32,7 +32,7 @@
                               th:object="${localBeneficiaryDTO}">
                             <input type="hidden" th:value="local" class="form-control"/>
                             <div class="form-group">
-                                <label>Bank Details</label>
+                                <label>Beneficiary Bank</label>
                                 <span class="req"></span>
                                 <select name="beneficiaryBank" id="beneficiaryBank" class="form-control" placeholder="select"
                                         th:field="*{beneficiaryBank}" required="required">
@@ -173,11 +173,9 @@
                         </form>
 
                     </div>
-
-            </div>
-            <div class="col-md-3 pull-right " >
-                <div th:replace="cust_layout :: sidebar" class="" >
                 </div>
+            </div>
+            <div th:replace="cust_layout :: sidebar" class="col-md-3 sidebar">
             </div>
         </div>
     </div>

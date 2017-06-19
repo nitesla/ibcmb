@@ -4,11 +4,13 @@ import longbridge.dtos.AccountDTO;
 import longbridge.dtos.CodeDTO;
 import longbridge.dtos.RetailUserDTO;
 import longbridge.dtos.SettingDTO;
-import longbridge.exception.*;
+import longbridge.exception.PasswordException;
+import longbridge.exception.PasswordMismatchException;
+import longbridge.exception.PasswordPolicyViolationException;
+import longbridge.exception.WrongPasswordException;
 import longbridge.forms.AlertPref;
 import longbridge.forms.CustChangePassword;
 import longbridge.forms.CustResetPassword;
-import longbridge.models.Account;
 import longbridge.models.Email;
 import longbridge.models.FinancialInstitutionType;
 import longbridge.models.RetailUser;
@@ -88,6 +90,8 @@ public class SettingController {
     @PostMapping("/change_password")
     public String ChangePassword(@ModelAttribute("custChangePassword") @Valid CustChangePassword custChangePassword, BindingResult result, Principal principal, Model model, RedirectAttributes redirectAttributes) throws Exception {
         if (result.hasErrors()) {
+            List<String> passwordPolicy = passwordPolicyService.getPasswordRules();
+            model.addAttribute("passwordRules", passwordPolicy);
             model.addAttribute("failure", "Please fill in the required fields");
             return "cust/settings/pword";
         }

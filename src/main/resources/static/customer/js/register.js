@@ -21,8 +21,10 @@ form.children("div").steps({
     transitionEffect: "slideLeft",
     onStepChanging: function (event, currentIndex, newIndex)
     {
-        $("#myspan").hide();
 
+        $("#myspan1").hide();
+
+        $("#successReg").hide();
 
         form.validate().settings.ignore = ":disabled,:hidden";
         console.log(currentIndex);
@@ -33,7 +35,6 @@ form.children("div").steps({
         {
             $("#myspan").hide();
             $("#loader").hide();
-
             return true;
         }
 
@@ -50,14 +51,10 @@ form.children("div").steps({
             console.log("Current step is the account details step");
             var accountNumber = $('input[name="accountNumber"]').val();
 
-
             var email = $('input[name="email"]').val();
-
             console.log(email);
             var birthDate = $('input[name="birthDate"]').val();
-
-            return isValid && validateAccountDetails(accountNumber, email, birthDate);
-
+            return isValid && validateAccountDetails(accountNumber, email, birthDate) && validateExists(accountNumber, email, birthDate);
 
         }
         if(PROFILE_DETAILS_STEP === currentIndex){
@@ -83,7 +80,6 @@ form.children("div").steps({
 
 
         return form.valid();
-
 
 
     },
@@ -146,7 +142,7 @@ function validateAccountDetails(accountNumber, email, birthDate){
 
             if(customerId == "" || customerId === null){
 
-                // loader.style.display = "none";
+                loader.style.display = "none";
                 //invalid account number
                 // $.notify({
                 //     title: '<strong></strong>',
@@ -155,16 +151,14 @@ function validateAccountDetails(accountNumber, email, birthDate){
                 //     type: 'danger'
                 // });
 
-                document.getElementById("myspan").textContent="Invalid Account Credentials, Contact the bank";
+                document.getElementById("myspan").textContent="Invalid Account Credentials, Ensure details were correctly inputted. If problem persists, Please contact the bank.";
                 $("#myspan").show();
                 $("#loader").hide();
-                //loader.style.display = "block";
 
                 //alert("Account number not found");
             }else{
+                //loader.style.display = "none";
 
-                // loader.style.display = "none";
-                // $("#loader").hide();
                 //valid account number
                 //alert("Customer Id: " + customerId);
                 $('input[name=customerId]').val(customerId);
@@ -173,6 +167,50 @@ function validateAccountDetails(accountNumber, email, birthDate){
     });
 
     if(customerId == "" || customerId == null ){
+        return false;
+    }else{
+        return true;
+    }
+}
+
+function validateExists(accountNumber, email, birthDate){
+    var loader = document.getElementById('loader');
+    loader.style.display = "block";
+    if(email == ""){
+        email = "ib@coronationmb.com"
+    }
+    if(birthDate == ""){
+        birthDate = "11-12-1970"
+    }
+    var cif;
+    $.ajax({
+        type:'GET',
+        url:"/rest/accountexists/"+accountNumber+"/"+email+"/"+birthDate,
+        async:false,
+        success:function(data1){
+            cif = ''+String(data1);
+
+            if(cif == "" || cif === null){
+
+                loader.style.display = "none";
+                //invalid account number
+
+                document.getElementById("myspan").textContent="Account has been previously registered, please try to login with credentials.";
+                $("#myspan").show();
+                loader.style.display = "none";
+
+                //alert("Account number not found");
+            }else{
+                loader.style.display = "none";
+
+                //valid account number
+                //alert("Customer Id: " + customerId);
+                //$('input[name=customerId]').val(cif);
+            }
+        }
+    });
+
+    if(cif == "" || cif == null ){
         return false;
     }else{
         return true;
@@ -189,14 +227,6 @@ function validateUsername(username){
             result = ''+String(data1);
             if(result == 'false'){
                 //invalid account number
-                //alert("user name not found");
-                // $.notify({
-                //     title: '<strong></strong>',
-                //     message: 'Username already exists'
-                // },{
-                //     type: 'danger'
-                // });
-
                 document.getElementById("myspan1").textContent="Username already exists";
                 $("#myspan1").show();
             }else{
@@ -226,7 +256,7 @@ function validatePassword(password){
                 //success
             }else{
                 document.getElementById("myspan1").textContent="The entered password might not meet the set password policy";
-                $("#myspan").show();
+                $("#myspan1").show();
             }
         }
     });
@@ -257,8 +287,8 @@ function validateRegCode(code){
                 //     type: 'danger'
                 // });
 
-                document.getElementById("myspan").textContent="Enter the Registration code sent to your mobile";
-                $("#myspan").show();
+                document.getElementById("myspan1").textContent="Enter the Registration code sent to your mobile";
+                $("#myspan1").show();
 
             }else{
                 //valid account number
@@ -278,6 +308,8 @@ function validateRegCode(code){
 
 function sendRegCode(){
 
+    $('#myModal').modal('show');
+
     var accountNumber = $('input[name="accountNumber"]').val();
     var email = $('input[name="email"]').val();
     if(email == ""){
@@ -289,14 +321,8 @@ function sendRegCode(){
     }
     var result;
 
-    $('#myModal').modal('show');
-
-    var loader = document.getElementById('loa');
+    var loader = document.getElementById('load');
     loader.style.display = "block";
-
-
-
-
 
 
     $.ajax({
@@ -308,21 +334,17 @@ function sendRegCode(){
             if(result === 'false' || result=== '' || result === null){
                 loader.style.display = "none";
                 //invalid account number
-                //alert("user name not found");
-                // $.notify({
-                //     title: '<strong></strong>',
-                //     message: 'Failed to send registration code. Please try again.'
-                // },{
-                //     type: 'danger'
-                // });
                 document.getElementById("myspan1").textContent="Failed to send registration code. Please try again.";
                 $("#myspan1").show();
                 $('#myModal').modal('hide');
 
-
             }else{
+
                 loader.style.display = "none";
                 $("#myspan1").hide();
+                document.getElementById("successReg").innerHTML="Registration code has been successfully sent. If you do not receive a message after 5 minutes, please retry.";
+                $("#successReg").show();
+
                 var showreg = document.getElementById('regcodebox');
                 showreg.style.display = "block";
 
@@ -337,6 +359,8 @@ function sendRegCode(){
 }
 
 function registerUser(){
+    $("#myMode").modal("show");
+
     var returnValue = false;
     $('#reg-form').submit(function(e){
         e.preventDefault();
@@ -351,7 +375,9 @@ function registerUser(){
                 //alert(data+" return ");
                 //callback methods go right here
                 if(data==="true"){
+                    $("#myMode").modal("hide");
                     $('#returnValue').val(true);
+
                 }else {
                     // $.notify({
                     //     title: '<strong></strong>',
@@ -360,8 +386,10 @@ function registerUser(){
                     //     type: 'danger'
                     // });
 
-                    document.getElementById("myspan").textContent="Self Registration Failed";
-                    $("#myspan").show();
+                    document.getElementById("myspan3").textContent="Self Registration Failed";
+                    $("#myspan3").show();
+                    $("#myMode").modal("hide");
+
                 }
             }
         });
@@ -371,3 +399,4 @@ function registerUser(){
     //alert(returnValue);
     return Boolean(returnValue);
 }
+

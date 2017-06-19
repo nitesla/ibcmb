@@ -27,6 +27,31 @@
         }
     }
 
+    function validatePassword(password){
+        var res;
+        $.ajax({
+            type:'GET',
+            url:"/rest/password/check/"+password,
+            async:false,
+            success:function(data1){
+                res = ''+String(data1);
+                if(res === 'true'){
+                    //success
+                }else{
+                    document.getElementById("myspan1").textContent="The entered password might not meet the set password policy";
+                    $("#myspan1").show();
+                }
+            }
+        });
+
+        if(res === 'true'){
+            //username is valid and available
+            return true;
+        }else{
+            return false;
+        }
+    }
+
 	function changePassword(){
 	    var returnValue = false;
         $('#reg-form').submit(function(e){
@@ -44,12 +69,8 @@
                     if(data==="true"){
                         $('#returnValue').val(true);
                     }else {
-                        $.notify({
-                            title: '<strong>Oops!</strong>',
-                            message: 'Password Reset Failed, the entered password might not meet the set password policy'
-                        },{
-                            type: 'danger'
-                        });
+                        document.getElementById("myspan1").textContent=data;
+                        $("#myspan1").show();
                     }
                 }
             });
@@ -59,8 +80,6 @@
         //alert(returnValue);
         return Boolean(returnValue);
     }
-
-
 	
 
     //steps with form
@@ -115,7 +134,8 @@
             if(CHANGE_PASSWORD_STEP === currentIndex){
                 console.log("Current step is the change password step");
                 //form.submit();
-               return isValid && changePassword();
+                var confirm = $('input[name="confirm"]').val();
+               return isValid && validatePassword(confirm) && changePassword();
             }
 
             form.validate().settings.ignore = ":disabled,:hidden";

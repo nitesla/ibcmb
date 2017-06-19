@@ -4,14 +4,8 @@ import longbridge.dtos.FinancialInstitutionDTO;
 import longbridge.dtos.LocalBeneficiaryDTO;
 import longbridge.dtos.TransferRequestDTO;
 import longbridge.exception.InternetBankingTransferException;
-import longbridge.models.FinancialInstitution;
-import longbridge.models.FinancialInstitutionType;
-import longbridge.models.LocalBeneficiary;
-import longbridge.models.RetailUser;
-import longbridge.services.FinancialInstitutionService;
-import longbridge.services.LocalBeneficiaryService;
-import longbridge.services.RetailUserService;
-import longbridge.services.TransferService;
+import longbridge.models.*;
+import longbridge.services.*;
 import longbridge.utils.TransferType;
 import longbridge.validator.transfer.TransferValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,10 +19,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -46,18 +42,25 @@ public class InterBankTransferController {
     private LocalBeneficiaryService localBeneficiaryService;
     private FinancialInstitutionService financialInstitutionService;
     private TransferValidator validator;
+    private IntegrationService integrationService;
+    private AccountService accountService;
     private String page = "cust/transfer/interbank/";
     @Value("${bank.code}")
     private String bankCode;
 
     @Autowired
-    public InterBankTransferController(RetailUserService retailUserService, TransferService transferService, MessageSource messages, LocalBeneficiaryService localBeneficiaryService, FinancialInstitutionService financialInstitutionService, TransferValidator validator) {
+    public InterBankTransferController(RetailUserService retailUserService, TransferService transferService, MessageSource messages, LocalBeneficiaryService localBeneficiaryService, FinancialInstitutionService financialInstitutionService,AccountService accountService, TransferValidator validator
+
+    ,IntegrationService integrationService
+    ) {
         this.retailUserService = retailUserService;
         this.transferService = transferService;
         this.messages = messages;
         this.localBeneficiaryService = localBeneficiaryService;
         this.financialInstitutionService = financialInstitutionService;
         this.validator = validator;
+        this.integrationService=integrationService;
+        this.accountService = accountService;
     }
 
     @GetMapping(value = "")
@@ -195,7 +198,17 @@ public class InterBankTransferController {
 
 
         );
+        model.addAttribute("nip",integrationService.getFee("NIP"));
+        model.addAttribute("rtgs",integrationService.getFee("RTGS"));
 
     }
 
+    @RequestMapping(value="/balance/{accountNumber}", method=RequestMethod.GET , produces="application/json")
+    @ResponseBody
+    public BigDecimal getBalance(@PathVariable String accountNumber) throws Exception {
+        Account account = accountService.getAccountByAccountNumber(accountNumber);
+        Map<String, BigDecimal> balance = accountService.getBalance(account);
+        BigDecimal availBal = balance.get("AvailableBalance");
+        return availBal;
+    }
 }

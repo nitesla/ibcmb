@@ -1,6 +1,7 @@
 package longbridge.models;
 
 
+import longbridge.utils.verificationStatus;
 import org.hibernate.annotations.Where;
 
 import org.hibernate.envers.Audited;
@@ -8,27 +9,26 @@ import org.hibernate.envers.Audited;
 import javax.persistence.*;
 import java.util.Date;
 
-/** this represents a change that needs Verification. This can be
+/**
+ * this represents a change that needs Verification. This can be
  * used to store an update if a verification is made. It also serves as an audit for every change
  * Created by LB-PRJ-020 on 4/7/2017.
  */
 @Entity
-@Audited(withModifiedFlag=true)
-@Where(clause ="del_Flag='N'" )
-public class Verification extends  AbstractEntity {
-    public static enum VerificationStatus {
-        VERIFIED, DECLINED,PENDING //EXPIRED
-    }
+@Audited(withModifiedFlag = true)
+@Where(clause = "del_Flag='N'")
+public class Verification extends AbstractEntity {
 
-    //@Column(columnDefinition = "TEXT")
+
+    @Lob
     private String beforeObject; //json
-    //@Column(columnDefinition = "TEXT")
+    @Lob
     private String afterObject; //json
-    //@Column(columnDefinition = "TEXT")
+    @Lob
     private String original; //json
 
     @Enumerated(value = EnumType.STRING)
-    private VerificationStatus status;
+    private verificationStatus status;
 
     private String description;
     private Long entityId;
@@ -48,39 +48,39 @@ public class Verification extends  AbstractEntity {
     @ManyToOne
     private AdminUser verifiedBy;
     private Date verifiedOn;
-    
+
     @OneToOne
     private Verification dependency;
 
     public Verification getDependency() {
-		return dependency;
-	}
+        return dependency;
+    }
 
-	public void setDependency(Verification dependency) {
-		this.dependency = dependency;
-	}
+    public void setDependency(Verification dependency) {
+        this.dependency = dependency;
+    }
 
-	public AdminUser getDeclinedBy() {
+    public AdminUser getDeclinedBy() {
         return declinedBy;
     }
 
     public String getEntityName() {
-		return entityName;
-	}
+        return entityName;
+    }
 
-	public void setEntityName(String entityName) {
-		this.entityName = entityName;
-	}
+    public void setEntityName(String entityName) {
+        this.entityName = entityName;
+    }
 
-	public void setDeclinedBy(AdminUser declinedBy) {
+    public void setDeclinedBy(AdminUser declinedBy) {
         this.declinedBy = declinedBy;
     }
 
-    public VerificationStatus getStatus() {
+    public verificationStatus getStatus() {
         return status;
     }
 
-    public void setStatus(VerificationStatus status) {
+    public void setStatus(verificationStatus status) {
         this.status = status;
     }
 
@@ -180,32 +180,32 @@ public class Verification extends  AbstractEntity {
         this.verifiedBy = verifiedBy;
     }
 
-	@Override
-	public String toString() {
-		return "Verification [" + (beforeObject != null ? "beforeObject=" + beforeObject + ", " : "")
-				+ (afterObject != null ? "afterObject=" + afterObject + ", " : "")
-				+ (original != null ? "original=" + original + ", " : "")
-				+ (status != null ? "status=" + status + ", " : "")
-				+ (description != null ? "description=" + description + ", " : "")
-				+ (entityId != null ? "entityId=" + entityId + ", " : "")
-				+ (operationCode != null ? "operationCode=" + operationCode + ", " : "")
-				+ (initiatedBy != null ? "initiatedBy=" + initiatedBy + ", " : "")
-				+ (initiatedOn != null ? "initiatedOn=" + initiatedOn + ", " : "")
-				+ (declinedBy != null ? "declinedBy=" + declinedBy + ", " : "")
-				+ (declinedOn != null ? "declinedOn=" + declinedOn + ", " : "")
-				+ (declineReason != null ? "declineReason=" + declineReason + ", " : "")
-				+ (verifiedBy != null ? "verifiedBy=" + verifiedBy + ", " : "")
-				+ (verifiedOn != null ? "verifiedOn=" + verifiedOn : "") + "]";
-	}
+    @Override
+    public String toString() {
+        return "Verification [" + (beforeObject != null ? "beforeObject=" + beforeObject + ", " : "")
+                + (afterObject != null ? "afterObject=" + afterObject + ", " : "")
+                + (original != null ? "original=" + original + ", " : "")
+                + (status != null ? "status=" + status + ", " : "")
+                + (description != null ? "description=" + description + ", " : "")
+                + (entityId != null ? "entityId=" + entityId + ", " : "")
+                + (operationCode != null ? "operationCode=" + operationCode + ", " : "")
+                + (initiatedBy != null ? "initiatedBy=" + initiatedBy + ", " : "")
+                + (initiatedOn != null ? "initiatedOn=" + initiatedOn + ", " : "")
+                + (declinedBy != null ? "declinedBy=" + declinedBy + ", " : "")
+                + (declinedOn != null ? "declinedOn=" + declinedOn + ", " : "")
+                + (declineReason != null ? "declineReason=" + declineReason + ", " : "")
+                + (verifiedBy != null ? "verifiedBy=" + verifiedBy + ", " : "")
+                + (verifiedOn != null ? "verifiedOn=" + verifiedOn : "") + "]";
+    }
 
-	public static OperationCode getAddCode() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public static OperationCode getAddCode() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	public static OperationCode getModifyCode() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public static OperationCode getModifyCode() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
 }

@@ -8,6 +8,8 @@ import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingSecurityException;
 import longbridge.exception.PasswordException;
 import longbridge.forms.ChangePassword;
+import longbridge.models.CorporateUser;
+import longbridge.security.FailedLoginService;
 import longbridge.services.CorporateService;
 import longbridge.services.CorporateUserService;
 import longbridge.services.RoleService;
@@ -47,7 +49,11 @@ public class AdmCorporateUserController {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    MessageSource messageSource;
+    private MessageSource messageSource;
+
+    @Autowired
+    private FailedLoginService failedLoginService;
+
 
 
     @ModelAttribute
@@ -145,6 +151,23 @@ public class AdmCorporateUserController {
         }
     }
 
+
+    @GetMapping("/{userId}/unlock")
+    public String unlockUser(@PathVariable Long userId, RedirectAttributes redirectAttributes,Locale locale){
+
+        try{
+            String message = corporateUserService.unlockUser(userId);
+            redirectAttributes.addFlashAttribute("message",message);
+
+        }
+        catch (InternetBankingException e){
+            logger.error("Error unlocking user",e.getMessage());
+            redirectAttributes.addFlashAttribute("message",messageSource.getMessage("unlock.failure",null, locale));
+
+        }
+
+        return "redirect:/admin/corporates/users";
+    }
 
     @GetMapping("{userId}/edit")
     public String getUser(@PathVariable Long userId, Model model) {

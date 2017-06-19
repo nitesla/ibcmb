@@ -17,12 +17,12 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-9 content-bg">
-
-                    <div class="col-md- col-sm-">
+            <div class="col-md-8 content-bg">
+                <div class="row form-spacing">
+                    <div class="col-md-10 col-sm-10">
                         <form method="post" th:action="@{/retail/account/history}">
 
-                            <table class="table table-responsive" id="users">
+                            <table class="table" id="users">
                                 <thead>
                                 <tr>
                                     <th>Date</th>
@@ -42,11 +42,9 @@
                         </form>
 
                     </div>
-
-            </div>
-            <div class="col-md-3 pull-right " >
-                <div th:replace="cust_layout :: sidebar" class="" >
                 </div>
+            </div>
+            <div th:replace="cust_layout :: sidebar" class="col-md-3 sidebar">
             </div>
         </div>
     </div>

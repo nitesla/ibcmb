@@ -3,6 +3,7 @@ package longbridge.controllers.admin;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import longbridge.utils.verificationStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +51,7 @@ public class VerificationController {
         Verification verification = verificationRepo.findOne(id);
         logger.info("log {}", verification);
 
-        if (verification == null || Verification.VerificationStatus.PENDING != verification.getStatus())
+        if (verification == null || verificationStatus.PENDING != verification.getStatus())
             return "Verification not found";
 
         //TODO check if this verification has a dependency
@@ -58,7 +59,7 @@ public class VerificationController {
         	return "Verification has a dependency";
         }
         
-        verificationService.verify(verification);
+        verificationService.verify(id);
 
 		return "adm/admin/verification/confirm";
 	}
@@ -69,7 +70,7 @@ public class VerificationController {
         AdminUser adminUser = adminUserService.getUser(1l);
         Verification verification = verificationService.getVerification(verificationId);
 
-        if (verification == null || Verification.VerificationStatus.PENDING != verification.getStatus())
+        if (verification == null || verificationStatus.PENDING != verification.getStatus())
             return "Verification not found";
 
         //TODO check if this verification has a dependency
@@ -77,7 +78,7 @@ public class VerificationController {
         	return "Verification has a dependency";
         }
         
-        verificationService.verify(verification);
+        verificationService.verify(verificationId);
 		return "adm/admin/verification/decline";
 	}
 

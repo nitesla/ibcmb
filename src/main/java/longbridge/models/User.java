@@ -8,7 +8,7 @@ import java.util.Date;
  * Created by Wunmi on 29/03/2017.
  */
 @MappedSuperclass
-public class User extends AbstractEntity{
+public class User extends AbstractEntity implements Cloneable{
 
     protected String userName;
     protected String firstName;
@@ -16,8 +16,6 @@ public class User extends AbstractEntity{
     protected String email;
     protected String phoneNumber;
     protected String password;
-    @Column(length = 4000)
-    protected String usedPasswords;
     protected String status;
     protected Date createdOnDate;
     protected Date expiryDate;
@@ -93,13 +91,6 @@ public class User extends AbstractEntity{
         this.password = password;
     }
 
-    public String getUsedPasswords() {
-        return usedPasswords;
-    }
-
-    public void setUsedPasswords(String usedPasswords) {
-        this.usedPasswords = usedPasswords;
-    }
 
     public String getStatus() {
 		return status;
@@ -203,5 +194,9 @@ public class User extends AbstractEntity{
 	}
 
 
+	@Override
+    public Object clone() throws CloneNotSupportedException{
+        return super.clone();
+    }
 
 }
