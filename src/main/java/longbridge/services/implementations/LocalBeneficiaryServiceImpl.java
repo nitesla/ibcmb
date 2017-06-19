@@ -8,6 +8,7 @@ import longbridge.models.RetailUser;
 import longbridge.models.User;
 import longbridge.repositories.FinancialInstitutionRepo;
 import longbridge.repositories.LocalBeneficiaryRepo;
+import longbridge.services.IntegrationService;
 import longbridge.services.LocalBeneficiaryService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -34,6 +35,8 @@ public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
     MessageSource messageSource;
     @Autowired
     FinancialInstitutionRepo financialInstitutionRepo;
+    @Autowired
+    IntegrationService integrationService;
     Locale locale = LocaleContextHolder.getLocale();
     private LocalBeneficiaryRepo localBeneficiaryRepo;
     private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -122,6 +125,9 @@ public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
 
         if (financialInstitutionRepo.findByInstitutionCode(localBeneficiary.getBeneficiaryBank())==null)
             throw new InternetBankingException("transfer.beneficiary.invalid");
+
+       if (integrationService.doNameEnquiry(localBeneficiary.getBeneficiaryBank(), localBeneficiary.getAccountNumber()).getAccountName()==null)
+           throw new InternetBankingException("transfer.beneficiary.invalid");
     }
 
 }

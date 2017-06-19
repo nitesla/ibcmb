@@ -26,6 +26,10 @@ public interface RetailUserService {
     @PreAuthorize("hasAuthority('GET_RETAIL_USER')")
     RetailUserDTO getUser(Long id);
 
+
+    String unlockUser(Long id) throws InternetBankingException;
+
+
 //    @PreAuthorize("hasAuthority('GET_RETAIL_USER')")
     RetailUser getUserByName(String name);
 
@@ -62,7 +66,7 @@ public interface RetailUserService {
 //    String setPassword(RetailUser user, String password) throws PasswordException;
 
 
-    @PreAuthorize("hasAuthority('UPDATE_RETAIL_USER')")
+    //@PreAuthorize("hasAuthority('UPDATE_RETAIL_USER')")
     String resetPassword(RetailUser user, CustResetPassword custResetPassword);
 
     /**

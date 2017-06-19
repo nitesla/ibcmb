@@ -20,7 +20,7 @@
         <div class="row">
             <div class="col-md-9 content-bg">
                 <!--<div class="row form-spacing">-->
-                <div class="col-md-8">
+                <div class="col-md-6 alert" style="border:0px !important">
                     <div class="">
 
                         <div th:if="${message != null}" class="alert alert-info" th:text="${message}">message</div>
@@ -78,14 +78,11 @@
 
                     </div>
                 </div>
-
-
-                <div class="col-md-4 sidebar" >
-                    <div class="sidebar-bg">
-
-                        <p class="related page_header">Related Information</p>
-                        <hr class="hrhr"/>
-                    </div>
+                <div class="col-md-6 col-sm-6">
+                    <!--<p class="related" style="padding-top: 5%">Related Information</p>-->
+                    <hr/>
+                    <!--<input type="availBal" name="availBal"/>-->
+                    <p id="availBal"><b></b></p>
                 </div>
 
             </div>

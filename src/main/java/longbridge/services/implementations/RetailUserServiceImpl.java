@@ -15,6 +15,7 @@ import longbridge.models.Code;
 import longbridge.models.Email;
 import longbridge.models.RetailUser;
 import longbridge.repositories.RetailUserRepo;
+import longbridge.security.FailedLoginService;
 import longbridge.services.*;
 import longbridge.utils.DateFormatter;
 import org.modelmapper.ModelMapper;
@@ -58,6 +59,9 @@ public class RetailUserServiceImpl implements RetailUserService {
     @Autowired
     MailService mailService;
 
+    @Autowired
+    FailedLoginService failedLoginService;
+
     Locale locale = LocaleContextHolder.getLocale();
 
     private CodeService codeService;
@@ -84,6 +88,23 @@ public class RetailUserServiceImpl implements RetailUserService {
     public RetailUserDTO getUser(Long id) {
         RetailUser retailUser = this.retailUserRepo.findOne(id);
         return convertEntityToDTO(retailUser);
+    }
+
+    @Override
+    public String unlockUser(Long id) throws InternetBankingException {
+
+        RetailUser user = retailUserRepo.findOne(id);
+        if (!"L".equals(user.getStatus())) {
+            throw new InternetBankingException(messageSource.getMessage("user.unlocked", null, locale));
+        }
+        try {
+            failedLoginService.unLockUser(user);
+            return messageSource.getMessage("unlock.success",null,locale);
+        }
+        catch (Exception e){
+            throw new InternetBankingException(messageSource.getMessage("unlock.failure", null, locale));
+
+        }
     }
 
     @Override
@@ -197,6 +218,7 @@ public class RetailUserServiceImpl implements RetailUserService {
         try{
             securityService.addUserContacts(email, phone, true, username);
         }catch (InternetBankingSecurityException e){
+            securityService.deleteEntrustUser(username);
             throw new InternetBankingSecurityException(messageSource.getMessage("entrust.create.failure", null, locale), e);
         }
     }
@@ -316,12 +338,15 @@ public class RetailUserServiceImpl implements RetailUserService {
 
         String errorMessage = passwordPolicyService.validate(custResetPassword.getNewPassword(), user);
         if (!"".equals(errorMessage)) {
+            logger.info("Password violation");
             throw new PasswordPolicyViolationException(errorMessage);
         }
 
         if (!custResetPassword.getNewPassword().equals(custResetPassword.getConfirmPassword())) {
+            logger.info("Password mismatch");
             throw new PasswordMismatchException();
         }
+
         try {
             RetailUser retailUser = retailUserRepo.findOne(user.getId());
             retailUser.setPassword(this.passwordEncoder.encode(custResetPassword.getNewPassword()));
@@ -410,15 +435,11 @@ public class RetailUserServiceImpl implements RetailUserService {
 
     private RetailUserDTO convertEntityToDTO(RetailUser retailUser) {
         RetailUserDTO retailUserDTO =  modelMapper.map(retailUser, RetailUserDTO.class);
-        Code code = codeService.getByTypeAndCode("USER_STATUS", retailUser.getStatus());
         if(retailUser.getCreatedOnDate()!=null) {
             retailUserDTO.setCreatedOn(DateFormatter.format(retailUser.getCreatedOnDate()));
         }
         if(retailUser.getLastLoginDate()!=null) {
             retailUserDTO.setLastLogin(DateFormatter.format(retailUser.getLastLoginDate()));
-        }
-        if (code != null) {
-            retailUserDTO.setStatus(code.getDescription());
         }
         return retailUserDTO;
     }

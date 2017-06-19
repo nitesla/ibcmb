@@ -68,9 +68,10 @@ public class TokenManagementController {
             }
         }
         catch (InternetBankingSecurityException ibe){
-            logger.error("Error authenticating token");
+            logger.error("Error authenticating token",ibe);
+            redirectAttributes.addFlashAttribute("failure",ibe.getMessage());
+
         }
-        redirectAttributes.addFlashAttribute("failure",messageSource.getMessage("token.auth.failure",null,locale));
         return "redirect:/retail/token";
 
     }
@@ -88,7 +89,7 @@ public class TokenManagementController {
         }
         catch (InternetBankingSecurityException ibe){
             logger.error("Failed to load corp user {} token serials", principal.getName(),ibe);
-            model.addAttribute("failure", "Failed to load token serial numbers");
+            model.addAttribute("failure", ibe.getMessage());
         }
 
         model.addAttribute("tokenSync", new CustSyncTokenForm());
@@ -108,9 +109,10 @@ public class TokenManagementController {
             }
         }catch (InternetBankingSecurityException ibe){
             logger.error("Error Synchronizing Token", ibe);
+            redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("token.sync.failure", null, locale));
+
 
         }
-        redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("token.sync.failure", null, locale));
         return "redirect:/retail/token/sync";
 
     }

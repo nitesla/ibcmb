@@ -1,10 +1,7 @@
 package longbridge.controllers.retail;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import longbridge.api.AccountDetails;
 import longbridge.dtos.AccountDTO;
-import longbridge.dtos.CorporateDTO;
-import longbridge.dtos.CorporateUserDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.forms.CustomizeAccount;
 import longbridge.models.Account;
@@ -14,13 +11,14 @@ import longbridge.repositories.AccountRepo;
 import longbridge.services.AccountService;
 import longbridge.services.IntegrationService;
 import longbridge.services.RetailUserService;
+import longbridge.services.TransferService;
+import longbridge.utils.AccountStatement;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JsonDataSource;
 import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.export.JRXlsExporter;
 import net.sf.jasperreports.engine.export.JRXlsExporterParameter;
 import net.sf.jasperreports.engine.xml.JRXmlLoader;
-import longbridge.services.TransferService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,29 +27,21 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.io.Resource;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
-import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
-import org.springframework.data.jpa.datatables.repository.DataTablesUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView;
 
 import javax.validation.Valid;
 import java.io.File;
-import java.io.IOException;
 import java.security.Principal;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
-import static net.sf.jasperreports.engine.JasperExportManager.*;
-import static org.springframework.data.repository.init.ResourceReader.Type.JSON;
+import static net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfFile;
 
 /**
  * Created by Fortune on 4/3/2017.
@@ -247,11 +237,17 @@ public class AccountController {
         return "cust/account/history";
     }
 
-    @GetMapping("/viewstatement")
-    public String getViewStatement( Model model,Principal principal){
+    @GetMapping("/viewstatement/{account}")
+    public String getViewStatement( Model model,Principal principal,@PathVariable Account account){
+        RetailUser retailUser=retailUserService.getUserByName(principal.getName());
+
+        AccountStatement accountStatement = integrationService.getAccountStatements(account.getAccountId(),new Date(),new Date());
+        model.addAttribute("accountStatement",accountStatement);
+        System.out.println("PRINT ACCOUNT STAT:"+accountStatement);
 
         return "cust/account/view";
     }
+
     @GetMapping("/print/statement")
     public String getAcctStmtPDF(){
         logger.info("account statement running");

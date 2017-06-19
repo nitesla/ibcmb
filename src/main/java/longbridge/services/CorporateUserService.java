@@ -135,5 +135,7 @@ public interface CorporateUserService{
 
     List<CorporateUserDTO> getUsersWithoutRole(Long corpId);
 
+    String unlockUser(Long id) throws InternetBankingException;
+
 
 }

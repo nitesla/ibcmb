@@ -35,5 +35,7 @@ public interface CorpTransferService {
 
     String authorizeTransfer(CorporateRole role, Long authId) throws InternetBankingException;
 
+    String addTransferRequest(CorpTransferRequestDTO transferRequestDTO) throws InternetBankingException;
+
 
 }

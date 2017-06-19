@@ -118,7 +118,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Iterable<AccountDTO> getAccounts(String customerId) {
+    public List<AccountDTO> getAccounts(String customerId) {
         List<Account> accountList = accountRepo.findByCustomerId(customerId);
         return convertEntitiesToDTOs(accountList);
     }
