@@ -28,6 +28,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -88,9 +89,15 @@ public class IntegrationServiceImpl implements IntegrationService {
     public AccountStatement getAccountStatements(String accountNo, Date fromDate, Date toDate) {
         AccountStatement statement = new AccountStatement();
         try {
-            String uri = URI + "/account/{acctId}";
+            SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
+       /* String dateInString = "7-Jun-2013";
+        Date date = formatter.parse(dateInString);*/
+            String uri = URI + "/statement";
             Map<String, String> params = new HashMap<>();
-            params.put("acctId", accountNo);
+            params.put("accountNumber", accountNo);
+            params.put("fromDate", formatter.format(fromDate));
+            if (toDate!=null) params.put("toDate",formatter.format(toDate));
+
 
 
             statement = template.getForObject(uri, AccountStatement.class, params);
@@ -250,6 +257,22 @@ public class IntegrationServiceImpl implements IntegrationService {
         logger.trace("request did not match any type");
         transRequest.setStatus(ResultType.ERROR.toString());
         return transRequest;
+    }
+
+    @Override
+    public TransferDetails makeNapsTransfer(Naps naps) throws InternetBankingTransferException {
+        String uri = URI + "/naps";
+
+        try {
+            TransferDetails details = template.getForObject(uri, TransferDetails.class, naps);
+            return details;
+        } catch (Exception e) {
+            return new TransferDetails();
+        }
+
+
+
+
     }
 
     @Override

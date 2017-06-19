@@ -31,7 +31,7 @@ public interface IntegrationService {
      * Fetches the {@link AccountStatement} of the account identified by
      * {@code accountId} for the period between {@code fromDate} and {@code toDate}
      *
-     * @param accountId the finacle acid of the Account
+     * @param accountNo the  account Number of the Account
      * @param fromDate  the Date from where to begin fetching the account statement
      * @param toDate    the Date to stop fetching the account statement (inclusive)
      * @return {@code AccountStatement} object
@@ -52,6 +52,7 @@ public interface IntegrationService {
      * Initiates a transfer request to the relevant Transfer service.
      */
     TransRequest makeTransfer(TransRequest transRequest) throws InternetBankingTransferException;
+    TransferDetails makeNapsTransfer(Naps naps) throws InternetBankingTransferException;
 
     /**
      * Fetches the account Name, Balance , Type from the account table specified by account Number

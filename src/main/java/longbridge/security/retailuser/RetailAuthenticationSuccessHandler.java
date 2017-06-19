@@ -140,7 +140,7 @@ public class RetailAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
             }
         } catch (Exception e) {
-            logger.error("EXCEPTION OCCURRED {}", e.getMessage());
+            logger.error("EXCEPTION OCCURRED {}", e);
         }
 
     }
