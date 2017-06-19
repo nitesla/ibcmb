@@ -11,4 +11,7 @@ import org.springframework.stereotype.Repository;
 public interface VerificationRepo extends CommonRepo<Verification, Long>{
 
     Verification findFirstByEntityNameAndStatus(String name, verificationStatus status);
+
+    Verification findFirstByEntityNameAndEntityIdAndStatus(String name, Long id, verificationStatus status);
+
 }

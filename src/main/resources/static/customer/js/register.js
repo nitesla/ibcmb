@@ -21,7 +21,6 @@ form.children("div").steps({
     transitionEffect: "slideLeft",
     onStepChanging: function (event, currentIndex, newIndex)
     {
-        $("#myspan").hide();
 
         $("#myspan1").hide();
 
@@ -52,13 +51,10 @@ form.children("div").steps({
             console.log("Current step is the account details step");
             var accountNumber = $('input[name="accountNumber"]').val();
 
-
             var email = $('input[name="email"]').val();
-
             console.log(email);
             var birthDate = $('input[name="birthDate"]').val();
             return isValid && validateAccountDetails(accountNumber, email, birthDate) && validateExists(accountNumber, email, birthDate);
-
 
         }
         if(PROFILE_DETAILS_STEP === currentIndex){
@@ -84,7 +80,6 @@ form.children("div").steps({
 
 
         return form.valid();
-
 
 
     },
@@ -147,7 +142,7 @@ function validateAccountDetails(accountNumber, email, birthDate){
 
             if(customerId == "" || customerId === null){
 
-                // loader.style.display = "none";
+                loader.style.display = "none";
                 //invalid account number
                 // $.notify({
                 //     title: '<strong></strong>',
@@ -164,8 +159,6 @@ function validateAccountDetails(accountNumber, email, birthDate){
             }else{
                 //loader.style.display = "none";
 
-                // loader.style.display = "none";
-                // $("#loader").hide();
                 //valid account number
                 //alert("Customer Id: " + customerId);
                 $('input[name=customerId]').val(customerId);
