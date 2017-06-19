@@ -1,7 +1,6 @@
 package longbridge.services.implementations;
 
 
-
 import longbridge.config.entrust.CustomHttpClient;
 import longbridge.config.entrust.EntrustServiceResponse;
 import longbridge.exception.InternetBankingSecurityException;
@@ -117,7 +116,7 @@ public class SecurityServiceImpl implements SecurityService {
 
             logger.trace("response is {}", respMesg);
 
-            if (!isSuccessful){
+            if (!isSuccessful) {
                 String erroMessg = StringUtils.substringBetween(responseMessage, "<respMessage>", "</respMessage>");
                 throw new InternetBankingSecurityException(erroMessg);
             }
@@ -163,7 +162,7 @@ public class SecurityServiceImpl implements SecurityService {
 
 
             logger.info("******************END RESPONSE***********");
-            if (!isSuccessful){
+            if (!isSuccessful) {
                 String erroMessg = StringUtils.substringBetween(responseMessage, "<respMessage>", "</respMessage>");
                 throw new InternetBankingSecurityException(erroMessg);
             }
@@ -209,7 +208,7 @@ public class SecurityServiceImpl implements SecurityService {
 
 
             logger.info("******************END RESPONSE***********");
-            if (!isSuccessful){
+            if (!isSuccessful) {
                 String erroMessg = StringUtils.substringBetween(responseMessage, "<respMessage>", "</respMessage>");
                 throw new InternetBankingSecurityException(erroMessg);
             }
@@ -248,7 +247,7 @@ public class SecurityServiceImpl implements SecurityService {
 
 
             logger.info("******************END RESPONSE***********");
-            if (!isSuccessful){
+            if (!isSuccessful) {
                 String erroMessg = StringUtils.substringBetween(responseMessage, "<respMessage>", "</respMessage>");
                 throw new InternetBankingSecurityException(erroMessg);
             }
@@ -287,7 +286,7 @@ public class SecurityServiceImpl implements SecurityService {
 
 
             logger.info("******************END RESPONSE***********");
-            if (!isSuccessful){
+            if (!isSuccessful) {
                 String erroMessg = StringUtils.substringBetween(responseMessage, "<respMessage>", "</respMessage>");
                 throw new InternetBankingSecurityException(erroMessg);
             }
@@ -327,7 +326,7 @@ public class SecurityServiceImpl implements SecurityService {
 
 
             logger.info("******************END RESPONSE***********");
-            if (!isSuccessful){
+            if (!isSuccessful) {
                 String erroMessg = StringUtils.substringBetween(responseMessage, "<respMessage>", "</respMessage>");
                 throw new InternetBankingSecurityException(erroMessg);
             }
@@ -368,7 +367,7 @@ public class SecurityServiceImpl implements SecurityService {
 
 
             logger.info("******************END RESPONSE***********");
-            if (!isSuccessful){
+            if (!isSuccessful) {
                 String erroMessg = StringUtils.substringBetween(responseMessage, "<respMessage>", "</respMessage>");
                 throw new InternetBankingSecurityException(erroMessg);
             }
@@ -410,7 +409,7 @@ public class SecurityServiceImpl implements SecurityService {
 
 
             logger.info("******************END RESPONSE***********");
-            if (!isSuccessful){
+            if (!isSuccessful) {
                 String erroMessg = StringUtils.substringBetween(responseMessage, "<respMessage>", "</respMessage>");
                 throw new InternetBankingSecurityException(erroMessg);
             }
@@ -452,7 +451,7 @@ public class SecurityServiceImpl implements SecurityService {
 
 
             logger.info("******************END RESPONSE***********");
-            if (!isSuccessful){
+            if (!isSuccessful) {
                 String erroMessg = StringUtils.substringBetween(responseMessage, "<respMessage>", "</respMessage>");
                 throw new InternetBankingSecurityException(erroMessg);
             }
@@ -494,7 +493,7 @@ public class SecurityServiceImpl implements SecurityService {
 
 
             logger.info("******************END RESPONSE***********");
-            if (!isSuccessful){
+            if (!isSuccessful) {
                 String erroMessg = StringUtils.substringBetween(responseMessage, "<respMessage>", "</respMessage>");
                 throw new InternetBankingSecurityException(erroMessg);
             }
@@ -504,10 +503,6 @@ public class SecurityServiceImpl implements SecurityService {
             throw new InternetBankingSecurityException(e.getMessage(), e);
 
         }
-
-
-
-
 
 
     }
@@ -547,7 +542,7 @@ public class SecurityServiceImpl implements SecurityService {
 
 
             logger.info("******************END RESPONSE***********");
-            if (!isSuccessful){
+            if (!isSuccessful) {
                 String erroMessg = StringUtils.substringBetween(responseMessage, "<respMessage>", "</respMessage>");
                 throw new InternetBankingSecurityException(erroMessg);
             }
@@ -561,6 +556,89 @@ public class SecurityServiceImpl implements SecurityService {
 
         return list;
 
+
+    }
+
+    @Override
+    public Integer getMinUserQA(String username) {
+        try {
+            StringWriter writer = new StringWriter();
+            this.t = this.ve.getTemplate("entrust/performGetMinQASize.vm");
+            this.context.put("appCode", appCode);
+            this.context.put("appDesc", appDesc);
+            this.context.put("appGroup", appGroup);
+            this.context.put("userName", username);
+            this.t.merge(this.context, writer);
+            String payload = writer.toString();
+            EntrustServiceResponse webServiceResponse = httpClient.sendHttpRequest(payload);
+            String responseMessage = webServiceResponse.getResponseMessage();
+            logger.trace("response {}", responseMessage);
+            CharSequence charSequence = "<respCode>1</respCode>";
+
+
+            boolean isSuccessful = responseMessage.contains(charSequence);
+            String msg = StringUtils.substringBetween(responseMessage, "<respMessageCode>", "</respMessageCode>");
+
+            logger.trace("response message code : {}", msg);
+            if (!isSuccessful) throw new InternetBankingSecurityException(msg);
+
+
+            logger.info("******************END RESPONSE***********");
+            if (!isSuccessful) {
+                String erroMessg = StringUtils.substringBetween(responseMessage, "<respMessage>", "</respMessage>");
+                throw new InternetBankingSecurityException(erroMessg);
+            }
+
+            Integer number = Integer.parseInt(StringUtils.substringBetween(responseMessage, "<questionSize>", "</questionSize>"));
+            return number;
+
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new InternetBankingSecurityException(e.getMessage(), e);
+
+        }
+
+
+    }
+
+    @Override
+    public Integer geUserQASize(String username) {
+        try {
+            StringWriter writer = new StringWriter();
+            this.t = this.ve.getTemplate("entrust/performGetQASize.vm");
+            this.context.put("appCode", appCode);
+            this.context.put("appDesc", appDesc);
+            this.context.put("appGroup", appGroup);
+            this.context.put("userName", username);
+            this.t.merge(this.context, writer);
+            String payload = writer.toString();
+            EntrustServiceResponse webServiceResponse = httpClient.sendHttpRequest(payload);
+            String responseMessage = webServiceResponse.getResponseMessage();
+            logger.trace("response {}", responseMessage);
+            CharSequence charSequence = "<respCode>1</respCode>";
+
+
+            boolean isSuccessful = responseMessage.contains(charSequence);
+            String msg = StringUtils.substringBetween(responseMessage, "<respMessageCode>", "</respMessageCode>");
+
+            logger.trace("response message code : {}", msg);
+            if (!isSuccessful) throw new InternetBankingSecurityException(msg);
+
+
+            logger.info("******************END RESPONSE***********");
+            if (!isSuccessful) {
+                String erroMessg = StringUtils.substringBetween(responseMessage, "<respMessage>", "</respMessage>");
+                throw new InternetBankingSecurityException(erroMessg);
+            }
+
+            Integer number = Integer.parseInt(StringUtils.substringBetween(responseMessage, "<questionSize>", "</questionSize>"));
+            return number;
+
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new InternetBankingSecurityException(e.getMessage(), e);
+
+        }
 
     }
 
@@ -585,7 +663,7 @@ public class SecurityServiceImpl implements SecurityService {
             String msg = StringUtils.substringBetween(responseMessage, "<respMessageCode>", "</respMessageCode>");
 
             logger.trace("response message code : {}", msg);
-            if (!isSuccessful){
+            if (!isSuccessful) {
                 String erroMessg = StringUtils.substringBetween(responseMessage, "<respMessage>", "</respMessage>");
                 throw new InternetBankingSecurityException(erroMessg);
             }
@@ -642,9 +720,8 @@ public class SecurityServiceImpl implements SecurityService {
             logger.trace("response message code : {}", msg);
 
 
-
             logger.info("******************END RESPONSE***********");
-            if (!isSuccessful){
+            if (!isSuccessful) {
                 String erroMessg = StringUtils.substringBetween(responseMessage, "<respMessage>", "</respMessage>");
                 throw new InternetBankingSecurityException(erroMessg);
             }
@@ -689,7 +766,7 @@ public class SecurityServiceImpl implements SecurityService {
             String respMesg = StringUtils.substringBetween(responseMessage, "<respMessageCode>", "</respMessageCode>");
 
             logger.trace("response is {}", respMesg);
-            if (!isSuccessful){
+            if (!isSuccessful) {
                 String erroMessg = StringUtils.substringBetween(responseMessage, "<respMessage>", "</respMessage>");
                 throw new InternetBankingSecurityException(erroMessg);
             }
@@ -731,7 +808,7 @@ public class SecurityServiceImpl implements SecurityService {
 
 
             logger.info("******************END RESPONSE***********");
-            if (!isSuccessful){
+            if (!isSuccessful) {
                 String erroMessg = StringUtils.substringBetween(responseMessage, "<respMessage>", "</respMessage>");
                 throw new InternetBankingSecurityException(erroMessg);
             }
@@ -773,7 +850,7 @@ public class SecurityServiceImpl implements SecurityService {
 
 
             logger.info("******************END RESPONSE***********");
-            if (!isSuccessful){
+            if (!isSuccessful) {
                 String erroMessg = StringUtils.substringBetween(responseMessage, "<respMessage>", "</respMessage>");
                 throw new InternetBankingSecurityException(erroMessg);
             }
@@ -810,7 +887,7 @@ public class SecurityServiceImpl implements SecurityService {
             String payload = writer.toString();
             EntrustServiceResponse webServiceResponse = httpClient.sendHttpRequest(payload);
             String responseMessage = webServiceResponse.getResponseMessage();
-            logger.trace("User Contact Details",context);
+            logger.trace("User Contact Details", context);
             logger.trace("response {}", responseMessage);
             CharSequence charSequence = "<respCode>1</respCode>";
             boolean isSuccessful = responseMessage.contains(charSequence);
@@ -822,7 +899,7 @@ public class SecurityServiceImpl implements SecurityService {
 
 
             logger.info("******************END RESPONSE***********");
-            if (!isSuccessful){
+            if (!isSuccessful) {
                 String erroMessg = StringUtils.substringBetween(responseMessage, "<respMessage>", "</respMessage>");
                 throw new InternetBankingSecurityException(erroMessg);
             }

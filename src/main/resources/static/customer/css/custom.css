@@ -70,6 +70,9 @@ span.req
     display: none;
 }
 
+.mtop{
+    margin-top: 0px;
+}
 
 /*#loader {*/
     /*position: absolute;*/
@@ -181,6 +184,36 @@ span.req
 }
 
 
+ .no-bd-rad
+    {
+        border-radius: 0px;
+
+    }
+
+    .mess
+    {
+        font-size: 14px;
+        padding:20px;
+        line-height: 16px;
+    }
+
+    .no-bd-top
+    {
+        border-top: 0px;
+    }
+
+    .content
+    {
+        width:80%;
+        margin: 0px auto;
+        margin-top: 180px;
+    }
+
+
+
+.margin-xs{
+    margin-top:180px;
+}
 
 #myspan2
 {
@@ -951,9 +984,10 @@ button, input, optgroup, select, textarea {
 }
 
 .content-bg{
-    margin: 20px 10px 10px 0;
+    margin: 20px 0 10px 0;
     background-color: #ebecef;
     min-height: 350px;
+    padding-top:20px;
 }
 
 .sidebar-bg{
@@ -1197,6 +1231,14 @@ button, input, optgroup, select, textarea {
     .header {
         min-height: 1px;
         padding-bottom: 10px;
+    }
+
+    .margin-xs{
+        margin-top:30px;
+    }
+
+    .mtop{
+        margin-top: 20px;
     }
 
     .container {

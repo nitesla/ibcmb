@@ -4,11 +4,12 @@
 
 </head>
 <body>
+<div class="container">
 <header th:replace="cust_layout :: header">
 </header>
 
 <section class="content-wrapper">
-    <div class="container">
+    <div class="">
         <div class="row">
             <div class="col-md-4 col-sm-4">
                 <h5 class="page_header"> Transaction Summary</h5>
@@ -17,9 +18,7 @@
         <div class="row">
             <div class="col-md-9 content-bg">
 
-                    <!--<div class="col-md-6 col-sm-6">-->
-
-
+                <div class="spacing">
                     <table>
                         <tr>
 
@@ -88,7 +87,7 @@
 
                         </div>
                     </form>
-                    <!--</div>-->
+                </div>
 
             </div>
             <div class="col-md-3 pull-right " >
@@ -103,6 +102,7 @@
 <!-- CONTENT-WRAPPER SECTION END-->
 <footer th:replace="cust_layout ::footer">
 </footer>
+</div>
 <script th:src="@{~/customer/js/accountdetails.js}"></script>
 </body>
 </html>

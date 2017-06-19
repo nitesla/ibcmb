@@ -8,59 +8,59 @@
     <header th:replace="cust_layout :: header">
     </header>
 
-<section class="content-wrapper">
-    <div class="containe">
-        <div class="row">
-            <div class="col-md-4 col-sm-4">
-                <h5 class="page_header"> Transaction Summary</h5>
+    <section class="content-wrapper">
+        <div class="containe">
+            <div class="row">
+                <div class="col-md-4 col-sm-4">
+                    <h5 class="page_header"> Transaction Summary</h5>
+                </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-md-8 content-bg">
-                <div class="row form-spacing">
-                    <!--<div class="col-md-6 col-sm-6">-->
+            <div class="row">
+                <div class="col-md-9 content-bg">
+                    <div class="row form-spacing">
+                        <!--<div class="col-md-6 col-sm-6">-->
 
 
-                    <table>
-                        <tr>
+                        <table>
+                            <tr>
 
-                            <th>Source account</th>
-                            <td th:text="${transferRequest.customerAccountNumber}"></td>
+                                <th>Source account</th>
+                                <td th:text="${transferRequest.customerAccountNumber}"></td>
 
-                        </tr>
-                        <tr>
+                            </tr>
+                            <tr>
 
-                            <th>Destination account</th>
-                            <td th:text="${transferRequest.beneficiaryAccountNumber}"></td>
+                                <th>Destination account</th>
+                                <td th:text="${transferRequest.beneficiaryAccountNumber}"></td>
 
-                        </tr>
-                        <tr>
+                            </tr>
+                            <tr>
 
-                            <th>Destination account owner</th>
-                            <td th:text="${transferRequest.beneficiaryAccountName}"></td>
+                                <th>Destination account owner</th>
+                                <td th:text="${transferRequest.beneficiaryAccountName}"></td>
 
-                        </tr>
-                        <tr>
+                            </tr>
+                            <tr>
 
-                            <th>Amount</th>
-                            <td th:text="${transferRequest.amount}"></td>
+                                <th>Amount</th>
+                                <td th:text="${transferRequest.amount}"></td>
 
-                        </tr>
-                        <tr>
+                            </tr>
+                            <tr>
 
-                            <th>Remarks</th>
-                            <td th:text="${transferRequest.remarks}"></td>
+                                <th>Remarks</th>
+                                <td th:text="${transferRequest.remarks}"></td>
 
-                        </tr>
-                    </table>
+                            </tr>
+                        </table>
 
 
-                    <form method="post" th:action="@{/retail/transfer/process}" th:object="${transferRequest}">
-                        <input type="hidden" th:field="*{customerAccountNumber}"/>
-                        <input type="hidden" th:field="*{beneficiaryAccountNumber}"/>
-                        <input type="hidden" th:field="*{beneficiaryAccountName}"/>
-                        <input type="hidden" th:field="*{amount}"/>
-                        <input type="hidden" th:field="*{remarks}"/>
+                        <form method="post" th:action="@{/retail/transfer/process}" th:object="${transferRequest}">
+                            <input type="hidden" th:field="*{customerAccountNumber}"/>
+                            <input type="hidden" th:field="*{beneficiaryAccountNumber}"/>
+                            <input type="hidden" th:field="*{beneficiaryAccountName}"/>
+                            <input type="hidden" th:field="*{amount}"/>
+                            <input type="hidden" th:field="*{remarks}"/>
 
                         <div class="checkbox">
                             <label style="font-weight: bold; color: black"><input type="checkbox" id="add" name="add"/>Add Beneficiary</label>
@@ -71,23 +71,25 @@
                             <a th:href="@{/retail/transfer/local}">Cancel</a>
 
 
-                        </div>
-                    </form>
-                    <!--</div>-->
+                            </div>
+                        </form>
+                        <!--</div>-->
+                    </div>
                 </div>
-            </div>
-            <div th:replace="cust_layout :: sidebar" class="col-md-3 sidebar">
-            </div>
+                <div class="col-md-3 pull-right">
+                    <div th:replace="cust_layout :: sidebar" class="" >
+                    </div>
+                </div>
 
+            </div>
         </div>
-    </div>
-</section>
+    </section>
 
 
-<!-- CONTENT-WRAPPER SECTION END-->
-<footer th:replace="cust_layout ::footer">
-</footer>
-<script th:src="@{~/customer/js/accountdetails.js}"></script>
+    <!-- CONTENT-WRAPPER SECTION END-->
+    <footer th:replace="cust_layout ::footer">
+    </footer>
+    <script th:src="@{~/customer/js/accountdetails.js}"></script>
 </div>
 </body>
 </html>
