@@ -24,6 +24,8 @@ import org.springframework.stereotype.Repository;
 
 public interface AdminUserRepo extends CommonRepo<AdminUser, Long>{
     AdminUser findFirstByUserName(String s);
+
+    AdminUser findById(Long id);
     AdminUser findFirstByUserNameIgnoreCase(String s);
     Iterable<AdminUser> findByRole(Role r);
     Page<AdminUser> findByRole(Role r, Pageable pageDetail);

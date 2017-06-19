@@ -177,7 +177,7 @@ public class MainController {
                         .findFirst()
                         .orElse("");
 
-                logger.info("SECIMAGE"+ image);
+//                logger.info("SECIMAGE"+ image);
 
                 model.addAttribute("secImage", image);
             }

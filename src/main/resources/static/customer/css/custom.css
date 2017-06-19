@@ -47,7 +47,6 @@ label
     background: #F3F3F4;
 }
 
-
 span.req
 {
     position: absolute;
@@ -139,6 +138,7 @@ span.req
     border-radius: 50%;
     border-top: 2px solid #032A4F;
     border-bottom: 2px solid #D3B2A4;
+    display: none;
     width: 80px;
     height: 80px;
     -webkit-animation: spin 2s linear infinite;
@@ -170,6 +170,43 @@ span.req
 {
     color: black !important;
 }
+
+
+.modal-box
+{
+    border-radius: 0px !important;
+    padding: 10px !important;
+    margin: 0px auto !important;
+    width:65%;
+}
+
+
+ .no-bd-rad
+    {
+        border-radius: 0px;
+
+    }
+
+    .mess
+    {
+        font-size: 14px;
+        padding:20px;
+        line-height: 16px;
+    }
+
+    .no-bd-top
+    {
+        border-top: 0px;
+    }
+
+    .content
+    {
+        width:80%;
+        margin: 0px auto;
+        margin-top: 180px;
+    }
+
+
 
 .margin-xs{
     margin-top:180px;
@@ -208,6 +245,42 @@ span.req
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+
+
+.contact
+{
+    position:relative !important;
+
+
+}
+
+.contact:hover, .contact:visited
+{
+    background: #003056 !important;
+}
+
+
+.contact:hover ~ .contact-drop
+{
+    display: block;
+}
+.contact-drop li
+{
+    padding: 7px;
+    padding-top: 5px;
+
+}
+
+.contact-drop
+{
+    position: absolute !important;
+    left:0px !important;
+    background-color: #e7e7e7 !important;
+    top: 140% !important;
+    //padding: 10px 5px 10px 5px;
+    display: none;
 }
 
 
@@ -908,7 +981,7 @@ button, input, optgroup, select, textarea {
 }
 
 .content-bg{
-    margin: 20px 10px 10px 0;
+    margin: 20px 0 10px 0;
     background-color: #ebecef;
     min-height: 350px;
 }
@@ -1170,10 +1243,6 @@ button, input, optgroup, select, textarea {
         background: #FFF;
     }
 
-    .margin-xs{
-        margin-top: 0px;
-    }
-
     .logo {
         clear: both;
         display: block;
@@ -1287,9 +1356,6 @@ button, input, optgroup, select, textarea {
     /*margin: 0 0 10px 100px;*/
     /*}*/
 
-    .mtop{
-        margin-top: 20px;
-    }
     .carousel-caption {
         display: none;
         /*position: absolute;*/

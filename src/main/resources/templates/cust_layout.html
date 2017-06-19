@@ -7,6 +7,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/jquery-ui.css}"/>
+    <!--<link rel="stylesheet" type="text/css" th:href="@{~/customer/css/date/css/bootstrap-datepicker.css}"/>-->
+    <!--<link rel="stylesheet" type="text/css" th:href="@{~/customer/css/date/css/bootstrap-datepicker.standalone.css}"/>-->
+
+
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/bootstrap.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/custom.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/calendar.css}"/>
@@ -88,7 +92,7 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.servreq}"> Service Requests </a>
                         <ul class="dropdown-menu">
                         <li sec:authorize="hasAuthority('TRACK_SERV_REQ')"><a th:href="@{/retail/requests/track}" th:text="#{menu.servreq.track}">Track Requests</a></li>
-                        <li role="separator" class="divider"></li>
+                        <!--<li role="separator" class="divider"></li>-->
                         <p th:each="requests : ${serviceRequests}">
                         <li sec:authorize="hasAuthority('MAKE_SERV_REQ')"><a th:href="@{/retail/requests/} + ${requests.id}" th:text="${requests.requestName}"></a></li>
                         </p>
@@ -143,9 +147,41 @@
 </header>
 
     <div th:fragment="sidebar" class="sideba">
+
+
         <div class="sidebar-b calende cal  ">
-            <div  id="calendar" style="display: block; margin: 0px auto;" class=" calendar hidden-xs hidden-sm "></div>
-        </div>
+            <div  class="alert  time" >
+                <span id="time_">
+                <script>
+                    setInterval(
+                        function()
+                        {
+
+                            var time_function = moment().format('Do MMMM YYYY, h:mm:ss a');
+                            var holder = document.getElementById('time_');
+                            holder.innerHTML = time_function;
+                        },
+                        1000) ;
+
+                    function showCal()
+                    {
+                        alert();
+
+                        $( function() {
+                            $( "#datepicker" ).datepicker();
+                        } );
+                        alert();
+                    }
+                </script>
+                </span>
+
+                <i class="fa fa-calendar pull-right" id ='datepicker' onclick="showCal()"></i>
+
+
+            </div>
+
+            <!--<div  id="calendar" style="display: block; margin: 0px auto;" class=" calendar hidden-xs hidden-sm "></div>-->
+       </div>
         <div class="sidebar- hidden-xs hidden-sm" >
             <img style="display: block; margin: 0px auto;" class="center" th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
         </div>
@@ -168,7 +204,7 @@
         </div>
     </div>
 
-    <div th:if="${message}">
+    <!--<div th:if="${message}">
         <div hidden="hidden">
             <ul class="actionMessage">
                 <li th:each="msg : ${message}" th:text="${msg}" >Message</li>
@@ -182,16 +218,76 @@
                 <li th:each="msg : ${failure}" th:text="${msg}" id="error">Message</li>
             </ul>
         </div>
+    </div>-->
+
+
+    <div id="myModalError" class="modal fade " role="dialog">
+  <div class="modal-dialog" >
+
+    <!-- Modal content-->
+  
+    <div class="modal-content no-bd-rad content ">
+      
+      <div class="modal-body">
+       
+
+        <p id='errorMess' class='mess text-danger'>Put something here iff need be.</p>
+
+
+
+      </div>
+
+
+       <div class="modal-footer no-bd-top" >
+            <button type="button" class="btn btn-link" data-dismiss="modal">OK</button>
+        </div>
+      
     </div>
 
+  </div>
+</div>
+
+
+<div id="myModalSuccess" class="modal fade " role="dialog">
+  <div class="modal-dialog" >
+
+    <!-- Modal content-->
+  
+    <div class="modal-content no-bd-rad content ">
+      
+      <div class="modal-body">
+       
+
+        <p id='successMess' class='mess text-primary'>Put something here iff need be.</p>
+
+
+
+      </div>
+
+
+       <div class="modal-footer no-bd-top" >
+            <button type="button" class="btn btn-link" data-dismiss="modal">OK</button>
+        </div>
+      
+    </div>
+
+  </div>
+</div>
+
+
+
+
+
     <!-- CORE JQUERY SCRIPTS -->
+
     <script th:src="@{~/customer/js/jquery-1.11.1.js}"></script>
     <script th:src="@{~/customer/js/jquery-ui.js}"></script>
     <script th:src="@{~/customer/js/jquery.dataTables.js}"></script>
+    <!--<script th:src="@{~/customer/js/date/js/bootstrap-datepicker.js}"></script>-->
     <script th:src="@{~/customer/js/momentMin.js}"></script>
     <script th:src="@{~/customer/js/calendar.js}"></script>
     <script th:src="@{~/customer/js/jquery.spring-friendly.min.js}"></script>
-    <script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
+    <!--<script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>-->
     <script th:src="@{~/customer/plugins/bootstrap-daterangepicker/daterangepicker.js}"></script>
     <script th:src="@{~/customer/js/coronation.js}"></script>
     <!-- BOOTSTRAP SCRIPTS  -->
@@ -214,6 +310,9 @@
     <script>
         $(document).ready(function(){
             $('[data-toggle="tooltip"]').tooltip();
+
+           
+
         });
     </script>
 </footer>
