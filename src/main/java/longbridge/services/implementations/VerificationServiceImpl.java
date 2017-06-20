@@ -9,6 +9,7 @@ import longbridge.models.Verification;
 import longbridge.repositories.VerificationRepo;
 import longbridge.services.VerificationService;
 import longbridge.utils.verificationStatus;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,17 +48,22 @@ public class VerificationServiceImpl implements VerificationService {
         return messageSource.getMessage("verification.decline",null,locale);
 	}
 
+
+
+
 	@Override
-	public String verify(Verification t) throws VerificationException {
+	@Transactional
+	public String verify(Long verId) throws VerificationException {
 		//check if it is verified
+		Verification t = verificationRepo.findOne(verId);
 		if(t.getVerifiedBy() != null){
 			//already verified
 			logger.debug("Already verified");
-            return messageSource.getMessage("verification.verify",null,locale);
-        }
+			return messageSource.getMessage("verification.verify",null,locale);
+		}
 		//TODO Get the current logged in user and use as verifier
 //        t.setVerifiedBy(verifier);
-        t.setVerifiedOn(new Date());
+		t.setVerifiedOn(new Date());
 //        logger.info("Verified by: "+ verifier.getUserName());
 
 		Class<?> cc = null;
@@ -67,14 +73,23 @@ public class VerificationServiceImpl implements VerificationService {
 			cc = Class.forName(PACKAGE_NAME + t.getEntityName());
 			logger.info("Class {}", cc.getName());
 			method = cc.getMethod("deserialize", String.class);
-
 			Object returned = cc.newInstance();
 			method.invoke(returned, t.getAfterObject());
+			logger.info("Object retrieved {}", t.getAfterObject());
 			logger.info("Object returned {}", returned.toString());
-			logger.debug("Class {} ", returned.toString() );
-			eman.persist(cc.cast(returned));
+			logger.debug("Class {} ", returned.toString());
+			if(t.getEntityId()==null) {
+				eman.persist(cc.cast(returned));
 
+			}
+			else{
+				Object obj = eman.find(cc,t.getEntityId());
+				ModelMapper modelMapper = new ModelMapper();
+				modelMapper.map(returned,obj);
+				eman.persist(cc.cast(obj));
+			}
 			AbstractEntity entity = (AbstractEntity) returned;
+
 			t.setEntityId(entity.getId());
 			t.setStatus(verificationStatus.VERIFIED);
 			verificationRepo.save(t);
@@ -93,7 +108,53 @@ public class VerificationServiceImpl implements VerificationService {
 		}
 		return messageSource.getMessage("verification.verify",null,locale);
 	}
-
+//	@Override
+//	public String verify(Verification t) throws VerificationException {
+//		//check if it is verified
+//		if(t.getVerifiedBy() != null){
+//			//already verified
+//			logger.debug("Already verified");
+//            return messageSource.getMessage("verification.verify",null,locale);
+//        }
+//		//TODO Get the current logged in user and use as verifier
+////        t.setVerifiedBy(verifier);
+//        t.setVerifiedOn(new Date());
+////        logger.info("Verified by: "+ verifier.getUserName());
+//
+//		Class<?> cc = null;
+//		Method method = null;
+//
+//		try {
+//			cc = Class.forName(PACKAGE_NAME + t.getEntityName());
+//			logger.info("Class {}", cc.getName());
+//			method = cc.getMethod("deserialize", String.class);
+//
+//			Object returned = cc.newInstance();
+//			method.invoke(returned, t.getAfterObject());
+//			logger.info("Object returned {}", returned.toString());
+//			logger.debug("Class {} ", returned.toString() );
+//			eman.persist(cc.cast(returned));
+//
+//			AbstractEntity entity = (AbstractEntity) returned;
+//			t.setEntityId(entity.getId());
+//			t.setStatus(verificationStatus.VERIFIED);
+//			verificationRepo.save(t);
+//
+//		} catch (NoSuchMethodException | SecurityException | ClassNotFoundException e1) {
+//			logger.error("Error", e1);
+//		} catch (IllegalAccessException e) {
+//			logger.error("Error", e);
+//		} catch (IllegalArgumentException e) {
+//			logger.error("Error", e);
+//		} catch (InvocationTargetException e) {
+//			logger.error("Error", e);
+//		} catch (InstantiationException e) {
+//			// TODO Auto-generated catch block
+//			logger.error("Error", e);
+//		}
+//		return messageSource.getMessage("verification.verify",null,locale);
+//	}
+//
 
 	@Override
 	public Verification getVerification(Long id) {

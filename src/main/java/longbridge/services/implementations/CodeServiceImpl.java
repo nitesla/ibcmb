@@ -8,6 +8,7 @@ import longbridge.models.Code;
 import longbridge.repositories.CodeRepo;
 import longbridge.services.CodeService;
 import longbridge.services.VerificationService;
+import longbridge.utils.Verifiable;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,6 +55,7 @@ public class CodeServiceImpl implements CodeService {
 
     @Override
     @Transactional
+    @Verifiable(operation="Delete_Code",description="Delete Code")
     public String deleteCode(Long codeId) throws InternetBankingException{
           try{
 
@@ -92,6 +94,7 @@ public class CodeServiceImpl implements CodeService {
   
 
     @Transactional
+    @Verifiable(operation="Update_Code",description="Update Code")
     public String updateCode(CodeDTO codeDTO, AdminUser adminUser) throws InternetBankingException{
         try {
             Code code = convertDTOToEntity(codeDTO);
@@ -152,6 +155,7 @@ public class CodeServiceImpl implements CodeService {
 
 
 	@Override
+    @Verifiable(operation="Add_Code",description="Add Code")
 	public String addCode(CodeDTO codeDTO, AdminUser adminUser) throws InternetBankingException {
 		try {
             Code code = convertDTOToEntity(codeDTO);
@@ -173,6 +177,7 @@ public class CodeServiceImpl implements CodeService {
 	}
 
     @Override
+
     public Code getByTypeAndCode(String type, String code) {
         return codeRepo.findByTypeAndCode(type,code);
     }

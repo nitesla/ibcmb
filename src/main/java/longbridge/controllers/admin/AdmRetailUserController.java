@@ -134,6 +134,7 @@ public class AdmRetailUserController {
 
         try{
             String message = retailUserService.unlockUser(userId);
+
             redirectAttributes.addFlashAttribute("message",message);
 
         }

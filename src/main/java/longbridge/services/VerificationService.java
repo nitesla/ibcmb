@@ -17,7 +17,7 @@ public interface VerificationService {
       *
       * @param verification The {@link Verification} object
       */
-     String verify(Verification verification) throws VerificationException;
+     String verify(Long verification) throws VerificationException;
      
      /** This fetches the {@link Verification} object with the id {@code id}
       * 

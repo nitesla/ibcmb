@@ -10,6 +10,7 @@ import longbridge.services.AccountConfigService;
 import longbridge.services.AccountService;
 import longbridge.services.IntegrationService;
 import longbridge.utils.AccountStatement;
+import longbridge.utils.Verifiable;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,6 +56,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    @Verifiable(operation="Add_FIA_Account",description="Add Account FI")
     public boolean AddFIAccount(String customerId, AccountInfo acct) {
         if (!customerId.equals(acct.getCustomerId())) {
             return false;
@@ -73,6 +75,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    @Verifiable(operation="Add_Account",description="Add Account")
     public boolean AddAccount(String customerId, AccountDTO accountdto) throws InternetBankingException {
         if (!customerId.equals(accountdto.getCustomerId())) {
             return false;
@@ -93,6 +96,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    @Verifiable(operation="Customize_Account",description="Customize Account")
     public String customizeAccount(Long id, String name) throws InternetBankingException{
         try {
             Account account = accountRepo.findFirstById(id);

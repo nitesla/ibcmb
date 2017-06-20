@@ -1,5 +1,6 @@
 package longbridge.controllers.admin;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.umd.cs.findbugs.annotations.Confidence;
 import longbridge.dtos.AdminUserDTO;
 import longbridge.dtos.RoleDTO;
@@ -35,6 +36,8 @@ import javax.validation.Valid;
 import java.security.Principal;
 import java.util.Locale;
 
+import static org.springframework.data.repository.init.ResourceReader.Type.JSON;
+
 /**
  * Created by SYLVESTER on 31/03/2017.
  */
@@ -59,6 +62,9 @@ public class AdminUserController {
 
     @Autowired
     ConfigurationService configService;
+
+
+    ObjectMapper mapper = new ObjectMapper();
 
 
     /**
@@ -90,6 +96,8 @@ public class AdminUserController {
             return "adm/admin/add";
         }
         try {
+
+          //  var jasonString = JSON.stringify(javascriptObject);
             String message = adminUserService.addUser(adminUser);
             redirectAttributes.addFlashAttribute("message", message);
             return "redirect:/admin/users";
