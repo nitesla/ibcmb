@@ -6,7 +6,7 @@
     <groupId>longbridge</groupId>
     <artifactId>internetbanking</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <packaging>jar</packaging>
+    <packaging>war</packaging>
 
     <name>internetbanking</name>
     <description>internet banking application</description>
@@ -251,22 +251,20 @@
             <!--<artifactId>ojdbc6</artifactId>-->
             <!--<version>11.2.0</version>-->
         <!--</dependency>-->
-        <dependency>
-            <groupId>net.sf.jasperreports</groupId>
-            <artifactId>jasperreports</artifactId>
-            <artifactId>5.6.0</artifactId>
-        </dependency>
-<<<<<<< HEAD
 
         <!--<dependency>-->
             <!--<groupId>mysql</groupId>-->
             <!--<artifactId>mysql-connector-java</artifactId>-->
             <!--<scope>runtime</scope>-->
         <!--</dependency>-->
-=======
-        <dependency>
-            <groupId>net.sf.j</groupId>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>net.sf.jasperreports</groupId>-->
+            <!--<artifactId>jasperreports</artifactId>-->
+            <!--<artifactId>5.6.0</artifactId>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>net.sf.j</groupId>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>commons-digester</groupId>
             <artifactId>commons-digester</artifactId>
@@ -279,20 +277,17 @@
             <version>1.6</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.eclipse.birt.runtime.3_7_1/com.lowagie.text -->
-        <dependency>
-            <groupId>org.eclipse.birt.runtime.3_7_1</groupId>
-            <artifactId>com.lowagie.text</artifactId>
-            <version>2.1.7</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.eclipse.birt.runtime.3_7_1</groupId>-->
+            <!--<artifactId>com.lowagie.text</artifactId>-->
+            <!--<version>2.1.7</version>-->
+        <!--</dependency>-->
         <!-- https://mvnrepository.com/artifact/org.apache.poi/poi -->
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi</artifactId>
-            <version>3.7</version>
-        </dependency>
-
-
->>>>>>> 42b44c7a81bcc267c496de80a4779ca8c02641b3
+        <!--<dependency>-->
+            <!--<groupId>org.apache.poi</groupId>-->
+            <!--<artifactId>poi</artifactId>-->
+            <!--<version>3.7</version>-->
+        <!--</dependency>-->
     </dependencies>
 
     <build>

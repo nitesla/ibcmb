@@ -39,12 +39,12 @@ public class LocalTransferController {
 
     private RetailUserService retailUserService;
     private TransferService transferService;
-    private AccountService accountService;
     private MessageSource messages;
     private LocalBeneficiaryService localBeneficiaryService;
     private FinancialInstitutionService financialInstitutionService;
     private TransferValidator validator;
     private TransferErrorService transferErrorService;
+    private AccountService accountService;
     private String page = "cust/transfer/local/";
     @Value("${bank.code}")
     private String bankCode;
@@ -58,6 +58,7 @@ public class LocalTransferController {
         this.financialInstitutionService = financialInstitutionService;
         this.validator = validator;
         this.transferErrorService = transferErrorService;
+        this.accountService = accountService;
     }
 
     @GetMapping("")

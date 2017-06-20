@@ -8,10 +8,7 @@ import longbridge.models.FinancialInstitution;
 import longbridge.models.FinancialInstitutionType;
 import longbridge.models.LocalBeneficiary;
 import longbridge.models.RetailUser;
-import longbridge.services.FinancialInstitutionService;
-import longbridge.services.LocalBeneficiaryService;
-import longbridge.services.RetailUserService;
-import longbridge.services.TransferService;
+import longbridge.services.*;
 import longbridge.utils.TransferType;
 import longbridge.validator.transfer.TransferValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,18 +43,23 @@ public class InterBankTransferController {
     private LocalBeneficiaryService localBeneficiaryService;
     private FinancialInstitutionService financialInstitutionService;
     private TransferValidator validator;
+    private IntegrationService integrationService;
     private String page = "cust/transfer/interbank/";
     @Value("${bank.code}")
     private String bankCode;
 
     @Autowired
-    public InterBankTransferController(RetailUserService retailUserService, TransferService transferService, MessageSource messages, LocalBeneficiaryService localBeneficiaryService, FinancialInstitutionService financialInstitutionService, TransferValidator validator) {
+    public InterBankTransferController(RetailUserService retailUserService, TransferService transferService, MessageSource messages, LocalBeneficiaryService localBeneficiaryService, FinancialInstitutionService financialInstitutionService, TransferValidator validator
+
+    ,IntegrationService integrationService
+    ) {
         this.retailUserService = retailUserService;
         this.transferService = transferService;
         this.messages = messages;
         this.localBeneficiaryService = localBeneficiaryService;
         this.financialInstitutionService = financialInstitutionService;
         this.validator = validator;
+        this.integrationService=integrationService;
     }
 
     @GetMapping(value = "")
@@ -195,6 +197,8 @@ public class InterBankTransferController {
 
 
         );
+        model.addAttribute("nip",integrationService.getFee("NIP"));
+        model.addAttribute("rtgs",integrationService.getFee("RTGS"));
 
     }
 

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="corp_layout :: site-head">
+
+</head>
+
+<style>
+    .hstyle{
+        width: 100%;
+        text-align: center;
+        border-bottom: 1px solid #000;
+        line-height: 0.1em;
+        margin: 10px 0 20px;
+    }
+
+    .hstyle span {
+        background:#fff;
+        padding:0 10px;
+    }
+</style>
+
+<body>
+<header th:replace="corp_layout ::corp-header">
+</header>
+
+<section class="content-wrapper">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 col-sm-4">
+                <h5 class="page_header"> Bulk Transfer </h5>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-8 content-bg">
+                <div class="row form-spacing">
+                    <div>
+                        <p>To make a bulk transfer, You are required to download a pre-formatted file and fill
+                            in the details of the beneficiaries... <a th:href="@{/corporate/transfer/bulk/download}">Download File</a></p>
+                    </div>
+
+                    <br/>
+
+                    <!--<p>Upload the completed file through the link below</p>-->
+                    <hr width="100%" size="1" />
+                    <h6 class="hstyle"><span>Upload the completed Bulk Transfer file through the link below</span></h6>
+
+
+                    <div class="col-md-6 col-sm-6">
+                        <form method="post" th:action="@{/corporate/transfer/bulk/upload}" enctype="multipart/form-data">
+
+
+                            <div class="form-group">
+                                <!--<label>Bulk Transfer file</label>-->
+                                <input  type="file" name="transferFile"/>
+                                <br/>
+                                <!--<input  type="submit" value="Upload"/>-->
+                                <button class="btn btn-link" type="submit">Upload</button>
+
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div th:replace="corp_layout :: corp-sidebar" class="col-md-3 sidebar">
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- CONTENT-WRAPPER SECTION END-->
+<footer th:replace="corp_layout ::corp-footer">
+</footer>
+<script>
+    //datepicker
+    $( function() {
+        $( "#datepicker" ).datepicker(
+            { dateformat : 'dd/mm/yy'}
+        );
+    } );
+</script>
+</body>
+</html>

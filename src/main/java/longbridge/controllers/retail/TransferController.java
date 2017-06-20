@@ -214,14 +214,27 @@ public class TransferController {
             request.getSession().removeAttribute("transferRequest");
 
 
-            if (request.getSession().getAttribute("Lbeneficiary") != null) {
+//            if (request.getSession().getAttribute("Lbeneficiary") != null) {
+//
+//                LocalBeneficiaryDTO l = (LocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary");
+//                model.addAttribute("message", messages.getMessage("transaction.success", null, locale));
+//                model.addAttribute("beneficiary", l);
+//                return "/cust/transfer/transferbeneficiary";
+//            }
 
-                LocalBeneficiaryDTO l = (LocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary");
-                model.addAttribute("message", messages.getMessage("transaction.success", null, locale));
-                model.addAttribute("beneficiary", l);
-                return "/cust/transfer/transferbeneficiary";
+            if(request.getParameter("add") != null){
+                //checkbox not checked
+                System.out.println("checkbox checked");
+                if (request.getSession().getAttribute("Lbeneficiary") != null) {
+                    LocalBeneficiaryDTO l = (LocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary");
+                    RetailUser user = retailUserService.getUserByName(principal.getName());
+                    //LocalBeneficiaryDTO l = (LocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary");
+                    model.addAttribute("message", messages.getMessage("transaction.success", null, locale));
+                    localBeneficiaryService.addLocalBeneficiary(user, l);
+                    request.getSession().removeAttribute("Lbeneficiary");
+                    model.addAttribute("beneficiary", l);
+                }
             }
-
             redirectAttributes.addFlashAttribute("message", messages.getMessage("transaction.success", null, locale));
             return index(transferRequestDTO.getTransferType());
             //return "redirect:/retail/dashboard";

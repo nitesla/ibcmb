@@ -1,13 +1,14 @@
 package longbridge.services.implementations;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.VerificationException;
 import longbridge.models.AbstractEntity;
 import longbridge.models.SerializableEntity;
 import longbridge.models.Verification;
-import longbridge.models.Verification.VerificationStatus;
 import longbridge.repositories.VerificationRepo;
 import longbridge.services.VerificationService;
+import longbridge.utils.verificationStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,7 +76,7 @@ public class VerificationServiceImpl implements VerificationService {
 
 			AbstractEntity entity = (AbstractEntity) returned;
 			t.setEntityId(entity.getId());
-			t.setStatus(VerificationStatus.VERIFIED);
+			t.setStatus(verificationStatus.VERIFIED);
 			verificationRepo.save(t);
 
 		} catch (NoSuchMethodException | SecurityException | ClassNotFoundException e1) {
@@ -113,7 +114,7 @@ public class VerificationServiceImpl implements VerificationService {
         //TODO get the Operation Code
 //        verification.setOperationCode(entity.getAddCode());
         verification.setEntityName(classSimpleName);
-        verification.setStatus(VerificationStatus.PENDING);
+        verification.setStatus(verificationStatus.PENDING);
         //TODO use the current user as the initiator
         //verification.setInitiatedBy(initiator);
         verification.setInitiatedOn(new Date());
@@ -125,19 +126,24 @@ public class VerificationServiceImpl implements VerificationService {
 	}
 
 
-
-
 	@Override
-	public <T extends SerializableEntity<T>> String addModifyVerificationRequest(T originalEntity, T entity) throws JsonProcessingException {
+	public <T extends SerializableEntity<T>> String addModifyVerificationRequest(T originalEntity, T entity) throws JsonProcessingException,DuplicateObjectException {
+
 		String classSimpleName = entity.getClass().getSimpleName();
-		Verification verification = new Verification();
+
+		Verification verification = verificationRepo.findFirstByEntityNameAndStatus(classSimpleName, verificationStatus.PENDING);
+
+		if(verification!=null){
+			throw new DuplicateObjectException("Entity has pending verification");
+		}
+		verification.setEntityName(classSimpleName);
 		verification.setBeforeObject(originalEntity.serialize());
 		verification.setAfterObject(entity.serialize());
 		verification.setOriginal(originalEntity.serialize());
 		verification.setDescription("Modified " + classSimpleName);
 		//TODO get the Operation Code
 //		verification.setOperationCode(entity.getModifyCode());
-		verification.setStatus(VerificationStatus.PENDING);
+		verification.setStatus(verificationStatus.PENDING);
         //TODO use the current user as the initiator
         //verification.setInitiatedBy(initiator);
         verification.setInitiatedOn(new Date());

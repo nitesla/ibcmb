@@ -92,7 +92,6 @@ public class BeneficiaryController {
         model.addAttribute("internationalBeneficiaryDTO", new InternationalBeneficiaryDTO());
         model.addAttribute("foreignBanks", financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.FOREIGN));
         model.addAttribute("foreignCurrencyCodes", codeService.getCodesByType("CURRENCY"));
-
         return "cust/beneficiary/add";
     }
 

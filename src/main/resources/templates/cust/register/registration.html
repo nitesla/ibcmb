@@ -68,10 +68,6 @@
                         <div>
                             <h3>Account Details</h3>
                             <section>
-
-
-
-
                                 <div class="row">
                                     <div class="col-md-offset-4 col-md-4">
                                         <div class='alert alert-danger' id="myspan">
@@ -82,18 +78,26 @@
                                             <span class='req'></span><input type="text" name="accountNumber"  class="form-control required" placeholder="Account Number"/>
                                         </div>
                                         <div id="loader" style='display:none'>
-
                                         </div>
 
+                                        <div class="form-group">
+                                            <label>Select Email or Date of birth to complete registration</label>
+                                            <select name="userdet" id="userdet" class="form-control">
+                                                <option th:value="email">Use Email</option>
+                                                <option th:value="dob">Use Date of Birth</option>
+                                            </select>
+                                        </div>
 
-                                        <div class="form-group clearfix">
+                                        <div id="email" class="form-group clearfix">
                                             <label>Email</label>
                                             <span class='req'></span><input type="email" name="email" class="form-control" placeholder="Email"/>
                                         </div>
-                                        <div class="form-group clearfix">
+                                        <div id="dob" style="display: none;" class="form-group clearfix">
                                             <label>Date of Birth</label>
                                             <span class='req'></span><input name="birthDate" type="text" class="form-control" data-mask="99-99-9999" placeholder="DD-MM-YYYY"/>
                                         </div>
+
+
                                     </div>
                                 </div>
                             </section>
@@ -105,6 +109,11 @@
                                             <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
                                         </div>
 
+                                        <div class='alert alert-success alert-dismissable' id="successReg" style="display:none">
+                                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                        </div>
+
+
                                         <div class="form-group clearfix">
                                             <label>Username</label>
                                             <span class='req'></span><input type="text" name="userName" class="form-control required" placeholder="Preferred Username"/>
@@ -113,7 +122,7 @@
 
 
                                                     <!-- Modal content-->
-                                                    <div id="load" style='display:none'></div>
+                                                <div id="load" style='display:none'></div>
 
 
 
@@ -136,7 +145,7 @@
 
                                         <a id="send" href="javascript:void(0)" onclick="sendRegCode();" class="btn "> Send Verification Code</a>
 
-                                        <div id='regcodebox' class="form-group clearfix display-none">
+                                        <div id='regcodebox' class="form-group clearfix">
                                             <label>Registration Code</label>
                                             <span class='req'></span><input type="text" id="code" name="regCode" class="col-md-8 form-control required" placeholder="Registration Code"/>
                                         </div>
@@ -157,7 +166,7 @@
                             <section>
                                 <div class="row">
                                     <div class="col-md-offset-4 col-md-4">
-                                        <div class='alert alert-danger' id="myspan">
+                                        <div class='alert alert-danger' id="myspan2">
                                         </div>
                                         <input id="returnValue" type="hidden"/>
                                         <div class="form-group clearfix">
@@ -177,14 +186,24 @@
                             <section>
                                 <div class="row">
                                     <div class="col-md-offset-3 col-md-6">
-                                        <div class='alert alert-danger' id="myspan">
+                                        <div class='alert alert-danger' id="myspan3" style="display: none;">
                                         </div>
+
                                         <div class="form-group">
                                             <label>Select Phishing Image</label>
+                                            <div id="myMode" class="modal fade" role="dialog">
 
+
+
+                                                <!-- Modal content-->
+                                                <div id="loads" style='display:none'></div>
+
+
+
+                                            </div>
                                             <table>
                                                 <td th:each="image : ${images}" style="position: relative;">
-                                                    <img th:src="${image}" width="100px" height="100px"/>
+                                                    <img th:src="${imagePath} + ${image}" width="100px" height="100px"/>
                                                     <input type="radio" name="phishing" th:value="${image}" id="check1" class="required" style="position: absolute; bottom: 20px; right: 20px;" />
                                                 </td>
                                             </table>
@@ -193,7 +212,7 @@
                                         </div>
                                     </div>
                                     <div class="col-md-offset-4 col-md-4">
-                                        <input type="text" name="caption" class="form-control" placeholder="Enter Image Caption"/>
+                                        <input type="text" name="caption" class="form-control required" placeholder="Enter Image Caption"/>
                                     </div>
                                 </div>
                             </section>
@@ -251,6 +270,16 @@
 <script th:th:inline="javascript" type="text/javascript">
     /*<![CDATA[*/
 
+    $('#userdet').on('change', function () {
+        if ($(this).val() === "email") {
+            $("#email").show();
+            $("#dob").hide();
+        }
+        else if ($(this).val() === "dob") {
+            $("#dob").show();
+            $("#email").hide();
+        }
+    });
 
     function passwordStrength(password)
     {

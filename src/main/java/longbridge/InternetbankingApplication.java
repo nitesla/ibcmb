@@ -22,7 +22,7 @@ import java.util.Date;
 @SpringBootApplication
 @EnableJpaRepositories(repositoryFactoryBeanClass = CustomJpaRepositoryFactoryBean.class)
 
-public class InternetbankingApplication /*extends SpringBootServletInitializer */implements CommandLineRunner {
+public class InternetbankingApplication extends SpringBootServletInitializer implements CommandLineRunner {
 
     @Autowired
     private SecurityService securityService;
@@ -51,8 +51,8 @@ public class InternetbankingApplication /*extends SpringBootServletInitializer *
 //        securityService.addUserContacts("soluwawunmi@gmail.com","07038810752",true,"wumiTofu01");
 //         securityService.sendOtp("wumiTofu01");
 //        System.out.println("Your password is "+passwordEncoder.encode("password123"));
-        integrationService.getAccountStatements("1234",new Date(),new Date());
-        System.out.println("end process");
+//        integrationService.getAccountStatements("1234",new Date(),new Date());
+//        System.out.println("end process");
     }
 
 //    @Override
@@ -62,7 +62,6 @@ public class InternetbankingApplication /*extends SpringBootServletInitializer *
 //        System.out.println("Rate "+rate);
 //
 //    }
-
 
 
 }

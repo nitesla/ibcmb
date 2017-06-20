@@ -1,6 +1,7 @@
 package longbridge.models;
 
 
+import longbridge.utils.verificationStatus;
 import org.hibernate.annotations.Where;
 
 import org.hibernate.envers.Audited;
@@ -16,9 +17,7 @@ import java.util.Date;
 @Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
 public class Verification extends  AbstractEntity {
-    public static enum VerificationStatus {
-        VERIFIED, DECLINED,PENDING //EXPIRED
-    }
+
 
     //@Column(columnDefinition = "TEXT")
     private String beforeObject; //json
@@ -28,7 +27,7 @@ public class Verification extends  AbstractEntity {
     private String original; //json
 
     @Enumerated(value = EnumType.STRING)
-    private VerificationStatus status;
+    private verificationStatus status;
 
     private String description;
     private Long entityId;
@@ -76,11 +75,11 @@ public class Verification extends  AbstractEntity {
         this.declinedBy = declinedBy;
     }
 
-    public VerificationStatus getStatus() {
+    public verificationStatus getStatus() {
         return status;
     }
 
-    public void setStatus(VerificationStatus status) {
+    public void setStatus(verificationStatus status) {
         this.status = status;
     }
 

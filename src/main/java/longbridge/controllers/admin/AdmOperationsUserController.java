@@ -3,9 +3,6 @@ package longbridge.controllers.admin;
 import longbridge.dtos.OperationsUserDTO;
 import longbridge.dtos.RoleDTO;
 import longbridge.exception.*;
-import longbridge.forms.ChangeDefaultPassword;
-import longbridge.forms.ChangePassword;
-import longbridge.models.AdminUser;
 import longbridge.models.OperationsUser;
 import longbridge.models.Verification;
 import longbridge.repositories.OperationsUserRepo;
@@ -13,6 +10,7 @@ import longbridge.repositories.VerificationRepo;
 import longbridge.services.OperationsUserService;
 import longbridge.services.PasswordPolicyService;
 import longbridge.services.RoleService;
+import longbridge.utils.verificationStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +30,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
-import java.security.Principal;
 import java.util.Locale;
 
 /**
@@ -247,7 +244,7 @@ public class AdmOperationsUserController {
         OperationsUser operationsUser = operationsUserRepo.findOne(1l);
         Verification verification = verificationRepo.findOne(id);
 
-        if (verification == null || Verification.VerificationStatus.PENDING != verification.getStatus())
+        if (verification == null || verificationStatus.PENDING != verification.getStatus())
             return "Verification not found";
 
 //        try {
@@ -265,7 +262,7 @@ public class AdmOperationsUserController {
         OperationsUser operationsUser = operationsUserRepo.findOne(1l);
         Verification verification = verificationRepo.findOne(id);
 
-        if (verification == null || Verification.VerificationStatus.PENDING != verification.getStatus())
+        if (verification == null || verificationStatus.PENDING != verification.getStatus())
             return "Verification not found";
 
        // operationsUserService.decline(verification, operationsUser, "todo get the  reason from the frontend");

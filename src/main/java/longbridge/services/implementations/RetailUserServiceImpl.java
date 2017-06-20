@@ -337,12 +337,15 @@ public class RetailUserServiceImpl implements RetailUserService {
 
         String errorMessage = passwordPolicyService.validate(custResetPassword.getNewPassword(), user);
         if (!"".equals(errorMessage)) {
+            logger.info("Password violation");
             throw new PasswordPolicyViolationException(errorMessage);
         }
 
         if (!custResetPassword.getNewPassword().equals(custResetPassword.getConfirmPassword())) {
+            logger.info("Password mismatch");
             throw new PasswordMismatchException();
         }
+
         try {
             RetailUser retailUser = retailUserRepo.findOne(user.getId());
             retailUser.setPassword(this.passwordEncoder.encode(custResetPassword.getNewPassword()));
@@ -431,15 +434,11 @@ public class RetailUserServiceImpl implements RetailUserService {
 
     private RetailUserDTO convertEntityToDTO(RetailUser retailUser) {
         RetailUserDTO retailUserDTO =  modelMapper.map(retailUser, RetailUserDTO.class);
-        Code code = codeService.getByTypeAndCode("USER_STATUS", retailUser.getStatus());
         if(retailUser.getCreatedOnDate()!=null) {
             retailUserDTO.setCreatedOn(DateFormatter.format(retailUser.getCreatedOnDate()));
         }
         if(retailUser.getLastLoginDate()!=null) {
             retailUserDTO.setLastLogin(DateFormatter.format(retailUser.getLastLoginDate()));
-        }
-        if (code != null) {
-            retailUserDTO.setStatus(code.getDescription());
         }
         return retailUserDTO;
     }

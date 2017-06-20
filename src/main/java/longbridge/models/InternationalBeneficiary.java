@@ -68,10 +68,6 @@ public class InternationalBeneficiary extends Beneficiary {
         return intermediaryBankAcctNo;
     }
 
-    public void setIntermediaryBankAcctNo(String intermediaryBankAcctNo) {
-        this.intermediaryBankAcctNo = intermediaryBankAcctNo;
-    }
-
     public String getCurrencyCode() {
         return currencyCode;
     }
@@ -79,4 +75,9 @@ public class InternationalBeneficiary extends Beneficiary {
     public void setCurrencyCode(String currencyCode) {
         this.currencyCode = currencyCode;
     }
+
+    public void setIntermediaryBankAcctNo(String intermediaryBankAcctNo) {
+        this.intermediaryBankAcctNo = intermediaryBankAcctNo;
+    }
+
 }

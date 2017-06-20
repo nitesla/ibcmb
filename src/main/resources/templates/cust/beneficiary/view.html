@@ -8,6 +8,24 @@
     <header th:replace="cust_layout :: header">
     </header>
 
+
+    <div class="modal fade" id="myModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title">Confirm delete</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure that you want to delete this beneficiary?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="del btn btn-primary">Yes</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
 <section class="content-wrapper">
     <div class="containe">
         <div class="row">
@@ -34,7 +52,7 @@
                                     <td th:text="${loc.accountName}"></td>
                                     <td th:text="${loc.accountNumber}"></td>
                                     <td th:text="${loc.beneficiaryBank}"></td>
-                                    <td><a href="/retail/beneficiary/index/loc/delete"><i class="delete-btn fa fa-trash"></i></a></td>
+                                    <td><a th:id="${loc.id}" onclick="validateDelete(this.id)"><i class="fa fa-trash"></i></a></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -52,7 +70,7 @@
                                     <td th:text="${int.accountName}"></td>
                                     <td th:text="${int.accountNumber}"></td>
                                     <td th:text="${int.beneficiaryBank}"></td>
-                                    <td><a  th:href="@{'/retail/beneficiary/' + ${int.id} + '/int/delete'}"><i class="delete-btn fa fa-trash"></i></a></td>
+                                    <td th:id="${int.id}"><a th:id="${loc.id}" onclick="validateDelete(this.id)"><i class="delete-btn fa fa-trash"></i></a></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -70,55 +88,29 @@
 </footer>
 </div>
 
-
-<script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
 <script th:src="@{~/bank/vendors/sweetalert/sweetalert.min.js}"></script>
+<script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
+<script th:src="@{~/bank/vendors/bootstrap-dialog/js/bootstrap-dialog.js}"></script>
 
 
 <!-- Page-Level Scripts -->
 <script>
     /*<![CDATA[*/
 
-//    $(".delete-btn").on("click", function (e) {
-//        e.preventDefault();
-//        var link = $(e.currentTarget);
-//        var ooo = link.attr("href");
-//alert(ooo);
-//        //goto url
-//        warnBeforeRedirect(ooo);
-//    });
-
-    $(".delete-btn").on("click", function(e) {
-        e.preventDefault();
-        var link = $(e.currentTarget);
-
-        alert(this.attr("href"));
-//        var dt = $('table#mytab');
-//        var id = $(dt.anchor({
-//          onClick  : true
-//        }).node()).attr("id");
-        //window.location.href = link.attr("formaction") + '?id=' + id;
-        //replace {id} with id
-        var ooo = link.attr("href").replace("index",id);
-
+    function validateDelete(id) {
+        var ooo = "/retail/beneficiary/"+id+ "/loc/delete";
         //goto url
         warnBeforeRedirect(ooo);
-    });
+    }
 
 
     function warnBeforeRedirect(ooo) {
-        swal({
-            title: "Are you sure?",
-            text: "Are you sure that you want to delete this user?",
-            type: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#DD6B55",
-            confirmButtonText: "Yes, delete user!",
-            closeOnConfirm: false
-        }, function () {
-            // Redirect the user
+
+        $ ("#myModal").modal('show');
+        $('.del').on('click', function(){
             window.location.assign(ooo);
         });
+
     }
 
     /*]]>*/
