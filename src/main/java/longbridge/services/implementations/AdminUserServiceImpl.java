@@ -15,6 +15,7 @@ import longbridge.services.*;
 import java.util.*;
 
 import longbridge.utils.DateFormatter;
+import longbridge.utils.HostMaster;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -140,10 +141,10 @@ public class AdminUserServiceImpl implements AdminUserService {
             Role role = new Role();
             role.setId(Long.parseLong(user.getRoleId()));
             adminUser.setRole(role);
-//            creatUserOnEntrust(adminUser);
-//            adminUserRepo.save(adminUser);
+            creatUserOnEntrust(adminUser);
+            adminUserRepo.save(adminUser);
 
-            makerCheckerSave(adminUser,adminUser);
+//            makerCheckerSave(adminUser,adminUser);
 
             logger.info("New admin user {} created", adminUser.getUserName());
             return messageSource.getMessage("user.add.success", null, locale);
@@ -232,6 +233,8 @@ public class AdminUserServiceImpl implements AdminUserService {
                         .setBody(String.format(messageSource.getMessage("admin.reactivation.message", null, locale), fullName, user.getUserName(), password))
                         .build();
                 mailService.send(email);
+
+                logger.info("Logged in user "+HostMaster.getLoggedInUser());
 
             }
 
@@ -335,10 +338,10 @@ public class AdminUserServiceImpl implements AdminUserService {
 //        }
 //    }
 
-    public  String verifyRequest(Long verId) throws VerificationException{
-        verificationService.verify(verId);
-        return "Verified successful";
-    }
+//    public  String verifyRequest(Long verId) throws VerificationException{
+//        verificationService.verify(verId);
+//        return "Verified successful";
+//    }
 
     @Override
     @Transactional

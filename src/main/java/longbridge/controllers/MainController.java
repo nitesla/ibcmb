@@ -99,7 +99,6 @@ public class MainController {
 
     @RequestMapping(value = {"/admin/dashboard", "/admin"})
     public String getAdminDashboard() {
-        clearSession();
         return "adm/dashboard";
     }
 
