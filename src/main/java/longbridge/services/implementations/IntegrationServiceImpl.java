@@ -96,17 +96,13 @@ public class IntegrationServiceImpl implements IntegrationService {
             Map<String, String> params = new HashMap<>();
             params.put("accountNumber", accountNo);
             params.put("fromDate", formatter.format(fromDate));
-            if (toDate!=null) params.put("toDate",formatter.format(toDate));
-
+            if (toDate != null) params.put("toDate", formatter.format(toDate));
 
 
             statement = template.getForObject(uri, AccountStatement.class, params);
 
 
-
-
-
-        } catch (Exception e){
+        } catch (Exception e) {
 
         }
 
@@ -271,8 +267,6 @@ public class IntegrationServiceImpl implements IntegrationService {
         }
 
 
-
-
     }
 
     @Override
@@ -411,15 +405,15 @@ public class IntegrationServiceImpl implements IntegrationService {
 
     @Override
     public BigDecimal getAvailableBalance(String s) {
-       try{
-           Map<String, BigDecimal> getBalance = getBalance(s);
-           BigDecimal balance = getBalance.get("AvailableBalance");
-           if (balance != null) {
-               return balance;
-           }
-       }catch (Exception e){
-       e.printStackTrace();
-       }
+        try {
+            Map<String, BigDecimal> getBalance = getBalance(s);
+            BigDecimal balance = getBalance.get("AvailableBalance");
+            if (balance != null) {
+                return balance;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return new BigDecimal(0);
     }
 
