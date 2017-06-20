@@ -296,10 +296,10 @@ public class AdminUserServiceImpl implements AdminUserService {
         }
     }
 
-//    public  String verifyRequest(Long verId) throws VerificationException{
-//        verificationService.verify(verId);
-//        return "Verified successful";
-//    }
+    public  String verifyRequest(Long verId) throws VerificationException{
+        verificationService.verify(verId);
+        return "Verified successful";
+    }
 
 //    @Override
 //    @Transactional

@@ -15,8 +15,8 @@
                 <div class="clearfix"></div>
                 <div class="clearfix"></div>
 
-                <div th:replace="layout :: admin-menu"></div>
-                <div th:replace="layout :: menu-footer-adm"></div>
+                <div th:replace="layout :: ops-menu"></div>
+                <div th:replace="layout :: menu-footer-ops"></div>
 
             </div>
         </div>
@@ -55,28 +55,28 @@
                                                     <li >
                                                         <div class="col-lg-4">
                                                             <div class="title-action">
-                                                                <a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/corporates/users/index/edit" disabled="disabled" ><i class="fa fa-pencil"></i> Edit</a>
+                                                                <a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/ops/corporates/users/index/edit" disabled="disabled" ><i class="fa fa-pencil"></i> Edit</a>
                                                             </div>
                                                         </div>
                                                     </li>
                                                     <li >
                                                         <div class="col-lg-4">
                                                             <div class="title-action">
-                                                                <a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/corporates/users/index/password/reset" disabled="disabled" ><i class="fa fa-lock"></i> Reset Password</a>
+                                                                <a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/ops/corporates/users/index/password/reset" disabled="disabled" ><i class="fa fa-lock"></i> Reset Password</a>
                                                             </div>
                                                         </div>
                                                     </li>
                                                     <li >
                                                         <div class="col-lg-4">
                                                             <div class="title-action">
-                                                                <a  class="btn btn-danger btn-sm bt-select bt-link-act" href="/admin/corporates/users/index/activation" disabled="disabled" ><i class="fa fa-user"></i> Activate/Deactivate</a>
+                                                                <a  class="btn btn-danger btn-sm bt-select bt-link-act" href="/ops/corporates/users/index/activation" disabled="disabled" ><i class="fa fa-user"></i> Activate/Deactivate</a>
                                                             </div>
                                                         </div>
                                                     </li>
                                                     <li >
                                                         <div class="col-lg-4">
                                                             <div class="title-action">
-                                                                <a id="user-delete-btn" class="btn btn-danger btn-sm bt-select" href="/admin/corporates/users/index/delete" disabled="disabled" ><i class="fa fa-trash"></i> Delete</a>
+                                                                <a id="user-delete-btn" class="btn btn-danger btn-sm bt-select" href="/ops/corporates/users/index/delete" disabled="disabled" ><i class="fa fa-trash"></i> Delete</a>
                                                             </div>
                                                         </div>
                                                     </li>
@@ -85,7 +85,7 @@
                                                     <li >
                                                         <div class="col-lg-4">
                                                             <div class="title-action">
-                                                                <a class="btn btn-primary btn-sm" th:href="@{'/admin/corporates/users/' + ${corporate.id}+ '/new'}"><i class="fa fa-user-plus"></i> Add Corporate User</a>
+                                                                <a class="btn btn-primary btn-sm" th:href="@{'/ops/corporates/users/' + ${corporate.id}+ '/new'}"><i class="fa fa-user-plus"></i> Add Corporate User</a>
                                                             </div>
                                                         </div>
                                                     </li>
@@ -137,7 +137,7 @@
                                                         <!--<li>-->
                                                             <!--<div class="col-lg-4">-->
                                                                 <!--<div class="title-action">-->
-                                                                    <!--<a  class="btn btn-danger btn-sm btn-select btn-link-act" href="/admin/corporates/index/account/activation" disabled="disabled" ><i class="fa fa-user"></i> Activate/Deactivate</a>-->
+                                                                    <!--<a  class="btn btn-danger btn-sm btn-select btn-link-act" href="/ops/corporates/index/account/activation" disabled="disabled" ><i class="fa fa-user"></i> Activate/Deactivate</a>-->
                                                                 <!--</div>-->
                                                             <!--</div>-->
                                                         <!--</li>-->
@@ -146,7 +146,7 @@
                                                         <li >
                                                             <div class="col-lg-4">
                                                                 <div class="title-action">
-                                                                    <a class="btn btn-primary btn-sm" th:href="@{'/admin/corporates/' + ${corporate.id}+ '/account/new'}"><i class="fa fa-user-plus"></i> Link Account</a>
+                                                                    <a class="btn btn-primary btn-sm" th:href="@{'/ops/corporates/' + ${corporate.id}+ '/account/new'}"><i class="fa fa-user-plus"></i> Link Account</a>
                                                                 </div>
                                                             </div>
                                                         </li>
@@ -193,7 +193,7 @@
                                                     <li >
                                                         <div class="col-lg-4">
                                                             <div class="title-action">
-                                                                <a  class="btn btn-primary btn-sm bt-role-select bt-role-act" href="/admin/corporates/roles/index/edit" disabled="disabled" ><i class="fa fa-pencil"></i> Edit</a>
+                                                                <a  class="btn btn-primary btn-sm bt-role-select bt-role-act" href="/ops/corporates/roles/index/edit" disabled="disabled" ><i class="fa fa-pencil"></i> Edit</a>
                                                             </div>
                                                         </div>
                                                     </li>
@@ -201,7 +201,7 @@
                                                     <li >
                                                         <div class="col-lg-4">
                                                             <div class="title-action">
-                                                                <a id="role-delete-btn" class="btn btn-danger btn-sm bt-role-select" href="/admin/corporates/roles/index/delete" disabled="disabled" ><i class="fa fa-trash"></i> Delete</a>
+                                                                <a id="role-delete-btn" class="btn btn-danger btn-sm bt-role-select" href="/ops/corporates/roles/index/delete" disabled="disabled" ><i class="fa fa-trash"></i> Delete</a>
                                                             </div>
                                                         </div>
                                                     </li>
@@ -210,7 +210,7 @@
                                                     <li >
                                                         <div class="col-lg-4">
                                                             <div class="title-action">
-                                                                <a class="btn btn-primary btn-sm" th:href="@{'/admin/corporates/' + ${corporate.id}+ '/roles/new'}"><i class="fa fa-user-plus"></i> Add Role</a>
+                                                                <a class="btn btn-primary btn-sm" th:href="@{'/ops/corporates/' + ${corporate.id}+ '/roles/new'}"><i class="fa fa-user-plus"></i> Add Role</a>
                                                             </div>
                                                         </div>
                                                     </li>
@@ -257,14 +257,14 @@
                                                         <li>
                                                             <div class="col-lg-4">
                                                                 <div class="title-action">
-                                                                    <a class="btn btn-primary btn-sm btr-select btr-link-act" href="/admin/corporates/rules/index/edit" disabled="disabled" ><i class="fa fa-pencil"></i> Edit</a>
+                                                                    <a class="btn btn-primary btn-sm btr-select btr-link-act" href="/ops/corporates/rules/index/edit" disabled="disabled" ><i class="fa fa-pencil"></i> Edit</a>
                                                                 </div>
                                                             </div>
                                                         </li>
                                                         <li>
                                                             <div class="col-lg-4">
                                                                 <div class="title-action">
-                                                                    <a id="delete-btn" class="btn btn-danger btn-sm btr-select" href="/admin/corporates/rules/index/delete" disabled="disabled" ><i class="fa fa-trash"></i> Delete</a>
+                                                                    <a id="delete-btn" class="btn btn-danger btn-sm btr-select" href="/ops/corporates/rules/index/delete" disabled="disabled" ><i class="fa fa-trash"></i> Delete</a>
                                                                 </div>
                                                             </div>
                                                         </li>
@@ -273,7 +273,7 @@
                                                         <li >
                                                             <div class="col-lg-4">
                                                                 <div class="title-action">
-                                                                    <a class="btn btn-primary btn-sm" th:href="@{'/admin/corporates/' + ${corporate.id}+ '/rules/new'}"><i class="fa fa-plus"></i> New Rule</a>
+                                                                    <a class="btn btn-primary btn-sm" th:href="@{'/ops/corporates/' + ${corporate.id}+ '/rules/new'}"><i class="fa fa-plus"></i> New Rule</a>
                                                                 </div>
                                                             </div>
                                                         </li>
@@ -346,7 +346,7 @@
 <script th:inline="javascript">
     /*<![CDATA[*/
     $(document).ready(function() {
-        var url = /*[['/admin/corporates/'+${corporate.id}+'/users']]*/"/admin/corporates/${corporate.id}/users";
+        var url = /*[['/ops/corporates/'+${corporate.id}+'/users']]*/"/ops/corporates/${corporate.id}/users";
         var table = $('#users').DataTable({
             select: true,
             responsive : false,
@@ -444,7 +444,7 @@
 <script th:inline="javascript">
     /*<![CDATA[*/
     $(document).ready(function() {
-        var acurl = /*[['/admin/corporates/'+${corporate.id}+'/accounts']]*/"/admin/corporates/${corporate.id}/accounts";
+        var acurl = /*[['/ops/corporates/'+${corporate.id}+'/accounts']]*/"/ops/corporates/${corporate.id}/accounts";
         var table = $('#account').DataTable({
             select: true,
             responsive : false,
@@ -515,7 +515,7 @@
 <script th:inline="javascript">
     /*<![CDATA[*/
     $(document).ready(function() {
-        var acurl = /*[['/admin/corporates/'+${corporate.id}+'/roles']]*/"/admin/corporates/${corporate.id}/roles";
+        var acurl = /*[['/ops/corporates/'+${corporate.id}+'/roles']]*/"/ops/corporates/${corporate.id}/roles";
         var table = $('#roles').DataTable({
             select: true,
             responsive : false,
@@ -620,7 +620,7 @@
 <script th:inline="javascript">
     /*<![CDATA[*/
     $(document).ready(function() {
-        var url = /*[['/admin/corporates/'+${corporate.id}+'/rules']]*/"/admin/corporates/${corporate.id}/rules";
+        var url = /*[['/ops/corporates/'+${corporate.id}+'/rules']]*/"/ops/corporates/${corporate.id}/rules";
         var table = $('#rules').DataTable({
             select: true,
             responsive : false,

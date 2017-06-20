@@ -165,19 +165,19 @@
                         },
                         1000) ;
 
-                    function showCal()
-                    {
-                        alert();
-
-                        $( function() {
-                            $( "#datepicker" ).datepicker();
-                        } );
-                        alert();
-                    }
+//                    function showCal()
+//                    {
+//                        alert();
+//
+//                        $( function() {
+//                            $( "#datepicker" ).datepicker();
+//                        } );
+//                        alert();
+//                    }
                 </script>
                 </span>
 
-                <i class="fa fa-calendar pull-right" id ='datepicker' onclick="showCal()"></i>
+                <input type="text" id ='datepicker'/>
 
 
             </div>
@@ -312,10 +312,14 @@
     <script>
         $(document).ready(function(){
             $('[data-toggle="tooltip"]').tooltip();
-
-           
-
         });
+    </script>
+    <script>
+        $( function() {
+            $( "#datepicker" ).datepicker(
+                { dateformat : 'dd/mm/yy'}
+            );
+        } );
     </script>
 </footer>
 <!-- /footer content -->

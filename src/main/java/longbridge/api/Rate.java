@@ -11,6 +11,14 @@ public class Rate {
     private String feeValue;
     private String feeDescription;
 
+    public Rate(String feeName, String feeValue, String feeDescription) {
+        this.feeName = feeName;
+        this.feeValue = feeValue;
+        this.feeDescription = feeDescription;
+    }
+
+    public Rate() {
+    }
 
     public String getFeeName() {
         return feeName;

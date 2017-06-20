@@ -28,7 +28,10 @@ public class AdminUserLoginInterceptor extends HandlerInterceptorAdapter {
         String uri = httpServletRequest.getRequestURI();
 
 
+
+
         if (httpServletRequest.getSession().getAttribute("expired-password") != null && !(uri.equalsIgnoreCase("/admin/users/password/new"))) {
+
             ChangeDefaultPassword changePassword = new ChangeDefaultPassword();
 
             ModelAndView modelAndView = new ModelAndView("forwarded-view");

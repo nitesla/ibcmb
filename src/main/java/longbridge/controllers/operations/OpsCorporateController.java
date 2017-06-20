@@ -1,4 +1,4 @@
-package longbridge.controllers.admin;
+package longbridge.controllers.operations;
 
 import longbridge.api.AccountInfo;
 import longbridge.dtos.*;
@@ -35,8 +35,8 @@ import java.util.*;
  */
 
 @Controller
-@RequestMapping("/admin/corporates")
-public class AdmCorporateController {
+@RequestMapping("/ops/corporates")
+public class OpsCorporateController {
 
     @Autowired
     private CorporateService corporateService;
@@ -79,39 +79,39 @@ public class AdmCorporateController {
     @GetMapping("/new")
     public String addCorporate(Model model) {
         model.addAttribute("corporate", new CorporateDTO());
-        return "/adm/corporate/add";
+        return "/ops/corporate/add";
     }
 
     @PostMapping
     public String createCorporate(@ModelAttribute("corporate") @Valid CorporateDTO corporate, BindingResult result, RedirectAttributes redirectAttributes, HttpSession session, Locale locale) {
         if (result.hasErrors()) {
             result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
-            return "/adm/corporate/add";
+            return "/ops/corporate/add";
         }
 
         boolean exists = corporateService.corporateExists(corporate.getCustomerId());
         if(exists){
             result.addError(new ObjectError("invalid", messageSource.getMessage("corporate.exist", null, locale)));
-            return "/adm/corporate/add";
+            return "/ops/corporate/add";
         }
 
        List<AccountInfo> accountInfos = integrationService.fetchAccounts(corporate.getCustomerId());
 
         if (accountInfos == null || accountInfos.isEmpty()) {
             result.addError(new ObjectError("invalid", messageSource.getMessage("cifid.invalid", null, locale)));
-            return "/adm/corporate/add";
+            return "/ops/corporate/add";
         } else {
             String accountName = integrationService.viewCustomerDetails(accountInfos.get(0).getAccountNumber()).getCustomerName();
             corporate.setName(accountName);
             session.setAttribute("corporate", corporate);
-            return "redirect:/admin/corporates/user/first";
+            return "redirect:/ops/corporates/user/first";
         }
 
 //        try{
 //
 //            String message = corporateService.addCorporate(corporate);
 //            redirectAttributes.addFlashAttribute("message", message);
-//            return "redirect:/admin/corporates";
+//            return "redirect:/ops/corporates";
 //        } catch (InternetBankingException ibe) {
 //            logger.error("Failed to create corporate entity", ibe);
 //            result.addError(new ObjectError("invalid", ibe.getMessage()));
@@ -126,7 +126,7 @@ public class AdmCorporateController {
         CorporateUserDTO corporateUserDTO = new CorporateUserDTO();
         model.addAttribute("corporate", corporateDTO);
         model.addAttribute("corporateUser", corporateUserDTO);
-        return "/adm/corporate/addUser";
+        return "/ops/corporate/addUser";
     }
 
     /**
@@ -138,34 +138,34 @@ public class AdmCorporateController {
     public String editUser(@PathVariable Long id, Model model) {
         CorporateDTO corporate = corporateService.getCorporate(id);
         model.addAttribute("corporate", corporate);
-        return "/adm/corporate/edit";
+        return "/ops/corporate/edit";
     }
 
     @GetMapping("/{corporateId}")
     public String getCorporate(@PathVariable Long corporateId, Model model) {
         CorporateDTO corporate = corporateService.getCorporate(corporateId);
         model.addAttribute("corporate", corporate);
-        return "/adm/corporates/details";
+        return "/ops/corporates/details";
     }
 
     @GetMapping
     public String getAllCorporates(HttpSession session) {
         session.removeAttribute("corporate");
-        return "/adm/corporate/view";
+        return "/ops/corporate/view";
     }
 
 //    @GetMapping("/{reqId}/view")
 //    public String  viewRole(@PathVariable Long reqId, Model model){
 //        CorporateDTO corporate = corporateService.getCorporate(reqId);
 //        model.addAttribute("corporate",corporate);
-//        return "/adm/corporate/details";
+//        return "/ops/corporate/details";
 //    }
 
     @GetMapping("/{reqId}/view")
     public String viewRole(@PathVariable Long reqId, Model model) {
         CorporateDTO corporate = corporateService.getCorporate(reqId);
         model.addAttribute("corporate", corporate);
-        return "/adm/corporate/viewdetails";
+        return "/ops/corporate/viewdetails";
     }
 
     @GetMapping(path = "/{corpId}/users")
@@ -230,16 +230,16 @@ public class AdmCorporateController {
     public String updateCorporate(@ModelAttribute("corporate") CorporateDTO corporate, BindingResult result, RedirectAttributes redirectAttributes, Locale locale) {
         if (result.hasErrors()) {
             result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
-            return "/adm/corporate/edit";
+            return "/ops/corporate/edit";
         }
         try {
             String message = corporateService.updateCorporate(corporate);
             redirectAttributes.addFlashAttribute("message", message);
-            return "redirect:/admin/corporates";
+            return "redirect:/ops/corporates";
         } catch (InternetBankingException ibe) {
             logger.error("Failed to update corporate entity", ibe);
             result.addError(new ObjectError("invalid", ibe.getMessage()));
-            return "/adm/corporate/edit";
+            return "/ops/corporate/edit";
 
         }
     }
@@ -253,7 +253,7 @@ public class AdmCorporateController {
             logger.error("Error changing corporate activation status", ibe);
             redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
         }
-        return "redirect:/admin/corporates";
+        return "redirect:/ops/corporates";
     }
 
 
@@ -267,7 +267,7 @@ public class AdmCorporateController {
             logger.error("Failed to delete corporate", ibe);
             redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
         }
-        return "redirect:/admin/corporates";
+        return "redirect:/ops/corporates";
     }
 
 
@@ -278,7 +278,7 @@ public class AdmCorporateController {
         account.setCustomerId(corporate.getCustomerId());
         model.addAttribute("account", account);
         model.addAttribute("corporate", corporate);
-        return "/adm/corporate/addAccount";
+        return "/ops/corporate/addAccount";
     }
 
     @PostMapping("/account/new")
@@ -287,7 +287,7 @@ public class AdmCorporateController {
             result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
             Corporate corporate = corporateService.getCorporateByCustomerId(accountDTO.getCustomerId());
             model.addAttribute("corporate", corporate);
-            return "/adm/corporate/addAccount";
+            return "/ops/corporate/addAccount";
         }
 
         try {
@@ -295,13 +295,13 @@ public class AdmCorporateController {
             String message = corporateService.addAccount(corporate, accountDTO);
             Long corporateId = corporate.getId();
             redirectAttributes.addFlashAttribute("message", message);
-            return "redirect:/admin/corporates/" + corporateId + "/view";
+            return "redirect:/ops/corporates/" + corporateId + "/view";
         } catch (InternetBankingException ibe) {
             Corporate corporate = corporateService.getCorporateByCustomerId(accountDTO.getCustomerId());
             model.addAttribute("account", accountDTO);
             model.addAttribute("corporate", corporate);
             result.addError(new ObjectError("exception", messageSource.getMessage("corporate.account.add.failure", null, locale)));
-            return "/adm/corporate/addAccount";
+            return "/ops/corporate/addAccount";
         }
 
     }
@@ -315,7 +315,7 @@ public class AdmCorporateController {
         model.addAttribute("roleList", roles);
         model.addAttribute("currencies", currencies);
         model.addAttribute("corporateRule", new CorpTransferRuleDTO());
-        return "/adm/corporate/addrule";
+        return "/ops/corporate/addrule";
     }
 
     @PostMapping("/rules")
@@ -337,7 +337,7 @@ public class AdmCorporateController {
             model.addAttribute("currencies", currencies);
             bindingResult.addError(new ObjectError("exception", messageSource.getMessage("rule.amount.invalid", null, locale)));
 
-            return "/adm/corporate/addrule";
+            return "/ops/corporate/addrule";
 
         }
 
@@ -363,7 +363,7 @@ public class AdmCorporateController {
         try {
             String message = corporateService.addCorporateRule(transferRuleDTO);
             redirectAttributes.addFlashAttribute("message", message);
-            return "redirect:/admin/corporates/" + transferRuleDTO.getCorporateId() + "/view";
+            return "redirect:/ops/corporates/" + transferRuleDTO.getCorporateId() + "/view";
         } catch (TransferRuleException tre) {
             logger.error("Failed to create transfer rule", tre);
             bindingResult.addError(new ObjectError("exception", tre.getMessage()));
@@ -373,7 +373,7 @@ public class AdmCorporateController {
             model.addAttribute("corporate", corporate);
             model.addAttribute("roleList", roles);
             model.addAttribute("currencies", currencies);
-            return "/adm/corporate/addrule";
+            return "/ops/corporate/addrule";
 
         } catch (InternetBankingException ibe) {
             logger.error("Failed to create transfer rule", ibe);
@@ -384,7 +384,7 @@ public class AdmCorporateController {
             model.addAttribute("corporate", corporate);
             model.addAttribute("roleList", roles);
             model.addAttribute("currencies", currencies);
-            return "/adm/corporate/addrule";
+            return "/ops/corporate/addrule";
         }
     }
 
@@ -407,7 +407,7 @@ public class AdmCorporateController {
         model.addAttribute("corporateRule", transferRuleDTO);
         model.addAttribute("currencies", currencies);
 
-        return "/adm/corporate/editrule";
+        return "/ops/corporate/editrule";
     }
 
     @PostMapping("/rules/update")
@@ -429,7 +429,7 @@ public class AdmCorporateController {
             model.addAttribute("currencies", currencies);
             bindingResult.addError(new ObjectError("exception", messageSource.getMessage("rule.amount.invalid", null, locale)));
 
-            return "/adm/corporate/editrule";
+            return "/ops/corporate/editrule";
 
         }
         String[] roleIds;
@@ -455,7 +455,7 @@ public class AdmCorporateController {
         try {
             String message = corporateService.updateCorporateRule(transferRuleDTO);
             redirectAttributes.addFlashAttribute("message", message);
-            return "redirect:/admin/corporates/" + transferRuleDTO.getCorporateId() + "/view";
+            return "redirect:/ops/corporates/" + transferRuleDTO.getCorporateId() + "/view";
         } catch (TransferRuleException tre) {
             logger.error("Failed to update transfer rule", tre);
             bindingResult.addError(new ObjectError("exception", tre.getMessage()));
@@ -465,7 +465,7 @@ public class AdmCorporateController {
             model.addAttribute("corporate", corporate);
             model.addAttribute("roleList", roles);
             model.addAttribute("currencies", currencies);
-            return "/adm/corporate/editrule";
+            return "/ops/corporate/editrule";
 
         } catch (InternetBankingException ibe) {
             logger.error("Failed to update transfer rule", ibe);
@@ -476,7 +476,7 @@ public class AdmCorporateController {
             model.addAttribute("corporate", corporate);
             model.addAttribute("roleList", roles);
             model.addAttribute("currencies", currencies);
-            return "/adm/corporate/editrule";
+            return "/ops/corporate/editrule";
         }
     }
 
@@ -506,7 +506,7 @@ public class AdmCorporateController {
             logger.error("Failed to delete transfer rule", ibe);
             redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
         }
-        return "redirect:/admin/corporates/";
+        return "redirect:/ops/corporates/";
 
     }
 

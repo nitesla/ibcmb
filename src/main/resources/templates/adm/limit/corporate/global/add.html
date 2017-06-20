@@ -17,8 +17,8 @@
                 <div class="clearfix"></div>
                 <div class="clearfix"></div>
 
-                <div th:replace="layout :: ops-menu"></div>
-                <div th:replace="layout :: menu-footer-ops"></div>
+                <div th:replace="layout :: admin-menu"></div>
+                <div th:replace="layout :: menu-footer-adm"></div>
 
             </div>
         </div>
@@ -29,7 +29,7 @@
             <div class="">
                 <div class="page-title">
                     <div class="title_left">
-                        <h3>Retail Global Transaction Limit</h3>
+                        <h3>Corporate Global Transaction Limit</h3>
                     </div>
 
                 </div>
@@ -60,7 +60,7 @@
 
                             <div class="x_content">
 
-                                <form method="post" class="form-horizontal" th:action="@{/ops/limits/retail/global/update}" th:object="${globalLimit}">
+                                <form method="post" class="form-horizontal" th:action="@{/admin/limits/corporate/global}" th:object="${globalLimit}">
                                     <div class="form-group">
                                         <label class="col-sm-2 control-label">Transfer Channel</label>
 
@@ -82,6 +82,7 @@
                                         </div>
 
                                     </div>
+
                                     <div class="form-group">
                                         <label class="col-sm-2 control-label">Maximum Limit</label>
 
@@ -90,6 +91,7 @@
                                         </div>
 
                                     </div>
+
                                     <div class="form-group">
                                         <label class="col-sm-2 control-label">Currency</label>
 
@@ -123,16 +125,11 @@
 
                                     <!--</div>-->
 
-                                    <input type="hidden" name="id" th:value="*{id}"/>
-                                    <input type="hidden" name="version" th:value="*{version}"/>
-                                    <input type="hidden" name="customerType" th:value="*{customerType}"/>
-
-
 
                                     <div class="form-group">
                                         <div class="col-sm-4 col-sm-offset-2">
                                             <button class="btn btn-white" type="reset" id="cancel">Cancel</button>
-                                            <button class="btn btn-primary" type="submit">Save</button>
+                                            <button class="btn btn-primary" type="submit">Submit</button>
                                         </div>
                                     </div>
 
@@ -167,21 +164,19 @@
 </div>
 
 
-
 <!-- Page-Level Scripts -->
 <script>
 
 
     $( function() {
         $( "#datepicker" ).datepicker(
-            { dateformat : 'dd/mm/yyyy'}
+            { dateformat : 'dd/mm/yy'}
         );
     } );
 
     document.getElementById("cancel").onclick = function () {
-        location.href = "/ops/limits/retail/global";
+        location.href = "/admin/limits/corporate/global";
     }
-
 </script>
 
 
