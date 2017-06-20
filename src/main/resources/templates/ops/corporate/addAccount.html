@@ -15,8 +15,8 @@
                 <div class="clearfix"></div>
                 <div class="clearfix"></div>
 
-                <div th:replace="layout :: admin-menu"></div>
-                <div th:replace="layout :: menu-footer-adm"></div>
+                <div th:replace="layout :: ops-menu"></div>
+                <div th:replace="layout :: menu-footer-ops"></div>
 
             </div>
         </div>
@@ -45,7 +45,7 @@
 
                             <div class="x_content">
                                 <div class="ibox-content">
-                                    <form method="post" class="form-horizontal" th:action="@{/admin/corporates/account/new}" th:object="${account}">
+                                    <form method="post" class="form-horizontal" th:action="@{/ops/corporates/account/new}" th:object="${account}">
 
 
                                         <div th:replace="layout::form-validation"></div>
@@ -89,7 +89,7 @@
 
     var corpId = [[${corporate.id}]];
     document.getElementById("cancel").onclick = function () {
-        location.href = "/admin/corporates/"+corpId+"/view";}
+        location.href = "/ops/corporates/"+corpId+"/view";}
     /*]]>*/
 
 </script>

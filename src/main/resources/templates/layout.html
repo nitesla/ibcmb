@@ -35,8 +35,6 @@
                 <ul class="nav child_menu">
                     <li sec:authorize="hasAuthority('ADMIN_USER_MANAGEMENT')"><a href="/admin/users/">Administrators</a></li>
                     <li sec:authorize="hasAuthority('OPS_USER_MANAGEMENT')"><a href="/admin/operations/users">Operators</a></li>
-                    <li sec:authorize="hasAuthority('CORPORATE_USER_MANAGEMENT')"><a href="/admin/corporates/">Corporate</a></li>
-                    <li sec:authorize="hasAuthority('RETAIL_USER_MANAGEMENT')"><a href="/admin/retail/users/">Retail</a></li>
                 </ul>
             </li>
             <li sec:authorize="hasAuthority('MANAGE_CONFIG')"><a><i class="fa fa-gears"></i> Configurations <span class="fa fa-chevron-down"></span></a>
@@ -51,6 +49,8 @@
                     <li sec:authorize="hasAuthority('FIN_INST')"><a href="/admin/finst">Financial Institutions</a></li>
                     <li sec:authorize="hasAuthority('CONTACT_GRP')"><a href="/admin/groups/">Contact Groups</a></li>
                     <li sec:authorize="hasAuthority('SERVICE_REQ')"><a href="/admin/srconfig">Service Requests</a></li>
+                    <li sec:authorize="hasAuthority('LIMIT_CORPORATE_GLOBAL')" class="sub_menu"><a href="/admin/limits/corporate/global">Corporate Global Limit</a></li>
+                    <li sec:authorize="hasAuthority('LIMIT_RETAIL_GLOBAL')" class="sub_menu"><a href="/admin/limits/retail/global">Retail Global Limit</a></li>
                 </ul>
             </li>
 
@@ -77,7 +77,6 @@
                     <li><a href="/admin/token/deactivate/username">Deactivate Token</a></li>
                     <li><a href="/admin/token/synchronize">Synchronize Token</a></li>
                     <li><a href="/admin/token/unlock">Unlock Token</a></li>
-
                 </ul>
             </li>
             <!--<li><a><i class="fa fa-check"></i> Approvals <span class="fa fa-chevron-down"></span></a>-->
@@ -99,12 +98,17 @@
     <div class="menu_section">
         <h3>Operations Console</h3>
         <ul class="nav side-menu">
+            <li sec:authorize="hasAuthority('USER_MANAGEMENT')"><a><i class="fa fa-users"></i> User Management <span class="fa fa-chevron-down"></span></a>
+                <ul class="nav child_menu">
+                    <li sec:authorize="hasAuthority('CORPORATE_USER_MANAGEMENT')"><a href="/ops/corporates/">Corporate</a></li>
+                    <li sec:authorize="hasAuthority('RETAIL_USER_MANAGEMENT')"><a href="/ops/retail/users/">Retail</a></li>
+                </ul>
+            </li>
             <li sec:authorize="hasAuthority('OPS_SERV_REQ')"><a href="/ops/requests/"><i class="fa fa-question-circle"></i> Service Requests</a></li>
             <li sec:authorize="hasAuthority('OPS_LIMIT')"><a><i class="fa fa-money"></i> Limits <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
                     <li sec:authorize="hasAuthority('LIMIT_CORPORATE')"><a> Corporate <span class="fa fa-chevron-down"></span></a>
                         <ul class="nav child_menu">
-                            <li sec:authorize="hasAuthority('LIMIT_CORPORATE_GLOBAL')" class="sub_menu"><a href="/ops/limits/corporate/global">Global Level</a></li>
                             <li sec:authorize="hasAuthority('LIMIT_CORPORATE_CLASS')" class="sub_menu"><a href="/ops/limits/corporate/class">Class Level</a></li>
                             <li sec:authorize="hasAuthority('LIMIT_CORPORATE_ACCOUNT')" class="sub_menu"><a href="/ops/limits/corporate/account">Account Level</a></li>
 
@@ -112,7 +116,6 @@
                     </li>
                     <li sec:authorize="hasAuthority('LIMIT_RETAIL')"><a> Retail <span class="fa fa-chevron-down"></span></a>
                         <ul class="nav child_menu">
-                            <li sec:authorize="hasAuthority('LIMIT_RETAIL_GLOBAL')" class="sub_menu"><a href="/ops/limits/retail/global">Global Level</a></li>
                             <li sec:authorize="hasAuthority('LIMIT_RETAIL_CLASS')" class="sub_menu"><a href="/ops/limits/retail/class">Class Level</a></li>
                             <li sec:authorize="hasAuthority('LIMIT_RETAIL_ACCOUNT')" class="sub_menu"><a href="/ops/limits/retail/account">Account Level</a></li>
 

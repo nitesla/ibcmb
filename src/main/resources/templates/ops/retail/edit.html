@@ -15,8 +15,8 @@
                 <div class="clearfix"></div>
                 <div class="clearfix"></div>
 
-                <div th:replace="layout :: admin-menu"></div>
-                <div th:replace="layout :: menu-footer-adm"></div>
+                <div th:replace="layout :: ops-menu"></div>
+                <div th:replace="layout :: menu-footer-ops"></div>
 
             </div>
         </div>
@@ -44,7 +44,7 @@
 
                             <div class="x_content">
                                 <div class="ibox-content">
-                                    <form method="post" class="form-horizontal" th:action="@{/admin/retail/users/update}" th:object="${retailUser}">
+                                    <form method="post" class="form-horizontal" th:action="@{/ops/retail/users/update}" th:object="${retailUser}">
 
 
                                         <div class="form-group">
@@ -117,7 +117,7 @@
 <script>
 
     document.getElementById("cancel").onclick = function () {
-        location.href = "/admin/retail/users";}
+        location.href = "/ops/retail/users";}
 </script>
 
 </body>
