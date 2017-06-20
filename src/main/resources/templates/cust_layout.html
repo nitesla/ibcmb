@@ -148,46 +148,47 @@
 
 </header>
 
-    <div th:fragment="sidebar" class="sideba">
+    <div th:fragment="sidebar" class="sideba" style=" padding-top:20px;">
 
 
-        <div class="sidebar-b calende cal  ">
-            <div  class="alert  time" >
-                <span id="time_">
-                <script>
-                    setInterval(
-                        function()
+       <div class="sidebar-b calende cal  hidden-xs">
+            <div  class="alert  time">
+
+
+                 
+
+                <i class="fa fa-calendar " id='datepickerImage' onclick="show()" style="font-size:25px"></i>
+                      <span id='dp'></span> 
+
+                      <div id="time_" class="pull-right text-bold " style="font-weight:bold;color:#003056">
+                     
+                            <script>
+                                setInterval(
+                                    function()
+                                    {
+
+                                        var time_function = moment().format('Do MMMM YYYY, h:mm:ss a');
+                                        var holder = document.getElementById('time_');
+                                        holder.innerHTML = time_function;
+                                    },
+                                    1000) ;
+                            </script>
+                        </div>
+                      <style>
+                        #dp
                         {
-
-                            var time_function = moment().format('Do MMMM YYYY, h:mm:ss a');
-                            var holder = document.getElementById('time_');
-                            holder.innerHTML = time_function;
-                        },
-                        1000) ;
-
-//                    function showCal()
-//                    {
-//                        alert();
-//
-//                        $( function() {
-//                            $( "#datepicker" ).datepicker();
-//                        } );
-//                        alert();
-//                    }
-                </script>
-                </span>
-
-                <input type="text" id ='datepicker'/>
-
-
+                            display: none;
+                        }
+                      </style>
             </div>
-
             <!--<div  id="calendar" style="display: block; margin: 0px auto;" class=" calendar hidden-xs hidden-sm "></div>-->
        </div>
         <div class="sidebar- hidden-xs hidden-sm" >
             <img style="display: block; margin: 0px auto;" class="center" th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
         </div>
     </div>
+
+   
 
 <!-- footer content -->
 <footer th:fragment="footer">
@@ -309,17 +310,42 @@
         <!--});-->
 
     <!--</script>-->
-    <script>
-        $(document).ready(function(){
+    <script th:inline='javascript'>
+        /*<![CDATA[*/
+
+        $(document).ready(function()
+        {
             $('[data-toggle="tooltip"]').tooltip();
-        });
+                
+                $("#dp").datepicker({
+                // buttonImage: '@{~/customer/img/cmb_logo.png}',
+                 buttonText: "<i class='fa fa-calendar'></i>",
+                buttonImageOnly: true,
+                changeMonth: true,
+                showAnim: "slide" ,
+                changeYear: true,
+                showOn: 'both',
+            
+
+            
+     });
+
+
+     /*]]>*/
+
+        })
     </script>
+
     <script>
-        $( function() {
-            $( "#datepicker" ).datepicker(
-                { dateformat : 'dd/mm/yy'}
-            );
-        } );
+                    
+        function show()
+        {
+            var dp = document.getElementById('dp');
+            if (dp.style.display == "block")
+                 dp.style.display = "none";
+            else
+                 dp.style.display = "block";
+        }
     </script>
 </footer>
 <!-- /footer content -->

@@ -74,6 +74,11 @@ span.req
     margin-top: 0px;
 }
 
+.text-bold
+{
+    font-weight: bold;
+}
+
 /*#loader {*/
     /*position: absolute;*/
     /*left: 50%;*/
@@ -100,6 +105,11 @@ span.req
     width:100%;
     margin-bottom: 0px;
 
+}
+
+.time
+{
+    background: #ebecef;
 }
 
 /*#loa {*/
@@ -183,6 +193,11 @@ span.req
     width:65%;
 }
 
+.center
+{
+    margin:0px auto !important;
+}
+
 
  .no-bd-rad
     {
@@ -255,17 +270,17 @@ span.req
 .contact
 {
     position:relative !important;
-
+    
 
 }
 
-.contact:hover, .contact:visited
+.contact:hover, .contact:focus
 {
     background: #003056 !important;
 }
 
 
-.contact:hover ~ .contact-drop
+.contact:focus ~ .contact-drop
 {
     display: block;
 }
@@ -281,8 +296,8 @@ span.req
     position: absolute !important;
     left:0px !important;
     background-color: #e7e7e7 !important;
-    top: 140% !important;
-    //padding: 10px 5px 10px 5px;
+    top: 110% !important;
+    /*//padding: 10px 5px 10px 10px;*/
     display: none;
 }
 
@@ -696,13 +711,16 @@ body {
 .icon a{
     background-color: #868B8F;
     font-size: 30px;
-    padding: 5px 10px;
-    margin: 20px 15px 10px 15px;
+    padding:10px;
+    /*margin: 20px 15px 10px 15px;*/
 }
 
 .icon a i{
     /*font-size: 36px;*/
     color: #FFF;
+    padding:10px;
+    /*display: block;*/
+    text-align: center;
 
 }
 
@@ -775,11 +793,19 @@ body {
     max-width: 500px;
 
 }
+
+.alert
+{
+    margin-top: 1px !important;
+
+}
 .lists{
-    float: left;
-    margin: 0 20px 0 20px;
+    /*float: left;*/
+    /*margin: 0 20px 0 20px;*/
     font-size: 14px;
+    /*padding-left: 20px;*/
     text-align: left;
+    /*margin:0px auto !important;*/
 }
 
 .lists li{
@@ -1108,7 +1134,7 @@ button, input, optgroup, select, textarea {
 /*}*/
 .table tbody tr{
     background-color: #fff;
-    border-top: 2px solid #003056;
+    border-top: 2px solid grey;
 }
 .table th, td{
     padding: 15px;
