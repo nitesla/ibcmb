@@ -234,7 +234,7 @@ public class SettingController {
 
 
         RetailUser user = retailUserService.getUserByName(principal.getName());
-        String fullname=user.getFirstName()+' '+user.getLastName();
+        String fullname=user.getFirstName();
         String custemail=user.getEmail();
         String custId=user.getCustomerId();
         String acctNumber=request.getParameter("acctNumber");
