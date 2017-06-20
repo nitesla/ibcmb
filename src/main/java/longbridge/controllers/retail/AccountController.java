@@ -264,12 +264,6 @@ public class AccountController {
     return "redirect:/retail/dashboard";
     }
 
-
-
-
-//
-//
-//
     @GetMapping("/helloReport2/{account}")
     public ModelAndView getRpt2(ModelAndView modelAndView,@PathVariable Account account) {
 
