@@ -1,10 +1,9 @@
-package longbridge.controllers.admin;
+package longbridge.controllers.operations;
 
 import longbridge.dtos.RetailUserDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.PasswordException;
 import longbridge.forms.ChangePassword;
-import longbridge.models.RetailUser;
 import longbridge.security.FailedLoginService;
 import longbridge.services.RetailUserService;
 import org.slf4j.Logger;
@@ -31,8 +30,8 @@ import java.util.Locale;
  */
 
 @Controller
-@RequestMapping("/admin/retail/users")
-public class AdmRetailUserController {
+@RequestMapping("/ops/retail/users")
+public class OpsRetailUserController {
     @Autowired
     private RetailUserService retailUserService;
 
@@ -48,11 +47,11 @@ public class AdmRetailUserController {
     @PostMapping
     public String createUser(@ModelAttribute("retailUser") RetailUserDTO retailUser, BindingResult result, RedirectAttributes redirectAttributes) throws Exception{
         if(result.hasErrors()){
-            return "adm/retail/add";
+            return "/ops/retail/add";
         }
        // retailUserService.addUser(retailUser);
         redirectAttributes.addFlashAttribute("message","Retail user created successfully");
-        return "redirect:/admin/retail/users";
+        return "redirect:/ops/retail/users";
     }
 
 
@@ -64,14 +63,14 @@ public class AdmRetailUserController {
     public String editUser(@PathVariable Long userId, Model model) {
         RetailUserDTO retailUser = retailUserService.getUser(userId);
         model.addAttribute("retailUser", retailUser);
-        return "/adm/retail/edit";
+        return "/ops/retail/edit";
     }
 
 
 
     @GetMapping
     public String getAllRetailUsers(Model model){
-        return "adm/retail/view";
+        return "/ops/retail/view";
     }
 
     @GetMapping("/all")
@@ -108,11 +107,11 @@ public class AdmRetailUserController {
     @PostMapping("/update")
     public String UpdateUser(@ModelAttribute("retailUser") RetailUserDTO retailUser, BindingResult result, RedirectAttributes redirectAttributes) throws Exception{
        if(result.hasErrors()){
-           return "adm/retail/add";
+           return "/ops/retail/add";
        }
         retailUserService.updateUser(retailUser);
         redirectAttributes.addFlashAttribute("message", "Retail user updated successfully");
-        return "redirect:/admin/retail/users";
+        return "redirect:/ops/retail/users";
     }
 
 
@@ -125,7 +124,7 @@ public class AdmRetailUserController {
             logger.error("Error changing user activation status", ibe);
             redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
         }
-        return "redirect:/admin/retail/users";
+        return "redirect:/ops/retail/users";
     }
 
 
@@ -143,7 +142,7 @@ public class AdmRetailUserController {
 
         }
 
-        return "redirect:/admin/retail/users";
+        return "redirect:/ops/retail/users";
     }
 
     @GetMapping("/{id}/password/reset")
@@ -155,7 +154,7 @@ public class AdmRetailUserController {
             redirectAttributes.addAttribute("failure", pe.getMessage());
             logger.error("Error resetting password for retail user", pe);
         }
-        return "redirect:/admin/retail/users";
+        return "redirect:/ops/retail/users";
     }
 
     @GetMapping("/{userId}/delete")
@@ -163,7 +162,7 @@ public class AdmRetailUserController {
         retailUserService.deleteUser(userId);
         redirectAttributes.addFlashAttribute("message", "Retail user deleted successfully");
 
-        return "redirect:/admin/retail/users";
+        return "redirect:/ops/retail/users";
     }
 
     @GetMapping("/password")

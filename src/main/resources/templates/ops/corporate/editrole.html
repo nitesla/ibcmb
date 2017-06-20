@@ -15,8 +15,8 @@
                 <div class="clearfix"></div>
                 <div class="clearfix"></div>
 
-                <div th:replace="layout :: admin-menu"></div>
-                <div th:replace="layout :: menu-footer-adm"></div>
+                <div th:replace="layout :: ops-menu"></div>
+                <div th:replace="layout :: menu-footer-ops"></div>
 
             </div>
         </div>
@@ -44,7 +44,7 @@
                             </div>
 
                             <div class="x_content">
-                                <form method="post" th:action="@{/admin/corporates/roles/update}" class="form-horizontal"
+                                <form method="post" th:action="@{/ops/corporates/roles/update}" class="form-horizontal"
                                       th:object="${role}" id="form-save">
                                     <div class="panel panel-default">
 
@@ -165,11 +165,11 @@
     var corpId = [[${corporate.id}]];
     if(corpId!=null) {
         document.getElementById("cancel").onclick = function () {
-            location.href = "/admin/corporates/" + corpId + "/view";
+            location.href = "/ops/corporates/" + corpId + "/view";
         }
     }else{
         document.getElementById("cancel").onclick = function () {
-            location.href = "/admin/corporates/";
+            location.href = "/ops/corporates/";
         }
     }
 

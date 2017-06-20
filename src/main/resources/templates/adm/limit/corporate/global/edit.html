@@ -25,8 +25,8 @@
                 <div class="clearfix"></div>
                 <div class="clearfix"></div>
 
-                <div th:replace="layout :: ops-menu"></div>
-                <div th:replace="layout :: menu-footer-ops"></div>
+                <div th:replace="layout :: admin-menu"></div>
+                <div th:replace="layout :: menu-footer-adm"></div>
 
             </div>
         </div>
@@ -65,7 +65,7 @@
 
                             <div class="x_content">
 
-                                <form method="post" class="form-horizontal" th:action="@{/ops/limits/corporate/global/update}" th:object="${globalLimit}">
+                                <form method="post" class="form-horizontal" th:action="@{/admin/limits/corporate/global/update}" th:object="${globalLimit}">
                                     <div class="form-group">
                                         <label class="col-sm-2 control-label">Transfer Channel</label>
 
@@ -186,7 +186,7 @@
     } );
 
     document.getElementById("cancel").onclick = function () {
-        location.href = "/ops/limits/corporate/global";
+        location.href = "/admin/limits/corporate/global";
     }
 
 </script>

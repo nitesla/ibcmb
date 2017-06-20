@@ -10,7 +10,7 @@
             </div>
 
             <div class="x_content">
-                <form method="post" th:action="@{/admin/corporates}" class="form-horizontal"
+                <form method="post" th:action="@{/ops/corporates}" class="form-horizontal"
                       th:object="${corporate}" id="form-save">
                     <div class="panel panel-default">
                         <div class="panel-body">
@@ -70,7 +70,7 @@
     $(document)
         .ready(
             function() {
-                var url = /*[['/admin/corporates/'+${corporate.id}+'/users']]*/"/admin/corporates/${corporate.id}/users";
+                var url = /*[['/ops/corporates/'+${corporate.id}+'/users']]*/"/ops/corporates/${corporate.id}/users";
                 var table = $('#users').DataTable({
                     responsive : false,
                     "lengthMenu" : [ [ 5, 10 ], [ 5, 10 ] ],
