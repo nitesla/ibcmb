@@ -27,9 +27,11 @@ private PasswordPolicyService passwordPolicyService;
         String uri=httpServletRequest.getRequestURI();
 
 
+        System.out.println("Hello Interceptor");
 
         if (httpServletRequest.getSession().getAttribute("expired-password")!=null&& !(uri.equalsIgnoreCase("/admin/users/password/new")))
         {
+            System.out.println("expired password");
             ChangeDefaultPassword changePassword = new ChangeDefaultPassword();
 
             ModelAndView modelAndView = new ModelAndView("forwarded-view");

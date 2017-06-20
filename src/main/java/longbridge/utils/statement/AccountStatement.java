@@ -28,4 +28,12 @@ public class AccountStatement{
     public void setPaginatedAccountStatement(PaginatedAccountStatement paginatedAccountStatement) {
         this.paginatedAccountStatement = paginatedAccountStatement;
     }
+
+    @Override
+    public String toString() {
+        return "AccountStatement{" +
+                "accountStatementWithPaginationCustomData=" + accountStatementWithPaginationCustomData +
+                ", paginatedAccountStatement=" + paginatedAccountStatement +
+                '}';
+    }
 }

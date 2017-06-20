@@ -96,10 +96,11 @@ public class IntegrationServiceImpl implements IntegrationService {
             Map<String, String> params = new HashMap<>();
             params.put("accountNumber", accountNo);
             params.put("fromDate", formatter.format(fromDate));
+            params.put("solId",viewAccountDetails(accountNo).getSolId());
             if (toDate != null) params.put("toDate", formatter.format(toDate));
 
 
-            statement = template.getForObject(uri, AccountStatement.class, params);
+            statement = template.postForObject(uri,  params,AccountStatement.class);
 
 
         } catch (Exception e) {
@@ -257,7 +258,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 
     @Override
     public TransferDetails makeNapsTransfer(Naps naps) throws InternetBankingTransferException {
-        String uri = URI + "/naps";
+        String uri = URI + "/transfer/naps";
 
         try {
             TransferDetails details = template.getForObject(uri, TransferDetails.class, naps);
@@ -454,7 +455,7 @@ public class IntegrationServiceImpl implements IntegrationService {
             return details;
         } catch (Exception e) {
 
-            return new Rate();
+            return new Rate("","0","");
         }
 
 
@@ -481,7 +482,7 @@ public class IntegrationServiceImpl implements IntegrationService {
             e.printStackTrace();
             logger.error("Exception occurred {}", e);
             transRequest.setStatus("96");
-            transRequest.setStatusDescription("FAILED TO SEND A MAIL");
+            transRequest.setStatusDescription("TRANSACTION FAILED");
         }
 
         return transRequest;
