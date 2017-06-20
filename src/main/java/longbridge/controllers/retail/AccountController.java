@@ -253,7 +253,8 @@ public class AccountController {
 //        Account account=accountRepo.findFirstAccountByCustomerId(retailUser.getCustomerId());
 
 //        SimpleDateFormat format=new SimpleDateFormat("DD/MM/YYYY")
-        AccountStatement accountStatement = integrationService.getAccountStatements(account.getAccountId(), new Date(), new Date());
+
+        AccountStatement accountStatement = integrationService.getAccountStatements(account.getAccountNumber(), new Date(), new Date());
         if (accountStatement != null || !(accountStatement.equals(""))){
 
             List<TransactionDetails> transactionList=accountStatement.getPaginatedAccountStatement().getTransactionDetails();
