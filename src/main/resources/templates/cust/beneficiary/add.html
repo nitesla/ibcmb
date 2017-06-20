@@ -73,12 +73,8 @@
                             <input type="hidden" th:value="foreign" class="form-control"/>
                             <div class="form-group">
                                 <label>Beneficiary Bank</label>
-                                <span class="req"></span>
-                                <select th:field="*{beneficiaryBank}" class="form-control">
-                                    <option th:each="bank : ${foreignBanks}" th:value="${bank.institutionCode}"
-                                            th:text="${bank.institutionName}"></option>
-                                </select>
-
+                                <span class="req"></span><input type="text" class="form-control"
+                                                                placeholder="Beneficiary Bank" th:field="*{beneficiaryBank}"/>
                             </div>
                             <div class="form-group">
 

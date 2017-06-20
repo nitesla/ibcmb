@@ -166,7 +166,7 @@ public class User extends AbstractEntity implements Cloneable{
 
     @Override
     public String toString() {
-        return "User{" +
+        return "User{" +super.toString()+'\''+
                 "userName='" + userName + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +

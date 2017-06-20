@@ -270,6 +270,43 @@ public class AdminUserServiceImpl implements AdminUserService {
         }
     }
 
+//    @Override
+//    @Transactional
+////    @Verifiable(operation="Updating an Existing User")
+//    public String updateUser(AdminUserDTO user) throws InternetBankingException {
+//
+//        try {
+//            AdminUser adminUser = adminUserRepo.findById(user.getId());
+//
+//            adminUser.setId(user.getId());
+//            adminUser.setVersion(user.getVersion());
+//            adminUser.setFirstName(user.getFirstName());
+//            adminUser.setLastName(user.getLastName());
+//            adminUser.setUserName(user.getUserName());
+//            adminUser.setEmail(user.getEmail());
+//            adminUser.setPhoneNumber(user.getPhoneNumber());
+//            Role role = new Role();
+//            role.setId(Long.parseLong(user.getRoleId()));
+//            adminUser.setRole(role);
+//
+////            adminUserRepo.save(adminUser);
+//
+//            AdminUser originalUser = adminUserRepo.findOne(user.getId());
+//
+//            makerCheckerSave(originalUser,adminUser);
+//
+//            logger.info("Admin user {} updated", adminUser.getUserName());
+//            return messageSource.getMessage("user.update.success", null, locale);
+//        } catch (Exception e) {
+//            throw new InternetBankingException(messageSource.getMessage("user.update.failure", null, locale), e);
+//        }
+//    }
+
+    public  String verifyRequest(Long verId) throws VerificationException{
+        verificationService.verify(verId);
+        return "Verified successful";
+    }
+
     @Override
     @Transactional
     @Verifiable(operation="Update_Admin",description="Update a Admin User")
@@ -278,65 +315,31 @@ public class AdminUserServiceImpl implements AdminUserService {
 
         try {
             AdminUser adminUser = adminUserRepo.findById(user.getId());
+            AdminUser modifiedEntity = (AdminUser)adminUser.clone();
+            modifiedEntity.setId(user.getId());
+            modifiedEntity.setVersion(user.getVersion());
+            modifiedEntity.setFirstName(user.getFirstName());
+            modifiedEntity.setLastName(user.getLastName());
+            modifiedEntity.setUserName(user.getUserName());
+            modifiedEntity.setEmail(user.getEmail());
+            modifiedEntity.setPhoneNumber(user.getPhoneNumber());
+            Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
+            modifiedEntity.setRole(role);
 
-            adminUser.setId(user.getId());
-            adminUser.setVersion(user.getVersion());
-            adminUser.setFirstName(user.getFirstName());
-            adminUser.setLastName(user.getLastName());
-            adminUser.setUserName(user.getUserName());
-            adminUser.setEmail(user.getEmail());
-            adminUser.setPhoneNumber(user.getPhoneNumber());
-            Role role = new Role();
-            role.setId(Long.parseLong(user.getRoleId()));
-            adminUser.setRole(role);
-            adminUserRepo.save(adminUser);
+//            adminUserRepo.save(adminUser);
 
+            makerCheckerSave(originalEntity,modifiedEntity);
 
-            logger.info("Admin user {} updated", adminUser.getUserName());
+            logger.info("Admin user {} updated", originalEntity.getUserName());
             return messageSource.getMessage("user.update.success", null, locale);
-        } catch (Exception e) {
+        }
+        catch (DuplicateObjectException e) {
+            throw new DuplicateObjectException(e.getMessage());
+        }
+        catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("user.update.failure", null, locale), e);
         }
     }
-
-    public  String verifyRequest(Long verId) throws VerificationException{
-        verificationService.verify(verId);
-        return "Verified successful";
-    }
-
-//    @Override
-//    @Transactional
-////    @Verifiable(operation="Updating an Existing User")
-//    public String updateUser(AdminUserDTO user) throws InternetBankingException {
-//
-//        try {
-//            AdminUser originalEntity = adminUserRepo.findById(user.getId());
-//            AdminUser modifiedEntity = (AdminUser)originalEntity.clone();
-//            modifiedEntity.setId(user.getId());
-//            modifiedEntity.setVersion(user.getVersion());
-//            modifiedEntity.setFirstName(user.getFirstName());
-//            modifiedEntity.setLastName(user.getLastName());
-//            modifiedEntity.setUserName(user.getUserName());
-//            modifiedEntity.setEmail(user.getEmail());
-//            modifiedEntity.setPhoneNumber(user.getPhoneNumber());
-//            Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
-//            modifiedEntity.setRole(role);
-//
-////            adminUserRepo.save(adminUser);
-//
-//
-//            makerCheckerSave(originalEntity,modifiedEntity);
-//
-//            logger.info("Admin user {} updated", originalEntity.getUserName());
-//            return messageSource.getMessage("user.update.success", null, locale);
-//        }
-//        catch (DuplicateObjectException e) {
-//            throw new DuplicateObjectException(e.getMessage());
-//        }
-//        catch (Exception e) {
-//            throw new InternetBankingException(messageSource.getMessage("user.update.failure", null, locale), e);
-//        }
-//    }
 
 
     @Override

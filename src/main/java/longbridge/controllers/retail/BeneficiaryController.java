@@ -79,7 +79,7 @@ public class BeneficiaryController {
 
         Iterable<InternationalBeneficiary> intBeneficiary = internationalBeneficiaryService.getInternationalBeneficiaries(retailUser);
         for (InternationalBeneficiary intBenef : intBeneficiary) {
-            intBenef.setBeneficiaryBank(financialInstitutionService.getFinancialInstitutionByCode(intBenef.getBeneficiaryBank()).getInstitutionName());
+            intBenef.setBeneficiaryBank(intBenef.getBeneficiaryBank());
         }
         model.addAttribute("intBen", intBeneficiary);
         return "cust/beneficiary/view";
@@ -89,7 +89,6 @@ public class BeneficiaryController {
     public String addBeneficiary(Model model) {
         model.addAttribute("localBeneficiaryDTO", new LocalBeneficiaryDTO());
         model.addAttribute("internationalBeneficiaryDTO", new InternationalBeneficiaryDTO());
-        model.addAttribute("foreignBanks", financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.FOREIGN));
         model.addAttribute("foreignCurrencyCodes", codeService.getCodesByType("CURRENCY"));
         return "cust/beneficiary/add";
     }
@@ -98,7 +97,6 @@ public class BeneficiaryController {
     public String createLocalBeneficiary(@Valid LocalBeneficiaryDTO localBeneficiaryDTO, BindingResult result, Principal principal, Model model, RedirectAttributes redirectAttributes, Locale locale) {
         if (result.hasErrors()) {
             model.addAttribute("internationalBeneficiaryDTO", new InternationalBeneficiaryDTO());
-            model.addAttribute("foreignBanks", financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.FOREIGN));
 
             return "cust/beneficiary/add";
         }
@@ -131,7 +129,6 @@ public class BeneficiaryController {
 
             model.addAttribute("localBeneficiaryDTO", new LocalBeneficiaryDTO());
             model.addAttribute("internationalBeneficiaryDTO", internationalBeneficiaryDTO);
-            model.addAttribute("foreignBanks", financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.FOREIGN));
             return "cust/beneficiary/add";
         }
 

@@ -20,7 +20,7 @@
 
                     <div class="col-md">
                         <br/>
-                        <div class="form-group col-md-6 col-sm-6">
+                       <!-- <div class="form-group col-md-6 col-sm-6">
                             <label>Date Range</label>
                             <div class="input-daterange input-group" id="date-range">
                                 <input type="text" class="form-control" name="start" placeholder="Start date" />
@@ -37,16 +37,65 @@
                         </div>
 <div class="row-spacing col-md-12">
                         <a th:href="@{'#'}" class="btn pull-right"><i class="fa fa-search" style="color: white" ></i>&nbsp; find</a>
-</div>
+</div>-->
 
 <!--<p>
-                        <a th:href="@{'#'}" class="btn bt-select bt-link-act" disabled="disabled"><i class="fa fa-print" style="color: white" ></i>&nbsp; print</a>
-                        <a th:href="@{'#'}" class="btn " disabled="disabled"><i class="fa fa-envelope" style="color: white" ></i>&nbsp; send mail</a>
-</p>-->
+                        <a th:href="@{/retail/account/print/statement}" class="btn bt-select bt-link-act"> &lt;!&ndash;disabled="disabled"&ndash;&gt;<i class="fa fa-print" style="color: white" ></i>&nbsp; print</a>
+                        <a th:href="@{'#'}" class="btn "> &lt;!&ndash;disabled="disabled"&ndash;&gt;<i class="fa fa-envelope" style="color: white" ></i>&nbsp; send mail</a>
+</p>--><div class="row">
+                        <div class="col-sm-4 text-left">
+                            <h2>CUSTOMER STATEMENT</h2>
+                        </div>
+                        <div class="col-sm-6 text-right">
+                            <h4>Account Summary</h4>
+
+                        </div>
+                    </div>
+                        <br/>
+                        <div class="row">
+                            <div class="col-sm-4 text-left">
+                                <h5>Customer:</h5>
+                                <h4 class="text-navy">ADE DAYO</h4>
+
+                                <h5>Address:</h5>
+                                <address>
+                                    <strong>Longbridge Tech.</strong><br/>
+                                    106 Jorg Avenu, 600/10<br/>
+                                    Chicago, VT 32456<br/>
+                                </address>
+                                <h5>Customer No:</h5>
+                                <h5>Currency:</h5>
+
+                            </div>
+
+
+
+                            <div class="col-sm-6 text-right">
+
+                                <h5>Account No:</h5>
+                                <h4 class="text-navy"></h4>
+                                <h5>Opening Balance:</h5>
+                                <h4 class="text-navy"></h4>
+                                <h5>Total Debit:</h5>
+                                <h4 class="text-navy"></h4>
+                                <h5>Total Credit:</h5>
+                                <h4 class="text-navy"></h4>
+                                <h5>Closing Balance:</h5>
+                                <h4 class="text-navy"></h4>
+                                <h5>Debit Count:</h5>
+                                <h4 class="text-navy"></h4>
+                                <h5>Credit Count:</h5>
+                                <h4 class="text-navy"></h4>
+
+
+                            </div>
+                        </div>
+                        <br/>
+                        <h2>TRANSACTION DETAILS</h2>
                         <table class="table" id="users">
                             <thead>
                             <tr>
-                                <th>Amount</th>
+                                <th>Post Date</th>
                                 <th>Currency Code</th>
                                 <th>Post Date</th>
                                 <th>Transaction Particulars</th>
@@ -56,7 +105,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr th:each="list : ${accountStatement}">
+                            <tr th:each="list : ${accountStatement.transactionList}">
                                 <td  th:text="${list.amount}"></td>
                                 <td  th:text="${list.currencyCode}"></td>
                                 <td th:text="${list.postDate}"></td>
@@ -84,65 +133,20 @@
 <script th:inline="javascript">
     /*<![CDATA[*/
     $(document).ready(function() {
-        var url = "/retail/account/all";
+
         var table = $('#users').DataTable({
             select: true,
             responsive: true,
-            "lengthMenu": [[5, 10], [5, 10]],
+            "lengthMenu": [[5, 10,20], [5, 10,20]],
             "pagingType": "simple_numbers",
             "searching": false,
             "paging": true,
-            "serverSide": true,
-            "ajax": url,
-            "dom": 'T<"clear">frtlp',
-            "columns": [
-                {"data": "transactionNarration"},
-                {"data": "postingDate"},
-                {"data": "valueDate"},
-                {"data": "debitCredit"},
-                {"data": "transRefId"},
-                {"data": "accountBalance"}
-            ]
-        });
-
-        table.on('select', function() {
-            if (table.rows({
-                        selected : true
-                    }).indexes().length === 0) {
-                $('.bt-select').attr("disabled", true);
-            } else {
-                $('.bt-select').removeAttr("disabled");
-            }
-
+            "dom": 'T<"clear">frtlp'});
 
         });
 
-        table.on('deselect', function() {
-            if (table.rows({
-                        selected : true
-                    }).indexes().length === 0) {
-                $('.bt-select').attr("disabled", true);
-            } else {
-                $('.bt-select').removeAttr("disabled");
-            }
-        });
-    });
 
-    $("a.bt-link-act").on("click", function(e) {
-        e.preventDefault();
-        var link = $(e.currentTarget);
-        if($(link).attr("disabled")){
-            return;
-        }
 
-        var dt = $('#users').DataTable();
-        var id = $(dt.row({
-            selected: true
-        }).node()).attr("id");
-        var ooo = link.attr("href").replace("index",id);
-        window.location.assign(ooo);
-
-    } );
 
     /*]]>*/
 </script>
