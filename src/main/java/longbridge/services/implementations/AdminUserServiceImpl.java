@@ -15,6 +15,7 @@ import longbridge.services.*;
 import java.util.*;
 
 import longbridge.utils.DateFormatter;
+import longbridge.utils.HostMaster;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -140,10 +141,10 @@ public class AdminUserServiceImpl implements AdminUserService {
             Role role = new Role();
             role.setId(Long.parseLong(user.getRoleId()));
             adminUser.setRole(role);
-//            creatUserOnEntrust(adminUser);
-//            adminUserRepo.save(adminUser);
+            creatUserOnEntrust(adminUser);
+            adminUserRepo.save(adminUser);
 
-            makerCheckerSave(adminUser,adminUser);
+//            makerCheckerSave(adminUser,adminUser);
 
             logger.info("New admin user {} created", adminUser.getUserName());
             return messageSource.getMessage("user.add.success", null, locale);
@@ -233,6 +234,8 @@ public class AdminUserServiceImpl implements AdminUserService {
                         .build();
                 mailService.send(email);
 
+                logger.info("Logged in user "+HostMaster.getLoggedInUser());
+
             }
 
             logger.info("Admin user {} status changed from {} to {}", user.getUserName(), oldStatus, newStatus);
@@ -296,45 +299,6 @@ public class AdminUserServiceImpl implements AdminUserService {
         }
     }
 
-//    public  String verifyRequest(Long verId) throws VerificationException{
-//        verificationService.verify(verId);
-//        return "Verified successful";
-//    }
-
-//    @Override
-//    @Transactional
-////    @Verifiable(operation="Updating an Existing User")
-//    public String updateUser(AdminUserDTO user) throws InternetBankingException {
-//
-//        try {
-//            AdminUser originalEntity = adminUserRepo.findById(user.getId());
-//            AdminUser modifiedEntity = (AdminUser)originalEntity.clone();
-//            modifiedEntity.setId(user.getId());
-//            modifiedEntity.setVersion(user.getVersion());
-//            modifiedEntity.setFirstName(user.getFirstName());
-//            modifiedEntity.setLastName(user.getLastName());
-//            modifiedEntity.setUserName(user.getUserName());
-//            modifiedEntity.setEmail(user.getEmail());
-//            modifiedEntity.setPhoneNumber(user.getPhoneNumber());
-//            Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
-//            modifiedEntity.setRole(role);
-//
-////            adminUserRepo.save(adminUser);
-//
-//
-//            makerCheckerSave(originalEntity,modifiedEntity);
-//
-//            logger.info("Admin user {} updated", originalEntity.getUserName());
-//            return messageSource.getMessage("user.update.success", null, locale);
-//        }
-//        catch (DuplicateObjectException e) {
-//            throw new DuplicateObjectException(e.getMessage());
-//        }
-//        catch (Exception e) {
-//            throw new InternetBankingException(messageSource.getMessage("user.update.failure", null, locale), e);
-//        }
-//    }
-
     public  String verifyRequest(Long verId) throws VerificationException{
         verificationService.verify(verId);
         return "Verified successful";
@@ -360,6 +324,7 @@ public class AdminUserServiceImpl implements AdminUserService {
 //
 ////            adminUserRepo.save(adminUser);
 //
+//
 //            makerCheckerSave(originalEntity,modifiedEntity);
 //
 //            logger.info("Admin user {} updated", originalEntity.getUserName());
@@ -371,8 +336,12 @@ public class AdminUserServiceImpl implements AdminUserService {
 //        catch (Exception e) {
 //            throw new InternetBankingException(messageSource.getMessage("user.update.failure", null, locale), e);
 //        }
-    //}
+//    }
 
+//    public  String verifyRequest(Long verId) throws VerificationException{
+//        verificationService.verify(verId);
+//        return "Verified successful";
+//    }
 
     @Override
     @Transactional
