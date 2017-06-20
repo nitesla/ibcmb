@@ -296,10 +296,10 @@ public class AdminUserServiceImpl implements AdminUserService {
         }
     }
 
-    public  String verifyRequest(Long verId) throws VerificationException{
-        verificationService.verify(verId);
-        return "Verified successful";
-    }
+//    public  String verifyRequest(Long verId) throws VerificationException{
+//        verificationService.verify(verId);
+//        return "Verified successful";
+//    }
 
 //    @Override
 //    @Transactional
@@ -339,40 +339,6 @@ public class AdminUserServiceImpl implements AdminUserService {
         verificationService.verify(verId);
         return "Verified successful";
     }
-
-    @Override
-    @Transactional
-//    @Verifiable(operation="Updating an Existing User")
-    public String updateUser(AdminUserDTO user) throws InternetBankingException {
-
-        try {
-            AdminUser originalEntity = adminUserRepo.findById(user.getId());
-            AdminUser modifiedEntity = (AdminUser)originalEntity.clone();
-            modifiedEntity.setId(user.getId());
-            modifiedEntity.setVersion(user.getVersion());
-            modifiedEntity.setFirstName(user.getFirstName());
-            modifiedEntity.setLastName(user.getLastName());
-            modifiedEntity.setUserName(user.getUserName());
-            modifiedEntity.setEmail(user.getEmail());
-            modifiedEntity.setPhoneNumber(user.getPhoneNumber());
-            Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
-            modifiedEntity.setRole(role);
-
-//            adminUserRepo.save(adminUser);
-
-            makerCheckerSave(originalEntity,modifiedEntity);
-
-            logger.info("Admin user {} updated", originalEntity.getUserName());
-            return messageSource.getMessage("user.update.success", null, locale);
-        }
-        catch (DuplicateObjectException e) {
-            throw new DuplicateObjectException(e.getMessage());
-        }
-        catch (Exception e) {
-            throw new InternetBankingException(messageSource.getMessage("user.update.failure", null, locale), e);
-        }
-    }
-
 
     @Override
     @Transactional
