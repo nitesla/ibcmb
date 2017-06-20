@@ -3,6 +3,7 @@ package longbridge.services;
 import longbridge.dtos.AdminUserDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.PasswordException;
+import longbridge.exception.VerificationException;
 import longbridge.forms.ChangeDefaultPassword;
 import longbridge.forms.ChangePassword;
 import longbridge.models.AdminUser;
@@ -85,6 +86,8 @@ public interface AdminUserService {
      */
     @PreAuthorize("hasAuthority('UPDATE_ADMIN_USER')")
     String updateUser(AdminUserDTO user) throws InternetBankingException;
+
+    String verifyRequest(Long verId) throws VerificationException;
 
     /**
      * Resets the password of the specified Admin user

@@ -11,16 +11,16 @@
 <section class="content-wrapper">
     <div class="containe">
         <div class="row">
-            <div class="col-md-8 col-sm-8">
+            <div class="col-md-9 col-sm-9">
                 <h5 class="page_header"> Direct Debit</h5>
                 <a th:href="@{/retail/directdebit/new}" class="pull-right">Add New Direct Debit</a>
             </div>
         </div>
         <div class="row">
-            <div class="col-md-8 content-bg">
-                <div class="row spacing">
+            <div class="col-md-9 content-bg">
+
                     <div class="col-md-10">
-                        <table class="table">
+                        <table class="table table-responsive">
                             <thead>
                                 <td>Beneficiary</td>
                                 <td>Debit Account</td>
@@ -38,9 +38,11 @@
                             </tbody>
                         </table>
                     </div>
-                </div>
+
             </div>
-            <div th:replace="cust_layout :: sidebar" class="col-md-3 sidebar">
+            <div class="col-md-3 pull-right " >
+                <div th:replace="cust_layout :: sidebar" class="" >
+                </div>
             </div>
         </div>
     </div>

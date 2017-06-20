@@ -114,14 +114,14 @@
                     <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit</p>
                     <br/><br/>
 
-                    <div class="dropdown">
+                    <div class="dropdown margin-bottom">
                         <button class="dropbtn">LOGIN</button>
                         <div class="dropdown-content">
                             <a th:href="@{/login/retail}"> INDIVIDUAL </a>
                             <a th:href="@{/login/corporate}"> CORPORATE </a>
                         </div>
                     </div>
-                    <div class="dropdown">
+                    <div class="dropdown margin-bottom">
                         <form action="/register">
                             <button class="dropbtn" data-toggle="tooltip" data-placement="bottom" title="Join our internet banking platform">REGISTER NOW</button>
                         </form>
@@ -221,7 +221,6 @@
 
                     </div>
                 </div>
-v
                 <div class="margin-bottom"></div>
                 <div>
                     <div th:if="${message}" class="alert alert-success alert-dismissable">
@@ -233,7 +232,9 @@ v
                         <strong>We are Sorry!</strong> Email could not be sent.
                     </div>
                     <p>Enter details below</p>
-                    <form method="post" th:action="@{/home#contact_us}" th:object="${message}" class="contact-form">
+
+                    <!--<form action="/contact" method="post" class="contact-form">-->
+                    <form action="/contact" method="post" class="contact-form">
 
                             <div class="form-group">
                                 <input type="text" name="name" class="form-control" placeholder="Name" required="required"/>
@@ -247,6 +248,7 @@ v
                         <input type="submit" value="Submit" class="btn btn-primary btn-md form-control" />
 
                     </form>
+
                 </div>
             </div>
         </div>
