@@ -1,5 +1,6 @@
 package longbridge.services.implementations;
 
+import longbridge.api.AccountDetails;
 import longbridge.dtos.SettingDTO;
 import longbridge.dtos.TransferRequestDTO;
 import longbridge.exception.InternetBankingTransferException;
@@ -63,7 +64,6 @@ public class TransferServiceImpl implements TransferService {
     }
 
 
-
     public TransferRequestDTO makeTransfer(TransferRequestDTO transferRequestDTO) throws InternetBankingTransferException {
         validateTransfer(transferRequestDTO);
         logger.trace("Transfer details valid {}", transferRequestDTO);
@@ -73,8 +73,8 @@ public class TransferServiceImpl implements TransferService {
             logger.trace("params {}", transRequest);
             saveTransfer(convertEntityToDTO(transRequest));
 
-            if (transRequest.getStatus() != null){
-                if ( transRequest.getStatus().equalsIgnoreCase("000") || transRequest.getStatus().equalsIgnoreCase("00"))
+            if (transRequest.getStatus() != null) {
+                if (transRequest.getStatus().equalsIgnoreCase("000") || transRequest.getStatus().equalsIgnoreCase("00"))
                     return convertEntityToDTO(transRequest);
 
                 throw new InternetBankingTransferException(transRequest.getStatusDescription());
@@ -206,17 +206,29 @@ public class TransferServiceImpl implements TransferService {
 
     private void validateAccounts(TransferRequestDTO dto) throws InternetBankingTransferException {
 
-        if (!StringUtils.isNumeric(dto.getAmount().toString()) || dto.getAmount().compareTo(new BigDecimal(0))==0)
+        String bvn = integrationService.viewCustomerDetails(dto.getCustomerAccountNumber()).getBvn();
+        if (bvn == null || bvn.isEmpty() || bvn.equalsIgnoreCase(""))
+            throw new InternetBankingTransferException(TransferExceptions.NO_BVN.toString());
+
+
+        if (!integrationService.viewAccountDetails(dto.getCustomerAccountNumber()).getAcctStatus().equalsIgnoreCase("A"))
+            throw new InternetBankingTransferException(TransferExceptions.INVALID_ACCOUNT.toString());
+
+
+        if (!StringUtils.isNumeric(dto.getAmount().toString()) || dto.getAmount().compareTo(new BigDecimal(0)) == 0)
             throw new InternetBankingTransferException(TransferExceptions.INVALID_AMOUNT.toString());
 
 
-
         if (dto.getTransferType().equals(TransferType.OWN_ACCOUNT_TRANSFER) || dto.getTransferType().equals(TransferType.CORONATION_BANK_TRANSFER)) {
-            if (integrationService.viewAccountDetails(dto.getCustomerAccountNumber()) == null)
+            AccountDetails sourceAccount = integrationService.viewAccountDetails(dto.getCustomerAccountNumber());
+            AccountDetails destAccount = integrationService.viewAccountDetails(dto.getBeneficiaryAccountNumber());
+            if (sourceAccount == null)
                 throw new InternetBankingTransferException(TransferExceptions.INVALID_ACCOUNT.toString());
-            if (integrationService.viewAccountDetails(dto.getBeneficiaryAccountNumber()) == null)
+            if (destAccount == null)
                 throw new InternetBankingTransferException(TransferExceptions.INVALID_BENEFICIARY.toString());
-
+            if (sourceAccount.getAcctCrncyCode().equalsIgnoreCase("NGN") && !destAccount.getAcctCrncyCode().equalsIgnoreCase("NGN"))
+                ;
+            throw new InternetBankingTransferException(TransferExceptions.NOT_ALLOWED.toString());
 
         }
         if (dto.getTransferType().equals(TransferType.INTER_BANK_TRANSFER)) {

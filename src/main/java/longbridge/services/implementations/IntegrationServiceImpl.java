@@ -86,6 +86,18 @@ public class IntegrationServiceImpl implements IntegrationService {
     }
 
     @Override
+    public List<ExchangeRate> getExchangeRate() {
+        try {
+
+            String uri = URI + "/forex";
+            return Arrays.stream(template.getForObject(uri, ExchangeRate[].class)).collect(Collectors.toList());
+        } catch (Exception e) {
+            logger.error("Exception occurred {}", e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+
+    @Override
     public AccountStatement getAccountStatements(String accountNo, Date fromDate, Date toDate) {
         AccountStatement statement = new AccountStatement();
         try {

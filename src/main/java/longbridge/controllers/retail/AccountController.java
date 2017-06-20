@@ -1,7 +1,5 @@
 package longbridge.controllers.retail;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import longbridge.api.AccountDetails;
 import longbridge.dtos.AccountDTO;
 import longbridge.exception.InternetBankingException;
@@ -15,8 +13,8 @@ import longbridge.services.AccountService;
 import longbridge.services.IntegrationService;
 import longbridge.services.RetailUserService;
 import longbridge.services.TransferService;
-
 import longbridge.utils.DateFormatter;
+
 import longbridge.utils.statement.AccountBalance;
 import longbridge.utils.statement.AccountStatement;
 import longbridge.utils.statement.PaginatedAccountStatement;

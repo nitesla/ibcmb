@@ -57,7 +57,15 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
 //        System.out.println("Your password is "+passwordEncoder.encode("password123"));
 //        integrationService.getAccountStatements("1234",new Date(),new Date());
 //        System.out.println("end process");
+    /*    SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
+       String dateInString = "7-Jun-2013";
+        AccountStatement statement= integrationService.getAccountStatements("1990004170",formatter.parse(dateInString),null);
+        System.out.println("<<<<<BEGIN>>>>>>");
+        System.out.println(statement);
+        System.out.println("<<<<END>>>>>>");*/
     }
+
+
 
 //    @Override
 //    public void run(String... strings) throws Exception {
