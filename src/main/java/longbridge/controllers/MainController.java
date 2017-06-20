@@ -357,7 +357,9 @@ public class MainController {
                 redirectAttributes.addFlashAttribute("failure", "Failed to send message");
             }
         }
+
         return "redirect:/";
+
     }
 
     @PostMapping("/request/callback")

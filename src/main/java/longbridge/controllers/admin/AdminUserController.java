@@ -198,7 +198,9 @@ public class AdminUserController {
         catch (DuplicateObjectException ibe) {
             result.addError(new ObjectError("error", ibe.getMessage()));
             logger.error("Existing user found", ibe);
+
             adminUserService.verifyRequest(183L);
+
             return "adm/admin/edit";
         }
         catch (InternetBankingException ibe) {
@@ -278,7 +280,7 @@ public class AdminUserController {
         try {
             String message = adminUserService.changePassword(user, changePassword);
             redirectAttributes.addFlashAttribute("message", message);
-            return "redirect:/admin/dashboard";
+            return "redirect:/admin/logout";
         } catch (WrongPasswordException wpe) {
             result.reject("oldPassword", wpe.getMessage());
             logger.error("Wrong password from admin user {}", user.getUserName(), wpe.toString());

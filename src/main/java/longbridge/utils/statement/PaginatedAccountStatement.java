@@ -61,4 +61,16 @@ public class PaginatedAccountStatement {
     public void setHasMoreData(String hasMoreData) {
         this.hasMoreData = hasMoreData;
     }
+
+    @Override
+    public String toString() {
+        return "PaginatedAccountStatement{" +
+                "transactionDetails=" + transactionDetails +
+                ", acctBal=" + acctBal +
+                ", field125='" + field125 + '\'' +
+                ", field126='" + field126 + '\'' +
+                ", field127='" + field127 + '\'' +
+                ", hasMoreData='" + hasMoreData + '\'' +
+                '}';
+    }
 }

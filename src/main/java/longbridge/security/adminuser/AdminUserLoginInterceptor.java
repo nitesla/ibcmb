@@ -19,19 +19,19 @@ import javax.servlet.http.HttpServletResponse;
  */
 @Component
 public class AdminUserLoginInterceptor extends HandlerInterceptorAdapter {
-@Autowired
-private PasswordPolicyService passwordPolicyService;
+    @Autowired
+    private PasswordPolicyService passwordPolicyService;
+
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) throws Exception {
 
-        String uri=httpServletRequest.getRequestURI();
+        String uri = httpServletRequest.getRequestURI();
 
 
-        System.out.println("Hello Interceptor");
 
-        if (httpServletRequest.getSession().getAttribute("expired-password")!=null&& !(uri.equalsIgnoreCase("/admin/users/password/new")))
-        {
-            System.out.println("expired password");
+
+        if (httpServletRequest.getSession().getAttribute("expired-password") != null && !(uri.equalsIgnoreCase("/admin/users/password/new"))) {
+
             ChangeDefaultPassword changePassword = new ChangeDefaultPassword();
 
             ModelAndView modelAndView = new ModelAndView("forwarded-view");
@@ -41,8 +41,7 @@ private PasswordPolicyService passwordPolicyService;
             modelAndView.setViewName("/adm/admin/new-pword");
             throw new ModelAndViewDefiningException(modelAndView);
         }
-        if (httpServletRequest.getSession().getAttribute("2FA")!=null&& !(uri.equalsIgnoreCase("/admin/token")))
-        {
+        if (httpServletRequest.getSession().getAttribute("2FA") != null && !(uri.equalsIgnoreCase("/admin/token"))) {
 
             ModelAndView modelAndView = new ModelAndView("forwarded-view");
 
@@ -51,21 +50,11 @@ private PasswordPolicyService passwordPolicyService;
         }
 
 
-
-
         return true;
     }
 
     @Override
     public void postHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o, ModelAndView modelAndView) throws Exception {
-
-
-
-
-
-
-
-
 
 
     }
