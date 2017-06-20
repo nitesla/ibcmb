@@ -59,7 +59,7 @@ public class VerificationController {
         	return "Verification has a dependency";
         }
         
-        verificationService.verify(verification);
+        verificationService.verify(id);
 
 		return "adm/admin/verification/confirm";
 	}
@@ -78,7 +78,7 @@ public class VerificationController {
         	return "Verification has a dependency";
         }
         
-        verificationService.verify(verification);
+        verificationService.verify(verificationId);
 		return "adm/admin/verification/decline";
 	}
 

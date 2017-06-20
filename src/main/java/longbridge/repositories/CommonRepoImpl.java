@@ -44,24 +44,21 @@ public class CommonRepoImpl<T extends AbstractEntity, ID extends Serializable> e
 //    <S extends T> Iterable<S> save(Iterable<S> var1);
 
 
-    public <T extends SerializableEntity<T>> String makerCheckerSave(boolean isMakerChecker, T originalEntity, T entity) throws JsonProcessingException, VerificationException {
+    public <T extends SerializableEntity<T>> String makerCheckerSave(T originalEntity, T entity) throws JsonProcessingException, VerificationException {
 
         AbstractEntity originalEntity1 = (AbstractEntity) (originalEntity);
 
         if (originalEntity1.getId() == null) {
-            if (isMakerChecker) {
-
                 String message = verificationService.addNewVerificationRequest(entity);
                 return message;
-            }
+
         } else {
-            if (isMakerChecker) {
+
                 String message = verificationService.addModifyVerificationRequest(originalEntity, entity);
                 return message;
-            }
+
         }
 
-        return null;
 
     }
 

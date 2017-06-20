@@ -21,9 +21,18 @@ public class TransferErrorService {
     private LocaleResolver localeResolver;
     public String getMessage(InternetBankingTransferException exception, HttpServletRequest request){
         final Locale locale = localeResolver.resolveLocale(request);
-        String errorMessage = messages.getMessage("transfer.add.failure", null, locale);
+       // String errorMessage = messages.getMessage("transfer.api.failure", null, locale) ;
 
-        if (exception.getMessage().equalsIgnoreCase(TransferExceptions.BALANCE.toString())) {
+
+
+
+
+
+
+        String errorMessage ;
+
+       /* if (exception.getMessage().equalsIgnoreCase(TransferExceptions.BALANCE.toString()))
+        {
             errorMessage = messages.getMessage(TransferExceptions.BALANCE.toString(), null, locale);
         } else if (exception.getMessage().equalsIgnoreCase(TransferExceptions.NO_DEBIT_ACCOUNT.toString())) {
             errorMessage = messages.getMessage(TransferExceptions.NO_DEBIT_ACCOUNT.toString(), null, locale);
@@ -39,7 +48,16 @@ public class TransferErrorService {
         }
         else if (exception.getMessage().equalsIgnoreCase(TransferExceptions.INVALID_AMOUNT.toString())) {
             errorMessage = messages.getMessage(TransferExceptions.INVALID_AMOUNT.toString(), null, locale);
-        }
+        }*/
+
+
+
+       try{
+           errorMessage = messages.getMessage(exception.getMessage(), null, locale);
+       }catch (Exception e){
+           errorMessage=exception.getMessage();
+       }
+
         return errorMessage;
 
     }

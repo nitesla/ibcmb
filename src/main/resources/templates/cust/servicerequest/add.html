@@ -16,7 +16,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-8 content-bg">
+                <div class="col-md-9 content-bg">
                     <div class="row form-spacing">
                         <div class="col-md-6 col-sm-6">
                             <h5 class="page_header" th:text="${requestConfig.requestName}"></h5>
@@ -29,7 +29,7 @@
 
                                         <p th:if="${field.fieldType} == 'TEXT'"><input class="form-control" type="text" th:name="${field.fieldName}" required="required"/></p>
 
-                                        <p th:if="${field.fieldType} == 'NUMBER'"><input class="form-control" type="number" th:name="${field.fieldName}" required="required"/></p>
+                                        <p th:if="${field.fieldType} == 'NUMBER'"><input class="form-control" type="number" min="0" th:name="${field.fieldName}" required="required"/></p>
 
 
                                         <p th:if="${field.fieldType} == 'TEXTAREA'" required="required">
@@ -70,8 +70,10 @@
                         </div>
                     </div>
                 </div>
-                <div th:replace="cust_layout :: sidebar" class="col-md-3 sidebar">
-                </div>
+                 <div class="col-md-3 pull-right">
+                            <div th:replace="cust_layout :: sidebar" class="" >
+                            </div>
+                        </div>
             </div>
 
             <form id="submitform" action="/retail/requests" method="post">

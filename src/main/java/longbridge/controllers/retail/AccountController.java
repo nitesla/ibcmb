@@ -15,7 +15,9 @@ import longbridge.services.AccountService;
 import longbridge.services.IntegrationService;
 import longbridge.services.RetailUserService;
 import longbridge.services.TransferService;
-import longbridge.utils.AccountStatement;
+import longbridge.utils.statement.AccountBalance;
+import longbridge.utils.statement.AccountStatement;
+import longbridge.utils.statement.TransactionDetails;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.data.JsonDataSource;
@@ -241,6 +243,7 @@ public class AccountController {
     }
 
     @GetMapping("/viewstatement/{account}")
+
     public String getViewStatement( Model model,Principal principal,@PathVariable Account account) {
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
 
@@ -249,7 +252,8 @@ public class AccountController {
 //        SimpleDateFormat format=new SimpleDateFormat("DD/MM/YYYY")
         AccountStatement accountStatement = integrationService.getAccountStatements(account.getAccountId(), new Date(), new Date());
         if (accountStatement != null || !(accountStatement.equals(""))){
-            List<FinancialTransaction> transactionList=accountStatement.getTransactionList();
+
+            List<TransactionDetails> transactionList=accountStatement.getPaginatedAccountStatement().getTransactionDetails();
             model.addAttribute("transactionLists",transactionList);
             System.out.println("transactionList"+transactionList);
             model.addAttribute("accountStatement", accountStatement);
@@ -277,28 +281,26 @@ public class AccountController {
 
         AccountStatement accountStatement = integrationService.getAccountStatements(account.getAccountId(), new Date(), new Date());
         if (accountStatement != null || !(accountStatement.equals(""))) {
-            List<FinancialTransaction> transactionList = accountStatement.getTransactionList();
+            List<TransactionDetails> transactionList = accountStatement.getPaginatedAccountStatement().getTransactionDetails();
+            AccountBalance accountBalance=accountStatement.getPaginatedAccountStatement().getAcctBal();
 //            String sourceFileName ="classpath:pdf/accountStatement.jrxml";
 //            JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource(transactionList);
 
             Map<String, Object> parameterMap = new HashMap<>();
            /* parameterMap.put("AccountNum","10112332");
             parameterMap.put("date","01-08-2017");*/
-            for (FinancialTransaction transaction:transactionList){
-                parameterMap.put("currencyCode",transaction.getCurrencyCode());
+            parameterMap.put("currencyCode",accountBalance.getCurrencyCode());
+            parameterMap.put("accountNumber",accountBalance.getAccountNumber());
+            parameterMap.put("accountNumber",accountBalance.getLedgerBalance());
+            parameterMap.put("amount",accountBalance.getAvailableBalance().getAmountValue());
+            for (TransactionDetails transaction:transactionList){
                 parameterMap.put("valueDate",transaction.getValueDate());
-                parameterMap.put("currentBal",transaction.getCurrentBalance());
-                parameterMap.put("postDate",transaction.getPostDate());
-                parameterMap.put("tranParticular",transaction.getTransactionParticulars());
-                parameterMap.put("amount",transaction.getAmount());
-                parameterMap.put("tranType",transaction.getTranType());
                 parameterMap.put("valueDate",transaction.getValueDate());
-                parameterMap.put("accountId",transaction.getAccountId());
-
-
-                return new ModelAndView(v,parameterMap);
+                parameterMap.put("tranParticular",transaction.getTransactionSummary());
+                parameterMap.put("tranParticular",transaction.getTransactionBalance());
+                parameterMap.put("tranId",transaction.getTransactionId());
             }
-
+            return new ModelAndView(v,parameterMap);
         }
         return null;
     }

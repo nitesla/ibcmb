@@ -18,10 +18,8 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-8 content-bg">
-                <!--<div class="row form-spacing">-->
-                <div class="col-md-6 col-sm-6">
-                    <div class="row form-spacing">
+            <div class="col-md-9 content-bg">
+                    <div class="col-md-6 col-sm-6 form-spacing">
 
                         <div th:if="${message != null}" class="alert alert-info" th:text="${message}">message</div>
                         <div th:if="${error != null}" class="alert alert-info" th:text="${error}">message</div>
@@ -36,9 +34,9 @@
 
                                 <span id="scurency"></span>
                                 <select name="source" class="form-control" id="source"
-                                        th:field="*{customerAccountNumber}">
+                                        th:field="*{customerAccountNumber}" onchange="getBalance()">
                                     <!--<option value=""> select an account</option>-->
-                                    <option th:each="s: ${accounts}" th:value="${s}" th:text="${s}"></option>
+                                    <option th:each="s: ${accounts}" th:value="${s}" th:text="${s}" ></option>
                                 </select>
 
                             </div>
@@ -75,19 +73,18 @@
                             <button class="btn btn-link" type="submit">Submit</button>
                         </form>
 
-
-                    </div>
                 </div>
-
-            </div>
-            <div class="col-md-3 sidebar" >
-                <div class="sidebar-bg">
-
-                    <p class="related">Related Information</p>
-                    <hr class="hrhr"/>
+                <div class="col-md-6 col-sm-6">
+                    <!--<p class="related" style="padding-top: 5%">Related Information</p>-->
+                    <hr/>
+                    <!--<input type="availBal" name="availBal"/>-->
+                    <p id="availBal"><b></b></p>
                 </div>
             </div>
-            <div th:replace="cust_layout :: sidebar" class="col-md-3 sidebar">
+
+            <div class="col-md-3 pull-right " >
+                <div th:replace="cust_layout :: sidebar" class="" >
+                </div>
             </div>
         </div>
 
@@ -137,6 +134,27 @@
 
     };
 
+
+    function getBalance(){
+        var accountNumber = $('#source').val();
+        $.ajax({
+            url: "/retail/transfer/ownaccount/balance/"+accountNumber,
+            type: 'GET',
+            async: false,
+            success:function(availBal){
+                bal = ''+String(availBal);
+                if(bal == "" ){
+                    document.getElementById("myspan").textContent="Could not get balance from server, please try again.";
+                    $("#myspan").show();
+                }else{
+//                    $('input[name=availBal]').val(bal);
+
+                    $('#availBal').text("Available Balance: "+bal);
+
+                }
+            }
+        })
+    }
 
     /*]]>*/
 

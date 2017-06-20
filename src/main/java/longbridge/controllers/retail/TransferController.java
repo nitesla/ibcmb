@@ -4,6 +4,7 @@ package longbridge.controllers.retail;
 import longbridge.dtos.LocalBeneficiaryDTO;
 import longbridge.dtos.TransferRequestDTO;
 import longbridge.exception.InternetBankingException;
+import longbridge.exception.InternetBankingSecurityException;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferErrorService;
 import longbridge.models.Account;
@@ -195,14 +196,16 @@ public class TransferController {
 
             if (request.getSession().getAttribute("auth-needed") != null) {
                 String token = request.getParameter("token");
-                boolean ok = securityService.performTokenValidation(principal.getName(), token);
-
-                if (!ok) {
-                    model.addAttribute("failure", messages.getMessage("auth.token.failure", null, locale));
+                boolean ok=false;
+                try {
+                  ok = securityService.performTokenValidation(principal.getName(), token);
+                }catch (InternetBankingSecurityException ibse){
+                    model.addAttribute("failure", ibse.getMessage());
                     return "/cust/transfer/transferauth";
-                } else {
-                    request.getSession().removeAttribute("auth-needed");
                 }
+
+                    request.getSession().removeAttribute("auth-needed");
+
 
 
             }

@@ -5,14 +5,15 @@ import longbridge.api.*;
 import longbridge.dtos.SettingDTO;
 import longbridge.exception.InternetBankingTransferException;
 
+import longbridge.exception.TransferExceptions;
 import longbridge.models.FinancialTransaction;
 import longbridge.models.TransRequest;
 import longbridge.services.ConfigurationService;
 import longbridge.services.IntegrationService;
 import longbridge.services.MailService;
-import longbridge.utils.AccountStatement;
 import longbridge.utils.ResultType;
 import longbridge.utils.TransferType;
+import longbridge.utils.statement.AccountStatement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -38,12 +40,11 @@ import java.util.stream.Collectors;
 @Service
 public class IntegrationServiceImpl implements IntegrationService {
 
-    private Logger logger = LoggerFactory.getLogger(getClass());
-
-    @Value("${ebank.service.uri}")
-    private String URI;
     @Value("${excel.path}")
     String PROPERTY_EXCEL_SOURCE_FILE_PATH;
+    private Logger logger = LoggerFactory.getLogger(getClass());
+    @Value("${ebank.service.uri}")
+    private String URI;
     @Value("${CMB.ALERT.URL}")
     private String cmbAlert;
 
@@ -85,80 +86,40 @@ public class IntegrationServiceImpl implements IntegrationService {
     }
 
     @Override
-    public AccountStatement getAccountStatements(String accountId, Date fromDate, Date toDate) {
-     AccountStatement statement = new AccountStatement();
-     List<FinancialTransaction> financialTransactions= new ArrayList<>();
-        FileInputStream fis = null;
-        InputStreamReader isr = null;
-        BufferedReader bf = null;
-        File csv = new File(PROPERTY_EXCEL_SOURCE_FILE_PATH);
-
-
-
+    public AccountStatement getAccountStatements(String accountNo, Date fromDate, Date toDate) {
+        AccountStatement statement = new AccountStatement();
         try {
+            SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
+       /* String dateInString = "7-Jun-2013";
+        Date date = formatter.parse(dateInString);*/
+            String uri = URI + "/statement";
+            Map<String, String> params = new HashMap<>();
+            params.put("accountNumber", accountNo);
+            params.put("fromDate", formatter.format(fromDate));
+            if (toDate!=null) params.put("toDate",formatter.format(toDate));
 
-            logger.info("*****************************FILE PROCESSING STARTED******************************");
-
-            fis =  new FileInputStream(csv);
-            isr = new InputStreamReader(
-                    fis);
-            bf = new BufferedReader(isr);
-           String skipped ;
 
 
-
-                /*FinancialTransaction td = new FinancialTransaction(tranStr);
-                financialTransactions.add(td);
-
-                 isr = new InputStreamReader(
-                    fis, "UTF-16");*/
-               int read = 0;
-            while ((skipped = bf.readLine()) != null ) {
-
-                if (read==0){
-
-                    read++;
-                    continue;
-                }
-                FinancialTransaction td = new FinancialTransaction(skipped);
-                financialTransactions.add(td);
-                read++;
-
-            }
+            statement = template.getForObject(uri, AccountStatement.class, params);
 
 
 
 
 
+        } catch (Exception e){
+
+        }
 
 
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-
-    }
-
-
-        statement.setClosingBalance(new BigDecimal(2000));
-        statement.setTransactionList(financialTransactions);
-        statement.setCreditCount(20);
-        statement.setCreditCount(20);
-        statement.setOpeningBalance(new BigDecimal(3000));
-        statement.setTotalCredit(new BigDecimal(4000));
-        statement.setTotalDebit(new BigDecimal(5000));
-        System.out.println("ACCOUNT STATEMENT "+statement);
         return statement;
     }
 
     @Override
     public Map<String, BigDecimal> getBalance(String accountId) {
-        String uri = URI + "/account/{acctId}";
-        Map<String, String> params = new HashMap<>();
-        params.put("acctId", accountId);
+
         Map<String, BigDecimal> response = new HashMap<>();
         try {
-            AccountDetails details = template.getForObject(uri, AccountDetails.class, params);
+            AccountDetails details = viewAccountDetails(accountId);
 
             BigDecimal availBal = new BigDecimal(details.getAvailableBalance());
             BigDecimal ledgBal = new BigDecimal(details.getLedgerBalAmt());
@@ -167,8 +128,10 @@ public class IntegrationServiceImpl implements IntegrationService {
 
             return response;
         } catch (Exception e) {
+            response.put("AvailableBalance", new BigDecimal(0));
+            response.put("LedgerBalance", new BigDecimal(0));
             e.printStackTrace();
-            return null;
+            return response;
         }
     }
 
@@ -195,21 +158,20 @@ public class IntegrationServiceImpl implements IntegrationService {
                 try {
                     response = template.postForObject(uri, params, TransferDetails.class);
 
-                    if (response != null) {
 
-                        transRequest.setStatus(response.getResponseCode());
-                        transRequest.setStatusDescription(response.getResponseDescription());
-                        transRequest.setReferenceNumber(response.getUniqueReferenceCode());
-                        transRequest.setNarration(response.getNarration());
+                    transRequest.setStatus(response.getResponseCode());
+                    transRequest.setStatusDescription(response.getResponseDescription());
+                    transRequest.setReferenceNumber(response.getUniqueReferenceCode());
+                    transRequest.setNarration(response.getNarration());
 
-                        return transRequest;
-                    }
-                    transRequest.setStatus(ResultType.ERROR.toString());
+
                     return transRequest;
+
                 } catch (Exception e) {
 
                     e.printStackTrace();
                     transRequest.setStatus(ResultType.ERROR.toString());
+                    transRequest.setStatusDescription(TransferExceptions.ERROR.toString());
                     return transRequest;
 
                 }
@@ -229,23 +191,22 @@ public class IntegrationServiceImpl implements IntegrationService {
                 logger.info("params for transfer {}", params.toString());
                 try {
                     response = template.postForObject(uri, params, TransferDetails.class);
-                    if (response != null) {
-                        logger.info("response for transfer {}", response.toString());
-                        transRequest.setStatus(response.getResponseCode());
-                        transRequest.setStatusDescription(response.getResponseDescription());
-                        transRequest.setReferenceNumber(response.getUniqueReferenceCode());
-                        transRequest.setNarration(response.getNarration());
-
-                        return transRequest;
 
 
-                    }
+                    logger.info("response for transfer {}", response.toString());
+                    transRequest.setReferenceNumber(response.getUniqueReferenceCode());
+                    transRequest.setNarration(response.getNarration());
+                    transRequest.setStatus(response.getResponseCode());
+                    transRequest.setStatusDescription(response.getResponseDescription());
+
+                    return transRequest;
 
 
                 } catch (Exception e) {
 
                     e.printStackTrace();
                     transRequest.setStatus(ResultType.ERROR.toString());
+                    transRequest.setStatusDescription(TransferExceptions.ERROR.toString());
                     return transRequest;
                 }
 
@@ -254,13 +215,10 @@ public class IntegrationServiceImpl implements IntegrationService {
             case INTERNATIONAL_TRANSFER: {
 
             }
-            case NAPS: {
 
-
-            }
             case OWN_ACCOUNT_TRANSFER: {
                 transRequest.setTransferType(TransferType.OWN_ACCOUNT_TRANSFER);
-                TransferDetails response = null;
+                TransferDetails response;
                 String uri = URI + "/transfer/local";
                 Map<String, String> params = new HashMap<>();
                 params.put("debitAccountNumber", transRequest.getCustomerAccountNumber());
@@ -270,23 +228,18 @@ public class IntegrationServiceImpl implements IntegrationService {
                 logger.info("params for transfer {}", params.toString());
                 try {
                     response = template.postForObject(uri, params, TransferDetails.class);
-                    if (response != null) {
-                        System.out.println("@@@@@ response " + response.getResponseDescription());
-                        transRequest.setStatus(response.getResponseCode());
-                        transRequest.setStatusDescription(response.getResponseDescription());
-                        transRequest.setReferenceNumber(response.getUniqueReferenceCode());
-                        transRequest.setNarration(response.getNarration());
-                        return transRequest;
-                    } else {
+                    transRequest.setNarration(response.getNarration());
+                    transRequest.setReferenceNumber(response.getUniqueReferenceCode());
+                    transRequest.setStatus(response.getResponseCode());
+                    transRequest.setStatusDescription(response.getResponseDescription());
+                    return transRequest;
 
-                        transRequest.setStatus(ResultType.ERROR.toString());
-                        return transRequest;
-                    }
 
                 } catch (Exception e) {
 
                     e.printStackTrace();
                     transRequest.setStatus(ResultType.ERROR.toString());
+                    transRequest.setStatusDescription(TransferExceptions.ERROR.toString());
                     return transRequest;
                 }
 
@@ -307,16 +260,32 @@ public class IntegrationServiceImpl implements IntegrationService {
     }
 
     @Override
+    public TransferDetails makeNapsTransfer(Naps naps) throws InternetBankingTransferException {
+        String uri = URI + "/naps";
+
+        try {
+            TransferDetails details = template.getForObject(uri, TransferDetails.class, naps);
+            return details;
+        } catch (Exception e) {
+            return new TransferDetails();
+        }
+
+
+
+
+    }
+
+    @Override
     public AccountDetails viewAccountDetails(String acctNo) {
 
-        String uri = URI + "/account/{acctId}";
+        String uri = URI + "/account/{acctNo}";
         Map<String, String> params = new HashMap<>();
-        params.put("acctId", acctNo);
+        params.put("acctNo", acctNo);
         try {
             AccountDetails details = template.getForObject(uri, AccountDetails.class, params);
             return details;
         } catch (Exception e) {
-            return null;
+            return new AccountDetails();
         }
 
 
@@ -324,7 +293,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 
     @Override
     public CustomerDetails isAccountValid(String accNo, String email, String dob) {
-        CustomerDetails result = null;
+        CustomerDetails result = new CustomerDetails();
         String uri = URI + "/account/verification";
         Map<String, String> params = new HashMap<>();
         params.put("accountNumber", accNo);
@@ -384,7 +353,7 @@ public class IntegrationServiceImpl implements IntegrationService {
     @Override
     public BigDecimal getDailyDebitTransaction(String acctNo) {
 
-        BigDecimal result = null;
+        BigDecimal result = new BigDecimal(0);
         String uri = URI + "/transfer/dailyTransaction";
         Map<String, String> params = new HashMap<>();
         params.put("accountNumber", acctNo);
@@ -404,7 +373,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 
     @Override
     public BigDecimal getDailyAccountLimit(String accNo, String channel) {
-        BigDecimal result = null;
+        BigDecimal result = new BigDecimal(0);
         String uri = URI + "/transfer/limit";
         Map<String, String> params = new HashMap<>();
         params.put("accountNumber", accNo);
@@ -442,11 +411,15 @@ public class IntegrationServiceImpl implements IntegrationService {
 
     @Override
     public BigDecimal getAvailableBalance(String s) {
-        Map<String, BigDecimal> getBalance = getBalance(s);
-        BigDecimal balance = getBalance.get("AvailableBalance");
-        if (balance != null) {
-            return balance;
-        }
+       try{
+           Map<String, BigDecimal> getBalance = getBalance(s);
+           BigDecimal balance = getBalance.get("AvailableBalance");
+           if (balance != null) {
+               return balance;
+           }
+       }catch (Exception e){
+       e.printStackTrace();
+       }
         return new BigDecimal(0);
     }
 
@@ -512,6 +485,7 @@ public class IntegrationServiceImpl implements IntegrationService {
             transRequest.setStatus("Approved or completed successfully");
         } catch (Exception e) {
             e.printStackTrace();
+            logger.error("Exception occurred {}", e);
             transRequest.setStatus("96");
             transRequest.setStatusDescription("FAILED TO SEND A MAIL");
         }
