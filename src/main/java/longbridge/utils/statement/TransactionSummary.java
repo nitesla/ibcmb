@@ -57,5 +57,16 @@ public class TransactionSummary {
     public void setTransactionType(String transactionType) {
         this.transactionType = transactionType;
     }
+
+    @Override
+    public String toString() {
+        return "TransactionSummary{" +
+                "instrumentId='" + instrumentId + '\'' +
+                ", transactionAmount=" + transactionAmount +
+                ", TransactionDate='" + TransactionDate + '\'' +
+                ", transactionDescription='" + transactionDescription + '\'' +
+                ", transactionType='" + transactionType + '\'' +
+                '}';
+    }
 }
 

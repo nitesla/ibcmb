@@ -280,7 +280,7 @@ public class AdminUserController {
         try {
             String message = adminUserService.changePassword(user, changePassword);
             redirectAttributes.addFlashAttribute("message", message);
-            return "redirect:/admin/dashboard";
+            return "redirect:/admin/logout";
         } catch (WrongPasswordException wpe) {
             result.reject("oldPassword", wpe.getMessage());
             logger.error("Wrong password from admin user {}", user.getUserName(), wpe.toString());

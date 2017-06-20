@@ -36,7 +36,7 @@ public class VerificationServiceImpl implements VerificationService {
 	@Autowired
     private EntityManager eman;
 	@Autowired
-	MessageSource messageSource;
+	private MessageSource messageSource;
 
 	Locale locale = LocaleContextHolder.getLocale();
 
@@ -135,6 +135,24 @@ public class VerificationServiceImpl implements VerificationService {
 
 		return String.format(messageSource.getMessage("verification.add.success",null,locale),classSimpleName);
 
+
+//		public <T extends SerializableEntity<T>> String makerCheckerSave(T originalEntity, T entity) throws JsonProcessingException, VerificationException {
+//
+//			AbstractEntity originalEntity1 = (AbstractEntity) (originalEntity);
+//
+//			if (originalEntity1.getId() == null) {
+//				String message = verificationService.addNewVerificationRequest(entity);
+//				return message;
+//
+//			} else {
+//
+//				String message = verificationService.addModifyVerificationRequest(originalEntity, entity);
+//				return message;
+//
+//			}
+//
+//
+//		}
 	}
 
 

@@ -47,4 +47,8 @@ public interface VerificationService {
      * @throws JsonProcessingException if there is an error in serializing the entity
       */
       <T extends SerializableEntity<T>> String addModifyVerificationRequest(T originalEntity, T entity) throws JsonProcessingException;
+
+
+
+//    <T extends SerializableEntity<T>> String makerCheckerSave(T originalEntity, T entity) throws JsonProcessingException, VerificationException;
 }

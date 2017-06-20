@@ -77,6 +77,19 @@ public class TransactionDetails {
     public void setTransactionSerialNumber(String transactionSerialNumber) {
         this.transactionSerialNumber = transactionSerialNumber;
     }
+
+    @Override
+    public String toString() {
+        return "TransactionDetails{" +
+                "transactionSummary=" + transactionSummary +
+                ", postedDate='" + postedDate + '\'' +
+                ", transactionCategory='" + transactionCategory + '\'' +
+                ", transactionId='" + transactionId + '\'' +
+                ", valueDate='" + valueDate + '\'' +
+                ", transactionBalance=" + transactionBalance +
+                ", transactionSerialNumber='" + transactionSerialNumber + '\'' +
+                '}';
+    }
 }
 
 

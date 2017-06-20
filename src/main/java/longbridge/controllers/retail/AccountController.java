@@ -16,8 +16,10 @@ import longbridge.services.IntegrationService;
 import longbridge.services.RetailUserService;
 import longbridge.services.TransferService;
 
+import longbridge.utils.DateFormatter;
 import longbridge.utils.statement.AccountBalance;
 import longbridge.utils.statement.AccountStatement;
+import longbridge.utils.statement.PaginatedAccountStatement;
 import longbridge.utils.statement.TransactionDetails;
 
 import net.sf.jasperreports.engine.*;
@@ -49,9 +51,11 @@ import org.springframework.web.servlet.view.jasperreports.JasperReportsMultiForm
 import org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView;
 import org.springframework.web.servlet.view.jasperreports.JasperReportsViewResolver;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.File;
 import java.security.Principal;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -244,32 +248,34 @@ public class AccountController {
         return "cust/account/history";
     }
 
-    @GetMapping("/viewstatement/{account}")
+    @GetMapping("/viewstatement")
+    public String getViewOnly( Model model,Principal principal) throws ParseException {
 
+    return "cust/account/view";
+    }
 
-    public String getViewStatement( Model model,Principal principal,@PathVariable Account account) {
+    @PostMapping("/viewstatement/display")
+    public String getViewStatement(Model model, Principal principal, HttpServletRequest request) throws ParseException {
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
-
-//        Account account=accountRepo.findFirstAccountByCustomerId(retailUser.getCustomerId());
-
-//        SimpleDateFormat format=new SimpleDateFormat("DD/MM/YYYY")
-
-        AccountStatement accountStatement = integrationService.getAccountStatements(account.getAccountNumber(), new Date(), new Date());
+        String fromdate=request.getParameter("start");
+        String enddate=request.getParameter("end");
+        String foracid=request.getParameter("acctNumber");
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+        AccountStatement accountStatement = integrationService.getAccountStatements(foracid, formatter.parse(fromdate), formatter.parse(enddate));
+        System.out.println("PRINT MY ACCOUNT STATEMENT:" + accountStatement);
         if (accountStatement != null || !(accountStatement.equals(""))){
 
             List<TransactionDetails> transactionList=accountStatement.getPaginatedAccountStatement().getTransactionDetails();
             model.addAttribute("transactionLists",transactionList);
             System.out.println("transactionList"+transactionList);
             model.addAttribute("accountStatement", accountStatement);
-        System.out.println("PRINT MY ACCOUNT STATEMENT:" + accountStatement);
 
-
-        return "cust/account/view";
-    }
-    return "redirect:/retail/dashboard";
+            return "cust/account/view";
+        }
+        return "redirect:/retail/dashboard";
     }
 
-    @GetMapping("/helloReport2/{account}")
+    @GetMapping("/PrintReport/{account}")
     public ModelAndView getRpt2(ModelAndView modelAndView,@PathVariable Account account) {
 
         JasperReportsPdfView v = new JasperReportsPdfView();
@@ -278,7 +284,7 @@ public class AccountController {
 //                v.setReportDataKey("datasource");
 
 
-        AccountStatement accountStatement = integrationService.getAccountStatements(account.getAccountId(), new Date(), new Date());
+        AccountStatement accountStatement = integrationService.getAccountStatements(account.getAccountNumber(), new Date(), new Date());
         if (accountStatement != null || !(accountStatement.equals(""))) {
             List<TransactionDetails> transactionList = accountStatement.getPaginatedAccountStatement().getTransactionDetails();
             AccountBalance accountBalance=accountStatement.getPaginatedAccountStatement().getAcctBal();
