@@ -17,12 +17,12 @@ import java.util.List;
 @Where(clause ="del_Flag='N'" )
 public class BulkTransfer extends AbstractEntity{
     private String debitAccount;
-    private String date;
-    private String reference;
+    private String requestDate;
+    private String refCode;
     private  String status;
 
     @OneToMany(mappedBy = "bulkTransfer",cascade = {CascadeType.ALL})
-    private List<CreditRequest> creditRequestList;
+    private List<CreditRequest> crRequestList;
 
     @ManyToOne
     private Corporate corporate;
@@ -44,36 +44,37 @@ public class BulkTransfer extends AbstractEntity{
         this.debitAccount = debitAccount;
     }
 
-    public String getDate() {
-        return date;
-    }
+   
+    public String getRequestDate() {
+		return requestDate;
+	}
 
-    public void setDate(String date) {
-        this.date = date;
-    }
+	public void setRequestDate(String requestDate) {
+		this.requestDate = requestDate;
+	}
 
-    public String getReference() {
-        return reference;
-    }
+	public List<CreditRequest> getCrRequestList() {
+		return crRequestList;
+	}
 
-    public void setReference(String reference) {
-        this.reference = reference;
-    }
+	public void setCrRequestList(List<CreditRequest> crRequestList) {
+		this.crRequestList = crRequestList;
+	}
 
-    public List<CreditRequest> getCreditRequestList() {
-        return creditRequestList;
-    }
+	public String getRefCode() {
+		return refCode;
+	}
 
-    public void setCreditRequestList(List<CreditRequest> creditRequestList) {
-        this.creditRequestList = creditRequestList;
-    }
+	public void setRefCode(String refCode) {
+		this.refCode = refCode;
+	}
 
-    public BulkTransfer(String debitAccount, String date, String reference, String status, List<CreditRequest> creditRequestList, Corporate corporate) {
+	public BulkTransfer(String debitAccount, String date, String reference, String status, List<CreditRequest> creditRequestList, Corporate corporate) {
         this.debitAccount = debitAccount;
-        this.date = date;
-        this.reference = reference;
+        this.requestDate = date;
+        this.refCode = reference;
         this.status = status;
-        this.creditRequestList = creditRequestList;
+        this.crRequestList = creditRequestList;
         this.corporate = corporate;
     }
 
