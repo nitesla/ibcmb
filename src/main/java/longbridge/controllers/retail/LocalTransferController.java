@@ -164,6 +164,11 @@ public class LocalTransferController {
     }
 
 
+    @ModelAttribute
+    public void getBankCode(Model model) {
+        model.addAttribute("bankCode", bankCode);
+    }
+
     @RequestMapping(value="/balance/{accountNumber}", method=RequestMethod.GET , produces="application/json")
     @ResponseBody
     public BigDecimal getBalance(@PathVariable String accountNumber) throws Exception {
@@ -172,12 +177,5 @@ public class LocalTransferController {
         BigDecimal availBal = balance.get("AvailableBalance");
         return availBal;
     }
-
-
-    @ModelAttribute
-    public void getBankCode(Model model) {
-        model.addAttribute("bankCode", bankCode);
-    }
-
 
 }

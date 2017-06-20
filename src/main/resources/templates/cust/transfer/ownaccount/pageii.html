@@ -18,13 +18,13 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-8 content-bg">
+            <div class="col-md-9 content-bg">
                 <!--<div class="row spacing">-->
-                <div class="col-md-6 col-sm-6">
-                    <div class="row spacing" >
+
+                    <div class="spacing" >
 
 
-                        <table>
+                        <table class="">
                             <tr>
 
                                 <th colspan="2">Transaction Summary</th>
@@ -75,6 +75,10 @@
                         </form>
 
                     </div>
+
+            </div>
+            <div class="col-md-3 pull-right " >
+                <div th:replace="cust_layout :: sidebar" class="" >
                 </div>
                 <div class="col-md-6 col-sm-6">
                     <p class="related">Related Information</p>
@@ -82,8 +86,6 @@
                     <!--<p th:each="rule : ${passwordRules}" th:text="${rule}"></p>-->
                 </div>
             </div>
-        <div th:replace="cust_layout :: sidebar" class="col-md-3 sidebar">
-        </div>
         </div>
 
     </div>

@@ -32,7 +32,7 @@
                               th:object="${localBeneficiaryDTO}">
                             <input type="hidden" th:value="local" class="form-control"/>
                             <div class="form-group">
-                                <label>Bank Details</label>
+                                <label>Beneficiary Bank</label>
                                 <span class="req"></span>
                                 <select th:field="*{beneficiaryBank}" class="form-control">
                                     <option th:each="bank : ${localBanks}" th:value="${bank.institutionCode}"

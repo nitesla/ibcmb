@@ -9,7 +9,7 @@ import longbridge.repositories.AccountRepo;
 import longbridge.services.AccountConfigService;
 import longbridge.services.AccountService;
 import longbridge.services.IntegrationService;
-import longbridge.utils.AccountStatement;
+import longbridge.utils.statement.AccountStatement;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,18 +32,13 @@ import java.util.stream.StreamSupport;
 @Service
 public class AccountServiceImpl implements AccountService {
 
+    Locale locale = LocaleContextHolder.getLocale();
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private AccountRepo accountRepo;
-
     private IntegrationService integrationService;
-
     private ModelMapper modelMapper;
-
     private AccountConfigService accountConfigService;
-
     private MessageSource messageSource;
-
-    Locale locale = LocaleContextHolder.getLocale();
 
     @Autowired
     public AccountServiceImpl(AccountRepo accountRepo, IntegrationService integrationService, ModelMapper modelMapper, AccountConfigService accountConfigService, MessageSource messageSource) {
@@ -65,6 +60,7 @@ public class AccountServiceImpl implements AccountService {
         account.setCustomerId(acct.getCustomerId());
         account.setAccountName(acct.getAccountName());
         account.setAccountNumber(acct.getAccountNumber());
+        account.setCurrencyCode(acct.getAccountCurrency());
         account.setSolId(acct.getSolId());
         account.setSchemeCode(acct.getSchemeCode());
         account.setSchemeType(acct.getSchemeType());
@@ -84,6 +80,7 @@ public class AccountServiceImpl implements AccountService {
         account.setCustomerId(acct.getCustId());
         account.setAccountName(acct.getAcctName());
         account.setAccountNumber(acct.getAcctNumber());
+        account.setCurrencyCode(acct.getAcctCrncyCode());
         account.setSolId(acct.getSolId());
         account.setSchemeCode(acct.getSchmCode());
         account.setSchemeType(acct.getAcctType());
@@ -93,21 +90,21 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public String customizeAccount(Long id, String name) throws InternetBankingException{
+    public String customizeAccount(Long id, String name) throws InternetBankingException {
         try {
             Account account = accountRepo.findFirstById(id);
             account.setAccountName(name);
             this.accountRepo.save(account);
-            return messageSource.getMessage("account.customize.success",null, locale);
-        }catch (Exception e){
-            throw new InternetBankingException(messageSource.getMessage("account.customize.failure",null, locale), e);
+            return messageSource.getMessage("account.customize.success", null, locale);
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("account.customize.failure", null, locale), e);
         }
 
     }
 
     @Override
     public AccountDTO getAccount(Long accId) {
-        AccountDTO account =  convertEntityToDTO(accountRepo.findById(accId));
+        AccountDTO account = convertEntityToDTO(accountRepo.findById(accId));
         //TODO fetch account Balance and account type
         return account;
     }
@@ -132,9 +129,10 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public List<Account> getCustomerAccounts(String customerId, String currencyCode) {
 
-        List<Account> accountList = accountRepo.findByCustomerIdAndCurrencyCodeIgnoreCase(customerId,currencyCode);
+        List<Account> accountList = accountRepo.findByCustomerIdAndCurrencyCodeIgnoreCase(customerId, currencyCode);
 
         return accountList;
+
     }
 
     @Override
@@ -183,28 +181,28 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public String hideAccount(Long id) throws InternetBankingException{
+    public String hideAccount(Long id) throws InternetBankingException {
 
         try {
             Account account = accountRepo.findFirstById(id);
             account.setHiddenFlag("Y");
             accountRepo.save(account);
-            return messageSource.getMessage("account.hide.success",null, locale);
-        }catch (Exception e){
-            throw new InternetBankingException(messageSource.getMessage("account.hide.failure",null, locale), e);
+            return messageSource.getMessage("account.hide.success", null, locale);
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("account.hide.failure", null, locale), e);
         }
     }
 
     @Override
-    public String unhideAccount(Long id) throws InternetBankingException{
+    public String unhideAccount(Long id) throws InternetBankingException {
 
         try {
             Account account = accountRepo.findFirstById(id);
             account.setHiddenFlag("N");
             accountRepo.save(account);
-            return messageSource.getMessage("success",null, locale);
-        }catch (Exception e){
-            throw new InternetBankingException(messageSource.getMessage("failure",null, locale), e);
+            return messageSource.getMessage("success", null, locale);
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("failure", null, locale), e);
         }
     }
 
@@ -216,9 +214,9 @@ public class AccountServiceImpl implements AccountService {
             Account account = accountRepo.findFirstById(acctId);
             account.setPrimaryFlag("Y");
             accountRepo.save(account);
-            return messageSource.getMessage("success",null, locale);
-        }catch (Exception e){
-            throw new InternetBankingException(messageSource.getMessage("failure",null, locale), e);
+            return messageSource.getMessage("success", null, locale);
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("failure", null, locale), e);
         }
 
     }
@@ -258,13 +256,13 @@ public class AccountServiceImpl implements AccountService {
         //Iterable<Account> accounts = this.getCustomerAccounts(customerId);
         Iterable<AccountDTO> accountDTOS = convertEntitiesToDTOs(this.getCustomerAccounts(customerId));
         StreamSupport
-                .stream(accountDTOS.spliterator(),false)
+                .stream(accountDTOS.spliterator(), false)
                 .filter(i -> !accountConfigService.isAccountHidden(i.getAccountNumber()))
-                .filter(i->!accountConfigService.isAccountRestrictedForView(i.getAccountNumber()))
+                .filter(i -> !accountConfigService.isAccountRestrictedForView(i.getAccountNumber()))
                 .filter(i -> !accountConfigService.isAccountRestrictedForDebitAndCredit(i.getAccountNumber()))
                 .filter(i -> !accountConfigService.isAccountClassRestrictedForView(i.getSchemeCode()))
                 .filter(i -> !accountConfigService.isAccountClassRestrictedForDebitAndCredit(i.getSchemeCode()))
-                .forEach(i->accountsForDebitAndCredit.add(i) );
+                .forEach(i -> accountsForDebitAndCredit.add(i));
 
         return accountsForDebitAndCredit;
     }
@@ -275,17 +273,17 @@ public class AccountServiceImpl implements AccountService {
         //Iterable<Account> accounts = this.getCustomerAccounts(customerId);
         Iterable<AccountDTO> accountDTOS = convertEntitiesToDTOs(this.getCustomerAccounts(customerId));
         StreamSupport
-                .stream(accountDTOS.spliterator(),false)
+                .stream(accountDTOS.spliterator(), false)
                 .filter(i -> !accountConfigService.isAccountHidden(i.getAccountNumber()))
-                .filter(i->!accountConfigService.isAccountRestrictedForView(i.getAccountNumber()))
+                .filter(i -> !accountConfigService.isAccountRestrictedForView(i.getAccountNumber()))
                 .filter(i -> !accountConfigService.isAccountRestrictedForDebitAndCredit(i.getAccountNumber()))
                 .filter(i -> !accountConfigService.isAccountClassRestrictedForView(i.getSchemeCode()))
                 .filter(i -> !accountConfigService.isAccountClassRestrictedForDebitAndCredit(i.getSchemeCode()))
-                .forEach(i->{
+                .forEach(i -> {
                     Map<String, BigDecimal> balance = integrationService.getBalance(i.getAccountNumber());
-                    String availbalance ="0";
-                    String ledBalance="0";
-                    if (balance!=null){
+                    String availbalance = "0";
+                    String ledBalance = "0";
+                    if (balance != null) {
                         availbalance = balance.get("AvailableBalance").toString();
                         ledBalance = balance.get("LedgerBalance").toString();
                     }
@@ -295,8 +293,7 @@ public class AccountServiceImpl implements AccountService {
                     accountsForDebitAndCredit.add(i);
 
 
-                } );
-
+                });
 
 
         return accountsForDebitAndCredit;
@@ -318,10 +315,10 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Iterable<Account> getAccountsForCredit(String customerId) {
-        logger.info("the customer is "+customerId);
+        logger.info("the customer is " + customerId);
         List<Account> accountsForCredit = new ArrayList<Account>();
         Iterable<Account> accounts = this.getCustomerAccounts(customerId);
-        logger.info("accounts are {}",accounts);
+        logger.info("accounts are {}", accounts);
         for (Account account : accounts) {
             if (!accountConfigService.isAccountHidden(account.getAccountNumber())
                     && (!accountConfigService.isAccountRestrictedForView(account.getAccountNumber())) && !accountConfigService.isAccountRestrictedForCredit(account.getAccountNumber()) && (!accountConfigService.isAccountClassRestrictedForView(account.getSchemeCode()) && (!accountConfigService.isAccountClassRestrictedForCredit(account.getSchemeCode())))) {
@@ -331,27 +328,28 @@ public class AccountServiceImpl implements AccountService {
         }
         return accountsForCredit;
     }
-@Override
-public Boolean updateAccountDetails(){
-    //1010007408
-    List<Account> allAccounts = accountRepo.findAll();
-    for (Account account:allAccounts) {
-        logger.info("the account name on our db is {} and account number {}",account.getAccountName(),account.getAccountNumber());
-        AccountDetails accountDetails = integrationService.viewAccountDetails(account.getAccountNumber());
-        System.out.println("the account name on finacle is"+accountDetails.getAcctName());
-        if(account.getCurrencyCode() != null){
-        if(account.getAccountName().equalsIgnoreCase("ADEDOKUN  OLUTOPE")&&account.getCurrencyCode().equalsIgnoreCase("NGN")) {
+
+    @Override
+    public Boolean updateAccountDetails() {
+        //1010007408
+        List<Account> allAccounts = accountRepo.findAll();
+        for (Account account : allAccounts) {
+            logger.info("the account name on our db is {} and account number {}", account.getAccountName(), account.getAccountNumber());
+            AccountDetails accountDetails = integrationService.viewAccountDetails(account.getAccountNumber());
+            System.out.println("the account name on finacle is" + accountDetails.getAcctName());
+            if (account.getCurrencyCode() != null) {
+                if (account.getAccountName().equalsIgnoreCase("ADEDOKUN  OLUTOPE") && account.getCurrencyCode().equalsIgnoreCase("NGN")) {
 //            account.setAccountName(accountDetails.getAcctName());
-            account.setAccountName("MARTINS");
-            System.out.println("the account name after setting is"+account.getAccountName());
+                    account.setAccountName("MARTINS");
+                    System.out.println("the account name after setting is" + account.getAccountName());
 //            accountRepo.save(account);
-        }
+                }
 //            accountDetails.;
 
+            }
         }
+        return false;
     }
-    return false;
-}
 
 
 //    private Account mockAccount;

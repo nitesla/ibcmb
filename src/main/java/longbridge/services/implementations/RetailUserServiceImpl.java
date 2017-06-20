@@ -164,6 +164,7 @@ public class RetailUserServiceImpl implements RetailUserService {
             retailUser.setEmail(details.getEmail());
             retailUser.setCreatedOnDate(new Date());
             retailUser.setBirthDate(user.getBirthDate());
+            retailUser.setBvn(user.getBvn());
             retailUser.setRole(roleService.getTheRole("RETAIL"));
             retailUser.setStatus("A");
             retailUser.setAlertPreference(codeService.getByTypeAndCode("ALERT_PREFERENCE", "BOTH"));
@@ -218,6 +219,7 @@ public class RetailUserServiceImpl implements RetailUserService {
         try{
             securityService.addUserContacts(email, phone, true, username);
         }catch (InternetBankingSecurityException e){
+            securityService.deleteEntrustUser(username);
             throw new InternetBankingSecurityException(messageSource.getMessage("entrust.create.failure", null, locale), e);
         }
     }

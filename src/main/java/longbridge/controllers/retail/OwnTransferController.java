@@ -75,14 +75,6 @@ public class OwnTransferController {
     }
 
 
-    @RequestMapping(value="/balance/{accountNumber}", method=RequestMethod.GET , produces="application/json")
-    @ResponseBody
-    public BigDecimal getBalance(@PathVariable String accountNumber) throws Exception {
-        Account account = accountService.getAccountByAccountNumber(accountNumber);
-        Map<String, BigDecimal> balance = accountService.getBalance(account);
-        BigDecimal availBal = balance.get("AvailableBalance");
-        return availBal;
-    }
 
 
     @PostMapping("/summary")
@@ -111,6 +103,15 @@ public class OwnTransferController {
 
         }
 
+    }
+
+    @RequestMapping(value="/balance/{accountNumber}", method=RequestMethod.GET , produces="application/json")
+    @ResponseBody
+    public BigDecimal getBalance(@PathVariable String accountNumber) throws Exception {
+        Account account = accountService.getAccountByAccountNumber(accountNumber);
+        Map<String, BigDecimal> balance = accountService.getBalance(account);
+        BigDecimal availBal = balance.get("AvailableBalance");
+        return availBal;
     }
 
 
