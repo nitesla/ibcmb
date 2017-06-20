@@ -24,7 +24,7 @@ import java.util.Date;
 @SpringBootApplication
 @EnableJpaRepositories(repositoryFactoryBeanClass = CustomJpaRepositoryFactoryBean.class)
 
-public class InternetbankingApplication /*extends SpringBootServletInitializer */implements CommandLineRunner {
+public class InternetbankingApplication extends SpringBootServletInitializer implements CommandLineRunner {
 
     @Autowired
     private SecurityService securityService;

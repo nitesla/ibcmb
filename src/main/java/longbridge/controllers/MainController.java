@@ -57,9 +57,9 @@ public class MainController {
 
 
     @RequestMapping(value = {"/", "/home"})
-    public String getHomePage(@RequestParam Optional<HttpServletRequest> request) {
+    public String getHomePage() {
+clearSession();
 
-        if (request.isPresent()) request.get().getSession().invalidate();
 
         return "index";
     }
@@ -67,7 +67,7 @@ public class MainController {
     @RequestMapping(value = "/login/retail", method = RequestMethod.GET)
     public ModelAndView getLoginPage(@RequestParam Optional<String> error, @RequestParam Optional<HttpServletRequest> request) {
 
-        if (request.isPresent()) request.get().getSession().invalidate();
+
         clearSession();
 
         return new ModelAndView("retpage1", "error", error);
