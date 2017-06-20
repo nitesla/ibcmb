@@ -1,10 +1,13 @@
 package longbridge.controllers.retail;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import longbridge.api.AccountDetails;
 import longbridge.dtos.AccountDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.forms.CustomizeAccount;
 import longbridge.models.Account;
+import longbridge.models.FinancialTransaction;
 import longbridge.models.RetailUser;
 import longbridge.models.TransRequest;
 import longbridge.repositories.AccountRepo;
@@ -14,6 +17,7 @@ import longbridge.services.RetailUserService;
 import longbridge.services.TransferService;
 import longbridge.utils.AccountStatement;
 import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.data.JsonDataSource;
 import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.export.JRXlsExporter;
@@ -22,23 +26,29 @@ import net.sf.jasperreports.engine.xml.JRXmlLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.InternalResourceViewResolver;
+import org.springframework.web.servlet.view.jasperreports.JasperReportsMultiFormatView;
+import org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView;
+import org.springframework.web.servlet.view.jasperreports.JasperReportsViewResolver;
 
 import javax.validation.Valid;
 import java.io.File;
 import java.security.Principal;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static net.sf.jasperreports.engine.JasperExportManager.exportReportToPdfFile;
@@ -69,15 +79,23 @@ public class AccountController {
     @Autowired
     AccountRepo accountRepo;
 
+
+
+    /*@Autowired @Qualifier("accountReport2")
+    private JasperReportsPdfView helloReport;*/
+
     private Long customizeAccountId;
 
-    private ApplicationContext appContext;
+   @Autowired private ApplicationContext appContext;
+
     @Value("${jsonFile.path}")
     private String JOSNpath;
     @Value("${jrxmlFile.path}")
     private String jrxmlPath;
     @Value("${savedDocFile.path}")
     private String savedDoc;
+    @Value("${excel.path}")
+    String PROPERTY_EXCEL_SOURCE_FILE_PATH;
 
     @GetMapping
     public String listAccounts(){
@@ -198,38 +216,23 @@ public class AccountController {
     }
 
     @GetMapping("/{id}/statement")
-    public String getAccountStatement(@PathVariable Long id, Model model,Principal principal){
+    public String getTransactionHistory(@PathVariable Long id, Model model,Principal principal){
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
 
        Account account = accountRepo.findOne(id);
 
         List<AccountDTO> accountList = accountService.getAccountsAndBalances(retailUser.getCustomerId());
         List<TransRequest> transRequestList=transferService.getLastTenTransactionsForAccount(account.getAccountNumber());
-
-        model.addAttribute("accountList", accountList);
+    if(transRequestList!=null || !(transRequestList.equals("")) || !(transRequestList.isEmpty())) {
         model.addAttribute("transRequestList", transRequestList);
-        System.out.println("what is the "+transRequestList);
+        model.addAttribute("accountList", accountList);
+        System.out.println("what is the " + transRequestList);
         return "cust/account/accountstatement";
     }
-
-    /*@GetMapping(path = "/all")
-    public
-    @ResponseBody
-    DataTablesOutput<TransRequest> getUsers(Principal principal, DataTablesInput input) {
-        RetailUser retailUser = retailUserService.getUserByName(principal.getName());
-
-//        CorporateDTO corporate = corporateService.getCorporate(corporateUser.getCorporate().getId());
-
-        Pageable pageable = DataTablesUtils.getPageable(input);
-        Page<TransRequest> users = transferService.getLastTenTransactionsForAccount( pageable);
-        DataTablesOutput<CorporateUserDTO> out = new DataTablesOutput<CorporateUserDTO>();
-        out.setDraw(input.getDraw());
-        out.setData(users.getContent());
-        out.setRecordsFiltered(users.getTotalElements());
-        out.setRecordsTotal(users.getTotalElements());
-        return out;
+        return "redirect:/retail/dashboard";
     }
-    */
+
+
 
     @PostMapping("/history")
     public String getAccountHistory( Model model,Principal principal){
@@ -238,48 +241,123 @@ public class AccountController {
     }
 
     @GetMapping("/viewstatement/{account}")
-    public String getViewStatement( Model model,Principal principal,@PathVariable Account account){
-        RetailUser retailUser=retailUserService.getUserByName(principal.getName());
+    public String getViewStatement( Model model,Principal principal,@PathVariable Account account) {
+        RetailUser retailUser = retailUserService.getUserByName(principal.getName());
 
-        AccountStatement accountStatement = integrationService.getAccountStatements(account.getAccountId(),new Date(),new Date());
-        model.addAttribute("accountStatement",accountStatement);
-        System.out.println("PRINT ACCOUNT STAT:"+accountStatement);
+//        Account account=accountRepo.findFirstAccountByCustomerId(retailUser.getCustomerId());
+
+//        SimpleDateFormat format=new SimpleDateFormat("DD/MM/YYYY")
+        AccountStatement accountStatement = integrationService.getAccountStatements(account.getAccountId(), new Date(), new Date());
+        if (accountStatement != null || !(accountStatement.equals(""))){
+            List<FinancialTransaction> transactionList=accountStatement.getTransactionList();
+            model.addAttribute("transactionLists",transactionList);
+            System.out.println("transactionList"+transactionList);
+            model.addAttribute("accountStatement", accountStatement);
+        System.out.println("PRINT MY ACCOUNT STATEMENT:" + accountStatement);
 
         return "cust/account/view";
     }
+    return "redirect:/retail/dashboard";
+    }
 
-    @GetMapping("/print/statement")
-    public String getAcctStmtPDF(){
-        logger.info("account statement running");
-        File file = new File("classpath:pdf");
-        Map<String,Object> parameters = new HashMap<String, Object>();
-        parameters.put("AccountNum","10112332");
-        parameters.put("date","01-08-2017");
-        String destination = "C:\\Users\\Longbridge\\Documents\\InternetBanking\\master\\src\\main\\resources\\pdf\\";
-        Resource resource = new ClassPathXmlApplicationContext().getResource(jrxmlPath);
-        try {
-            JsonDataSource ds = new JsonDataSource(new File("C:\\Users\\Longbridge\\Documents\\InternetBanking\\master\\src\\main\\resources\\pdf\\MOCK_DATA2.json"));
-            JasperDesign jasperDesign = JRXmlLoader.load(resource.getInputStream());
-            JasperReport jasperReport  = JasperCompileManager.compileReport(jasperDesign);
-            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport,  parameters,  ds);
-            exportReportToPdfFile(jasperPrint, destination+"accountStatement"+".pdf");
-            File destFile = new File(destination+"accountStatement"+".xlsx");
-            try {
-                JRXlsExporter exporter = new JRXlsExporter();
-                exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
-                exporter.setParameter(JRXlsExporterParameter.IS_ONE_PAGE_PER_SHEET, Boolean.TRUE);
-                exporter.setParameter(JRXlsExporterParameter.IS_DETECT_CELL_TYPE, Boolean.TRUE);
-                exporter.setParameter(JRXlsExporterParameter.IS_WHITE_PAGE_BACKGROUND, Boolean.FALSE);
-                exporter.setParameter(JRXlsExporterParameter.IS_REMOVE_EMPTY_SPACE_BETWEEN_ROWS, Boolean.TRUE);
-                exporter.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, destFile.toString());
-                exporter.setParameter(JRXlsExporterParameter.IS_ONE_PAGE_PER_SHEET, Boolean.FALSE);
-                exporter.exportReport();
-            } catch (JRException e) {
-                e.printStackTrace();
+
+
+
+//
+//
+//
+    @GetMapping("/helloReport2/{account}")
+    public ModelAndView getRpt2(ModelAndView modelAndView,@PathVariable Account account) {
+
+        JasperReportsPdfView v = new JasperReportsPdfView();
+        v.setUrl("classpath:pdf/accountStatement.jrxml");
+        v.setApplicationContext(appContext);
+//                v.setReportDataKey("datasource");
+
+
+        AccountStatement accountStatement = integrationService.getAccountStatements(account.getAccountId(), new Date(), new Date());
+        if (accountStatement != null || !(accountStatement.equals(""))) {
+            List<FinancialTransaction> transactionList = accountStatement.getTransactionList();
+//            String sourceFileName ="classpath:pdf/accountStatement.jrxml";
+//            JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource(transactionList);
+
+            Map<String, Object> parameterMap = new HashMap<>();
+           /* parameterMap.put("AccountNum","10112332");
+            parameterMap.put("date","01-08-2017");*/
+            for (FinancialTransaction transaction:transactionList){
+                parameterMap.put("currencyCode",transaction.getCurrencyCode());
+                parameterMap.put("valueDate",transaction.getValueDate());
+                parameterMap.put("currentBal",transaction.getCurrentBalance());
+                parameterMap.put("postDate",transaction.getPostDate());
+                parameterMap.put("tranParticular",transaction.getTransactionParticulars());
+                parameterMap.put("amount",transaction.getAmount());
+                parameterMap.put("tranType",transaction.getTranType());
+                parameterMap.put("valueDate",transaction.getValueDate());
+                parameterMap.put("accountId",transaction.getAccountId());
+
+
+                return new ModelAndView(v,parameterMap);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+
         }
+        return null;
+    }
+
+//    @GetMapping("/print/statement/{account}")
+//    public String getAcctStmtPDF(Principal principal,@PathVariable Account account){
+//        logger.info("account statement running");
+//        File file = new File("classpath:pdf");
+//
+//        AccountStatement accountStatement = integrationService.getAccountStatements(account.getAccountId(), new Date(), new Date());
+////        if (accountStatement != null || !(accountStatement.equals(""))){
+//            List<FinancialTransaction> transactionList=accountStatement.getTransactionList();
+//            Map<String,Object> parameters = new HashMap<String, Object>();
+//        parameters.put("AccountNum","10112332");
+//        parameters.put("date","01-08-2017");
+//        parameters.put("closingBal",accountStatement.getClosingBalance());
+//        parameters.put("creditCount",accountStatement.getCreditCount());
+//        parameters.put("debitCount",accountStatement.getDebitCount());
+//        parameters.put("openingBal",accountStatement.getOpeningBalance());
+//        parameters.put("totalCredit",accountStatement.getTotalCredit());
+//        parameters.put("totalCredit",accountStatement.getTotalDebit());
+//        List<FinancialTransaction> transactionLists=accountStatement.getTransactionList();
+//        for (FinancialTransaction transaction:transactionLists){
+//            parameters.put("currencyCode",transaction.getCurrencyCode());
+//            parameters.put("valueDate",transaction.getValueDate());
+//            parameters.put("currentBal",transaction.getCurrentBalance());
+//            parameters.put("postDate",transaction.getPostDate());
+//            parameters.put("tranParticular",transaction.getTransactionParticulars());
+//            parameters.put("amount",transaction.getAmount());
+//            parameters.put("tranType",transaction.getTranType());
+//            parameters.put("valueDate",transaction.getValueDate());
+//            parameters.put("accountId",transaction.getAccountId());
+////            parameters
+//        }
+//        String destination = "C:\\Users\\SYLVESTER\\Documents\\InternetB\\Keep History\\ibcmb\\src\\main\\resources\\pdf\\";
+//        Resource resource = new ClassPathXmlApplicationContext().getResource(jrxmlPath);
+//        try {
+//            JsonDataSource ds = new JsonDataSource(new File("C:\\Users\\SYLVESTER\\Documents\\InternetB\\Keep History\\ibcmb\\src\\main\\resources\\pdf\\MOCK_DATA2.json"));
+//            JasperDesign jasperDesign = JRXmlLoader.load(resource.getInputStream());
+//            JasperReport jasperReport  = JasperCompileManager.compileReport(jasperDesign);
+//            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport,  parameters,  ds);
+//            exportReportToPdfFile(jasperPrint, destination+"accountStatement"+".pdf");
+//            File destFile = new File(destination+"accountStatement"+".xlsx");
+//            try {
+//                JRXlsExporter exporter = new JRXlsExporter();
+//                exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
+//                exporter.setParameter(JRXlsExporterParameter.IS_ONE_PAGE_PER_SHEET, Boolean.TRUE);
+//                exporter.setParameter(JRXlsExporterParameter.IS_DETECT_CELL_TYPE, Boolean.TRUE);
+//                exporter.setParameter(JRXlsExporterParameter.IS_WHITE_PAGE_BACKGROUND, Boolean.FALSE);
+//                exporter.setParameter(JRXlsExporterParameter.IS_REMOVE_EMPTY_SPACE_BETWEEN_ROWS, Boolean.TRUE);
+//                exporter.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, destFile.toString());
+//                exporter.setParameter(JRXlsExporterParameter.IS_ONE_PAGE_PER_SHEET, Boolean.FALSE);
+//                exporter.exportReport();
+//            } catch (JRException e) {
+//                e.printStackTrace();
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 //        try {
 //            JRDataSource dataSource = new JREmptyDataSource();
 //            File outDir = new File("classpath: pdf/outputFile");
@@ -292,6 +370,6 @@ public class AccountController {
 //        } catch (JRException e) {
 //            e.printStackTrace();
 //        }
-        return null;
-    }
+//        return null;
+//    }
 }
