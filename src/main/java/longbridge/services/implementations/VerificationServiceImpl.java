@@ -50,7 +50,6 @@ public class VerificationServiceImpl implements VerificationService {
 	}
 
 	@Override
-	@Transactional
 	public String verify(Long verId) throws VerificationException {
 		//check if it is verified
 		Verification t = verificationRepo.findOne(verId);
