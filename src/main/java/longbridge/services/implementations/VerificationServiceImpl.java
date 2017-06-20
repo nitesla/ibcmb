@@ -52,7 +52,6 @@ public class VerificationServiceImpl implements VerificationService {
 
 
 	@Override
-	@Transactional
 	public String verify(Long verId) throws VerificationException {
 		//check if it is verified
 		Verification t = verificationRepo.findOne(verId);
@@ -108,53 +107,7 @@ public class VerificationServiceImpl implements VerificationService {
 		}
 		return messageSource.getMessage("verification.verify",null,locale);
 	}
-//	@Override
-//	public String verify(Verification t) throws VerificationException {
-//		//check if it is verified
-//		if(t.getVerifiedBy() != null){
-//			//already verified
-//			logger.debug("Already verified");
-//            return messageSource.getMessage("verification.verify",null,locale);
-//        }
-//		//TODO Get the current logged in user and use as verifier
-////        t.setVerifiedBy(verifier);
-//        t.setVerifiedOn(new Date());
-////        logger.info("Verified by: "+ verifier.getUserName());
-//
-//		Class<?> cc = null;
-//		Method method = null;
-//
-//		try {
-//			cc = Class.forName(PACKAGE_NAME + t.getEntityName());
-//			logger.info("Class {}", cc.getName());
-//			method = cc.getMethod("deserialize", String.class);
-//
-//			Object returned = cc.newInstance();
-//			method.invoke(returned, t.getAfterObject());
-//			logger.info("Object returned {}", returned.toString());
-//			logger.debug("Class {} ", returned.toString() );
-//			eman.persist(cc.cast(returned));
-//
-//			AbstractEntity entity = (AbstractEntity) returned;
-//			t.setEntityId(entity.getId());
-//			t.setStatus(verificationStatus.VERIFIED);
-//			verificationRepo.save(t);
-//
-//		} catch (NoSuchMethodException | SecurityException | ClassNotFoundException e1) {
-//			logger.error("Error", e1);
-//		} catch (IllegalAccessException e) {
-//			logger.error("Error", e);
-//		} catch (IllegalArgumentException e) {
-//			logger.error("Error", e);
-//		} catch (InvocationTargetException e) {
-//			logger.error("Error", e);
-//		} catch (InstantiationException e) {
-//			// TODO Auto-generated catch block
-//			logger.error("Error", e);
-//		}
-//		return messageSource.getMessage("verification.verify",null,locale);
-//	}
-//
+
 
 	@Override
 	public Verification getVerification(Long id) {
@@ -190,18 +143,22 @@ public class VerificationServiceImpl implements VerificationService {
 	@Override
 	public <T extends SerializableEntity<T>> String addModifyVerificationRequest(T originalEntity, T entity) throws JsonProcessingException,DuplicateObjectException {
 
-		String classSimpleName = entity.getClass().getSimpleName();
+		String className = entity.getClass().getSimpleName();
 
-		Verification verification = verificationRepo.findFirstByEntityNameAndStatus(classSimpleName, verificationStatus.PENDING);
+		AbstractEntity originalEntity1 = (AbstractEntity)originalEntity;
+
+		Verification verification = verificationRepo.findFirstByEntityNameAndEntityIdAndStatus(className,originalEntity1.getId(),verificationStatus.PENDING);
 
 		if(verification!=null){
 			throw new DuplicateObjectException("Entity has pending verification");
 		}
-		verification.setEntityName(classSimpleName);
+		verification = new Verification();
+		verification.setEntityName(className);
+		verification.setEntityId(originalEntity1.getId());
 		verification.setBeforeObject(originalEntity.serialize());
 		verification.setAfterObject(entity.serialize());
 		verification.setOriginal(originalEntity.serialize());
-		verification.setDescription("Modified " + classSimpleName);
+		verification.setDescription("Modified " + className);
 		//TODO get the Operation Code
 //		verification.setOperationCode(entity.getModifyCode());
 		verification.setStatus(verificationStatus.PENDING);
@@ -209,7 +166,7 @@ public class VerificationServiceImpl implements VerificationService {
         //verification.setInitiatedBy(initiator);
         verification.setInitiatedOn(new Date());
         verificationRepo.save(verification);
-        logger.info(classSimpleName + " Modification request has been added. Before {}, After {}", verification.getBeforeObject(), verification.getAfterObject());
-		return String.format(messageSource.getMessage("verification.modify.success",null,locale),classSimpleName);
+        logger.info(className + " Modification request has been added. Before {}, After {}", verification.getBeforeObject(), verification.getAfterObject());
+		return String.format(messageSource.getMessage("verification.modify.success",null,locale),className);
 	}
 }
