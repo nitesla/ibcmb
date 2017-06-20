@@ -117,7 +117,7 @@ public class OperationsUserController {
         try {
             String message = operationsUserService.changePassword(user, changePassword);
             redirectAttributes.addFlashAttribute("message", message);
-            return "redirect:/ops/dashboard";
+            return "redirect:/ops/logout";
         } catch (WrongPasswordException wpe) {
             result.reject("oldPassword", wpe.getMessage());
             logger.error("Wrong password from operation user {}", user.getUserName(), wpe.toString());
