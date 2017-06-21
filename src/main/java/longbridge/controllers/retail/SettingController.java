@@ -282,6 +282,9 @@ public class SettingController {
 
     }
 
-
+ @GetMapping("/faq")
+    public String fAQ(){
+        return "cust/faq";
+    }
 
 }

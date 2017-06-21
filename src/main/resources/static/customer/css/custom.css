@@ -21,6 +21,7 @@ start
 
 
 .req:after { content:" * ";color:#ff6666;font-size: 13px;font-weight: bolder }
+.req-inner:before { content:" * ";color:#ff6666;font-size: 13px;font-weight: bolder }
 
 
 .req ~ input
@@ -42,6 +43,11 @@ label
     color:white;
 }
 
+.bg-white
+{
+    background-color: white;
+}
+
 .bg-grey
 {
     background: #F3F3F4;
@@ -56,10 +62,56 @@ span.req
 
 }
 
+.hide-content-only
+{
+    visibility: hidden;
+}
+span.req-inner
+{
+    position: relative;
+    top:-10px;
+    right:-5px;
+    display: inline-block;
+
+}
+
+.my-border
+{
+    border: 1px solid grey !important;
+}
+
+.my-label
+{
+    margin-left:50px !important;
+    font-weight:bold;
+    font-size:14px
+}
+
+.alert
+{
+    padding: 7px !important;
+}
+
+.my-select
+{
+    height: 30px !important;
+    width:70% !important;
+    margin: 0px auto !important;
+    /*-webkit-appearance: menulist;*/
+    
+}
+.my-input
+{
+    height: 30px !important;
+    width:70% !important;
+}
+
 .form-group
 {
     position: relative !important;
 }
+
+
 .mt-sm
 {
     margin-bottom: 10px;
