@@ -196,6 +196,7 @@
     <script th:src="@{~/customer/js/coronation.js}"></script>
     <!-- BOOTSTRAP SCRIPTS  -->
     <script th:src="@{~/customer/js/bootstrap.js}"></script>
+    <script th:src="@{~/customer/js/bootstrap-session-timeout.js}"></script>
     <!--<script>-->
         <!--$(document).ready(function(){-->
             <!--$(".dropdown").hover(-->
@@ -214,6 +215,16 @@
     <script>
         $(document).ready(function(){
             $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
+    <script>
+        $.sessionTimeout({
+            keepAliveUrl: 'keep-alive.html',
+            logoutUrl: 'logout.html',
+            redirUrl: 'locked.html',
+            warnAfter: 5000,
+            redirAfter: 15000,
+            countdownBar: true
         });
     </script>
 </footer>

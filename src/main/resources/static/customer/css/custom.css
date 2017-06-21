@@ -770,6 +770,28 @@ body {
     position: inherit;
 }
 
+/*CSS for session timeout*/
+.progress{
+    height: 10px;
+}
+.progress-bar{
+    font-size: 11px;
+    line-height: 10px;
+    color: #fff;
+    text-align: center;
+    background-color: #9F614B;
+}
+.prog-time{
+    color: #032A4F;
+    font-weight: 100%
+}
+.modal-footer .btn {
+    background-color: #9F614B;
+    color: #fff;
+    border-radius: 4px;
+}
+/*===================*/
+
 /*.calender{*/
 /*overflow: hidden;*/
 /*position: inherit;*/
