@@ -46,7 +46,8 @@ public class CodeServiceImpl implements CodeService {
     MessageSource messageSource;
 
     @Autowired
-    public CodeServiceImpl(CodeRepo codeRepository, VerificationService verificationService, ModelMapper modelMapper) {
+    public CodeServiceImpl(CodeRepo codeRepository, VerificationService verificationService, ModelMapper modelMapper)
+    {
         codeRepo = codeRepository;
         this.verificationService = verificationService;
         this.modelMapper = modelMapper;

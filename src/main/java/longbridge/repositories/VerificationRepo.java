@@ -16,5 +16,9 @@ public interface VerificationRepo extends CommonRepo<Verification, Long>{
 
     Verification findFirstByEntityNameAndStatus(String name, verificationStatus status);
 
-    Page<Verification > findByStatus(verificationStatus status , Pageable pageable);
+    Page<Verification > findByStatusAndCreatedBy(verificationStatus status , String createdby,Pageable pageable);
+
+    Verification findFirstByEntityNameAndEntityIdAndStatus(String name,long id,verificationStatus status);
+
+    int countByCreatedByAndUserTypeAndStatus(String username,String userType, verificationStatus status);
 }

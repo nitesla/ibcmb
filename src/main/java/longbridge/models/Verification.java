@@ -22,8 +22,10 @@ public class Verification extends AbstractEntity {
 
     @Lob
     private String beforeObject; //json
+
     @Lob
     private String afterObject; //json
+
     @Lob
     private String original; //json
 
@@ -33,6 +35,26 @@ public class Verification extends AbstractEntity {
     private String description;
     private Long entityId;
     private String entityName;
+    private String createdBy;
+
+    private String userType;
+
+    public String getUserType() {
+        return userType;
+    }
+
+    public void setUserType(String userType) {
+        this.userType = userType;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
     @Enumerated(value = EnumType.STRING)
     private OperationCode operationCode;
 

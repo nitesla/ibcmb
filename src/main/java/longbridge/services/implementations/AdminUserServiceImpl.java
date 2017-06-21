@@ -125,7 +125,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Override
     @Transactional
    @Verifiable(operation="Add_Admin",description="Adding a new User")
-    public String addUser(AdminUserDTO user) throws InternetBankingException {
+    public String addUser(AdminUserDTO user,User createdBy) throws InternetBankingException {
         AdminUser adminUser = adminUserRepo.findFirstByUserNameIgnoreCase(user.getUserName());
         if (adminUser != null) {
             throw new DuplicateObjectException(messageSource.getMessage("user.exist", null, locale));
@@ -141,10 +141,11 @@ public class AdminUserServiceImpl implements AdminUserService {
             Role role = new Role();
             role.setId(Long.parseLong(user.getRoleId()));
             adminUser.setRole(role);
-            creatUserOnEntrust(adminUser);
-            adminUserRepo.save(adminUser);
 
-//            makerCheckerSave(adminUser,adminUser);
+            //creatUserOnEntrust(adminUser);
+         //   adminUserRepo.save(adminUser);
+
+         makerCheckerSave(adminUser,adminUser,createdBy);
 
             logger.info("New admin user {} created", adminUser.getUserName());
             return messageSource.getMessage("user.add.success", null, locale);
@@ -160,12 +161,12 @@ public class AdminUserServiceImpl implements AdminUserService {
         }
     }
 
-    public <T extends SerializableEntity<T>> String makerCheckerSave(T originalEntity, T entity) throws JsonProcessingException, VerificationException {
+    public <T extends SerializableEntity<T>> String makerCheckerSave(T originalEntity, T entity,User createdBy) throws JsonProcessingException, VerificationException {
 
         AbstractEntity originalEntity1 = (AbstractEntity) (originalEntity);
 
         if (originalEntity1.getId() == null) {
-            String message = verificationService.addNewVerificationRequest(entity);
+            String message = verificationService.addNewVerificationRequest(entity, createdBy);
             return message;
 
         } else {
@@ -311,11 +312,11 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Transactional
     @Verifiable(operation="Update_Admin",description="Update a Admin User")
 //    @Verifiable(operation="Updating an Existing User")
-    public String updateUser(AdminUserDTO user) throws InternetBankingException {
+    public String updateUser(AdminUserDTO user,User users) throws InternetBankingException {
 
         try {
-            AdminUser adminUser = adminUserRepo.findById(user.getId());
-            AdminUser modifiedEntity = (AdminUser)adminUser.clone();
+            AdminUser originalEntity = adminUserRepo.findById(user.getId());
+            AdminUser modifiedEntity = (AdminUser)originalEntity.clone();
             modifiedEntity.setId(user.getId());
             modifiedEntity.setVersion(user.getVersion());
             modifiedEntity.setFirstName(user.getFirstName());
@@ -328,7 +329,7 @@ public class AdminUserServiceImpl implements AdminUserService {
 
 //            adminUserRepo.save(adminUser);
 
-            makerCheckerSave(originalEntity,modifiedEntity);
+            makerCheckerSave(originalEntity,modifiedEntity,users);
 
             logger.info("Admin user {} updated", originalEntity.getUserName());
             return messageSource.getMessage("user.update.success", null, locale);

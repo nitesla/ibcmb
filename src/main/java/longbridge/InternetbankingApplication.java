@@ -1,6 +1,7 @@
 package longbridge;
 
 import longbridge.api.Rate;
+import longbridge.config.SpringClassScanner;
 import longbridge.config.makerchecker.MakerCheckerInitializer;
 import longbridge.jobs.CronJobs;
 import longbridge.models.MakerChecker;
@@ -47,8 +48,8 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
     @Autowired
     private MakerCheckerRepo makerCheckerRepo;
 
-    @Autowired
-    private MakerCheckerInitializer makerCheckerInitializer;
+//    @Autowired
+//    private SpringClassScanner springClassScanner;
 
     public static void main(String[] args) {
         SpringApplication.run(InternetbankingApplication.class, args);
@@ -62,7 +63,7 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
     @Override
     public void run(String... strings) throws Exception {
         cronJobs.startJob();
-        makerCheckerInitializer.initializeMakerChecker();
+        //springClassScanner.afterPropertiesSet();
 //      securityService.createEntrustUser("wumiTofu01","Wunmi baba ",true);
 //        securityService.addUserContacts("soluwawunmi@gmail.com","07038810752",true,"wumiTofu01");
 //         securityService.sendOtp("wumiTofu01");

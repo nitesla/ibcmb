@@ -10,6 +10,6 @@ import org.springframework.data.domain.Pageable;
  */
 public interface MakerCheckerService
  {
-    Page<VerificationDTO> getMakerCheckerPending(Pageable pageDetails);
+
 
  }

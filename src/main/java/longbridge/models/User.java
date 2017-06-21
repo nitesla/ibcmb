@@ -198,9 +198,9 @@ public class User extends AbstractEntity implements Cloneable{
         return super.clone();
     }
 
-	@Override
-    public Object clone() throws CloneNotSupportedException{
-        return super.clone();
-    }
+//	@Override
+//    public Object clone() throws CloneNotSupportedException{
+//        return super.clone();
+//    }
 
 }
