@@ -107,7 +107,7 @@ public class MainController {
 
     @GetMapping("/faqs")
     public String viewFAQs() {
-        return "cust/faqs"; //TODO
+        return "faqs";
     }
 
     @GetMapping("/login/retail/failure")
@@ -363,7 +363,7 @@ public class MainController {
             }
         }
 
-        return "redirect:/";
+        return "redirect:/#contact_us";
 
     }
 
@@ -392,7 +392,7 @@ public class MainController {
                 redirectAttributes.addFlashAttribute("failure", "Failed to send message");
             }
         }
-        return "redirect:/";
+        return "redirect:/#contact_us";
     }
 
     private void clearSession(){
