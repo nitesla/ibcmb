@@ -23,7 +23,7 @@ public class InternationalBeneficiaryDTO {
     private String beneficiaryAddress;
     private String intermediaryBankName;
     private String intermediaryBankAcctNo;
-    private String currency;
+    private String currencyCode;
 
     public Long getId() {
         return id;
@@ -97,11 +97,11 @@ public class InternationalBeneficiaryDTO {
         this.intermediaryBankAcctNo = intermediaryBankAcctNo;
     }
 
-    public String getCurrency() {
-        return currency;
+    public String getCurrencyCode() {
+        return currencyCode;
     }
 
-    public void setCurrency(String currency) {
-        this.currency = currency;
+    public void setCurrencyCode(String currencyCode) {
+        this.currencyCode = currencyCode;
     }
 }

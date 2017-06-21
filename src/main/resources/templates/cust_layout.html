@@ -83,7 +83,7 @@
                         <li sec:authorize="hasAuthority('OWN_ACCOUNT_TRANSFER')"><a th:href="@{/retail/transfer/ownaccount}" th:text="#{menu.transfer.own}">Own account transfers </a></li>
                         <li sec:authorize="hasAuthority('CMB_CMB_TRANSFER')"><a th:href="@{/retail/transfer/local}" th:text="#{menu.transfer.cmb}">Transfer to Coronation account </a></li>
                         <li sec:authorize="hasAuthority('INTERBANK_TRANSFER')"><a th:href="@{/retail/transfer/interbank}" th:text="#{menu.transfer.other}">Transfer to other banks</a></li>
-                        <li sec:authorize="hasAuthority('INTERNATIONAL_TRANSFERs')"><a th:href="@{/retail/transfer/international}" th:text="#{menu.transfer.int}">International transfer</a></li>
+                        <li sec:authorize="hasAuthority('INTERNATIONAL_TRANSFERss')"><a th:href="@{/retail/transfer/international}" th:text="#{menu.transfer.int}">International transfer</a></li>
                         <li sec:authorize="hasAuthority('RET_TRANSACTION_LIMITs.')"><a th:href="@{/retail/transfer/settransferlimit}" th:text="#{menu.transfer.limit}">Set transfer limit</a></li>
                         <li sec:authorize="hasAuthority('STANDING_ORDER')"><a th:href="@{/retail/directdebit}" th:text="#{menu.transfer.order}">Standing order</a></li>
                         </ul>
@@ -288,7 +288,7 @@
     <script th:src="@{~/customer/js/jquery.dataTables.js}"></script>
     <!--<script th:src="@{~/customer/js/date/js/bootstrap-datepicker.js}"></script>-->
     <script th:src="@{~/customer/js/momentMin.js}"></script>
-    <script th:src="@{~/customer/js/calendar.js}"></script>
+    <!--<script th:src="@{~/customer/js/calendar.js}"></script>-->
     <script th:src="@{~/customer/js/jquery.spring-friendly.min.js}"></script>
     <script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
     <script th:src="@{~/customer/plugins/bootstrap-daterangepicker/daterangepicker.js}"></script>

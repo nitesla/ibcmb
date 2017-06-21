@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="cust_layout :: site-head">
+
+</head>
+<body>
+<div class="container">
+    <header th:replace="cust_layout :: header">
+    </header>
+
+<section class="content-wrapper">
+    <div class="containe">
+        <div class="row">
+            <div class="col-md-9 col-sm-9">
+                <h5 class="page_header"> International transfer</h5>
+                <a th:href="@{/retail/exchangerate}" class="pull-right"> View Exchange Rates</a>
+            </div>
+
+        </div>
+
+        <div class="row">
+            <div class="col-md-9 content-bg">
+                <div class="spacing">
+                    <div class="col-md-12 col-sm-12">
+                        <h6 class="sub_header">Beneficiaries</h6>
+                        <form method="post" >
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Beneficiary name</th>
+                                        <th>Account Number</th>
+                                        <th>Currency</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+
+                                <tr th:each="loc : ${interBen}">
+                                    <td th:text="${loc.accountName}"></td>
+                                    <td th:text="${loc.accountNumber}"></td>
+                                    <td th:text="${loc.currencyCode}"></td>
+                                    <td>
+                                        <li class="dropdown" style="list-style: none">
+                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" style="font-size:20px;" aria-haspopup="true"><i class=" fa fa-angle-right"></i></a>
+                                        <ul class="dropdown-menu">
+
+
+                                            <li><a th:href="@{'/retail/transfer/international/' + ${loc.id} }">make a transfer</a>
+
+
+                                            </li>
+                                            <!--<li><a href="#">view details</a>
+                                            </li>
+                                            <li><a href="#">edit</a>
+                                            </li>-->
+                                        </ul>
+                                        </li>
+                                    </td>
+                                </tr>
+
+                                </tbody>
+                            </table>
+                            <br/>
+                            <a th:href="@{/retail/transfer/international/new}" class="btn">New Beneficiary</a>
+
+                           <!-- <button type="submit" class="btn btn-default" style="float: right">Add beneficiary</button>
+                       --> </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 pull-right">
+                            <div th:replace="cust_layout :: sidebar" class="" >
+                            </div>
+                        </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- CONTENT-WRAPPER SECTION END-->
+<footer th:replace="cust_layout ::footer">
+</footer>
+<script>
+    //datepicker
+    $( function() {
+        $( "#datepicker" ).datepicker(
+                { dateformat : 'dd/mm/yy'}
+        );
+    } );
+</script>
+</div>
+</body>
+</html>
