@@ -7,6 +7,7 @@ import longbridge.models.FinancialInstitution;
 import longbridge.models.FinancialInstitutionType;
 import longbridge.repositories.FinancialInstitutionRepo;
 import longbridge.services.FinancialInstitutionService;
+import longbridge.utils.Verifiable;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,6 +71,7 @@ public class FinancialInstitutionServiceImpl implements FinancialInstitutionServ
     }
 
     @Override
+    @Verifiable(operation="Add_Financial_Institution",description="Add Financial Institution")
     public String addFinancialInstitution(FinancialInstitutionDTO financialInstitutionDTO) throws InternetBankingException {
 
         FinancialInstitution financialInstitution;
@@ -92,6 +94,7 @@ public class FinancialInstitutionServiceImpl implements FinancialInstitutionServ
     }
 
     @Override
+    @Verifiable(operation="Update_Financial_Institution",description="Update Financial Institution")
     public String updateFinancialInstitution(FinancialInstitutionDTO financialInstitutionDTO) throws InternetBankingException {
         try {
             FinancialInstitution financialInstitution = new FinancialInstitution();
@@ -133,6 +136,7 @@ public class FinancialInstitutionServiceImpl implements FinancialInstitutionServ
     }
 
     @Override
+    @Verifiable(operation="Delete_Financial_Institution",description="Delete Financiail Institution")
     public String deleteFinancialInstitution(Long id) throws InternetBankingException {
       try {
           this.financialInstitutionRepo.delete(id);

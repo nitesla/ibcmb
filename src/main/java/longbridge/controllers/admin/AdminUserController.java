@@ -1,5 +1,6 @@
 package longbridge.controllers.admin;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.umd.cs.findbugs.annotations.Confidence;
 import longbridge.dtos.AdminUserDTO;
 import longbridge.dtos.RoleDTO;
@@ -8,6 +9,7 @@ import longbridge.exception.*;
 import longbridge.forms.ChangeDefaultPassword;
 import longbridge.forms.ChangePassword;
 import longbridge.models.AdminUser;
+import longbridge.models.User;
 import longbridge.services.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +33,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.security.Principal;
 import java.util.Locale;
+
+import static org.springframework.data.repository.init.ResourceReader.Type.JSON;
 
 /**
  * Created by SYLVESTER on 31/03/2017.
@@ -63,6 +67,9 @@ public class AdminUserController {
 
 
 
+    ObjectMapper mapper = new ObjectMapper();
+
+
     /**
      * Page for adding a new user
      *
@@ -86,16 +93,20 @@ public class AdminUserController {
      * @throws Exception
      */
     @PostMapping
-    public String createUser(@ModelAttribute("adminUser") @Valid AdminUserDTO adminUser, BindingResult result, RedirectAttributes redirectAttributes, Locale locale) {
+    public String createUser(@ModelAttribute("adminUser") @Valid AdminUserDTO adminUser, BindingResult result, RedirectAttributes redirectAttributes, Locale locale,Principal principal) {
         if (result.hasErrors()) {
             result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
             return "adm/admin/add";
         }
         try {
-            String message = adminUserService.addUser(adminUser);
+             AdminUser userCreatedBy = adminUserService.getUserByName(principal.getName());
+            // String user=userCreatedBy.getUserName();
+
+            String message = adminUserService.addUser(adminUser,userCreatedBy);
             redirectAttributes.addFlashAttribute("message", message);
             return "redirect:/admin/users";
-        } catch (DuplicateObjectException doe) {
+        }
+        catch (DuplicateObjectException doe) {
             result.addError(new ObjectError("error", doe.getMessage()));
             logger.error("Error creating admin user {}", adminUser.getUserName(), doe);
             return "adm/admin/add";
@@ -176,22 +187,15 @@ public class AdminUserController {
     }
 
 
-    /**
-     * Updates the user
-     *
-     * @param adminUser
-     * @param redirectAttributes
-     * @return
-     * @throws Exception
-     */
     @PostMapping("/update")
-    public String updateUser(@ModelAttribute("adminUser") @Valid AdminUserDTO adminUser, BindingResult result, RedirectAttributes redirectAttributes, Locale locale) {
+    public String updateUser(@ModelAttribute("adminUser") @Valid AdminUserDTO adminUser, BindingResult result, RedirectAttributes redirectAttributes, Locale locale,Principal principal) {
         if (result.hasErrors()) {
             result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
             return "adm/admin/edit";
         }
         try {
-            String message = adminUserService.updateUser(adminUser);
+            AdminUser userCreatedBy = adminUserService.getUserByName(principal.getName());
+            String message = adminUserService.updateUser(adminUser,userCreatedBy);
             redirectAttributes.addFlashAttribute("message", message);
             return "redirect:/admin/users";
         }

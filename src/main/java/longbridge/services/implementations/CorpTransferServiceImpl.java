@@ -12,6 +12,7 @@ import longbridge.repositories.PendingAuthorizationRepo;
 import longbridge.services.*;
 import longbridge.utils.ResultType;
 import longbridge.utils.TransferType;
+import longbridge.utils.Verifiable;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,6 +70,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
 
     @Override
     @Transactional
+
     public String addTransferRequest(CorpTransferRequestDTO transferRequestDTO) throws InternetBankingException {
 
         CorpTransRequest transferRequest = convertDTOToEntity(transferRequestDTO);
@@ -106,6 +108,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         return messageSource.getMessage("transfer.add.success", null, locale);
     }
 
+
     public CorpTransferRequestDTO makeTransfer(CorpTransferRequestDTO corpTransferRequestDTO) throws InternetBankingTransferException {
         validateTransfer(corpTransferRequestDTO);
         logger.trace("Transfer details valid {}", corpTransferRequestDTO);
@@ -135,6 +138,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     }
 
     @Override
+
     public boolean saveTransfer(CorpTransferRequestDTO corpTransferRequestDTO) throws InternetBankingTransferException {
         boolean result = false;
         try {

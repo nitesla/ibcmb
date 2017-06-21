@@ -16,6 +16,7 @@ import longbridge.repositories.RoleRepo;
 import longbridge.security.FailedLoginService;
 import longbridge.services.*;
 import longbridge.utils.DateFormatter;
+import longbridge.utils.Verifiable;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
 import org.slf4j.Logger;
@@ -125,6 +126,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     }
 
     @Override
+    @Verifiable(operation="Update_Corporate_User",description="Update Corporate User")
     public String updateUser(CorporateUserDTO user) throws InternetBankingException {
         try {
             CorporateUser corporateUser = corporateUserRepo.findOne(user.getId());
@@ -149,6 +151,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
     @Override
     @Transactional
+    @Verifiable(operation="Add_Corporate_User",description="Add Corporate User")
     public String addUser(CorporateUserDTO user) throws InternetBankingException {
 
         CorporateUser corporateUser = corporateUserRepo.findFirstByUserNameIgnoreCase(user.getUserName());
@@ -212,6 +215,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
     @Override
     @Transactional
+    @Verifiable(operation="Add_User_From_Corporate_Admin",description="Add User From Coporate Admin")
     public String addUserFromCorporateAdmin(CorpCorporateUserDTO user) throws InternetBankingException {
 
         CorporateUser corporateUser = corporateUserRepo.findFirstByUserNameIgnoreCase(user.getUserName());
@@ -361,6 +365,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
 
     @Override
+    @Verifiable(operation="Delete_User",description="Delete User")
     public String deleteUser(Long userId) throws InternetBankingException {
         try {
             CorporateUser corporateUser = corporateUserRepo.findOne(userId);
@@ -384,11 +389,13 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     }
 
     @Override
+    @Verifiable(operation="Lock_User",description="Lock User")
     public void lockUser(CorporateUser user, Date unlockat) {
         //todo
     }
 
     @Override
+    @Verifiable(operation="Unlock_User",description="Unlock User")
     public String unlockUser(Long id) throws InternetBankingException {
 
         CorporateUser user = corporateUserRepo.findOne(id);
@@ -457,6 +464,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     }
 
     @Override
+    @Verifiable(operation="Generate_And_Send_Password",description="Generate And Send Password")
     public void generateAndSendPassword(CorporateUser user) {
         String newPassword = securityService.generatePassword();
         try {
@@ -498,6 +506,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         return  convertEntitiesToDTOs(usersWithoutCorpRole);
     }
 
+    @Verifiable(operation="Send_User_Credentials",description="Send User Credentials")
     private void sendUserCredentials(CorporateUser user, String password) throws InternetBankingException {
         String fullName = user.getFirstName() + " " + user.getLastName();
         Email email = new Email.Builder()

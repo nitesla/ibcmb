@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import longbridge.utils.Verifiable;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -41,6 +42,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 
 	@Transactional
 	@Override
+	@Verifiable(operation="Add_Setting",description="Add Settings")
 	public String addSetting(SettingDTO dto) throws InternetBankingException {
 		try {
 			ModelMapper mapper = new ModelMapper();
@@ -94,6 +96,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 	
 	@Transactional
 	@Override
+	@Verifiable(operation="Update_Settings",description="Update Settings")
 	public String updateSetting(SettingDTO dto) throws InternetBankingException {
 		try {
 			Setting setting = settingRepo.findOne(dto.getId());
@@ -107,6 +110,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 	}
 
 	@Override
+	@Verifiable(operation="Delete_Settings",description="Delete Settings")
 	public String deleteSetting(Long id) throws InternetBankingException {
 		try {
 			settingRepo.delete(id);
