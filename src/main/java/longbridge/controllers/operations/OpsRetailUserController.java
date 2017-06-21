@@ -133,6 +133,7 @@ public class OpsRetailUserController {
 
         try{
             String message = retailUserService.unlockUser(userId);
+
             redirectAttributes.addFlashAttribute("message",message);
 
         }

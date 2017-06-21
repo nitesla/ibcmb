@@ -1,9 +1,14 @@
 package longbridge.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import longbridge.dtos.CodeDTO;
+import longbridge.dtos.VerificationDTO;
 import longbridge.exception.VerificationException;
 import longbridge.models.SerializableEntity;
+import longbridge.models.User;
 import longbridge.models.Verification;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface VerificationService {
 
@@ -15,8 +20,15 @@ public interface VerificationService {
 
 	 /** This will verify/approve a Verification request.
       *
-      * @param verId
+      * @param
       */
+
+
+	 int getTotalNumberPending(User user);
+
+
+     Page<VerificationDTO> getMakerCheckerPending(Pageable pageDetails,User createdBy);
+
      String verify(Long verId) throws VerificationException;
      
      /** This fetches the {@link Verification} object with the id {@code id}
@@ -34,7 +46,7 @@ public interface VerificationService {
 
 
 
-     <T extends SerializableEntity<T>> String addNewVerificationRequest(T entity) throws JsonProcessingException, VerificationException;
+     <T extends SerializableEntity<T>> String addNewVerificationRequest(T entity, User createdBy) throws JsonProcessingException, VerificationException;
 
 
 

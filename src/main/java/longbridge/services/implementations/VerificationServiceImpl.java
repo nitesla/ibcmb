@@ -1,12 +1,10 @@
 package longbridge.services.implementations;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import longbridge.dtos.VerificationDTO;
 import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.VerificationException;
-import longbridge.models.AbstractEntity;
-import longbridge.models.AdminUser;
-import longbridge.models.SerializableEntity;
-import longbridge.models.Verification;
+import longbridge.models.*;
 import longbridge.repositories.VerificationRepo;
 import longbridge.services.VerificationService;
 import longbridge.utils.verificationStatus;
@@ -16,13 +14,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 @Service
@@ -38,6 +41,10 @@ public class VerificationServiceImpl implements VerificationService {
 	@Autowired
 	private MessageSource messageSource;
 
+	@Autowired
+	private ModelMapper modelMapper;
+
+
 	Locale locale = LocaleContextHolder.getLocale();
 
 	@Override
@@ -49,6 +56,9 @@ public class VerificationServiceImpl implements VerificationService {
         return messageSource.getMessage("verification.decline",null,locale);
 	}
 
+
+
+
 	@Override
 	public String verify(Long verId) throws VerificationException {
 		//check if it is verified
@@ -56,11 +66,11 @@ public class VerificationServiceImpl implements VerificationService {
 		if(t.getVerifiedBy() != null){
 			//already verified
 			logger.debug("Already verified");
-            return messageSource.getMessage("verification.verify",null,locale);
-        }
+			return messageSource.getMessage("verification.verify",null,locale);
+		}
 		//TODO Get the current logged in user and use as verifier
 //        t.setVerifiedBy(verifier);
-        t.setVerifiedOn(new Date());
+		t.setVerifiedOn(new Date());
 //        logger.info("Verified by: "+ verifier.getUserName());
 
 		Class<?> cc = null;
@@ -114,8 +124,7 @@ public class VerificationServiceImpl implements VerificationService {
 
 
 	@Override
-
-	public <T extends SerializableEntity<T>> String addNewVerificationRequest(T entity) throws JsonProcessingException, VerificationException {
+	public <T extends SerializableEntity<T>> String addNewVerificationRequest(T entity,User createdBy) throws JsonProcessingException, VerificationException {
 
 		String classSimpleName = entity.getClass().getSimpleName();
 		Verification verification = new Verification();
@@ -123,12 +132,10 @@ public class VerificationServiceImpl implements VerificationService {
         verification.setAfterObject(entity.serialize());
         verification.setOriginal("");
         verification.setDescription("Added " + classSimpleName);
-        //TODO get the Operation Code
-//        verification.setOperationCode(entity.getAddCode());
+        verification.setUserType(createdBy.getUserType().name());
         verification.setEntityName(classSimpleName);
+        verification.setCreatedBy(createdBy.getUserName());
         verification.setStatus(verificationStatus.PENDING);
-        //TODO use the current user as the initiator
-        //verification.setInitiatedBy(initiator);
         verification.setInitiatedOn(new Date());
         verificationRepo.save(verification);
         logger.info(classSimpleName + " creation request has been added. Before {}, After {}", verification.getBeforeObject(), verification.getAfterObject());
@@ -185,4 +192,45 @@ public class VerificationServiceImpl implements VerificationService {
         logger.info(className + " Modification request has been added. Before {}, After {}", verification.getBeforeObject(), verification.getAfterObject());
 		return String.format(messageSource.getMessage("verification.modify.success",null,locale),className);
 	}
+
+
+	public VerificationDTO convertEntityToDTO(Verification verification)
+	{
+		return  modelMapper.map(verification,VerificationDTO.class);
+	}
+
+	public List<VerificationDTO> convertEntitiesToDTOs(Iterable<Verification> verifications)
+	{
+		List<VerificationDTO> verificationDTOArrayList = new ArrayList<>();
+		for(Verification verification: verifications){
+			VerificationDTO verificationDTO = convertEntityToDTO(verification);
+			verificationDTOArrayList.add(verificationDTO);
+		}
+		return verificationDTOArrayList;
+	}
+
+
+	@Override
+	public Page<VerificationDTO> getMakerCheckerPending(Pageable pageDetails,User createdBy)
+	{
+		 Page<Verification> page=verificationRepo.findByStatusAndCreatedBy(verificationStatus.PENDING,createdBy.getUserName(),pageDetails);
+		System.out.print("This is the total length"+page.getTotalElements());
+		List<VerificationDTO> dtOs = convertEntitiesToDTOs(page.getContent());
+		long t = page.getTotalElements();
+		Page<VerificationDTO> pageImpl = new PageImpl<VerificationDTO>(dtOs,pageDetails,t);
+		return pageImpl;
+
+	}
+
+	@Override
+	public int getTotalNumberPending(User user)
+	{
+
+		int totalNumberPending=verificationRepo.countByCreatedByAndUserTypeAndStatus(user.getUserName(),user.getUserType().name(),verificationStatus.PENDING);
+
+			return totalNumberPending;
+	}
+
+
+
 }
