@@ -1,6 +1,7 @@
 package longbridge.services.implementations;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import longbridge.dtos.PendingVerification;
 import longbridge.dtos.VerificationDTO;
 import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.VerificationException;
@@ -23,10 +24,7 @@ import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 @Service
 @Transactional
@@ -231,6 +229,27 @@ public class VerificationServiceImpl implements VerificationService {
 			return totalNumberPending;
 	}
 
-
-
+	@Override
+	public Page<PendingVerification> getPendingVerifications(User user, Pageable pageable) {
+		Page<Verification> verifications = verificationRepo.findByStatusAndCreatedByAndUserType(verificationStatus.PENDING,user.getUserName(),user.getUserType().name(),pageable);
+		Set<String> entities = new HashSet<>();
+		List<PendingVerification> pendingVerifications = new ArrayList<>();
+		for(Verification verification: verifications){
+			entities.add(verification.getEntityName());
+		}
+		for(String entity: entities){
+			int countEntity = 0;
+			for(Verification verification: verifications){
+				if(entity.equals(verification.getEntityName())){
+					countEntity+=1;
+				}
+			}
+			PendingVerification pendingVerification = new PendingVerification();
+			pendingVerification.setEntityName(entity);
+			pendingVerification.setNumPending(countEntity);
+			pendingVerifications.add(pendingVerification);
+		}
+		PageImpl<PendingVerification> pendVerifications = new PageImpl<PendingVerification>(pendingVerifications,pageable,verifications.getTotalElements());
+		return pendVerifications;
+	}
 }

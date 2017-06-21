@@ -1,7 +1,7 @@
 package longbridge.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import longbridge.dtos.CodeDTO;
+import longbridge.dtos.PendingVerification;
 import longbridge.dtos.VerificationDTO;
 import longbridge.exception.VerificationException;
 import longbridge.models.SerializableEntity;
@@ -9,6 +9,9 @@ import longbridge.models.User;
 import longbridge.models.Verification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import java.util.List;
+import java.util.Set;
 
 public interface VerificationService {
 
@@ -61,6 +64,7 @@ public interface VerificationService {
       <T extends SerializableEntity<T>> String addModifyVerificationRequest(T originalEntity, T entity) throws JsonProcessingException;
 
 
+    Page<PendingVerification> getPendingVerifications(User user, Pageable pageable);
 
 //    <T extends SerializableEntity<T>> String makerCheckerSave(T originalEntity, T entity) throws JsonProcessingException, VerificationException;
 }

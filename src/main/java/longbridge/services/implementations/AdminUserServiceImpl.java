@@ -16,6 +16,7 @@ import java.util.*;
 
 import longbridge.utils.DateFormatter;
 import longbridge.utils.HostMaster;
+import longbridge.utils.Verifiable;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

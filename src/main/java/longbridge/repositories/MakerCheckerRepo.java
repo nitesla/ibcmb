@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
  */
 
 @Repository
-
 public interface MakerCheckerRepo extends CommonRepo<MakerChecker, Long>
 {
     MakerChecker findFirstByName(String name);
