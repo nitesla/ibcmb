@@ -17,6 +17,8 @@
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/select.bootstrap.css}" />
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/font-awesome/font-awesome.min.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/bootstrap-daterangepicker/daterangepicker.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/datatables/css/jquery.dataTables.min.css}"/>
+    <!--<link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/datatables/css/dataTables.bootstrap.css}"/>-->
 
     <title>Coronation Merchant Bank</title>
 
@@ -178,16 +180,7 @@
                             display: none;
                         }
                       </style>
-
-                
-
-               
-              
-                
-
-
             </div>
-
             <!--<div  id="calendar" style="display: block; margin: 0px auto;" class=" calendar hidden-xs hidden-sm "></div>-->
        </div>
         <div class="sidebar- hidden-xs hidden-sm" >
@@ -323,8 +316,6 @@
         $(document).ready(function()
         {
             $('[data-toggle="tooltip"]').tooltip();
-
-           
                 
                 $("#dp").datepicker({
                 // buttonImage: '@{~/customer/img/cmb_logo.png}',
@@ -347,15 +338,15 @@
 
     <script>
                     
-                        function show()
-                        {
-                            var dp = document.getElementById('dp');
-                            if (dp.style.display == "block")
-                                 dp.style.display = "none";
-                            else
-                                 dp.style.display = "block";
-                        }
-                </script>
+        function show()
+        {
+            var dp = document.getElementById('dp');
+            if (dp.style.display == "block")
+                 dp.style.display = "none";
+            else
+                 dp.style.display = "block";
+        }
+    </script>
 </footer>
 <!-- /footer content -->
 

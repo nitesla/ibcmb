@@ -16,6 +16,8 @@ import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -66,29 +68,30 @@ public class MainController {
     public ModelAndView getLoginPage(@RequestParam Optional<String> error, @RequestParam Optional<HttpServletRequest> request) {
 
         if (request.isPresent()) request.get().getSession().invalidate();
-
+        clearSession();
 
         return new ModelAndView("retpage1", "error", error);
     }
 
     @RequestMapping(value = "/login/corporate", method = RequestMethod.GET)
     public ModelAndView getCorpLoginPage(@RequestParam Optional<String> error) {
-
+        clearSession();
         return new ModelAndView("corppage1", "error", error);
+
     }
 
     @GetMapping(value = "/login/admin")
-    public ModelAndView adminLogin(@RequestParam Optional<HttpSession> session) {
-        if (session.isPresent()) session.get().invalidate();
+    public ModelAndView adminLogin() {
+        clearSession();
+
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("admlogin");
         return modelAndView;
     }
 
     @GetMapping(value = "/login/ops")
-    public ModelAndView opsLogin(@RequestParam Optional<HttpSession> session) {
-
-        if (session.isPresent()) session.get().invalidate();
+    public ModelAndView opsLogin() {
+        clearSession();
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("opslogin");
         return modelAndView;
@@ -357,7 +360,9 @@ public class MainController {
                 redirectAttributes.addFlashAttribute("failure", "Failed to send message");
             }
         }
+
         return "redirect:/";
+
     }
 
     @PostMapping("/request/callback")
@@ -386,6 +391,14 @@ public class MainController {
             }
         }
         return "redirect:/";
+    }
+
+    private void clearSession(){
+        ServletRequestAttributes attr = (ServletRequestAttributes)
+                RequestContextHolder.currentRequestAttributes();
+        HttpSession session = attr.getRequest().getSession(false);
+        if (session!=null)
+        session.invalidate();
     }
 
 }

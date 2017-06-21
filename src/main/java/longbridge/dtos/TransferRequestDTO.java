@@ -40,24 +40,30 @@ public class TransferRequestDTO{
     private String sessionId;
 
     private BigDecimal amount;
+    private String statusDescription;
 
 
     public TransferRequestDTO() {
     }
 
-    public TransferRequestDTO(String source, TransferType transferType, FinancialInstitution financialInstitution, String beneficiaryAccountNumber, String beneficiaryAccountName, String remarks, String referenceNumber, String userReferenceNumber, String narration, String sessionId, BigDecimal amount) {
-        this.customerAccountNumber = source;
+    public TransferRequestDTO(Long id, int version, String customerAccountNumber, TransferType transferType, FinancialInstitution financialInstitution, String beneficiaryAccountNumber, String beneficiaryAccountName, String remarks, String status, String referenceNumber, String userReferenceNumber, String narration, String sessionId, BigDecimal amount, String statusDescription) {
+        this.id = id;
+        this.version = version;
+        this.customerAccountNumber = customerAccountNumber;
         this.transferType = transferType;
         this.financialInstitution = financialInstitution;
         this.beneficiaryAccountNumber = beneficiaryAccountNumber;
         this.beneficiaryAccountName = beneficiaryAccountName;
         this.remarks = remarks;
+        this.status = status;
         this.referenceNumber = referenceNumber;
         this.userReferenceNumber = userReferenceNumber;
         this.narration = narration;
         this.sessionId = sessionId;
-        this.amount=amount;
+        this.amount = amount;
+        this.statusDescription = statusDescription;
     }
+
 
     public Long getId() {
         return id;
@@ -171,26 +177,35 @@ public class TransferRequestDTO{
         this.amount = amount;
     }
 
+    public String getStatusDescription() {
+        return statusDescription;
+    }
+
+    public void setStatusDescription(String statusDescription) {
+        this.statusDescription = statusDescription;
+    }
+
     @Override
     public String toString() {
-        return "Transfer{" +
-                "source=" + customerAccountNumber +
+        return "TransferRequestDTO{" +
+                ", version=" + version +
+                ", customerAccountNumber='" + customerAccountNumber + '\'' +
                 ", transferType=" + transferType +
-                ", financialinstitution=" + financialInstitution +
+                ", financialInstitution=" + financialInstitution +
                 ", beneficiaryAccountNumber='" + beneficiaryAccountNumber + '\'' +
                 ", beneficiaryAccountName='" + beneficiaryAccountName + '\'' +
                 ", remarks='" + remarks + '\'' +
+                ", status='" + status + '\'' +
                 ", referenceNumber='" + referenceNumber + '\'' +
                 ", userReferenceNumber='" + userReferenceNumber + '\'' +
                 ", narration='" + narration + '\'' +
                 ", sessionId='" + sessionId + '\'' +
-                ", amount='" + amount + '\'' +
+                ", amount=" + amount +
+                ", statusDescription='" + statusDescription + '\'' +
                 '}';
     }
 
-	
-
-	public static OperationCode getAddCode() {
+    public static OperationCode getAddCode() {
 		// TODO Auto-generated method stub
 		return null;
 	}

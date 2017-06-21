@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout :: site-head">
+</head>
+
+
+
+<body class="nav-md">
+<div class="container body">
+    <div class="main_container">
+        <div class="col-md-3 left_col">
+            <div class="left_col scroll-view">
+                <div class="navbar nav_title" style="border: 0;">
+                    <!--<a href="index.html"><img th:src="@{~/images/cmb_logo.png}"/></a>-->
+                </div>
+
+                <div class="clearfix"></div>
+                <div class="clearfix"></div>
+
+                <div th:replace="layout :: admin-menu"></div>
+                <div th:replace="layout :: menu-footer-adm"></div>
+
+            </div>
+        </div>
+        <div th:replace="layout :: ops-top-nav"></div>
+
+        <!-- page content -->
+        <div class="right_col" role="main">
+            <div class="">
+                <div class="page-title">
+                    <div class="title_left">
+                        <h3>Corporate Global Transaction Limit</h3>
+                    </div>
+
+                </div>
+
+                <div class="clearfix"></div>
+
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <ul class="nav navbar-left panel_toolbox">
+
+
+
+
+                                </ul>
+                                <ul class="nav navbar-right panel_toolbox">
+
+
+
+
+                                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                    </li>
+
+                                </ul>
+                                <div class="clearfix"></div>
+                            </div>
+
+                            <div class="x_content">
+
+                                <form method="post" class="form-horizontal" th:action="@{/admin/limits/corporate/global}" th:object="${globalLimit}">
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">Transfer Channel</label>
+
+                                        <div class="col-sm-6">
+                                            <select class="form-control" th:field="*{channel}">
+                                                <option th:each="channel: ${transferChannels}" th:value="${channel.code}" th:text="${channel.description}" th:selected="${channel.code==globalLimit.channel}"></option>
+
+                                            </select>
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">Description</label>
+
+                                        <div class="col-sm-6">
+                                            <input class="form-control" th:field="*{description}"/>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">Maximum Limit</label>
+
+                                        <div class="col-sm-6">
+                                            <input type="number" min="0" step="only" class="form-control" th:field="*{maxLimit}"/>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">Currency</label>
+
+                                        <div class="col-sm-6">
+                                            <select class="form-control" th:field="*{currency}">
+                                                <option th:each="currency: ${currencies}" th:value="${currency.code}" th:text="${currency.description}" th:selected="${currency.code==globalLimit.currency}"></option>
+
+                                            </select>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">Frequency</label>
+
+                                        <div class="col-sm-6">
+                                            <select class="form-control" th:field="*{frequency}">
+                                                <option th:each="frequency: ${frequencies}" th:value="${frequency.code}" th:text="${frequency.description}" th:selected="${frequency.code==globalLimit.frequency}"></option>
+
+                                            </select>
+                                        </div>
+
+                                    </div>
+
+                                    <!--<div class="form-group">-->
+                                        <!--<label class="col-sm-2 control-label">Effective Date</label>-->
+                                        <!--<div class="col-sm-6">-->
+                                            <!--<input class="form-control" id="datepicker" type="text" th:field="*{startDate}" required="required"/>-->
+
+                                        <!--</div>-->
+
+                                    <!--</div>-->
+
+
+                                    <div class="form-group">
+                                        <div class="col-sm-4 col-sm-offset-2">
+                                            <button class="btn btn-white" type="reset" id="cancel">Cancel</button>
+                                            <button class="btn btn-primary" type="submit">Submit</button>
+                                        </div>
+                                    </div>
+
+                                    <div th:if="${#fields.hasErrors('*')}">
+                                        <div hidden="hidden" >
+                                            <ul id="fielderrors">
+                                                <li th:each="err : ${#fields.errors('*')}" th:text="${err}">Input is incorrect</li>
+                                            </ul>
+                                        </div></div>
+                                    <div hidden="hidden">
+                                        <ul class="actionError" th:if="${#fields.hasErrors('global')}">
+                                            <li th:each="err : ${#fields.errors('global')}" th:text="${err}">Global error message</li>
+                                        </ul>
+                                    </div>
+
+                                </form>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- footer content -->
+        <footer th:replace="layout :: footer">
+        </footer>
+        <!-- /footer content -->
+    </div>
+</div>
+
+
+<!-- Page-Level Scripts -->
+<script>
+
+
+    $( function() {
+        $( "#datepicker" ).datepicker(
+            { dateformat : 'dd/mm/yy'}
+        );
+    } );
+
+    document.getElementById("cancel").onclick = function () {
+        location.href = "/admin/limits/corporate/global";
+    }
+</script>
+
+
+</body>
+</html>

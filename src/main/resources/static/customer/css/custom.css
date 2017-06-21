@@ -70,11 +70,14 @@ span.req
     display: none;
 }
 
+.mtop{
+    margin-top: 0px;
+}
+
 .text-bold
 {
     font-weight: bold;
 }
-
 
 /*#loader {*/
     /*position: absolute;*/
@@ -1254,6 +1257,14 @@ button, input, optgroup, select, textarea {
     .header {
         min-height: 1px;
         padding-bottom: 10px;
+    }
+
+    .margin-xs{
+        margin-top:30px;
+    }
+
+    .mtop{
+        margin-top: 20px;
     }
 
     .container {
