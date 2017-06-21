@@ -1,6 +1,7 @@
 package longbridge.controllers.retail;
 
 import longbridge.dtos.FinancialInstitutionDTO;
+import longbridge.dtos.SettingDTO;
 import longbridge.models.*;
 import longbridge.services.*;
 import longbridge.utils.DateFormatter;
@@ -32,6 +33,9 @@ public class RetailControllerAdvice {
     private ServiceReqConfigService reqConfigService;
     private MessageService messageService;
     private FinancialInstitutionService financialInstitutionService;
+
+    @Autowired
+    private ConfigurationService configurationService;
 
     @Autowired
     public RetailControllerAdvice(RetailUserService retailUserService, IntegrationService integrationService, TransferService transferService, AccountService accountService, ServiceReqConfigService reqConfigService, MessageService messageService
@@ -133,6 +137,23 @@ public class RetailControllerAdvice {
         }
 
         return "";
+    }
+
+    @ModelAttribute
+    public void sessionTimeout(Model model){
+        SettingDTO setting = configurationService.getSettingByName("SESSION_TIMEOUT");
+
+            try{
+                if (setting != null && setting.isEnabled()){
+                    System.out.println("this is session timmmmmmmmmmmmmmm");
+                    System.out.println(setting.getValue());
+                    model.addAttribute("timeOut", Long.parseLong(setting.getValue()));
+                }
+
+        }catch(Exception ex){
+
+            }
+
     }
 
 

@@ -348,16 +348,16 @@
                  dp.style.display = "block";
         }
     </script>
-    <script>
-        $.sessionTimeout({
-            keepAliveUrl: 'keep-alive.html',
-            logoutUrl: 'logout.html',
-            redirUrl: 'locked.html',
-            warnAfter: 5000,
-            redirAfter: 15000,
-            countdownBar: true
-        });
-    </script>
+    <!--<script th:inline="javascript">-->
+        <!--$.sessionTimeout({-->
+            <!--keepAliveUrl: 'keep-alive.html',-->
+            <!--logoutUrl: 'logout.html',-->
+            <!--redirUrl: 'logout.html',-->
+            <!--warnAfter: [[${timeOut}]],-->
+            <!--redirAfter: 20000,-->
+            <!--countdownBar: true-->
+        <!--});-->
+    <!--</script>-->
 </footer>
 <!-- /footer content -->
 
