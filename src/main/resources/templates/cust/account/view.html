@@ -46,11 +46,12 @@
                                 <option th:each="s: ${accounts}" th:value="${s}" th:text="${s}"></option></select>
                         </div>
 
+                        <div class="col-md-6 col-sm-6">
+                            <button type="submit" class="btn pull-right"><i class="fa fa-search" style="color: white" ></i>&nbsp; find</button>
+                        </div>
+
                     </div>
 
-<div class="row-spacing col-md-12">
-                        <button type="submit" class="btn pull-right"><i class="fa fa-search" style="color: white" ></i>&nbsp; find</button>
-</div>
 
 <!--<p>
                         <a th:href="@{/retail/account/print/statement}" class="btn bt-select bt-link-act"> &lt;!&ndash;disabled="disabled"&ndash;&gt;<i class="fa fa-print" style="color: white" ></i>&nbsp; print</a>
@@ -58,7 +59,7 @@
 </p>-->
 
                         <h2>TRANSACTION DETAILS</h2>
-                    <table class="table" id="users">
+                    <table  id="users" class="display" cellspacing="0" width="100%">
                         <thead>
                         <tr>
                             <th>Amount</th>
@@ -80,6 +81,17 @@
                             <td th:text="${list.valueDate}"></td>
                         </tr>
                         </tbody>
+                        <tfoot>
+                        <tr>
+                            <th>Amount</th>
+                            <th>Currency Code</th>
+                            <th>Post Date</th>
+                            <th>Transaction Particulars</th>
+                            <th>Transaction Type</th>
+                            <th>Value Date</th>
+
+                        </tr>
+                        </tfoot>
                     </table>
 
 
@@ -110,6 +122,7 @@
             "searching": false,
             "paging": true,
             "dom": 'T<"clear">frtlp'});
+
 
         });
 
