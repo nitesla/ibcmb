@@ -22,8 +22,6 @@ public interface VerificationRepo extends CommonRepo<Verification, Long>{
 
     Page<Verification > findByStatusAndCreatedByAndUserType(verificationStatus status , String createdby,String userType,Pageable pageable);
 
-
-
     Verification findFirstByEntityNameAndEntityIdAndStatus(String name,long id,verificationStatus status);
 
     int countByCreatedByAndUserTypeAndStatus(String username,String userType, verificationStatus status);
