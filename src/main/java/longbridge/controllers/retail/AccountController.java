@@ -253,22 +253,28 @@ public class AccountController {
     }
 
     @PostMapping("/viewstatement/display")
-    public String getViewStatement(Model model, Principal principal, HttpServletRequest request) throws ParseException {
-        RetailUser retailUser = retailUserService.getUserByName(principal.getName());
+    public String getViewStatement(Model model, HttpServletRequest request) throws ParseException {
+
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         String fromdate=request.getParameter("start");
         String enddate=request.getParameter("end");
+        if(enddate==null || enddate.isEmpty() || enddate.equals("")){
+            enddate=formatter.format(new Date());
+        }
         String foracid=request.getParameter("acctNumber");
-        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+
         AccountStatement accountStatement = integrationService.getAccountStatements(foracid, formatter.parse(fromdate), formatter.parse(enddate));
         System.out.println("PRINT MY ACCOUNT STATEMENT:" + accountStatement);
         if (accountStatement != null || !(accountStatement.equals(""))){
 
             List<TransactionDetails> transactionList=accountStatement.getPaginatedAccountStatement().getTransactionDetails();
-            model.addAttribute("transactionLists",transactionList);
-            System.out.println("transactionList"+transactionList);
-            model.addAttribute("accountStatement", accountStatement);
+            if(transactionList!=null || !(transactionList.equals("")) || transactionList.isEmpty()) {
+                model.addAttribute("transactionLists", transactionList);
+                System.out.println("transactionList" + transactionList);
+                model.addAttribute("accountStatement", accountStatement);
 
-            return "cust/account/view";
+                return "cust/account/view";
+            }
         }
         return "redirect:/retail/dashboard";
     }
