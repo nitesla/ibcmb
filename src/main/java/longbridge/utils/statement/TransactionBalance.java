@@ -25,4 +25,12 @@ public class TransactionBalance {
   public void setCurrencyCode(String currencyCode) {
     this.currencyCode = currencyCode;
   }
+
+  @Override
+  public String toString() {
+    return "TransactionBalance{" +
+            "amountValue='" + amountValue + '\'' +
+            ", currencyCode='" + currencyCode + '\'' +
+            '}';
+  }
 }

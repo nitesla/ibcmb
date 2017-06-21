@@ -250,6 +250,7 @@ public class SecurityConfig {
                     .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                     .invalidSessionUrl("/login/retail")
 
+
                     .and()
 
                     // logout

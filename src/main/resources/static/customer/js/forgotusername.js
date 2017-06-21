@@ -5,6 +5,7 @@ var customerId = "null";
  * @param accountNumber the account number to check
  */
 function validateAccountNo(accountNumber){
+    
     var customerId;
     var secQues;
     $.ajax({

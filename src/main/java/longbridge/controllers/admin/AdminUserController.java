@@ -8,10 +8,7 @@ import longbridge.exception.*;
 import longbridge.forms.ChangeDefaultPassword;
 import longbridge.forms.ChangePassword;
 import longbridge.models.AdminUser;
-import longbridge.services.AdminUserService;
-import longbridge.services.ConfigurationService;
-import longbridge.services.PasswordPolicyService;
-import longbridge.services.RoleService;
+import longbridge.services.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +55,12 @@ public class AdminUserController {
     private MessageSource messageSource;
 
     @Autowired
-    ConfigurationService configService;
+    private ConfigurationService configService;
+
+    @Autowired
+    private VerificationService verificationService;
+
+
 
 
     /**
@@ -192,7 +194,16 @@ public class AdminUserController {
             String message = adminUserService.updateUser(adminUser);
             redirectAttributes.addFlashAttribute("message", message);
             return "redirect:/admin/users";
-        } catch (InternetBankingException ibe) {
+        }
+        catch (DuplicateObjectException ibe) {
+            result.addError(new ObjectError("error", ibe.getMessage()));
+            logger.error("Existing user found", ibe);
+
+            adminUserService.verifyRequest(183L);
+
+            return "adm/admin/edit";
+        }
+        catch (InternetBankingException ibe) {
             result.addError(new ObjectError("error", ibe.getMessage()));
             logger.error("Error updating admin user", ibe);
             return "adm/admin/edit";
@@ -269,7 +280,7 @@ public class AdminUserController {
         try {
             String message = adminUserService.changePassword(user, changePassword);
             redirectAttributes.addFlashAttribute("message", message);
-            return "redirect:/admin/dashboard";
+            return "redirect:/admin/logout";
         } catch (WrongPasswordException wpe) {
             result.reject("oldPassword", wpe.getMessage());
             logger.error("Wrong password from admin user {}", user.getUserName(), wpe.toString());

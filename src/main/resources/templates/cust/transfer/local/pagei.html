@@ -13,19 +13,14 @@
         <div class="row">
             <div class="col-md-4 col-sm-4">
                 <h5 class="page_header"> Coronation account transfer</h5>
-                <select class="form-control" name="coronationbeneficiaries">
-                    <option value="Overveiw">coronation beneficiaries</option>
-                </select>
             </div>
         </div>
 
         <div class="row">
-
-            <div class="col-md-8 content-bg">
-
-                <div class="row spacing">
+            <div class="col-md-9 content-bg">
+                <div class="spacing">
                     <div class="col-md-12 col-sm-12">
-                        <h6 class="page_header">Beneficiaries</h6>
+                        <h6 class="sub_header">Beneficiaries</h6>
                         <form method="post" >
                             <table class="table">
                                 <thead>
@@ -62,22 +57,17 @@
                                 </tbody>
                             </table>
                             <br/>
-                            <a th:href="@{/retail/transfer/local/new}" class="btn">Add Beneficiary</a>
+                            <a th:href="@{/retail/transfer/local/new}" class="btn">New Beneficiary</a>
 
                            <!-- <button type="submit" class="btn btn-default" style="float: right">Add beneficiary</button>
                        --> </form>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3 sidebar" >
-                <div class="sidebar-bg">
-
-                    <p class="related">Related Information</p>
-                    <hr class="hrhr"/>
-                </div>
-            </div>
-            <div th:replace="cust_layout :: sidebar" class="col-md-3 sidebar">
-            </div>
+            <div class="col-md-3 pull-right">
+                            <div th:replace="cust_layout :: sidebar" class="" >
+                            </div>
+                        </div>
         </div>
     </div>
 </section>

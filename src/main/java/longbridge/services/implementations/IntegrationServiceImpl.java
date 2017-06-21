@@ -86,6 +86,18 @@ public class IntegrationServiceImpl implements IntegrationService {
     }
 
     @Override
+    public List<ExchangeRate> getExchangeRate() {
+        try {
+
+            String uri = URI + "/forex";
+            return Arrays.stream(template.getForObject(uri, ExchangeRate[].class)).collect(Collectors.toList());
+        } catch (Exception e) {
+            logger.error("Exception occurred {}", e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+
+    @Override
     public AccountStatement getAccountStatements(String accountNo, Date fromDate, Date toDate) {
         AccountStatement statement = new AccountStatement();
         try {
@@ -96,17 +108,14 @@ public class IntegrationServiceImpl implements IntegrationService {
             Map<String, String> params = new HashMap<>();
             params.put("accountNumber", accountNo);
             params.put("fromDate", formatter.format(fromDate));
-            if (toDate!=null) params.put("toDate",formatter.format(toDate));
+            params.put("solId",viewAccountDetails(accountNo).getSolId());
+            if (toDate != null) params.put("toDate", formatter.format(toDate));
 
 
-
-            statement = template.getForObject(uri, AccountStatement.class, params);
-
+            statement = template.postForObject(uri,  params,AccountStatement.class);
 
 
-
-
-        } catch (Exception e){
+        } catch (Exception e) {
 
         }
 
@@ -261,7 +270,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 
     @Override
     public TransferDetails makeNapsTransfer(Naps naps) throws InternetBankingTransferException {
-        String uri = URI + "/naps";
+        String uri = URI + "/transfer/naps";
 
         try {
             TransferDetails details = template.getForObject(uri, TransferDetails.class, naps);
@@ -269,8 +278,6 @@ public class IntegrationServiceImpl implements IntegrationService {
         } catch (Exception e) {
             return new TransferDetails();
         }
-
-
 
 
     }
@@ -411,15 +418,15 @@ public class IntegrationServiceImpl implements IntegrationService {
 
     @Override
     public BigDecimal getAvailableBalance(String s) {
-       try{
-           Map<String, BigDecimal> getBalance = getBalance(s);
-           BigDecimal balance = getBalance.get("AvailableBalance");
-           if (balance != null) {
-               return balance;
-           }
-       }catch (Exception e){
-       e.printStackTrace();
-       }
+        try {
+            Map<String, BigDecimal> getBalance = getBalance(s);
+            BigDecimal balance = getBalance.get("AvailableBalance");
+            if (balance != null) {
+                return balance;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return new BigDecimal(0);
     }
 
@@ -460,7 +467,7 @@ public class IntegrationServiceImpl implements IntegrationService {
             return details;
         } catch (Exception e) {
 
-            return new Rate();
+            return new Rate("","0","");
         }
 
 
@@ -487,7 +494,7 @@ public class IntegrationServiceImpl implements IntegrationService {
             e.printStackTrace();
             logger.error("Exception occurred {}", e);
             transRequest.setStatus("96");
-            transRequest.setStatusDescription("FAILED TO SEND A MAIL");
+            transRequest.setStatusDescription("TRANSACTION FAILED");
         }
 
         return transRequest;

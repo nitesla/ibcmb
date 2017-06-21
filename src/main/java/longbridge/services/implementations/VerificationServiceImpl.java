@@ -4,11 +4,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.VerificationException;
 import longbridge.models.AbstractEntity;
+import longbridge.models.AdminUser;
 import longbridge.models.SerializableEntity;
 import longbridge.models.Verification;
 import longbridge.repositories.VerificationRepo;
 import longbridge.services.VerificationService;
 import longbridge.utils.verificationStatus;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +36,7 @@ public class VerificationServiceImpl implements VerificationService {
 	@Autowired
     private EntityManager eman;
 	@Autowired
-	MessageSource messageSource;
+	private MessageSource messageSource;
 
 	Locale locale = LocaleContextHolder.getLocale();
 
@@ -48,8 +50,9 @@ public class VerificationServiceImpl implements VerificationService {
 	}
 
 	@Override
-	public String verify(Verification t) throws VerificationException {
+	public String verify(Long verId) throws VerificationException {
 		//check if it is verified
+		Verification t = verificationRepo.findOne(verId);
 		if(t.getVerifiedBy() != null){
 			//already verified
 			logger.debug("Already verified");
@@ -67,14 +70,23 @@ public class VerificationServiceImpl implements VerificationService {
 			cc = Class.forName(PACKAGE_NAME + t.getEntityName());
 			logger.info("Class {}", cc.getName());
 			method = cc.getMethod("deserialize", String.class);
-
 			Object returned = cc.newInstance();
 			method.invoke(returned, t.getAfterObject());
+			logger.info("Object retrieved {}", t.getAfterObject());
 			logger.info("Object returned {}", returned.toString());
-			logger.debug("Class {} ", returned.toString() );
-			eman.persist(cc.cast(returned));
+			logger.debug("Class {} ", returned.toString());
+			if(t.getEntityId()==null) {
+				eman.persist(cc.cast(returned));
 
+			}
+			else{
+				Object obj = eman.find(cc,t.getEntityId());
+				ModelMapper modelMapper = new ModelMapper();
+				modelMapper.map(returned,obj);
+				eman.persist(cc.cast(obj));
+			}
 			AbstractEntity entity = (AbstractEntity) returned;
+
 			t.setEntityId(entity.getId());
 			t.setStatus(verificationStatus.VERIFIED);
 			verificationRepo.save(t);
@@ -123,24 +135,46 @@ public class VerificationServiceImpl implements VerificationService {
 
 		return String.format(messageSource.getMessage("verification.add.success",null,locale),classSimpleName);
 
+
+//		public <T extends SerializableEntity<T>> String makerCheckerSave(T originalEntity, T entity) throws JsonProcessingException, VerificationException {
+//
+//			AbstractEntity originalEntity1 = (AbstractEntity) (originalEntity);
+//
+//			if (originalEntity1.getId() == null) {
+//				String message = verificationService.addNewVerificationRequest(entity);
+//				return message;
+//
+//			} else {
+//
+//				String message = verificationService.addModifyVerificationRequest(originalEntity, entity);
+//				return message;
+//
+//			}
+//
+//
+//		}
 	}
 
 
 	@Override
 	public <T extends SerializableEntity<T>> String addModifyVerificationRequest(T originalEntity, T entity) throws JsonProcessingException,DuplicateObjectException {
 
-		String classSimpleName = entity.getClass().getSimpleName();
+		String className = entity.getClass().getSimpleName();
 
-		Verification verification = verificationRepo.findFirstByEntityNameAndStatus(classSimpleName, verificationStatus.PENDING);
+		AbstractEntity originalEntity1 = (AbstractEntity)originalEntity;
+
+		Verification verification = verificationRepo.findFirstByEntityNameAndEntityIdAndStatus(className,originalEntity1.getId(),verificationStatus.PENDING);
 
 		if(verification!=null){
 			throw new DuplicateObjectException("Entity has pending verification");
 		}
-		verification.setEntityName(classSimpleName);
+		verification = new Verification();
+		verification.setEntityName(className);
+		verification.setEntityId(originalEntity1.getId());
 		verification.setBeforeObject(originalEntity.serialize());
 		verification.setAfterObject(entity.serialize());
 		verification.setOriginal(originalEntity.serialize());
-		verification.setDescription("Modified " + classSimpleName);
+		verification.setDescription("Modified " + className);
 		//TODO get the Operation Code
 //		verification.setOperationCode(entity.getModifyCode());
 		verification.setStatus(verificationStatus.PENDING);
@@ -148,7 +182,7 @@ public class VerificationServiceImpl implements VerificationService {
         //verification.setInitiatedBy(initiator);
         verification.setInitiatedOn(new Date());
         verificationRepo.save(verification);
-        logger.info(classSimpleName + " Modification request has been added. Before {}, After {}", verification.getBeforeObject(), verification.getAfterObject());
-		return String.format(messageSource.getMessage("verification.modify.success",null,locale),classSimpleName);
+        logger.info(className + " Modification request has been added. Before {}, After {}", verification.getBeforeObject(), verification.getAfterObject());
+		return String.format(messageSource.getMessage("verification.modify.success",null,locale),className);
 	}
 }

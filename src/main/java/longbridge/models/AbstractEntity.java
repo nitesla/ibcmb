@@ -121,4 +121,14 @@ public abstract class AbstractEntity implements Serializable, SerializableEntity
          modelMapper.map(readValue, this);
          
 	}
+
+    @Override
+    public String toString() {
+        return
+                "id=" + id +
+                ", version=" + version +
+                ", delFlag='" + delFlag + '\'' +
+                ", deletedOn=" + deletedOn +
+                '}';
+    }
 }
