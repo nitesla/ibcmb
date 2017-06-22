@@ -100,8 +100,6 @@ public class AdminUserController {
         }
         try {
              AdminUser userCreatedBy = adminUserService.getUserByName(principal.getName());
-            // String user=userCreatedBy.getUserName();
-
             String message = adminUserService.addUser(adminUser,userCreatedBy);
             redirectAttributes.addFlashAttribute("message", message);
             return "redirect:/admin/users";

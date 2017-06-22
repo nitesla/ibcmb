@@ -143,15 +143,17 @@ public class AdminUserServiceImpl implements AdminUserService {
             Role role = new Role();
             role.setId(Long.parseLong(user.getRoleId()));
             adminUser.setRole(role);
+
 //            creatUserOnEntrust(adminUser);
 //            adminUserRepo.save(adminUser);
 
-         makerCheckerSave(adminUser,adminUser,createdBy);
-
+            makerCheckerSave(adminUser,adminUser,createdBy);
             logger.info("New admin user {} created", adminUser.getUserName());
             return messageSource.getMessage("user.add.success", null, locale);
 
-        } catch (InternetBankingSecurityException se) {
+        }
+        catch (InternetBankingSecurityException se)
+        {
             throw new InternetBankingSecurityException(messageSource.getMessage("entrust.create.failure", null, locale), se);
         } catch (Exception e) {
             if (e instanceof EntrustException) {
@@ -339,7 +341,6 @@ public class AdminUserServiceImpl implements AdminUserService {
 //            adminUserRepo.save(adminUser);
 
             makerCheckerSave(originalEntity,modifiedEntity,users);
-
             logger.info("Admin user {} updated", originalEntity.getUserName());
             return messageSource.getMessage("user.update.success", null, locale);
         }
