@@ -27,8 +27,16 @@ public interface VerificationService {
       */
 
 
-	 int getTotalNumberPending(User user);
+     int getTotalNumberForVerification(User user);
 
+
+	 long getTotalNumberPending(User user);
+
+
+    Page<PendingVerification> getPendingVerifications(Pageable  pageable, User user);
+
+
+    List<Verification> getVerificationForUser(User user);
 
      Page<VerificationDTO> getMakerCheckerPending(Pageable pageDetails,User createdBy);
 

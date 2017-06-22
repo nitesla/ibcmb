@@ -13,4 +13,6 @@ public interface PermissionRepo extends CommonRepo<Permission, Long> {
     Iterable<Permission> findByIdNotIn(Long[] permissions);
 
     Iterable<Permission> findByUserType(String type);
+
+
 }

@@ -1,6 +1,7 @@
 package longbridge.models;
 
 import org.hibernate.annotations.Where;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.Entity;
 

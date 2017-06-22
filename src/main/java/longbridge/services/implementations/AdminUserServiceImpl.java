@@ -117,7 +117,8 @@ public class AdminUserServiceImpl implements AdminUserService {
 
 
     @Override
-    public Iterable<AdminUserDTO> getUsers() {
+    public Iterable<AdminUserDTO> getUsers()
+    {
         Iterable<AdminUser> adminUsers = adminUserRepo.findAll();
         return convertEntitiesToDTOs(adminUsers);
     }
@@ -125,7 +126,7 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     @Override
     @Transactional
-   @Verifiable(operation="Add_Admin",description="Adding a new User")
+    @Verifiable(operation="Add_Admin",description="Adding a new User")
     public String addUser(AdminUserDTO user,User createdBy) throws InternetBankingException {
         AdminUser adminUser = adminUserRepo.findFirstByUserNameIgnoreCase(user.getUserName());
         if (adminUser != null) {
@@ -199,6 +200,7 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     @Override
     @Transactional
+    @Verifiable(operation="change_Activation_Status",description="Change Activation Status")
     public String changeActivationStatus(Long userId) throws InternetBankingException {
         try {
             AdminUser user = adminUserRepo.findOne(userId);
@@ -207,7 +209,7 @@ public class AdminUserServiceImpl implements AdminUserService {
             user.setStatus(newStatus);
             adminUserRepo.save(user);
             String fullName = user.getFirstName() + " " + user.getLastName();
-            if ((oldStatus == null)) {//User was just created
+            if ((oldStatus == null)) {
                 String password = passwordPolicyService.generatePassword();
                 user.setPassword(passwordEncoder.encode(password));
                 user.setExpiryDate(new Date());
@@ -242,7 +244,9 @@ public class AdminUserServiceImpl implements AdminUserService {
             logger.info("Admin user {} status changed from {} to {}", user.getUserName(), oldStatus, newStatus);
             return messageSource.getMessage("user.status.success", null, locale);
 
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             throw new InternetBankingException(messageSource.getMessage("user.status.failure", null, locale), e);
 
         }
@@ -317,7 +321,6 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Override
     @Transactional
     @Verifiable(operation="Update_Admin",description="Update a Admin User")
-//    @Verifiable(operation="Updating an Existing User")
     public String updateUser(AdminUserDTO user,User users) throws InternetBankingException {
 
         try {
