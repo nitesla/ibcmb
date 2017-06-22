@@ -4,6 +4,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import com.sun.javafx.sg.prism.NGShape;
+//import longbridge.dtos.PendingDTO;
+import longbridge.dtos.PendingVerification;
 import longbridge.dtos.VerificationDTO;
 import longbridge.models.MakerChecker;
 import longbridge.utils.verificationStatus;
@@ -26,6 +28,7 @@ import longbridge.services.AdminUserService;
 import longbridge.services.VerificationService;
 
 import java.security.Principal;
+import java.util.List;
 
 @Controller
 @RequestMapping("/admin/verifications")
@@ -89,15 +92,15 @@ public class VerificationController {
 		return "adm/admin/verification/decline";
 	}
 
+
 	@GetMapping(path = "/all")
 	public @ResponseBody
-	DataTablesOutput<VerificationDTO> getAllCodes(DataTablesInput input,Principal principal)
+	DataTablesOutput<PendingVerification> getAllPending(DataTablesInput input, Principal principal)
 	{
 		AdminUser createdBy = adminUserService.getUserByName(principal.getName());
-		//String user=userCreatedBy.getUserName();
 		Pageable pageable = DataTablesUtils.getPageable(input);
-		Page<VerificationDTO> codes = verificationService.getMakerCheckerPending(pageable,createdBy);
-		DataTablesOutput<VerificationDTO> out = new DataTablesOutput<VerificationDTO>();
+		Page<PendingVerification> codes = verificationService.getPendingVerifications(pageable,createdBy);
+		DataTablesOutput<PendingVerification> out = new DataTablesOutput<PendingVerification>();
 		out.setDraw(input.getDraw());
 		out.setData(codes.getContent());
 		out.setRecordsFiltered(codes.getTotalElements());
@@ -105,14 +108,64 @@ public class VerificationController {
 		return out;
 	}
 
+
+	@GetMapping(path = "/allverification")
+	public @ResponseBody
+	DataTablesOutput<Verification> getAllVerification(DataTablesInput input, Principal principal)
+	{
+		AdminUser createdBy = adminUserService.getUserByName(principal.getName());
+		Pageable pageable = DataTablesUtils.getPageable(input);
+		List<Verification> codes = verificationService.getVerificationForUser(createdBy);
+		System.out.println("this is the code"+codes);
+		DataTablesOutput<Verification> out = new DataTablesOutput<Verification>();
+		out.setDraw(input.getDraw());
+		out.setData(codes);
+		out.setRecordsFiltered(codes.size());
+		out.setRecordsTotal(codes.size());
+		return out;
+	}
+
+
+
+
+//	@GetMapping(path = "/all")
+//	public @ResponseBody
+//	DataTablesOutput<VerificationDTO> getAllCodes(DataTablesInput input,Principal principal)
+//	{
+//		AdminUser createdBy = adminUserService.getUserByName(principal.getName());
+//		//String user=userCreatedBy.getUserName();
+//		Pageable pageable = DataTablesUtils.getPageable(input);
+//		Page<VerificationDTO> codes = verificationService.getMakerCheckerPending(pageable,createdBy);
+//		DataTablesOutput<VerificationDTO> out = new DataTablesOutput<VerificationDTO>();
+//		out.setDraw(input.getDraw());
+//		out.setData(codes.getContent());
+//		out.setRecordsFiltered(codes.getTotalElements());
+//		out.setRecordsTotal(codes.getTotalElements());
+//		return out;
+//	}
+
 	@GetMapping("/pendingops")
 	public String getPendingVerification(Model model,Principal principal)
 	{
 		AdminUser createdBy = adminUserService.getUserByName(principal.getName());
-		int totalPending=verificationService.getTotalNumberPending(createdBy);
-		System.out.println("the totalPending" +totalPending);
+		int verificationNumber=verificationService.getTotalNumberForVerification(createdBy);
+		long totalPending=verificationService.getTotalNumberPending(createdBy);
 		model.addAttribute("totalPending",totalPending);
-		return "adm/makerchecker/view";
+		model.addAttribute("verificationNumber",verificationNumber);
+		return "adm/makerchecker/pending";
+	}
+
+
+	@GetMapping("/verificationops")
+	public String getVerification(Model model, Principal principal)
+	{
+
+		AdminUser createdBy=adminUserService.getUserByName(principal.getName());
+		int verificationNumber=verificationService.getTotalNumberForVerification(createdBy);
+		long totalPending=verificationService.getTotalNumberPending(createdBy);
+		model.addAttribute("verificationNumber", verificationNumber);
+		model.addAttribute("totalPending",totalPending);
+		return "adm/makerchecker/checker";
 	}
 
 }

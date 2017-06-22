@@ -49,11 +49,11 @@ public class AdmMakerCheckerController {
 //        return out;
 //    }
 
-
-    @GetMapping("/pendingops")
-    public String getCodeTypes() {
-        return "adm/makerchecker/view";
-    }
+//
+//    @GetMapping("/pendingops")
+//    public String getCodeTypes() {
+//        return "adm/makerchecker/view";
+//    }
 
 
 

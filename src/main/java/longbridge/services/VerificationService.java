@@ -2,6 +2,8 @@ package longbridge.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import longbridge.dtos.CodeDTO;
+//import longbridge.dtos.PendingDTO;
+import longbridge.dtos.PendingVerification;
 import longbridge.dtos.VerificationDTO;
 import longbridge.exception.VerificationException;
 import longbridge.models.SerializableEntity;
@@ -9,6 +11,9 @@ import longbridge.models.User;
 import longbridge.models.Verification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import java.util.List;
+import java.util.Set;
 
 public interface VerificationService {
 
@@ -24,8 +29,16 @@ public interface VerificationService {
       */
 
 
-	 int getTotalNumberPending(User user);
+     int getTotalNumberForVerification(User user);
 
+
+	 long getTotalNumberPending(User user);
+
+
+    Page<PendingVerification> getPendingVerifications(Pageable  pageable, User user);
+
+
+    List<Verification> getVerificationForUser(User user);
 
      Page<VerificationDTO> getMakerCheckerPending(Pageable pageDetails,User createdBy);
 

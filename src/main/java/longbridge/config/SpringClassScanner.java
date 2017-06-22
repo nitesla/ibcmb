@@ -19,6 +19,7 @@ import javax.persistence.EntityManager;
 
 
 @Component
+
 public class SpringClassScanner  implements InitializingBean{
 
 	@Autowired
@@ -31,15 +32,17 @@ public class SpringClassScanner  implements InitializingBean{
    private final String path = "longbridge.services.implementations";
  
  
-    private ClassPathScanningCandidateComponentProvider createComponentScanner() {
+    private ClassPathScanningCandidateComponentProvider createComponentScanner()
+	{
         ClassPathScanningCandidateComponentProvider provider
                 = new ClassPathScanningCandidateComponentProvider(true);
         return provider;
     }
 
 	@Override
+	@Transactional
 	//@Transactional(readOnly = false,rollbackFor = Exception.class)
-	@Transactional(rollbackFor = Throwable.class)
+	//@Transactional(rollbackFor = Throwable.class)
 	public void afterPropertiesSet() throws Exception {
 		 ClassPathScanningCandidateComponentProvider provider = createComponentScanner();
 	        for (BeanDefinition beanDef : provider.findCandidateComponents(path)) {
@@ -55,16 +58,15 @@ public class SpringClassScanner  implements InitializingBean{
 
 	                		if(!makerCheckerRepo.existsByCode(operation))
 							{
-
-
 								MakerChecker makerChecker=new MakerChecker();
 								makerChecker.setCode(operation);
 								makerChecker.setName(description);
 								makerChecker.setEnabled("N");
 								makerChecker.setVersion(0);
 								makerChecker.setDelFlag("N");
-								try{
-									//makerCheckerRepo.save(makerChecker);
+								try
+								{
+									makerCheckerRepo.save(makerChecker);
 								}
 								catch (Exception e)
 								{
