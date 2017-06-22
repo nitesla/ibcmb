@@ -5,6 +5,8 @@ import longbridge.dtos.SettingDTO;
 import longbridge.models.*;
 import longbridge.services.*;
 import longbridge.utils.DateFormatter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.ui.Model;
@@ -24,6 +26,9 @@ import java.util.stream.StreamSupport;
 
 @ControllerAdvice(basePackages = {"longbridge.controllers.retail"})
 public class RetailControllerAdvice {
+
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+
     @Value("${bank.code}")
     private String bankCode;
     private RetailUserService retailUserService;
@@ -142,16 +147,14 @@ public class RetailControllerAdvice {
     @ModelAttribute
     public void sessionTimeout(Model model){
         SettingDTO setting = configurationService.getSettingByName("SESSION_TIMEOUT");
-
             try{
                 if (setting != null && setting.isEnabled()){
-                    System.out.println("this is session timmmmmmmmmmmmmmm");
-                    System.out.println(setting.getValue());
-                    model.addAttribute("timeOut", Long.parseLong(setting.getValue()));
+                    Long timeOuts = Long.parseLong(setting.getValue())* 60;
+                    logger.info("SESSION TIME OUT PERIOD" + timeOuts);
+                    model.addAttribute("timeOut", timeOuts);
                 }
 
         }catch(Exception ex){
-
             }
 
     }

@@ -96,33 +96,33 @@
         }
 
         // Reset timer on any of these events
-        if (!opt.ignoreUserActivity) {
-            var mousePosition = [-1, -1];
-            $(document).on('keyup mouseup mousemove touchend touchmove', function(e) {
-                if (e.type === 'mousemove') {
-                    // Solves mousemove even when mouse not moving issue on Chrome:
-                    // https://code.google.com/p/chromium/issues/detail?id=241476
-                    if (e.clientX === mousePosition[0] && e.clientY === mousePosition[1]) {
-                        return;
-                    }
-                    mousePosition[0] = e.clientX;
-                    mousePosition[1] = e.clientY;
-                }
-                startSessionTimer();
-
-                // If they moved the mouse not only reset the counter
-                // but remove the modal too!
-                if ($('#session-timeout-dialog').length > 0 &&
-                    $('#session-timeout-dialog').data('bs.modal') &&
-                    $('#session-timeout-dialog').data('bs.modal').isShown) {
-                    // http://stackoverflow.com/questions/11519660/twitter-bootstrap-modal-backdrop-doesnt-disappear
-                    $('#session-timeout-dialog').modal('hide');
-                    $('body').removeClass('modal-open');
-                    $('div.modal-backdrop').remove();
-
-                }
-            });
-        }
+        // if (!opt.ignoreUserActivity) {
+        //     var mousePosition = [-1, -1];
+        //     $(document).on('keyup mouseup mousemove touchend touchmove', function(e) {
+        //         if (e.type === 'mousemove') {
+        //             // Solves mousemove even when mouse not moving issue on Chrome:
+        //             // https://code.google.com/p/chromium/issues/detail?id=241476
+        //             if (e.clientX === mousePosition[0] && e.clientY === mousePosition[1]) {
+        //                 return;
+        //             }
+        //             mousePosition[0] = e.clientX;
+        //             mousePosition[1] = e.clientY;
+        //         }
+        //         startSessionTimer();
+        //
+        //         // If they moved the mouse not only reset the counter
+        //         // but remove the modal too!
+        //         // if ($('#session-timeout-dialog').length > 0 &&
+        //         //     $('#session-timeout-dialog').data('bs.modal') &&
+        //         //     $('#session-timeout-dialog').data('bs.modal').isShown) {
+        //         //     // http://stackoverflow.com/questions/11519660/twitter-bootstrap-modal-backdrop-doesnt-disappear
+        //         //     $('#session-timeout-dialog').modal('hide');
+        //         //     $('body').removeClass('modal-open');
+        //         //     $('div.modal-backdrop').remove();
+        //         //
+        //         // }
+        //     });
+        // }
 
         // Keeps the server side connection live, by pingin url set in keepAliveUrl option.
         // KeepAlivePinged is a helper var to ensure the functionality of the keepAliveInterval option
@@ -188,7 +188,7 @@
                 } else {
                     opt.onRedir(opt);
                 }
-            }, (opt.redirAfter - opt.warnAfter));
+            }, (opt.redirAfter));
         }
 
         function startCountdownTimer(type, reset) {
