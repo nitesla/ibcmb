@@ -23,6 +23,8 @@ form.children("div").steps({
     {
 
         $("#myspan1").hide();
+         $("#loader").hide();
+        
 
         $("#successReg").hide();
 
@@ -34,7 +36,7 @@ form.children("div").steps({
         if (currentIndex > newIndex)
         {
             $("#myspan").hide();
-            $("#loader").hide();
+           
             return true;
         }
 

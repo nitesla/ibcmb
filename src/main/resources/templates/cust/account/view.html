@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="cust_layout :: site-head">
-
 </head>
 <body>
 <div class="container">
@@ -25,15 +24,17 @@
                         <div class="form-group col-md-6 col-sm-6">
                             <label>Date Range</label>
                             <div class="input-daterange input-group" id="date-range">
-                                <input type="text" class="form-control" id="start" name="start" placeholder="Start date" required="required" />
+                                <input type="text" data-date-format="dd-mm-yyyy" class="form-control datepicker" id="start" name="fromDate" placeholder="Start date" required="required" />
                                 <span class="input-group-addon no-border text-white">to</span>
-                                <input type="text" class="form-control" name="end" id="end" placeholder="End date" required="required" />
+                                <input type="text"  data-date-format="dd-mm-yyyy" class="form-control datepicker" name="toDate" id="endDate" placeholder="End date" required="required" />
                             </div>
                         </div>
                         <div class="form-group col-md-6 col-sm-6">
                             <label>Transaction Type</label>
-                            <select id="transType"  class="form-control">
-                                <option></option>
+                            <select name="tranType"  class="form-control">
+                             	<option value="B">All</option>
+                                <option value="C">Credit</option>
+                                <option value="D">Debit</option>
                             </select>
                         </div>
 </div>
@@ -46,20 +47,19 @@
                                 <option th:each="s: ${accounts}" th:value="${s}" th:text="${s}"></option></select>
                         </div>
 
-                        <div class="col-md-6 col-sm-6">
-                            <button type="submit" class="btn pull-right"><i class="fa fa-search" style="color: white" ></i>&nbsp; find</button>
-                        </div>
-
                     </div>
 
+<div class="row-spacing col-md-12">
+                        <button type="submit" class="btn pull-right" id="btn-find"><i class="fa fa-search" style="color: white" ></i>&nbsp; find</button>
+</div>
 
-<!--<p>
-                        <a th:href="@{/retail/account/print/statement}" class="btn bt-select bt-link-act"> &lt;!&ndash;disabled="disabled"&ndash;&gt;<i class="fa fa-print" style="color: white" ></i>&nbsp; print</a>
-                        <a th:href="@{'#'}" class="btn "> &lt;!&ndash;disabled="disabled"&ndash;&gt;<i class="fa fa-envelope" style="color: white" ></i>&nbsp; send mail</a>
-</p>-->
+<p>
+                        <a id="btn-print" th:href="@{'~/viewstatement/display/data'}" class="btn bt-link-act"> <i class="fa fa-print" style="color: white" ></i>&nbsp; print</a>
+                        <a th:href="@{'#'}" class="btn "> <i class="fa fa-envelope" style="color: white" ></i>&nbsp; send mail</a>
+</p>
 
                         <h2>TRANSACTION DETAILS</h2>
-                    <table  id="users" class="display" cellspacing="0" width="100%">
+                    <table class="table" id="tranDetails">
                         <thead>
                         <tr>
                             <th>Amount</th>
@@ -71,27 +71,6 @@
 
                         </tr>
                         </thead>
-                        <tbody>
-                        <tr th:each="list : ${transactionLists}">
-                            <td  th:text="${list.transactionBalance.amountValue}"></td>
-                            <td  th:text="${list.transactionBalance.currencyCode}"></td>
-                            <td th:text="${list.postedDate}"></td>
-                            <td  th:text="${list.transactionSummary.transactionDescription}"></td>
-                            <td  th:text="${list.transactionSummary.transactionType}"></td>
-                            <td th:text="${list.valueDate}"></td>
-                        </tr>
-                        </tbody>
-                        <tfoot>
-                        <tr>
-                            <th>Amount</th>
-                            <th>Currency Code</th>
-                            <th>Post Date</th>
-                            <th>Transaction Particulars</th>
-                            <th>Transaction Type</th>
-                            <th>Value Date</th>
-
-                        </tr>
-                        </tfoot>
                     </table>
 
 
@@ -112,16 +91,71 @@
 </footer>
 <script th:inline="javascript">
     /*<![CDATA[*/
+    jQuery.download = function(url, key, data) {
+		// Build a form
+		var form = $('<form></form>').attr('action', url).attr('target', '_blank')
+				.attr('method', 'get');
+		// Add the one key/value
+		form.append($("<input></input>").attr('type', 'hidden').attr('name',
+				key).attr('value', data));
+
+		$.each( data, function( propertyName, valueOfProperty ){
+		   form.append($("<input></input>").attr('type', 'hidden').attr('name',
+				   propertyName).attr('value', valueOfProperty));
+		});
+
+		//send request
+		form.appendTo('body').submit().remove();
+	};
+
     $(document).ready(function() {
 
-        var table = $('#users').DataTable({
-            select: true,
-            responsive: true,
+    	$('.datepicker').datepicker({ dateFormat: 'dd-mm-yy' });//
+
+    	$('#tranDetails').DataTable({
             "lengthMenu": [[5, 10,20], [5, 10,20]],
             "pagingType": "simple_numbers",
-            "searching": false,
-            "paging": true,
-            "dom": 'T<"clear">frtlp'});
+            "searching" : false,
+    		"processing" : true,
+    		"serverSide" : false,
+    		"ordering" : false,
+            "dom": 'T<"clear">frtlp',
+            "columns" : [
+            	{"data" : "transactionBalance.amountValue"},
+            	{"data" : "transactionBalance.currencyCode"},
+            	{"data" : "postedDate"} ,
+            	{"data" : "transactionSummary.transactionDescription"},
+            	{"data" : "transactionSummary.transactionType"},
+            	{"data" : "valueDate"}
+            	],
+            "ajax" : {
+            	"url":"viewstatement/display/data",
+            	"type" : "GET",
+				"data" : function(d) {
+					d.acctNumber = $('[name=acctNumber]').val();
+					d.fromDate = $('[name=fromDate]').val();
+					d.toDate = $('[name=toDate]').val();
+					d.tranType = $('[name=tranType]').val();
+				}
+			}
+
+        });
+
+        $("#btn-find").on("click", function(e) {
+
+			e.preventDefault();
+			dt = $('#tranDetails').DataTable();
+			dt.ajax.reload(null, true);
+
+		});
+
+        $("#btn-print").on("click", function(e) {
+        	e.preventDefault();
+    		var table = $('#tranDetails').DataTable();
+    		var data = table.ajax.params();
+    		$.download("downloadstatement", "data", data);
+
+    	});
 
 
         });

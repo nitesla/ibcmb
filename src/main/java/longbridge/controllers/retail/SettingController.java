@@ -291,12 +291,16 @@ public class SettingController {
         }
     }
 
-
     @GetMapping("/exchangerate")
-    public String viewCurrencyExchangeRate(Model model){
+    public String viewCurrencyExchangeRate(Model model) {
         List<ExchangeRate> rate = integrationService.getExchangeRate();
         model.addAttribute("rates", rate);
         return "cust/exchangerate";
+    }
+
+    @GetMapping("/faq")
+    public String fAQ(){
+        return "cust/faq";
     }
 
 }

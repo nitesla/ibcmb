@@ -15,68 +15,89 @@
 
             <div class="col-md-4 col-sm-4">
                 <h5 class="page_header"> Own Account Transaction</h5>
+                
             </div>
+
+            <p class="col-xs-12">
+                    Fields marked <span style="color:red">*</span> are compulsory
+                </p>
         </div>
         <div class="row">
             <div class="col-md-9 content-bg">
-                    <div class="col-md-6 col-sm-6 form-spacing">
+                    <div class="col-md-6 col-sm-offset-2 col-sm-6 form-spacin">
 
                         <div th:if="${message != null}" class="alert alert-info" th:text="${message}">message</div>
                         <div th:if="${error != null}" class="alert alert-info" th:text="${error}">message</div>
+                        <div>
+                             <form class=' col-xs-12' method="post" th:action="@{/retail/transfer/ownaccount/summary}" th:object="${transferRequest}">
+                                    <input type="hidden" th:field="*{financialInstitution}"/>
 
-                        <form method="post" th:action="@{/retail/transfer/ownaccount/summary}"
-                              th:object="${transferRequest}">
-                            <input type="hidden" th:field="*{financialInstitution}"/>
-
-                            <div class="form-group">
-                                <label>Source account</label>
-
-
-                                <span id="scurency"></span>
-                                <select name="source" class="form-control" id="source"
-                                        th:field="*{customerAccountNumber}" onchange="getBalance()">
-                                    <!--<option value=""> select an account</option>-->
-                                    <option th:each="s: ${accounts}" th:value="${s}" th:text="${s}" ></option>
-                                </select>
-
-                            </div>
-                            <div class="form-group">
-                                <label>Destination account</label>
-
-                                <span id="dcurency"></span>
-                                <select name="destination" class="form-control" id="destination"
-                                        th:field="*{beneficiaryAccountNumber}" required="required">
-                                    <option th:each="s: ${accounts}" th:value="${s}" th:text="${s}"></option>
+                                    <div class="form-group">
+                                        <label class="my-label">Source account</label>
 
 
-                                </select>
-                                <label	th:if="${#fields.hasErrors('beneficiaryAccountNumber')}" th:errors="*{beneficiaryAccountNumber}"
-                                          class="validation-message"></label>
-                            </div>
+                                        <span id="scurency"></span>
+                                        <div>
+                                        <span class="alert no-bd-rad my-border bg-white">NGN</span>
+                                            <select name="source" class="form-contrl my-select" id="source"
+                                                    th:field="*{customerAccountNumber}" onchange="getBalance()" style="width:70%;margin:0px auto;">
+                                                <!--<option value=""> select an account</option>-->
+                                                <option th:each="s: ${accounts}" th:value="${s}" th:text="${s}" ></option>
+                                            </select><span class='req-inner'></span>
+                                        </div>
 
-                            <div class="form-group">
-                                <label>Amount</label>
-                                <input type="number" name="textname" min="0" step="1" placeholder="Enter an amount"
-                                       th:field="*{amount}"
-                                       class="form-control"/>
-                                <label	th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}"
-                                          class="validation-message"></label>
-                            </div>
-                            <input type="hidden" th:field="*{financialInstitution}" />
-                            <div class="form-group">
-                                <label>Remark</label>
-                                <input type="text" name="textname" placeholder="" th:field="*{remarks}"
-                                       class="form-control"/>
-                            </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="my-label">Destination account</label>
+
+                                        <span id="dcurency"></span>
+                                        <div>
+                                         <span class="alert no-bd-rad my-border bg-white">NGN</span>
+                                        <select name="destination" class="form-contrl my-select" id="destination"
+                                                th:field="*{beneficiaryAccountNumber}" required="required">
+                                            <option th:each="s: ${accounts}" th:value="${s}" th:text="${s}"></option>
 
 
-                            <button class="btn btn-link" type="submit">Submit</button>
-                        </form>
+                                        </select><span class='req-inner'></span>
+                                        </div>
+                                        <label	th:if="${#fields.hasErrors('beneficiaryAccountNumber')}" th:errors="*{beneficiaryAccountNumber}"
+                                                class="validation-message"></label>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="my-label">Amount</label>
+                                        <span class="alert no-bd-rad my-border bg-white hide-content-only">NGN</span>
+
+                                        <input type="number" name="textname" min="0" step=".10" placeholder="Enter an amount"
+                                            th:field="*{amount}"
+                                            class="form-contro my-input"/><span class='req-inner'></span>
+                                        <label	th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}"
+                                                class="validation-message"></label>
+                                    </div>
+                                    <input type="hidden" th:field="*{financialInstitution}" />
+                                    <div class="form-group">
+                                        <label  class="my-label">Remark</label>
+                                         <span class="alert no-bd-rad my-border bg-white hide-content-only">NGN</span>
+
+                                        <input type="text" name="textname" placeholder="" th:field="*{remarks}"
+                                            class="form-contro my-input"/>
+                                    </div>
+                                    
+                                    <div class='pull-right' style="margin-right:50px;">
+                                         <button class="btn btn-link" type="submit">Submit</button>
+                                         <button class="btn btn-link" type="button">Cancel</button>
+                                   
+                                    </div>
+                                   
+                                   
+                            </form>
+
+                        </div>
 
                 </div>
-                <div class="col-md-6 col-sm-6">
+                <div class="col-md-4 col-sm-4 well">
                     <!--<p class="related" style="padding-top: 5%">Related Information</p>-->
-                    <hr/>
+                   
                     <!--<input type="availBal" name="availBal"/>-->
                     <p id="availBal"><b></b></p>
                 </div>
