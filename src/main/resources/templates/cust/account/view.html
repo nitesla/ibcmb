@@ -98,20 +98,20 @@
 		// Add the one key/value
 		form.append($("<input></input>").attr('type', 'hidden').attr('name',
 				key).attr('value', data));
-		
+
 		$.each( data, function( propertyName, valueOfProperty ){
 		   form.append($("<input></input>").attr('type', 'hidden').attr('name',
 				   propertyName).attr('value', valueOfProperty));
 		});
-		
+
 		//send request
 		form.appendTo('body').submit().remove();
 	};
-	
+
     $(document).ready(function() {
-    	
+
     	$('.datepicker').datepicker({ dateFormat: 'dd-mm-yy' });//
-		
+
     	$('#tranDetails').DataTable({
             "lengthMenu": [[5, 10,20], [5, 10,20]],
             "pagingType": "simple_numbers",
@@ -120,13 +120,13 @@
     		"serverSide" : false,
     		"ordering" : false,
             "dom": 'T<"clear">frtlp',
-            "columns" : [ 
-            	{"data" : "transactionBalance.amountValue"}, 
+            "columns" : [
+            	{"data" : "transactionBalance.amountValue"},
             	{"data" : "transactionBalance.currencyCode"},
             	{"data" : "postedDate"} ,
-            	{"data" : "transactionSummary.transactionDescription"}, 
+            	{"data" : "transactionSummary.transactionDescription"},
             	{"data" : "transactionSummary.transactionType"},
-            	{"data" : "valueDate"} 
+            	{"data" : "valueDate"}
             	],
             "ajax" : {
             	"url":"viewstatement/display/data",
@@ -138,15 +138,15 @@
 					d.tranType = $('[name=tranType]').val();
 				}
 			}
-           	
+
         });
-        
+
         $("#btn-find").on("click", function(e) {
-        	
+
 			e.preventDefault();
 			dt = $('#tranDetails').DataTable();
 			dt.ajax.reload(null, true);
-			
+
 		});
 
         $("#btn-print").on("click", function(e) {
@@ -156,7 +156,8 @@
     		$.download("downloadstatement", "data", data);
 
     	});
-        
+
+
         });
 
 

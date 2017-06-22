@@ -7,6 +7,7 @@ import longbridge.exception.VerificationException;
 import longbridge.forms.ChangeDefaultPassword;
 import longbridge.forms.ChangePassword;
 import longbridge.models.AdminUser;
+import longbridge.models.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -65,7 +66,7 @@ public interface AdminUserService {
      * @param user the new admin user
      */
     @PreAuthorize("hasAuthority('ADD_ADMIN_USER')")
-    String addUser(AdminUserDTO user) throws InternetBankingException;
+    String addUser(AdminUserDTO user,User users) throws InternetBankingException;
 
 
     /**
@@ -85,7 +86,7 @@ public interface AdminUserService {
      * @param user the admin user whose details are to be updated
      */
     @PreAuthorize("hasAuthority('UPDATE_ADMIN_USER')")
-    String updateUser(AdminUserDTO user) throws InternetBankingException;
+    String updateUser(AdminUserDTO user,User createdBy) throws InternetBankingException;
 
     String verifyRequest(Long verId) throws VerificationException;
 

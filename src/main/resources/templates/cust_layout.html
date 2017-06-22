@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml"
+      xmlns:https="http://www.springframework.org/schema/jdbc">
 <head th:fragment="site-head">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta charset="utf-8"/>
@@ -301,7 +302,10 @@
     <script th:src="@{~/customer/js/coronation.js}"></script>
     <!-- BOOTSTRAP SCRIPTS  -->
     <script th:src="@{~/customer/js/bootstrap.js}"></script>
-    <!--<script>-->
+    <!--<script th:scr="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.27/build/pdfmake.min.js"></script>-->
+    <!--<script th:scr="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.27/build/vfs_fonts.js"></script>-->
+   <!--<script th:scr="https://cdn.datatables.net/buttons/1.3.1/js/buttons.html5.min.js"></script>-->
+    <!--&lt;!&ndash;<script>&ndash;&gt;-->
         <!--$(document).ready(function(){-->
             <!--$(".dropdown").hover(-->
                 <!--function() {-->

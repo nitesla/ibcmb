@@ -15,7 +15,6 @@ import longbridge.repositories.AuditConfigRepo;
 @Component
 public class AuditConfigInitializer implements InitializingBean {
 
-
     @Autowired
     EntityManager entityManager;
     @Autowired
@@ -23,7 +22,8 @@ public class AuditConfigInitializer implements InitializingBean {
 
     @Transactional
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet() throws Exception
+    {
         try {
 
             entityManager.getEntityManagerFactory().getMetamodel().getEntities().stream()
@@ -36,9 +36,11 @@ public class AuditConfigInitializer implements InitializingBean {
                     entity.setEntityName(e);
                     configRepo.save(entity);
                 }
-            });
+                     });
 
-        } catch (Exception e) {
+            }
+        catch (Exception e)
+        {
             System.out.println("@@@ "+e.getMessage());
             e.printStackTrace();
         }

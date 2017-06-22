@@ -6,6 +6,7 @@ import longbridge.models.Corporate;
 import longbridge.models.CorporateUser;
 import longbridge.repositories.CorpLocalBeneficiaryRepo;
 import longbridge.services.CorpLocalBeneficiaryService;
+import longbridge.utils.Verifiable;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,6 +45,7 @@ public class CorpLocalBeneficiaryServiceImpl implements CorpLocalBeneficiaryServ
 
 
     @Override
+    @Verifiable(operation="Add_Corp_Beneficiary",description="Add Corprate Local Beneficiary")
     public String addCorpLocalBeneficiary(Corporate corporate, CorpLocalBeneficiaryDTO beneficiary) {
         CorpLocalBeneficiary corpLocalBeneficiary=convertDTOToEntity(beneficiary);
         corpLocalBeneficiary.setCorporate(corporate);
@@ -54,6 +56,7 @@ public class CorpLocalBeneficiaryServiceImpl implements CorpLocalBeneficiaryServ
     }
 
     @Override
+    @Verifiable(operation="Delete_Corp_Beneficiary",description="Delete Corprate Local Beneficiary")
     public String deleteCorpLocalBeneficiary(Long beneficiaryId) {
         this.corpLocalBeneficiaryRepo.delete(beneficiaryId);
         logger.info("Beneficiary with Id {} deleted", beneficiaryId);

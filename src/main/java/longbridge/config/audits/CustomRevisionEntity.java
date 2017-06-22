@@ -19,11 +19,10 @@ import java.util.Set;
  */
 @Entity
 @RevisionEntity(EntityRevisionListener.class)
-public class CustomRevisionEntity extends DefaultRevisionEntity implements Serializable {
+public class CustomRevisionEntity extends DefaultRevisionEntity implements Serializable
+{
 
-    /**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1767924677148716529L;
 	private String lastChangedBy;
 	private String ipAddress;

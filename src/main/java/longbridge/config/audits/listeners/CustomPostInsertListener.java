@@ -1,5 +1,6 @@
 package longbridge.config.audits.listeners;
 
+//import longbridge.config.audits.CustomJdbcUtil;
 import longbridge.config.audits.CustomJdbcUtil;
 import org.hibernate.envers.boot.internal.EnversService;
 import org.hibernate.envers.event.spi.EnversPostInsertEventListenerImpl;
@@ -13,12 +14,12 @@ import org.springframework.stereotype.Component;
 public class CustomPostInsertListener extends EnversPostInsertEventListenerImpl {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 9002213873196744995L;
 
 	/**
-	 * 
+	 *
 	 */
 
 	public CustomPostInsertListener(EnversService enversService) {
