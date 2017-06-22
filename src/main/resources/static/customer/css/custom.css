@@ -887,11 +887,12 @@ body {
     color: #032A4F;
     font-weight: 100%
 }
-.modal-footer .btn {
-    background-color: #9F614B;
-    color: #fff;
-    border-radius: 4px;
-}
+
+/*.modal-footer .btn {*/
+    /*background-color: #9F614B;*/
+    /*color: #fff;*/
+    /*border-radius: 4px;*/
+/*}*/
 /*===================*/
 
 /*.calender{*/

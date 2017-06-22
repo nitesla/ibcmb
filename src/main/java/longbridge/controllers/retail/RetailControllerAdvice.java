@@ -1,8 +1,9 @@
 package longbridge.controllers.retail;
 
-import longbridge.dtos.FinancialInstitutionDTO;
 import longbridge.dtos.SettingDTO;
-import longbridge.models.*;
+import longbridge.models.Account;
+import longbridge.models.RetailUser;
+import longbridge.models.SRConfig;
 import longbridge.services.*;
 import longbridge.utils.DateFormatter;
 import org.slf4j.Logger;
@@ -14,9 +15,10 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.security.Principal;
-import java.text.Collator;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.StreamSupport;
 
 /**
@@ -149,7 +151,7 @@ public class RetailControllerAdvice {
         SettingDTO setting = configurationService.getSettingByName("SESSION_TIMEOUT");
             try{
                 if (setting != null && setting.isEnabled()){
-                    Long timeOuts = Long.parseLong(setting.getValue())* 60;
+                    Long timeOuts = Long.parseLong(setting.getValue())* 60000;
                     logger.info("SESSION TIME OUT PERIOD" + timeOuts);
                     model.addAttribute("timeOut", timeOuts);
                 }

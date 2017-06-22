@@ -14,7 +14,7 @@
     'use strict';
     $.sessionTimeout = function(options) {
         var defaults = {
-            title: 'Your Session is About to Expire!',
+            title: 'Session Timeout Notification!',
             message: 'Your session is about to expire.',
             logoutButton: 'Logout',
             keepAliveButton: 'Stay Connected',
@@ -46,7 +46,7 @@
         }
 
         // Some error handling if options are miss-configured
-        if (opt.warnAfter >= opt.redirAfter) {
+        if (opt.warnAfter < opt.redirAfter) {
             console.error('Bootstrap-session-timeout plugin is miss-configured. Option "redirAfter" must be equal or greater than "warnAfter".');
             return false;
         }
@@ -67,18 +67,16 @@
             $('body').append('<div class="modal fade" id="session-timeout-dialog"> \
               <div class="modal-dialog"> \
                 <div class="modal-content"> \
-                  <div class="modal-header"> \
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button> \
-                    <h4 class="modal-title">' + opt.title + '</h4> \
-                  </div> \
                   <div class="modal-body"> \
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button> \
+                    <h4 class="modal-title">' + opt.title + '</h4><br/> \
                     <p>' + opt.message + '</p> \
                     ' + countdownMessage + ' \
                     ' + coundownBarHtml + ' \
                   </div> \
                   <div class="modal-footer"> \
-                    <button id="session-timeout-dialog-logout" type="button" class="btn btn-default">' + opt.logoutButton + '</button> \
-                    <button id="session-timeout-dialog-keepalive" type="button" class="btn btn-primary" data-dismiss="modal">' + opt.keepAliveButton + '</button> \
+                    <button id="session-timeout-dialog-logout" type="button" class="btn btn-link">' + opt.logoutButton + '</button> \
+                    <button id="session-timeout-dialog-keepalive" type="button" class="btn btn-link" data-dismiss="modal">' + opt.keepAliveButton + '</button> \
                   </div> \
                 </div> \
               </div> \
@@ -197,7 +195,8 @@
 
             if (type === 'dialog' && reset) {
                 // If triggered by startDialogTimer start warning countdown
-                countdown.timeLeft = Math.floor((opt.redirAfter - opt.warnAfter) / 1000);
+                // countdown.timeLeft = Math.floor((opt.redirAfter - opt.warnAfter) / 1000);
+                countdown.timeLeft = Math.floor(opt.redirAfter / 1000);
             } else if (type === 'session' && reset) {
                 // If triggered by startSessionTimer start full countdown
                 // (this is needed if user doesn't close the warning dialog)
@@ -205,7 +204,8 @@
             }
             // If opt.countdownBar is true, calculate remaining time percentage
             if (opt.countdownBar && type === 'dialog') {
-                countdown.percentLeft = Math.floor(countdown.timeLeft / ((opt.redirAfter - opt.warnAfter) / 1000) * 100);
+                //countdown.percentLeft = Math.floor(countdown.timeLeft / ((opt.redirAfter - opt.warnAfter) / 1000) * 100);
+                countdown.percentLeft = Math.floor(countdown.timeLeft / (opt.redirAfter / 1000) * 100);
             } else if (opt.countdownBar && type === 'session') {
                 countdown.percentLeft = Math.floor(countdown.timeLeft / (opt.redirAfter / 1000) * 100);
             }

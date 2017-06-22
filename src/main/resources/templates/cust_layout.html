@@ -350,9 +350,9 @@
     </script>
     <script th:inline="javascript">
         $.sessionTimeout({
-            keepAliveUrl: 'keep-alive.html',
-            logoutUrl: 'logout.html',
-            redirUrl: 'logout.html',
+            keepAliveUrl: '',
+            logoutUrl: '/retail/logout',
+            redirUrl: '/retail/logout',
             warnAfter: [[${timeOut}]],
             redirAfter: 10000,
             countdownBar: true
