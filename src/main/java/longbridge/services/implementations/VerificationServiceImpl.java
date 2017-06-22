@@ -307,7 +307,7 @@ public class VerificationServiceImpl implements VerificationService {
 	}
 
 
-	public List<Verification> getVerificationForUser(User user)
+	public List<Verification> getVerificationsForUser(User user)
 	{
 		List<Verification> verifications = verificationRepo.findVerificationForUser(user.getUserName(),user.getUserType().name());
 		return  verifications;

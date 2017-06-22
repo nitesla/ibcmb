@@ -1,13 +1,11 @@
 package longbridge.controllers.admin;
 
 import longbridge.dtos.CodeDTO;
-import longbridge.dtos.VerificationDTO;
 import longbridge.models.AdminUser;
 import longbridge.models.Verification;
 import longbridge.services.AdminUserService;
 import longbridge.services.VerificationService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
@@ -75,25 +73,25 @@ public class AdmMakerCheckerController {
     }
 
 
-//    @GetMapping(path = "/allverification")
-//    public @ResponseBody
-//    DataTablesOutput<Verification> getAllVerification(DataTablesInput input, Principal principal) {
-//        AdminUser createdBy = adminUserService.getUserByName(principal.getName());
-//        Pageable pageable = DataTablesUtils.getPageable(input);
-//        List<Verification> codes = verificationService.getVerificationForUser(createdBy);
-//        System.out.println("this is the code"+codes);
-//        DataTablesOutput<Verification> out = new DataTablesOutput<Verification>();
-//        out.setDraw(input.getDraw());
-//        out.setData(codes);
-//        out.setRecordsFiltered(codes.size());
-//        out.setRecordsTotal(codes.size());
-//        return out;
-//    }
+    @GetMapping(path = "/allverification")
+    public @ResponseBody
+    DataTablesOutput<Verification> getAllVerification(DataTablesInput input, Principal principal) {
+        AdminUser createdBy = adminUserService.getUserByName(principal.getName());
+        Pageable pageable = DataTablesUtils.getPageable(input);
+        List<Verification> codes = verificationService.getVerificationsForUser(createdBy);
+        System.out.println("this is the code"+codes);
+        DataTablesOutput<Verification> out = new DataTablesOutput<Verification>();
+        out.setDraw(input.getDraw());
+        out.setData(codes);
+        out.setRecordsFiltered(codes.size());
+        out.setRecordsTotal(codes.size());
+        return out;
+    }
 
     @GetMapping("/verification/{id}/view")
         public String getObjectsForVerification(){
 
-//        verificationService.
+
         return "adm/makerchecker/details";
     }
 }
