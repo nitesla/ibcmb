@@ -1,7 +1,6 @@
 package longbridge.services.implementations;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-
 import longbridge.dtos.PendingVerification;
 import longbridge.dtos.VerificationDTO;
 import longbridge.exception.DuplicateObjectException;
@@ -279,7 +278,7 @@ public class VerificationServiceImpl implements VerificationService {
 
 
 	@Override
-	public Page<PendingVerification> getPendingVerifications( Pageable pageable,User user)
+	public Page<PendingVerification> getPendingVerifications(User user, Pageable pageable)
 	{
 		Page<Verification> verifications = verificationRepo.findByStatusAndCreatedByAndUserType(verificationStatus.PENDING,user.getUserName(),user.getUserType().name(),pageable);
 		Set<String> entities = new HashSet<>();
@@ -308,13 +307,12 @@ public class VerificationServiceImpl implements VerificationService {
 	}
 
 
-	public List<Verification> getVerificationForUser(User user)
+	public List<Verification> getVerificationsForUser(User user)
 	{
 		List<Verification> verifications = verificationRepo.findVerificationForUser(user.getUserName(),user.getUserType().name());
 		return  verifications;
 
 	}
-
 
 
 

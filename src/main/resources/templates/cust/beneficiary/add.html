@@ -15,8 +15,8 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-8 content-bg">
-                <div class="row form-spacing">
+            <div class="col-md-9 content-bg">
+                <div class="form-spacing">
                     <div class="col-md-6 col-sm-6">
                         <div class="form-group">
                             <label>Beneficiary Type</label>
@@ -117,12 +117,12 @@
                             </div>
                             <div class="form-group">
                                 <label>Intermediary Bank Name</label>
-                                <span class="req"></span><input type="text" class="form-control" name="intermediaryBankName"
+                                <input type="text" class="form-control" name="intermediaryBankName"
                                                                 placeholder="Intermediary Bank Name" th:field="*{intermediaryBankName}"/>
                             </div>
                             <div class="form-group">
                                 <label>Intermediary Account Number</label>
-                                <span class="req"></span><input min="0" type="number" class="form-control" name="intermediaryBankAcctNo"
+                                <input min="0" type="number" class="form-control" name="intermediaryBankAcctNo"
                                                                 placeholder="Intermediary Bank Account Number"
                                                                 th:field="*{intermediaryBankAcctNo}"/>
 
@@ -171,7 +171,9 @@
                     </div>
                 </div>
             </div>
-            <div th:replace="cust_layout :: sidebar" class="col-md-3 sidebar">
+            <div class="col-md-3 pull-right " >
+                <div th:replace="cust_layout :: sidebar" class="" >
+                </div>
             </div>
         </div>
     </div>

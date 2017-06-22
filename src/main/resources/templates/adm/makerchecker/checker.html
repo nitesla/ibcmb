@@ -150,7 +150,7 @@
                 "data" : null,
                 "render" : function(data, type,full, meta) {
                     if (type === 'display') {
-                            return "<a class='btn btn-primary fa fa-eye dt-body-center'; text-align:center; margin:0 auto;'> View</a>";
+                            return "<a class='btn btn-primary fa fa-eye dt-body-center bt-link-act' href='/admin/verification/index/view' text-align:center; margin:0 auto;'> View</a>";
                     }
                     return data;
                 }
@@ -187,7 +187,7 @@
         if($(link).attr("disabled")){
             return;
         }
-        var dt = $('#codes').DataTable();
+        var dt = $('#verification').DataTable();
         var id = $(dt.row({
             selected: true
         }).node()).attr("id");
@@ -202,7 +202,7 @@
         if($(link).attr("disabled")){
             return;
         }
-        var dt = $('#codes').DataTable();
+        var dt = $('#verification').DataTable();
         var id = $(dt.row({
             selected: true
         }).node()).attr("id");

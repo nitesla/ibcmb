@@ -57,9 +57,9 @@ public class MainController {
 
 
     @RequestMapping(value = {"/", "/home"})
-    public String getHomePage() {
-clearSession();
+    public String getHomePage(@RequestParam Optional<HttpServletRequest> request) {
 
+        if (request.isPresent()) request.get().getSession().invalidate();
 
         return "index";
     }
@@ -67,15 +67,17 @@ clearSession();
     @RequestMapping(value = "/login/retail", method = RequestMethod.GET)
     public ModelAndView getLoginPage(@RequestParam Optional<String> error, @RequestParam Optional<HttpServletRequest> request) {
 
-
-        clearSession();
+        if (request.isPresent()) request.get().getSession().invalidate();
+        //clearSession();
 
         return new ModelAndView("retpage1", "error", error);
     }
 
     @RequestMapping(value = "/login/corporate", method = RequestMethod.GET)
-    public ModelAndView getCorpLoginPage(@RequestParam Optional<String> error) {
-        clearSession();
+    public ModelAndView getCorpLoginPage(@RequestParam Optional<String> error, @RequestParam Optional<HttpServletRequest> request) {
+
+        if (request.isPresent()) request.get().getSession().invalidate();
+        //clearSession();
         return new ModelAndView("corppage1", "error", error);
 
     }
@@ -105,7 +107,7 @@ clearSession();
 
     @GetMapping("/faqs")
     public String viewFAQs() {
-        return "cust/faqs"; //TODO
+        return "faqs";
     }
 
     @GetMapping("/login/retail/failure")
@@ -361,7 +363,7 @@ clearSession();
             }
         }
 
-        return "redirect:/";
+        return "redirect:/#contact_us";
 
     }
 
@@ -390,7 +392,7 @@ clearSession();
                 redirectAttributes.addFlashAttribute("failure", "Failed to send message");
             }
         }
-        return "redirect:/";
+        return "redirect:/#contact_us";
     }
 
     private void clearSession(){

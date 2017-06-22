@@ -177,39 +177,7 @@
 
                 </div>
                 <div class="margin-bottom"></div>
-                <!--<div id="contact_us visible-xs">
-                    <h4>Contact Us</h4>
-                    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi e</p>
-                    <ul class="icon">
-                        <li class="dropdown col-xs-12" >
-                        <a href ='javascript:void' class="dropdown-toggle contact" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-phone"></i></a>
-                        <ul class="dropdown-menu contact-drop" >
-                            <li>T +234 (0)818 831 4939</li>
-                            <li>T +234 (0)802 891 3262</li>
-                            <li class="icontext pull-right" data-toggle="modal" data-target="#myModal"><button class="btn btn-link">Call back</button></li>
-                        </ul>
-                        </li>
-                        <li class="dropdown col-xs-12">
-                        <a href ='javascript:void' class="dropdown-toggle contact" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-envelope"></i></a>
-                        <ul class="dropdown-menu contact-drop">
-                            <li>Send us an email</li>
-                            <li>enquiries@coronationmb.com</li>
-                            <li class="icontext pull-right">Copy email</li>
-                        </ul>
-                        </li>
-                        <li class="dropdown col-xs-12">
-                        <a href="javascript:void" class="dropdown-toggle contact" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-comments-o"></i> </a>
-                        <ul class="dropdown-menu faz contact-drop">
-                            <li>Need instant help?</li>
-                            <li>Chat with us</li>
-                            <li class="icontext pull-right"><button class="btn btn-link"><i class="fa fa-comments-o"></i> Live chat</button></li>
-                        </ul>
-                        </li>
-
-                        
-                    </ul>
-                </div>-->
-                <div id="contact_us hidden-xs">
+                <div id="contact_us">
                     <h4>Contact Us</h4>
                     <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi e</p>
                     <ul class="icon">
@@ -283,14 +251,6 @@
                 </div>
                 <div class="margin-bottom"></div>
                 <div>
-                    <div th:if="${message}" class="alert alert-success alert-dismissable">
-                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                        <strong>Success!</strong> Email successfully sent.
-                    </div>
-                    <div th:if="${failure}" class="alert alert-danger alert-dismissable">
-                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                        <strong>We are Sorry!</strong> Email could not be sent.
-                    </div>
                     <p>Enter details below</p>
 
                     <!--<form action="/contact" method="post" class="contact-form">-->
@@ -299,7 +259,7 @@
                             <div class="form-group">
                                 <input type="text" name="name" class="form-control" placeholder="Name" required="required"/>
                             </div>
-                            <div class="form-group">
+                            <div id="email" class="form-group">
                                 <input type="text" name="email" class="form-control" placeholder="Email" required="required"/>
                             </div>
                             <div class="form-group">
@@ -314,6 +274,77 @@
         </div>
     </div>
 </section>
+
+<div th:if="${message}">
+    <div hidden="hidden">
+        <ul class="actionMessage">
+            <li th:each="msg : ${message}" th:text="${msg}" >Message</li>
+        </ul>
+    </div>
+</div>
+
+<div th:if="${failure}">
+    <div hidden="hidden">
+        <ul class="actionError">
+            <li th:each="msg : ${failure}" th:text="${msg}" id="error">Message</li>
+        </ul>
+    </div>
+</div>
+
+
+<div id="myModalError" class="modal fade " role="dialog">
+    <div class="modal-dialog" >
+
+        <!-- Modal content-->
+
+        <div class="modal-content no-bd-rad content ">
+
+            <div class="modal-body">
+
+
+                <p id='errorMess' class='mess text-danger'>Put something here iff need be.</p>
+
+
+
+            </div>
+
+
+            <div class="modal-footer no-bd-top" >
+                <button type="button" class="btn btn-link" data-dismiss="modal">OK</button>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+
+<div id="myModalSuccess" class="modal fade " role="dialog">
+    <div class="modal-dialog" >
+
+        <!-- Modal content-->
+
+        <div class="modal-content no-bd-rad content ">
+
+            <div class="modal-body">
+
+
+                <p id='successMess' class='mess text-primary'>Put something here iff need be.</p>
+
+
+
+            </div>
+
+
+            <div class="modal-footer no-bd-top" >
+                <button type="button" class="btn btn-link" data-dismiss="modal">OK</button>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
 
 <footer>
     <div class="container">
@@ -336,6 +367,7 @@
 <script th:src="@{~/customer/js/jquery-1.11.1.js}"></script>
 <!-- BOOTSTRAP SCRIPTS  -->
 <script th:src="@{~/customer/js/bootstrap.js}"></script>
+<script th:src="@{~/customer/js/coronation.js}"></script>
 
 
 <script>

@@ -20,11 +20,14 @@ public interface VerificationRepo extends CommonRepo<Verification, Long>{
 
     Page<Verification > findByStatusAndCreatedBy(verificationStatus status , String createdby,Pageable pageable);
 
+    List<Verification > findByStatusAndCreatedBy(verificationStatus status , String createdby);
+
+    Page<Verification > findByStatusAndCreatedByAndUserType(verificationStatus status , String createdby,String userType,Pageable pageable);
+
     Verification findFirstByEntityNameAndEntityIdAndStatus(String name,long id,verificationStatus status);
 
     long countByCreatedByAndUserTypeAndStatus(String username,String userType, verificationStatus status);
 
-    Page<Verification> findByStatusAndCreatedByAndUserType(verificationStatus status , String createdby,String userType,Pageable pageable);
 
 
     @Query("select v from Verification v where v.createdBy != :createdBy and v.userType=:userType")

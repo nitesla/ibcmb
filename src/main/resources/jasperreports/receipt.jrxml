@@ -10,12 +10,13 @@
 		<field name="tranPartclr" class="java.lang.String"/>
 	</subDataset>
 	<subDataset name="New Dataset 1" uuid="169fec4f-b0c2-449c-8845-764aa9b49546"/>
-	<parameter name="AccountNum" class="java.lang.String"/>
-	<parameter name="date" class="java.lang.String"/>
 	<parameter name="amount" class="java.lang.String"/>
-	<parameter name="currencyCode" class="java.lang.String"/>
-	<parameter name="currentBal" class="java.lang.String"/>
-	<parameter name="tranParticular" class="java.lang.String"/>
+	<parameter name="beneAccName" class="java.lang.String"/>
+	<parameter name="beneAccNo" class="java.lang.String"/>
+	<parameter name="custAcount" class="java.lang.String"/>
+	<parameter name="bank" class="java.lang.String"/>
+	<parameter name="narration" class="java.lang.String"/>
+	<parameter name="remarks" class="java.lang.String"/>
 	<!--<parameter name="currencyCode" class="java.lang.String"/>
 	<parameter name="currentBal" class="java.lang.String"/>
 	<parameter name="tranParticular" class="java.lang.String"/>
@@ -39,44 +40,27 @@
 				<textElement verticalAlignment="Middle">
 					<font fontName="Monospaced" size="15" isBold="true"/>
 				</textElement>
-				<text><![CDATA[CORONATION MERCHANT BANK ]]></text>
+				<text><![CDATA[TRANSFER RECEIPT]]></text>
 			</staticText>
 		</band>
 	</title>
 	<pageHeader>
 		<band height="40" splitType="Stretch">
 
-			<staticText>
-				<reportElement key="FIN_PAGE_HEADER-1" stretchType="RelativeToTallestObject" x="2" y="0" width="224" height="20" uuid="5d4ebda4-648d-42fb-a10b-ad358ac1fddf"/>
-				<textElement textAlignment="Justified" verticalAlignment="Middle">
-					<font fontName="Monospaced" size="14" isBold="true" pdfFontName="Helvetica-Bold"/>
-				</textElement>
-				<text><![CDATA[CUSTOMER STATEMENT]]></text>
-			</staticText>
-			<staticText>
-				<reportElement key="staticText-1" x="2" y="20" width="138" height="20" uuid="4c90e7cc-8cfd-44c7-8d9d-cf61878772fe"/>
-				<textElement textAlignment="Justified">
-					<font fontName="Monospaced" size="14" isBold="true" pdfFontName="Helvetica-Bold"/>
-				</textElement>
-				<text><![CDATA[FOR THE PERIOD:]]></text>
-			</staticText>
-
-
-
-			<textField>
-				<reportElement x="229" y="0" width="100" height="20" uuid="15fb3740-440a-4f05-85f0-4576bb347dcc"/>
-				<textElement>
-					<font size="12"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{AccountNum}]]></textFieldExpression>
-			</textField>
-			<textField pattern="dd/MM/yyyy">
-				<reportElement x="140" y="20" width="100" height="20" uuid="3d89440a-b3a7-4ce6-85a5-659ed54b44f6"/>
-				<textElement>
-					<font size="12"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{date}]]></textFieldExpression>
-			</textField>
+			<!--<textField>-->
+				<!--<reportElement x="229" y="0" width="100" height="20" uuid="15fb3740-440a-4f05-85f0-4576bb347dcc"/>-->
+				<!--<textElement>-->
+					<!--<font size="12"/>-->
+				<!--</textElement>-->
+				<!--<textFieldExpression><![CDATA[$P{AccountNum}]]></textFieldExpression>-->
+			<!--</textField>-->
+			<!--<textField pattern="dd/MM/yyyy">-->
+				<!--<reportElement x="140" y="20" width="100" height="20" uuid="3d89440a-b3a7-4ce6-85a5-659ed54b44f6"/>-->
+				<!--<textElement>-->
+					<!--<font size="12"/>-->
+				<!--</textElement>-->
+				<!--<textFieldExpression><![CDATA[$P{date}]]></textFieldExpression>-->
+			<!--</textField>-->
 
 		</band>
 	</pageHeader>
@@ -117,7 +101,7 @@
 			<textField>
 				<reportElement x="2" y="0" width="100" height="20" uuid="b4700827-7841-4a94-bf4a-d4256bfb4b79"/><textElement>
 
-				</textElement>
+			</textElement>
 				<textFieldExpression><![CDATA[$P{amount}]]></textFieldExpression>
 			</textField>
 

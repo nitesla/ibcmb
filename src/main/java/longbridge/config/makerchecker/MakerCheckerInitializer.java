@@ -5,15 +5,11 @@ import longbridge.models.MakerChecker;
 import longbridge.repositories.MakerCheckerRepo;
 import longbridge.utils.Verifiable;
 import org.reflections.Reflections;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.stereotype.Component;
-import org.springframework.util.ReflectionUtils;
-
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -26,38 +22,51 @@ public class MakerCheckerInitializer {
 
     @Autowired
     MakerCheckerRepo makerCheckerRepo;
-   // private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public void initializeMakerChecker() {
-        Reflections reflections = new Reflections("longbridge.services.implementations");
+    // private Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    private ClassPathScanningCandidateComponentProvider createComponentScanner() {
+        ClassPathScanningCandidateComponentProvider provider
+                = new ClassPathScanningCandidateComponentProvider(true);
+        return provider;
+    }
+
+    public void initialize() {
+
+        String packge = "longbridge.services.implementations";
 
 
-        Set<Class<? extends Object>> clazzes =reflections.getTypesAnnotatedWith(Verifiable.class,true);
-        
-        for (Class aClass : clazzes) {
+        ClassPathScanningCandidateComponentProvider provider = createComponentScanner();
+        for (BeanDefinition beanDef : provider.findCandidateComponents(packge)) {
+            System.out.println(beanDef.toString());
+            try {
+                Class<?> cl = Class.forName(beanDef.getBeanClassName());
 
-            Method[] methods = aClass.getDeclaredMethods();
 
-            for (Method method : methods) {
-                if (method.isAnnotationPresent(Verifiable.class))
-                {
-                    Verifiable verifyAnno = method.getAnnotation(Verifiable.class);
-                    String operation = verifyAnno.operation();
-                    String description = verifyAnno.description();
+                Method[] methods = cl.getDeclaredMethods();
 
-                    if(!makerCheckerRepo.existsByCode(operation))
-                    {
+                for (Method method : methods) {
+                    if (method.isAnnotationPresent(Verifiable.class)) {
+                        Verifiable verifyAnno = method.getAnnotation(Verifiable.class);
+                        String operation = verifyAnno.operation();
+                        String description = verifyAnno.description();
 
-                        MakerChecker makerChecker=new MakerChecker();
-                        makerChecker.setCode(operation);
-                        makerChecker.setName(description);
-                        makerChecker.setEnabled("N");
-                        makerChecker.setVersion(0);
-                        makerChecker.setDelFlag("N");
-                        System.out.print(makerChecker.toString());
-                        makerCheckerRepo.save(makerChecker);
+
+                        if (!makerCheckerRepo.existsByCode(operation)) {
+
+                            MakerChecker makerChecker = new MakerChecker();
+                            makerChecker.setVersion(0);
+                            makerChecker.setDelFlag("N");
+                            makerChecker.setCode(operation);
+                            makerChecker.setName(description);
+                            makerChecker.setEnabled("N");
+                            System.out.print(makerChecker.toString());
+                            makerCheckerRepo.save(makerChecker);
+                        }
                     }
                 }
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
             }
         }
     }

@@ -25,6 +25,7 @@ public interface IntegrationService {
      * @return a list of accounts
      */
     List<AccountInfo> fetchAccounts(String cifid);
+
     List<ExchangeRate> getExchangeRate();
 
 

@@ -3,11 +3,8 @@ package longbridge.controllers.admin;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import com.sun.javafx.sg.prism.NGShape;
 //import longbridge.dtos.PendingDTO;
 import longbridge.dtos.PendingVerification;
-import longbridge.dtos.VerificationDTO;
-import longbridge.models.MakerChecker;
 import longbridge.utils.verificationStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -99,7 +96,7 @@ public class VerificationController {
 	{
 		AdminUser createdBy = adminUserService.getUserByName(principal.getName());
 		Pageable pageable = DataTablesUtils.getPageable(input);
-		Page<PendingVerification> codes = verificationService.getPendingVerifications(pageable,createdBy);
+		Page<PendingVerification> codes = verificationService.getPendingVerifications(createdBy,pageable);
 		DataTablesOutput<PendingVerification> out = new DataTablesOutput<PendingVerification>();
 		out.setDraw(input.getDraw());
 		out.setData(codes.getContent());
@@ -115,8 +112,7 @@ public class VerificationController {
 	{
 		AdminUser createdBy = adminUserService.getUserByName(principal.getName());
 		Pageable pageable = DataTablesUtils.getPageable(input);
-		List<Verification> codes = verificationService.getVerificationForUser(createdBy);
-		System.out.println("this is the code"+codes);
+		List<Verification> codes = verificationService.getVerificationsForUser(createdBy);
 		DataTablesOutput<Verification> out = new DataTablesOutput<Verification>();
 		out.setDraw(input.getDraw());
 		out.setData(codes);
