@@ -70,7 +70,7 @@
                                     <td th:text="${int.accountName}"></td>
                                     <td th:text="${int.accountNumber}"></td>
                                     <td th:text="${int.beneficiaryBank}"></td>
-                                    <td ><a th:id="${int.id}" onclick="validateDelete(this.id)"><i class="fa fa-trash"></i></a></td>
+                                    <td ><a th:id="${int.id}" onclick="validateIntDelete(this.id)"><i class="fa fa-trash"></i></a></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -101,6 +101,12 @@
 
     function validateDelete(id) {
         var ooo = "/retail/beneficiary/"+id+ "/loc/delete";
+        //goto url
+        warnBeforeRedirect(ooo);
+    }
+
+    function validateIntDelete(id) {
+        var ooo = "/retail/beneficiary/"+id+ "/int/delete";
         //goto url
         warnBeforeRedirect(ooo);
     }

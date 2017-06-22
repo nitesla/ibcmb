@@ -55,8 +55,7 @@ public class Verification extends AbstractEntity {
         this.createdBy = createdBy;
     }
 
-    @Enumerated(value = EnumType.STRING)
-    private OperationCode operationCode;
+    private String operationCode;
 
     @ManyToOne
     private AdminUser initiatedBy;
@@ -154,11 +153,11 @@ public class Verification extends AbstractEntity {
         this.entityId = entityId;
     }
 
-    public OperationCode getOperationCode() {
+    public String getOperationCode() {
         return operationCode;
     }
 
-    public void setOperationCode(OperationCode operationCode) {
+    public void setOperationCode(String operationCode) {
         this.operationCode = operationCode;
     }
 

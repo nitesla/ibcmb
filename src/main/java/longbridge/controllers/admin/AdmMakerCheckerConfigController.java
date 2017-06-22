@@ -60,7 +60,7 @@ public class AdmMakerCheckerConfigController {
 
 
     @PostMapping("/save")
-    public String createPermission(@ModelAttribute("checker") MakerCheckerDTO makerChecker, BindingResult result, RedirectAttributes redirectAttributes, Locale locale) {
+    public String createMakerChecker(@ModelAttribute("checker") MakerCheckerDTO makerChecker, BindingResult result, RedirectAttributes redirectAttributes, Locale locale) {
         if (result.hasErrors())
         {
             result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));

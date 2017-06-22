@@ -59,6 +59,16 @@
                         </div>
                     </li>
 
+                    <li>
+                        <div class="col-lg-4">
+                            <div class="title-action">
+                                <a  class=" btn btn-app btn  btn-sm bt-select bt-link-act" href="/admin/verifications/index/view" disabled="disabled" >
+                                    <i class="fa fa-envelope"></i>Approval Queue
+                                </a>
+                            </div>
+                        </div>
+                    </li>
+
                 </ul>
                 <div class="clearfix"></div>
             </div>
@@ -123,7 +133,7 @@
 
 <script th:src="@{~/bank/vendors/datatables.net/js/jquery.dataTables.js}"></script>
 <script th:src="@{~/bank/js/dataTables.bootstrap.js}"></script>
-<!--<script th:src="@{~/bank/js/dataTables.select.js}"></script>-->
+<script th:src="@{~/bank/js/dataTables.select.js}"></script>
 <script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
 
 <!-- Page-Level Scripts -->
@@ -131,7 +141,7 @@
     /*<![CDATA[*/
     $(document).ready(function() {
         var table = $('#verification').DataTable({
-            select:false,
+            select:true,
             responsive: true,
             "lengthMenu" : [ [ 5, 10, 20],	[ 5, 10, 20 ] ],
             "pagingType" : "simple_numbers",
@@ -150,7 +160,7 @@
                 "data" : null,
                 "render" : function(data, type,full, meta) {
                     if (type === 'display') {
-                            return "<a class='btn btn-primary fa fa-eye dt-body-center bt-link-act' href='/admin/verification/index/view' text-align:center; margin:0 auto;'> View</a>";
+                            return "<a id='verify' class='btn btn-primary fa fa-eye dt-body-center bt-select bt-link-action' href='/admin/verifications/index/view' text-align:center; margin:0 auto;'> View</a>";
                     }
                     return data;
                 }
@@ -170,6 +180,7 @@
         });
 
         table.on('deselect', function() {
+            alert('i am here');
             if (table.rows({
                     selected : true
                 }).indexes().length === 0) {
@@ -182,6 +193,7 @@
     });
 
     $("a.bt-link-act").on("click", function(e) {
+
         e.preventDefault();
         var link = $(e.currentTarget);
         if($(link).attr("disabled")){
@@ -192,6 +204,7 @@
             selected: true
         }).node()).attr("id");
         var ooo = link.attr("href").replace("index",id);
+        alert(id);
         window.location.assign(ooo);
 
     } );

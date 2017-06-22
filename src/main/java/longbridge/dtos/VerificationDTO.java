@@ -34,7 +34,7 @@ public class VerificationDTO {
     private Long entityId;
     private String entityName;
 
-    private OperationCode operationCode;
+    private String operationCode;
 
     private AdminUser initiatedBy;
     private Date initiatedOn;
@@ -105,11 +105,11 @@ public class VerificationDTO {
         this.entityName = entityName;
     }
 
-    public OperationCode getOperationCode() {
+    public String getOperationCode() {
         return operationCode;
     }
 
-    public void setOperationCode(OperationCode operationCode) {
+    public void setOperationCode(String operationCode) {
         this.operationCode = operationCode;
     }
 
