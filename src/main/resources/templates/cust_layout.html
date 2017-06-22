@@ -58,9 +58,15 @@
                     </a>
                     </h5>
 
-                        <div class="hide-faq"><h6>FAQS &nbsp; &nbsp;<i class="fa fa-question-circle"></i><span
-                        class="date2 lorem">&nbsp; &nbsp;Login History:&nbsp;</span>&nbsp;
-                        <span class="lorem" th:text="*{lastLogin}">21st March 2017 10:30am</span></h6></div>
+                        
+                            <div class="hide-faq">
+                                <h6><a th:href="@{/retail/faq}"> FAQS</a> &nbsp; &nbsp;
+                                        <i class="fa fa-question-circle"></i>
+                                        <span class="date2 lorem">&nbsp; &nbsp;Login History:&nbsp;</span>&nbsp;
+                                        <span class="lorem" th:text="*{lastLogin}">21st March 2017 10:30am</span>
+                                </h6>
+                            </div>
+                        
                         </div>
                 </div>
                 <div class="row">
@@ -330,6 +336,7 @@
             
      });
 
+    
 
      /*]]>*/
 
