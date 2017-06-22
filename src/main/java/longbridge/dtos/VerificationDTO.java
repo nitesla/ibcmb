@@ -39,7 +39,6 @@ public class VerificationDTO {
     private AdminUser initiatedBy;
     private Date initiatedOn;
 
-
     private AdminUser declinedBy;
     private Date declinedOn;
     private String declineReason;
