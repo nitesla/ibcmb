@@ -28,7 +28,6 @@ public interface VerificationRepo extends CommonRepo<Verification, Long>{
 
     long countByCreatedByAndUserTypeAndStatus(String username,String userType, verificationStatus status);
 
-    Page<Verification> findByStatusAndCreatedByAndUserType(verificationStatus status , String createdby,String userType,Pageable pageable);
 
 
     @Query("select v from Verification v where v.createdBy != :createdBy and v.userType=:userType")

@@ -278,7 +278,7 @@ public class VerificationServiceImpl implements VerificationService {
 
 
 	@Override
-	public Page<PendingVerification> getPendingVerifications( Pageable pageable,User user)
+	public Page<PendingVerification> getPendingVerifications(User user, Pageable pageable)
 	{
 		Page<Verification> verifications = verificationRepo.findByStatusAndCreatedByAndUserType(verificationStatus.PENDING,user.getUserName(),user.getUserType().name(),pageable);
 		Set<String> entities = new HashSet<>();
@@ -313,7 +313,6 @@ public class VerificationServiceImpl implements VerificationService {
 		return  verifications;
 
 	}
-
 
 
 

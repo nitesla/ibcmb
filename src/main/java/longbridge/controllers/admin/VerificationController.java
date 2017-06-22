@@ -99,7 +99,7 @@ public class VerificationController {
 	{
 		AdminUser createdBy = adminUserService.getUserByName(principal.getName());
 		Pageable pageable = DataTablesUtils.getPageable(input);
-		Page<PendingVerification> codes = verificationService.getPendingVerifications(pageable,createdBy);
+		Page<PendingVerification> codes = verificationService.getPendingVerifications(createdBy,pageable);
 		DataTablesOutput<PendingVerification> out = new DataTablesOutput<PendingVerification>();
 		out.setDraw(input.getDraw());
 		out.setData(codes.getContent());
@@ -116,7 +116,6 @@ public class VerificationController {
 		AdminUser createdBy = adminUserService.getUserByName(principal.getName());
 		Pageable pageable = DataTablesUtils.getPageable(input);
 		List<Verification> codes = verificationService.getVerificationForUser(createdBy);
-		System.out.println("this is the code"+codes);
 		DataTablesOutput<Verification> out = new DataTablesOutput<Verification>();
 		out.setDraw(input.getDraw());
 		out.setData(codes);

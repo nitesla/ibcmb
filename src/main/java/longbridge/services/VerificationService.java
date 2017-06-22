@@ -33,8 +33,6 @@ public interface VerificationService {
 	 long getTotalNumberPending(User user);
 
 
-    Page<PendingVerification> getPendingVerifications(Pageable  pageable, User user);
-
 
     List<Verification> getVerificationForUser(User user);
 
