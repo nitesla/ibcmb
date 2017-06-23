@@ -133,6 +133,7 @@ public class OwnTransferController {
         params.put("transDate", transferService.getTransfer(id).getTranDate());
         params.put("refNo", transferService.getTransfer(id).getReferenceNumber());
 
+
         return new ModelAndView(view, params);
     }
 }
