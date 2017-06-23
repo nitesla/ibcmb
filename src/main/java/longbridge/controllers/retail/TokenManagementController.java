@@ -83,12 +83,13 @@ public class TokenManagementController {
 
             logger.info("Serial received :"+serials);
             if (serials != null && !"".equals(serials)) {
-                List<String> serialNos = Arrays.asList(StringUtils.split(serials, ","));
+                String serialNums = StringUtils.trim(serials);
+                List<String> serialNos = Arrays.asList(StringUtils.split(serialNums, ","));
                 model.addAttribute("serials", serialNos);
             }
         }
         catch (InternetBankingSecurityException ibe){
-            logger.error("Failed to load corp user {} token serials", principal.getName(),ibe);
+            logger.error("Failed to load corporate user {} token serials", principal.getName(),ibe);
             model.addAttribute("failure", ibe.getMessage());
         }
 
@@ -124,7 +125,8 @@ public class TokenManagementController {
         try {
             String serials = securityService.getTokenSerials(principal.getName());
             if (serials != null && !"".equals(serials)) {
-                List<String> serialNos = Arrays.asList(StringUtils.split(serials, ","));
+                String serialNums = StringUtils.trim(serials);
+                List<String> serialNos = Arrays.asList(StringUtils.split(serialNums, ","));
                 model.addAttribute("serials", serialNos);
             }
         }
@@ -183,13 +185,13 @@ public class TokenManagementController {
             }catch(InternetBankingSecurityException ibe){
                 logger.error("Error authenticating token", ibe);
                 redirectAttributes.addFlashAttribute("failure", "Token Authentication Failed");
-                return "redirect:/token/authenticate";
+                return "redirect:/retail/token/authenticate";
 
             }
 
         }else {
             redirectAttributes.addFlashAttribute("failure", "Token Authentication Failed");
-            return "redirect:/token/authenticate";
+            return "redirect:/retail/token/authenticate";
         }
         session.setAttribute("authenticated","authenticated");
 

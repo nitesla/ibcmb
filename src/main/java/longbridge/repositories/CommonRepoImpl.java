@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import longbridge.exception.VerificationException;
 import longbridge.models.AbstractEntity;
 import longbridge.models.SerializableEntity;
+import longbridge.models.User;
 import longbridge.services.VerificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
@@ -31,6 +32,7 @@ public class CommonRepoImpl<T extends AbstractEntity, ID extends Serializable> e
     private VerificationService verificationService;
 
 
+
     public CommonRepoImpl(Class<T> domainClass, EntityManager em) {
         super(domainClass, em);
         this.em = em;
@@ -44,12 +46,12 @@ public class CommonRepoImpl<T extends AbstractEntity, ID extends Serializable> e
 //    <S extends T> Iterable<S> save(Iterable<S> var1);
 
 
-    public <T extends SerializableEntity<T>> String makerCheckerSave(T originalEntity, T entity) throws JsonProcessingException, VerificationException {
+    public <T extends SerializableEntity<T>> String makerCheckerSave(T originalEntity, T entity,User createdBy) throws JsonProcessingException, VerificationException {
 
         AbstractEntity originalEntity1 = (AbstractEntity) (originalEntity);
 
         if (originalEntity1.getId() == null) {
-                String message = verificationService.addNewVerificationRequest(entity);
+                String message = verificationService.addNewVerificationRequest(entity,createdBy);
                 return message;
 
         } else {

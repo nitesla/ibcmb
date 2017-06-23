@@ -4,6 +4,7 @@ import longbridge.exception.InternetBankingException;
 import longbridge.models.AuditConfig;
 import longbridge.repositories.AuditConfigRepo;
 import longbridge.services.AuditConfigService;
+import longbridge.utils.Verifiable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,6 +33,7 @@ public class AuditConfigImpl implements AuditConfigService {
 	}
 
 	@Override
+	@Verifiable(operation="Audit_Save",description="Audit Save")
     public boolean saveAuditConfig(AuditConfig cfg) throws InternetBankingException {
 		configRepo.save(cfg);
 		return true;

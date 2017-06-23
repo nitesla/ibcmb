@@ -204,9 +204,9 @@ public class MessageServiceImpl implements MessageService {
             String message = stringBuilder.toString();
 
             mailService.send(email, "CUSTOMER SUPPORT REQUEST", message);
-            return messageSource.getMessage("contactus.failure", null, locale);
-        }catch (InternetBankingException e){
-            throw new InternetBankingException(messageSource.getMessage("contactus.failure", null, locale),e);
+            return messageSource.getMessage("contactus.send.success", null, locale);
+        }catch (Exception e){
+            throw new InternetBankingException(messageSource.getMessage("contactus.send.failure", null, locale),e);
         }
     }
 

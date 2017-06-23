@@ -8,6 +8,7 @@ import longbridge.models.*;
 import longbridge.repositories.*;
 import longbridge.services.RoleService;
 import longbridge.services.VerificationService;
+import longbridge.utils.Verifiable;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -107,6 +108,7 @@ public class RoleServiceImpl implements RoleService {
 
 
     @Override
+    @Verifiable(operation="Add Role",description="Add Role")
     public String addRole(RoleDTO roleDTO) throws InternetBankingException {
 
         Role role = roleRepo.findByName(roleDTO.getName());
@@ -151,6 +153,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+    @Verifiable(operation="Update Role",description="Update Role")
     public String updateRole(RoleDTO roleDTO) throws InternetBankingException {
         try {
             Role role = convertDTOToEntity(roleDTO);
@@ -163,6 +166,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+    @Verifiable(operation="Delete Role",description="Delete Role")
     public String deleteRole(Long id) throws InternetBankingException {
 
         	Role role = roleRepo.getOne(id);
@@ -179,6 +183,7 @@ public class RoleServiceImpl implements RoleService {
         }
     }
 
+    @Verifiable(operation="Add Permission",description="Add Permission")
     public String addPermission(PermissionDTO permissionDTO) throws InternetBankingException {
         try {
             Permission permission = convertDTOToEntity(permissionDTO);
@@ -222,6 +227,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+    @Verifiable(operation="Update Permission",description="Update Permission")
     public String updatePermission(PermissionDTO permissionDTO) throws InternetBankingException {
         try {
             Permission permission = convertDTOToEntity(permissionDTO);
@@ -234,6 +240,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+    @Verifiable(operation="Delete Permission",description="Delete Permission")
     public String deletePermission(Long id) throws InternetBankingException {
         try {
             permissionRepo.delete(id);

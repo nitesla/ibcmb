@@ -78,7 +78,6 @@ public class TransactionDetails {
         this.transactionSerialNumber = transactionSerialNumber;
     }
 
-
     @Override
     public String toString() {
         return "TransactionDetails{" +

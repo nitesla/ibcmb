@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="cust_layout :: site-head">
+
+</head>
+<body>
+<div class="container">
+    <header th:replace="cust_layout :: header">
+    </header>
+
+    <section class="content-wrapper">
+        <div class="">
+            <div class="row">
+                <div class="col-md-4 col-sm-4">
+                    <h5 class="page_header"> Currency Exchange Rates</h5>
+                </div>
+
+
+            </div>
+            <div class="row">
+                <div class=" col-md-12" style="margin-top:20px">
+                    <!--<div class='col-md-9 '>-->
+
+
+                    <div class="col-md-9 content-bg " >
+
+                        <div class="col-md table-responsive">
+                            <table class="table " id="rates">
+                                <thead>
+                                <tr>
+                                    <th class="text-center">Currency</th>
+                                    <th class="text-center">One Naira Equivalent</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="list : ${rates}">
+                                    <td th:align="center" th:text="${list.currencyCode}"></td>
+                                    <td th:align="center" th:text="${list.amountValue}"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+
+                    </div>
+
+                    <div class="col-md-3 pull-right">
+                        <div th:replace="cust_layout :: sidebar" class="" >
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+<!-- CONTENT-WRAPPER SECTION END-->
+<footer th:replace="cust_layout :: footer">
+</footer>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    $(document).ready(function() {
+        var table = $('#rates').DataTable({
+            select: true,
+            responsive : true,
+            "lengthMenu" : [ [ 5, 10 ], [ 5, 10 ] ],
+            "pagingType" : "simple",
+            "searching" : false,
+            "paging" : true,
+            "dom": 'rt<"bottom"flp><"clear">'
+        });
+    });
+
+    /*]]>*/
+</script>
+</body>
+</html>

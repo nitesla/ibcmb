@@ -36,8 +36,8 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-8 content-bg">
-                <div class="row spacing">
+            <div class="col-md-9 content-bg">
+                <div class=" spacing">
                     <div class="col-md-10">
                         <h4 class="sub_header">Local Beneficiaries</h4>
                         <table class="table" id="mytab">
@@ -70,14 +70,16 @@
                                     <td th:text="${int.accountName}"></td>
                                     <td th:text="${int.accountNumber}"></td>
                                     <td th:text="${int.beneficiaryBank}"></td>
-                                    <td ><a th:id="${int.id}" onclick="validateDelete(this.id)"><i class="fa fa-trash"></i></a></td>
+                                    <td ><a th:id="${int.id}" onclick="validateIntDelete(this.id)"><i class="fa fa-trash"></i></a></td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
-            <div th:replace="cust_layout :: sidebar" class="col-md-3 sidebar">
+            <div class="col-md-3 pull-right " >
+                <div th:replace="cust_layout :: sidebar" class="" >
+                </div>
             </div>
         </div>
     </div>
@@ -99,6 +101,12 @@
 
     function validateDelete(id) {
         var ooo = "/retail/beneficiary/"+id+ "/loc/delete";
+        //goto url
+        warnBeforeRedirect(ooo);
+    }
+
+    function validateIntDelete(id) {
+        var ooo = "/retail/beneficiary/"+id+ "/int/delete";
         //goto url
         warnBeforeRedirect(ooo);
     }

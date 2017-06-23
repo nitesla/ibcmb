@@ -17,34 +17,34 @@
         </div>
         <div class="row">
             <div class="col-md-9 content-bg">
-                <div class="form-spacing">
-                    <div class="col-md-6 col-sm-6">
+                <div class="form-spacin">
+                    <div class="col-sm-8 col-sm-offset-2">
                         <form id="local" method="post" th:action="@{/retail/transfer/local/new}"
                               th:object="${localBeneficiaryDTO}">
                             <div class="form-group">
                                 <label>Beneficiary Bank</label>
-                                <select name="beneficiaryBank" class="form-control" th:field="*{beneficiaryBank}"
+                                <select name="beneficiaryBank" class="form-contro my-select" th:field="*{beneficiaryBank}"
                                         required="required">
                                     <option th:value="${bankCode}" >Coronation Merchant Bank</option>
-                                </select>
+                                </select><span class='req-inner'></span>
                             </div>
                             <div class="form-group">
                                 <label>Account Number</label>
-                                <input type="text" class="form-control" name="accountNumber" th:field="*{accountNumber}"
-                                       id="acct_num" placeholder="Account Number" required="required"/>
+                                <input type="text" class="form-contro my-input" name="accountNumber" th:field="*{accountNumber}"
+                                       id="acct_num" placeholder="Account Number" required="required"/><span class='req-inner'></span>
                                 <p class="acctError" style="display:none;">invalid account number or Bank details</p>
                             </div>
 
                             <div class="form-group">
                                 <label>Account Name</label>
-                                <input type="text" class="form-control" name="accountNumber" th:field="*{accountName}"
+                                <input type="text" class="form-contro my-input" name="accountNumber" th:field="*{accountName}"
                                        id="acct_name" onblur="clearFields()" readonly="readonly" required="required"/>
                                 <label
                                         th:if="${#fields.hasErrors('accountName')}" th:errors="*{accountName}"
                                         class="validation-message"></label>
                             </div>
                             <div class="form-group">
-                                <input type="text" class="form-control" name="preferredName"
+                                <input type="text" class="form-contrl my-input" name="preferredName"
                                        placeholder="Beneficiary Alias" th:field="*{preferredName}"/>
                             </div>
                             <button id="localsave" style="display: none;" class="btn btn-link">NEXT</button>
