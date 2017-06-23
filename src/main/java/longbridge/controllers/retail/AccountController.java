@@ -14,6 +14,7 @@ import longbridge.services.RetailUserService;
 import longbridge.services.TransferService;
 import longbridge.utils.statement.AccountStatement;
 import longbridge.utils.statement.TransactionDetails;
+import longbridge.utils.statement.TransactionHistory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -214,10 +215,9 @@ public class AccountController {
 		RetailUser retailUser = retailUserService.getUserByName(principal.getName());
 
 		Account account = accountRepo.findOne(id);
-
+       String LAST_TEN_TRANSACTION="10";
 		List<AccountDTO> accountList = accountService.getAccountsAndBalances(retailUser.getCustomerId());
-		List<TransRequest> transRequestList = transferService
-				.getLastTenTransactionsForAccount(account.getAccountNumber());
+		List<TransactionHistory> transRequestList=integrationService.getLastNTransactions(account.getAccountNumber(),LAST_TEN_TRANSACTION);
 		if (transRequestList != null || !(transRequestList.equals("")) || !(transRequestList.isEmpty())) {
 			model.addAttribute("transRequestList", transRequestList);
 			model.addAttribute("accountList", accountList);
@@ -254,6 +254,7 @@ public class AccountController {
 			AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to,transType);
 			out.setDraw(input.getDraw());
 			List<TransactionDetails> list = accountStatement.getTransactionDetails();
+			System.out.println(accountStatement.toString());
 			System.out.println("Whats in the list "+list);
 			out.setData(list);
 			out.setRecordsFiltered(list.size());
@@ -279,11 +280,14 @@ public class AccountController {
 			AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to,transType);
 			out.setDraw(input.getDraw());
 			List<TransactionDetails> list = accountStatement.getTransactionDetails();
+			System.out.println("list = " + list);
 			modelMap.put("datasource", list);
 			modelMap.put("format", "pdf");
 			modelMap.put("accountNum", acctNumber);
 			modelMap.put("fromDate", fromDate);
 			modelMap.put("toDate", toDate);
+			Date today=new Date();
+			modelMap.put("today",today);
 		} catch (ParseException e) {
 			logger.warn("didn't parse date", e);
 		}
