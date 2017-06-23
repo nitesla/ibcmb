@@ -15,6 +15,7 @@ import longbridge.services.MailService;
 import longbridge.utils.ResultType;
 import longbridge.utils.TransferType;
 import longbridge.utils.statement.AccountStatement;
+import longbridge.utils.statement.TransactionHistory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -102,7 +103,7 @@ public class IntegrationServiceImpl implements IntegrationService {
     }
 
     @Override
-    public AccountStatement getAccountStatements(String accountNo, Date fromDate, Date toDate) {
+    public AccountStatement getAccountStatements(String accountNo, Date fromDate, Date toDate, String tranType) {
         AccountStatement statement = new AccountStatement();
         try {
             SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
@@ -113,6 +114,8 @@ public class IntegrationServiceImpl implements IntegrationService {
             params.put("accountNumber", accountNo);
             params.put("fromDate", formatter.format(fromDate));
             params.put("solId", viewAccountDetails(accountNo).getSolId());
+            if (tranType != null)
+                params.put("tranType", tranType);
             if (toDate != null) params.put("toDate", formatter.format(toDate));
 
 
@@ -125,6 +128,32 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 
         return statement;
+    }
+
+    @Override
+    public List<TransactionHistory> getLastNTransactions(String accountNo, String numberOfRecords) {
+        List<TransactionHistory> histories = new ArrayList<>();
+
+
+        try {
+
+            String uri = URI + "/transactions";
+            Map<String, String> params = new HashMap<>();
+            params.put("accountNumber", accountNo);
+            params.put("numberOfRecords", numberOfRecords);
+            params.put("branchId", viewAccountDetails(accountNo).getSolId());
+
+
+            TransactionHistory[] t = template.postForObject(uri, params, TransactionHistory[].class);
+            histories.addAll(Arrays.asList(t));
+
+
+        } catch (Exception e) {
+       e.printStackTrace();
+        }
+
+
+        return histories;
     }
 
     @Override
