@@ -6,31 +6,38 @@ import com.fasterxml.jackson.annotation.JsonSetter;
  * Created by Longbridge on 14/06/2017.
  */
 public class CreditRequestDTO {
-    private long dt_RowId;
+    private String serial;
+    private String refCode;
     private String accountNumber;
     private String sortCode;
     private String accountName;
     private String amount;
+    private String narration;
+    private String status;
 
-    public CreditRequestDTO(String accountNumber, String sortCode, String accountName, String amount) {
-        this.accountNumber = accountNumber;
-        this.sortCode = sortCode;
-        this.accountName = accountName;
-        this.amount = amount;
+    public String getSerial() {
+        return serial;
     }
 
-    public CreditRequestDTO() {
+    public void setSerial(String serial) {
+        this.serial = serial;
     }
 
-    public long getDt_RowId() {
-        return dt_RowId;
+    public String getRefCode() {
+        return refCode;
     }
 
-    @JsonSetter("DT_RowId")
-    public void setDt_RowId(long dt_RowId) {
-        this.dt_RowId = dt_RowId;
+    public String getStatus() {
+        return status;
     }
 
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public void setRefCode(String refCode) {
+        this.refCode = refCode;
+    }
 
     public String getAccountNumber() {
         return accountNumber;
@@ -64,4 +71,24 @@ public class CreditRequestDTO {
         this.amount = amount;
     }
 
+    public String getNarration() {
+        return narration;
+    }
+
+    public void setNarration(String narration) {
+        this.narration = narration;
+    }
+
+    public CreditRequestDTO(String serial, String refCode, String accountNumber, String sortCode, String accountName, String amount, String narration) {
+        this.serial = serial;
+        this.refCode = refCode;
+        this.accountNumber = accountNumber;
+        this.sortCode = sortCode;
+        this.accountName = accountName;
+        this.amount = amount;
+        this.narration = narration;
+    }
+
+    public CreditRequestDTO() {
+    }
 }

@@ -193,11 +193,7 @@ public class InterBankTransferController {
         List<FinancialInstitutionDTO> sortedNames = financialInstitutionService.getOtherLocalBanks(bankCode);
         sortedNames.sort(Comparator.comparing(FinancialInstitutionDTO::getInstitutionName));
 
-        model.addAttribute("localBanks"
-        ,sortedNames
-
-
-        );
+        model.addAttribute("localBanks",sortedNames);
         model.addAttribute("nip",integrationService.getFee("NIP"));
         model.addAttribute("rtgs",integrationService.getFee("RTGS"));
 

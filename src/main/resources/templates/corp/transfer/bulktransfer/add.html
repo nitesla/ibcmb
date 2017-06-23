@@ -40,14 +40,14 @@
         </div>
         <div class="row">
             <div class="col-md-12 content-bg">
-                <form method="post" th:action="@{/corporate/bulktransfer}" id="" class="form-horizontal">
+                <form method="post" th:action="@{/corporate/transfer/save}" id="" class="form-horizontal">
                 <div class="row spacing">
                     <div>
                         <p>To make a bulk transfer, Enter the request fields below</p>
                     </div>
 
                     <br/>
-                    <div class="form-group">
+                    <div class="form-group col-md-6">
                         <label>Source account</label>
 
 
@@ -58,12 +58,12 @@
                         </select>
                         <input type="hidden" name="requests"/>
                     </div></div>
-                </form>
 
-                    <div class="col-md-6 col-sm-6 col-xs-12">
-                        <button type="submit" id="button_add" class="btn-xs btn-success btn">Add Field</button>
-                        <button type="submit" id="button_del" class="btn-xs btn-warning btn">Remove</button>
-                    </div>
+
+                    <!--<div class="col-md-6 col-sm-6 col-xs-12">-->
+                        <!--<button type="submit" id="button_add" class="btn-xs btn-success btn">Add Field</button>-->
+                        <!--<button type="submit" id="button_del" class="btn-xs btn-warning btn">Remove</button>-->
+                    <!--</div>-->
                     <br/>
 
                         <br/>
@@ -78,11 +78,22 @@
                                 <th>Amount (N)</th>
                                 <th>Narration</th>
                             </thead>
-
+                            <tbody>
+                            <!--<tr th:each="tr : ${transferRequests}">-->
+                                <!--<td th:text="${tr.serial}"></td>-->
+                                <!--<td th:text="${tr.refCode}"></td>-->
+                                <!--<td th:text="${tr.accountNumber}"></td>-->
+                                <!--<td th:text="${tr.sortCode}"></td>-->
+                                <!--<td th:text="${tr.accountName}"></td>-->
+                                <!--<td th:text="${tr.amount}"></td>-->
+                                <!--<td th:text="${tr.narration}"></td>-->
+                            <!--</tr>-->
+                            </tbody>
                         </table>
 
                     <br/>
-                    <button class="btn btn-link" type="submit" id="button_submit">Upload</button>
+                    <button class="btn btn-link" type="submit" id="button_submit">Submit</button>
+                </form>
                     </div>
 
 
@@ -98,119 +109,67 @@
 <!-- CONTENT-WRAPPER SECTION END-->
 <footer th:replace="corp_layout ::corp-footer">
 </footer>
-<script type="text/javascript" language="javascript" src="js/jquery.js">
-</script>
-
-<script type="text/javascript" language="javascript" src="js/jquery.dataTables.js">
-</script>
-
-<script type="text/javascript" language="javascript" src="js/dataTables.select.js">
-</script>
-<script type="text/javascript" language="javascript" src="js/bootstrap.js">
-</script>
-
-
 <script th:inline="javascript">
     //<![CDATA[
     //datepicker
-    $( function() {
-        $( "#datepicker" ).datepicker(
-            { dateformat : 'dd/mm/yy'}
-        );
-    } );
+//    $( function() {
+//        $( "#datepicker" ).datepicker(
+//            { dateformat : 'dd/mm/yy'}
+//        );
+//    } );
 
+//    $(document).ready(function() {
+//        $.ajax({
+//            url: "/corporate/transfer/all",
+//            type: 'GET',
+//            async: false,
+//            success:function(crLists){
+//
+//
+//                var table = $('#mytab').DataTable({
+//
+//                     });
+//
+//            }
+//        })
 
 
     $(document).ready(function() {
-        t = $('#mytab').DataTable({dom : 'rt',
-            select : {style:'single'},
-            ordering : false,
-            "language": {
-                "emptyTable": "Enter Bulk transfer request fields"
-            }
-        });
-
-        t.on('select', function (e,dt,type, indexed) {
-            if(type == 'row'){
-
-                dt.rows({selected: true}).every(function (rowIdx,tableLoop,rowLoop) {
-                    this.data();
-                    inparray = [];
-                    for(i =0; i < this.data().length; i++){
-                        inp = '<input value="' +this.data()[i]+'"/>';
-                        inparray.push(inp);
-                    }
-                    this.data(inparray).draw();
-                });
-
-//                dt.rows({selected: true}).each(function (value,index) {
-//                    rw = value;//dt.row(index);
-//                    arr = rw.data;
-//                    inparray = [];
-//                    for(i =0; i < arr.length; i++){
-//                        inp = '<input value="' +arr[i]+'"/>';
-//                        inparray.push(inp);
-//                    }
-//                    //rw.add(inparray);
-//                });
+        var table = $('#mytab').DataTable({
+            select:true,
+            "lengthMenu" : [ [ 5, 10, 20],	[ 5, 10, 20 ] ],
+            "pagingType" : "simple_numbers",
+            "searching": false,
+            "paging": true,
+            "serverSide" : false,
+            "ajax": "/corporate/transfer/all",
+            "dom": 'T<"clear">frtlp',
+            "columns": [
+                { "data": "serial" },
+                { "data": "refCode" },
+                { "data": "accountNumber" },
+                { "data": "sortCode" },
+                { "data": "accountName" },
+                { "data": "amount" },
+                { "data": "narration" }
+            ] });
 
 
-            }
-        });
 
-        t.on('deselect', function (e,dt,type, indexed) {
-            if(type == 'row'){
-
-                dt.rows({selected: false}).every(function (rowIdx,tableLoop,rowLoop) {
-                    rw = dt.row(index);
-                    arr = rw.data;
-                    inparray = [];
-
-                    for(i =0  ; i < arr.length; i++){
-
-                        d= $(arr[i]).val();
-                        inparray.push(d);
-                    }
-
-                    rw.add(inparray);
-                });
+    });
 
 
-            }
-        });
+    $('#button_submit').click(function(e) {
+        e.preventDefault()
+        bulkTab = $('#mytab').DataTable();
+        data = JSON.stringify(bulkTab.data().toArray());
+        $("input[name='requests']").val(data);
+        $('form').submit();
+    });
 
-        $('#button_add').on( 'click', function (e) {
-            e.preventDefault();
-            t.row.add( [
-                '',
-                '',
-                '',
-                '',
-                '',
-                '',
-                ''
-            ] ).draw( false );
-
-        } );
-
-        $('#button_del').click( function (e) {
-            e.preventDefault()
-            var dt = $('#mytab').DataTable();
-            dt.row('.selected').remove().draw( false );
+    //});
 
 
-        } );
-
-        $('#button_submit').click(function(e) {
-            e.preventDefault()
-            bulkTab = $('#mytab').DataTable();
-            data = JSON.stringify(bulkTab.data().toArray());
-            $("input[name='requests']").val(data);
-            $('form').submit();
-        });
-    } );
-
-    //]]>
 
 </script>
 </body>

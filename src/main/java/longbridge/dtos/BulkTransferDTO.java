@@ -3,82 +3,74 @@ package longbridge.dtos;
 /**
  * Created by Longbridge on 14/06/2017.
  */
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 public class BulkTransferDTO {
-    private long dt_RowId;
-    private String reference;
-    private String accountNumber;
-    private String sortCode;
-    private String accountName;
-    private String amount;
-    private String narration;
+    @JsonProperty("DT_RowId")
+    private Long id;
+    private String debitAccount;
+    private String requestDate;
+    private String refCode;
+    private  String status;
+    private Long batchId;
 
-    public BulkTransferDTO(String reference, String accountNumber, String sortCode, String accountName, String amount, String narration) {
-        this.reference = reference;
-        this.accountNumber = accountNumber;
-        this.sortCode = sortCode;
-        this.accountName = accountName;
-        this.amount = amount;
-        this.narration = narration;
-    }
 
     public BulkTransferDTO() {
     }
 
-    public long getDt_RowId() {
-        return dt_RowId;
+    public BulkTransferDTO(String debitAccount, String requestDate, String refCode, String status, Long batchId) {
+        this.debitAccount = debitAccount;
+        this.requestDate = requestDate;
+        this.refCode = refCode;
+        this.status = status;
+        this.batchId = batchId;
     }
 
-    @JsonSetter("DT_RowId")
-    public void setDt_RowId(long dt_RowId) {
-        this.dt_RowId = dt_RowId;
+    public Long getBatchId() {
+        return batchId;
     }
 
-    public String getReference() {
-        return reference;
+    public void setBatchId(Long batchId) {
+        this.batchId = batchId;
     }
 
-    public void setReference(String reference) {
-        this.reference = reference;
+    public Long getId() {
+        return id;
     }
 
-    public String getAccountNumber() {
-        return accountNumber;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public void setAccountNumber(String accountNumber) {
-        this.accountNumber = accountNumber;
+    public String getDebitAccount() {
+        return debitAccount;
     }
 
-    public String getSortCode() {
-        return sortCode;
+    public void setDebitAccount(String debitAccount) {
+        this.debitAccount = debitAccount;
     }
 
-    public void setSortCode(String sortCode) {
-        this.sortCode = sortCode;
+    public String getRequestDate() {
+        return requestDate;
     }
 
-    public String getAccountName() {
-        return accountName;
+    public void setRequestDate(String requestDate) {
+        this.requestDate = requestDate;
     }
 
-    public void setAccountName(String accountName) {
-        this.accountName = accountName;
+    public String getRefCode() {
+        return refCode;
     }
 
-    public String getAmount() {
-        return amount;
+    public void setRefCode(String refCode) {
+        this.refCode = refCode;
     }
 
-    public void setAmount(String amount) {
-        this.amount = amount;
+    public String getStatus() {
+        return status;
     }
 
-    public String getNarration() {
-        return narration;
-    }
-
-    public void setNarration(String narration) {
-        this.narration = narration;
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

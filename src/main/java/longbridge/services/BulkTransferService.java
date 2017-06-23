@@ -1,4 +1,6 @@
 package longbridge.services;
+import longbridge.dtos.BulkTransferDTO;
+import longbridge.dtos.CreditRequestDTO;
 import longbridge.models.BulkTransfer;
 import longbridge.models.Corporate;
 import longbridge.models.CreditRequest;
@@ -20,8 +22,14 @@ import longbridge.models.Corporate;
 public interface BulkTransferService {
     String makeBulkTransferRequest(BulkTransfer bulkTransfer);
     Page<BulkTransfer> getAllBulkTransferRequests(Corporate corporate, Pageable details);
+    Page<BulkTransferDTO> getBulkTransferRequests(Corporate corporate, Pageable details);
     String cancelBulkTransferRequest(Long id);
     BulkTransfer getBulkTransferRequest(Long id);
+    Page<CreditRequestDTO> getCreditRequests(BulkTransfer bulkTransfer, Pageable pageable);
+
+    Page<CreditRequest> getAllCreditRequests(BulkTransfer bulkTransfer, Pageable pageable);
+
+
 
 
 }
