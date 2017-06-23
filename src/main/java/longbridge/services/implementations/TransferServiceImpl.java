@@ -20,6 +20,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContext;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -30,6 +33,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -47,12 +51,14 @@ public class TransferServiceImpl implements TransferService {
     private AccountService accountService;
     private FinancialInstitutionService financialInstitutionService;
     private ConfigurationService configService;
+    private MessageSource messages;
+    private Locale locale= LocaleContextHolder.getLocale();
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
     @Autowired
     public TransferServiceImpl(TransferRequestRepo transferRequestRepo, IntegrationService integrationService, TransactionLimitServiceImpl limitService, ModelMapper modelMapper, AccountService accountService, FinancialInstitutionService financialInstitutionService, ConfigurationService configurationService
-            , RetailUserRepo retailUserRepo) {
+            , RetailUserRepo retailUserRepo,MessageSource messages) {
         this.transferRequestRepo = transferRequestRepo;
         this.integrationService = integrationService;
         this.limitService = limitService;
@@ -61,6 +67,7 @@ public class TransferServiceImpl implements TransferService {
         this.financialInstitutionService = financialInstitutionService;
         this.configService = configurationService;
         this.retailUserRepo = retailUserRepo;
+        this.messages=messages;
     }
 
 
@@ -71,6 +78,7 @@ public class TransferServiceImpl implements TransferService {
         if (transRequest != null) {
 
             logger.trace("params {}", transRequest);
+
             saveTransfer(convertEntityToDTO(transRequest));
 
             if (transRequest.getStatus() != null) {

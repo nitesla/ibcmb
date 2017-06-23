@@ -5,6 +5,7 @@ import longbridge.api.*;
 import longbridge.dtos.SettingDTO;
 import longbridge.exception.InternetBankingTransferException;
 
+import longbridge.exception.TransferErrorService;
 import longbridge.exception.TransferExceptions;
 import longbridge.models.FinancialTransaction;
 import longbridge.models.TransRequest;
@@ -53,14 +54,17 @@ public class IntegrationServiceImpl implements IntegrationService {
     private MailService mailService;
     private TemplateEngine templateEngine;
     private ConfigurationService configService;
+    private TransferErrorService errorService;
 
     @Autowired
     public IntegrationServiceImpl(RestTemplate template, MailService mailService, TemplateEngine templateEngine
-            , ConfigurationService configService) {
+            , ConfigurationService configService,
+                                  TransferErrorService errorService) {
         this.template = template;
         this.mailService = mailService;
         this.templateEngine = templateEngine;
         this.configService = configService;
+        this.errorService = errorService;
     }
 
 
@@ -108,11 +112,11 @@ public class IntegrationServiceImpl implements IntegrationService {
             Map<String, String> params = new HashMap<>();
             params.put("accountNumber", accountNo);
             params.put("fromDate", formatter.format(fromDate));
-            params.put("solId",viewAccountDetails(accountNo).getSolId());
+            params.put("solId", viewAccountDetails(accountNo).getSolId());
             if (toDate != null) params.put("toDate", formatter.format(toDate));
 
 
-            statement = template.postForObject(uri,  params,AccountStatement.class);
+            statement = template.postForObject(uri, params, AccountStatement.class);
 
 
         } catch (Exception e) {
@@ -180,7 +184,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 
                     e.printStackTrace();
                     transRequest.setStatus(ResultType.ERROR.toString());
-                    transRequest.setStatusDescription(TransferExceptions.ERROR.toString());
+                    transRequest.setStatusDescription(errorService.getExactMessage(TransferExceptions.ERROR.toString()));
                     return transRequest;
 
                 }
@@ -215,7 +219,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 
                     e.printStackTrace();
                     transRequest.setStatus(ResultType.ERROR.toString());
-                    transRequest.setStatusDescription(TransferExceptions.ERROR.toString());
+                    transRequest.setStatusDescription(errorService.getExactMessage(TransferExceptions.ERROR.toString()));
                     return transRequest;
                 }
 
@@ -248,7 +252,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 
                     e.printStackTrace();
                     transRequest.setStatus(ResultType.ERROR.toString());
-                    transRequest.setStatusDescription(TransferExceptions.ERROR.toString());
+                    transRequest.setStatusDescription(errorService.getExactMessage(TransferExceptions.ERROR.toString()));
                     return transRequest;
                 }
 
@@ -467,7 +471,7 @@ public class IntegrationServiceImpl implements IntegrationService {
             return details;
         } catch (Exception e) {
 
-            return new Rate("","0","");
+            return new Rate("", "0", "");
         }
 
 

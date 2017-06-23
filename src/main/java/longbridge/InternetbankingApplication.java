@@ -3,10 +3,12 @@ package longbridge;
 import longbridge.api.Rate;
 import longbridge.jobs.CronJobs;
 import longbridge.repositories.CustomJpaRepositoryFactoryBean;
+import longbridge.services.BulkTransferService;
 import longbridge.services.IntegrationService;
 
 import longbridge.services.SecurityService;
 import longbridge.utils.statement.AccountStatement;
+import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -23,6 +25,7 @@ import java.util.Date;
 
 @SpringBootApplication
 @EnableJpaRepositories(repositoryFactoryBeanClass = CustomJpaRepositoryFactoryBean.class)
+@EnableBatchProcessing
 
 public class InternetbankingApplication /*extends SpringBootServletInitializer */implements CommandLineRunner {
 
@@ -33,7 +36,7 @@ public class InternetbankingApplication /*extends SpringBootServletInitializer *
     @Autowired
     private IntegrationService integrationService;
     @Autowired
-    PasswordEncoder passwordEncoder;
+    BulkTransferService service;
     @Autowired
     private CronJobs cronJobs;
 
@@ -49,6 +52,7 @@ public class InternetbankingApplication /*extends SpringBootServletInitializer *
     @Override
    public void run(String... strings) throws Exception {
         cronJobs.startJob();
+        service.makeBulkTransferRequest("1169");
 
 
 //      securityService.createEntrustUser("wumiTofu01","Wunmi baba ",true);
