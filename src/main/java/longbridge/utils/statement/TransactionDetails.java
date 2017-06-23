@@ -13,7 +13,16 @@ public class TransactionDetails {
     private String narration;
     private String accountBalance;
     private String tranType;
+    private String tranAmount;
 
+
+    public String getTranAmount() {
+        return tranAmount;
+    }
+
+    public void setTranAmount(String tranAmount) {
+        this.tranAmount = tranAmount;
+    }
 
     public String getCurrencyCode() {
         return currencyCode;
