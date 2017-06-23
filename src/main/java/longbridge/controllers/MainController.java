@@ -84,7 +84,7 @@ public class MainController {
 
     @GetMapping(value = "/login/admin")
     public ModelAndView adminLogin() {
-        clearSession();
+        //clearSession();
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("admlogin");
@@ -93,7 +93,7 @@ public class MainController {
 
     @GetMapping(value = "/login/ops")
     public ModelAndView opsLogin() {
-        clearSession();
+        //clearSession();
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("opslogin");
         return modelAndView;
@@ -395,12 +395,12 @@ public class MainController {
         return "redirect:/#contact_us";
     }
 
-    private void clearSession(){
+  /*  private void clearSession(){
         ServletRequestAttributes attr = (ServletRequestAttributes)
                 RequestContextHolder.currentRequestAttributes();
         HttpSession session = attr.getRequest().getSession(false);
         if (session!=null)
         session.invalidate();
-    }
+    }*/
 
 }
