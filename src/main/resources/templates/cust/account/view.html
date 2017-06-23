@@ -25,7 +25,7 @@
                             <label>Date Range</label>
                             <div class="input-daterange input-group" id="date-range">
                                 <input type="text" data-date-format="dd-mm-yyyy" class="form-control datepicker" id="start" name="fromDate" placeholder="Start date" required="required" />
-                                <span class="input-group-addon no-border text-white">to</span>
+                                <span class="input-group-addon no-border">to</span>
                                 <input type="text"  data-date-format="dd-mm-yyyy" class="form-control datepicker" name="toDate" id="endDate" placeholder="End date" required="required" />
                             </div>
                         </div>
@@ -47,30 +47,43 @@
                                 <option th:each="s: ${accounts}" th:value="${s}" th:text="${s}"></option></select>
                         </div>
 
+                        <div class="form-group col-md-6">
+                            <label>&nbsp;</label>
+                            <button type="submit" class="btn " id="btn-find"><i class="fa fa-search" style="color: white" ></i>&nbsp; view</button>
+                        </div>
                     </div>
 
-<div class="row-spacing col-md-12">
-                        <button type="submit" class="btn pull-right" id="btn-find"><i class="fa fa-search" style="color: white" ></i>&nbsp; find</button>
-</div>
+
 
 <p>
-                        <a id="btn-print" th:href="@{'~/viewstatement/display/data'}" class="btn bt-link-act"> <i class="fa fa-print" style="color: white" ></i>&nbsp; print</a>
-                        <a th:href="@{'#'}" class="btn "> <i class="fa fa-envelope" style="color: white" ></i>&nbsp; send mail</a>
+                        <a id="btn-print" th:href="@{'~/viewstatement/display/data'}" class="btn bt-link-act pull-right"> <i class="fa fa-print" style="color: white" ></i>&nbsp; print</a>
+                        <!--<a th:href="@{'#'}" class="btn "> <i class="fa fa-envelope" style="color: white" ></i>&nbsp; send mail</a>-->
 </p>
 
                         <h2>TRANSACTION DETAILS</h2>
                     <table class="table" id="tranDetails">
                         <thead>
                         <tr>
-                            <th>Amount</th>
+                            <th>Account Balance</th>
                             <th>Currency Code</th>
                             <th>Post Date</th>
-                            <th>Transaction Particulars</th>
-                            <th>Transaction Type</th>
+                            <th>Transaction Narration</th>
+                            <th>Debit/Credit</th>
                             <th>Value Date</th>
 
                         </tr>
                         </thead>
+                        <tfoot>
+                        <tr>
+                            <th>Account Balance</th>
+                            <th>Currency Code</th>
+                            <th>Post Date</th>
+                            <th>Transaction Narration</th>
+                            <th>Debit/Credit</th>
+                            <th>Value Date</th>
+
+                        </tr>
+                        </tfoot>
                     </table>
 
 
@@ -121,11 +134,11 @@
     		"ordering" : false,
             "dom": 'T<"clear">frtlp',
             "columns" : [
-            	{"data" : "transactionBalance.amountValue"},
-            	{"data" : "transactionBalance.currencyCode"},
-            	{"data" : "postedDate"} ,
-            	{"data" : "transactionSummary.transactionDescription"},
-            	{"data" : "transactionSummary.transactionType"},
+            	{"data" : "accountBalance"},
+            	{"data" : "currencyCode"},
+            	{"data" : "postDate"} ,
+            	{"data" : "narration"},
+            	{"data" : "tranType"},
             	{"data" : "valueDate"}
             	],
             "ajax" : {

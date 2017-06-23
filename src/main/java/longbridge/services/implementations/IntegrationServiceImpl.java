@@ -102,7 +102,7 @@ public class IntegrationServiceImpl implements IntegrationService {
     }
 
     @Override
-    public AccountStatement getAccountStatements(String accountNo, Date fromDate, Date toDate) {
+    public AccountStatement getAccountStatements(String accountNo, Date fromDate, Date toDate,String tranType) {
         AccountStatement statement = new AccountStatement();
         try {
             SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
@@ -113,6 +113,8 @@ public class IntegrationServiceImpl implements IntegrationService {
             params.put("accountNumber", accountNo);
             params.put("fromDate", formatter.format(fromDate));
             params.put("solId", viewAccountDetails(accountNo).getSolId());
+            if (tranType!=null)
+            params.put("tranType", tranType);
             if (toDate != null) params.put("toDate", formatter.format(toDate));
 
 

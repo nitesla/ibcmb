@@ -38,7 +38,7 @@ public interface IntegrationService {
      * @param toDate    the Date to stop fetching the account statement (inclusive)
      * @return {@code AccountStatement} object
      */
-    AccountStatement getAccountStatements(String accountNo, Date fromDate, Date toDate);
+    AccountStatement getAccountStatements(String accountNo, Date fromDate, Date toDate,String tranType);
 
 
     /**
