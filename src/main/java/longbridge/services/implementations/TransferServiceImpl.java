@@ -235,7 +235,7 @@ public class TransferServiceImpl implements TransferService {
             if (destAccount == null)
                 throw new InternetBankingTransferException(TransferExceptions.INVALID_BENEFICIARY.toString());
             if ((("NGN").equalsIgnoreCase(sourceAccount.getAcctCrncyCode()))&& !("NGN").equalsIgnoreCase(destAccount.getAcctCrncyCode()))
-                
+
             throw new InternetBankingTransferException(TransferExceptions.NOT_ALLOWED.toString());
 
         }

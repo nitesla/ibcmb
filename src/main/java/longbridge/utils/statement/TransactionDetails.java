@@ -7,51 +7,28 @@ package longbridge.utils.statement;
 
 
 public class TransactionDetails {
-
-    private TransactionSummary transactionSummary;
-
-    private String postedDate;
-
-    private String transactionCategory;
-
-    private String transactionId;
-
+    private String currencyCode;
+    private String postDate;
     private String valueDate;
+    private String narration;
+    private String accountBalance;
+    private String tranType;
 
-    private TransactionBalance transactionBalance;
 
-    private String transactionSerialNumber;
-
-    public TransactionSummary getTransactionSummary() {
-        return transactionSummary;
+    public String getCurrencyCode() {
+        return currencyCode;
     }
 
-    public void setTransactionSummary(TransactionSummary transactionSummary) {
-        this.transactionSummary = transactionSummary;
+    public void setCurrencyCode(String currencyCode) {
+        this.currencyCode = currencyCode;
     }
 
-    public String getPostedDate() {
-        return postedDate;
+    public String getPostDate() {
+        return postDate;
     }
 
-    public void setPostedDate(String postedDate) {
-        this.postedDate = postedDate;
-    }
-
-    public String getTransactionCategory() {
-        return transactionCategory;
-    }
-
-    public void setTransactionCategory(String transactionCategory) {
-        this.transactionCategory = transactionCategory;
-    }
-
-    public String getTransactionId() {
-        return transactionId;
-    }
-
-    public void setTransactionId(String transactionId) {
-        this.transactionId = transactionId;
+    public void setPostDate(String postDate) {
+        this.postDate = postDate;
     }
 
     public String getValueDate() {
@@ -62,32 +39,39 @@ public class TransactionDetails {
         this.valueDate = valueDate;
     }
 
-    public TransactionBalance getTransactionBalance() {
-        return transactionBalance;
+    public String getNarration() {
+        return narration;
     }
 
-    public void setTransactionBalance(TransactionBalance transactionBalance) {
-        this.transactionBalance = transactionBalance;
+    public void setNarration(String narration) {
+        this.narration = narration;
     }
 
-    public String getTransactionSerialNumber() {
-        return transactionSerialNumber;
+    public String getAccountBalance() {
+        return accountBalance;
     }
 
-    public void setTransactionSerialNumber(String transactionSerialNumber) {
-        this.transactionSerialNumber = transactionSerialNumber;
+    public void setAccountBalance(String accountBalance) {
+        this.accountBalance = accountBalance;
+    }
+
+    public String getTranType() {
+        return tranType;
+    }
+
+    public void setTranType(String tranType) {
+        this.tranType = tranType;
     }
 
     @Override
     public String toString() {
         return "TransactionDetails{" +
-                "transactionSummary=" + transactionSummary +
-                ", postedDate='" + postedDate + '\'' +
-                ", transactionCategory='" + transactionCategory + '\'' +
-                ", transactionId='" + transactionId + '\'' +
+                "currencyCode='" + currencyCode + '\'' +
+                ", postDate='" + postDate + '\'' +
                 ", valueDate='" + valueDate + '\'' +
-                ", transactionBalance=" + transactionBalance +
-                ", transactionSerialNumber='" + transactionSerialNumber + '\'' +
+                ", narration='" + narration + '\'' +
+                ", accountBalance='" + accountBalance + '\'' +
+                ", tranType='" + tranType + '\'' +
                 '}';
     }
 }
