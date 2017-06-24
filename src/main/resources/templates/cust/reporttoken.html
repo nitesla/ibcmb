@@ -8,7 +8,7 @@
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/bootstrap.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/custom.css}"/>
 
-    <title>Retrieve Username</title>
+    <title>Report Token</title>
 </head>
 <body>
 
@@ -62,7 +62,7 @@
                 <div class="row">
                     <h5 class="page_header">Report Lost Token</h5>
 
-                    <form id="reg-form" action="/forgot/username" method="post">
+                    <form id="reg-form" action="/reporttoken" method="post">
 
                         <div>
                             <h3>Username</h3>
@@ -115,7 +115,7 @@
 
                                         <div class="form-group">
                                             <label>Select missing token device </label>
-                                            <span class='req'></span><select name="token" class="form-control"> <option></option></select>
+                                            <span class='req'></span><select id="userTokens" name="token" class="form-control"></select>
 
                                         </div>
                                     </div>
@@ -128,7 +128,7 @@
                                         <br/>
                                         <h4 style="font-size: 16px;">Operation successful</h4>
                                         <br/>
-                                        Your username has been sent to your registered email
+                                        Your report of a lost token was successful and has been blocked.
                                         <br/>
                                     </div>
                                 </div>
@@ -141,6 +141,59 @@
         </div>
     </div>
 </section>
+
+<div id="myModalError" class="modal fade " role="dialog">
+    <div class="modal-dialog" >
+
+        <!-- Modal content-->
+
+        <div class="modal-content no-bd-rad content ">
+
+            <div class="modal-body">
+
+
+                <p id='errorMess' class='mess text-danger'>Put something here iff need be.</p>
+
+
+
+            </div>
+
+
+            <div class="modal-footer no-bd-top" >
+                <button type="button" class="btn btn-link" data-dismiss="modal">OK</button>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+
+<div id="myModalSuccess" class="modal fade " role="dialog">
+    <div class="modal-dialog" >
+
+        <!-- Modal content-->
+
+        <div class="modal-content no-bd-rad content ">
+
+            <div class="modal-body">
+
+
+                <p id='successMess' class='mess text-primary'>Put something here iff need be.</p>
+
+
+
+            </div>
+
+
+            <div class="modal-footer no-bd-top" >
+                <button type="button" class="btn btn-link" data-dismiss="modal">OK</button>
+            </div>
+
+        </div>
+
+    </div>
+</div>
 
 <footer>
     <div class="container">
@@ -167,6 +220,6 @@
 <script th:src="@{~/customer/js/jquery-ui.js}"></script>
 <script th:src="@{~/customer/plugins/jquery-steps/js/jquery.steps.min.js}" type="text/javascript"></script>
 <script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
-<!--<script th:src="@{~/customer/js/forgotusername.js}" type="text/javascript"></script>-->
+<script th:src="@{~/customer/js/reporttoken.js}" type="text/javascript"></script>
 </body>
 </html>
