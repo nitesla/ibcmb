@@ -3,8 +3,8 @@
 	<property name="ireport.zoom" value="1.1"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
-	<subDataset name="JSONdata" uuid="7604951b-25ba-4a57-8b64-f83d19444a3a">
-		<queryString language="JSON">
+	<subDataset name="datasource" uuid="7604951b-25ba-4a57-8b64-f83d19444a3a">
+		<queryString>
 			<![CDATA[]]>
 		</queryString>
 		<field name="tranPartclr" class="java.lang.String"/>
@@ -20,7 +20,7 @@
 	<parameter name="recipientBank" class="java.lang.String"/>
 	<parameter name="remarks" class="java.lang.String"/>
 	<parameter name="sender" class="java.lang.String"/>
-	<queryString language="json">
+	<queryString >
 		<![CDATA[]]>
 	</queryString>
 	<background>

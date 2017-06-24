@@ -117,7 +117,7 @@ public class OwnTransferController {
     public ModelAndView report(@PathVariable Long id) {
 
         JasperReportsPdfView view = new JasperReportsPdfView();
-        view.setUrl("classpath:pdf/receipt.jrxml");
+        view.setUrl("classpath:jasperreports/receipt.jrxml");
         view.setApplicationContext(appContext);
 
         Map<String, Object> params = new HashMap<>();
@@ -130,7 +130,7 @@ public class OwnTransferController {
         params.put("recipientBank","AGONORONA BANK" );
         params.put("acctNum2", "WAHALA DEY");
         params.put("refNum", "65566586787");
-
+        params.put("amountInWords", "30 BILLION FOR THE ACCOUNT");
 
 
         return new ModelAndView(view, params);
