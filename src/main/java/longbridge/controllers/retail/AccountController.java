@@ -35,6 +35,7 @@ import javax.validation.Valid;
 import java.security.Principal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -253,12 +254,17 @@ public class AccountController {
 			to = dateFormat.parse(toDate);
 			AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to,transType);
 			out.setDraw(input.getDraw());
-			List<TransactionDetails> list = accountStatement.getTransactionDetails();
+			List<TransactionDetails> list = new ArrayList<>();
+			if (list != null || !(list.equals("")) || !(list.isEmpty())) {
+				list=accountStatement.getTransactionDetails();
 			System.out.println(accountStatement.toString());
 			System.out.println("Whats in the list "+list);
-			out.setData(list);
-			out.setRecordsFiltered(list.size());
-			out.setRecordsTotal(list.size());
+
+
+				out.setData(list);
+				out.setRecordsFiltered(list.size());
+				out.setRecordsTotal(list.size());
+			}
 		} catch (ParseException e) {
 			logger.warn("didn't parse date", e);
 		}
