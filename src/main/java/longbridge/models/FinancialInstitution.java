@@ -21,6 +21,7 @@ import javax.persistence.UniqueConstraint;
 public class FinancialInstitution extends AbstractEntity {
 
 
+
     private String institutionCode;
 
     private FinancialInstitutionType institutionType;
