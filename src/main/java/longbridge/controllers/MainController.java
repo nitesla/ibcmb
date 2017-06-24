@@ -343,7 +343,7 @@ public class MainController {
         String message = webRequest.getParameter("message");
         if (message == null){
             model.addAttribute("failure", "Field is required");
-            return "/home";
+            return "index";
         }
         SettingDTO setting = configurationService.getSettingByName("CUSTOMER_CARE_EMAIL");
         logger.info("SETTING RETRIEVED");
@@ -373,7 +373,7 @@ public class MainController {
         String phone = webRequest.getParameter("phone");
         if (phone == null){
             model.addAttribute("failure", "Field is required");
-            return "/home";
+            return "index";
         }
         SettingDTO setting = configurationService.getSettingByName("CUSTOMER_CARE_EMAIL");
         logger.info("SETTING RETRIEVED");
