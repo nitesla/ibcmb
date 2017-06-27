@@ -253,9 +253,7 @@
                 <div>
                     <p>Enter details below</p>
 
-                    <!--<form action="/contact" method="post" class="contact-form">-->
-                    <form action="#contact_us" method="post" class="contact-form">
-
+                    <form action="/contact" method="post" class="contact-form">
                             <div class="form-group">
                                 <input type="text" name="name" class="form-control" placeholder="Name" required="required"/>
                             </div>
@@ -266,7 +264,6 @@
                                 <textarea name="message" value="Message" class="form-control" rows="10" required="required"></textarea>
                             </div>
                         <input type="submit" value="Submit" class="btn btn-primary btn-md form-control" />
-
                     </form>
 
                 </div>
@@ -275,6 +272,28 @@
     </div>
 </section>
 
+
+
+<footer>
+    <div class="container">
+        <div class="footer_bar">
+            <div class="col-md-6">
+                <ul class="list_group">
+                    <li><a href="#" target="_blank">Privacy policy</a></li>
+                    <li><a href="#" target="_blank">Disclaimer</a></li>
+                    <li><a href="#" target="_blank">Terms &amp; Conditions</a></li>
+                </ul>
+            </div>
+
+            <div class="col-md-6"><p> &copy; 2017 - All rights reserved</p></div>
+        </div>
+    </div>
+</footer>
+<!-- CORE JQUERY SCRIPTS -->
+<script th:src="@{~/customer/js/jquery-1.11.1.js}"></script>
+<!-- BOOTSTRAP SCRIPTS  -->
+<script th:src="@{~/customer/js/bootstrap.js}"></script>
+<script th:src="@{~/customer/js/coronation.js}"></script>
 <div th:if="${message}">
     <div hidden="hidden">
         <ul class="actionMessage">
@@ -345,31 +364,5 @@
     </div>
 </div>
 
-
-<footer>
-    <div class="container">
-        <div class="footer_bar">
-            <div class="col-md-6">
-                <ul class="list_group">
-                    <li><a href="#" target="_blank">Privacy policy</a></li>
-                    <li><a href="#" target="_blank">Disclaimer</a></li>
-                    <li><a href="#" target="_blank">Terms &amp; Conditions</a></li>
-                </ul>
-            </div>
-
-            <div class="col-md-6"><p> &copy; 2017 - All rights reserved</p></div>
-        </div>
-    </div>
-</footer>
-<!-- CORE JQUERY SCRIPTS -->
-<script th:src="@{~/customer/js/jquery-1.11.1.js}"></script>
-<!-- BOOTSTRAP SCRIPTS  -->
-<script th:src="@{~/customer/js/bootstrap.js}"></script>
-<script th:src="@{~/customer/js/coronation.js}"></script>
-
-
-<script>
-
-</script>
 </body>
 </html>
