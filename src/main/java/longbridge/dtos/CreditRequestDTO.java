@@ -1,92 +1,42 @@
 package longbridge.dtos;
 
-
+import com.fasterxml.jackson.annotation.JsonSetter;
 
 /**
- * Created by ayoade_farooq@yahoo.com on 6/21/2017.
+ * Created by Longbridge on 14/06/2017.
  */
-
 public class CreditRequestDTO {
-    private String description="NAPS TRANSFER";
-    private String beneficiaryName;
-    private String email;
-    private String beneficiaryAccountNumber;
-    private String paymentReference;
-    private String accountName;
+    private String serial;
+    private String refCode;
     private String accountNumber;
-    private String beneficiaryBankCode;
-    private String batchId;
-    private String payerName ;
-    private String payerAccountNumber;
+    private String sortCode;
+    private String accountName;
     private String amount;
     private String narration;
+    private String status;
 
-    public CreditRequestDTO() {
+    public String getSerial() {
+        return serial;
     }
 
-    public CreditRequestDTO(String description, String beneficiaryName, String email, String beneficiaryAccountNumber, String paymentReference, String accountName, String accountNumber, String beneficiaryBankCode, String batchId, String payerName, String payerAccountNumber, String amount, String narration) {
-        this.description = description;
-        this.beneficiaryName = beneficiaryName;
-        this.email = email;
-        this.beneficiaryAccountNumber = beneficiaryAccountNumber;
-        this.paymentReference = paymentReference;
-        this.accountName = accountName;
-        this.accountNumber = accountNumber;
-        this.beneficiaryBankCode = beneficiaryBankCode;
-        this.batchId = batchId;
-        this.payerName = payerName;
-        this.payerAccountNumber = payerAccountNumber;
-        this.amount = amount;
-        this.narration = narration;
+    public void setSerial(String serial) {
+        this.serial = serial;
     }
 
-
-    public String getDescription() {
-        return description;
+    public String getRefCode() {
+        return refCode;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public String getStatus() {
+        return status;
     }
 
-    public String getBeneficiaryName() {
-        return beneficiaryName;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
-    public void setBeneficiaryName(String beneficiaryName) {
-        this.beneficiaryName = beneficiaryName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getBeneficiaryAccountNumber() {
-        return beneficiaryAccountNumber;
-    }
-
-    public void setBeneficiaryAccountNumber(String beneficiaryAccountNumber) {
-        this.beneficiaryAccountNumber = beneficiaryAccountNumber;
-    }
-
-    public String getPaymentReference() {
-        return paymentReference;
-    }
-
-    public void setPaymentReference(String paymentReference) {
-        this.paymentReference = paymentReference;
-    }
-
-    public String getAccountName() {
-        return accountName;
-    }
-
-    public void setAccountName(String accountName) {
-        this.accountName = accountName;
+    public void setRefCode(String refCode) {
+        this.refCode = refCode;
     }
 
     public String getAccountNumber() {
@@ -97,36 +47,21 @@ public class CreditRequestDTO {
         this.accountNumber = accountNumber;
     }
 
-    public String getBeneficiaryBankCode() {
-        return beneficiaryBankCode;
+    public String getSortCode() {
+        return sortCode;
     }
 
-    public void setBeneficiaryBankCode(String beneficiaryBankCode) {
-        this.beneficiaryBankCode = beneficiaryBankCode;
+    public void setSortCode(String sortCode) {
+        this.sortCode = sortCode;
+
     }
 
-    public String getBatchId() {
-        return batchId;
+    public String getAccountName() {
+        return accountName;
     }
 
-    public void setBatchId(String batchId) {
-        this.batchId = batchId;
-    }
-
-    public String getPayerName() {
-        return payerName;
-    }
-
-    public void setPayerName(String payerName) {
-        this.payerName = payerName;
-    }
-
-    public String getPayerAccountNumber() {
-        return payerAccountNumber;
-    }
-
-    public void setPayerAccountNumber(String payerAccountNumber) {
-        this.payerAccountNumber = payerAccountNumber;
+    public void setAccountName(String accountName) {
+        this.accountName = accountName;
     }
 
     public String getAmount() {
@@ -145,22 +80,9 @@ public class CreditRequestDTO {
         this.narration = narration;
     }
 
-    @Override
-    public String toString() {
-        return "CreditRequestDTO{" +
-                "description='" + description + '\'' +
-                ", beneficiaryName='" + beneficiaryName + '\'' +
-                ", email='" + email + '\'' +
-                ", beneficiaryAccountNumber='" + beneficiaryAccountNumber + '\'' +
-                ", paymentReference='" + paymentReference + '\'' +
-                ", accountName='" + accountName + '\'' +
-                ", accountNumber='" + accountNumber + '\'' +
-                ", beneficiaryBankCode='" + beneficiaryBankCode + '\'' +
-                ", batchId='" + batchId + '\'' +
-                ", payerName='" + payerName + '\'' +
-                ", payerAccountNumber='" + payerAccountNumber + '\'' +
-                ", amount='" + amount + '\'' +
-                ", narration='" + narration + '\'' +
-                '}';
+
+
+    public CreditRequestDTO() {
+
     }
 }
