@@ -22,7 +22,7 @@ public class BulkTransferNotificationListener extends JobExecutionListenerSuppor
             log.info("!!! JOB STARTED AT {}! ", new Date());
 
         } catch (Exception e) {
-            System.out.println("it didn't close");
+           log.error("Exception occurred {}",e);
         }
     }
 
