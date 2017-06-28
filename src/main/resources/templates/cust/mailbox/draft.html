@@ -9,63 +9,53 @@
     </header>
 
 <section class="content-wrapper">
-    <div class="container conts">
-        <div class="wrapper wrapper-content">
-            <div class="containe">
-                <div class="row">
-                    <div class="col-lg-3">
-                        <div class="ibox float-e-margins">
-                            <div class="ibox-content mailbox-content">
-                                <div class="margin-bottoms"></div>
-                                <div class="file-manager">
-                                    <a class="btn btn-block btn-primary compose-mail" th:href="@{/retail/mailbox/compose}">Compose Mail</a>
-                                    <div class="margin-bottoms"></div>
-                                    <ul class="folder-list">
+    <form class="col-sm-4" role="search">
+            <label for="" class='message-label'>Message Center</label>
+            <div class="input-group add-on">
+                <input class="form-control" placeholder="Search" name="srch-term" id="srch-term" type="text"/>
+                <div class="input-group-btn  bg-white">
+                    <button class="btn btn-default search-icon" type="submit"><i class="fa fa-search icon-search"></i></button>
+                </div>
+            </div>
+        </form>
 
-                                        <li><a th:href="@{/retail/mailbox/inbox}"> <i class="fa fa-inbox "></i> Inbox</a></li>
-                                        <li><a th:href="@{/retail/mailbox/sentmail}"> <i class="fa fa-sign-out"></i> Sent Mail</a></li>
-                                        <li><a th:href="@{/retail/mailbox/draft}"> <i class="fa fa-file-text-o"></i> Drafts </a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
+        <div class="row">
+
+            <div class="col-md-9 bg-coronation content-mail"  style="margin-top:20px">
+                <aside class="col-md-3 alert no-bd mail-links-box">
+                    <div class="">
+                        <ul class='mail-links'>
+                           <a th:href="@{/retail/mailbox/compose}"><li class='bg-white coronation-blue' style="border-bottom:0px !important;font-size:13px;font-weight:bolder">Compose Message
+                            </li></a>
+                            <a th:href="@{/retail/mailbox/inbox}"><li >Inbox (1) <i class=' pull-right fa fa-angle-right' style="font-size:20px"></i></li></a>
+                            <a th:href="@{/retail/mailbox/sentmail}"><li class=''>Sent (1)<i class='pull-right fa fa-angle-right' style="font-size:20px"></i></li></a>
+                            <a th:href="@{/retail/mailbox/draft}"><li class='mail-active'> Drafts (1) <i class=' pull-right fa fa-angle-right' style="font-size:20px"></i></li></a>
+
+                        </ul>
                     </div>
-                    <div class="col-lg-9 animated fadeInRight">
-                        <div class="contain">
-                            <div class="margin-bottom"></div>
-                            <div class="mail-box-header">
-                                <h2 class="in-box">
-                                    Inbox
-                                </h2>
-                                <br/>
-                                <div class="mail-tools tooltip-demo m-t-md faz">
-                                    <a href="/retail/mailbox/inbox" class=" btn btn-white btn-sm" data-toggle="tooltip" data-placement="left" title="Refresh inbox"><i class="fa fa-refresh"></i> Refresh</a>
-                                    <!--<button class="btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="Mark as read"><i class="fa fa-eye" th:action="@{/retail/mailbox/trash}"></i> </button>-->
-                                    <!--<button class="btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="Move to trash" th:action="@{/retail/mailbox/inbox}"><i class="fa fa-trash-o"></i> </button>-->
-                                </div>
-                            </div>
-                            <div class="margin-bottoms"></div>
-                            <div class="mail-box">
-                                <table class="table table-hover table-mail">
+                </aside>
+                <article class="col-md-9 article">  
+                    <div class="alert alert-bottom bg-coronation-blue">
+                        <p style="color:white">INBOX</p>
+                    </div>
+
+                    <table class="table table-hover table-mail">
                                     <tbody>
-                                    <tr th:each="message: ${receivedMessages}" class="unread">
+                                    <tr th:each="message: ${sentMessages}" class="unread">
                                         <td class="mail-ontact" th:text="${message.sender}"></td>
-                                        <td class="mail-subject"><a th:href="@{/retail/mailbox/draft/{id}/message(id=${message.id})}" th:text="${message.subject}">Placeholder text</a></td>
+                                        <td class="mail-subject"><a th:href="@{/retail/mailbox/sent/{id}/message(id=${message.id})}" th:text="${message.subject}">Placeholder text</a></td>
                                         <td class="text-right mail-date" th:text="${message.createdOn}">6.10 AM</td>
                                     </tr>
 
-
                                     </tbody>
                                 </table>
+                </article>
+            </div>
+             <div class="col-md-3  pull-right">
+                            <div th:replace="cust_layout :: sidebar" class="" >
                             </div>
-                        </div>
-                    </div>
-
-                </div>
             </div>
         </div>
-    </div>
-
 </section>
 
 <!-- CONTENT-WRAPPER SECTION END-->

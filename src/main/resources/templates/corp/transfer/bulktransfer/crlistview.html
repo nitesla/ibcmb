@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="corp_layout :: site-head">
+
+    <link rel="stylesheet" type="text/css" href="css/jquery.dataTables.css"/>
+    <link rel="stylesheet" type="text/css" href="css/select.bootstrap.css"/>
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="css/dataTables.bootstrap.css"/>
+</head>
+
+<style>
+    .hstyle{
+        width: 100%;
+        text-align: center;
+        border-bottom: 1px solid #000;
+        line-height: 0.1em;
+        margin: 10px 0 20px;
+    }
+
+    .hstyle span {
+        background:#fff;
+        padding:0 10px;
+    }
+    table.dataTable tbody > tr.selected{
+        color: black;
+        background-color: #d7bdb3;
+    }
+</style>
+
+<body>
+<header th:replace="corp_layout ::corp-header">
+</header>
+
+<section class="content-wrapper">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 col-sm-4">
+                <h5 class="page_header"> Bulk Transfer Details</h5>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 content-bg">
+                <form method="post" id="" class="form-horizontal">
+                    <div class="row spacing">
+                        <div>
+                            <p>Request Date: <span th:text="${bulkTransfer.requestDate}"></span></p>
+
+                        </div>
+
+
+
+                        <br/>
+                        <div class="form-group col-md-6">
+                            <label>Source account</label>
+                            <input type="text" class="form-control" th:field="*{bulkTransfer.debitAccount}" readonly/>
+                            </div>
+
+
+                    <br/>
+                        <input type="hidden" class="form-control" th:value="${bulkTransfer.id}" th:field="*{bulkTransfer.id}" th:id="bk" id="bk" readonly/>
+
+                        <br/>
+                    <table id="mytab" class="table table-striped table-bordered table-hover" cellspacing="0"  >
+                        <thead>
+
+                        <th>Serial</th>
+                        <th>Ref</th>
+                        <th>Account Number</th>
+                        <th>Sort Code</th>
+                        <th>Beneficiary Name</th>
+                        <th>Amount (N)</th>
+                        <th>Narration</th>
+                        <th>Status</th>
+
+                        </thead>
+                        <!--<tbody>-->
+                        <!--<tr th:each="cr : ${creditRequests}">-->
+                        <!--<td th:text="${cr.serial}"></td>-->
+                        <!--<td th:text="${cr.refCode}"></td>-->
+                        <!--<td th:text="${cr.accountNumber}"></td>-->
+                        <!--<td th:text="${cr.sortCode}"></td>-->
+                        <!--<td th:text="${cr.accountName}"></td>-->
+                        <!--<td th:text="${cr.amount}"></td>-->
+                        <!--<td th:text="${cr.narration}"></td>-->
+                        <!--<td th:text="${cr.status}"></td>-->
+                        <!--</tr>-->
+                        <!--</tbody>-->
+                    </table>
+
+                    <br/>
+                    <a class="btn btn-link" th:href="@{/corporate/transfer/bulk}">Back</a>
+                    </div>
+                </form>
+            </div>
+
+
+
+            <!--<div th:replace="corp_layout :: corp-sidebar" class="col-md-3 sidebar">-->
+            <!--</div>-->
+        </div>
+    </div>
+
+</section>
+
+
+<!-- CONTENT-WRAPPER SECTION END-->
+<footer th:replace="corp_layout ::corp-footer">
+</footer>
+<script th:inline="javascript">
+    //<![CDATA[
+
+    $(document).ready(function() {
+        var id = document.getElementById("bk").value;
+        var table = $('#mytab').DataTable({
+            select:true,
+            "lengthMenu" : [ [ 5, 10, 20],	[ 5, 10, 20 ] ],
+            "pagingType" : "simple_numbers",
+            "searching": false,
+            "paging": true,
+            "serverSide" : false,
+            "ajax": "/corporate/transfer/" +id+ "/allcreditrequests",
+            "dom": 'T<"clear">frtlp',
+            "columns": [
+                { "data": "serial" },
+                { "data": "refCode" },
+                { "data": "accountNumber" },
+                { "data": "sortCode" },
+                { "data": "accountName" },
+                { "data": "amount" },
+                { "data": "narration" },
+                { "data": "status" }
+            ] });
+
+
+
+    });
+
+
+    $('#button_submit').click(function(e) {
+        e.preventDefault()
+        bulkTab = $('#mytab').DataTable();
+        data = JSON.stringify(bulkTab.data().toArray());
+        $("input[name='requests']").val(data);
+        $('form').submit();
+    });
+
+    //});
+
+
+
+</script>
+</body>
+</html>

@@ -3,10 +3,11 @@
 <head>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/bootstrap.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/custom.css}"/>
+     <link rel="stylesheet" type="text/css" th:href="@{~/customer/font-awesome/font-awesome.min.css}"/>
     <title>Log in | Coronation Merchant Bank
     </title>
 </head>
-<body>
+<body onload="token()">
 <div class="container">
     <div class="top_bar">
         <ul class="list_group">
@@ -49,23 +50,23 @@
 <section class="content-wrapper">
     <div class="container">
         <div class="bg">
-            <form id="loginform" th:action="@{/retail/token}" method="POST" class="form-signin">
-                <h1>Token Authentication</h1>
-                <br/>
+            <!--<form id="loginform" th:action="@{/retail/token}" method="POST" class="form-signin">-->
+                <!--<h1>Token Authentication</h1>-->
+                <!--<br/>-->
 
 
-                <div id="username_div" class="form-group">
-                    <input type="text" id="token" name="token" class="form-control"  placeholder="Token Code" />
-                </div>
-                <div class="form-group">
-                    <button class="btn btn-primary form-control" type="submit"> Next </button>
-                </div>
-            </form>
+                <!--<div id="username_div" class="form-group">-->
+                    <!--<input type="text" id="token" name="token" class="form-control"  placeholder="Token Code" />-->
+                <!--</div>-->
+                <!--<div class="form-group">-->
+                    <!--<button class="btn btn-primary form-control" type="submit"> Next </button>-->
+                <!--</div>-->
+            <!--</form>-->
         </div>
     </div>
 </section>
 
-<footer>zz
+<footer>
     <div class="container">
         <div class="footer_bar">
             <div class="col-md-6 col-xs-12">
@@ -99,58 +100,65 @@
     </div>
 </div>
 
-<div id="myModalError" class="modal fade " role="dialog">
-    <div class="modal-dialog" >
+<div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
 
-        <!-- Modal content-->
+    <!-- Modal content-->
+    <div class="modal-content no-bd-rad tokenBox" >
+        <form id="loginform" th:action="@{/retail/token}" method="POST" >
+            <div class="modal-body no-bd-rad">  
+            
+                
 
-        <div class="modal-content no-bd-rad content ">
-
-            <div class="modal-body">
+                    <h3 class="tokenHeader"><span class='text-danger'>Hello</span>, Tolu</h3>
 
 
-                <p id='errorMess' class='mess text-danger'>Put something here iff need be.</p>
+                    <div class="margin-bottom">
+                        <p style="margin-bottom:20px">Kindly enter the OTP from your token device</p>
+                         <div id="username_div" class="form-group">
+                                <input  type="text" id="token" name="token" class='form-control tokenInput' placeholder="Token Code" />
+                         </div>
+                         <div id='errorMess' class=" text-danger "></div>
+                         <div id='successMess' class=" text-success "></div>
+                    </div>
+                    <div >
+                    <p>Don't have a token?</p>
+                    <p><a href='javascript:sendOtp()' >Send me an OTP </a><i class='fa fa-angle-down'  style="font-size:18px;"></i></p>
+                    </div>
+               
+            </div>
+            <div class="modal-footer no-bd-top ">
+                <a onclick='redirect()' class="btn btn-link token-btn remove-item" th:action="@{/retail/login}" >Back</a>
 
-
-
+                <button type='submit' class="btn btn-link token-btn" >Continue</button>
             </div>
 
+             </form>
 
-            <div class="modal-footer no-bd-top" >
-                <button type="button" class="btn btn-link" data-dismiss="modal">OK</button>
-            </div>
-
-        </div>
 
     </div>
+
+  </div>
 </div>
 
 
-<div id="myModalSuccess" class="modal fade " role="dialog">
-    <div class="modal-dialog" >
+<script> 
+    function token()
+    {
+        $('#myModal').modal({
+            backdrop: 'static',
+            keyboard: false,
+            show: true
 
-        <!-- Modal content-->
-
-        <div class="modal-content no-bd-rad content ">
-
-            <div class="modal-body">
-
-
-                <p id='successMess' class='mess text-primary'>Put something here iff need be.</p>
-
+        })
+    }
 
 
-            </div>
-
-
-            <div class="modal-footer no-bd-top" >
-                <button type="button" class="btn btn-link" data-dismiss="modal">OK</button>
-            </div>
-
-        </div>
-
-    </div>
-</div>
+    function redirect()
+    {
+       location.href = '/login/retail';
+    }
+</script>
 
 <!-- jQuery -->
 <!-- Bootstrap -->
@@ -173,6 +181,43 @@
 <script th:src="@{~/customer/js/coronation.js}"></script>
 <!-- BOOTSTRAP SCRIPTS  -->
 <script th:src="@{~/customer/js/bootstrap.js}"></script>
+<script>
+    function sendOtp() {
+        //make sure alert message is not empty
+//        alert("send otp");
+//        console.log(acct);
+        $.ajax({
+            type: 'GET',
+            url: '/otp/send',
+            asyn:false,
+//					dataType: 'String',
+            error: function (data) {
+                alert("failure");
+//                $('#sub').disabled();
+            },
+            success: function (reponse) {
+//                console.log(data);
+//                console.log(textSt`atus);
+//                var result = data;
+                //var result = (new Function("return " + result))();
+                // $('#acct_name').val(result.message);
+//                $('#acct_name').val(result);
+//                alert("success");
+                if (reponse === 'success') {
+                    document.getElementById("successMess").textContent = "Successfully sent";
 
+                }else{
+                    if(reponse==="empty"){
+                        document.getElementById("errorMess").textContent = "Invalid username";
+                    }else{
+                    document.getElementById("errorMess").textContent = "Sending OTP failed!";
+                    }
+                }
+            }
+
+        });
+//        $.ajax({options});
+    }
+</script>
 </body>
 </html>
