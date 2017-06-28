@@ -19,9 +19,8 @@ public interface VerificationService {
      * This will decline a Verification request.
      *
      * @param verification  The {@link Verification} object
-     * @param declineReason The reason for declining the verification request
      */
-    String decline(Verification verification, String declineReason) throws VerificationException;
+    String decline(VerificationDTO verification) throws VerificationException;
 
     /**
      * This will verify/approve a Verification request.
@@ -43,7 +42,9 @@ public interface VerificationService {
 
     List<VerificationDTO>getPendingForUser(User user);
 
-    String verify(Long verId) throws VerificationException;
+    String verify(VerificationDTO verification) throws VerificationException;
+
+    String verify(Long id) throws VerificationException;
 
     /**
      * This fetches the {@link Verification} object with the id {@code id}

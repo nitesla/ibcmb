@@ -48,19 +48,27 @@ public class VerificationServiceImpl implements VerificationService {
     Locale locale = LocaleContextHolder.getLocale();
 
     @Override
-    public String decline(Verification verification, String declineReason) throws VerificationException {
-		verification.setDeclinedBy(getCurrentUserName());
+    public String decline(VerificationDTO dto) throws VerificationException {
+        Verification verification = verificationRepo.findOne(dto.getId());
+
+        verification.setDeclinedBy(getCurrentUserName());
         verification.setDeclinedOn(new Date());
-        verification.setDeclineReason(declineReason);
+        verification.setDeclineReason(dto.getComment());
         verificationRepo.save(verification);
         return messageSource.getMessage("verification.decline", null, locale);
     }
 
 
     @Override
-    public String verify(Long verId) throws VerificationException {
+    public String verify(Long id) throws VerificationException{
+        VerificationDTO verificationDTO = getVerification(id);
+        return verify(verificationDTO);
+    }
+
+    @Override
+    public String verify(VerificationDTO dto) throws VerificationException {
         //check if it is verified
-        Verification verification = verificationRepo.findOne(verId);
+        Verification verification = verificationRepo.findOne(dto.getId());
         if (verification.getVerifiedBy() != null) {
             logger.debug("Already verified");
             return messageSource.getMessage("verification.verify", null, locale);
