@@ -2,6 +2,8 @@ package longbridge.services;
 
 import longbridge.dtos.NotificationsDTO;
 import longbridge.models.Notifications;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -13,6 +15,8 @@ public interface NotificationsService {
     List<NotificationsDTO> getNotifications();
 
     NotificationsDTO getNotification(Long id);
+
+    Page<NotificationsDTO> getNotifications(Pageable pageDetails);
 
     String addNotification(NotificationsDTO notificationsDTO);
 
