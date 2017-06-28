@@ -60,12 +60,20 @@
                 <div class="form-group">
                     <button class="btn btn-primary form-control" type="submit"> Next </button>
                 </div>
+                <div class="form-group">
+                    <button onclick="sendOtp()" class="btn btn-primary form-control" >Generate OTP</button>
+
+                </div>
+                <div id="failedMassage" >
+                    Failed to send otp
+                </div>
+
             </form>
         </div>
     </div>
 </section>
 
-<footer>zz
+<footer>
     <div class="container">
         <div class="footer_bar">
             <div class="col-md-6 col-xs-12">
@@ -120,6 +128,34 @@
 <script th:src="@{~/customer/js/coronation.js}"></script>
 <!-- BOOTSTRAP SCRIPTS  -->
 <script th:src="@{~/customer/js/bootstrap.js}"></script>
-
+<script>
+    function sendOtp() {
+        //make sure alert message is not empty
+//        alert("send otp");
+//        console.log(acct);
+        $.ajax({
+            type: 'GET',
+            url: '/otp/send',
+            asyn:false,
+//					dataType: 'String',
+            error: function (data) {
+                alert("failure");
+//                $('#sub').disabled();
+            },
+            success: function (data) {
+//                console.log(data);
+//                console.log(textSt`atus);
+//                var result = data;
+                //var result = (new Function("return " + result))();
+                // $('#acct_name').val(result.message);
+//                $('#acct_name').val(result);
+//                alert("success");
+                alert(data);
+                $('#failedMassage').toggle();
+            }
+        });
+//        $.ajax({options});
+    }
+</script>
 </body>
 </html>

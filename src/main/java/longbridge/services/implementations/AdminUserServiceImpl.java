@@ -239,7 +239,7 @@ public class AdminUserServiceImpl implements AdminUserService {
                         .build();
                 mailService.send(email);
 
-                logger.info("Logged in user "+HostMaster.getLoggedInUser());
+//                logger.info("Logged in user "+HostMaster.getLoggedInUser());
 
             }
 
