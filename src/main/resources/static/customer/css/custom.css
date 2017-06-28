@@ -117,6 +117,14 @@ start
 
 }
 
+
+.faq-icon
+{
+    padding:2px;
+    background-color: #9F614B;
+    color:white !important;
+}
+
 .alert-bottom
 {
     margin-bottom: 10px;
