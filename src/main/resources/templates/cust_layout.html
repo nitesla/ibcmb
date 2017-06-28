@@ -32,7 +32,6 @@
             <ul class="list_group">
                 <li><a href="/retail/contact"> Contact Us</a>&nbsp;</li>
                 <li><a href="https://coronationmb.com" target="_blank"> Coronation merchant bank</a>&nbsp;</li>
-                <li><a href="#"> Help&nbsp;</a></li>
             </ul>
         </div>
         <nav class="navbar navbar-default">
@@ -60,7 +59,7 @@
 
                         
                             <div class="hide-faq">
-                                <h6><a th:href="@{/faq}"> FAQS &nbsp; &nbsp;
+                                <h6><a target="_blank" th:href="@{/faqs}"> FAQS &nbsp; &nbsp;
                                         <i style="font-size: 16px;" class="fa fa-question-circle"></i></a>
                                         <span class="date2 lorem">&nbsp; &nbsp;Login History:&nbsp;</span>&nbsp;
                                         <span class="lorem" th:text="*{lastLogin}">21st March 2017 10:30am</span>
@@ -89,7 +88,7 @@
                         <li sec:authorize="hasAuthority('OWN_ACCOUNT_TRANSFER')"><a th:href="@{/retail/transfer/ownaccount}" th:text="#{menu.transfer.own}">Own account transfers </a></li>
                         <li sec:authorize="hasAuthority('CMB_CMB_TRANSFER')"><a th:href="@{/retail/transfer/local}" th:text="#{menu.transfer.cmb}">Transfer to Coronation account </a></li>
                         <li sec:authorize="hasAuthority('INTERBANK_TRANSFER')"><a th:href="@{/retail/transfer/interbank}" th:text="#{menu.transfer.other}">Transfer to other banks</a></li>
-                        <li sec:authorize="hasAuthority('INTERNATIONAL_TRANSFER')"><a th:href="@{/retail/transfer/international}" th:text="#{menu.transfer.int}">International transfer</a></li>
+                        <!--<li sec:authorize="hasAuthority('INTERNATIONAL_TRANSFERssss')"><a th:href="@{/retail/transfer/international}" th:text="#{menu.transfer.int}">International transfer</a></li>-->
                         <li sec:authorize="hasAuthority('RET_TRANSACTION_LIMITs.')"><a th:href="@{/retail/transfer/settransferlimit}" th:text="#{menu.transfer.limit}">Set transfer limit</a></li>
                         <li sec:authorize="hasAuthority('STANDING_ORDER')"><a th:href="@{/retail/directdebit}" th:text="#{menu.transfer.order}">Standing order</a></li>
                         </ul>
@@ -154,7 +153,7 @@
 
 </header>
 
-    <div th:fragment="sidebar" class="sideba" style=" padding-top:20px;">
+    <div th:fragment="sidebar" class="sideba" style=" adding-top:20px;">
 
 
        <div class="sidebar-b calende cal  hidden-xs">
@@ -194,11 +193,15 @@
         </div>
     </div>
 
+    <div th:fragment="mail">
+
+    </div>
+
    
 
 <!-- footer content -->
 <footer th:fragment="footer">
-    <div class="container">
+    <div class="containe">
         <div class="footer_bar">
             <div class="col-md-6 col-xs-12">
                 <ul class="list_group">
@@ -302,21 +305,7 @@
     <!-- BOOTSTRAP SCRIPTS  -->
     <script th:src="@{~/customer/js/bootstrap.js}"></script>
     <script th:src="@{~/customer/js/bootstrap-session-timeout.js}"></script>
-    <!--<script>-->
-        <!--$(document).ready(function(){-->
-            <!--$(".dropdown").hover(-->
-                <!--function() {-->
-                    <!--$('.dropdown-menu', this).not('.in .dropdown-menu').stop(true,true);-->
-                    <!--$(this).toggleClass('open');-->
-                <!--},-->
-                <!--function() {-->
-                    <!--$('.dropdown-menu', this).not('.in .dropdown-menu').stop(true,true);-->
-                    <!--$(this).toggleClass('open');-->
-                <!--}-->
-            <!--);-->
-        <!--});-->
 
-    <!--</script>-->
     <script th:inline='javascript'>
         /*<![CDATA[*/
 
@@ -326,22 +315,16 @@
                 
                 $("#dp").datepicker({
                 // buttonImage: '@{~/customer/img/cmb_logo.png}',
-                 buttonText: "<i class='fa fa-calendar'></i>",
+                    buttonText: "<i class='fa fa-calendar'></i>",
                 buttonImageOnly: true,
                 changeMonth: true,
                 showAnim: "slide" ,
                 changeYear: true,
-                showOn: 'both',
-            
-
-            
-     });
-
-    
-
-     /*]]>*/
-
+                showOn: 'both'
+            });
         })
+
+        /*]]>*/
     </script>
 
     <script>

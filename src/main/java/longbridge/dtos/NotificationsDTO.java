@@ -10,6 +10,7 @@ public class NotificationsDTO {
 
     @JsonProperty("DT_RowId")
     private Long id;
+
     @NotEmpty(message = "message")
     private String message;
 
