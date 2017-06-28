@@ -31,7 +31,10 @@ public interface VerificationRepo extends CommonRepo<Verification, Long>{
 
     long countByInitiatedByAndUserTypeAndStatus(String username, UserType userType, verificationStatus status);
 
+    List<Verification> findByInitiatedByAndUserType(String initiatedby, UserType userType);
+
     @Query("select v from Verification v where v.initiatedBy != :initiatedBy and v.userType=:userType")
     List<Verification> findVerificationForUser(@Param("initiatedBy") String initiatedBy, @Param("userType") UserType userType);
+
 
 }

@@ -66,7 +66,7 @@ public interface AdminUserService {
      * @param user the new admin user
      */
     @PreAuthorize("hasAuthority('ADD_ADMIN_USER')")
-    String addUser(AdminUserDTO user,User users) throws InternetBankingException;
+    String addUser(AdminUserDTO user) throws InternetBankingException;
 
 
     /**
@@ -86,7 +86,7 @@ public interface AdminUserService {
      * @param user the admin user whose details are to be updated
      */
     @PreAuthorize("hasAuthority('UPDATE_ADMIN_USER')")
-    String updateUser(AdminUserDTO user,User createdBy) throws InternetBankingException;
+    String updateUser(AdminUserDTO user) throws InternetBankingException;
 
     /**
      * Resets the password of the specified Admin user

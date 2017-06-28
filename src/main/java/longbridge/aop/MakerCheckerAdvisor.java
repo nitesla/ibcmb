@@ -72,6 +72,10 @@ public class MakerCheckerAdvisor {
     public void isSaving() {
     }
 
+    @Pointcut("call(* delete(..))")
+    public void isDeleting() {
+    }
+
     @Pointcut("execution(* save(..))")
     public void isSaving2() {
     }
@@ -102,7 +106,7 @@ public class MakerCheckerAdvisor {
             return verifier.operation() + "action successful";
         }
 
-        entityManager.detach(entity);
+        //entityManager.detach(entity);
         CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User doneBy = principal.getUser();
         String entityName = entity.getClass().getSimpleName();
@@ -111,6 +115,7 @@ public class MakerCheckerAdvisor {
         verification.setEntityName(entityName);
         verification.setInitiatedOn(new Date());
         verification.setInitiatedBy(doneBy.getUserName());
+        verification.setUserType(doneBy.getUserType());
         verification.setOperation(verifier.operation());
         verification.setDescription(verifier.description());
         verification.setOriginalObject(entity.serialize());

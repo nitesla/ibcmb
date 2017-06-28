@@ -1,17 +1,13 @@
 package longbridge.config.makerchecker;
 
-import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import longbridge.models.MakerChecker;
 import longbridge.repositories.MakerCheckerRepo;
 import longbridge.utils.Verifiable;
-import org.reflections.Reflections;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.stereotype.Component;
 import java.lang.reflect.Method;
-import java.util.Set;
-import java.util.logging.Logger;
 
 /**
  * Created by chiomarose on 19/06/2017.
@@ -35,13 +31,11 @@ public class MakerCheckerInitializer {
 
         String packge = "longbridge.services.implementations";
 
-
         ClassPathScanningCandidateComponentProvider provider = createComponentScanner();
         for (BeanDefinition beanDef : provider.findCandidateComponents(packge)) {
             System.out.println(beanDef.toString());
             try {
                 Class<?> cl = Class.forName(beanDef.getBeanClassName());
-
 
                 Method[] methods = cl.getDeclaredMethods();
 
@@ -51,15 +45,14 @@ public class MakerCheckerInitializer {
                         String operation = verifyAnno.operation();
                         String description = verifyAnno.description();
 
-
                         if (!makerCheckerRepo.existsByOperation(operation)) {
 
                             MakerChecker makerChecker = new MakerChecker();
                             makerChecker.setVersion(0);
                             makerChecker.setDelFlag("N");
-                            makerChecker.setCode(operation);
-                            makerChecker.setName(description);
-                            makerChecker.setEnabled("N");
+                            makerChecker.setOperation(operation);
+                            makerChecker.setDescription(description);
+                            makerChecker.setEnabled("Y");
                             System.out.print(makerChecker.toString());
                             makerCheckerRepo.save(makerChecker);
                         }

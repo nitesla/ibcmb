@@ -33,6 +33,8 @@ import longbridge.services.RoleService;
 import longbridge.services.SecurityService;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+
 
 /**
  * Created by SYLVESTER on 3/30/2017.
@@ -73,12 +75,12 @@ public class AdminUserServiceImpl implements AdminUserService {
     private ConfigurationService configService;
 
     @Autowired
-    private VerificationService verificationService;
-
-    @Autowired
     private RoleRepo roleRepo;
     @Autowired
     HostMaster hostMaster;
+
+    @Autowired
+    EntityManager entityManager;
 
 
     private Locale locale = LocaleContextHolder.getLocale();
@@ -128,8 +130,8 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     @Override
     @Transactional
-    @Verifiable(operation="Add_Admin",description="Adding a new User")
-    public String addUser(AdminUserDTO user,User createdBy) throws InternetBankingException {
+    @Verifiable(operation="ADD_ADMIN",description="Adding a new User")
+    public String addUser(AdminUserDTO user) throws InternetBankingException {
         AdminUser adminUser = adminUserRepo.findFirstByUserNameIgnoreCase(user.getUserName());
         if (adminUser != null) {
             throw new DuplicateObjectException(messageSource.getMessage("user.exist", null, locale));
@@ -184,7 +186,7 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     @Override
     @Transactional
-    @Verifiable(operation="change_Activation_Status",description="Change Activation Status")
+    @Verifiable(operation="ADMIN_ACTIVATE_STATUS",description="Change Activation Status")
     public String changeActivationStatus(Long userId) throws InternetBankingException {
         try {
             AdminUser user = adminUserRepo.findOne(userId);
@@ -239,13 +241,10 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     @Override
     @Transactional
-    @Verifiable(operation="Delete_Admin",description="Delete a Admin")
     public String deleteUser(Long id) throws InternetBankingException {
         try {
             AdminUser user = adminUserRepo.findOne(id);
             adminUserRepo.delete(id);
-            String fullName = user.getFirstName() + " " + user.getLastName();
-
             SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_DELETION");
             if (setting != null && setting.isEnabled()) {
                 if ("YES".equalsIgnoreCase(setting.getValue())) {
@@ -264,23 +263,23 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     @Override
     @Transactional
-    @Verifiable(operation="Update_Admin",description="Update a Admin User")
-    public String updateUser(AdminUserDTO user,User users) throws InternetBankingException {
+    @Verifiable(operation="UPDATE_ADMIN",description="Update a Admin User")
+    public String updateUser(AdminUserDTO user) throws InternetBankingException {
 
         try {
-            AdminUser originalEntity = adminUserRepo.findById(user.getId());
-            AdminUser modifiedEntity = (AdminUser)originalEntity.clone();
-            modifiedEntity.setId(user.getId());
-            modifiedEntity.setVersion(user.getVersion());
-            modifiedEntity.setFirstName(user.getFirstName());
-            modifiedEntity.setLastName(user.getLastName());
-            modifiedEntity.setUserName(user.getUserName());
-            modifiedEntity.setEmail(user.getEmail());
-            modifiedEntity.setPhoneNumber(user.getPhoneNumber());
+            AdminUser adminUser = adminUserRepo.findById(user.getId());
+            entityManager.detach(adminUser);
+            adminUser.setId(user.getId());
+            adminUser.setVersion(user.getVersion());
+            adminUser.setFirstName(user.getFirstName());
+            adminUser.setLastName(user.getLastName());
+            adminUser.setUserName(user.getUserName());
+            adminUser.setEmail(user.getEmail());
+            adminUser.setPhoneNumber(user.getPhoneNumber());
             Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
-            modifiedEntity.setRole(role);
-            adminUserRepo.save(modifiedEntity);
-            logger.info("Admin user {} updated", originalEntity.getUserName());
+            adminUser.setRole(role);
+            adminUserRepo.save(adminUser);
+            logger.info("Admin user {} updated", adminUser.getUserName());
             return messageSource.getMessage("user.update.success", null, locale);
         }
         catch (DuplicateObjectException e) {

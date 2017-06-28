@@ -45,8 +45,8 @@ public class VerificationServiceImpl implements VerificationService {
     @Autowired
     private ModelMapper modelMapper;
 
-    @Autowired
-    MakerCheckerService makerCheckerService;
+//    @Autowired
+//    MakerCheckerService makerCheckerService;
 
 
     Locale locale = LocaleContextHolder.getLocale();
@@ -253,6 +253,18 @@ public class VerificationServiceImpl implements VerificationService {
     public List<VerificationDTO> getVerificationsForUser(User user) {
         List<Verification> verifications = verificationRepo.findVerificationForUser(user.getUserName(), user.getUserType());
 
+        return convertEntitiesToDTOs(verifications);
+
+    }
+
+
+    public List<VerificationDTO> getPendingForUser(User user) {
+        List<Verification> verifications = verificationRepo.findByInitiatedByAndUserType(user.getUserName(), user.getUserType());
+        for(Verification verification: verifications){
+            if(verification.getVerifiedBy()==null){
+                verification.setVerifiedBy("PENDING...");
+            }
+        }
         return convertEntitiesToDTOs(verifications);
 
     }

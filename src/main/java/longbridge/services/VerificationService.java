@@ -40,6 +40,9 @@ public interface VerificationService {
 
     Page<VerificationDTO> getMakerCheckerPending(Pageable pageDetails, User createdBy);
 
+
+    List<VerificationDTO>getPendingForUser(User user);
+
     String verify(Long verId) throws VerificationException;
 
     /**

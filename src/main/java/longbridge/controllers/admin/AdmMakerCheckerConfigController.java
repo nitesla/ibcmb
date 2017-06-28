@@ -53,14 +53,14 @@ public class AdmMakerCheckerConfigController {
     @GetMapping("/new")
     public String addMakerChecker(Model model)
     {
-        model.addAttribute("checker", new MakerCheckerDTO());
+      //  model.addAttribute("checker", new MakerCheckerDTO());
         return "adm/makercheckerconfig/add";
     }
 
 
 
     @PostMapping("/save")
-    public String createMakerChecker(@ModelAttribute("checker") MakerCheckerDTO makerChecker, BindingResult result, RedirectAttributes redirectAttributes, Locale locale) {
+    public String createPermission(@ModelAttribute("checker") MakerCheckerDTO makerChecker, BindingResult result, RedirectAttributes redirectAttributes, Locale locale) {
         if (result.hasErrors())
         {
             result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
