@@ -51,7 +51,7 @@ public class UserGroupServiceImpl implements UserGroupService {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
-    @Verifiable(operation="Add Group",description="Add Group")
+    @Verifiable(operation="GRP_ADD",description="Adding a Group")
     public String addGroup(UserGroupDTO userGroupDTO) throws InternetBankingException {
         try {
             UserGroup userGroup = convertDTOToEntity(userGroupDTO);
@@ -63,7 +63,7 @@ public class UserGroupServiceImpl implements UserGroupService {
         }
     }
 
-    @Verifiable(operation="Update Group",description="Update Group")
+    @Verifiable(operation="GRP_UPDATE",description="Updating a Group")
     public String updateGroup(UserGroupDTO userGroupDTO) throws InternetBankingException{
         try {
             UserGroup userGroup = convertDTOToEntity(userGroupDTO);
@@ -77,7 +77,7 @@ public class UserGroupServiceImpl implements UserGroupService {
         }
     }
 
-    @Verifiable(operation="Delete Group",description="Delete Group")
+    @Verifiable(operation="GRP_DEL",description="Deleting a Group")
     public String deleteGroup(Long id) throws InternetBankingException{
         try {
             userGroupRepo.delete(id);
