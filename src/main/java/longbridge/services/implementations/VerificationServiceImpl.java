@@ -45,10 +45,6 @@ public class VerificationServiceImpl implements VerificationService {
     @Autowired
     private ModelMapper modelMapper;
 
-//    @Autowired
-//    MakerCheckerService makerCheckerService;
-
-
     Locale locale = LocaleContextHolder.getLocale();
 
     @Override
