@@ -145,11 +145,8 @@ public class AdminUserServiceImpl implements AdminUserService {
             Role role = new Role();
             role.setId(Long.parseLong(user.getRoleId()));
             adminUser.setRole(role);
+            adminUserRepo.save(adminUser);
 
-//            creatUserOnEntrust(adminUser);
-//            adminUserRepo.save(adminUser);
-
-            makerCheckerSave(adminUser,adminUser,createdBy);
             logger.info("New admin user {} created", adminUser.getUserName());
             return messageSource.getMessage("user.add.success", null, locale);
 
@@ -166,23 +163,6 @@ public class AdminUserServiceImpl implements AdminUserService {
         }
     }
 
-    public <T extends SerializableEntity<T>> String makerCheckerSave(T originalEntity, T entity,User createdBy) throws JsonProcessingException, VerificationException {
-
-        AbstractEntity originalEntity1 = (AbstractEntity) (originalEntity);
-
-        if (originalEntity1.getId() == null) {
-            String message = verificationService.addNewVerificationRequest(entity, createdBy);
-            return message;
-
-        } else {
-
-            String message = verificationService.addModifyVerificationRequest(originalEntity, entity);
-            return message;
-
-        }
-
-
-    }
 
     private void creatUserOnEntrust(AdminUser adminUser){
         String fullName = adminUser.getFirstName() + " " + adminUser.getLastName();
@@ -281,46 +261,6 @@ public class AdminUserServiceImpl implements AdminUserService {
         }
     }
 
-//    @Override
-//    @Transactional
-////    @Verifiable(operation="Updating an Existing User")
-//    public String updateUser(AdminUserDTO user) throws InternetBankingException {
-//
-//        try {
-//            AdminUser adminUser = adminUserRepo.findById(user.getId());
-//
-//            adminUser.setId(user.getId());
-//            adminUser.setVersion(user.getVersion());
-//            adminUser.setFirstName(user.getFirstName());
-//            adminUser.setLastName(user.getLastName());
-//            adminUser.setUserName(user.getUserName());
-//            adminUser.setEmail(user.getEmail());
-//            adminUser.setPhoneNumber(user.getPhoneNumber());
-//            Role role = new Role();
-//            role.setId(Long.parseLong(user.getRoleId()));
-//            adminUser.setRole(role);
-//
-////            adminUserRepo.save(adminUser);
-//
-//            AdminUser originalUser = adminUserRepo.findOne(user.getId());
-//
-//            makerCheckerSave(originalUser,adminUser);
-//
-//            logger.info("Admin user {} updated", adminUser.getUserName());
-//            return messageSource.getMessage("user.update.success", null, locale);
-//        } catch (Exception e) {
-//            throw new InternetBankingException(messageSource.getMessage("user.update.failure", null, locale), e);
-//        }
-//    }
-
-//    public  String verifyRequest(Long verId) throws VerificationException{
-//        verificationService.verify(verId);
-//        return "Verified successful";
-//    }
-    public  String verifyRequest(Long verId) throws VerificationException{
-        verificationService.verify(verId);
-        return "Verified successful";
-    }
 
     @Override
     @Transactional
@@ -339,10 +279,7 @@ public class AdminUserServiceImpl implements AdminUserService {
             modifiedEntity.setPhoneNumber(user.getPhoneNumber());
             Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
             modifiedEntity.setRole(role);
-
-//            adminUserRepo.save(adminUser);
-
-            makerCheckerSave(originalEntity,modifiedEntity,users);
+            adminUserRepo.save(modifiedEntity);
             logger.info("Admin user {} updated", originalEntity.getUserName());
             return messageSource.getMessage("user.update.success", null, locale);
         }

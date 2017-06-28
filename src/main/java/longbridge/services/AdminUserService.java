@@ -88,8 +88,6 @@ public interface AdminUserService {
     @PreAuthorize("hasAuthority('UPDATE_ADMIN_USER')")
     String updateUser(AdminUserDTO user,User createdBy) throws InternetBankingException;
 
-    String verifyRequest(Long verId) throws VerificationException;
-
     /**
      * Resets the password of the specified Admin user
      * @param userId the admin user

@@ -32,6 +32,7 @@ public class VerificationDTO {
     private String operation;
 
     private String initiatedBy;
+
     private Date initiatedOn;
 
     private String declinedBy;
@@ -107,6 +108,7 @@ public class VerificationDTO {
     public void setDeclinedOn(Date declinedOn) {
         this.declinedOn = declinedOn;
     }
+
 
     public String getDeclineReason() {
         return declineReason;

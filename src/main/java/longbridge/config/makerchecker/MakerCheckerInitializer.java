@@ -52,7 +52,7 @@ public class MakerCheckerInitializer {
                         String description = verifyAnno.description();
 
 
-                        if (!makerCheckerRepo.existsByCode(operation)) {
+                        if (!makerCheckerRepo.existsByOperation(operation)) {
 
                             MakerChecker makerChecker = new MakerChecker();
                             makerChecker.setVersion(0);

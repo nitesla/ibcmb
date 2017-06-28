@@ -200,9 +200,6 @@ public class AdminUserController {
         catch (DuplicateObjectException ibe) {
             result.addError(new ObjectError("error", ibe.getMessage()));
             logger.error("Existing user found", ibe);
-
-            adminUserService.verifyRequest(183L);
-
             return "adm/admin/edit";
         }
         catch (InternetBankingException ibe) {
