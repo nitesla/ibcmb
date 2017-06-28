@@ -119,7 +119,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
 
     @Override
     @Transactional
-    @Verifiable(operation="OPS_ACTIVATE_STATUS",description="Change Activation Status")
+    @Verifiable(operation="OPS_ACTIVATION",description="Change Operations User Activation Status")
     public String changeActivationStatus(Long userId) throws InternetBankingException {
         try {
             OperationsUser user = operationsUserRepo.findOne(userId);
@@ -174,7 +174,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
 
     @Override
     @Transactional
-    @Verifiable(operation="ADD_ADMIN",description="Adding a new User")
+    @Verifiable(operation="OPS_ADD",description="Adding an Operations User")
     public String addUser(OperationsUserDTO user) throws InternetBankingException {
         OperationsUser opsUser = operationsUserRepo.findFirstByUserNameIgnoreCase(user.getUserName());
         if (opsUser != null) {
@@ -229,7 +229,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
 
     @Override
     @Transactional
-    @Verifiable(operation="UPDATE_ADMIN",description="Updating a new User")
+    @Verifiable(operation="UPDATE_OPS",description="Updating an Operations User")
     public String updateUser(OperationsUserDTO user) throws InternetBankingException {
         try {
             OperationsUser opsUser = operationsUserRepo.findOne(user.getId());

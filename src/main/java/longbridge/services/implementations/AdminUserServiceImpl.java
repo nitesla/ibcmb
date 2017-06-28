@@ -130,7 +130,7 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     @Override
     @Transactional
-    @Verifiable(operation="ADD_ADMIN",description="Adding a new User")
+    @Verifiable(operation="ADMIN_ADD",description="Adding an Admin User")
     public String addUser(AdminUserDTO user) throws InternetBankingException {
         AdminUser adminUser = adminUserRepo.findFirstByUserNameIgnoreCase(user.getUserName());
         if (adminUser != null) {
@@ -186,7 +186,7 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     @Override
     @Transactional
-    @Verifiable(operation="ADMIN_ACTIVATE_STATUS",description="Change Activation Status")
+    @Verifiable(operation="ADMIN_ACTIVATION",description="Change Admin Activation Status")
     public String changeActivationStatus(Long userId) throws InternetBankingException {
         try {
             AdminUser user = adminUserRepo.findOne(userId);
@@ -263,7 +263,7 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     @Override
     @Transactional
-    @Verifiable(operation="UPDATE_ADMIN",description="Update a Admin User")
+    @Verifiable(operation="ADMIN_UPDATE",description="Updating an Admin User")
     public String updateUser(AdminUserDTO user) throws InternetBankingException {
 
         try {
@@ -369,24 +369,6 @@ public class AdminUserServiceImpl implements AdminUserService {
         }
     }
 
-    private String getUsedPasswords(String newPassword, String oldPasswords) {
-        StringBuilder builder = new StringBuilder();
-        if (oldPasswords != null) {
-            builder.append(oldPasswords);
-        }
-        builder.append(passwordEncoder.encode(newPassword) + ",");
-        return builder.toString();
-    }
-
-
-    private void sendUserCredentials(AdminUser user, String password) throws InternetBankingException {
-        Email email = new Email.Builder()
-                .setRecipient(user.getEmail())
-                .setSubject("Creation on Internet Banking Admin Console")
-                .setBody(String.format("You have been created on the Internet Banking Administration console.\nYour username is %s and your password is %s. \nThank you.", user.getUserName(), password))
-                .build();
-        mailService.send(email);
-    }
 
     @Override
     @Transactional

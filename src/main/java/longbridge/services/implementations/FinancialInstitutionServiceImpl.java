@@ -71,7 +71,7 @@ public class FinancialInstitutionServiceImpl implements FinancialInstitutionServ
     }
 
     @Override
-    @Verifiable(operation="Add_Financial_Institution",description="Add Financial Institution")
+    @Verifiable(operation="FIN_INST_ADD",description="Adding a Financial Institution")
     public String addFinancialInstitution(FinancialInstitutionDTO financialInstitutionDTO) throws InternetBankingException {
 
         FinancialInstitution financialInstitution;
@@ -94,7 +94,7 @@ public class FinancialInstitutionServiceImpl implements FinancialInstitutionServ
     }
 
     @Override
-    @Verifiable(operation="Update_Financial_Institution",description="Update Financial Institution")
+    @Verifiable(operation="FIN_INST_UPDATE",description="Updating a Financial Institution")
     public String updateFinancialInstitution(FinancialInstitutionDTO financialInstitutionDTO) throws InternetBankingException {
         try {
             FinancialInstitution financialInstitution = new FinancialInstitution();
@@ -136,7 +136,7 @@ public class FinancialInstitutionServiceImpl implements FinancialInstitutionServ
     }
 
     @Override
-    @Verifiable(operation="Delete_Financial_Institution",description="Delete Financiail Institution")
+    @Verifiable(operation="FIN_INST_DEL",description="Deleting a Financial Institution")
     public String deleteFinancialInstitution(Long id) throws InternetBankingException {
       try {
           this.financialInstitutionRepo.delete(id);
