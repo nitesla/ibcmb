@@ -26,10 +26,10 @@ import java.util.*;
  */
 @Scope(value = "step", proxyMode = ScopedProxyMode.INTERFACES)
 @Component
-class BulkTransferReader implements ItemReader<CreditRequestDTO>, InitializingBean {
+class BulkTransferReader implements ItemReader<TransferDTO>, InitializingBean {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BulkTransferReader.class);
-    private final List<CreditRequestDTO> transferData = new ArrayList<>();
+    private final List<TransferDTO> transferData = new ArrayList<>();
     private final String batchId;
     private CreditRequestRepo repo;
     private IntegrationService integrationService;
@@ -50,11 +50,11 @@ class BulkTransferReader implements ItemReader<CreditRequestDTO>, InitializingBe
     }
 
     @Override
-    public CreditRequestDTO read() throws Exception {
-        LOGGER.info("Reading the information of the next student");
+    public TransferDTO read() throws Exception {
+        LOGGER.info("Reading the information of the next transfer");
 
 
-        CreditRequestDTO nextRequest = null;
+        TransferDTO nextRequest = null;
 
         if (nextIndex < transferData.size()) {
             nextRequest = transferData.get(nextIndex);
@@ -78,10 +78,10 @@ class BulkTransferReader implements ItemReader<CreditRequestDTO>, InitializingBe
     }
 
 
-    CreditRequestDTO map(CreditRequest request) {
+    TransferDTO map(CreditRequest request) {
         String payRef = "CORONATION/NAPS/" + (new SimpleDateFormat("yyMMddHHmmss").format(new Date()));
         CustomerDetails details = integrationService.viewCustomerDetails(request.getBulkTransfer().getDebitAccount());
-        CreditRequestDTO dto = new CreditRequestDTO();
+        TransferDTO dto = new TransferDTO();
         dto.setAccountName(details.getCustomerName());
         dto.setAccountNumber(request.getBulkTransfer().getDebitAccount());
         dto.setBeneficiaryName(request.getAccountName());

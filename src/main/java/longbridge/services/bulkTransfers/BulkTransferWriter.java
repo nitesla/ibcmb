@@ -15,7 +15,7 @@ import java.util.*;
  * Created by ayoade_farooq@yahoo.com on 6/22/2017.
  */
 @Service
-public class BulkTransferWriter implements ItemWriter<CreditRequestDTO> {
+public class BulkTransferWriter implements ItemWriter<TransferDTO> {
 
 
     private RestTemplate template;
@@ -29,25 +29,25 @@ public class BulkTransferWriter implements ItemWriter<CreditRequestDTO> {
 
 
     @Override
-    public void write(List<? extends CreditRequestDTO> items)
+    public void write(List<? extends TransferDTO> items)
             throws Exception {
 
         LOGGER.info("Received the information of {} transactions", items.size());
-        items.forEach(i -> LOGGER.debug("Received the information of a payroll: {}", i));
+        items.forEach(i -> LOGGER.debug("Received the information of a transaction: {}", i));
 
-        List<CreditRequestDTO> dtos = new ArrayList<>();
+        List<TransferDTO> dtos = new ArrayList<>();
         dtos.addAll(items);
 
         TransferDetails details= details(dtos);
-        System.out.println("@@@@RESPOSNE "+details);
+
     }
 
 
 
-    private TransferDetails details( List<CreditRequestDTO> dtos ){
+    private TransferDetails details( List<TransferDTO> dtos ){
         String uri =  "http://132.10.200.140:9292/service/outwardnapsTransfer";
         try {
-            System.out.println("@@@REQUEST "+dtos);
+
             TransferDetails details = template.postForObject(uri, dtos, TransferDetails.class);
             return details;
         } catch (Exception e) {

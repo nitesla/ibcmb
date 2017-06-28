@@ -1,6 +1,6 @@
 package longbridge.services.bulkTransfers;
 
-import longbridge.dtos.CreditRequestDTO;
+
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -11,6 +11,7 @@ import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -27,41 +28,46 @@ public class BulkTransferConfig
 {
 
     private static final String DEFAULT_BATCH_ID = "";
-
+    @Autowired
+    public JobBuilderFactory jobBuilderFactory;
     @Bean
     @StepScope
-    ItemReader<CreditRequestDTO> customReader(@Value("#{jobParameters[batchId]}")String batchId) {
+    ItemReader<TransferDTO> customReader(@Value("#{jobParameters[batchId]}")String batchId) {
         return new BulkTransferReader(batchId);
     }
 
     @Bean
-    ItemProcessor<CreditRequestDTO, CreditRequestDTO> customProcessor() {
+    ItemProcessor<TransferDTO, TransferDTO> customProcessor() {
         return new BulkTransferProcessor();
     }
 
     @Bean
-    ItemWriter<CreditRequestDTO> customWriter() {
+    ItemWriter<TransferDTO> customWriter() {
         return new BulkTransferWriter();
     }
 
     @Bean
-    Step customStep(ItemReader<CreditRequestDTO> customReader,
-                         ItemProcessor<CreditRequestDTO, CreditRequestDTO> customProcessor,
-                         ItemWriter<CreditRequestDTO> customWriter,
-                         StepBuilderFactory stepBuilderFactory) {
+    Step customStep(ItemReader<TransferDTO> customReader,
+                         ItemProcessor<TransferDTO, TransferDTO> customProcessor,
+                         ItemWriter<TransferDTO> customWriter,
+                         StepBuilderFactory stepBuilderFactory,
+                    BulkTransferNotificationListener listener) {
         return stepBuilderFactory.get("customStep")
-                .<CreditRequestDTO, CreditRequestDTO>chunk(2000)
+                .<TransferDTO, TransferDTO>chunk(2000)
                 .reader(customReader(DEFAULT_BATCH_ID))
                 .processor(customProcessor)
                 .writer(customWriter)
+                .listener(listener)
                 .build();
     }
 
     @Bean
     Job customJob(JobBuilderFactory jobBuilderFactory,
-                       @Qualifier("customStep") Step customStep) {
+                       @Qualifier("customStep") Step customStep,
+                  BulkTransferNotificationListener listener) {
         return jobBuilderFactory.get("customJob")
                 .incrementer(new RunIdIncrementer())
+                .listener(listener)
                 .flow(customStep)
                 .end()
                 .build();

@@ -43,7 +43,7 @@ public class BulkTransferJobLauncher {
 
         jobLauncher.run(job, newExecution(s));
 
-        LOGGER.info("Stopping restStudentJob job");
+        LOGGER.info("Stopping Bulk transfer job");
     }
 
     private JobParameters newExecution(String s) {

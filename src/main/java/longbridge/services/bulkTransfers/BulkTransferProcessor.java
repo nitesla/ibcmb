@@ -10,7 +10,7 @@ import org.springframework.batch.item.ItemProcessor;
 /**
  * Created by ayoade_farooq@yahoo.com on 6/22/2017.
  */
-public class BulkTransferProcessor  implements ItemProcessor<CreditRequestDTO,CreditRequestDTO>
+public class BulkTransferProcessor  implements ItemProcessor<TransferDTO,TransferDTO>
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(BulkTransferProcessor.class);
 
@@ -18,8 +18,8 @@ public class BulkTransferProcessor  implements ItemProcessor<CreditRequestDTO,Cr
     }
 
     @Override
-    public CreditRequestDTO process(CreditRequestDTO item) throws Exception {
-        LOGGER.info("Processing payroll information: {}", item);
+    public TransferDTO process(TransferDTO item) throws Exception {
+        LOGGER.info("Processing transfer information: {}", item);
         return item;
     }
 }
