@@ -47,19 +47,19 @@ public class FaqsServiceImpl implements FaqsService {
     }
 
     @Override
-    @Verifiable(operation = "FAQ_ADD", description = "Adding an FAQ")
+    @Verifiable(operation = "FAQ_ADD", description = "Adding FAQs")
     public String addFaq(FaqsDTO faqsDTO) {
         return null;
     }
 
     @Override
-    @Verifiable(operation = "FAQ_UPDATE", description = "Updating an FAQ")
+    @Verifiable(operation = "FAQ_UPDATE", description = "Updating an FAQs")
     public String updateFaq(FaqsDTO faqsDTO) {
         return null;
     }
 
     @Override
-    @Verifiable(operation = "FAQ_DEL", description = "Deleting an FAQ")
+    @Verifiable(operation = "FAQ_DEL", description = "Deleting FAQs")
     public String deleteFaq(Long id) {
         return null;
     }
