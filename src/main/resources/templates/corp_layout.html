@@ -12,14 +12,17 @@
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/calendar.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/select.bootstrap.css}" />
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/font-awesome/font-awesome.min.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/bootstrap-daterangepicker/daterangepicker.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/datatables/css/jquery.dataTables.min.css}"/>
+
     <title>Coronation Merchant Bank</title>
 
 </head>
 
 <body>
-
+<div class="container">
     <header class="header" th:fragment="corp-header">
-        <div class="container">
+        <div class="containe">
             <div class="top_bar">
                 <ul class="list_group">
                     <li><a href="/#contact_us"> Contact Us&nbsp;</a></li>
@@ -141,25 +144,25 @@
 
 <!-- footer content -->
 <footer th:fragment="corp-footer">
-    <!--<div class="container">-->
-        <!--<div class="footer_bar">-->
-            <!--<div class="col-md-6 col-xs-12">-->
-                <!--<ul class="list_group">-->
-                    <!--<li><a href="#" target="_blank">Privacy policy</a></li>-->
-                    <!--<li><a href="#" target="_blank">Disclaimer</a></li>-->
-                    <!--<li><a href="#" target="_blank">Terms &amp; Conditions</a></li>-->
-                <!--</ul>-->
+    <div class="containe">
+        <div class="footer_bar">
+            <div class="col-md-6 col-xs-12">
+                <ul class="list_group">
+                    <li><a href="#" target="_blank">Privacy policy</a></li>
+                    <li><a href="#" target="_blank">Disclaimer</a></li>
+                    <li><a href="#" target="_blank">Terms &amp; Conditions</a></li>
+                </ul>
 
-            <!--</div>-->
-            <!--<div class="col-md-6 col-xs-12"><p> &copy; 2017 Coronation Merchant Bank. All rights reserved</p></div>-->
+            </div>
+            <div class="col-md-6 col-xs-12"><p> &copy; 2017 Coronation Merchant Bank. All rights reserved</p></div>
 
-        <!--</div>-->
-    <!--</div>-->
+        </div>
+    </div>
 
     <div th:if="${message}">
         <div hidden="hidden">
             <ul class="actionMessage">
-                <li th:each="msg : ${message}" th:text="${msg}">Message</li>
+                <li th:each="msg : ${message}" th:text="${msg}" >Message</li>
             </ul>
         </div>
     </div>
@@ -167,8 +170,62 @@
     <div th:if="${failure}">
         <div hidden="hidden">
             <ul class="actionError">
-                <li th:each="msg : ${failure}" th:text="${msg}">Message</li>
+                <li th:each="msg : ${failure}" th:text="${msg}" id="error">Message</li>
             </ul>
+        </div>
+    </div>
+
+
+    <div id="myModalError" class="modal fade " role="dialog">
+        <div class="modal-dialog" >
+
+            <!-- Modal content-->
+
+            <div class="modal-content no-bd-rad content ">
+
+                <div class="modal-body">
+
+
+                    <p id='errorMess' class='mess text-danger'>Put something here iff need be.</p>
+
+
+
+                </div>
+
+
+                <div class="modal-footer no-bd-top" >
+                    <button type="button" class="btn btn-link" data-dismiss="modal">OK</button>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+
+    <div id="myModalSuccess" class="modal fade " role="dialog">
+        <div class="modal-dialog" >
+
+            <!-- Modal content-->
+
+            <div class="modal-content no-bd-rad content ">
+
+                <div class="modal-body">
+
+
+                    <p id='successMess' class='mess text-primary'>Put something here iff need be.</p>
+
+
+
+                </div>
+
+
+                <div class="modal-footer no-bd-top" >
+                    <button type="button" class="btn btn-link" data-dismiss="modal">OK</button>
+                </div>
+
+            </div>
+
         </div>
     </div>
 
@@ -185,28 +242,57 @@
     <script th:src="@{~/customer/js/coronation.js}"></script>
     <!-- BOOTSTRAP SCRIPTS  -->
     <script th:src="@{~/customer/js/bootstrap.js}"></script>
-    <!--<script>-->
-        <!--$(document).ready(function(){-->
-            <!--$(".dropdown").hover(-->
-                <!--function() {-->
-                    <!--$('.dropdown-menu', this).not('.in .dropdown-menu').stop(true,true).slideDown("1200");-->
-                    <!--$(this).toggleClass('open');-->
-                <!--},-->
-                <!--function() {-->
-                    <!--$('.dropdown-menu', this).not('.in .dropdown-menu').stop(true,true).slideUp("1200");-->
-                    <!--$(this).toggleClass('open');-->
-                <!--}-->
-            <!--);-->
-        <!--});-->
+    <script th:src="@{~/customer/js/bootstrap-session-timeout.js}"></script>
+    <script th:inline='javascript'>
+        /*<![CDATA[*/
 
-    <!--</script>-->
-    <script>
-        $(document).ready(function(){
+        $(document).ready(function()
+        {
             $('[data-toggle="tooltip"]').tooltip();
+
+            $("#dp").datepicker({
+                // buttonImage: '@{~/customer/img/cmb_logo.png}',
+                buttonText: "<i class='fa fa-calendar'></i>",
+                buttonImageOnly: true,
+                changeMonth: true,
+                showAnim: "slide" ,
+                changeYear: true,
+                showOn: 'both',
+
+
+
+            });
+
+
+
+            /*]]>*/
+
+        })
+    </script>
+
+    <script>
+
+        function show()
+        {
+            var dp = document.getElementById('dp');
+            if (dp.style.display == "block")
+                dp.style.display = "none";
+            else
+                dp.style.display = "block";
+        }
+    </script>
+    <script th:inline="javascript">
+        $.sessionTimeout({
+            keepAliveUrl: '',
+            logoutUrl: '/retail/logout',
+            redirUrl: '/retail/logout',
+            warnAfter: [[${timeOut}]],
+            redirAfter: 10000,
+            countdownBar: true
         });
     </script>
 </footer>
-<!-- /footer content -->
-
+    <!-- /footer content -->
+</div>
 </body>
 </html>
