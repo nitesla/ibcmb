@@ -32,7 +32,6 @@
             <ul class="list_group">
                 <li><a href="/retail/contact"> Contact Us</a>&nbsp;</li>
                 <li><a href="https://coronationmb.com" target="_blank"> Coronation merchant bank</a>&nbsp;</li>
-                <li><a href="#"> Help&nbsp;</a></li>
             </ul>
         </div>
         <nav class="navbar navbar-default">
@@ -60,7 +59,7 @@
 
                         
                             <div class="hide-faq">
-                                <h6><a th:href="@{/faq}"> FAQS &nbsp; &nbsp;
+                                <h6><a target="_blank" th:href="@{/faqs}"> FAQS &nbsp; &nbsp;
                                         <i style="font-size: 16px;" class="fa fa-question-circle"></i></a>
                                         <span class="date2 lorem">&nbsp; &nbsp;Login History:&nbsp;</span>&nbsp;
                                         <span class="lorem" th:text="*{lastLogin}">21st March 2017 10:30am</span>
@@ -154,7 +153,7 @@
 
 </header>
 
-    <div th:fragment="sidebar" class="sideba" style=" padding-top:20px;">
+    <div th:fragment="sidebar" class="sideba" style=" adding-top:20px;">
 
 
        <div class="sidebar-b calende cal  hidden-xs">
@@ -192,6 +191,10 @@
         <div class="sidebar- hidden-xs hidden-sm" >
             <img style="display: block; margin: 0px auto;" class="center" th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
         </div>
+    </div>
+
+    <div th:fragment="mail">
+
     </div>
 
    
