@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 public class HostMaster {
 
 
-    public String getLoggedInUser() {
+    public  String getLoggedInUser() {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {

@@ -27,7 +27,6 @@ public class BulkTransfer extends AbstractEntity{
     @ManyToOne
     private Corporate corporate;
 
-
     public Corporate getCorporate() {
         return corporate;
     }
@@ -44,32 +43,32 @@ public class BulkTransfer extends AbstractEntity{
         this.debitAccount = debitAccount;
     }
 
-   
+
     public String getRequestDate() {
-		return requestDate;
-	}
+        return requestDate;
+    }
 
-	public void setRequestDate(String requestDate) {
-		this.requestDate = requestDate;
-	}
+    public void setRequestDate(String requestDate) {
+        this.requestDate = requestDate;
+    }
 
-	public List<CreditRequest> getCrRequestList() {
-		return crRequestList;
-	}
+    public List<CreditRequest> getCrRequestList() {
+        return crRequestList;
+    }
 
-	public void setCrRequestList(List<CreditRequest> crRequestList) {
-		this.crRequestList = crRequestList;
-	}
+    public void setCrRequestList(List<CreditRequest> crRequestList) {
+        this.crRequestList = crRequestList;
+    }
 
-	public String getRefCode() {
-		return refCode;
-	}
+    public String getRefCode() {
+        return refCode;
+    }
 
-	public void setRefCode(String refCode) {
-		this.refCode = refCode;
-	}
+    public void setRefCode(String refCode) {
+        this.refCode = refCode;
+    }
 
-	public BulkTransfer(String debitAccount, String date, String reference, String status, List<CreditRequest> creditRequestList, Corporate corporate) {
+    public BulkTransfer(String debitAccount, String date, String reference, String status, List<CreditRequest> creditRequestList, Corporate corporate) {
         this.debitAccount = debitAccount;
         this.requestDate = date;
         this.refCode = reference;
@@ -77,6 +76,7 @@ public class BulkTransfer extends AbstractEntity{
         this.crRequestList = creditRequestList;
         this.corporate = corporate;
     }
+
 
     public BulkTransfer() {
     }
@@ -88,4 +88,5 @@ public class BulkTransfer extends AbstractEntity{
     public void setStatus(String status) {
         this.status = status;
     }
+
 }

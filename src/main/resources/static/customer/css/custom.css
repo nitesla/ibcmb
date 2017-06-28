@@ -30,6 +30,131 @@ start
     display: inline !important;
 }
 
+.search-icon
+{
+    background-color: white !important;
+
+}
+.message-label
+{
+    font-size:16px;
+    padding:15px !important;
+    padding-left:0px !important;
+}
+
+.mail-links
+{
+    list-style-type: none
+
+}
+
+
+.mail-links li
+{
+    padding: 10px !important;
+    margin-top:3px;
+    padding-right: 15px !important; 
+    border-bottom: 1px solid grey;
+    cursor: pointer;
+}
+
+.mail-links li:hover
+{
+    background-color: #f2dede;
+}
+
+
+
+.coronation-blue
+{
+    color:#003056;
+}
+
+.mail-active
+{
+     background-color: #f2dede;
+}
+}
+
+.content-mail
+{
+    min-height: 350px !important;
+}
+
+.links
+{
+     
+    
+
+}
+
+.block
+{
+    display: block;
+}
+
+.mail-textarea
+{
+    min-height: 250px;
+}
+
+.article
+{
+    margin-top: 10px;
+}
+.mail-links a
+{
+    text-decoration: none;
+}
+.mail-links-box
+{
+    border:0px !important;
+   border-right: 3px solid white !important;
+   
+   margin-top:20px !important;
+   min-height: 450px;
+  
+
+}
+
+
+.faq-icon
+{
+    padding:2px;
+    background-color: #9F614B;
+    color:white !important;
+}
+
+.alert-bottom
+{
+    margin-bottom: 10px;
+}
+
+.pointer
+{
+    cursor: pointer;
+}
+
+.bg-coronation-blue
+{
+    background-color: #003056;
+}
+
+.inbox-row
+{
+    border-top:0px !important;
+}
+
+.bg-coronation
+{
+    background-color: #ebecef !important;
+}
+
+.icon-search
+{
+    color: black !important;
+}
+
 label
 {
     display: block !important;
@@ -231,6 +356,27 @@ span.req-inner
     font-size: 20px;
     margin-bottom: 30px;
 }
+
+.token-btn
+{
+    font-size:12px  !important;
+}
+
+
+tokenInput
+{
+    border: 1px solid grey !important;
+}
+
+
+.tokenBox
+{
+    width:65%;
+    margin: 0px auto;
+   
+    margin-top: 180px;
+    padding: 25px;
+}
 .text-black-req
 {
     color: black !important;
@@ -250,10 +396,31 @@ span.req-inner
     margin:0px auto !important;
 }
 
+.no-bd
+{
+    border:0px !important;
+}
+
+.mail-label
+{
+    margin-top:10px !important;
+    font-weight: bold !important;
+
+}
+
+
+.compose
+{
+    margin-top:25px !important;
+    padding:10px !important;
+    border:0px !important;
+    outline: 0px !important;
+}
+
 
  .no-bd-rad
     {
-        border-radius: 0px;
+        border-radius: 0px !important;
 
     }
 
@@ -848,7 +1015,7 @@ body {
 
 .alert
 {
-    margin-top: 1px !important;
+    margin-top: 1px;
 
 }
 .lists{
@@ -923,6 +1090,29 @@ body {
 .calender{
     position: inherit;
 }
+
+/*CSS for session timeout*/
+.progress{
+    height: 10px;
+}
+.progress-bar{
+    font-size: 11px;
+    line-height: 10px;
+    color: #fff;
+    text-align: center;
+    background-color: #9F614B;
+}
+.prog-time{
+    color: #032A4F;
+    font-weight: 100%
+}
+
+/*.modal-footer .btn {*/
+    /*background-color: #9F614B;*/
+    /*color: #fff;*/
+    /*border-radius: 4px;*/
+/*}*/
+/*===================*/
 
 /*.calender{*/
 /*overflow: hidden;*/

@@ -36,7 +36,7 @@ public interface VerificationService {
     long getTotalNumberPending(User user);
 
 
-    List<Verification> getVerificationsForUser(User user);
+    List<VerificationDTO> getVerificationsForUser(User user);
 
     Page<VerificationDTO> getMakerCheckerPending(Pageable pageDetails, User createdBy);
 
@@ -48,7 +48,7 @@ public interface VerificationService {
      * @param id the id of the record in the db
      * @return The {@link Verification} object identified by {@code id} or null if none is found
      */
-    Verification getVerification(Long id);
+    VerificationDTO getVerification(Long id);
 
     /**
      * Creates a new <b>add</b> {@link Verification} request

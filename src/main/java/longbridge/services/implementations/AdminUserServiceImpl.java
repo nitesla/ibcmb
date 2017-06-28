@@ -77,6 +77,8 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     @Autowired
     private RoleRepo roleRepo;
+    @Autowired
+    HostMaster hostMaster;
 
 
     private Locale locale = LocaleContextHolder.getLocale();
@@ -239,7 +241,7 @@ public class AdminUserServiceImpl implements AdminUserService {
                         .build();
                 mailService.send(email);
 
-//                logger.info("Logged in user "+HostMaster.getLoggedInUser());
+                logger.info("Logged in user "+hostMaster.getLoggedInUser());
 
             }
 

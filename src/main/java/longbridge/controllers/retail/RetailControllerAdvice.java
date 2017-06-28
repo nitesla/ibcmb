@@ -1,9 +1,13 @@
 package longbridge.controllers.retail;
 
-import longbridge.dtos.FinancialInstitutionDTO;
-import longbridge.models.*;
+import longbridge.dtos.SettingDTO;
+import longbridge.models.Account;
+import longbridge.models.RetailUser;
+import longbridge.models.SRConfig;
 import longbridge.services.*;
 import longbridge.utils.DateFormatter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.ui.Model;
@@ -13,9 +17,10 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
-import java.text.Collator;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.StreamSupport;
 
 /**
@@ -25,6 +30,9 @@ import java.util.stream.StreamSupport;
 
 @ControllerAdvice(basePackages = {"longbridge.controllers.retail"})
 public class RetailControllerAdvice {
+
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+
     @Value("${bank.code}")
     private String bankCode;
     private RetailUserService retailUserService;
@@ -36,6 +44,9 @@ public class RetailControllerAdvice {
     private FinancialInstitutionService financialInstitutionService;
     @Autowired
     private SecurityService securityService;
+    @Autowired
+    private ConfigurationService configurationService;
+
     @Autowired
     public RetailControllerAdvice(RetailUserService retailUserService, IntegrationService integrationService, TransferService transferService, AccountService accountService, ServiceReqConfigService reqConfigService, MessageService messageService
             , FinancialInstitutionService financialInstitutionService
@@ -136,6 +147,21 @@ public class RetailControllerAdvice {
         }
 
         return "";
+    }
+
+    @ModelAttribute
+    public void sessionTimeout(Model model){
+        SettingDTO setting = configurationService.getSettingByName("SESSION_TIMEOUT");
+            try{
+                if (setting != null && setting.isEnabled()){
+                    Long timeOuts = Long.parseLong(setting.getValue())* 60000;
+                    logger.info("SESSION TIME OUT PERIOD" + timeOuts);
+                    model.addAttribute("timeOut", timeOuts);
+                }
+
+        }catch(Exception ex){
+            }
+
     }
 
 

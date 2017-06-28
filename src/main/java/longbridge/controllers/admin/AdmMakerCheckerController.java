@@ -1,6 +1,8 @@
 package longbridge.controllers.admin;
 
+import com.sun.javafx.sg.prism.NGShape;
 import longbridge.dtos.CodeDTO;
+import longbridge.dtos.VerificationDTO;
 import longbridge.models.AdminUser;
 import longbridge.models.Verification;
 import longbridge.services.AdminUserService;
@@ -11,7 +13,9 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.data.jpa.datatables.repository.DataTablesUtils;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import java.security.Principal;
@@ -75,23 +79,16 @@ public class AdmMakerCheckerController {
 
     @GetMapping(path = "/allverification")
     public @ResponseBody
-    DataTablesOutput<Verification> getAllVerification(DataTablesInput input, Principal principal) {
+    DataTablesOutput<VerificationDTO> getAllVerification(DataTablesInput input, Principal principal) {
         AdminUser createdBy = adminUserService.getUserByName(principal.getName());
         Pageable pageable = DataTablesUtils.getPageable(input);
-        List<Verification> codes = verificationService.getVerificationsForUser(createdBy);
-        System.out.println("this is the code"+codes);
-        DataTablesOutput<Verification> out = new DataTablesOutput<Verification>();
+        List<VerificationDTO> verifications = verificationService.getVerificationsForUser(createdBy);
+        DataTablesOutput<VerificationDTO> out = new DataTablesOutput<VerificationDTO>();
         out.setDraw(input.getDraw());
-        out.setData(codes);
-        out.setRecordsFiltered(codes.size());
-        out.setRecordsTotal(codes.size());
+        out.setData(verifications);
+        out.setRecordsFiltered(verifications.size());
+        out.setRecordsTotal(verifications.size());
         return out;
     }
 
-    @GetMapping("/verification/{id}/view")
-        public String getObjectsForVerification(){
-
-
-        return "adm/makerchecker/details";
-    }
 }

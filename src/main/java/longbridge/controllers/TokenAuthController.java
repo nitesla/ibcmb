@@ -6,7 +6,6 @@ import longbridge.exception.InternetBankingSecurityException;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.services.SecurityService;
 import longbridge.utils.HostMaster;
-import net.minidev.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,20 +92,20 @@ public class TokenAuthController {
                 else sendOtp = false;
                 logger.info("otp sent {}",sendOtp);
                 if (sendOtp){
-                    stringBuilder.append("sucess");
-                }else{
-                    stringBuilder.append("failed");
+                    stringBuilder.append("success");
                 }
             } catch (InternetBankingSecurityException e) {
-                stringBuilder.append("failed");
                 logger.info(e.getMessage());
             } catch (NoSuchMessageException e) {
 //                e.printStackTrace();
-                stringBuilder.append("failed");
                 logger.info(e.getMessage());
 
             }
         }else {
+            stringBuilder.append("empty");
+        }
+
+        if(stringBuilder.toString().equalsIgnoreCase("")){
             stringBuilder.append("failed");
         }
         return stringBuilder.toString();

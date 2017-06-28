@@ -5,6 +5,7 @@ import javax.persistence.PersistenceContext;
 
 //import longbridge.dtos.PendingDTO;
 import longbridge.dtos.PendingVerification;
+import longbridge.dtos.VerificationDTO;
 import longbridge.utils.verificationStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,7 +76,7 @@ public class VerificationController {
 	public String decline(@PathVariable Long verificationId){
 		//TODO check verifier role
         AdminUser adminUser = adminUserService.getUser(1l);
-        Verification verification = verificationService.getVerification(verificationId);
+        VerificationDTO verification = verificationService.getVerification(verificationId);
 
         if (verification == null || verificationStatus.PENDING != verification.getStatus())
             return "Verification not found";
@@ -108,16 +109,16 @@ public class VerificationController {
 
 	@GetMapping(path = "/allverification")
 	public @ResponseBody
-	DataTablesOutput<Verification> getAllVerification(DataTablesInput input, Principal principal)
+	DataTablesOutput<VerificationDTO> getAllVerification(DataTablesInput input, Principal principal)
 	{
 		AdminUser createdBy = adminUserService.getUserByName(principal.getName());
 		Pageable pageable = DataTablesUtils.getPageable(input);
-		List<Verification> codes = verificationService.getVerificationsForUser(createdBy);
-		DataTablesOutput<Verification> out = new DataTablesOutput<Verification>();
+		List<VerificationDTO> verifications = verificationService.getVerificationsForUser(createdBy);
+		DataTablesOutput<VerificationDTO> out = new DataTablesOutput<VerificationDTO>();
 		out.setDraw(input.getDraw());
-		out.setData(codes);
-		out.setRecordsFiltered(codes.size());
-		out.setRecordsTotal(codes.size());
+		out.setData(verifications);
+		out.setRecordsFiltered(verifications.size());
+		out.setRecordsTotal(verifications.size());
 		return out;
 	}
 
@@ -162,6 +163,16 @@ public class VerificationController {
 		model.addAttribute("verificationNumber", verificationNumber);
 		model.addAttribute("totalPending",totalPending);
 		return "adm/makerchecker/checker";
+	}
+
+
+	@GetMapping("/{id}/view")
+	public String getObjectsForVerification(@PathVariable Long id,Model model ){
+
+		VerificationDTO verification = verificationService.getVerification(id);
+		model.addAttribute("beforeObject",verification.getBeforeObject());
+		model.addAttribute("afterObject",verification.getAfterObject());
+		return "adm/makerchecker/details";
 	}
 
 }

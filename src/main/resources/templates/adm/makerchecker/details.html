@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="layout :: site-head">
+    <style>
+
+        /*.verticalline{*/
+            /*!*border-left: thick solid #00aeef;*!*/
+            /*border-right: thick solid #000000;*/
+            /*co*/
+        /*}*/
+    </style>
 </head>
 
 
@@ -81,28 +89,24 @@
                         </div>
                         <div class="x_content">
 
-                            <table class="table table-striped table-bordered table-hover" id="verification">
-                                <thead>
-                                <tr>
-                                    <th>Operation Code</th>
-                                    <th>Description</th>
-                                    <th>User</th>
-                                </tr>
-                                </thead>
-
-                                <tbody>
+                            <div class="col-md-12" style="float: left">
 
 
-                                </tbody>
+                                <div id="before" class="col-md-5" style="overflow-wrap: break-word">
 
-                                <tfoot>
-                                <tr>
-                                    <th>Operation Code</th>
-                                    <th>Description</th>
-                                    <th>User</th>
-                                </tr>
-                                </tfoot>
-                            </table>
+                                </div>
+
+                                <div  class="col-md-1" style="border-right: thick solid palegoldenrod">
+
+                                </div>
+
+
+                                <div id="after" class="col-md-5" style="overflow-wrap: break-word">
+
+                                </div>
+
+                            </div>
+
 
                         </div>
                     </div>
@@ -126,7 +130,7 @@
 <script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
 
 <!-- Page-Level Scripts -->
-<script>
+<script th:inline="javascript">
     /*<![CDATA[*/
     $(document).ready(function() {
         var table = $('#verification').DataTable({
@@ -215,6 +219,21 @@
             window.location.assign(ooo);
         });
     }
+
+
+    var beforeObject = [[${beforeObject}]];
+
+    alert(beforeObject);
+
+    var afterObject = [[${afterObject}]];
+
+    alert(afterObject);
+
+    $('#before').html(beforeObject)
+
+
+    $('#after').html(afterObject)
+
 
     /*]]>*/
 </script>

@@ -91,6 +91,10 @@
 			<artifactId>guava</artifactId>
 			<version>${guava.version}</version>
 		</dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-batch</artifactId>
+        </dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -269,15 +273,11 @@
             <artifactId>itext</artifactId>
             <version>2.1.7</version>
         </dependency>
+
         <dependency>
-            <groupId>org.quartz-scheduler</groupId>
-            <artifactId>quartz</artifactId>
-            <version>2.2.1</version>
-        </dependency>
-        <dependency>
-            <groupId>net.minidev</groupId>
-            <artifactId>json-smart</artifactId>
-            <version>RELEASE</version>
+        	<groupId>net.sf.jasperreports</groupId>
+        	<artifactId>jasperreports-functions</artifactId>
+        	<version>6.4.0</version>
         </dependency>
     </dependencies>
 
