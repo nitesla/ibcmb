@@ -40,26 +40,9 @@ public class MakerCheckerServiceConfigImpl implements MakerCheckerServiceConfig 
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Override
-    @Verifiable(operation="Save_MakerChecker",description="Save Maker Checker")
-    public String saveMakerChecker(MakerCheckerDTO makerCheckerDTO) throws InternetBankingException
-    {
 
-        try {
-            MakerChecker checker = convertDTOToEntity(makerCheckerDTO);
-            makerCheckerRepo.save(checker);
-            logger.info("Added MakerChecker {}", checker.toString());
-            return messageSource.getMessage("makerchecker.add.success", null, locale);
-        }
-        catch (Exception e)
-        {
-            throw new InternetBankingException(messageSource.getMessage("makerchecker.add.failure", null, locale), e);
-        }
-
-    }
-
-    @Verifiable(operation="Update_MakerChecker",description="Update Maker Checker")
-    public String updateMakerChecker(MakerChecker makerChecker) throws InternetBankingException
+    @Verifiable(operation="MAKER_CHECKER_CONFIG",description="Configuring Maker Checker")
+    public String configureMakerChecker(MakerChecker makerChecker) throws InternetBankingException
     {
 
         try {

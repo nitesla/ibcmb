@@ -4,6 +4,7 @@ import longbridge.dtos.FaqsDTO;
 import longbridge.models.Faqs;
 import longbridge.repositories.NotificationsRepo;
 import longbridge.services.FaqsService;
+import longbridge.utils.Verifiable;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,16 +47,19 @@ public class FaqsServiceImpl implements FaqsService {
     }
 
     @Override
+    @Verifiable(operation = "FAQ_ADD", description = "Adding an FAQ")
     public String addFaq(FaqsDTO faqsDTO) {
         return null;
     }
 
     @Override
+    @Verifiable(operation = "FAQ_UPDATE", description = "Updating an FAQ")
     public String updateFaq(FaqsDTO faqsDTO) {
         return null;
     }
 
     @Override
+    @Verifiable(operation = "FAQ_DEL", description = "Deleting an FAQ")
     public String deleteFaq(Long id) {
         return null;
     }
