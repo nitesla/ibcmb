@@ -1,0 +1,174 @@
+package longbridge.aop;
+
+import java.util.Date;
+
+import javax.persistence.EntityManager;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import longbridge.exception.DuplicateObjectException;
+import longbridge.models.AbstractEntity;
+import longbridge.models.MakerChecker;
+import longbridge.models.User;
+import longbridge.models.Verification;
+import longbridge.repositories.VerificationRepo;
+import longbridge.security.userdetails.CustomUserPrincipal;
+import longbridge.services.MakerCheckerService;
+import longbridge.services.VerificationService;
+import longbridge.utils.Verifiable;
+import longbridge.utils.verificationStatus;
+import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
+import org.aspectj.lang.annotation.Pointcut;
+import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
+
+@Aspect
+public class MakerCheckerAdvisor {
+
+    @Autowired
+    private VerificationRepo verificationRepo;
+
+    @Autowired
+    MakerCheckerService makerCheckerService;
+
+    @Autowired
+    VerificationService verificationService;
+
+    @Autowired
+    EntityManager entityManager;
+    private Logger log = LoggerFactory.getLogger(this.getClass());
+
+
+    @Pointcut("this(org.springframework.data.repository.Repository)")
+    public void inRepositoryLayer() {
+    }
+
+    @Pointcut("within( longbridge.services..*)")
+    public void inServiceLayer() {
+    }
+
+    @Pointcut("@withincode(longbridge.utils.Verifiable)")
+    public void isInVerifiable() {
+    }
+
+    @Pointcut("withincode(@longbridge.utils.Verifiable * *(..)) &&  @withincode(verifier)")
+    public void isInVerifiable2(Verifiable verifier) {
+    }
+
+
+    @Pointcut("execution(@longbridge.utils.Verifiable * *(..))")
+    public void isVerifiable() {
+    }
+
+    @Pointcut("call(* save(..))")
+    public void isSaving() {
+    }
+
+    @Pointcut("execution(* save(..))")
+    public void isSaving2() {
+    }
+
+    @Before("inRepositoryLayer() && isSaving()")
+    public void temp(JoinPoint p) {
+
+    }
+
+
+    @Around("isSaving() && inServiceLayer() && isInVerifiable2(verifier) && args(entity)")
+    public Object proceed3(ProceedingJoinPoint pjp, AbstractEntity entity, Verifiable verifier) throws Throwable {
+        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+        log.info("Again testing that this save works");
+
+        log.info("In operation [ " + verifier.operation() + "] ...{" + verifier.description() + "}");
+
+        // pjp.getSignature().getDeclaringType().getAnnotations()
+        log.info(entity.toString());
+        log.info("JB Around: " + pjp);
+
+        if (!makerCheckerService.isEnabled(verifier.operation())) {
+            if (entity.getId() == null) {
+                entityManager.persist(entity);
+            } else {
+                entityManager.merge(entity);
+            }
+            return verifier.operation() + "action successful";
+        }
+
+        entityManager.detach(entity);
+        CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User doneBy = principal.getUser();
+        String entityName = entity.getClass().getSimpleName();
+
+        Verification verification = new Verification();
+        verification.setEntityName(entityName);
+        verification.setInitiatedOn(new Date());
+        verification.setInitiatedBy(doneBy.getUserName());
+        verification.setOperation(verifier.operation());
+        verification.setDescription(verifier.description());
+        verification.setOriginalObject(entity.serialize());
+        Object dto = getDTOFromEntity(entityName);
+
+        if (entity.getId() != null) {
+            Long id = entity.getId();
+            AbstractEntity originalEntity = entityManager.find(entity.getClass(), id);
+
+            Verification pendingVerification = verificationRepo.findFirstByEntityNameAndEntityIdAndStatus(entityName, id, verificationStatus.PENDING);
+            if (pendingVerification != null) {
+                //found pending verification
+                throw new DuplicateObjectException("Entity has pending verification");
+            }
+
+            String beforeObject = mapAndSerializeDTOFromEntity(originalEntity, dto);
+            verification.setBeforeObject(beforeObject);
+
+            verification.setEntityId(entity.getId());
+        }
+        String afterObject = mapAndSerializeDTOFromEntity(entity, dto);
+        verification.setAfterObject(afterObject);
+        verification.setStatus(verificationStatus.PENDING);
+        verificationRepo.save(verification);
+
+        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+
+        return verifier.operation() + "action successfully added for approval";
+        // return pjp.proceed();
+    }
+
+
+
+
+    private Object getDTOFromEntity(String entityName) {
+
+        final String PACKAGE_NAME = "longbridge.dtos.";
+        String dtoName = PACKAGE_NAME + entityName + "DTO";
+        try {
+            Class<?> claz = Class.forName(dtoName);
+            Object obj = claz.newInstance();
+            return obj;
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
+    private String mapAndSerializeDTOFromEntity(Object entity, Object dto) throws JsonProcessingException {
+        ModelMapper modelMapper = new ModelMapper();
+        modelMapper.map(entity, dto);
+        ObjectMapper mapper = new ObjectMapper();
+        String data = mapper.writeValueAsString(dto);
+        return data;
+    }
+}

@@ -19,32 +19,27 @@ public class VerificationDTO {
 
     @JsonProperty("DT_RowId")
     private Long id;
-
     private int version;
     private String beforeObject; //json
-
     private String afterObject; //json
-
     private String original; //json
-
 
     private verificationStatus status;
 
     private String description;
     private Long entityId;
     private String entityName;
+    private String operation;
 
-    private String operationCode;
-
-    private AdminUser initiatedBy;
+    private String initiatedBy;
     private Date initiatedOn;
 
-    private AdminUser declinedBy;
+    private String declinedBy;
     private Date declinedOn;
     private String declineReason;
 
 
-    private AdminUser verifiedBy;
+    private String verifiedBy;
     private Date verifiedOn;
 
     private Verification dependency;
@@ -105,39 +100,7 @@ public class VerificationDTO {
         this.entityName = entityName;
     }
 
-    public String getOperationCode() {
-        return operationCode;
-    }
-
-    public void setOperationCode(String operationCode) {
-        this.operationCode = operationCode;
-    }
-
-    public AdminUser getInitiatedBy() {
-        return initiatedBy;
-    }
-
-    public void setInitiatedBy(AdminUser initiatedBy) {
-        this.initiatedBy = initiatedBy;
-    }
-
-    public Date getInitiatedOn() {
-        return initiatedOn;
-    }
-
-    public void setInitiatedOn(Date initiatedOn) {
-        this.initiatedOn = initiatedOn;
-    }
-
-    public AdminUser getDeclinedBy() {
-        return declinedBy;
-    }
-
-    public void setDeclinedBy(AdminUser declinedBy) {
-        this.declinedBy = declinedBy;
-    }
-
-    public Date getDeclinedOn() {
+     public Date getDeclinedOn() {
         return declinedOn;
     }
 
@@ -153,11 +116,43 @@ public class VerificationDTO {
         this.declineReason = declineReason;
     }
 
-    public AdminUser getVerifiedBy() {
+    public String getOperation() {
+        return operation;
+    }
+
+    public void setOperation(String operation) {
+        this.operation = operation;
+    }
+
+    public String getInitiatedBy() {
+        return initiatedBy;
+    }
+
+    public void setInitiatedBy(String initiatedBy) {
+        this.initiatedBy = initiatedBy;
+    }
+
+    public Date getInitiatedOn() {
+        return initiatedOn;
+    }
+
+    public void setInitiatedOn(Date initiatedOn) {
+        this.initiatedOn = initiatedOn;
+    }
+
+    public String getDeclinedBy() {
+        return declinedBy;
+    }
+
+    public void setDeclinedBy(String declinedBy) {
+        this.declinedBy = declinedBy;
+    }
+
+    public String getVerifiedBy() {
         return verifiedBy;
     }
 
-    public void setVerifiedBy(AdminUser verifiedBy) {
+    public void setVerifiedBy(String verifiedBy) {
         this.verifiedBy = verifiedBy;
     }
 

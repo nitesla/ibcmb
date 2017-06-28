@@ -41,7 +41,7 @@ public class MakerCheckerServiceConfigImpl implements MakerCheckerServiceConfig 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
-    @Verifiable(operation="Save MakerChecker",description="Save Maker Checker")
+    @Verifiable(operation="Save_MakerChecker",description="Save Maker Checker")
     public String saveMakerChecker(MakerCheckerDTO makerCheckerDTO) throws InternetBankingException
     {
 
@@ -84,7 +84,7 @@ public class MakerCheckerServiceConfigImpl implements MakerCheckerServiceConfig 
     @Override
     public MakerChecker getEntity(String entityName)
     {
-        return makerCheckerRepo.findFirstByName(entityName);
+        return makerCheckerRepo.findFirstByOperation(entityName);
     }
 
     @Override

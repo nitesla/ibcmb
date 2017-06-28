@@ -1,5 +1,6 @@
 package longbridge.repositories;
 
+import longbridge.models.UserType;
 import longbridge.models.Verification;
 import longbridge.utils.verificationStatus;
 import org.springframework.data.domain.Page;
@@ -18,19 +19,19 @@ public interface VerificationRepo extends CommonRepo<Verification, Long>{
 
     Verification findFirstByEntityNameAndStatus(String name, verificationStatus status);
 
-    Page<Verification > findByStatusAndCreatedBy(verificationStatus status , String createdby,Pageable pageable);
+    Page<Verification> findByStatusAndInitiatedBy(verificationStatus status, String initiatedBy, Pageable pageable);
 
-    List<Verification > findByStatusAndCreatedBy(verificationStatus status , String createdby);
+    Page<Verification> findByOperationAndInitiatedByAndUserTypeAndStatus(String operation, String initiatedBy, UserType userType, verificationStatus status, Pageable pageable);
 
-    Page<Verification > findByStatusAndCreatedByAndUserType(verificationStatus status , String createdby,String userType,Pageable pageable);
+    List<Verification> findByStatusAndInitiatedBy(verificationStatus status, String initiatedBy);
 
-    Verification findFirstByEntityNameAndEntityIdAndStatus(String name,long id,verificationStatus status);
+    Page<Verification> findByStatusAndInitiatedByAndUserType(verificationStatus status, String initiatedBy, UserType userType, Pageable pageable);
 
-    long countByCreatedByAndUserTypeAndStatus(String username,String userType, verificationStatus status);
+    Verification findFirstByEntityNameAndEntityIdAndStatus(String name, long id, verificationStatus status);
 
+    long countByInitiatedByAndUserTypeAndStatus(String username, UserType userType, verificationStatus status);
 
-
-    @Query("select v from Verification v where v.createdBy != :createdBy and v.userType=:userType")
-    List<Verification> findVerificationForUser(@Param("createdBy") String createdBy,@Param("userType") String userType);
+    @Query("select v from Verification v where v.initiatedBy != :initiatedBy and v.userType=:userType")
+    List<Verification> findVerificationForUser(@Param("initiatedBy") String initiatedBy, @Param("userType") UserType userType);
 
 }
