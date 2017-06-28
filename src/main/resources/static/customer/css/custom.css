@@ -356,6 +356,27 @@ span.req-inner
     font-size: 20px;
     margin-bottom: 30px;
 }
+
+.token-btn
+{
+    font-size:12px  !important;
+}
+
+
+tokenInput
+{
+    border: 1px solid grey !important;
+}
+
+
+.tokenBox
+{
+    width:65%;
+    margin: 0px auto;
+   
+    margin-top: 180px;
+    padding: 25px;
+}
 .text-black-req
 {
     color: black !important;
@@ -399,7 +420,7 @@ span.req-inner
 
  .no-bd-rad
     {
-        border-radius: 0px;
+        border-radius: 0px !important;
 
     }
 
