@@ -149,9 +149,13 @@
                 </ul>
             </li>
 
-            <!--<li><a><i class="fa fa-bar-chart-o"></i> Reports <span class="fa fa-chevron-down"></span></a>-->
-                <!--<ul class="nav child_menu"></ul>-->
-            <!--</li>-->
+            <li><a><i class="fa fa-check"></i> Verifications <span class="fa fa-chevron-down"></span></a>
+                <ul class="nav child_menu">
+                    <li><a href="/ops/verifications/operations"> Approval  <button class="badge bg-orange"  th:text="${verificationNumber}"></button> </a></li>
+                    <li><a href="/ops/verifications/pendingops">Approval Queue <button class="badge bg-orange bt-select" disabled="disabled" th:text="${totalPending}" >count</button></a></li>
+
+                </ul>
+            </li>
         </ul>
     </div>
 </div>

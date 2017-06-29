@@ -169,36 +169,31 @@
 <!-- Page-Level Scripts -->
 <script th:inline="javascript">
     /*<![CDATA[*/
-    var parseJsonAsList = function(jsn,path){
-
+    var parseJsonAsList = function(jsn,path)
+    {
         var result = '';
         for(node in jsn){
 
             if(Object.prototype.toString.call(jsn[node]) === '[object Array]')
             {
-
                 current_path = path.endsWith('[') ? path + node + ']' : path + '.' +node;
-
                 b = jsonPath(beforeData,current_path)[0] ;
                 a = jsonPath(afterData,current_path)[0];
-                if(true ){
+
+                if(true)
+                {
 
                     result += '<li class="list-group-item">'+ node +':<ul class="list-group">' + parseJsonAsList(jsn[node],current_path+'[') + '</ul></li>';
-                }else{
+                }else
+                    {
                     result += '<li class="list-group-item list-group-item-danger">'+ node +':<ul class="list-group">' + parseJsonAsHTMLTree(jsn[node],current_path+'[') + '</ul></li>';
-                }
+                   }
             }
             else if(Object.prototype.toString.call(jsn[node]) === '[object Object]')
             {
-
-
                 current_path = path.endsWith('[') ? path + node + ']' : path + '.' +node;
-                /* if(jsonPath(beforeData,current_path)){
-
-                 }
-                 b = jsonPath(beforeData,current_path)[0] ;
-                 a = jsonPath(afterData,current_path)[0];
-                 */
+                b = jsonPath(beforeData,current_path)[0] ;
+                a = jsonPath(afterData,current_path)[0];
                 if(true){
                     result += '<li class="list-group-item">'+ node +':<ul class="list-group">' + parseJsonAsList(jsn[node],current_path) + '</ul></li>';
                 }else{
@@ -207,13 +202,10 @@
             }
             else{
 
-
                 current_path = path.endsWith('[') ? path + node + ']' : path + '.' +node;
 
-                b = jsonPath(beforeData,current_path) ? jsonPath(beforeData,current_path)[0] : 'undefined' ;
-
-                a = jsonPath(afterData,current_path) ? jsonPath(afterData,current_path)[0] : 'undefined' ;
-
+                b = jsonPath(beforeData,current_path)[0] ;
+                a = jsonPath(afterData,current_path)[0];
                 if(a == b && typeof a != 'undefined' && typeof b != 'undefined' ){
 
                     result += '<li class="list-group-item">' + node + ':'+jsn[node] +'</li>'
@@ -221,7 +213,7 @@
 
                     result += '<li class="list-group-item list-group-item-danger">' + node + ':'+jsn[node] +'</li>'
                 }
-            }
+              }
 
         }
         return result;
@@ -240,14 +232,8 @@
                 "targets" : 0,
                 "className" : "dt-center",
                 "render" : function(data, type, full, meta) {
-
                     if (type === 'display') {
-                        temp = data;
-                        if(!temp || 0 === temp.length){
-                            temp = '{}'
-                        }
-                        before = JSON.parse(temp);
-
+                        before = JSON.parse(data);
                         return '<ul>'+parseJsonAsList(before,'$')+'</ul>';
                     }
                     return data;
@@ -257,13 +243,8 @@
                 "className" : "dt-center",
                 "render" : function(data, type, full, meta) {
                     if (type === 'display') {
-                        temp = data;
-                        if(!temp || 0 === temp.length ){
-                            temp = '{}'
-                        }
-                        before = JSON.parse(temp);
-
-                        return '<ul>'+parseJsonAsList(before,'$')+'</ul>';
+                        after = JSON.parse(data);
+                        return '<ul class="list-group">'+parseJsonAsList(after,'$')+'</ul>';
                     }
                     return data;
                 }
@@ -271,7 +252,6 @@
         });
 
     });
-
     /*]]>*/
 </script>
 

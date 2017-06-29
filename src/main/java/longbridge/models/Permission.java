@@ -99,10 +99,10 @@ public class Permission extends AbstractEntity  implements PrettySerializer{
                     throws IOException, JsonProcessingException
             {
                 gen.writeStartObject();
-                gen.writeStringField("name",value.name);
-                gen.writeStringField("description",value.description);
-                gen.writeStringField("userType",value.userType);
-                gen.writeStringField("category",value.category);
+                gen.writeStringField("Name",value.name);
+                gen.writeStringField("Description",value.description);
+                gen.writeStringField("User Type",value.userType);
+                gen.writeStringField("Category",value.category);
                 gen.writeEndObject();
             }
         };
