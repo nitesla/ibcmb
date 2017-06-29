@@ -378,7 +378,6 @@ public class IntegrationServiceImpl implements IntegrationService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return result;
     }
 

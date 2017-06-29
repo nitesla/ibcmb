@@ -5,6 +5,7 @@ import longbridge.exception.InternetBankingException;
 import longbridge.models.Faqs;
 import longbridge.repositories.FaqsRepo;
 import longbridge.services.FaqsService;
+import longbridge.utils.Verifiable;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,6 +63,7 @@ public class FaqsServiceImpl implements FaqsService {
     }
 
     @Override
+    @Verifiable(operation = "FAQ_ADD", description = "Adding FAQs")
     public String addFaq(FaqsDTO faqsDTO) {
         try {
             Faqs faqs = convertDTOToEntity(faqsDTO);
@@ -74,6 +76,7 @@ public class FaqsServiceImpl implements FaqsService {
     }
 
     @Override
+    @Verifiable(operation = "FAQ_UPDATE", description = "Updating an FAQs")
     public String updateFaq(FaqsDTO faqsDTO) {
         try {
             Faqs faqs = convertDTOToEntity(faqsDTO);
@@ -87,6 +90,7 @@ public class FaqsServiceImpl implements FaqsService {
     }
 
     @Override
+    @Verifiable(operation = "FAQ_DEL", description = "Deleting FAQs")
     public String deleteFaq(Long id) {
         try{
             faqsRepo.delete(id);

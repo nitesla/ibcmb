@@ -11,9 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 public interface MakerCheckerRepo extends CommonRepo<MakerChecker, Long>
 {
-    MakerChecker findFirstByName(String name);
-    boolean existsByName(String name);
-    boolean existsByNameAndEnabled(String name, String enabled);
-    boolean existsByCode(String code);
+    MakerChecker findFirstByOperation(String operation);
+    boolean existsByOperation(String operation);
+    boolean existsByOperationAndEnabled(String name, String enabled);
 }
 
