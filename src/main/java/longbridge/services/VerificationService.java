@@ -54,29 +54,11 @@ public interface VerificationService {
      */
     VerificationDTO getVerification(Long id);
 
-    /**
-     * Creates a new <b>add</b> {@link Verification} request
-     *
-     * @param entity The entity to verify
-     * @throws JsonProcessingException if there is an error in serializing the entity
-     */
 
-
-    <T extends SerializableEntity<T>> String addNewVerificationRequest(T entity, User createdBy, String operation) throws JsonProcessingException, VerificationException;
-
-
-    /**
-     * Create a new <b>modify</b> {@link Verification} request
-     *
-     * @param entity         The modified entity
-     * @throws JsonProcessingException if there is an error in serializing the entity
-     */
-    <T extends SerializableEntity<T>> String addModifyVerificationRequest(T entity, User doneBy, String operation) throws JsonProcessingException;
 
 
     Page<PendingVerification> getPendingVerifications(User user, Pageable pageable);
 
     Page<VerificationDTO> getPendingOperations(String operation, User user, Pageable pageable);
 
-    <T extends SerializableEntity<T>> String save(T originalEntity, T entity, User createdBy, String operation) throws JsonProcessingException, VerificationException;
 }
