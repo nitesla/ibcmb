@@ -75,13 +75,13 @@
 
                             <div class="x_content">
                                 <div class="ibox-content">
-                                    <form method="post" class="form-horizontal" >
+                                    <form method="post" th:action="@{/admin/verifications/verify}" class="form-horizontal" th:object="${verification}">
 
 
                                         <div class="form-group">
                                             <label for="comments" class="col-sm-2 control-label" style="text-align: left">Comments</label>
                                             <div class="col-sm-10">
-                                                <input type="text"  class="form-control" id="comments"/>
+                                                <input type="text"  th:field="*{comment}" class="form-control" id="comments"/>
                                             </div>
                                         </div>
 
@@ -218,8 +218,8 @@
         }
         return result;
     }
-      var beforeData = JSON.parse([[${beforeObject}]]);
-      var afterData =JSON.parse([[${afterObject}]]);
+      var beforeData = JSON.parse([[${verification.beforeObject}]]);
+      var afterData =JSON.parse([[${verification.afterObject}]]);
     console.log(beforeData);
     $(document).ready(function() {
 

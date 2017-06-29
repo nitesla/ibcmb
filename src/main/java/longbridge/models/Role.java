@@ -1,5 +1,8 @@
 package longbridge.models;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -21,7 +24,7 @@ import java.util.Collection;
 @Entity
 @Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
-public class Role extends AbstractEntity{
+public class Role extends AbstractEntity implements PrettySerializer{
 
     private String name;
     private String email;
@@ -105,4 +108,35 @@ public class Role extends AbstractEntity{
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+
+	@Override @JsonIgnore
+    public JsonSerializer<Role> getSerializer() {
+        return new JsonSerializer<Role>() {
+            @Override
+            public void serialize(Role value, JsonGenerator gen, SerializerProvider serializers)
+                    throws IOException, JsonProcessingException {
+
+                gen.writeStartObject();
+                gen.writeStringField("name", value.name);
+                gen.writeStringField("email", value.email);
+                // gen.writeArrayFieldStart("permissions");
+                gen.writeObjectFieldStart("permissions");
+                for(Permission p : value.permissions){
+                    gen.writeObjectFieldStart(p.getId().toString());
+                    //gen.writeStartObject();
+                    gen.writeStringField("name", p.getName());
+                    gen.writeStringField("category", p.getCategory());
+                    gen.writeStringField("description", p.getDescription());
+                    gen.writeEndObject();
+                }
+                gen.writeEndObject();
+                //gen.writeEndArray();
+                gen.writeEndObject();
+            }
+        };
+    }
+
+
+
 }

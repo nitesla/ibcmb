@@ -61,7 +61,7 @@ public class TransactionLimitServiceImpl implements TransactionLimitService {
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
-    @Verifiable(operation="GLO_LIM_ADD",description="Adding  Global Limit")
+    @Verifiable(operation="GLO_LIM_ADD",description="Adding a Global Limit")
     public String addGlobalLimit(GlobalLimitDTO globalLimitDTO) throws InternetBankingException {
         try {
             GlobalLimit globalLimit = convertGlobalLimitDTOToEntity(globalLimitDTO);
@@ -74,7 +74,7 @@ public class TransactionLimitServiceImpl implements TransactionLimitService {
     }
 
     @Override
-    @Verifiable(operation="GLO_LIM_UPDATE",description="Updating  Global Limit")
+    @Verifiable(operation="GLO_LIM_UPDATE",description="Updating a Global Limit")
     public String updateGlobalLimit(GlobalLimitDTO globalLimitDTO) throws InternetBankingException {
         try {
             GlobalLimit globalLimit = convertGlobalLimitDTOToEntity(globalLimitDTO);

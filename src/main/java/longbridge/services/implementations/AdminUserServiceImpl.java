@@ -131,9 +131,11 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Override
     @Transactional
     @Verifiable(operation="ADMIN_ADD",description="Adding an Admin User")
-    public String addUser(AdminUserDTO user) throws InternetBankingException {
+    public String addUser(AdminUserDTO user) throws InternetBankingException
+    {
         AdminUser adminUser = adminUserRepo.findFirstByUserNameIgnoreCase(user.getUserName());
-        if (adminUser != null) {
+        if (adminUser != null)
+        {
             throw new DuplicateObjectException(messageSource.getMessage("user.exist", null, locale));
         }
         try {
@@ -144,24 +146,26 @@ public class AdminUserServiceImpl implements AdminUserService {
             adminUser.setEmail(user.getEmail());
             adminUser.setPhoneNumber(user.getPhoneNumber());
             adminUser.setCreatedOnDate(new Date());
-            Role role = new Role();
-            role.setId(Long.parseLong(user.getRoleId()));
+            Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
             adminUser.setRole(role);
             adminUserRepo.save(adminUser);
 
             logger.info("New admin user {} created", adminUser.getUserName());
             return messageSource.getMessage("user.add.success", null, locale);
 
-        }
+           }
         catch (InternetBankingSecurityException se)
         {
             throw new InternetBankingSecurityException(messageSource.getMessage("entrust.create.failure", null, locale), se);
-        } catch (Exception e) {
-            if (e instanceof EntrustException) {
+        } catch (Exception e)
+        {
+            if (e instanceof EntrustException)
+            {
                 throw new EntrustException(e.getMessage());
-            } else {
+            } else
+                {
                 throw new InternetBankingException(messageSource.getMessage("user.add.failure", null, locale), e);
-            }
+               }
         }
     }
 

@@ -136,8 +136,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             corporateUser.setFirstName(user.getFirstName());
             corporateUser.setPhoneNumber(user.getPhoneNumber());
             if (user.getRoleId() != null) {
-                Role role = new Role();
-                role.setId(Long.parseLong(user.getRoleId()));
+                Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
                 corporateUser.setRole(role);
             }
 
@@ -170,8 +169,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             String password = passwordPolicyService.generatePassword();
             corporateUser.setPassword(passwordEncoder.encode(password));
             corporateUser.setExpiryDate(new Date());
-            Role role = new Role();
-            role.setId(Long.parseLong(user.getRoleId()));
+            Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
             corporateUser.setRole(role);
             Corporate corporate = corporateRepo.findOne(Long.parseLong(user.getCorporateId()));
             corporateUser.setCorporate(corporate);
@@ -364,7 +362,6 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         try {
             CorporateUser corporateUser = corporateUserRepo.findOne(userId);
             corporateUserRepo.delete(userId);
-            String fullName = corporateUser.getFirstName()+" "+corporateUser.getLastName();
             SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_DELETION");
 
             if (setting != null && setting.isEnabled()) {

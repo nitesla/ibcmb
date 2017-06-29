@@ -5,6 +5,8 @@ import java.util.Date;
 import javax.persistence.EntityManager;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import longbridge.exception.DuplicateObjectException;
 import longbridge.models.AbstractEntity;
 import longbridge.models.MakerChecker;
@@ -14,6 +16,7 @@ import longbridge.repositories.VerificationRepo;
 import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.MakerCheckerService;
 import longbridge.services.VerificationService;
+import longbridge.utils.PrettySerializer;
 import longbridge.utils.Verifiable;
 import longbridge.utils.verificationStatus;
 import org.aspectj.lang.JoinPoint;
@@ -97,16 +100,11 @@ public class MakerCheckerAdvisor {
         log.info(entity.toString());
         log.info("JB Around: " + pjp);
 
-        if (!makerCheckerService.isEnabled(verifier.operation())) {
-            if (entity.getId() == null) {
-                entityManager.persist(entity);
-            } else {
-                entityManager.merge(entity);
-            }
+        if (!makerCheckerService.isEnabled(verifier.operation())){
+            entityManager.merge(entity);
             return verifier.operation() + "action successful";
         }
 
-        //entityManager.detach(entity);
         CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User doneBy = principal.getUser();
         String entityName = entity.getClass().getSimpleName();
@@ -115,11 +113,23 @@ public class MakerCheckerAdvisor {
         verification.setEntityName(entityName);
         verification.setInitiatedOn(new Date());
         verification.setInitiatedBy(doneBy.getUserName());
+        verification.setVerifiedBy("PENDING..");
         verification.setUserType(doneBy.getUserType());
         verification.setOperation(verifier.operation());
         verification.setDescription(verifier.description());
         verification.setOriginalObject(entity.serialize());
-        Object dto = getDTOFromEntity(entityName);
+
+
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectMapper prettyMapper = mapper;
+        prettyMapper = new ObjectMapper();
+        if (entity instanceof PrettySerializer) {
+            JsonSerializer<Object> serializer = ((PrettySerializer) (entity)).getSerializer();
+
+            SimpleModule module = new SimpleModule();
+            module.addSerializer(entity.getClass(), serializer);
+            prettyMapper.registerModule(module);
+        }
 
         if (entity.getId() != null) {
             Long id = entity.getId();
@@ -131,13 +141,10 @@ public class MakerCheckerAdvisor {
                 throw new DuplicateObjectException("Entity has pending verification");
             }
 
-            String beforeObject = mapAndSerializeDTOFromEntity(originalEntity, dto);
-            verification.setBeforeObject(beforeObject);
-
+            verification.setBeforeObject(prettyMapper.writeValueAsString(originalEntity));
             verification.setEntityId(entity.getId());
         }
-        String afterObject = mapAndSerializeDTOFromEntity(entity, dto);
-        verification.setAfterObject(afterObject);
+        verification.setAfterObject(prettyMapper.writeValueAsString(entity));
         verification.setStatus(verificationStatus.PENDING);
         verificationRepo.save(verification);
 
@@ -150,30 +157,4 @@ public class MakerCheckerAdvisor {
 
 
 
-    private Object getDTOFromEntity(String entityName) {
-
-        final String PACKAGE_NAME = "longbridge.dtos.";
-        String dtoName = PACKAGE_NAME + entityName + "DTO";
-        try {
-            Class<?> claz = Class.forName(dtoName);
-            Object obj = claz.newInstance();
-            return obj;
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-
-    private String mapAndSerializeDTOFromEntity(Object entity, Object dto) throws JsonProcessingException {
-        ModelMapper modelMapper = new ModelMapper();
-        modelMapper.map(entity, dto);
-        ObjectMapper mapper = new ObjectMapper();
-        String data = mapper.writeValueAsString(dto);
-        return data;
-    }
 }
