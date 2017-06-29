@@ -100,7 +100,7 @@ public class AdminUserController {
         }
         try {
              AdminUser userCreatedBy = adminUserService.getUserByName(principal.getName());
-            String message = adminUserService.addUser(adminUser,userCreatedBy);
+            String message = adminUserService.addUser(adminUser);
             redirectAttributes.addFlashAttribute("message", message);
             return "redirect:/admin/users";
         }
@@ -193,16 +193,13 @@ public class AdminUserController {
         }
         try {
             AdminUser userCreatedBy = adminUserService.getUserByName(principal.getName());
-            String message = adminUserService.updateUser(adminUser,userCreatedBy);
+            String message = adminUserService.updateUser(adminUser);
             redirectAttributes.addFlashAttribute("message", message);
             return "redirect:/admin/users";
         }
         catch (DuplicateObjectException ibe) {
             result.addError(new ObjectError("error", ibe.getMessage()));
             logger.error("Existing user found", ibe);
-
-            adminUserService.verifyRequest(183L);
-
             return "adm/admin/edit";
         }
         catch (InternetBankingException ibe) {
