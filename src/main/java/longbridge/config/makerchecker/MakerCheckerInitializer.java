@@ -52,7 +52,7 @@ public class MakerCheckerInitializer {
                             makerChecker.setDelFlag("N");
                             makerChecker.setOperation(operation);
                             makerChecker.setDescription(description);
-                            makerChecker.setEnabled("Y");
+                            makerChecker.setEnabled("N");
                             System.out.print(makerChecker.toString());
                             makerCheckerRepo.save(makerChecker);
                         }

@@ -71,7 +71,6 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    @Verifiable(operation="ACC_ADD",description="Add Account")
     public boolean AddAccount(String customerId, AccountDTO accountdto) throws InternetBankingException {
         if (!customerId.equals(accountdto.getCustomerId())) {
             return false;
