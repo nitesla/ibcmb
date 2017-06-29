@@ -15,13 +15,19 @@
 
             <div class="col-md-4 col-sm-4">
                 <h5 class="page_header"> Transfer to <span th:text="${beneficiary.preferredName}"></span></h5>
+                 <select class="form-control invisible">
+                        <option value="account">Account Overview</option>
+                </select>
             </div>
+            <p class="col-xs-12">
+                    Fields marked <span style="color:red">*</span> are compulsory
+            </p>
         </div>
         <div class="row">
             <div class="col-md-9 content-bg">
 
-                <div class="col-md-6 col-sm-6">
-                    <div class="row form-spacing">
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <div class="r form-spacin">
                         <div th:if="${message != null}" class="alert alert-info" th:text="${message}">message</div>
                         <div th:if="${error != null}" class="alert alert-info" th:text="${error}">message</div>
 
@@ -62,14 +68,14 @@
                             </div>
 
 
-                            <button class="btn btn-link" type="submit">Submit</button>
+                            <button class="btn btn-link required-step" type="submit">Submit</button>
                         </form>
                         <!--</div>-->
                     </div>
                 </div>
-                <div class="col-md-6 col-sm-6">
+                <div class="col-md-6 col-sm-6 well">
                     <!--<p class="related" style="padding-top: 5%">Related Information</p>-->
-                    <hr/>
+                   
                     <!--<input type="availBal" name="availBal"/>-->
                     <p id="availBal"><b></b></p>
                 </div>

@@ -13,23 +13,26 @@
 
         <div class="row">
 
-            <div class="col-md-4 col-sm-4">
+            <div class="col-md-4 col-sm-4 col-xs-12">
                 <h5 class="page_header"> Own Account Transaction</h5>
+                <select class="form-control invisible">
+                        <option value="account">Account Overview</option>
+                </select>
                 
             </div>
 
             <p class="col-xs-12">
                     Fields marked <span style="color:red">*</span> are compulsory
-                </p>
+            </p>
         </div>
         <div class="row">
-            <div class="col-md-9 content-bg">
-                    <div class="col-md-6 col-sm-offset-2 col-sm-6 form-spacin">
+            <div class="col-md-9 col-xs-12 content-bg">
+                <div class="col-md-6 col-xs-12 col-sm-6 form-spacin">
 
                         <div th:if="${message != null}" class="alert alert-info" th:text="${message}">message</div>
                         <div th:if="${error != null}" class="alert alert-info" th:text="${error}">message</div>
                         <div>
-                             <form class=' col-xs-12' method="post" th:action="@{/retail/transfer/ownaccount/summary}" th:object="${transferRequest}">
+                             <form class='' method="post" th:action="@{/retail/transfer/ownaccount/summary}" th:object="${transferRequest}">
                                     <input type="hidden" th:field="*{financialInstitution}"/>
 
                                     <div class="form-group">
@@ -84,8 +87,8 @@
                                     </div>
                                     
                                     <div class='pull-right' style="margin-right:50px;">
-                                         <button class="btn btn-link" type="submit">Submit</button>
-                                         <button class="btn btn-link" type="button">Cancel</button>
+                                         <button class="btn btn-link required-step" type="submit">Submit</button>
+                                         <button class="btn btn-link less-required" type="button ">Cancel</button>
                                    
                                     </div>
                                    
@@ -95,7 +98,7 @@
                         </div>
 
                 </div>
-                <div class="col-md-4 col-sm-4 well">
+                <div class="col-md-4 col-sm-4 col-xs-12 well rel-info">
                     <!--<p class="related" style="padding-top: 5%">Related Information</p>-->
                    
                     <!--<input type="availBal" name="availBal"/>-->
