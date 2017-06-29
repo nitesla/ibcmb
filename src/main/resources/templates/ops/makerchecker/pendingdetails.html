@@ -38,28 +38,31 @@
 
                     <li>
                         <div class="col-lg-4">
-                            <div class="title-action" >
-                                <a class="btn btn-app" href="#"  disabled="disabled" >
-                                    <button class="badge bg-orange bt-select" disabled="disabled" th:text="${totalPending}" >count</button>
-                                    <i class="fa fa-check"></i>My approvals
+                            <div class="title-action">
+                                <a class="btn btn-app" href="/admin/verifications/pendingops">
+                                    <button class="badge bg-orange bt-select"   th:text="${totalPending}">count</button>
+                                    <i class="fa fa-envelope"></i>My approval
                                 </a>
                             </div>
                         </div>
-
                     </li>
+
 
                     <li>
                         <div class="col-lg-4">
                             <div class="title-action">
-                                <a  class=" btn btn-app btn bt-select btn-sm  bt-link-act" href="/admin/verifications/operations">
-                                    <button class="badge bg-orange"  th:text="${verificationNumber}"></button>
-                                    <i class="fa fa-check"></i>Approval Queue
+                                <a  class=" btn btn-app btn  btn-sm bt-select bt-link-act" href="#" disabled="disabled" >
+                                    <button class="badge bg-orange" disabled="disabled" th:text="${verificationNumber}"></button>
+                                    <i class="fa fa-envelope"></i>Approval Queue
                                 </a>
                             </div>
                         </div>
                     </li>
 
+
+
                 </ul>
+
 
                 <div class="clearfix"></div>
 
@@ -75,20 +78,13 @@
 
                             <div class="x_content">
                                 <div class="ibox-content">
-                                    <form method="post" th:action="@{/admin/verifications/verify}" class="form-horizontal" th:object="${verification}">
+                                    <form method="post" class="form-horizontal" >
 
 
-                                        <div class="form-group">
-                                            <label for="comments" class="col-sm-2 control-label" style="text-align: left">Comments</label>
-                                            <div class="col-sm-10">
-                                                <input type="text"  th:field="*{comment}" class="form-control" id="comments"/>
-                                            </div>
-                                        </div>
 
+                                        <label style="font-size:large">Previous Changes</label>
 
-                                            <label style="font-size:large">Previous Changes</label>
-
-                                            <!--<div id="before" style="overflow-wrap: break-word;border-left: 1px solid;margin-right: 1px;padding:5px; ">-->
+                                        <!--<div id="before" style="overflow-wrap: break-word;border-left: 1px solid;margin-right: 1px;padding:5px; ">-->
 
                                         <table class="table table-striped dt-responsive no-wrap table-bordered table-hover" id="table">
                                             <thead>
@@ -109,17 +105,12 @@
                                             </tbody>
                                         </table>
 
+
+
                                         <div>
+                                            <!--<input  th:hidden="hidden" th:field="*{version}"/>-->
+                                            <!--<input  th:hidden="hidden" th:field="*{id}"/>-->
 
-                                            <button type="submit" name="approve"  value="true" class="btn btn-success btn-labeled pull-right">
-                                                Approve<span class="btn-label btn-label-right"><i class="fa fa-check"></i></span>
-                                            </button>
-
-                                            <button type="submit" name="approve" value="false" class="btn btn-danger btn-labeled pull-right">
-                                                Decline<span class="btn-label btn-label-right"><i class="fa fa-times"></i></span>
-                                            </button>
-                                            <input  th:hidden="hidden" th:field="*{version}"/>
-                                            <input  th:hidden="hidden" th:field="*{id}"/>
 
                                         </div>
                                     </form>
@@ -169,28 +160,29 @@
 <!-- Page-Level Scripts -->
 <script th:inline="javascript">
     /*<![CDATA[*/
-    var parseJsonAsList = function(jsn,path)
-    {
+    var parseJsonAsList = function(jsn,path){
+
         var result = '';
         for(node in jsn){
 
             if(Object.prototype.toString.call(jsn[node]) === '[object Array]')
             {
+
                 current_path = path.endsWith('[') ? path + node + ']' : path + '.' +node;
+
                 b = jsonPath(beforeData,current_path)[0] ;
                 a = jsonPath(afterData,current_path)[0];
-
-                if(true)
-                {
+                if(true ){
 
                     result += '<li class="list-group-item">'+ node +':<ul class="list-group">' + parseJsonAsList(jsn[node],current_path+'[') + '</ul></li>';
-                }else
-                    {
+                }else{
                     result += '<li class="list-group-item list-group-item-danger">'+ node +':<ul class="list-group">' + parseJsonAsHTMLTree(jsn[node],current_path+'[') + '</ul></li>';
-                   }
+                }
             }
             else if(Object.prototype.toString.call(jsn[node]) === '[object Object]')
             {
+
+
                 current_path = path.endsWith('[') ? path + node + ']' : path + '.' +node;
                 b = jsonPath(beforeData,current_path)[0] ;
                 a = jsonPath(afterData,current_path)[0];
@@ -202,8 +194,8 @@
             }
             else{
 
-                current_path = path.endsWith('[') ? path + node + ']' : path + '.' +node;
 
+                current_path = path.endsWith('[') ? path + node + ']' : path + '.' +node;
                 b = jsonPath(beforeData,current_path)[0] ;
                 a = jsonPath(afterData,current_path)[0];
                 if(a == b && typeof a != 'undefined' && typeof b != 'undefined' ){
@@ -213,13 +205,13 @@
 
                     result += '<li class="list-group-item list-group-item-danger">' + node + ':'+jsn[node] +'</li>'
                 }
-              }
+            }
 
         }
         return result;
     }
-      var beforeData = JSON.parse([[${verification.beforeObject}]]);
-      var afterData =JSON.parse([[${verification.afterObject}]]);
+    var beforeData = JSON.parse([[${beforeObject}]]);
+    var afterData =JSON.parse([[${afterObject}]]);
     console.log(beforeData);
     $(document).ready(function() {
 

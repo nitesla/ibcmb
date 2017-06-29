@@ -119,7 +119,7 @@ public class AccountConfigServiceImpl implements AccountConfigService {
 
     @Override
     @Transactional
-    @Verifiable(operation="Delete_Acc_Restriction",description="Delete Account Restriction")
+    @Verifiable(operation="ACC_RES_DEL",description="Delete Account Restriction")
     public String deleteAccountRestriction(Long id) throws InternetBankingException {
         try {
             accountRestrictionRepo.delete(id);
@@ -132,7 +132,7 @@ public class AccountConfigServiceImpl implements AccountConfigService {
     }
 
     @Override
-    @Verifiable(operation="Add_Acc_Class_Restriction",description="Add Account Class Restriction")
+    @Verifiable(operation="ACL_RES_ADD",description="Add Account Class Restriction")
     public String addAccountClassRestriction(AccountClassRestrictionDTO accountClassRestrictionDTO) throws InternetBankingException {
 
         validateNoAccountClassDuplication(accountClassRestrictionDTO);

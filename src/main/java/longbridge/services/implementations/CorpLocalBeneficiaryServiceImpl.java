@@ -45,7 +45,6 @@ public class CorpLocalBeneficiaryServiceImpl implements CorpLocalBeneficiaryServ
 
 
     @Override
-    @Verifiable(operation="Add_Corp_Beneficiary",description="Add Corprate Local Beneficiary")
     public String addCorpLocalBeneficiary(Corporate corporate, CorpLocalBeneficiaryDTO beneficiary) {
         CorpLocalBeneficiary corpLocalBeneficiary=convertDTOToEntity(beneficiary);
         corpLocalBeneficiary.setCorporate(corporate);
@@ -56,7 +55,6 @@ public class CorpLocalBeneficiaryServiceImpl implements CorpLocalBeneficiaryServ
     }
 
     @Override
-    @Verifiable(operation="Delete_Corp_Beneficiary",description="Delete Corprate Local Beneficiary")
     public String deleteCorpLocalBeneficiary(Long beneficiaryId) {
         this.corpLocalBeneficiaryRepo.delete(beneficiaryId);
         logger.info("Beneficiary with Id {} deleted", beneficiaryId);

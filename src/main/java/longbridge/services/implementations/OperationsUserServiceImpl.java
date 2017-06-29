@@ -10,6 +10,7 @@ import longbridge.models.Email;
 import longbridge.models.OperationsUser;
 import longbridge.models.Role;
 import longbridge.repositories.OperationsUserRepo;
+import longbridge.repositories.RoleRepo;
 import longbridge.services.*;
 import longbridge.utils.DateFormatter;
 import longbridge.utils.ReflectionUtils;
@@ -62,6 +63,9 @@ public class OperationsUserServiceImpl implements OperationsUserService {
 
     @Autowired
     private ConfigurationService configService;
+
+    @Autowired
+    private RoleRepo roleRepo;
 
     @Autowired
     EntityManager entityManager;
@@ -239,8 +243,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             opsUser.setLastName(user.getLastName());
             opsUser.setUserName(user.getUserName());
             opsUser.setPhoneNumber(user.getPhoneNumber());
-            Role role = new Role();
-            role.setId(Long.parseLong(user.getRoleId()));
+            Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
             opsUser.setRole(role);
             this.operationsUserRepo.save(opsUser);
             logger.info("Operations user {} updated", opsUser.getUserName());

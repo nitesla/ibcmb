@@ -19,9 +19,8 @@ public interface VerificationService {
      * This will decline a Verification request.
      *
      * @param verification  The {@link Verification} object
-     * @param declineReason The reason for declining the verification request
      */
-    String decline(Verification verification, String declineReason) throws VerificationException;
+    String decline(VerificationDTO verification) throws VerificationException;
 
     /**
      * This will verify/approve a Verification request.
@@ -43,7 +42,9 @@ public interface VerificationService {
 
     List<VerificationDTO>getPendingForUser(User user);
 
-    String verify(Long verId) throws VerificationException;
+    String verify(VerificationDTO verification) throws VerificationException;
+
+    String verify(Long id) throws VerificationException;
 
     /**
      * This fetches the {@link Verification} object with the id {@code id}
@@ -53,29 +54,11 @@ public interface VerificationService {
      */
     VerificationDTO getVerification(Long id);
 
-    /**
-     * Creates a new <b>add</b> {@link Verification} request
-     *
-     * @param entity The entity to verify
-     * @throws JsonProcessingException if there is an error in serializing the entity
-     */
 
-
-    <T extends SerializableEntity<T>> String addNewVerificationRequest(T entity, User createdBy, String operation) throws JsonProcessingException, VerificationException;
-
-
-    /**
-     * Create a new <b>modify</b> {@link Verification} request
-     *
-     * @param entity         The modified entity
-     * @throws JsonProcessingException if there is an error in serializing the entity
-     */
-    <T extends SerializableEntity<T>> String addModifyVerificationRequest(T entity, User doneBy, String operation) throws JsonProcessingException;
 
 
     Page<PendingVerification> getPendingVerifications(User user, Pageable pageable);
 
     Page<VerificationDTO> getPendingOperations(String operation, User user, Pageable pageable);
 
-    <T extends SerializableEntity<T>> String save(T originalEntity, T entity, User createdBy, String operation) throws JsonProcessingException, VerificationException;
 }

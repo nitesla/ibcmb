@@ -34,6 +34,7 @@ public class Verification extends AbstractEntity {
     @Enumerated(value = EnumType.STRING)
     private UserType userType;
     private String operation;
+    private String comments;
     private String initiatedBy;
     private Date initiatedOn;
     private String declinedBy;
@@ -72,6 +73,14 @@ public class Verification extends AbstractEntity {
 
     public String getDeclineReason() {
         return declineReason;
+    }
+
+    public String getComments() {
+        return comments;
+    }
+
+    public void setComments(String comments) {
+        this.comments = comments;
     }
 
     public String getDescription() {
@@ -183,14 +192,5 @@ public class Verification extends AbstractEntity {
         this.verifiedBy = verifiedBy;
     }
 
-    public static OperationCode getAddCode() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public static OperationCode getModifyCode() {
-        // TODO Auto-generated method stub
-        return null;
-    }
 
 }

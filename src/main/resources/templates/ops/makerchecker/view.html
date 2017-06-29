@@ -28,10 +28,39 @@
             <div class="">
                 <div class="page-title">
                     <div class="title_left">
-                        <h3>Pending Verifications</h3>
+                        <h3>Verification</h3>
                     </div>
 
                 </div>
+
+
+                <ul class="nav navbar-right panel_toolbox">
+
+                    <li>
+                        <div class="col-lg-4">
+                            <div class="title-action" >
+                                <a class="btn btn-app" href="/admin/verifications/pendingops"  disabled="disabled" >
+                                    <button class="badge bg-orange bt-select" disabled="disabled" th:text="${totalPending}" >count</button>
+                                    <i class="fa fa-envelope"></i>My approval
+                                </a>
+                            </div>
+                        </div>
+
+                    </li>
+
+                    <li>
+                        <div class="col-lg-4">
+                            <div class="title-action">
+                                <a  class=" btn btn-app btn bt-select btn-sm  bt-link-act" href="/admin/verifications/operations">
+                                    <button class="badge bg-orange"  th:text="${verificationNumber}"></button>
+                                    <i class="fa fa-envelope"></i>Approval Queue
+                                </a>
+                            </div>
+                        </div>
+                    </li>
+
+                </ul>
+
                 <div class="clearfix"></div>
             </div>
 
@@ -40,31 +69,17 @@
             <div class="row">
                 <div class="col-md-12 col-sm-12 col-xs-12">
                     <div class="x_panel">
-
                         <div class="x_title">
-                            <ul class="nav navbar-left panel_toolbox">
-                                <li>
-                                    <div class="col-lg-4">
-                                        <div class="title-action">
-                                            <a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/verifications/index/view" disabled="disabled" ><i class="fa fa-eye"></i> View</a>
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
+                            <!--<div class="row wrapper border-bottom white-bg page-heading">-->
 
 
-
+                            <!--</div>-->
                             <ul class="nav navbar-right panel_toolbox">
-                                <li>
-                                    <div class="col-lg-4">
-                                        <div class="title-action">
-                                            <a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/verifications/index/verify" disabled="disabled" ><i class="fa fa-check"></i> Approve</a>
-                                        </div>
-                                    </div>
+
+                                <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                                 </li>
 
                             </ul>
-
                             <div class="clearfix"></div>
                         </div>
                         <div class="x_content">
@@ -72,9 +87,9 @@
                             <table class="table table-striped table-bordered table-hover" id="verification">
                                 <thead>
                                 <tr>
-                                    <th>Operation</th>
-                                    <th>Initiated  By</th>
-
+                                    <th>Operation Code</th>
+                                    <th>Description</th>
+                                    <th>User</th>
                                 </tr>
                                 </thead>
 
@@ -85,8 +100,9 @@
 
                                 <tfoot>
                                 <tr>
-                                    <th>Operation</th>
-                                    <th>Initiated By</th>
+                                    <th>Operation Code</th>
+                                    <th>Description</th>
+                                    <th>User</th>
                                 </tr>
                                 </tfoot>
                             </table>
@@ -124,18 +140,15 @@
             "searching": false,
             "paging": true,
             "serverSide" : true,
-            "ajax": "/admin/verifications/allverification",
+            "ajax": "/admin/verifications/all",
             "dom": 'T<"clear">frtlp',
             "columns": [
-                {"data":"operation"},
-                {"data":"initiatedBy"},
+                {"data":"operationCode"},
+                { "data": "description" },
+                { "data": "entityName" }
+            ] });
 
-
-            ]
-        });
-
-        table.on('select', function()
-        {
+        table.on('select', function() {
             if (table.rows({
                     selected : true
                 }).indexes().length === 0) {
@@ -143,7 +156,6 @@
             } else {
                 $('.bt-select').removeAttr("disabled");
             }
-
 
         });
 
@@ -165,8 +177,7 @@
         if($(link).attr("disabled")){
             return;
         }
-
-        var dt = $('#verification').DataTable();
+        var dt = $('#codes').DataTable();
         var id = $(dt.row({
             selected: true
         }).node()).attr("id");
@@ -175,14 +186,13 @@
 
     } );
 
-
     $("#delete-btn").on("click", function(e) {
         e.preventDefault();
         var link = $(e.currentTarget);
         if($(link).attr("disabled")){
             return;
         }
-        var dt = $('#verification').DataTable();
+        var dt = $('#codes').DataTable();
         var id = $(dt.row({
             selected: true
         }).node()).attr("id");
