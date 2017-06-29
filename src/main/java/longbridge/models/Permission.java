@@ -91,7 +91,6 @@ public class Permission extends AbstractEntity  implements PrettySerializer{
                 '}';
                  }
 
-
     @Override @JsonIgnore
     public JsonSerializer<Permission> getSerializer() {
         return new JsonSerializer<Permission>() {

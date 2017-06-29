@@ -51,6 +51,8 @@ public class VerificationServiceImpl implements VerificationService {
     public String decline(VerificationDTO dto) throws VerificationException {
         Verification verification = verificationRepo.findOne(dto.getId());
 
+        verification.setId(dto.getId());
+        verification.setVersion(dto.getVersion());
         verification.setDeclinedBy(getCurrentUserName());
         verification.setDeclinedOn(new Date());
         verification.setDeclineReason(dto.getComment());
@@ -73,8 +75,11 @@ public class VerificationServiceImpl implements VerificationService {
             logger.debug("Already verified");
             return messageSource.getMessage("verification.verify", null, locale);
         }
+        verification.setId(dto.getId());
+        verification.setVersion(dto.getVersion());
         verification.setVerifiedBy(getCurrentUserName());
         verification.setVerifiedOn(new Date());
+        verification.setComments(dto.getComment());
 
         Class<?> cc ;
         Method method;

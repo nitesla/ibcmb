@@ -100,7 +100,8 @@ public class MakerCheckerAdvisor {
         log.info(entity.toString());
         log.info("JB Around: " + pjp);
 
-        if (!makerCheckerService.isEnabled(verifier.operation())) {
+        if (!makerCheckerService.isEnabled(verifier.operation()))
+        {
             if (entity.getId() == null) {
                 entityManager.persist(entity);
             } else {

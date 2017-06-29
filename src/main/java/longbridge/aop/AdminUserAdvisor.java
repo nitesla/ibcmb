@@ -35,8 +35,6 @@
 //    EntityManager entityManager;
 //    private Logger log = LoggerFactory.getLogger(this.getClass());
 //
-//
-//
 //    @Pointcut("within( longbridge.services..*)")
 //    public void inServiceLayer() {
 //    }
@@ -64,7 +62,8 @@
 //    }
 //
 //    @After("isSaving2() && args(user))")
-//    public void temp(JoinPoint p, AdminUser user) {
+//    public void temp(JoinPoint p, AdminUser user)
+//    {
 //
 //    }
 //
