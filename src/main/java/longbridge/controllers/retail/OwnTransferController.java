@@ -128,7 +128,7 @@ public class OwnTransferController {
     modelMap.put("format", "pdf");
     modelMap.put("amount", "1,000,000.00");
     modelMap.put("recipient", "BANKOLE D. ONEY");
-    modelMap.put("acctNo1", "10986433737332");
+    modelMap.put("acctNum1", "10986433737332");
     modelMap.put("sender", "CHEERFUL GIVER CHOICE");
     modelMap.put("bank", "BANK OF AFRICA");
     modelMap.put("remarks", "MY BUILDING PROJECT");
@@ -139,7 +139,7 @@ public class OwnTransferController {
     modelMap.put("amountInWords", "30 BILLION ");
         logger.info("Transaction Receipt {}",modelMap);
 
-        ModelAndView modelAndView = new ModelAndView("rpt_receipt", modelMap);
+        ModelAndView modelAndView = new ModelAndView("rpt_reciept4", modelMap);
         return modelAndView;
     }
 }

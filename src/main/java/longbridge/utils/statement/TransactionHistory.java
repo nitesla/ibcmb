@@ -1,6 +1,7 @@
 package longbridge.utils.statement;
 
 
+import java.util.Date;
 
 /**
  * Created by ayoade_farooq@yahoo.com on 6/23/2017.
@@ -10,8 +11,8 @@ public class TransactionHistory
 {
 
     private String narration;
-    private String postedDate;
-    private String valueDate;
+    private Date postedDate;
+    private Date valueDate;
     private String tranType;
     private String tranId;
     private String balance;
@@ -24,19 +25,19 @@ public class TransactionHistory
         this.narration = narration;
     }
 
-    public String getPostedDate() {
+    public Date getPostedDate() {
         return postedDate;
     }
 
-    public void setPostedDate(String postedDate) {
+    public void setPostedDate(Date postedDate) {
         this.postedDate = postedDate;
     }
 
-    public String getValueDate() {
+    public Date getValueDate() {
         return valueDate;
     }
 
-    public void setValueDate(String valueDate) {
+    public void setValueDate(Date valueDate) {
         this.valueDate = valueDate;
     }
 
@@ -64,13 +65,12 @@ public class TransactionHistory
         this.balance = balance;
     }
 
-
     @Override
     public String toString() {
         return "TransactionHistory{" +
                 "narration='" + narration + '\'' +
-                ", postedDate='" + postedDate + '\'' +
-                ", valueDate='" + valueDate + '\'' +
+                ", postedDate=" + postedDate +
+                ", valueDate=" + valueDate +
                 ", tranType='" + tranType + '\'' +
                 ", tranId='" + tranId + '\'' +
                 ", balance='" + balance + '\'' +

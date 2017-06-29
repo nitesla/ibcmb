@@ -1,3 +1,4 @@
+/*
 package longbridge.aop;
 
 import longbridge.models.AdminUser;
@@ -16,9 +17,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.EntityManager;
 
+*/
 /**
  * Created by Fortune on 6/28/2017.
- */
+ *//*
+
 @Aspect
 public class AdminUserAdvisor {
 
@@ -69,3 +72,4 @@ public class AdminUserAdvisor {
     }
 
 }
+*/

@@ -303,26 +303,22 @@ public class AccountController {
 			}
 			else{};
 			modelMap.put("summary.openingBalance", accountStatement.getOpeningBalance());
-			System.out.println("whats the openingBalance:"+ accountStatement.getOpeningBalance());
 			if (accountStatement.getDebitCount() != null) {
 				modelMap.put("debitCount", accountStatement.getDebitCount());
-				System.out.println("whats the debit count:"+accountStatement.getDebitCount());
-			}
+				}
 			else{
 				modelMap.put("debitCount","");
 			}
 			if (accountStatement.getCreditCount() != null) {
 				modelMap.put("creditCount", accountStatement.getCreditCount());
-				System.out.println("whats the credit count:" + accountStatement.getCreditCount());
-			}
+				}
 			else{
 				modelMap.put("creditCount","");
 			}
 			modelMap.put("summary.currencyCode", accountStatement.getCurrencyCode());
 			if(accountStatement.getClosingBalance()!=null) {
 				modelMap.put("summary.closingBalance", accountStatement.getClosingBalance());
-				System.out.println("whats the closingBalance:" + accountStatement.getClosingBalance());
-			}
+				}
 			else{
 				modelMap.put("summary.closingBalance","0");
 			}
@@ -330,8 +326,7 @@ public class AccountController {
 			modelMap.put("summary.totalCredit", accountStatement.getTotalCredit());
 			if(accountStatement.getAddress()!=null ) {
 				modelMap.put("address", accountStatement.getAddress());
-				System.out.println("whats the address:" + accountStatement.getAddress());
-			}
+				}
 			else if(accountStatement.getAddress()==null){
 				modelMap.put("address","");
 			}
