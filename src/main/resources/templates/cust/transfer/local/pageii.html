@@ -14,7 +14,10 @@
         <div class="row">
 
             <div class="col-md-4 col-sm-4">
-                <h5 class="page_header"> Transfer to <span th:text="${beneficiary.preferredName}"></span></h5>
+                <h5 class="page_header"> Transfer to
+                    <span  th:if="${beneficiary.preferredName} !=''" th:text="${beneficiary.preferredName}"></span>
+                    <span  th:if="${beneficiary.preferredName} ==''" th:text="${beneficiary.accountName}"></span>
+                </h5>
             </div>
         </div>
         <div class="row">

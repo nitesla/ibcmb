@@ -131,4 +131,6 @@ public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
            throw new InternetBankingException("transfer.beneficiary.invalid");
     }
 
+
+
 }
