@@ -172,6 +172,42 @@ public class UserRegController {
         return secQuestion;
     }
 
+    @GetMapping("/rest/getSecQues/{username}")
+    public @ResponseBody String getSecQues(@PathVariable String username){
+        String secQuestion = "";
+        logger.info("Username in Controller : " + username);
+
+        RetailUser user = retailUserService.getUserByName(username);
+        logger.info("USER NAME {}", user);
+
+        if (user != null){
+            logger.info("USER NAME {}", user.getUserName());
+            try{
+                Map<String, List<String>> qa = securityService.getUserQA(user.getUserName());
+                logger.info("QQQAAAA {}", qa);
+                //List<String> sec = null;
+                if (qa != null || !qa.isEmpty()){
+                    List<String> question = qa.get("questions");
+                    secQuestion = question.stream().filter(Objects::nonNull).findFirst().orElse("");
+                    logger.info("question {}", secQuestion);
+
+                }else {
+                    secQuestion = "";
+                }
+
+            }catch (Exception e){
+                logger.info(e.getMessage());
+                secQuestion = "";
+            }
+
+        }
+        else {
+            secQuestion = "";
+        }
+
+        return secQuestion;
+    }
+
     @GetMapping("/rest/secAns/{answer}")
     public @ResponseBody String getSecAns(@PathVariable String answer, HttpSession session){
 
@@ -196,6 +232,71 @@ public class UserRegController {
         }
         //return (String) session.getAttribute("username");
     }
+
+    @GetMapping("/rest/secAnswer/{answer}/{username}")
+    public @ResponseBody String getSecAns(@PathVariable String answer, @PathVariable String username){
+
+        //confirm security question is correct
+        String secAnswer="";
+        try {
+            Map<String, List<String>> qa = securityService.getUserQA(username);
+            //List<String> sec = null;
+            if (qa != null) {
+                List<String> question = qa.get("answers");
+                secAnswer = question.stream().filter(Objects::nonNull).findFirst().orElse("");
+                logger.info("user answer {}", answer);
+                logger.info("answer {}", secAnswer);
+
+                if (!secAnswer.equalsIgnoreCase(answer)) {
+                    return "";
+                } else {
+                    return "true";
+                }
+
+            } else {
+                return "";
+            }
+
+        }catch (Exception e){
+            logger.info(e.getMessage());
+            return "";
+        }
+        //return (String) session.getAttribute("username");
+    }
+
+    @GetMapping("/rest/getTokenSerials/{username}")
+    public @ResponseBody String[] getTokenSerials(@PathVariable String username){
+        String no[] = new String[0];
+        logger.info("Username in Controller : " + username);
+
+        RetailUser user = retailUserService.getUserByName(username);
+        if (user != null){
+            logger.info("USER NAME {}", user.getUserName());
+            try{
+                String sn = securityService.getTokenSerials(user.getUserName());
+                logger.info("SERIALS {}", sn);
+                //List<String> sec = null;
+                if (sn != null || !sn.isEmpty()){
+                    String myList[] = sn.trim().split(",");
+
+                    logger.info("SERIALS {}", myList);
+                    return myList;
+                }else {
+                    return no;
+                }
+
+            }catch (Exception e){
+                logger.info(e.getMessage());
+            }
+
+        }
+        else {
+            return no;
+        }
+
+        return no;
+    }
+
 
     @GetMapping("/rest/regCode/{accountNumber}/{email}/{birthDate}")
     public @ResponseBody String sendRegCode(@PathVariable String accountNumber, @PathVariable String email, @PathVariable String birthDate, HttpSession session){
@@ -252,6 +353,16 @@ public class UserRegController {
         return "false";
     }
 
+    @GetMapping("/rest/username/{username}")
+    public @ResponseBody String usernameCheck(@PathVariable String username){
+        RetailUser user = retailUserService.getUserByName(username);
+        logger.info("USER RETURNED{}", user);
+        if(user == null){
+            return "false";
+        }
+        return user.getUserName();
+    }
+
     @GetMapping("/rest/password/check/{password}")
     public @ResponseBody String checkPassword(@PathVariable String password){
         String message = passwordPolicyService.validate(password, null);
@@ -268,7 +379,39 @@ public class UserRegController {
         return "cust/reporttoken";
     }
 
+    @PostMapping("/reporttoken")
+    public @ResponseBody String reportToken(WebRequest webRequest){
+        Iterator<String> iterator = webRequest.getParameterNames();
 
+        while(iterator.hasNext()){
+            logger.info(iterator.next());
+        }
+
+        String username = webRequest.getParameter("username");
+        String token = webRequest.getParameter("token");
+        try{
+
+            if ("".equals(username) ||username == null) {
+                logger.error("No username found");
+                return "false";
+            }
+
+            if ("".equals(token) ||token == null) {
+                logger.error("No token selected");
+                return "false";
+            }
+
+            Boolean res = securityService.deActivateToken(username, token);
+            if (res){
+                return "true";
+            }else {
+                return "false";
+            }
+
+        }catch (Exception e){
+            return "false";
+        }
+    }
 
 
     @GetMapping("/forgot/username")

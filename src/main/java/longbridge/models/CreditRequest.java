@@ -13,20 +13,33 @@ import javax.persistence.ManyToOne;
 @Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
 public class CreditRequest extends AbstractEntity{
-    private String accountName;
+
+    private String serial;
+    private String refCode;
     private String accountNumber;
-    private String amount;
     private String sortCode;
+    private String accountName;
+    private String amount;
+    private String narration;
+    private String status;
 
     @ManyToOne
     BulkTransfer bulkTransfer;
 
-    public String getAccountName() {
-        return accountName;
+    public String getSerial() {
+        return serial;
     }
 
-    public void setAccountName(String accountName) {
-        this.accountName = accountName;
+    public void setSerial(String serial) {
+        this.serial = serial;
+    }
+
+    public String getRefCode() {
+        return refCode;
+    }
+
+    public void setRefCode(String refCode) {
+        this.refCode = refCode;
     }
 
     public String getAccountNumber() {
@@ -37,6 +50,22 @@ public class CreditRequest extends AbstractEntity{
         this.accountNumber = accountNumber;
     }
 
+    public String getSortCode() {
+        return sortCode;
+    }
+
+    public void setSortCode(String sortCode) {
+        this.sortCode = sortCode;
+    }
+
+    public String getAccountName() {
+        return accountName;
+    }
+
+    public void setAccountName(String accountName) {
+        this.accountName = accountName;
+    }
+
     public String getAmount() {
         return amount;
     }
@@ -45,12 +74,12 @@ public class CreditRequest extends AbstractEntity{
         this.amount = amount;
     }
 
-    public String getSortCode() {
-        return sortCode;
+    public String getNarration() {
+        return narration;
     }
 
-    public void setSortCode(String sortCode) {
-        this.sortCode = sortCode;
+    public void setNarration(String narration) {
+        this.narration = narration;
     }
 
     public BulkTransfer getBulkTransfer() {
@@ -61,14 +90,26 @@ public class CreditRequest extends AbstractEntity{
         this.bulkTransfer = bulkTransfer;
     }
 
-    public CreditRequest(String accountName, String accountNumber, String amount, String sortCode, BulkTransfer bulkTransfer) {
-        this.accountName = accountName;
-        this.accountNumber = accountNumber;
-        this.amount = amount;
-        this.sortCode = sortCode;
-        this.bulkTransfer = bulkTransfer;
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public CreditRequest() {
+    }
+
+    public CreditRequest(String serial, String refCode, String accountNumber, String sortCode, String accountName, String amount, String narration, String status, BulkTransfer bulkTransfer) {
+        this.serial = serial;
+        this.refCode = refCode;
+        this.accountNumber = accountNumber;
+        this.sortCode = sortCode;
+        this.accountName = accountName;
+        this.amount = amount;
+        this.narration = narration;
+        this.status = status;
+        this.bulkTransfer = bulkTransfer;
     }
 }

@@ -116,8 +116,8 @@ public class VerificationServiceImpl implements VerificationService {
 
 
 	@Override
-	public Verification getVerification(Long id) {
-		return verificationRepo.findOne(id);
+	public VerificationDTO getVerification(Long id) {
+		return convertEntityToDTO(verificationRepo.findOne(id));
 	}
 
 
@@ -307,12 +307,14 @@ public class VerificationServiceImpl implements VerificationService {
 	}
 
 
-	public List<Verification> getVerificationsForUser(User user)
+	public List<VerificationDTO> getVerificationsForUser(User user)
 	{
 		List<Verification> verifications = verificationRepo.findVerificationForUser(user.getUserName(),user.getUserType().name());
-		return  verifications;
+
+		return  convertEntitiesToDTOs(verifications);
 
 	}
+
 
 
 

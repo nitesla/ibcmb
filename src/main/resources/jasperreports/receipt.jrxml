@@ -10,13 +10,16 @@
 		<field name="tranPartclr" class="java.lang.String"/>
 	</subDataset>
 	<subDataset name="New Dataset 1" uuid="169fec4f-b0c2-449c-8845-764aa9b49546"/>
+	<parameter name="tranDate" class="java.lang.String"/>
+	<parameter name="refNum" class="java.lang.String"/>
+	<parameter name="acctNum1" class="java.lang.String"/>
+	<parameter name="acctNum2" class="java.lang.String"/>
 	<parameter name="amount" class="java.lang.String"/>
-	<parameter name="beneAccName" class="java.lang.String"/>
-	<parameter name="beneAccNo" class="java.lang.String"/>
-	<parameter name="custAcount" class="java.lang.String"/>
-	<parameter name="bank" class="java.lang.String"/>
-	<parameter name="narration" class="java.lang.String"/>
+	<parameter name="amountInWords" class="java.lang.String"/>
+	<parameter name="recipient" class="java.lang.String"/>
+	<parameter name="recipientBank" class="java.lang.String"/>
 	<parameter name="remarks" class="java.lang.String"/>
+	<parameter name="sender" class="java.lang.String"/>
 	<!--<parameter name="currencyCode" class="java.lang.String"/>
 	<parameter name="currentBal" class="java.lang.String"/>
 	<parameter name="tranParticular" class="java.lang.String"/>

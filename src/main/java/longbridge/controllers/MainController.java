@@ -1,5 +1,6 @@
 package longbridge.controllers;
 
+import longbridge.dtos.FaqsDTO;
 import longbridge.dtos.SettingDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.PasswordException;
@@ -16,8 +17,6 @@ import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -54,6 +53,8 @@ public class MainController {
     private ConfigurationService configurationService;
     @Autowired
     private MailService mailService;
+    @Autowired
+    private  FaqsService faqsService;
 
 
     @RequestMapping(value = {"/", "/home"})
@@ -84,7 +85,7 @@ public class MainController {
 
     @GetMapping(value = "/login/admin")
     public ModelAndView adminLogin() {
-        clearSession();
+        //clearSession();
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("admlogin");
@@ -93,7 +94,7 @@ public class MainController {
 
     @GetMapping(value = "/login/ops")
     public ModelAndView opsLogin() {
-        clearSession();
+        //clearSession();
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("opslogin");
         return modelAndView;
@@ -106,7 +107,10 @@ public class MainController {
 
 
     @GetMapping("/faqs")
-    public String viewFAQs() {
+    public String viewFAQs(Model model) {
+        List<FaqsDTO> faqs = faqsService.getFaqs();
+        logger.info("FAQS {}", faqs);
+        model.addAttribute("faqList", faqs);
         return "faqs";
     }
 
@@ -343,7 +347,7 @@ public class MainController {
         String message = webRequest.getParameter("message");
         if (message == null){
             model.addAttribute("failure", "Field is required");
-            return "/home";
+            return "index";
         }
         SettingDTO setting = configurationService.getSettingByName("CUSTOMER_CARE_EMAIL");
         logger.info("SETTING RETRIEVED");
@@ -373,7 +377,7 @@ public class MainController {
         String phone = webRequest.getParameter("phone");
         if (phone == null){
             model.addAttribute("failure", "Field is required");
-            return "/home";
+            return "index";
         }
         SettingDTO setting = configurationService.getSettingByName("CUSTOMER_CARE_EMAIL");
         logger.info("SETTING RETRIEVED");
@@ -395,12 +399,12 @@ public class MainController {
         return "redirect:/#contact_us";
     }
 
-    private void clearSession(){
+  /*  private void clearSession(){
         ServletRequestAttributes attr = (ServletRequestAttributes)
                 RequestContextHolder.currentRequestAttributes();
         HttpSession session = attr.getRequest().getSession(false);
         if (session!=null)
         session.invalidate();
-    }
+    }*/
 
 }

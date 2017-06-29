@@ -3,8 +3,8 @@
 <head th:replace="cust_layout :: site-head">
 
 </head>
-<body onclick=''>
-    >
+<body>
+
     <div class="container">
         <header th:replace="cust_layout :: header">
         </header>
@@ -46,28 +46,30 @@
                                             <td th:align="center" th:text="${list.currencyCode}"></td>
                                             <td th:align="center" th:text="${list.accountBalance}"></td>
                                             <td th:align="center" th:text="${list.ledgerBalance}"></td>
-
-                                            <td th:align="center" >
+                                            <td><a th:href="@{'/retail/account/' + ${list.id} + '/statement'}">
+                                                <i class=" fa fa-angle-right"></i>
+                                            </a></td>
+                                            <!--<td th:align="center" >
                                                 <select>
                                                     <option>Quick Actions</option>
                                                     <option>
                                                         <a th:href="@{'/retail/account/' + ${list.id} + '/statement'}">
-                                                            <i class=" fa fa-angle-right">Item</i>
+                                                            <i class=" fa fa-angle-right">Transaction History</i>
                                                         </a>
                                                     </option>
                                                     <option>
-                                                        <a th:href="@{'/retail/account/' + ${list.id} + '/statement'}">
+                                                        <a th:href="@{'#'}">
                                                             <i class=" fa fa-angle-right">Another Item</i>
                                                         </a>
                                                     </option>
                                                     <option>
-                                                        <a th:href="@{'/retail/account/' + ${list.id} + '/statement'}">
+                                                        <a th:href="@{'#'}">
                                                             <i class=" fa fa-angle-right">Yet another iTem</i>
                                                         </a>
                                                     </option>
                                                 </select>
 
-                                            </td>
+                                            </td>-->
                                             </tr>
                                         </tbody>
                                     </table>

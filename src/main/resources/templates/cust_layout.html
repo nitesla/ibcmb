@@ -10,16 +10,19 @@
     <!--<link rel="stylesheet" type="text/css" th:href="@{~/customer/css/date/css/bootstrap-datepicker.css}"/>-->
     <!--<link rel="stylesheet" type="text/css" th:href="@{~/customer/css/date/css/bootstrap-datepicker.standalone.css}"/>-->
 
-    
+
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/bootstrap.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/custom.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/calendar.css}"/>
-    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/select.bootstrap.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/select.bootstrap.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/font-awesome/font-awesome.min.css}"/>
-    <link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/bootstrap-daterangepicker/daterangepicker.css}"/>
+    <link rel="stylesheet" type="text/css"
+          th:href="@{~/customer/plugins/bootstrap-daterangepicker/daterangepicker.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/datatables/css/jquery.dataTables.min.css}"/>
     <!--<link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/datatables/css/dataTables.bootstrap.css}"/>-->
-    `<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.0/css/bootstrap-datepicker.min.css"/>
+    `
+    <link rel="stylesheet" type="text/css"
+          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.0/css/bootstrap-datepicker.min.css"/>
     <title>Coronation Merchant Bank</title>
 
 </head>
@@ -37,7 +40,8 @@
         <nav class="navbar navbar-default">
             <div class="container-fluid">
                 <div class="navbar-header navbar-left">
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                            data-target="#navbar-collapse-1" aria-expanded="false">
                         <span class="sr-only">MENU</span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
@@ -47,85 +51,127 @@
                 </div>
                 <div class="row ">
                     <div class="col-md-3 col-sm-4 header_info bvn"><p>Your Bank verification number</p>
-                        <h5 th:if="${bvn=='Not available'}"><a style ='color:#003056' th:href="@{/retail/bvn}" th:text="'BVN: ' + ${bvn}"></a></h5>
-                        <h5 th:unless="${bvn=='Not available'}"><div th:text="'BVN: ' + ${bvn}"></div></h5>
+                        <h5 th:if="${bvn=='Not available'}"><a style='color:#003056' th:href="@{/retail/bvn}"
+                                                               th:text="'BVN: ' + ${bvn}"></a></h5>
+                        <h5 th:unless="${bvn=='Not available'}">
+                            <div th:text="'BVN: ' + ${bvn}"></div>
+                        </h5>
 
-                    </div><div class="col-md-5 col-sm-4 header_info"><h5><span th:text="*{greeting}"></span><br
-                    class="break"/><b th:text="*{name}"></b> &nbsp; <a th:href="@{/retail/mailbox/inbox}">
-                    <i class="fa fa-envelope" style="color:#003056"></i>
-                    <span th:if="${numOfUnreadMessages}" class="badge bg-green" th:text="${numOfUnreadMessages}">count</span>
+                    </div>
+                    <div class="col-md-5 col-sm-4 header_info"><h5><span th:text="*{greeting}"></span><br
+                            class="break"/><b th:text="*{name}"></b> &nbsp; <a th:href="@{/retail/mailbox/inbox}">
+                        <i class="fa fa-envelope" style="color:#003056"></i>
+                        <span th:if="${numOfUnreadMessages}" class="badge bg-green" th:text="${numOfUnreadMessages}">count</span>
                     </a>
                     </h5>
 
-                        
-                            <div class="hide-faq">
-                                <h6><a target="_blank" th:href="@{/faqs}"> FAQS &nbsp; &nbsp;
-                                        <i style="font-size: 16px;" class="fa fa-question-circle"></i></a>
-                                        <span class="date2 lorem">&nbsp; &nbsp;Login History:&nbsp;</span>&nbsp;
-                                        <span class="lorem" th:text="*{lastLogin}">21st March 2017 10:30am</span>
-                                </h6>
-                            </div>
-                        
+
+                        <div class="hide-faq">
+                            <h6><a target="_blank" th:href="@{/faqs}"> FAQS &nbsp; &nbsp;
+                                <i style="font-size: 16px;" class="fa fa-question-circle"></i></a>
+                                <span class="date2 lorem">&nbsp; &nbsp;Login History:&nbsp;</span>&nbsp;
+                                <span class="lorem" th:text="*{lastLogin}">21st March 2017 10:30am</span>
+                            </h6>
                         </div>
+
+                    </div>
                 </div>
                 <div class="row">
                     <div class="collapse navbar-collapse links" id="navbar-collapse-1">
                         <ul class="nav navbar-nav">
-                            <li><a th:href="@{/retail/dashboard}" >Dashboard</a></li>
+                            <li><a th:href="@{/retail/dashboard}">Dashboard</a></li>
                             <li class="dropdown" sec:authorize="hasAuthority('MANAGE_ACCOUNT')">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.account}"> My Accounts</a>
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                   aria-haspopup="true" aria-expanded="false" th:text="#{menu.account}"> My Accounts</a>
                                 <ul class="dropdown-menu">
-                                    <li sec:authorize="hasAuthority('CUSTOMIZE_ACCOUNT')"><a th:href="@{/retail/account/customize}" th:text="#{menu.account.customize}">Customise Accounts</a></li>
-                                    <li sec:authorize="hasAuthority('ACCOUNT_SETTINGS')"><a th:href="@{/retail/account/settings}" th:text="#{menu.account.settings}">Account Settings</a></li>
-                                    <li sec:authorize="hasAuthority('VIEW_ACCOUNT_OFFICER')"><a th:href="@{/retail/account/officer}" th:text="#{menu.account.officer}">Account Officer</a></li>
-                                    <li sec:authorize="hasAuthority('CREATE_ACCOUNT')"><a th:href="@{/retail/account/viewstatement}" >Account Statement</a></li>
+                                    <li sec:authorize="hasAuthority('CUSTOMIZE_ACCOUNT')"><a
+                                            th:href="@{/retail/account/customize}" th:text="#{menu.account.customize}">Customise
+                                        Accounts</a></li>
+                                    <li sec:authorize="hasAuthority('ACCOUNT_SETTINGS')"><a
+                                            th:href="@{/retail/account/settings}" th:text="#{menu.account.settings}">Account
+                                        Settings</a></li>
+                                    <li sec:authorize="hasAuthority('VIEW_ACCOUNT_OFFICER')"><a
+                                            th:href="@{/retail/account/officer}" th:text="#{menu.account.officer}">Account
+                                        Officer</a></li>
+                                    <li sec:authorize="hasAuthority('CREATE_ACCOUNT')"><a
+                                            th:href="@{/retail/account/viewstatement}">Account Statement</a></li>
                                     <!--<li sec:authorize="hasAuthority('CREATE_ACCOUNT')"><a th:href="@{'#'}" th:text="#{menu.account.create}">Create New Acoount</a></li>-->
                                 </ul>
                             </li>
-                        <li class="dropdown" sec:authorize="hasAuthority('MANAGE_TRANSFERS')">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.transfer}"> Transfers</a>
-                        <ul class="dropdown-menu">
-                        <li sec:authorize="hasAuthority('OWN_ACCOUNT_TRANSFER')"><a th:href="@{/retail/transfer/ownaccount}" th:text="#{menu.transfer.own}">Own account transfers </a></li>
-                        <li sec:authorize="hasAuthority('CMB_CMB_TRANSFER')"><a th:href="@{/retail/transfer/local}" th:text="#{menu.transfer.cmb}">Transfer to Coronation account </a></li>
-                        <li sec:authorize="hasAuthority('INTERBANK_TRANSFER')"><a th:href="@{/retail/transfer/interbank}" th:text="#{menu.transfer.other}">Transfer to other banks</a></li>
-                        <li sec:authorize="hasAuthority('INTERNATIONAL_TRANSFERss')"><a th:href="@{/retail/transfer/international}" th:text="#{menu.transfer.int}">International transfer</a></li>
-                        <li sec:authorize="hasAuthority('RET_TRANSACTION_LIMITs.')"><a th:href="@{/retail/transfer/settransferlimit}" th:text="#{menu.transfer.limit}">Set transfer limit</a></li>
-                        <li sec:authorize="hasAuthority('STANDING_ORDER')"><a th:href="@{/retail/directdebit}" th:text="#{menu.transfer.order}">Standing order</a></li>
-                        </ul>
-                        </li>
-                        <!--<li sec:authorize="hasAuthority('MANAGE_BILL_PAYMENT')"><a href="#" th:text="#{menu.bill}">Bill Payments</a></li>-->
-                        <!--<li sec:authorize="hasAuthority('MANAGE_INVESTMENT')"><a href="#" th:text="#{menu.investment}">Investment</a></li>-->
-                        <li class="dropdown" sec:authorize="hasAuthority('MANAGE_SERV_REQ')">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.servreq}"> Service Requests </a>
-                        <ul class="dropdown-menu">
-                        <li sec:authorize="hasAuthority('TRACK_SERV_REQ')"><a th:href="@{/retail/requests/track}" th:text="#{menu.servreq.track}">Track Requests</a></li>
-                        <!--<li role="separator" class="divider"></li>-->
-                        <p th:each="requests : ${serviceRequests}">
-                        <li sec:authorize="hasAuthority('MAKE_SERV_REQ')"><a th:href="@{/retail/requests/} + ${requests.id}" th:text="${requests.requestName}"></a></li>
-                        </p>
-                        </ul>
-                        </li>
+                            <li class="dropdown" sec:authorize="hasAuthority('MANAGE_TRANSFERS')">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                   aria-haspopup="true" aria-expanded="false" th:text="#{menu.transfer}"> Transfers</a>
+                                <ul class="dropdown-menu">
+                                    <li sec:authorize="hasAuthority('OWN_ACCOUNT_TRANSFER')"><a
+                                            th:href="@{/retail/transfer/ownaccount}" th:text="#{menu.transfer.own}">Own
+                                        account transfers </a></li>
+                                    <li sec:authorize="hasAuthority('CMB_CMB_TRANSFER')"><a
+                                            th:href="@{/retail/transfer/local}" th:text="#{menu.transfer.cmb}">Transfer
+                                        to Coronation account </a></li>
+                                    <li sec:authorize="hasAuthority('INTERBANK_TRANSFER')"><a
+                                            th:href="@{/retail/transfer/interbank}" th:text="#{menu.transfer.other}">Transfer
+                                        to other banks</a></li>
+                                    <!--<li sec:authorize="hasAuthority('INTERNATIONAL_TRANSFERssss')"><a th:href="@{/retail/transfer/international}" th:text="#{menu.transfer.int}">International transfer</a></li>-->
+                                    <li sec:authorize="hasAuthority('RET_TRANSACTION_LIMITs.')"><a
+                                            th:href="@{/retail/transfer/settransferlimit}"
+                                            th:text="#{menu.transfer.limit}">Set transfer limit</a></li>
+                                    <li sec:authorize="hasAuthority('STANDING_ORDER')"><a
+                                            th:href="@{/retail/directdebit}" th:text="#{menu.transfer.order}">Standing
+                                        order</a></li>
+                                </ul>
+                            </li>
+                            <!--<li sec:authorize="hasAuthority('MANAGE_BILL_PAYMENT')"><a href="#" th:text="#{menu.bill}">Bill Payments</a></li>-->
+                            <!--<li sec:authorize="hasAuthority('MANAGE_INVESTMENT')"><a href="#" th:text="#{menu.investment}">Investment</a></li>-->
+                            <li class="dropdown" sec:authorize="hasAuthority('MANAGE_SERV_REQ')">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                   aria-haspopup="true" aria-expanded="false" th:text="#{menu.servreq}"> Service
+                                    Requests </a>
+                                <ul class="dropdown-menu">
+                                    <li sec:authorize="hasAuthority('TRACK_SERV_REQ')"><a
+                                            th:href="@{/retail/requests/track}" th:text="#{menu.servreq.track}">Track
+                                        Requests</a></li>
+                                    <!--<li role="separator" class="divider"></li>-->
+                                    <p th:each="requests : ${serviceRequests}">
+                                    <li sec:authorize="hasAuthority('MAKE_SERV_REQ')"><a
+                                            th:href="@{/retail/requests/} + ${requests.id}"
+                                            th:text="${requests.requestName}"></a></li>
+                                    </p>
+                                </ul>
+                            </li>
 
-                        <li class="dropdown" sec:authorize="hasAuthority('RET_USER_SETTINGS')">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.settings}"> Settings </a>
-                        <ul class="dropdown-menu">
-                        <li sec:authorize="hasAuthority('SET_ALERT_PREFERENCE')"><a th:href="@{/retail/alert_preference}" th:text="#{menu.settings.alert}">Alert Preference</a></li>
-                        <li sec:authorize="hasAuthority('RET_CHANGE_PASSWORD')"><a th:href="@{/retail/change_password}" th:text="#{menu.settings.password}">Change Password</a></li>
-                        </ul>
-                        </li>
-                        <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> More </a>
-                        <ul class="dropdown-menu">
-                        <li sec:authorize="hasAuthority('RET_SYNC_TOKEN')"><a th:href="@{/retail/token/sync}" th:text="#{menu.token.sync}">Synchronize Token</a></li>
-                        <li sec:authorize="hasAuthority('RET_LOST_TOKEN')"><a th:href="@{/retail/token/lost}" th:text="#{menu.token.report}">Report Lost Token</a></li>
-                        <li sec:authorize="hasAuthority('MANAGE_BEN')"><a th:href="@{/retail/beneficiary}" th:text="#{menu.beneficiary}">Beneficiaries</a></li>
-                        <li sec:authorize="hasAuthority('RET_MAILBOX')"><a th:href="@{/retail/mailbox/inbox}" th:text="#{menu.mail}"> Mailbox</a></li>
-                        </ul>
-                        </li>
+                            <li class="dropdown" sec:authorize="hasAuthority('RET_USER_SETTINGS')">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                   aria-haspopup="true" aria-expanded="false" th:text="#{menu.settings}"> Settings </a>
+                                <ul class="dropdown-menu">
+                                    <li sec:authorize="hasAuthority('SET_ALERT_PREFERENCE')"><a
+                                            th:href="@{/retail/alert_preference}" th:text="#{menu.settings.alert}">Alert
+                                        Preference</a></li>
+                                    <li sec:authorize="hasAuthority('RET_CHANGE_PASSWORD')"><a
+                                            th:href="@{/retail/change_password}" th:text="#{menu.settings.password}">Change
+                                        Password</a></li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                   aria-haspopup="true" aria-expanded="false"> More </a>
+                                <ul class="dropdown-menu">
+                                    <li sec:authorize="hasAuthority('RET_SYNC_TOKEN')"><a
+                                            th:href="@{/retail/token/sync}" th:text="#{menu.token.sync}">Synchronize
+                                        Token</a></li>
+                                    <li sec:authorize="hasAuthority('RET_LOST_TOKEN')"><a
+                                            th:href="@{/retail/token/lost}" th:text="#{menu.token.report}">Report Lost
+                                        Token</a></li>
+                                    <li sec:authorize="hasAuthority('MANAGE_BEN')"><a th:href="@{/retail/beneficiary}"
+                                                                                      th:text="#{menu.beneficiary}">Beneficiaries</a>
+                                    </li>
+                                    <li sec:authorize="hasAuthority('RET_MAILBOX')"><a
+                                            th:href="@{/retail/mailbox/inbox}" th:text="#{menu.mail}"> Mailbox</a></li>
+                                </ul>
+                            </li>
                         </ul>
 
                         <ul class="nav navbar-nav navbar-right">
-                        <li><a th:href="@{/retail/logout}"> Log out <span class="fa-stack fa-lg">
+                            <li><a th:href="@{/retail/logout}"> Log out <span class="fa-stack fa-lg">
                         <i class="fa fa-square fa-stack-1x fa-lg"></i>
                         <i class="fa fa-power-off fa-stack-1x fa-inverse"></i>
                         </span></a></li>
@@ -134,68 +180,63 @@
                 </div>
 
 
-
-
             </div>
-
 
 
         </nav>
 
 
-
     </div>
 
     <a href="/retail/dashboard" class="logo navbar-right">
-        <img th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
+        <img th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank"/>
     </a>
 
 
 </header>
 
-    <div th:fragment="sidebar" class="sideba" style=" adding-top:20px;">
+<div th:fragment="sidebar" class="sideba" style=" adding-top:20px;">
 
 
-       <div class="sidebar-b calende cal  hidden-xs">
-            <div  class="alert  time">
+    <div class="sidebar-b calende cal  hidden-xs">
+        <div class="alert  time">
 
-               
 
-                <i class="fa fa-calendar " id='datepickerImage' onclick="show()" style="font-size:25px"></i>
-                      
+            <i class="fa fa-calendar " id='datepickerImage' onclick="show()" style="font-size:25px"></i>
 
-                      <!--<div id="time_" class="pull-right text-bold " style="font-weight:bold;color:#003056">
-                     
-                            <script>
-                                setInterval(
-                                    function()
-                                    {
 
-                                        var time_function = moment().format('Do MMMM YYYY, h:mm:ss a');
-                                        var holder = document.getElementById('time_');
-                                        holder.innerHTML = time_function;
-                                    },
-                                    1000) ;
-                            </script>
-                        </div>-->
-                      
-            </div>
-            <!--<div  id="calendar" style="display: block; margin: 0px auto;" class=" calendar hidden-xs hidden-sm "></div>-->
-       </div>
-        <div class="sidebar- hidden-xs hidden-sm" >
-            <img style="display: block; margin: 0px auto;" class="center" th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
+            <!--<div id="time_" class="pull-right text-bold " style="font-weight:bold;color:#003056">
+
+                  <script>
+                      setInterval(
+                          function()
+                          {
+
+                              var time_function = moment().format('Do MMMM YYYY, h:mm:ss a');
+                              var holder = document.getElementById('time_');
+                              holder.innerHTML = time_function;
+                          },
+                          1000) ;
+                  </script>
+              </div>-->
+
         </div>
+        <!--<div  id="calendar" style="display: block; margin: 0px auto;" class=" calendar hidden-xs hidden-sm "></div>-->
     </div>
-
-    <div th:fragment="mail">
-
+    <div class="sidebar- hidden-xs hidden-sm">
+        <img style="display: block; margin: 0px auto;" class="center" th:src="@{~/customer/img/cmb_logo.png}"
+             alt="Coronation Merchant Bank"/>
     </div>
+</div>
 
-   
+<div th:fragment="mail">
+
+</div>
+
 
 <!-- footer content -->
 <footer th:fragment="footer">
-    <div class="container">
+    <div class="containe">
         <div class="footer_bar">
             <div class="col-md-6 col-xs-12">
                 <ul class="list_group">
@@ -213,7 +254,7 @@
     <div th:if="${message}">
         <div hidden="hidden">
             <ul class="actionMessage">
-                <li th:each="msg : ${message}" th:text="${msg}" >Message</li>
+                <li th:each="msg : ${message}" th:text="${msg}">Message</li>
             </ul>
         </div>
     </div>
@@ -228,60 +269,55 @@
 
 
     <div id="myModalError" class="modal fade " role="dialog">
-  <div class="modal-dialog" >
+        <div class="modal-dialog">
 
-    <!-- Modal content-->
-  
-    <div class="modal-content no-bd-rad content ">
-      
-      <div class="modal-body">
-       
+            <!-- Modal content-->
 
-        <p id='errorMess' class='mess text-danger'>Put something here iff need be.</p>
+            <div class="modal-content no-bd-rad content ">
+
+                <div class="modal-body">
 
 
+                    <p id='errorMess' class='mess text-danger'>Put something here iff need be.</p>
 
-      </div>
+
+                </div>
 
 
-       <div class="modal-footer no-bd-top" >
-            <button type="button" class="btn btn-link" data-dismiss="modal">OK</button>
+                <div class="modal-footer no-bd-top">
+                    <button type="button" class="btn btn-link" data-dismiss="modal">OK</button>
+                </div>
+
+            </div>
+
         </div>
-      
     </div>
 
-  </div>
-</div>
+
+    <div id="myModalSuccess" class="modal fade " role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+
+            <div class="modal-content no-bd-rad content ">
+
+                <div class="modal-body">
 
 
-<div id="myModalSuccess" class="modal fade " role="dialog">
-  <div class="modal-dialog" >
-
-    <!-- Modal content-->
-  
-    <div class="modal-content no-bd-rad content ">
-      
-      <div class="modal-body">
-       
-
-        <p id='successMess' class='mess text-primary'>Put something here iff need be.</p>
+                    <p id='successMess' class='mess text-primary'>Put something here iff need be.</p>
 
 
+                </div>
 
-      </div>
 
+                <div class="modal-footer no-bd-top">
+                    <button type="button" class="btn btn-link" data-dismiss="modal">OK</button>
+                </div>
 
-       <div class="modal-footer no-bd-top" >
-            <button type="button" class="btn btn-link" data-dismiss="modal">OK</button>
+            </div>
+
         </div>
-      
     </div>
-
-  </div>
-</div>
-
-
-
 
 
     <!-- CORE JQUERY SCRIPTS -->
@@ -301,37 +337,35 @@
     <!-- BOOTSTRAP SCRIPTS  -->
     <script th:src="@{~/customer/js/bootstrap.js}"></script>
     <script th:src="@{~/customer/js/bootstrap-session-timeout.js}"></script>
-    <!--<script>-->
-        <!--$(document).ready(function(){-->
-            <!--$(".dropdown").hover(-->
-                <!--function() {-->
-                    <!--$('.dropdown-menu', this).not('.in .dropdown-menu').stop(true,true);-->
-                    <!--$(this).toggleClass('open');-->
-                <!--},-->
-                <!--function() {-->
-                    <!--$('.dropdown-menu', this).not('.in .dropdown-menu').stop(true,true);-->
-                    <!--$(this).toggleClass('open');-->
-                <!--}-->
-            <!--);-->
-        <!--});-->
 
-    <!--</script>-->
+    <script th:inline='javascript'>
+        /*<![CDATA[*/
 
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
 
+            $("#dp").datepicker({
+                // buttonImage: '@{~/customer/img/cmb_logo.png}',
+                buttonText: "<i class='fa fa-calendar'></i>",
+                buttonImageOnly: true,
+                changeMonth: true,
+                showAnim: "slide",
+                changeYear: true,
+                showOn: 'both'
+            });
+        })
 
-    
-   
-                    
-      
-    <script th:inline="javascript">
-        $.sessionTimeout({
-            keepAliveUrl: '',
-            logoutUrl: '/retail/logout',
-            redirUrl: '/retail/logout',
-            warnAfter: [[${timeOut}]],
-            redirAfter: 10000,
-            countdownBar: true
-        });
+        /*]]>*/
+    </script>
+    <script th:inline='javascript'>
+            $.sessionTimeout({
+                keepAliveUrl: '',
+                logoutUrl: '/retail/logout',
+                redirUrl: '/retail/logout',
+                warnAfter: [[${timeOut}]],
+                redirAfter: 10000,
+                countdownBar: true
+            });
     </script>
 </footer>
 <!-- /footer content -->

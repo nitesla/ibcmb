@@ -12,10 +12,9 @@ import longbridge.services.AccountService;
 import longbridge.services.IntegrationService;
 import longbridge.services.RetailUserService;
 import longbridge.services.TransferService;
-import longbridge.utils.statement.AccountBalance;
 import longbridge.utils.statement.AccountStatement;
-import longbridge.utils.statement.PaginatedAccountStatement;
 import longbridge.utils.statement.TransactionDetails;
+import longbridge.utils.statement.TransactionHistory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,13 +30,15 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView;
 
 import javax.validation.Valid;
 import java.security.Principal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by Fortune on 4/3/2017.
@@ -215,10 +216,9 @@ public class AccountController {
 		RetailUser retailUser = retailUserService.getUserByName(principal.getName());
 
 		Account account = accountRepo.findOne(id);
-
+       String LAST_TEN_TRANSACTION="10";
 		List<AccountDTO> accountList = accountService.getAccountsAndBalances(retailUser.getCustomerId());
-		List<TransRequest> transRequestList = transferService
-				.getLastTenTransactionsForAccount(account.getAccountNumber());
+		List<TransactionHistory> transRequestList=integrationService.getLastNTransactions(account.getAccountNumber(),LAST_TEN_TRANSACTION);
 		if (transRequestList != null || !(transRequestList.equals("")) || !(transRequestList.isEmpty())) {
 			model.addAttribute("transRequestList", transRequestList);
 			model.addAttribute("accountList", accountList);
@@ -243,7 +243,7 @@ public class AccountController {
 	@GetMapping("/viewstatement/display/data")
 	public @ResponseBody
 	DataTablesOutput<TransactionDetails> getStatementData(DataTablesInput input, String acctNumber,
-														  String fromDate, String toDate) {
+														  String fromDate, String toDate,String transType) {
 		// Pageable pageable = DataTablesUtils.getPageable(input);
 
 		Date from;
@@ -252,15 +252,19 @@ public class AccountController {
 		try {
 			from = dateFormat.parse(fromDate);
 			to = dateFormat.parse(toDate);
-			AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to);
+			AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to,transType);
 			out.setDraw(input.getDraw());
-			PaginatedAccountStatement paginatedAccountStatement = accountStatement.getPaginatedAccountStatement();
 			List<TransactionDetails> list = new ArrayList<>();
-			if (paginatedAccountStatement != null)
-				list = paginatedAccountStatement.getTransactionDetails();
-			out.setData(list);
-			out.setRecordsFiltered(list.size());
-			out.setRecordsTotal(list.size());
+			if (list != null || !(list.equals("")) || !(list.isEmpty())) {
+				list=accountStatement.getTransactionDetails();
+			System.out.println(accountStatement.toString());
+			System.out.println("Whats in the list "+list);
+
+
+				out.setData(list);
+				out.setRecordsFiltered(list.size());
+				out.setRecordsTotal(list.size());
+			}
 		} catch (ParseException e) {
 			logger.warn("didn't parse date", e);
 		}
@@ -270,7 +274,7 @@ public class AccountController {
 
 	@GetMapping("/downloadstatement")
 	public ModelAndView downloadStatementData(ModelMap modelMap, DataTablesInput input, String acctNumber,
-											  String fromDate, String toDate) {
+											  String fromDate, String toDate, String transType) {
 		// Pageable pageable = DataTablesUtils.getPageable(input);
 
 		Date from;
@@ -279,17 +283,17 @@ public class AccountController {
 		try {
 			from = dateFormat.parse(fromDate);
 			to = dateFormat.parse(toDate);
-			AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to);
+			AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to,transType);
 			out.setDraw(input.getDraw());
-			PaginatedAccountStatement paginatedAccountStatement = accountStatement.getPaginatedAccountStatement();
-			List<TransactionDetails> list = new ArrayList<>();
-			if (paginatedAccountStatement != null)
-				list = paginatedAccountStatement.getTransactionDetails();
+			List<TransactionDetails> list = accountStatement.getTransactionDetails();
+			System.out.println("list = " + list);
 			modelMap.put("datasource", list);
 			modelMap.put("format", "pdf");
 			modelMap.put("accountNum", acctNumber);
 			modelMap.put("fromDate", fromDate);
 			modelMap.put("toDate", toDate);
+			Date today=new Date();
+			modelMap.put("today",today);
 		} catch (ParseException e) {
 			logger.warn("didn't parse date", e);
 		}
@@ -299,43 +303,5 @@ public class AccountController {
 
 	}
 
-	@GetMapping("/PrintReport/{account}")
-	public ModelAndView getRpt2(ModelAndView modelAndView, @PathVariable Account account) {
-
-		JasperReportsPdfView v = new JasperReportsPdfView();
-		v.setUrl("classpath:pdf/accountStatement.jrxml");
-		v.setApplicationContext(appContext);
-		// v.setReportDataKey("datasource");
-
-		AccountStatement accountStatement = integrationService.getAccountStatements(account.getAccountNumber(),
-				new Date(), new Date());
-		if (accountStatement != null || !(accountStatement.equals(""))) {
-			List<TransactionDetails> transactionList = accountStatement.getPaginatedAccountStatement()
-					.getTransactionDetails();
-			AccountBalance accountBalance = accountStatement.getPaginatedAccountStatement().getAcctBal();
-			// String sourceFileName ="classpath:pdf/accountStatement.jrxml";
-			// JRBeanCollectionDataSource beanColDataSource = new
-			// JRBeanCollectionDataSource(transactionList);
-
-			Map<String, Object> parameterMap = new HashMap<>();
-			/*
-			 * parameterMap.put("AccountNum","10112332");
-			 * parameterMap.put("date","01-08-2017");
-			 */
-			parameterMap.put("currencyCode", accountBalance.getCurrencyCode());
-			parameterMap.put("accountNumber", accountBalance.getAccountNumber());
-			parameterMap.put("accountNumber", accountBalance.getLedgerBalance());
-			parameterMap.put("amount", accountBalance.getAvailableBalance().getAmountValue());
-			for (TransactionDetails transaction : transactionList) {
-				parameterMap.put("valueDate", transaction.getValueDate());
-				parameterMap.put("valueDate", transaction.getValueDate());
-				parameterMap.put("tranParticular", transaction.getTransactionSummary());
-				parameterMap.put("tranParticular", transaction.getTransactionBalance());
-				parameterMap.put("tranId", transaction.getTransactionId());
-			}
-			return new ModelAndView(v, parameterMap);
-		}
-		return null;
-	}
 
 }

@@ -28,6 +28,7 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
+import org.springframework.web.servlet.mvc.WebContentInterceptor;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -72,6 +73,9 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
         registry.addInterceptor(retailUserLoginInterceptor()).addPathPatterns("/retail/**");
         registry.addInterceptor(corporateUserLoginInterceptor()).addPathPatterns("/corporate/**");
         registry.addInterceptor(retailTransferAuthInterceptor()).addPathPatterns("/retail/transfer/process");
+        registry.addInterceptor(webContentInterceptor()).addPathPatterns("/retail/**");
+      //  registry.addInterceptor(webContentInterceptor()).addPathPatterns("/retail/**");
+       // registry.addInterceptor(webContentInterceptor()).addPathPatterns("/retail/**");
     }
 
     @Bean
@@ -145,6 +149,16 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
     @Bean
     public SessionRegistry sessionRegistry() {
         return new SessionRegistryImpl();
+    }
+    @Bean
+    public WebContentInterceptor webContentInterceptor() {
+        WebContentInterceptor interceptor = new WebContentInterceptor();
+        interceptor.setCacheSeconds(-1);
+        interceptor.setUseExpiresHeader(true);
+        interceptor.setAlwaysMustRevalidate(true);
+        interceptor.setUseCacheControlHeader(true);
+        interceptor.setUseCacheControlNoStore(true);
+        return interceptor;
     }
 
 

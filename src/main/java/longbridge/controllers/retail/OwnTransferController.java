@@ -117,21 +117,21 @@ public class OwnTransferController {
     public ModelAndView report(@PathVariable Long id) {
 
         JasperReportsPdfView view = new JasperReportsPdfView();
-        view.setUrl("classpath:pdf/receipt.jrxml");
+        view.setUrl("classpath:jasperreports/receipt.jrxml");
         view.setApplicationContext(appContext);
 
         Map<String, Object> params = new HashMap<>();
-        params.put("amount", transferService.getTransfer(id).getAmount());
-        params.put("beneAccName", transferService.getTransfer(id).getBeneficiaryAccountName());
-        params.put("beneAccNo", transferService.getTransfer(id).getBeneficiaryAccountNumber());
-        params.put("custAcount", transferService.getTransfer(id).getCustomerAccountNumber());
-        params.put("bank", transferService.getTransfer(id).getFinancialInstitution().getInstitutionName());
-        params.put("narration", transferService.getTransfer(id).getNarration());
-        params.put("remarks", transferService.getTransfer(id).getRemarks());
-        params.put("status", transferService.getTransfer(id).getStatus());
-        params.put("transType", transferService.getTransfer(id).getTransferType());
-        params.put("transDate", transferService.getTransfer(id).getTranDate());
-        params.put("refNo", transferService.getTransfer(id).getReferenceNumber());
+        params.put("amount", "1,000,000.00");
+        params.put("recipient", "BANKOLE D. MONEY");
+        params.put("acctNum1", "10986433737332");
+        params.put("sender", "CHEERFUL GIVER CHOICE");
+        params.put("bank", "BANK OF AFRICA");
+        params.put("remarks", "MY BUILDING PROJECT");
+        params.put("recipientBank","AGONORONA BANK" );
+        params.put("acctNum2", "WAHALA DEY");
+        params.put("refNum", "65566586787");
+        params.put("amountInWords", "30 BILLION FOR THE ACCOUNT");
+
 
         return new ModelAndView(view, params);
     }
