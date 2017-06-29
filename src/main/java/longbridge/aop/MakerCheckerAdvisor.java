@@ -100,13 +100,8 @@ public class MakerCheckerAdvisor {
         log.info(entity.toString());
         log.info("JB Around: " + pjp);
 
-        if (!makerCheckerService.isEnabled(verifier.operation()))
-        {
-            if (entity.getId() == null) {
-                entityManager.persist(entity);
-            } else {
-                entityManager.merge(entity);
-            }
+        if (!makerCheckerService.isEnabled(verifier.operation())){
+            entityManager.merge(entity);
             return verifier.operation() + "action successful";
         }
 
@@ -146,7 +141,6 @@ public class MakerCheckerAdvisor {
             }
 
             verification.setBeforeObject(prettyMapper.writeValueAsString(originalEntity));
-
             verification.setEntityId(entity.getId());
         }
         verification.setAfterObject(prettyMapper.writeValueAsString(entity));
