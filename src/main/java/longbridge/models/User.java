@@ -199,7 +199,7 @@ public class User extends AbstractEntity implements PrettySerializer {
                 gen.writeStringField("lastName", value.lastName);
                 gen.writeStringField("email", value.email);
                 gen.writeStringField("phone", value.phoneNumber);
-                String status = "Unknown";
+                String status =null;
                 if ("A".equals(value.status))
                     status = "Active";
                 else if ("I".equals(value.status))
