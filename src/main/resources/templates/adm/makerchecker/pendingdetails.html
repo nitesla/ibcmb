@@ -38,28 +38,31 @@
 
                     <li>
                         <div class="col-lg-4">
-                            <div class="title-action" >
-                                <a class="btn btn-app" href="#"  disabled="disabled" >
-                                    <button class="badge bg-orange bt-select" disabled="disabled" th:text="${totalPending}" >count</button>
-                                    <i class="fa fa-check"></i>My approvals
+                            <div class="title-action">
+                                <a class="btn btn-app" href="/admin/verifications/pendingops">
+                                    <button class="badge bg-orange bt-select"   th:text="${totalPending}">count</button>
+                                    <i class="fa fa-envelope"></i>My approval
                                 </a>
                             </div>
                         </div>
-
                     </li>
+
 
                     <li>
                         <div class="col-lg-4">
                             <div class="title-action">
-                                <a  class=" btn btn-app btn bt-select btn-sm  bt-link-act" href="/admin/verifications/operations">
-                                    <button class="badge bg-orange"  th:text="${verificationNumber}"></button>
-                                    <i class="fa fa-check"></i>Approval Queue
+                                <a  class=" btn btn-app btn  btn-sm bt-select bt-link-act" href="#" disabled="disabled" >
+                                    <button class="badge bg-orange" disabled="disabled" th:text="${verificationNumber}"></button>
+                                    <i class="fa fa-envelope"></i>Approval Queue
                                 </a>
                             </div>
                         </div>
                     </li>
 
+
+
                 </ul>
+
 
                 <div class="clearfix"></div>
 
@@ -198,9 +201,9 @@
 
                 current_path = path.endsWith('[') ? path + node + ']' : path + '.' +node;
 
-                b = jsonPath(beforeData,current_path) ? jsonPath(beforeData,current_path)[0] : 'undefined' ;
+                b = jsonPath(beforeData,current_path) ? jsonPath(beforeData,current_path)[0] ;
 
-                a = jsonPath(afterData,current_path) ? jsonPath(afterData,current_path)[0] : 'undefined' ;
+                a = jsonPath(afterData,current_path)[0];
 
                 if(a == b && typeof a != 'undefined' && typeof b != 'undefined' ){
 

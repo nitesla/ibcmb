@@ -12,7 +12,8 @@ import javax.persistence.Entity;
 
 @Entity
 @Where(clause ="del_Flag='N'" )
-public class OpsPassword  extends  AbstractEntity{
+public class OpsPassword  extends  AbstractEntity
+{
 
     Long userId;
     String password;

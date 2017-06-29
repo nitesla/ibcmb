@@ -16,7 +16,7 @@
 
                 <div class="clearfix"></div>
 
-                <div th:replace="layout :: admin-menu"></div>
+                <div th:replace="layout :: ops-menu"></div>
                 <div th:replace="layout :: menu-footer-adm"></div>
 
             </div>
@@ -152,7 +152,7 @@
             "searching": false,
             "paging": true,
             "serverSide" : true,
-            "ajax": "/admin/verifications/all",
+            "ajax": "/ops/verifications/all",
             "dom": 'T<"clear">frtlp',
             "columns": [
                 {"data":"description"},
