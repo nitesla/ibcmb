@@ -56,7 +56,7 @@ public class CodeServiceImpl implements CodeService {
 
     @Override
     @Transactional
-    @Verifiable(operation="CODE_DEL",description="Deleting a Code")
+    @Verifiable(operation="DELETE_CODE",description="Deleting a Code")
     public String deleteCode(Long codeId) throws InternetBankingException{
           try{
 
@@ -95,7 +95,7 @@ public class CodeServiceImpl implements CodeService {
   
 
     @Transactional
-    @Verifiable(operation="CODE_UPDATE",description="Updating a Code")
+    @Verifiable(operation="UPDATE_CODE",description="Updating a Code")
     public String updateCode(CodeDTO codeDTO, AdminUser adminUser) throws InternetBankingException{
         try {
             Code code = convertDTOToEntity(codeDTO);
@@ -156,7 +156,7 @@ public class CodeServiceImpl implements CodeService {
 
 
 	@Override
-    @Verifiable(operation="CODE_ADD",description="Add Code")
+    @Verifiable(operation="ADD_CODE",description="Adding a Code")
 	public String addCode(CodeDTO codeDTO, AdminUser adminUser) throws InternetBankingException {
 		try {
             Code code = convertDTOToEntity(codeDTO);

@@ -126,7 +126,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     }
 
     @Override
-    @Verifiable(operation="CORP_USER_UPDATE",description="Updating Corporate User")
+    @Verifiable(operation="UPDATE_CORPORATE_USER",description="Updating Corporate User")
     public String updateUser(CorporateUserDTO user) throws InternetBankingException {
         try {
             CorporateUser corporateUser = corporateUserRepo.findOne(user.getId());
@@ -150,7 +150,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
     @Override
     @Transactional
-    @Verifiable(operation="CORP_USER_ADD",description="Adding Corporate User")
+    @Verifiable(operation="ADD_CORPORATE_USER",description="Adding Corporate User")
     public String addUser(CorporateUserDTO user) throws InternetBankingException {
 
         CorporateUser corporateUser = corporateUserRepo.findFirstByUserNameIgnoreCase(user.getUserName());
@@ -255,7 +255,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
     @Override
     @Transactional
-    @Verifiable(operation = "CORP_USER_ACTIVATION", description = "Change corporate user activation status")
+    @Verifiable(operation = "CORP_USER_STATUS", description = "Change corporate user activation status")
     public String changeActivationStatus(Long userId) throws InternetBankingException {
         try {
             CorporateUser user = corporateUserRepo.findOne(userId);
@@ -380,13 +380,12 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     }
 
     @Override
-    @Verifiable(operation="CORP_USER_LOCK",description="Locking a Corporate User")
     public void lockUser(CorporateUser user, Date unlockat) {
         //todo
     }
 
     @Override
-    @Verifiable(operation="CORP_USER_UNLOCK",description="Unlocking a Corporate User")
+    @Verifiable(operation="UNLOCK_CORP_USER",description="Unlocking a Corporate User")
     public String unlockUser(Long id) throws InternetBankingException {
 
         CorporateUser user = corporateUserRepo.findOne(id);

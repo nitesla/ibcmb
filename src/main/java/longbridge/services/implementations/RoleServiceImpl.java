@@ -70,7 +70,7 @@ public class RoleServiceImpl implements RoleService {
 
 
     @Override
-    @Verifiable(operation="ROLE_ADD",description="Adding a Role")
+    @Verifiable(operation="ADD_ROLE",description="Adding a Role")
     public String addRole(RoleDTO roleDTO) throws InternetBankingException {
 
         Role role = roleRepo.findByName(roleDTO.getName());
@@ -115,7 +115,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    @Verifiable(operation="ROLE_UPDATE",description="Updating a Role")
+    @Verifiable(operation="UPDATE_ROLE",description="Updating a Role")
     public String updateRole(RoleDTO roleDTO) throws InternetBankingException {
         try {
             Role role = convertDTOToEntity(roleDTO);
@@ -128,7 +128,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    @Verifiable(operation="ROLE_DEL",description="Deleting a Role")
+    @Verifiable(operation="DELETE_ROLE",description="Deleting a Role")
     public String deleteRole(Long id) throws InternetBankingException {
 
         	Role role = roleRepo.getOne(id);
@@ -145,7 +145,6 @@ public class RoleServiceImpl implements RoleService {
         }
     }
 
-    @Verifiable(operation="PERM_ADD",description="Adding a Permission")
     public String addPermission(PermissionDTO permissionDTO) throws InternetBankingException {
         try {
             Permission permission = convertDTOToEntity(permissionDTO);
@@ -189,7 +188,6 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    @Verifiable(operation="PERM_UPDATE",description="Updating a Permission")
     public String updatePermission(PermissionDTO permissionDTO) throws InternetBankingException {
         try {
             Permission permission = convertDTOToEntity(permissionDTO);
@@ -202,7 +200,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    @Verifiable(operation="PERM_DEL",description="Deleting a Permission")
+    @Verifiable(operation="DELETE_PERMISSION",description="Deleting a Permission")
     public String deletePermission(Long id) throws InternetBankingException {
         try {
             permissionRepo.delete(id);
