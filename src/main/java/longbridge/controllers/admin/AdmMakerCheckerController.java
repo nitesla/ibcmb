@@ -82,7 +82,7 @@ public class AdmMakerCheckerController {
     DataTablesOutput<VerificationDTO> getAllVerification(DataTablesInput input, Principal principal) {
         AdminUser createdBy = adminUserService.getUserByName(principal.getName());
         Pageable pageable = DataTablesUtils.getPageable(input);
-        List<VerificationDTO> verifications = verificationService.getVerificationsForUser(createdBy);
+        List<VerificationDTO> verifications = verificationService.getVerificationsForUser();
         DataTablesOutput<VerificationDTO> out = new DataTablesOutput<VerificationDTO>();
         out.setDraw(input.getDraw());
         out.setData(verifications);

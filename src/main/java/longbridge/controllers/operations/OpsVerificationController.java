@@ -78,7 +78,7 @@ public class OpsVerificationController {
     DataTablesOutput<VerificationDTO> getAllPending(DataTablesInput input, Principal principal) {
         OperationsUser createdBy = operationsUserService.getUserByName(principal.getName());
         Pageable pageable = DataTablesUtils.getPageable(input);
-        List<VerificationDTO> verifications = verificationService.getPendingForUser(createdBy);
+        List<VerificationDTO> verifications = verificationService.getPendingForUser();
         DataTablesOutput<VerificationDTO> out = new DataTablesOutput<VerificationDTO>();
         out.setDraw(input.getDraw());
         out.setData(verifications);
@@ -93,7 +93,7 @@ public class OpsVerificationController {
     DataTablesOutput<VerificationDTO> getAllVerification(DataTablesInput input, Principal principal) {
         OperationsUser createdBy = operationsUserService.getUserByName(principal.getName());
         Pageable pageable = DataTablesUtils.getPageable(input);
-        List<VerificationDTO> verifications = verificationService.getVerificationsForUser(createdBy);
+        List<VerificationDTO> verifications = verificationService.getVerificationsForUser();
         DataTablesOutput<VerificationDTO> out = new DataTablesOutput<VerificationDTO>();
         out.setDraw(input.getDraw());
         out.setData(verifications);
@@ -116,7 +116,7 @@ public class OpsVerificationController {
     DataTablesOutput<VerificationDTO> getPendingOperation(@PathVariable String operation, DataTablesInput input, Principal principal) {
         OperationsUser user = operationsUserService.getUserByName(principal.getName());
         Pageable pageable = DataTablesUtils.getPageable(input);
-        Page<VerificationDTO> page = verificationService.getPendingOperations(operation, user, pageable);
+        Page<VerificationDTO> page = verificationService.getPendingOperations(operation, pageable);
         DataTablesOutput<VerificationDTO> out = new DataTablesOutput<VerificationDTO>();
         out.setDraw(input.getDraw());
         out.setData(page.getContent());
@@ -129,8 +129,8 @@ public class OpsVerificationController {
     @GetMapping("/pendingops")
     public String getPendingVerification(Model model, Principal principal) {
         OperationsUser createdBy = operationsUserService.getUserByName(principal.getName());
-        int verificationNumber = verificationService.getTotalNumberForVerification(createdBy);
-        long totalPending = verificationService.getTotalNumberPending(createdBy);
+        int verificationNumber = verificationService.getTotalNumberForVerification();
+        long totalPending = verificationService.getTotalNumberPending();
         model.addAttribute("totalPending", totalPending);
         model.addAttribute("verificationNumber", verificationNumber);
         return "ops/makerchecker/pending";
@@ -140,8 +140,8 @@ public class OpsVerificationController {
     @GetMapping("/operations")
     public String getVerification(Model model, Principal principal) {
         OperationsUser createdBy = operationsUserService.getUserByName(principal.getName());
-        int verificationNumber = verificationService.getTotalNumberForVerification(createdBy);
-        long totalPending = verificationService.getTotalNumberPending(createdBy);
+        int verificationNumber = verificationService.getTotalNumberForVerification();
+        long totalPending = verificationService.getTotalNumberPending();
         model.addAttribute("verificationNumber", verificationNumber);
         model.addAttribute("totalPending", totalPending);
         return "ops/makerchecker/checker";
@@ -162,8 +162,8 @@ public class OpsVerificationController {
         //JSONObject product = new JSONObject(verification.getAfterObject());
         //JSONArray recs = locs.getJSONArray("record");
         OperationsUser createdBy = operationsUserService.getUserByName(principal.getName());
-        int verificationNumber = verificationService.getTotalNumberForVerification(createdBy);
-        long totalPending = verificationService.getTotalNumberPending(createdBy);
+        int verificationNumber = verificationService.getTotalNumberForVerification();
+        long totalPending = verificationService.getTotalNumberPending();
         model.addAttribute("verificationNumber", verificationNumber);
         model.addAttribute("totalPending", totalPending);
         return "ops/makerchecker/details";
@@ -183,8 +183,8 @@ public class OpsVerificationController {
         //JSONObject product = new JSONObject(verification.getAfterObject());
         //JSONArray recs = locs.getJSONArray("record");
         OperationsUser createdBy = operationsUserService.getUserByName(principal.getName());
-        int verificationNumber = verificationService.getTotalNumberForVerification(createdBy);
-        long totalPending = verificationService.getTotalNumberPending(createdBy);
+        int verificationNumber = verificationService.getTotalNumberForVerification();
+        long totalPending = verificationService.getTotalNumberPending();
         model.addAttribute("verificationNumber", verificationNumber);
         model.addAttribute("totalPending", totalPending);
         return "ops/makerchecker/pendingdetails";

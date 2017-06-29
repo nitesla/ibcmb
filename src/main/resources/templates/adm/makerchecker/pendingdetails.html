@@ -201,9 +201,9 @@
 
                 current_path = path.endsWith('[') ? path + node + ']' : path + '.' +node;
 
-                b = jsonPath(beforeData,current_path) ? jsonPath(beforeData,current_path)[0] ;
+                b = jsonPath(beforeData,current_path) ? jsonPath(beforeData,current_path)[0] : 'undefined' ;
 
-                a = jsonPath(afterData,current_path)[0];
+                a = jsonPath(afterData,current_path) ? jsonPath(afterData,current_path)[0] : 'undefined' ;
 
                 if(a == b && typeof a != 'undefined' && typeof b != 'undefined' ){
 
