@@ -66,7 +66,7 @@ public interface OperationsUserService{
      * @param password the password
      */
     @PreAuthorize("hasAuthority('SET_OPS_PASSWORD')")
-    String setPasswordw(OperationsUser User, String password) throws InternetBankingException;
+    String setPassword(OperationsUser User, String password) throws InternetBankingException;
 
     /**
      * Creates an Operations User
