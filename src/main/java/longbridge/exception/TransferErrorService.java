@@ -2,6 +2,7 @@ package longbridge.exception;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.LocaleResolver;
 
@@ -61,6 +62,20 @@ public class TransferErrorService {
         return errorMessage;
 
     }
+    public String getExactMessage(String exception){
+        final Locale locale = LocaleContextHolder.getLocale();
 
+        String errorMessage ;
+
+        try{
+            errorMessage = messages.getMessage(exception, null, locale);
+        }catch (Exception e)
+        {
+            errorMessage=exception;
+        }
+
+        return errorMessage;
+
+    }
 
 }

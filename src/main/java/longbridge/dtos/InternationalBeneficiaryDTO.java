@@ -26,8 +26,6 @@ public class InternationalBeneficiaryDTO {
 
     private String currencyCode;
 
-
-
     public Long getId() {
         return id;
     }
@@ -99,8 +97,6 @@ public class InternationalBeneficiaryDTO {
     public void setIntermediaryBankAcctNo(String intermediaryBankAcctNo) {
         this.intermediaryBankAcctNo = intermediaryBankAcctNo;
     }
-
-
     public String getCurrencyCode() {
         return currencyCode;
     }

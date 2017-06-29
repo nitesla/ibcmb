@@ -263,6 +263,10 @@ public class UserRegController {
     }
 
 
+    @GetMapping("/reporttoken")
+    public String showReportToken(Model model) {
+        return "cust/reporttoken";
+    }
 
 
 

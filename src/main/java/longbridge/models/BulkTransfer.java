@@ -42,7 +42,6 @@ public class BulkTransfer extends AbstractEntity{
     public void setDebitAccount(String debitAccount) {
         this.debitAccount = debitAccount;
     }
-
    
     public String getRequestDate() {
 		return requestDate;
@@ -68,6 +67,14 @@ public class BulkTransfer extends AbstractEntity{
 		this.refCode = refCode;
 	}
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
 	public BulkTransfer(String debitAccount, String date, String reference, String status, List<CreditRequest> creditRequestList, Corporate corporate) {
         this.debitAccount = debitAccount;
         this.requestDate = date;
@@ -81,12 +88,5 @@ public class BulkTransfer extends AbstractEntity{
     public BulkTransfer() {
     }
 
-    public String getStatus() {
-        return status;
-    }
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
-    
 }

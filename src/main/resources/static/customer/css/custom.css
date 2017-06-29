@@ -21,6 +21,7 @@ start
 
 
 .req:after { content:" * ";color:#ff6666;font-size: 13px;font-weight: bolder }
+.req-inner:before { content:" * ";color:#ff6666;font-size: 13px;font-weight: bolder }
 
 
 .req ~ input
@@ -42,6 +43,11 @@ label
     color:white;
 }
 
+.bg-white
+{
+    background-color: white;
+}
+
 .bg-grey
 {
     background: #F3F3F4;
@@ -56,10 +62,56 @@ span.req
 
 }
 
+.hide-content-only
+{
+    visibility: hidden;
+}
+span.req-inner
+{
+    position: relative;
+    top:-10px;
+    right:-5px;
+    display: inline-block;
+
+}
+
+.my-border
+{
+    border: 1px solid grey !important;
+}
+
+.my-label
+{
+    margin-left:50px !important;
+    font-weight:bold;
+    font-size:14px
+}
+
+.alert
+{
+    padding: 7px !important;
+}
+
+.my-select
+{
+    height: 30px !important;
+    width:70% !important;
+    margin: 0px auto !important;
+    /*-webkit-appearance: menulist;*/
+    
+}
+.my-input
+{
+    height: 30px !important;
+    width:70% !important;
+}
+
 .form-group
 {
     position: relative !important;
 }
+
+
 .mt-sm
 {
     margin-bottom: 10px;
@@ -72,6 +124,11 @@ span.req
 
 .mtop{
     margin-top: 0px;
+}
+
+.text-bold
+{
+    font-weight: bold;
 }
 
 /*#loader {*/
@@ -100,6 +157,11 @@ span.req
     width:100%;
     margin-bottom: 0px;
 
+}
+
+.time
+{
+    background: #ebecef;
 }
 
 /*#loa {*/
@@ -183,6 +245,11 @@ span.req
     width:65%;
 }
 
+.center
+{
+    margin:0px auto !important;
+}
+
 
  .no-bd-rad
     {
@@ -255,17 +322,17 @@ span.req
 .contact
 {
     position:relative !important;
-
+    
 
 }
 
-.contact:hover, .contact:visited
+.contact:hover, .contact:focus
 {
     background: #003056 !important;
 }
 
 
-.contact:hover ~ .contact-drop
+.contact:focus ~ .contact-drop
 {
     display: block;
 }
@@ -281,8 +348,8 @@ span.req
     position: absolute !important;
     left:0px !important;
     background-color: #e7e7e7 !important;
-    top: 140% !important;
-    //padding: 10px 5px 10px 5px;
+    top: 110% !important;
+    /*//padding: 10px 5px 10px 10px;*/
     display: none;
 }
 
@@ -696,13 +763,16 @@ body {
 .icon a{
     background-color: #868B8F;
     font-size: 30px;
-    padding: 5px 10px;
-    margin: 20px 15px 10px 15px;
+    padding:10px;
+    /*margin: 20px 15px 10px 15px;*/
 }
 
 .icon a i{
     /*font-size: 36px;*/
     color: #FFF;
+    padding:10px;
+    /*display: block;*/
+    text-align: center;
 
 }
 
@@ -775,11 +845,19 @@ body {
     max-width: 500px;
 
 }
+
+.alert
+{
+    margin-top: 1px !important;
+
+}
 .lists{
-    float: left;
-    margin: 0 20px 0 20px;
+    /*float: left;*/
+    /*margin: 0 20px 0 20px;*/
     font-size: 14px;
+    /*padding-left: 20px;*/
     text-align: left;
+    /*margin:0px auto !important;*/
 }
 
 .lists li{
@@ -845,6 +923,29 @@ body {
 .calender{
     position: inherit;
 }
+
+/*CSS for session timeout*/
+.progress{
+    height: 10px;
+}
+.progress-bar{
+    font-size: 11px;
+    line-height: 10px;
+    color: #fff;
+    text-align: center;
+    background-color: #9F614B;
+}
+.prog-time{
+    color: #032A4F;
+    font-weight: 100%
+}
+
+/*.modal-footer .btn {*/
+    /*background-color: #9F614B;*/
+    /*color: #fff;*/
+    /*border-radius: 4px;*/
+/*}*/
+/*===================*/
 
 /*.calender{*/
 /*overflow: hidden;*/
@@ -1108,7 +1209,7 @@ button, input, optgroup, select, textarea {
 /*}*/
 .table tbody tr{
     background-color: #fff;
-    border-top: 2px solid #003056;
+    border-top: 2px solid grey;
 }
 .table th, td{
     padding: 15px;

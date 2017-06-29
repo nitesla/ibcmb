@@ -5,6 +5,7 @@ import longbridge.api.*;
 import longbridge.dtos.SettingDTO;
 import longbridge.exception.InternetBankingTransferException;
 
+import longbridge.exception.TransferErrorService;
 import longbridge.exception.TransferExceptions;
 import longbridge.models.FinancialTransaction;
 import longbridge.models.TransRequest;
@@ -14,6 +15,7 @@ import longbridge.services.MailService;
 import longbridge.utils.ResultType;
 import longbridge.utils.TransferType;
 import longbridge.utils.statement.AccountStatement;
+import longbridge.utils.statement.TransactionHistory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,14 +55,17 @@ public class IntegrationServiceImpl implements IntegrationService {
     private MailService mailService;
     private TemplateEngine templateEngine;
     private ConfigurationService configService;
+    private TransferErrorService errorService;
 
     @Autowired
     public IntegrationServiceImpl(RestTemplate template, MailService mailService, TemplateEngine templateEngine
-            , ConfigurationService configService) {
+            , ConfigurationService configService,
+                                  TransferErrorService errorService) {
         this.template = template;
         this.mailService = mailService;
         this.templateEngine = templateEngine;
         this.configService = configService;
+        this.errorService = errorService;
     }
 
 
@@ -86,7 +91,19 @@ public class IntegrationServiceImpl implements IntegrationService {
     }
 
     @Override
-    public AccountStatement getAccountStatements(String accountNo, Date fromDate, Date toDate) {
+    public List<ExchangeRate> getExchangeRate() {
+        try {
+
+            String uri = URI + "/forex";
+            return Arrays.stream(template.getForObject(uri, ExchangeRate[].class)).collect(Collectors.toList());
+        } catch (Exception e) {
+            logger.error("Exception occurred {}", e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+
+    @Override
+    public AccountStatement getAccountStatements(String accountNo, Date fromDate, Date toDate, String tranType) {
         AccountStatement statement = new AccountStatement();
         try {
             SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
@@ -96,22 +113,47 @@ public class IntegrationServiceImpl implements IntegrationService {
             Map<String, String> params = new HashMap<>();
             params.put("accountNumber", accountNo);
             params.put("fromDate", formatter.format(fromDate));
-            if (toDate!=null) params.put("toDate",formatter.format(toDate));
+            params.put("solId", viewAccountDetails(accountNo).getSolId());
+            if (tranType != null)
+                params.put("tranType", tranType);
+            if (toDate != null) params.put("toDate", formatter.format(toDate));
 
 
-
-            statement = template.getForObject(uri, AccountStatement.class, params);
-
+            statement = template.postForObject(uri, params, AccountStatement.class);
 
 
-
-
-        } catch (Exception e){
+        } catch (Exception e) {
 
         }
 
 
         return statement;
+    }
+
+    @Override
+    public List<TransactionHistory> getLastNTransactions(String accountNo, String numberOfRecords) {
+        List<TransactionHistory> histories = new ArrayList<>();
+
+
+        try {
+
+            String uri = URI + "/transactions";
+            Map<String, String> params = new HashMap<>();
+            params.put("accountNumber", accountNo);
+            params.put("numberOfRecords", numberOfRecords);
+            params.put("branchId", viewAccountDetails(accountNo).getSolId());
+
+
+            TransactionHistory[] t = template.postForObject(uri, params, TransactionHistory[].class);
+            histories.addAll(Arrays.asList(t));
+
+
+        } catch (Exception e) {
+       e.printStackTrace();
+        }
+
+
+        return histories;
     }
 
     @Override
@@ -171,7 +213,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 
                     e.printStackTrace();
                     transRequest.setStatus(ResultType.ERROR.toString());
-                    transRequest.setStatusDescription(TransferExceptions.ERROR.toString());
+                    transRequest.setStatusDescription(errorService.getExactMessage(TransferExceptions.ERROR.toString()));
                     return transRequest;
 
                 }
@@ -206,7 +248,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 
                     e.printStackTrace();
                     transRequest.setStatus(ResultType.ERROR.toString());
-                    transRequest.setStatusDescription(TransferExceptions.ERROR.toString());
+                    transRequest.setStatusDescription(errorService.getExactMessage(TransferExceptions.ERROR.toString()));
                     return transRequest;
                 }
 
@@ -239,7 +281,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 
                     e.printStackTrace();
                     transRequest.setStatus(ResultType.ERROR.toString());
-                    transRequest.setStatusDescription(TransferExceptions.ERROR.toString());
+                    transRequest.setStatusDescription(errorService.getExactMessage(TransferExceptions.ERROR.toString()));
                     return transRequest;
                 }
 
@@ -261,7 +303,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 
     @Override
     public TransferDetails makeNapsTransfer(Naps naps) throws InternetBankingTransferException {
-        String uri = URI + "/naps";
+        String uri = URI + "/transfer/naps";
 
         try {
             TransferDetails details = template.getForObject(uri, TransferDetails.class, naps);
@@ -269,8 +311,6 @@ public class IntegrationServiceImpl implements IntegrationService {
         } catch (Exception e) {
             return new TransferDetails();
         }
-
-
 
 
     }
@@ -411,15 +451,15 @@ public class IntegrationServiceImpl implements IntegrationService {
 
     @Override
     public BigDecimal getAvailableBalance(String s) {
-       try{
-           Map<String, BigDecimal> getBalance = getBalance(s);
-           BigDecimal balance = getBalance.get("AvailableBalance");
-           if (balance != null) {
-               return balance;
-           }
-       }catch (Exception e){
-       e.printStackTrace();
-       }
+        try {
+            Map<String, BigDecimal> getBalance = getBalance(s);
+            BigDecimal balance = getBalance.get("AvailableBalance");
+            if (balance != null) {
+                return balance;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return new BigDecimal(0);
     }
 
@@ -460,7 +500,7 @@ public class IntegrationServiceImpl implements IntegrationService {
             return details;
         } catch (Exception e) {
 
-            return new Rate();
+            return new Rate("", "0", "");
         }
 
 
@@ -487,7 +527,7 @@ public class IntegrationServiceImpl implements IntegrationService {
             e.printStackTrace();
             logger.error("Exception occurred {}", e);
             transRequest.setStatus("96");
-            transRequest.setStatusDescription("FAILED TO SEND A MAIL");
+            transRequest.setStatusDescription("TRANSACTION FAILED");
         }
 
         return transRequest;

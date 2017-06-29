@@ -6,6 +6,7 @@ import longbridge.models.CorpInterBen;
 import longbridge.models.CorporateUser;
 import longbridge.repositories.CorpInternationalBeneficiaryRepo;
 import longbridge.services.CorpInternationalBeneficiaryService;
+import longbridge.utils.Verifiable;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +42,7 @@ public class CorpInternationalBeneficiaryServiceImpl implements CorpInternationa
     }
 
     @Override
+    @Verifiable(operation="Add_Corp_Inter_Beneficiary",description="Add Corperate International Beneficiary")
     public String addCorpInternationalBeneficiary(CorporateUser user, CorpInternationalBeneficiaryDTO beneficiary) throws InternetBankingException {
         CorpInterBen corpInterBen = convertDTOToEntity(beneficiary);
         corpInterBen.setCorporate(user.getCorporate());
@@ -50,6 +52,7 @@ public class CorpInternationalBeneficiaryServiceImpl implements CorpInternationa
     }
 
     @Override
+    @Verifiable(operation="Delete_Corp_Inter_Beneficiary",description="Delete Corperate International Beneficiary")
     public String deleteCorpInternationalBeneficiary(Long beneficiaryId) throws InternetBankingException {
         corpInternationalBeneficiaryRepo.delete(beneficiaryId);
         logger.info("Deleted beneficiary with Id{}", beneficiaryId);

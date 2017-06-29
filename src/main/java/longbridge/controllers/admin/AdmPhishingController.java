@@ -11,6 +11,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+import org.springframework.data.jpa.datatables.repository.DataTablesUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -85,4 +90,20 @@ public class AdmPhishingController {
 
         return "";
     }
+
+
+    @GetMapping(path = "/all")
+    public
+    @ResponseBody
+    DataTablesOutput<PhishingImage> getAllPhishingImages(DataTablesInput input) {
+        Pageable pageable = DataTablesUtils.getPageable(input);
+        Page<PhishingImage> sq = phishingImageService.getAllPhishingImages(pageable);
+        DataTablesOutput<PhishingImage> out = new DataTablesOutput<PhishingImage>();
+        out.setDraw(input.getDraw());
+        out.setData(sq.getContent());
+        out.setRecordsFiltered(sq.getTotalElements());
+        out.setRecordsTotal(sq.getTotalElements());
+        return out;
+    }
+
 }

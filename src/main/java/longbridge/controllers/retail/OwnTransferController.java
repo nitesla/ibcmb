@@ -119,11 +119,21 @@ public class OwnTransferController {
     public ModelAndView report(@PathVariable Long id) {
 
         JasperReportsPdfView view = new JasperReportsPdfView();
-        view.setUrl("classpath:pdf/a");
+        view.setUrl("classpath:pdf/receipt.jrxml");
         view.setApplicationContext(appContext);
 
         Map<String, Object> params = new HashMap<>();
-        params.put("datasource", transferService.getTransfer(id));
+        params.put("amount", transferService.getTransfer(id).getAmount());
+        params.put("beneAccName", transferService.getTransfer(id).getBeneficiaryAccountName());
+        params.put("beneAccNo", transferService.getTransfer(id).getBeneficiaryAccountNumber());
+        params.put("custAcount", transferService.getTransfer(id).getCustomerAccountNumber());
+        params.put("bank", transferService.getTransfer(id).getFinancialInstitution().getInstitutionName());
+        params.put("narration", transferService.getTransfer(id).getNarration());
+        params.put("remarks", transferService.getTransfer(id).getRemarks());
+        params.put("status", transferService.getTransfer(id).getStatus());
+        params.put("transType", transferService.getTransfer(id).getTransferType());
+        params.put("transDate", transferService.getTransfer(id).getTranDate());
+        params.put("refNo", transferService.getTransfer(id).getReferenceNumber());
 
         return new ModelAndView(view, params);
     }

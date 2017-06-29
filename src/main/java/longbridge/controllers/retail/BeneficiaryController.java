@@ -45,6 +45,12 @@ public class BeneficiaryController {
     private FinancialInstitutionService financialInstitutionService;
 
     private RetailUserService retailUserService;
+
+    private ConfigurationService configurationService;
+
+    @Autowired
+    private MailService mailService;
+
     @Value("${bank.code}")
     private String bankCode;
 
@@ -80,7 +86,7 @@ public class BeneficiaryController {
 
         Iterable<InternationalBeneficiary> intBeneficiary = internationalBeneficiaryService.getInternationalBeneficiaries(retailUser);
         for (InternationalBeneficiary intBenef : intBeneficiary) {
-            intBenef.setBeneficiaryBank(financialInstitutionService.getFinancialInstitutionByCode(intBenef.getBeneficiaryBank()).getInstitutionName());
+            intBenef.setBeneficiaryBank(intBenef.getBeneficiaryBank());
         }
         model.addAttribute("intBen", intBeneficiary);
         return "cust/beneficiary/view";
@@ -90,7 +96,6 @@ public class BeneficiaryController {
     public String addBeneficiary(Model model) {
         model.addAttribute("localBeneficiaryDTO", new LocalBeneficiaryDTO());
         model.addAttribute("internationalBeneficiaryDTO", new InternationalBeneficiaryDTO());
-        model.addAttribute("foreignBanks", financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.FOREIGN));
         model.addAttribute("foreignCurrencyCodes", codeService.getCodesByType("CURRENCY"));
         return "cust/beneficiary/add";
     }
@@ -99,15 +104,35 @@ public class BeneficiaryController {
     public String createLocalBeneficiary(@Valid LocalBeneficiaryDTO localBeneficiaryDTO, BindingResult result, Principal principal, Model model, RedirectAttributes redirectAttributes, Locale locale) {
         if (result.hasErrors()) {
             model.addAttribute("internationalBeneficiaryDTO", new InternationalBeneficiaryDTO());
-            model.addAttribute("foreignBanks", financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.FOREIGN));
 
             return "cust/beneficiary/add";
         }
 
         try {
+            System.out.println("ï got here");
             RetailUser user = retailUserService.getUserByName(principal.getName());
-            String message = localBeneficiaryService.addLocalBeneficiary(user, localBeneficiaryDTO);
-            redirectAttributes.addFlashAttribute("message", message);
+            String message2 = localBeneficiaryService.addLocalBeneficiary(user, localBeneficiaryDTO);
+
+            //String email = user.getEmail();
+
+            String message = messages.getMessage("newbeneficiary.alert.message",null,locale);
+            System.out.println(message);
+            try {
+                Email mail = new Email.Builder()
+                        .setRecipient("adebimpe.ayoola@longbridgetech.com")
+                        .setSender("ayoolabimpe@gmail.com")
+                        .setSubject("New Beneficiary Notification")
+                        .setBody(message)
+                        .build();
+                mailService.send(mail);
+                logger.debug("Message sent successfully");
+                //redirectAttributes.addFlashAttribute("message", "Message sent successfully");
+
+            } catch (Exception ex) {
+                logger.error("Failed to send Email", ex);
+                //redirectAttributes.addFlashAttribute("failure", "Failed to send message");
+            }
+            redirectAttributes.addFlashAttribute("message", message2);
         } catch (InternetBankingException e) {
 
             try{
@@ -132,7 +157,6 @@ public class BeneficiaryController {
 
             model.addAttribute("localBeneficiaryDTO", new LocalBeneficiaryDTO());
             model.addAttribute("internationalBeneficiaryDTO", internationalBeneficiaryDTO);
-            model.addAttribute("foreignBanks", financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.FOREIGN));
             return "cust/beneficiary/add";
         }
 

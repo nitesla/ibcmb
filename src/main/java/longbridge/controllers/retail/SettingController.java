@@ -1,13 +1,11 @@
 package longbridge.controllers.retail;
 
+import longbridge.api.ExchangeRate;
 import longbridge.dtos.AccountDTO;
 import longbridge.dtos.CodeDTO;
 import longbridge.dtos.RetailUserDTO;
 import longbridge.dtos.SettingDTO;
-import longbridge.exception.PasswordException;
-import longbridge.exception.PasswordMismatchException;
-import longbridge.exception.PasswordPolicyViolationException;
-import longbridge.exception.WrongPasswordException;
+import longbridge.exception.*;
 import longbridge.forms.AlertPref;
 import longbridge.forms.CustChangePassword;
 import longbridge.forms.CustResetPassword;
@@ -62,6 +60,9 @@ public class SettingController {
     private MessageService messageService;
     @Autowired
     private ConfigurationService configService;
+
+    @Autowired
+    private IntegrationService integrationService;
 
     @Autowired
     private FinancialInstitutionService financialInstitutionService;
@@ -234,7 +235,7 @@ public class SettingController {
 
 
         RetailUser user = retailUserService.getUserByName(principal.getName());
-        String fullname=user.getFirstName()+' '+user.getLastName();
+        String fullname=user.getFirstName();
         String custemail=user.getEmail();
         String custId=user.getCustomerId();
         String acctNumber=request.getParameter("acctNumber");
@@ -270,18 +271,37 @@ public class SettingController {
     }
 
     @PostMapping("/contact")
-    public String sendContactForm(WebRequest webRequest, Principal principal, Model model){
+    public String sendContactForm(WebRequest webRequest, Principal principal, Model model, Locale locale, RedirectAttributes redirectAttributes){
         String message = webRequest.getParameter("message");
         if (message == null){
             model.addAttribute("failure", "Field is required");
             return "cust/contact";
         }
-        RetailUser user = retailUserService.getUserByName(principal.getName());
-        messageService.sendRetailContact(message, user);
-        return "redirect:/retail/dashboard";
 
+        RetailUser user = retailUserService.getUserByName(principal.getName());
+
+        try{
+            messageService.sendRetailContact(message, user);
+            redirectAttributes.addFlashAttribute("message", "message sent successfully");
+            return "redirect:/retail/contact";
+        }catch (InternetBankingException e){
+            logger.error("Failed to send Email request", e);
+            String mes = e.getMessage();
+            model.addAttribute("failure", mes);
+            return "cust/contact";
+        }
     }
 
+    @GetMapping("/exchangerate")
+    public String viewCurrencyExchangeRate(Model model) {
+        List<ExchangeRate> rate = integrationService.getExchangeRate();
+        model.addAttribute("rates", rate);
+        return "cust/exchangerate";
+    }
 
+    @GetMapping("/faq")
+    public String fAQ(){
+        return "cust/faq";
+    }
 
 }

@@ -5,6 +5,7 @@ import longbridge.api.*;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.models.TransRequest;
 import longbridge.utils.statement.*;
+
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -26,6 +27,8 @@ public interface IntegrationService {
      */
     List<AccountInfo> fetchAccounts(String cifid);
 
+    List<ExchangeRate> getExchangeRate();
+
 
     /**
      * Fetches the {@link AccountStatement} of the account identified by
@@ -36,8 +39,9 @@ public interface IntegrationService {
      * @param toDate    the Date to stop fetching the account statement (inclusive)
      * @return {@code AccountStatement} object
      */
-    AccountStatement getAccountStatements(String accountNo, Date fromDate, Date toDate);
+    AccountStatement getAccountStatements(String accountNo, Date fromDate, Date toDate, String tranType);
 
+    List<TransactionHistory> getLastNTransactions(String accountNo, String numberOfRecords);
 
     /**
      * Fetches the account Balance of the account specified by accountId
@@ -52,6 +56,7 @@ public interface IntegrationService {
      * Initiates a transfer request to the relevant Transfer service.
      */
     TransRequest makeTransfer(TransRequest transRequest) throws InternetBankingTransferException;
+
     TransferDetails makeNapsTransfer(Naps naps) throws InternetBankingTransferException;
 
     /**
@@ -65,6 +70,7 @@ public interface IntegrationService {
     CustomerDetails isAccountValid(String accNo, String email, String dob);
 
     CustomerDetails viewCustomerDetails(String accNo);
+
     CustomerDetails viewCustomerDetailsByCif(String cifId);
 
 
@@ -112,7 +118,7 @@ public interface IntegrationService {
 
     ObjectNode sendSMS(String message, String contact, String subject);
 
-    Rate  getFee(String channel);
+    Rate getFee(String channel);
 
 
 }

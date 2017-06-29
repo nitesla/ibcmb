@@ -53,6 +53,7 @@ public class CreditRequestDTO {
 
     public void setSortCode(String sortCode) {
         this.sortCode = sortCode;
+
     }
 
     public String getAccountName() {
@@ -79,16 +80,9 @@ public class CreditRequestDTO {
         this.narration = narration;
     }
 
-    public CreditRequestDTO(String serial, String refCode, String accountNumber, String sortCode, String accountName, String amount, String narration) {
-        this.serial = serial;
-        this.refCode = refCode;
-        this.accountNumber = accountNumber;
-        this.sortCode = sortCode;
-        this.accountName = accountName;
-        this.amount = amount;
-        this.narration = narration;
-    }
+
 
     public CreditRequestDTO() {
+
     }
 }

@@ -3,6 +3,7 @@ package longbridge.controllers.retail;
 import longbridge.dtos.FinancialInstitutionDTO;
 import longbridge.dtos.LocalBeneficiaryDTO;
 import longbridge.dtos.TransferRequestDTO;
+import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferErrorService;
 import longbridge.models.Account;
@@ -41,6 +42,7 @@ public class LocalTransferController {
     private TransferService transferService;
     private MessageSource messages;
     private LocalBeneficiaryService localBeneficiaryService;
+
     private FinancialInstitutionService financialInstitutionService;
     private TransferValidator validator;
     private TransferErrorService transferErrorService;
@@ -75,17 +77,27 @@ public class LocalTransferController {
 
 
     @PostMapping("/summary")
-    public String transferSummary(@ModelAttribute("transferRequest") @Valid TransferRequestDTO transferRequestDTO, BindingResult result, Model model, HttpServletRequest servletRequest) {
+    public String transferSummary(@ModelAttribute("transferRequest") @Valid TransferRequestDTO transferRequestDTO, BindingResult result, Model model, HttpServletRequest servletRequest, Principal principal) {
         model.addAttribute("transferRequest", transferRequestDTO);
         validator.validate(transferRequestDTO, result);
 
+//        String exist = "false";
+
         if (servletRequest.getSession().getAttribute("Lbeneficiary") != null) {
+            System.out.println("ï am not null");
             LocalBeneficiaryDTO beneficiary = (LocalBeneficiaryDTO) servletRequest.getSession().getAttribute("Lbeneficiary");
+//            if (localBeneficiaryRepo.findByUser_IdAndAccountNumber(user.getId(), beneficiary.getAccountNumber()) != null){
+//                exist = "true";
+//                throw new DuplicateObjectException("beneficiary.exist");
+//            }
+
+
             model.addAttribute("beneficiary", beneficiary);
         }
         if (result.hasErrors()) {
             return page + "pageii";
         }
+
         try {
             transferService.validateTransfer(transferRequestDTO);
             transferRequestDTO.setTransferType(TransferType.CORONATION_BANK_TRANSFER);

@@ -129,8 +129,10 @@
 
 
 <script>
-    $('#password').bind("cut copy paste",function(e) {
-        e.preventDefault();
+    $(document).ready(function() {
+        $('#password').bind("cut copy paste", function (e) {
+            e.preventDefault();
+        });
     });
 </script>
 

@@ -8,8 +8,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -36,6 +40,21 @@ public class PhishingImageServiceImpl implements PhishingImageService{
 
     @Override
     public String deleteImage(Long id) {
+        return null;
+    }
+
+
+    @Override
+    public Page<PhishingImage> getAllPhishingImages(Pageable pageDetails) {
+        Page<PhishingImage> page = phishingImageRepo.findAll(pageDetails);
+        List<PhishingImage> dtOs = page.getContent();
+        long t = page.getTotalElements();
+        Page<PhishingImage> pageImpl = new PageImpl<PhishingImage>(dtOs, pageDetails, t);
+        return pageImpl;
+    }
+
+    @Override
+    public List<PhishingImage> getPhishingImages() {
         return null;
     }
 }

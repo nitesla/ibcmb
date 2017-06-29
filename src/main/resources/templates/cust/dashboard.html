@@ -3,7 +3,8 @@
 <head th:replace="cust_layout :: site-head">
 
 </head>
-<body>
+<body onclick=''>
+    >
     <div class="container">
         <header th:replace="cust_layout :: header">
         </header>
@@ -17,14 +18,18 @@
                         <option value="account">Account Overview</option>
                     </select>
                 </div>
+
+                
             </div>
             <div class="row">
                     <div class=" col-md-12" style="margin-top:20px">
                         <!--<div class='col-md-9 '>-->
-                        <div class="col-md-9 content-bg" >
+                    
 
-                                <div class="col-md">
-                                    <table class="table table-responsive" id="users">
+                        <div class="col-md-9 content-bg " >
+
+                                <div class="col-md table-responsive">
+                                    <table class="table " id="users">
                                         <thead>
                                         <tr>
                                             <th class="text-center">Account Number</th>
@@ -70,6 +75,11 @@
 
 
                         </div>
+                        
+                        <div class="col-md-3 pull-right">
+                            <div th:replace="cust_layout :: sidebar" class="" >
+                            </div>
+                        </div>
                         <!--</div>-->
 
                         <!--<div class="col-md-3 sidebar" style="overflow:scroll; height:200x; ">-->
@@ -88,10 +98,7 @@
 
                             <!--</div>-->
                         <!--</div>-->
-                        <div class="col-md-3 pull-right">
-                            <div th:replace="cust_layout :: sidebar" class="" >
-                            </div>
-                        </div>
+                        
 
                 </div>
             </div>

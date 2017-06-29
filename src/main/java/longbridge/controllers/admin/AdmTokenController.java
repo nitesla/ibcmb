@@ -116,7 +116,8 @@ public class AdmTokenController {
             String serials = securityService.getTokenSerials(username);
             logger.info("Serials recieved are "+serials);
             if (serials != null && !"".equals(serials)) {
-                List<String> serialNos = Arrays.asList(StringUtils.split(serials, ","));
+                String serialNums = StringUtils.trim(serials);
+                List<String> serialNos = Arrays.asList(StringUtils.split(serialNums, ","));
                 model.addAttribute("serials", serialNos);
                 TokenForm tokenForm = new TokenForm();
                 tokenForm.setUsername(username);
@@ -200,7 +201,8 @@ public class AdmTokenController {
         try {
             String serials = securityService.getTokenSerials(username);
             if (serials != null && !"".equals(serials)) {
-                List<String> serialNos = Arrays.asList(StringUtils.split(serials, ","));
+                String serialNums = StringUtils.trim(serials);
+                List<String> serialNos = Arrays.asList(StringUtils.split(serialNums, ","));
                 model.addAttribute("serials", serialNos);
                 TokenForm tokenForm = new TokenForm();
                 tokenForm.setUsername(username);
@@ -303,8 +305,10 @@ public class AdmTokenController {
         List<String> serials = new ArrayList<>();
         try {
             String serial = securityService.getTokenSerials(username);
-            if (serial != null && !"".equals(serial)) {
-                serials = Arrays.asList(StringUtils.split(serial, ","));
+            if (serials != null && !"".equals(serials)) {
+                String serialNums = StringUtils.trim(serial);
+
+              serials = Arrays.asList(StringUtils.split(serialNums, ","));
             }
         } catch (InternetBankingSecurityException ibe) {
             logger.error("Error getting token serials", ibe);

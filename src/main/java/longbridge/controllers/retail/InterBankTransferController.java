@@ -82,15 +82,19 @@ public class InterBankTransferController {
 
             request.getSession().setAttribute("NIP", "NIP");
             requestDTO.setTransferType(TransferType.INTER_BANK_TRANSFER);
+
+            model.addAttribute("transferRequest", requestDTO);
+            return page + "pageiA";
         } else {
             System.out.println("RTGS");
             request.getSession().setAttribute("NIP", "RTGS");
             requestDTO.setTransferType(TransferType.RTGS);
+
+            model.addAttribute("transferRequest", requestDTO);
+            return page + "pageiAb";
         }
 
 
-        model.addAttribute("transferRequest", requestDTO);
-        return page + "pageiA";
     }
 
 
