@@ -58,7 +58,7 @@ public class VerificationController {
     public String verifyOp(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         verificationService.verify(id);
         redirectAttributes.addFlashAttribute("message","Operations done successfully");
-        return "redirect:admin/verifications/operations";
+        return "redirect:/admin/verifications/operations";
     }
 
 
@@ -74,7 +74,7 @@ public class VerificationController {
         }
         redirectAttributes.addFlashAttribute("message", "Operations done successfully");
 
-        return "redirect:admin/verifications/operations";
+        return "redirect:/admin/verifications/operations";
     }
 
 
