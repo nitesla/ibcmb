@@ -94,7 +94,6 @@ public class MakerCheckerAdvisor {
         System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
         log.info("Again testing that this save works");
 
-
         // pjp.getSignature().getDeclaringType().getAnnotations()
         log.info(entity.toString());
         log.info("JB Around: " + pjp);
