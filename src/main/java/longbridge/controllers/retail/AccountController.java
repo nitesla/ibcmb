@@ -333,7 +333,7 @@ public class AccountController {
 				System.out.println("whats the address:" + accountStatement.getAddress());
 			}
 			else if(accountStatement.getAddress()==null){
-				modelMap.put("address","14 Bello owosho Street");
+				modelMap.put("address","");
 			}
 			else{};
 
@@ -341,6 +341,7 @@ public class AccountController {
 			modelMap.put("toDate", toDate);
 			Date today=new Date();
 			modelMap.put("today",today);
+
 		} catch (ParseException e) {
 			logger.warn("didn't parse date", e);
 		}

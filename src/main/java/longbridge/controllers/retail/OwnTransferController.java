@@ -8,6 +8,8 @@ import longbridge.services.*;
 import longbridge.utils.ResultType;
 import longbridge.utils.TransferType;
 import longbridge.validator.transfer.TransferValidator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
@@ -51,6 +53,7 @@ public class OwnTransferController {
     private String page = "cust/transfer/ownaccount/";
     @Value("${bank.code}")
     private String bankCode;
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     public OwnTransferController(TransferService transferService, AccountService accountService, MessageSource messages, LocaleResolver localeResolver, LocalBeneficiaryService localBeneficiaryService, TransferValidator validator, FinancialInstitutionService financialInstitutionService, ApplicationContext appContext, TransferErrorService errorService) {
@@ -116,10 +119,11 @@ public class OwnTransferController {
 
 
     @RequestMapping(path = "{id}/receipt", method = RequestMethod.GET)
-    public ModelAndView report(@PathVariable Long id,ModelMap modelMap,HttpServletRequest servletRequest) {
+    public ModelAndView report(@PathVariable Long id,ModelMap modelMap,HttpServletRequest servletRequest, TransferRequestDTO transferRequestDTO) {
         /**
          * Created a stub to test transaction receiptpt
          */
+
     modelMap.put("datasource",new ArrayList<>());
     modelMap.put("format", "pdf");
     modelMap.put("amount", "1,000,000.00");
@@ -133,6 +137,7 @@ public class OwnTransferController {
     modelMap.put("refNUm", "65566586787");
     modelMap.put("tranDate", "08-09-2017");
     modelMap.put("amountInWords", "30 BILLION ");
+        logger.info("Transaction Receipt {}",modelMap);
 
         ModelAndView modelAndView = new ModelAndView("rpt_receipt", modelMap);
         return modelAndView;
