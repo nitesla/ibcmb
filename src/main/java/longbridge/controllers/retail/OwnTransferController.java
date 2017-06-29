@@ -14,6 +14,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.LocaleResolver;
@@ -25,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -114,25 +116,25 @@ public class OwnTransferController {
 
 
     @RequestMapping(path = "{id}/receipt", method = RequestMethod.GET)
-    public ModelAndView report(@PathVariable Long id) {
+    public ModelAndView report(@PathVariable Long id,ModelMap modelMap,HttpServletRequest servletRequest) {
+        /**
+         * Created a stub to test transaction receiptpt
+         */
+    modelMap.put("datasource",new ArrayList<>());
+    modelMap.put("format", "pdf");
+    modelMap.put("amount", "1,000,000.00");
+    modelMap.put("recipient", "BANKOLE D. ONEY");
+    modelMap.put("acctNo1", "10986433737332");
+    modelMap.put("sender", "CHEERFUL GIVER CHOICE");
+    modelMap.put("bank", "BANK OF AFRICA");
+    modelMap.put("remarks", "MY BUILDING PROJECT");
+    modelMap.put("recipientBank", "AGONORONA BANK");
+    modelMap.put("acctNo2", "0986879765");
+    modelMap.put("refNUm", "65566586787");
+    modelMap.put("tranDate", "08-09-2017");
+    modelMap.put("amountInWords", "30 BILLION ");
 
-        JasperReportsPdfView view = new JasperReportsPdfView();
-        view.setUrl("classpath:jasperreports/receipt.jrxml");
-        view.setApplicationContext(appContext);
-
-        Map<String, Object> params = new HashMap<>();
-        params.put("amount", "1,000,000.00");
-        params.put("recipient", "BANKOLE D. MONEY");
-        params.put("acctNum1", "10986433737332");
-        params.put("sender", "CHEERFUL GIVER CHOICE");
-        params.put("bank", "BANK OF AFRICA");
-        params.put("remarks", "MY BUILDING PROJECT");
-        params.put("recipientBank","AGONORONA BANK" );
-        params.put("acctNum2", "WAHALA DEY");
-        params.put("refNum", "65566586787");
-        params.put("amountInWords", "30 BILLION FOR THE ACCOUNT");
-
-
-        return new ModelAndView(view, params);
+        ModelAndView modelAndView = new ModelAndView("rpt_receipt", modelMap);
+        return modelAndView;
     }
 }

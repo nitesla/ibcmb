@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import longbridge.dtos.PendingVerification;
 import longbridge.dtos.VerificationDTO;
 import longbridge.exception.DuplicateObjectException;
+import longbridge.exception.InternetBankingException;
 import longbridge.exception.VerificationException;
 import longbridge.models.*;
 import longbridge.repositories.VerificationRepo;
@@ -71,9 +72,8 @@ public class VerificationServiceImpl implements VerificationService {
     public String verify(VerificationDTO dto) throws VerificationException {
         //check if it is verified
         Verification verification = verificationRepo.findOne(dto.getId());
-        if (verification.getVerifiedBy() != null) {
-            logger.debug("Already verified");
-            return messageSource.getMessage("verification.verify", null, locale);
+        if (verificationStatus.VERIFIED.equals(verification.getStatus())) {
+            throw new InternetBankingException("Operation is already verified");
         }
         verification.setId(dto.getId());
         verification.setVersion(dto.getVersion());
@@ -86,7 +86,6 @@ public class VerificationServiceImpl implements VerificationService {
 
         try {
             cc = Class.forName(PACKAGE_NAME + verification.getEntityName());
-            logger.info("Class {}", cc.getName());
             method = cc.getMethod("deserialize", String.class);
             Object returned = cc.newInstance();
             method.invoke(returned, verification.getAfterObject());
