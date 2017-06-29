@@ -2,13 +2,21 @@ package longbridge.models;
 
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import longbridge.utils.PrettySerializer;
+
 import javax.persistence.*;
+import java.io.IOException;
 import java.util.Date;
 /**
  * Created by Wunmi on 29/03/2017.
  */
 @MappedSuperclass
-public class User extends AbstractEntity implements Cloneable{
+public class User extends AbstractEntity implements PrettySerializer {
 
     protected String userName;
     protected String firstName;
@@ -32,7 +40,7 @@ public class User extends AbstractEntity implements Cloneable{
 
     @ManyToOne
     protected Role role;
-    protected  String entrustId;
+    protected String entrustId;
 
 
     public String getEntrustId() {
@@ -93,14 +101,14 @@ public class User extends AbstractEntity implements Cloneable{
 
 
     public String getStatus() {
-		return status;
-	}
+        return status;
+    }
 
-	public void setStatus(String status) {
-		this.status = status;
-	}
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
-	public Role getRole() {
+    public Role getRole() {
         return role;
     }
 
@@ -126,25 +134,37 @@ public class User extends AbstractEntity implements Cloneable{
         this.createdOnDate = createdOnDate;
     }
 
-    public Date getExpiryDate() {return expiryDate;}
+    public Date getExpiryDate() {
+        return expiryDate;
+    }
 
-    public void setExpiryDate(Date expiryDate) {this.expiryDate = expiryDate;}
+    public void setExpiryDate(Date expiryDate) {
+        this.expiryDate = expiryDate;
+    }
 
-    public Date getLockedUntilDate() {return lockedUntilDate;}
+    public Date getLockedUntilDate() {
+        return lockedUntilDate;
+    }
 
-    public void setLockedUntilDate(Date lockedUntilDate) {this.lockedUntilDate = lockedUntilDate;}
+    public void setLockedUntilDate(Date lockedUntilDate) {
+        this.lockedUntilDate = lockedUntilDate;
+    }
 
-    public Date getLastLoginDate() {return lastLoginDate;}
+    public Date getLastLoginDate() {
+        return lastLoginDate;
+    }
 
-    public void setLastLoginDate(Date lastLoginDate) {this.lastLoginDate = lastLoginDate;}
+    public void setLastLoginDate(Date lastLoginDate) {
+        this.lastLoginDate = lastLoginDate;
+    }
 
     public int getNoOfLoginAttempts() {
-		return noOfLoginAttempts;
-	}
+        return noOfLoginAttempts;
+    }
 
-	public void setNoOfLoginAttempts(int noOfLoginAttempts) {
-		this.noOfLoginAttempts = noOfLoginAttempts;
-	}
+    public void setNoOfLoginAttempts(int noOfLoginAttempts) {
+        this.noOfLoginAttempts = noOfLoginAttempts;
+    }
 
     public UserType getUserType() {
         return userType;
@@ -155,52 +175,41 @@ public class User extends AbstractEntity implements Cloneable{
     }
 
     @Override
-    public int hashCode(){
+    public int hashCode() {
         return super.hashCode();
     }
 
     @Override
-    public boolean equals(Object o){
+    public boolean equals(Object o) {
         return super.equals(o);
     }
 
-    @Override
-    public String toString() {
-        return "User{" +super.toString()+'\''+
-                "userName='" + userName + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                ", status='" + status + '\'' +
-                ", createdOnDate=" + createdOnDate +
-                ", expiryDate=" + expiryDate +
-                ", lockedUntilDate=" + lockedUntilDate +
-                ", lastLoginDate=" + lastLoginDate +
-                ", noOfLoginAttempts=" + noOfLoginAttempts +
-                ", userType=" + userType +
-                ", role=" + role +
-                '}';
-    }
-
-	public static OperationCode getAddCode() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public static OperationCode getModifyCode() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
     @Override
-    public Object clone() throws CloneNotSupportedException{
-        return super.clone();
+    @JsonIgnore
+    public JsonSerializer<User> getSerializer() {
+        return new JsonSerializer<User>() {
+            @Override
+            public void serialize(User value, JsonGenerator gen, SerializerProvider serializers)
+                    throws IOException, JsonProcessingException {
+
+                gen.writeStartObject();
+                gen.writeStringField("userName", value.userName);
+                gen.writeStringField("firstName", value.firstName);
+                gen.writeStringField("lastName", value.lastName);
+                gen.writeStringField("email", value.email);
+                gen.writeStringField("phone", value.phoneNumber);
+                String status = "Unknown";
+                if ("A".equals(value.status))
+                    status = "Active";
+                else if ("I".equals(value.status))
+                    status = "Inactive";
+                else if ("L".equals(value.status))
+                    status = "Locked";
+                gen.writeStringField("status", status);
+                gen.writeStringField("Role", value.role.getName());
+                gen.writeEndObject();
+            }
+        };
     }
-
-//	@Override
-//    public Object clone() throws CloneNotSupportedException{
-//        return super.clone();
-//    }
-
 }
