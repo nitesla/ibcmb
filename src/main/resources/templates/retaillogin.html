@@ -62,13 +62,13 @@
                     <div th:if="${param.expired != null}" class="alert alert-danger" th:text="#{session.expired}">error</div>
                     <br/>
                      <div id="username_div" class="form-group">
-                        <input type="text" name="username" th:value="*{username}" class="form-control"  placeholder="Username" readonly="readonly" autocomplete="off"/>
+                        <input type="text" name="username" th:value="*{username}" class="my-select"  placeholder="Username" readonly="readonly" autocomplete="off"/>
                         <p><a class="text-white" href="/forgot/username">Forgot Username?</a></p>
                      </div>
 
 
                      <div id="password_div" class="form-group">
-                        <input id="password" type="password" name="password" class="form-control"  placeholder="Password" required="required" autocomplete="off" />
+                        <input id="password" type="password" name="password" class="my-select"  placeholder="Password" required="required" autocomplete="off" />
                         <p><a class="text-white" href="/forgot/password">forgot password?</a></p>
                     </div>
 
@@ -76,7 +76,7 @@
 
 
                     <div class="form-group">
-                        <button class="btn btn-primary form-control"> Continue </button>
+                        <button class="btn btn-primary my-select"> Continue </button>
                     </div>
 
                      </div>

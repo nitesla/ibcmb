@@ -39,7 +39,7 @@
                                         <span id="scurency"></span>
                                         <div>
                                         <span class="alert no-bd-rad my-border bg-white">NGN</span>
-                                            <select name="source" class="form-contrl my-select" id="source"
+                                            <select name="source" class="form-control" id="source"
                                                     th:field="*{customerAccountNumber}" onchange="getBalance()" style="width:70%;margin:0px auto;">
                                                 <!--<option value=""> select an account</option>-->
                                                 <option th:each="s: ${accounts}" th:value="${s}" th:text="${s}" ></option>
