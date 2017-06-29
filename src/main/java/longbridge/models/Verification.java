@@ -192,14 +192,5 @@ public class Verification extends AbstractEntity {
         this.verifiedBy = verifiedBy;
     }
 
-    public static OperationCode getAddCode() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public static OperationCode getModifyCode() {
-        // TODO Auto-generated method stub
-        return null;
-    }
 
 }

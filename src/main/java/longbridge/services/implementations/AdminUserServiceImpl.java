@@ -146,8 +146,7 @@ public class AdminUserServiceImpl implements AdminUserService {
             adminUser.setEmail(user.getEmail());
             adminUser.setPhoneNumber(user.getPhoneNumber());
             adminUser.setCreatedOnDate(new Date());
-            Role role = new Role();
-            role.setId(Long.parseLong(user.getRoleId()));
+            Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
             adminUser.setRole(role);
             adminUserRepo.save(adminUser);
 

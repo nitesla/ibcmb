@@ -93,7 +93,6 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    @Verifiable(operation="Customize_Account",description="Customize Account")
     public String customizeAccount(Long id, String name) throws InternetBankingException{
         try {
             Account account = accountRepo.findFirstById(id);
