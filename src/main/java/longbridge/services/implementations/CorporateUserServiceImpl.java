@@ -126,7 +126,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     }
 
     @Override
-    @Verifiable(operation="Update_Corporate_User",description="Update Corporate User")
+    @Verifiable(operation="CORP_USER_UPDATE",description="Updating Corporate User")
     public String updateUser(CorporateUserDTO user) throws InternetBankingException {
         try {
             CorporateUser corporateUser = corporateUserRepo.findOne(user.getId());
@@ -151,7 +151,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
     @Override
     @Transactional
-    @Verifiable(operation="Add_Corporate_User",description="Add Corporate User")
+    @Verifiable(operation="CORP_USER_ADD",description="Adding Corporate User")
     public String addUser(CorporateUserDTO user) throws InternetBankingException {
 
         CorporateUser corporateUser = corporateUserRepo.findFirstByUserNameIgnoreCase(user.getUserName());
@@ -215,7 +215,6 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
     @Override
     @Transactional
-    @Verifiable(operation="Add_User_From_Corporate_Admin",description="Add User From Coporate Admin")
     public String addUserFromCorporateAdmin(CorpCorporateUserDTO user) throws InternetBankingException {
 
         CorporateUser corporateUser = corporateUserRepo.findFirstByUserNameIgnoreCase(user.getUserName());
@@ -233,26 +232,21 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             String password = passwordPolicyService.generatePassword();
             corporateUser.setPassword(passwordEncoder.encode(password));
             corporateUser.setExpiryDate(new Date());
+            corporateUser.setStatus("A");
             Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
-            if (!"Authorizer".equals(role.getName())) {
-                user.setStatus("A");
-            }
             corporateUser.setRole(role);
             Corporate corporate = corporateRepo.findOne(Long.parseLong(user.getCorporateId()));
             corporateUser.setCorporate(corporate);
             passwordPolicyService.saveCorporatePassword(corporateUser);
             corporateUserRepo.save(corporateUser);
-            SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_CREATION");
             String fullName = user.getFirstName() + " " + user.getLastName();
             createUserOnEntrust(corporateUser);
-            if (!"Authorizer".equals(role.getName())) {
                 Email email = new Email.Builder()
                         .setRecipient(user.getEmail())
                         .setSubject(messageSource.getMessage("customer.create.subject", null, locale))
                         .setBody(String.format(messageSource.getMessage("customer.create.message", null, locale), fullName, user.getUserName(), password))
                         .build();
                 mailService.send(email);
-            }
             logger.info("New corporate user {} created", corporateUser.getUserName());
             return messageSource.getMessage("user.add.success", null, locale);
         } catch (Exception e) {
@@ -263,6 +257,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
     @Override
     @Transactional
+    @Verifiable(operation = "CORP_USER_ACTIVATION", description = "Change corporate user activation status")
     public String changeActivationStatus(Long userId) throws InternetBankingException {
         try {
             CorporateUser user = corporateUserRepo.findOne(userId);
@@ -365,7 +360,6 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
 
     @Override
-    @Verifiable(operation="Delete_User",description="Delete User")
     public String deleteUser(Long userId) throws InternetBankingException {
         try {
             CorporateUser corporateUser = corporateUserRepo.findOne(userId);
@@ -389,13 +383,13 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     }
 
     @Override
-    @Verifiable(operation="Lock_User",description="Lock User")
+    @Verifiable(operation="CORP_USER_LOCK",description="Locking a Corporate User")
     public void lockUser(CorporateUser user, Date unlockat) {
         //todo
     }
 
     @Override
-    @Verifiable(operation="Unlock_User",description="Unlock User")
+    @Verifiable(operation="CORP_USER_UNLOCK",description="Unlocking a Corporate User")
     public String unlockUser(Long id) throws InternetBankingException {
 
         CorporateUser user = corporateUserRepo.findOne(id);
@@ -464,7 +458,6 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     }
 
     @Override
-    @Verifiable(operation="Generate_And_Send_Password",description="Generate And Send Password")
     public void generateAndSendPassword(CorporateUser user) {
         String newPassword = securityService.generatePassword();
         try {
@@ -502,20 +495,10 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             }
         }
 
-//        List<CorporateUser> usersWithoutRoles = corporateUserRepo.findByCorporateAndCorporateRoleIsNull(corporate);
         return  convertEntitiesToDTOs(usersWithoutCorpRole);
     }
 
-    @Verifiable(operation="Send_User_Credentials",description="Send User Credentials")
-    private void sendUserCredentials(CorporateUser user, String password) throws InternetBankingException {
-        String fullName = user.getFirstName() + " " + user.getLastName();
-        Email email = new Email.Builder()
-                .setRecipient(user.getEmail())
-                .setSubject(messageSource.getMessage("corporate.customer.create.subject", null, locale))
-                .setBody(String.format(messageSource.getMessage("corporate.customer.create.message", null, locale), fullName, user.getUserName(), password))
-                .build();
-        mailService.send(email);
-    }
+
 
     @Override
     public boolean changeAlertPreference(CorporateUserDTO corporateUser, AlertPref alertPreference) {

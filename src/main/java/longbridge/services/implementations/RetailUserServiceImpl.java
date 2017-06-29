@@ -18,6 +18,7 @@ import longbridge.repositories.RetailUserRepo;
 import longbridge.security.FailedLoginService;
 import longbridge.services.*;
 import longbridge.utils.DateFormatter;
+import longbridge.utils.Verifiable;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -91,6 +92,7 @@ public class RetailUserServiceImpl implements RetailUserService {
     }
 
     @Override
+    @Verifiable(operation = "RET_USER_UNLOCK", description = "Unlocking a Retail User")
     public String unlockUser(Long id) throws InternetBankingException {
 
         RetailUser user = retailUserRepo.findOne(id);
@@ -270,6 +272,7 @@ public class RetailUserServiceImpl implements RetailUserService {
 
     @Override
     @Transactional
+    @Verifiable(operation = "RET_ACTIVATION", description = "Change Retail User Activation Status")
     public String changeActivationStatus(Long userId) throws InternetBankingException {
         try {
             RetailUser user = retailUserRepo.findOne(userId);
@@ -300,14 +303,7 @@ public class RetailUserServiceImpl implements RetailUserService {
         }
     }
 
-    private String getUsedPasswords(String newPassword, String oldPasswords) {
-        StringBuilder builder = new StringBuilder();
-        if (oldPasswords != null) {
-            builder.append(oldPasswords);
-        }
-        builder.append(passwordEncoder.encode(newPassword) + ",");
-        return builder.toString();
-    }
+
 
     @Override
     @Transactional

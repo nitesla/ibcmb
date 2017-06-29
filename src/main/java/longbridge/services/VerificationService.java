@@ -40,6 +40,9 @@ public interface VerificationService {
 
     Page<VerificationDTO> getMakerCheckerPending(Pageable pageDetails, User createdBy);
 
+
+    List<VerificationDTO>getPendingForUser(User user);
+
     String verify(Long verId) throws VerificationException;
 
     /**
@@ -58,21 +61,21 @@ public interface VerificationService {
      */
 
 
-    <T extends SerializableEntity<T>> String addNewVerificationRequest(T entity, User createdBy) throws JsonProcessingException, VerificationException;
+    <T extends SerializableEntity<T>> String addNewVerificationRequest(T entity, User createdBy, String operation) throws JsonProcessingException, VerificationException;
 
 
     /**
      * Create a new <b>modify</b> {@link Verification} request
      *
-     * @param originalEntity The existing entity
      * @param entity         The modified entity
      * @throws JsonProcessingException if there is an error in serializing the entity
      */
-    <T extends SerializableEntity<T>> String addModifyVerificationRequest(T originalEntity, T entity) throws JsonProcessingException;
+    <T extends SerializableEntity<T>> String addModifyVerificationRequest(T entity, User doneBy, String operation) throws JsonProcessingException;
 
 
     Page<PendingVerification> getPendingVerifications(User user, Pageable pageable);
 
-//    <T extends SerializableEntity<T>> String makerCheckerSave(T originalEntity, T entity) throws JsonProcessingException, VerificationException;
+    Page<VerificationDTO> getPendingOperations(String operation, User user, Pageable pageable);
 
+    <T extends SerializableEntity<T>> String save(T originalEntity, T entity, User createdBy, String operation) throws JsonProcessingException, VerificationException;
 }

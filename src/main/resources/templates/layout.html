@@ -42,6 +42,7 @@
                     <li sec:authorize="hasAuthority('CODE_CONFIG')"><a href="/admin/codes/alltypes">Codes</a></li>
                     <li sec:authorize="hasAuthority('SETTING_CONFIG')"><a href="/admin/settings">System Settings</a></li>
                     <li sec:authorize="hasAuthority('AUDIT_CONFIG')"><a href="/admin/audit">Audit</a></li>
+                    <li><a href="/admin/checker">Checker</a></li>
                 </ul>
             </li>
             <li sec:authorize="hasAuthority('BANK_CONFIG')"><a><i class="fa fa-bank"></i> Bank Setup <span class="fa fa-chevron-down"></span></a>
@@ -79,15 +80,13 @@
                 </ul>
             </li>
 
+            <li><a><i class="fa fa-check"></i> Verifications <span class="fa fa-chevron-down"></span></a>
+                <ul class="nav child_menu">
+                    <li><a href="/admin/verifications/operations">Approval</a></li>
+                    <li><a href="/admin/verifications/pendingops">Approval Queue</a></li>
 
-
-            <!--<li><a><i class="fa fa-check"></i> Approvals <span class="fa fa-chevron-down"></span></a>-->
-                <!--&lt;!&ndash;<ul class="nav child_menu">&ndash;&gt;-->
-                    <!--&lt;!&ndash;<li><a href="view.html">View TR</a></li>&ndash;&gt;-->
-                    <!--&lt;!&ndash;<li><a href="add.html">Add TR</a></li>&ndash;&gt;-->
-                    <!--&lt;!&ndash;<li><a href="edit.html">Edit TR</a></li>&ndash;&gt;-->
-                <!--&lt;!&ndash;</ul>&ndash;&gt;-->
-            <!--</li>-->
+                </ul>
+            </li>
         </ul>
     </div>
 

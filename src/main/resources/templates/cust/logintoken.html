@@ -11,7 +11,7 @@
 <div class="container">
     <div class="top_bar">
         <ul class="list_group">
-            <li><a href="#"> CORONATION MERCHANT BANK</a></li>
+            <li><a href="https://www.coronationmb.com/" target="_blank"> CORONATION MERCHANT BANK</a></li>
         </ul>
     </div>
     <nav class="navbar navbar-default">
@@ -119,10 +119,11 @@
                                 <input  type="text" id="token" name="token" class='form-control tokenInput' placeholder="Token Code" />
                          </div>
                          <div id='errorMess' class=" text-danger "></div>
+                         <div id='successMess' class=" text-success "></div>
                     </div>
                     <div >
                     <p>Don't have a token?</p>
-                    <p><a>Send me an OTP </a><i class='fa fa-angle-down'  style="font-size:18px;"></i></p>
+                    <p><a href='javascript:sendOtp()' >Send me an OTP </a><i class='fa fa-angle-down'  style="font-size:18px;"></i></p>
                     </div>
                
             </div>
@@ -181,6 +182,43 @@
 <script th:src="@{~/customer/js/coronation.js}"></script>
 <!-- BOOTSTRAP SCRIPTS  -->
 <script th:src="@{~/customer/js/bootstrap.js}"></script>
+<script>
+    function sendOtp() {
+        //make sure alert message is not empty
+//        alert("send otp");
+//        console.log(acct);
+        $.ajax({
+            type: 'GET',
+            url: '/otp/send',
+            asyn:false,
+//					dataType: 'String',
+            error: function (data) {
+                alert("failure");
+//                $('#sub').disabled();
+            },
+            success: function (reponse) {
+//                console.log(data);
+//                console.log(textSt`atus);
+//                var result = data;
+                //var result = (new Function("return " + result))();
+                // $('#acct_name').val(result.message);
+//                $('#acct_name').val(result);
+//                alert("success");
+                if (reponse === 'success') {
+                    document.getElementById("successMess").textContent = "Successfully sent";
 
+                }else{
+                    if(reponse==="empty"){
+                        document.getElementById("errorMess").textContent = "Invalid username";
+                    }else{
+                    document.getElementById("errorMess").textContent = "Sending OTP failed!";
+                    }
+                }
+            }
+
+        });
+//        $.ajax({options});
+    }
+</script>
 </body>
 </html>

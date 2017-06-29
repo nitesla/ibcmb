@@ -12,31 +12,10 @@ import javax.persistence.Entity;
 @Where(clause ="del_flag='N'")
 public class MakerChecker extends AbstractEntity {
 
-    String enabled="N";
+    private String enabled;
+    private String operation;
+    private String description;
 
-    String name;
-
-    String code;
-
-    String userType;
-
-    @Override
-    public String toString() {
-        return "MakerChecker{" +
-                "enabled='" + enabled + '\'' +
-                ", name='" + name + '\'' +
-                ", code='" + code + '\'' +
-                ", userType='" + userType + '\'' +
-                '}';
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public String getEnabled()
     {
@@ -48,19 +27,29 @@ public class MakerChecker extends AbstractEntity {
         this.enabled = enabled;
     }
 
-    public String getCode() {
-        return code;
+    public String getOperation() {
+        return operation;
     }
 
-    public void setCode(String code) {
-        this.code = code;
+    public void setOperation(String operation) {
+        this.operation = operation;
     }
 
-    public String getUserType() {
-        return userType;
+    public String getDescription() {
+        return description;
     }
 
-    public void setUserType(String userType) {
-        this.userType = userType;
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+
+    @Override
+    public String toString() {
+        return "MakerChecker{" +
+                "enabled='" + enabled + '\'' +
+                ", operation='" + operation + '\'' +
+                ", description='" +  + '\'' +
+                '}';
     }
 }

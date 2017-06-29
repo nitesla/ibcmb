@@ -11,5 +11,5 @@
     <task:annotation-driven />
     <util:properties id="applicationProps" location="application.properties" />
     <context:property-placeholder properties-ref="applicationProps"  />
-    <bean id="demoServicePropertiesExample" class="longbridge.jobs.CronJobs"></bean>
+    <bean id="demoServicePropertiesExample" class="longbridge.jobs.CronJobsbkp"></bean>
 </beans>

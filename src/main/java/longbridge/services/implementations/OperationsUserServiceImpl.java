@@ -13,6 +13,7 @@ import longbridge.repositories.OperationsUserRepo;
 import longbridge.services.*;
 import longbridge.utils.DateFormatter;
 import longbridge.utils.ReflectionUtils;
+import longbridge.utils.Verifiable;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +24,8 @@ import org.springframework.data.domain.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
+import javax.persistence.metamodel.EmbeddableType;
 import javax.transaction.Transactional;
 import java.util.*;
 
@@ -59,6 +62,9 @@ public class OperationsUserServiceImpl implements OperationsUserService {
 
     @Autowired
     private ConfigurationService configService;
+
+    @Autowired
+    EntityManager entityManager;
 
     private Locale locale = LocaleContextHolder.getLocale();
 
@@ -113,6 +119,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
 
     @Override
     @Transactional
+    @Verifiable(operation="OPS_ACTIVATION",description="Change Operations User Activation Status")
     public String changeActivationStatus(Long userId) throws InternetBankingException {
         try {
             OperationsUser user = operationsUserRepo.findOne(userId);
@@ -167,6 +174,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
 
     @Override
     @Transactional
+    @Verifiable(operation="OPS_ADD",description="Adding an Operations User")
     public String addUser(OperationsUserDTO user) throws InternetBankingException {
         OperationsUser opsUser = operationsUserRepo.findFirstByUserNameIgnoreCase(user.getUserName());
         if (opsUser != null) {
@@ -221,9 +229,11 @@ public class OperationsUserServiceImpl implements OperationsUserService {
 
     @Override
     @Transactional
+    @Verifiable(operation="UPDATE_OPS",description="Updating an Operations User")
     public String updateUser(OperationsUserDTO user) throws InternetBankingException {
         try {
             OperationsUser opsUser = operationsUserRepo.findOne(user.getId());
+            entityManager.detach(opsUser);
             opsUser.setVersion(user.getVersion());
             opsUser.setFirstName(user.getFirstName());
             opsUser.setLastName(user.getLastName());
@@ -248,7 +258,6 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             OperationsUser opsUser = operationsUserRepo.findOne(userId);
             operationsUserRepo.delete(userId);
             logger.warn("Operations user with Id {} deleted", userId);
-            String fullName = opsUser.getFirstName() + " " + opsUser.getLastName();
             SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_DELETION");
 
             if (setting != null && setting.isEnabled()) {
@@ -365,23 +374,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
         }
     }
 
-    private String getUsedPasswords(String newPassword, String oldPasswords) {
-        StringBuilder builder = new StringBuilder();
-        if (oldPasswords != null) {
-            builder.append(oldPasswords);
-        }
-        builder.append(passwordEncoder.encode(newPassword )+ ",");
-        return builder.toString();
-    }
 
-    private void sendUserCredentials(OperationsUser user, String password) throws InternetBankingException {
-        Email email = new Email.Builder()
-                .setRecipient(user.getEmail())
-                .setSubject("Creation on Internet Banking Operations Console")
-                .setBody(String.format("You have been created on the Internet Banking Operation console.\nYour username is %s and your password is %s. \nThank you.", user.getUserName(), password))
-                .build();
-        mailService.send(email);
-    }
 
     private OperationsUserDTO convertEntityToDTO(OperationsUser operationsUser) {
         OperationsUserDTO operationsUserDTO = modelMapper.map(operationsUser, OperationsUserDTO.class);
