@@ -44,8 +44,7 @@ public class VerificationController {
     @Autowired
     private AdminUserService adminUserService;
 
-    @PersistenceContext
-    private EntityManager eman;
+
 
     @GetMapping("/")
     public String getVerifications(Model model) {
@@ -54,10 +53,10 @@ public class VerificationController {
     }
 
 
-    @PostMapping("/{id}/verify")
+    @GetMapping("/{id}/verify")
     public String verifyOp(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         verificationService.verify(id);
-        redirectAttributes.addFlashAttribute("message","Operations done successfully");
+        redirectAttributes.addFlashAttribute("message","Operation approved successfully");
         return "redirect:/admin/verifications/operations";
     }
 
@@ -65,15 +64,17 @@ public class VerificationController {
     @PostMapping("/verify")
     public String verify(@ModelAttribute("verification") VerificationDTO verification, WebRequest request, RedirectAttributes redirectAttributes) {
 
-        String appoval = request.getParameter("approve");
+        String approval = request.getParameter("approve");
 
-        if ("true".equals(appoval)) {
+        if ("true".equals(approval)) {
             verificationService.verify(verification);
-        } else if ("false".equals(appoval)) {
-            verificationService.decline(verification);
-        }
-        redirectAttributes.addFlashAttribute("message", "Operations done successfully");
+            redirectAttributes.addFlashAttribute("message", "Operation approved successfully");
 
+        } else if ("false".equals(approval)) {
+            verificationService.decline(verification);
+            redirectAttributes.addFlashAttribute("message", "Operation declined successfully");
+
+        }
         return "redirect:/admin/verifications/operations";
     }
 

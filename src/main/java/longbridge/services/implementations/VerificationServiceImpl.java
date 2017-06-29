@@ -47,9 +47,10 @@ public class VerificationServiceImpl implements VerificationService {
 
     @Override
     public String decline(VerificationDTO dto) throws VerificationException {
-        Verification verification = verificationRepo.findOne(dto.getId());
 
+        Verification verification = verificationRepo.findOne(dto.getId());
         String verifiedBy = getCurrentUserName();
+
         if(verifiedBy.equals(verification.getInitiatedBy())){
             throw new InternetBankingException("You cannot verify what you initiated");
         }
@@ -62,6 +63,7 @@ public class VerificationServiceImpl implements VerificationService {
         verification.setDeclinedBy(getCurrentUserName());
         verification.setDeclinedOn(new Date());
         verification.setDeclineReason(dto.getComment());
+        verification.setStatus(verificationStatus.DECLINED);
         verificationRepo.save(verification);
         return messageSource.getMessage("verification.decline", null, locale);
     }

@@ -113,6 +113,7 @@ public class MakerCheckerAdvisor {
         verification.setEntityName(entityName);
         verification.setInitiatedOn(new Date());
         verification.setInitiatedBy(doneBy.getUserName());
+        verification.setVerifiedBy("PENDING..");
         verification.setUserType(doneBy.getUserType());
         verification.setOperation(verifier.operation());
         verification.setDescription(verifier.description());
