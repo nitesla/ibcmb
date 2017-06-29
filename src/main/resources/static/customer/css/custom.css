@@ -23,7 +23,11 @@ start
 .req:after { content:" * ";color:#ff6666;font-size: 13px;font-weight: bolder }
 .req-inner:before { content:" * ";color:#ff6666;font-size: 13px;font-weight: bolder }
 
-
+.row
+{
+    margin-right: 0px !important;
+    margin-left: 0px !important;
+}
 .req ~ input
 {
     width:100% !important;
@@ -40,6 +44,12 @@ start
     font-size:16px;
     padding:15px !important;
     padding-left:0px !important;
+}
+
+
+.invisible
+{
+    visibility: hidden;
 }
 
 .mail-links
@@ -240,14 +250,18 @@ select
     -moz-appearance: none;
     appearance:none;
      background: url('../img/select.jpg') white no-repeat calc(100%);*/
-     
-
-
 }
+
 .my-input
 {
     height: 30px !important;
     width:70% !important;
+     padding:6px 12px !important;
+}
+
+.no-pad-left
+{
+    padding-left: 0px !important;
 }
 
 .form-group
@@ -306,6 +320,7 @@ select
 .time
 {
     background: #ebecef;
+    margin-top: 0px !important;
 }
 
 /*#loa {*/
@@ -370,6 +385,18 @@ select
 }
 
 
+.required-step
+{
+    color:#003056;
+}
+
+
+.less-required
+{
+    color: #777 !important;
+}
+
+
 .tokenHeader
 {
     font-size: 20px;
@@ -385,6 +412,12 @@ select
 tokenInput
 {
     border: 1px solid grey !important;
+}
+
+
+.alert-info
+{
+    background: #003056;
 }
 
 
@@ -816,7 +849,7 @@ body {
     color: #003056;
     font-size: 16px;
     font-weight: 100;
-    margin-top: 40px;
+    margin-top: 20px;
     margin-bottom: 5px;
     text-align: left;
 }
@@ -1260,7 +1293,7 @@ button {
 
 button, input, optgroup, select, textarea {
     margin: 0;
-    margin-top: 3px;
+    margin-top: 6px !important;
     font: inherit;
     color: inherit;
 }
@@ -1272,10 +1305,11 @@ button, input, optgroup, select, textarea {
 }
 
 .content-bg{
-    margin: 20px 0 10px 0;
+    margin: 6px 0 0 0;
     background-color: #ebecef;
     min-height: 350px;
     padding-top:20px;
+    padding-bottom:20px;
 }
 
 .sidebar-bg{
@@ -1334,10 +1368,9 @@ button, input, optgroup, select, textarea {
     border: none;
 }
 
-.btn:hover{
-    color: #fff;
-    background-color: #9A6B57;
-    border: none;
+.btn-link:hover, .btn-link:focus
+{
+    text-decoration: none;
 }
 
 
@@ -1396,7 +1429,7 @@ button, input, optgroup, select, textarea {
 /*}*/
 .table tbody tr{
     background-color: #fff;
-    border-top: 2px solid grey;
+    border-top: 1px solid grey;
 }
 .table th, td{
     padding: 15px;

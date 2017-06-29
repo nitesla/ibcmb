@@ -29,10 +29,19 @@
 <section class="content-wrapper">
     <div class="containe">
         <div class="row">
-            <div class="col-md-9 col-sm-9">
-                <div class="page_header">
-                <h5 > Beneficiary List</h5></div>
-                <a th:href="@{/retail/beneficiary/new}" class="pull-right">Add New Beneficiary</a>
+<
+            <div class="col-md col-sm">
+                <div class=" col-sm-4 page_header">
+                    <h5 > Beneficiary List</h5>
+                    <select class="form-control invisible">
+                        <option value="account">Account Overview</option>
+                </select>
+                </div>
+                <div class='col-sm-5' style='margin-top:80px;'>
+
+                    <a th:href="@{/retail/beneficiary/new}" class="pull-right">Add New Beneficiary</a>
+
+                </div>
             </div>
         </div>
         <div class="row">
