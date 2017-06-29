@@ -10,7 +10,7 @@
     <!--<link rel="stylesheet" type="text/css" th:href="@{~/customer/css/date/css/bootstrap-datepicker.css}"/>-->
     <!--<link rel="stylesheet" type="text/css" th:href="@{~/customer/css/date/css/bootstrap-datepicker.standalone.css}"/>-->
 
-
+    
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/bootstrap.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/custom.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/calendar.css}"/>
@@ -19,7 +19,7 @@
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/bootstrap-daterangepicker/daterangepicker.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/datatables/css/jquery.dataTables.min.css}"/>
     <!--<link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/datatables/css/dataTables.bootstrap.css}"/>-->
-
+    `<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.0/css/bootstrap-datepicker.min.css"/>
     <title>Coronation Merchant Bank</title>
 
 </head>
@@ -159,13 +159,12 @@
        <div class="sidebar-b calende cal  hidden-xs">
             <div  class="alert  time">
 
-
-                 
+               
 
                 <i class="fa fa-calendar " id='datepickerImage' onclick="show()" style="font-size:25px"></i>
-                      <span id='dp'></span> 
+                      
 
-                      <div id="time_" class="pull-right text-bold " style="font-weight:bold;color:#003056">
+                      <!--<div id="time_" class="pull-right text-bold " style="font-weight:bold;color:#003056">
                      
                             <script>
                                 setInterval(
@@ -178,13 +177,8 @@
                                     },
                                     1000) ;
                             </script>
-                        </div>
-                      <style>
-                        #dp
-                        {
-                            display: none;
-                        }
-                      </style>
+                        </div>-->
+                      
             </div>
             <!--<div  id="calendar" style="display: block; margin: 0px auto;" class=" calendar hidden-xs hidden-sm "></div>-->
        </div>
@@ -302,6 +296,8 @@
     <script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
     <script th:src="@{~/customer/plugins/bootstrap-daterangepicker/daterangepicker.js}"></script>
     <script th:src="@{~/customer/js/coronation.js}"></script>
+    <!--<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>-->
+
     <!-- BOOTSTRAP SCRIPTS  -->
     <script th:src="@{~/customer/js/bootstrap.js}"></script>
     <script th:src="@{~/customer/js/bootstrap-session-timeout.js}"></script>
@@ -320,44 +316,13 @@
         <!--});-->
 
     <!--</script>-->
-    <script th:inline='javascript'>
-        /*<![CDATA[*/
 
-        $(document).ready(function()
-        {
-            $('[data-toggle="tooltip"]').tooltip();
-                
-                $("#dp").datepicker({
-                // buttonImage: '@{~/customer/img/cmb_logo.png}',
-                 buttonText: "<i class='fa fa-calendar'></i>",
-                buttonImageOnly: true,
-                changeMonth: true,
-                showAnim: "slide" ,
-                changeYear: true,
-                showOn: 'both',
-            
 
-            
-     });
 
     
-
-     /*]]>*/
-
-        })
-    </script>
-
-    <script>
+   
                     
-        function show()
-        {
-            var dp = document.getElementById('dp');
-            if (dp.style.display == "block")
-                 dp.style.display = "none";
-            else
-                 dp.style.display = "block";
-        }
-    </script>
+      
     <script th:inline="javascript">
         $.sessionTimeout({
             keepAliveUrl: '',
