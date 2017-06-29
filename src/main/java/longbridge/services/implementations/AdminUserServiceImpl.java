@@ -130,7 +130,7 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     @Override
     @Transactional
-    @Verifiable(operation="ADMIN_ADD",description="Adding an Admin User")
+    @Verifiable(operation="ADD_ADMIN_USER",description="Adding an Admin User")
     public String addUser(AdminUserDTO user) throws InternetBankingException
     {
         AdminUser adminUser = adminUserRepo.findFirstByUserNameIgnoreCase(user.getUserName());
@@ -190,7 +190,7 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     @Override
     @Transactional
-    @Verifiable(operation="ADMIN_ACTIVATION",description="Change Admin Activation Status")
+    @Verifiable(operation="UPDATE_ADMIN_STATUS",description="Change Admin Activation Status")
     public String changeActivationStatus(Long userId) throws InternetBankingException {
         try {
             AdminUser user = adminUserRepo.findOne(userId);
@@ -267,7 +267,7 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     @Override
     @Transactional
-    @Verifiable(operation="ADMIN_UPDATE",description="Updating an Admin User")
+    @Verifiable(operation="UPDATE_ADMIN_USER",description="Updating an Admin User")
     public String updateUser(AdminUserDTO user) throws InternetBankingException {
 
         try {

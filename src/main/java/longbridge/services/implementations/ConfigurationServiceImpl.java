@@ -42,7 +42,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 
 	@Transactional
 	@Override
-	@Verifiable(operation="SETTING_DEL",description="Add Settings")
+	@Verifiable(operation="ADD_SETTING",description="Add Settings")
 	public String addSetting(SettingDTO dto) throws InternetBankingException {
 		try {
 			ModelMapper mapper = new ModelMapper();
@@ -96,7 +96,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 	
 	@Transactional
 	@Override
-	@Verifiable(operation="SETTING_UPDATE",description="Update Settings")
+	@Verifiable(operation="UPDATE_SETTING",description="Update Settings")
 	public String updateSetting(SettingDTO dto) throws InternetBankingException {
 		try {
 			Setting setting = settingRepo.findOne(dto.getId());
@@ -110,7 +110,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 	}
 
 	@Override
-	@Verifiable(operation="SETTING_DEL",description="Delete Settings")
+	@Verifiable(operation="DELETE_SETTING",description="Delete Settings")
 	public String deleteSetting(Long id) throws InternetBankingException {
 		try {
 			settingRepo.delete(id);
