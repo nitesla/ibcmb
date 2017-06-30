@@ -55,43 +55,44 @@
 
                         <div class="form-group col-md-6">
                             <label>&nbsp;</label>
-                            <button type="submit" class="btn " id="btn-find"><i class="fa fa-search" style="color: white" ></i>&nbsp; view</button>
+                            <button type="submit" class="btn btn-link " id="btn-find"><i class="fa fa-search" style="color: whit" ></i>&nbsp; view</button>
                         </div>
                     </div>
 
 
 
 <p>
-                        <a id="btn-print" th:href="@{'~/viewstatement/display/data'}" class="btn bt-link-act pull-right"> <i class="fa fa-print" style="color: white" ></i>&nbsp; print</a>
+                        <a id="btn-print" th:href="@{'~/viewstatement/display/data'}"  class="btn bt-link-act pull-right"> <i class="fa fa-print"  ></i>&nbsp; print</a>
                         <!--<a th:href="@{'#'}" class="btn "> <i class="fa fa-envelope" style="color: white" ></i>&nbsp; send mail</a>-->
 </p>
 
                         <h2>TRANSACTION DETAILS</h2>
-                    <table class="table" id="tranDetails">
-                        <thead>
-                        <tr>
-                            <th>Account Balance</th>
-                            <th>Currency Code</th>
-                            <th>Post Date</th>
-                            <th>Transaction Narration</th>
-                            <th>Debit/Credit</th>
-                            <th>Value Date</th>
+                    <div class="table-responsive" >
+                            <table class="table" id="tranDetails">
+                                <thead>
+                                <tr>
+                                    <th>Account Balance</th>
+                                    <th>Currency Code</th>
+                                    <th>Post Date</th>
+                                    <th>Transaction Narration</th>
+                                    <th>Debit/Credit</th>
+                                    <th>Value Date</th>
 
-                        </tr>
-                        </thead>
-                        <tfoot>
-                        <tr>
-                            <th>Account Balance</th>
-                            <th>Currency Code</th>
-                            <th>Post Date</th>
-                            <th>Transaction Narration</th>
-                            <th>Debit/Credit</th>
-                            <th>Value Date</th>
+                                </tr>
+                                </thead>
+                                <tfoot>
+                                <tr>
+                                    <th>Account Balance</th>
+                                    <th>Currency Code</th>
+                                    <th>Post Date</th>
+                                    <th>Transaction Narration</th>
+                                    <th>Debit/Credit</th>
+                                    <th>Value Date</th>
 
-                        </tr>
-                        </tfoot>
-                    </table>
-
+                                </tr>
+                                </tfoot>
+                            </table>
+                    </div>
 
                 </div>
     </form>
@@ -164,6 +165,7 @@
 
 			e.preventDefault();
 			dt = $('#tranDetails').DataTable();
+           
 			dt.ajax.reload(null, true);
 
 		});

@@ -63,8 +63,9 @@
                                     <input type="text" name="token" placeholder="" class="form-control"/>
                                     <br/>
                                     <div class="form-group">
-                                        <button type="submit" class="btn btn-default">Proceed</button>
-                                        <a th:href="@{/retail/transfer/ownaccount}" >Cancel</a>
+                                        <button type="submit" class="btn btn-link required-step">Proceed</button>
+                                        <button th:href="@{/retail/transfer/ownaccount}" class='btn btn-link less-required'>Cancel</button>
+                                         <button type='button' class='btn btn-link less-required'>Modify</button>
                                     </div>
 
 

@@ -43,7 +43,7 @@
                                         <div>
                                         <span class="alert no-bd-rad my-border bg-white">NGN</span>
                                             <select name="source" class="form-control" id="source"
-                                                    th:field="*{customerAccountNumber}" onchange="getBalance()" style="width:70%;margin:0px auto;">
+                                                    th:field="*{customerAccountNumber}" onchange="getBalance()" >
                                                 <!--<option value=""> select an account</option>-->
                                                 <option th:each="s: ${accounts}" th:value="${s}" th:text="${s}" ></option>
                                             </select><span class='req-inner'></span>
@@ -56,7 +56,7 @@
                                         <span id="dcurency"></span>
                                         <div>
                                          <span class="alert no-bd-rad my-border bg-white">NGN</span>
-                                        <select name="destination" class="form-contrl my-select" id="destination"
+                                        <select name="destination" class="form-control " id="destination"
                                                 th:field="*{beneficiaryAccountNumber}" required="required">
                                             <option th:each="s: ${accounts}" th:value="${s}" th:text="${s}"></option>
 
@@ -73,7 +73,7 @@
 
                                         <input type="number" name="textname" min="0" step=".10" placeholder="Enter an amount"
                                             th:field="*{amount}"
-                                            class="form-contro my-input"/><span class='req-inner'></span>
+                                            class="form-control"/><span class='req-inner'></span>
                                         <label	th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}"
                                                 class="validation-message"></label>
                                     </div>
@@ -83,10 +83,11 @@
                                          <span class="alert no-bd-rad my-border bg-white hide-content-only">NGN</span>
 
                                         <input type="text" name="textname" placeholder="" th:field="*{remarks}"
-                                            class="form-contro my-input"/>
+                                            class="form-control "/>
                                     </div>
                                     
-                                    <div class='pull-right' style="margin-right:50px;">
+                                    <div class='ull-right' style="margin-right:50px;">
+                                         <span class="alert no-bd-rad my-border bg-white hide-content-only">NGN</span>
                                          <button class="btn btn-link required-step" type="submit">Submit</button>
                                          <button class="btn btn-link less-required" type="button ">Cancel</button>
                                    
@@ -98,9 +99,10 @@
                         </div>
 
                 </div>
-                <div class="col-md-4 col-sm-4 col-xs-12 well rel-info">
+                <div class="col-md-4 col-sm-4 well">
                     <!--<p class="related" style="padding-top: 5%">Related Information</p>-->
-                   
+                    Related Information
+                    <hr class="related-info"/>
                     <!--<input type="availBal" name="availBal"/>-->
                     <p id="availBal"><b></b></p>
                 </div>
