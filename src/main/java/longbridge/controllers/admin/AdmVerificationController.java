@@ -98,7 +98,8 @@ public class AdmVerificationController {
     @GetMapping(path = "/all")
     public
     @ResponseBody
-    DataTablesOutput<VerificationDTO> getAllPending(DataTablesInput input, Principal principal) {
+    DataTablesOutput<VerificationDTO> getAllPending(DataTablesInput input, Principal principal)
+    {
         //AdminUser createdBy = adminUserService.getUserByName(principal.getName());
         Pageable pageable = DataTablesUtils.getPageable(input);
         List<VerificationDTO> verifications = verificationService.getPendingForUser();
@@ -152,15 +153,18 @@ public class AdmVerificationController {
 
 
     @GetMapping("/pendingops")
-    public String getPendingVerification(Model model, Principal principal) {
-               return "adm/makerchecker/pending";
+    public String getPendingVerification(Model model, Principal principal)
+    {
+
+        return "adm/makerchecker/pending";
     }
 
 
     @GetMapping("/operations")
     public String getVerification(Model model, Principal principal)
     {
-         return "adm/makerchecker/checker";
+
+        return "adm/makerchecker/checker";
     }
 
 
