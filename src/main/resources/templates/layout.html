@@ -42,7 +42,7 @@
                     <li sec:authorize="hasAuthority('CODE_CONFIG')"><a href="/admin/codes/alltypes">Codes</a></li>
                     <li sec:authorize="hasAuthority('SETTING_CONFIG')"><a href="/admin/settings">System Settings</a></li>
                     <li sec:authorize="hasAuthority('AUDIT_CONFIG')"><a href="/admin/audit">Audit</a></li>
-                    <li><a href="/admin/checker">Maker Checker</a></li>
+                    <li><a href="/admin/checker">Checker</a></li>
                 </ul>
             </li>
             <li sec:authorize="hasAuthority('BANK_CONFIG')"><a><i class="fa fa-bank"></i> Bank Setup <span class="fa fa-chevron-down"></span></a>
@@ -82,8 +82,8 @@
 
             <li><a><i class="fa fa-check"></i> Verifications <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
-                    <li><a href="/admin/verifications/operations">Approval</a></li>
-                    <li><a href="/admin/verifications/pendingops">My Requests</a></li>
+                    <li><a href="/admin/verifications/operations"> Approvals  <button class="badge bg-orange"  th:text="${verificationNumber}"></button> </a></li>
+                    <li><a href="/admin/verifications/pendingops">My  Requests <button class="badge bg-orange bt-select" disabled="disabled" th:text="${totalPending}" >count</button>  </a></li>
 
                 </ul>
             </li>
@@ -122,7 +122,11 @@
 
                         </ul>
                     </li>
+
+
+
                 </ul>
+
             </li>
 
 

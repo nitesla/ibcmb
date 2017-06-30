@@ -34,32 +34,32 @@
                 </div>
 
 
-                <ul class="nav navbar-right panel_toolbox">
+                <!--<ul class="nav navbar-right panel_toolbox">-->
 
-                    <li>
-                        <div class="col-lg-4">
-                            <div class="title-action" >
-                                <a class="btn btn-app" href="#"  disabled="disabled" >
-                                    <button class="badge bg-orange bt-select" disabled="disabled" th:text="${totalPending}" >count</button>
-                                    <i class="fa fa-check"></i>My approvals
-                                </a>
-                            </div>
-                        </div>
+                    <!--<li>-->
+                        <!--<div class="col-lg-4">-->
+                            <!--<div class="title-action" >-->
+                                <!--<a class="btn btn-app" href="#"  disabled="disabled" >-->
+                                    <!--<button class="badge bg-orange bt-select" disabled="disabled" th:text="${totalPending}" >count</button>-->
+                                    <!--<i class="fa fa-check"></i>My approvals-->
+                                <!--</a>-->
+                            <!--</div>-->
+                        <!--</div>-->
 
-                    </li>
+                    <!--</li>-->
 
-                    <li>
-                        <div class="col-lg-4">
-                            <div class="title-action">
-                                <a  class=" btn btn-app btn bt-select btn-sm  bt-link-act" href="/admin/verifications/operations">
-                                    <button class="badge bg-orange"  th:text="${verificationNumber}"></button>
-                                    <i class="fa fa-check"></i>Approval Queue
-                                </a>
-                            </div>
-                        </div>
-                    </li>
+                    <!--<li>-->
+                        <!--<div class="col-lg-4">-->
+                            <!--<div class="title-action">-->
+                                <!--<a  class=" btn btn-app btn bt-select btn-sm  bt-link-act" href="/ops/verifications/operations">-->
+                                    <!--<button class="badge bg-orange"  th:text="${verificationNumber}"></button>-->
+                                    <!--<i class="fa fa-check"></i>Approval Queue-->
+                                <!--</a>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</li>-->
 
-                </ul>
+                <!--</ul>-->
 
                 <div class="clearfix"></div>
 
@@ -75,13 +75,13 @@
 
                             <div class="x_content">
                                 <div class="ibox-content">
-                                    <form method="post" class="form-horizontal" >
+                                    <form method="post" th:action="@{/ops/verifications/verify}" class="form-horizontal" th:object="${verification}">
 
 
                                         <div class="form-group">
                                             <label for="comments" class="col-sm-2 control-label" style="text-align: left">Comments</label>
                                             <div class="col-sm-10">
-                                                <input type="text"  class="form-control" id="comments"/>
+                                                <input type="text"  th:field="*{comment}" class="form-control" id="comments"/>
                                             </div>
                                         </div>
 
@@ -132,27 +132,27 @@
         </div>
 
 
-        <div id="myModal" class="modal fade" role="dialog">
-            <div class="modal-dialog modal-lg">
+        <!--<div id="myModal" class="modal fade" role="dialog">-->
+            <!--<div class="modal-dialog modal-lg">-->
 
-                <!-- Modal content-->
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title" style="color:#2A3F54">Reason</h4>
-                    </div>
-                    <div class="modal-body" style="text-align: center">
-                        <input style="width:700px;height:100px"/>
+                <!--&lt;!&ndash; Modal content&ndash;&gt;-->
+                <!--<div class="modal-content">-->
+                    <!--<div class="modal-header">-->
+                        <!--<button type="button" class="close" data-dismiss="modal">&times;</button>-->
+                        <!--<h4 class="modal-title" style="color:#2A3F54">Reason</h4>-->
+                    <!--</div>-->
+                    <!--<div class="modal-body" style="text-align: center">-->
+                        <!--<input style="width:700px;height:100px"/>-->
 
-                    </div>
-                    <div class="modal-footer">
-                        <input type="submit" class="btn btn-primary" value="Submit"  data-dismiss="modal"/>
+                    <!--</div>-->
+                    <!--<div class="modal-footer">-->
+                        <!--<input type="submit" class="btn btn-primary" value="Submit"  data-dismiss="modal"/>-->
 
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+                        <!--<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
         <!-- /page content -->
 
         <!-- footer content -->
@@ -204,8 +204,10 @@
 
                 current_path = path.endsWith('[') ? path + node + ']' : path + '.' +node;
 
-                b = jsonPath(beforeData,current_path)[0] ;
-                a = jsonPath(afterData,current_path)[0];
+                b = jsonPath(beforeData,current_path) ? jsonPath(beforeData,current_path)[0] : 'undefined' ;
+
+                a = jsonPath(afterData,current_path) ? jsonPath(afterData,current_path)[0] : 'undefined' ;
+
                 if(a == b && typeof a != 'undefined' && typeof b != 'undefined' ){
 
                     result += '<li class="list-group-item">' + node + ':'+jsn[node] +'</li>'
@@ -218,8 +220,8 @@
         }
         return result;
     }
-      var beforeData = JSON.parse([[${beforeObject}]]);
-      var afterData =JSON.parse([[${afterObject}]]);
+      var beforeData = JSON.parse([[${verification.beforeObject}]]);
+      var afterData =JSON.parse([[${verification.afterObject}]]);
     console.log(beforeData);
     $(document).ready(function() {
 
@@ -233,6 +235,10 @@
                 "className" : "dt-center",
                 "render" : function(data, type, full, meta) {
                     if (type === 'display') {
+                        temp = data;
+                        if(!temp || 0 === temp.length){
+                            temp = '{}'
+                        }
                         before = JSON.parse(data);
                         return '<ul>'+parseJsonAsList(before,'$')+'</ul>';
                     }
@@ -243,6 +249,10 @@
                 "className" : "dt-center",
                 "render" : function(data, type, full, meta) {
                     if (type === 'display') {
+                        temp = data;
+                        if(!temp || 0 === temp.length){
+                            temp = '{}'
+                        }
                         after = JSON.parse(data);
                         return '<ul class="list-group">'+parseJsonAsList(after,'$')+'</ul>';
                     }

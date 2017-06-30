@@ -136,8 +136,11 @@ public class VerificationServiceImpl implements VerificationService {
 
 
     @Override
-    public Page<VerificationDTO> getMakerCheckerPending(Pageable pageDetails, User createdBy) {
-        Page<Verification> page = verificationRepo.findByStatusAndInitiatedBy(verificationStatus.PENDING, createdBy.getUserName(), pageDetails);
+    public Page<VerificationDTO> getMakerCheckerPending(Pageable pageDetails) {
+        CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User doneBy = principal.getUser();
+
+        Page<Verification> page = verificationRepo.findByStatusAndInitiatedBy(verificationStatus.PENDING, doneBy.getUserName(), pageDetails);
         List<VerificationDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
         Page<VerificationDTO> pageImpl = new PageImpl<VerificationDTO>(dtOs, pageDetails, t);
@@ -146,8 +149,10 @@ public class VerificationServiceImpl implements VerificationService {
     }
 
     @Override
-    public Page<VerificationDTO> getPendingOperations(String operation,User user,Pageable pageable) {
-        Page<Verification> page = verificationRepo.findByOperationAndInitiatedByAndUserTypeAndStatus(operation,user.getUserName(),user.getUserType(),verificationStatus.PENDING,pageable);
+    public Page<VerificationDTO> getPendingOperations(String operation,Pageable pageable) {
+        CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User doneBy = principal.getUser();
+        Page<Verification> page = verificationRepo.findByOperationAndInitiatedByAndUserTypeAndStatus(operation,doneBy.getUserName(),doneBy.getUserType(),verificationStatus.PENDING,pageable);
         List<VerificationDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
         Page<VerificationDTO> pageImpl = new PageImpl<VerificationDTO>(dtOs, pageable, t);
@@ -156,23 +161,31 @@ public class VerificationServiceImpl implements VerificationService {
     }
 
     @Override
-    public long getTotalNumberPending(User user) {
-        long totalNumberPending = verificationRepo.countByInitiatedByAndUserTypeAndStatus(user.getUserName(), user.getUserType(), verificationStatus.PENDING);
+    public long getTotalNumberPending() {
+        CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User doneBy = principal.getUser();
+
+        long totalNumberPending = verificationRepo.countByInitiatedByAndUserTypeAndStatus(doneBy.getUserName(),doneBy.getUserType(), verificationStatus.PENDING);
         return totalNumberPending;
     }
 
 
     @Override
-    public int getTotalNumberForVerification(User user) {
-        List<Verification> b = verificationRepo.findVerificationForUser(user.getUserName(), user.getUserType());
+    public int getTotalNumberForVerification() {
+
+        CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User doneBy = principal.getUser();
+        List<Verification> b = verificationRepo.findVerificationForUser(doneBy.getUserName(), doneBy.getUserType());
         return b.size();
     }
 
 
 
     @Override
-    public Page<PendingVerification> getPendingVerifications(User user, Pageable pageable) {
-        Page<Verification> verifications = verificationRepo.findByStatusAndInitiatedByAndUserType(verificationStatus.PENDING, user.getUserName(), user.getUserType(), pageable);
+    public Page<PendingVerification> getPendingVerifications(Pageable pageable) {
+        CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User doneBy = principal.getUser();
+        Page<Verification> verifications = verificationRepo.findByStatusAndInitiatedByAndUserType(verificationStatus.PENDING, doneBy.getUserName(), doneBy.getUserType(), pageable);
         Set<String> entities = new HashSet<>();
         List<PendingVerification> pendingVerifications = new ArrayList<>();
         for (Verification verification : verifications) {
@@ -197,15 +210,28 @@ public class VerificationServiceImpl implements VerificationService {
     }
 
 
-    public List<VerificationDTO> getVerificationsForUser(User user) {
-        List<Verification> verifications = verificationRepo.findVerificationForUser(user.getUserName(), user.getUserType());
+    public List<VerificationDTO> getVerificationsForUser() {
+        CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User doneBy = principal.getUser();
+        List<Verification> verifications = verificationRepo.findVerificationForUser(doneBy.getUserName(), doneBy.getUserType());
         return convertEntitiesToDTOs(verifications);
 
     }
 
+    @Override
+    public Collection<Permission> getPermmitedOperation()
+    {
+        CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User doneBy = principal.getUser();
 
-    public List<VerificationDTO> getPendingForUser(User user) {
-        List<Verification> verifications = verificationRepo.findByInitiatedByAndUserType(user.getUserName(), user.getUserType());
+        return doneBy.getRole().getPermissions();
+    }
+
+
+    public List<VerificationDTO> getPendingForUser() {
+        CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User doneBy = principal.getUser();
+        List<Verification> verifications = verificationRepo.findByInitiatedByAndUserType(doneBy.getUserName(), doneBy.getUserType());
         return convertEntitiesToDTOs(verifications);
 
     }

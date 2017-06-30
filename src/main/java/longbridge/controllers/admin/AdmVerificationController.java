@@ -83,9 +83,9 @@ public class AdmVerificationController {
     public
     @ResponseBody
     DataTablesOutput<VerificationDTO> getAllPending(DataTablesInput input, Principal principal) {
-        AdminUser createdBy = adminUserService.getUserByName(principal.getName());
+        //AdminUser createdBy = adminUserService.getUserByName(principal.getName());
         Pageable pageable = DataTablesUtils.getPageable(input);
-        List<VerificationDTO> verifications = verificationService.getPendingForUser(createdBy);
+        List<VerificationDTO> verifications = verificationService.getPendingForUser();
         DataTablesOutput<VerificationDTO> out = new DataTablesOutput<VerificationDTO>();
         out.setDraw(input.getDraw());
         out.setData(verifications);
@@ -97,10 +97,11 @@ public class AdmVerificationController {
     @GetMapping(path = "/allverification")
     public
     @ResponseBody
-    DataTablesOutput<VerificationDTO> getAllVerification(DataTablesInput input, Principal principal) {
+    DataTablesOutput<VerificationDTO> getAllVerification(DataTablesInput input, Principal principal)
+    {
         AdminUser createdBy = adminUserService.getUserByName(principal.getName());
         Pageable pageable = DataTablesUtils.getPageable(input);
-        List<VerificationDTO> verifications = verificationService.getVerificationsForUser(createdBy);
+        List<VerificationDTO> verifications = verificationService.getVerificationsForUser();
         DataTablesOutput<VerificationDTO> out = new DataTablesOutput<VerificationDTO>();
         out.setDraw(input.getDraw());
         out.setData(verifications);
@@ -108,6 +109,7 @@ public class AdmVerificationController {
         out.setRecordsTotal(verifications.size());
         return out;
     }
+
 
     @GetMapping("/{opId}/pending")
     public String getPendingOperation(@PathVariable Long opId, Model model, Principal principal) {
@@ -123,7 +125,7 @@ public class AdmVerificationController {
     DataTablesOutput<VerificationDTO> getPendingOperation(@PathVariable String operation, DataTablesInput input, Principal principal) {
         AdminUser user = adminUserService.getUserByName(principal.getName());
         Pageable pageable = DataTablesUtils.getPageable(input);
-        Page<VerificationDTO> page = verificationService.getPendingOperations(operation, user, pageable);
+        Page<VerificationDTO> page = verificationService.getPendingOperations(operation, pageable);
         DataTablesOutput<VerificationDTO> out = new DataTablesOutput<VerificationDTO>();
         out.setDraw(input.getDraw());
         out.setData(page.getContent());
@@ -136,8 +138,8 @@ public class AdmVerificationController {
     @GetMapping("/pendingops")
     public String getPendingVerification(Model model, Principal principal) {
         AdminUser createdBy = adminUserService.getUserByName(principal.getName());
-        int verificationNumber = verificationService.getTotalNumberForVerification(createdBy);
-        long totalPending = verificationService.getTotalNumberPending(createdBy);
+        int verificationNumber = verificationService.getTotalNumberForVerification();
+        long totalPending = verificationService.getTotalNumberPending();
         model.addAttribute("totalPending", totalPending);
         model.addAttribute("verificationNumber", verificationNumber);
         return "adm/makerchecker/pending";
@@ -145,10 +147,11 @@ public class AdmVerificationController {
 
 
     @GetMapping("/operations")
-    public String getVerification(Model model, Principal principal) {
+    public String getVerification(Model model, Principal principal)
+    {
         AdminUser createdBy = adminUserService.getUserByName(principal.getName());
-        int verificationNumber = verificationService.getTotalNumberForVerification(createdBy);
-        long totalPending = verificationService.getTotalNumberPending(createdBy);
+        int verificationNumber = verificationService.getTotalNumberForVerification();
+        long totalPending = verificationService.getTotalNumberPending();
         model.addAttribute("verificationNumber", verificationNumber);
         model.addAttribute("totalPending", totalPending);
         return "adm/makerchecker/checker";
@@ -169,8 +172,8 @@ public class AdmVerificationController {
         //JSONObject product = new JSONObject(verification.getAfterObject());
         //JSONArray recs = locs.getJSONArray("record");
         AdminUser createdBy = adminUserService.getUserByName(principal.getName());
-        int verificationNumber = verificationService.getTotalNumberForVerification(createdBy);
-        long totalPending = verificationService.getTotalNumberPending(createdBy);
+        int verificationNumber = verificationService.getTotalNumberForVerification();
+        long totalPending = verificationService.getTotalNumberPending();
         model.addAttribute("verificationNumber", verificationNumber);
         model.addAttribute("totalPending", totalPending);
         return "adm/makerchecker/details";
@@ -190,8 +193,8 @@ public class AdmVerificationController {
         //JSONObject product = new JSONObject(verification.getAfterObject());
         //JSONArray recs = locs.getJSONArray("record");
         AdminUser createdBy = adminUserService.getUserByName(principal.getName());
-        int verificationNumber = verificationService.getTotalNumberForVerification(createdBy);
-        long totalPending = verificationService.getTotalNumberPending(createdBy);
+        int verificationNumber = verificationService.getTotalNumberForVerification();
+        long totalPending = verificationService.getTotalNumberPending();
         model.addAttribute("verificationNumber", verificationNumber);
         model.addAttribute("totalPending", totalPending);
         return "adm/makerchecker/pendingdetails";

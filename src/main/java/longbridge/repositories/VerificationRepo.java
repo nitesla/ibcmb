@@ -33,8 +33,14 @@ public interface VerificationRepo extends CommonRepo<Verification, Long>{
 
     List<Verification> findByInitiatedByAndUserType(String initiatedby, UserType userType);
 
+
     @Query("select v from Verification v where v.initiatedBy != :initiatedBy and v.userType=:userType and v.status ='PENDING'")
     List<Verification> findVerificationForUser(@Param("initiatedBy") String initiatedBy, @Param("userType") UserType userType);
+
+
+    @Query( "select v from verification v where v.initiatedBy != :initiated and v.operation in :permissionlist")
+    Page<Verification> findVerificationForUser(@Param("initiated") String initiatedBy,@Param("permissionlist") List<String> operation);
+
 
 
 }

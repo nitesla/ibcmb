@@ -34,34 +34,34 @@
                 </div>
 
 
-                <ul class="nav navbar-right panel_toolbox">
+                <!--<ul class="nav navbar-right panel_toolbox">-->
 
-                    <li>
-                        <div class="col-lg-4">
-                            <div class="title-action">
-                                <a class="btn btn-app" href="/admin/verifications/pendingops">
-                                    <button class="badge bg-orange bt-select"   th:text="${totalPending}">count</button>
-                                    <i class="fa fa-envelope"></i>My approval
-                                </a>
-                            </div>
-                        </div>
-                    </li>
-
-
-                    <li>
-                        <div class="col-lg-4">
-                            <div class="title-action">
-                                <a  class=" btn btn-app btn  btn-sm bt-select bt-link-act" href="#" disabled="disabled" >
-                                    <button class="badge bg-orange" disabled="disabled" th:text="${verificationNumber}"></button>
-                                    <i class="fa fa-envelope"></i>Approval Queue
-                                </a>
-                            </div>
-                        </div>
-                    </li>
+                    <!--<li>-->
+                        <!--<div class="col-lg-4">-->
+                            <!--<div class="title-action">-->
+                                <!--<a class="btn btn-app" href="/ops/verifications/pendingops">-->
+                                    <!--<button class="badge bg-orange bt-select"   th:text="${totalPending}">count</button>-->
+                                    <!--<i class="fa fa-envelope"></i>My approval-->
+                                <!--</a>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</li>-->
 
 
+                    <!--<li>-->
+                        <!--<div class="col-lg-4">-->
+                            <!--<div class="title-action">-->
+                                <!--<a  class=" btn btn-app btn  btn-sm bt-select bt-link-act" href="#" disabled="disabled" >-->
+                                    <!--<button class="badge bg-orange" disabled="disabled" th:text="${verificationNumber}"></button>-->
+                                    <!--<i class="fa fa-envelope"></i>Approval Queue-->
+                                <!--</a>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</li>-->
 
-                </ul>
+
+
+                <!--</ul>-->
 
 
                 <div class="clearfix"></div>
@@ -184,8 +184,12 @@
 
 
                 current_path = path.endsWith('[') ? path + node + ']' : path + '.' +node;
+               /* if(jsonPath(beforeData,current_path)){
+
+                }
                 b = jsonPath(beforeData,current_path)[0] ;
                 a = jsonPath(afterData,current_path)[0];
+                */
                 if(true){
                     result += '<li class="list-group-item">'+ node +':<ul class="list-group">' + parseJsonAsList(jsn[node],current_path) + '</ul></li>';
                 }else{
@@ -196,8 +200,11 @@
 
 
                 current_path = path.endsWith('[') ? path + node + ']' : path + '.' +node;
-                b = jsonPath(beforeData,current_path)[0] ;
-                a = jsonPath(afterData,current_path)[0];
+
+                b = jsonPath(beforeData,current_path) ? jsonPath(beforeData,current_path)[0] : 'undefined' ;
+
+                a = jsonPath(afterData,current_path) ? jsonPath(afterData,current_path)[0] : 'undefined' ;
+
                 if(a == b && typeof a != 'undefined' && typeof b != 'undefined' ){
 
                     result += '<li class="list-group-item">' + node + ':'+jsn[node] +'</li>'
@@ -224,8 +231,14 @@
                 "targets" : 0,
                 "className" : "dt-center",
                 "render" : function(data, type, full, meta) {
+
                     if (type === 'display') {
-                        before = JSON.parse(data);
+                        temp = data;
+                        if(!temp || 0 === temp.length){
+                            temp = '{}'
+                        }
+                        before = JSON.parse(temp);
+
                         return '<ul>'+parseJsonAsList(before,'$')+'</ul>';
                     }
                     return data;
@@ -235,8 +248,13 @@
                 "className" : "dt-center",
                 "render" : function(data, type, full, meta) {
                     if (type === 'display') {
-                        after = JSON.parse(data);
-                        return '<ul class="list-group">'+parseJsonAsList(after,'$')+'</ul>';
+                        temp = data;
+                        if(!temp || 0 === temp.length ){
+                            temp = '{}'
+                        }
+                        before = JSON.parse(temp);
+
+                        return '<ul>'+parseJsonAsList(before,'$')+'</ul>';
                     }
                     return data;
                 }
