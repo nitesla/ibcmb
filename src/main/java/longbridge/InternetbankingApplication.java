@@ -1,5 +1,6 @@
 package longbridge;
 
+import longbridge.jobs.CronJobScheduler;
 import longbridge.config.makerchecker.MakerCheckerInitializer;
 import longbridge.repositories.CustomJpaRepositoryFactoryBean;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -33,7 +34,7 @@ private MakerCheckerInitializer makerCheckerInitializer;
 
     @Override
     public void run(String... strings) throws Exception {
-        makerCheckerInitializer.initialize();
+//        CronJobScheduler.startJobs();
     }
 }
 
