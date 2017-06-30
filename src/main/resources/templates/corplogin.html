@@ -10,7 +10,7 @@
 <div class="container">
     <div class="top_bar">
         <ul class="list_group">
-            <li><a href="#"> CORONATION MERCHANT BANK</a></li>
+            <li><a href="https://www.coronationmb.com/" target="_blank"> CORONATION MERCHANT BANK</a></li>
         </ul>
     </div>
     <br/>
@@ -59,15 +59,15 @@
                 <div th:if="${param.error != null}" class="alert alert-danger" th:text="${session[SPRING_SECURITY_LAST_EXCEPTION]}">error</div>
 
                 <div class="form-group">
-                    <input type="text" name="username" th:value="*{username}" class="form-control" readonly="readonly" autocomplete="off"/>
+                    <input type="text" name="username" th:value="*{username}" class="my-select" readonly="readonly" autocomplete="off"/>
                 </div>
 
                 <div class="form-group">
-                    <input type="text" name="corporateId" th:value="*{corpKey}" class="form-control" readonly="readonly" autocomplete="off"/>
+                    <input type="text" name="corporateId" th:value="*{corpKey}" class="my-select" readonly="readonly" autocomplete="off"/>
                 </div>
 
                 <div class="form-group">
-                    <input id="password" type="password" name="password" class="form-control"  placeholder="Password" autocomplete="off"/>
+                    <input id="password" type="password" name="password" class="my-select"  placeholder="Password" autocomplete="off"/>
                 </div>
 
                 <div class="form-group">

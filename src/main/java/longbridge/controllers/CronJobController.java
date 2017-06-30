@@ -1,5 +1,7 @@
 package longbridge.controllers;
 
+import longbridge.services.AccountService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 /**
@@ -7,5 +9,9 @@ import org.springframework.stereotype.Controller;
  */
 @Controller
 public class CronJobController {
-
+    @Autowired
+    private AccountService accountService;
+    public void updatAllAccounts(){
+        accountService.updateAccountDetails();
+    }
 }

@@ -1,8 +1,9 @@
 package longbridge.services.implementations;
 
 import longbridge.dtos.FaqsDTO;
+import longbridge.exception.InternetBankingException;
 import longbridge.models.Faqs;
-import longbridge.repositories.NotificationsRepo;
+import longbridge.repositories.FaqsRepo;
 import longbridge.services.FaqsService;
 import longbridge.utils.Verifiable;
 import org.modelmapper.ModelMapper;
@@ -11,6 +12,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -34,34 +38,68 @@ public class FaqsServiceImpl implements FaqsService {
     MessageSource messageSource;
 
     @Autowired
-    NotificationsRepo notificationsRepo;
+    FaqsRepo faqsRepo;
 
     @Override
     public List<FaqsDTO> getFaqs() {
-        return null;
+        List<Faqs> faqs = this.faqsRepo.findAll();
+        return convertEntitiesToDTOs(faqs);
+    }
+
+    @Override
+    public Page<FaqsDTO> getFaqs(Pageable pageDetails) {
+        Page<Faqs> page = faqsRepo.findAll(pageDetails);
+        List<FaqsDTO> dtOs = convertEntitiesToDTOs(page.getContent());
+        long t = page.getTotalElements();
+
+        Page<FaqsDTO> pageImpl = new PageImpl<FaqsDTO>(dtOs, pageDetails, t);
+        return pageImpl;
     }
 
     @Override
     public FaqsDTO getFaq(Long id) {
-        return null;
+        Faqs faqs = this.faqsRepo.findOne(id);
+        return convertEntityToDTO(faqs);
     }
 
     @Override
     @Verifiable(operation = "ADD_FAQ", description = "Adding FAQs")
     public String addFaq(FaqsDTO faqsDTO) {
-        return null;
+        try {
+            Faqs faqs = convertDTOToEntity(faqsDTO);
+            faqsRepo.save(faqs);
+            logger.info("Added new Notification {} ", faqs.getQuestion());
+            return messageSource.getMessage("faq.add.success", null, locale);
+        }catch (Exception e){
+            throw new InternetBankingException(messageSource.getMessage("failure",null,locale));
+        }
     }
 
     @Override
     @Verifiable(operation = "UPDATE_FAQ", description = "Updating an FAQs")
     public String updateFaq(FaqsDTO faqsDTO) {
-        return null;
+        try {
+            Faqs faqs = convertDTOToEntity(faqsDTO);
+            faqsRepo.save(faqs);
+            logger.info("Updated Notification with Id {}", faqs.getQuestion());
+            return messageSource.getMessage("faq.update.success", null, locale);
+        }
+        catch (Exception e){
+            throw new InternetBankingException(messageSource.getMessage("failure",null,locale));
+        }
     }
 
     @Override
     @Verifiable(operation = "DELETE_FAQ", description = "Deleting FAQs")
     public String deleteFaq(Long id) {
-        return null;
+        try{
+            faqsRepo.delete(id);
+            logger.info("Notification {} has been deleted",id.toString());
+            return messageSource.getMessage("faq.delete.success",null,locale);
+        }
+        catch (Exception e){
+            throw new InternetBankingException(messageSource.getMessage("failure",null,locale));
+        }
     }
 
     @Override

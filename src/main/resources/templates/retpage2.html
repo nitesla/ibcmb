@@ -10,7 +10,7 @@
 <div class="container">
     <div class="top_bar">
         <ul class="list_group">
-            <li><a href="#"> CORONATION MERCHANT BANK</a></li>
+            <li><a href="https://www.coronationmb.com/" target="_blank"> CORONATION MERCHANT BANK</a></li>
         </ul>
     </div>
     <br/>
@@ -51,53 +51,69 @@
 <section class="content-wrapper">
     <div class="container">
         <div class="bg">
-            <div class="col-md-offset-3 col-md-6 col-sm-offset-1 col-sm-10 margin-xs">
-                <form th:action="@{/login/p/retail}" method="POST" class="login-for" autocomplete="off">
+           
+                <form id="loginform" th:action="@{/login/p/retail}"  class="" method="POST"  autocomplete="off">
+                    
+                     <div class='col form-signi visible-xs visible-sm' style="padding:10px 15px 30px">
+                        <h5 class="form-signin-heading text-white" style='margin-top:20px'>Check the box to Confirm Security Image</h5>
 
+                         <div >
+                            <div  class="bg-danger"  style="max-height:auto;width:200px;margin:0px auto">
+                                <img th:if="${secImage}" class='bg-danger img-responsive center'  style="height:100px;display: block;margin: 0px auto; margin-bottom: 5px;" th:src="@{'data:image/jpeg;base64,' + ${secImage}}" />
+                                <img th:unless="${secImage}" class='bg-danger img-responsive center' style="height:100px;display: block;margin: 0px auto; margin-bottom: 5px;" th:src="@{/customer/img/cmb_logo.png}" />
+                                <input type="checkbox" style='display:block;margin:0px auto;' name="phishing"/>
+                            </div>
+                         </div>
 
-                <!--<div class="col-xs-12 visible-xs" style="margin-top:1px;border:none;padding: 20px" >-->
-                    <!--<div style="max-height:150px">-->
-                        <!--<img th:if="${secImage}"  class='bg-danger' style='display:block;margin:0px auto;margin-top:0px;width:150px;padding:20px;' th:src="@{'data:image/jpeg;base64,' + ${secImage}}" />-->
-                        <!--<img th:unless="${secImage}"  class='bg-danger' style='display:block;margin:0px auto;margin-top:0px;width:150px;padding:20px;'  th:src="@{/customer/img/cmb_logo.png}" />-->
-                        <!--<input type="checkbox" style='display:block;margin:0px auto;' name="phishing"/>-->
-                    <!--</div>-->
-                <!--</div>-->
-                <div class="col-md-7 col-sm-7 col-xs-12 ">
-
-                    <h5 class="form-signin-heading text-white mtop">Check the box to Confirm Security Image</h5>
-
-                    <div class="col-xs-12 visible-xs" style="margin:5px;border:none;" >
-                        <div class="bg-danger col-xs-offset-4 col-xs-4" style="max-height:auto; padding: 5px">
-                            <img th:if="${secImage}" class='bg-danger img-responsive center'  style="height:100px;display: block;margin: 0px auto; margin-bottom: 5px;" th:src="@{'data:image/jpeg;base64,' + ${secImage}}" />
-                            <img th:unless="${secImage}" class='bg-danger img-responsive center' style="height:100px;display: block;margin: 0px auto; margin-bottom: 5px;" th:src="@{/customer/img/cmb_logo.png}" />
-                            <input type="checkbox" style='display:block;margin:0px auto;' name="phishing"/>
-                        </div>
                     </div>
+                    
+                    
+                    <div class='col-md-offset-4 col-md-4 hidden-sm hidden-xs  form-signi' style="padding:100px 15px 30px">
+                        <h5 class="form-signin-heading text-white hidden-xs hidden-sm">Check the box to Confirm Security Image</h5>
                         <br/>
-                    <h5 class="text-white" th:if="${imageException}" th:text="${imageException}"></h5>
-                        <div class="row ">
-                            <div class="form-group ">
-                                <input type="text" name="username" th:value="*{username}" class="form-control" readonly="readonly" autocomplete="off"/>
-                            </div>
-                            <div class="">
-                                <button class="btn btn-primary form-control"> Continue </button>
-                            </div>
+                        <div class="form-group ">
+                            <input type="text" name="username" th:value="*{username}" class="my-select" readonly="readonly" autocomplete="off"/>
+                            <p>&nbsp;</p>
                         </div>
-                </div>
-                <div class="col-md-5 col-sm-5 col-xs-12 hidden-xs" style="border:none;paddng: 20px;">
-                    <div class="bg-danger"  style="padding: 10px;">
-                        <div style="max-height:auto">
-                            <img th:if="${secImage}" class='bg-danger img-responsive center'  style="height:100px;display: block;margin: 0px auto; margin-bottom: 5px;" th:src="@{'data:image/jpeg;base64,' + ${secImage}}" />
-                            <img th:unless="${secImage}" class='bg-danger img-responsive center' style="height:100px;display: block;margin: 0px auto; margin-bottom: 5px;" th:src="@{/customer/img/cmb_logo.png}" />
-                            <input type="checkbox" style='display:block;margin:0px auto;' name="phishing"/>
+                    
+
+                        <div class="form-group">
+                            <button class="btn btn-primary  my-select"> Continue </button>
+                        </div>
+                    
+                    </div>
+
+                    <div class='col-md-offset-4 col-md-4 visible-xs visible-sm   form-signi' style="padding:10px 15px 30px">
+                        <h5 class="form-signin-heading text-white hidden-xs hidden-sm">Check the box to Confirm Security Image</h5>
+                        <br/>
+                        <div class="form-group ">
+                            <input type="text" name="username" th:value="*{username}" class="my-select" readonly="readonly" autocomplete="off"/>
+                            <p>&nbsp;</p>
+                        </div>
+                    
+
+                        <div class="form-group">
+                            <button class="btn btn-primary my-select"> Continue </button>
                         </div>
                     </div>
-                </div>
+
+                    <div class='col-md-4 form-signi hidden-xs hidden-sm' style="padding:100px 15px 30px">
+                         <div class="bg-danger"  style="padding: 10px;width:200px">
+                            <div style="max-height:auto">
+                                <img th:if="${secImage}" class='bg-danger img-responsive center'  style="height:100px;display: block;margin: 0px auto; margin-bottom: 5px;" th:src="@{'data:image/jpeg;base64,' + ${secImage}}" />
+                                <img th:unless="${secImage}" class='bg-danger img-responsive center' style="height:100px;display: block;margin: 0px auto; margin-bottom: 5px;" th:src="@{/customer/img/cmb_logo.png}" />
+                                <input type="checkbox" style='display:block;margin:0px auto;' name="phishing"/>
+                            </div>
+                         </div>
+
+                    </div>
 
                 </form>
 
 
-            </div>
+            
+           
+            
         </div>
     </div>
 </section>

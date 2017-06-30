@@ -4,34 +4,41 @@
 
 </head>
 <body>
+<div class="container">
 <header th:replace="corp_layout :: corp-header">
 </header>
 
 <section class="content-wrapper">
-    <div class="container">
+    <div class="">
         <div class="row">
             <div class="col-md-4 col-sm-4">
                 <h5 class="page_header"> Change Password</h5>
+                <select class="form-control invisible">
+                    <option value="account">Account Overview</option>
+                </select>
             </div>
+            <p class="col-xs-12">
+                Fields marked <span style="color:red">*</span> are compulsory
+            </p>
         </div>
         <div class="row">
-            <div class="col-md-8 content-bg">
-                <div class="row form-spacing">
+            <div class="col-md-9 content-bg">
+                <div class="row">
                     <div class="col-md-6 col-sm-6">
                         <form method="post" th:action="@{/corporate/change_password}" th:object="${custChangePassword}">
                             <div class="form-group">
                                 <label>Old Password</label>
-                                <input id="password" type="password" th:field="*{oldPassword}" class="form-control"/>
+                                <input id="password" type="password" th:field="*{oldPassword}" class="form-control"/><span class='req-inner'></span>
                                 <p class="errors" th:if="${#fields.hasErrors('oldPassword')}" th:errors="*{oldPassword}">&times;</p>
                             </div>
                             <div class="form-group">
                                 <label>New Password</label>
-                                <input id="password" type="password" th:field="*{newPassword}"  class="form-control"/>
+                                <input id="password" type="password" th:field="*{newPassword}"  class="form-control"/><span class='req-inner'></span>
                                 <p class="errors" th:if="${#fields.hasErrors('newPassword')}" th:errors="*{newPassword}">&times;</p>
                             </div>
                             <div class="form-group">
                                 <label>Confirm New Password</label>
-                                <input id="password" type="password" th:field="*{confirmPassword}"  class="form-control"/>
+                                <input id="password" type="password" th:field="*{confirmPassword}"  class="form-control"/><span class='req-inner'></span>
                                 <p class="errors" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}">&times;</p>
                             </div>
 
@@ -44,7 +51,9 @@
                     </div>
                 </div>
             </div>
-            <div th:replace="corp_layout :: corp-sidebar" class="col-md-3 sidebar">
+            <div class="col-md-3 pull-right " >
+                <div th:replace="cust_layout :: sidebar" class="" >
+                </div>
             </div>
         </div>
     </div>
@@ -58,5 +67,6 @@
         e.preventDefault();
     });
 </script>
+</div>
 </body>
 </html>

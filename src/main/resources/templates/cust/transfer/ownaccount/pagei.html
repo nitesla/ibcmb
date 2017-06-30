@@ -13,23 +13,26 @@
 
         <div class="row">
 
-            <div class="col-md-4 col-sm-4">
+            <div class="col-md-4 col-sm-4 col-xs-12">
                 <h5 class="page_header"> Own Account Transaction</h5>
+                <select class="form-control invisible">
+                        <option value="account">Account Overview</option>
+                </select>
                 
             </div>
 
             <p class="col-xs-12">
                     Fields marked <span style="color:red">*</span> are compulsory
-                </p>
+            </p>
         </div>
         <div class="row">
-            <div class="col-md-9 content-bg">
-                    <div class="col-md-6 col-sm-offset-2 col-sm-6 form-spacin">
+            <div class="col-md-9 col-xs-12 content-bg">
+                <div class="col-md-6 col-xs-12 col-sm-6 form-spacin">
 
                         <div th:if="${message != null}" class="alert alert-info" th:text="${message}">message</div>
                         <div th:if="${error != null}" class="alert alert-info" th:text="${error}">message</div>
                         <div>
-                             <form class=' col-xs-12' method="post" th:action="@{/retail/transfer/ownaccount/summary}" th:object="${transferRequest}">
+                             <form class='' method="post" th:action="@{/retail/transfer/ownaccount/summary}" th:object="${transferRequest}">
                                     <input type="hidden" th:field="*{financialInstitution}"/>
 
                                     <div class="form-group">
@@ -38,9 +41,11 @@
 
                                         <span id="scurency"></span>
                                         <div>
-                                        <span class="alert no-bd-rad my-border bg-white">NGN</span>
+
+                                        <span class="alert no-bd-rad my-border bg-white" id="sourceCurrency">&nbsp;&nbsp;&nbsp;</span>
                                             <select name="source" class="form-contrl my-select" id="source"
-                                                    th:field="*{customerAccountNumber}" onchange="getBalance()" style="width:70%;margin:0px auto;">
+                                                    th:field="*{customerAccountNumber}" onchange="getBalance();getSourceCurrency()" style="width:70%;margin:0px auto;">
+
                                                 <!--<option value=""> select an account</option>-->
                                                 <option th:each="s: ${accounts}" th:value="${s}" th:text="${s}" ></option>
                                             </select><span class='req-inner'></span>
@@ -52,9 +57,9 @@
 
                                         <span id="dcurency"></span>
                                         <div>
-                                         <span class="alert no-bd-rad my-border bg-white">NGN</span>
+                                         <span class="alert no-bd-rad my-border bg-white" id="destCurrency">&nbsp;&nbsp;&nbsp;</span>
                                         <select name="destination" class="form-contrl my-select" id="destination"
-                                                th:field="*{beneficiaryAccountNumber}" required="required">
+                                                th:field="*{beneficiaryAccountNumber}"  onchange="getDestCurrency();"  required="required">
                                             <option th:each="s: ${accounts}" th:value="${s}" th:text="${s}"></option>
 
 
@@ -66,7 +71,7 @@
 
                                     <div class="form-group">
                                         <label class="my-label">Amount</label>
-                                        <span class="alert no-bd-rad my-border bg-white hide-content-only">NGN</span>
+                                        <span class="alert no-bd-rad my-border bg-white hide-content-only"></span>
 
                                         <input type="number" name="textname" min="0" step=".10" placeholder="Enter an amount"
                                             th:field="*{amount}"
@@ -84,8 +89,8 @@
                                     </div>
                                     
                                     <div class='pull-right' style="margin-right:50px;">
-                                         <button class="btn btn-link" type="submit">Submit</button>
-                                         <button class="btn btn-link" type="button">Cancel</button>
+                                         <button class="btn btn-link required-step" type="submit">Submit</button>
+                                         <button class="btn btn-link less-required" type="button ">Cancel</button>
                                    
                                     </div>
                                    
@@ -95,7 +100,7 @@
                         </div>
 
                 </div>
-                <div class="col-md-4 col-sm-4 well">
+                <div class="col-md-4 col-sm-4 col-xs-12 well rel-info">
                     <!--<p class="related" style="padding-top: 5%">Related Information</p>-->
                    
                     <!--<input type="availBal" name="availBal"/>-->
@@ -176,6 +181,52 @@
             }
         })
     }
+
+    //
+
+    function getSourceCurrency(){
+        var accountNumber = $('#source').val();
+        $.ajax({
+            url: "/retail/transfer/"+accountNumber+"/currency",
+            type: 'GET',
+            async: false,
+            success:function(currency){
+                cur = ''+String(currency);
+                if(cur == "" ){
+                    document.getElementById("sourceCurrency").textContent=" Unknown";
+                   // $("#myspan").show();
+                }else{
+//                    $('input[name=availBal]').val(bal);
+
+                    $('#sourceCurrency').text(cur);
+
+                }
+            }
+        })
+    }
+
+///
+    function getDestCurrency(){
+        var accountNumber = $('#destination').val();
+        $.ajax({
+            url: "/retail/transfer/"+accountNumber+"/currency",
+            type: 'GET',
+            async: false,
+            success:function(currency){
+                cur = ''+String(currency);
+                if(cur == "" ){
+                    document.getElementById("destCurrency").textContent=" Unknown";
+                    // $("#myspan").show();
+                }else{
+//                    $('input[name=availBal]').val(bal);
+
+                    $('#destCurrency').text(cur);
+
+                }
+            }
+        })
+    }
+
 
     /*]]>*/
 

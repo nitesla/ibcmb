@@ -4,14 +4,15 @@
 
 </head>
 <body>
+<div class="container">
 <header th:replace="corp_layout :: corp-header">
 </header>
 
 <section class="content-wrapper">
-    <div class="container">
+    <div class="">
         <div class="row">
-            <div class="col-md-1"></div>
-            <div class="col-md-8 col-sm-8">
+            <div class="col-md"></div>
+            <div class="col-md-9 col-sm-9">
                 <div class="row">
                     <div class="col-md-6 col-sm-6">
                         <p th:each="req : ${requestList}">
@@ -35,5 +36,6 @@
 <!-- CONTENT-WRAPPER SECTION END-->
 <footer th:replace="corp_layout :: corp-footer">
 </footer>
+</div>
 </body>
 </html>

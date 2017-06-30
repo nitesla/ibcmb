@@ -42,8 +42,7 @@ import java.util.stream.Collectors;
 @Service
 public class IntegrationServiceImpl implements IntegrationService {
 
-    @Value("${excel.path}")
-    String PROPERTY_EXCEL_SOURCE_FILE_PATH;
+
     private Logger logger = LoggerFactory.getLogger(getClass());
     @Value("${ebank.service.uri}")
     private String URI;
@@ -103,20 +102,21 @@ public class IntegrationServiceImpl implements IntegrationService {
     }
 
     @Override
-    public AccountStatement getAccountStatements(String accountNo, Date fromDate, Date toDate, String tranType) {
+    public AccountStatement getAccountStatements(String accountNo, Date fromDate, Date toDate, String tranType,PaginationDetails paginationDetails) {
         AccountStatement statement = new AccountStatement();
         try {
             SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
        /* String dateInString = "7-Jun-2013";
         Date date = formatter.parse(dateInString);*/
             String uri = URI + "/statement";
-            Map<String, String> params = new HashMap<>();
+            Map<String, Object> params = new HashMap<>();
             params.put("accountNumber", accountNo);
             params.put("fromDate", formatter.format(fromDate));
             params.put("solId", viewAccountDetails(accountNo).getSolId());
             if (tranType != null)
                 params.put("tranType", tranType);
             if (toDate != null) params.put("toDate", formatter.format(toDate));
+            if (paginationDetails != null) params.put("paginationDetails", paginationDetails);
 
 
             statement = template.postForObject(uri, params, AccountStatement.class);
@@ -129,7 +129,34 @@ public class IntegrationServiceImpl implements IntegrationService {
 
         return statement;
     }
+    @Override
+    public AccountStatement getAccountStatements(String accountNo, Date fromDate, Date toDate, String tranType) {
+        AccountStatement statement = new AccountStatement();
+        try {
+            SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
+       /* String dateInString = "7-Jun-2013";
+        Date date = formatter.parse(dateInString);*/
+            String uri = URI + "/statement";
+            Map<String, Object> params = new HashMap<>();
+            params.put("accountNumber", accountNo);
+            params.put("fromDate", formatter.format(fromDate));
+            params.put("solId", viewAccountDetails(accountNo).getSolId());
+            if (tranType != null)
+                params.put("tranType", tranType);
+            if (toDate != null) params.put("toDate", formatter.format(toDate));
 
+
+
+            statement = template.postForObject(uri, params, AccountStatement.class);
+
+
+        } catch (Exception e) {
+
+        }
+
+
+        return statement;
+    }
     @Override
     public List<TransactionHistory> getLastNTransactions(String accountNo, String numberOfRecords) {
         List<TransactionHistory> histories = new ArrayList<>();

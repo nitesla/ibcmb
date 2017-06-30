@@ -7,27 +7,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/jquery-ui.css}"/>
+    <!--<link rel="stylesheet" type="text/css" th:href="@{~/customer/css/date/css/bootstrap-datepicker.css}"/>-->
+    <!--<link rel="stylesheet" type="text/css" th:href="@{~/customer/css/date/css/bootstrap-datepicker.standalone.css}"/>-->
+
+
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/bootstrap.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/custom.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/calendar.css}"/>
-    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/select.bootstrap.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/select.bootstrap.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/font-awesome/font-awesome.min.css}"/>
-    <link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/bootstrap-daterangepicker/daterangepicker.css}"/>
+    <link rel="stylesheet" type="text/css"
+          th:href="@{~/customer/plugins/bootstrap-daterangepicker/daterangepicker.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/datatables/css/jquery.dataTables.min.css}"/>
+    <!--<link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/datatables/css/dataTables.bootstrap.css}"/>-->
 
+    <link rel="stylesheet" type="text/css"
+          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.0/css/bootstrap-datepicker.min.css"/>
     <title>Coronation Merchant Bank</title>
 
 </head>
 
 <body>
-<div class="container">
-    <header class="header" th:fragment="corp-header">
+<div th:fragment="corp-header">
+    <header class="header">
         <div class="containe">
             <div class="top_bar">
                 <ul class="list_group">
-                    <li><a href="/#contact_us"> Contact Us&nbsp;</a></li>
-                    <li><a href="#"> Coronation merchant bank&nbsp;</a></li>
-                    <li><a href="#"> Help&nbsp;</a></li>
+                    <li><a href="/corporate/contact"> Contact Us&nbsp;</a></li>
+                    <li><a href="https://www.coronationmb.com/" target="_blank"> Coronation merchant bank&nbsp;</a></li>
                 </ul>
             </div>
             <nav class="navbar navbar-default">
@@ -41,28 +48,34 @@
                         </button>
                         <a class="navbar-brand" href="#" data-toggle="collapse" data-target="#navbar-collapse-1">Menu</a>
                     </div>
-                    <div class="row ">
+                    <div class=" ">
                         <div class="col-md-3 col-sm-4 header_info bvn"><p>Your RC Number</p>
                             <h5 th:text="'RC N0: ' + ${RcNo}"></h5></div>
-                        <div class="col-md-5 col-sm-4 header_info"><h5><span th:text="*{greeting}"></span><br class="break"/><b th:text="*{name}"></b> &nbsp; <a th:href="@{/corporate/mailbox/inbox}"><i class="fa fa-envelope"></i>
+                        <div class="col-md-5 col-sm-4 header_info"><h5><span th:text="*{greeting}"></span><br class="break"/><b th:text="*{name}"></b> &nbsp; <a th:href="@{/corporate/mailbox/inbox}"><i class="fa fa-envelope" style="color:#003056"></i>
                             <span th:if="${numOfUnreadMessages}" class="badge bg-green" th:text="${numOfUnreadMessages}">count</span>
 
                         </a></h5>
 
-                            <div class="hide-faq"><h6>FAQS &nbsp; &nbsp;<i class="fa fa-question-circle"></i><span class="date2 lorem">&nbsp; &nbsp;Login History:&nbsp;</span>&nbsp;
-                                <span class="lorem" th:text="*{lastLogin}"></span></h6></div></div>
+                            <div class="hide-faq">
+                                <h6>
+                                    <a target="_blank" th:href="@{/faqs}">FAQS &nbsp; &nbsp;<i class="fa fa-question-circle"></i></a><span class="date2 lorem">&nbsp; &nbsp;Login History:&nbsp;</span>&nbsp;
+                                <span class="lorem" th:text="*{lastLogin}"></span>
+                            </h6>
+                            </div>
+                        </div>
                     </div>
                     <div class="row">
-                <div class="collapse navbar-collapse links" id="navbar-collapse-1">
-                    <div class="container">
+                        <div class="collapse navbar-collapse links" id="navbar-collapse-1">
                     <ul class="nav navbar-nav">
+                        <li><a th:href="@{/corporate/dashboard}">Dashboard</a></li>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.account}"> My Accounts</a>
                             <ul class="dropdown-menu">
                                 <li><a th:href="@{/corporate/account/customize}" th:text="#{menu.account.customize}">Customise Accounts</a></li>
                                 <li><a th:href="@{/corporate/account/settings}" th:text="#{menu.account.settings}">Account Settings</a></li>
                                 <li><a th:href="@{/corporate/account/officer}" th:text="#{menu.account.officer}">Account Officer</a></li>
-                                <li><a th:href="@{/corporate/account/viewstatement}" th:text="#{menu.account.officer}">Account Statement</a></li>
+                                <li sec:authorize="hasAuthority('CREATE_ACCOUNT')"><a
+                                        th:href="@{/corporate/account/viewstatement}">Account Statement</a></li>
                                 <li><a th:href="@{'#'}" th:text="#{menu.account.create}">Create New Acoount</a></li>
                             </ul>
                         </li>
@@ -87,7 +100,6 @@
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.servreq}"> Service Requests </a>
                             <ul class="dropdown-menu">
                                 <li><a th:href="@{/corporate/requests/track}" th:text="#{menu.servreq.track}">Track Requests</a></li>
-                                <li role="separator" class="divider"></li>
                                 <p th:each="requests : ${serviceRequests}">
                                 <li><a th:href="@{/corporate/requests/} + ${requests.id}" th:text="${requests.requestName}"></a></li>
                                 </p>
@@ -122,23 +134,47 @@
                                 </span></a></li>
                     </ul>
                     </div>
-                </div>
                     </div>
-</div>
+                </div>
             </nav>
         </div>
-        <a href="corporate/dashboard" class="logo">
+        <a href="/corporate/dashboard" class="logo navbar-right">
             <img th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
         </a>
     </header>
+    <div class=' alert alert-info text-white  no-bd-rad' style="margin:1px !important;background-color:#003056;color:white;"><marquee>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</marquee></div>
+</div>
 
-    <div th:fragment="corp-sidebar" class="col-md-3 sidebar">
+    <div th:fragment="corp-sidebar" >
 
-        <div class="sidebar-bg calender">
-            <div id="calendar" class="calendar"></div>
+        <div class="sidebar-b calende cal  hidden-xs">
+            <div class="alert  time" style=" margin-top: 6px !important;">
+
+
+                <i class="fa fa-calendar " id='datepickerImage' onclick="show()" style="font-size:25px"></i>
+
+
+                <!--<div id="time_" class="pull-right text-bold " style="font-weight:bold;color:#003056">
+
+                      <script>
+                          setInterval(
+                              function()
+                              {
+
+                                  var time_function = moment().format('Do MMMM YYYY, h:mm:ss a');
+                                  var holder = document.getElementById('time_');
+                                  holder.innerHTML = time_function;
+                              },
+                              1000) ;
+                      </script>
+                  </div>-->
+
+            </div>
+            <!--<div  id="calendar" style="display: block; margin: 0px auto;" class=" calendar hidden-xs hidden-sm "></div>-->
         </div>
-        <div class="sidebar-bg">
-            <img th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
+        <div class="sidebar-bg hidden-xs hidden-sm" style="max-height:200px;">
+            <img style="display: block; margin: 0px auto;" class="center img-responsive" th:src="@{~/customer/img/advert.jpg}"
+                 alt="Coronation Merchant Bank"/>
         </div>
     </div>
 
@@ -233,19 +269,21 @@
     <script th:src="@{~/customer/js/jquery-1.11.1.js}"></script>
     <script th:src="@{~/customer/js/jquery-ui.js}"></script>
     <script th:src="@{~/customer/js/jquery.dataTables.js}"></script>
+    <!--<script th:src="@{~/customer/js/date/js/bootstrap-datepicker.js}"></script>-->
     <script th:src="@{~/customer/js/momentMin.js}"></script>
-    <script th:src="@{~/customer/js/calendar.js}"></script>
-    <script th:src="@{~/customer/js/dataTables.bootstrap.js}"></script>
+    <!--<script th:src="@{~/customer/js/calendar.js}"></script>-->
     <script th:src="@{~/customer/js/jquery.spring-friendly.min.js}"></script>
-    <script th:src="@{~/customer/js/dataTables.select.js}"></script>
     <script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
+    <script th:src="@{~/customer/plugins/bootstrap-daterangepicker/daterangepicker.js}"></script>
     <script th:src="@{~/customer/js/coronation.js}"></script>
+    <!--<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>-->
+
     <!-- BOOTSTRAP SCRIPTS  -->
     <script th:src="@{~/customer/js/bootstrap.js}"></script>
     <script th:src="@{~/customer/js/bootstrap-session-timeout.js}"></script>
+
     <script th:inline='javascript'>
         /*<![CDATA[*/
-
         $(document).ready(function()
         {
             $('[data-toggle="tooltip"]').tooltip();
@@ -257,30 +295,13 @@
                 changeMonth: true,
                 showAnim: "slide" ,
                 changeYear: true,
-                showOn: 'both',
-
-
-
+                showOn: 'both'
             });
 
-
-
-            /*]]>*/
-
         })
+        /*]]>*/
     </script>
 
-    <script>
-
-        function show()
-        {
-            var dp = document.getElementById('dp');
-            if (dp.style.display == "block")
-                dp.style.display = "none";
-            else
-                dp.style.display = "block";
-        }
-    </script>
     <script th:inline="javascript">
         $.sessionTimeout({
             keepAliveUrl: '',
@@ -293,6 +314,5 @@
     </script>
 </footer>
     <!-- /footer content -->
-</div>
 </body>
 </html>

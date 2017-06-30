@@ -40,15 +40,10 @@ public class CronJobServiceImpl implements CronJobService {
         for (Account account : allAccounts) {
             AccountDetails accountDetails = integrationService.viewAccountDetails(account.getAccountNumber());
             if (!account.getAccountName().equalsIgnoreCase(accountDetails.getAcctName())) {
-//            account.setAccountName(accountDetails.getAcctName());
-//                    account.setAccountName(accountDetails.getAcctName());
-
+            account.setAccountName(accountDetails.getAcctName());
                     System.out.println("the account name after setting is" + account.getAccountName());
 //            accountRepo.save(account);
-//            accountDetails.;
-
             }
-
         }
         return null;
     }
@@ -92,5 +87,20 @@ public class CronJobServiceImpl implements CronJobService {
             cronJob.setDelFlag("N");
             cronJobRepo.save(cronJob);
         }
+    }
+
+    @Override
+    public Boolean updateAllAccountCurrency() throws InternetBankingException {
+        List<Account> allAccounts = accountRepo.findAll();
+//        logger.info("The account size {}",allAccounts.size());
+        for (Account account : allAccounts) {
+            AccountDetails accountDetails = integrationService.viewAccountDetails(account.getAccountNumber());
+            if ((account.getCurrencyCode()==null)||(!account.getCurrencyCode().equalsIgnoreCase(""))||(!accountDetails.getAcctCrncyCode().equalsIgnoreCase(account.getCurrencyCode()))) {
+            account.setCurrencyCode(accountDetails.getAcctCrncyCode());
+                logger.info("the new account currency {} and {}" , account.getCurrencyCode(),accountDetails.getAcctCrncyCode());
+            accountRepo.save(account);
+            }
+        }
+        return null;
     }
 }

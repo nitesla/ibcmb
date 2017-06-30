@@ -82,6 +82,9 @@ public class LocalTransferController {
         if (servletRequest.getSession().getAttribute("Lbeneficiary") != null) {
             LocalBeneficiaryDTO beneficiary = (LocalBeneficiaryDTO) servletRequest.getSession().getAttribute("Lbeneficiary");
             model.addAttribute("beneficiary", beneficiary);
+            if (beneficiary.getId()==null)
+                model.addAttribute("newBen","newBen");
+
         }
         if (result.hasErrors()) {
             return page + "pageii";
@@ -90,6 +93,9 @@ public class LocalTransferController {
             transferService.validateTransfer(transferRequestDTO);
             transferRequestDTO.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
             servletRequest.getSession().setAttribute("transferRequest", transferRequestDTO);
+
+
+
 
             return page + "pageiii";
         } catch (InternetBankingTransferException e) {
