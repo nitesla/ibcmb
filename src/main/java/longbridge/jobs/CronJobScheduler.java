@@ -64,7 +64,7 @@ public class CronJobScheduler {
                 .newTrigger()
                 .withIdentity("oneTime", "bcons3")
                 .withSchedule(
-                        CronScheduleBuilder.cronSchedule("0/30 * * * * ?"))
+                        CronScheduleBuilder.cronSchedule("0 0/1 * 1/1 * ? *"))
                 .build();
 //        Trigger fiveMins = TriggerBuilder
 //                .newTrigger()

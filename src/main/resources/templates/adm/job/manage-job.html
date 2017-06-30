@@ -40,201 +40,105 @@
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="x_panel">
                             <!--<div class="x_title">-->
-                                <!--<ul class="nav navbar-left panel_toolbox">-->
-                                    <!--<li >-->
-                                        <!--<div class="col-lg-4">-->
-                                            <!--<div class="title-action">-->
-                                                <!--&lt;!&ndash;<a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/codes/index/edit" disabled="disabled" ><i class="fa fa-pencil"></i> Edit</a>&ndash;&gt;-->
-                                            <!--</div>-->
-                                        <!--</div>-->
-                                    <!--</li>-->
-                                    <!--<li >-->
-                                        <!--<div class="col-lg-4">-->
-                                            <!--<div class="title-action">-->
-                                                <!--&lt;!&ndash;<a id="delete-btn" class="btn btn-danger btn-sm bt-select" href="/admin/codes/index/delete" disabled="disabled" ><i class="fa fa-trash"></i> Delete</a>&ndash;&gt;-->
-                                            <!--</div>-->
-                                        <!--</div>-->
-                                    <!--</li>-->
+                            <!--<ul class="nav navbar-left panel_toolbox">-->
+                            <!--<li >-->
+                            <!--<div class="col-lg-4">-->
+                            <!--<div class="title-action">-->
+                            <!--&lt;!&ndash;<a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/codes/index/edit" disabled="disabled" ><i class="fa fa-pencil"></i> Edit</a>&ndash;&gt;-->
+                            <!--</div>-->
+                            <!--</div>-->
+                            <!--</li>-->
+                            <!--<li >-->
+                            <!--<div class="col-lg-4">-->
+                            <!--<div class="title-action">-->
+                            <!--&lt;!&ndash;<a id="delete-btn" class="btn btn-danger btn-sm bt-select" href="/admin/codes/index/delete" disabled="disabled" ><i class="fa fa-trash"></i> Delete</a>&ndash;&gt;-->
+                            <!--</div>-->
+                            <!--</div>-->
+                            <!--</li>-->
 
-                                <!--</ul>-->
-                                <!--<ul class="nav navbar-right panel_toolbox">-->
+                            <!--</ul>-->
+                            <!--<ul class="nav navbar-right panel_toolbox">-->
 
-                                    <!--&lt;!&ndash; <li>-->
-                                         <!--<div class="col-lg-8">-->
-                                             <!--<h2>Admin Management</h2>-->
-                                         <!--</div>-->
-                                     <!--</li>&ndash;&gt;-->
-                                    <!--<li >-->
-                                        <!--<div class="col-lg-4">-->
-                                            <!--<div class="title-action">-->
-                                                <!--&lt;!&ndash;<a href="/admin/codes/type/typeid/new" class="btn btn-sm btn-primary bt-link-add"><i class="fa fa-plus"></i> Add</a>&ndash;&gt;-->
-                                            <!--</div>-->
-                                        <!--</div>-->
-                                    <!--</li>-->
+                            <!--&lt;!&ndash; <li>-->
+                            <!--<div class="col-lg-8">-->
+                            <!--<h2>Admin Management</h2>-->
+                            <!--</div>-->
+                            <!--</li>&ndash;&gt;-->
+                            <!--<li >-->
+                            <!--<div class="col-lg-4">-->
+                            <!--<div class="title-action">-->
+                            <!--&lt;!&ndash;<a href="/admin/codes/type/typeid/new" class="btn btn-sm btn-primary bt-link-add"><i class="fa fa-plus"></i> Add</a>&ndash;&gt;-->
+                            <!--</div>-->
+                            <!--</div>-->
+                            <!--</li>-->
 
 
-                                    <!--&lt;!&ndash;<li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>&ndash;&gt;-->
-                                    <!--&lt;!&ndash;</li>&ndash;&gt;-->
+                            <!--&lt;!&ndash;<li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>&ndash;&gt;-->
+                            <!--&lt;!&ndash;</li>&ndash;&gt;-->
 
-                                <!--</ul>-->
-                                <!--&lt;!&ndash;<div class="clearfix"></div>&ndash;&gt;-->
+                            <!--</ul>-->
+                            <!--&lt;!&ndash;<div class="clearfix"></div>&ndash;&gt;-->
                             <!--</div>-->
                             <div class="x_content">
                                 <!--<fieldset>-->
-                                    <!--<div class="form-group">-->
-                                        <!--<label class="control-label col-md-2 col-sm-2 col-xs-12">Job Type</label>-->
-                                        <!--<div class="col-md-4 col-sm-6 col-xs-12">-->
-                                            <!--<input class="form-control col-md-7 col-xs-12" name="codeType" disabled="disabled"/>-->
-                                        <!--</div>-->
-                                    <!--</div>-->
+                                <!--<div class="form-group">-->
+                                <!--<label class="control-label col-md-2 col-sm-2 col-xs-12">Job Type</label>-->
+                                <!--<div class="col-md-4 col-sm-6 col-xs-12">-->
+                                <!--<input class="form-control col-md-7 col-xs-12" name="codeType" disabled="disabled"/>-->
+                                <!--</div>-->
+                                <!--</div>-->
                                 <!--</fieldset>-->
                                 <br/><br/> <fieldset>
                                 <div class="form-group">
                                     <div class="col-md-12 col-sm-6 col-xs-12">
 
                                         <form method="post" th:action="@{/admin/job/expression}" class="form-horizontal">
-                                            <div class="form-group">
-                                                <label class="col-sm-2 control-label">Second</label>
-
-                                                <div class="col-sm-4">
-                                                    <select type="text" th:id="second" th:name="second" class="form-control">
-                                                        <option value="*">Every second</option>
-                                                        <option value="1">1</option>
-                                                        <option value="2">2</option>
-                                                        <option value="3">3</option>
-                                                        <option value="4">4</option>
-                                                        <option value="5">5</option>
-                                                        <option value="6">6</option>
-                                                        <option value="7">7</option>
-                                                        <option value="8">8</option>
-                                                        <option value="9">9</option>
-                                                        <option value="10">10</option>
-                                                        <option value="11">11</option>
-                                                        <option value="12">12</option>
-                                                        <option value="13">13</option>
-                                                        <option value="14">14</option>
-                                                        <option value="15">15</option>
-                                                        <option value="16">16</option>
-                                                        <option value="17">17</option>
-                                                        <option value="18">18</option>
-                                                        <option value="19">19</option>
-                                                        <option value="20">20</option>
-                                                        <option value="21">21</option>
-                                                        <option value="22">22</option>
-                                                        <option value="23">23</option>
-                                                        <option value="24">24</option>
-                                                        <option value="25">25</option>
-                                                        <option value="26">26</option>
-                                                        <option value="27">27</option>
-                                                        <option value="28">28</option>
-                                                        <option value="29">29</option>
-                                                        <option value="30">30</option>
-                                                        <option value="31">31</option>
-                                                        <option value="32">32</option>
-                                                        <option value="33">33</option>
-                                                        <option value="34">34</option>
-                                                        <option value="35">35</option>
-                                                        <option value="36">36</option>
-                                                        <option value="37">37</option>
-                                                        <option value="38">38</option>
-                                                        <option value="39">39</option>
-                                                        <option value="40">40</option>
-                                                        <option value="41">41</option>
-                                                        <option value="42">42</option>
-                                                        <option value="43">43</option>
-                                                        <option value="44">44</option>
-                                                        <option value="45">45</option>
-                                                        <option value="46">46</option>
-                                                        <option value="47">47</option>
-                                                        <option value="48">48</option>
-                                                        <option value="49">49</option>
-                                                        <option value="50">50</option>
-                                                        <option value="51">51</option>
-                                                        <option value="52">52</option>
-                                                        <option value="53">53</option>
-                                                        <option value="54">54</option>
-                                                        <option value="55">55</option>
-                                                        <option value="56">56</option>
-                                                        <option value="57">57</option>
-                                                        <option value="58">58</option>
-                                                        <option value="59">59</option>
-                                                    </select>
-                                                </div>Second
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="col-sm-2 control-label">Minute </label>
-
-                                                <div class="col-sm-4">
-                                                    <select class="form-control left-selector" th:name="minute" th:id="minute">
-                                                        <option value="*">Every Minute</option>
-                                                        <option value="1">1</option>
-                                                        <option value="2">2</option>
-                                                        <option value="3">3</option>
-                                                        <option value="4">4</option>
-                                                        <option value="5">5</option>
-                                                        <option value="6">6</option>
-                                                        <option value="7">7</option>
-                                                        <option value="8">8</option>
-                                                        <option value="9">9</option>
-                                                        <option value="10">10</option>
-                                                        <option value="11">11</option>
-                                                        <option value="12">12</option>
-                                                        <option value="13">13</option>
-                                                        <option value="14">14</option>
-                                                        <option value="15">15</option>
-                                                        <option value="16">16</option>
-                                                        <option value="17">17</option>
-                                                        <option value="18">18</option>
-                                                        <option value="19">19</option>
-                                                        <option value="20">20</option>
-                                                        <option value="21">21</option>
-                                                        <option value="22">22</option>
-                                                        <option value="23">23</option>
-                                                        <option value="24">24</option>
-                                                        <option value="25">25</option>
-                                                        <option value="26">26</option>
-                                                        <option value="27">27</option>
-                                                        <option value="28">28</option>
-                                                        <option value="29">29</option>
-                                                        <option value="30">30</option>
-                                                        <option value="31">31</option>
-                                                        <option value="32">32</option>
-                                                        <option value="33">33</option>
-                                                        <option value="34">34</option>
-                                                        <option value="35">35</option>
-                                                        <option value="36">36</option>
-                                                        <option value="37">37</option>
-                                                        <option value="38">38</option>
-                                                        <option value="39">39</option>
-                                                        <option value="40">40</option>
-                                                        <option value="41">41</option>
-                                                        <option value="42">42</option>
-                                                        <option value="43">43</option>
-                                                        <option value="44">44</option>
-                                                        <option value="45">45</option>
-                                                        <option value="46">46</option>
-                                                        <option value="47">47</option>
-                                                        <option value="48">48</option>
-                                                        <option value="49">49</option>
-                                                        <option value="50">50</option>
-                                                        <option value="51">51</option>
-                                                        <option value="52">52</option>
-                                                        <option value="53">53</option>
-                                                        <option value="54">54</option>
-                                                        <option value="55">55</option>
-                                                        <option value="56">56</option>
-                                                        <option value="57">57</option>
-                                                        <option value="58">58</option>
-                                                        <option value="59">59</option>
-                                                    </select>
-                                                </div>minutes
-                                                </div>
+                                            <select class="form-control left-selector" th:name="scheduler" th:id="scheduler">
+                                                <option value="*">Reschedule job</option>
+                                                <option value="secondsDiv">Second(s)</option>
+                                                <option value="minuteDiv">Miinute(s)</option>
+                                                <option value="hourDiv">Hourly</option>
+                                                <option value="weekDiv">Weekly</option>
+                                                <option value="monthDiv">Month</option>
+                                                <option value="yearDiv">Yearly</option>
+                                            </select>
+                                            <br/>
+                                            <div id="secondsDiv" class="schedulingSection" style="display: none">
                                                 <div class="form-group">
-                                                    <label class="col-sm-2 control-label">Specify Hour(s)</label>
+                                                    <label class="col-sm-2 control-label">Every</label>
 
                                                     <div class="col-sm-4">
-                                                        <select multiple="multiple" class="form-control left-selector" th:name="hour" th:id="hour">
-                                                            <option value="*">All</option>
+                                                        <input th:type="number" th:id="second" th:name="second" min="1" class="form-control"/>
+
+                                                    </div>Second
+                                                </div>
+
+                                            </div>
+                                            <div id="minuteDiv" class="schedulingSection" style="display: none">
+                                                <div class="form-group">
+                                                    <label class="col-sm-2 control-label">Every</label>
+
+                                                    <div class="col-sm-4">
+                                                        <input type="number" th:id="minute" th:name="minute" min="1" class="form-control"/>
+
+                                                    </div>Minute
+                                                </div>
+
+                                            </div>
+                                            <div id="hourDiv" class="schedulingSection" style="display:none;">
+                                                <div class="form-group">
+                                                    <label class="col-sm-2 control-label">Every</label>
+
+                                                    <div class="col-sm-4">
+                                                        <input type="number" th:id="everyHour" th:name="everyHour" min="1" class="form-control"/>
+
+                                                    </div>Hour
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-sm-2 control-label">Start at</label>
+
+                                                    <div class="col-sm-4">
+                                                        <select class="form-control left-selector" th:name="hour"  th:class="col-sm-4" th:id="hour">
                                                             <option value="0">12:00 am</option>
                                                             <option value="1">1:00 am</option>
                                                             <option value="2">2:00 am</option>
@@ -260,8 +164,105 @@
                                                             <option value="22">10:00 pm</option>
                                                             <option value="23">11:00 pm</option>
                                                         </select>
+                                                        <select type="text" th:id="minSecond" th:class="col-sm-3" th:name="minSecond" class="form-control">
+                                                        <option value="1">1</option>
+                                                        <option value="2">2</option>
+                                                        <option value="3">3</option>
+                                                        <option value="4">4</option>
+                                                        <option value="5">5</option>
+                                                        <option value="6">6</option>
+                                                        <option value="7">7</option>
+                                                        <option value="8">8</option>
+                                                        <option value="9">9</option>
+                                                        <option value="10">10</option>
+                                                        <option value="11">11</option>
+                                                        <option value="12">12</option>
+                                                        <option value="13">13</option>
+                                                        <option value="14">14</option>
+                                                        <option value="15">15</option>
+                                                        <option value="16">16</option>
+                                                        <option value="17">17</option>
+                                                        <option value="18">18</option>
+                                                        <option value="19">19</option>
+                                                        <option value="20">20</option>
+                                                        <option value="21">21</option>
+                                                        <option value="22">22</option>
+                                                        <option value="23">23</option>
+                                                        <option value="24">24</option>
+                                                        <option value="25">25</option>
+                                                        <option value="26">26</option>
+                                                        <option value="27">27</option>
+                                                        <option value="28">28</option>
+                                                        <option value="29">29</option>
+                                                        <option value="30">30</option>
+                                                        <option value="31">31</option>
+                                                        <option value="32">32</option>
+                                                        <option value="33">33</option>
+                                                        <option value="34">34</option>
+                                                        <option value="35">35</option>
+                                                        <option value="36">36</option>
+                                                        <option value="37">37</option>
+                                                        <option value="38">38</option>
+                                                        <option value="39">39</option>
+                                                        <option value="40">40</option>
+                                                        <option value="41">41</option>
+                                                        <option value="42">42</option>
+                                                        <option value="43">43</option>
+                                                        <option value="44">44</option>
+                                                        <option value="45">45</option>
+                                                        <option value="46">46</option>
+                                                        <option value="47">47</option>
+                                                        <option value="48">48</option>
+                                                        <option value="49">49</option>
+                                                        <option value="50">50</option>
+                                                        <option value="51">51</option>
+                                                        <option value="52">52</option>
+                                                        <option value="53">53</option>
+                                                        <option value="54">54</option>
+                                                        <option value="55">55</option>
+                                                        <option value="56">56</option>
+                                                        <option value="57">57</option>
+                                                        <option value="58">58</option>
+                                                        <option value="59">59</option>
+                                                        </select>Seconds
                                                     </div>
+                                                </div>
+
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label">Specify Hour(s)</label>
+
+                                                <div class="col-sm-4">
+                                                    <select multiple="multiple" class="form-control left-selector" th:name="hour" th:id="hour">
+                                                        <option value="*">All</option>
+                                                        <option value="0">12:00 am</option>
+                                                        <option value="1">1:00 am</option>
+                                                        <option value="2">2:00 am</option>
+                                                        <option value="3">3:00 am</option>
+                                                        <option value="4">4:00 am</option>
+                                                        <option value="5">5:00 am</option>
+                                                        <option value="6">6:00 am</option>
+                                                        <option value="7">7:00 am</option>
+                                                        <option value="8">8:00 am</option>
+                                                        <option value="9">9:00 am</option>
+                                                        <option value="10">10:00 am</option>
+                                                        <option value="11">11:00 am</option>
+                                                        <option value="12">12:00 pm</option>
+                                                        <option value="13">1:00 pm</option>
+                                                        <option value="14">2:00 pm</option>
+                                                        <option value="15">3:00 pm</option>
+                                                        <option value="16">4:00 pm</option>
+                                                        <option value="17">5:00 pm</option>
+                                                        <option value="18">6:00 pm</option>
+                                                        <option value="19">7:00 pm</option>
+                                                        <option value="20">8:00 pm</option>
+                                                        <option value="21">9:00 pm</option>
+                                                        <option value="22">10:00 pm</option>
+                                                        <option value="23">11:00 pm</option>
+                                                    </select>
+                                                </div>
                                             </div>
+                                            </div>
+                                            <div id="monthDiv" class="schedulingSection" style="display:none;">
                                             <div class="form-group">
                                                 <label class="col-sm-2 control-label">Specify Month</label>
 
@@ -283,6 +284,8 @@
                                                     </select>
                                                 </div>
                                             </div>
+                                                </div>
+                                            <div id="weekDiv" class="schedulingSection" style="display:none;">
                                             <div class="form-group">
                                                 <label class="col-sm-2 control-label">Specify day of the Week </label>
 
@@ -299,12 +302,15 @@
                                                     </select>
                                                 </div>
                                             </div>
+                                                </div>
+                                            <div id="buttonDiv" class="schedulingSection" style="display:none;">
                                             <div class="form-group">
                                                 <div class="col-sm-4 col-sm-offset-2">
                                                     <!--<button class="btn btn-white" type="reset" id="cancel">Cancel</button>-->
                                                     <button class="btn btn-primary" type="submit">Update</button>
                                                 </div>
                                             </div>
+                                                </div>
                                             <div ></div>
 
                                         </form>
@@ -360,12 +366,24 @@
 
 
     );
-//    function disableCom(category) {
-//        if($('#everySecond').is(':checked') == true){
-////            alert("checked");
-//                    $('#second').prop('disabled',true);
-//        }
-//    }
+    $(function() {    // Makes sure the code contained doesn't run until
+        //     all the DOM elements have loaded
+
+        $('#scheduler').change(function(){
+            $('.schedulingSection').hide();
+            $('#' + $(this).val()).show();
+            if($(this).val() != '*'){
+            $('#buttonDiv').show();
+            }
+        });
+
+    });
+    //    function disableCom(category) {
+    //        if($('#everySecond').is(':checked') == true){
+    ////            alert("checked");
+    //                    $('#second').prop('disabled',true);
+    //        }
+    //    }
 </script>
 
 

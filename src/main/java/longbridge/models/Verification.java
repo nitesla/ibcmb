@@ -22,54 +22,26 @@ public class Verification extends AbstractEntity {
 
     @Lob
     private String beforeObject; //json
-
     @Lob
     private String afterObject; //json
-
     @Lob
-    private String original; //json
-
+    private String originalObject; //json
     @Enumerated(value = EnumType.STRING)
     private verificationStatus status;
-
     private String description;
     private Long entityId;
     private String entityName;
-    private String createdBy;
-
-    private String userType;
-
-    public String getUserType() {
-        return userType;
-    }
-
-    public void setUserType(String userType) {
-        this.userType = userType;
-    }
-
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    private String operationCode;
-
-    @ManyToOne
-    private AdminUser initiatedBy;
+    @Enumerated(value = EnumType.STRING)
+    private UserType userType;
+    private String operation;
+    private String comments;
+    private String initiatedBy;
     private Date initiatedOn;
-
-    @ManyToOne
-    private AdminUser declinedBy;
+    private String declinedBy;
     private Date declinedOn;
     private String declineReason;
-
-    @ManyToOne
-    private AdminUser verifiedBy;
+    private String verifiedBy;
     private Date verifiedOn;
-
     @OneToOne
     private Verification dependency;
 
@@ -81,9 +53,6 @@ public class Verification extends AbstractEntity {
         this.dependency = dependency;
     }
 
-    public AdminUser getDeclinedBy() {
-        return declinedBy;
-    }
 
     public String getEntityName() {
         return entityName;
@@ -93,9 +62,6 @@ public class Verification extends AbstractEntity {
         this.entityName = entityName;
     }
 
-    public void setDeclinedBy(AdminUser declinedBy) {
-        this.declinedBy = declinedBy;
-    }
 
     public verificationStatus getStatus() {
         return status;
@@ -107,6 +73,14 @@ public class Verification extends AbstractEntity {
 
     public String getDeclineReason() {
         return declineReason;
+    }
+
+    public String getComments() {
+        return comments;
+    }
+
+    public void setComments(String comments) {
+        this.comments = comments;
     }
 
     public String getDescription() {
@@ -137,12 +111,12 @@ public class Verification extends AbstractEntity {
         this.afterObject = afterObject;
     }
 
-    public String getOriginal() {
-        return original;
+    public String getOriginalObject() {
+        return originalObject;
     }
 
-    public void setOriginal(String original) {
-        this.original = original;
+    public void setOriginalObject(String originalObject) {
+        this.originalObject = originalObject;
     }
 
     public Long getEntityId() {
@@ -153,20 +127,16 @@ public class Verification extends AbstractEntity {
         this.entityId = entityId;
     }
 
-    public String getOperationCode() {
-        return operationCode;
+    public String getOperation() {
+        return operation;
     }
 
-    public void setOperationCode(String operationCode) {
-        this.operationCode = operationCode;
+    public void setOperation(String operation) {
+        this.operation = operation;
     }
 
-    public AdminUser getInitiatedBy() {
-        return initiatedBy;
-    }
-
-    public void setInitiatedBy(AdminUser initiatedBy) {
-        this.initiatedBy = initiatedBy;
+    public String getDeclinedBy() {
+        return declinedBy;
     }
 
     public Date getInitiatedOn() {
@@ -193,40 +163,34 @@ public class Verification extends AbstractEntity {
         this.verifiedOn = verifiedOn;
     }
 
-    public AdminUser getVerifiedBy() {
+
+    public UserType getUserType() {
+        return userType;
+    }
+
+    public void setUserType(UserType userType) {
+        this.userType = userType;
+    }
+
+    public String getInitiatedBy() {
+        return initiatedBy;
+    }
+
+    public void setInitiatedBy(String initiatedBy) {
+        this.initiatedBy = initiatedBy;
+    }
+
+    public void setDeclinedBy(String declinedBy) {
+        this.declinedBy = declinedBy;
+    }
+
+    public String getVerifiedBy() {
         return verifiedBy;
     }
 
-    public void setVerifiedBy(AdminUser verifiedBy) {
+    public void setVerifiedBy(String verifiedBy) {
         this.verifiedBy = verifiedBy;
     }
 
-    @Override
-    public String toString() {
-        return "Verification [" + (beforeObject != null ? "beforeObject=" + beforeObject + ", " : "")
-                + (afterObject != null ? "afterObject=" + afterObject + ", " : "")
-                + (original != null ? "original=" + original + ", " : "")
-                + (status != null ? "status=" + status + ", " : "")
-                + (description != null ? "description=" + description + ", " : "")
-                + (entityId != null ? "entityId=" + entityId + ", " : "")
-                + (operationCode != null ? "operationCode=" + operationCode + ", " : "")
-                + (initiatedBy != null ? "initiatedBy=" + initiatedBy + ", " : "")
-                + (initiatedOn != null ? "initiatedOn=" + initiatedOn + ", " : "")
-                + (declinedBy != null ? "declinedBy=" + declinedBy + ", " : "")
-                + (declinedOn != null ? "declinedOn=" + declinedOn + ", " : "")
-                + (declineReason != null ? "declineReason=" + declineReason + ", " : "")
-                + (verifiedBy != null ? "verifiedBy=" + verifiedBy + ", " : "")
-                + (verifiedOn != null ? "verifiedOn=" + verifiedOn : "") + "]";
-    }
-
-    public static OperationCode getAddCode() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public static OperationCode getModifyCode() {
-        // TODO Auto-generated method stub
-        return null;
-    }
 
 }

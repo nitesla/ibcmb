@@ -14,9 +14,9 @@ public class TestClass implements Job {
     private CronJobService cronJobService;
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-        cronJobService.updateAllAccountName();
-        cronJobService.updateAllBVN();
-        cronJobService.updateAllAccountCurrency();
+//        cronJobService.updateAllAccountName();
+//        cronJobService.updateAllBVN();
+//        cronJobService.updateAllAccountCurrency();
         System.out.println("job runing");
     }
 }

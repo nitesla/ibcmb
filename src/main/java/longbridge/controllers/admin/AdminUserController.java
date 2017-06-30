@@ -64,17 +64,8 @@ public class AdminUserController {
     @Autowired
     private VerificationService verificationService;
 
-
-
-
     ObjectMapper mapper = new ObjectMapper();
 
-
-    /**
-     * Page for adding a new user
-     *
-     * @return
-     */
     @GetMapping("/new")
     public String addUser(Model model) {
         Iterable<RoleDTO> roles = roleService.getRoles();
@@ -83,15 +74,6 @@ public class AdminUserController {
         return "adm/admin/add";
     }
 
-
-    /**
-     * Creates a new user
-     *
-     * @param adminUser
-     * @param redirectAttributes
-     * @return
-     * @throws Exception
-     */
     @PostMapping
     public String createUser(@ModelAttribute("adminUser") @Valid AdminUserDTO adminUser, BindingResult result, RedirectAttributes redirectAttributes, Locale locale,Principal principal) {
         if (result.hasErrors()) {
@@ -100,7 +82,7 @@ public class AdminUserController {
         }
         try {
              AdminUser userCreatedBy = adminUserService.getUserByName(principal.getName());
-            String message = adminUserService.addUser(adminUser,userCreatedBy);
+            String message = adminUserService.addUser(adminUser);
             redirectAttributes.addFlashAttribute("message", message);
             return "redirect:/admin/users";
         }
@@ -193,16 +175,13 @@ public class AdminUserController {
         }
         try {
             AdminUser userCreatedBy = adminUserService.getUserByName(principal.getName());
-            String message = adminUserService.updateUser(adminUser,userCreatedBy);
+            String message = adminUserService.updateUser(adminUser);
             redirectAttributes.addFlashAttribute("message", message);
             return "redirect:/admin/users";
         }
         catch (DuplicateObjectException ibe) {
             result.addError(new ObjectError("error", ibe.getMessage()));
             logger.error("Existing user found", ibe);
-
-            adminUserService.verifyRequest(183L);
-
             return "adm/admin/edit";
         }
         catch (InternetBankingException ibe) {

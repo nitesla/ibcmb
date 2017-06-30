@@ -38,26 +38,29 @@
 
                     <li>
                         <div class="col-lg-4">
-                            <div class="title-action">
-                                <a class="btn btn-app">
-                                    <span class="badge bg-orange" th:text="${totalPending}">count</span>
+                            <div class="title-action" >
+                                <a class="btn btn-app" href="/admin/verifications/pendingops"  disabled="disabled" >
+                                    <button class="badge bg-orange bt-select" disabled="disabled" th:text="${totalPending}" >count</button>
                                     <i class="fa fa-envelope"></i>My approval
                                 </a>
                             </div>
                         </div>
+
                     </li>
 
                     <li>
                         <div class="col-lg-4">
                             <div class="title-action">
-                                <a class="btn btn-app">
-                                    <span class="badge bg-orange">12</span>
+                                <a  class=" btn btn-app btn bt-select btn-sm  bt-link-act" href="/admin/verifications/operations">
+                                    <button class="badge bg-orange"  th:text="${verificationNumber}"></button>
                                     <i class="fa fa-envelope"></i>Approval Queue
                                 </a>
                             </div>
                         </div>
                     </li>
+
                 </ul>
+
                 <div class="clearfix"></div>
             </div>
 

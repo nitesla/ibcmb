@@ -13,12 +13,19 @@
         <div class="row">
             <div class="col-md-4 col-sm-4">
                 <h5 class="page_header"> New Beneficiary</h5>
+                <select class="form-control invisible">
+                        <option value="account">Account Overview</option>
+                </select>
             </div>
+
+             <p class="col-xs-12 invisible">
+                    Fields marked <span style="color:red">*</span> are compulsory
+            </p>
         </div>
         <div class="row">
             <div class="col-md-9 content-bg">
                 <div class="form-spacin">
-                    <div class="col-sm-8 col-sm-offset-2">
+                    <div class="col-sm-8">
                         <form id="local" method="post" th:action="@{/retail/transfer/local/new}"
                               th:object="${localBeneficiaryDTO}">
                             <div class="form-group">
@@ -47,9 +54,12 @@
                                 <input type="text" class="form-contrl my-input" name="preferredName"
                                        placeholder="Beneficiary Alias" th:field="*{preferredName}"/>
                             </div>
-                            <button id="localsave" style="display: none;" class="btn btn-link">NEXT</button>
-                            <button id="neq" type="button" class="btn btn-link" onclick="getAccountName();">Name Enquiry</button>
-                            <a  th:href="@{/retail/benficiary}"  class="btn btn-link"  >Cancel</a>
+                            <button id="localsave" style="display: none;" class="btn btn-link required-step">NEXT</button>
+                            <button id="neq" type="button" class="btn btn-link required-step" onclick="getAccountName();">Name Enquiry</button>
+                            <form th:href="@{/retail/benficiary}">
+                                 <button  type='submit'  class="btn btn-link less-required"  >Cancel</button>
+                            </form>
+                           
                         </form>
 
 
