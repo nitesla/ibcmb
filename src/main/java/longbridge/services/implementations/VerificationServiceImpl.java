@@ -33,7 +33,6 @@ import java.io.IOException;
 import java.util.*;
 
 @Service
-@Transactional
 public class VerificationServiceImpl implements VerificationService {
 
     private static final String PACKAGE_NAME = "longbridge.models.";
@@ -74,7 +73,6 @@ public class VerificationServiceImpl implements VerificationService {
         }
 
         try {
-            verification.setId(dto.getId());
             verification.setVersion(dto.getVersion());
             verification.setVerifiedBy(getCurrentUserName());
             verification.setComments(dto.getComment());
@@ -84,7 +82,7 @@ public class VerificationServiceImpl implements VerificationService {
             notifyInitiator(verification);
         }
         catch (Exception e){
-            throw new InternetBankingException(messageSource.getMessage("verification.decline.failure",null,locale));
+            throw new InternetBankingException(messageSource.getMessage("verification.decline.failure",null,locale),e);
         }
         return messageSource.getMessage("verification.decline", null, locale);
     }
@@ -129,7 +127,7 @@ public class VerificationServiceImpl implements VerificationService {
         }
         catch (Exception e) {
             logger.error("Error verifying operation");
-            throw new InternetBankingException("Failed to verify the operation");
+            throw new InternetBankingException("Failed to verify the operation",e);
         }
         return messageSource.getMessage("verification.verify", null, locale);
     }

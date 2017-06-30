@@ -63,7 +63,7 @@ public class AdmVerificationController {
         }
         catch (InternetBankingException ibe){
             logger.error("Error verifying the operation",ibe);
-            redirectAttributes.addFlashAttribute("message", ibe.getMessage());
+            redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
 
         }
         return "redirect:/admin/verifications/operations";
