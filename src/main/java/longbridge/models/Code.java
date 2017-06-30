@@ -6,6 +6,10 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
@@ -34,7 +38,7 @@ import longbridge.dtos.CodeDTO;
 		@UniqueConstraint(columnNames={"code", "type","deletedOn"})
 )
 @Where(clause ="del_Flag='N'" )
-public class Code extends AbstractEntity {
+public class Code extends AbstractEntity implements PrettySerializer{
 
     private String code;
     private String type;
@@ -124,11 +128,21 @@ public class Code extends AbstractEntity {
         this.version = code.version;
 	}
 
-	public static OperationCode getAddCode() {
-        return OperationCode.ADD_CODE;
+
+	@Override @JsonIgnore
+	public JsonSerializer<Code> getSerializer() {
+		return new JsonSerializer<Code>() {
+			@Override
+			public void serialize(Code value, JsonGenerator gen, SerializerProvider serializers)
+					throws IOException, JsonProcessingException
+			{
+				gen.writeStartObject();
+				gen.writeStringField("Code",value.code);
+				gen.writeStringField("Description",value.description);
+				gen.writeStringField("Type",value.type);
+				gen.writeEndObject();
+			}
+		};
 	}
 
-	public static OperationCode getModifyCode() {
-		return OperationCode.MODIFY_CODE;
 	}
-}

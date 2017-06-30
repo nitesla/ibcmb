@@ -99,16 +99,6 @@ public class Role extends AbstractEntity implements PrettySerializer{
     }
 
 
-	public static OperationCode getAddCode() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public static OperationCode getModifyCode() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 
 	@Override @JsonIgnore
     public JsonSerializer<Role> getSerializer() {
@@ -118,10 +108,10 @@ public class Role extends AbstractEntity implements PrettySerializer{
                     throws IOException, JsonProcessingException {
 
                 gen.writeStartObject();
-                gen.writeStringField("name", value.name);
-                gen.writeStringField("email", value.email);
+                gen.writeStringField("Name", value.name);
+                gen.writeStringField("Email", value.email);
                 // gen.writeArrayFieldStart("permissions");
-                gen.writeObjectFieldStart("permissions");
+                gen.writeObjectFieldStart("Permissions");
                 for(Permission p : value.permissions){
                     gen.writeObjectFieldStart(p.getId().toString());
                     //gen.writeStartObject();
