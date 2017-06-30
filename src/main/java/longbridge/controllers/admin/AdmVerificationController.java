@@ -7,6 +7,7 @@ import javax.persistence.Version;
 //import longbridge.dtos.PendingDTO;
 import longbridge.dtos.PendingVerification;
 import longbridge.dtos.VerificationDTO;
+import longbridge.exception.InternetBankingException;
 import longbridge.utils.verificationStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,8 +56,16 @@ public class AdmVerificationController {
 
     @GetMapping("/{id}/verify")
     public String verifyOp(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        verificationService.verify(id);
-        redirectAttributes.addFlashAttribute("message","Operation approved successfully");
+
+        try {
+            verificationService.verify(id);
+            redirectAttributes.addFlashAttribute("message", "Operation approved successfully");
+        }
+        catch (InternetBankingException ibe){
+            logger.error("Error verifying the operation",ibe);
+            redirectAttributes.addFlashAttribute("message", ibe.getMessage());
+
+        }
         return "redirect:/admin/verifications/operations";
     }
 
@@ -66,13 +75,20 @@ public class AdmVerificationController {
 
         String approval = request.getParameter("approve");
 
-        if ("true".equals(approval)) {
-            verificationService.verify(verification);
-            redirectAttributes.addFlashAttribute("message", "Operation approved successfully");
+        try {
+            if ("true".equals(approval)) {
+                verificationService.verify(verification);
+                redirectAttributes.addFlashAttribute("message", "Operation approved successfully");
 
-        } else if ("false".equals(approval)) {
-            verificationService.decline(verification);
-            redirectAttributes.addFlashAttribute("message", "Operation declined successfully");
+            } else if ("false".equals(approval)) {
+                verificationService.decline(verification);
+                redirectAttributes.addFlashAttribute("message", "Operation declined successfully");
+
+            }
+        }
+        catch (InternetBankingException ibe){
+            logger.error("Error verifying the operation",ibe);
+            redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
 
         }
         return "redirect:/admin/verifications/operations";

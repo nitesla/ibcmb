@@ -42,7 +42,6 @@ public class MakerCheckerServiceConfigImpl implements MakerCheckerServiceConfig 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
-    @Verifiable(operation="MAKER_CHECKER_CONFIG",description="Configuring Maker Checker")
     public String configureMakerChecker(MakerChecker makerChecker) throws InternetBankingException
     {
 

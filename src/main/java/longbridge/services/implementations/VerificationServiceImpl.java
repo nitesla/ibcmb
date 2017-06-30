@@ -6,9 +6,13 @@ import longbridge.dtos.VerificationDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.VerificationException;
 import longbridge.models.*;
+import longbridge.repositories.AdminUserRepo;
+import longbridge.repositories.OperationsUserRepo;
 import longbridge.repositories.VerificationRepo;
 import longbridge.security.userdetails.CustomUserPrincipal;
+import longbridge.services.MailService;
 import longbridge.services.VerificationService;
+import longbridge.utils.DateFormatter;
 import longbridge.utils.verificationStatus;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -19,6 +23,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -41,6 +46,15 @@ public class VerificationServiceImpl implements VerificationService {
     private MessageSource messageSource;
 
     @Autowired
+    private AdminUserRepo adminUserRepo;
+
+    @Autowired
+    private OperationsUserRepo operationsUserRepo;
+
+    @Autowired
+    MailService mailService;
+
+    @Autowired
     private ModelMapper modelMapper;
 
     Locale locale = LocaleContextHolder.getLocale();
@@ -58,13 +72,20 @@ public class VerificationServiceImpl implements VerificationService {
         if (!verificationStatus.PENDING.equals(verification.getStatus())) {
             throw new InternetBankingException("Verification is not pending for the operation");
         }
-        verification.setId(dto.getId());
-        verification.setVersion(dto.getVersion());
-        verification.setDeclinedBy(getCurrentUserName());
-        verification.setDeclinedOn(new Date());
-        verification.setDeclineReason(dto.getComment());
-        verification.setStatus(verificationStatus.DECLINED);
-        verificationRepo.save(verification);
+
+        try {
+            verification.setId(dto.getId());
+            verification.setVersion(dto.getVersion());
+            verification.setVerifiedBy(getCurrentUserName());
+            verification.setComments(dto.getComment());
+            verification.setDeclinedOn(new Date());
+            verification.setStatus(verificationStatus.DECLINED);
+            verificationRepo.save(verification);
+            notifyInitiator(verification);
+        }
+        catch (Exception e){
+            throw new InternetBankingException(messageSource.getMessage("verification.decline.failure",null,locale));
+        }
         return messageSource.getMessage("verification.decline", null, locale);
     }
 
@@ -103,22 +124,57 @@ public class VerificationServiceImpl implements VerificationService {
             verification.setComments(dto.getComment());
             verification.setStatus(verificationStatus.VERIFIED);
             verificationRepo.save(verification);
-
+            notifyInitiator(verification);
 
         }
-        catch (ClassNotFoundException|IOException e) {
+        catch (Exception e) {
             logger.error("Error verifying operation");
             throw new InternetBankingException("Failed to verify the operation");
         }
         return messageSource.getMessage("verification.verify", null, locale);
     }
 
+    @Async
+    private void notifyInitiator(Verification verification){
+
+        CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User verifiedBy = principal.getUser();
+
+        String initiator = verification.getInitiatedBy();
+
+        User initiatedBy = null;
+
+        switch (verification.getUserType()){
+            case ADMIN:
+                initiatedBy = adminUserRepo.findFirstByUserName(initiator);
+
+                break;
+            case OPERATIONS:
+                initiatedBy = operationsUserRepo.findFirstByUserName(initiator);
+                break;
+        }
+        if(initiatedBy!=null) {
+            if (initiatedBy.getEmail() != null) {
+                String initiatorName = initiatedBy.getFirstName()+" "+initiatedBy.getLastName();
+                String verifierName = verifiedBy.getFirstName()+" "+verifiedBy.getLastName();
+                Date date = verification.getVerifiedOn();
+                String operation = verification.getOperation();
+                String comment = verification.getComments();
+                String status = verification.getStatus().name();
+                Email email = new Email.Builder()
+                        .setRecipient(initiatedBy.getEmail())
+                        .setSubject(messageSource.getMessage("verification.subject", null, locale))
+                        .setBody(String.format(messageSource.getMessage("verification.message", null, locale),initiatorName, verifierName, operation, status, DateFormatter.format(date),comment))
+                        .build();
+                mailService.send(email);
+            }
+        }
+    }
 
     @Override
     public VerificationDTO getVerification(Long id) {
         return convertEntityToDTO(verificationRepo.findOne(id));
     }
-
 
 
     public VerificationDTO convertEntityToDTO(Verification verification) {
