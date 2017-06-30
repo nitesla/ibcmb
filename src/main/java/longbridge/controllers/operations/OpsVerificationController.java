@@ -76,7 +76,7 @@ public class OpsVerificationController {
     public
     @ResponseBody
     DataTablesOutput<VerificationDTO> getAllPending(DataTablesInput input, Principal principal) {
-        OperationsUser createdBy = operationsUserService.getUserByName(principal.getName());
+       // OperationsUser createdBy = operationsUserService.getUserByName(principal.getName());
         Pageable pageable = DataTablesUtils.getPageable(input);
         List<VerificationDTO> verifications = verificationService.getPendingForUser();
         DataTablesOutput<VerificationDTO> out = new DataTablesOutput<VerificationDTO>();
