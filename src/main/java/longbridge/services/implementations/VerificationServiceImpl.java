@@ -175,7 +175,8 @@ public class VerificationServiceImpl implements VerificationService {
 
         CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User doneBy = principal.getUser();
-        List<Verification> b = verificationRepo.findVerificationForUser(doneBy.getUserName(), doneBy.getUserType());
+        List<String> permissions = getPermissionCodes(doneBy.getRole());
+        List<Verification> b = verificationRepo.findVerificationForUser(doneBy.getUserName(), permissions);
         return b.size();
     }
 
@@ -213,18 +214,19 @@ public class VerificationServiceImpl implements VerificationService {
     public List<VerificationDTO> getVerificationsForUser() {
         CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User doneBy = principal.getUser();
-        List<Verification> verifications = verificationRepo.findVerificationForUser(doneBy.getUserName(), doneBy.getUserType());
+        List<String> permissions = getPermissionCodes(doneBy.getRole());
+        List<Verification> verifications = verificationRepo.findVerificationForUser(doneBy.getUserName(), permissions);
         return convertEntitiesToDTOs(verifications);
 
     }
 
-    @Override
-    public Collection<Permission> getPermmitedOperation()
-    {
-        CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        User doneBy = principal.getUser();
-
-        return doneBy.getRole().getPermissions();
+    public List<String> getPermissionCodes(Role role) {
+      Collection<Permission> permissions = role.getPermissions();
+      List<String> permCodes = new ArrayList<>();
+      for (Permission permission: permissions){
+          permCodes.add(permission.getCode());
+      }
+        return permCodes;
     }
 
 

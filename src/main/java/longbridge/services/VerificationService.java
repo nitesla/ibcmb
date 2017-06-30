@@ -54,11 +54,8 @@ public interface VerificationService {
     VerificationDTO getVerification(Long id);
 
 
-
-
     Page<PendingVerification> getPendingVerifications(Pageable pageable);
 
-    Collection<Permission>  getPermmitedOperation();
 
     Page<VerificationDTO> getPendingOperations(String operation, Pageable pageable);
 
