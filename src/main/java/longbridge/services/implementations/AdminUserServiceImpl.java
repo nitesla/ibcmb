@@ -1,6 +1,5 @@
 package longbridge.services.implementations;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import longbridge.dtos.AdminUserDTO;
 import longbridge.dtos.SettingDTO;
 import longbridge.exception.*;
@@ -26,6 +25,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import longbridge.services.AdminUserService;
@@ -123,7 +123,7 @@ public class AdminUserServiceImpl implements AdminUserService {
 
 	@Override
 	@Transactional
-	@Verifiable(operation = "ADMIN_ADD", description = "Adding an Admin User")
+	@Verifiable(operation = "ADD_ADMIN_USER", description = "Adding an Admin User")
 	public String addUser(AdminUserDTO user) throws InternetBankingException {
 		AdminUser adminUser = adminUserRepo.findFirstByUserNameIgnoreCase(user.getUserName());
 		if (adminUser != null) {
@@ -140,7 +140,7 @@ public class AdminUserServiceImpl implements AdminUserService {
 			Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
 			adminUser.setRole(role);
 			adminUserRepo.save(adminUser);
-
+			creatUserOnEntrust(adminUser);
 			logger.info("New admin user {} created", adminUser.getUserName());
 			return messageSource.getMessage("user.add.success", null, locale);
 
@@ -154,7 +154,9 @@ public class AdminUserServiceImpl implements AdminUserService {
 		}
 	}
 
-	public void createUserOnEntrust(AdminUser adminUser) {
+	public void creatUserOnEntrust(AdminUser adminUser) {
+		
+		// Check if user exists else don't create
 		String fullName = adminUser.getFirstName() + " " + adminUser.getLastName();
 		SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_CREATION");
 		if (setting != null && setting.isEnabled()) {
@@ -175,17 +177,17 @@ public class AdminUserServiceImpl implements AdminUserService {
 
 	@Override
 	@Transactional
-	@Verifiable(operation = "ADMIN_ACTIVATION", description = "Change Admin Activation Status")
+	@Verifiable(operation = "UPDATE_ADMIN_STATUS", description = "Change Admin Activation Status")
 	public String changeActivationStatus(Long userId) throws InternetBankingException {
 		try {
 			AdminUser user = adminUserRepo.findOne(userId);
+			entityManager.detach(user);
 			String oldStatus = user.getStatus();
 			String newStatus = "A".equals(oldStatus) ? "I" : "A";
 			user.setStatus(newStatus);
 			adminUserRepo.save(user);
 			String fullName = user.getFirstName() + " " + user.getLastName();
 			if ((oldStatus == null)) {
-				// TODO: Why are you resetting password
 				String password = passwordPolicyService.generatePassword();
 				user.setPassword(passwordEncoder.encode(password));
 				user.setExpiryDate(new Date());
@@ -199,23 +201,22 @@ public class AdminUserServiceImpl implements AdminUserService {
 						.build();
 				mailService.send(email);
 
-			} else if (("I".equals(oldStatus)) && "A".equals(newStatus)) {
-				// User	 is being reactivated
-				// TODO: Why are you resetting password on reactivation
+			} else if (("I".equals(oldStatus)) && "A".equals(newStatus)) {// User
+																			// is
+																			// being
+																			// reactivated
 				String password = passwordPolicyService.generatePassword();
 				user.setPassword(passwordEncoder.encode(password));
 				passwordPolicyService.saveAdminPassword(user);
 				user.setExpiryDate(new Date());
 				adminUserRepo.save(user);
-
-				// TODO: Move to @Async method 
-				// create async services that do post user save
 				Email email = new Email.Builder().setRecipient(user.getEmail())
 						.setSubject(messageSource.getMessage("admin.reactivation.subject", null, locale))
 						.setBody(String.format(messageSource.getMessage("admin.reactivation.message", null, locale),
 								fullName, user.getUserName(), password))
 						.build();
 				mailService.send(email);
+
 				logger.info("Logged in user " + hostMaster.getLoggedInUser());
 
 			}
@@ -238,7 +239,6 @@ public class AdminUserServiceImpl implements AdminUserService {
 			SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_DELETION");
 			if (setting != null && setting.isEnabled()) {
 				if ("YES".equalsIgnoreCase(setting.getValue())) {
-					// TODO : YES ?
 					securityService.deleteEntrustUser(user.getUserName());
 				}
 			}
@@ -254,7 +254,7 @@ public class AdminUserServiceImpl implements AdminUserService {
 
 	@Override
 	@Transactional
-	@Verifiable(operation = "ADMIN_UPDATE", description = "Updating an Admin User")
+	@Verifiable(operation = "UPDATE_ADMIN_USER", description = "Updating an Admin User")
 	public String updateUser(AdminUserDTO user) throws InternetBankingException {
 
 		try {
