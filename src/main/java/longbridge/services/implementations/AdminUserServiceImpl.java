@@ -194,6 +194,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     public String changeActivationStatus(Long userId) throws InternetBankingException {
         try {
             AdminUser user = adminUserRepo.findOne(userId);
+            entityManager.detach(user);
             String oldStatus = user.getStatus();
             String newStatus = "A".equals(oldStatus) ? "I" : "A";
             user.setStatus(newStatus);

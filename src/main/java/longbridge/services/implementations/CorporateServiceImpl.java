@@ -22,6 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -68,6 +69,8 @@ public class CorporateServiceImpl implements CorporateService {
     @Autowired
     private CorporateRoleRepo corporateRoleRepo;
 
+    @Autowired
+    private EntityManager entityManager;
 
     private Locale locale = LocaleContextHolder.getLocale();
     private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -180,6 +183,7 @@ public class CorporateServiceImpl implements CorporateService {
     public String updateCorporate(CorporateDTO corporateDTO) throws InternetBankingException {
         try {
             Corporate corporate = corporateRepo.findOne(corporateDTO.getId());
+            entityManager.detach(corporate);
             corporate.setVersion(corporateDTO.getVersion());
             corporate.setEmail(corporateDTO.getEmail());
             corporate.setName(corporateDTO.getName());
@@ -234,6 +238,7 @@ public class CorporateServiceImpl implements CorporateService {
     public String changeActivationStatus(Long id) throws InternetBankingException {
         try {
             Corporate corporate = corporateRepo.findOne(id);
+            entityManager.detach(corporate);
             String oldStatus = corporate.getStatus();
             String newStatus = "A".equals(oldStatus) ? "I" : "A";
             corporate.setStatus(newStatus);

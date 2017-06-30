@@ -99,8 +99,6 @@ public class CodeServiceImpl implements CodeService {
     public String updateCode(CodeDTO codeDTO, AdminUser adminUser) throws InternetBankingException{
         try {
             Code code = convertDTOToEntity(codeDTO);
-            // Code originalObject = codeRepo.findOne(code.getId());
-            //check if maker checker is enabled
             codeRepo.save(code);
             logger.info("Updated code with Id {}",code.getId());
             return messageSource.getMessage("code.update.success", null, locale);
@@ -160,7 +158,6 @@ public class CodeServiceImpl implements CodeService {
 	public String addCode(CodeDTO codeDTO, AdminUser adminUser) throws InternetBankingException {
 		try {
             Code code = convertDTOToEntity(codeDTO);
-            //check if maker checker is enabled
             codeRepo.save(code);
             logger.info("Added new code {} of type {}",code.getDescription(),code.getType());
             return messageSource.getMessage("code.add.success", null, locale);

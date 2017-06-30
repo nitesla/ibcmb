@@ -31,6 +31,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.util.*;
 
 /**
@@ -78,6 +79,9 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     private FailedLoginService failedLoginService;
 
     private Locale locale = LocaleContextHolder.getLocale();
+
+    @Autowired
+    private EntityManager entityManager;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -130,6 +134,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     public String updateUser(CorporateUserDTO user) throws InternetBankingException {
         try {
             CorporateUser corporateUser = corporateUserRepo.findOne(user.getId());
+
             corporateUser.setEmail(user.getEmail());
             corporateUser.setLastName(user.getLastName());
             corporateUser.setUserName(user.getUserName());
@@ -139,7 +144,6 @@ public class CorporateUserServiceImpl implements CorporateUserService {
                 Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
                 corporateUser.setRole(role);
             }
-
             corporateUserRepo.save(corporateUser);
             return messageSource.getMessage("user.update.success", null, locale);
         } catch (Exception e) {
@@ -259,6 +263,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     public String changeActivationStatus(Long userId) throws InternetBankingException {
         try {
             CorporateUser user = corporateUserRepo.findOne(userId);
+            entityManager.detach(user);
             String oldStatus = user.getStatus();
             String newStatus = "A".equals(oldStatus) ? "I" : "A";
             user.setStatus(newStatus);

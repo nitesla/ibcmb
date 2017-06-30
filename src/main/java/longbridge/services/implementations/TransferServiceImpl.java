@@ -146,7 +146,6 @@ public class TransferServiceImpl implements TransferService {
 
         }
 
-
         if (dto.getBeneficiaryAccountNumber().equalsIgnoreCase(dto.getCustomerAccountNumber())) {
             throw new InternetBankingTransferException(TransferExceptions.SAME_ACCOUNT.toString());
         }

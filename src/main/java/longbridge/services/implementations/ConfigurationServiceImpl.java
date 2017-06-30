@@ -22,6 +22,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+
 /**
  * Created by Fortune on 4/13/2017.
  */
@@ -37,6 +39,9 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 
 	@Autowired
 	MessageSource messageSource;
+
+	@Autowired
+	EntityManager entityManager;
 
 	Locale locale = LocaleContextHolder.getLocale();
 
@@ -100,6 +105,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 	public String updateSetting(SettingDTO dto) throws InternetBankingException {
 		try {
 			Setting setting = settingRepo.findOne(dto.getId());
+			entityManager.detach(setting);
 			ModelMapper mapper = new ModelMapper();
 			mapper.map(dto, setting);
 			settingRepo.save(setting);

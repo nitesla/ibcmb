@@ -45,9 +45,8 @@ public class AccountConfigServiceImpl implements AccountConfigService {
 
     @Autowired
     private AccountRepo accountRepo;
-
     @Autowired
-    MessageSource messageSource;
+    private MessageSource messageSource;
 
     private Locale locale = LocaleContextHolder.getLocale();
 

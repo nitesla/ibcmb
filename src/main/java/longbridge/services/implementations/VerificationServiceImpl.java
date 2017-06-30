@@ -157,7 +157,6 @@ public class VerificationServiceImpl implements VerificationService {
 
     @Override
     public long getTotalNumberPending(User user) {
-
         long totalNumberPending = verificationRepo.countByInitiatedByAndUserTypeAndStatus(user.getUserName(), user.getUserType(), verificationStatus.PENDING);
         return totalNumberPending;
     }
@@ -165,7 +164,6 @@ public class VerificationServiceImpl implements VerificationService {
 
     @Override
     public int getTotalNumberForVerification(User user) {
-
         List<Verification> b = verificationRepo.findVerificationForUser(user.getUserName(), user.getUserType());
         return b.size();
     }

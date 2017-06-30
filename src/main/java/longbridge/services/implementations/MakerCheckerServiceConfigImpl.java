@@ -36,6 +36,7 @@ public class MakerCheckerServiceConfigImpl implements MakerCheckerServiceConfig 
     private Locale locale = LocaleContextHolder.getLocale();
 
 
+
     private ModelMapper modelMapper = new ModelMapper();
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -46,7 +47,6 @@ public class MakerCheckerServiceConfigImpl implements MakerCheckerServiceConfig 
     {
 
         try {
-            //  MakerChecker checker = convertDTOToEntity(makerChecker);
                makerCheckerRepo.save(makerChecker);
                logger.info("Added MakerChecker {}", makerChecker.toString());
               return messageSource.getMessage("makerchecker.add.success", null, locale);
