@@ -97,14 +97,9 @@ public class MakerCheckerAdvisor {
         log.info(entity.toString());
         log.info("JB Around: " + pjp);
 
-        if (!makerCheckerService.isEnabled(verifier.operation()))
-        {
-            if (entity.getId() == null) {
-                entityManager.persist(entity);
-            } else {
-                entityManager.merge(entity);
-            }
-            return verifier.operation() + "action successful";
+        if (!makerCheckerService.isEnabled(verifier.operation())) {
+            pjp.proceed();
+            return verifier.description()+" successful";
         }
 
         CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -139,11 +134,10 @@ public class MakerCheckerAdvisor {
             Verification pendingVerification = verificationRepo.findFirstByEntityNameAndEntityIdAndStatus(entityName, id, verificationStatus.PENDING);
             if (pendingVerification != null) {
                 //found pending verification
-                throw new DuplicateObjectException("Entity has pending verification");
+                throw new DuplicateObjectException(entityName+" has pending verification");
             }
 
             verification.setBeforeObject(prettyMapper.writeValueAsString(originalEntity));
-
             verification.setEntityId(entity.getId());
         }
         verification.setAfterObject(prettyMapper.writeValueAsString(entity));
