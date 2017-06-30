@@ -253,6 +253,7 @@ public class AccountController {
 			from = dateFormat.parse(fromDate);
 			to = dateFormat.parse(toDate);
 			AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to,transType);
+			logger.info("TransactionType {}",transType);
 			out.setDraw(input.getDraw());
 			List<TransactionDetails> list = new ArrayList<>();
 			if (list != null || !(list.equals("")) || !(list.isEmpty())) {
@@ -274,7 +275,7 @@ public class AccountController {
 
 	@GetMapping("/downloadstatement")
 	public ModelAndView downloadStatementData(ModelMap modelMap, DataTablesInput input, String acctNumber,
-											  String fromDate, String toDate, String transType) {
+											  String fromDate, String toDate, String transType, Principal principal) {
 		// Pageable pageable = DataTablesUtils.getPageable(input);
 
 		Date from;
@@ -286,14 +287,56 @@ public class AccountController {
 			AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to,transType);
 			out.setDraw(input.getDraw());
 			List<TransactionDetails> list = accountStatement.getTransactionDetails();
+			RetailUser retailUser=retailUserService.getUserByName(principal.getName());
 			System.out.println("list = " + list);
 			modelMap.put("datasource", list);
 			modelMap.put("format", "pdf");
-			modelMap.put("accountNum", acctNumber);
+			modelMap.put("summary.accountNum", acctNumber);
+			modelMap.put("customerName",retailUser.getFirstName()+" "+retailUser.getLastName());
+				logger.info("Customer's Name {}"+retailUser.getFirstName()+" "+retailUser.getLastName());
+
+			if(accountStatement.getAccountNumber()!=null) {
+				modelMap.put("customerNo", acctNumber);
+			}
+			else if(accountStatement.getAccountNumber()==null ||accountStatement.getAccountNumber().isEmpty()){
+				modelMap.put("customerNo","");
+			}
+			else{};
+			modelMap.put("summary.openingBalance", accountStatement.getOpeningBalance());
+			if (accountStatement.getDebitCount() != null) {
+				modelMap.put("debitCount", accountStatement.getDebitCount());
+				}
+			else{
+				modelMap.put("debitCount","");
+			}
+			if (accountStatement.getCreditCount() != null) {
+				modelMap.put("creditCount", accountStatement.getCreditCount());
+				}
+			else{
+				modelMap.put("creditCount","");
+			}
+			modelMap.put("summary.currencyCode", accountStatement.getCurrencyCode());
+			if(accountStatement.getClosingBalance()!=null) {
+				modelMap.put("summary.closingBalance", accountStatement.getClosingBalance());
+				}
+			else{
+				modelMap.put("summary.closingBalance","0");
+			}
+			modelMap.put("summary.totalDebit", accountStatement.getTotalDebit());
+			modelMap.put("summary.totalCredit", accountStatement.getTotalCredit());
+			if(accountStatement.getAddress()!=null ) {
+				modelMap.put("address", accountStatement.getAddress());
+				}
+			else if(accountStatement.getAddress()==null){
+				modelMap.put("address","");
+			}
+			else{};
+
 			modelMap.put("fromDate", fromDate);
 			modelMap.put("toDate", toDate);
 			Date today=new Date();
 			modelMap.put("today",today);
+
 		} catch (ParseException e) {
 			logger.warn("didn't parse date", e);
 		}

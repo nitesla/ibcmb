@@ -11,6 +11,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -46,6 +49,16 @@ public class NotificationsServiceImpl implements NotificationsService {
     public NotificationsDTO getNotification(Long id) {
         Notifications notifications = this.notificationsRepo.findOne(id);
         return convertEntityToDTO(notifications);
+    }
+
+    @Override
+    public Page<NotificationsDTO> getNotifications(Pageable pageDetails) {
+        Page<Notifications> page = notificationsRepo.findAll(pageDetails);
+        List<NotificationsDTO> dtOs = convertEntitiesToDTOs(page.getContent());
+        long t = page.getTotalElements();
+
+        Page<NotificationsDTO> pageImpl = new PageImpl<NotificationsDTO>(dtOs, pageDetails, t);
+        return pageImpl;
     }
 
     @Override

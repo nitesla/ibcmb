@@ -73,7 +73,7 @@ public class AccountConfigServiceImpl implements AccountConfigService {
     }
 
     @Override
-    @Verifiable(operation="Add_Acc_Restriction",description="Adding Account Restriction")
+    @Verifiable(operation="ACC_RES_ADD",description="Adding Account Restriction")
     public String addAccountRestriction(AccountRestrictionDTO accountRestrictionDTO) throws InternetBankingException {
 
         validateNoAccountDuplication(accountRestrictionDTO);
@@ -89,7 +89,7 @@ public class AccountConfigServiceImpl implements AccountConfigService {
 
 
     @Override
-    @Verifiable(operation="Update_Acc_Restriction",description="Update Account Restriction")
+    @Verifiable(operation="ACC_RES_UPDATE",description="Update Account Restriction")
     public String updateAccountRestriction(AccountRestrictionDTO accountRestrictionDTO) throws InternetBankingException {
 
         validateNoAccountDuplication(accountRestrictionDTO);
@@ -119,7 +119,7 @@ public class AccountConfigServiceImpl implements AccountConfigService {
 
     @Override
     @Transactional
-    @Verifiable(operation="Delete_Acc_Restriction",description="Delete Account Restriction")
+    @Verifiable(operation="ACC_RES_DEL",description="Delete Account Restriction")
     public String deleteAccountRestriction(Long id) throws InternetBankingException {
         try {
             accountRestrictionRepo.delete(id);
@@ -132,7 +132,7 @@ public class AccountConfigServiceImpl implements AccountConfigService {
     }
 
     @Override
-    @Verifiable(operation="Add_Acc_Class_Restriction",description="Add Account Class Restriction")
+    @Verifiable(operation="ACL_RES_ADD",description="Add Account Class Restriction")
     public String addAccountClassRestriction(AccountClassRestrictionDTO accountClassRestrictionDTO) throws InternetBankingException {
 
         validateNoAccountClassDuplication(accountClassRestrictionDTO);
@@ -147,7 +147,7 @@ public class AccountConfigServiceImpl implements AccountConfigService {
     }
 
     @Override
-    @Verifiable(operation="Update_Acc_Class_Restriction",description="Update Account Class Restriction")
+    @Verifiable(operation="ACL_RES_UPDATE",description="Update Account Class Restriction")
     public String updateAccountClassRestriction(AccountClassRestrictionDTO accountClassRestrictionDTO) throws InternetBankingException {
 
         validateNoAccountClassDuplication(accountClassRestrictionDTO);
@@ -166,7 +166,7 @@ public class AccountConfigServiceImpl implements AccountConfigService {
     }
 
     @Override
-    @Verifiable(operation="Delete_Acc_Class_Restriction",description="Delete Account Class Restriction")
+    @Verifiable(operation="ACC_RES_ADD",description="Delete Account Class Restriction")
     public String deleteAccountClassRestriction(Long id) throws InternetBankingException {
         try {
             AccountClassRestriction accountClassRestriction = accountClassRestrictionRepo.findOne(id);

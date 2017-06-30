@@ -41,37 +41,6 @@ public class CommonRepoImpl<T extends AbstractEntity, ID extends Serializable> e
     }
 
 
-//    <S extends T> S save(S var1);
-//
-//    <S extends T> Iterable<S> save(Iterable<S> var1);
-
-
-    public <T extends SerializableEntity<T>> String makerCheckerSave(T originalEntity, T entity,User createdBy) throws JsonProcessingException, VerificationException {
-
-        AbstractEntity originalEntity1 = (AbstractEntity) (originalEntity);
-
-        if (originalEntity1.getId() == null) {
-                String message = verificationService.addNewVerificationRequest(entity,createdBy);
-                return message;
-
-        } else {
-
-                String message = verificationService.addModifyVerificationRequest(originalEntity, entity);
-                return message;
-
-        }
-
-
-    }
-
-
-
-
-//    public <T extends SerializableEntity<T>> String makerCheckerUpdate(T entity) throws JsonProcessingException, VerificationException {
-//        String message = verificationService.addNewVerificationRequest(entity);
-//        return message;
-//    }
-
 
     @Override
     @Transactional

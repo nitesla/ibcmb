@@ -61,7 +61,7 @@ public class TransactionLimitServiceImpl implements TransactionLimitService {
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
-    @Verifiable(operation="Add_Global_Limit",description="Add Global Limit")
+    @Verifiable(operation="GLO_LIM_ADD",description="Adding a Global Limit")
     public String addGlobalLimit(GlobalLimitDTO globalLimitDTO) throws InternetBankingException {
         try {
             GlobalLimit globalLimit = convertGlobalLimitDTOToEntity(globalLimitDTO);
@@ -74,7 +74,7 @@ public class TransactionLimitServiceImpl implements TransactionLimitService {
     }
 
     @Override
-    @Verifiable(operation="Update Global Limit",description="Update Global Limit")
+    @Verifiable(operation="GLO_LIM_UPDATE",description="Updating a Global Limit")
     public String updateGlobalLimit(GlobalLimitDTO globalLimitDTO) throws InternetBankingException {
         try {
             GlobalLimit globalLimit = convertGlobalLimitDTOToEntity(globalLimitDTO);
@@ -130,7 +130,7 @@ public class TransactionLimitServiceImpl implements TransactionLimitService {
     }
 
     @Override
-    @Verifiable(operation="Add_Class_limit",description="Add Class Limit")
+    @Verifiable(operation="CLASS_LIM_ADD",description="Adding a Class Limit")
     public String addClassLimit(ClassLimitDTO classLimitDTO) throws InternetBankingException {
         try {
             ClassLimit classLimit = convertClassLimitDTOToEntity(classLimitDTO);
@@ -143,7 +143,7 @@ public class TransactionLimitServiceImpl implements TransactionLimitService {
     }
 
     @Override
-    @Verifiable(operation="Update_Class_Limit",description="Update Class Limit")
+    @Verifiable(operation="CLASS_LIM_UPDATE",description="Updating a Class Limit")
     public String updateClassLimit(ClassLimitDTO classLimitDTO) throws InternetBankingException {
         try {
             ClassLimit classLimit = convertClassLimitDTOToEntity(classLimitDTO);
@@ -183,7 +183,7 @@ public class TransactionLimitServiceImpl implements TransactionLimitService {
     }
 
     @Override
-    @Verifiable(operation="Add_Account_limit",description="Add Account Limit")
+    @Verifiable(operation="ACC_LIM_ADD",description="Adding an Account Limit")
     public String addAccountLimit(AccountLimitDTO accountLimitDTO) throws InternetBankingException {
         try {
             AccountLimit accountLimit = convertAccountLimitDTOToEntity(accountLimitDTO);
@@ -196,7 +196,7 @@ public class TransactionLimitServiceImpl implements TransactionLimitService {
     }
 
     @Override
-    @Verifiable(operation="Update_Account_Limit",description="Update Account Limit")
+    @Verifiable(operation="ACC_LIM_UPDATE",description="Updating an Account Limit")
     public String updateAccountLimit(AccountLimitDTO accountLimitDTO) throws InternetBankingException {
         try {
             AccountLimit accountLimit = convertAccountLimitDTOToEntity(accountLimitDTO);
@@ -223,7 +223,7 @@ public class TransactionLimitServiceImpl implements TransactionLimitService {
     }
 
     @Override
-    @Verifiable(operation="Delete_Corporate_Account_Limit",description="Delete Coporate Account Limit")
+    @Verifiable(operation="ACC_COP_LIM_DEL",description="Deleting a Coporate Account Limit")
     public String deleteCorporateAccountLimit(Long id) throws InternetBankingException {
         try {
             accountLimitRepo.delete(id);
@@ -235,7 +235,7 @@ public class TransactionLimitServiceImpl implements TransactionLimitService {
     }
 
     @Override
-    @Verifiable(operation="Delete_Coporate_Class_Limit",description="Delete Coporate Class Limit")
+    @Verifiable(operation="COP_CLASS_LIM_DEL",description="Deleting a Coporate Class Limit")
     public String deleteCorporateClassLimit(Long id) throws InternetBankingException {
         try {
             classLimitRepo.delete(id);
@@ -247,7 +247,7 @@ public class TransactionLimitServiceImpl implements TransactionLimitService {
     }
 
     @Override
-    @Verifiable(operation="Delete_Corporate_Global_Limit",description="Delete Corporate Global Limit")
+    @Verifiable(operation="COP_GLO_LIM_DEL",description="Deleting a Corporate Global Limit")
     public String deleteCorporateGlobalLimit(Long id) throws InternetBankingException {
         try {
             globalLimitRepo.delete(id);
@@ -259,7 +259,7 @@ public class TransactionLimitServiceImpl implements TransactionLimitService {
     }
 
     @Override
-    @Verifiable(operation="Delete_Retail_Account_Limit",description="Delete  Retail Account Limit")
+    @Verifiable(operation="RET_ACC_LIM_DEL",description="Deleting a  Retail Account Limit")
     public String deleteRetailAccountLimit(Long id) throws InternetBankingException {
         try {
             accountLimitRepo.delete(id);
@@ -271,7 +271,7 @@ public class TransactionLimitServiceImpl implements TransactionLimitService {
     }
 
     @Override
-    @Verifiable(operation="Delete_Retail_Class_Limit",description="Delete Retail Class Limit")
+    @Verifiable(operation="RET_CLASS_LIM_DEL",description="Deleting a Retail Class Limit")
     public String deleteRetailClassLimit(Long id) throws InternetBankingException {
         try {
             classLimitRepo.delete(id);
@@ -283,7 +283,7 @@ public class TransactionLimitServiceImpl implements TransactionLimitService {
     }
 
     @Override
-    @Verifiable(operation="Delete_Retail_Global_Limit",description="Delete Retail Global Limit")
+    @Verifiable(operation="RET_GLO_LIM_DEL",description="Deleting a Retail Global Limit")
     public String deleteRetailGlobalLimit(Long id) throws InternetBankingException {
         try {
             globalLimitRepo.delete(id);

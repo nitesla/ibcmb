@@ -1,5 +1,6 @@
 package longbridge.controllers.retail;
 
+import longbridge.dtos.NotificationsDTO;
 import longbridge.dtos.SettingDTO;
 import longbridge.models.Account;
 import longbridge.models.RetailUser;
@@ -40,13 +41,16 @@ public class RetailControllerAdvice {
     private ServiceReqConfigService reqConfigService;
     private MessageService messageService;
     private FinancialInstitutionService financialInstitutionService;
+    private NotificationsService notificationsService;
 
+    @Autowired
+    private SecurityService securityService;
     @Autowired
     private ConfigurationService configurationService;
 
     @Autowired
     public RetailControllerAdvice(RetailUserService retailUserService, IntegrationService integrationService, TransferService transferService, AccountService accountService, ServiceReqConfigService reqConfigService, MessageService messageService
-            , FinancialInstitutionService financialInstitutionService
+            , FinancialInstitutionService financialInstitutionService, NotificationsService notificationsService
     ) {
         this.retailUserService = retailUserService;
         this.integrationService = integrationService;
@@ -55,6 +59,7 @@ public class RetailControllerAdvice {
         this.reqConfigService = reqConfigService;
         this.messageService = messageService;
         this.financialInstitutionService = financialInstitutionService;
+        this.notificationsService = notificationsService;
     }
 
     @ModelAttribute
@@ -144,6 +149,21 @@ public class RetailControllerAdvice {
         }
 
         return "";
+    }
+
+    @ModelAttribute
+    public void getSystemNotifications(Model model){
+        try{
+            List<NotificationsDTO> notifications = notificationsService.getNotifications();
+//            NotificationsDTO notificationsDTO = new NotificationsDTO();
+//            notificationsDTO.setMessage("welcome");
+//            notifications.add(notificationsDTO);
+            model.addAttribute("notifications", notifications);
+        }catch (Exception e){
+            logger.warn(e.getMessage());
+        }
+
+
     }
 
     @ModelAttribute
