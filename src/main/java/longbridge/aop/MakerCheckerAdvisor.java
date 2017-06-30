@@ -90,7 +90,7 @@ public class MakerCheckerAdvisor {
     public Object proceed3(ProceedingJoinPoint pjp, AbstractEntity entity, Verifiable verifier) throws Throwable {
         System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
         log.info("Again testing that this save works");
-
+        entityManager.detach(entity);
         log.info("In operation [ " + verifier.operation() + "] ...{" + verifier.description() + "}");
 
         // pjp.getSignature().getDeclaringType().getAnnotations()
@@ -117,7 +117,8 @@ public class MakerCheckerAdvisor {
 
 
         ObjectMapper prettyMapper = new ObjectMapper();;
-        if (entity instanceof PrettySerializer) {
+      //  if (entity instanceof PrettySerializer) {
+        if(PrettySerializer.class.isAssignableFrom(entity.getClass())){
             JsonSerializer<Object> serializer = ((PrettySerializer) (entity)).getSerializer();
 
             SimpleModule module = new SimpleModule();
