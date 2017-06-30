@@ -31,7 +31,7 @@
                             <form method="post" th:action="@{/retail/account/customize}" th:object="${customizeAccount}">
                                 <div class="form-group">
                                     <label>Preferred Name</label>
-                                    <span class="required"></span><input class="form-control"  placeholder="Preferred name" name="accountName" th:value="${account}" />
+                                    <input class="form-control"  placeholder="Preferred name" name="accountName" th:value="${account}" /><span class='req-inner'></span>
                                     <p class="errors" th:if="${#fields.hasErrors('accountName')}" th:errors="*{accountName}">&times;</p>
                                 </div>
 
