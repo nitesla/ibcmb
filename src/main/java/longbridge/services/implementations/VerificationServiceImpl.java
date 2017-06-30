@@ -267,12 +267,12 @@ public class VerificationServiceImpl implements VerificationService {
     }
 
 
-    public List<VerificationDTO> getVerificationsForUser() {
+    public Page<Verification> getVerificationsForUser(Pageable pageable) {
         CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User doneBy = principal.getUser();
         List<String> permissions = getPermissionCodes(doneBy.getRole());
-        List<Verification> verifications = verificationRepo.findVerificationForUser(doneBy.getUserName(), doneBy.getUserType(),permissions);
-        return convertEntitiesToDTOs(verifications);
+        Page<Verification> verifications = verificationRepo.findVerificationForUsers(doneBy.getUserName(), doneBy.getUserType(),permissions,pageable);
+        return verifications;
 
     }
 
@@ -286,11 +286,11 @@ public class VerificationServiceImpl implements VerificationService {
     }
 
 
-    public List<VerificationDTO> getPendingForUser() {
+    public Page<Verification> getPendingForUser(Pageable pageable) {
         CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User doneBy = principal.getUser();
-        List<Verification> verifications = verificationRepo.findByInitiatedByAndUserType(doneBy.getUserName(), doneBy.getUserType());
-        return convertEntitiesToDTOs(verifications);
+        Page<Verification> verifications = verificationRepo.findByInitiatedByAndUserType(doneBy.getUserName(), doneBy.getUserType(),pageable);
+        return verifications;
 
     }
 

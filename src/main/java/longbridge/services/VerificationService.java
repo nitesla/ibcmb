@@ -34,12 +34,12 @@ public interface VerificationService {
     long getTotalNumberPending();
 
 
-    List<VerificationDTO> getVerificationsForUser();
+    Page<Verification> getVerificationsForUser(Pageable pageable);
 
     Page<VerificationDTO> getMakerCheckerPending(Pageable pageDetails);
 
 
-    List<VerificationDTO>getPendingForUser();
+    Page<Verification>getPendingForUser(Pageable pageable);
 
     String verify(VerificationDTO verification) throws VerificationException;
 

@@ -3,6 +3,7 @@ package longbridge.controllers.operations;
 import longbridge.dtos.VerificationDTO;
 import longbridge.models.AdminUser;
 import longbridge.models.OperationsUser;
+import longbridge.models.Verification;
 import longbridge.repositories.VerificationRepo;
 import longbridge.services.AdminUserService;
 import longbridge.services.OperationsUserService;
@@ -75,30 +76,30 @@ public class OpsVerificationController {
     @GetMapping(path = "/all")
     public
     @ResponseBody
-    DataTablesOutput<VerificationDTO> getAllPending(DataTablesInput input, Principal principal) {
+    DataTablesOutput<Verification> getAllPending(DataTablesInput input, Principal principal) {
        // OperationsUser createdBy = operationsUserService.getUserByName(principal.getName());
         Pageable pageable = DataTablesUtils.getPageable(input);
-        List<VerificationDTO> verifications = verificationService.getPendingForUser();
-        DataTablesOutput<VerificationDTO> out = new DataTablesOutput<VerificationDTO>();
+        Page<Verification> page = verificationService.getPendingForUser(pageable);
+        DataTablesOutput<Verification> out = new DataTablesOutput<Verification>();
         out.setDraw(input.getDraw());
-        out.setData(verifications);
-        out.setRecordsFiltered(verifications.size());
-        out.setRecordsTotal(verifications.size());
+        out.setData(page.getContent());
+        out.setRecordsFiltered(page.getTotalElements());
+        out.setRecordsTotal(page.getTotalElements());
         return out;
     }
 
     @GetMapping(path = "/allverification")
     public
     @ResponseBody
-    DataTablesOutput<VerificationDTO> getAllVerification(DataTablesInput input, Principal principal) {
+    DataTablesOutput<Verification> getAllVerification(DataTablesInput input, Principal principal) {
         OperationsUser createdBy = operationsUserService.getUserByName(principal.getName());
         Pageable pageable = DataTablesUtils.getPageable(input);
-        List<VerificationDTO> verifications = verificationService.getVerificationsForUser();
-        DataTablesOutput<VerificationDTO> out = new DataTablesOutput<VerificationDTO>();
+        Page<Verification> verifications = verificationService.getVerificationsForUser(pageable);
+        DataTablesOutput<Verification> out = new DataTablesOutput<Verification>();
         out.setDraw(input.getDraw());
-        out.setData(verifications);
-        out.setRecordsFiltered(verifications.size());
-        out.setRecordsTotal(verifications.size());
+        out.setData(verifications.getContent());
+        out.setRecordsFiltered(verifications.getTotalElements());
+        out.setRecordsTotal(verifications.getTotalElements());
         return out;
     }
 
