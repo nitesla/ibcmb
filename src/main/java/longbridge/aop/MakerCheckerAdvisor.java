@@ -116,15 +116,14 @@ public class MakerCheckerAdvisor {
         verification.setOriginalObject(entity.serialize());
 
 
-        ObjectMapper mapper = new ObjectMapper();
-        ObjectMapper prettyMapper = mapper;
-        prettyMapper = new ObjectMapper();
+        ObjectMapper prettyMapper = new ObjectMapper();;
         if (entity instanceof PrettySerializer) {
             JsonSerializer<Object> serializer = ((PrettySerializer) (entity)).getSerializer();
 
             SimpleModule module = new SimpleModule();
             module.addSerializer(entity.getClass(), serializer);
             prettyMapper.registerModule(module);
+            log.debug("Registering Pretty serializer for " + entity.getClass().getName());
         }
 
         if (entity.getId() != null) {

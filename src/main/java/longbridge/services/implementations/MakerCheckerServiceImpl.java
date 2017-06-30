@@ -67,7 +67,8 @@ public class MakerCheckerServiceImpl implements MakerCheckerService {
     }
 
     @Override
-    public boolean isEnabled(String operation) {
+    public boolean isEnabled(String operation)
+    {
         return makerCheckerRepo.existsByOperationAndEnabled(operation,"Y");
     }
 
