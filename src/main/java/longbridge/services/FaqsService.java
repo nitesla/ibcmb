@@ -4,6 +4,7 @@ import longbridge.dtos.FaqsDTO;
 import longbridge.models.Faqs;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 

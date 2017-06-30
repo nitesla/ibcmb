@@ -7,6 +7,7 @@ import javax.persistence.EntityManager;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import longbridge.exception.DuplicateObjectException;
+import longbridge.exception.InternetBankingException;
 import longbridge.models.AbstractEntity;
 import longbridge.models.User;
 import longbridge.models.Verification;
@@ -134,7 +135,7 @@ public class MakerCheckerAdvisor {
             Verification pendingVerification = verificationRepo.findFirstByEntityNameAndEntityIdAndStatus(entityName, id, verificationStatus.PENDING);
             if (pendingVerification != null) {
                 //found pending verification
-                throw new DuplicateObjectException("Entity has pending verification");
+                throw new DuplicateObjectException(entityName+" has pending verification");
             }
 
             verification.setBeforeObject(prettyMapper.writeValueAsString(originalEntity));

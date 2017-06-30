@@ -1,6 +1,7 @@
 package longbridge.services.implementations;
 
 import longbridge.dtos.SettingDTO;
+import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.Setting;
 import longbridge.repositories.SettingRepo;
@@ -110,7 +111,11 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 			mapper.map(dto, setting);
 			settingRepo.save(setting);
 			return messageSource.getMessage("setting.update.success", null, locale);
-		} catch (Exception e) {
+		}
+		catch (DuplicateObjectException e) {
+			throw new DuplicateObjectException(e.getMessage());
+		}
+		catch (Exception e) {
 			throw new InternetBankingException(messageSource.getMessage("setting.update.failure",null,locale),e);
 		}
 	}

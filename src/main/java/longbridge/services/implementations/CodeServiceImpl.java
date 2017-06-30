@@ -2,6 +2,7 @@ package longbridge.services.implementations;
 
 import longbridge.dtos.CodeDTO;
 import longbridge.dtos.CodeTypeDTO;
+import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.AdminUser;
 import longbridge.models.Code;
@@ -102,6 +103,9 @@ public class CodeServiceImpl implements CodeService {
             codeRepo.save(code);
             logger.info("Updated code with Id {}",code.getId());
             return messageSource.getMessage("code.update.success", null, locale);
+        }
+        catch (DuplicateObjectException e) {
+            throw new DuplicateObjectException(e.getMessage());
         }
         catch (Exception e){
             throw new InternetBankingException(messageSource.getMessage("code.update.failure",null,locale));
