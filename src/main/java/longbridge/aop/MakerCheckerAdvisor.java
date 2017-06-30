@@ -4,11 +4,12 @@ import java.util.Date;
 
 import javax.persistence.EntityManager;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import longbridge.exception.DuplicateObjectException;
-import longbridge.exception.InternetBankingException;
 import longbridge.models.AbstractEntity;
+import longbridge.models.MakerChecker;
 import longbridge.models.User;
 import longbridge.models.Verification;
 import longbridge.repositories.VerificationRepo;
@@ -24,12 +25,13 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Component;
 
 @Aspect
 public class MakerCheckerAdvisor {
@@ -45,7 +47,6 @@ public class MakerCheckerAdvisor {
 
     @Autowired
     EntityManager entityManager;
-
     private Logger log = LoggerFactory.getLogger(this.getClass());
 
 
@@ -82,14 +83,13 @@ public class MakerCheckerAdvisor {
     public void isSaving2() {
     }
 
-    @Before("inRepositoryLayer() && isSaving()")
-    public void temp(JoinPoint p) {
 
-    }
 
-    @Transactional
+
     @Around("isSaving() && inServiceLayer() && isInVerifiable2(verifier) && args(entity)")
-    public Object proceed(ProceedingJoinPoint pjp, AbstractEntity entity, Verifiable verifier) throws Throwable {
+    public Object proceed3(ProceedingJoinPoint pjp, AbstractEntity entity, Verifiable verifier) throws Throwable {
+        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+        log.info("Again testing that this save works");
 
         log.info("In operation [ " + verifier.operation() + "] ...{" + verifier.description() + "}");
 
@@ -97,9 +97,14 @@ public class MakerCheckerAdvisor {
         log.info(entity.toString());
         log.info("JB Around: " + pjp);
 
-        if (!makerCheckerService.isEnabled(verifier.operation())) {
-            pjp.proceed();
-            return verifier.description()+" successful";
+        if (!makerCheckerService.isEnabled(verifier.operation()))
+        {
+            if (entity.getId() == null) {
+                entityManager.persist(entity);
+            } else {
+                entityManager.merge(entity);
+            }
+            return verifier.operation() + "action successful";
         }
 
         CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -110,7 +115,6 @@ public class MakerCheckerAdvisor {
         verification.setEntityName(entityName);
         verification.setInitiatedOn(new Date());
         verification.setInitiatedBy(doneBy.getUserName());
-        verification.setVerifiedBy("PENDING..");
         verification.setUserType(doneBy.getUserType());
         verification.setOperation(verifier.operation());
         verification.setDescription(verifier.description());
@@ -135,10 +139,11 @@ public class MakerCheckerAdvisor {
             Verification pendingVerification = verificationRepo.findFirstByEntityNameAndEntityIdAndStatus(entityName, id, verificationStatus.PENDING);
             if (pendingVerification != null) {
                 //found pending verification
-                throw new DuplicateObjectException(entityName+" has pending verification");
+                throw new DuplicateObjectException("Entity has pending verification");
             }
 
             verification.setBeforeObject(prettyMapper.writeValueAsString(originalEntity));
+
             verification.setEntityId(entity.getId());
         }
         verification.setAfterObject(prettyMapper.writeValueAsString(entity));
@@ -150,6 +155,8 @@ public class MakerCheckerAdvisor {
         return verifier.operation() + "action successfully added for approval";
         // return pjp.proceed();
     }
+
+
 
 
 }

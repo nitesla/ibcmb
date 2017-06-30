@@ -282,11 +282,6 @@
             <artifactId>itextpdf</artifactId>
             <version>5.5.11</version>
         </dependency>
-        <dependency>
-            <groupId>longbridge</groupId>
-            <artifactId>internetbanking</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
         <!-- https://mvnrepository.com/artifact/org.quartz-scheduler/quartz -->
         <dependency>
             <groupId>org.quartz-scheduler</groupId>
