@@ -137,24 +137,14 @@ public class AdmVerificationController {
 
     @GetMapping("/pendingops")
     public String getPendingVerification(Model model, Principal principal) {
-        AdminUser createdBy = adminUserService.getUserByName(principal.getName());
-        int verificationNumber = verificationService.getTotalNumberForVerification();
-        long totalPending = verificationService.getTotalNumberPending();
-        model.addAttribute("totalPending", totalPending);
-        model.addAttribute("verificationNumber", verificationNumber);
-        return "adm/makerchecker/pending";
+               return "adm/makerchecker/pending";
     }
 
 
     @GetMapping("/operations")
     public String getVerification(Model model, Principal principal)
     {
-        AdminUser createdBy = adminUserService.getUserByName(principal.getName());
-        int verificationNumber = verificationService.getTotalNumberForVerification();
-        long totalPending = verificationService.getTotalNumberPending();
-        model.addAttribute("verificationNumber", verificationNumber);
-        model.addAttribute("totalPending", totalPending);
-        return "adm/makerchecker/checker";
+         return "adm/makerchecker/checker";
     }
 
 

@@ -176,7 +176,7 @@ public class VerificationServiceImpl implements VerificationService {
         CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User doneBy = principal.getUser();
         List<String> permissions = getPermissionCodes(doneBy.getRole());
-        List<Verification> b = verificationRepo.findVerificationForUser(doneBy.getUserName(), permissions);
+        List<Verification> b = verificationRepo.findVerificationForUser(doneBy.getUserName(),doneBy.getUserType(), permissions);
         return b.size();
     }
 
@@ -215,7 +215,7 @@ public class VerificationServiceImpl implements VerificationService {
         CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User doneBy = principal.getUser();
         List<String> permissions = getPermissionCodes(doneBy.getRole());
-        List<Verification> verifications = verificationRepo.findVerificationForUser(doneBy.getUserName(), permissions);
+        List<Verification> verifications = verificationRepo.findVerificationForUser(doneBy.getUserName(), doneBy.getUserType(),permissions);
         return convertEntitiesToDTOs(verifications);
 
     }

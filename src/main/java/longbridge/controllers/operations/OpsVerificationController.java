@@ -128,23 +128,13 @@ public class OpsVerificationController {
 
     @GetMapping("/pendingops")
     public String getPendingVerification(Model model, Principal principal) {
-        OperationsUser createdBy = operationsUserService.getUserByName(principal.getName());
-        int verificationNumber = verificationService.getTotalNumberForVerification();
-        long totalPending = verificationService.getTotalNumberPending();
-        model.addAttribute("totalPending", totalPending);
-        model.addAttribute("verificationNumber", verificationNumber);
-        return "ops/makerchecker/pending";
+              return "ops/makerchecker/pending";
     }
 
 
     @GetMapping("/operations")
     public String getVerification(Model model, Principal principal) {
-        OperationsUser createdBy = operationsUserService.getUserByName(principal.getName());
-        int verificationNumber = verificationService.getTotalNumberForVerification();
-        long totalPending = verificationService.getTotalNumberPending();
-        model.addAttribute("verificationNumber", verificationNumber);
-        model.addAttribute("totalPending", totalPending);
-        return "ops/makerchecker/checker";
+          return "ops/makerchecker/checker";
     }
 
 
