@@ -68,6 +68,7 @@
                             <input type="hidden" th:field="*{beneficiaryAccountName}"/>
                             <input type="hidden" th:field="*{amount}"/>
                             <input type="hidden" th:field="*{remarks}"/>
+                            <input type="hidden" th:field="*{id}"/>
                         <div class="checkbox">
                             <label style="font-weight: bold; color: black"><input type="checkbox" id="add" name="add"/>Add Beneficiary</label>
                         </div>
@@ -75,7 +76,7 @@
                             <!--<a style="cursor: pointer;" onclick="goBack()" >Modify</a>-->
                             <button type="submit" class="btn btn-outline-primary">Proceed</button>
                             <a th:href="@{/retail/transfer/local}">Cancel</a>
-
+                            <a th:href="@{/retail/transfer/ownaccount/5/receipt}">Cancel</a>
 
 
                             </div>
