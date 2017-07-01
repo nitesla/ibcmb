@@ -1,9 +1,15 @@
 package longbridge.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.Entity;
+import java.io.IOException;
 
 /**
  * Created by Wunmi on 27/03/2017.
@@ -11,7 +17,7 @@ import javax.persistence.Entity;
 @Entity
 @Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
-public class Permission extends AbstractEntity{
+public class Permission extends AbstractEntity  implements PrettySerializer{
 
     private Long id;
     private String name;
@@ -83,5 +89,25 @@ public class Permission extends AbstractEntity{
                 ", code='" + code + '\'' +
                 ", userType='" + userType + '\'' +
                 '}';
+                 }
+
+    @Override @JsonIgnore
+    public JsonSerializer<Permission> getSerializer() {
+        return new JsonSerializer<Permission>() {
+            @Override
+            public void serialize(Permission value,JsonGenerator gen,SerializerProvider serializers)
+                    throws IOException, JsonProcessingException
+            {
+                gen.writeStartObject();
+                gen.writeStringField("Name",value.name);
+                gen.writeStringField("Description",value.description);
+                gen.writeStringField("User Type",value.userType);
+                gen.writeStringField("Category",value.category);
+                gen.writeEndObject();
+            }
+        };
     }
+
+
+
 }

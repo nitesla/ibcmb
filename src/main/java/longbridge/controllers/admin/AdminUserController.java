@@ -64,17 +64,8 @@ public class AdminUserController {
     @Autowired
     private VerificationService verificationService;
 
-
-
-
     ObjectMapper mapper = new ObjectMapper();
 
-
-    /**
-     * Page for adding a new user
-     *
-     * @return
-     */
     @GetMapping("/new")
     public String addUser(Model model) {
         Iterable<RoleDTO> roles = roleService.getRoles();
@@ -83,15 +74,6 @@ public class AdminUserController {
         return "adm/admin/add";
     }
 
-
-    /**
-     * Creates a new user
-     *
-     * @param adminUser
-     * @param redirectAttributes
-     * @return
-     * @throws Exception
-     */
     @PostMapping
     public String createUser(@ModelAttribute("adminUser") @Valid AdminUserDTO adminUser, BindingResult result, RedirectAttributes redirectAttributes, Locale locale,Principal principal) {
         if (result.hasErrors()) {

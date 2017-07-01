@@ -39,10 +39,11 @@
                                     <option value="rtgs">RTGS</option>
                                 </select>
                             </div>
-                            <div class="col-md-4 well">
-                                
-                                <p id="nip" >Fee applicable: <span th:text="'N'+${nip.feeValue}"></span></p>
-                                <p id="rtgs" style="display: none;">Fee applicable: <span th:text="'N'+${rtgs.feeValue}"></span></p>
+
+                            <div class="col-md-4">
+                                <br/>
+                                <p id="nip" style="padding: 5%">Fee applicable: <span th:if="${nip.feeValue}!=null" th:text="'N'+${nip.feeValue}"></span></p>
+                                <p id="rtgs" style="display: none; padding: 5%">Fee applicable: <span th:if="${rtgs.feeValue}!=null" th:text="'N'+${rtgs.feeValue}"></span></p>
                             </div>
 
                             <div class="form-group col-md-8">

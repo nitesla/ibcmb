@@ -67,6 +67,7 @@
 </p>
 
                         <h2>TRANSACTION DETAILS</h2>
+
                     <div class="table-responsive" >
                             <table class="table" id="tranDetails">
                                 <thead>
@@ -93,6 +94,7 @@
                                 </tfoot>
                             </table>
                     </div>
+
 
                 </div>
     </form>
@@ -133,9 +135,17 @@
     	$('.datepicker').datepicker({ dateFormat: 'dd-mm-yy' });//
 
     	$('#tranDetails').DataTable({
+            responsive: true,
+
             "lengthMenu": [[5, 10,20], [5, 10,20]],
             "pagingType": "simple_numbers",
             "searching" : false,
+            "fields": [  {
+                name:      'valueDate',
+                type:      'datetime',
+                def:       function () { return new Date(); },
+                format:    'dd-MM-yyyy '  }
+            ],
     		"processing" : true,
     		"serverSide" : false,
     		"ordering" : false,
@@ -165,7 +175,11 @@
 
 			e.preventDefault();
 			dt = $('#tranDetails').DataTable();
+<<<<<<< HEAD
            
+=======
+
+>>>>>>> master
 			dt.ajax.reload(null, true);
 
 		});

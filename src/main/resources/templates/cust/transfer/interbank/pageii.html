@@ -14,10 +14,15 @@
         <div class="row">
 
             <div class="col-md-4 col-sm-4">
-                <h5 class="page_header"> Transfer to <span th:text="${benName}"></span></h5>
-                <select class="form-control invisible">
+
+                <h5 class="page_header"> Transfer to
+                    <span  th:if="${benName}== null"  th:text="${transferRequest.beneficiaryAccountName}"></span>
+                    <span th:if="${benName}!= null" th:text="${benName}"></span>
+                    <select class="form-control invisible">
                         <option value="account">Account Overview</option>
-                </select>
+                    </select>
+                </h5>
+
             </div>
              <p class="col-xs-12">
                     Fields marked <span style="color:red">*</span> are compulsory

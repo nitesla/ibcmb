@@ -8,6 +8,7 @@ import longbridge.models.Verification;
 import longbridge.services.AdminUserService;
 import longbridge.services.VerificationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
@@ -79,15 +80,14 @@ public class AdmMakerCheckerController {
 
     @GetMapping(path = "/allverification")
     public @ResponseBody
-    DataTablesOutput<VerificationDTO> getAllVerification(DataTablesInput input, Principal principal) {
-        AdminUser createdBy = adminUserService.getUserByName(principal.getName());
+    DataTablesOutput<Verification> getAllVerification(DataTablesInput input) {
         Pageable pageable = DataTablesUtils.getPageable(input);
-        List<VerificationDTO> verifications = verificationService.getVerificationsForUser(createdBy);
-        DataTablesOutput<VerificationDTO> out = new DataTablesOutput<VerificationDTO>();
+        Page<Verification> verifications = verificationService.getVerificationsForUser(pageable);
+        DataTablesOutput<Verification> out = new DataTablesOutput<Verification>();
         out.setDraw(input.getDraw());
-        out.setData(verifications);
-        out.setRecordsFiltered(verifications.size());
-        out.setRecordsTotal(verifications.size());
+        out.setData(verifications.getContent());
+        out.setRecordsFiltered(verifications.getTotalElements());
+        out.setRecordsTotal(verifications.getTotalElements());
         return out;
     }
 

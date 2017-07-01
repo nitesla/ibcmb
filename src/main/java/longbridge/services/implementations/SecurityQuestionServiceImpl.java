@@ -62,7 +62,7 @@ public class SecurityQuestionServiceImpl implements SecurityQuestionService {
     }
 
     @Override
-    @Verifiable(operation="SQ_ADD",description="Adding Security Question")
+    @Verifiable(operation="ADD_SQ",description="Adding Security Question")
     public String addSecQuestion(String question) throws InternetBankingException {
 
         try {
@@ -77,7 +77,7 @@ public class SecurityQuestionServiceImpl implements SecurityQuestionService {
     }
 
     @Override
-    @Verifiable(operation="SQ_UPDATE",description="Updating Security Question")
+    @Verifiable(operation="UPDATE_SQ",description="Updating Security Question")
     public String updateSecQuestion(SecQuestionDTO secQuestionDTO) {
         try {
             SecurityQuestions securityQuestions = convertDTOToEntity(secQuestionDTO);
@@ -90,7 +90,7 @@ public class SecurityQuestionServiceImpl implements SecurityQuestionService {
     }
 
     @Override
-    @Verifiable(operation="SQ_DEL",description="Deleting Security Question")
+    @Verifiable(operation="DELETE_SQ",description="Deleting Security Question")
     public String deleteSecQuestion(Long id) {
         try{
             SecurityQuestions securityQuestions = secQuestionRepo.findOne(id);

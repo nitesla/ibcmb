@@ -2,6 +2,7 @@ package longbridge.services.implementations;
 
 import longbridge.dtos.CodeDTO;
 import longbridge.dtos.CodeTypeDTO;
+import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.AdminUser;
 import longbridge.models.Code;
@@ -56,7 +57,7 @@ public class CodeServiceImpl implements CodeService {
 
     @Override
     @Transactional
-    @Verifiable(operation="CODE_DEL",description="Deleting a Code")
+    @Verifiable(operation="DELETE_CODE",description="Deleting a Code")
     public String deleteCode(Long codeId) throws InternetBankingException{
           try{
 
@@ -95,15 +96,16 @@ public class CodeServiceImpl implements CodeService {
   
 
     @Transactional
-    @Verifiable(operation="CODE_UPDATE",description="Updating a Code")
+    @Verifiable(operation="UPDATE_CODE",description="Updating a Code")
     public String updateCode(CodeDTO codeDTO, AdminUser adminUser) throws InternetBankingException{
         try {
             Code code = convertDTOToEntity(codeDTO);
-            // Code originalObject = codeRepo.findOne(code.getId());
-            //check if maker checker is enabled
             codeRepo.save(code);
             logger.info("Updated code with Id {}",code.getId());
             return messageSource.getMessage("code.update.success", null, locale);
+        }
+        catch (DuplicateObjectException e) {
+            throw new DuplicateObjectException(e.getMessage());
         }
         catch (Exception e){
             throw new InternetBankingException(messageSource.getMessage("code.update.failure",null,locale));
@@ -156,11 +158,10 @@ public class CodeServiceImpl implements CodeService {
 
 
 	@Override
-    @Verifiable(operation="CODE_ADD",description="Add Code")
+    @Verifiable(operation="ADD_CODE",description="Adding a Code")
 	public String addCode(CodeDTO codeDTO, AdminUser adminUser) throws InternetBankingException {
 		try {
             Code code = convertDTOToEntity(codeDTO);
-            //check if maker checker is enabled
             codeRepo.save(code);
             logger.info("Added new code {} of type {}",code.getDescription(),code.getType());
             return messageSource.getMessage("code.add.success", null, locale);

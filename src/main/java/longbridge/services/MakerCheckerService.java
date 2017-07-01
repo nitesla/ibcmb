@@ -22,9 +22,8 @@ public interface MakerCheckerService {
 
     Page<MakerChecker> getEntities(Pageable pageDetails);
 
-    String addMakerChecker(MakerCheckerDTO chk) throws InternetBankingException;
 
-    String updateMakerChecker(MakerChecker makerChecker) throws InternetBankingException;
+    String configureMakerChecker(MakerChecker makerChecker) throws InternetBankingException;
 
 
 

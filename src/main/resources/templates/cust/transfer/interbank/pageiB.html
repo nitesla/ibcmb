@@ -122,7 +122,9 @@
 
             },
             success: function (data, textStatus) {
-                 
+
+
+                if (textStatus.c)
                 var result = data;
                 $('#acct_name').val(result);
 

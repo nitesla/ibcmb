@@ -56,8 +56,9 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
 
     @Bean
     public RestTemplate restTemplate(RestTemplateBuilder builder) {
-        builder.setConnectTimeout(1*60);
-        builder.setReadTimeout(1*60);
+        builder.setConnectTimeout(20*60);
+        builder.setReadTimeout(20*60);
+       // builder.basicAuthorization()
         return builder.build();
     }
 

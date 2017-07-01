@@ -34,11 +34,10 @@ public class Verification extends AbstractEntity {
     @Enumerated(value = EnumType.STRING)
     private UserType userType;
     private String operation;
+    private String comments;
     private String initiatedBy;
     private Date initiatedOn;
-    private String declinedBy;
     private Date declinedOn;
-    private String declineReason;
     private String verifiedBy;
     private Date verifiedOn;
     @OneToOne
@@ -70,8 +69,13 @@ public class Verification extends AbstractEntity {
         this.status = status;
     }
 
-    public String getDeclineReason() {
-        return declineReason;
+
+    public String getComments() {
+        return comments;
+    }
+
+    public void setComments(String comments) {
+        this.comments = comments;
     }
 
     public String getDescription() {
@@ -82,9 +86,6 @@ public class Verification extends AbstractEntity {
         this.description = description;
     }
 
-    public void setDeclineReason(String declineReason) {
-        this.declineReason = declineReason;
-    }
 
     public String getBeforeObject() {
         return beforeObject;
@@ -126,9 +127,6 @@ public class Verification extends AbstractEntity {
         this.operation = operation;
     }
 
-    public String getDeclinedBy() {
-        return declinedBy;
-    }
 
     public Date getInitiatedOn() {
         return initiatedOn;
@@ -171,9 +169,6 @@ public class Verification extends AbstractEntity {
         this.initiatedBy = initiatedBy;
     }
 
-    public void setDeclinedBy(String declinedBy) {
-        this.declinedBy = declinedBy;
-    }
 
     public String getVerifiedBy() {
         return verifiedBy;
@@ -183,14 +178,5 @@ public class Verification extends AbstractEntity {
         this.verifiedBy = verifiedBy;
     }
 
-    public static OperationCode getAddCode() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public static OperationCode getModifyCode() {
-        // TODO Auto-generated method stub
-        return null;
-    }
 
 }

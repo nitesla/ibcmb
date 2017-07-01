@@ -9,18 +9,12 @@ function initnotices(){
 
     $('.actionMessage li').each(function(index, value) {
         var tt = $(this).text();
-        $('#myModalSuccess').modal('show');
-        var err = document.getElementById('successMess');
-        err.textContent = tt;
-        //var notify = $.notify({message:tt}, { allow_dismiss: true ,type: 'success'});
+        var notify = $.notify({message:tt}, { allow_dismiss: true ,type: 'success'});
     });
 
     $('.actionError li').each(function(index, value) {
         var tt = $(this).text();
-        $('#myModalError').modal('show');
-        var err = document.getElementById('errorMess');
-        err.textContent = tt;
-        //var notify = $.notify({message:tt}, { allow_dismiss: true ,type: 'danger'});
+        var notify = $.notify({message:tt}, { allow_dismiss: true ,type: 'danger'});
     });
 
     $('.fieldError li').each(function(index, value) {

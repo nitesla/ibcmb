@@ -8,13 +8,13 @@
     <header th:replace="cust_layout :: header">
     </header>
 
-<section class="content-wrapper">
-    <div class="containe">
-
+    <section class="content-wrapper">
+        <div class="containe">
         <div class="row">
 
             <div class="col-md-4 col-sm-4">
-                <h5 class="page_header"> Transfer to <span th:text="${beneficiary.preferredName}"></span></h5>
+                <span th:if="${beneficiary.preferredName} !=''" th:text="${beneficiary.preferredName}"></span>
+                <span th:if="${beneficiary.preferredName} ==''" th:text="${beneficiary.accountName}"></span>
                  <select class="form-control invisible">
                         <option value="account">Account Overview</option>
                 </select>
@@ -45,8 +45,6 @@
                                         th:field="*{customerAccountNumber}" required="required" onchange="getBalance()">
                                     <option value=""> select an account</option>
                                     <option th:each="s: ${accounts}" th:value="${s}" th:text="${s}"></option>
-
-
                                 </select>
                                 <p class="errors" th:if="${#fields.hasErrors('customerAccountNumber')}" th:errors="*{customerAccountNumber}">&times;</p>
                             </div>
@@ -71,7 +69,10 @@
                             </div>
 
 
+                            <div class="col-md-6 col-sm-6 well">
+                        <!--<p class="related" style="padding-top: 5%">Related Information</p>-->
                             <span class="alert no-bd-rad my-border bg-white invisible">NGN</span><button class="btn btn-link required-step" type="submit">Submit</button>
+                            </div>
                         </form>
                         <!--</div>-->
                     </div>
@@ -89,31 +90,31 @@
                 </div>
             </div>
         </div>
-    </div>
-</section>
+        </div>
+    </section>
 
 
-<!-- CONTENT-WRAPPER SECTION END-->
-<footer th:replace="cust_layout ::footer">
-</footer>
-<!--<script th:src="@{~/customer/js/accountdetails.js}"></script>-->
+    <!-- CONTENT-WRAPPER SECTION END-->
+    <footer th:replace="cust_layout ::footer">
+    </footer>
+    <!--<script th:src="@{~/customer/js/accountdetails.js}"></script>-->
     <script th:inline="javascript">
         /*<![CDATA[*/
-        function getBalance(){
+        function getBalance() {
             var accountNumber = $('#source').val();
             $.ajax({
-                url: "/retail/transfer/local/balance/"+accountNumber,
+                url: "/retail/transfer/local/balance/" + accountNumber,
                 type: 'GET',
                 async: false,
-                success:function(availBal){
-                    bal = ''+String(availBal);
-                    if(bal == "" ){
-                        document.getElementById("myspan").textContent="Could not get balance from server, please try again.";
+                success: function (availBal) {
+                    bal = '' + String(availBal);
+                    if (bal == "") {
+                        document.getElementById("myspan").textContent = "Could not get balance from server, please try again.";
                         $("#myspan").show();
-                    }else{
+                    } else {
 //                    $('input[name=availBal]').val(bal);
 
-                        $('#availBal').text("Available Balance: "+bal);
+                        $('#availBal').text("Available Balance: " + bal);
 
                     }
                 }

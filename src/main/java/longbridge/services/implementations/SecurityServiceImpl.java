@@ -41,7 +41,6 @@ public class SecurityServiceImpl implements SecurityService {
     private String appGroup;
     @Value("${ENTRUST.app.desc}")
     private String appDesc;
-    ;
 
     private BCryptPasswordEncoder passwordEncoder;
     private ModelMapper modelMapper;

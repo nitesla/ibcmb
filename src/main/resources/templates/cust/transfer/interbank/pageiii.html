@@ -87,7 +87,8 @@
                         <input type="hidden" th:field="*{amount}"/>
                         <input type="hidden" th:field="*{remarks}"/>
 
-                         <span class="form-group checkbox col-xs-5">
+
+                         <span class="form-group checkbox col-xs-5" th:if="${newBen}!=null">
                             <label style="font-weight: bold; color: black;margin-left:10px !important">
                                 <input  type="checkbox" id="add" name="add"/>Add Beneficiary
                             </label>
@@ -98,11 +99,9 @@
                             <button th:href="@{/retail/transfer/interbank}" class="btn btn-link less-required">Cancel</button>
                             <button type='button' class='btn btn-link less-required'>Modify</button>
 
-
                         </div>
                     </form>
                 </div>
-
             </div>
             <div class="col-md-3 pull-right " >
                 <div th:replace="cust_layout :: sidebar" class="" >

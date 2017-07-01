@@ -46,6 +46,9 @@ start
     padding-left:0px !important;
 }
 
+.active{
+    border-bottom: 5px solid #9F614B !important;
+}
 
 .invisible
 {
@@ -200,6 +203,7 @@ span.req
 {
     visibility: hidden;
 }
+
 span.req-inner
 {
     position: relative;
@@ -940,7 +944,6 @@ body {
 
 .navbar-nav li a{
     color: #777;
-    margin-top: 5px;
     padding-top: 8px;
     padding-bottom: 0px;
 }
@@ -1266,12 +1269,12 @@ nav li a {
 }
 
 .navbar-right{
-    margin-top: -10px;
+    margin-top: -15px;
 }
 
 .footer_bar {
     display: block;
-    padding: 37px 0 0 0;
+    margin: 20px 0 0 0;
 
 }
 
@@ -1324,6 +1327,11 @@ button, input, optgroup, select, textarea {
     margin-top: 6px !important;
     font: inherit;
     color: inherit;
+}
+
+.navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus {
+    color: #555;
+    background-color: #fff;
 }
 
 .content-wrapper {

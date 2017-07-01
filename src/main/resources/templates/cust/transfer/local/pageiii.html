@@ -70,7 +70,8 @@
                             <input type="hidden" th:field="*{beneficiaryAccountName}"/>
                             <input type="hidden" th:field="*{amount}"/>
                             <input type="hidden" th:field="*{remarks}"/>
-                        <span class="form-group checkbox col-xs-5">
+
+                        <span class="form-group checkbox col-xs-5" th:if="${newBen}!=null">
                             <label style="font-weight: bold; color: black;margin-left:10px !important">
                                 <input  type="checkbox" id="add" name="add"/>Add Beneficiary
                             </label>

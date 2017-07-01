@@ -39,6 +39,7 @@ public class VerificationDTO {
     private Date declinedOn;
     private String declineReason;
 
+    private String comment;
 
     private String verifiedBy;
     private Date verifiedOn;
@@ -67,6 +68,14 @@ public class VerificationDTO {
 
     public void setOriginal(String original) {
         this.original = original;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
     public verificationStatus getStatus() {
