@@ -218,7 +218,7 @@ catch(InternetBankingException e){
     @GetMapping("/viewstatement/display/data")
     public @ResponseBody
     DataTablesOutput<TransactionDetails> getStatementData(DataTablesInput input, String acctNumber,
-                                                          String fromDate, String toDate, String transType) {
+                                                          String fromDate, String toDate, String tranType) {
         // Pageable pageable = DataTablesUtils.getPageable(input);
 
         Date from;
@@ -227,8 +227,8 @@ catch(InternetBankingException e){
         try {
             from = dateFormat.parse(fromDate);
             to = dateFormat.parse(toDate);
-            AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to,transType);
-            logger.info("TransactionType {}",transType);
+            AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to,tranType);
+            logger.info("TransactionType {}",tranType);
             out.setDraw(input.getDraw());
             List<TransactionDetails> list = new ArrayList<>();
             if (list != null || !(list.equals("")) || !(list.isEmpty())) {
@@ -250,7 +250,7 @@ catch(InternetBankingException e){
 
     @GetMapping("/downloadstatement")
     public ModelAndView downloadStatementData(ModelMap modelMap, DataTablesInput input, String acctNumber,
-                                              String fromDate, String toDate, String transType, Principal principal) {
+                                              String fromDate, String toDate, String tranType, Principal principal) {
         // Pageable pageable = DataTablesUtils.getPageable(input);
 
         Date from;
@@ -259,7 +259,7 @@ catch(InternetBankingException e){
         try {
             from = dateFormat.parse(fromDate);
             to = dateFormat.parse(toDate);
-            AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to,transType);
+            AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to,tranType);
             out.setDraw(input.getDraw());
             List<TransactionDetails> list = accountStatement.getTransactionDetails();
             CorporateUser corporateUser=corporateUserService.getUserByName(principal.getName());
