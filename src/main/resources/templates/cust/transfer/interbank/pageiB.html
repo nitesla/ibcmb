@@ -114,13 +114,15 @@
                 $('.acctError').show().css("color", "red");
 
             },
-            success: function (data, textStatus) {
+            success: function (data, textStatus,xhr) {
 
 
                 if (textStatus.c)
+                    if(xhr.status==200){
+                        var result = data;
+                        $('#acct_name').val(result);
+                    }
 
-                var result = data;
-                $('#acct_name').val(result);
 
                 if( result!=null && result!='' ) {
 
