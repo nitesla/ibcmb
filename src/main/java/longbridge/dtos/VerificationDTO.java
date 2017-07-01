@@ -5,6 +5,7 @@ import longbridge.models.AdminUser;
 import longbridge.models.OperationCode;
 import longbridge.models.Verification;
 import longbridge.utils.verificationStatus;
+import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -35,6 +36,7 @@ public class VerificationDTO {
 
     private Date initiatedOn;
 
+    @NotEmpty(message = "comment")
     private String comment;
 
     private String verifiedBy;

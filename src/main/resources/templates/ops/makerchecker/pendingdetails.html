@@ -34,34 +34,34 @@
                 </div>
 
 
-                <!--<ul class="nav navbar-right panel_toolbox">-->
+                <ul class="nav navbar-right panel_toolbox">
 
                     <!--<li>-->
-                        <!--<div class="col-lg-4">-->
-                            <!--<div class="title-action">-->
-                                <!--<a class="btn btn-app" href="/ops/verifications/pendingops">-->
-                                    <!--<button class="badge bg-orange bt-select"   th:text="${totalPending}">count</button>-->
-                                    <!--<i class="fa fa-envelope"></i>My approval-->
-                                <!--</a>-->
-                            <!--</div>-->
-                        <!--</div>-->
+                    <!--<div class="col-lg-4">-->
+                    <!--<div class="title-action">-->
+                    <!--<a class="btn btn-app" href="/admin/verifications/pendingops">-->
+                    <!--<button class="badge bg-orange bt-select"   th:text="${totalPending}">count</button>-->
+                    <!--<i class="fa fa-envelope"></i>My approval-->
+                    <!--</a>-->
+                    <!--</div>-->
+                    <!--</div>-->
                     <!--</li>-->
 
 
                     <!--<li>-->
-                        <!--<div class="col-lg-4">-->
-                            <!--<div class="title-action">-->
-                                <!--<a  class=" btn btn-app btn  btn-sm bt-select bt-link-act" href="#" disabled="disabled" >-->
-                                    <!--<button class="badge bg-orange" disabled="disabled" th:text="${verificationNumber}"></button>-->
-                                    <!--<i class="fa fa-envelope"></i>Approval Queue-->
-                                <!--</a>-->
-                            <!--</div>-->
-                        <!--</div>-->
+                    <!--<div class="col-lg-4">-->
+                    <!--<div class="title-action">-->
+                    <!--<a  class=" btn btn-app btn  btn-sm bt-select bt-link-act" href="#" disabled="disabled" >-->
+                    <!--<button class="badge bg-orange" disabled="disabled" th:text="${verificationNumber}"></button>-->
+                    <!--<i class="fa fa-envelope"></i>Approval Queue-->
+                    <!--</a>-->
+                    <!--</div>-->
+                    <!--</div>-->
                     <!--</li>-->
 
 
 
-                <!--</ul>-->
+                </ul>
 
 
                 <div class="clearfix"></div>
@@ -82,7 +82,7 @@
 
 
 
-                                        <label style="font-size:large">Previous Changes</label>
+                                        <label style="font-size:large" th:text="${verify.description}"></label>
 
                                         <!--<div id="before" style="overflow-wrap: break-word;border-left: 1px solid;margin-right: 1px;padding:5px; ">-->
 
@@ -96,10 +96,10 @@
                                             <tbody>
                                             <tr>
                                                 <td style ="word-break:break-all;width:50%;">
-                                                    <th:block th:text="*{beforeObject}"></th:block>
+                                                    <th:block th:text="${verify.beforeObject}"></th:block>
                                                 </td>
                                                 <td style ="word-break:break-all;">
-                                                    <th:block th:text="*{afterObject}"></th:block>
+                                                    <th:block th:text="${verify.afterObject}"></th:block>
                                                 </td>
                                             </tr>
                                             </tbody>
@@ -184,12 +184,12 @@
 
 
                 current_path = path.endsWith('[') ? path + node + ']' : path + '.' +node;
-               /* if(jsonPath(beforeData,current_path)){
+                /* if(jsonPath(beforeData,current_path)){
 
-                }
-                b = jsonPath(beforeData,current_path)[0] ;
-                a = jsonPath(afterData,current_path)[0];
-                */
+                 }
+                 b = jsonPath(beforeData,current_path)[0] ;
+                 a = jsonPath(afterData,current_path)[0];
+                 */
                 if(true){
                     result += '<li class="list-group-item">'+ node +':<ul class="list-group">' + parseJsonAsList(jsn[node],current_path) + '</ul></li>';
                 }else{
@@ -217,8 +217,8 @@
         }
         return result;
     }
-    var beforeData = JSON.parse([[${beforeObject}]]);
-    var afterData =JSON.parse([[${afterObject}]]);
+    var beforeData = JSON.parse([[${verify.beforeObject}]]);
+    var afterData =JSON.parse([[${verify.afterObject}]]);
     console.log(beforeData);
     $(document).ready(function() {
 

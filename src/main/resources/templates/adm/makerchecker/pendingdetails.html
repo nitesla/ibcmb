@@ -82,7 +82,7 @@
 
 
 
-                                        <label style="font-size:large" th:text="${verification.description}"></label>
+                                        <label style="font-size:large" th:text="${verify.description}"></label>
 
                                         <!--<div id="before" style="overflow-wrap: break-word;border-left: 1px solid;margin-right: 1px;padding:5px; ">-->
 
@@ -96,10 +96,10 @@
                                             <tbody>
                                             <tr>
                                                 <td style ="word-break:break-all;width:50%;">
-                                                    <th:block th:text="${verification.beforeObject}"></th:block>
+                                                    <th:block th:text="${verify.beforeObject}"></th:block>
                                                 </td>
                                                 <td style ="word-break:break-all;">
-                                                    <th:block th:text="${verification.afterObject}"></th:block>
+                                                    <th:block th:text="${verify.afterObject}"></th:block>
                                                 </td>
                                             </tr>
                                             </tbody>
@@ -217,8 +217,8 @@
         }
         return result;
     }
-    var beforeData = JSON.parse([[${verification.beforeObject}]]);
-    var afterData =JSON.parse([[${verification.afterObject}]]);
+    var beforeData = JSON.parse([[${verify.beforeObject}]]);
+    var afterData =JSON.parse([[${verify.afterObject}]]);
     console.log(beforeData);
     $(document).ready(function() {
 
