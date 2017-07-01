@@ -16,7 +16,7 @@
                 <div class="clearfix"></div>
                 <div class="clearfix"></div>
 
-                <div th:replace="layout :: admin-menu"></div>
+                <div th:replace="layout :: ops-menu"></div>
                 <div th:replace="layout :: menu-footer-adm"></div>
 
             </div>
@@ -34,33 +34,6 @@
                 </div>
 
 
-                <ul class="nav navbar-right panel_toolbox">
-
-                    <li>
-                        <div class="col-lg-4">
-                            <div class="title-action" >
-                                <a class="btn btn-app" href="#"  disabled="disabled" >
-                                    <button class="badge bg-orange bt-select" disabled="disabled" th:text="${totalPending}" >count</button>
-                                    <i class="fa fa-check"></i>My approvals
-                                </a>
-                            </div>
-                        </div>
-
-                    </li>
-
-                    <li>
-                        <div class="col-lg-4">
-                            <div class="title-action">
-                                <a  class=" btn btn-app btn bt-select btn-sm  bt-link-act" href="/admin/verifications/operations">
-                                    <button class="badge bg-orange"  th:text="${verificationNumber}"></button>
-                                    <i class="fa fa-check"></i>Approval Queue
-                                </a>
-                            </div>
-                        </div>
-                    </li>
-
-                </ul>
-
                 <div class="clearfix"></div>
 
                 <div class="row">
@@ -75,20 +48,21 @@
 
                             <div class="x_content">
                                 <div class="ibox-content">
-                                    <form method="post" class="form-horizontal" >
+                                    <form method="post" th:action="@{/ops/verifications/verify}" class="form-horizontal" th:object="${verification}">
 
 
+                                        <div th:replace="layout::form-validation"></div>
                                         <div class="form-group">
                                             <label for="comments" class="col-sm-2 control-label" style="text-align: left">Comments</label>
                                             <div class="col-sm-10">
-                                                <input type="text"  class="form-control" id="comments"/>
+                                                <input type="text"  th:field="*{comment}" class="form-control" id="comments"/>
                                             </div>
                                         </div>
 
 
-                                            <label style="font-size:large">Previous Changes</label>
+                                        <label style="font-size:large" th:text="${verify.description}"></label>
 
-                                            <!--<div id="before" style="overflow-wrap: break-word;border-left: 1px solid;margin-right: 1px;padding:5px; ">-->
+                                        <!--<div id="before" style="overflow-wrap: break-word;border-left: 1px solid;margin-right: 1px;padding:5px; ">-->
 
                                         <table class="table table-striped dt-responsive no-wrap table-bordered table-hover" id="table">
                                             <thead>
@@ -100,10 +74,10 @@
                                             <tbody>
                                             <tr>
                                                 <td style ="word-break:break-all;width:50%;">
-                                                    <th:block th:text="*{beforeObject}"></th:block>
+                                                    <th:block th:text="${verify.beforeObject}"></th:block>
                                                 </td>
                                                 <td style ="word-break:break-all;">
-                                                    <th:block th:text="*{afterObject}"></th:block>
+                                                    <th:block th:text="${verify.afterObject}"></th:block>
                                                 </td>
                                             </tr>
                                             </tbody>
@@ -118,8 +92,8 @@
                                             <button type="submit" name="approve" value="false" class="btn btn-danger btn-labeled pull-right">
                                                 Decline<span class="btn-label btn-label-right"><i class="fa fa-times"></i></span>
                                             </button>
-                                            <input  th:hidden="hidden" th:field="*{version}"/>
-                                            <input  th:hidden="hidden" th:field="*{id}"/>
+                                            <input  th:hidden="hidden" th:field="${verify.version}"/>
+                                            <input  th:hidden="hidden" th:field="${verify.id}"/>
 
                                         </div>
                                     </form>
@@ -185,9 +159,9 @@
 
                     result += '<li class="list-group-item">'+ node +':<ul class="list-group">' + parseJsonAsList(jsn[node],current_path+'[') + '</ul></li>';
                 }else
-                    {
+                {
                     result += '<li class="list-group-item list-group-item-danger">'+ node +':<ul class="list-group">' + parseJsonAsHTMLTree(jsn[node],current_path+'[') + '</ul></li>';
-                   }
+                }
             }
             else if(Object.prototype.toString.call(jsn[node]) === '[object Object]')
             {
@@ -204,8 +178,10 @@
 
                 current_path = path.endsWith('[') ? path + node + ']' : path + '.' +node;
 
-                b = jsonPath(beforeData,current_path)[0] ;
-                a = jsonPath(afterData,current_path)[0];
+                b = jsonPath(beforeData,current_path) ? jsonPath(beforeData,current_path)[0] : 'undefined' ;
+
+                a = jsonPath(afterData,current_path) ? jsonPath(afterData,current_path)[0] : 'undefined' ;
+
                 if(a == b && typeof a != 'undefined' && typeof b != 'undefined' ){
 
                     result += '<li class="list-group-item">' + node + ':'+jsn[node] +'</li>'
@@ -213,13 +189,13 @@
 
                     result += '<li class="list-group-item list-group-item-danger">' + node + ':'+jsn[node] +'</li>'
                 }
-              }
+            }
 
         }
         return result;
     }
-      var beforeData = JSON.parse([[${beforeObject}]]);
-      var afterData =JSON.parse([[${afterObject}]]);
+    var beforeData = JSON.parse([[${verification.beforeObject}]]);
+    var afterData =JSON.parse([[${verification.afterObject}]]);
     console.log(beforeData);
     $(document).ready(function() {
 
@@ -233,6 +209,10 @@
                 "className" : "dt-center",
                 "render" : function(data, type, full, meta) {
                     if (type === 'display') {
+                        temp = data;
+                        if(!temp || 0 === temp.length){
+                            temp = '{}'
+                        }
                         before = JSON.parse(data);
                         return '<ul>'+parseJsonAsList(before,'$')+'</ul>';
                     }
@@ -243,6 +223,10 @@
                 "className" : "dt-center",
                 "render" : function(data, type, full, meta) {
                     if (type === 'display') {
+                        temp = data;
+                        if(!temp || 0 === temp.length ){
+                            temp = '{}'
+                        }
                         after = JSON.parse(data);
                         return '<ul class="list-group">'+parseJsonAsList(after,'$')+'</ul>';
                     }

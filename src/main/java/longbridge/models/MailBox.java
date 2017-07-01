@@ -62,20 +62,4 @@ public class MailBox extends AbstractEntity{
 		this.messages = messages;
 	}
 
-	@Override
-	public String serialize() throws JsonProcessingException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	
-	public static OperationCode getAddCode() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public static OperationCode getModifyCode() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }

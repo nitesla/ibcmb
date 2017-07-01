@@ -1,8 +1,10 @@
-package longbridge.config.makerchecker;
+package longbridge.config;
 
 import longbridge.models.MakerChecker;
 import longbridge.repositories.MakerCheckerRepo;
 import longbridge.utils.Verifiable;
+
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
@@ -14,7 +16,7 @@ import java.lang.reflect.Method;
  */
 
 @Component
-public class MakerCheckerInitializer {
+public class MakerCheckerInitializer implements InitializingBean{
 
     @Autowired
     MakerCheckerRepo makerCheckerRepo;
@@ -27,9 +29,11 @@ public class MakerCheckerInitializer {
         return provider;
     }
 
-    public void initialize() {
 
-        String packge = "longbridge.services.implementations";
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		String packge = "longbridge.services.implementations";
 
         ClassPathScanningCandidateComponentProvider provider = createComponentScanner();
         for (BeanDefinition beanDef : provider.findCandidateComponents(packge)) {
@@ -52,7 +56,7 @@ public class MakerCheckerInitializer {
                             makerChecker.setDelFlag("N");
                             makerChecker.setOperation(operation);
                             makerChecker.setDescription(description);
-                            makerChecker.setEnabled("Y");
+                            makerChecker.setEnabled("N");
                             System.out.print(makerChecker.toString());
                             makerCheckerRepo.save(makerChecker);
                         }
@@ -62,7 +66,7 @@ public class MakerCheckerInitializer {
                 e.printStackTrace();
             }
         }
-    }
+	}
 
 
 //    public static List<Method> getMethodsAnnotatedWith(final Class<?> type, final Class<? extends Annotation> annotation) {

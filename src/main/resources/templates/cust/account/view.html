@@ -8,7 +8,7 @@
     </header>
 
 <section class="content-wrapper">
-    <div class="containe">
+    <div class="container">
         <div class="row">
             <div class="col-md-4 col-sm-4">
                 <h5 class="page_header"> Account Statement</h5>
@@ -55,43 +55,45 @@
 
                         <div class="form-group col-md-6">
                             <label>&nbsp;</label>
-                            <button type="submit" class="btn " id="btn-find"><i class="fa fa-search" style="color: white" ></i>&nbsp; view</button>
+                            <button type="submit" class="btn btn-link " id="btn-find"><i class="fa fa-search" style="color: whit" ></i>&nbsp; view</button>
                         </div>
                     </div>
 
 
 
 <p>
-                        <a id="btn-print" th:href="@{'~/viewstatement/display/data'}" class="btn bt-link-act pull-right"> <i class="fa fa-print" style="color: white" ></i>&nbsp; print</a>
-                        <!--<a th:href="@{'#'}" class="btn "> <i class="fa fa-envelope" style="color: white" ></i>&nbsp; send mail</a>-->
+                        <a id="btn-print" th:href="@{'~/viewstatement/display/data'}"  class="btn bt-link-act pull-right"> <i class="fa fa-print"  ></i>&nbsp; print</a>
+                        <a id="btn-email" onclick="getEmail();" th:href="@{'#'}" class="btn pull-right "> <i class="fa fa-envelope" style="color: white" ></i>&nbsp; send mail</a>
 </p>
 
                         <h2>TRANSACTION DETAILS</h2>
 
-                    <table class="table" id="tranDetails">
-                        <thead>
-                        <tr>
-                            <th>Account Balance</th>
-                            <th>Currency Code</th>
-                            <th>Post Date</th>
-                            <th>Transaction Narration</th>
-                            <th>Debit/Credit</th>
-                            <th>Value Date</th>
+                    <div class="table-responsive" >
+                            <table class="table" id="tranDetails">
+                                <thead>
+                                <tr>
+                                    <th>Account Balance</th>
+                                    <th>Currency Code</th>
+                                    <th>Post Date</th>
+                                    <th>Transaction Narration</th>
+                                    <th>Debit/Credit</th>
+                                    <th>Value Date</th>
 
-                        </tr>
-                        </thead>
-                        <tfoot>
-                        <tr>
-                            <th>Account Balance</th>
-                            <th>Currency Code</th>
-                            <th>Post Date</th>
-                            <th>Transaction Narration</th>
-                            <th>Debit/Credit</th>
-                            <th>Value Date</th>
+                                </tr>
+                                </thead>
+                                <tfoot>
+                                <tr>
+                                    <th>Account Balance</th>
+                                    <th>Currency Code</th>
+                                    <th>Post Date</th>
+                                    <th>Transaction Narration</th>
+                                    <th>Debit/Credit</th>
+                                    <th>Value Date</th>
 
-                        </tr>
-                        </tfoot>
-                    </table>
+                                </tr>
+                                </tfoot>
+                            </table>
+                    </div>
 
 
                 </div>
@@ -173,7 +175,6 @@
 
 			e.preventDefault();
 			dt = $('#tranDetails').DataTable();
-
 			dt.ajax.reload(null, true);
 
 		});
@@ -191,8 +192,49 @@
 
 
 
-
     /*]]>*/
 </script>
+<script>
+    function getEmail()
+    {
+        $('#emailModal').modal({
+            backdrop: 'static',
+            keyboard: false,
+            show: true
+
+        })
+    }
+
+</script>
+<div id="emailModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+<div class="modal-content no-bd-rad tokenBox" >
+    <form id="loginform" th:action="@{/}" method="POST" >
+        <div class="modal-body no-bd-rad">
+
+            <div class="margin-bottom">
+                <p style="margin-bottom:20px">Kindly enter email address</p>
+                <div id="username_div" class="form-group">
+                    <input  type="email" id="token" name="token" class='my-select tokenInput' placeholder="Email address" />
+                </div>
+                <div id='errorMess' class=" text-danger "></div>
+                <div id='successMess' class=" text-success "></div>
+            </div>
+
+
+        </div>
+        <div class="modal-footer no-bd-top ">
+            <button  class="btn btn-link token-btn remove-item" data-dismiss="modal" >Back</button>
+
+            <button type='submit' class="btn btn-link token-btn" >Continue</button>
+        </div>
+
+    </form>
+
+
+
+</div>
+    </div>
+</div>
 </body>
 </html>

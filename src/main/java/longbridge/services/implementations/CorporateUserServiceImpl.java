@@ -31,6 +31,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.util.*;
 
 /**
@@ -79,6 +80,9 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
     private Locale locale = LocaleContextHolder.getLocale();
 
+    @Autowired
+    private EntityManager entityManager;
+
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
@@ -126,10 +130,11 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     }
 
     @Override
-    @Verifiable(operation="CORP_USER_UPDATE",description="Updating Corporate User")
+    @Verifiable(operation="UPDATE_CORPORATE_USER",description="Updating Corporate User")
     public String updateUser(CorporateUserDTO user) throws InternetBankingException {
         try {
             CorporateUser corporateUser = corporateUserRepo.findOne(user.getId());
+
             corporateUser.setEmail(user.getEmail());
             corporateUser.setLastName(user.getLastName());
             corporateUser.setUserName(user.getUserName());
@@ -139,7 +144,6 @@ public class CorporateUserServiceImpl implements CorporateUserService {
                 Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
                 corporateUser.setRole(role);
             }
-
             corporateUserRepo.save(corporateUser);
             return messageSource.getMessage("user.update.success", null, locale);
         } catch (Exception e) {
@@ -150,7 +154,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
     @Override
     @Transactional
-    @Verifiable(operation="CORP_USER_ADD",description="Adding Corporate User")
+    @Verifiable(operation="ADD_CORPORATE_USER",description="Adding Corporate User")
     public String addUser(CorporateUserDTO user) throws InternetBankingException {
 
         CorporateUser corporateUser = corporateUserRepo.findFirstByUserNameIgnoreCase(user.getUserName());
@@ -255,10 +259,11 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
     @Override
     @Transactional
-    @Verifiable(operation = "CORP_USER_ACTIVATION", description = "Change corporate user activation status")
+    @Verifiable(operation = "CORP_USER_STATUS", description = "Change corporate user activation status")
     public String changeActivationStatus(Long userId) throws InternetBankingException {
         try {
             CorporateUser user = corporateUserRepo.findOne(userId);
+            entityManager.detach(user);
             String oldStatus = user.getStatus();
             String newStatus = "A".equals(oldStatus) ? "I" : "A";
             user.setStatus(newStatus);
@@ -380,13 +385,12 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     }
 
     @Override
-    @Verifiable(operation="CORP_USER_LOCK",description="Locking a Corporate User")
     public void lockUser(CorporateUser user, Date unlockat) {
         //todo
     }
 
     @Override
-    @Verifiable(operation="CORP_USER_UNLOCK",description="Unlocking a Corporate User")
+    @Verifiable(operation="UNLOCK_CORP_USER",description="Unlocking a Corporate User")
     public String unlockUser(Long id) throws InternetBankingException {
 
         CorporateUser user = corporateUserRepo.findOne(id);

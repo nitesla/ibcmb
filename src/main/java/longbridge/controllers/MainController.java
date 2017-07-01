@@ -100,10 +100,6 @@ public class MainController {
         return modelAndView;
     }
 
-    @RequestMapping(value = {"/admin/dashboard", "/admin"})
-    public String getAdminDashboard() {
-        return "adm/dashboard";
-    }
 
 
     @GetMapping("/faqs")

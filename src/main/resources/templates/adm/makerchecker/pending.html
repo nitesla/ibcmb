@@ -28,38 +28,38 @@
             <div class="">
                 <div class="page-title">
                     <div class="title_left">
-                        <h3>Pending Operations</h3>
+                        <h3>Operations</h3>
                     </div>
                 </div>
 
 
 
-                <ul class="nav navbar-right panel_toolbox">
+                <!--<ul class="nav navbar-right panel_toolbox">-->
 
-                    <li>
-                        <div class="col-lg-4">
-                            <div class="title-action" >
-                                <a class="btn btn-app" href="#"  disabled="disabled" >
-                                    <button class="badge bg-orange bt-select" disabled="disabled" th:text="${totalPending}" >count</button>
-                                    <i class="fa fa-check"></i>My approvals
-                                </a>
-                            </div>
-                        </div>
+                    <!--<li>-->
+                        <!--<div class="col-lg-4">-->
+                            <!--<div class="title-action" >-->
+                                <!--<a class="btn btn-app" href="#"  disabled="disabled" >-->
+                                    <!--<button class="badge bg-orange bt-select" disabled="disabled" th:text="${totalPending}" >count</button>-->
+                                    <!--<i class="fa fa-check"></i>My approvals-->
+                                <!--</a>-->
+                            <!--</div>-->
+                        <!--</div>-->
 
-                    </li>
+                    <!--</li>-->
 
-                    <li>
-                        <div class="col-lg-4">
-                            <div class="title-action">
-                                <a  class=" btn btn-app btn bt-select btn-sm  bt-link-act" href="/admin/verifications/operations">
-                                    <button class="badge bg-orange"  th:text="${verificationNumber}"></button>
-                                    <i class="fa fa-check"></i>Approval Queue
-                                </a>
-                            </div>
-                        </div>
-                    </li>
+                    <!--<li>-->
+                        <!--<div class="col-lg-4">-->
+                            <!--<div class="title-action">-->
+                                <!--<a  class=" btn btn-app btn bt-select btn-sm  bt-link-act" href="/admin/verifications/operations">-->
+                                    <!--<button class="badge bg-orange"  th:text="${verificationNumber}"></button>-->
+                                    <!--<i class="fa fa-check"></i>Approval Queue-->
+                                <!--</a>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</li>-->
 
-                </ul>
+                <!--</ul>-->
                 <div class="clearfix"></div>
             </div>
 
@@ -97,7 +97,7 @@
                                 <thead>
                                 <tr>
                                     <th>Operation</th>
-                                    <th>Created By</th>
+                                    <th>Initiated By</th>
                                     <th>Verified By</th>
                                     <th>Status</th>
 
@@ -112,7 +112,7 @@
                                 <tfoot>
                                 <tr>
                                     <th>Operation</th>
-                                    <th>Created By</th>
+                                    <th>Initiated By</th>
                                     <th>Verified By</th>
                                     <th>Status</th>
                                 </tr>
@@ -167,11 +167,11 @@
                     if (type === 'display') {
                         if (data == "PENDING") {
                             return "<i class='fa fa-question dt-body-center' style='color:green;display:block; text-align:center; margin:0 auto;' ></i>";
-                        } else if (data == "VERIFIED") {
+                        } else if (data == "APPROVED") {
                             return "<i class='fa fa-check  dt-body-center' style='color:green;display:block; text-align:center; margin:0 auto;'></i>";
                         }
                         else{
-                            return "<i class='fa fa-ban  dt-body-center' style='color:red;display:block; text-align:center; margin:0 auto;'></i>"
+                            return "<i class='fa fa-times  dt-body-center' style='color:red;display:block; text-align:center; margin:0 auto;'></i>"
                         }
                     }
                     return data;

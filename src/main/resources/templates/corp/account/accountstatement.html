@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="corp_layout :: site-head">
+
+</head>
+<body>
+<div class="container">
+    <header th:replace="corp_layout :: corp-header">
+    </header>
+
+
+<section class="content-wrapper">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 col-sm-4">
+                <h5 class="page_header"> Transaction History</h5>
+
+                 <select class="form-control invisible">
+                        <option value="account">Account Overview</option>
+                </select>
+            </div>
+
+              <p class="col-xs-12 invisible">
+                    Fields marked <span style="color:red">*</span> are compulsory
+                </p>
+        </div>
+        <div class="row">
+            <div class="col-md-9 content-bg">
+
+                    <div  class="col-md- col-sm-">
+                        <form method="post">
+                            <h2 class="page_header">Last 10 transaction</h2>
+
+                            <table class="table" id="users">
+                                <thead>
+                                <tr>
+
+                                    <th>Post Date</th>
+                                    <th>Transaction Narration</th>
+                                    <th>Account Balance</th>
+                                    <th>Debit/Credit</th>
+                                    <th>Value Date</th>
+
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="list : ${transRequestList}">
+                                    <td th:text="${#dates.format(list.postedDate, 'dd-MMM-yyyy')}"></td>
+                                    <td  th:text="${list.narration}"></td>
+                                    <td th:text="${#numbers.formatDecimal(list.balance, 0, 'COMMA', 2, 'POINT')}"></td>
+                                    <td th:text="${list.tranType}"></td>
+                                    <td th:text="${#dates.format(list.valueDate, 'dd-MMM-yyyy')}"></td>
+                                   </tr>
+                                </tbody>
+
+                            </table>
+
+                        </form>
+
+                    </div>
+            </div>
+
+             <div class="col-md-3 pull-right">
+                            <div th:replace="corp_layout :: corp-sidebar" class="" >
+                            </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CONTENT-WRAPPER SECTION END-->
+<footer th:replace="corp_layout ::corp-footer">
+</footer>
+<script>
+
+
+</script>
+</div>
+</body>
+</html>

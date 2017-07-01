@@ -37,9 +37,6 @@ public class Verification extends AbstractEntity {
     private String comments;
     private String initiatedBy;
     private Date initiatedOn;
-    private String declinedBy;
-    private Date declinedOn;
-    private String declineReason;
     private String verifiedBy;
     private Date verifiedOn;
     @OneToOne
@@ -71,9 +68,6 @@ public class Verification extends AbstractEntity {
         this.status = status;
     }
 
-    public String getDeclineReason() {
-        return declineReason;
-    }
 
     public String getComments() {
         return comments;
@@ -91,9 +85,6 @@ public class Verification extends AbstractEntity {
         this.description = description;
     }
 
-    public void setDeclineReason(String declineReason) {
-        this.declineReason = declineReason;
-    }
 
     public String getBeforeObject() {
         return beforeObject;
@@ -135,9 +126,6 @@ public class Verification extends AbstractEntity {
         this.operation = operation;
     }
 
-    public String getDeclinedBy() {
-        return declinedBy;
-    }
 
     public Date getInitiatedOn() {
         return initiatedOn;
@@ -147,13 +135,6 @@ public class Verification extends AbstractEntity {
         this.initiatedOn = initiatedOn;
     }
 
-    public Date getDeclinedOn() {
-        return declinedOn;
-    }
-
-    public void setDeclinedOn(Date declinedOn) {
-        this.declinedOn = declinedOn;
-    }
 
     public Date getVerifiedOn() {
         return verifiedOn;
@@ -180,9 +161,6 @@ public class Verification extends AbstractEntity {
         this.initiatedBy = initiatedBy;
     }
 
-    public void setDeclinedBy(String declinedBy) {
-        this.declinedBy = declinedBy;
-    }
 
     public String getVerifiedBy() {
         return verifiedBy;

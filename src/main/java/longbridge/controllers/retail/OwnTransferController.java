@@ -118,7 +118,7 @@ public class OwnTransferController {
     }
 
 
-    @RequestMapping(path = "{id}/receipt", method = RequestMethod.POST)
+    @RequestMapping(path = "{id}/receipt", method = RequestMethod.GET)
     public ModelAndView report(@PathVariable Long id,HttpServletRequest servletRequest, TransferRequestDTO transferRequestDTO) {
         /**
          * Created a stub to test transaction receiptpt
