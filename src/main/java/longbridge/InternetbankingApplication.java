@@ -1,7 +1,7 @@
 package longbridge;
 
+import longbridge.config.MakerCheckerInitializer;
 import longbridge.jobs.CronJobScheduler;
-import longbridge.config.makerchecker.MakerCheckerInitializer;
 import longbridge.repositories.CustomJpaRepositoryFactoryBean;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +34,7 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
 
     @Override
     public void run(String... strings) throws Exception {
-        makerCheckerInitializer.initialize();
+      //  makerCheckerInitializer.initialize();
     }
 }
 
