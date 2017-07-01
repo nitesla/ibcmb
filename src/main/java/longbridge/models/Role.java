@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import longbridge.dtos.RoleDTO;
+import longbridge.utils.PrettySerializer;
 
 import javax.persistence.*;
 
