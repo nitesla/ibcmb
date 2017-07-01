@@ -3,6 +3,7 @@ package longbridge.controllers.admin;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Version;
+import javax.validation.Valid;
 
 //import longbridge.dtos.PendingDTO;
 import longbridge.dtos.PendingVerification;
@@ -13,6 +14,7 @@ import longbridge.utils.verificationStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
@@ -20,6 +22,8 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.data.jpa.datatables.repository.DataTablesUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
 import longbridge.models.AdminUser;
@@ -33,6 +37,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 @Controller
 @RequestMapping("/admin/verifications")
@@ -45,6 +50,9 @@ public class AdmVerificationController {
 
     @Autowired
     private AdminUserService adminUserService;
+
+    @Autowired
+    private MessageSource messageSource;
 
 
 
@@ -77,7 +85,7 @@ public class AdmVerificationController {
 
 
     @PostMapping("/verify")
-    public String verify(@ModelAttribute("verification") VerificationDTO verification, WebRequest request, Model model, RedirectAttributes redirectAttributes) {
+    public String verify(@ModelAttribute("verification") @Valid VerificationDTO verification,BindingResult result, WebRequest request, Model model, RedirectAttributes redirectAttributes,  Locale locale) {
 
         String approval = request.getParameter("approve");
 
@@ -87,9 +95,12 @@ public class AdmVerificationController {
                 redirectAttributes.addFlashAttribute("message", "Operation approved successfully");
 
             } else if ("false".equals(approval)) {
-                if("".equals(verification.getComment()) ||verification.getComment()==null){
-                    redirectAttributes.addFlashAttribute("failure", "Enter a reason for declining the operation");
-                    return "redirect:/admin/verifications/"+verification.getId()+"/view";
+                if (result.hasErrors())
+                {
+                     VerificationDTO verification2=verificationService.getVerification(verification.getId());
+                    model.addAttribute("verify",verification2);
+                    result.addError(new ObjectError("invalid", messageSource.getMessage("reason.required", null, locale)));
+                    return "adm/makerchecker/details";
                 }
                 verificationService.decline(verification);
                 redirectAttributes.addFlashAttribute("message", "Operation declined successfully");
@@ -202,7 +213,8 @@ public class AdmVerificationController {
     public String getObjectsForVerification(@PathVariable Long id, Model model) {
 
         VerificationDTO verification = verificationService.getVerification(id);
-        model.addAttribute("verification", verification);
+        model.addAttribute("verification",new VerificationDTO());
+        model.addAttribute("verify", verification);
         return "adm/makerchecker/details";
     }
 
@@ -210,7 +222,7 @@ public class AdmVerificationController {
     public String getObjectsForPending(@PathVariable Long id, Model model) {
 
         VerificationDTO verification = verificationService.getVerification(id);
-        model.addAttribute("verification", verification);
+        model.addAttribute("verify", verification);
         return "adm/makerchecker/pendingdetails";
     }
 

@@ -34,33 +34,6 @@
                 </div>
 
 
-                <!--<ul class="nav navbar-right panel_toolbox">-->
-
-                <!--<li>-->
-                <!--<div class="col-lg-4">-->
-                <!--<div class="title-action" >-->
-                <!--<a class="btn btn-app" href="#"  disabled="disabled" >-->
-                <!--<button class="badge bg-orange bt-select" disabled="disabled" th:text="${totalPending}" >count</button>-->
-                <!--<i class="fa fa-check"></i>My approvals-->
-                <!--</a>-->
-                <!--</div>-->
-                <!--</div>-->
-
-                <!--</li>-->
-
-                <!--<li>-->
-                <!--<div class="col-lg-4">-->
-                <!--<div class="title-action">-->
-                <!--<a  class=" btn btn-app btn bt-select btn-sm  bt-link-act" href="/admin/verifications/operations">-->
-                <!--<button class="badge bg-orange"  th:text="${verificationNumber}"></button>-->
-                <!--<i class="fa fa-check"></i>Approval Queue-->
-                <!--</a>-->
-                <!--</div>-->
-                <!--</div>-->
-                <!--</li>-->
-
-                <!--</ul>-->
-
                 <div class="clearfix"></div>
 
                 <div class="row">
@@ -78,6 +51,7 @@
                                     <form method="post" th:action="@{/ops/verifications/verify}" class="form-horizontal" th:object="${verification}">
 
 
+                                        <div th:replace="layout::form-validation"></div>
                                         <div class="form-group">
                                             <label for="comments" class="col-sm-2 control-label" style="text-align: left">Comments</label>
                                             <div class="col-sm-10">
@@ -86,7 +60,7 @@
                                         </div>
 
 
-                                        <label style="font-size:large" th:text="*{description}"></label>
+                                        <label style="font-size:large" th:text="${verify.description}"></label>
 
                                         <!--<div id="before" style="overflow-wrap: break-word;border-left: 1px solid;margin-right: 1px;padding:5px; ">-->
 
@@ -100,10 +74,10 @@
                                             <tbody>
                                             <tr>
                                                 <td style ="word-break:break-all;width:50%;">
-                                                    <th:block th:text="*{beforeObject}"></th:block>
+                                                    <th:block th:text="${verify.beforeObject}"></th:block>
                                                 </td>
                                                 <td style ="word-break:break-all;">
-                                                    <th:block th:text="*{afterObject}"></th:block>
+                                                    <th:block th:text="${verify.afterObject}"></th:block>
                                                 </td>
                                             </tr>
                                             </tbody>
@@ -118,8 +92,8 @@
                                             <button type="submit" name="approve" value="false" class="btn btn-danger btn-labeled pull-right">
                                                 Decline<span class="btn-label btn-label-right"><i class="fa fa-times"></i></span>
                                             </button>
-                                            <input  th:hidden="hidden" th:field="*{version}"/>
-                                            <input  th:hidden="hidden" th:field="*{id}"/>
+                                            <input  th:hidden="hidden" th:field="${verify.version}"/>
+                                            <input  th:hidden="hidden" th:field="${verify.id}"/>
 
                                         </div>
                                     </form>
