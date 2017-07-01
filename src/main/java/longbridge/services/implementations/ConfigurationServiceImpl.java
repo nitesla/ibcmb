@@ -1,6 +1,7 @@
 package longbridge.services.implementations;
 
 import longbridge.dtos.SettingDTO;
+import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.Setting;
 import longbridge.repositories.SettingRepo;
@@ -22,6 +23,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+
 /**
  * Created by Fortune on 4/13/2017.
  */
@@ -38,11 +41,14 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 	@Autowired
 	MessageSource messageSource;
 
+	@Autowired
+	EntityManager entityManager;
+
 	Locale locale = LocaleContextHolder.getLocale();
 
 	@Transactional
 	@Override
-	@Verifiable(operation="SETTING_DEL",description="Add Settings")
+	@Verifiable(operation="ADD_SETTING",description="Add Settings")
 	public String addSetting(SettingDTO dto) throws InternetBankingException {
 		try {
 			ModelMapper mapper = new ModelMapper();
@@ -96,21 +102,26 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 	
 	@Transactional
 	@Override
-	@Verifiable(operation="SETTING_UPDATE",description="Update Settings")
+	@Verifiable(operation="UPDATE_SETTING",description="Update Settings")
 	public String updateSetting(SettingDTO dto) throws InternetBankingException {
 		try {
 			Setting setting = settingRepo.findOne(dto.getId());
+			entityManager.detach(setting);
 			ModelMapper mapper = new ModelMapper();
 			mapper.map(dto, setting);
 			settingRepo.save(setting);
 			return messageSource.getMessage("setting.update.success", null, locale);
-		} catch (Exception e) {
+		}
+		catch (DuplicateObjectException e) {
+			throw new DuplicateObjectException(e.getMessage());
+		}
+		catch (Exception e) {
 			throw new InternetBankingException(messageSource.getMessage("setting.update.failure",null,locale),e);
 		}
 	}
 
 	@Override
-	@Verifiable(operation="SETTING_DEL",description="Delete Settings")
+	@Verifiable(operation="DELETE_SETTING",description="Delete Settings")
 	public String deleteSetting(Long id) throws InternetBankingException {
 		try {
 			settingRepo.delete(id);

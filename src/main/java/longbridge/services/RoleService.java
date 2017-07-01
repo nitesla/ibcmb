@@ -105,7 +105,7 @@ public interface RoleService {
      * Deletes the permissiont
      * @param id the permission
      */
-    @PreAuthorize("hasAuthority('DELETE_ROLE')")
+    @PreAuthorize("hasAuthority('DELETE_PERMISSION')")
     String deletePermission(Long id) throws InternetBankingException;
 
  

@@ -265,7 +265,7 @@
             <artifactId>spring-context-support</artifactId>
             <version>4.3.7.RELEASE</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.eclipse.birt.runtime.3_7_1/com.lowagie.text -->
+        <!-- homtps://mvnrepository.com/artifact/org.eclipse.birt.runtime.3_7_1/com.lowagie.text -->
 
         <dependency>
             <groupId>net.sf.jasperreports</groupId>
@@ -281,11 +281,6 @@
             <groupId>com.itextpdf</groupId>
             <artifactId>itextpdf</artifactId>
             <version>5.5.11</version>
-        </dependency>
-        <dependency>
-            <groupId>longbridge</groupId>
-            <artifactId>internetbanking</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.quartz-scheduler/quartz -->
         <dependency>

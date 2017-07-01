@@ -56,7 +56,7 @@ public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
             LocalBeneficiary localBeneficiary = convertDTOToEntity(beneficiary);
             localBeneficiary.setUser(user);
             validateBeneficiary(localBeneficiary, user);
-            this.localBeneficiaryRepo.save(localBeneficiary);
+            localBeneficiaryRepo.save(localBeneficiary);
             logger.trace("Beneficiary {} has been added", localBeneficiary.toString());
             return messageSource.getMessage("beneficiary.add.success", null, locale);
         } catch (Exception e) {

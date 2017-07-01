@@ -38,13 +38,12 @@
                                     <div class="form-group">
                                         <label class="my-label">Source account</label>
 
-
                                         <span id="scurency"></span>
                                         <div>
 
                                         <span class="alert no-bd-rad my-border bg-white" id="sourceCurrency">&nbsp;&nbsp;&nbsp;</span>
-                                            <select name="source" class="form-contrl my-select" id="source"
-                                                    th:field="*{customerAccountNumber}" onchange="getBalance();getSourceCurrency()" style="width:70%;margin:0px auto;">
+                                            <select name="source" class="form-control" id="source"
+                                                    th:field="*{customerAccountNumber}" onchange="getBalance();getSourceCurrency()" >
 
                                                 <!--<option value=""> select an account</option>-->
                                                 <option th:each="s: ${accounts}" th:value="${s}" th:text="${s}" ></option>
@@ -58,7 +57,7 @@
                                         <span id="dcurency"></span>
                                         <div>
                                          <span class="alert no-bd-rad my-border bg-white" id="destCurrency">&nbsp;&nbsp;&nbsp;</span>
-                                        <select name="destination" class="form-contrl my-select" id="destination"
+                                        <select name="destination" class="form-control" id="destination"
                                                 th:field="*{beneficiaryAccountNumber}"  onchange="getDestCurrency();"  required="required">
                                             <option th:each="s: ${accounts}" th:value="${s}" th:text="${s}"></option>
 
@@ -71,21 +70,27 @@
 
                                     <div class="form-group">
                                         <label class="my-label">Amount</label>
-                                        <span class="alert no-bd-rad my-border bg-white hide-content-only"></span>
+                                        <div>
+                                            <span class="alert no-bd-rad my-border bg-white hide-content-only"></span>
 
-                                        <input type="number" name="textname" min="0" step=".10" placeholder="Enter an amount"
-                                            th:field="*{amount}"
-                                            class="form-contro my-input"/><span class='req-inner'></span>
+                                            <input type="number" name="textname" min="0" step=".10" placeholder="Enter an amount"
+                                                th:field="*{amount}"
+                                                class="form-control"/><span class='req-inner'></span>
+                                        </div>
                                         <label	th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}"
                                                 class="validation-message"></label>
                                     </div>
+
                                     <input type="hidden" th:field="*{financialInstitution}" />
                                     <div class="form-group">
                                         <label  class="my-label">Remark</label>
+
+                                        <div>
                                          <span class="alert no-bd-rad my-border bg-white hide-content-only">NGN</span>
 
                                         <input type="text" name="textname" placeholder="" th:field="*{remarks}"
-                                            class="form-contro my-input"/>
+                                            class="form-control"/>
+                                        </div>
                                     </div>
                                     
                                     <div class='pull-right' style="margin-right:50px;">

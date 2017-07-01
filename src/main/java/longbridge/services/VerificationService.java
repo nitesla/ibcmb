@@ -4,12 +4,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import longbridge.dtos.PendingVerification;
 import longbridge.dtos.VerificationDTO;
 import longbridge.exception.VerificationException;
-import longbridge.models.SerializableEntity;
-import longbridge.models.User;
-import longbridge.models.Verification;
+import longbridge.models.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -29,18 +28,18 @@ public interface VerificationService {
      */
 
 
-    int getTotalNumberForVerification(User user);
+    int getTotalNumberForVerification();
 
 
-    long getTotalNumberPending(User user);
+    long getTotalNumberPending();
 
 
-    List<VerificationDTO> getVerificationsForUser(User user);
+    Page<Verification> getVerificationsForUser(Pageable pageable);
 
-    Page<VerificationDTO> getMakerCheckerPending(Pageable pageDetails, User createdBy);
+    Page<VerificationDTO> getMakerCheckerPending(Pageable pageDetails);
 
 
-    List<VerificationDTO>getPendingForUser(User user);
+    Page<Verification>getPendingForUser(Pageable pageable);
 
     String verify(VerificationDTO verification) throws VerificationException;
 
@@ -55,10 +54,9 @@ public interface VerificationService {
     VerificationDTO getVerification(Long id);
 
 
+    Page<PendingVerification> getPendingVerifications(Pageable pageable);
 
 
-    Page<PendingVerification> getPendingVerifications(User user, Pageable pageable);
-
-    Page<VerificationDTO> getPendingOperations(String operation, User user, Pageable pageable);
+    Page<VerificationDTO> getPendingOperations(String operation, Pageable pageable);
 
 }

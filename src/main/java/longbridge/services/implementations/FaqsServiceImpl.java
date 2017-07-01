@@ -63,7 +63,7 @@ public class FaqsServiceImpl implements FaqsService {
     }
 
     @Override
-    @Verifiable(operation = "FAQ_ADD", description = "Adding FAQs")
+    @Verifiable(operation = "ADD_FAQ", description = "Adding FAQs")
     public String addFaq(FaqsDTO faqsDTO) {
         try {
             Faqs faqs = convertDTOToEntity(faqsDTO);
@@ -76,7 +76,7 @@ public class FaqsServiceImpl implements FaqsService {
     }
 
     @Override
-    @Verifiable(operation = "FAQ_UPDATE", description = "Updating an FAQs")
+    @Verifiable(operation = "UPDATE_FAQ", description = "Updating an FAQs")
     public String updateFaq(FaqsDTO faqsDTO) {
         try {
             Faqs faqs = convertDTOToEntity(faqsDTO);
@@ -90,7 +90,7 @@ public class FaqsServiceImpl implements FaqsService {
     }
 
     @Override
-    @Verifiable(operation = "FAQ_DEL", description = "Deleting FAQs")
+    @Verifiable(operation = "DELETE_FAQ", description = "Deleting FAQs")
     public String deleteFaq(Long id) {
         try{
             faqsRepo.delete(id);

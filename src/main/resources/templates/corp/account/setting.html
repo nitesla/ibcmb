@@ -9,16 +9,23 @@
 </header>
 
 <section class="content-wrapper">
-    <div class="container">
+    <div class="">
         <div class="row">
             <div class="col-md-4 col-sm-4">
                 <h5 class="page_header"> Account Settings</h5>
+                <select class="form-control invisible" id="view">
+                    <option value="account">Account Overview</option>
+                </select>
             </div>
+
+            <p class="col-xs-12 invisible">
+                Fields marked <span style="color:red">*</span> are compulsory
+            </p>
         </div>
         <div class="row">
-            <div class="col-md-8 content-bg">
-                <div class="row spacing">
-                    <div class="col-md-10">
+            <div class="col-md-9 content-bg">
+                <div class="row">
+                    <div class="col-md-12">
                         <table class="table">
                             <thead>
                             <tr>
@@ -46,7 +53,9 @@
                     </div>
                 </div>
             </div>
-            <div th:replace="corp_layout :: corp-sidebar" class="col-md-3 sidebar">
+            <div class="col-md-3 pull-right">
+                <div th:replace="cust_layout :: sidebar" class="" >
+                </div>
             </div>
         </div>
     </div>

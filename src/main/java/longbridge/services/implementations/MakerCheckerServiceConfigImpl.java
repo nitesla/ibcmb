@@ -36,17 +36,16 @@ public class MakerCheckerServiceConfigImpl implements MakerCheckerServiceConfig 
     private Locale locale = LocaleContextHolder.getLocale();
 
 
+
     private ModelMapper modelMapper = new ModelMapper();
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
-    @Verifiable(operation="MAKER_CHECKER_CONFIG",description="Configuring Maker Checker")
     public String configureMakerChecker(MakerChecker makerChecker) throws InternetBankingException
     {
 
         try {
-            //  MakerChecker checker = convertDTOToEntity(makerChecker);
                makerCheckerRepo.save(makerChecker);
                logger.info("Added MakerChecker {}", makerChecker.toString());
               return messageSource.getMessage("makerchecker.add.success", null, locale);

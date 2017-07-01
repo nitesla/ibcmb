@@ -1,5 +1,3 @@
-
-/*
 package longbridge.aop;
 
 import longbridge.models.AdminUser;
@@ -18,60 +16,37 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.EntityManager;
 
-*/
 /**
  * Created by Fortune on 6/28/2017.
- *//*
-
+ */
 @Aspect
 public class AdminUserAdvisor {
 
-    @Autowired
-    private VerificationRepo verificationRepo;
-
-    @Autowired
-    MakerCheckerService makerCheckerService;
-
-    @Autowired
-    VerificationService verificationService;
 
     @Autowired
     EntityManager entityManager;
     private Logger log = LoggerFactory.getLogger(this.getClass());
 
 
-
-    @Pointcut("within( longbridge.services..*)")
-    public void inServiceLayer() {
+    @Pointcut("within( longbridge.services.implementations.VerificationServiceImpl)")
+    public void isVerification() {
     }
 
-    @Pointcut("@withincode(longbridge.utils.Verifiable)")
-    public void isInVerifiable() {
-    }
-
-    @Pointcut("withincode(@longbridge.utils.Verifiable * *(..)) &&  @withincode(verifier)")
-    public void isInVerifiable2(Verifiable verifier) {
+    @Pointcut("withincode(* verify(..))")
+    public void isVerify() {
     }
 
 
-
-    @Pointcut("call(* save(..))")
-    public void isSaving() {
+    @Pointcut("call(* merge(..))")
+    public void isMerging() {
     }
 
-    @Pointcut("call(* delete(..))")
-    public void isDeleting() {
-    }
 
-    @Pointcut("execution(* save(..))")
-    public void isSaving2() {
-    }
+    @After("isVerification() && isMerging() && isVerify() && args(user)")
+    public void postAdminUserCreation(JoinPoint p, AdminUser user)
+    {
 
-    @After("isSaving2() && args(user))")
-    public void temp(JoinPoint p, AdminUser user) {
-
+    	
     }
 
 }
-*/
-

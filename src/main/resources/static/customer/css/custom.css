@@ -1243,7 +1243,7 @@ nav li a {
 
 .footer_bar {
     display: block;
-    padding: 37px 0 0 0;
+    margin: 20px 0 0 0;
 
 }
 
@@ -1296,6 +1296,11 @@ button, input, optgroup, select, textarea {
     margin-top: 6px !important;
     font: inherit;
     color: inherit;
+}
+
+.navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus {
+    color: #555;
+    background-color: #fff;
 }
 
 .content-wrapper {

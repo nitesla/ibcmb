@@ -52,7 +52,7 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 
 	@Override
 	@Transactional
-	@Verifiable(operation="SR_CONFIG_ADD",description="Adding a Service Request Configuration")
+	@Verifiable(operation="ADD_SERV_REQ_CONFIG",description="Adding a Service Request Configuration")
 	public String addServiceReqConfig(ServiceReqConfigDTO serviceReqConfigDTO) throws InternetBankingException {
 		try {
 			SRConfig SRConfig = convertDTOToEntity(serviceReqConfigDTO);
@@ -104,7 +104,7 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 
 	@Override
 	@Transactional
-	@Verifiable(operation="SR_CONFIG_UPDATE",description="Updating a Service Request Configuration")
+	@Verifiable(operation="UPDATE_SERV_REQ_CONFIG",description="Updating a Service Request Configuration")
 	public String updateServiceReqConfig(ServiceReqConfigDTO serviceReqConfigDTO) throws InternetBankingException {
 		try {
 			SRConfig SRConfig = serviceReqConfigRepo.findOne(serviceReqConfigDTO.getId());
@@ -144,7 +144,7 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 	}
 
 	@Override
-	@Verifiable(operation="SR_CONFIG_DEL",description="Deleting a Service Request Configuration")
+	@Verifiable(operation="DELETE_SERV_REQ_CONFIG",description="Deleting a Service Request Configuration")
 	public String delServiceReqConfig(Long id) throws InternetBankingException {
 		try {
 			serviceReqConfigRepo.delete(id);

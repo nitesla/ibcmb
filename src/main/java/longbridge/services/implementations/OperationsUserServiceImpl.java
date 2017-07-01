@@ -123,7 +123,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
 
     @Override
     @Transactional
-    @Verifiable(operation="OPS_ACTIVATION",description="Change Operations User Activation Status")
+    @Verifiable(operation="UPDATE_OPS_STATUS",description="Change Operations User Activation Status")
     public String changeActivationStatus(Long userId) throws InternetBankingException {
         try {
             OperationsUser user = operationsUserRepo.findOne(userId);
@@ -178,7 +178,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
 
     @Override
     @Transactional
-    @Verifiable(operation="OPS_ADD",description="Adding an Operations User")
+    @Verifiable(operation="ADD_OPS_USER",description="Adding an Operations User")
     public String addUser(OperationsUserDTO user) throws InternetBankingException {
         OperationsUser opsUser = operationsUserRepo.findFirstByUserNameIgnoreCase(user.getUserName());
         if (opsUser != null) {
@@ -192,8 +192,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             opsUser.setEmail(user.getEmail());
             opsUser.setPhoneNumber(user.getPhoneNumber());
             opsUser.setCreatedOnDate(new Date());
-            Role role = new Role();
-            role.setId(Long.parseLong(user.getRoleId()));
+            Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
             opsUser.setRole(role);
             creatUserOnEntrust(opsUser);
             operationsUserRepo.save(opsUser);
@@ -233,7 +232,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
 
     @Override
     @Transactional
-    @Verifiable(operation="UPDATE_OPS",description="Updating an Operations User")
+    @Verifiable(operation="UPDATE_OPS_USER",description="Updating an Operations User")
     public String updateUser(OperationsUserDTO user) throws InternetBankingException {
         try {
             OperationsUser opsUser = operationsUserRepo.findOne(user.getId());
