@@ -46,6 +46,9 @@ start
     padding-left:0px !important;
 }
 
+.active{
+    border-bottom: 5px solid #9F614B !important;
+}
 
 .invisible
 {
@@ -200,6 +203,7 @@ span.req
 {
     visibility: hidden;
 }
+
 span.req-inner
 {
     position: relative;
@@ -306,8 +310,17 @@ select
     /*animation: spin 2s linear infinite;*/
 /*}*/
 
+.sent-info
+{
+    padding: 5px;
+}
 
 
+.sm-box
+{
+    min-height: 250px;
+    padding:20px;
+}
 
 #myspan
 {
@@ -419,6 +432,24 @@ tokenInput
 {
     background: #003056;
 }
+
+.inline-tag
+{
+    display:inline;
+}
+
+.related-info
+{
+    border:1px solid #9F614B;
+    color:blue;
+}
+
+ .tab tr th
+    {
+        font-weight: bold;
+        font-size: 15px;
+        
+    }
 
 
 .tokenBox
@@ -913,7 +944,6 @@ body {
 
 .navbar-nav li a{
     color: #777;
-    margin-top: 5px;
     padding-top: 8px;
     padding-bottom: 0px;
 }
@@ -1135,9 +1165,10 @@ body {
     padding: 0 15px 0 15px;
 }
 .errors{
-    padding: 5px 0 5px 0;
+    padding: 5px 0px 5px 0;
     color: #9F614B;
     font-size: 12px;
+    margin-left:45px
 }
 .calender{
     position: inherit;
@@ -1238,7 +1269,7 @@ nav li a {
 }
 
 .navbar-right{
-    margin-top: -10px;
+    margin-top: -15px;
 }
 
 .footer_bar {
