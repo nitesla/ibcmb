@@ -221,7 +221,6 @@ public class OpsVerificationController {
     @GetMapping("/{id}/pendingviews")
     public String getObjectsForPending(@PathVariable Long id, Model model)
     {
-
         VerificationDTO verification = verificationService.getVerification(id);
         model.addAttribute("verify", verification);
         return "ops/makerchecker/pendingdetails";
