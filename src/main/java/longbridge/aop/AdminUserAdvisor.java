@@ -1,5 +1,6 @@
 package longbridge.aop;
 
+import longbridge.dtos.VerificationDTO;
 import longbridge.models.AdminUser;
 import longbridge.repositories.VerificationRepo;
 import longbridge.services.MakerCheckerService;
@@ -26,6 +27,8 @@ public class AdminUserAdvisor {
     @Autowired
     EntityManager entityManager;
     private Logger log = LoggerFactory.getLogger(this.getClass());
+    @Autowired
+    private VerificationService verificationService;
 
 
     @Pointcut("within( longbridge.services.implementations.VerificationServiceImpl)")
@@ -40,13 +43,42 @@ public class AdminUserAdvisor {
     @Pointcut("call(* merge(..))")
     public void isMerging() {
     }
+    
+    
+    @Pointcut("execution(public * verify(..))")
+    public void verified() {
+    }
 
 
+    
+    //this is after merge of verification
     @After("isVerification() && isMerging() && isVerify() && args(user)")
     public void postAdminUserCreation(JoinPoint p, AdminUser user)
     {
-
+    	//general user creation
+    	
+    	
+    	//activation
+    	
     	
     }
+    
+    //this runs after execution
+    @After("isVerification() && verified() && args(verificationDto)")
+    public void postAdminUserCreation2(JoinPoint p, VerificationDTO verificationDto)
+    {
+    	if(verificationDto.getOperation().equals("UPDATE_ADMIN_STATUS")){
+    		//do post update admin
+    		
+    	}
+    	//general user creation
+    	
+    	
+    	//activation
+    	
+    	
+    }
+    
+   
 
 }
