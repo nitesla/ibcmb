@@ -29,24 +29,28 @@
 <section class="content-wrapper">
     <div class="containe">
         <div class="row">
+<<<<<<< HEAD
+
+=======
+>>>>>>> master
             <div class="col-md col-sm">
-                <div class=" col-sm-4 page_header">
-                    <h5 > Beneficiary List</h5>
+                <div class=" col-md-9 col-sm-9">
+                    <h5 class="page_header"> Beneficiary List</h5>
                     <select class="form-control invisible">
                         <option value="account">Account Overview</option>
                 </select>
-                </div>
-                <div class='col-sm-5' style='margin-top:80px;'>
-
-                    <a th:href="@{/retail/beneficiary/new}" class="pull-right">Add New Beneficiary</a>
+                <a th:href="@{/retail/beneficiary/new}" class="pull-right">Add New Beneficiary</a>
 
                 </div>
+                 <p class="col-xs-12 invisible">
+                    Fields marked <span style="color:red">*</span> are compulsory
+            </p>
             </div>
         </div>
         <div class="row">
             <div class="col-md-9 content-bg">
 
-                    <div class="col-md-12">
+                    <div class="col-md-12 table-responsive">
                         <h4 class="sub_header">Local Beneficiaries</h4>
                         <table class="table" id="mytab">
                             <thead>

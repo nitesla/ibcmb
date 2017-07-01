@@ -4,10 +4,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import longbridge.api.*;
 import longbridge.dtos.SettingDTO;
 import longbridge.exception.InternetBankingTransferException;
-
 import longbridge.exception.TransferErrorService;
 import longbridge.exception.TransferExceptions;
-import longbridge.models.FinancialTransaction;
 import longbridge.models.TransRequest;
 import longbridge.services.ConfigurationService;
 import longbridge.services.IntegrationService;
@@ -25,10 +23,6 @@ import org.springframework.web.client.RestTemplate;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;

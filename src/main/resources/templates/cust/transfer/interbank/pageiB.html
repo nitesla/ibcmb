@@ -30,32 +30,34 @@
                               th:object="${localBeneficiaryDTO}">
                             <div class="form-group">
                                 <label>Beneficiary Bank</label>
-                                <select name="beneficiaryBank" class="form-contol my-select" th:field="*{beneficiaryBank}" id="bank_code" required="required">
+                                <select name="beneficiaryBank" class="form-control" th:field="*{beneficiaryBank}" id="bank_code" required="required">
                                     <option th:each="bank : ${localBanks}" th:value="${bank.institutionCode}" th:text="${bank.institutionName}"></option>
                                 </select><span class='req-inner'></span>
                                 <p th:if="${#fields.hasErrors('beneficiaryBank')}" th:errors="*{beneficiaryBank}"
                                    class="errors"></p>
                             </div>
                             <div class="form-group">
-                                <label>Account Number</label>
-                                <input type="text" class="form-contrl my-input" name="accountNumber" th:field="*{accountNumber}"
+                                <label >Account Number</label>
+                                <input type="text" class="form-control" name="accountNumber" th:field="*{accountNumber}"
                                        id="acct_num" placeholder="Account Number" required="required"/><span class='req-inner'></span>
                                 <p class="errors" th:if="${#fields.hasErrors('accountNumber')}" th:errors="*{accountNumber}">&times;</p>
                                 <p class="acctError" style="display:none;">invalid account number or Bank details</p>
+                                <p id='loading-icon' style="display:none"><i class='fa fa-spinner fa-spin' style="font-size:10px;color:#003056"></i></p>
+
                             </div>
 
                             <div class="form-group">
-                                <label>Account Name</label>
-                                <input type="text" class="form-contro my-input" name="accountName" th:field="*{accountName}"
+                                <label >Account Name</label>
+                                <input type="text" class="form-control" name="accountName" th:field="*{accountName}"
                                        id="acct_name" readonly="readonly" required="required"/>
                                 <p class="errors" th:if="${#fields.hasErrors('accountName')}" th:errors="*{accountName}">&times;</p>
                             </div>
                             <div class="form-group">
-                                <input type="text" class="form-cntrol my-input" name="preferredName"
+                                <input type="text" class="form-control" name="preferredName"
                                        placeholder="Beneficiary Alias" th:field="*{preferredName}"/>
                             </div>
-                            <button id="localsave" style="display: none;" class="btn btn-link" >Next</button>
-                            <button id="neq" type="button" class="btn btn-link" onclick="getAccountName();">Name Enquiry</button>
+                            <button id="localsave" style="display: none;" class="btn btn-link required-step" >Next</button>
+                            <button id="neq" type="button" class="btn btn-link required-step" onclick="getAccountName();">Name Enquiry</button>
                         </form>
 
                     </div>
@@ -94,13 +96,14 @@
 
 
     function getAccountName() {
+        $('#loading-icon').show();
         //make sure alert message is not empty
         var acct = $('#acct_num').val();
         var bank = $('#bank_code').val();
 
         if(( acct==null || acct=='' ) || ( bank==null || bank=='' )) {
 
-
+             $('#loading-icon').hide();
             $('.acctError').show().css("color", "red");
             return false;
         }
@@ -111,14 +114,17 @@
             url: '/retail/transfer/' + acct + '/'+bank+'/nameEnquiry',
 //					dataType: 'jsonp',
             error: function (xhr, textStatus, errorThrown) {
+                 
                 $('.acctError').show().css("color", "red");
+
+                 $('#loading-icon').hide();
+                  document.getElementById('loading-icon').style.display = 'none';
 
             },
             success: function (data, textStatus) {
 
 
                 if (textStatus.c)
-
                 var result = data;
                 $('#acct_name').val(result);
 
@@ -126,9 +132,12 @@
 
                     $('#localsave').show();
                     $('#neq').hide();
+                    document.getElementById('loading-icon').style.display = 'none';
+                     $('#loading-icon').hide();
                 }else{
-
+                     document.getElementById('loading-icon').style.display = 'none';
                     $('.acctError').show().css("color", "red");
+                    $('#loading-icon').hide();
                 }
             }
         };
@@ -141,6 +150,9 @@
 
     /*]]>*/
 </script>
+
+
+
 </div>
 </body>
 </html>

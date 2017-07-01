@@ -11,11 +11,12 @@
     <div class="containe">
         <div class="row">
             <div class="col-md-4 col-sm-4">
-                <h5 class="page_header"> Change Password</h5><select class="form-control invisible">
+                <h5 class="page_header"> Change Password</h5>
+            <select class="form-control invisible">
                 <option value="account">Account Overview</option>
             </select>
             </div>
-            <p class="col-xs-12 invisible">
+            <p class="col-xs-12">
                 Fields marked <span style="color:red">*</span> are compulsory
             </p>
         </div>
@@ -40,7 +41,7 @@
                                 <p class="errors" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}">&times;</p>
                             </div>
 
-                            <button type="submit" class="btn btn-default">Submit</button>
+                            <button type="submit" class="btn btn-link required-step">Submit</button>
 
                             <div th:replace="layout :: form-validation">
 
@@ -49,7 +50,7 @@
                     </div>
                     <div class="col-md-6 col-sm-6 well rel-info">
                         <p class="related">Related Information</p>
-                        <hr/>
+                        <hr class="related-info"/>
                         <p th:each="rule : ${passwordRules}" th:text="${rule}"></p>
                     </div>
 
