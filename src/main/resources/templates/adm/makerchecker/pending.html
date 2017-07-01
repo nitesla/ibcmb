@@ -97,7 +97,7 @@
                                 <thead>
                                 <tr>
                                     <th>Operation</th>
-                                    <th>Created By</th>
+                                    <th>Initiated By</th>
                                     <th>Verified By</th>
                                     <th>Status</th>
 
@@ -112,7 +112,7 @@
                                 <tfoot>
                                 <tr>
                                     <th>Operation</th>
-                                    <th>Created By</th>
+                                    <th>Initiated By</th>
                                     <th>Verified By</th>
                                     <th>Status</th>
                                 </tr>
@@ -151,7 +151,6 @@
             "pagingType" : "simple_numbers",
             "searching": false,
             "paging": true,
-            rowId: 'id',
             "serverSide" : true,
             "ajax": "/admin/verifications/all",
             "dom": 'T<"clear">frtlp',
@@ -168,7 +167,7 @@
                     if (type === 'display') {
                         if (data == "PENDING") {
                             return "<i class='fa fa-question dt-body-center' style='color:green;display:block; text-align:center; margin:0 auto;' ></i>";
-                        } else if (data == "VERIFIED") {
+                        } else if (data == "APPROVED") {
                             return "<i class='fa fa-check  dt-body-center' style='color:green;display:block; text-align:center; margin:0 auto;'></i>";
                         }
                         else{

@@ -216,7 +216,9 @@ public class RoleServiceImpl implements RoleService {
     }
 
     private Role convertDTOToEntity(RoleDTO roleDTO) {
-        return modelMapper.map(roleDTO, Role.class);
+        Role role = modelMapper.map(roleDTO, Role.class);
+        role.setPermissions(convertPermissionDTOsToEntities(roleDTO.getPermissions()));
+        return role;
     }
 
     private List<RoleDTO> convertRoleEntitiesToDTOs(Iterable<Role> roles) {
@@ -233,16 +235,26 @@ public class RoleServiceImpl implements RoleService {
     }
 
     private Permission convertDTOToEntity(PermissionDTO permissionDTO) {
-        return modelMapper.map(permissionDTO, Permission.class);
+        Permission permission = permissionRepo.findOne(permissionDTO.getId());
+        return permission;
     }
 
     private List<PermissionDTO> convertPermissionEntitiesToDTOs(Iterable<Permission> permissions) {
         List<PermissionDTO> permissionDTOList = new ArrayList<>();
         for (Permission permission : permissions) {
-            PermissionDTO permissionDTO = modelMapper.map(permission, PermissionDTO.class);
+            PermissionDTO permissionDTO = convertEntityToDTO(permission);
             permissionDTOList.add(permissionDTO);
         }
         return permissionDTOList;
+    }
+
+    private List<Permission> convertPermissionDTOsToEntities(Iterable<PermissionDTO> permissionDTOs) {
+        List<Permission> permissions = new ArrayList<>();
+        for (PermissionDTO permissionDTO : permissionDTOs) {
+            Permission permission = convertDTOToEntity(permissionDTO);
+            permissions.add(permission);
+        }
+        return permissions;
     }
 
 

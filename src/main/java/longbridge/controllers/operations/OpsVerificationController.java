@@ -3,6 +3,7 @@ package longbridge.controllers.operations;
 import longbridge.InternetbankingApplication;
 import longbridge.dtos.VerificationDTO;
 import longbridge.exception.InternetBankingException;
+import longbridge.exception.VerificationException;
 import longbridge.models.AdminUser;
 import longbridge.models.OperationsUser;
 import longbridge.models.Verification;
@@ -57,6 +58,12 @@ public class OpsVerificationController {
            redirectAttributes.addFlashAttribute("message","Operation approved successfully");
 
        }
+
+       catch (VerificationException ve){
+           logger.error("Error verifying the operation",ve);
+           redirectAttributes.addFlashAttribute("failure", ve.getMessage());
+       }
+
        catch (InternetBankingException ibe){
            logger.error("Error verifying operation",ibe);
            redirectAttributes.addFlashAttribute("failure",ibe.getMessage());
@@ -77,10 +84,19 @@ public class OpsVerificationController {
                 redirectAttributes.addFlashAttribute("message", "Operation approved successfully");
 
             } else if ("false".equals(approval)) {
+                if("".equals(verification.getComment()) ||verification.getComment()==null){
+                    redirectAttributes.addFlashAttribute("failure", "Enter a reason for declining the operation");
+                    return "redirect:/ops/verifications/"+verification.getId()+"/view";
+                }
                 verificationService.decline(verification);
                 redirectAttributes.addFlashAttribute("message", "Operation declined successfully");
 
             }
+        }
+
+        catch (VerificationException ve){
+            logger.error("Error verifying the operation",ve);
+            redirectAttributes.addFlashAttribute("failure", ve.getMessage());
         }
         catch (InternetBankingException ibe){
             logger.error("Error verifying operation",ibe);
@@ -94,11 +110,10 @@ public class OpsVerificationController {
     @GetMapping(path = "/all")
     public
     @ResponseBody
-    DataTablesOutput<Verification> getAllPending(DataTablesInput input, Principal principal) {
-       // OperationsUser createdBy = operationsUserService.getUserByName(principal.getName());
+    DataTablesOutput<VerificationDTO> getAllPending(DataTablesInput input, Principal principal) {
         Pageable pageable = DataTablesUtils.getPageable(input);
-        Page<Verification> page = verificationService.getPendingForUser(pageable);
-        DataTablesOutput<Verification> out = new DataTablesOutput<Verification>();
+        Page<VerificationDTO> page = verificationService.getPendingForUser(pageable);
+        DataTablesOutput<VerificationDTO> out = new DataTablesOutput<VerificationDTO>();
         out.setDraw(input.getDraw());
         out.setData(page.getContent());
         out.setRecordsFiltered(page.getTotalElements());
@@ -110,7 +125,6 @@ public class OpsVerificationController {
     public
     @ResponseBody
     DataTablesOutput<Verification> getAllVerification(DataTablesInput input, Principal principal) {
-        OperationsUser createdBy = operationsUserService.getUserByName(principal.getName());
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<Verification> verifications = verificationService.getVerificationsForUser(pageable);
         DataTablesOutput<Verification> out = new DataTablesOutput<Verification>();
@@ -133,9 +147,29 @@ public class OpsVerificationController {
     public
     @ResponseBody
     DataTablesOutput<VerificationDTO> getPendingOperation(@PathVariable String operation, DataTablesInput input, Principal principal) {
-        OperationsUser user = operationsUserService.getUserByName(principal.getName());
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<VerificationDTO> page = verificationService.getPendingOperations(operation, pageable);
+        DataTablesOutput<VerificationDTO> out = new DataTablesOutput<VerificationDTO>();
+        out.setDraw(input.getDraw());
+        out.setData(page.getContent());
+        out.setRecordsFiltered(page.getTotalElements());
+        out.setRecordsTotal(page.getTotalElements());
+        return out;
+    }
+
+
+
+    @GetMapping("/verified")
+    public String getVerifiedOperations() {
+        return "/ops/makerchecker/verified";
+    }
+
+    @GetMapping(path = "/verified/all")
+    public
+    @ResponseBody
+    DataTablesOutput<VerificationDTO> getVerifiedOperations(DataTablesInput input) {
+        Pageable pageable = DataTablesUtils.getPageable(input);
+        Page<VerificationDTO> page = verificationService.getVerifiedOPerations(pageable);
         DataTablesOutput<VerificationDTO> out = new DataTablesOutput<VerificationDTO>();
         out.setDraw(input.getDraw());
         out.setData(page.getContent());
@@ -162,20 +196,7 @@ public class OpsVerificationController {
 
         VerificationDTO verification = verificationService.getVerification(id);
         model.addAttribute("verification", verification);
-
-        List<String> list = new ArrayList<String>();
-        //int afterObject=verification.getAfterObject().length();
-        //JSONObject obj = new JSONObject(verification.getAfterObject());
-        //for(int i=0; i=afterObject)
-        //JSONObject json = (JSONObject) JSONSerializer.toJSON(data);
-        //JSONObject product = new JSONObject(verification.getAfterObject());
-        //JSONArray recs = locs.getJSONArray("record");
-        OperationsUser createdBy = operationsUserService.getUserByName(principal.getName());
-        int verificationNumber = verificationService.getTotalNumberForVerification();
-        long totalPending = verificationService.getTotalNumberPending();
-        model.addAttribute("verificationNumber", verificationNumber);
-        model.addAttribute("totalPending", totalPending);
-        return "ops/makerchecker/details";
+               return "ops/makerchecker/details";
     }
 
     @GetMapping("/{id}/pendingviews")
@@ -184,18 +205,6 @@ public class OpsVerificationController {
         VerificationDTO verification = verificationService.getVerification(id);
         model.addAttribute("beforeObject", verification.getBeforeObject());
         model.addAttribute("afterObject", verification.getAfterObject());
-        List<String> list = new ArrayList<String>();
-        //int afterObject=verification.getAfterObject().length();
-        //JSONObject obj = new JSONObject(verification.getAfterObject());
-        //for(int i=0; i=afterObject)
-        //JSONObject json = (JSONObject) JSONSerializer.toJSON(data);
-        //JSONObject product = new JSONObject(verification.getAfterObject());
-        //JSONArray recs = locs.getJSONArray("record");
-        OperationsUser createdBy = operationsUserService.getUserByName(principal.getName());
-        int verificationNumber = verificationService.getTotalNumberForVerification();
-        long totalPending = verificationService.getTotalNumberPending();
-        model.addAttribute("verificationNumber", verificationNumber);
-        model.addAttribute("totalPending", totalPending);
         return "ops/makerchecker/pendingdetails";
     }
 

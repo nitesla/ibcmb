@@ -30,11 +30,15 @@ public class AdmControllerAdvice {
             return "redirect://login/admin";
         }
 
+
         int verificationNumber = verificationService.getTotalNumberForVerification();
         long totalPending = verificationService.getTotalNumberPending();
-        model.addAttribute("totalPending", totalPending);
-        model.addAttribute("verificationNumber", verificationNumber);
-
+        if(totalPending>0) {
+            model.addAttribute("totalPending", totalPending);
+        }
+        if(verificationNumber>0) {
+            model.addAttribute("verificationNumber", verificationNumber);
+        }
 
         return "";
     }

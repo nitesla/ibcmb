@@ -8,6 +8,7 @@ import javax.persistence.Version;
 import longbridge.dtos.PendingVerification;
 import longbridge.dtos.VerificationDTO;
 import longbridge.exception.InternetBankingException;
+import longbridge.exception.VerificationException;
 import longbridge.utils.verificationStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,6 +62,11 @@ public class AdmVerificationController {
             verificationService.verify(id);
             redirectAttributes.addFlashAttribute("message", "Operation approved successfully");
         }
+
+        catch (VerificationException ve){
+            logger.error("Error verifying the operation",ve);
+            redirectAttributes.addFlashAttribute("failure", ve.getMessage());
+        }
         catch (InternetBankingException ibe){
             logger.error("Error verifying the operation",ibe);
             redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
@@ -71,7 +77,7 @@ public class AdmVerificationController {
 
 
     @PostMapping("/verify")
-    public String verify(@ModelAttribute("verification") VerificationDTO verification, WebRequest request, RedirectAttributes redirectAttributes) {
+    public String verify(@ModelAttribute("verification") VerificationDTO verification, WebRequest request, Model model, RedirectAttributes redirectAttributes) {
 
         String approval = request.getParameter("approve");
 
@@ -81,15 +87,22 @@ public class AdmVerificationController {
                 redirectAttributes.addFlashAttribute("message", "Operation approved successfully");
 
             } else if ("false".equals(approval)) {
+                if("".equals(verification.getComment()) ||verification.getComment()==null){
+                    redirectAttributes.addFlashAttribute("failure", "Enter a reason for declining the operation");
+                    return "redirect:/admin/verifications/"+verification.getId()+"/view";
+                }
                 verificationService.decline(verification);
                 redirectAttributes.addFlashAttribute("message", "Operation declined successfully");
 
             }
         }
+        catch (VerificationException ve){
+            logger.error("Error verifying the operation",ve);
+            redirectAttributes.addFlashAttribute("failure", ve.getMessage());
+        }
         catch (InternetBankingException ibe){
             logger.error("Error verifying the operation",ibe);
             redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
-
         }
         return "redirect:/admin/verifications/operations";
     }
@@ -98,11 +111,11 @@ public class AdmVerificationController {
     @GetMapping(path = "/all")
     public
     @ResponseBody
-    DataTablesOutput<Verification> getAllPending(DataTablesInput input)
+    DataTablesOutput<VerificationDTO> getAllPending(DataTablesInput input)
     {
         Pageable pageable = DataTablesUtils.getPageable(input);
-        Page<Verification> page = verificationService.getPendingForUser(pageable);
-        DataTablesOutput<Verification> out = new DataTablesOutput<Verification>();
+        Page<VerificationDTO> page = verificationService.getPendingForUser(pageable);
+        DataTablesOutput<VerificationDTO> out = new DataTablesOutput<VerificationDTO>();
         out.setDraw(input.getDraw());
         out.setData(page.getContent());
         out.setRecordsFiltered(page.getTotalElements());
@@ -149,6 +162,26 @@ public class AdmVerificationController {
     }
 
 
+    @GetMapping("/verified")
+    public String getVerifiedOperations() {
+        return "adm/makerchecker/verified";
+    }
+
+    @GetMapping(path = "/verified/all")
+    public
+    @ResponseBody
+    DataTablesOutput<VerificationDTO> getVerifiedOperations(DataTablesInput input) {
+        Pageable pageable = DataTablesUtils.getPageable(input);
+        Page<VerificationDTO> page = verificationService.getVerifiedOPerations(pageable);
+        DataTablesOutput<VerificationDTO> out = new DataTablesOutput<VerificationDTO>();
+        out.setDraw(input.getDraw());
+        out.setData(page.getContent());
+        out.setRecordsFiltered(page.getTotalElements());
+        out.setRecordsTotal(page.getTotalElements());
+        return out;
+    }
+
+
     @GetMapping("/pendingops")
     public String getPendingVerification(Model model)
     {
@@ -170,10 +203,6 @@ public class AdmVerificationController {
 
         VerificationDTO verification = verificationService.getVerification(id);
         model.addAttribute("verification", verification);
-        int verificationNumber = verificationService.getTotalNumberForVerification();
-        long totalPending = verificationService.getTotalNumberPending();
-        model.addAttribute("verificationNumber", verificationNumber);
-        model.addAttribute("totalPending", totalPending);
         return "adm/makerchecker/details";
     }
 
@@ -181,12 +210,7 @@ public class AdmVerificationController {
     public String getObjectsForPending(@PathVariable Long id, Model model) {
 
         VerificationDTO verification = verificationService.getVerification(id);
-        model.addAttribute("beforeObject", verification.getBeforeObject());
-        model.addAttribute("afterObject", verification.getAfterObject());
-        int verificationNumber = verificationService.getTotalNumberForVerification();
-        long totalPending = verificationService.getTotalNumberPending();
-        model.addAttribute("verificationNumber", verificationNumber);
-        model.addAttribute("totalPending", totalPending);
+        model.addAttribute("verification", verification);
         return "adm/makerchecker/pendingdetails";
     }
 

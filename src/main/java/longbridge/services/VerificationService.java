@@ -39,7 +39,7 @@ public interface VerificationService {
     Page<VerificationDTO> getMakerCheckerPending(Pageable pageDetails);
 
 
-    Page<Verification>getPendingForUser(Pageable pageable);
+    Page<VerificationDTO>getPendingForUser(Pageable pageable);
 
     String verify(VerificationDTO verification) throws VerificationException;
 
@@ -54,9 +54,7 @@ public interface VerificationService {
     VerificationDTO getVerification(Long id);
 
 
-    Page<PendingVerification> getPendingVerifications(Pageable pageable);
-
-
     Page<VerificationDTO> getPendingOperations(String operation, Pageable pageable);
 
+    Page<VerificationDTO> getVerifiedOPerations(Pageable pageable);
 }

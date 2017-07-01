@@ -35,10 +35,6 @@ public class VerificationDTO {
 
     private Date initiatedOn;
 
-    private String declinedBy;
-    private Date declinedOn;
-    private String declineReason;
-
     private String comment;
 
     private String verifiedBy;
@@ -110,22 +106,6 @@ public class VerificationDTO {
         this.entityName = entityName;
     }
 
-     public Date getDeclinedOn() {
-        return declinedOn;
-    }
-
-    public void setDeclinedOn(Date declinedOn) {
-        this.declinedOn = declinedOn;
-    }
-
-
-    public String getDeclineReason() {
-        return declineReason;
-    }
-
-    public void setDeclineReason(String declineReason) {
-        this.declineReason = declineReason;
-    }
 
     public String getOperation() {
         return operation;
@@ -149,14 +129,6 @@ public class VerificationDTO {
 
     public void setInitiatedOn(Date initiatedOn) {
         this.initiatedOn = initiatedOn;
-    }
-
-    public String getDeclinedBy() {
-        return declinedBy;
-    }
-
-    public void setDeclinedBy(String declinedBy) {
-        this.declinedBy = declinedBy;
     }
 
     public String getVerifiedBy() {

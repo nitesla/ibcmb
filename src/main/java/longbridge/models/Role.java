@@ -110,14 +110,17 @@ public class Role extends AbstractEntity implements PrettySerializer{
 
                 gen.writeStartObject();
                 gen.writeStringField("Name", value.name);
+                gen.writeStringField("Type",value.userType.name());
                 gen.writeStringField("Email", value.email);
+                gen.writeStringField("Description", value.description);
+
                 // gen.writeArrayFieldStart("permissions");
                 gen.writeObjectFieldStart("Permissions");
                 for(Permission p : value.permissions){
                     gen.writeObjectFieldStart(p.getId().toString());
                     //gen.writeStartObject();
                     gen.writeStringField("Name",p.getName());
-                    gen.writeStringField("Category",p.getCategory());
+                    gen.writeStringField("Code",p.getCode());
                     gen.writeStringField("Description",p.getDescription());
                     gen.writeEndObject();
                 }
