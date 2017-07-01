@@ -140,15 +140,15 @@
                                     </ul>
                                 </li>
 
-                                <li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI() == '/retail/' ? 'active':''}" sec:authorize="hasAuthority('RET_USER_SETTINGS')">
+                                <li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI().startsWith('/retail/settings') ? 'active':''}" sec:authorize="hasAuthority('RET_USER_SETTINGS')">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
                                     aria-haspopup="true" aria-expanded="false" th:text="#{menu.settings}"> Settings </a>
                                     <ul class="dropdown-menu">
                                         <li sec:authorize="hasAuthority('SET_ALERT_PREFERENCE')"><a
-                                                th:href="@{/retail/alert_preference}" th:text="#{menu.settings.alert}">Alert
+                                                th:href="@{/retail/settings/alert_preference}" th:text="#{menu.settings.alert}">Alert
                                             Preference</a></li>
                                         <li sec:authorize="hasAuthority('RET_CHANGE_PASSWORD')"><a
-                                                th:href="@{/retail/change_password}" th:text="#{menu.settings.password}">Change
+                                                th:href="@{/retail/settings/change_password}" th:text="#{menu.settings.password}">Change
                                             Password</a></li>
                                     </ul>
                                 </li>
