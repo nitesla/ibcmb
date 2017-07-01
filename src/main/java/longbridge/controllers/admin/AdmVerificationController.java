@@ -181,7 +181,8 @@ public class AdmVerificationController {
     @GetMapping(path = "/verified/all")
     public
     @ResponseBody
-    DataTablesOutput<VerificationDTO> getVerifiedOperations(DataTablesInput input) {
+    DataTablesOutput<VerificationDTO> getVerifiedOperations(DataTablesInput input)
+    {
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<VerificationDTO> page = verificationService.getVerifiedOPerations(pageable);
         DataTablesOutput<VerificationDTO> out = new DataTablesOutput<VerificationDTO>();
@@ -210,7 +211,8 @@ public class AdmVerificationController {
 
 
     @GetMapping("/{id}/view")
-    public String getObjectsForVerification(@PathVariable Long id, Model model) {
+    public String getObjectsForVerification(@PathVariable Long id, Model model)
+    {
 
         VerificationDTO verification = verificationService.getVerification(id);
         model.addAttribute("verification",new VerificationDTO());

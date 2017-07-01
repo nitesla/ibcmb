@@ -320,6 +320,11 @@
             <artifactId>aspectjrt</artifactId>
             <version>1.8.4</version>
         </dependency>
+        <dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjweaver</artifactId>
+			<version>1.8.9</version>
+		</dependency>
     </dependencies>
 
     <build>
@@ -328,6 +333,24 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+            <plugin>
+			<groupId>org.codehaus.mojo</groupId>
+			<artifactId>aspectj-maven-plugin</artifactId>
+			<version>1.10</version>
+			<configuration>
+				<complianceLevel>1.8</complianceLevel>
+				<source>1.8</source>
+				<target>1.8</target>
+			</configuration>
+			<executions>
+				<execution>
+					<goals>
+						<goal>compile</goal>       <!-- use this goal to weave all your main classes -->
+						<goal>test-compile</goal>  <!-- use this goal to weave all your test classes -->
+					</goals>
+				</execution>
+			</executions>
+</plugin>
         </plugins>
     </build>
 

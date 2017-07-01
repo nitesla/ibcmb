@@ -4,12 +4,10 @@ import java.util.Date;
 
 import javax.persistence.EntityManager;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import longbridge.exception.DuplicateObjectException;
 import longbridge.models.AbstractEntity;
-import longbridge.models.MakerChecker;
 import longbridge.models.User;
 import longbridge.models.Verification;
 import longbridge.repositories.VerificationRepo;
@@ -19,19 +17,15 @@ import longbridge.services.VerificationService;
 import longbridge.utils.PrettySerializer;
 import longbridge.utils.Verifiable;
 import longbridge.utils.verificationStatus;
-import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
-import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
 
 @Aspect
 public class MakerCheckerAdvisor {
