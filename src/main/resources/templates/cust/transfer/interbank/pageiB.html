@@ -96,6 +96,7 @@
 
 
     function getAccountName() {
+        $('.acctError').hide();
         $('#loading-icon').show();
         //make sure alert message is not empty
         var acct = $('#acct_num').val();
@@ -118,7 +119,7 @@
                 $('.acctError').show().css("color", "red");
 
                  $('#loading-icon').hide();
-                  document.getElementById('loading-icon').style.display = 'none';
+                  
 
             },
             success: function (data, textStatus) {
