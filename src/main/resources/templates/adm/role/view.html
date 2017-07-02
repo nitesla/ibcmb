@@ -251,7 +251,7 @@
 		var id = $(dt.row({
 			selected : true
 		}).node()).attr("id");
-		var ooo = target.attr("href").replace("index", id);
+		var ooo = target.attr("data-href").replace("index", id);
 		$(this).find(".modal-body").load(ooo);
 	});
 

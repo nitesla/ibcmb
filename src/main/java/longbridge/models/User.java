@@ -194,7 +194,7 @@ public class User extends AbstractEntity implements PrettySerializer {
         return super.equals(o);
     }
 
-    @Override
+    @Override @JsonIgnore
 	public List<String> getDefaultSearchFields() {
 		return Arrays.asList("userName", "firstName","lastName");
 	}
