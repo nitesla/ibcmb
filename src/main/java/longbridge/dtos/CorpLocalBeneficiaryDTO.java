@@ -1,11 +1,13 @@
 package longbridge.dtos;
 
+import java.io.Serializable;
+
 import org.hibernate.validator.constraints.NotEmpty;
 
 /**
  * Created by SYLVESTER on 5/19/2017.
  */
-public class CorpLocalBeneficiaryDTO {
+public class CorpLocalBeneficiaryDTO  implements Serializable{
     private Long id;
     @NotEmpty(message = "Please enter a Beneficiary Name")
     private String accountName;

@@ -17,6 +17,8 @@ import longbridge.models.Email;
 import longbridge.models.RetailUser;
 import longbridge.models.SecurityQuestions;
 import longbridge.services.*;
+
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -117,7 +119,7 @@ public class UserRegController {
 
             }else {
                 customerId="does not exsist";
-                logger.info("customer is null");
+                logger.info("customer does not exist");
             }
 
         }else {
@@ -156,7 +158,7 @@ public class UserRegController {
             session.setAttribute("username", user.getUserName());
             Map<String, List<String>> qa = securityService.getUserQA(user.getUserName());
             //List<String> sec = null;
-            if (qa != null || !qa.isEmpty()){
+            if (qa != null && !qa.isEmpty()){
                 List<String> question = qa.get("questions");
                 secQuestion = question.stream().filter(Objects::nonNull).findFirst().orElse("");
                 logger.info("question {}", secQuestion);
@@ -186,7 +188,7 @@ public class UserRegController {
                 Map<String, List<String>> qa = securityService.getUserQA(user.getUserName());
                 logger.info("QQQAAAA {}", qa);
                 //List<String> sec = null;
-                if (qa != null || !qa.isEmpty()){
+                if (qa != null && !qa.isEmpty()){
                     List<String> question = qa.get("questions");
                     secQuestion = question.stream().filter(Objects::nonNull).findFirst().orElse("");
                     logger.info("question {}", secQuestion);
@@ -276,7 +278,7 @@ public class UserRegController {
                 String sn = securityService.getTokenSerials(user.getUserName());
                 logger.info("SERIALS {}", sn);
                 //List<String> sec = null;
-                if (sn != null || !sn.isEmpty()){
+                if (sn != null && !sn.isEmpty()){
                     String myList[] = sn.trim().split(",");
 
                     logger.info("SERIALS {}", myList);
@@ -643,7 +645,7 @@ public class UserRegController {
         resetPasswordForm.username = (String) session.getAttribute("username");
         try{
             Map<String, List<String>> qa = securityService.getUserQA((String) session.getAttribute("username"));
-            if (qa != null || !qa.isEmpty()){
+            if (qa != null && !qa.isEmpty()){
                 List<String> questions= qa.get("questions");
                 List<String> answers= qa.get("answers");
                 String secQuestion = questions.get(0);
@@ -685,6 +687,10 @@ public class UserRegController {
         String username = (String) session.getAttribute("username");
 
         if (username.equals("")||username==null){
+            return "false";
+        }
+        
+        if ( StringUtils.isBlank(username) ){
             return "false";
         }
 

@@ -10,7 +10,6 @@
     <!--<link rel="stylesheet" type="text/css" th:href="@{~/customer/css/date/css/bootstrap-datepicker.css}"/>-->
     <!--<link rel="stylesheet" type="text/css" th:href="@{~/customer/css/date/css/bootstrap-datepicker.standalone.css}"/>-->
 
-
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/bootstrap.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/custom.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/calendar.css}"/>
@@ -68,7 +67,7 @@
 
 
                             <div class="hide-faq">
-                                <h6><a target="_blank" th:href="@{/faqs}"> FAQS &nbsp; &nbsp;
+                                <h6><a target="_blank" th:href="@{/faqs}" style="text-decoration:none;"> FAQS &nbsp; &nbsp;
                                     <i style="font-size: 16px;" class="fa fa-question-circle"></i></a>
                                     <span class="date2 lorem">&nbsp; &nbsp;Login History:&nbsp;</span>&nbsp;
                                     <span class="lorem" th:text="*{lastLogin}">21st March 2017 10:30am</span>
@@ -141,15 +140,15 @@
                                     </ul>
                                 </li>
 
-                                <li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI() == '/retail/' ? 'active':''}" sec:authorize="hasAuthority('RET_USER_SETTINGS')">
+                                <li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI().startsWith('/retail/settings') ? 'active':''}" sec:authorize="hasAuthority('RET_USER_SETTINGS')">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
                                     aria-haspopup="true" aria-expanded="false" th:text="#{menu.settings}"> Settings </a>
                                     <ul class="dropdown-menu">
                                         <li sec:authorize="hasAuthority('SET_ALERT_PREFERENCE')"><a
-                                                th:href="@{/retail/alert_preference}" th:text="#{menu.settings.alert}">Alert
+                                                th:href="@{/retail/settings/alert_preference}" th:text="#{menu.settings.alert}">Alert
                                             Preference</a></li>
                                         <li sec:authorize="hasAuthority('RET_CHANGE_PASSWORD')"><a
-                                                th:href="@{/retail/change_password}" th:text="#{menu.settings.password}">Change
+                                                th:href="@{/retail/settings/change_password}" th:text="#{menu.settings.password}">Change
                                             Password</a></li>
                                     </ul>
                                 </li>
@@ -195,31 +194,55 @@
 <div th:fragment="sidebar" class="sideba" style=" adding-top:20px;">
 
     <div class="sidebar-b calende cal  hidden-xs">
-        <div class="alert  time" style=" margin-top: 6px !important;">
+        <div class="alert no-b   time" style=" margin-top: 6px !important;">
 
 
-            <i class="fa fa-calendar " id='datepickerImage' onclick="show()" style="font-size:25px"></i>
+           
+
+            <span id='time' class="time pull-lef alert no-bd"></span>
 
 
-            <!--<div id="time_" class="pull-right text-bold " style="font-weight:bold;color:#003056">
+             <span class="pull-right  ">
+                <i class="fa fa-calendar " id='datepickerImage' onclick="show()" style="font-size:14px"></i>
+            </span>
 
-                  <script>
+            <span class="pull-right  " >
+                <span class="" id='day' style="padding:3px !important"></span><span>,</span>
+                <span class='' id='cal_date' style="padding:5px !important"></span>
+                 
+            </span>
+           
+
+             <script>
                       setInterval(
                           function()
                           {
+                               
 
-                              var time_function = moment().format('Do MMMM YYYY, h:mm:ss a');
-                              var holder = document.getElementById('time_');
-                              holder.innerHTML = time_function;
+                                var timer = moment().format('LTS'); //timer in hours,minutes and seconds
+                                var day = moment().format('dddd'); // get the current day
+                                var cur_date = moment().format("MMM Do YY");
+
+
+                                var time_holder = document.getElementById('time');// get where to insert the timer
+                                var day_holder = document.getElementById('day'); // get where to insert the current day
+                                var cur_date_holder = document.getElementById('cal_date'); // get where to insert the current date
+                                
+                                time_holder.innerHTML = timer;
+                                day_holder.innerHTML = day;
+                                cur_date_holder.innerHTML = cur_date;
+                            //   var time_function = moment().format('Do MMMM YYYY, h:mm:ss a');
+                            //   var holder = document.getElementById('time_');
+                            //   holder.innerHTML = time_function;
                           },
                           1000) ;
                   </script>
-              </div>-->
+             
 
         </div>
         <!--<div  id="calendar" style="display: block; margin: 0px auto;" class=" calendar hidden-xs hidden-sm "></div>-->
     </div>
-    <div class="sidebar-bg hidden-xs hidden-sm" style="max-height:200px;">
+    <div class="sidebar-bg hidden-xs hidden-sm alert" style="max-height:250px;">
         <img style="display: block; margin: 0px auto;" class="center img-responsive" th:src="@{~/customer/img/advert.jpg}"
              alt="Coronation Merchant Bank"/>
     </div>

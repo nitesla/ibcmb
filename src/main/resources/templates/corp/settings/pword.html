@@ -25,7 +25,7 @@
             <div class="col-md-9 content-bg">
                 <div class="row">
                     <div class="col-md-6 col-sm-6">
-                        <form method="post" th:action="@{/corporate/change_password}" th:object="${custChangePassword}">
+                        <form method="post" th:action="@{/corporate/settings/change_password}" th:object="${custChangePassword}">
                             <div class="form-group">
                                 <label>Old Password</label>
                                 <input id="password" type="password" th:field="*{oldPassword}" class="form-control"/><span class='req-inner'></span>

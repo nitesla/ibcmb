@@ -145,8 +145,8 @@ public class AdminUserServiceImpl implements AdminUserService {
             adminUser.setCreatedOnDate(new Date());
             Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
             adminUser.setRole(role);
-            adminUserRepo.save(adminUser);
-            createUserOnEntrust(adminUser);
+            AdminUser newUser = adminUserRepo.save(adminUser);
+            createUserOnEntrust(newUser);
 
             logger.info("New admin user {} created", adminUser.getUserName());
             return messageSource.getMessage("user.add.success", null, locale);
@@ -163,19 +163,22 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
 
-    private void createUserOnEntrust(AdminUser adminUser) {
-        String fullName = adminUser.getFirstName() + " " + adminUser.getLastName();
-        SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_CREATION");
-        if (setting != null && setting.isEnabled()) {
-            if ("YES".equalsIgnoreCase(setting.getValue())) {
-                boolean creatResult = securityService.createEntrustUser(adminUser.getUserName(), fullName, true);
-                if (!creatResult) {
-                    throw new EntrustException(messageSource.getMessage("entrust.create.failure", null, locale));
-                }
+    public void createUserOnEntrust(AdminUser adminUser) {
+        AdminUser user = adminUserRepo.findFirstByUserName(adminUser.getUserName());
+        if(user!=null) {
+            String fullName = adminUser.getFirstName() + " " + adminUser.getLastName();
+            SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_CREATION");
+            if (setting != null && setting.isEnabled()) {
+                if ("YES".equalsIgnoreCase(setting.getValue())) {
+                    boolean creatResult = securityService.createEntrustUser(adminUser.getUserName(), fullName, true);
+                    if (!creatResult) {
+                        throw new EntrustException(messageSource.getMessage("entrust.create.failure", null, locale));
+                    }
 
-                boolean contactResult = securityService.addUserContacts(adminUser.getEmail(), adminUser.getPhoneNumber(), true, adminUser.getUserName());
-                if (!contactResult) {
-                    logger.error("Failed to add user contacts on Entrust");
+                    boolean contactResult = securityService.addUserContacts(adminUser.getEmail(), adminUser.getPhoneNumber(), true, adminUser.getUserName());
+                    if (!contactResult) {
+                        logger.error("Failed to add user contacts on Entrust");
+                    }
                 }
             }
         }
@@ -191,7 +194,6 @@ public class AdminUserServiceImpl implements AdminUserService {
             String oldStatus = user.getStatus();
             String newStatus = "A".equals(oldStatus) ? "I" : "A";
             user.setStatus(newStatus);
-            adminUserRepo.save(user);
             String fullName = user.getFirstName() + " " + user.getLastName();
             if ((oldStatus == null) || ("I".equals(oldStatus)) && "A".equals(newStatus)) {
                 String password = passwordPolicyService.generatePassword();
@@ -217,13 +219,15 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     @Async
     public void sendPostActivateMessage(User user,String ... args ){
-    	//check if records exist send else return 
-    	  Email email = new Email.Builder()
-                  .setRecipient(user.getEmail())
-                  .setSubject(messageSource.getMessage("admin.create.subject", null, locale))
-                  .setBody(String.format(messageSource.getMessage("admin.create.message", null, locale), args))
-                  .build();
-          mailService.send(email);
+    	//check if records exist send else return
+        if("A".equals(user.getStatus())) {
+            Email email = new Email.Builder()
+                    .setRecipient(user.getEmail())
+                    .setSubject(messageSource.getMessage("admin.activation.subject", null, locale))
+                    .setBody(String.format(messageSource.getMessage("admin.activation.message", null, locale), args))
+                    .build();
+            mailService.send(email);
+        }
     }
     
     

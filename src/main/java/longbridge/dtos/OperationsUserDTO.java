@@ -34,6 +34,7 @@ public class OperationsUserDTO implements Person{
     @NotEmpty(message = "email")
     @Email(message = "email")
     private String email;
+    @NotEmpty(message = "phoneNumber")
     private String phoneNumber;
     @JsonIgnore
     private String password;
