@@ -1,6 +1,8 @@
 package longbridge.controllers.retail;
 
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import longbridge.api.NEnquiryDetails;
 import longbridge.dtos.LocalBeneficiaryDTO;
 import longbridge.dtos.TransferRequestDTO;
 import longbridge.exception.InternetBankingException;
@@ -14,6 +16,8 @@ import longbridge.repositories.RetailUserRepo;
 import longbridge.services.*;
 import longbridge.utils.ResultType;
 import longbridge.utils.TransferType;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
@@ -153,7 +157,8 @@ public class TransferController {
 
         try {
             if (principal!=null){
-                return integrationService.viewAccountDetails(accountNo).getAcctName();
+                String name =integrationService.viewAccountDetails(accountNo).getAcctName();
+                return name;
             }
 
         } catch (Exception e) {
@@ -167,25 +172,24 @@ public class TransferController {
     @GetMapping("/{accountNo}/{bank}/nameEnquiry")
     public
     @ResponseBody
-    String getInterBankAccountName(@PathVariable String accountNo, @PathVariable String bank,Principal principal) {
+    String getInterBankAccountName(@PathVariable String accountNo, @PathVariable String bank, Principal principal) {
 
-        try {
+      if (principal!=null){
+          NEnquiryDetails details= integrationService.doNameEnquiry(bank,accountNo);
+          if (details==null)
+              return createMessage("service down please try later", false);
 
-            if (principal!=null)
-            {
-                if (bank.equalsIgnoreCase(bankCode)) return integrationService.viewAccountDetails(accountNo).getAcctName();
-
-                return (integrationService.doNameEnquiry(bank, accountNo)).getAccountName();
-
-            }
+          if (details.getAccountName()==null)
+              return createMessage("invalid account number or Bank details", false);
 
 
+          return createMessage(details.getAccountName(), true);
+      }
 
-        } catch (Exception e) {
 
-        }
+        return createMessage("session expired", false);
 
-        return "";
+
     }
 
 
@@ -314,7 +318,18 @@ public class TransferController {
         return "redirect:/retail/dashboard";
     }
 
+    private String createMessage(String message, boolean successOrFailure){
+        JSONObject object = new JSONObject();
+        //ObjectNode object = Json.newObject();
+        try {
+            object.put("message", message);
+            object.put("success", successOrFailure);
 
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return object.toString();
+    }
 
 
     }

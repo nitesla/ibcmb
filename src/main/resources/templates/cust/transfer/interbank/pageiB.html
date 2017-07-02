@@ -105,48 +105,31 @@
 
              $('#loading-icon').hide();
             $('.acctError').show().css("color", "red");
+            $('#loading-icon').hide();
             return false;
         }
 
-
-        var options = {
-            type: 'GET',
-            url: '/retail/transfer/' + acct + '/'+bank+'/nameEnquiry',
-//					dataType: 'jsonp',
-            error: function (xhr, textStatus, errorThrown) {
-                 
-                $('.acctError').show().css("color", "red");
-
-                 $('#loading-icon').hide();
-                  document.getElementById('loading-icon').style.display = 'none';
-
-            },
-            success: function (data, textStatus,xhr) {
-
-
-                if (textStatus.c)
-
-                    if(xhr.status==200){
-                        var result = data;
-                        $('#acct_name').val(result);
-                    }
+        $.getJSON('/retail/transfer/' + acct + '/'+bank+'/nameEnquiry', function(jd) {
+            var message = jd.message;
+            var success =  jd.success;
+           if (success==false){
+               $('.acctError').text(message);
+               $('.acctError').show().css("color", "red");
+               $('#loading-icon').hide();
+           }else{
+               $('#acct_name').val(message);
+               $('#localsave').show();
+               $('#neq').hide();
+               document.getElementById('loading-icon').style.display = 'none';
+               $('#loading-icon').hide();
+           }
 
 
 
-                if( result!=null && result!='' ) {
 
-                    $('#localsave').show();
-                    $('#neq').hide();
-                    document.getElementById('loading-icon').style.display = 'none';
-                     $('#loading-icon').hide();
-                }else{
-                     document.getElementById('loading-icon').style.display = 'none';
-                    $('.acctError').show().css("color", "red");
-                    $('#loading-icon').hide();
-                }
-            }
-        };
-        $.ajax(options);
+
+        });
+
     };
 
 
