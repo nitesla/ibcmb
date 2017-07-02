@@ -30,6 +30,7 @@ public class User extends AbstractEntity implements PrettySerializer {
     protected Date lockedUntilDate;
     protected Date lastLoginDate;
     protected int noOfLoginAttempts;
+    protected boolean isFirstTimeLogon=true;
 
     //@Enumerated(value = EnumType.STRING)
     @Enumerated(EnumType.ORDINAL)
@@ -42,6 +43,13 @@ public class User extends AbstractEntity implements PrettySerializer {
     protected Role role;
     protected String entrustId;
 
+    public boolean isFirstTimeLogon() {
+        return isFirstTimeLogon;
+    }
+
+    public void setFirstTimeLogon(boolean firstTimeLogon) {
+        isFirstTimeLogon = firstTimeLogon;
+    }
 
     public String getEntrustId() {
         return entrustId;

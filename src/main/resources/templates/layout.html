@@ -83,8 +83,9 @@
 
             <li><a><i class="fa fa-check"></i> Verifications <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
-                    <li><a href="/admin/verifications/operations"> Approvals  <button class="badge bg-orange"  th:text="${verificationNumber}"></button> </a></li>
-                    <li><a href="/admin/verifications/pendingops">My Requests <button class="badge bg-orange bt-select" disabled="disabled" th:text="${totalPending}" >count</button>  </a></li>
+                    <li><a href="/admin/verifications/verified"> My Approvals </a></li>
+                    <li><a href="/admin/verifications/operations"> Pending  <button class="badge bg-orange"  th:text="${verificationNumber}"></button> </a></li>
+                    <li><a href="/admin/verifications/pendingops">My Requests <button class="badge bg-orange" disabled="disabled" th:text="${totalPending}" ></button>  </a></li>
 
                 </ul>
             </li>
@@ -102,8 +103,8 @@
         <ul class="nav side-menu">
             <li sec:authorize="hasAuthority('USER_MANAGEMENT')"><a><i class="fa fa-users"></i> User Management <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
-                    <li sec:authorize="hasAuthority('CORPORATE_USER_MANAGEMENT')"><a href="/ops/corporates/">Corporate</a></li>
-                    <li sec:authorize="hasAuthority('RETAIL_USER_MANAGEMENT')"><a href="/ops/retail/users/">Retail</a></li>
+                    <li><a href="/ops/corporates/">Corporate</a></li>
+                    <li ><a href="/ops/retail/users/">Retail</a></li>
                 </ul>
             </li>
             <li sec:authorize="hasAuthority('OPS_SERV_REQ')"><a href="/ops/requests/"><i class="fa fa-question-circle"></i> Service Requests</a></li>
@@ -156,7 +157,8 @@
 
             <li><a><i class="fa fa-check"></i> Verifications <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
-                    <li><a href="/ops/verifications/operations"> Approval  <button class="badge bg-orange"  th:text="${verificationNumber}"></button> </a></li>
+                    <li><a href="/ops/verifications/verified"> My Approvals </a></li>
+                    <li><a href="/ops/verifications/operations"> Pending  <button class="badge bg-orange"  th:text="${verificationNumber}"></button> </a></li>
                     <li><a href="/ops/verifications/pendingops">My Requests <button class="badge bg-orange bt-select" disabled="disabled" th:text="${totalPending}" >count</button></a></li>
 
                 </ul>

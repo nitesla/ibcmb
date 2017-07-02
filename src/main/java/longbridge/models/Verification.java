@@ -37,7 +37,6 @@ public class Verification extends AbstractEntity {
     private String comments;
     private String initiatedBy;
     private Date initiatedOn;
-    private Date declinedOn;
     private String verifiedBy;
     private Date verifiedOn;
     @OneToOne
@@ -136,13 +135,6 @@ public class Verification extends AbstractEntity {
         this.initiatedOn = initiatedOn;
     }
 
-    public Date getDeclinedOn() {
-        return declinedOn;
-    }
-
-    public void setDeclinedOn(Date declinedOn) {
-        this.declinedOn = declinedOn;
-    }
 
     public Date getVerifiedOn() {
         return verifiedOn;

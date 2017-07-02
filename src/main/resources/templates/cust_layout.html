@@ -77,12 +77,12 @@
 
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="">
                        
                         <div class="collapse navbar-collapse links" id="navbar-collapse-1">
                             <ul class="nav navbar-nav">
-                                <li><a th:href="@{/retail/dashboard}">Dashboard</a></li>
-                                <li class="dropdown" sec:authorize="hasAuthority('MANAGE_ACCOUNT')">
+                                <li th:classappend="${#httpServletRequest.getRequestURI().startsWith('/retail/dashboard') ? 'active':''}"><a th:href="@{/retail/dashboard}">Dashboard</a></li>
+                                <li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI().startsWith('/retail/account') ? 'active':''}" sec:authorize="hasAuthority('MANAGE_ACCOUNT')">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
                                     aria-haspopup="true" aria-expanded="false" th:text="#{menu.account}"> My Accounts</a>
                                     <ul class="dropdown-menu">
@@ -100,7 +100,7 @@
                                         <!--<li sec:authorize="hasAuthority('CREATE_ACCOUNT')"><a th:href="@{'#'}" th:text="#{menu.account.create}">Create New Acoount</a></li>-->
                                     </ul>
                                 </li>
-                                <li class="dropdown" sec:authorize="hasAuthority('MANAGE_TRANSFERS')">
+                                <li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI().startsWith('/retail/transfer') ? 'active':''}" sec:authorize="hasAuthority('MANAGE_TRANSFERS')">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
                                     aria-haspopup="true" aria-expanded="false" th:text="#{menu.transfer}"> Transfers</a>
                                     <ul class="dropdown-menu">
@@ -124,7 +124,7 @@
                                 </li>
                                 <!--<li sec:authorize="hasAuthority('MANAGE_BILL_PAYMENT')"><a href="#" th:text="#{menu.bill}">Bill Payments</a></li>-->
                                 <!--<li sec:authorize="hasAuthority('MANAGE_INVESTMENT')"><a href="#" th:text="#{menu.investment}">Investment</a></li>-->
-                                <li class="dropdown" sec:authorize="hasAuthority('MANAGE_SERV_REQ')">
+                                <li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI().startsWith('/retail/requests') ? 'active':''}" sec:authorize="hasAuthority('MANAGE_SERV_REQ')">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
                                     aria-haspopup="true" aria-expanded="false" th:text="#{menu.servreq}"> Service
                                         Requests </a>
@@ -141,7 +141,7 @@
                                     </ul>
                                 </li>
 
-                                <li class="dropdown" sec:authorize="hasAuthority('RET_USER_SETTINGS')">
+                                <li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI() == '/retail/' ? 'active':''}" sec:authorize="hasAuthority('RET_USER_SETTINGS')">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
                                     aria-haspopup="true" aria-expanded="false" th:text="#{menu.settings}"> Settings </a>
                                     <ul class="dropdown-menu">
@@ -189,7 +189,7 @@
         </a>
     </header>
 
-    <div class=' alert alert-info text-white  no-bd-rad' style="margin:1px !important;background-color:#003056;color:white;"><marquee>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</marquee></div>
+    <div class=' alert alert-info text-white  no-bd-rad' style="margin:1px 15px 1px 1px!important;background-color:#003056;color:white;"><marquee>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</marquee></div>
 </div>
 
 <div th:fragment="sidebar" class="sideba" style=" adding-top:20px;">
