@@ -61,7 +61,6 @@ start
 
 }
 
-
 .mail-links li
 {
     padding: 10px !important;
@@ -193,7 +192,7 @@ label
 span.req
 {
     position: absolute;
-    top:18px;
+    top:22px;
     left:-7px;
     display: inline-block;
 

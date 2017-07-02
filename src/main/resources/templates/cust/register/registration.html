@@ -70,14 +70,10 @@
                             <section>
                                 <div class="row">
                                     <div class="col-md-offset-4 col-md-4">
-                                        <div class='alert alert-danger' id="myspan">
-                                        </div>
                                         <div class="form-group clearfix">
 
                                             <label>Account Number</label>
                                             <span class='req'></span><input type="text" name="accountNumber" autocomplete="off" class="my-select required" placeholder="Account Number"/>
-                                        </div>
-                                        <div id="loader" style='display:none'>
                                         </div>
 
                                         <div class="form-group">
@@ -105,14 +101,6 @@
                             <section>
                                 <div class="row">
                                     <div class="col-md-offset-4 col-md-4">
-                                        <div class='alert alert-danger alert-dismissable' id="myspan1" style="display:none">
-                                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                                        </div>
-
-                                        <div class='alert alert-success alert-dismissable' id="successReg" style="display:none">
-                                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                                        </div>
-
 
                                         <div class="form-group clearfix">
                                             <label>Username</label>
@@ -123,9 +111,6 @@
 
                                                     <!-- Modal content-->
                                                 <div id="load" style='display:none'></div>
-
-
-
                                                 </div>
 
                                         </div>
@@ -230,16 +215,61 @@
             </div>
         </div>
         <!-- End row-->
-
     </div>
 </section>
 
+<div id="myModalError" class="modal fade " role="dialog">
+    <div class="modal-dialog">
 
+        <!-- Modal content-->
+
+        <div class="modal-content no-bd-rad content ">
+
+            <div class="modal-body">
+
+
+                <p id='errorMess' class='mess text-danger'>Put something here iff need be.</p>
+
+
+            </div>
+
+
+            <div class="modal-footer no-bd-top">
+                <button type="button" class="btn btn-link" data-dismiss="modal">OK</button>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+
+<div id="myModalSuccess" class="modal fade " role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+
+        <div class="modal-content no-bd-rad content ">
+
+            <div class="modal-body">
+
+
+                <p id='successMess' class='mess text-primary'>Put something here iff need be.</p>
+
+
+            </div>
+
+
+            <div class="modal-footer no-bd-top">
+                <button type="button" class="btn btn-link" data-dismiss="modal">OK</button>
+            </div>
+
+        </div>
+
+    </div>
+</div>
 
 <footer>
-
-
-
     <div class="container">
         <div class="footer_bar">
             <div class="col-md-6 col-xs-12">
