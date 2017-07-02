@@ -13,6 +13,8 @@ import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by LB-PRJ-020 on 4/5/2017.
@@ -94,7 +96,10 @@ public class Setting extends AbstractEntity implements PrettySerializer{
                 '}';
     }
 
-
+    @Override
+   	public List<String> getDefaultSearchFields() {
+   		return Arrays.asList("name", "type","description");
+   	}
 
     @Override @JsonIgnore
     public JsonSerializer<Setting> getSerializer() {

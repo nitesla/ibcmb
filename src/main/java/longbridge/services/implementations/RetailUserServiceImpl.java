@@ -490,4 +490,13 @@ public class RetailUserServiceImpl implements RetailUserService {
         return retailUser.getUserName();
     }
 
+	@Override
+	public Page<RetailUserDTO> findUsers(String pattern, Pageable pageDetails) {
+		Page<RetailUser> page = retailUserRepo.findUsingPattern(pattern,pageDetails);
+        List<RetailUserDTO> dtOs = convertEntitiesToDTOs(page.getContent());
+        long t = page.getTotalElements();
+        Page<RetailUserDTO> pageImpl = new PageImpl<RetailUserDTO>(dtOs, pageDetails, t);
+        return pageImpl;
+	}
+
 }

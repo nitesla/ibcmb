@@ -418,4 +418,15 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     }
 
 
+	@Override
+	public Page<OperationsUserDTO> findUsers(String pattern, Pageable pageDetails) {
+	 	Page<OperationsUser> page = operationsUserRepo.findUsingPattern(pattern,pageDetails);
+        List<OperationsUserDTO> dtOs = convertEntitiesToDTOs(page.getContent());
+        long t = page.getTotalElements();
+
+        Page<OperationsUserDTO> pageImpl = new PageImpl<OperationsUserDTO>(dtOs, pageDetails, t);
+        return pageImpl;
+	}
+
+
 }

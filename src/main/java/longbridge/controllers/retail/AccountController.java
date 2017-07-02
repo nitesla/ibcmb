@@ -15,6 +15,8 @@ import longbridge.services.TransferService;
 import longbridge.utils.statement.AccountStatement;
 import longbridge.utils.statement.TransactionDetails;
 import longbridge.utils.statement.TransactionHistory;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.repo.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -31,7 +35,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 import javax.validation.Valid;
+import java.io.ByteArrayOutputStream;
 import java.security.Principal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -66,6 +73,9 @@ public class AccountController {
 
 	@Autowired
 	AccountRepo accountRepo;
+
+	@Autowired
+	JavaMailSender mailSender;
 
 	/*
 	 * @Autowired @Qualifier("accountReport2") private JasperReportsPdfView
@@ -243,7 +253,7 @@ public class AccountController {
 	@GetMapping("/viewstatement/display/data")
 	public @ResponseBody
 	DataTablesOutput<TransactionDetails> getStatementData(DataTablesInput input, String acctNumber,
-														  String fromDate, String toDate,String transType) {
+														  String fromDate, String toDate,String tranType) {
 		// Pageable pageable = DataTablesUtils.getPageable(input);
 
 		Date from;
@@ -252,8 +262,8 @@ public class AccountController {
 		try {
 			from = dateFormat.parse(fromDate);
 			to = dateFormat.parse(toDate);
-			AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to,transType);
-			logger.info("TransactionType {}",transType);
+			AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to,tranType);
+			logger.info("TransactionType {}",tranType);
 			out.setDraw(input.getDraw());
 			List<TransactionDetails> list = new ArrayList<>();
 			if (list != null || !(list.equals("")) || !(list.isEmpty())) {
@@ -275,7 +285,7 @@ public class AccountController {
 
 	@GetMapping("/downloadstatement")
 	public ModelAndView downloadStatementData(ModelMap modelMap, DataTablesInput input, String acctNumber,
-											  String fromDate, String toDate, String transType, Principal principal) {
+											  String fromDate, String toDate, String tranType, Principal principal) {
 		// Pageable pageable = DataTablesUtils.getPageable(input);
 
 		Date from;
@@ -284,7 +294,7 @@ public class AccountController {
 		try {
 			from = dateFormat.parse(fromDate);
 			to = dateFormat.parse(toDate);
-			AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to,transType);
+			AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to,tranType);
 			out.setDraw(input.getDraw());
 			List<TransactionDetails> list = accountStatement.getTransactionDetails();
 			RetailUser retailUser=retailUserService.getUserByName(principal.getName());
@@ -346,5 +356,35 @@ public class AccountController {
 
 	}
 
+@PostMapping("sendEmail")
+	public String sendEmail(ModelMap modelMap, DataTablesInput input, String acctNumber,
+							String fromDate, String toDate, String tranType, Principal principal) throws MessagingException {
+	/*JRDataSource ds = new JRBeanCollectionDataSource(reportList);
+
+	Resource report = new ClassPathResource("static/jasper/rpt_report.jasper");
+
+	JasperPrint jasperPrint = JasperFillManager.fillReport(report.getInputStream(), Collections.EMPTY_MAP,ds);
+	ByteArrayOutputStream baos = new ByteArrayOutputStream();
+	JasperExportManager.exportReportToPdfStream(jasperPrint, baos);
+	DataSource aAttachment =  new ByteArrayDataSource(baos.toByteArray(), "application/pdf");
+
+	MimeMessage message = mailSender.createMimeMessage();
+	MimeMessageHelper helper = new MimeMessageHelper(message);
+
+	helper.setTo("xxxxxx");
+
+	helper.setFrom("xxxxx");
+	helper.setSubject("Testing Email");
+
+	String text = "Testing Email";
+
+	helper.setText(text, false);
+
+	helper.addAttachment("report.pdf",aAttachment);
+
+	mailSender.send(message);
+	*/
+	return null;
+}
 
 }

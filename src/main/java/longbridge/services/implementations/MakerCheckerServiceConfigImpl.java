@@ -90,4 +90,9 @@ public class MakerCheckerServiceConfigImpl implements MakerCheckerServiceConfig 
     {
         return modelMapper.map(makerCheckerDTO,MakerChecker.class);
     }
+
+	@Override
+	public Page<MakerChecker> findEntities(String pattern, Pageable pageDetails) {
+		 return makerCheckerRepo.findUsingPattern(pattern,pageDetails);
+	}
 }

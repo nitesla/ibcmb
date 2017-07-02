@@ -2,6 +2,8 @@ package longbridge.controllers.admin;
 
 import longbridge.models.MakerChecker;
 import longbridge.services.MakerCheckerServiceConfig;
+
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,9 +50,14 @@ public class AdmMakerCheckerConfigController {
 
     @GetMapping(path = "/all")
     public @ResponseBody
-    DataTablesOutput<MakerChecker> getAllEntities(DataTablesInput input){
+    DataTablesOutput<MakerChecker> getAllEntities(DataTablesInput input, @RequestParam("csearch") String search){
         Pageable pageable = DataTablesUtils.getPageable(input);
-        Page<MakerChecker> makerCheckers= makerCheckerService.getEntities(pageable);
+        Page<MakerChecker> makerCheckers= null;
+        if (StringUtils.isNoneBlank(search)) {
+        	makerCheckers= makerCheckerService.findEntities(search,pageable);
+		}else{
+			makerCheckers= makerCheckerService.getEntities(pageable);
+		}
         DataTablesOutput<MakerChecker> out = new DataTablesOutput<MakerChecker>();
         out.setDraw(input.getDraw());
         out.setData(makerCheckers.getContent());

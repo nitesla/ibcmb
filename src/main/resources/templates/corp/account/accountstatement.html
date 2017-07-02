@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="cust_layout :: site-head">
+<head th:replace="corp_layout :: site-head">
 
 </head>
 <body>
 <div class="container">
-    <header th:replace="cust_layout :: header">
+    <header th:replace="corp_layout :: corp-header">
     </header>
 
 
 <section class="content-wrapper">
-    <div class="containe">
+    <div class="container">
         <div class="row">
             <div class="col-md-4 col-sm-4">
                 <h5 class="page_header"> Transaction History</h5>
@@ -59,9 +59,9 @@
 
                     </div>
             </div>
-           
+
              <div class="col-md-3 pull-right">
-                            <div th:replace="cust_layout :: sidebar" class="" >
+                            <div th:replace="corp_layout :: corp-sidebar" class="" >
                             </div>
             </div>
         </div>
@@ -69,7 +69,7 @@
 </section>
 
 <!-- CONTENT-WRAPPER SECTION END-->
-<footer th:replace="cust_layout ::footer">
+<footer th:replace="corp_layout ::corp-footer">
 </footer>
 <script>
 

@@ -1,19 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="slyRec" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="c711b49a-19b4-48b6-b709-0113f398e21c">
-	<property name="ireport.zoom" value="1.0"/>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="accountStatment" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" whenResourceMissingType="Empty" uuid="b1c76af6-01a7-4384-8820-23f298be1610">
+	<property name="ireport.zoom" value="1.1"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
+	<subDataset name="JSONdata" uuid="7604951b-25ba-4a57-8b64-f83d19444a3a">
+		<queryString language="JSON">
+			<![CDATA[]]>
+		</queryString>
+		<field name="tranPartclr" class="java.lang.String"/>
+	</subDataset>
+	<subDataset name="New Dataset 1" uuid="169fec4f-b0c2-449c-8845-764aa9b49546"/>
+	<parameter name="AccountNum" class="java.lang.String"/>
+	<parameter name="date" class="java.lang.String"/>
+	<parameter name="remarks" class="java.lang.String"/>
+	<parameter name="refNUm" class="java.lang.String"/>
 	<parameter name="tranDate" class="java.lang.String"/>
 	<parameter name="sender" class="java.lang.String"/>
-	<parameter name="acctNo1" class="java.lang.String"/>
-	<parameter name="remarks" class="java.lang.String"/>
-	<parameter name="acctNo2" class="java.lang.String"/>
-	<parameter name="amountInWords" class="java.lang.String"/>
-	<parameter name="recipientBank" class="java.lang.String"/>
 	<parameter name="recipient" class="java.lang.String"/>
-	<parameter name="refNUm" class="java.lang.String"/>
-	<parameter name="parameter1" class="java.lang.String"/>
+	<parameter name="recipientBank" class="java.lang.String"/>
+	<parameter name="acctNo2" class="java.lang.String"/>
+	<parameter name="acctNo1" class="java.lang.String"/>
 	<parameter name="amount" class="java.lang.String"/>
+	<queryString language="json">
+		<![CDATA[]]>
+	</queryString>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -32,10 +42,7 @@
 		</band>
 	</pageHeader>
 	<columnHeader>
-		<band height="16" splitType="Stretch"/>
-	</columnHeader>
-	<detail>
-		<band height="123" splitType="Stretch">
+		<band height="150" splitType="Stretch">
 			<rectangle>
 				<reportElement x="1" y="62" width="553" height="19" backcolor="#EBE9E8" uuid="8fd0d94d-c621-4e57-96e1-97ff7d41e76a">
 					<printWhenExpression><![CDATA[($V{REPORT_COUNT}%2)==1]]></printWhenExpression>
@@ -185,7 +192,8 @@
 				</graphicElement>
 			</rectangle>
 		</band>
-	</detail>
+	</columnHeader>
+
 	<columnFooter>
 		<band height="45" splitType="Stretch"/>
 	</columnFooter>

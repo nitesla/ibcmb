@@ -64,6 +64,8 @@ public interface CorporateService{
     @PreAuthorize("hasAuthority('GET_CORPORATE')")
     Page<CorporateDTO> getCorporates(Pageable pageDetails);
 
+    @PreAuthorize("hasAuthority('GET_CORPORATE')")
+    Page<CorporateDTO> findCorporates(String pattern,Pageable pageDetails);
     /**
      * Sets the limit of transaction amount for the corporate customer
      *
@@ -208,7 +210,6 @@ public interface CorporateService{
 
     @PreAuthorize("hasAuthority('DELETE_CORPORATE_ROLE')")
     String deleteCorporateRole(Long id) throws InternetBankingException;
-
 
 
 }
