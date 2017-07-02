@@ -112,6 +112,8 @@
         $.getJSON('/retail/transfer/' + acct + '/'+bank+'/nameEnquiry', function(jd) {
             var message = jd.message;
             var success =  jd.success;
+            console.log(message);
+            console.log(success);
            if (success==false){
                $('.acctError').text(message);
                $('.acctError').show().css("color", "red");

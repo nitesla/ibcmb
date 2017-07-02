@@ -1,5 +1,6 @@
 package longbridge.controllers.retail;
 
+import longbridge.api.Rate;
 import longbridge.dtos.FinancialInstitutionDTO;
 import longbridge.dtos.LocalBeneficiaryDTO;
 import longbridge.dtos.TransferRequestDTO;
@@ -208,9 +209,12 @@ public class InterBankTransferController {
 
 
         );
+        model.addAttribute("nip", new Rate());
+        model.addAttribute("rtgs",new Rate());
+      /*
         model.addAttribute("nip", integrationService.getFee("NIP"));
         model.addAttribute("rtgs", integrationService.getFee("RTGS"));
-
+*/
     }
 
     @RequestMapping(value = "/balance/{accountNumber}", method = RequestMethod.GET, produces = "application/json")
