@@ -415,7 +415,7 @@ public class CorporateServiceImpl implements CorporateService {
             return messageSource.getMessage("role.add.success", null, locale);
 
         } catch (Exception e) {
-            throw new InternetBankingException(messageSource.getMessage("role.add.failure", null, locale));
+            throw new InternetBankingException(messageSource.getMessage("role.add.failure", null, locale),e);
 
         }
     }

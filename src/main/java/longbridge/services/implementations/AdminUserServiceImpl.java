@@ -82,7 +82,6 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Autowired
     EntityManager entityManager;
 
-
     private Locale locale = LocaleContextHolder.getLocale();
 
 
@@ -162,6 +161,29 @@ public class AdminUserServiceImpl implements AdminUserService {
         }
     }
 
+    public void postCreateUser(AdminUser adminUser){
+        createUserOnEntrust(adminUser);
+    }
+
+//    public void postUpdateUserStatus(AdminUser adminUser, ){
+//
+//        if("A".equals(adminUser.getStatus())) {
+//
+//            String password = passwordPolicyService.generatePassword();
+//            adminUser.setPassword(passwordEncoder.encode(password));
+//            adminUser.setExpiryDate(new Date());
+//            passwordPolicyService.saveAdminPassword(adminUser);
+//            adminUserRepo.save(adminUser);
+//
+//            Email email = new Email.Builder()
+//                    .setRecipient(adminUser.getEmail())
+//                    .setSubject(messageSource.getMessage("admin.activation.subject", null, locale))
+//                    .setBody(String.format(messageSource.getMessage("admin.activation.message", null, locale), args))
+//                    .build();
+//            mailService.send(email);
+//        }
+
+//    }
 
     public void createUserOnEntrust(AdminUser adminUser) {
         AdminUser user = adminUserRepo.findFirstByUserName(adminUser.getUserName());

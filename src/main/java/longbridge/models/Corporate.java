@@ -38,10 +38,12 @@ public class Corporate extends AbstractEntity implements PrettySerializer{
 
 
     @OneToMany
+    @JsonIgnore
     Set<CorporateRole> corporateRoles = new HashSet<CorporateRole>();
 
 
     @OneToMany(mappedBy = "corporate",cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<CorporateUser> users =  new ArrayList<CorporateUser>();
 
 //    @OneToMany
@@ -144,8 +146,7 @@ public class Corporate extends AbstractEntity implements PrettySerializer{
     public void setAddress(String address) {
         this.address = address;
     }
-    
-    
+
 
 	public List<CorporateUser> getUsers() {
 		return users;
@@ -180,25 +181,6 @@ public class Corporate extends AbstractEntity implements PrettySerializer{
         this.createdOnDate = createdOnDate;
     }
 
-    @Override
-    public String toString() {
-        return "Corporate{" +
-                "rcNumber='" + rcNumber + '\'' +
-                ", customerId='" + customerId + '\'' +
-                ", corporateType='" + corporateType + '\'' +
-                ", name='" + name + '\'' +
-                ", email='" + email + '\'' +
-                ", address='" + address + '\'' +
-                ", status='" + status + '\'' +
-                ", createdOnDate=" + createdOnDate +
-                ", bvn='" + bvn + '\'' +
-                ", users=" + users +
-                ", corpLimits=" + corpLimits +
-                ", corpTransferRequests=" + corpTransferRequests +
-                ", corpTransRules=" + corpTransRules +
-                '}';
-    }
-    
     @Override @JsonIgnore
    	public List<String> getDefaultSearchFields() {
    		return Arrays.asList("name", "rcNumber","customerId");

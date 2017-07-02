@@ -111,6 +111,7 @@ public class Setting extends AbstractEntity implements PrettySerializer{
                 gen.writeStartObject();
                 gen.writeStringField("Name",value.name);
                 gen.writeStringField("Description",value.description);
+                gen.writeStringField("Value",value.value);
                 gen.writeBooleanField("Enabled",value.enabled);
                 gen.writeStringField("Type",value.type);
                 gen.writeEndObject();
