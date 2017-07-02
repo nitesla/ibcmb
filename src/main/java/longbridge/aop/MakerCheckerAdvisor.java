@@ -34,10 +34,10 @@ public class MakerCheckerAdvisor {
 	private VerificationRepo verificationRepo;
 
 	@Autowired
-	MakerCheckerService makerCheckerService;
+	private MakerCheckerService makerCheckerService;
 
 	@Autowired
-	VerificationService verificationService;
+	private VerificationService verificationService;
 
 	@Autowired
 	EntityManager entityManager;
@@ -106,12 +106,10 @@ public class MakerCheckerAdvisor {
 		ObjectMapper mapper = new ObjectMapper();
 		verification.setOriginalObject(mapper.writeValueAsString(entity));
 
-//		Class<?> forName = Class.forName(entity.getClass().getName(), true, this.getClass().getClassLoader());
 
 		ObjectMapper prettyMapper = new ObjectMapper();
-		;
+
 		if (entity instanceof PrettySerializer) {
-//		if (isPrettySerializalble(forName)) {
 			JsonSerializer<Object> serializer = ((PrettySerializer) (entity)).getSerializer();
 
 			SimpleModule module = new SimpleModule();
@@ -140,7 +138,7 @@ public class MakerCheckerAdvisor {
 
 		System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
 
-		return verifier.operation() + "action successfully added for approval";
+		return entity;
 		// return pjp.proceed();
 	}
 

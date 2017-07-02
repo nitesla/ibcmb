@@ -112,7 +112,7 @@ public class VerificationServiceImpl implements VerificationService {
         try {
             Class<?> clazz  = Class.forName(PACKAGE_NAME + verification.getEntityName());
             Object object = mapper.readValue(verification.getOriginalObject(), clazz);
-
+            logger.info("Trying to merge..{}",object.toString());
             entityManager.merge(object);
             verification.setId(dto.getId());
             verification.setVersion(dto.getVersion());
@@ -229,11 +229,17 @@ public class VerificationServiceImpl implements VerificationService {
     @Override
     public int getTotalNumberForVerification() {
 
-        CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        User doneBy = principal.getUser();
-        List<String> permissions = getPermissionCodes(doneBy.getRole());
-        List<Verification> b = verificationRepo.findVerificationForUser(doneBy.getUserName(),doneBy.getUserType(), permissions);
-        return b.size();
+        try {
+            CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            User doneBy = principal.getUser();
+            List<String> permissions = getPermissionCodes(doneBy.getRole());
+            List<Verification> b = verificationRepo.findVerificationForUser(doneBy.getUserName(), doneBy.getUserType(), permissions);
+            return b.size();
+        }
+        catch (Exception e){
+            logger.error("Error retrieving verification",e);
+        }
+        return 0;
     }
 
 

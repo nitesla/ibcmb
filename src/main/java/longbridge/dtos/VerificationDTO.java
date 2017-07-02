@@ -172,4 +172,23 @@ public class VerificationDTO {
     public void setVersion(int version) {
         this.version = version;
     }
+
+    @Override
+    public String toString() {
+        return "VerificationDTO{" +
+                "id=" + id +
+                ", version=" + version +
+                 ", status=" + status +
+                ", description='" + description + '\'' +
+                ", entityId=" + entityId +
+                ", entityName='" + entityName + '\'' +
+                ", operation='" + operation + '\'' +
+                ", initiatedBy='" + initiatedBy + '\'' +
+                ", initiatedOn=" + initiatedOn +
+                ", comment='" + comment + '\'' +
+                ", verifiedBy='" + verifiedBy + '\'' +
+                ", verifiedOn=" + verifiedOn +
+                ", dependency=" + dependency +
+                '}';
+    }
 }

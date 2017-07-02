@@ -109,8 +109,6 @@ public class TokenManagementController {
         }catch (InternetBankingSecurityException ibe){
             logger.error("Error Synchronizing Token", ibe);
             redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("token.sync.failure", null, locale));
-
-
         }
         return "redirect:/retail/token/sync";
 

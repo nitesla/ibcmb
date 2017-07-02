@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import longbridge.models.*;
 import longbridge.utils.TransferType;
 
-
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 /** *
@@ -12,7 +12,7 @@ import java.math.BigDecimal;
  *
  */
 
-public class TransferRequestDTO{
+public class TransferRequestDTO implements Serializable{
 
 
     @JsonProperty("DT_RowId")
@@ -205,13 +205,4 @@ public class TransferRequestDTO{
                 '}';
     }
 
-    public static OperationCode getAddCode() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public static OperationCode getModifyCode() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }
