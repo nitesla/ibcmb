@@ -58,8 +58,8 @@ public class AdminUserAdvisor {
     public void isVerification() {
     }
 
-    @Pointcut("withincode(* verify(..))")
-    public void isVerify() {
+    @Pointcut("withincode(* verify(..)) && args(verificationDto)")
+    public void isVerify(VerificationDTO verificationDto) {
     }
 
 
@@ -68,15 +68,15 @@ public class AdminUserAdvisor {
     }
 
 
-    @Pointcut("execution(public * verify(..))")
-    public void verified() {
+    @Pointcut("execution(public * verify(..)) && args(verificationDto)")
+    public void verified(VerificationDTO verificationDto) {
     }
 
 
 
     //this is after merge of verification
-    @After("isVerification() && isMerging() && isVerify() && args(user)")
-    public void postAdminUserCreation(JoinPoint p, AdminUser user) {
+    @After("isVerification() && isMerging() && isVerify(verificationDto) && args(user)")
+    public void postAdminUserCreation(JoinPoint p, AdminUser user,VerificationDTO verificationDto) {
 
         logger.info("Executing ADD_ADMIN_USER operation");
         adminUserService.createUserOnEntrust(user);
@@ -87,7 +87,7 @@ public class AdminUserAdvisor {
     }
     
    // this runs after execution
-    @After("isVerification() && verified() && args(verificationDto)")
+    @After("isVerification() && verified(verificationDto)")
     public void postAdminUserCreation2(JoinPoint p, VerificationDTO verificationDto)
     {
 
