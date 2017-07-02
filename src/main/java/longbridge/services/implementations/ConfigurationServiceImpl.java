@@ -139,4 +139,13 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 		return null;
 	}
 
+	@Override
+	public Page<SettingDTO> findSetting(String pattern, Pageable pageDetails) {
+		Page<Setting> page = settingRepo.findUsingPattern(pattern, pageDetails);
+		List<SettingDTO> dtOs = convertEntitiesToDTOs(page.getContent());
+		long t = page.getTotalElements();
+		Page<SettingDTO> pageImpl = new PageImpl<SettingDTO>(dtOs, pageDetails, t);
+		return pageImpl;
+	}
+
 }

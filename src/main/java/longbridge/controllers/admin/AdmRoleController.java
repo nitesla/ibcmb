@@ -7,6 +7,7 @@ import longbridge.exception.InternetBankingException;
 import longbridge.models.User;
 import longbridge.services.RoleService;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -121,10 +122,15 @@ public class AdmRoleController {
     @GetMapping(path = "/all")
     public
     @ResponseBody
-    DataTablesOutput<RoleDTO> getRoles(DataTablesInput input) {
+    DataTablesOutput<RoleDTO> getRoles(DataTablesInput input,@RequestParam("csearch") String search) {
 
         Pageable pageable = DataTablesUtils.getPageable(input);
-        Page<RoleDTO> roles = roleService.getRoles(pageable);
+        Page<RoleDTO> roles = null;
+        if (StringUtils.isNoneBlank(search)) {
+        	roles = roleService.findRoles(search,pageable);
+		}else{
+			roles = roleService.getRoles(pageable);
+		}
         DataTablesOutput<RoleDTO> out = new DataTablesOutput<RoleDTO>();
         out.setDraw(input.getDraw());
         out.setData(roles.getContent());

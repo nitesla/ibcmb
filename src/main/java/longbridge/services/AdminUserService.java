@@ -59,6 +59,7 @@ public interface AdminUserService {
 //     */
 //    Iterable<AdminUser> getAdminUsers();
 
+    Page<AdminUserDTO> findUsers(String pattern ,Pageable pageDetails);
     boolean userExists(String username) throws InternetBankingException;
 
     /**

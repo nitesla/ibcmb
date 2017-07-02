@@ -11,6 +11,8 @@ import longbridge.forms.ChangePassword;
 import longbridge.models.AdminUser;
 import longbridge.models.User;
 import longbridge.services.*;
+
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -114,9 +116,15 @@ public class AdminUserController {
     @GetMapping("/all")
     public
     @ResponseBody
-    DataTablesOutput<AdminUserDTO> getUsers(DataTablesInput input) {
+    DataTablesOutput<AdminUserDTO> getUsers(DataTablesInput input,@RequestParam("csearch") String search) {
         Pageable pageable = DataTablesUtils.getPageable(input);
-        Page<AdminUserDTO> adminUsers = adminUserService.getUsers(pageable);
+        
+        Page<AdminUserDTO> adminUsers = null;
+        if (StringUtils.isNoneBlank(search)) {
+        	adminUsers = adminUserService.findUsers(search,pageable);
+		}else{
+			adminUsers = adminUserService.getUsers(pageable);
+		}
         DataTablesOutput<AdminUserDTO> out = new DataTablesOutput<AdminUserDTO>();
         out.setDraw(input.getDraw());
         out.setData(adminUsers.getContent());
@@ -174,7 +182,6 @@ public class AdminUserController {
             return "adm/admin/edit";
         }
         try {
-            AdminUser userCreatedBy = adminUserService.getUserByName(principal.getName());
             String message = adminUserService.updateUser(adminUser);
             redirectAttributes.addFlashAttribute("message", message);
             return "redirect:/admin/users";

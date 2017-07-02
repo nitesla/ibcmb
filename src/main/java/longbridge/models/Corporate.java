@@ -198,6 +198,11 @@ public class Corporate extends AbstractEntity implements PrettySerializer{
                 ", corpTransRules=" + corpTransRules +
                 '}';
     }
+    
+    @Override @JsonIgnore
+   	public List<String> getDefaultSearchFields() {
+   		return Arrays.asList("name", "rcNumber","customerId");
+   	}
 
     @Override @JsonIgnore
     public JsonSerializer<Corporate> getSerializer() {
