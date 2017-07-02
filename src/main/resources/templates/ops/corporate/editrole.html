@@ -66,15 +66,6 @@
                                                                                th:field="*{rank}"/>
                                                 </div>
 
-                                                <!--<div class="form-group col-lg-6">-->
-                                                <!--<label>Type</label>-->
-                                                <!--<select id="userType" class="form-control" th:field="*{type}">-->
-                                                <!--<option value="">&#45;&#45;Select&#45;&#45;</option>-->
-                                                <!--<option value="INITIATOR">Initiator</option>-->
-                                                <!--<option value="AUTHORIZER">Authorizer</option>-->
-                                                <!--<option value="ADMIN">Administrator</option>-->
-                                                <!--</select>-->
-                                                <!--</div>-->
 
                                             </fieldset>
 
@@ -86,7 +77,10 @@
                                                     <div class="form-group text-left col-lg-5">
                                                         <select multiple="multiple" class="form-control left-selector">
                                                             <option th:each="user: ${users}"
+                                                             		th:object="${user}"
+      																th:unless="${#lists.contains(role.users, user)}"
                                                                     th:value="${user.id}"
+                                                                    
                                                                     th:text="${user.firstName}+' '+${user.lastName}"></option>
                                                         </select>
                                                     </div>
