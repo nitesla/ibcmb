@@ -235,7 +235,13 @@ public class RoleServiceImpl implements RoleService {
     }
 
     private Permission convertDTOToEntity(PermissionDTO permissionDTO) {
-        Permission permission = permissionRepo.findOne(permissionDTO.getId());
+        Permission permission;
+        if(permissionDTO.getId()==null){
+            permission = convertDTOToEntity(permissionDTO);
+        }
+        else {
+            permission = permissionRepo.findOne(permissionDTO.getId());
+        }
         return permission;
     }
 

@@ -37,7 +37,7 @@ public class MakerCheckerInitializer implements InitializingBean{
 
         ClassPathScanningCandidateComponentProvider provider = createComponentScanner();
         for (BeanDefinition beanDef : provider.findCandidateComponents(packge)) {
-            System.out.println(beanDef.toString());
+//            System.out.println(beanDef.toString());
             try {
                 Class<?> cl = Class.forName(beanDef.getBeanClassName());
 
