@@ -301,47 +301,25 @@ public class AccountController {
 			System.out.println("list = " + list);
 			modelMap.put("datasource", list);
 			modelMap.put("format", "pdf");
-			modelMap.put("summary.accountNum", acctNumber);
-			modelMap.put("customerName",retailUser.getFirstName()+" "+retailUser.getLastName());
-				logger.info("Customer's Name {}"+retailUser.getFirstName()+" "+retailUser.getLastName());
-
-			if(accountStatement.getAccountNumber()!=null) {
-				modelMap.put("customerNo", acctNumber);
-			}
-			else if(accountStatement.getAccountNumber()==null ||accountStatement.getAccountNumber().isEmpty()){
-				modelMap.put("customerNo","");
-			}
-			else{};
+			modelMap.put("summary.accountNum",acctNumber);
+			modelMap.put("summary.customerName",retailUser.getFirstName()+" "+retailUser.getLastName());
+			modelMap.put("summary.customerNo", retailUser.getCustomerId());
 			modelMap.put("summary.openingBalance", accountStatement.getOpeningBalance());
-			if (accountStatement.getDebitCount() != null) {
-				modelMap.put("debitCount", accountStatement.getDebitCount());
-				}
-			else{
-				modelMap.put("debitCount","");
+			if(accountStatement.getDebitCount()!=null) {
+				modelMap.put("summary.debitCount", accountStatement.getDebitCount());
 			}
-			if (accountStatement.getCreditCount() != null) {
-				modelMap.put("creditCount", accountStatement.getCreditCount());
-				}
-			else{
-				modelMap.put("creditCount","");
+			else{modelMap.put("summary.debitCount", "");}
+			if(accountStatement.getCreditCount()!=null) {
+				modelMap.put("summary.creditCount", accountStatement.getCreditCount());
 			}
+			else{modelMap.put("summary.creditCount", "");}
 			modelMap.put("summary.currencyCode", accountStatement.getCurrencyCode());
 			if(accountStatement.getClosingBalance()!=null) {
 				modelMap.put("summary.closingBalance", accountStatement.getClosingBalance());
-				}
-			else{
-				modelMap.put("summary.closingBalance","0");
-			}
+			}else{modelMap.put("summary.closingBalance","" );}
 			modelMap.put("summary.totalDebit", accountStatement.getTotalDebit());
 			modelMap.put("summary.totalCredit", accountStatement.getTotalCredit());
-			if(accountStatement.getAddress()!=null ) {
-				modelMap.put("address", accountStatement.getAddress());
-				}
-			else if(accountStatement.getAddress()==null){
-				modelMap.put("address","");
-			}
-			else{};
-
+			modelMap.put("summary.address", "");
 			modelMap.put("fromDate", fromDate);
 			modelMap.put("toDate", toDate);
 			Date today=new Date();
