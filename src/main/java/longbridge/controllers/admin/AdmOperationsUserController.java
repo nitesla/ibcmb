@@ -11,6 +11,8 @@ import longbridge.services.OperationsUserService;
 import longbridge.services.PasswordPolicyService;
 import longbridge.services.RoleService;
 import longbridge.utils.verificationStatus;
+
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -149,10 +151,16 @@ public class AdmOperationsUserController {
     }
 
     @GetMapping(path = "/all")
-    public @ResponseBody DataTablesOutput<OperationsUserDTO> getUsers(DataTablesInput input){
+    public @ResponseBody DataTablesOutput<OperationsUserDTO> getUsers(DataTablesInput input, @RequestParam("csearch") String search){
 
         Pageable pageable = DataTablesUtils.getPageable(input);
-        Page<OperationsUserDTO> operationsUsers = operationsUserService.getUsers(pageable);
+        
+        Page<OperationsUserDTO> operationsUsers = null;
+        if (StringUtils.isNoneBlank(search)) {
+        	operationsUsers = operationsUserService.findUsers(search,pageable);
+		}else{
+			operationsUsers = operationsUserService.getUsers(pageable);
+		}
         DataTablesOutput<OperationsUserDTO> out = new DataTablesOutput<OperationsUserDTO>();
         out.setDraw(input.getDraw());
         out.setData(operationsUsers.getContent());
