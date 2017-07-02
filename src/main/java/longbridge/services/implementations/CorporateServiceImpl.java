@@ -679,16 +679,14 @@ public class CorporateServiceImpl implements CorporateService {
         }
         return corporateDTOList;
     }
-    //    private List<AccountDTO> convertAccountEntitiesToDTOs(Iterable<Account> accounts){
-//        List<AccountDTO> accountDTOList = new ArrayList<>();
-//        for(Account account: accounts){
-//            AccountDTO accountDTO = convertAccountEntityToDTO(account);
-//            accountDTOList.add(accountDTO);
-//        }
-//        return accountDTOList;
-//    }
-//
-//    private AccountDTO convertAccountEntityToDTO(Account account){
-//        return  modelMapper.map(account,AccountDTO.class);
-//    }
+
+	@Override
+	public Page<CorporateDTO> findCorporates(String pattern, Pageable pageDetails) {
+		 Page<Corporate> page = corporateRepo.findUsingPattern(pattern,pageDetails);
+	        List<CorporateDTO> dtOs = convertEntitiesToDTOs(page.getContent());
+	        long t = page.getTotalElements();
+
+	        Page<CorporateDTO> pageImpl = new PageImpl<CorporateDTO>(dtOs, pageDetails, t);
+	        return pageImpl;
+	}
 }
