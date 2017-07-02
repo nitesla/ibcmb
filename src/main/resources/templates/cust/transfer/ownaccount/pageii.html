@@ -63,13 +63,13 @@
                             <input type="hidden" th:field="*{beneficiaryAccountName}"/>
                             <input type="hidden" th:field="*{amount}"/>
                             <input type="hidden" th:field="*{remarks}"/>
-
+                            <input type="hidden" th:field="*{id}"/>
 
                             <div class="form-group">
                                 <!--<a style="cursor: pointer;" onclick="goBack()" >Modify</a>-->
                                 <button type="submit" class="btn btn-link">Proceed</button>
                                 <a th:href="@{/retail/transfer/ownaccount}">Cancel</a>
-
+                                <!--<a th:href="@{'/retail/transfer/ownaccount/' + ${transferRequest.id} + '/receipt'}">Print</a>-->
 
                             </div>
                         </form>
