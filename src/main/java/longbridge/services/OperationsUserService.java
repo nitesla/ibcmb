@@ -58,6 +58,8 @@ public interface OperationsUserService{
     @PreAuthorize("hasAuthority('GET_OPS_USER')")
     Page<OperationsUserDTO> findUsers(OperationsUserDTO example,Pageable pageDetails);
 
+    @PreAuthorize("hasAuthority('GET_OPS_USER')")
+    Page<OperationsUserDTO> findUsers(String pattern,Pageable pageDetails);
     /**
      * Sets the password for the specified Operations User.
      * Also, the password must meet the organization's password policy if any one has been defined

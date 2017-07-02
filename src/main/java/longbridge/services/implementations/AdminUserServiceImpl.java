@@ -429,5 +429,14 @@ public class AdminUserServiceImpl implements AdminUserService {
         return pageImpl;
     }
 
+	@Override
+	public Page<AdminUserDTO> findUsers(String pattern, Pageable pageDetails) {
+		Page<AdminUser> page = adminUserRepo.findUsingPattern(pattern, pageDetails);
+		List<AdminUserDTO> dtOs = convertEntitiesToDTOs(page.getContent());
+        long t = page.getTotalElements();
+        Page<AdminUserDTO> pageImpl = new PageImpl<AdminUserDTO>(dtOs, pageDetails, t);
+        return pageImpl;
+	}
+
 
 }
