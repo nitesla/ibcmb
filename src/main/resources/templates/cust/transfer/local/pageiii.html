@@ -70,7 +70,7 @@
                             <input type="hidden" th:field="*{beneficiaryAccountName}"/>
                             <input type="hidden" th:field="*{amount}"/>
                             <input type="hidden" th:field="*{remarks}"/>
-<<<<<<< HEAD
+
                             <input type="hidden" th:field="*{id}"/>
                         <div class="checkbox">
                             <label style="font-weight: bold; color: black"><input type="checkbox" id="add" name="add"/>Add Beneficiary</label>
@@ -79,8 +79,8 @@
                             <!--<a style="cursor: pointer;" onclick="goBack()" >Modify</a>-->
                             <button type="submit" class="btn btn-outline-primary">Proceed</button>
                             <a th:href="@{/retail/transfer/local}">Cancel</a>
-                            <a th:href="@{/retail/transfer/ownaccount/5/receipt}">Cancel</a>
-=======
+
+
 
                         <span class="form-group checkbox col-xs-5" th:if="${newBen}!=null">
                             <label style="font-weight: bold; color: black;margin-left:10px !important">
@@ -92,11 +92,18 @@
                             <button type="submit" class="btn btn-link required-step">Proceed</button>
 
                             <button th:href="@{/retail/transfer/local}" class='btn btn-link less-required'>Cancel</button>
-                             <button type='button' class='btn btn-link less-required'>Modify</button>
->>>>>>> 1727eadecf6f4c78fba5611f14ace6f167693285
 
+                             <button type='button' class='btn btn-link less-required' onclick="edit();">Modify</button>
 
                             </div>
+                        </form>
+
+                        <form method="post" id="form_edit" th:action="@{/retail/transfer/local/edit}" th:object="${transferRequest}">
+                            <input type="hidden" th:field="*{customerAccountNumber}"/>
+                            <input type="hidden" th:field="*{beneficiaryAccountNumber}"/>
+                            <input type="hidden" th:field="*{beneficiaryAccountName}"/>
+                            <input type="hidden" th:field="*{amount}"/>
+                            <input type="hidden" th:field="*{remarks}"/>
                         </form>
                         <!--</div>-->
                     </div>
@@ -115,6 +122,13 @@
     <footer th:replace="cust_layout ::footer">
     </footer>
     <script th:src="@{~/customer/js/accountdetails.js}"></script>
+    <script>
+         function edit(){
+             $("#form_edit").submit();
+         }
+
+
+    </script>
 </div>
 </body>
 </html>

@@ -123,7 +123,8 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
     }
 
     @Bean
-    public OpUserLoginInterceptor OpUserLoginInterceptor() {
+    public OpUserLoginInterceptor OpUserLoginInterceptor()
+    {
         return new OpUserLoginInterceptor();
     }
 

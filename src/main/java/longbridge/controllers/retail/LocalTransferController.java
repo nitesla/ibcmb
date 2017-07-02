@@ -20,6 +20,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.LocaleResolver;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -182,5 +183,18 @@ public class LocalTransferController {
         BigDecimal availBal = balance.get("AvailableBalance");
         return availBal;
     }
+
+
+    @PostMapping("/edit")
+    public String editTransfer(@ModelAttribute("transferRequest")  TransferRequestDTO transferRequestDTO,Model model,HttpServletRequest request){
+        transferRequestDTO.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
+        transferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode(bankCode));
+        model.addAttribute("transferRequest",transferRequestDTO);
+        if ( request.getSession().getAttribute("Lbeneficiary")!=null)
+            model.addAttribute("beneficiary",(LocalBeneficiaryDTO)request.getSession().getAttribute("Lbeneficiary"));
+
+        return page + "pageii";
+    }
+
 
 }

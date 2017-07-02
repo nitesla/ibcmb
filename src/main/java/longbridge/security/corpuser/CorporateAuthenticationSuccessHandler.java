@@ -85,7 +85,13 @@ public class CorporateAuthenticationSuccessHandler implements AuthenticationSucc
 
     protected String determineTargetUrl(final Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        boolean isUser = corporateUserRepo.findFirstByUserName(userDetails.getUsername()).getUserType().equals(UserType.CORPORATE);
+      CorporateUser corporateUser = corporateUserRepo.findFirstByUserName(userDetails.getUsername());
+        boolean isUser = corporateUser.getUserType().equals(UserType.CORPORATE);
+
+        boolean isFirstLogon= corporateUser.isFirstTimeLogon();
+        if (isFirstLogon){
+            return "/corporate/setup";
+        }
 
         SettingDTO setting = configService.getSettingByName("ENABLE_CORPORATE_2FA");
         boolean tokenAuth = false;

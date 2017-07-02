@@ -78,6 +78,14 @@
                                 </div>
 
                             </form>
+                        <form method="post" id="form_edit" th:action="@{/retail/transfer/ownaccount/edit}"
+                              th:object="${transRequest}">
+                            <input type="hidden" th:field="*{customerAccountNumber}"/>
+                            <input type="hidden" th:field="*{beneficiaryAccountNumber}"/>
+                            <input type="hidden" th:field="*{beneficiaryAccountName}"/>
+                            <input type="hidden" th:field="*{amount}"/>
+                            <input type="hidden" th:field="*{remarks}"/>
+                        </form>
 
 
                     </div>
@@ -96,6 +104,13 @@
 <footer th:replace="cust_layout ::footer">
 </footer>
 </div>
+<script>
+    function edit(){
+        $("#form_edit").submit();
+    }
+
+
+</script>
 </body>
 
 </html>
