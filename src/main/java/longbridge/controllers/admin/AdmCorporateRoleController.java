@@ -171,7 +171,7 @@ public class AdmCorporateRoleController {
                 usersList.add(userDTO);
             }
         }
-        else if (userIds.length==0){
+        else{
             result.addError(new ObjectError("invalid", "No Users in Role"));
             CorporateDTO corporate = corporateService.getCorporate(NumberUtils.toLong(roleDTO.getCorporateId()));
             List<CorporateUserDTO> users = corporateUserService.getUsersWithoutRole(NumberUtils.toLong(roleDTO.getCorporateId()));

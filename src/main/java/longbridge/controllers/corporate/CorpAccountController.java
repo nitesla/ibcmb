@@ -194,7 +194,7 @@ catch(InternetBankingException e){
         String LAST_TEN_TRANSACTION="10";
         List<AccountDTO> accountList = accountService.getAccountsAndBalances(corporateUser.getCorporate().getCustomerId());
         List<TransactionHistory> transRequestList=integrationService.getLastNTransactions(account.getAccountNumber(),LAST_TEN_TRANSACTION);
-        if (transRequestList != null || !(transRequestList.equals("")) || !(transRequestList.isEmpty())) {
+        if (transRequestList != null  && ! transRequestList.isEmpty()) {
             model.addAttribute("transRequestList", transRequestList);
             model.addAttribute("accountList", accountList);
             System.out.println("what is the " + transRequestList);
@@ -231,7 +231,7 @@ catch(InternetBankingException e){
             logger.info("TransactionType {}",tranType);
             out.setDraw(input.getDraw());
             List<TransactionDetails> list = new ArrayList<>();
-            if (list != null || !(list.equals("")) || !(list.isEmpty())) {
+            if (list != null && !list.isEmpty()) {
                 list=accountStatement.getTransactionDetails();
                 System.out.println(accountStatement.toString());
                 System.out.println("Whats in the list "+list);
