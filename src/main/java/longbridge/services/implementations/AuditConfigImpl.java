@@ -43,4 +43,9 @@ public class AuditConfigImpl implements AuditConfigService {
 	public Page<AuditConfig> getEntities(Pageable pageDetails) {
 		return configRepo.findAll(pageDetails);
 	}
+
+	@Override
+	public Page<AuditConfig> findEntities(String pattern, Pageable pageDetails) {
+		return configRepo.findUsingPattern(pattern,pageDetails);
+	}
 }

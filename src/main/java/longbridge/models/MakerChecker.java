@@ -3,6 +3,9 @@ package longbridge.models;
 import org.hibernate.annotations.Where;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
+import java.util.List;
+
 import javax.persistence.Entity;
 
 /**
@@ -43,7 +46,11 @@ public class MakerChecker extends AbstractEntity {
         this.description = description;
     }
 
-
+    @Override
+	public List<String> getDefaultSearchFields() {
+		return Arrays.asList("operation","description");
+	}
+    
     @Override
     public String toString() {
         return "MakerChecker{" +
