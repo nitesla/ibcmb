@@ -11,7 +11,9 @@ import longbridge.utils.PrettySerializer;
 
 import javax.persistence.*;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 /**
  * Created by Wunmi on 29/03/2017.
  */
@@ -192,6 +194,10 @@ public class User extends AbstractEntity implements PrettySerializer {
         return super.equals(o);
     }
 
+    @Override
+	public List<String> getDefaultSearchFields() {
+		return Arrays.asList("userName", "firstName","lastName");
+	}
 
     @Override
     @JsonIgnore

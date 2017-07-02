@@ -163,4 +163,15 @@ public class FinancialInstitutionServiceImpl implements FinancialInstitutionServ
     public FinancialInstitution getFinancialInstitutionByCode(String institutionCode) {
         return financialInstitutionRepo.findByInstitutionCode(institutionCode);
     }
+
+	@Override
+	public Page<FinancialInstitutionDTO> findFinancialInstitutions(String pattern, Pageable pageDetails) {
+		 Page<FinancialInstitution> page = financialInstitutionRepo.findUsingPattern(pattern,pageDetails);
+	        List<FinancialInstitutionDTO> dtOs = convertEntitiesToDTOs(page.getContent());
+	        long t = page.getTotalElements();
+
+	        // return  new PageImpl<ServiceReqConfigDTO>(dtOs,pageDetails,page.getTotalElements());
+	        Page<FinancialInstitutionDTO> pageImpl = new PageImpl<FinancialInstitutionDTO>(dtOs, pageDetails, t);
+	        return pageImpl;
+	}
 }

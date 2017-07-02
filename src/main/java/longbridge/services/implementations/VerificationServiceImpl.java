@@ -109,7 +109,6 @@ public class VerificationServiceImpl implements VerificationService {
 
         ObjectMapper mapper = new ObjectMapper();
 
-
         try {
             Class<?> clazz  = Class.forName(PACKAGE_NAME + verification.getEntityName());
             Object object = mapper.readValue(verification.getOriginalObject(), clazz);
