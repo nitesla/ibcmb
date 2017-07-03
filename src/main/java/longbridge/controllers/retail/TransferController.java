@@ -20,21 +20,21 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.LocaleResolver;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.StreamSupport;
 
 
@@ -56,13 +56,16 @@ public class TransferController {
     private FinancialInstitutionService financialInstitutionService;
     private TransferErrorService transferErrorService;
     private SecurityService securityService;
+    private ApplicationContext appContext;
 
     @Value("${bank.code}")
     private String bankCode;
 
 
     @Autowired
-    public TransferController(RetailUserService retailUserService, IntegrationService integrationService, TransferService transferService, AccountService accountService, MessageSource messages, LocaleResolver localeResolver, LocalBeneficiaryService localBeneficiaryService, FinancialInstitutionService financialInstitutionService, TransferErrorService transferErrorService, SecurityService securityService) {
+
+    public TransferController(RetailUserService retailUserService, IntegrationService integrationService, TransferService transferService, AccountService accountService, MessageSource messages, LocaleResolver localeResolver, LocalBeneficiaryService localBeneficiaryService, FinancialInstitutionService financialInstitutionService, TransferErrorService transferErrorService, SecurityService securityService
+    ,ApplicationContext appContext) {
         this.retailUserService = retailUserService;
         this.integrationService = integrationService;
         this.transferService = transferService;
@@ -73,6 +76,7 @@ public class TransferController {
         this.financialInstitutionService = financialInstitutionService;
         this.transferErrorService = transferErrorService;
         this.securityService = securityService;
+        this.appContext=appContext;
 
     }
 
@@ -187,13 +191,18 @@ public class TransferController {
 
         if (principal != null) {
             NEnquiryDetails details = integrationService.doNameEnquiry(bank, accountNo);
-            if (details == null)
+            if (details == null )
                 return createMessage("service down please try later", false);
 
-            if (details.getAccountName() == null)
-                return createMessage("invalid account number or Bank details", false);
 
 
+            if (details.getResponseCode() != null  &&! details.getResponseCode().equalsIgnoreCase("00"))
+                return createMessage(details.getResponseDescription(), false);
+
+
+
+
+           if (details.getAccountName() != null && details.getResponseCode() != null && details.getResponseCode().equalsIgnoreCase("00"))
             return createMessage(details.getAccountName(), true);
         }
 
@@ -310,6 +319,59 @@ public class TransferController {
             e.printStackTrace();
         }
         return object.toString();
+    }
+
+    /**
+     * Returns the viewName to return for coming back to the sender url
+     *
+     * @param request Instance of {@link HttpServletRequest} or use an injected instance
+     * @return Optional with the view name. Recomended to use an alternativa url with
+     * {@link Optional#orElse(java.lang.Object)}
+     */
+    protected Optional<String> getPreviousPageByRequest(HttpServletRequest request)
+    {
+        return Optional.ofNullable(request.getHeader("Referer")).map(requestUrl -> "redirect:" + requestUrl);
+    }
+
+    @RequestMapping(path = "{id}/receipt", method = RequestMethod.GET)
+    public ModelAndView report(@PathVariable Long id, HttpServletRequest servletRequest, TransferRequestDTO transferRequestDTO) {
+        /**
+         * Created a stub to test transaction receiptpt
+         */
+        JasperReportsPdfView view = new JasperReportsPdfView();
+        view.setUrl("classpath:jasperreports/rpt_receipt.jrxml");
+        view.setApplicationContext(appContext);
+
+        Map<String, Object> modelMap = new HashMap<>();
+
+        modelMap.put("datasource",new ArrayList<>());
+//        modelMap.put("format", "pdf");
+        modelMap.put("amount",transferService.getTransfer(id).getAmount());
+        modelMap.put("recipient",transferService.getTransfer(id).getBeneficiaryAccountName());
+        modelMap.put("AccountNum", transferService.getTransfer(id).getCustomerAccountNumber());
+        modelMap.put("sender", "");
+        modelMap.put("bank", transferService.getTransfer(id).getFinancialInstitution().getInstitutionName());
+        modelMap.put("remarks", transferService.getTransfer(id).getRemarks());
+        modelMap.put("recipientBank", "");
+        modelMap.put("acctNo2", transferService.getTransfer(id).getCustomerAccountNumber());
+        modelMap.put("acctNo1", transferService.getTransfer(id).getBeneficiaryAccountNumber());
+        modelMap.put("refNUm", transferService.getTransfer(id).getReferenceNumber());
+        modelMap.put("date", transferService.getTransfer(id).getTranDate());
+        modelMap.put("tranDate",transferService.getTransfer(id).getTranDate());
+        ModelAndView modelAndView=new ModelAndView(view, modelMap);
+        return modelAndView;
+//        logger.info("Transaction Receipt {}",modelMap);
+//
+//        ModelAndView modelAndView = new ModelAndView("rpt_receipt", modelMap);
+//        return modelAndView;
+    }
+
+    @RequestMapping(value = "/back", method = RequestMethod.POST)
+    public @ResponseBody
+    String testRedirection(HttpServletRequest request)
+    {
+
+        return getPreviousPageByRequest(request).orElse("/retail/dashboard"); //else go to home page
     }
 
 

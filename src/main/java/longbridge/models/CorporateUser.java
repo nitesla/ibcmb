@@ -26,7 +26,7 @@ import java.util.List;
 @Table(uniqueConstraints=@UniqueConstraint(columnNames={"userName","deletedOn"}))
 public class CorporateUser extends User {
 
-	protected boolean isFirstTimeLogon;
+	protected String isFirstTimeLogon;
 
 	@ManyToOne @JsonIgnore
     private Corporate corporate;
@@ -35,15 +35,15 @@ public class CorporateUser extends User {
 	private CorporateRole corporateRole;
 
 
-	public Boolean isFirstTimeLogon() {
-		return isFirstTimeLogon;
-	}
+    public String getIsFirstTimeLogon() {
+        return isFirstTimeLogon;
+    }
 
-	public void setFirstTimeLogon(Boolean firstTimeLogon) {
-		isFirstTimeLogon = firstTimeLogon;
-	}
+    public void setIsFirstTimeLogon(String isFirstTimeLogon) {
+        this.isFirstTimeLogon = isFirstTimeLogon;
+    }
 
-	public CorporateUser(){
+    public CorporateUser(){
 		this.userType = (UserType.CORPORATE);
 	}
 
