@@ -398,42 +398,67 @@ public class CorporateServiceImpl implements CorporateService {
     @Override
     @Verifiable(operation="ADD_CORPORATE_ROLE",description="Adding a Corporate Role")
     public String addCorporateRole(CorporateRoleDTO roleDTO) throws InternetBankingException {
-
-
-        try {
+    	try {
             Corporate corporate = corporateRepo.findOne(NumberUtils.toLong(roleDTO.getCorporateId()));
             CorporateRole role = convertCorporateRoleDTOToEntity(roleDTO);
-            CorporateRole corporateRole = corporateRoleRepo.save(role);
-            corporate.getCorporateRoles().add(corporateRole);
-            corporateRepo.save(corporate);
-            Set<CorporateUserDTO> users = roleDTO.getUsers();
-            for (CorporateUserDTO user : users) {
+            role.setCorporate(corporate);
+            
+            //CorporateRole corporateRole = corporateRoleRepo.save(role);
+           // corporate.getCorporateRoles().add(corporateRole);
+//            corporateRepo.save(corporate);
+            HashSet<CorporateUser> corpUsers = new HashSet<>();
+            for (CorporateUserDTO user : roleDTO.getUsers()) {
                 CorporateUser corporateUser = corporateUserRepo.findOne(user.getId());
-                corporateUser.setCorporateRole(corporateRole);
-                corporateUserRepo.save(corporateUser);
+                corpUsers.add(corporateUser);
             }
+            role.setUsers(corpUsers);
+            corporateRoleRepo.save(role);
             return messageSource.getMessage("role.add.success", null, locale);
 
         } catch (Exception e) {
-            throw new InternetBankingException(messageSource.getMessage("role.add.failure", null, locale));
+            throw new InternetBankingException(messageSource.getMessage("role.add.failure", null, locale),e);
 
         }
+
+       
     }
 
+//    public String addCorporateRole2(CorporateRoleDTO roleDTO) throws InternetBankingException {
+//
+//    	 try {
+//             Corporate corporate = corporateRepo.findOne(NumberUtils.toLong(roleDTO.getCorporateId()));
+//             CorporateRole role = convertCorporateRoleDTOToEntity(roleDTO);
+//             CorporateRole corporateRole = corporateRoleRepo.save(role);
+//             corporate.getCorporateRoles().add(corporateRole);
+//             corporateRepo.save(corporate);
+//             Set<CorporateUserDTO> users = roleDTO.getUsers();
+//             for (CorporateUserDTO user : users) {
+//                 CorporateUser corporateUser = corporateUserRepo.findOne(user.getId());
+//                 corporateUser.setCorporateRole(corporateRole);
+//                 corporateUserRepo.save(corporateUser);
+//             }
+//             return messageSource.getMessage("role.add.success", null, locale);
+//
+//         } catch (Exception e) {
+//             throw new InternetBankingException(messageSource.getMessage("role.add.failure", null, locale));
+//
+//         }
+//        
+//    }
+
+    
     @Override
     @Verifiable(operation="UPDATE_CORPORATE_ROLE",description="Updating a Corporate Role")
     public String updateCorporateRole(CorporateRoleDTO roleDTO) throws InternetBankingException {
         try {
-            Set<CorporateUser> oldUsers = corporateRoleRepo.findOne(roleDTO.getId()).getUsers();
             CorporateRole role = convertCorporateRoleDTOToEntity(roleDTO);
-            Set<CorporateUser> newUsers = role.getUsers();
-            for (CorporateUser user : oldUsers) {
+            
+            HashSet<CorporateUser> corpUsers = new HashSet<>();
+            for (CorporateUserDTO user : roleDTO.getUsers()) {
                 CorporateUser corporateUser = corporateUserRepo.findOne(user.getId());
-                if (!newUsers.contains(corporateUser)) {
-                    corporateUser.setCorporateRole(null);
-                    corporateUserRepo.save(corporateUser);
-                }
+                corpUsers.add(corporateUser);
             }
+            role.setUsers(corpUsers);
             corporateRoleRepo.save(role);
 
             return messageSource.getMessage("role.update.success", null, locale);
@@ -679,16 +704,14 @@ public class CorporateServiceImpl implements CorporateService {
         }
         return corporateDTOList;
     }
-    //    private List<AccountDTO> convertAccountEntitiesToDTOs(Iterable<Account> accounts){
-//        List<AccountDTO> accountDTOList = new ArrayList<>();
-//        for(Account account: accounts){
-//            AccountDTO accountDTO = convertAccountEntityToDTO(account);
-//            accountDTOList.add(accountDTO);
-//        }
-//        return accountDTOList;
-//    }
-//
-//    private AccountDTO convertAccountEntityToDTO(Account account){
-//        return  modelMapper.map(account,AccountDTO.class);
-//    }
+
+	@Override
+	public Page<CorporateDTO> findCorporates(String pattern, Pageable pageDetails) {
+		 Page<Corporate> page = corporateRepo.findUsingPattern(pattern,pageDetails);
+	        List<CorporateDTO> dtOs = convertEntitiesToDTOs(page.getContent());
+	        long t = page.getTotalElements();
+
+	        Page<CorporateDTO> pageImpl = new PageImpl<CorporateDTO>(dtOs, pageDetails, t);
+	        return pageImpl;
+	}
 }

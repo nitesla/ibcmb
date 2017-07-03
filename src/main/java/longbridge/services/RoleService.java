@@ -44,6 +44,9 @@ public interface RoleService {
 
     @PreAuthorize("hasAuthority('GET_ROLE')")
     Page<RoleDTO> getRoles(Pageable pageDetails);
+    
+    @PreAuthorize("hasAuthority('GET_ROLE')")
+    Page<RoleDTO> findRoles(String pattern, Pageable pageDetails);
 
     @PreAuthorize("hasAuthority('GET_ROLE')")
     Page<User> getUsers(RoleDTO role, Pageable pageDetails);
@@ -94,6 +97,8 @@ public interface RoleService {
     @PreAuthorize("hasAuthority('GET_ROLE')")
     Page<PermissionDTO> getPermissions(Pageable pageDetails);
 
+    @PreAuthorize("hasAuthority('GET_ROLE')")
+    Page<PermissionDTO> findPermissions(String pattern,Pageable pageDetails);
     /**
      * Updates the details of the permission
      * @param permission the permission to be deleted

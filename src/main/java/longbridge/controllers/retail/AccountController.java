@@ -3,6 +3,7 @@ package longbridge.controllers.retail;
 import longbridge.api.AccountDetails;
 import longbridge.api.PaginationDetails;
 import longbridge.dtos.AccountDTO;
+import longbridge.dtos.TransferRequestDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.forms.CustomizeAccount;
 import longbridge.models.Account;
@@ -37,18 +38,17 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.ByteArrayOutputStream;
 import java.security.Principal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 /**
  * Created by Fortune on 4/3/2017.
@@ -229,16 +229,45 @@ public class AccountController {
 		RetailUser retailUser = retailUserService.getUserByName(principal.getName());
 
 		Account account = accountRepo.findOne(id);
-       String LAST_TEN_TRANSACTION="10";
+		String LAST_TEN_TRANSACTION = "10";
 		List<AccountDTO> accountList = accountService.getAccountsAndBalances(retailUser.getCustomerId());
-		List<TransactionHistory> transRequestList=integrationService.getLastNTransactions(account.getAccountNumber(),LAST_TEN_TRANSACTION);
-		if (transRequestList != null || !(transRequestList.equals("")) || !(transRequestList.isEmpty())) {
+		List<TransactionHistory> transRequestList = integrationService.getLastNTransactions(account.getAccountNumber(),
+				LAST_TEN_TRANSACTION);
+		if (transRequestList != null && !transRequestList.isEmpty()) {
 			model.addAttribute("transRequestList", transRequestList);
 			model.addAttribute("accountList", accountList);
 			System.out.println("what is the " + transRequestList);
 			return "cust/account/accountstatement";
 		}
 		return "redirect:/retail/dashboard";
+	}
+
+		@RequestMapping(path = "{id}/downloadhistory", method = RequestMethod.GET)
+		public ModelAndView getTransPDF(@PathVariable String id, Model model, Principal principal) {
+			RetailUser retailUser = retailUserService.getUserByName(principal.getName());
+
+		Account account=accountRepo.findFirstAccountByCustomerId(retailUser.getCustomerId());
+			logger.info("Retail account {}",account);
+		String LAST_TEN_TRANSACTION = "10";
+		List<TransactionHistory> transRequestList = integrationService.getLastNTransactions(account.getAccountNumber(),
+				LAST_TEN_TRANSACTION);
+		JasperReportsPdfView view = new JasperReportsPdfView();
+		view.setUrl("classpath:jasperreports/rpt_tran-hist.jrxml");
+		view.setApplicationContext(appContext);
+
+		Map<String, Object> modelMap = new HashMap<>();
+		for(TransactionHistory transactionHistory:transRequestList) {
+		modelMap.put("datasource", new ArrayList<>());
+	modelMap.put("amount", transactionHistory.getBalance());
+	modelMap.put("sender",retailUser.getFirstName()+" "+retailUser.getLastName() );
+	modelMap.put("remarks", transactionHistory.getNarration());
+	modelMap.put("recipientBank", "");
+	modelMap.put("refNUm", transactionHistory.getTranType());
+	modelMap.put("date",transactionHistory.getValueDate());
+	modelMap.put("tranDate", transactionHistory.getPostedDate());
+}
+	return new ModelAndView(view, modelMap);
+
 	}
 
 	@PostMapping("/history")
@@ -254,6 +283,7 @@ public class AccountController {
 	}
 
 	@GetMapping("/viewstatement/display/data")
+
 	public @ResponseBody
 	DataTablesOutput<TransactionDetails> getStatementData(DataTablesInput input, String acctNumber,
 														  String fromDate, String toDate, String tranType) {
@@ -265,20 +295,21 @@ public class AccountController {
 		try {
 			from = dateFormat.parse(fromDate);
 			to = dateFormat.parse(toDate);
-			AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to,tranType);
-			logger.info("TransactionType {}",tranType);
-			out.setDraw(input.getDraw());
-			List<TransactionDetails> list = new ArrayList<>();
-			if (list != null || !(list.equals("")) || !(list.isEmpty())) {
-				list=accountStatement.getTransactionDetails();
-			System.out.println(accountStatement.toString());
-			System.out.println("Whats in the list "+list);
-
-
-				out.setData(list);
-				out.setRecordsFiltered(list.size());
-				out.setRecordsTotal(list.size());
+			int diffInDays = (int) ((to.getTime() - from.getTime()) / (1000 * 60 * 60 * 24));
+			logger.info("Day difference {}",diffInDays);
+			if (diffInDays > 1) {
+				logger.info("Difference in number of days {} : " , diffInDays);
 			}
+			AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to, tranType);
+			logger.info("TransactionType {}", tranType);
+			out.setDraw(input.getDraw());
+			List<TransactionDetails> list = accountStatement.getTransactionDetails();
+			System.out.println(accountStatement.toString());
+			System.out.println("Whats in the list " + list);
+
+			out.setData(list);
+			out.setRecordsFiltered(list.size());
+			out.setRecordsTotal(list.size());
 		} catch (ParseException e) {
 			logger.warn("didn't parse date", e);
 		}
@@ -288,7 +319,7 @@ public class AccountController {
 
 	@GetMapping("/downloadstatement")
 	public ModelAndView downloadStatementData(ModelMap modelMap, DataTablesInput input, String acctNumber,
-											  String fromDate, String toDate, String tranType, Principal principal) {
+			String fromDate, String toDate, String tranType, Principal principal) {
 		// Pageable pageable = DataTablesUtils.getPageable(input);
 
 		Date from;
@@ -297,10 +328,10 @@ public class AccountController {
 		try {
 			from = dateFormat.parse(fromDate);
 			to = dateFormat.parse(toDate);
-			AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to,tranType);
+			AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to, tranType);
 			out.setDraw(input.getDraw());
 			List<TransactionDetails> list = accountStatement.getTransactionDetails();
-			RetailUser retailUser=retailUserService.getUserByName(principal.getName());
+			RetailUser retailUser = retailUserService.getUserByName(principal.getName());
 			System.out.println("list = " + list);
 			modelMap.put("datasource", list);
 			modelMap.put("format", "pdf");
@@ -317,7 +348,7 @@ public class AccountController {
 			}
 			else{modelMap.put("summary.creditCount", "");}
 			modelMap.put("summary.currencyCode", accountStatement.getCurrencyCode());
-			if(accountStatement.getClosingBalance()!=null) {
+			if (accountStatement.getClosingBalance() != null) {
 				modelMap.put("summary.closingBalance", accountStatement.getClosingBalance());
 			}else{modelMap.put("summary.closingBalance","" );}
 			modelMap.put("summary.totalDebit", accountStatement.getTotalDebit());
@@ -325,47 +356,51 @@ public class AccountController {
 			modelMap.put("summary.address", "");
 			modelMap.put("fromDate", fromDate);
 			modelMap.put("toDate", toDate);
-			Date today=new Date();
-			modelMap.put("today",today);
+			Date today = new Date();
+			modelMap.put("today", today);
 
 		} catch (ParseException e) {
 			logger.warn("didn't parse date", e);
 		}
-		
+
 		ModelAndView modelAndView = new ModelAndView("rpt_account-statement", modelMap);
 		return modelAndView;
 
 	}
 
-@PostMapping("sendEmail")
-	public String sendEmail(ModelMap modelMap, DataTablesInput input, String acctNumber,
-							String fromDate, String toDate, String tranType, Principal principal) throws MessagingException {
-	/*JRDataSource ds = new JRBeanCollectionDataSource(reportList);
-
-	Resource report = new ClassPathResource("static/jasper/rpt_report.jasper");
-
-	JasperPrint jasperPrint = JasperFillManager.fillReport(report.getInputStream(), Collections.EMPTY_MAP,ds);
-	ByteArrayOutputStream baos = new ByteArrayOutputStream();
-	JasperExportManager.exportReportToPdfStream(jasperPrint, baos);
-	DataSource aAttachment =  new ByteArrayDataSource(baos.toByteArray(), "application/pdf");
-
-	MimeMessage message = mailSender.createMimeMessage();
-	MimeMessageHelper helper = new MimeMessageHelper(message);
-
-	helper.setTo("xxxxxx");
-
-	helper.setFrom("xxxxx");
-	helper.setSubject("Testing Email");
-
-	String text = "Testing Email";
-
-	helper.setText(text, false);
-
-	helper.addAttachment("report.pdf",aAttachment);
-
-	mailSender.send(message);
-	*/
-	return null;
-}
+	@PostMapping("sendEmail")
+	public String sendEmail(ModelMap modelMap, DataTablesInput input, String acctNumber, String fromDate, String toDate,
+			String tranType, Principal principal) throws MessagingException {
+		/*
+		 * JRDataSource ds = new JRBeanCollectionDataSource(reportList);
+		 * 
+		 * Resource report = new
+		 * ClassPathResource("static/jasper/rpt_report.jasper");
+		 * 
+		 * JasperPrint jasperPrint =
+		 * JasperFillManager.fillReport(report.getInputStream(),
+		 * Collections.EMPTY_MAP,ds); ByteArrayOutputStream baos = new
+		 * ByteArrayOutputStream();
+		 * JasperExportManager.exportReportToPdfStream(jasperPrint, baos);
+		 * DataSource aAttachment = new ByteArrayDataSource(baos.toByteArray(),
+		 * "application/pdf");
+		 * 
+		 * MimeMessage message = mailSender.createMimeMessage();
+		 * MimeMessageHelper helper = new MimeMessageHelper(message);
+		 * 
+		 * helper.setTo("xxxxxx");
+		 * 
+		 * helper.setFrom("xxxxx"); helper.setSubject("Testing Email");
+		 * 
+		 * String text = "Testing Email";
+		 * 
+		 * helper.setText(text, false);
+		 * 
+		 * helper.addAttachment("report.pdf",aAttachment);
+		 * 
+		 * mailSender.send(message);
+		 */
+		return null;
+	}
 
 }

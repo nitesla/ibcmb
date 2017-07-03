@@ -5,10 +5,7 @@ import longbridge.dtos.SettingDTO;
 import longbridge.exception.*;
 import longbridge.forms.ChangeDefaultPassword;
 import longbridge.forms.ChangePassword;
-import longbridge.models.Code;
-import longbridge.models.Email;
-import longbridge.models.OperationsUser;
-import longbridge.models.Role;
+import longbridge.models.*;
 import longbridge.repositories.OperationsUserRepo;
 import longbridge.repositories.RoleRepo;
 import longbridge.services.*;
@@ -22,11 +19,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.*;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
-import javax.persistence.metamodel.EmbeddableType;
 import javax.transaction.Transactional;
 import java.util.*;
 
@@ -127,36 +124,21 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     public String changeActivationStatus(Long userId) throws InternetBankingException {
         try {
             OperationsUser user = operationsUserRepo.findOne(userId);
+            entityManager.detach(user);
             String oldStatus = user.getStatus();
             String newStatus = "A".equals(oldStatus) ? "I" : "A";
             user.setStatus(newStatus);
-            operationsUserRepo.save(user);
             String fullName = user.getFirstName() + " " + user.getLastName();
-            if ((oldStatus == null)) {//User was just created
+            if ((oldStatus == null) || ("I".equals(oldStatus)) && "A".equals(newStatus)) {
                 String password = passwordPolicyService.generatePassword();
                 user.setPassword(passwordEncoder.encode(password));
                 user.setExpiryDate(new Date());
                 passwordPolicyService.saveOpsPassword(user);
                 operationsUserRepo.save(user);
-
-                Email email = new Email.Builder()
-                        .setRecipient(user.getEmail())
-                        .setSubject(messageSource.getMessage("ops.create.subject", null, locale))
-                        .setBody(String.format(messageSource.getMessage("ops.create.message", null, locale), fullName, user.getUserName(), password))
-                        .build();
-                mailService.send(email);
-            } else if (("I".equals(oldStatus)) && "A".equals(newStatus)) {//User is being reactivated
-                String password = passwordPolicyService.generatePassword();
-                user.setPassword(passwordEncoder.encode(password));
-                user.setExpiryDate(new Date());
-                passwordPolicyService.saveOpsPassword(user);
+                sendPostActivateMessage(user, fullName,user.getUserName(),password);
+            } else{
+                user.setStatus(newStatus);
                 operationsUserRepo.save(user);
-                Email email = new Email.Builder()
-                        .setRecipient(user.getEmail())
-                        .setSubject(messageSource.getMessage("ops.reactivation.subject", null, locale))
-                        .setBody(String.format(messageSource.getMessage("ops.reactivation.message", null, locale), fullName, user.getUserName(), password))
-                        .build();
-                mailService.send(email);
             }
 
 
@@ -169,6 +151,20 @@ public class OperationsUserServiceImpl implements OperationsUserService {
         }
     }
 
+
+
+    @Async
+    public void sendPostActivateMessage(User user, String ... args ){
+        //check if records exist send else return
+        if("A".equals(user.getStatus())) {
+            Email email = new Email.Builder()
+                    .setRecipient(user.getEmail())
+                    .setSubject(messageSource.getMessage("ops.activation.subject", null, locale))
+                    .setBody(String.format(messageSource.getMessage("ops.activation.message", null, locale), args))
+                    .build();
+            mailService.send(email);
+        }
+    }
 
     @Override
     public OperationsUser getUserByName(String name) {
@@ -194,8 +190,8 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             opsUser.setCreatedOnDate(new Date());
             Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
             opsUser.setRole(role);
-            creatUserOnEntrust(opsUser);
             operationsUserRepo.save(opsUser);
+            createUserOnEntrust(opsUser);
             logger.info("New Operation user  {} created", opsUser.getUserName());
             return messageSource.getMessage("user.add.success", null, LocaleContextHolder.getLocale());
         } catch (InternetBankingSecurityException se) {
@@ -211,20 +207,27 @@ public class OperationsUserServiceImpl implements OperationsUserService {
 
     }
 
-    private void creatUserOnEntrust(OperationsUser opsUser) throws EntrustException{
-        String fullName = opsUser.getFirstName() + " " + opsUser.getLastName();
-        SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_CREATION");
 
-        if (setting != null && setting.isEnabled()) {
-            if ("YES".equalsIgnoreCase(setting.getValue())) {
-                boolean result = securityService.createEntrustUser(opsUser.getUserName(), fullName, true);
-                if (!result) {
-                    throw new EntrustException(messageSource.getMessage("entrust.create.failure", null, locale));
-                }
+    public void createUserOnEntrust(OperationsUser opsUser) {
+        OperationsUser user = operationsUserRepo.findFirstByUserName(opsUser.getUserName());
+        if(user!=null) {
+            if ("".equals(user.getEntrustId())||user.getEntrustId()==null){
+                String fullName = user.getFirstName() + " " + user.getLastName();
+                SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_CREATION");
+                if (setting != null && setting.isEnabled()) {
+                    if ("YES".equalsIgnoreCase(setting.getValue())) {
+                        boolean creatResult = securityService.createEntrustUser(user.getUserName(), fullName, true);
+                        if (!creatResult) {
+                            throw new EntrustException(messageSource.getMessage("entrust.create.failure", null, locale));
+                        }
 
-                boolean contactResult = securityService.addUserContacts(opsUser.getEmail(),opsUser.getPhoneNumber(),true,opsUser.getUserName());
-                if(!contactResult){
-                    logger.error("Failed to add user contacts on Entrust");
+                        boolean contactResult = securityService.addUserContacts(user.getEmail(), user.getPhoneNumber(), true, user.getUserName());
+                        if (!contactResult) {
+                            logger.error("Failed to add user contacts on Entrust");
+                        }
+                    }
+                    user.setEntrustId(user.getUserName());
+                    operationsUserRepo.save(user);
                 }
             }
         }

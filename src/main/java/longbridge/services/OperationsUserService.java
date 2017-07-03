@@ -5,6 +5,7 @@ import longbridge.exception.PasswordException;
 import longbridge.forms.ChangeDefaultPassword;
 import longbridge.forms.ChangePassword;
 import longbridge.models.Email;
+import longbridge.models.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -39,6 +40,8 @@ public interface OperationsUserService{
     @PreAuthorize("hasAuthority('GET_OPS_USER')")
     OperationsUser getUserByName(String name);
 
+
+    void sendPostActivateMessage(User user, String ... args );
 
     /**
      * Returns all Operations users present in th system
@@ -99,6 +102,9 @@ public interface OperationsUserService{
      */
     @PreAuthorize("hasAuthority('DELETE_OPS_USER')")
     String deleteUser(Long userId) throws InternetBankingException;
+
+
+    void createUserOnEntrust(OperationsUser opsUser);
 
     /**
      * Resets the password of the specified Operations user

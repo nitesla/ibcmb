@@ -1,4 +1,4 @@
-package longbridge.controllers.admin;
+package longbridge.controllers.operations;
 
 import longbridge.dtos.CorporateDTO;
 import longbridge.dtos.CorporateRoleDTO;
@@ -32,8 +32,8 @@ import java.util.*;
  */
 
 @Controller
-@RequestMapping("/admin/corporates")
-public class AdmCorporateRoleController {
+@RequestMapping("/ops/corporates")
+public class OpsCorporateRoleController {
 
     @Autowired
     CorporateService corporateService;
@@ -79,8 +79,9 @@ public class AdmCorporateRoleController {
         model.addAttribute("users",users);
         model.addAttribute("corporate",corporate);
         model.addAttribute("role", roleDTO);
-        return "adm/corporate/addrole";
+        return "ops/corporate/addrole";
     }
+    
     @PostMapping("/roles")
     public String createRole(@ModelAttribute("role") @Valid CorporateRoleDTO roleDTO, BindingResult result, WebRequest request, RedirectAttributes redirectAttributes, Locale locale,Model model) {
         if (result.hasErrors()) {
@@ -90,7 +91,7 @@ public class AdmCorporateRoleController {
             model.addAttribute("users",users);
             model.addAttribute("corporate",corporate);
 
-            return "adm/corporate/addrole";
+            return "ops/corporate/addrole";
         }
         Set<CorporateUserDTO> usersList = new HashSet<CorporateUserDTO>();
 
@@ -108,7 +109,7 @@ public class AdmCorporateRoleController {
             List<CorporateUserDTO> users = corporateUserService.getUsersWithoutRole(NumberUtils.toLong(roleDTO.getCorporateId()));
             model.addAttribute("users",users);
             model.addAttribute("corporate",corporate);
-            return "adm/corporate/addrole";
+            return "ops/corporate/addrole";
         }
 
 
@@ -116,7 +117,7 @@ public class AdmCorporateRoleController {
         try {
             String message = corporateService.addCorporateRole(roleDTO);
             redirectAttributes.addFlashAttribute("message", message);
-            return "redirect:/admin/corporates/" + roleDTO.getCorporateId() + "/view";
+            return "redirect:/ops/corporates/" + roleDTO.getCorporateId() + "/view";
         }
         catch (DuplicateObjectException ibe) {
             result.addError(new ObjectError("error", ibe.getMessage()));
@@ -125,7 +126,7 @@ public class AdmCorporateRoleController {
             model.addAttribute("users",users);
             model.addAttribute("corporate",corporate);
             logger.error("Error creating role", ibe);
-            return "adm/corporate/addrole";
+            return "ops/corporate/addrole";
         }
         catch (InternetBankingException ibe) {
             CorporateDTO corporate = corporateService.getCorporate(NumberUtils.toLong(roleDTO.getCorporateId()));
@@ -134,7 +135,7 @@ public class AdmCorporateRoleController {
             model.addAttribute("users",users);
             result.addError(new ObjectError("error", messageSource.getMessage("role.add.failure", null, locale)));
             logger.error("Error creating role", ibe);
-            return "adm/corporate/addrole";
+            return "ops/corporate/addrole";
         }
     }
 
@@ -148,7 +149,7 @@ public class AdmCorporateRoleController {
         model.addAttribute("role", roleDTO);
         logger.info("Users in role: "+roleDTO.getUsers());
         model.addAttribute("corporate",corporate);
-        return "adm/corporate/editrole";
+        return "ops/corporate/editrole";
     }
 
     @PostMapping("/roles/update")
@@ -159,7 +160,8 @@ public class AdmCorporateRoleController {
             List<CorporateUserDTO> users = corporateUserService.getUsersWithoutRole(NumberUtils.toLong(roleDTO.getCorporateId()));
             model.addAttribute("users",users);
             model.addAttribute("corporate",corporate);
-            return "adm/corporate/editrole";
+            model.addAttribute("role", roleDTO);
+            return "ops/corporate/editrole";
         }
         Set<CorporateUserDTO> usersList = new HashSet<CorporateUserDTO>();
 
@@ -171,20 +173,21 @@ public class AdmCorporateRoleController {
                 usersList.add(userDTO);
             }
         }
-        else if (userIds.length==0){
+        else{
             result.addError(new ObjectError("invalid", "No Users in Role"));
             CorporateDTO corporate = corporateService.getCorporate(NumberUtils.toLong(roleDTO.getCorporateId()));
             List<CorporateUserDTO> users = corporateUserService.getUsersWithoutRole(NumberUtils.toLong(roleDTO.getCorporateId()));
             model.addAttribute("users",users);
             model.addAttribute("corporate",corporate);
-            return "adm/corporate/editrole";
+            model.addAttribute("role", roleDTO);
+            return "ops/corporate/editrole";
         }
 
         roleDTO.setUsers(usersList);
         try {
             String message = corporateService.updateCorporateRole(roleDTO);
             redirectAttributes.addFlashAttribute("message", message);
-            return "redirect:/admin/corporates/" + roleDTO.getCorporateId() + "/view";
+            return "redirect:/ops/corporates/" + roleDTO.getCorporateId() + "/view";
         }
         catch (DuplicateObjectException ibe) {
             result.addError(new ObjectError("error", ibe.getMessage()));
@@ -192,17 +195,19 @@ public class AdmCorporateRoleController {
             List<CorporateUserDTO> users = corporateUserService.getUsersWithoutRole(NumberUtils.toLong(roleDTO.getCorporateId()));
             model.addAttribute("users",users);
             model.addAttribute("corporate",corporate);
+            model.addAttribute("role", roleDTO);
             logger.error("Error updating role", ibe);
-            return "adm/corporate/editrole";
+            return "ops/corporate/editrole";
         }
         catch (InternetBankingException ibe) {
             CorporateDTO corporate = corporateService.getCorporate(NumberUtils.toLong(roleDTO.getCorporateId()));
             model.addAttribute("corporate",corporate);
             List<CorporateUserDTO> users = corporateUserService.getUsersWithoutRole(NumberUtils.toLong(roleDTO.getCorporateId()));
             model.addAttribute("users",users);
+            model.addAttribute("role", roleDTO);
             result.addError(new ObjectError("error", messageSource.getMessage("role.add.failure", null, locale)));
             logger.error("Error updating role", ibe);
-            return "adm/corporate/editrole";
+            return "ops/corporate/editrole";
         }
     }
 
@@ -211,11 +216,11 @@ public class AdmCorporateRoleController {
         try {
             String message = corporateService.deleteCorporateRole(roleId);
             redirectAttributes.addFlashAttribute("message", message);
-            return "redirect:/admin/corporate/roles";
+            return "redirect:/ops/corporate/roles";
         } catch (InternetBankingException ibe) {
             logger.error("Error deleting role", ibe);
             redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
-            return "redirect:/admin/corporate/roles";
+            return "redirect:/ops/corporate/roles";
         }
     }
 }

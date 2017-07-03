@@ -17,7 +17,9 @@ import longbridge.utils.PrettySerializer;
 import javax.persistence.*;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Created by Wunmi on 27/03/2017.
@@ -80,14 +82,6 @@ public class Role extends AbstractEntity implements PrettySerializer{
         this.email = email;
     }
 
-    //    public Collection<User> getUsers() {
-//        return users;
-//    }
-//
-//    public void setUsers(Collection<User> users) {
-//        this.users = users;
-//    }
-
 
     @Override
     public String toString() {
@@ -131,6 +125,10 @@ public class Role extends AbstractEntity implements PrettySerializer{
         };
     }
 
+	@Override
+	public List<String> getDefaultSearchFields() {
+		return Arrays.asList("name", "description","email");
+	}
 
 
 }

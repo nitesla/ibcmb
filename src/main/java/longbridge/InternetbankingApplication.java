@@ -34,7 +34,6 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
 
     @Override
     public void run(String... strings) throws Exception {
-      //  makerCheckerInitializer.initialize();
     }
 }
 

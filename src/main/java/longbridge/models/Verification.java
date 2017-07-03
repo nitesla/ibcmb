@@ -6,8 +6,13 @@ import org.hibernate.annotations.Where;
 
 import org.hibernate.envers.Audited;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
+
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 /**
  * this represents a change that needs Verification. This can be
@@ -170,5 +175,10 @@ public class Verification extends AbstractEntity {
         this.verifiedBy = verifiedBy;
     }
 
+    
+    @Override @JsonIgnore
+  	public List<String> getDefaultSearchFields() {
+  		return Arrays.asList("entityName", "initiatedBy","verifiedBy");
+  	}
 
 }

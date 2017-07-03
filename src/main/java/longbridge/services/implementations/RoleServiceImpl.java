@@ -235,7 +235,13 @@ public class RoleServiceImpl implements RoleService {
     }
 
     private Permission convertDTOToEntity(PermissionDTO permissionDTO) {
-        Permission permission = permissionRepo.findOne(permissionDTO.getId());
+        Permission permission;
+        if(permissionDTO.getId()==null){
+            permission = convertDTOToEntity(permissionDTO);
+        }
+        else {
+            permission = permissionRepo.findOne(permissionDTO.getId());
+        }
         return permission;
     }
 
@@ -342,4 +348,26 @@ public class RoleServiceImpl implements RoleService {
         }
         return cnt;
     }
+
+
+
+	@Override
+	public Page<RoleDTO> findRoles(String pattern, Pageable pageDetails) {
+		 Page<Role> page = roleRepo.findUsingPattern(pattern,pageDetails);
+	        List<RoleDTO> dtOs = convertRoleEntitiesToDTOs(page.getContent());
+	        long t = page.getTotalElements();
+	        Page<RoleDTO> pageImpl = new PageImpl<RoleDTO>(dtOs, pageDetails, t);
+	        return pageImpl;
+	}
+
+
+
+	@Override
+	public Page<PermissionDTO> findPermissions(String pattern, Pageable pageDetails) {
+		Page<Permission> page = permissionRepo.findUsingPattern(pattern,pageDetails);
+        List<PermissionDTO> dtOs = convertPermissionEntitiesToDTOs(page.getContent());
+        long t = page.getTotalElements();
+        Page<PermissionDTO> pageImpl = new PageImpl<PermissionDTO>(dtOs, pageDetails, t);
+        return pageImpl;
+	}
 }

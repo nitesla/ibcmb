@@ -1,14 +1,10 @@
 package longbridge.controllers.operations;
 
-import longbridge.InternetbankingApplication;
 import longbridge.dtos.VerificationDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.VerificationException;
-import longbridge.models.AdminUser;
-import longbridge.models.OperationsUser;
 import longbridge.models.Verification;
 import longbridge.repositories.VerificationRepo;
-import longbridge.services.AdminUserService;
 import longbridge.services.OperationsUserService;
 import longbridge.services.VerificationService;
 import org.slf4j.Logger;
@@ -30,11 +26,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
-//import longbridge.dtos.PendingDTO;
 
 @Controller
 @RequestMapping("/ops/verifications")
@@ -52,8 +45,7 @@ public class OpsVerificationController {
     private MessageSource messageSource;
 
     @GetMapping("/")
-    public String getVerifications(Model model)
-    {
+    public String getVerifications(Model model) {
 
         return "ops/verification/view";
     }
@@ -62,28 +54,24 @@ public class OpsVerificationController {
     @GetMapping("/{id}/verify")
     public String verifyOp(@PathVariable Long id, RedirectAttributes redirectAttributes) {
 
-       try {
-           verificationService.verify(id);
-           redirectAttributes.addFlashAttribute("message","Operation approved successfully");
+        try {
+            verificationService.verify(id);
+            redirectAttributes.addFlashAttribute("message", "Operation approved successfully");
 
-       }
+        } catch (VerificationException ve) {
+            logger.error("Error verifying the operation", ve);
+            redirectAttributes.addFlashAttribute("failure", ve.getMessage());
+        } catch (InternetBankingException ibe) {
+            logger.error("Error verifying operation", ibe);
+            redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
 
-       catch (VerificationException ve){
-           logger.error("Error verifying the operation",ve);
-           redirectAttributes.addFlashAttribute("failure", ve.getMessage());
-       }
-
-       catch (InternetBankingException ibe){
-           logger.error("Error verifying operation",ibe);
-           redirectAttributes.addFlashAttribute("failure",ibe.getMessage());
-
-       }
+        }
         return "redirect:/ops/verifications/operations";
     }
 
 
     @PostMapping("/verify")
-    public String verify(@ModelAttribute("verification")@Valid VerificationDTO verification, BindingResult result, WebRequest request, Model model, RedirectAttributes redirectAttributes, Locale locale) {
+    public String verify(@ModelAttribute("verification") @Valid VerificationDTO verification, BindingResult result, WebRequest request, Model model, RedirectAttributes redirectAttributes, Locale locale) {
 
         String approval = request.getParameter("approve");
 
@@ -92,29 +80,21 @@ public class OpsVerificationController {
                 verificationService.verify(verification);
                 redirectAttributes.addFlashAttribute("message", "Operation approved successfully");
 
-            }
-            else if ("false".equals(approval))
-            {
-                if (result.hasErrors())
-                {
-                    VerificationDTO verification2=verificationService.getVerification(verification.getId());
-                    model.addAttribute("verify",verification2);
-                    result.addError(new ObjectError("invalid", messageSource.getMessage("reason.required", null,locale)));
+            } else if ("false".equals(approval)) {
+                if (result.hasErrors()) {
+                    VerificationDTO verification2 = verificationService.getVerification(verification.getId());
+                    model.addAttribute("verify", verification2);
+                    result.addError(new ObjectError("invalid", messageSource.getMessage("reason.required", null, locale)));
                     return "ops/makerchecker/details";
                 }
                 verificationService.decline(verification);
                 redirectAttributes.addFlashAttribute("message", "Operation declined successfully");
             }
-        }
-
-        catch (VerificationException ve)
-        {
-            logger.error("Error verifying the operation",ve);
+        } catch (VerificationException ve) {
+            logger.error("Error verifying the operation", ve);
             redirectAttributes.addFlashAttribute("failure", ve.getMessage());
-        }
-        catch (InternetBankingException ibe)
-        {
-            logger.error("Error verifying operation",ibe);
+        } catch (InternetBankingException ibe) {
+            logger.error("Error verifying operation", ibe);
             redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
 
         }
@@ -139,8 +119,7 @@ public class OpsVerificationController {
     @GetMapping(path = "/allverification")
     public
     @ResponseBody
-    DataTablesOutput<Verification> getAllVerification(DataTablesInput input)
-    {
+    DataTablesOutput<Verification> getAllVerification(DataTablesInput input) {
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<Verification> verifications = verificationService.getVerificationsForUser(pageable);
         DataTablesOutput<Verification> out = new DataTablesOutput<Verification>();
@@ -152,8 +131,7 @@ public class OpsVerificationController {
     }
 
     @GetMapping("/{opId}/pending")
-    public String getPendingOperation(@PathVariable Long opId, Model model)
-    {
+    public String getPendingOperation(@PathVariable Long opId, Model model) {
 
         VerificationDTO verificationDTO = verificationService.getVerification(opId);
         model.addAttribute("operation", verificationDTO.getOperation());
@@ -173,7 +151,6 @@ public class OpsVerificationController {
         out.setRecordsTotal(page.getTotalElements());
         return out;
     }
-
 
 
     @GetMapping("/verified")
@@ -198,19 +175,18 @@ public class OpsVerificationController {
 
     @GetMapping("/pendingops")
     public String getPendingVerification(Model model) {
-              return "ops/makerchecker/pending";
+        return "ops/makerchecker/pending";
     }
 
 
     @GetMapping("/operations")
     public String getVerification(Model model) {
-          return "ops/makerchecker/checker";
+        return "ops/makerchecker/checker";
     }
 
 
     @GetMapping("/{id}/view")
-    public String getObjectsForVerification(@PathVariable Long id, Model model)
-    {
+    public String getObjectsForVerification(@PathVariable Long id, Model model) {
 
         VerificationDTO verification = verificationService.getVerification(id);
         model.addAttribute("verification", new VerificationDTO());
@@ -219,8 +195,7 @@ public class OpsVerificationController {
     }
 
     @GetMapping("/{id}/pendingviews")
-    public String getObjectsForPending(@PathVariable Long id, Model model)
-    {
+    public String getObjectsForPending(@PathVariable Long id, Model model) {
         VerificationDTO verification = verificationService.getVerification(id);
         model.addAttribute("verify", verification);
         return "ops/makerchecker/pendingdetails";

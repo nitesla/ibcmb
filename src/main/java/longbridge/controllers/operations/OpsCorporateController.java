@@ -6,6 +6,8 @@ import longbridge.exception.InternetBankingException;
 import longbridge.exception.TransferRuleException;
 import longbridge.models.*;
 import longbridge.services.*;
+
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -214,10 +216,15 @@ public class OpsCorporateController {
     @GetMapping(path = "/all")
     public
     @ResponseBody
-    DataTablesOutput<CorporateDTO> getCorporates(DataTablesInput input) {
+    DataTablesOutput<CorporateDTO> getCorporates(DataTablesInput input,@RequestParam("csearch") String search) {
 
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<CorporateDTO> corps = corporateService.getCorporates(pageable);
+        if (StringUtils.isNoneBlank(search)) {
+        	corps = corporateService.findCorporates(search,pageable);
+		}else{
+			corps = corporateService.getCorporates(pageable);
+		}
         DataTablesOutput<CorporateDTO> out = new DataTablesOutput<CorporateDTO>();
         out.setDraw(input.getDraw());
         out.setData(corps.getContent());

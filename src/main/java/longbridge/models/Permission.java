@@ -13,6 +13,8 @@ import org.hibernate.envers.Audited;
 
 import javax.persistence.Entity;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by Wunmi on 27/03/2017.
@@ -111,6 +113,9 @@ public class Permission extends AbstractEntity  implements PrettySerializer{
         };
     }
 
-
+    @Override
+	public List<String> getDefaultSearchFields() {
+		return Arrays.asList("name", "description","category");
+	}
 
 }
