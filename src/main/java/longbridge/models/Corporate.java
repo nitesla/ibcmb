@@ -180,26 +180,16 @@ public class Corporate extends AbstractEntity implements PrettySerializer{
         this.createdOnDate = createdOnDate;
     }
 
+
+
     @Override
-    public String toString() {
-        return "Corporate{" +
-                "rcNumber='" + rcNumber + '\'' +
-                ", customerId='" + customerId + '\'' +
-                ", corporateType='" + corporateType + '\'' +
-                ", name='" + name + '\'' +
-                ", email='" + email + '\'' +
-                ", address='" + address + '\'' +
-                ", status='" + status + '\'' +
-                ", createdOnDate=" + createdOnDate +
-                ", bvn='" + bvn + '\'' +
-                ", users=" + users +
-                ", corpLimits=" + corpLimits +
-                ", corpTransferRequests=" + corpTransferRequests +
-                ", corpTransRules=" + corpTransRules +
-                '}';
-    }
-    
-    @Override @JsonIgnore
+	public String toString() {
+		return "Corporate [rcNumber=" + rcNumber + ", customerId=" + customerId + ", corporateType=" + corporateType
+				+ ", name=" + name + ", email=" + email + ", address=" + address + ", status=" + status
+				+ ", createdOnDate=" + createdOnDate + ", bvn=" + bvn + "]";
+	}
+
+	@Override @JsonIgnore
    	public List<String> getDefaultSearchFields() {
    		return Arrays.asList("name", "rcNumber","customerId");
    	}

@@ -21,7 +21,9 @@
     <aspects>
         <!-- declare application aspects to the weaver -->
         <aspect name="longbridge.aop.MakerCheckerAdvisor"/>
-        <!--<aspect name="longbridge.aop.AdminUserAdvisor"/>-->
+        <aspect name="longbridge.aop.AdminUserAdvisor"/>
+        <aspect name="longbridge.aop.OpsUserAdvisor"/>
+
 
     </aspects>
 

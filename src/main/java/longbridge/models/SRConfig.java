@@ -1,11 +1,18 @@
 package longbridge.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import longbridge.utils.PrettySerializer;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
+import java.io.IOException;
 import java.util.Collection;
 
 /**
@@ -14,7 +21,7 @@ import java.util.Collection;
 @Entity
 @Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
-public class SRConfig extends AbstractEntity{
+public class SRConfig extends AbstractEntity implements PrettySerializer{
 
     private String requestName;
     private String requestType;
@@ -64,13 +71,32 @@ public class SRConfig extends AbstractEntity{
         this.authenticate = authenticate;
     }
 
-    public static OperationCode getAddCode() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
-	public static OperationCode getModifyCode() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+
+    @Override @JsonIgnore
+    public JsonSerializer<SRConfig> getSerializer() {
+        return new JsonSerializer<SRConfig>() {
+            @Override
+            public void serialize(SRConfig value, JsonGenerator gen, SerializerProvider serializers)
+                    throws IOException, JsonProcessingException
+            {
+                gen.writeStartObject();
+                gen.writeStringField("Service Request Name",value.requestName);
+                gen.writeStringField("Request Type",value.requestType);
+                gen.writeBooleanField("Authentication",value.authenticate);
+                gen.writeObjectFieldStart("Form Fields");
+
+                for(ServiceReqFormField reqFormField: formFields){
+
+                    gen.writeObjectFieldStart(reqFormField.getId().toString());
+                    gen.writeStringField("Field Name",reqFormField.getFieldName());
+                    gen.writeStringField("Field Type",reqFormField.getFieldType());
+                    gen.writeStringField("Field Label",reqFormField.getFieldLabel());
+                    gen.writeStringField("Field Data",reqFormField.getTypeData());
+                    gen.writeEndObject();
+                }
+                gen.writeEndObject();
+            }
+        };
+    }
 }
