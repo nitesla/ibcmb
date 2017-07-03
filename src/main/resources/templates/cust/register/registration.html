@@ -154,6 +154,7 @@
                                         <div class='alert alert-danger' id="myspan2">
                                         </div>
                                         <input id="returnValue" type="hidden"/>
+                                        <!--<p th:each="question,id : ${securityQuestion}" th:text="${question.securityQuestion.}"></p>-->
                                         <div class="form-group clearfix">
                                             <label>Question</label>
                                             <select name="securityQuestion" class="my-select required">
@@ -289,7 +290,7 @@
 <script th:src="@{~/customer/js/jquery-ui.js}"></script>
 <script th:src="@{~/customer/plugins/jquery-steps/js/jquery.steps.min.js}" type="text/javascript"></script>
 <script th:src="@{~/customer/js/jasny-bootstrap.min.js}"></script>
-<script th:src="@{~/customer/js/register.js}" type="text/javascript"></script>
+<!--<script th:src="@{~/customer/js/register.js}" type="text/javascript"></script>-->
 <script th:src="@{~/customer/js/passwordStrength.js}" type="text/javascript"></script>
 <script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
 

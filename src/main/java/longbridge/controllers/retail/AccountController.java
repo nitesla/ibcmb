@@ -1,7 +1,9 @@
 package longbridge.controllers.retail;
 
 import longbridge.api.AccountDetails;
+import longbridge.api.PaginationDetails;
 import longbridge.dtos.AccountDTO;
+import longbridge.dtos.TransferRequestDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.forms.CustomizeAccount;
 import longbridge.models.Account;
@@ -23,8 +25,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+import org.springframework.data.jpa.datatables.repository.DataTablesUtils;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Controller;
@@ -34,18 +38,17 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.ByteArrayOutputStream;
 import java.security.Principal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 /**
  * Created by Fortune on 4/3/2017.
@@ -239,6 +242,35 @@ public class AccountController {
 		return "redirect:/retail/dashboard";
 	}
 
+		@RequestMapping(path = "{id}/downloadhistory", method = RequestMethod.GET)
+		public ModelAndView getTransPDF(@PathVariable String id, Model model, Principal principal) {
+			RetailUser retailUser = retailUserService.getUserByName(principal.getName());
+
+		Account account=accountRepo.findFirstAccountByCustomerId(retailUser.getCustomerId());
+			logger.info("Retail account {}",account);
+		String LAST_TEN_TRANSACTION = "10";
+		List<TransactionHistory> transRequestList = integrationService.getLastNTransactions(account.getAccountNumber(),
+				LAST_TEN_TRANSACTION);
+		JasperReportsPdfView view = new JasperReportsPdfView();
+		view.setUrl("classpath:jasperreports/rpt_tran-hist.jrxml");
+		view.setApplicationContext(appContext);
+
+		Map<String, Object> modelMap = new HashMap<>();
+		for(TransactionHistory transactionHistory:transRequestList) {
+		modelMap.put("datasource", new ArrayList<>());
+	modelMap.put("amount", transactionHistory.getBalance());
+	modelMap.put("sender",retailUser.getFirstName()+" "+retailUser.getLastName() );
+	modelMap.put("remarks", transactionHistory.getNarration());
+	modelMap.put("recipientBank", "");
+	modelMap.put("refNUm", transactionHistory.getTranType());
+	modelMap.put("date",transactionHistory.getValueDate());
+	modelMap.put("tranDate", transactionHistory.getPostedDate());
+}
+
+	ModelAndView modelAndView=new ModelAndView(view, modelMap);
+	  return modelAndView;
+	}
+
 	@PostMapping("/history")
 	public String getAccountHistory(Model model, Principal principal) {
 
@@ -252,8 +284,10 @@ public class AccountController {
 	}
 
 	@GetMapping("/viewstatement/display/data")
-	public @ResponseBody DataTablesOutput<TransactionDetails> getStatementData(DataTablesInput input, String acctNumber,
-			String fromDate, String toDate, String tranType) {
+
+	public @ResponseBody
+	DataTablesOutput<TransactionDetails> getStatementData(DataTablesInput input, String acctNumber,
+														  String fromDate, String toDate, String tranType) {
 		// Pageable pageable = DataTablesUtils.getPageable(input);
 
 		Date from;
@@ -262,6 +296,11 @@ public class AccountController {
 		try {
 			from = dateFormat.parse(fromDate);
 			to = dateFormat.parse(toDate);
+			int diffInDays = (int) ((to.getTime() - from.getTime()) / (1000 * 60 * 60 * 24));
+			logger.info("Day difference {}",diffInDays);
+			if (diffInDays > 1) {
+				logger.info("Difference in number of days {} : " , diffInDays);
+			}
 			AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to, tranType);
 			logger.info("TransactionType {}", tranType);
 			out.setDraw(input.getDraw());
@@ -270,8 +309,9 @@ public class AccountController {
 			System.out.println("Whats in the list " + list);
 
 			out.setData(list);
-			out.setRecordsFiltered(list==null?0:list.size());
-			out.setRecordsTotal(list.size());
+			int sz = list==null?0:list.size();
+			out.setRecordsFiltered(sz);
+			out.setRecordsTotal(sz);
 		} catch (ParseException e) {
 			logger.warn("didn't parse date", e);
 		}
@@ -297,44 +337,25 @@ public class AccountController {
 			System.out.println("list = " + list);
 			modelMap.put("datasource", list);
 			modelMap.put("format", "pdf");
-			modelMap.put("summary.accountNum", acctNumber);
-			modelMap.put("customerName", retailUser.getFirstName() + " " + retailUser.getLastName());
-			logger.info("Customer's Name {}" + retailUser.getFirstName() + " " + retailUser.getLastName());
-
-			if (accountStatement.getAccountNumber() != null) {
-				modelMap.put("customerNo", acctNumber);
-			} else if (accountStatement.getAccountNumber() == null || accountStatement.getAccountNumber().isEmpty()) {
-				modelMap.put("customerNo", "");
-			} else {
-			}
-			;
+			modelMap.put("summary.accountNum",acctNumber);
+			modelMap.put("summary.customerName",retailUser.getFirstName()+" "+retailUser.getLastName());
+			modelMap.put("summary.customerNo", retailUser.getCustomerId());
 			modelMap.put("summary.openingBalance", accountStatement.getOpeningBalance());
-			if (accountStatement.getDebitCount() != null) {
-				modelMap.put("debitCount", accountStatement.getDebitCount());
-			} else {
-				modelMap.put("debitCount", "");
+			if(accountStatement.getDebitCount()!=null) {
+				modelMap.put("summary.debitCount", accountStatement.getDebitCount());
 			}
-			if (accountStatement.getCreditCount() != null) {
-				modelMap.put("creditCount", accountStatement.getCreditCount());
-			} else {
-				modelMap.put("creditCount", "");
+			else{modelMap.put("summary.debitCount", "");}
+			if(accountStatement.getCreditCount()!=null) {
+				modelMap.put("summary.creditCount", accountStatement.getCreditCount());
 			}
+			else{modelMap.put("summary.creditCount", "");}
 			modelMap.put("summary.currencyCode", accountStatement.getCurrencyCode());
 			if (accountStatement.getClosingBalance() != null) {
 				modelMap.put("summary.closingBalance", accountStatement.getClosingBalance());
-			} else {
-				modelMap.put("summary.closingBalance", "0");
-			}
+			}else{modelMap.put("summary.closingBalance","" );}
 			modelMap.put("summary.totalDebit", accountStatement.getTotalDebit());
 			modelMap.put("summary.totalCredit", accountStatement.getTotalCredit());
-			if (accountStatement.getAddress() != null) {
-				modelMap.put("address", accountStatement.getAddress());
-			} else if (accountStatement.getAddress() == null) {
-				modelMap.put("address", "");
-			} else {
-			}
-			;
-
+			modelMap.put("summary.address", "");
 			modelMap.put("fromDate", fromDate);
 			modelMap.put("toDate", toDate);
 			Date today = new Date();

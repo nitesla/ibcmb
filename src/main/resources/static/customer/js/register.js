@@ -227,7 +227,7 @@ function validatePassword(password){
             if(result === 'true'){
                 //success
             }else{
-                document.getElementById("errorMess").textContent="The entered password might not meet the set password policy.";
+                document.getElementById("errorMess").textContent=result;
                 $('#myModalError').modal('show');
             }
         }
