@@ -142,11 +142,19 @@
                 {"data":"verifiedOn"}
 
             ],
+            columnDefs" : [ {
+            "targets" : 2,
+            "data" : "status",
+            "render" : function(data, type,full, meta) {
+                if (type === 'display') {
+                	var dtStart = new Date(parseInt(data.substr(6)));
+                	var dtStartWrapper = moment(dtStart);
+                	return dtStartWrapper.format('DD/MM/YYYY HH:mm');
+                }
+                return data;
+            }
 
-            "columnDefs": [ {
-                targets: 2,
-                render: $.fn.dataTable.render.moment( 'Do MMM YYYYY' )
-            } ]
+        } ]
         });
 
         table.on('select', function()
