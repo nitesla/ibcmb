@@ -63,6 +63,7 @@ public class TransferController {
 
 
     @Autowired
+
     public TransferController(RetailUserService retailUserService, IntegrationService integrationService, TransferService transferService, AccountService accountService, MessageSource messages, LocaleResolver localeResolver, LocalBeneficiaryService localBeneficiaryService, FinancialInstitutionService financialInstitutionService, TransferErrorService transferErrorService, SecurityService securityService
     ,ApplicationContext appContext) {
         this.retailUserService = retailUserService;
@@ -319,6 +320,19 @@ public class TransferController {
         }
         return object.toString();
     }
+
+    /**
+     * Returns the viewName to return for coming back to the sender url
+     *
+     * @param request Instance of {@link HttpServletRequest} or use an injected instance
+     * @return Optional with the view name. Recomended to use an alternativa url with
+     * {@link Optional#orElse(java.lang.Object)}
+     */
+    protected Optional<String> getPreviousPageByRequest(HttpServletRequest request)
+    {
+        return Optional.ofNullable(request.getHeader("Referer")).map(requestUrl -> "redirect:" + requestUrl);
+    }
+
     @RequestMapping(path = "{id}/receipt", method = RequestMethod.GET)
     public ModelAndView report(@PathVariable Long id, HttpServletRequest servletRequest, TransferRequestDTO transferRequestDTO) {
         /**
@@ -332,39 +346,25 @@ public class TransferController {
 
         modelMap.put("datasource",new ArrayList<>());
 //        modelMap.put("format", "pdf");
-        modelMap.put("amount", "1,000,000.00");
-        modelMap.put("recipient", "BANKOLE D. ONEY");
-        modelMap.put("AccountNum", "10986433737332");
-        modelMap.put("sender", "CHEERFUL GIVER CHOICE");
-        modelMap.put("bank", "BANK OF AFRICA");
-        modelMap.put("remarks", "MY BUILDING PROJECT");
-        modelMap.put("recipientBank", "AGONORONA BANK");
-        modelMap.put("acctNo2", "0986879765");
-        modelMap.put("acctNo1", "4343758667");
-        modelMap.put("refNUm", "65566586787");
-        modelMap.put("date", "08-09-2017");
-        modelMap.put("amountInWords", "30 BILLION ");
-        modelMap.put("tranDate", "08-09-2017");
-        return new ModelAndView(view, modelMap);
-
+        modelMap.put("amount",transferService.getTransfer(id).getAmount());
+        modelMap.put("recipient",transferService.getTransfer(id).getBeneficiaryAccountName());
+        modelMap.put("AccountNum", transferService.getTransfer(id).getCustomerAccountNumber());
+        modelMap.put("sender", "");
+        modelMap.put("bank", transferService.getTransfer(id).getFinancialInstitution().getInstitutionName());
+        modelMap.put("remarks", transferService.getTransfer(id).getRemarks());
+        modelMap.put("recipientBank", "");
+        modelMap.put("acctNo2", transferService.getTransfer(id).getCustomerAccountNumber());
+        modelMap.put("acctNo1", transferService.getTransfer(id).getBeneficiaryAccountNumber());
+        modelMap.put("refNUm", transferService.getTransfer(id).getReferenceNumber());
+        modelMap.put("date", transferService.getTransfer(id).getTranDate());
+        modelMap.put("tranDate",transferService.getTransfer(id).getTranDate());
+        ModelAndView modelAndView=new ModelAndView(view, modelMap);
+        return modelAndView;
 //        logger.info("Transaction Receipt {}",modelMap);
 //
 //        ModelAndView modelAndView = new ModelAndView("rpt_receipt", modelMap);
 //        return modelAndView;
     }
-    /**
-     * Returns the viewName to return for coming back to the sender url
-     *
-     * @param request Instance of {@link HttpServletRequest} or use an injected instance
-     * @return Optional with the view name. Recomended to use an alternativa url with
-     * {@link Optional#orElse(java.lang.Object)}
-     */
-    protected Optional<String> getPreviousPageByRequest(HttpServletRequest request)
-    {
-        return Optional.ofNullable(request.getHeader("Referer")).map(requestUrl -> "redirect:" + requestUrl);
-    }
-
-
 
     @RequestMapping(value = "/back", method = RequestMethod.POST)
     public @ResponseBody
@@ -373,6 +373,7 @@ public class TransferController {
 
         return getPreviousPageByRequest(request).orElse("/retail/dashboard"); //else go to home page
     }
+
 
 }
 

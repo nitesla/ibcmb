@@ -120,6 +120,40 @@ public class OwnTransferController {
 
 
 
+    @RequestMapping(path = "{id}/receipt", method = RequestMethod.GET)
+    public ModelAndView report(@PathVariable Long id,HttpServletRequest servletRequest, TransferRequestDTO transferRequestDTO) {
+        /**
+         * Created a stub to test transaction receiptpt
+         */
+        JasperReportsPdfView view = new JasperReportsPdfView();
+        view.setUrl("classpath:jasperreports/rpt_receipt.jrxml");
+        view.setApplicationContext(appContext);
+
+        Map<String, Object> modelMap = new HashMap<>();
+
+        modelMap.put("datasource",new ArrayList<>());
+//        modelMap.put("format", "pdf");
+        modelMap.put("amount", "1,000,000.00");
+        modelMap.put("recipient", "BANKOLE D. ONEY");
+        modelMap.put("AccountNum", "10986433737332");
+        modelMap.put("sender", "BAMDUPE ABIODUN");
+        modelMap.put("bank", "CORONATION MERCHANT BANK");
+        modelMap.put("remarks", "MY BUILDING PROJECT");
+        modelMap.put("recipientBank", "CORONATION MERCHANT BANK");
+        modelMap.put("acctNo2", "0986879765");
+        modelMap.put("acctNo1", "4343758667");
+        modelMap.put("refNUm", "65566586787");
+        modelMap.put("date", "08-09-2017");
+        modelMap.put("amountInWords", "1 MILLION NAIRA ");
+        modelMap.put("tranDate", "08-09-2017");
+        return new ModelAndView(view, modelMap);
+
+//        logger.info("Transaction Receipt {}",modelMap);
+//
+//        ModelAndView modelAndView = new ModelAndView("rpt_receipt", modelMap);
+//        return modelAndView;
+    }
+
     @PostMapping("/edit")
     public String editTransfer(@ModelAttribute("transferRequest")  TransferRequestDTO transferRequestDTO,Model model,HttpServletRequest request){
         transferRequestDTO.setTransferType(TransferType.OWN_ACCOUNT_TRANSFER);
