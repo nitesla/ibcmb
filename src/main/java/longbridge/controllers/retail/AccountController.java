@@ -1,6 +1,7 @@
 package longbridge.controllers.retail;
 
 import longbridge.api.AccountDetails;
+import longbridge.api.PaginationDetails;
 import longbridge.dtos.AccountDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.forms.CustomizeAccount;
@@ -23,8 +24,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+import org.springframework.data.jpa.datatables.repository.DataTablesUtils;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Controller;
@@ -253,7 +256,7 @@ public class AccountController {
 	@GetMapping("/viewstatement/display/data")
 	public @ResponseBody
 	DataTablesOutput<TransactionDetails> getStatementData(DataTablesInput input, String acctNumber,
-														  String fromDate, String toDate,String tranType) {
+														  String fromDate, String toDate, String tranType) {
 		// Pageable pageable = DataTablesUtils.getPageable(input);
 
 		Date from;

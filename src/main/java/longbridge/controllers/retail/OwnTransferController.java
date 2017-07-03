@@ -134,15 +134,15 @@ public class OwnTransferController {
         modelMap.put("amount", "1,000,000.00");
         modelMap.put("recipient", "BANKOLE D. ONEY");
         modelMap.put("AccountNum", "10986433737332");
-        modelMap.put("sender", "CHEERFUL GIVER CHOICE");
-        modelMap.put("bank", "BANK OF AFRICA");
+        modelMap.put("sender", "BAMDUPE ABIODUN");
+        modelMap.put("bank", "CORONATION MERCHANT BANK");
         modelMap.put("remarks", "MY BUILDING PROJECT");
-        modelMap.put("recipientBank", "AGONORONA BANK");
+        modelMap.put("recipientBank", "CORONATION MERCHANT BANK");
         modelMap.put("acctNo2", "0986879765");
         modelMap.put("acctNo1", "4343758667");
         modelMap.put("refNUm", "65566586787");
         modelMap.put("date", "08-09-2017");
-        modelMap.put("amountInWords", "30 BILLION ");
+        modelMap.put("amountInWords", "1 MILLION NAIRA ");
         modelMap.put("tranDate", "08-09-2017");
         return new ModelAndView(view, modelMap);
 
