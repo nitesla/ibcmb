@@ -23,6 +23,39 @@ start
 .req:after { content:" * ";color:#ff6666;font-size: 13px;font-weight: bolder }
 .req-inner:before { content:" * ";color:#ff6666;font-size: 13px;font-weight: bolder }
 
+.time-icon
+{
+    padding-left:5px !important;
+    color:#9F614B !important;
+}
+
+
+.no-mt
+{
+    margin-top: 0px !important;
+}
+
+
+.no-mb
+{
+    margin-bottom: 0px !important;
+}
+
+.no-ml
+{
+    margin-left: 0px !important;
+}
+
+.no-mr
+{
+    margin-right: 0px !important;
+}
+
+
+.no-margin
+{
+    margin:0px !important;
+}
 .row
 {
     margin-right: 0px !important;
@@ -47,7 +80,7 @@ start
 }
 
 .active{
-    border-bottom: 2px solid #9F614B !important;
+    border-bottom: 3px solid #9F614B !important;
 }
 
 .datepicker-switch
@@ -375,10 +408,17 @@ select
 
 }
 
+.power
+{
+    background: #9F614B;
+    padding:6px;
+}
+
 .time
 {
-    background: #ebecef;
+    /*background: #ebecef;*/
     margin-top: 0px !important;
+    padding: 7px !important;
 }
 
 /*#loa {*/
@@ -425,6 +465,91 @@ select
     height: 80px;
     -webkit-animation: spin 2s linear infinite;
     animation: spin 2s linear infinite;
+}
+
+
+.top-bar
+{
+   
+     padding-left: 0px !important;
+}
+
+
+.top-link
+{
+    padding: 10px;
+    padding-left: 0px !important;
+}
+
+.top-link li
+{
+    display: inline;
+    padding:0px 2px;
+    border-right: 1px solid #868B8F;
+    font-size: 10px;
+}
+
+.top-link li a
+{
+    color: #777;
+}
+
+.top-link li a:hover
+{
+    text-decoration: none;
+    color:#9F614B;
+}
+
+.bvn-tab
+{
+    border:1px solid #777;
+    padding: 10px;
+    margin-top: 15px;
+    
+}
+
+.info-bar
+{
+    background: #ebecef;
+    padding:14px;
+    margin-top: -2px;
+}
+
+.header-bar
+{
+   
+    padding-top: 10px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #ebecef;
+}
+
+
+.bvn-add-info
+{
+    padding-left:5px;
+    font-size: 10px;
+     
+}
+
+.greeting
+{
+    font-size: 17px;
+    color: #9F614B;
+    
+}
+
+.greeting-user
+{
+    font-size: 17px;
+    color: #032A4F;
+      
+}
+
+.user-info
+{
+    padding: 10px;
+    padding-left: 40px;
+     margin-top: 15px;
 }
 
 
@@ -838,7 +963,7 @@ body {
     display: block;
     line-height: 1px;
     position: absolute;
-    right: 80px;
+    right: 50px;
     top: 30px;
     width: 200px;
 }
@@ -920,7 +1045,7 @@ body {
 }
 .lorem
 {
-    font-size: 14px;
+    font-size: 10px;
 }
 
 .page_header{
@@ -985,9 +1110,7 @@ body {
     border-radius: 0;
 }
 
-.navbar-nav>li:first-child>a {
-    padding-left: 0;
-}
+
 
 .navbar-nav li a{
     color: #777;
