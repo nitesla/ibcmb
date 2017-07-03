@@ -15,6 +15,5 @@ import java.io.Serializable;
 @NoRepositoryBean
 public interface CommonRepo<T, ID extends Serializable> extends JpaRepository<T, ID> {
 
-    <T extends SerializableEntity<T>> String makerCheckerSave(T originalEntity, T entity,User createdBy) throws JsonProcessingException, VerificationException;
 
 }

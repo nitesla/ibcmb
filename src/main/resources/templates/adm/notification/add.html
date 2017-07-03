@@ -27,7 +27,7 @@
             <div class="">
                 <div class="page-title">
                     <div class="title_left">
-                        <h3>Checker Maker Management</h3>
+                        <h3>System Notification</h3>
                     </div>
 
                 </div>
@@ -37,41 +37,23 @@
                 <div class="row">
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="x_panel">
-                            <div class="x_title">
-                                <!--<h2>Add new checker maker</h2>-->
-
-                                <div class="clearfix"></div>
-                            </div>
 
                             <div class="x_content">
                                 <div class="ibox-content">
-                                    <form method="post" th:action="@{/admin/checker/save}" class="form-horizontal"  th:object="${checker}" >
+                                    <div class="x_title">
+                                        <ul class="nav navbar-right panel_toolbox">
 
+                                        </ul>
+                                        <div class="clearfix"></div>
+                                    </div>
+                                    <form method="post" class="form-horizontal" th:action="@{/admin/notification}">
                                         <div class="form-group">
-                                            <label class="col-sm-2 control-label">Name</label>
+                                            <label class="col-sm-2 control-label">Message</label>
 
-                                            <div class="col-sm-4">
-                                                <input type="text"  class="form-control"  th:field="*{name}"/>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label class="col-sm-2 control-label">Code</label>
-
-                                            <div class="col-sm-4">
-                                                <input type="text" class="form-control" th:field="*{code}" />
+                                            <div class="col-sm-6">
+                                                <textarea class="form-control" name="message"></textarea>
                                             </div>
 
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="col-sm-2 control-label">User Type</label>
-                                            <div class="col-sm-4">
-                                                <select class="form-control" th:field="*{userType}">
-                                                    <option value="">--Select--</option>
-                                                    <option value="ADMIN">Administrator</option>
-                                                    <option value="OPERATIONS">Operator</option>
-                                                </select>
-                                            </div>
                                         </div>
 
                                         <div class="form-group">
@@ -80,8 +62,7 @@
                                                 <button class="btn btn-primary" type="submit">Submit</button>
                                             </div>
                                         </div>
-                                        <div th:replace="layout::form-validation"></div>
-
+                                <!--<div th:replace="layout::form-validation"></div>-->
                                     </form>
                                 </div>
                             </div>
@@ -100,9 +81,9 @@
 </div>
 
 <script>
+
     document.getElementById("cancel").onclick = function () {
-        location.href = "/admin/checker";
-    }
+        location.href = "/admin/notification";}
 </script>
 
 </body>

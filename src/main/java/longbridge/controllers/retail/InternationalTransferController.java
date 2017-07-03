@@ -103,6 +103,7 @@ public class InternationalTransferController {
 
 
         servletRequest.getSession().setAttribute("Ibeneficiary", internationalBeneficiaryDTO);
+        servletRequest.getSession().setAttribute("benName", internationalBeneficiaryDTO.getAccountName());
 
         return page + "pageii";
     }
@@ -110,10 +111,13 @@ public class InternationalTransferController {
 
 
     @PostMapping("/summary")
-    public String transferSummary(@ModelAttribute("transferRequest") @Valid TransferRequestDTO transferRequestDTO, BindingResult result, Model model, HttpServletRequest servletRequest) {
+    public String transferSummary(@ModelAttribute("transferRequest") TransferRequestDTO transferRequestDTO, BindingResult result, Model model, HttpServletRequest servletRequest) {
         model.addAttribute("transferRequest", transferRequestDTO);
         validator.validate(transferRequestDTO, result);
-
+        if (servletRequest.getSession().getAttribute("benName") != null) {
+           String benName = (String) servletRequest.getSession().getAttribute("benName");
+            model.addAttribute("benName", benName);
+        }
         if (servletRequest.getSession().getAttribute("Ibeneficiary") != null) {
             InternationalBeneficiaryDTO beneficiary = (InternationalBeneficiaryDTO) servletRequest.getSession().getAttribute("Ibeneficiary");
             model.addAttribute("beneficiary", beneficiary);
@@ -125,7 +129,7 @@ public class InternationalTransferController {
             transferService.validateTransfer(transferRequestDTO);
             transferRequestDTO.setTransferType(TransferType.INTERNATIONAL_TRANSFER);
             servletRequest.getSession().setAttribute("transferRequest", transferRequestDTO);
-
+            servletRequest.getSession().removeAttribute("benName");
             return page + "pageiii";
         } catch (InternetBankingTransferException e) {
 
@@ -148,13 +152,14 @@ public class InternationalTransferController {
         requestDTO.setTransferType(TransferType.INTERNATIONAL_TRANSFER);
         FinancialInstitution financialInstitution = new FinancialInstitution();
         financialInstitution.setInstitutionCode(beneficiary.getBeneficiaryBank());
+        financialInstitution.setInstitutionName(beneficiary.getBeneficiaryBank());
         requestDTO.setFinancialInstitution(financialInstitution);
 
         model.addAttribute("transferRequest", requestDTO);
         model.addAttribute("beneficiary", beneficiary);
-        model.addAttribute("benName", beneficiary.getIntermediaryBankName());
+        model.addAttribute("benName",  beneficiary.getAccountName());
 
-        request.getSession().setAttribute("benName", beneficiary.getIntermediaryBankName());
+        request.getSession().setAttribute("benName", beneficiary.getAccountName());
         return page + "pageii";
     }
 

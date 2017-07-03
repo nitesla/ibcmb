@@ -67,48 +67,10 @@ public class RoleServiceImpl implements RoleService {
         this.corpRepo = corpRepo;
     }
 
-// @Override
-    // public Role deserialize(String data) throws IOException {
-    // Role role = new Role();
-    // ObjectMapper mapper = new ObjectMapper();
-    // JsonNode node = mapper.readTree(data);
-    // ObjectNode objectNode = nodeFactory.objectNode();
-    // role.setId(objectNode.get("id").asLong());
-    // role.setVersion(objectNode.get("version").asInt());
-    // role.setName(objectNode.get("name").asText());
-    // role.setEmail(objectNode.get("email").asText());
-    // role.setUserType(UserType.valueOf(objectNode.get("userType").asText()));
-    //
-    // //deserialize the listentity
-    // List<String> ids = objectNode.findValuesAsText("permissions");
-    // Collection<Permission> permissionCollection = new
-    // LinkedList<Permission>();
-    // for(String id: ids){
-    // Permission permission = new Permission();
-    // permission.setId();
-    // }
-    //// ArrayNode arrayNode = objectNode.putArray("permissions");
-    // objectNode.put("permissions",serializeEntityList(role.getPermissions(),
-    // arrayNode));
-    // return objectNode.toString();
-    // }
-    //
-    //// @Override
-    // public String serialize(Role role) throws JsonProcessingException {
-    // ObjectNode objectNode = nodeFactory.objectNode();
-    // objectNode.put("id", role.getId());
-    // objectNode.put("email", role.getEmail());
-    // objectNode.put("name", role.getName());
-    // objectNode.put("userType", role.getUserType().toString());
-    //// ArrayNode arrayNode = objectNode.putArray("permissions");
-    // objectNode.put("permissions",serializeEntityList(role.getPermissions(),
-    // arrayNode));
-    // return objectNode.toString();
-    // }
 
 
     @Override
-    @Verifiable(operation="Add Role",description="Add Role")
+    @Verifiable(operation="ROLE_ADD",description="Adding a Role")
     public String addRole(RoleDTO roleDTO) throws InternetBankingException {
 
         Role role = roleRepo.findByName(roleDTO.getName());
@@ -153,7 +115,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    @Verifiable(operation="Update Role",description="Update Role")
+    @Verifiable(operation="ROLE_UPDATE",description="Updating a Role")
     public String updateRole(RoleDTO roleDTO) throws InternetBankingException {
         try {
             Role role = convertDTOToEntity(roleDTO);
@@ -166,7 +128,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    @Verifiable(operation="Delete Role",description="Delete Role")
+    @Verifiable(operation="ROLE_DEL",description="Deleting a Role")
     public String deleteRole(Long id) throws InternetBankingException {
 
         	Role role = roleRepo.getOne(id);
@@ -183,7 +145,7 @@ public class RoleServiceImpl implements RoleService {
         }
     }
 
-    @Verifiable(operation="Add Permission",description="Add Permission")
+    @Verifiable(operation="PERM_ADD",description="Adding a Permission")
     public String addPermission(PermissionDTO permissionDTO) throws InternetBankingException {
         try {
             Permission permission = convertDTOToEntity(permissionDTO);
@@ -227,7 +189,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    @Verifiable(operation="Update Permission",description="Update Permission")
+    @Verifiable(operation="PERM_UPDATE",description="Updating a Permission")
     public String updatePermission(PermissionDTO permissionDTO) throws InternetBankingException {
         try {
             Permission permission = convertDTOToEntity(permissionDTO);
@@ -240,7 +202,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    @Verifiable(operation="Delete Permission",description="Delete Permission")
+    @Verifiable(operation="PERM_DEL",description="Deleting a Permission")
     public String deletePermission(Long id) throws InternetBankingException {
         try {
             permissionRepo.delete(id);

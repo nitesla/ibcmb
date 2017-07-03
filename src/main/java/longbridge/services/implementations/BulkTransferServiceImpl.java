@@ -7,9 +7,14 @@ import longbridge.models.Corporate;
 import longbridge.models.CreditRequest;
 import longbridge.repositories.BulkTransferRepo;
 import longbridge.services.BulkTransferService;
+import longbridge.services.bulkTransfers.BulkTransferJobLauncher;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.batch.core.JobParametersInvalidException;
+import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
+import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
+import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
@@ -24,19 +29,27 @@ import java.util.List;
  * Created by Longbridge on 14/06/2017.
  */
 @Service
-public class BulkTransferServiceImpl implements BulkTransferService{
+public class BulkTransferServiceImpl implements BulkTransferService {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Autowired
+
     private BulkTransferRepo bulkTransferRepo;
-    @Autowired
+
     private MessageSource messageSource;
 
+    private BulkTransferJobLauncher jobLauncher;
+
     private ModelMapper modelMapper;
+
     @Autowired
-    public BulkTransferServiceImpl(BulkTransferRepo bulkTransferRepo , ModelMapper modelMapper) {
+    public BulkTransferServiceImpl(BulkTransferRepo bulkTransferRepo, ModelMapper modelMapper
+            , BulkTransferJobLauncher jobLauncher,MessageSource messageSource
+
+    ) {
         this.bulkTransferRepo = bulkTransferRepo;
         this.modelMapper = modelMapper;
+        this.jobLauncher=jobLauncher;
+        this.messageSource=messageSource;
     }
 
 
@@ -44,11 +57,18 @@ public class BulkTransferServiceImpl implements BulkTransferService{
     public String makeBulkTransferRequest(BulkTransfer bulkTransfer) {
         logger.trace("Transfer details valid {}", bulkTransfer);
         //validate bulk transfer
-        bulkTransferRepo.save(bulkTransfer);
+        BulkTransfer transfer = bulkTransferRepo.save(bulkTransfer);
+        try {
+            jobLauncher.launchBulkTransferJob(""+transfer.getId());
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("Exception occurred {}",e);
+            return messageSource.getMessage("bulk.transfer.failure", null, null);
+        }
 
-        return messageSource.getMessage("bulk.transfer.success",null,null);
+
+        return messageSource.getMessage("bulk.transfer.success", null, null);
     }
-
 
 
     @Override
@@ -59,33 +79,31 @@ public class BulkTransferServiceImpl implements BulkTransferService{
 
     @Override
     public Page<BulkTransferDTO> getBulkTransferRequests(Corporate corporate, Pageable details) {
-        Page<BulkTransfer> page = bulkTransferRepo.findByCorporate(corporate,details);
+        Page<BulkTransfer> page = bulkTransferRepo.findByCorporate(corporate, details);
         List<BulkTransferDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
-        Page<BulkTransferDTO> pageImpl = new PageImpl<BulkTransferDTO>(dtOs,details,t);
+        Page<BulkTransferDTO> pageImpl = new PageImpl<BulkTransferDTO>(dtOs, details, t);
         return pageImpl;
     }
 
-    public BulkTransferDTO convertEntityToDTO(BulkTransfer bulkTransfer){
+    public BulkTransferDTO convertEntityToDTO(BulkTransfer bulkTransfer) {
         BulkTransferDTO bulkTransferDTO = new BulkTransferDTO();
-            bulkTransferDTO.setId(bulkTransfer.getId());
-            bulkTransferDTO.setDebitAccount(bulkTransfer.getDebitAccount());
-            bulkTransferDTO.setRefCode(bulkTransfer.getRefCode());
-            bulkTransferDTO.setRequestDate(bulkTransfer.getRequestDate());
-            bulkTransferDTO.setStatus(bulkTransfer.getStatus());
-            return  bulkTransferDTO;
+        bulkTransferDTO.setId(bulkTransfer.getId());
+        bulkTransferDTO.setDebitAccount(bulkTransfer.getDebitAccount());
+        bulkTransferDTO.setRefCode(bulkTransfer.getRefCode());
+        bulkTransferDTO.setRequestDate(bulkTransfer.getRequestDate());
+        bulkTransferDTO.setStatus(bulkTransfer.getStatus());
+        return bulkTransferDTO;
     }
 
-    public List<BulkTransferDTO> convertEntitiesToDTOs(Iterable<BulkTransfer> bulkTransfers){
+    public List<BulkTransferDTO> convertEntitiesToDTOs(Iterable<BulkTransfer> bulkTransfers) {
         List<BulkTransferDTO> bulkTransferDTOList = new ArrayList<>();
-        for(BulkTransfer bulkTransfer: bulkTransfers){
+        for (BulkTransfer bulkTransfer : bulkTransfers) {
             BulkTransferDTO bulkTransferDTO = convertEntityToDTO(bulkTransfer);
             bulkTransferDTOList.add(bulkTransferDTO);
         }
         return bulkTransferDTOList;
     }
-
-
 
 
     @Override
@@ -108,7 +126,7 @@ public class BulkTransferServiceImpl implements BulkTransferService{
         Page<CreditRequest> page = new PageImpl<CreditRequest>(creditRequests);
         List<CreditRequestDTO> dtOs = convertEntToDTOs(page.getContent());
         long t = page.getTotalElements();
-        Page<CreditRequestDTO> pageImpl = new PageImpl<CreditRequestDTO>(dtOs,pageable,t);
+        Page<CreditRequestDTO> pageImpl = new PageImpl<CreditRequestDTO>(dtOs, pageable, t);
         return pageImpl;
     }
 
@@ -117,15 +135,14 @@ public class BulkTransferServiceImpl implements BulkTransferService{
         Page<CreditRequest> page = (Page<CreditRequest>) bulkTransfer.getCrRequestList();
         List<CreditRequest> creditRequests = page.getContent();
         long t = page.getTotalElements();
-        Page<CreditRequest> pageImpl = new PageImpl<CreditRequest>(creditRequests,pageable,t);
+        Page<CreditRequest> pageImpl = new PageImpl<CreditRequest>(creditRequests, pageable, t);
         return pageImpl;
     }
 
 
-
-    public List<CreditRequestDTO> convertEntToDTOs(Iterable<CreditRequest> creditRequests){
+    public List<CreditRequestDTO> convertEntToDTOs(Iterable<CreditRequest> creditRequests) {
         List<CreditRequestDTO> creditRequestDTOList = new ArrayList<>();
-        for(CreditRequest creditRequest: creditRequests){
+        for (CreditRequest creditRequest : creditRequests) {
             CreditRequestDTO creditRequestDTO = convertEntityToDTO(creditRequest);
             creditRequestDTOList.add(creditRequestDTO);
         }
@@ -133,7 +150,7 @@ public class BulkTransferServiceImpl implements BulkTransferService{
     }
 
 
-    public CreditRequestDTO convertEntityToDTO(CreditRequest creditRequest){
+    public CreditRequestDTO convertEntityToDTO(CreditRequest creditRequest) {
         CreditRequestDTO creditRequestDTO = new CreditRequestDTO();
         creditRequestDTO.setRefCode(creditRequest.getRefCode());
         creditRequestDTO.setNarration(creditRequest.getNarration());
@@ -143,6 +160,6 @@ public class BulkTransferServiceImpl implements BulkTransferService{
         creditRequestDTO.setAccountNumber(creditRequest.getAccountNumber());
         creditRequestDTO.setSerial(creditRequest.getSerial());
         creditRequestDTO.setStatus(creditRequest.getStatus());
-        return  creditRequestDTO;
+        return creditRequestDTO;
     }
 }

@@ -214,6 +214,7 @@ import longbridge.services.RetailUserService;
 import longbridge.services.TransferService;
 import longbridge.utils.statement.AccountStatement;
 import longbridge.utils.statement.TransactionDetails;
+import longbridge.utils.statement.TransactionHistory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -234,6 +235,7 @@ import javax.validation.Valid;
 import java.security.Principal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -414,10 +416,9 @@ public class AccountController {
 		RetailUser retailUser = retailUserService.getUserByName(principal.getName());
 
 		Account account = accountRepo.findOne(id);
-
+       String LAST_TEN_TRANSACTION="10";
 		List<AccountDTO> accountList = accountService.getAccountsAndBalances(retailUser.getCustomerId());
-		List<TransRequest> transRequestList = transferService
-				.getLastTenTransactionsForAccount(account.getAccountNumber());
+		List<TransactionHistory> transRequestList=integrationService.getLastNTransactions(account.getAccountNumber(),LAST_TEN_TRANSACTION);
 		if (transRequestList != null || !(transRequestList.equals("")) || !(transRequestList.isEmpty())) {
 			model.addAttribute("transRequestList", transRequestList);
 			model.addAttribute("accountList", accountList);
@@ -452,12 +453,19 @@ public class AccountController {
 			from = dateFormat.parse(fromDate);
 			to = dateFormat.parse(toDate);
 			AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to,transType);
+			logger.info("TransactionType {}",transType);
 			out.setDraw(input.getDraw());
-			List<TransactionDetails> list = accountStatement.getTransactionDetails();
+			List<TransactionDetails> list = new ArrayList<>();
+			if (list != null || !(list.equals("")) || !(list.isEmpty())) {
+				list=accountStatement.getTransactionDetails();
+			System.out.println(accountStatement.toString());
 			System.out.println("Whats in the list "+list);
-			out.setData(list);
-			out.setRecordsFiltered(list.size());
-			out.setRecordsTotal(list.size());
+
+
+				out.setData(list);
+				out.setRecordsFiltered(list.size());
+				out.setRecordsTotal(list.size());
+			}
 		} catch (ParseException e) {
 			logger.warn("didn't parse date", e);
 		}
@@ -467,7 +475,7 @@ public class AccountController {
 
 	@GetMapping("/downloadstatement")
 	public ModelAndView downloadStatementData(ModelMap modelMap, DataTablesInput input, String acctNumber,
-											  String fromDate, String toDate, String transType) {
+											  String fromDate, String toDate, String transType, Principal principal) {
 		// Pageable pageable = DataTablesUtils.getPageable(input);
 
 		Date from;
@@ -479,11 +487,60 @@ public class AccountController {
 			AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to,transType);
 			out.setDraw(input.getDraw());
 			List<TransactionDetails> list = accountStatement.getTransactionDetails();
+			RetailUser retailUser=retailUserService.getUserByName(principal.getName());
+			System.out.println("list = " + list);
 			modelMap.put("datasource", list);
 			modelMap.put("format", "pdf");
-			modelMap.put("accountNum", acctNumber);
+			modelMap.put("summary.accountNum", acctNumber);
+			modelMap.put("customerName",retailUser.getFirstName()+" "+retailUser.getLastName());
+				logger.info("Customer's Name {}"+retailUser.getFirstName()+" "+retailUser.getLastName());
+
+			if(accountStatement.getAccountNumber()!=null) {
+				modelMap.put("customerNo", acctNumber);
+			}
+			else if(accountStatement.getAccountNumber()==null ||accountStatement.getAccountNumber().isEmpty()){
+				modelMap.put("customerNo","");
+			}
+			else{};
+			modelMap.put("summary.openingBalance", accountStatement.getOpeningBalance());
+			System.out.println("whats the openingBalance:"+ accountStatement.getOpeningBalance());
+			if (accountStatement.getDebitCount() != null) {
+				modelMap.put("debitCount", accountStatement.getDebitCount());
+				System.out.println("whats the debit count:"+accountStatement.getDebitCount());
+			}
+			else{
+				modelMap.put("debitCount","");
+			}
+			if (accountStatement.getCreditCount() != null) {
+				modelMap.put("creditCount", accountStatement.getCreditCount());
+				System.out.println("whats the credit count:" + accountStatement.getCreditCount());
+			}
+			else{
+				modelMap.put("creditCount","");
+			}
+			modelMap.put("summary.currencyCode", accountStatement.getCurrencyCode());
+			if(accountStatement.getClosingBalance()!=null) {
+				modelMap.put("summary.closingBalance", accountStatement.getClosingBalance());
+				System.out.println("whats the closingBalance:" + accountStatement.getClosingBalance());
+			}
+			else{
+				modelMap.put("summary.closingBalance","0");
+			}
+			modelMap.put("summary.totalDebit", accountStatement.getTotalDebit());
+			modelMap.put("summary.totalCredit", accountStatement.getTotalCredit());
+			if(accountStatement.getAddress()!=null ) {
+				modelMap.put("address", accountStatement.getAddress());
+				System.out.println("whats the address:" + accountStatement.getAddress());
+			}
+			else if(accountStatement.getAddress()==null){
+				modelMap.put("address","14 Bello owosho Street");
+			}
+			else{};
+
 			modelMap.put("fromDate", fromDate);
 			modelMap.put("toDate", toDate);
+			Date today=new Date();
+			modelMap.put("today",today);
 		} catch (ParseException e) {
 			logger.warn("didn't parse date", e);
 		}

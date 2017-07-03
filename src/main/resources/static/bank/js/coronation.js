@@ -9,16 +9,16 @@ function initnotices(){
 
     $('.actionMessage li').each(function(index, value) {
         var tt = $(this).text();
-        var notify = $.notify({message:tt}, { allow_dismiss: true,delay: 15000,type: 'success'});
+        var notify = $.notify({message:tt}, { allow_dismiss: true ,type: 'success'});
     });
 
     $('.actionError li').each(function(index, value) {
         var tt = $(this).text();
-        var notify = $.notify({message:tt}, { allow_dismiss: true,delay: 15000,type: 'danger'});
+        var notify = $.notify({message:tt}, { allow_dismiss: true ,type: 'danger'});
     });
 
     $('.fieldError li').each(function(index, value) {
         var tt = $(this).text();
-        var notify = $.notify({message:tt}, { allow_dismiss: true, delay: 15000,type: 'danger'});
+        var notify = $.notify({message:tt}, { allow_dismiss: true ,type: 'danger'});
     });
 }

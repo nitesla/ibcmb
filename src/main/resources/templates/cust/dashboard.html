@@ -3,8 +3,8 @@
 <head th:replace="cust_layout :: site-head">
 
 </head>
-<body onclick=''>
-    >
+<body>
+
     <div class="container">
         <header th:replace="cust_layout :: header">
         </header>
@@ -46,22 +46,22 @@
                                             <td th:align="center" th:text="${list.currencyCode}"></td>
                                             <td th:align="center" th:text="${list.accountBalance}"></td>
                                             <td th:align="center" th:text="${list.ledgerBalance}"></td>
+                                            <!--<td><a th:href="@{'/retail/account/' + ${list.id} + '/statement'}">-->
+                                                <!--<i class=" fa fa-angle-right"></i>-->
+                                            <!--</a></td>-->
+                                           <!--<td> <input type="hidden" class="form-control" id="rowId" th:value="${list.id}"/></td>-->
 
-                                            <td th:align="center" >
-                                                <select>
+                                            <td th:align="center">
+                                                <select class="quickAccess" th:attr="onchange='javascript:getId(\'' + ${list.id} + '\');'">
                                                     <option>Quick Actions</option>
+                                                    <option value="Transaction History">Transaction History</option>
                                                     <option>
-                                                        <a th:href="@{'/retail/account/' + ${list.id} + '/statement'}">
-                                                            <i class=" fa fa-angle-right">Item</i>
-                                                        </a>
-                                                    </option>
-                                                    <option>
-                                                        <a th:href="@{'/retail/account/' + ${list.id} + '/statement'}">
+                                                        <a th:href="@{'#'}">
                                                             <i class=" fa fa-angle-right">Another Item</i>
                                                         </a>
                                                     </option>
                                                     <option>
-                                                        <a th:href="@{'/retail/account/' + ${list.id} + '/statement'}">
+                                                        <a th:href="@{'#'}">
                                                             <i class=" fa fa-angle-right">Yet another iTem</i>
                                                         </a>
                                                     </option>
@@ -111,5 +111,29 @@
 <script>
 
 </script>
+    <script>
+
+            /*$('.quickAccess').on('change', function () {
+                if ($(this).val() === "Transaction History") {
+
+                    var rowid = $('#rowId').val();
+                    alert("what do we have here: "+rowid);
+                    if (( rowid != null || rowid != '' )) {
+                        window.location.href = "/retail/account/" + rowid + "/statement";
+                        alert("Are u ready!!!");
+                    }
+                }
+            });*/
+
+                function getId(Id) {
+                    if ($('.quickAccess').val() === "Transaction History") {
+                        if (( Id != null || Id != '' )) {
+                            window.location.href = "/retail/account/" + Id + "/statement";
+                        }
+                    }
+                }
+
+    </script>
+
 </body>
 </html>

@@ -52,7 +52,6 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    @Verifiable(operation="Add_FIA_Account",description="Add Account FI")
     public boolean AddFIAccount(String customerId, AccountInfo acct) {
         if (!customerId.equals(acct.getCustomerId())) {
             return false;
@@ -72,7 +71,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    @Verifiable(operation="Add_Account",description="Add Account")
+    @Verifiable(operation="ACC_ADD",description="Add Account")
     public boolean AddAccount(String customerId, AccountDTO accountdto) throws InternetBankingException {
         if (!customerId.equals(accountdto.getCustomerId())) {
             return false;
@@ -94,7 +93,6 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    @Verifiable(operation="Customize_Account",description="Customize Account")
     public String customizeAccount(Long id, String name) throws InternetBankingException{
         try {
             Account account = accountRepo.findFirstById(id);

@@ -6,7 +6,7 @@
     <groupId>longbridge</groupId>
     <artifactId>internetbanking</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <packaging>jar</packaging>
+    <packaging>war</packaging>
 
     <name>internetbanking</name>
     <description>internet banking application</description>
@@ -240,7 +240,7 @@
             <artifactId>commons-logging</artifactId>
             <version>1.1.1</version>
         </dependency>
-<<<<<<< HEAD
+
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi</artifactId>
@@ -271,9 +271,7 @@
         <!--<dependency>-->
             <!--<groupId>net.sf.j</groupId>-->
         <!--</dependency>-->
-=======
-       
->>>>>>> 3a5867340f6125f98b761497638d480a424ab66a
+
         <dependency>
             <groupId>commons-digester</groupId>
             <artifactId>commons-digester</artifactId>
@@ -319,7 +317,22 @@
             <artifactId>itext</artifactId>
             <version>2.1.7</version>
         </dependency>
+        <dependency>
+        	<groupId>net.sf.jasperreports</groupId>
+        	<artifactId>jasperreports-functions</artifactId>
+        	<version>6.4.0</version>
+        </dependency>
 
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-instrument</artifactId>
+            <version>4.3.8.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjrt</artifactId>
+            <version>1.8.4</version>
+        </dependency>
 
     </dependencies>
 
