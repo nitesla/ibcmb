@@ -1,5 +1,6 @@
 package longbridge.services;
 
+import longbridge.dtos.CorporateDTO;
 import longbridge.dtos.MessageDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.*;
@@ -153,7 +154,9 @@ public interface MessageService {
      */
     String purge(int daysOld) throws InternetBankingException;
 
-    String sendRetailContact(String User, RetailUser user);
+    String sendRetailContact(String message, RetailUser user);
+
+    String sendCorporateContact(String message, CorporateDTO corporate);
     /**
      *Purges the messages with the given date range
      * @param fromDate the start date

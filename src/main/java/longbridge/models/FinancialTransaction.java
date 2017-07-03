@@ -1,6 +1,14 @@
 package longbridge.models;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import longbridge.utils.PrettySerializer;
+
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -9,7 +17,7 @@ import java.util.Date;
 /**
  * Created by Wunmi on 3/28/2017.
  */
-public class FinancialTransaction{
+public class FinancialTransaction implements PrettySerializer{
     private String tranType ;
     private String transactionParticulars;
     private String currencyCode;
@@ -40,10 +48,6 @@ private SimpleDateFormat format=new SimpleDateFormat("DD/MM/YYYY");
         }
         this.transactionParticulars=tranToken[5].trim();
         this.tranType=tranToken[6].trim();
-
-
-
-
     }
 
     public String getTransactionParticulars() {
@@ -123,5 +127,26 @@ private SimpleDateFormat format=new SimpleDateFormat("DD/MM/YYYY");
                 ", valueDate=" + valueDate +
                 ", postDate=" + postDate +
                 '}';
+    }
+
+
+
+    @Override @JsonIgnore
+    public JsonSerializer<FinancialTransaction> getSerializer()
+    {
+        return new JsonSerializer<FinancialTransaction>()
+        {
+            @Override
+            public void serialize(FinancialTransaction value, JsonGenerator gen, SerializerProvider serializers)
+                    throws IOException, JsonProcessingException
+            {
+                gen.writeStartObject();
+                gen.writeStringField("Transaction Particulars",value.transactionParticulars);
+                gen.writeStringField("Amount",value.amount.toString());
+                gen.writeStringField("Current Balance",value.currentBalance.toString());
+                gen.writeStringField("Tran Type",value.tranType);
+                gen.writeEndObject();
+            }
+        };
     }
 }

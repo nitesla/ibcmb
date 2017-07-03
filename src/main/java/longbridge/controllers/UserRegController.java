@@ -17,7 +17,6 @@ import longbridge.models.Email;
 import longbridge.models.RetailUser;
 import longbridge.models.SecurityQuestions;
 import longbridge.services.*;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +35,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FilenameFilter;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Created by Wunmi Sowunmi on 18/04/2017.
@@ -75,7 +76,7 @@ public class UserRegController {
     @Value("${antiphishingimagepath}")
     private String imagePath;
 
-    @Value("${antiphishingimagepath2}")
+    @Value("${phishing.image.folder}")
     private String fullImagePath;
 
     @Autowired
@@ -119,7 +120,7 @@ public class UserRegController {
 
             }else {
                 customerId="does not exsist";
-                logger.info("customer is null");
+                logger.info("customer does not exist");
             }
 
         }else {
@@ -311,34 +312,42 @@ public class UserRegController {
         if (details != null){
             logger.info("Reg Code : " + details);
             String contact = details.getPhone();
-            Random rnd = new Random();
-            int n = 100000 + rnd.nextInt(900000);
-            logger.info("Reg Code : " + n);
-            String message = "Your Registration Code is : ";
-            message += n;
-            session.setAttribute("regCode", n);
-
-            ObjectNode sent = integrationService.sendSMS(message, contact +
-                    "" +
-                    " ", "Internet Banking Registration Code");
-            if (sent != null){
-
-
-                return String.valueOf(n);
+            code = generateAndSendRegCode(contact);
+            if (!"".equals(code)) {
+                session.setAttribute("regCode", code);
+            }else{
+                return code;
             }
 
         }else {
             //nothing
-            code = "";
+            return code;
         }
 
         return code;
     }
 
+    private String generateAndSendRegCode(String contact){
+        String code = "";
+        Random rnd = new Random();
+        int n = 100000 + rnd.nextInt(900000);
+        logger.info("Reg Code : " + n);
+        String message = "Your Registration Code is : ";
+        message += n;
+
+
+        CompletableFuture<ObjectNode> sent = integrationService.sendSMS(message, contact, "Internet Banking Registration Code");
+        if (sent != null){
+            return String.valueOf(n);
+        }
+        return code;
+    }
+
     @GetMapping("/rest/regCode/check/{code}")
     public @ResponseBody String checkRegCode(@PathVariable Integer code, HttpSession session){
-        Integer regCode = (Integer) session.getAttribute("regCode");
-        if (!code.equals(regCode)){
+        String regCode = (String) session.getAttribute("regCode");
+        Integer reg = Integer.parseInt(regCode);
+        if (!code.equals(reg)){
             return "false";
         }
         return "true";
@@ -507,10 +516,14 @@ public class UserRegController {
         registrationForm.step = "1";
         model.addAttribute("registrationForm", registrationForm);
 
+        File phish = new File(fullImagePath);
         List<String> images = new ArrayList<String>();
-        images.add("dog.jpg");
-        images.add("cheetah.jpg");
-        images.add("benz.jpg");
+        if (phish.isDirectory()) { // make sure it's a directory
+            for (final File f : phish.listFiles(IMAGE_FILTER)) {
+                images.add(f.getName());
+                logger.info("FILE NAME {}", f.getName());
+            }
+        }
 
         model.addAttribute("images", images);
         model.addAttribute("imagePath", imagePath);
@@ -522,6 +535,24 @@ public class UserRegController {
         model.addAttribute("secQuestions", securityQuestions);
         return "cust/register/registration";
     }
+
+    // array of supported extensions (use a List if you prefer)
+    static final String[] EXTENSIONS = new String[]{
+            "jpeg", "jpg", "gif", "png", "bmp" // and other formats you need
+    };
+    // filter to identify images based on their extensions
+    static final FilenameFilter IMAGE_FILTER = new FilenameFilter() {
+
+        @Override
+        public boolean accept(final File dir, final String name) {
+            for (final String ext : EXTENSIONS) {
+                if (name.endsWith("." + ext)) {
+                    return (true);
+                }
+            }
+            return (false);
+        }
+    };
 
     @PostMapping("/register")
     public @ResponseBody String addUser(WebRequest webRequest, RedirectAttributes redirectAttributes){

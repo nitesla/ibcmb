@@ -96,11 +96,21 @@
                         <div class="form-group col-xs-12">
                             <!--<input value="Modify" style="cursor: pointer;" type="button" onclick="history.go(-1);" />-->
                             <button type="submit" class="btn btn-link required-step">Proceed</button>
-                            <button th:href="@{/retail/transfer/interbank}" class="btn btn-link less-required">Cancel</button>
-                            <button type='button' class='btn btn-link less-required'>Modify</button>
+                            <button type="button" class="btn btn-link less-required" onclick="cancel();">Cancel</button>
+                            <button type='button' class='btn btn-link less-required' onclick="edit();">Modify</button>
 
                         </div>
                     </form>
+
+
+                    <form method="post" id="form_edit" th:action="@{/retail/transfer/interbank/edit}" th:object="${transferRequest}">
+                        <input type="hidden" th:field="*{customerAccountNumber}"/>
+                        <input type="hidden" th:field="*{beneficiaryAccountNumber}"/>
+                        <input type="hidden" th:field="*{beneficiaryAccountName}"/>
+                        <input type="hidden" th:field="*{amount}"/>
+                        <input type="hidden" th:field="*{remarks}"/>
+                    </form>
+
                 </div>
             </div>
             <div class="col-md-3 pull-right " >
@@ -117,5 +127,16 @@
 </footer>
 </div>
 <script th:src="@{~/customer/js/accountdetails.js}"></script>
+<script>
+    function edit(){
+        $("#form_edit").submit();
+    }
+
+    function cancel(){
+
+        window.location.href="/retail/transfer/interbank";
+
+    }
+</script>
 </body>
 </html>

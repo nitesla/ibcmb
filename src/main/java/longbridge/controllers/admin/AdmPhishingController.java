@@ -1,5 +1,6 @@
 package longbridge.controllers.admin;
 
+import longbridge.dtos.PhishingImageDTO;
 import longbridge.models.PhishingImage;
 import longbridge.services.PhishingImageService;
 import org.slf4j.Logger;
@@ -31,7 +32,7 @@ import java.util.Locale;
 @RequestMapping("/admin/phishing")
 public class AdmPhishingController {
 
-    @Value("${phising.image.folder}")
+    @Value("${phishing.image.folder}")
     private String folder;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -88,10 +89,10 @@ public class AdmPhishingController {
     @GetMapping(path = "/all")
     public
     @ResponseBody
-    DataTablesOutput<PhishingImage> getAllPhishingImages(DataTablesInput input) {
+    DataTablesOutput<PhishingImageDTO> getAllPhishingImages(DataTablesInput input) {
         Pageable pageable = DataTablesUtils.getPageable(input);
-        Page<PhishingImage> sq = phishingImageService.getAllPhishingImages(pageable);
-        DataTablesOutput<PhishingImage> out = new DataTablesOutput<PhishingImage>();
+        Page<PhishingImageDTO> sq = phishingImageService.getAllPhishingImages(pageable);
+        DataTablesOutput<PhishingImageDTO> out = new DataTablesOutput<PhishingImageDTO>();
         out.setDraw(input.getDraw());
         out.setData(sq.getContent());
         out.setRecordsFiltered(sq.getTotalElements());

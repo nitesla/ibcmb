@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.thymeleaf.TemplateEngine;
@@ -26,6 +27,7 @@ import org.thymeleaf.context.Context;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 /**
@@ -470,6 +472,7 @@ public class IntegrationServiceImpl implements IntegrationService {
     }
 
     @Override
+    @Async
     public BigDecimal getAvailableBalance(String s) {
         try {
             Map<String, BigDecimal> getBalance = getBalance(s);
@@ -484,10 +487,10 @@ public class IntegrationServiceImpl implements IntegrationService {
     }
 
     @Override
-    public ObjectNode sendSMS(String message, String contact, String subject) {
+    @Async
+    public CompletableFuture<ObjectNode> sendSMS(String message, String contact, String subject) {
         List<String> contacts = new ArrayList<>();
         contacts.add(contact);
-
         ObjectNode result = null;
         String uri = cmbAlert;
         Map<String, Object> params = new HashMap<>();
@@ -500,27 +503,29 @@ public class IntegrationServiceImpl implements IntegrationService {
         try {
 
             result = template.postForObject(uri, params, ObjectNode.class);
+
         } catch (Exception e) {
             e.printStackTrace();
 
 
         }
 
-        return result;
+        return  CompletableFuture.completedFuture(result);
     }
 
     @Override
-    public Rate getFee(String channel) {
+    @Async
+    public CompletableFuture<Rate> getFee(String channel) {
 
         String uri = URI + "/transfer/fee";
         Map<String, String> params = new HashMap<>();
         params.put("transactionChannel", channel);
         try {
             Rate details = template.postForObject(uri, params, Rate.class);
-            return details;
+            return CompletableFuture.completedFuture(details);
         } catch (Exception e) {
 
-            return new Rate("", "0", "");
+            return  CompletableFuture.completedFuture(new Rate("", "0", ""));
         }
 
 

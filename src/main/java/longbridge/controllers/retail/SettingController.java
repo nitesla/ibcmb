@@ -79,7 +79,7 @@ public class SettingController {
         return "cust/dashboard";
     }
 
-    @GetMapping("/change_password")
+    @GetMapping("/settings/change_password")
     public String ChangePaswordPage(Model model) {
         List<String> passwordPolicy = passwordPolicyService.getPasswordRules();
         logger.info("PASSWORD RULES {}", passwordPolicy);
@@ -88,7 +88,7 @@ public class SettingController {
         return "cust/settings/pword";
     }
 
-    @PostMapping("/change_password")
+    @PostMapping("/settings/change_password")
     public String ChangePassword(@ModelAttribute("custChangePassword") @Valid CustChangePassword custChangePassword, BindingResult result, Principal principal, Model model, RedirectAttributes redirectAttributes) throws Exception {
         if (result.hasErrors()) {
             List<String> passwordPolicy = passwordPolicyService.getPasswordRules();
@@ -103,7 +103,7 @@ public class SettingController {
         try {
             String message = retailUserService.changePassword(user, custChangePassword);
             redirectAttributes.addFlashAttribute("message", message);
-            return "redirect:/retail/dashboard";
+            return "redirect:/retail/logout";
         } catch (WrongPasswordException wpe) {
             model.addAttribute("failure", wpe.getMessage());
             logger.error("Wrong password from retail user {}", user.getUserName(), wpe.toString());
@@ -192,7 +192,7 @@ public class SettingController {
         }
     }
 
-    @GetMapping("/alert_preference")
+    @GetMapping("/settings/alert_preference")
     public String AlertPreferencePage(AlertPref alertPref, Model model, Principal principal) {
         RetailUser user = retailUserService.getUserByName(principal.getName());
         Iterable<CodeDTO> pref = codeService.getCodesByType("ALERT_PREFERENCE");
@@ -201,7 +201,7 @@ public class SettingController {
         return "cust/settings/alertpref";
     }
 
-    @PostMapping("/alert_preference")
+    @PostMapping("/settings/alert_preference")
     public String ChangeAlertPreference(@Valid AlertPref alertPref, Principal principal, BindingResult result, Model model, RedirectAttributes redirectAttributes) throws Exception {
         if (result.hasErrors()) {
             model.addAttribute("failure", "Pls correct the errors");

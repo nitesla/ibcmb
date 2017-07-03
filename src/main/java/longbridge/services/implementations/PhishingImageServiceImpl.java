@@ -1,5 +1,6 @@
 package longbridge.services.implementations;
 
+import longbridge.dtos.PhishingImageDTO;
 import longbridge.models.PhishingImage;
 import longbridge.repositories.PhishingImageRepo;
 import longbridge.services.PhishingImageService;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -33,7 +35,7 @@ public class PhishingImageServiceImpl implements PhishingImageService{
 
     @Override
     public String saveImage(PhishingImage phishingImage) {
-         phishingImageRepo.save(phishingImage);
+        phishingImageRepo.save(phishingImage);
         logger.info("Added new image {} ");
         return messageSource.getMessage("phishingimage.add.success", null, locale);
     }
@@ -43,14 +45,37 @@ public class PhishingImageServiceImpl implements PhishingImageService{
         return null;
     }
 
+    @Override
+    public List<PhishingImage> getRandomPhishingImages() {
+        List<PhishingImage> phishingImages = phishingImageRepo.findImagePath();
+        return phishingImages;
+    }
+
 
     @Override
-    public Page<PhishingImage> getAllPhishingImages(Pageable pageDetails) {
+    public Page<PhishingImageDTO> getAllPhishingImages(Pageable pageDetails) {
         Page<PhishingImage> page = phishingImageRepo.findAll(pageDetails);
-        List<PhishingImage> dtOs = page.getContent();
+        List<PhishingImageDTO> dtOs = convertEntToDTOs(page.getContent());
         long t = page.getTotalElements();
-        Page<PhishingImage> pageImpl = new PageImpl<PhishingImage>(dtOs, pageDetails, t);
+        Page<PhishingImageDTO> pageImpl = new PageImpl<PhishingImageDTO>(dtOs, pageDetails, t);
         return pageImpl;
+    }
+
+    public List<PhishingImageDTO> convertEntToDTOs(Iterable<PhishingImage> phishingImages) {
+        List<PhishingImageDTO> phishingImageDTOList = new ArrayList<>();
+        for (PhishingImage phishingImage : phishingImages) {
+            PhishingImageDTO phishingImageDTO = convertEntityToDTO(phishingImage);
+            phishingImageDTOList.add(phishingImageDTO);
+        }
+        return phishingImageDTOList;
+    }
+
+
+    public PhishingImageDTO convertEntityToDTO(PhishingImage phishingImage) {
+        PhishingImageDTO phishingImageDTO = new PhishingImageDTO();
+        phishingImageDTO.setId(phishingImage.getId());
+        phishingImageDTO.setImagePath(phishingImage.getImagePath());
+        return phishingImageDTO;
     }
 
     @Override

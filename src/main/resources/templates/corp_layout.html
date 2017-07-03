@@ -49,7 +49,7 @@
                         <a class="navbar-brand" href="#" data-toggle="collapse" data-target="#navbar-collapse-1">Menu</a>
                     </div>
                     <div class=" ">
-                        <div class="col-md-3 col-sm-4 header_info bvn"><p>Your RC Number</p>
+                        <div class="col-md-3 col-sm-4 header_info bvn"><p th:text="${compName}">Your RC Number</p>
                             <h5 th:text="'RC N0: ' + ${RcNo}"></h5></div>
                         <div class="col-md-5 col-sm-4 header_info"><h5><span th:text="*{greeting}"></span><br class="break"/><b th:text="*{name}"></b> &nbsp; <a th:href="@{/corporate/mailbox/inbox}"><i class="fa fa-envelope" style="color:#003056"></i>
                             <span th:if="${numOfUnreadMessages}" class="badge bg-green" th:text="${numOfUnreadMessages}">count</span>
@@ -67,8 +67,8 @@
                     <div class="row">
                         <div class="collapse navbar-collapse links" id="navbar-collapse-1">
                     <ul class="nav navbar-nav">
-                        <li><a th:href="@{/corporate/dashboard}">Dashboard</a></li>
-                        <li class="dropdown">
+                        <li th:classappend="${#httpServletRequest.getRequestURI().startsWith('/corporate/dashboard') ? 'active':''}"><a th:href="@{/corporate/dashboard}">Dashboard</a></li>
+                        <li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI().startsWith('/corporate/account') ? 'active':''}">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.account}"> My Accounts</a>
                             <ul class="dropdown-menu">
                                 <li><a th:href="@{/corporate/account/customize}" th:text="#{menu.account.customize}">Customise Accounts</a></li>
@@ -78,7 +78,7 @@
                                 <!--<li><a th:href="@{'#'}" th:text="#{menu.account.create}">Create New Acoount</a></li>-->
                             </ul>
                         </li>
-                        <li class="dropdown">
+                        <li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI().startsWith('/corporate/transfer') ? 'active':''}">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.transfer}"> Transfers</a>
                             <ul class="dropdown-menu">
                                 <li><a th:href="@{/corporate/transfer/ownaccount}" th:text="#{menu.transfer.own}">Own account transfers </a></li>
@@ -95,7 +95,7 @@
                         </li>
                         <!--<li><a href="#" th:text="#{menu.bill}">Bill Payments</a></li>-->
                         <!--<li><a href="#" th:text="#{menu.investment}">Investment</a></li>-->
-                        <li class="dropdown">
+                        <li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI().startsWith('/corporate/requests') ? 'active':''}">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.servreq}"> Service Requests </a>
                             <ul class="dropdown-menu">
                                 <li><a th:href="@{/corporate/requests/track}" th:text="#{menu.servreq.track}">Track Requests</a></li>
@@ -105,11 +105,11 @@
                             </ul>
                         </li>
 
-                        <li class="dropdown">
+                        <li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI().startsWith('/corporate/settings') ? 'active':''}">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.settings}"> Settings </a>
                             <ul class="dropdown-menu">
-                                <li><a th:href="@{/corporate/alert_preference}" th:text="#{menu.settings.alert}">Alert Preference</a></li>
-                                <li><a th:href="@{/corporate/change_password}" th:text="#{menu.settings.password}">Change Password</a></li>
+                                <li><a th:href="@{/corporate/settings/alert_preference}" th:text="#{menu.settings.alert}">Alert Preference</a></li>
+                                <li><a th:href="@{/corporate/settings/change_password}" th:text="#{menu.settings.password}">Change Password</a></li>
                             </ul>
                         </li>
                         <li class="dropdown">
@@ -179,7 +179,7 @@
 
 <!-- footer content -->
 <footer th:fragment="corp-footer">
-    <div class="containe">
+    <div class="container">
         <div class="footer_bar">
             <div class="col-md-6 col-xs-12">
                 <ul class="list_group">

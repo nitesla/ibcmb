@@ -33,6 +33,7 @@ public class User extends AbstractEntity implements PrettySerializer {
     protected Date lastLoginDate;
     protected int noOfLoginAttempts;
 
+
     //@Enumerated(value = EnumType.STRING)
     @Enumerated(EnumType.ORDINAL)
     protected UserType userType;
@@ -43,6 +44,7 @@ public class User extends AbstractEntity implements PrettySerializer {
     @ManyToOne
     protected Role role;
     protected String entrustId;
+
 
 
     public String getEntrustId() {
