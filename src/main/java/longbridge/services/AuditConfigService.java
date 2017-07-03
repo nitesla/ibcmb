@@ -7,7 +7,8 @@ import org.springframework.data.domain.Pageable;
 import longbridge.models.AuditConfig;
 import org.springframework.security.access.prepost.PreAuthorize;
 
-public interface AuditConfigService {
+public interface AuditConfigService
+{
 
 	AuditConfig findEntity(String entityName);
 

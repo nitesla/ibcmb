@@ -22,7 +22,6 @@ import java.util.Set;
 public class CustomRevisionEntity extends DefaultRevisionEntity implements Serializable
 {
 
-
 	private static final long serialVersionUID = 1767924677148716529L;
 	private String lastChangedBy;
 	private String ipAddress;
@@ -53,7 +52,10 @@ public class CustomRevisionEntity extends DefaultRevisionEntity implements Seria
 	@OneToMany(mappedBy="revision", cascade={CascadeType.PERSIST, CascadeType.REMOVE})
     private Set<ModifiedEntityTypeEntity> modifiedEntityTypes = new HashSet<ModifiedEntityTypeEntity>();
 
-    public void addModifiedEntityType(String entityClassName) {
+    public void addModifiedEntityType(String entityClassName)
+    {
         modifiedEntityTypes.add(new ModifiedEntityTypeEntity(this, entityClassName));
     }
+
+
 }

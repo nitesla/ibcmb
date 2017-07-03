@@ -69,9 +69,10 @@ public class AdmVerificationController {
         try {
             verificationService.verify(id);
             redirectAttributes.addFlashAttribute("message", "Operation approved successfully");
-        }
+            }
 
-        catch (VerificationException ve){
+        catch (VerificationException ve)
+        {
             logger.error("Error verifying the operation",ve);
             redirectAttributes.addFlashAttribute("failure", ve.getMessage());
         }
@@ -151,7 +152,8 @@ public class AdmVerificationController {
 
 
     @GetMapping("/{opId}/pending")
-    public String getPendingOperation(@PathVariable Long opId, Model model) {
+    public String getPendingOperation(@PathVariable Long opId, Model model)
+    {
 
         VerificationDTO verificationDTO = verificationService.getVerification(opId);
         model.addAttribute("operation", verificationDTO.getOperation());
@@ -174,7 +176,8 @@ public class AdmVerificationController {
 
 
     @GetMapping("/verified")
-    public String getVerifiedOperations() {
+    public String getVerifiedOperations()
+    {
         return "adm/makerchecker/verified";
     }
 
@@ -213,7 +216,6 @@ public class AdmVerificationController {
     @GetMapping("/{id}/view")
     public String getObjectsForVerification(@PathVariable Long id, Model model)
     {
-
         VerificationDTO verification = verificationService.getVerification(id);
         model.addAttribute("verification",new VerificationDTO());
         model.addAttribute("verify", verification);
@@ -221,12 +223,11 @@ public class AdmVerificationController {
     }
 
     @GetMapping("/{id}/pendingviews")
-    public String getObjectsForPending(@PathVariable Long id, Model model) {
-
+    public String getObjectsForPending(@PathVariable Long id, Model model)
+    {
         VerificationDTO verification = verificationService.getVerification(id);
         model.addAttribute("verify", verification);
         return "adm/makerchecker/pendingdetails";
     }
-
 
 }

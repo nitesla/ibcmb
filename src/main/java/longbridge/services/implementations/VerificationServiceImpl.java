@@ -29,6 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
@@ -268,6 +269,7 @@ public class VerificationServiceImpl implements VerificationService {
         CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User doneBy = principal.getUser();
         Page<Verification> page = verificationRepo.findByInitiatedByAndUserType(doneBy.getUserName(), doneBy.getUserType(),pageable);
+        List<Verification> ver=verificationRepo.findByInitiatedByAndUserType(doneBy.getUserName(), doneBy.getUserType());
         List<VerificationDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
         Page<VerificationDTO> pageImpl = new PageImpl<VerificationDTO>(dtOs, pageable, t);
@@ -277,13 +279,14 @@ public class VerificationServiceImpl implements VerificationService {
 
 
     @Override
-    public Page<VerificationDTO> getVerifiedOPerations(Pageable pageable) {
+    public Page<VerificationDTO> getVerifiedOPerations(Pageable pageable)
+    {
         CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User verifiedBy = principal.getUser();
         Page<Verification> page = verificationRepo.findVerifiedOperationsForUser(verifiedBy.getUserName(),verifiedBy.getUserType(),pageable);
         List<VerificationDTO> dtOs = convertEntitiesToDTOs(page.getContent());
-        long t = page.getTotalElements();
-        Page<VerificationDTO> pageImpl = new PageImpl<VerificationDTO>(dtOs, pageable, t);
+        long t =page.getTotalElements();
+        Page<VerificationDTO> pageImpl = new PageImpl<VerificationDTO>(dtOs,pageable,t);
         return pageImpl;
     }
 
