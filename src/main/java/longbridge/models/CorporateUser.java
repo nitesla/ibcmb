@@ -1,11 +1,17 @@
 package longbridge.models;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import longbridge.utils.PrettySerializer;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +26,8 @@ import java.util.List;
 @Table(uniqueConstraints=@UniqueConstraint(columnNames={"userName","deletedOn"}))
 public class CorporateUser extends User {
 
+	protected boolean isFirstTimeLogon;
+
 	@ManyToOne @JsonIgnore
     private Corporate corporate;
 
@@ -27,7 +35,15 @@ public class CorporateUser extends User {
 	private CorporateRole corporateRole;
 
 
-    public CorporateUser(){
+	public Boolean isFirstTimeLogon() {
+		return isFirstTimeLogon;
+	}
+
+	public void setFirstTimeLogon(Boolean firstTimeLogon) {
+		isFirstTimeLogon = firstTimeLogon;
+	}
+
+	public CorporateUser(){
 		this.userType = (UserType.CORPORATE);
 	}
 
@@ -58,5 +74,25 @@ public class CorporateUser extends User {
 	public boolean equals(Object o){
 		return super.equals(o);
 	}
+
+
+
+//	@Override @JsonIgnore
+//	public JsonSerializer<CorporateUser> getSerializer() {
+//		return new JsonSerializer<AccountClassRestriction>() {
+//			@Override
+//			public void serialize(AccountClassRestriction value, JsonGenerator gen, SerializerProvider serializers)
+//					throws IOException, JsonProcessingException
+//			{
+//				gen.writeStartObject();
+//				gen.writeStringField("Account Class",value.);
+//				gen.writeStringField("Restriction Type",value.restrictionType);
+//				gen.writeEndObject();
+//			}
+//		};
+//	}
+
+
+
 
 }
