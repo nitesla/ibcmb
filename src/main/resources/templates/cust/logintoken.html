@@ -125,9 +125,9 @@
                
             </div>
             <div class="modal-footer no-bd-top ">
-                <a onclick='redirect()' class="btn btn-link token-btn remove-item" th:action="@{/retail/login}" >Back</a>
+                <input type='button' onclick='redirect()' class="btn btn-link less-required token-btn " value='Back'/>
 
-                <button type='submit' class="btn btn-link token-btn" >Continue</button>
+                <input type='submit' class="btn btn-link token-btn required-step" value='Continue'/>
             </div>
 
              </form>
@@ -154,6 +154,7 @@
 
     function redirect()
     {
+        
        location.href = '/retail/logout';
     }
 </script>

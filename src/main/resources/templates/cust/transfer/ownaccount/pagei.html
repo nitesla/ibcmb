@@ -41,7 +41,7 @@
                                         <span id="scurency"></span>
                                         <div>
 
-                                        <span class="alert no-bd-rad my-border bg-white" id="sourceCurrency">&nbsp;&nbsp;&nbsp;</span>
+                                        <span class="alert no-bd-rad my-border bg-white" id="sourceCurrency">CCY</span>
                                             <select name="source" class="form-control" id="source"
                                                     th:field="*{customerAccountNumber}" onchange="getBalance();getSourceCurrency()" >
 
@@ -56,7 +56,7 @@
 
                                         <span id="dcurency"></span>
                                         <div>
-                                         <span class="alert no-bd-rad my-border bg-white" id="destCurrency">&nbsp;&nbsp;&nbsp;</span>
+                                         <span class="alert no-bd-rad my-border bg-white" id="destCurrency">CCY</span>
                                         <select name="destination" class="form-control" id="destination"
                                                 th:field="*{beneficiaryAccountNumber}"  onchange="getDestCurrency();"  required="required">
 
