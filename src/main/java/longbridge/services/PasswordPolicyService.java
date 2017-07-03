@@ -145,7 +145,7 @@ public class PasswordPolicyService {
             AdminPassword adminPassword = new AdminPassword();
             adminPassword.setUserId(adminUser.getId());
             adminPassword.setPassword(adminUser.getPassword());
-            if (numOfChanges != 0) {
+            if (numOfChanges > 0) {
                 if (count < numOfChanges) {
                     adminPasswordRepo.save(adminPassword);
                 } else {
@@ -167,7 +167,7 @@ public class PasswordPolicyService {
             OpsPassword opsPassword = new OpsPassword();
             opsPassword.setUserId(operationsUser.getId());
             opsPassword.setPassword(operationsUser.getPassword());
-            if (numOfChanges != 0) {
+            if (numOfChanges > 0) {
                 if (count < numOfChanges) {
                     opsPasswordRepo.save(opsPassword);
                 } else {
@@ -186,7 +186,7 @@ public class PasswordPolicyService {
             int count = retailPasswordRepo.countByUsername(retailUser.getUserName());
             int numOfChanges = NumberUtils.toInt(numOfChangesBeforeReuse.getValue());
 
-            if (numOfChanges != 0) {
+            if (numOfChanges > 0) {
                 RetailPassword retailPassword = new RetailPassword();
                 retailPassword.setUsername(retailUser.getUserName());
                 retailPassword.setPassword(retailUser.getPassword());
@@ -213,7 +213,7 @@ public class PasswordPolicyService {
             corporatePassword.setUsername(corporateUser.getUserName());
             corporatePassword.setPassword(corporateUser.getPassword());
 
-            if (numOfChanges != 0) {
+            if (numOfChanges > 0) {
                 if (count < numOfChanges) {
                     corporatePasswordRepo.save(corporatePassword);
                 } else {
@@ -254,8 +254,6 @@ public class PasswordPolicyService {
             LocalDateTime now = LocalDateTime.now();
 
             if (now.isAfter(dateToStartNotifying) && !now.isAfter(dateToExpire)) {
-                logger.info("The  return value is true");
-
                 return true;
             }
         }

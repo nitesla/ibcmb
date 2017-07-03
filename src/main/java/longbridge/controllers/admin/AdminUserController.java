@@ -73,7 +73,7 @@ public class AdminUserController {
         Iterable<RoleDTO> roles = roleService.getRoles();
         model.addAttribute("adminUser", new AdminUserDTO());
         model.addAttribute("roles", roles);
-        return "adm/admin/add";
+        return "/adm/admin/add";
     }
 
     @PostMapping

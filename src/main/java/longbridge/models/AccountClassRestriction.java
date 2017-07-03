@@ -13,7 +13,9 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Fortune on 4/27/2017.
@@ -22,7 +24,7 @@ import java.util.Date;
 @Entity
 @Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
-public class AccountClassRestriction extends AbstractEntity{
+public class AccountClassRestriction extends AbstractEntity implements PrettySerializer{
 
     private String accountClass;
     private String restrictionType;
@@ -62,5 +64,21 @@ public class AccountClassRestriction extends AbstractEntity{
                 '}';
     }
 
+
+
+    @Override @JsonIgnore
+    public JsonSerializer<AccountClassRestriction> getSerializer() {
+        return new JsonSerializer<AccountClassRestriction>() {
+            @Override
+            public void serialize(AccountClassRestriction value, JsonGenerator gen, SerializerProvider serializers)
+                    throws IOException, JsonProcessingException
+            {
+                gen.writeStartObject();
+                gen.writeStringField("Account Class",value.accountClass);
+                gen.writeStringField("Restriction Type",value.restrictionType);
+                gen.writeEndObject();
+            }
+        };
+    }
 
 }

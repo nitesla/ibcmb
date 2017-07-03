@@ -82,14 +82,6 @@ public class Role extends AbstractEntity implements PrettySerializer{
         this.email = email;
     }
 
-    //    public Collection<User> getUsers() {
-//        return users;
-//    }
-//
-//    public void setUsers(Collection<User> users) {
-//        this.users = users;
-//    }
-
 
     @Override
     public String toString() {

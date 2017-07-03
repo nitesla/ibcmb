@@ -142,9 +142,6 @@ public class TransferServiceImpl implements TransferService {
 
     @Override
     public void validateTransfer(TransferRequestDTO dto) throws InternetBankingTransferException {
-        if (dto.getAmount().compareTo(new BigDecimal(0)) <= 0) {
-
-        }
 
         if (dto.getBeneficiaryAccountNumber().equalsIgnoreCase(dto.getCustomerAccountNumber())) {
             throw new InternetBankingTransferException(TransferExceptions.SAME_ACCOUNT.toString());

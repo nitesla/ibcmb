@@ -3,6 +3,8 @@ package longbridge.models;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +20,7 @@ import java.util.List;
 @Table(uniqueConstraints=@UniqueConstraint(columnNames={"userName","deletedOn"}))
 public class CorporateUser extends User {
 
-	@ManyToOne
+	@ManyToOne @JsonIgnore
     private Corporate corporate;
 
 	@ManyToOne
@@ -46,12 +48,6 @@ public class CorporateUser extends User {
 		this.corporateRole = corporateRole;
 	}
 
-	@Override
-	public String toString() {
-		return "CorporateUser{" + super.toString() + "," +
-				"corporate=" + corporate +
-				'}';
-	}
 
 	@Override
 	public int hashCode(){
