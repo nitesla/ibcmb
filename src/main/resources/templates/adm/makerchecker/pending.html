@@ -136,10 +136,10 @@
             "dom": 'T<"clear">frtlp',
             "columns": [
                 {"data":"description"},
-                { "data": "initiatedBy" },
-                { "data": "initiatedOn" },
-                { "data": "verifiedBy" },
-                { "data": "verifiedOn" },
+                { "data": "initiatedBy"},
+                { "data": "initiatedOn"},
+                { "data": "verifiedBy" ,"defaultContent": "<i>Not Verified</i>"},
+                { "data": "verifiedOn", "defaultContent": "<i>Not Verified</i>" },
                 { "data": "status" }
 
             ] ,"columnDefs" : [ {
@@ -147,9 +147,12 @@
                 "data" : "status",
                 "render" : function(data, type,full, meta) {
                     if (type === 'display') {
+                    	if(data == null)
+                    		return data;
                     	var dtStart = new Date(parseInt(data));
                      	var dtStartWrapper = moment(dtStart);
-                     	return dtStartWrapper.format('DD/MM/YYYY HH:mm');
+                     	//return dtStartWrapper.format('DD/MM/YYYY HH:mm');
+                     	return dtStartWrapper.format('LLLL');
                     }
                     return data;
                 }
@@ -158,9 +161,11 @@
                 "data" : "status",
                 "render" : function(data, type,full, meta) {
                     if (type === 'display') {
+                    	if(data == null)
+                    		return data;
                     	var dtStart = new Date(parseInt(data));
                      	var dtStartWrapper = moment(dtStart);
-                     	return dtStartWrapper.format('DD/MM/YYYY HH:mm');
+                     	return dtStartWrapper.format('LLLL');
                     }
                     return data;
                 }
