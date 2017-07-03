@@ -309,8 +309,9 @@ public class AccountController {
 			System.out.println("Whats in the list " + list);
 
 			out.setData(list);
-			out.setRecordsFiltered(list==null?0:list.size());
-			out.setRecordsTotal(list.size());
+			int sz = list==null?0:list.size();
+			out.setRecordsFiltered(sz);
+			out.setRecordsTotal(sz);
 		} catch (ParseException e) {
 			logger.warn("didn't parse date", e);
 		}
