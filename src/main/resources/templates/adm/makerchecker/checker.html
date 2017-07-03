@@ -141,7 +141,12 @@
                 {"data":"verifiedBy"},
                 {"data":"verifiedOn"}
 
-            ]
+            ],
+
+            "columnDefs": [ {
+                targets: 2,
+                render: $.fn.dataTable.render.moment( 'Do MMM YYYYY' )
+            } ]
         });
 
         table.on('select', function()
