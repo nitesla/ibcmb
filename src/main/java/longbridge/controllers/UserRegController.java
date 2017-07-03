@@ -37,6 +37,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Created by Wunmi Sowunmi on 18/04/2017.
@@ -335,9 +336,7 @@ public class UserRegController {
         message += n;
 
 
-        ObjectNode sent = integrationService.sendSMS(message, contact +
-                "" +
-                " ", "Internet Banking Registration Code");
+        CompletableFuture<ObjectNode> sent = integrationService.sendSMS(message, contact, "Internet Banking Registration Code");
         if (sent != null){
             return String.valueOf(n);
         }
