@@ -23,6 +23,9 @@
         <aspect name="longbridge.aop.MakerCheckerAdvisor"/>
         <aspect name="longbridge.aop.AdminUserAdvisor"/>
         <aspect name="longbridge.aop.OpsUserAdvisor"/>
+        <aspect name="longbridge.aop.RetailUserAdvisor"/>
+        <aspect name="longbridge.aop.CorporateUserAdvisor"/>
+
 
 
     </aspects>

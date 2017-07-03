@@ -75,7 +75,7 @@ public class VerificationServiceImpl implements VerificationService {
         try {
             verification.setVersion(dto.getVersion());
             verification.setVerifiedBy(getCurrentUserName());
-            verification.setComments(dto.getComment());
+            verification.setComments(dto.getComments());
             verification.setVerifiedOn(new Date());
             verification.setStatus(verificationStatus.DECLINED);
             verificationRepo.save(verification);
@@ -118,7 +118,7 @@ public class VerificationServiceImpl implements VerificationService {
             verification.setVersion(dto.getVersion());
             verification.setVerifiedBy(getCurrentUserName());
             verification.setVerifiedOn(new Date());
-            verification.setComments(dto.getComment());
+            verification.setComments(dto.getComments());
             verification.setStatus(verificationStatus.APPROVED);
             verificationRepo.save(verification);
             notifyInitiator(verification);
