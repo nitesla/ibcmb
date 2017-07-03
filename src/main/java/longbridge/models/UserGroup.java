@@ -86,7 +86,8 @@ public class UserGroup extends AbstractEntity implements PrettySerializer{
 
 
     @Override
-    public JsonSerializer<UserGroup> getSerializer() {
+    public JsonSerializer<UserGroup> getSerializer()
+    {
         return new JsonSerializer<UserGroup>() {
 
             @Override

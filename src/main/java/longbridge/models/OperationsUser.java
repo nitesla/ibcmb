@@ -1,9 +1,15 @@
 package longbridge.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import longbridge.utils.PrettySerializer;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
+import java.io.IOException;
 import java.util.List;
 
 import javax.persistence.*;
@@ -18,16 +24,14 @@ import javax.persistence.*;
 @Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
 @Table(uniqueConstraints=@UniqueConstraint(columnNames={"userName","deletedOn"}))
-public class OperationsUser extends User implements Person {
+public class OperationsUser extends User implements Person,PrettySerializer {
 	public OperationsUser(){
 		this.userType = (UserType.OPERATIONS);
 	}
 
+	@JsonIgnore
 	@ManyToMany(mappedBy = "users")
 	private List<UserGroup> groups;
-
-
-
 
 
 	@JsonIgnore
@@ -36,14 +40,10 @@ public class OperationsUser extends User implements Person {
 	}
 
 
-
-
 	@JsonIgnore
 	public void setGroups(List<UserGroup> groups) {
 		this.groups = groups;
 	}
-
-
 
 
 	@Override
@@ -58,6 +58,7 @@ public class OperationsUser extends User implements Person {
 	public boolean isExternal() {
 		return false;
 	}
+
 
 
 }

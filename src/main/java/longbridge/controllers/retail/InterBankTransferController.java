@@ -24,10 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.security.Principal;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -174,7 +171,7 @@ public class InterBankTransferController {
         requestDTO.setBeneficiaryAccountName(beneficiary.getAccountName());
         requestDTO.setBeneficiaryAccountNumber(beneficiary.getAccountNumber());
         requestDTO.setTransferType(TransferType.INTER_BANK_TRANSFER);
-        FinancialInstitution institution = financialInstitutionService.getFinancialInstitutionByCode(beneficiary.getBeneficiaryBank());
+        FinancialInstitution institution = financialInstitutionService.getFinancialInstitutionByName(beneficiary.getBeneficiaryBank());
         if (institution == null) {
 
             model.addAttribute("failure", messages.getMessage("transfer.beneficiary.invalid", null, locale));
@@ -197,7 +194,23 @@ public class InterBankTransferController {
         List<LocalBeneficiary> beneficiaries =  StreamSupport.stream(localBeneficiaryService.getLocalBeneficiaries(retailUser).spliterator(), false)
                 .filter(i -> !i.getBeneficiaryBank().equalsIgnoreCase(financialInstitutionService.getFinancialInstitutionByCode(bankCode).getInstitutionCode()))
                 .collect(Collectors.toList());
-        beneficiaries .forEach(i-> i.setBeneficiaryBank(financialInstitutionService.getFinancialInstitutionByCode(i.getBeneficiaryBank()).getInstitutionName()));
+
+        beneficiaries
+                .stream()
+                .filter(Objects::nonNull)
+                .forEach(i->
+                        {
+                     FinancialInstitution financialInstitution=       financialInstitutionService.getFinancialInstitutionByCode(i.getBeneficiaryBank());
+
+                          if (financialInstitution!=null)
+                            i.setBeneficiaryBank(financialInstitution.getInstitutionName());
+
+
+
+
+                        }
+
+                );
 
         model.addAttribute("localBen", beneficiaries);
 

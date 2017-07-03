@@ -98,7 +98,9 @@
                                 <tr>
                                     <th>Operation</th>
                                     <th>Initiated By</th>
+                                    <th>Date</th>
                                     <th>Verified By</th>
+                                    <th>Date</th>
                                     <th>Status</th>
 
                                 </tr>
@@ -113,7 +115,9 @@
                                 <tr>
                                     <th>Operation</th>
                                     <th>Initiated By</th>
+                                    <th>Date</th>
                                     <th>Verified By</th>
+                                    <th>Date</th>
                                     <th>Status</th>
                                 </tr>
                                 </tfoot>
@@ -157,11 +161,13 @@
             "columns": [
                 {"data":"description"},
                 { "data": "initiatedBy" },
+                { "data": "initiatedOn" },
                 { "data": "verifiedBy" },
-                { "data": "status" },
+                { "data": "verifiedOn" },
+                { "data": "status" }
 
             ] ,"columnDefs" : [ {
-                "targets" : 3,
+                "targets" : 5,
                 "data" : "status",
                 "render" : function(data, type,full, meta) {
                     if (type === 'display') {
