@@ -32,6 +32,7 @@ public class User extends AbstractEntity implements PrettySerializer {
     protected Date lockedUntilDate;
     protected Date lastLoginDate;
     protected int noOfLoginAttempts;
+    @Column(nullable = true)
     protected boolean isFirstTimeLogon=true;
 
     //@Enumerated(value = EnumType.STRING)

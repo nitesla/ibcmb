@@ -82,9 +82,11 @@
         $('#bank_code').change(function () {
             $('#acct_name').val("");
             $('.acctError').hide();
+            $('#localsave').hide();
+            $('#neq').show();
         });
 
-        $('#acct_num').change(function () {
+        $('#acct_num').blur(function () {
             $('#acct_name').val("");
             $('.acctError').hide();
         });
@@ -122,6 +124,7 @@
                $('#acct_name').val(message);
                $('#localsave').show();
                $('#neq').hide();
+               $('.acctError').hide()
                document.getElementById('loading-icon').style.display = 'none';
                $('#loading-icon').hide();
            }
