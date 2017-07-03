@@ -39,7 +39,7 @@ public interface TransferService {
     Page<TransRequest> getTransfers(User user, Pageable pageDetails);
 
     @PreAuthorize("hasAuthority('MAKE_TRANSFER')")
-    boolean saveTransfer(TransferRequestDTO transferRequestDTO) throws TransferException;
+    TransferRequestDTO saveTransfer(TransferRequestDTO transferRequestDTO) throws TransferException;
     @PreAuthorize("hasAuthority('MAKE_TRANSFER')")
     void validateTransfer(TransferRequestDTO transferRequestDTO) throws InternetBankingTransferException;
 

@@ -119,6 +119,7 @@ public class OwnTransferController {
     }
 
 
+
     @RequestMapping(path = "{id}/receipt", method = RequestMethod.GET)
     public ModelAndView report(@PathVariable Long id,HttpServletRequest servletRequest, TransferRequestDTO transferRequestDTO) {
         /**
@@ -152,6 +153,7 @@ public class OwnTransferController {
 //        ModelAndView modelAndView = new ModelAndView("rpt_receipt", modelMap);
 //        return modelAndView;
     }
+
     @PostMapping("/edit")
     public String editTransfer(@ModelAttribute("transferRequest")  TransferRequestDTO transferRequestDTO,Model model,HttpServletRequest request){
         transferRequestDTO.setTransferType(TransferType.OWN_ACCOUNT_TRANSFER);

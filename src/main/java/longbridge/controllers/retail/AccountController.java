@@ -266,8 +266,9 @@ public class AccountController {
 	modelMap.put("date",transactionHistory.getValueDate());
 	modelMap.put("tranDate", transactionHistory.getPostedDate());
 }
-	return new ModelAndView(view, modelMap);
 
+	ModelAndView modelAndView=new ModelAndView(view, modelMap);
+	  return modelAndView;
 	}
 
 	@PostMapping("/history")

@@ -91,7 +91,7 @@
                             <!--<a style="cursor: pointer;" onclick="goBack()" >Modify</a>-->
                             <button type="submit" class="btn btn-link required-step">Proceed</button>
 
-                            <button th:href="@{/retail/transfer/local}" class='btn btn-link less-required'>Cancel</button>
+                            <button type="button" onclick="cancel();" class='btn btn-link less-required'>Cancel</button>
 
                              <button type='button' class='btn btn-link less-required' onclick="edit();">Modify</button>
 
@@ -127,7 +127,9 @@
          function edit(){
              $("#form_edit").submit();
          }
-
+         function cancel(){
+           window.location.href="/retail/transfer/local";
+         }
 
     </script>
 </div>

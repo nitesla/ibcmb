@@ -27,6 +27,7 @@ import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -66,9 +67,15 @@ public class LocalTransferController {
     public String index(Model model, Principal principal) throws Exception {
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
         Iterable<LocalBeneficiary> cmbBeneficiaries = localBeneficiaryService.getBankBeneficiaries(retailUser);
-        model.addAttribute("localBen",
-                StreamSupport.stream(cmbBeneficiaries.spliterator(), false)
-                        .collect(Collectors.toList()));
+
+        List<LocalBeneficiary> beneficiaries =StreamSupport.stream(cmbBeneficiaries.spliterator(), false)
+                .collect(Collectors.toList());
+        beneficiaries .forEach(i-> i.setBeneficiaryBank(financialInstitutionService.getFinancialInstitutionByCode(i.getBeneficiaryBank()).getInstitutionName()));
+
+        model.addAttribute("localBen",beneficiaries
+                );
+
+
 
 
         return page + "pagei";
