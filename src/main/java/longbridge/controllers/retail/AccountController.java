@@ -300,7 +300,7 @@ public class AccountController {
 			to = dateFormat.parse(toDate);
 			//int diffInDays = (int) ((to.getTime() - from.getTime()) / (1000 * 60 * 60 * 24));
 			Duration diffInDays= new Duration(new DateTime(from),new DateTime(to));
-			logger.info("Day difference {}",diffInDays);
+			logger.info("Day difference {}",diffInDays.getStandardDays());
 			AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to, tranType);
 			logger.info("TransactionType {}", tranType);
 			out.setDraw(input.getDraw());
