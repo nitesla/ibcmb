@@ -531,8 +531,27 @@ public class UserRegController {
         List<String> policies = passwordPolicyService.getPasswordRules();
         model.addAttribute("policies", policies);
 
-        List<SecurityQuestions> securityQuestions = securityQuestionService.getSecQuestions();
-        model.addAttribute("secQuestions", securityQuestions);
+        List<SecurityQuestions> secQues = securityQuestionService.getSecQuestions();
+        logger.info("security questions "+secQues);
+//        int noOfQuestions = securityService.getMinUserQA();
+//
+//        ArrayList[] masterList = new ArrayList[noOfQuestions];
+//
+//        //init arrays
+//        for (int idx=0; idx < noOfQuestions ; ++idx) {
+//           masterList[idx] = new ArrayList();
+//        }
+//
+//        //porpulate arrays
+//        for(int idx=0 ; idx < secQues.size() ; ++idx){
+//            masterList[idx / noOfQuestions].add(secQues.get(idx));
+//        }
+//
+//        logger.info("MASTER LIST {}", masterList);
+        model.addAttribute("secQuestions", secQues);
+
+        //logger.info("MIN SEC {}", noOfQuestions);
+
         return "cust/register/registration";
     }
 
@@ -587,7 +606,7 @@ public class UserRegController {
         doesUserExist(customerId);
 
         if (details.getBvn() != null && !details.getBvn().isEmpty() ){
-            logger.error("No Bvn found");
+//            logger.error("No Bvn found");
             bvn=details.getBvn();
         }
 
@@ -613,8 +632,8 @@ public class UserRegController {
         //byte[] encodedBytes = Base64.encodeBase64(phishing.getBytes());
         File image = new File(fullImagePath, phishing);
         Long length = image.length();
-       // length <= Integer.MAX_VALUE;
-//TODO: check file is not bigger than max int
+        // length <= Integer.MAX_VALUE;
+        //TODO: check file is not bigger than max int
         byte buffer[] = new byte[length.intValue()];
 
 
