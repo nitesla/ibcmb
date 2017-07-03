@@ -1,5 +1,6 @@
 package longbridge.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
@@ -29,6 +30,7 @@ public class OperationsUser extends User implements Person {
 
 
 
+	@JsonIgnore
 	public List<UserGroup> getGroups() {
 		return groups;
 	}
@@ -36,6 +38,7 @@ public class OperationsUser extends User implements Person {
 
 
 
+	@JsonIgnore
 	public void setGroups(List<UserGroup> groups) {
 		this.groups = groups;
 	}
@@ -51,6 +54,7 @@ public class OperationsUser extends User implements Person {
 
 
 	@Override
+	@JsonIgnore
 	public boolean isExternal() {
 		return false;
 	}

@@ -161,34 +161,11 @@ public class AdminUserServiceImpl implements AdminUserService {
         }
     }
 
-    public void postCreateUser(AdminUser adminUser){
-        createUserOnEntrust(adminUser);
-    }
-
-//    public void postUpdateUserStatus(AdminUser adminUser, ){
-//
-//        if("A".equals(adminUser.getStatus())) {
-//
-//            String password = passwordPolicyService.generatePassword();
-//            adminUser.setPassword(passwordEncoder.encode(password));
-//            adminUser.setExpiryDate(new Date());
-//            passwordPolicyService.saveAdminPassword(adminUser);
-//            adminUserRepo.save(adminUser);
-//
-//            Email email = new Email.Builder()
-//                    .setRecipient(adminUser.getEmail())
-//                    .setSubject(messageSource.getMessage("admin.activation.subject", null, locale))
-//                    .setBody(String.format(messageSource.getMessage("admin.activation.message", null, locale), args))
-//                    .build();
-//            mailService.send(email);
-//        }
-
-//    }
 
     public void createUserOnEntrust(AdminUser adminUser) {
         AdminUser user = adminUserRepo.findFirstByUserName(adminUser.getUserName());
         if(user!=null) {
-            if ("".equals(user.getEntrustId())){
+            if ("".equals(user.getEntrustId())||user.getEntrustId()==null){
             String fullName = adminUser.getFirstName() + " " + adminUser.getLastName();
             SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_CREATION");
             if (setting != null && setting.isEnabled()) {

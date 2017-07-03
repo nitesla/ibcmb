@@ -40,7 +40,6 @@ public class User extends AbstractEntity implements PrettySerializer {
     @ManyToOne
     protected Code alertPreference;
 
-    @JsonIgnore
     @ManyToOne
     protected Role role;
     protected String entrustId;

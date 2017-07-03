@@ -88,7 +88,7 @@ public class MakerCheckerAdvisor {
 
 		if (!makerCheckerService.isEnabled(verifier.operation())) {
 			pjp.proceed();
-			return verifier.description() + " successful";
+			return entity;
 		}
 
 		CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication()
