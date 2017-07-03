@@ -14,6 +14,7 @@ import longbridge.models.FinancialInstitutionType;
 import longbridge.models.RetailUser;
 import longbridge.repositories.RetailUserRepo;
 import longbridge.services.*;
+import longbridge.utils.DateFormatter;
 import longbridge.utils.ResultType;
 import longbridge.utils.TransferType;
 import org.codehaus.jettison.json.JSONException;
@@ -334,36 +335,26 @@ public class TransferController {
     }
 
     @RequestMapping(path = "{id}/receipt", method = RequestMethod.GET)
-    public ModelAndView report(@PathVariable Long id, HttpServletRequest servletRequest, TransferRequestDTO transferRequestDTO) {
-        /**
-         * Created a stub to test transaction receiptpt
-         */
+    public ModelAndView report(@PathVariable Long id, HttpServletRequest servletRequest,Principal principal) {
+        RetailUser retailUser=retailUserService.getUserByName(principal.getName());
         JasperReportsPdfView view = new JasperReportsPdfView();
         view.setUrl("classpath:jasperreports/rpt_receipt.jrxml");
         view.setApplicationContext(appContext);
-
         Map<String, Object> modelMap = new HashMap<>();
-
         modelMap.put("datasource",new ArrayList<>());
-//        modelMap.put("format", "pdf");
         modelMap.put("amount",transferService.getTransfer(id).getAmount());
         modelMap.put("recipient",transferService.getTransfer(id).getBeneficiaryAccountName());
         modelMap.put("AccountNum", transferService.getTransfer(id).getCustomerAccountNumber());
-        modelMap.put("sender", "");
-        modelMap.put("bank", transferService.getTransfer(id).getFinancialInstitution().getInstitutionName());
+        modelMap.put("sender",retailUser.getFirstName()+" "+retailUser.getLastName() );
         modelMap.put("remarks", transferService.getTransfer(id).getRemarks());
-        modelMap.put("recipientBank", "");
-        modelMap.put("acctNo2", transferService.getTransfer(id).getCustomerAccountNumber());
-        modelMap.put("acctNo1", transferService.getTransfer(id).getBeneficiaryAccountNumber());
+        modelMap.put("recipientBank", transferService.getTransfer(id).getFinancialInstitution().getInstitutionName());
+        modelMap.put("acctNo2", transferService.getTransfer(id).getBeneficiaryAccountNumber());
+        modelMap.put("acctNo1", transferService.getTransfer(id).getCustomerAccountNumber());
         modelMap.put("refNUm", transferService.getTransfer(id).getReferenceNumber());
-        modelMap.put("date", transferService.getTransfer(id).getTranDate());
-        modelMap.put("tranDate",transferService.getTransfer(id).getTranDate());
+        modelMap.put("date", DateFormatter.format(transferService.getTransfer(id).getTranDate()));
+        modelMap.put("tranDate", DateFormatter.format(transferService.getTransfer(id).getTranDate()));
         ModelAndView modelAndView=new ModelAndView(view, modelMap);
         return modelAndView;
-//        logger.info("Transaction Receipt {}",modelMap);
-//
-//        ModelAndView modelAndView = new ModelAndView("rpt_receipt", modelMap);
-//        return modelAndView;
     }
 
     @RequestMapping(value = "/back", method = RequestMethod.POST)
