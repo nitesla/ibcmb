@@ -1,5 +1,6 @@
 package longbridge.services;
 
+import longbridge.dtos.PhishingImageDTO;
 import longbridge.models.PhishingImage;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,7 +16,9 @@ public interface PhishingImageService {
 
     String deleteImage(Long id);
 
+    List<PhishingImage> getRandomPhishingImages();
+
     List<PhishingImage> getPhishingImages();
 
-    Page<PhishingImage> getAllPhishingImages(Pageable pageable);
+    Page<PhishingImageDTO> getAllPhishingImages(Pageable pageable);
 }
