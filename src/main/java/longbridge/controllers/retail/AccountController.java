@@ -147,7 +147,7 @@ public class AccountController {
 	public String updateCustom(@Valid CustomizeAccount customizeAccount, BindingResult result, Model model,
 			RedirectAttributes redirectAttributes, Locale locale) throws Exception {
 		if (result.hasErrors()) {
-			model.addAttribute("failure", "Pls correct the errors");
+			model.addAttribute("failure", "Name cannot be empty");
 			return "cust/account/customize";
 		}
 

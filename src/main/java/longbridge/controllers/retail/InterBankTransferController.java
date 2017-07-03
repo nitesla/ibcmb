@@ -1,5 +1,6 @@
 package longbridge.controllers.retail;
 
+import longbridge.api.Rate;
 import longbridge.dtos.FinancialInstitutionDTO;
 import longbridge.dtos.LocalBeneficiaryDTO;
 import longbridge.dtos.TransferRequestDTO;
@@ -27,6 +28,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -208,8 +210,19 @@ public class InterBankTransferController {
 
 
         );
-        model.addAttribute("nip", integrationService.getFee("NIP"));
-        model.addAttribute("rtgs", integrationService.getFee("RTGS"));
+
+
+        try {
+            model.addAttribute("nip", integrationService.getFee("NIP").get());
+            model.addAttribute("rtgs", integrationService.getFee("RTGS").get());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            model.addAttribute("nip", new Rate());
+            model.addAttribute("rtgs",new Rate());
+            e.printStackTrace();
+        }
+
 
     }
 

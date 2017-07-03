@@ -1,6 +1,7 @@
 package longbridge.services.implementations;
 
 import longbridge.api.AccountDetails;
+import longbridge.api.NEnquiryDetails;
 import longbridge.dtos.SettingDTO;
 import longbridge.dtos.TransferRequestDTO;
 import longbridge.exception.InternetBankingTransferException;
@@ -143,6 +144,7 @@ public class TransferServiceImpl implements TransferService {
     @Override
     public void validateTransfer(TransferRequestDTO dto) throws InternetBankingTransferException {
 
+
         if (dto.getBeneficiaryAccountNumber().equalsIgnoreCase(dto.getCustomerAccountNumber())) {
             throw new InternetBankingTransferException(TransferExceptions.SAME_ACCOUNT.toString());
         }
@@ -236,7 +238,8 @@ public class TransferServiceImpl implements TransferService {
 
         }
         if (dto.getTransferType().equals(TransferType.INTER_BANK_TRANSFER)) {
-            if (integrationService.doNameEnquiry(dto.getFinancialInstitution().getInstitutionCode(), dto.getBeneficiaryAccountNumber()) == null)
+            NEnquiryDetails details= integrationService.doNameEnquiry(dto.getFinancialInstitution().getInstitutionCode(), dto.getBeneficiaryAccountNumber());
+            if (details!=null &&  details.getAccountName()==null)
                 throw new InternetBankingTransferException(TransferExceptions.INVALID_BENEFICIARY.toString());
             if (integrationService.viewAccountDetails(dto.getCustomerAccountNumber()) == null)
                 throw new InternetBankingTransferException(TransferExceptions.INVALID_ACCOUNT.toString());

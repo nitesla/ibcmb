@@ -61,7 +61,7 @@ public class CorporateControllerAdvice {
         else
         {corporateName=corporateUser.getCorporate().getName();}
 
-//        model.addAttribute("compName",corporateName);
+        model.addAttribute("compName",corporateName);
 
         if(corporateUser.getLastLoginDate()!=null) {
             model.addAttribute("lastLogin", DateFormatter.format(corporateUser.getLastLoginDate()));

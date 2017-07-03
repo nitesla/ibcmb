@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html xmlns:th="http://www.thymeleaf.org" >
 <head th:replace="cust_layout :: site-head">
 
 </head>
@@ -15,7 +15,12 @@
 
             <div class="col-md-4 col-sm-4">
                 <h5 class="page_header">  Transaction Successful</h5>
+                 <select class="form-control invisible">
+                        <option value="account">Account Overview</option>
+                </select>
             </div>
+
+            
         </div>
         <div class="row">
             <div class="col-md-9 content-bg">
@@ -51,28 +56,15 @@
                             </tr>
                         </table>
 
-                        <form method="post" th:action="@{/retail/transfer/ownaccount}"
-                              th:object="${transRequest}">
-                            <input type="hidden" th:field="*{customerAccountNumber}"/>
-                            <input type="hidden" th:field="*{beneficiaryAccountNumber}"/>
-                            <input type="hidden" th:field="*{beneficiaryAccountName}"/>
-                            <input type="hidden" th:field="*{amount}"/>
-                            <input type="hidden" th:field="*{remarks}"/>
-                            <div class="form-group">
-                                <label>Token *</label>
-                                <input type="text" name="token" placeholder="" class="form-control"/>
-                                <br/>
+
                                 <div class="form-group">
 
-                                    <a th:href="@{/retail/transfer/ownaccount}" >Receipt</a>
+                                    <a th:href="@{/}" >Receipt</a>
                                     <a th:href="@{/retail/dashboard}" >Home</a>
-                                    <a th:href="@{/retail/transfer/ownaccount}" >Make another transfer</a>
+                                    <a th:href="@{/retail/transfer/}" >Make another transfer</a>
                                 </div>
 
 
-                            </div>
-
-                        </form>
 
 
                 </div>

@@ -47,7 +47,7 @@ start
 }
 
 .active{
-    border-bottom: 5px solid #9F614B !important;
+    border-bottom: 2px solid #9F614B !important;
 }
 
 .invisible
@@ -60,7 +60,6 @@ start
     list-style-type: none
 
 }
-
 
 .mail-links li
 {
@@ -193,7 +192,7 @@ label
 span.req
 {
     position: absolute;
-    top:18px;
+    top:22px;
     left:-7px;
     display: inline-block;
 
@@ -1352,6 +1351,12 @@ button, input, optgroup, select, textarea {
     margin: 15px 0 10px 0px;
     padding: 0px;
     background-color: #ebecef;
+    padding-bottom: 7px !important;
+}
+
+.full-width
+{
+    width: 100% !important;
 }
 
 .bg{

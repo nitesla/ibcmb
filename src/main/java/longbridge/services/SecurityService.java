@@ -71,6 +71,7 @@ public interface SecurityService {
 
     Map<String, List<String>> getUserQA(String username) throws InternetBankingTransferException;
      Integer getMinUserQA(String username);
+     Integer getMinUserQA();
      Integer geUserQASize(String username);
 
     Map<String, List<String>> getMutualAuth(String username) throws InternetBankingTransferException;
