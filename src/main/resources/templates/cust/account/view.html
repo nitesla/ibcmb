@@ -68,7 +68,7 @@
 
                         <h2>TRANSACTION DETAILS</h2>
 
-                    <div class="table-responsive" >
+                    <div class="" >
                             <table class="table" id="tranDetails">
                                 <thead>
                                 <tr>
@@ -131,7 +131,7 @@
 	};
 
     $(document).ready(function() {
-
+    $('#btn-print').hide();
     	$('.datepicker').datepicker({ dateFormat: 'dd-mm-yy' });//
 
     	$('#tranDetails').DataTable({
@@ -176,7 +176,7 @@
 			e.preventDefault();
 			dt = $('#tranDetails').DataTable();
 			dt.ajax.reload(null, true);
-
+            $('#btn-print').show();
 		});
 
         $("#btn-print").on("click", function(e) {

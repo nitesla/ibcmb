@@ -476,8 +476,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     }
 
 
-    @Override
-    public List<CorporateUserDTO> getUsersWithoutRole(Long corpId) {
+    public List<CorporateUserDTO> getUsersWithoutRole2(Long corpId) {
         boolean withoutRole = true;
         Corporate corporate = corporateRepo.findOne(corpId);
         List<CorporateUser> users = corporateUserRepo.findByCorporate(corporate);
@@ -499,6 +498,13 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         return  convertEntitiesToDTOs(usersWithoutCorpRole);
     }
 
+    @Override
+    public List<CorporateUserDTO> getUsersWithoutRole(Long corpId) {
+        boolean withoutRole = true;
+        Corporate corporate = corporateRepo.findOne(corpId);
+        List<CorporateUser> users = corporateUserRepo.findByCorporateAndCorporateRoleIsNull(corporate);
+        return  convertEntitiesToDTOs(users);
+    }
 
 
     @Override
