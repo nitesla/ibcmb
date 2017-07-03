@@ -118,11 +118,12 @@ public class AdminUserController {
     @ResponseBody
     DataTablesOutput<AdminUserDTO> getUsers(DataTablesInput input,@RequestParam("csearch") String search) {
         Pageable pageable = DataTablesUtils.getPageable(input);
-        
         Page<AdminUserDTO> adminUsers = null;
-        if (StringUtils.isNoneBlank(search)) {
+        if (StringUtils.isNoneBlank(search))
+        {
         	adminUsers = adminUserService.findUsers(search,pageable);
-		}else{
+		}else
+        {
 			adminUsers = adminUserService.getUsers(pageable);
 		}
         DataTablesOutput<AdminUserDTO> out = new DataTablesOutput<AdminUserDTO>();

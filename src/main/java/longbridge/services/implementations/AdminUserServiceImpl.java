@@ -400,7 +400,8 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
 
-    private List<AdminUserDTO> convertEntitiesToDTOs(Iterable<AdminUser> adminUsers) {
+    private List<AdminUserDTO> convertEntitiesToDTOs(Iterable<AdminUser> adminUsers)
+    {
         List<AdminUserDTO> adminUserDTOList = new ArrayList<>();
         for (AdminUser adminUser : adminUsers) {
             AdminUserDTO userDTO = convertEntityToDTO(adminUser);
@@ -410,7 +411,8 @@ public class AdminUserServiceImpl implements AdminUserService {
         return adminUserDTOList;
     }
 
-    private AdminUserDTO convertEntityToDTO(AdminUser adminUser) {
+    private AdminUserDTO convertEntityToDTO(AdminUser adminUser)
+    {
         AdminUserDTO adminUserDTO = modelMapper.map(adminUser, AdminUserDTO.class);
         adminUserDTO.setRoleId(adminUser.getRole().getId().toString());
         if (adminUser.getCreatedOnDate() != null) {
@@ -423,12 +425,14 @@ public class AdminUserServiceImpl implements AdminUserService {
         return adminUserDTO;
     }
 
-    private AdminUser convertDTOToEntity(AdminUserDTO adminUserDTO) {
+    private AdminUser convertDTOToEntity(AdminUserDTO adminUserDTO)
+    {
         return modelMapper.map(adminUserDTO, AdminUser.class);
     }
 
     @Override
-    public Page<AdminUserDTO> getUsers(Pageable pageDetails) {
+    public Page<AdminUserDTO> getUsers(Pageable pageDetails)
+    {
         Page<AdminUser> page = adminUserRepo.findAll(pageDetails);
         List<AdminUserDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
@@ -437,11 +441,12 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
 	@Override
-	public Page<AdminUserDTO> findUsers(String pattern, Pageable pageDetails) {
+	public Page<AdminUserDTO> findUsers(String pattern, Pageable pageDetails)
+    {
 		Page<AdminUser> page = adminUserRepo.findUsingPattern(pattern, pageDetails);
 		List<AdminUserDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
-        Page<AdminUserDTO> pageImpl = new PageImpl<AdminUserDTO>(dtOs, pageDetails, t);
+        Page<AdminUserDTO> pageImpl = new PageImpl<AdminUserDTO>(dtOs,pageDetails,t);
         return pageImpl;
 	}
 
