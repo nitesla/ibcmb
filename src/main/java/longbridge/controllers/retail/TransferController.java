@@ -20,21 +20,21 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.LocaleResolver;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.StreamSupport;
 
 
@@ -61,6 +61,8 @@ public class TransferController {
     private String bankCode;
 
 
+    @Autowired
+    private ApplicationContext appContext;
     @Autowired
     public TransferController(RetailUserService retailUserService, IntegrationService integrationService, TransferService transferService, AccountService accountService, MessageSource messages, LocaleResolver localeResolver, LocalBeneficiaryService localBeneficiaryService, FinancialInstitutionService financialInstitutionService, TransferErrorService transferErrorService, SecurityService securityService) {
         this.retailUserService = retailUserService;
@@ -312,6 +314,38 @@ public class TransferController {
         return object.toString();
     }
 
+    @RequestMapping(path = "{id}/receipt", method = RequestMethod.GET)
+    public ModelAndView report(@PathVariable Long id, HttpServletRequest servletRequest, TransferRequestDTO transferRequestDTO) {
+        /**
+         * Created a stub to test transaction receiptpt
+         */
+        JasperReportsPdfView view = new JasperReportsPdfView();
+        view.setUrl("classpath:jasperreports/rpt_receipt.jrxml");
+        view.setApplicationContext(appContext);
 
+        Map<String, Object> modelMap = new HashMap<>();
+
+        modelMap.put("datasource",new ArrayList<>());
+//        modelMap.put("format", "pdf");
+        modelMap.put("amount",transferService.getTransfer(id).getAmount());
+        modelMap.put("recipient",transferService.getTransfer(id).getBeneficiaryAccountName());
+        modelMap.put("AccountNum", transferService.getTransfer(id).getCustomerAccountNumber());
+        modelMap.put("sender", "");
+        modelMap.put("bank", transferService.getTransfer(id).getFinancialInstitution().getInstitutionName());
+        modelMap.put("remarks", transferService.getTransfer(id).getRemarks());
+        modelMap.put("recipientBank", "");
+        modelMap.put("acctNo2", "0986879765");
+        modelMap.put("acctNo1", "4343758667");
+        modelMap.put("refNUm", transferService.getTransfer(id).getReferenceNumber());
+        modelMap.put("date", transferService.getTransfer(id).getTranDate());
+        modelMap.put("amountInWords", "1 MILLION NAIRA ");
+        modelMap.put("tranDate", "08-09-2017");
+        return new ModelAndView(view, modelMap);
+
+//        logger.info("Transaction Receipt {}",modelMap);
+//
+//        ModelAndView modelAndView = new ModelAndView("rpt_receipt", modelMap);
+//        return modelAndView;
+    }
 }
 
