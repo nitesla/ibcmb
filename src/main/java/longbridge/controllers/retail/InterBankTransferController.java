@@ -28,6 +28,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -209,12 +210,20 @@ public class InterBankTransferController {
 
 
         );
-        model.addAttribute("nip", new Rate());
-        model.addAttribute("rtgs",new Rate());
-      /*
-        model.addAttribute("nip", integrationService.getFee("NIP"));
-        model.addAttribute("rtgs", integrationService.getFee("RTGS"));
-*/
+
+
+        try {
+            model.addAttribute("nip", integrationService.getFee("NIP").get());
+            model.addAttribute("rtgs", integrationService.getFee("RTGS").get());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            model.addAttribute("nip", new Rate());
+            model.addAttribute("rtgs",new Rate());
+            e.printStackTrace();
+        }
+
+
     }
 
     @RequestMapping(value = "/balance/{accountNumber}", method = RequestMethod.GET, produces = "application/json")

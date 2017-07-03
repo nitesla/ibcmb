@@ -37,6 +37,7 @@ import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created by Wunmi Sowunmi on 18/04/2017.
@@ -318,9 +319,16 @@ public class UserRegController {
             message += n;
             session.setAttribute("regCode", n);
 
-            ObjectNode sent = integrationService.sendSMS(message, contact +
-                    "" +
-                    " ", "Internet Banking Registration Code");
+            ObjectNode sent = null;
+            try {
+                sent = integrationService.sendSMS(message, contact +
+                        "" +
+                        " ", "Internet Banking Registration Code").get();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
             if (sent != null){
 
 
