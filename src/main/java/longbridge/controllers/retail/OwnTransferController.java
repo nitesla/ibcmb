@@ -1,5 +1,6 @@
 package longbridge.controllers.retail;
 
+import longbridge.dtos.LocalBeneficiaryDTO;
 import longbridge.dtos.TransferRequestDTO;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferErrorService;
@@ -151,4 +152,12 @@ public class OwnTransferController {
 //        ModelAndView modelAndView = new ModelAndView("rpt_receipt", modelMap);
 //        return modelAndView;
     }
+    @PostMapping("/edit")
+    public String editTransfer(@ModelAttribute("transferRequest")  TransferRequestDTO transferRequestDTO,Model model,HttpServletRequest request){
+        transferRequestDTO.setTransferType(TransferType.OWN_ACCOUNT_TRANSFER);
+        transferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode(bankCode));
+        model.addAttribute("transferRequest",transferRequestDTO);
+        return page + "pagei";
+    }
+
 }

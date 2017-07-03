@@ -107,11 +107,8 @@
     <div class="modal-content no-bd-rad tokenBox" >
         <form id="loginform" th:action="@{/retail/token}" method="POST" >
             <div class="modal-body no-bd-rad">  
-            
-                
 
-                    <h3 class="tokenHeader"><span class='text-danger'>Hello</span>, Tolu</h3>
-
+                    <h3 class="tokenHeader"><span class='text-danger'>Hello</span>, <span th:text="*{username}" style="text-transform: capitalize">Tolu</span></h3>
 
                     <div class="margin-bottom">
                         <p style="margin-bottom:20px">Kindly enter the OTP from your token device</p>

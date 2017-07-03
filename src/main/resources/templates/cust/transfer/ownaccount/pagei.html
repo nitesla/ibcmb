@@ -72,7 +72,7 @@
                                     <div class="form-group">
                                         <label class="my-label">Amount</label>
                                         <div>
-                                            <span class="alert no-bd-rad my-border bg-white hide-content-only">&nbsp;&nbsp;&nbsp;</span>
+                                            <span class="alert no-bd-rad my-border bg-white hide-content-only">NGN</span>
 
                                             <input type="number" name="textname" min="0" step=".10" placeholder="Enter an amount"
                                             th:field="*{amount}"
@@ -87,7 +87,7 @@
                                         <label  class="my-label">Remark</label>
 
                                         <div>
-                                         <span class="alert no-bd-rad my-border bg-white hide-content-only">&nbsp;&nbsp;&nbsp;</span>
+                                         <span class="alert no-bd-rad my-border bg-white hide-content-only">NGN</span>
 
                                         <input type="text" name="textname" placeholder="" th:field="*{remarks}"
                                             class="form-control"/>
@@ -223,7 +223,7 @@
             success:function(currency){
                 cur = ''+String(currency);
                 if(cur == "" ){
-                    document.getElementById("destCurrency").textContent=" Unknown";
+                    document.getElementById("destCurrency").textContent="NAN";
                     // $("#myspan").show();
                 }else{
 //                    $('input[name=availBal]').val(bal);

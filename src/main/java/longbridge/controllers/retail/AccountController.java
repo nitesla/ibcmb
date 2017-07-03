@@ -150,7 +150,7 @@ public class AccountController {
 	public String updateCustom(@Valid CustomizeAccount customizeAccount, BindingResult result, Model model,
 			RedirectAttributes redirectAttributes, Locale locale) throws Exception {
 		if (result.hasErrors()) {
-			model.addAttribute("failure", "Pls correct the errors");
+			model.addAttribute("failure", "Name cannot be empty");
 			return "cust/account/customize";
 		}
 
@@ -308,7 +308,7 @@ public class AccountController {
 			System.out.println("Whats in the list " + list);
 
 			out.setData(list);
-			out.setRecordsFiltered(list.size());
+			out.setRecordsFiltered(list==null?0:list.size());
 			out.setRecordsTotal(list.size());
 		} catch (ParseException e) {
 			logger.warn("didn't parse date", e);
