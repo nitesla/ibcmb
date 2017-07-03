@@ -232,8 +232,7 @@ public class RequestServiceImpl implements RequestService {
         return pageImpl;
     }
 
-    @Override
-    public int getNumOfUnattendedRequests(OperationsUser opsUser) {
+    public int getNumOfUnattendedRequests2(OperationsUser opsUser) {
         int count=0;
         List<ServiceRequest> serviceRequests = serviceRequestRepo.findByRequestStatus("S");
         List<UserGroup> opsUserGroups = opsUser.getGroups();
@@ -242,7 +241,7 @@ public class RequestServiceImpl implements RequestService {
 
             if (reqConfig != null) {
                 for (UserGroup group : opsUserGroups) {
-                    if (group.equals(userGroupRepo.findOne(reqConfig.getGroupId()))) {
+                    if (group.getId().equals(reqConfig.getGroupId())) {
                         count += 1;
                     }
                 }
@@ -252,6 +251,15 @@ public class RequestServiceImpl implements RequestService {
         return count;
     }
 
+    @Override
+    public int getNumOfUnattendedRequests(OperationsUser opsUser) {
+        int count=0;
+        for(UserGroup ug : opsUser.getGroups()){
+        	Integer cnt = serviceRequestRepo.countRequestForStatus("S", ug.getId());
+        	count += cnt ;
+        }
+        return count;
+    }
     //    @Override
 //	public Page<ServiceRequestDTO> getRequests(ServiceRequestDTO request, Pageable pageDetails) {
 //		// TODO Auto-generated method stub

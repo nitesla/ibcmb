@@ -76,7 +76,7 @@
 
                                                     <div class="form-group text-left col-lg-5">
                                                         <select multiple="multiple" class="form-control left-selector">
-                                                            <option th:each="user: ${users.?[corporateRole == null]}"
+                                                            <option th:each="user: ${users}"
                                                              		th:object="${user}"
       																th:unless="${#lists.contains(role.users, user)}"
                                                                     th:value="${user.id}"
