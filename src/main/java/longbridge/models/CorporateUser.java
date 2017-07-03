@@ -48,12 +48,6 @@ public class CorporateUser extends User {
 		this.corporateRole = corporateRole;
 	}
 
-	@Override
-	public String toString() {
-		return "CorporateUser{" + super.toString() + "," +
-				"corporate=" + corporate +
-				'}';
-	}
 
 	@Override
 	public int hashCode(){

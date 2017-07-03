@@ -1,11 +1,15 @@
 package longbridge.aop;
 
+import com.querydsl.core.types.Template;
 import longbridge.dtos.VerificationDTO;
 import longbridge.models.AdminUser;
+import longbridge.models.OperationsUser;
 import longbridge.models.Verification;
 import longbridge.repositories.AdminUserRepo;
+import longbridge.repositories.OperationsUserRepo;
 import longbridge.repositories.VerificationRepo;
 import longbridge.services.AdminUserService;
+import longbridge.services.OperationsUserService;
 import longbridge.services.PasswordPolicyService;
 import longbridge.services.VerificationService;
 import org.aspectj.lang.JoinPoint;
@@ -27,7 +31,7 @@ import java.util.Date;
  * Created by Fortune on 6/28/2017.
  */
 @Aspect
-public class AdminUserAdvisor {
+public class OpsUserAdvisor {
 
 
     @Autowired
@@ -37,10 +41,10 @@ public class AdminUserAdvisor {
     private VerificationService verificationService;
 
     @Autowired
-    private AdminUserService adminUserService;
+    private OperationsUserService operationsUserService;
 
     @Autowired
-    private AdminUserRepo adminUserRepo;
+    private OperationsUserRepo operationsUserRepo;
 
     @Autowired
     PasswordPolicyService passwordPolicyService;
@@ -76,45 +80,45 @@ public class AdminUserAdvisor {
 
     //this is after merge of verification
     @After("isVerification() && isMerging() && isVerify() && args(user)")
-    public void postAdminUserCreation(JoinPoint p, AdminUser user) {
+    public void postOpsUserCreation(JoinPoint p, OperationsUser user) {
 
-        logger.info("Executing ADD_ADMIN_USER operation");
-        adminUserService.createUserOnEntrust(user);
+        logger.info("Executing ADD_OPS_USER operation");
+        operationsUserService.createUserOnEntrust(user);
         logger.info("Created User on entrust");
 //        user.setEntrustId(user.getUserName());
 //        entityManager.merge(user);
-        logger.info("After Executing first Post Admin Advice");
+        logger.info("After Executing first Post Ops Advice");
     }
 
-   // this runs after execution
+    // this runs after execution
     @After("isVerification() && verified() && args(verificationDto)")
     public void postAdminUserCreation2(JoinPoint p, VerificationDTO verificationDto)
     {
 
-        logger.info("Entering Second Post Admin Advice...");
+        logger.info("Entering Second Post Ops Advice...");
         logger.info("Verification dto {}",verificationDto);
         logger.info("VerificationRepo {}",verificationRepo);
 
-  Verification verification  = verificationRepo.findOne(verificationDto.getId());
-        if(verification.getOperation().equals("UPDATE_ADMIN_STATUS")){
+        Verification verification  = verificationRepo.findOne(verificationDto.getId());
+        if(verification.getOperation().equals("UPDATE_OPS_STATUS")){
 
-            AdminUser user = adminUserRepo.findOne(verification.getEntityId());
-    	    String fullName = user.getFirstName()+" "+user.getLastName();
+            OperationsUser user = operationsUserRepo.findOne(verification.getEntityId());
+            String fullName = user.getFirstName()+" "+user.getLastName();
             String password = passwordPolicyService.generatePassword();
             user.setPassword(passwordEncoder.encode(password));
             user.setExpiryDate(new Date());
-            passwordPolicyService.saveAdminPassword(user);
-            adminUserRepo.save(user);
-            adminUserService.sendPostActivateMessage(user, fullName,user.getUserName(),password);
-    	}
+            passwordPolicyService.saveOpsPassword(user);
+            operationsUserRepo.save(user);
+            operationsUserService.sendPostActivateMessage(user, fullName,user.getUserName(),password);
+        }
 
 
 
 
-    	//general user creation
+        //general user creation
 
 
-    	//activation
+        //activation
 
 
     }

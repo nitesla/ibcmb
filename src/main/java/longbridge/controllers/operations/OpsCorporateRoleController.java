@@ -81,6 +81,7 @@ public class OpsCorporateRoleController {
         model.addAttribute("role", roleDTO);
         return "ops/corporate/addrole";
     }
+    
     @PostMapping("/roles")
     public String createRole(@ModelAttribute("role") @Valid CorporateRoleDTO roleDTO, BindingResult result, WebRequest request, RedirectAttributes redirectAttributes, Locale locale,Model model) {
         if (result.hasErrors()) {
@@ -159,6 +160,7 @@ public class OpsCorporateRoleController {
             List<CorporateUserDTO> users = corporateUserService.getUsersWithoutRole(NumberUtils.toLong(roleDTO.getCorporateId()));
             model.addAttribute("users",users);
             model.addAttribute("corporate",corporate);
+            model.addAttribute("role", roleDTO);
             return "ops/corporate/editrole";
         }
         Set<CorporateUserDTO> usersList = new HashSet<CorporateUserDTO>();
@@ -177,6 +179,7 @@ public class OpsCorporateRoleController {
             List<CorporateUserDTO> users = corporateUserService.getUsersWithoutRole(NumberUtils.toLong(roleDTO.getCorporateId()));
             model.addAttribute("users",users);
             model.addAttribute("corporate",corporate);
+            model.addAttribute("role", roleDTO);
             return "ops/corporate/editrole";
         }
 
@@ -192,6 +195,7 @@ public class OpsCorporateRoleController {
             List<CorporateUserDTO> users = corporateUserService.getUsersWithoutRole(NumberUtils.toLong(roleDTO.getCorporateId()));
             model.addAttribute("users",users);
             model.addAttribute("corporate",corporate);
+            model.addAttribute("role", roleDTO);
             logger.error("Error updating role", ibe);
             return "ops/corporate/editrole";
         }
@@ -200,6 +204,7 @@ public class OpsCorporateRoleController {
             model.addAttribute("corporate",corporate);
             List<CorporateUserDTO> users = corporateUserService.getUsersWithoutRole(NumberUtils.toLong(roleDTO.getCorporateId()));
             model.addAttribute("users",users);
+            model.addAttribute("role", roleDTO);
             result.addError(new ObjectError("error", messageSource.getMessage("role.add.failure", null, locale)));
             logger.error("Error updating role", ibe);
             return "ops/corporate/editrole";
