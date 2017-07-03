@@ -194,13 +194,12 @@ public class InterBankTransferController {
     @ModelAttribute
     public void getOtherBankBeneficiaries(Model model, Principal principal) {
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
-        model.addAttribute("localBen",
-                StreamSupport.stream(localBeneficiaryService.getLocalBeneficiaries(retailUser).spliterator(), false)
-                        .filter(i -> !i.getBeneficiaryBank().equalsIgnoreCase(financialInstitutionService.getFinancialInstitutionByCode(bankCode).getInstitutionCode()))
-                        .collect(Collectors.toList())
+        List<LocalBeneficiary> beneficiaries =  StreamSupport.stream(localBeneficiaryService.getLocalBeneficiaries(retailUser).spliterator(), false)
+                .filter(i -> !i.getBeneficiaryBank().equalsIgnoreCase(financialInstitutionService.getFinancialInstitutionByCode(bankCode).getInstitutionCode()))
+                .collect(Collectors.toList());
+        beneficiaries .forEach(i-> i.setBeneficiaryBank(financialInstitutionService.getFinancialInstitutionByCode(i.getBeneficiaryBank()).getInstitutionName()));
 
-
-        );
+        model.addAttribute("localBen", beneficiaries);
 
         List<FinancialInstitutionDTO> sortedNames = financialInstitutionService.getOtherLocalBanks(bankCode);
         sortedNames.sort(Comparator.comparing(FinancialInstitutionDTO::getInstitutionName));
