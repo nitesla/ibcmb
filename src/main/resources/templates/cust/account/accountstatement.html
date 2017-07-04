@@ -40,7 +40,7 @@
                                     <th>Account Balance</th>
                                     <th>Debit/Credit</th>
                                     <th>Value Date</th>
-                                    <th>Print</th>
+
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -51,7 +51,7 @@
                                     <td th:text="${list.tranType}"></td>
                                     <td th:text="${#dates.format(list.valueDate, 'dd-MMM-yyyy')}"></td>
 
-                                    <td><a target="_blank" class="fa fa-print" th:href="@{'/retail/account/' + ${list.tranId} + '/downloadhistory'}"></a></td>
+                                    <td><a target="_blank"  th:href="@{'/retail/account/' + ${list.tranId} + '/downloadhistory'}">Print</a></td>
 
                                 </tr>
                                 </tbody>

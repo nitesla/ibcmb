@@ -19,6 +19,7 @@ import longbridge.utils.statement.TransactionDetails;
 import longbridge.utils.statement.TransactionHistory;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.repo.Resource;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +49,7 @@ import java.io.ByteArrayOutputStream;
 import java.security.Principal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+ import org.joda.time.Duration;
 import java.util.*;
 
 /**
@@ -296,11 +298,11 @@ public class AccountController {
 		try {
 			from = dateFormat.parse(fromDate);
 			to = dateFormat.parse(toDate);
-			int diffInDays = (int) ((to.getTime() - from.getTime()) / (1000 * 60 * 60 * 24));
-			logger.info("Day difference {}",diffInDays);
-			if (diffInDays > 180) {
-				logger.info("Days Difference {} exceeds 180 of days  : " , diffInDays);
-			}
+
+			//int diffInDays = (int) ((to.getTime() - from.getTime()) / (1000 * 60 * 60 * 24));
+			Duration diffInDays= new Duration(new DateTime(from),new DateTime(to));
+			logger.info("Day difference {}",diffInDays.getStandardDays());
+
 			AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to, tranType);
 			logger.info("TransactionType {}", tranType);
 			out.setDraw(input.getDraw());
