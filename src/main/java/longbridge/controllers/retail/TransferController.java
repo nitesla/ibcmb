@@ -219,9 +219,11 @@ public class TransferController {
 
         try {
 
-            if (request.getSession().getAttribute("auth-needed") != null && request.getParameter("token")!=null) {
+            if (request.getSession().getAttribute("auth-needed") != null ) {
 
                 String token = request.getParameter("token");
+                if (request.getParameter("token")!=null)
+                    return "/cust/transfer/transferauth";
 
                 boolean ok = false;
                 try {
