@@ -274,7 +274,7 @@ public class TransferController {
                 request.getSession().removeAttribute("Lbeneficiary");
             String errorMessage = transferErrorService.getMessage(e, request);
             redirectAttributes.addFlashAttribute("failure", errorMessage);
-            return "redirect:/retail/dashboard";
+            return getPreviousPageByRequest(request).orElse("/retail/dashboard");
 
 
         }
