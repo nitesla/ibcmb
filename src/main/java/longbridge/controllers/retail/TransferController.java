@@ -220,11 +220,13 @@ public class TransferController {
         try {
 
             if (request.getSession().getAttribute("auth-needed") != null) {
+
                 String token = request.getParameter("token");
 
                 boolean ok = false;
                 try {
                     ok = securityService.performTokenValidation(principal.getName(), token);
+
                 } catch (InternetBankingSecurityException ibse) {
 
                     model.addAttribute("failure", ibse.getMessage());
