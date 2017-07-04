@@ -86,7 +86,7 @@
                                             <div class="col-sm-6">
                                                 <p th:each="role: ${roleList}">
                                                     <input type="checkbox" name="roles" th:value="${role.id}" th:checked="${role.ruleMember}"/>
-                                                    <label th:text="${role.name}+' '+${role.rank}"></label>
+                                                    <label th:text="${role.name +' [' +role.rank +']'}"></label>
                                                 </p>
                                             </div>
                                         </div>
