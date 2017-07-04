@@ -4,11 +4,11 @@
 
 </head>
 <body>
-<header th:replace="corp_layout :: corp-header">
-</header>
-
+<div class="container">
+    <header th:replace="corp_layout :: corp-header">
+    </header>
 <section class="content-wrapper">
-    <div class="container">
+    <div class="containe">
         <div class="row">
             <div class="col-md-1"></div>
             <div class="col-md-8 col-sm-8">
@@ -67,7 +67,7 @@
 </section>
 
 <!-- CONTENT-WRAPPER SECTION END-->
-<footer th:replace="cust_layout ::footer">
+<footer th:replace="corp_layout ::corp-footer">
 </footer>
 <script>
     /*<![CDATA[*/
@@ -77,5 +77,6 @@
     } );
     /*]]>*/
 </script>
+</div>
 </body>
 </html>

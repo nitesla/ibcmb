@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="corp_layout :: site-head">
 
 </head>
@@ -8,35 +8,21 @@
     <header th:replace="corp_layout :: corp-header">
     </header>
 
-<section class="content-wrapper">
-    <div class="containe">
-
-        <div class="row">
-
-            <div class="col-md-4 col-sm-4" >
-                <h5 class="page_header"> Own Account Transaction</h5>
-                <select class="form-control invisible">
-                        <option value="account">Account Overview</option>
-                </select>
+    <section class="content-wrapper">
+        <div class="containe">
+            <div class="row">
+                <div class="col-md-4 col-sm-4">
+                    <h5 class="page_header"> Transaction Summary</h5>
+                </div>
             </div>
-            <p class="col-xs-12 invisible">
-                    Fields marked <span style="color:red">*</span> are compulsory
-            </p>
-        </div>
-        <div class="row">
-            <div class="col-md-9 content-bg">
-                <!--<div class="row spacing">-->
-
-                    <div class="spacin" >
+            <div class="row">
+                <div class="col-md-9 content-bg">
+                    <div class="row form-spacing">
+                        <!--<div class="col-md-6 col-sm-6">-->
 
 
-                        <table class="">
-                            <tr>
 
-                                <th colspan="2">Transaction Summary</th>
-
-
-                            </tr>
+                        <table>
                             <tr>
 
                                 <th>Source account</th>
@@ -47,6 +33,12 @@
 
                                 <th>Destination account</th>
                                 <td th:text="${transferRequest.beneficiaryAccountNumber}"></td>
+
+                            </tr>
+                            <tr>
+
+                                <th>Destination account owner</th>
+                                <td th:text="${transferRequest.beneficiaryAccountName}"></td>
 
                             </tr>
                             <tr>
@@ -63,42 +55,42 @@
                             </tr>
                         </table>
 
+
                         <form method="post" th:action="@{/retail/transfer/process}" th:object="${transferRequest}">
                             <input type="hidden" th:field="*{customerAccountNumber}"/>
                             <input type="hidden" th:field="*{beneficiaryAccountNumber}"/>
                             <input type="hidden" th:field="*{beneficiaryAccountName}"/>
                             <input type="hidden" th:field="*{amount}"/>
                             <input type="hidden" th:field="*{remarks}"/>
-                            <input type="hidden" th:field="*{id}"/>
+                        <div class="checkbox">
+                            <label style="font-weight: bold; color: black"><input type="checkbox" id="add" name="add"/>Add Beneficiary</label>
+                        </div>
+                        <div class="form-group">
+                            <!--<a style="cursor: pointer;" onclick="goBack()" >Modify</a>-->
+                            <button type="submit" class="btn btn-outline-primary">Proceed</button>
+                            <a th:href="@{/retail/transfer/local}">Cancel</a>
 
-                            <div class="form-group">
-                                <!--<a style="cursor: pointer;" onclick="goBack()" >Modify</a>-->
-                                <button type="submit" class="btn btn-link">Proceed</button>
-                                <a th:href="@{/retail/transfer/ownaccount}">Cancel</a>
-                                <!--<a th:href="@{'/retail/transfer/ownaccount/' + ${transferRequest.id} + '/receipt'}">Print</a>-->
+
 
                             </div>
                         </form>
-
+                        <!--</div>-->
                     </div>
-
-            </div>
-            <div class="col-md-3 pull-right " >
-                <div th:replace="corp_layout :: corp-sidebar" class="" >
                 </div>
+                <div class="col-md-3 pull-right">
+                    <div th:replace="corp_layout :: corp-sidebar" class="" >
+                    </div>
+                </div>
+
             </div>
         </div>
-
-    </div>
-
-</section>
+    </section>
 
 
-<!-- CONTENT-WRAPPER SECTION END-->
-<footer th:replace="corp_layout ::corp-footer">
-</footer>
+    <!-- CONTENT-WRAPPER SECTION END-->
+    <footer th:replace="corp_layout ::corp-footer">
+    </footer>
+    <script th:src="@{~/customer/js/accountdetails.js}"></script>
 </div>
-
 </body>
-
 </html>
