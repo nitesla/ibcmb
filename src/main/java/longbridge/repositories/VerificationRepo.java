@@ -50,6 +50,4 @@ public interface VerificationRepo extends CommonRepo<Verification, Long>{
 
 
 
-
-
 }
