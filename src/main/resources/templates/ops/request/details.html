@@ -135,7 +135,7 @@
 
                                     <li th:each="history: ${histories}" >
                                         <a>
-                                            <span th:text="${history.username}"></span>
+                                            <span th:text="${history.createdBy}"></span>
                                             <i><span th:text="${history.status}"></span></i>
 
                                             <span class="time" th:text="${history.createdOn}"></span>

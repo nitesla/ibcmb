@@ -75,6 +75,7 @@
                                                 <div class="row">
 
                                                     <div class="form-group text-left col-lg-5">
+                                                        <label>Non-Members</label>
                                                         <select multiple="multiple" class="form-control left-selector">
                                                             <option th:each="user: ${users}"
                                                              		th:object="${user}"
@@ -86,6 +87,9 @@
                                                     </div>
 
                                                     <div class="btn-group-vertical col-xs-2 ">
+                                                        <br/><label></label>
+
+
                                                         <button type="button"
                                                                 class="btn btn-default text- btn-circle btn-default right-btn">
                                                             <i class="fa fa-long-arrow-right"></i>
@@ -96,7 +100,9 @@
                                                         </button>
 
                                                     </div>
-                                                    <div class="form-group text-right col-lg-5">
+                                                    <div class="form-group text-left col-lg-5">
+                                                        <label>Members</label>
+
                                                         <select multiple="multiple" class="form-control right-selector"
                                                                 name="usersList">
                                                             <option th:each="user: ${role.users}" th:value="${user.id}"
@@ -112,7 +118,7 @@
                                                 <div class="col-sm-4">
                                                     <button class="btn btn-white" type="reset" id="cancel">Cancel
                                                     </button>
-                                                    <button class="btn btn-primary" id="btn-save" type="submit">Submit
+                                                    <button class="btn btn-primary" id="btn-save" type="submit">Save
                                                     </button>
                                                 </div>
                                             </div>
