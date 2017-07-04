@@ -72,7 +72,7 @@
                                 <input id="password" type="password" th:field="*{confirmPassword}"  class="form-control"/>
                                 <p class="errors" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}">&times;</p>
                             </div>
-                            <button class="btn btn-primary form-control"> Submit</button>
+                            <button class="btn btn-link required-step form-control"> Submit</button>
                         </form>
                     </div>
                 </div>

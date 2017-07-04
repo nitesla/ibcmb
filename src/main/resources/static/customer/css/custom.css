@@ -81,6 +81,12 @@ start
 
 .active{
     border-bottom: 3px solid #9F614B !important;
+    
+}
+
+.active 
+{
+    color: #9F614B !important;
 }
 
 .datepicker-switch
@@ -448,6 +454,20 @@ select
     /*100% { transform: rotate(360deg); }*/
 /*}*/
 
+
+.menu-link
+{
+    padding: 10px 20px !important;
+    font-size: 16px;
+    font-weight: bold;
+
+}
+
+.menu-link:hover
+{
+    color: #9F614B !important;
+}
+
 #loader {
     position: absolute;
     left: 50%;
@@ -484,7 +504,7 @@ select
 .top-link li
 {
     display: inline;
-    padding:0px 2px;
+    padding:7px 2px;
     border-right: 1px solid #868B8F;
     font-size: 10px;
 }

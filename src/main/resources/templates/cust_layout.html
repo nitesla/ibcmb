@@ -17,15 +17,12 @@
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/bootstrap-daterangepicker/daterangepicker.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/datatables/css/jquery.dataTables.min.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/datatables/css/dataTables.bootstrap.css}"/>
-    
-    <link rel="stylesheet" type="text/css"
-          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.0/css/bootstrap-datepicker.min.css"/>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.0/css/bootstrap-datepicker.min.css"/>
     <title>Coronation Merchant Bank</title>
 
 </head>
 
 <body>
-
 <div th:fragment="header">
     <header class="heade " >
         <div class="row">
@@ -36,14 +33,13 @@
                         <li><a target="_blank" th:href="@{/faqs}" >Help</a>&nbsp;</li>
                     </ul>
             </div>
-
-
         </div>
         <div class="row header-bar">
             <div class="col-xs-12 col-sm-9 no-pad-left ">
                 <div class='bvn-tab col-md-5 col-sm-5 '>
                     <div class=" header_inf bv"><p>Your Bank verification number</p>
-                            <h5 th:if="${bvn=='Not available'}"><a style='color:#003056' th:href="@{/retail/bvn}"
+                            <h5 th:if="${bvn=='Not available'}">
+                                <a style='color:#003056' th:href="@{/retail/bvn}"
                                                                 th:text="'BVN: ' + ${bvn}"></a></h5>
                             <h5 th:unless="${bvn=='Not available'}">
                                 <span style='color:#003056' th:text="'BVN: ' + ${bvn}"></span><span class="bvn-add-info"> Lorem ipsum</span>
@@ -104,7 +100,7 @@
                     <div class="">
                        
                         <div class="collapse navbar-collapse" id="navbar-collapse-1">
-                            <ul class="nav navbar-nav">
+                            <ul class="nav navbar-nav menu">
                                 <li th:classappend="${#httpServletRequest.getRequestURI().startsWith('/retail/dashboard') ? 'active':''}"><a th:href="@{/retail/dashboard}">Dashboard</a></li>
                                 <li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI().startsWith('/retail/account') ? 'active':''}" sec:authorize="hasAuthority('MANAGE_ACCOUNT')">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
