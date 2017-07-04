@@ -28,7 +28,7 @@ public class Account extends AbstractEntity{
     private String hiddenFlag;
     private String currencyCode;
     private String status;
-
+    
     public Account() {
     }
 
