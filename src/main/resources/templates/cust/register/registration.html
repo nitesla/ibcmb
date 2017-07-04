@@ -119,9 +119,9 @@
                                             <label>Password</label>
                                             <span class='req'></span><input onKeyUp="passwordStrength(this.value)" type="password" id="password" name="password" class="my-select required" placeholder="Password"/>
 
-                                            <label for="passwordStrength">Password strength</label>
-                                            <div id="passwordDescription">Password not entered</div>
-                                            <div id="passwordStrength" class="strength0"></div>
+                                            <!--<label for="passwordStrength">Password strength</label>-->
+                                            <!--<div id="passwordDescription">Password not entered</div>-->
+                                            <!--<div id="passwordStrength" class="strength0"></div>-->
                                         </div>
                                         <div class="form-group clearfix">
                                             <label>Confirm Password</label>
@@ -291,10 +291,10 @@
 <script th:src="@{~/customer/plugins/jquery-steps/js/jquery.steps.min.js}" type="text/javascript"></script>
 <script th:src="@{~/customer/js/jasny-bootstrap.min.js}"></script>
 <script th:src="@{~/customer/js/register.js}" type="text/javascript"></script>
-<script th:src="@{~/customer/js/passwordStrength.js}" type="text/javascript"></script>
+<!--<script th:src="@{~/customer/js/passwordStrength.js}" type="text/javascript"></script>-->
 <script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
 
-<script th:th:inline="javascript" type="text/javascript">
+<script th:inline="javascript" type="text/javascript">
     /*<![CDATA[*/
 
     $('#userdet').on('change', function () {
@@ -308,6 +308,40 @@
         }
     });
 
+    alert([[${passwordStrength.digits}]]);
+
+    //var strength = [[${passwordStrength}]];
+
+    function passwordStrength(password)
+    {
+        var desc = new Array();
+        desc[0] = "Very Weak";
+        desc[1] = "Weak";
+        desc[2] = "Medium";
+        desc[3] = "Strong";
+
+        var score   = 0;
+
+        //if password bigger than 6 give 1 point
+        if (password.length > [[${passwordStrength.minLength}]]) score++;
+
+        //if password has both lower and uppercase characters give 1 point
+        //if ( ( password.match(/[a-z]/) ) && ( password.match(/[A-Z]/) ) ) score++;
+
+
+        //if password has at least one number give 1 point
+        if (password.match([[${passwordStrength.digits}]])) score++;
+
+        //if password has at least one special caracther give 1 point
+        if ( password.match([[${passwordStrength.SpecialChars}]]) ) score++;
+
+        //if password bigger than 12 give another 1 point
+//        if (password.length > 12) score++;
+
+        document.getElementById("passwordDescription").innerHTML = desc[score];
+        document.getElementById("passwordStrength").className = "strength" + score;
+
+    }
 
     $('#password').bind("cut copy paste",function(e) {
         e.preventDefault();

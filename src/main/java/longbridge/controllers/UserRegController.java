@@ -3,6 +3,7 @@ package longbridge.controllers;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import longbridge.api.CustomerDetails;
 import longbridge.dtos.AccountDTO;
+import longbridge.dtos.PasswordStrengthDTO;
 import longbridge.dtos.RetailUserDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.PasswordException;
@@ -531,24 +532,36 @@ public class UserRegController {
         List<String> policies = passwordPolicyService.getPasswordRules();
         model.addAttribute("policies", policies);
 
+
+
         List<SecurityQuestions> secQues = securityQuestionService.getSecQuestions();
         logger.info("security questions "+secQues);
-//        int noOfQuestions = securityService.getMinUserQA();
-//
-//        ArrayList[] masterList = new ArrayList[noOfQuestions];
-//
-//        //init arrays
-//        for (int idx=0; idx < noOfQuestions ; ++idx) {
-//           masterList[idx] = new ArrayList();
-//        }
-//
-//        //porpulate arrays
-//        for(int idx=0 ; idx < secQues.size() ; ++idx){
-//            masterList[idx / noOfQuestions].add(secQues.get(idx));
-//        }
-//
-//        logger.info("MASTER LIST {}", masterList);
+        int noOfQuestions = securityService.getMinUserQA();
+
+        ArrayList[] masterList = new ArrayList[noOfQuestions];
+
+        //init arrays
+        for (int idx=0; idx < noOfQuestions ; ++idx) {
+           masterList[idx] = new ArrayList();
+        }
+
+        //porpulate arrays
+        for(int idx=0 ; idx < secQues.size() ; ++idx){
+            masterList[idx % noOfQuestions].add(secQues.get(idx));
+        }
+
+        for (ArrayList m:masterList
+                ) {
+            logger.info("master question "+masterList);
+        }
+
+
+        logger.info("MASTER LIST {}", masterList);
         model.addAttribute("secQuestions", secQues);
+
+        PasswordStrengthDTO passwordStrengthDTO = passwordPolicyService.getPasswordStengthParams();
+        logger.info("Password Strength {}" + passwordStrengthDTO);
+        model.addAttribute("passwordStrength", passwordStrengthDTO);
 
         //logger.info("MIN SEC {}", noOfQuestions);
 
