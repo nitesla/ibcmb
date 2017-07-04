@@ -226,7 +226,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public List<Account> getAccountsForDebit(String customerId, String currencyCode) {
-        List<Account> accountsForDebit = new ArrayList<Account>();
+        List<Account> accountsForDebit = new ArrayList<>();
         List<Account> accounts = this.getCustomerAccounts(customerId, currencyCode);
         for (Account account : accounts) {
             if (!accountConfigService.isAccountHidden(account.getAccountNumber())
@@ -243,8 +243,9 @@ public class AccountServiceImpl implements AccountService {
         List<Account> accountsForDebit = new ArrayList<Account>();
         Iterable<Account> accounts = this.getCustomerAccounts(customerId);
         for (Account account : accounts) {
-            if (!accountConfigService.isAccountHidden(account.getAccountNumber())
-                    && (!accountConfigService.isAccountRestrictedForView(account.getAccountNumber())) && !accountConfigService.isAccountRestrictedForDebit(account.getAccountNumber()) && (!accountConfigService.isAccountClassRestrictedForView(account.getSchemeCode()) && (!accountConfigService.isAccountClassRestrictedForDebit(account.getSchemeCode())))) {
+            if ("A".equalsIgnoreCase(account.getStatus()) &&  !accountConfigService.isAccountHidden(account.getAccountNumber())
+                    && (!accountConfigService.isAccountRestrictedForView(account.getAccountNumber())) && !accountConfigService.isAccountRestrictedForDebit(account.getAccountNumber()) && (!accountConfigService.isAccountClassRestrictedForView(account.getSchemeCode()) && (!accountConfigService.isAccountClassRestrictedForDebit(account.getSchemeCode())))  )
+                     {
                 accountsForDebit.add(account);
             }
 

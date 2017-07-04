@@ -273,7 +273,7 @@ public class InterBankTransferController {
         if (request.getSession().getAttribute("Lbeneficiary") != null){
             LocalBeneficiaryDTO dto=         (LocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary");
             model.addAttribute("beneficiary", dto);
-            transferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode(dto.getBeneficiaryBank()));
+            transferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByName(dto.getBeneficiaryBank()));
         }
 
 
