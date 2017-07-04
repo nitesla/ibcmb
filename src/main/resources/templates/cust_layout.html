@@ -12,13 +12,11 @@
 
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/bootstrap.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/custom.css}"/>
-    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/calendar.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/select.bootstrap.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/font-awesome/font-awesome.min.css}"/>
-    <link rel="stylesheet" type="text/css"
-          th:href="@{~/customer/plugins/bootstrap-daterangepicker/daterangepicker.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/bootstrap-daterangepicker/daterangepicker.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/datatables/css/jquery.dataTables.min.css}"/>
-    <!--<link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/datatables/css/dataTables.bootstrap.css}"/>-->
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/datatables/css/dataTables.bootstrap.css}"/>
     
     <link rel="stylesheet" type="text/css"
           href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.0/css/bootstrap-datepicker.min.css"/>
@@ -188,7 +186,7 @@
         </a>
     </header>
 
-    <div class=' alert alert-info text-white  no-bd-rad' style="margin:1px 15px 1px 1px!important;background-color:#003056;color:white;"><marquee>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</marquee></div>
+    <div class=' alert alert-info text-white  no-bd-rad' style="margin:1px 15px 1px 1px!important;background-color:#003056;color:white;"><marquee class='marquee'>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</marquee></div>
 </div>
 
 <div th:fragment="sidebar" class="sideba" style=" adding-top:20px;">
@@ -199,16 +197,16 @@
 
            
 
-            <span id='time' class="time pull-lef alert no-bd"></span>
+            <span id='time' class="time pull-lef alert no-bd" style="font-size:14px"></span>
 
 
              <span class="pull-right  ">
-                <i class="fa fa-calendar " id='datepickerImage' onclick="show()" style="font-size:14px"></i>
+                <i class="fa fa-calendar datepicker cal-icon " data-provide="datepicker" onclick="show()" style="font-size:13px;background:transparent !important;border:0px !important"></i>
             </span>
 
             <span class="pull-right  " >
-                <span class="" id='day' style="padding:3px !important"></span><span>,</span>
-                <span class='' id='cal_date' style="padding:5px !important"></span>
+                <span class="text-blue" id='day' style="paddng:5px !important;font-size:14px"></span><span>,</span>
+                <span class='' id='cal_date' style="paddin:5px !important;font-size:14px"></span>
                  
             </span>
            
@@ -346,12 +344,12 @@
     <script th:src="@{~/customer/js/jquery.dataTables.js}"></script>
     <!--<script th:src="@{~/customer/js/date/js/bootstrap-datepicker.js}"></script>-->
     <script th:src="@{~/customer/js/momentMin.js}"></script>
-    <!--<script th:src="@{~/customer/js/calendar.js}"></script>-->
+    <script th:src="@{~/customer/js/calendar.js}"></script>
     <script th:src="@{~/customer/js/jquery.spring-friendly.min.js}"></script>
     <script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
     <script th:src="@{~/customer/plugins/bootstrap-daterangepicker/daterangepicker.js}"></script>
     <script th:src="@{~/customer/js/coronation.js}"></script>
-    <!--<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>-->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
 
     <!-- BOOTSTRAP SCRIPTS  -->
     <script th:src="@{~/customer/js/bootstrap.js}"></script>
@@ -360,19 +358,38 @@
     <script th:inline='javascript'>
         /*<![CDATA[*/
 
-        $(document).ready(function () {
+        $(document).ready(function () 
+    {
             $('[data-toggle="tooltip"]').tooltip();
+            $('.datepicker').datepicker({
+        autoclose: true,
+        todayBtn: true,
+        todayHighlight: true});
 
-            $("#dp").datepicker({
-                // buttonImage: '@{~/customer/img/cmb_logo.png}',
-                buttonText: "<i class='fa fa-calendar'></i>",
-                buttonImageOnly: true,
-                changeMonth: true,
-                showAnim: "slide",
-                changeYear: true,
-                showOn: 'both'
+            var text = ['Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+             'i am two  Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+              'i am 3 Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+               'i am 4 Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry. '];
+        var x = 0;
+        var end = 0;
+
+        function textArray()
+        {
+            $(".marquee").fadeOut(function() {
+        $(this).text(text[x]).fadeIn();
+
             });
-        })
+            x++;
+
+            end = x + 1;
+            if (text.length < end)
+            {
+                x = 0;
+            }
+        }
+        setInterval(textArray,30000 );
+        
+    })
 
         /*]]>*/
     </script>

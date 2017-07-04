@@ -55,13 +55,13 @@
 
 
                             <ul class="nav navbar-right panel_toolbox">
-                                <li>
-                                    <div class="col-lg-4">
-                                        <div class="title-action">
-                                            <a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/verifications/index/verify" disabled="disabled" ><i class="fa fa-check"></i> Approve</a>
-                                        </div>
-                                    </div>
-                                </li>
+                                <!--<li>-->
+                                    <!--<div class="col-lg-4">-->
+                                        <!--<div class="title-action">-->
+                                            <!--<a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/verifications/index/verify" disabled="disabled" ><i class="fa fa-check"></i> Approve</a>-->
+                                        <!--</div>-->
+                                    <!--</div>-->
+                                <!--</li>-->
 
                             </ul>
 
@@ -120,6 +120,7 @@
 <script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
 <script th:src="@{~/bank/js/momentMin.js}"></script>
 
+
 <!-- Page-Level Scripts -->
 <script>
     /*<![CDATA[*/
@@ -130,7 +131,7 @@
             "lengthMenu" : [ [ 5, 10, 20],	[ 5, 10, 20 ] ],
             "pagingType" : "simple_numbers",
             "searching": false,
-              rowId: 'id',
+            rowId: 'id',
             "paging": true,
             "serverSide" : true,
             "ajax": "/admin/verifications/allverification",

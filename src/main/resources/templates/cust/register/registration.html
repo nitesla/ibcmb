@@ -154,6 +154,7 @@
                                         <div class='alert alert-danger' id="myspan2">
                                         </div>
                                         <input id="returnValue" type="hidden"/>
+                                        <!--<p th:each="question,id : ${securityQuestion}" th:text="${question.securityQuestion.}"></p>-->
                                         <div class="form-group clearfix">
                                             <label>Question</label>
                                             <select name="securityQuestion" class="my-select required">
@@ -171,28 +172,23 @@
                             <section>
                                 <div class="row">
                                     <div class="col-md-offset-3 col-md-6">
-                                        <div class='alert alert-danger' id="myspan3" style="display: none;">
-                                        </div>
 
                                         <div class="form-group">
                                             <label>Select Phishing Image</label>
-                                            <div id="myMode" class="modal fade" role="dialog">
 
-
-
-                                                <!-- Modal content-->
-                                                <div id="loads" style='display:none'></div>
-
-
-
-                                            </div>
-                                            <table>
-                                                <td th:each="image : ${images}" style="position: relative;">
-                                                    <img th:src="${imagePath} + ${image}" width="100px" height="100px"/>
+                                            <div class="col-md-12" style="max-height: 250px; max-width: 450px;overflow: scroll;">
+                                                <div class="col-md-3" th:each="image : ${images}" style="position: relative; max-height: 100px;">
+                                                    <img th:src="${imagePath} + ${image}" width="100px" height="100px" style="padding: 5px;"/>
                                                     <input type="radio" name="phishing" th:value="${image}" id="check1" class="required" style="position: absolute; bottom: 20px; right: 20px;" />
-                                                </td>
-                                            </table>
+                                                </div>
+                                            </div>
 
+                                            <!--<table>-->
+                                                <!--<td th:each="image : ${images}" style="position: relative;">-->
+                                                    <!--<img th:src="${imagePath} + ${image}" width="100px" height="100px"/>-->
+                                                    <!--<input type="radio" name="phishing" th:value="${image}" id="check1" class="required" style="position: absolute; bottom: 20px; right: 20px;" />-->
+                                                <!--</td>-->
+                                            <!--</table>-->
 
                                         </div>
                                     </div>
@@ -295,6 +291,7 @@
 <script th:src="@{~/customer/plugins/jquery-steps/js/jquery.steps.min.js}" type="text/javascript"></script>
 <script th:src="@{~/customer/js/jasny-bootstrap.min.js}"></script>
 <script th:src="@{~/customer/js/register.js}" type="text/javascript"></script>
+<script th:src="@{~/customer/js/passwordStrength.js}" type="text/javascript"></script>
 <script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
 
 <script th:th:inline="javascript" type="text/javascript">
@@ -311,43 +308,6 @@
         }
     });
 
-    function passwordStrength(password)
-    {
-        var desc = new Array();
-        desc[0] = "Very Weak";
-        desc[1] = "Weak";
-        desc[2] = "Better";
-        desc[3] = "Medium";
-        desc[4] = "Strong";
-        desc[5] = "Strongest";
-
-        var score   = 0;
-
-        //if password bigger than 6 give 1 point
-        if (password.length > 6) score++;
-
-        //if password has both lower and uppercase characters give 1 point
-        if ( ( password.match(/[a-z]/) ) && ( password.match(/[A-Z]/) ) ) score++;
-
-        //if password has at least one number give 1 point
-        if (password.match(/\d+/)) score++;
-
-        //if password has at least one special caracther give 1 point
-        if ( password.match(/.[!,@,#,$,%,^,&,*,?,_,~,-,(,)]/) ) score++;
-
-        //if password bigger than 12 give another 1 point
-        if (password.length > 12) score++;
-
-        document.getElementById("passwordDescription").innerHTML = desc[score];
-        document.getElementById("passwordStrength").className = "strength" + score;
-    }
-    $.notifyDefaults({
-        placement: {
-            from: "top",
-            align: 'left',
-            offset: 50
-        }
-    });
 
     $('#password').bind("cut copy paste",function(e) {
         e.preventDefault();

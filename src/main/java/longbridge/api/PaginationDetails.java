@@ -64,4 +64,16 @@ private String lastTranSN;
     public void setLastTranSN(String lastTranSN) {
         this.lastTranSN = lastTranSN;
     }
+
+    @Override
+    public String toString() {
+        return "PaginationDetails{" +
+                "lastAccountBalance='" + lastAccountBalance + '\'' +
+                ", lastAccountCurrency='" + lastAccountCurrency + '\'' +
+                ", lastPostDate='" + lastPostDate + '\'' +
+                ", lastTranDate='" + lastTranDate + '\'' +
+                ", lastTranId='" + lastTranId + '\'' +
+                ", lastTranSN='" + lastTranSN + '\'' +
+                '}';
+    }
 }

@@ -27,6 +27,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -269,30 +270,16 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             user.setStatus(newStatus);
             corporateUserRepo.save(user);
             String fullName = user.getFirstName() + " " + user.getLastName();
-            if ((oldStatus == null)) {//User was just created
+            if ((oldStatus == null) || ("I".equals(oldStatus)) && "A".equals(newStatus)) {
                 String password = passwordPolicyService.generatePassword();
                 user.setPassword(passwordEncoder.encode(password));
                 user.setExpiryDate(new Date());
                 passwordPolicyService.saveCorporatePassword(user);
                 corporateUserRepo.save(user);
-
-                Email email = new Email.Builder()
-                        .setRecipient(user.getEmail())
-                        .setSubject(messageSource.getMessage("corporate.customer.create.subject", null, locale))
-                        .setBody(String.format(messageSource.getMessage("corporate.customer.create.message", null, locale), fullName, user.getUserName(), password,user.getCorporate().getCustomerId()))
-                        .build();
-                mailService.send(email);
-            } else if (("I".equals(oldStatus)) && "A".equals(newStatus)) {//User is being reactivated
-                String password = passwordPolicyService.generatePassword();
-                user.setPassword(passwordEncoder.encode(password));
-                user.setExpiryDate(new Date());
+                sendPostActivateMessage(user, fullName,user.getUserName(),password,user.getCorporate().getCustomerId());
+            } else{
+                user.setStatus(newStatus);
                 corporateUserRepo.save(user);
-                Email email = new Email.Builder()
-                        .setRecipient(user.getEmail())
-                        .setSubject(messageSource.getMessage("corporate.customer.reactivation.subject", null, locale))
-                        .setBody(String.format(messageSource.getMessage("corporate.customer.reactivation.message", null, locale), fullName, user.getUserName(), password,user.getCorporate().getCustomerId()))
-                        .build();
-                mailService.send(email);
             }
 
             logger.info("Corporate user {} status changed from {} to {}", user.getUserName(), oldStatus, newStatus);
@@ -301,6 +288,19 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("user.status.failure", null, locale), e);
 
+        }
+    }
+
+
+    @Async
+    public void sendPostActivateMessage(User user, String ... args ){
+        if("A".equals(user.getStatus())) {
+            Email email = new Email.Builder()
+                    .setRecipient(user.getEmail())
+                    .setSubject(messageSource.getMessage("corporate.customer.reactivation.subject", null, locale))
+                    .setBody(String.format(messageSource.getMessage("corporate.customer.reactivation.message", null, locale), args))
+                    .build();
+            mailService.send(email);
         }
     }
 
@@ -476,8 +476,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     }
 
 
-    @Override
-    public List<CorporateUserDTO> getUsersWithoutRole(Long corpId) {
+    public List<CorporateUserDTO> getUsersWithoutRole2(Long corpId) {
         boolean withoutRole = true;
         Corporate corporate = corporateRepo.findOne(corpId);
         List<CorporateUser> users = corporateUserRepo.findByCorporate(corporate);
@@ -499,6 +498,13 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         return  convertEntitiesToDTOs(usersWithoutCorpRole);
     }
 
+    @Override
+    public List<CorporateUserDTO> getUsersWithoutRole(Long corpId) {
+        boolean withoutRole = true;
+        Corporate corporate = corporateRepo.findOne(corpId);
+        List<CorporateUser> users = corporateUserRepo.findByCorporateAndCorporateRoleIsNull(corporate);
+        return  convertEntitiesToDTOs(users);
+    }
 
 
     @Override
