@@ -1,5 +1,6 @@
 package longbridge.controllers;
 
+import longbridge.exception.InternetBankingSecurityException;
 import longbridge.exception.PasswordException;
 import longbridge.exception.PasswordPolicyViolationException;
 import longbridge.services.SecurityService;
@@ -33,7 +34,6 @@ import java.util.Locale;
 @RequestMapping("/general/operations/users")
 public class OperationsUserGeneralContoller {
 	
-	private Logger logger= LoggerFactory.getLogger(this.getClass());
     @Autowired
     private  OperationsUserService operationsUserService;
     @Autowired
@@ -41,6 +41,7 @@ public class OperationsUserGeneralContoller {
     @Autowired
     private SecurityService securityService;
 
+    Logger logger =  LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     PasswordPolicyService passwordService;
@@ -76,13 +77,18 @@ public class OperationsUserGeneralContoller {
             model.addAttribute("failure", messageSource.getMessage("username.invalid", null, locale));
             return "/ops/username";
         }
-        boolean result = securityService.sendOtp(username);
-        if (result) {
-            session.setAttribute("username", username);
-            session.setAttribute("redirectUrl", "/password/reset");
-            session.setAttribute("otpUrl","/ops/otp");
-            model.addAttribute("message",messageSource.getMessage("otp.send.failure",null,locale));
-            return "/ops/otp";
+        try {
+            boolean result = securityService.sendOtp(username);
+            if (result) {
+                session.setAttribute("username", username);
+                session.setAttribute("redirectUrl", "/password/reset");
+                session.setAttribute("otpUrl", "/ops/otp");
+                model.addAttribute("message", messageSource.getMessage("otp.send.failure", null, locale));
+                return "/ops/otp";
+            }
+        }
+        catch (InternetBankingSecurityException se){
+            logger.error("Error sending OTP to user",se);
         }
         model.addAttribute("failure", messageSource.getMessage("otp.send.failure", null, locale));
         return "/ops/username";

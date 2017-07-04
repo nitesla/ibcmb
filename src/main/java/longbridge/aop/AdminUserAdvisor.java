@@ -58,8 +58,8 @@ public class AdminUserAdvisor {
     public void isVerification() {
     }
 
-    @Pointcut("withincode(* verify(..)) && args(verificationDto)")
-    public void isVerify(VerificationDTO verificationDto) {
+    @Pointcut("withincode(* verify(..))")
+    public void isVerify() {
     }
 
 
@@ -68,15 +68,15 @@ public class AdminUserAdvisor {
     }
 
 
-    @Pointcut("execution(public * verify(..)) && args(verificationDto)")
-    public void verified(VerificationDTO verificationDto) {
+    @Pointcut("execution(public * verify(..))")
+    public void verified() {
     }
 
 
 
     //this is after merge of verification
-    @After("isVerification() && isMerging() && isVerify(verificationDto) && args(user)")
-    public void postAdminUserCreation(JoinPoint p, AdminUser user,VerificationDTO verificationDto) {
+    @After("isVerification() && isMerging() && isVerify() && args(user)")
+    public void postAdminUserCreation(JoinPoint p, AdminUser user) {
 
         logger.info("Executing ADD_ADMIN_USER operation");
         adminUserService.createUserOnEntrust(user);
@@ -85,9 +85,9 @@ public class AdminUserAdvisor {
 //        entityManager.merge(user);
         logger.info("After Executing first Post Admin Advice");
     }
-    
+
    // this runs after execution
-    @After("isVerification() && verified(verificationDto)")
+    @After("isVerification() && verified() && args(verificationDto)")
     public void postAdminUserCreation2(JoinPoint p, VerificationDTO verificationDto)
     {
 
@@ -95,9 +95,10 @@ public class AdminUserAdvisor {
         logger.info("Verification dto {}",verificationDto);
         logger.info("VerificationRepo {}",verificationRepo);
 
+  Verification verification  = verificationRepo.findOne(verificationDto.getId());
+        if(verification.getOperation().equals("UPDATE_ADMIN_STATUS")){
 
-        if(verificationDto.getOperation().equals("UPDATE_ADMIN_STATUS")){
-            AdminUser user = adminUserRepo.findOne(verificationDto.getEntityId());
+            AdminUser user = adminUserRepo.findOne(verification.getEntityId());
     	    String fullName = user.getFirstName()+" "+user.getLastName();
             String password = passwordPolicyService.generatePassword();
             user.setPassword(passwordEncoder.encode(password));
@@ -112,12 +113,12 @@ public class AdminUserAdvisor {
 
     	//general user creation
 
-    	
+
     	//activation
-    	
-    	
+
+
     }
-    
-   
+
+
 
 }

@@ -71,13 +71,9 @@
 
                                     <div class="col-md-offset-4 col-md-4">
                                         <br/>
-                                        <div class='alert alert-danger' id="myspan" style="margin:0px;">
-                                        </div>
-
                                         <div class="form-group">
                                             <label>Account Number</label>
-                                            <span class='req'></span><input style="width:100% !important" type="text" name="acct" class="form-control required" placeholder="Account Number"/>
-
+                                            <span class='req'></span><input style="width:100% !important" type="text" name="acct" class="my-select required" placeholder="Account Number"/>
                                         </div>
                                     </div>
                                 </div>
@@ -87,17 +83,13 @@
                                 <div class="row">
                                     <div class="col-md-offset-4 col-md-4">
                                         <br/>
-                                        <div class='alert alert-danger' id="myspan2">
-                                        </div>
-                                        <br/>
-                                        <br/>
                                         <div class="form-group">
                                             <label>Security Question</label>
-                                            <input th:value="${retUsernameForm.securityQuestion}" name="securityQuestion" readonly="readonly" class="form-control"/>
+                                            <input th:value="${retUsernameForm.securityQuestion}" name="securityQuestion" readonly="readonly" class="my-select"/>
                                         </div>
                                         <div class="form-group">
                                             <label>Security Answer</label>
-                                            <span class="required"></span><input th:value="${retUsernameForm.securityAnswer}" type="text" name="securityAnswer" class="form-control required" placeholder="Security Answer"/>
+                                            <span class="required"></span><input th:value="${retUsernameForm.securityAnswer}" type="text" name="securityAnswer" class="my-select required" placeholder="Security Answer"/>
                                         </div>
                                         <input name="customerId" type="hidden"/>
                                         <input id="returnValue" type="hidden"/>
@@ -124,6 +116,57 @@
         </div>
     </div>
 </section>
+
+<div id="myModalError" class="modal fade " role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+
+        <div class="modal-content no-bd-rad content ">
+
+            <div class="modal-body">
+
+
+                <p id='errorMess' class='mess text-danger'>Put something here iff need be.</p>
+
+
+            </div>
+
+
+            <div class="modal-footer no-bd-top">
+                <button type="button" class="btn btn-link" data-dismiss="modal">OK</button>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+
+<div id="myModalSuccess" class="modal fade " role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+
+        <div class="modal-content no-bd-rad content ">
+
+            <div class="modal-body">
+
+
+                <p id='successMess' class='mess text-primary'>Put something here iff need be.</p>
+
+
+            </div>
+
+
+            <div class="modal-footer no-bd-top">
+                <button type="button" class="btn btn-link" data-dismiss="modal">OK</button>
+            </div>
+
+        </div>
+
+    </div>
+</div>
 
 <footer>
     <div class="container">

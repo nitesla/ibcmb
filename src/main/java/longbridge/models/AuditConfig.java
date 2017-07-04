@@ -38,7 +38,13 @@ public class AuditConfig extends AbstractEntity
 	}
 	
 	@Override
-	public List<String> getDefaultSearchFields() {
+	public List<String> getDefaultSearchFields()
+	{
 		return Arrays.asList("entityName");
 	}
+
+
+
+
+
 }

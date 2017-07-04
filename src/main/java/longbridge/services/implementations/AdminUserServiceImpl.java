@@ -82,7 +82,6 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Autowired
     EntityManager entityManager;
 
-
     private Locale locale = LocaleContextHolder.getLocale();
 
 
@@ -166,6 +165,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     public void createUserOnEntrust(AdminUser adminUser) {
         AdminUser user = adminUserRepo.findFirstByUserName(adminUser.getUserName());
         if(user!=null) {
+            if ("".equals(user.getEntrustId())||user.getEntrustId()==null){
             String fullName = adminUser.getFirstName() + " " + adminUser.getLastName();
             SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_CREATION");
             if (setting != null && setting.isEnabled()) {
@@ -180,6 +180,9 @@ public class AdminUserServiceImpl implements AdminUserService {
                         logger.error("Failed to add user contacts on Entrust");
                     }
                 }
+                user.setEntrustId(user.getUserName());
+                adminUserRepo.save(user);
+            }
             }
         }
     }

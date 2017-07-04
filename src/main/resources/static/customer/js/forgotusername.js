@@ -16,12 +16,8 @@ function validateAccountNo(accountNumber){
             customerId = ''+String(data1);
             if(customerId == ""){
                 //invalid account number
-                var error = document.getElementById("myspan");
-                    error.textContent="Ensure you put in a valid account number";
-               // $("#myspan").show();
-
-                error.style.display = "inline-block";
-
+                document.getElementById("errorMess").textContent="Ensure you put in a valid account number.";
+                $('#myModalError').modal('show');
                 //alert("Account number not found");
             }else{
                 //valid account number
@@ -43,8 +39,9 @@ function validateAccountNo(accountNumber){
             success:function(data2){
                 secQues = ''+String(data2);
                 if(secQues == "" ){
-                    document.getElementById("myspan").textContent="Could not get Security Question from server, please try again.";
-                    $("#myspan").show();
+                    document.getElementById("errorMess").textContent="Could not get Security Question from server, please try again.";
+                    $('#myModalError').modal('show');
+
                 }else{
                     $('input[name=securityQuestion]').val(secQues);
                 }
@@ -72,9 +69,8 @@ function validateSecAnswer(secAnswer){
             if(result == "" || result === null){
                 //invalid account number
 
-                //alert("Account number not found");
-                document.getElementById("myspan2").textContent="Wrong answer provided for security question.";
-                $("#myspan2").show();
+                document.getElementById("errorMess").textContent="Wrong answer provided for security question.";
+                $('#myModalError').modal('show');
             }else{
                 //valid account number
                 $('input[name=username]').val(result);
@@ -109,8 +105,8 @@ function sendUsername(){
                     $('#returnValue').val(returnValue);
                     returnValue = true;
                 }else {
-                    document.getElementById("myspan2").textContent="Failed to send username, please try again later.";
-                    $("#myspan2").show();
+                    document.getElementById("errorMess").textContent="Failed to send username, please try again later.";
+                    $('#myModalError').modal('show');
                     $('#returnValue').val(returnValue);
                     returnValue= false;
                 }

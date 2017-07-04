@@ -96,7 +96,7 @@
                         <div class="form-group col-xs-12">
                             <!--<input value="Modify" style="cursor: pointer;" type="button" onclick="history.go(-1);" />-->
                             <button type="submit" class="btn btn-link required-step">Proceed</button>
-                            <button th:href="@{/retail/transfer/interbank}" class="btn btn-link less-required">Cancel</button>
+                            <button type="button" class="btn btn-link less-required" onclick="cancel();">Cancel</button>
                             <button type='button' class='btn btn-link less-required' onclick="edit();">Modify</button>
 
                         </div>
@@ -132,7 +132,11 @@
         $("#form_edit").submit();
     }
 
+    function cancel(){
 
+        window.location.href="/retail/transfer/interbank";
+
+    }
 </script>
 </body>
 </html>

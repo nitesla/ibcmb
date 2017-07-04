@@ -1,5 +1,6 @@
 package longbridge.controllers.retail;
 
+import longbridge.api.Rate;
 import longbridge.dtos.FinancialInstitutionDTO;
 import longbridge.dtos.LocalBeneficiaryDTO;
 import longbridge.dtos.TransferRequestDTO;
@@ -23,10 +24,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.security.Principal;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -172,7 +171,7 @@ public class InterBankTransferController {
         requestDTO.setBeneficiaryAccountName(beneficiary.getAccountName());
         requestDTO.setBeneficiaryAccountNumber(beneficiary.getAccountNumber());
         requestDTO.setTransferType(TransferType.INTER_BANK_TRANSFER);
-        FinancialInstitution institution = financialInstitutionService.getFinancialInstitutionByCode(beneficiary.getBeneficiaryBank());
+        FinancialInstitution institution = financialInstitutionService.getFinancialInstitutionByName(beneficiary.getBeneficiaryBank());
         if (institution == null) {
 
             model.addAttribute("failure", messages.getMessage("transfer.beneficiary.invalid", null, locale));
@@ -192,13 +191,28 @@ public class InterBankTransferController {
     @ModelAttribute
     public void getOtherBankBeneficiaries(Model model, Principal principal) {
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
-        model.addAttribute("localBen",
-                StreamSupport.stream(localBeneficiaryService.getLocalBeneficiaries(retailUser).spliterator(), false)
-                        .filter(i -> !i.getBeneficiaryBank().equalsIgnoreCase(financialInstitutionService.getFinancialInstitutionByCode(bankCode).getInstitutionCode()))
-                        .collect(Collectors.toList())
+        List<LocalBeneficiary> beneficiaries =  StreamSupport.stream(localBeneficiaryService.getLocalBeneficiaries(retailUser).spliterator(), false)
+                .filter(i -> !i.getBeneficiaryBank().equalsIgnoreCase(financialInstitutionService.getFinancialInstitutionByCode(bankCode).getInstitutionCode()))
+                .collect(Collectors.toList());
+
+        beneficiaries
+                .stream()
+                .filter(Objects::nonNull)
+                .forEach(i->
+                        {
+                     FinancialInstitution financialInstitution=       financialInstitutionService.getFinancialInstitutionByCode(i.getBeneficiaryBank());
+
+                          if (financialInstitution!=null)
+                            i.setBeneficiaryBank(financialInstitution.getInstitutionName());
 
 
-        );
+
+
+                        }
+
+                );
+
+        model.addAttribute("localBen", beneficiaries);
 
         List<FinancialInstitutionDTO> sortedNames = financialInstitutionService.getOtherLocalBanks(bankCode);
         sortedNames.sort(Comparator.comparing(FinancialInstitutionDTO::getInstitutionName));
@@ -208,8 +222,19 @@ public class InterBankTransferController {
 
 
         );
-        model.addAttribute("nip", integrationService.getFee("NIP"));
-        model.addAttribute("rtgs", integrationService.getFee("RTGS"));
+
+
+        try {
+            model.addAttribute("nip", integrationService.getFee("NIP").get());
+            model.addAttribute("rtgs", integrationService.getFee("RTGS").get());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            model.addAttribute("nip", new Rate());
+            model.addAttribute("rtgs",new Rate());
+            e.printStackTrace();
+        }
+
 
     }
 

@@ -1,11 +1,17 @@
 package longbridge.models;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import longbridge.utils.PrettySerializer;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,12 +26,21 @@ import java.util.List;
 @Table(uniqueConstraints=@UniqueConstraint(columnNames={"userName","deletedOn"}))
 public class CorporateUser extends User {
 
+	protected String isFirstTimeLogon;
+
 	@ManyToOne @JsonIgnore
     private Corporate corporate;
 
-	@ManyToOne
-	private CorporateRole corporateRole;
+//	private CorporateRole corporateRole;
+//
 
+    public String getIsFirstTimeLogon() {
+        return isFirstTimeLogon;
+    }
+
+    public void setIsFirstTimeLogon(String isFirstTimeLogon) {
+        this.isFirstTimeLogon = isFirstTimeLogon;
+    }
 
     public CorporateUser(){
 		this.userType = (UserType.CORPORATE);
@@ -40,20 +55,14 @@ public class CorporateUser extends User {
 	}
 
 
-	public CorporateRole getCorporateRole() {
-		return corporateRole;
-	}
+//	public CorporateRole getCorporateRole() {
+//		return corporateRole;
+//	}
+//
+//	public void setCorporateRole(CorporateRole corporateRole) {
+//		this.corporateRole = corporateRole;
+//	}
 
-	public void setCorporateRole(CorporateRole corporateRole) {
-		this.corporateRole = corporateRole;
-	}
-
-	@Override
-	public String toString() {
-		return "CorporateUser{" + super.toString() + "," +
-				"corporate=" + corporate +
-				'}';
-	}
 
 	@Override
 	public int hashCode(){
@@ -64,5 +73,25 @@ public class CorporateUser extends User {
 	public boolean equals(Object o){
 		return super.equals(o);
 	}
+
+
+
+//	@Override @JsonIgnore
+//	public JsonSerializer<CorporateUser> getSerializer() {
+//		return new JsonSerializer<AccountClassRestriction>() {
+//			@Override
+//			public void serialize(AccountClassRestriction value, JsonGenerator gen, SerializerProvider serializers)
+//					throws IOException, JsonProcessingException
+//			{
+//				gen.writeStartObject();
+//				gen.writeStringField("Account Class",value.);
+//				gen.writeStringField("Restriction Type",value.restrictionType);
+//				gen.writeEndObject();
+//			}
+//		};
+//	}
+
+
+
 
 }

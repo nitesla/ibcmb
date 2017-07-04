@@ -56,7 +56,6 @@
                                         </div>
 
 
-
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">Old Password</label>
                                             <div class="col-sm-4">
@@ -67,14 +66,14 @@
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">New Password</label>
                                             <div class="col-sm-4">
-                                            <input id="password" type="password" class="form-control" th:field="*{newPassword}"/>
+                                            <input id="newpassword" type="password" class="form-control" th:field="*{newPassword}"/>
 
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">Confirm New Password</label>
                                             <div class="col-sm-4">
-                                            <input id="password" type="password" class="form-control" th:field="*{confirmPassword}"/>
+                                            <input id="conpassword" type="password" class="form-control" th:field="*{confirmPassword}"/>
                                             </div>
                                         </div>
 
@@ -114,6 +113,14 @@
 
 <script>
     $('#password').bind("cut copy paste",function(e) {
+        e.preventDefault();
+    });
+
+    $('#newpassword').bind("cut copy paste",function(e) {
+        e.preventDefault();
+    });
+
+    $('#conpassword').bind("cut copy paste",function(e) {
         e.preventDefault();
     });
 </script>
