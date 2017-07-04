@@ -221,9 +221,15 @@ public class RequestServiceImpl implements RequestService {
         List<UserGroup> opsUserGroups = opsUser.getGroups();
         for (ServiceRequestDTO request : dtOs) {
             SRConfig reqConfig = reqConfigRepo.findOne(request.getServiceReqConfigId());
-            for (UserGroup group : opsUserGroups) {
-                if (group.equals(userGroupRepo.findOne(reqConfig.getGroupId()))) {
-                    requestsForOpsUser.add(request);
+            if(reqConfig!=null) {
+                for (UserGroup group : opsUserGroups) {
+
+                    if (group != null) {
+
+                        if (group.equals(userGroupRepo.findOne(reqConfig.getGroupId()))) {
+                            requestsForOpsUser.add(request);
+                        }
+                    }
                 }
             }
         }
@@ -232,24 +238,6 @@ public class RequestServiceImpl implements RequestService {
         return pageImpl;
     }
 
-    public int getNumOfUnattendedRequests2(OperationsUser opsUser) {
-        int count=0;
-        List<ServiceRequest> serviceRequests = serviceRequestRepo.findByRequestStatus("S");
-        List<UserGroup> opsUserGroups = opsUser.getGroups();
-        for (ServiceRequest request : serviceRequests) {
-            SRConfig reqConfig = reqConfigRepo.findOne(request.getServiceReqConfigId());
-
-            if (reqConfig != null) {
-                for (UserGroup group : opsUserGroups) {
-                    if (group.getId().equals(reqConfig.getGroupId())) {
-                        count += 1;
-                    }
-                }
-            }
-        }
-
-        return count;
-    }
 
     @Override
     public int getNumOfUnattendedRequests(OperationsUser opsUser) {
@@ -260,19 +248,7 @@ public class RequestServiceImpl implements RequestService {
         }
         return count;
     }
-    //    @Override
-//	public Page<ServiceRequestDTO> getRequests(ServiceRequestDTO request, Pageable pageDetails) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-//
-//
-//
-//    @Override
-//    public Page<RequestHistoryDTO> getRequestHistories(Long serviceRequestId, Pageable pageDetails) {
-//      //TODO will be implemented later
-//        return
-//    }
+
 
 
     private ServiceRequestDTO convertEntityToDTO(ServiceRequest serviceRequest) {
@@ -283,11 +259,6 @@ public class RequestServiceImpl implements RequestService {
             requestDTO.setCorpName(serviceRequest.getCorporate().getName());
         }
         requestDTO.setDate(DateFormatter.format(serviceRequest.getDateRequested()));
-        Code code = codeService.getByTypeAndCode("REQUEST_STATUS", serviceRequest.getRequestStatus());
-        if (code != null) {
-            String status = code.getDescription();
-            requestDTO.setRequestStatus(status);
-        }
         return requestDTO;
 
     }
@@ -300,6 +271,11 @@ public class RequestServiceImpl implements RequestService {
         List<ServiceRequestDTO> serviceRequestDTOList = new ArrayList<>();
         for (ServiceRequest serviceRequest : serviceRequests) {
             ServiceRequestDTO requestDTO = convertEntityToDTO(serviceRequest);
+            Code code = codeService.getByTypeAndCode("REQUEST_STATUS", requestDTO.getRequestStatus());
+            if (code != null) {
+                String status = code.getDescription();
+                requestDTO.setRequestStatus(status);
+            }
             serviceRequestDTOList.add(requestDTO);
         }
         return serviceRequestDTOList;
