@@ -16,6 +16,8 @@ public interface PhishingImageService {
 
     String deleteImage(Long id);
 
+    List<PhishingImage> getRandomPhishingImages();
+
     List<PhishingImage> getPhishingImages();
 
     Page<PhishingImageDTO> getAllPhishingImages(Pageable pageable);

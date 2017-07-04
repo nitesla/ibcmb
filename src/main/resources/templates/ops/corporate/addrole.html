@@ -81,6 +81,7 @@
                                                 <div class="row">
 
                                                     <div class="form-group text-left col-lg-5">
+                                                        <label>Non-Members</label>
                                                         <select multiple="multiple" class="form-control left-selector">
                                                             <option th:each="user: ${users}"
                                                                     th:value="${user.id}"
@@ -100,6 +101,8 @@
 
                                                     </div>
                                                     <div class="form-group text-right col-lg-5">
+                                                        <label>Members</label>
+
                                                         <select multiple="multiple" class="form-control right-selector"
                                                                 name="usersList">
                                                             <option th:each="user: ${role.users}" th:value="${user.id}"

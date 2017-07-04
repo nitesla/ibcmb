@@ -36,8 +36,8 @@ public class VerificationDTO {
 
     private Date initiatedOn;
 
-    @NotEmpty(message = "comment")
-    private String comment;
+    @NotEmpty(message = "comments")
+    private String comments;
 
     private String verifiedBy;
     private Date verifiedOn;
@@ -68,12 +68,13 @@ public class VerificationDTO {
         this.original = original;
     }
 
-    public String getComment() {
-        return comment;
+
+    public String getComments() {
+        return comments;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
+    public void setComments(String comments) {
+        this.comments = comments;
     }
 
     public verificationStatus getStatus() {
@@ -185,7 +186,7 @@ public class VerificationDTO {
                 ", operation='" + operation + '\'' +
                 ", initiatedBy='" + initiatedBy + '\'' +
                 ", initiatedOn=" + initiatedOn +
-                ", comment='" + comment + '\'' +
+                ", comments='" + comments + '\'' +
                 ", verifiedBy='" + verifiedBy + '\'' +
                 ", verifiedOn=" + verifiedOn +
                 ", dependency=" + dependency +

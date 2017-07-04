@@ -41,7 +41,7 @@
                                         <span id="scurency"></span>
                                         <div>
 
-                                        <span class="alert no-bd-rad my-border bg-white" id="sourceCurrency">&nbsp;&nbsp;&nbsp;</span>
+                                        <span class="alert no-bd-rad my-border bg-white" id="sourceCurrency">CCY</span>
                                             <select name="source" class="form-control" id="source"
                                                     th:field="*{customerAccountNumber}" onchange="getBalance();getSourceCurrency()" >
 
@@ -56,7 +56,7 @@
 
                                         <span id="dcurency"></span>
                                         <div>
-                                         <span class="alert no-bd-rad my-border bg-white" id="destCurrency">&nbsp;&nbsp;&nbsp;</span>
+                                         <span class="alert no-bd-rad my-border bg-white" id="destCurrency">CCY</span>
                                         <select name="destination" class="form-control" id="destination"
                                                 th:field="*{beneficiaryAccountNumber}"  onchange="getDestCurrency();"  required="required">
 
@@ -72,7 +72,7 @@
                                     <div class="form-group">
                                         <label class="my-label">Amount</label>
                                         <div>
-                                            <span class="alert no-bd-rad my-border bg-white hide-content-only">&nbsp;&nbsp;&nbsp;</span>
+                                            <span class="alert no-bd-rad my-border bg-white hide-content-only">NGN</span>
 
                                             <input type="number" name="textname" min="0" step=".10" placeholder="Enter an amount"
                                             th:field="*{amount}"
@@ -87,7 +87,7 @@
                                         <label  class="my-label">Remark</label>
 
                                         <div>
-                                         <span class="alert no-bd-rad my-border bg-white hide-content-only">&nbsp;&nbsp;&nbsp;</span>
+                                         <span class="alert no-bd-rad my-border bg-white hide-content-only">NGN</span>
 
                                         <input type="text" name="textname" placeholder="" th:field="*{remarks}"
                                             class="form-control"/>
@@ -113,13 +113,7 @@
                     <hr class="related-info"/>
                     <!--<input type="availBal" name="availBal"/>-->
                     <p id="availBal"><b></b></p>
-<<<<<<< HEAD
-                </div>
-            </div>
 
-            <div th:replace="cust_layout :: sidebar" class="col-md-3 sidebar">
-            </div>
-=======
                 </div>
             </div>
 
@@ -127,7 +121,6 @@
                 <div th:replace="cust_layout :: sidebar" class="" >
                 </div>
             </div>
->>>>>>> cd73ef93ee1bbdd562ae886b71053d096903c1a1
         </div>
 
     </div>
@@ -231,7 +224,7 @@
             success:function(currency){
                 cur = ''+String(currency);
                 if(cur == "" ){
-                    document.getElementById("destCurrency").textContent=" Unknown";
+                    document.getElementById("destCurrency").textContent="NAN";
                     // $("#myspan").show();
                 }else{
 //                    $('input[name=availBal]').val(bal);

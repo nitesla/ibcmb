@@ -47,7 +47,53 @@ start
 }
 
 .active{
-    border-bottom: 5px solid #9F614B !important;
+    border-bottom: 2px solid #9F614B !important;
+}
+
+.datepicker-switch
+{
+    background-color: #e5eaee !important;
+   
+}
+
+
+.datepicker-orient-top:before
+{
+    top:0px !important;border:0 !important;
+}
+.datepicker-dropdown.datepicker-orient-top:after
+{
+    top:0px !important;
+    border:0 !important;
+   
+}
+
+.text-blue
+{
+    color: #003056;
+}
+
+.cal-icon
+{
+    background:  red !important;
+}
+
+.cal-icon:hover
+{
+     background: white !important;
+     border:1px solid #003056 !important;
+}
+
+.datepicker
+{
+    background: white !important;
+     border:1px solid #003056 !important;
+}
+
+.today
+{
+    background: #003056 !important;
+    color: white !important;
 }
 
 .invisible
@@ -60,7 +106,6 @@ start
     list-style-type: none
 
 }
-
 
 .mail-links li
 {
@@ -193,7 +238,7 @@ label
 span.req
 {
     position: absolute;
-    top:18px;
+    top:22px;
     left:-7px;
     display: inline-block;
 
@@ -381,6 +426,8 @@ select
     -webkit-animation: spin 2s linear infinite;
     animation: spin 2s linear infinite;
 }
+
+
 
 @-webkit-keyframes spin {
     0% { -webkit-transform: rotate(0deg); }
@@ -1352,6 +1399,12 @@ button, input, optgroup, select, textarea {
     margin: 15px 0 10px 0px;
     padding: 0px;
     background-color: #ebecef;
+    padding-bottom: 7px !important;
+}
+
+.full-width
+{
+    width: 100% !important;
 }
 
 .bg{
@@ -1543,6 +1596,14 @@ button, input, optgroup, select, textarea {
 
     .blue-bg{
         background-color: #003056;
+    }
+
+    .info-acc
+    {
+        padding: 10px !important;
+        padding-top:3px !important;
+        background: #ebecef !important;
+
     }
 
     .sidebar{

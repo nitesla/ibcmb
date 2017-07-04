@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="corp_layout :: site-head">
+
+</head>
+<body>
+<div class="container">
+    <header th:replace="corp_layout :: corp-header">
+    </header>
+
+<section class="content-wrapper">
+    <div class="containe">
+        <div class="row">
+            <div class="col-md-4 col-sm-4">
+                <h5 class="page_header"> Contact Us</h5>
+                <select class="form-control invisible" id="view">
+                    <option value="account">Account Overview</option>
+                </select>
+            </div>
+            <p class="col-xs-12 invisible">
+                Fields marked <span style="color:red">*</span> are compulsory
+            </p>
+        </div>
+        <div class="row">
+
+            <div class="col-md-9 content-bg">
+
+                    <div class="col-md-10">
+
+                        <form action="/corporate/contact" method="post">
+                            <div class="form-group">
+                                <label>Message</label>
+                                <span class="required"></span><textarea name="message" required="required" class="form-control" rows="10"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <button class=" btn btn-primary form-control">Send Message</button>
+                            </div>
+                        </form>
+                    </div>
+
+            </div>
+            <div class="col-md-3 pull-right">
+                <div th:replace="corp_layout :: corp-sidebar" class="" >
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CONTENT-WRAPPER SECTION END-->
+    <footer th:replace="corp_layout ::corp-footer">
+    </footer>
+</div>
+</body>
+</html>

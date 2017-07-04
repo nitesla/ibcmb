@@ -46,7 +46,7 @@ import java.util.Locale;
 @RequestMapping("/admin/phishing")
 public class AdmPhishingController {
 
-    @Value("${phising.image.folder}")
+    @Value("${phishing.image.folder}")
     private String folder;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());

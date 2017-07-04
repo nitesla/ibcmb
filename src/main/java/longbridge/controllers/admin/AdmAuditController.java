@@ -55,6 +55,31 @@ public class AdmAuditController {
         out.setRecordsTotal(auditConf.getTotalElements());
         return out;
     }
+
+
+
+    @GetMapping(path = "all/entityname")
+    public @ResponseBody DataTablesOutput<AuditConfig> getAllEntities(DataTablesInput input)
+    {
+        Pageable pageable=DataTablesUtils.getPageable(input);
+        Page<AuditConfig> auditConfig=null;
+        auditConfig=auditCfgService.getEntities(pageable);
+        DataTablesOutput<AuditConfig> out=new DataTablesOutput<>();
+        out.setDraw(input.getDraw());
+        out.setData(auditConfig.getContent());
+        out.setRecordsFiltered(auditConfig.getTotalElements());
+        out.setRecordsTotal(auditConfig.getTotalElements());
+        return out;
+    }
+
+
+
+    @GetMapping("/view")
+    public String listEntity(Model model) {
+        return "adm/audit/view";
+    }
+
+
     
     @PostMapping
     @ResponseBody

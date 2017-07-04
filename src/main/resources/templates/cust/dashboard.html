@@ -49,7 +49,7 @@
                                             <td th:align="center" th:text="${list.accountNumber}"></td>
                                             <td th:align="center" th:text="${list.schemeType}"></td>
                                             <td th:align="center" th:text="${list.currencyCode}"></td>
-                                            <td th:align="center" th:text="${list.accountBalance}"></td>
+                                            <td th:align="center" th:text="${list.accountBalance}" id="bal"></td>
                                             <td th:align="center" th:text="${list.ledgerBalance}"></td>
 
                                             <td th:align="center">
@@ -88,7 +88,17 @@
 </script>
     <script>
 
-                function getId(Id) {
+        $(document).ready(function () {
+            $('#users tr').each(function () {
+                var id = $(this).attr('id');
+                alert(id);
+                
+            })
+        })
+
+
+
+          function getId(Id) {
                     if ($('.quickAccess').val() === "Transaction History") {
                         if (( Id != null || Id != '' )) {
                             window.location.href = "/retail/account/" + Id + "/statement";

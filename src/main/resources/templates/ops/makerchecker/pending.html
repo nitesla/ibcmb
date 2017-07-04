@@ -97,8 +97,10 @@
                                 <thead>
                                 <tr>
                                     <th>Operation</th>
-                                    <th>Created By</th>
+                                    <th>Initiated By</th>
+                                    <th>Date</th>
                                     <th>Verified By</th>
+                                    <th> Date</th>
                                     <th>Status</th>
 
                                 </tr>
@@ -112,8 +114,10 @@
                                 <tfoot>
                                 <tr>
                                     <th>Operation</th>
-                                    <th>Created By</th>
+                                    <th>Initiated By</th>
+                                    <th>Date</th>
                                     <th>Verified By</th>
+                                    <th>Date </th>
                                     <th>Status</th>
                                 </tr>
                                 </tfoot>
@@ -139,6 +143,8 @@
 <script th:src="@{~/bank/js/dataTables.bootstrap.js}"></script>
 <script th:src="@{~/bank/js/dataTables.select.js}"></script>
 <script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
+<script th:src="@{~/bank/js/momentMin.js}"></script>
+
 
 <!-- Page-Level Scripts -->
 <script>
@@ -156,22 +162,51 @@
             "dom": 'T<"clear">frtlp',
             "columns": [
                 {"data":"description"},
-                { "data": "initiatedBy" },
-                { "data": "verifiedBy" },
-                { "data": "status" },
+                { "data": "initiatedBy"},
+                { "data": "initiatedOn"},
+                { "data": "verifiedBy" ,"defaultContent": "<i>Not Verified</i>"},
+                { "data": "verifiedOn", "defaultContent": "<i>Not Verified</i>" },
+                { "data": "status" }
 
             ] ,"columnDefs" : [ {
-                "targets" : 3,
+                "targets" : 2,
+                "data" : "status",
+                "render" : function(data, type,full, meta) {
+                    if (type === 'display') {
+                        if(data == null)
+                            return data;
+                        var dtStart = new Date(parseInt(data));
+                        var dtStartWrapper = moment(dtStart);
+                        //return dtStartWrapper.format('DD/MM/YYYY HH:mm');
+                        return dtStartWrapper.format('LLLL');
+                    }
+                    return data;
+                }
+            } ,{
+                "targets" : 4,
+                "data" : "status",
+                "render" : function(data, type,full, meta) {
+                    if (type === 'display') {
+                        if(data == null)
+                            return data;
+                        var dtStart = new Date(parseInt(data));
+                        var dtStartWrapper = moment(dtStart);
+                        return dtStartWrapper.format('LLLL');
+                    }
+                    return data;
+                }
+            } , {
+                "targets" : 5,
                 "data" : "status",
                 "render" : function(data, type,full, meta) {
                     if (type === 'display') {
                         if (data == "PENDING") {
                             return "<i class='fa fa-question dt-body-center' style='color:green;display:block; text-align:center; margin:0 auto;' ></i>";
-                        } else if (data == "VERIFIED") {
+                        } else if (data == "APPROVED") {
                             return "<i class='fa fa-check  dt-body-center' style='color:green;display:block; text-align:center; margin:0 auto;'></i>";
                         }
                         else{
-                            return "<i class='fa fa-ban  dt-body-center' style='color:red;display:block; text-align:center; margin:0 auto;'></i>"
+                            return "<i class='fa fa-times  dt-body-center' style='color:red;display:block; text-align:center; margin:0 auto;'></i>"
                         }
                     }
                     return data;
@@ -217,9 +252,9 @@
         var dt = $('#verification').DataTable();
         var data = dt.rows({selected:  true}).data();
 
-       // alert (data[dt.row][1]);
+        // alert (data[dt.row][1]);
 
-      //  var row=data[dt.row][1];
+        //  var row=data[dt.row][1];
 //        console.log(data);
 //        for( var i=0;i< data.length;i++)
 //        {

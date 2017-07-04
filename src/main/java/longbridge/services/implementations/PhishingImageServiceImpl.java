@@ -35,7 +35,7 @@ public class PhishingImageServiceImpl implements PhishingImageService{
 
     @Override
     public String saveImage(PhishingImage phishingImage) {
-         phishingImageRepo.save(phishingImage);
+        phishingImageRepo.save(phishingImage);
         logger.info("Added new image {} ");
         return messageSource.getMessage("phishingimage.add.success", null, locale);
     }
@@ -43,6 +43,12 @@ public class PhishingImageServiceImpl implements PhishingImageService{
     @Override
     public String deleteImage(Long id) {
         return null;
+    }
+
+    @Override
+    public List<PhishingImage> getRandomPhishingImages() {
+        List<PhishingImage> phishingImages = phishingImageRepo.findImagePath();
+        return phishingImages;
     }
 
 

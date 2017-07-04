@@ -35,6 +35,7 @@ public interface VerificationRepo extends CommonRepo<Verification, Long>{
 
     Page<Verification> findByInitiatedByAndUserType(String initiatedby, UserType userType,Pageable pageable);
 
+    List<Verification> findByInitiatedByAndUserType(String initiatedby, UserType userType);
 
     @Query( "select v from Verification v where v.initiatedBy != :initiated and v.userType=:userType and v.operation in :permissionlist and v.status ='PENDING'")
     List<Verification> findVerificationForUser(@Param("initiated") String initiatedBy, @Param("userType") UserType userType, @Param("permissionlist") List<String> operation);

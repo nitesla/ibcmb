@@ -21,12 +21,14 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.LocaleResolver;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -67,9 +69,15 @@ public class LocalTransferController {
     public String index(Model model, Principal principal) throws Exception {
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
         Iterable<LocalBeneficiary> cmbBeneficiaries = localBeneficiaryService.getBankBeneficiaries(retailUser);
-        model.addAttribute("localBen",
-                StreamSupport.stream(cmbBeneficiaries.spliterator(), false)
-                        .collect(Collectors.toList()));
+
+        List<LocalBeneficiary> beneficiaries =StreamSupport.stream(cmbBeneficiaries.spliterator(), false)
+                .collect(Collectors.toList());
+        beneficiaries .forEach(i-> i.setBeneficiaryBank(financialInstitutionService.getFinancialInstitutionByCode(i.getBeneficiaryBank()).getInstitutionName()));
+
+        model.addAttribute("localBen",beneficiaries
+                );
+
+
 
 
         return page + "pagei";
@@ -195,5 +203,18 @@ public class LocalTransferController {
         BigDecimal availBal = balance.get("AvailableBalance");
         return availBal;
     }
+
+
+    @PostMapping("/edit")
+    public String editTransfer(@ModelAttribute("transferRequest")  TransferRequestDTO transferRequestDTO,Model model,HttpServletRequest request){
+        transferRequestDTO.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
+        transferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode(bankCode));
+        model.addAttribute("transferRequest",transferRequestDTO);
+        if ( request.getSession().getAttribute("Lbeneficiary")!=null)
+            model.addAttribute("beneficiary",(LocalBeneficiaryDTO)request.getSession().getAttribute("Lbeneficiary"));
+
+        return page + "pageii";
+    }
+
 
 }

@@ -410,6 +410,7 @@ public class CorporateServiceImpl implements CorporateService {
             for (CorporateUserDTO user : roleDTO.getUsers()) {
                 CorporateUser corporateUser = corporateUserRepo.findOne(user.getId());
                 corpUsers.add(corporateUser);
+                //corporateUser.setCorporateRole(role);
             }
             role.setUsers(corpUsers);
             corporateRoleRepo.save(role);
@@ -451,14 +452,18 @@ public class CorporateServiceImpl implements CorporateService {
     @Verifiable(operation="UPDATE_CORPORATE_ROLE",description="Updating a Corporate Role")
     public String updateCorporateRole(CorporateRoleDTO roleDTO) throws InternetBankingException {
         try {
-            CorporateRole role = convertCorporateRoleDTOToEntity(roleDTO);
+            CorporateRole role = corporateRoleRepo.findOne(roleDTO.getId());
+            role.setVersion(roleDTO.getVersion());
+            role.setName(roleDTO.getName());
+            role.setRank(roleDTO.getRank());
+            role.getUsers().clear();
             
-            HashSet<CorporateUser> corpUsers = new HashSet<>();
+      
             for (CorporateUserDTO user : roleDTO.getUsers()) {
                 CorporateUser corporateUser = corporateUserRepo.findOne(user.getId());
-                corpUsers.add(corporateUser);
+                role.getUsers().add(corporateUser);
+               // corporateUser.setCorporateRole(role);
             }
-            role.setUsers(corpUsers);
             corporateRoleRepo.save(role);
 
             return messageSource.getMessage("role.update.success", null, locale);
@@ -501,7 +506,7 @@ public class CorporateServiceImpl implements CorporateService {
     @Transactional
     public Set<CorporateRoleDTO> getRoles(Long corpId) {
         Corporate corporate = corporateRepo.findOne(corpId);
-        Set<CorporateRole> corporateRoles = corporate.getCorporateRoles();
+        Set<CorporateRole> corporateRoles = corporateRoleRepo.findByCorporate(corporate);
         Set<CorporateRoleDTO> roles = convertCorporateRoleEntitiesToDTOs(corporateRoles);
         return roles;
     }

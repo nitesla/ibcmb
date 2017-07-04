@@ -261,7 +261,7 @@ public class CorpTransferController {
     public String authorizeTransfer(@PathVariable Long id, Principal principal, Model model, RedirectAttributes redirectAttributes){
 try {
     CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
-    String message = corpTransferService.authorizeTransfer(corporateUser.getCorporateRole(), id);
+    String message = corpTransferService.authorizeTransfer(corporateUser, id);
     redirectAttributes.addFlashAttribute("message", message);
 }
 catch (InvalidAuthorizationException iae){

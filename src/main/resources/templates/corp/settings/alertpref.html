@@ -25,7 +25,7 @@
             <div class="col-md-9 content-bg">
                 <div class="row">
                     <div class="col-md-6 col-sm-6">
-                        <form method="post" th:action="@{/corporate/alert_preference}" th:object="${alertPref}">
+                        <form method="post" th:action="@{/corporate/settings/alert_preference}" th:object="${alertPref}">
                             <div class="form-group">
                                 <label>Select Preference</label>
                                 <select th:field="*{preference}" class="form-control">

@@ -41,6 +41,7 @@ public class MakerCheckerAdvisor {
 
 	@Autowired
 	EntityManager entityManager;
+
 	private Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Pointcut("this(org.springframework.data.repository.Repository)")
@@ -57,18 +58,23 @@ public class MakerCheckerAdvisor {
 
 	@Pointcut("withincode(@longbridge.utils.Verifiable * *(..)) &&  @withincode(verifier)")
 	public void isInVerifiable2(Verifiable verifier) {
+
 	}
 
 	@Pointcut("execution(@longbridge.utils.Verifiable * *(..))")
 	public void isVerifiable() {
+
 	}
 
 	@Pointcut("call(* save(..))")
 	public void isSaving() {
+
 	}
+
 
 	@Pointcut("call(* delete(..))")
 	public void isDeleting() {
+
 	}
 
 	@Pointcut("execution(* save(..))")

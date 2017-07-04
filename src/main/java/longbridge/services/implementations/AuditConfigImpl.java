@@ -34,7 +34,8 @@ public class AuditConfigImpl implements AuditConfigService {
 
 	@Override
 	@Verifiable(operation="AUDIT_CONFIG",description="Configuring Audit")
-    public boolean saveAuditConfig(AuditConfig cfg) throws InternetBankingException {
+    public boolean saveAuditConfig(AuditConfig cfg) throws InternetBankingException
+	{
 		configRepo.save(cfg);
 		return true;
 	}

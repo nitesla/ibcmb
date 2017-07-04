@@ -164,7 +164,12 @@ public class FinancialInstitutionServiceImpl implements FinancialInstitutionServ
         return financialInstitutionRepo.findByInstitutionCode(institutionCode);
     }
 
-	@Override
+    @Override
+    public FinancialInstitution getFinancialInstitutionByName(String institutionName) {
+        return financialInstitutionRepo.findFirstByInstitutionNameIgnoreCase(institutionName);
+    }
+
+    @Override
 	public Page<FinancialInstitutionDTO> findFinancialInstitutions(String pattern, Pageable pageDetails) {
 		 Page<FinancialInstitution> page = financialInstitutionRepo.findUsingPattern(pattern,pageDetails);
 	        List<FinancialInstitutionDTO> dtOs = convertEntitiesToDTOs(page.getContent());
