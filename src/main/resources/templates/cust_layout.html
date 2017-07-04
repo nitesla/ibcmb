@@ -101,9 +101,9 @@
                        
                         <div class="collapse navbar-collapse" id="navbar-collapse-1">
                             <ul class="nav navbar-nav menu">
-                                <li th:classappend="${#httpServletRequest.getRequestURI().startsWith('/retail/dashboard') ? 'active':''}"><a th:href="@{/retail/dashboard}">Dashboard</a></li>
+                                <li th:classappend="${#httpServletRequest.getRequestURI().startsWith('/retail/dashboard') ? 'active':''}"><a class="menu-link" th:href="@{/retail/dashboard}">Dashboard</a></li>
                                 <li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI().startsWith('/retail/account') ? 'active':''}" sec:authorize="hasAuthority('MANAGE_ACCOUNT')">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                    <a href="#" class="dropdown-toggle menu-link" data-toggle="dropdown" role="button"
                                     aria-haspopup="true" aria-expanded="false" th:text="#{menu.account}"> My Accounts</a>
                                     <ul class="dropdown-menu">
                                         <li sec:authorize="hasAuthority('CUSTOMIZE_ACCOUNT')"><a
@@ -121,7 +121,7 @@
                                     </ul>
                                 </li>
                                 <li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI().startsWith('/retail/transfer') ? 'active':''}" sec:authorize="hasAuthority('MANAGE_TRANSFERS')">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                    <a href="#" class="dropdown-toggle menu-link" data-toggle="dropdown" role="button"
                                     aria-haspopup="true" aria-expanded="false" th:text="#{menu.transfer}"> Transfers</a>
                                     <ul class="dropdown-menu">
                                         <li sec:authorize="hasAuthority('OWN_ACCOUNT_TRANSFER')"><a
@@ -145,7 +145,7 @@
                                 <!--<li sec:authorize="hasAuthority('MANAGE_BILL_PAYMENT')"><a href="#" th:text="#{menu.bill}">Bill Payments</a></li>-->
                                 <!--<li sec:authorize="hasAuthority('MANAGE_INVESTMENT')"><a href="#" th:text="#{menu.investment}">Investment</a></li>-->
                                 <li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI().startsWith('/retail/requests') ? 'active':''}" sec:authorize="hasAuthority('MANAGE_SERV_REQ')">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                    <a href="#" class="dropdown-toggle menu-link" data-toggle="dropdown" role="button"
                                     aria-haspopup="true" aria-expanded="false" th:text="#{menu.servreq}"> Service
                                         Requests </a>
                                     <ul class="dropdown-menu">
@@ -162,7 +162,7 @@
                                 </li>
 
                                 <li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI().startsWith('/retail/settings') ? 'active':''}" sec:authorize="hasAuthority('RET_USER_SETTINGS')">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                    <a href="#" class="dropdown-toggle menu-link" data-toggle="dropdown" role="button"
                                     aria-haspopup="true" aria-expanded="false" th:text="#{menu.settings}"> Settings </a>
                                     <ul class="dropdown-menu">
                                         <li sec:authorize="hasAuthority('SET_ALERT_PREFERENCE')"><a
@@ -174,7 +174,7 @@
                                     </ul>
                                 </li>
                                 <li class="dropdown">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                    <a href="#" class="dropdown-toggle menu-link" data-toggle="dropdown" role="button"
                                     aria-haspopup="true" aria-expanded="false"> More </a>
                                     <ul class="dropdown-menu">
                                         <li sec:authorize="hasAuthority('RET_SYNC_TOKEN')"><a
@@ -261,7 +261,7 @@
     <div class="">
         <div class='time no-bd no-bd-rad ' style="border-bottom:2px solid #ebdfdb !important;">
              <span class=" ">
-                <i class="fa fa-hourglass-o datepicker cal-icon " data-provide="datepicker" onclick="show()" style="font-size:20px;background:transparent !important;border:0px !important"></i>
+                <i class="fa fa-clock-o datepicker cal-icon " data-provide="datepicker" onclick="show()" style="font-size:20px;background:transparent !important;border:0px !important"></i>
             </span>
              <span id='time' class="text-bold no-bd" style="font-size:14px;padding-left:10px;"></span>
         </div>
