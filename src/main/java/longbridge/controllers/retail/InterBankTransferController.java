@@ -161,7 +161,7 @@ public class InterBankTransferController {
                 transferRequestDTO.setTransferType(TransferType.INTER_BANK_TRANSFER);
                 charge= integrationService.getFee("NIP").get().getFeeValue();
             }
-            request.getSession().removeAttribute("NIP");
+           // request.getSession().removeAttribute("NIP");
 
         } else {
             transferRequestDTO.setTransferType(TransferType.INTER_BANK_TRANSFER);
@@ -256,6 +256,19 @@ public class InterBankTransferController {
 
     @PostMapping("/edit")
     public String editTransfer(@ModelAttribute("transferRequest") TransferRequestDTO transferRequestDTO, Model model, HttpServletRequest request) {
+        String type = (String) request.getSession().getAttribute("NIP");
+        if (type.equalsIgnoreCase("RTGS")){
+            transferRequestDTO.setTransferType(TransferType.RTGS);
+
+
+        }
+
+        else {
+            transferRequestDTO.setTransferType(TransferType.INTER_BANK_TRANSFER);
+
+        }
+
+
          model.addAttribute("transferRequest", transferRequestDTO);
         if (request.getSession().getAttribute("Lbeneficiary") != null){
             LocalBeneficiaryDTO dto=         (LocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary");
