@@ -6,6 +6,7 @@ import longbridge.models.Corporate;
 import longbridge.models.CorporateUser;
 import longbridge.repositories.CorpLocalBeneficiaryRepo;
 import longbridge.services.CorpLocalBeneficiaryService;
+import longbridge.utils.Verifiable;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

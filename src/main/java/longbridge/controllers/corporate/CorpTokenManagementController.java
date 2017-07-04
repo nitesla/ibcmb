@@ -105,14 +105,15 @@ public class CorpTokenManagementController {
                 boolean res = securityService.synchronizeToken(principal.getName(), custSyncTokenForm.getSerialNo(), custSyncTokenForm.getTokenCode1(), custSyncTokenForm.getTokenCode2());
                 if (res) {
                     redirectAttributes.addFlashAttribute("message", messageSource.getMessage("token.sync.success", null, locale));
-                    return "redirect:/corporate/token/sync";
-                }
+                }else{
+                	redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("token.sync.failure", null, locale));
+                } 
+                
             } catch (InternetBankingSecurityException ibe) {
                 logger.error("Error Synchronizing Token", ibe);
                 redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("token.sync.failure", null, locale));
-
             }
-            redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("token.sync.failure", null, locale));
+           
             return "redirect:/corporate/token/sync";
         }
 

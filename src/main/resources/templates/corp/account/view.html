@@ -1,70 +1,199 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="corp_layout :: site-head">
-
 </head>
 <body>
-<header th:replace="corp_layout ::corp-header">
-</header>
+<div class="container">
+    <header th:replace="corp_layout :: corp-header">
+    </header>
 
-<section class="content-wrapper">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-8 col-sm-8">
-                <h5 class="page_header"> Beneficiary List</h5>
-                <a th:href="@{/corporate/beneficiary/new}" class="pull-right">Add New Beneficiary</a>
+    <section class="content-wrapper">
+        <div class="containe">
+            <div class="row">
+                <div class="col-md-4 col-sm-4">
+                    <h5 class="page_header"> Account Statement</h5>
+                    <select class="form-control invisible">
+                        <option value="account">Account Overview</option>
+                    </select>
+                </div>
+                <p class="col-xs-12 invisible">
+                    Fields marked <span style="color:red">*</span> are compulsory
+                </p>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-md-8 content-bg">
-                <div class="row spacing">
-                    <div class="col-md-10">
-                        <h4 class="sub_header">Local Beneficiaries</h4>
-                        <table class="table">
-                            <thead>
-                                <td>Name</td>
-                                <td>Account Number</td>
-                                <td>Bank</td>
-                                <td>Delete</td>
-                            </thead>
-                            <tbody>
-                                <tr th:each="loc : ${localBen}">
-                                    <td th:text="${loc.accountName}"></td>
-                                    <td th:text="${loc.accountNumber}"></td>
-                                    <td th:text="${loc.beneficiaryBank}"></td>
-                                    <td><a th:href="@{'/corporate/beneficiary/' + ${loc.id} + '/loc/delete'}"><i class="fa fa-trash"></i></a></td>
-                                </tr>
-                            </tbody>
-                        </table>
+            <div class="row">
+                <div class="col-md-9 content-bg">
+                    <form method="post" th:action="@{/corporate/account/viewstatement/display}">
 
-                        <h4 class="sub_header">International Beneficiaries</h4>
-                        <table class="table">
-                            <thead>
-                                <td>Name</td>
-                                <td>Account Number</td>
-                                <td>Bank</td>
-                                <td>Delete</td>
-                            </thead>
-                            <tbody>
-                                <tr th:each="int : ${intBen}">
-                                    <td th:text="${int.accountName}"></td>
-                                    <td th:text="${int.accountNumber}"></td>
-                                    <td th:text="${int.beneficiaryBank}"></td>
-                                    <td><a th:href="@{'/corporate/beneficiary/' + ${int.id} + '/int/delete'}"><i class="fa fa-trash"></i></a></td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <div class="col-md">
+                            <br/>
+                            <div class="form-group col-md-12 col-sm-12">
+                                <div class="form-group col-md-6 col-sm-6">
+                                    <label>Date Range</label>
+                                    <div class="input-daterange input-group" id="date-range">
+                                        <input type="text" data-date-format="dd-mm-yyyy" class="form-control datepicker" id="start" name="fromDate" placeholder="Start date" required="required" />
+                                        <span class="input-group-addon no-border">to</span>
+                                        <input type="text"  data-date-format="dd-mm-yyyy" class="form-control datepicker" name="toDate" id="endDate" placeholder="End date" required="required" />
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6 col-sm-6">
+                                    <label>Transaction Type</label>
+                                    <select name="tranType"  class="form-control">
+                                        <option value="B">All</option>
+                                        <option value="C">Credit</option>
+                                        <option value="D">Debit</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-12 col-sm-12">
+                                <div class="form-group col-md-6 col-sm-6">
+                                    <label>Account Number</label>
+                                    <span class="req"></span>
+                                    <select name="acctNumber" id="acctNumber" class="form-control"
+                                            required="required">
+                                        <option th:each="s: ${accounts}" th:value="${s}" th:text="${s}"></option></select>
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                    <label>&nbsp;</label>
+                                    <button type="submit" class="btn btn-link " id="btn-find"><i class="fa fa-search" style="color: whit" ></i>&nbsp; view</button>
+                                </div>
+                            </div>
+
+
+
+                            <p>
+                                <a id="btn-print" th:href="@{'~/viewstatement/display/data'}"  class="btn bt-link-act pull-right"> <i class="fa fa-print"  ></i>&nbsp; print</a>
+                                <!--<a th:href="@{'#'}" class="btn "> <i class="fa fa-envelope" style="color: white" ></i>&nbsp; send mail</a>-->
+                            </p>
+
+                            <h2>TRANSACTION DETAILS</h2>
+
+                            <div class="table-responsive" >
+                                <table class="table" id="tranDetails">
+                                    <thead>
+                                    <tr>
+                                        <th>Account Balance</th>
+                                        <th>Currency Code</th>
+                                        <th>Post Date</th>
+                                        <th>Transaction Narration</th>
+                                        <th>Debit/Credit</th>
+                                        <th>Value Date</th>
+
+                                    </tr>
+                                    </thead>
+                                    <tfoot>
+                                    <tr>
+                                        <th>Account Balance</th>
+                                        <th>Currency Code</th>
+                                        <th>Post Date</th>
+                                        <th>Transaction Narration</th>
+                                        <th>Debit/Credit</th>
+                                        <th>Value Date</th>
+
+                                    </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+
+
+                        </div>
+                    </form>
+
+                </div>
+                <div class="col-md-3 pull-right " >
+                    <div th:replace="corp_layout :: corp-sidebar" class="" >
                     </div>
                 </div>
             </div>
-            <div th:replace="corp_layout :: corp-sidebar" class="col-md-3 sidebar">
-            </div>
         </div>
-    </div>
-</section>
-
+    </section>
+</div>
 <!-- CONTENT-WRAPPER SECTION END-->
 <footer th:replace="corp_layout ::corp-footer">
 </footer>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    jQuery.download = function(url, key, data) {
+        // Build a form
+        var form = $('<form></form>').attr('action', url).attr('target', '_blank')
+                .attr('method', 'get');
+        // Add the one key/value
+        form.append($("<input></input>").attr('type', 'hidden').attr('name',
+                key).attr('value', data));
+
+        $.each( data, function( propertyName, valueOfProperty ){
+            form.append($("<input></input>").attr('type', 'hidden').attr('name',
+                    propertyName).attr('value', valueOfProperty));
+        });
+
+        //send request
+        form.appendTo('body').submit().remove();
+    };
+
+    $(document).ready(function() {
+
+        $('.datepicker').datepicker({ dateFormat: 'dd-mm-yy' });//
+
+        $('#tranDetails').DataTable({
+            responsive: true,
+
+            "lengthMenu": [[5, 10,20], [5, 10,20]],
+            "pagingType": "simple_numbers",
+            "searching" : false,
+            "fields": [  {
+                name:      'valueDate',
+                type:      'datetime',
+                def:       function () { return new Date(); },
+                format:    'dd-MM-yyyy '  }
+            ],
+            "processing" : true,
+            "serverSide" : false,
+            "ordering" : false,
+            "dom": 'T<"clear">frtlp',
+            "columns" : [
+                {"data" : "accountBalance"},
+                {"data" : "currencyCode"},
+                {"data" : "postDate"} ,
+                {"data" : "narration"},
+                {"data" : "tranType"},
+                {"data" : "valueDate"}
+            ],
+            "ajax" : {
+                "url":"viewstatement/display/data",
+                "type" : "GET",
+                "data" : function(d) {
+                    d.acctNumber = $('[name=acctNumber]').val();
+                    d.fromDate = $('[name=fromDate]').val();
+                    d.toDate = $('[name=toDate]').val();
+                    d.tranType = $('[name=tranType]').val();
+                }
+            }
+
+        });
+
+        $("#btn-find").on("click", function(e) {
+
+            e.preventDefault();
+            dt = $('#tranDetails').DataTable();
+            dt.ajax.reload(null, true);
+
+        });
+
+        $("#btn-print").on("click", function(e) {
+            e.preventDefault();
+            var table = $('#tranDetails').DataTable();
+            var data = table.ajax.params();
+            $.download("downloadstatement", "data", data);
+
+        });
+
+
+    });
+
+
+
+
+    /*]]>*/
+</script>
 </body>
 </html>

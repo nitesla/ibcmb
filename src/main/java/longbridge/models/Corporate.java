@@ -1,12 +1,19 @@
 package longbridge.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
 import longbridge.repositories.CorporateRepo;
+import longbridge.utils.PrettySerializer;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -15,7 +22,7 @@ import java.util.*;
 @Entity
 @Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
-public class Corporate extends AbstractEntity{
+public class Corporate extends AbstractEntity implements PrettySerializer{
 
 
     private String rcNumber;
@@ -40,10 +47,11 @@ public class Corporate extends AbstractEntity{
 //    @OneToMany
 //    private Collection<Beneficiary> beneficiaries;
 
-    @OneToMany
+    @OneToMany @JsonIgnore
     private Collection<CorpLimit> corpLimits;
 
     @OneToMany(mappedBy = "corporate")
+    @JsonIgnore
     List<CorpTransRequest> corpTransferRequests;
 
     @OneToMany(cascade = CascadeType.ALL)
@@ -190,15 +198,26 @@ public class Corporate extends AbstractEntity{
                 ", corpTransRules=" + corpTransRules +
                 '}';
     }
+    
+    @Override @JsonIgnore
+   	public List<String> getDefaultSearchFields() {
+   		return Arrays.asList("name", "rcNumber","customerId");
+   	}
 
+    @Override @JsonIgnore
+    public JsonSerializer<Corporate> getSerializer() {
+        return new JsonSerializer<Corporate>() {
+            @Override
+            public void serialize(Corporate value, JsonGenerator gen, SerializerProvider serializers)
+                    throws IOException, JsonProcessingException
+            {
+                gen.writeStartObject();
+                gen.writeStringField("Name",value.name);
+                gen.writeStringField("Customer Id",value.customerId);
+                gen.writeStringField("RC Number",value.rcNumber);
+                gen.writeEndObject();
+            }
+        };
+    }
 
-    public static OperationCode getAddCode() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public static OperationCode getModifyCode() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }

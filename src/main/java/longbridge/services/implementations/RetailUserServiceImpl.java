@@ -18,6 +18,7 @@ import longbridge.repositories.RetailUserRepo;
 import longbridge.security.FailedLoginService;
 import longbridge.services.*;
 import longbridge.utils.DateFormatter;
+import longbridge.utils.Verifiable;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -91,6 +92,7 @@ public class RetailUserServiceImpl implements RetailUserService {
     }
 
     @Override
+    @Verifiable(operation = "UNLOCK_RETAIL_USER", description = "Unlocking a Retail User")
     public String unlockUser(Long id) throws InternetBankingException {
 
         RetailUser user = retailUserRepo.findOne(id);
@@ -164,6 +166,7 @@ public class RetailUserServiceImpl implements RetailUserService {
             retailUser.setEmail(details.getEmail());
             retailUser.setCreatedOnDate(new Date());
             retailUser.setBirthDate(user.getBirthDate());
+            retailUser.setBvn(user.getBvn());
             retailUser.setRole(roleService.getTheRole("RETAIL"));
             retailUser.setStatus("A");
             retailUser.setAlertPreference(codeService.getByTypeAndCode("ALERT_PREFERENCE", "BOTH"));
@@ -269,6 +272,7 @@ public class RetailUserServiceImpl implements RetailUserService {
 
     @Override
     @Transactional
+    @Verifiable(operation = "UPDATE_RETAIL_USER", description = "Change Retail User Activation Status")
     public String changeActivationStatus(Long userId) throws InternetBankingException {
         try {
             RetailUser user = retailUserRepo.findOne(userId);
@@ -299,14 +303,7 @@ public class RetailUserServiceImpl implements RetailUserService {
         }
     }
 
-    private String getUsedPasswords(String newPassword, String oldPasswords) {
-        StringBuilder builder = new StringBuilder();
-        if (oldPasswords != null) {
-            builder.append(oldPasswords);
-        }
-        builder.append(passwordEncoder.encode(newPassword) + ",");
-        return builder.toString();
-    }
+
 
     @Override
     @Transactional
@@ -492,5 +489,14 @@ public class RetailUserServiceImpl implements RetailUserService {
 
         return retailUser.getUserName();
     }
+
+	@Override
+	public Page<RetailUserDTO> findUsers(String pattern, Pageable pageDetails) {
+		Page<RetailUser> page = retailUserRepo.findUsingPattern(pattern,pageDetails);
+        List<RetailUserDTO> dtOs = convertEntitiesToDTOs(page.getContent());
+        long t = page.getTotalElements();
+        Page<RetailUserDTO> pageImpl = new PageImpl<RetailUserDTO>(dtOs, pageDetails, t);
+        return pageImpl;
+	}
 
 }

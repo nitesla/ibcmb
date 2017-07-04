@@ -6,74 +6,64 @@ import org.hibernate.annotations.Where;
 
 import org.hibernate.envers.Audited;
 
-import javax.persistence.*;
-import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
-/** this represents a change that needs Verification. This can be
+import javax.persistence.*;
+
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
+/**
+ * this represents a change that needs Verification. This can be
  * used to store an update if a verification is made. It also serves as an audit for every change
  * Created by LB-PRJ-020 on 4/7/2017.
  */
 @Entity
-@Audited(withModifiedFlag=true)
-@Where(clause ="del_Flag='N'" )
-public class Verification extends  AbstractEntity {
+@Audited(withModifiedFlag = true)
+@Where(clause = "del_Flag='N'")
+public class Verification extends AbstractEntity {
 
 
-    //@Column(columnDefinition = "TEXT")
+    @Lob
     private String beforeObject; //json
-    //@Column(columnDefinition = "TEXT")
+    @Lob
     private String afterObject; //json
-    //@Column(columnDefinition = "TEXT")
-    private String original; //json
-
+    @Lob
+    private String originalObject; //json
     @Enumerated(value = EnumType.STRING)
     private verificationStatus status;
-
     private String description;
     private Long entityId;
     private String entityName;
     @Enumerated(value = EnumType.STRING)
-    private OperationCode operationCode;
-
-    @ManyToOne
-    private AdminUser initiatedBy;
+    private UserType userType;
+    private String operation;
+    private String comments;
+    private String initiatedBy;
     private Date initiatedOn;
-
-    @ManyToOne
-    private AdminUser declinedBy;
-    private Date declinedOn;
-    private String declineReason;
-
-    @ManyToOne
-    private AdminUser verifiedBy;
+    private String verifiedBy;
     private Date verifiedOn;
-    
     @OneToOne
     private Verification dependency;
 
     public Verification getDependency() {
-		return dependency;
-	}
-
-	public void setDependency(Verification dependency) {
-		this.dependency = dependency;
-	}
-
-	public AdminUser getDeclinedBy() {
-        return declinedBy;
+        return dependency;
     }
+
+    public void setDependency(Verification dependency) {
+        this.dependency = dependency;
+    }
+
 
     public String getEntityName() {
-		return entityName;
-	}
-
-	public void setEntityName(String entityName) {
-		this.entityName = entityName;
-	}
-
-	public void setDeclinedBy(AdminUser declinedBy) {
-        this.declinedBy = declinedBy;
+        return entityName;
     }
+
+    public void setEntityName(String entityName) {
+        this.entityName = entityName;
+    }
+
 
     public verificationStatus getStatus() {
         return status;
@@ -83,8 +73,13 @@ public class Verification extends  AbstractEntity {
         this.status = status;
     }
 
-    public String getDeclineReason() {
-        return declineReason;
+
+    public String getComments() {
+        return comments;
+    }
+
+    public void setComments(String comments) {
+        this.comments = comments;
     }
 
     public String getDescription() {
@@ -95,9 +90,6 @@ public class Verification extends  AbstractEntity {
         this.description = description;
     }
 
-    public void setDeclineReason(String declineReason) {
-        this.declineReason = declineReason;
-    }
 
     public String getBeforeObject() {
         return beforeObject;
@@ -115,12 +107,12 @@ public class Verification extends  AbstractEntity {
         this.afterObject = afterObject;
     }
 
-    public String getOriginal() {
-        return original;
+    public String getOriginalObject() {
+        return originalObject;
     }
 
-    public void setOriginal(String original) {
-        this.original = original;
+    public void setOriginalObject(String originalObject) {
+        this.originalObject = originalObject;
     }
 
     public Long getEntityId() {
@@ -131,21 +123,14 @@ public class Verification extends  AbstractEntity {
         this.entityId = entityId;
     }
 
-    public OperationCode getOperationCode() {
-        return operationCode;
+    public String getOperation() {
+        return operation;
     }
 
-    public void setOperationCode(OperationCode operationCode) {
-        this.operationCode = operationCode;
+    public void setOperation(String operation) {
+        this.operation = operation;
     }
 
-    public AdminUser getInitiatedBy() {
-        return initiatedBy;
-    }
-
-    public void setInitiatedBy(AdminUser initiatedBy) {
-        this.initiatedBy = initiatedBy;
-    }
 
     public Date getInitiatedOn() {
         return initiatedOn;
@@ -155,13 +140,6 @@ public class Verification extends  AbstractEntity {
         this.initiatedOn = initiatedOn;
     }
 
-    public Date getDeclinedOn() {
-        return declinedOn;
-    }
-
-    public void setDeclinedOn(Date declinedOn) {
-        this.declinedOn = declinedOn;
-    }
 
     public Date getVerifiedOn() {
         return verifiedOn;
@@ -171,40 +149,36 @@ public class Verification extends  AbstractEntity {
         this.verifiedOn = verifiedOn;
     }
 
-    public AdminUser getVerifiedBy() {
+
+    public UserType getUserType() {
+        return userType;
+    }
+
+    public void setUserType(UserType userType) {
+        this.userType = userType;
+    }
+
+    public String getInitiatedBy() {
+        return initiatedBy;
+    }
+
+    public void setInitiatedBy(String initiatedBy) {
+        this.initiatedBy = initiatedBy;
+    }
+
+
+    public String getVerifiedBy() {
         return verifiedBy;
     }
 
-    public void setVerifiedBy(AdminUser verifiedBy) {
+    public void setVerifiedBy(String verifiedBy) {
         this.verifiedBy = verifiedBy;
     }
 
-	@Override
-	public String toString() {
-		return "Verification [" + (beforeObject != null ? "beforeObject=" + beforeObject + ", " : "")
-				+ (afterObject != null ? "afterObject=" + afterObject + ", " : "")
-				+ (original != null ? "original=" + original + ", " : "")
-				+ (status != null ? "status=" + status + ", " : "")
-				+ (description != null ? "description=" + description + ", " : "")
-				+ (entityId != null ? "entityId=" + entityId + ", " : "")
-				+ (operationCode != null ? "operationCode=" + operationCode + ", " : "")
-				+ (initiatedBy != null ? "initiatedBy=" + initiatedBy + ", " : "")
-				+ (initiatedOn != null ? "initiatedOn=" + initiatedOn + ", " : "")
-				+ (declinedBy != null ? "declinedBy=" + declinedBy + ", " : "")
-				+ (declinedOn != null ? "declinedOn=" + declinedOn + ", " : "")
-				+ (declineReason != null ? "declineReason=" + declineReason + ", " : "")
-				+ (verifiedBy != null ? "verifiedBy=" + verifiedBy + ", " : "")
-				+ (verifiedOn != null ? "verifiedOn=" + verifiedOn : "") + "]";
-	}
-
-	public static OperationCode getAddCode() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public static OperationCode getModifyCode() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    
+    @Override @JsonIgnore
+  	public List<String> getDefaultSearchFields() {
+  		return Arrays.asList("entityName", "initiatedBy","verifiedBy");
+  	}
 
 }

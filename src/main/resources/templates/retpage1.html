@@ -10,7 +10,7 @@
 <div class="container">
     <div class="top_bar">
         <ul class="list_group">
-            <li><a href="#"> CORONATION MERCHANT BANK</a></li>
+            <li><a href="https://www.coronationmb.com/" target="_blank"> CORONATION MERCHANT BANK</a></li>
         </ul>
     </div>
     <br/>
@@ -38,7 +38,7 @@
                     </li>
                     <li><a th:href="@{/register}">REGISTER</a></li>
                     <li><a href="/#contact_us">CONTACT US</a></li>
-                    <li><a href="/">HELP</a></li>
+                    <li><a href="/faqs"> FAQ</a></li>
                 </ul>
             </div>
         </div>
@@ -51,22 +51,26 @@
 <section class="content-wrapper">
     <div class="container">
         <div class="bg">
-            <form id="loginform" th:action="@{/login/u/retail}" method="POST" class="form-signin" autocomplete="off">
-                <h5 class="form-signin-heading text-white">Enter Login Details</h5>
+           
+                <form id="loginform" th:action="@{/login/u/retail}" method="POST" class="" autocomplete="off">
+                     <div class='col-sm-4 col-sm-offset-4 form-signi'  style="padding:100px 15px 30px">
+                    <h5 class="form-signin-heading text-white">Enter Login Details</h5>
 
 
-                <div th:if="${param.message != null}" class="alert alert-info" th:text="${param.message[0]}">message</div>
-                <div th:if="${param.error != null}" class="alert alert-danger" th:text="${session[SPRING_SECURITY_LAST_EXCEPTION]}">error</div>
-                <div th:if="${param.expired != null}" class="alert alert-danger" th:text="#{session.expired}">error</div>
-                <br/>
-                <div class="form-group ">
-                    <span id='reqspan' class='required text-white' style='top:1px;'></span><input style="width:100% !important" type="text" id="username" name="username" class="form-control"  required="required" placeholder="Username" autocomplete="off" />
-                    <p><a href="/forgot/username" class='text-white' data-toggle="tooltip" data-placement="right" title="Forgot Username?" autocomplete="off">Forgot Username?</a></p>
-                </div>
-                <div class="form-group">
-                    <button class="btn btn-primary form-control"> Continue </button>
-                </div>
-            </form>
+                    <div th:if="${param.message != null}" class="alert alert-info" th:text="${param.message[0]}">message</div>
+                    <div th:if="${param.error != null}" class="alert alert-danger" th:text="${session[SPRING_SECURITY_LAST_EXCEPTION]}">error</div>
+                    <div th:if="${param.expired != null}" class="alert alert-danger" th:text="#{session.expired}">error</div>
+                    <br/>
+                    <div class="form-group ">
+                        <span id='reqspan' class='required text-white' style='top:1px;'></span><input type="text" id="username" name="username" class="my-select"  required="required" placeholder="Username" autocomplete="off"/>
+                        <p><a href="/forgot/username" class='text-white' data-toggle="tooltip" data-placement="right" title="Forgot Username?" autocomplete="off">Forgot Username?</a></p>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-primary my-select"> Continue </button>
+                    </div>
+
+                     </div>
+                </form>
         </div>
     </div>
 </section>
@@ -109,20 +113,6 @@
 <script th:src="@{~/customer/js/bootstrap.js}"></script>
 <script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
 
-<!--<script>-->
-<!--$(document).ready(function(){-->
-<!--$(".dropdown").hover(-->
-<!--function() {-->
-<!--$('.dropdown-menu', this).not('.in .dropdown-menu').stop(true,true).slideDown(800);-->
-<!--$(this).toggleClass('open');-->
-<!--},-->
-<!--function() {-->
-<!--$('.dropdown-menu', this).not('.in .dropdown-menu').stop(true,true).slideUp(800);-->
-<!--$(this).toggleClass('open');-->
-<!--}-->
-<!--);-->
-<!--});-->
-<!--</script>-->
 <script>
     $(document).ready(function(){
         $('[data-toggle="tooltip"]').tooltip();

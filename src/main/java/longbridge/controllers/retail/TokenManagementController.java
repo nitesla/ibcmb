@@ -1,7 +1,5 @@
 package longbridge.controllers.retail;
 
-import longbridge.dtos.ServiceRequestDTO;
-import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingSecurityException;
 import longbridge.forms.CustSyncTokenForm;
 import longbridge.forms.TokenProp;
@@ -22,11 +20,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.security.Principal;
-import java.security.PublicKey;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -47,8 +44,9 @@ public class TokenManagementController {
     private MessageSource messageSource;
 
     @GetMapping
-    public String getRetailToken( HttpServletRequest httpServletRequest){
+    public String getRetailToken( HttpServletRequest httpServletRequest, Principal principal, Model model){
         httpServletRequest.getSession().setAttribute("2FA", "2FA");
+        model.addAttribute("username", principal.getName());
         return "/cust/logintoken";
     }
 
@@ -83,12 +81,13 @@ public class TokenManagementController {
 
             logger.info("Serial received :"+serials);
             if (serials != null && !"".equals(serials)) {
-                List<String> serialNos = Arrays.asList(StringUtils.split(serials, ","));
+                String serialNums = StringUtils.trim(serials);
+                List<String> serialNos = Arrays.asList(StringUtils.split(serialNums, ","));
                 model.addAttribute("serials", serialNos);
             }
         }
         catch (InternetBankingSecurityException ibe){
-            logger.error("Failed to load corp user {} token serials", principal.getName(),ibe);
+            logger.error("Failed to load corporate user {} token serials", principal.getName(),ibe);
             model.addAttribute("failure", ibe.getMessage());
         }
 
@@ -110,8 +109,6 @@ public class TokenManagementController {
         }catch (InternetBankingSecurityException ibe){
             logger.error("Error Synchronizing Token", ibe);
             redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("token.sync.failure", null, locale));
-
-
         }
         return "redirect:/retail/token/sync";
 
@@ -124,7 +121,8 @@ public class TokenManagementController {
         try {
             String serials = securityService.getTokenSerials(principal.getName());
             if (serials != null && !"".equals(serials)) {
-                List<String> serialNos = Arrays.asList(StringUtils.split(serials, ","));
+                String serialNums = StringUtils.trim(serials);
+                List<String> serialNos = Arrays.asList(StringUtils.split(serialNums, ","));
                 model.addAttribute("serials", serialNos);
             }
         }
@@ -183,17 +181,19 @@ public class TokenManagementController {
             }catch(InternetBankingSecurityException ibe){
                 logger.error("Error authenticating token", ibe);
                 redirectAttributes.addFlashAttribute("failure", "Token Authentication Failed");
-                return "redirect:/token/authenticate";
+                return "redirect:/retail/token/authenticate";
 
             }
 
         }else {
             redirectAttributes.addFlashAttribute("failure", "Token Authentication Failed");
-            return "redirect:/token/authenticate";
+            return "redirect:/retail/token/authenticate";
         }
         session.setAttribute("authenticated","authenticated");
 
         return "redirect:"+url;
     }
+
+
 
 }

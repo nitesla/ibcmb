@@ -10,9 +10,11 @@ import longbridge.models.Email;
 import longbridge.models.OperationsUser;
 import longbridge.models.Role;
 import longbridge.repositories.OperationsUserRepo;
+import longbridge.repositories.RoleRepo;
 import longbridge.services.*;
 import longbridge.utils.DateFormatter;
 import longbridge.utils.ReflectionUtils;
+import longbridge.utils.Verifiable;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +25,8 @@ import org.springframework.data.domain.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
+import javax.persistence.metamodel.EmbeddableType;
 import javax.transaction.Transactional;
 import java.util.*;
 
@@ -59,6 +63,12 @@ public class OperationsUserServiceImpl implements OperationsUserService {
 
     @Autowired
     private ConfigurationService configService;
+
+    @Autowired
+    private RoleRepo roleRepo;
+
+    @Autowired
+    EntityManager entityManager;
 
     private Locale locale = LocaleContextHolder.getLocale();
 
@@ -113,9 +123,11 @@ public class OperationsUserServiceImpl implements OperationsUserService {
 
     @Override
     @Transactional
+    @Verifiable(operation="UPDATE_OPS_STATUS",description="Change Operations User Activation Status")
     public String changeActivationStatus(Long userId) throws InternetBankingException {
         try {
             OperationsUser user = operationsUserRepo.findOne(userId);
+            entityManager.detach(user);
             String oldStatus = user.getStatus();
             String newStatus = "A".equals(oldStatus) ? "I" : "A";
             user.setStatus(newStatus);
@@ -167,6 +179,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
 
     @Override
     @Transactional
+    @Verifiable(operation="ADD_OPS_USER",description="Adding an Operations User")
     public String addUser(OperationsUserDTO user) throws InternetBankingException {
         OperationsUser opsUser = operationsUserRepo.findFirstByUserNameIgnoreCase(user.getUserName());
         if (opsUser != null) {
@@ -180,8 +193,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             opsUser.setEmail(user.getEmail());
             opsUser.setPhoneNumber(user.getPhoneNumber());
             opsUser.setCreatedOnDate(new Date());
-            Role role = new Role();
-            role.setId(Long.parseLong(user.getRoleId()));
+            Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
             opsUser.setRole(role);
             creatUserOnEntrust(opsUser);
             operationsUserRepo.save(opsUser);
@@ -221,16 +233,17 @@ public class OperationsUserServiceImpl implements OperationsUserService {
 
     @Override
     @Transactional
+    @Verifiable(operation="UPDATE_OPS_USER",description="Updating an Operations User")
     public String updateUser(OperationsUserDTO user) throws InternetBankingException {
         try {
             OperationsUser opsUser = operationsUserRepo.findOne(user.getId());
+            entityManager.detach(opsUser);
             opsUser.setVersion(user.getVersion());
             opsUser.setFirstName(user.getFirstName());
             opsUser.setLastName(user.getLastName());
             opsUser.setUserName(user.getUserName());
             opsUser.setPhoneNumber(user.getPhoneNumber());
-            Role role = new Role();
-            role.setId(Long.parseLong(user.getRoleId()));
+            Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
             opsUser.setRole(role);
             this.operationsUserRepo.save(opsUser);
             logger.info("Operations user {} updated", opsUser.getUserName());
@@ -248,7 +261,6 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             OperationsUser opsUser = operationsUserRepo.findOne(userId);
             operationsUserRepo.delete(userId);
             logger.warn("Operations user with Id {} deleted", userId);
-            String fullName = opsUser.getFirstName() + " " + opsUser.getLastName();
             SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_DELETION");
 
             if (setting != null && setting.isEnabled()) {
@@ -365,23 +377,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
         }
     }
 
-    private String getUsedPasswords(String newPassword, String oldPasswords) {
-        StringBuilder builder = new StringBuilder();
-        if (oldPasswords != null) {
-            builder.append(oldPasswords);
-        }
-        builder.append(passwordEncoder.encode(newPassword )+ ",");
-        return builder.toString();
-    }
 
-    private void sendUserCredentials(OperationsUser user, String password) throws InternetBankingException {
-        Email email = new Email.Builder()
-                .setRecipient(user.getEmail())
-                .setSubject("Creation on Internet Banking Operations Console")
-                .setBody(String.format("You have been created on the Internet Banking Operation console.\nYour username is %s and your password is %s. \nThank you.", user.getUserName(), password))
-                .build();
-        mailService.send(email);
-    }
 
     private OperationsUserDTO convertEntityToDTO(OperationsUser operationsUser) {
         OperationsUserDTO operationsUserDTO = modelMapper.map(operationsUser, OperationsUserDTO.class);
@@ -421,6 +417,17 @@ public class OperationsUserServiceImpl implements OperationsUserService {
         Page<OperationsUserDTO> pageImpl = new PageImpl<OperationsUserDTO>(dtOs, pageDetails, t);
         return pageImpl;
     }
+
+
+	@Override
+	public Page<OperationsUserDTO> findUsers(String pattern, Pageable pageDetails) {
+	 	Page<OperationsUser> page = operationsUserRepo.findUsingPattern(pattern,pageDetails);
+        List<OperationsUserDTO> dtOs = convertEntitiesToDTOs(page.getContent());
+        long t = page.getTotalElements();
+
+        Page<OperationsUserDTO> pageImpl = new PageImpl<OperationsUserDTO>(dtOs, pageDetails, t);
+        return pageImpl;
+	}
 
 
 }

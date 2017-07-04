@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import longbridge.api.*;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.models.TransRequest;
-import longbridge.utils.AccountStatement;
+import longbridge.utils.statement.*;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -27,18 +27,22 @@ public interface IntegrationService {
      */
     List<AccountInfo> fetchAccounts(String cifid);
 
+    List<ExchangeRate> getExchangeRate();
+
 
     /**
-     * Fetches the {@link longbridge.utils.AccountStatement} of the account identified by
+     * Fetches the {@link AccountStatement} of the account identified by
      * {@code accountId} for the period between {@code fromDate} and {@code toDate}
      *
-     * @param accountId the finacle acid of the Account
+     * @param accountNo the  account Number of the Account
      * @param fromDate  the Date from where to begin fetching the account statement
      * @param toDate    the Date to stop fetching the account statement (inclusive)
      * @return {@code AccountStatement} object
      */
-    AccountStatement getAccountStatements(String accountId, Date fromDate, Date toDate);
+    AccountStatement getAccountStatements(String accountNo, Date fromDate, Date toDate, String tranType,PaginationDetails paginationDetails);
+    AccountStatement getAccountStatements(String accountNo, Date fromDate, Date toDate, String tranType);
 
+    List<TransactionHistory> getLastNTransactions(String accountNo, String numberOfRecords);
 
     /**
      * Fetches the account Balance of the account specified by accountId
@@ -54,6 +58,8 @@ public interface IntegrationService {
      */
     TransRequest makeTransfer(TransRequest transRequest) throws InternetBankingTransferException;
 
+    TransferDetails makeNapsTransfer(Naps naps) throws InternetBankingTransferException;
+
     /**
      * Fetches the account Name, Balance , Type from the account table specified by account Number
      *
@@ -65,6 +71,7 @@ public interface IntegrationService {
     CustomerDetails isAccountValid(String accNo, String email, String dob);
 
     CustomerDetails viewCustomerDetails(String accNo);
+
     CustomerDetails viewCustomerDetailsByCif(String cifId);
 
 
@@ -112,7 +119,7 @@ public interface IntegrationService {
 
     ObjectNode sendSMS(String message, String contact, String subject);
 
-    Rate  getFee(String channel);
+    Rate getFee(String channel);
 
 
 }

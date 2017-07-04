@@ -2,13 +2,23 @@ package longbridge.models;
 
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import longbridge.utils.PrettySerializer;
+
 import javax.persistence.*;
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 /**
  * Created by Wunmi on 29/03/2017.
  */
 @MappedSuperclass
-public class User extends AbstractEntity{
+public class User extends AbstractEntity implements PrettySerializer {
 
     protected String userName;
     protected String firstName;
@@ -22,6 +32,7 @@ public class User extends AbstractEntity{
     protected Date lockedUntilDate;
     protected Date lastLoginDate;
     protected int noOfLoginAttempts;
+    protected boolean isFirstTimeLogon=true;
 
     //@Enumerated(value = EnumType.STRING)
     @Enumerated(EnumType.ORDINAL)
@@ -30,10 +41,18 @@ public class User extends AbstractEntity{
     @ManyToOne
     protected Code alertPreference;
 
+    @JsonIgnore
     @ManyToOne
     protected Role role;
-    protected  String entrustId;
+    protected String entrustId;
 
+    public boolean isFirstTimeLogon() {
+        return isFirstTimeLogon;
+    }
+
+    public void setFirstTimeLogon(boolean firstTimeLogon) {
+        isFirstTimeLogon = firstTimeLogon;
+    }
 
     public String getEntrustId() {
         return entrustId;
@@ -93,14 +112,14 @@ public class User extends AbstractEntity{
 
 
     public String getStatus() {
-		return status;
-	}
+        return status;
+    }
 
-	public void setStatus(String status) {
-		this.status = status;
-	}
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
-	public Role getRole() {
+    public Role getRole() {
         return role;
     }
 
@@ -126,25 +145,37 @@ public class User extends AbstractEntity{
         this.createdOnDate = createdOnDate;
     }
 
-    public Date getExpiryDate() {return expiryDate;}
+    public Date getExpiryDate() {
+        return expiryDate;
+    }
 
-    public void setExpiryDate(Date expiryDate) {this.expiryDate = expiryDate;}
+    public void setExpiryDate(Date expiryDate) {
+        this.expiryDate = expiryDate;
+    }
 
-    public Date getLockedUntilDate() {return lockedUntilDate;}
+    public Date getLockedUntilDate() {
+        return lockedUntilDate;
+    }
 
-    public void setLockedUntilDate(Date lockedUntilDate) {this.lockedUntilDate = lockedUntilDate;}
+    public void setLockedUntilDate(Date lockedUntilDate) {
+        this.lockedUntilDate = lockedUntilDate;
+    }
 
-    public Date getLastLoginDate() {return lastLoginDate;}
+    public Date getLastLoginDate() {
+        return lastLoginDate;
+    }
 
-    public void setLastLoginDate(Date lastLoginDate) {this.lastLoginDate = lastLoginDate;}
+    public void setLastLoginDate(Date lastLoginDate) {
+        this.lastLoginDate = lastLoginDate;
+    }
 
     public int getNoOfLoginAttempts() {
-		return noOfLoginAttempts;
-	}
+        return noOfLoginAttempts;
+    }
 
-	public void setNoOfLoginAttempts(int noOfLoginAttempts) {
-		this.noOfLoginAttempts = noOfLoginAttempts;
-	}
+    public void setNoOfLoginAttempts(int noOfLoginAttempts) {
+        this.noOfLoginAttempts = noOfLoginAttempts;
+    }
 
     public UserType getUserType() {
         return userType;
@@ -155,44 +186,45 @@ public class User extends AbstractEntity{
     }
 
     @Override
-    public int hashCode(){
+    public int hashCode() {
         return super.hashCode();
     }
 
     @Override
-    public boolean equals(Object o){
+    public boolean equals(Object o) {
         return super.equals(o);
     }
 
+    @Override @JsonIgnore
+	public List<String> getDefaultSearchFields() {
+		return Arrays.asList("userName", "firstName","lastName");
+	}
+
     @Override
-    public String toString() {
-        return "User{" +
-                "userName='" + userName + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                ", status='" + status + '\'' +
-                ", createdOnDate=" + createdOnDate +
-                ", expiryDate=" + expiryDate +
-                ", lockedUntilDate=" + lockedUntilDate +
-                ", lastLoginDate=" + lastLoginDate +
-                ", noOfLoginAttempts=" + noOfLoginAttempts +
-                ", userType=" + userType +
-                ", role=" + role +
-                '}';
+    @JsonIgnore
+    public JsonSerializer<User> getSerializer() {
+        return new JsonSerializer<User>() {
+            @Override
+            public void serialize(User value, JsonGenerator gen, SerializerProvider serializers)
+                    throws IOException, JsonProcessingException {
+
+                gen.writeStartObject();
+                gen.writeStringField("User Name", value.userName);
+                gen.writeStringField("First Name", value.firstName);
+                gen.writeStringField("Last Name", value.lastName);
+                gen.writeStringField("Email", value.email);
+                gen.writeStringField("Phone", value.phoneNumber);
+                String status =null;
+                if ("A".equals(value.status))
+                    status = "Active";
+                else if ("I".equals(value.status))
+                    status = "Inactive";
+                else if ("L".equals(value.status))
+                    status = "Locked";
+                gen.writeStringField("Status", status);
+                gen.writeStringField("Role", value.role.getName());
+                gen.writeEndObject();
+            }
+        };
     }
-
-	public static OperationCode getAddCode() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public static OperationCode getModifyCode() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-
 }

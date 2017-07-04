@@ -1,6 +1,7 @@
 package longbridge.services.implementations;
 
 import longbridge.dtos.LocalBeneficiaryDTO;
+import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.models.LocalBeneficiary;
@@ -55,7 +56,7 @@ public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
             LocalBeneficiary localBeneficiary = convertDTOToEntity(beneficiary);
             localBeneficiary.setUser(user);
             validateBeneficiary(localBeneficiary, user);
-            this.localBeneficiaryRepo.save(localBeneficiary);
+            localBeneficiaryRepo.save(localBeneficiary);
             logger.trace("Beneficiary {} has been added", localBeneficiary.toString());
             return messageSource.getMessage("beneficiary.add.success", null, locale);
         } catch (Exception e) {
@@ -121,7 +122,7 @@ public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
 
     public void validateBeneficiary(LocalBeneficiary localBeneficiary, User user) {
         if (localBeneficiaryRepo.findByUser_IdAndAccountNumber(user.getId(), localBeneficiary.getAccountNumber()) != null)
-            throw new InternetBankingException("beneficiary.exist");
+            throw new DuplicateObjectException("beneficiary.exist");
 
         if (financialInstitutionRepo.findByInstitutionCode(localBeneficiary.getBeneficiaryBank())==null)
             throw new InternetBankingException("transfer.beneficiary.invalid");
@@ -129,5 +130,7 @@ public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
        if (integrationService.doNameEnquiry(localBeneficiary.getBeneficiaryBank(), localBeneficiary.getAccountNumber()).getAccountName()==null)
            throw new InternetBankingException("transfer.beneficiary.invalid");
     }
+
+
 
 }

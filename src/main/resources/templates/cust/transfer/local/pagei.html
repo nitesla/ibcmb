@@ -13,25 +13,27 @@
         <div class="row">
             <div class="col-md-4 col-sm-4">
                 <h5 class="page_header"> Coronation account transfer</h5>
-                <select class="form-control" name="coronationbeneficiaries">
-                    <option value="Overveiw">coronation beneficiaries</option>
+                <select class="form-control invisible">
+                        <option value="account">Account Overview</option>
                 </select>
             </div>
+             <p class="col-xs-12 invisible">
+                    Fields marked <span style="color:red">*</span> are compulsory
+            </p>
         </div>
 
         <div class="row">
-
-            <div class="col-md-8 content-bg">
-
-                <div class="row spacing">
-                    <div class="col-md-12 col-sm-12">
-                        <h6 class="page_header">Beneficiaries</h6>
+            <div class="col-md-9 content-bg">
+                <div class="spacin">
+                    <div class="col-md-12 col-sm-12 table-responsive">
+                        <h6 class="sub_header">Beneficiaries</h6>
                         <form method="post" >
                             <table class="table">
                                 <thead>
                                 <tr>
                                 <th>Beneficiary name</th>
                                 <th>Account Number</th>
+                                
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -41,43 +43,38 @@
                                     <td th:text="${loc.accountName}"></td>
                                      <td th:text="${loc.accountNumber}"></td>
                                     <td>
-                                        <li class="dropdown" style="list-style: none">
+                                        <!--<li class="dropdown" style="list-style: none">
                                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" style="font-size:20px;" aria-haspopup="true"><i class=" fa fa-angle-right"></i></a>
-                                        <ul class="dropdown-menu">
+                                        <ul class="dropdown-menu">-->
 
 
-                                            <li><a th:href="@{'/retail/transfer/local/' + ${loc.id} }">make a transfer</a>
+                                            <a class="btn btn-link required-step" th:href="@{'/retail/transfer/local/' + ${loc.id} }">make a transfer</a>
 
 
-                                            </li>
+                                            
                                             <!--<li><a href="#">view details</a>
                                             </li>
                                             <li><a href="#">edit</a>
                                             </li>-->
-                                        </ul>
-                                        </li>
+                                        <!--</ul>
+                                        </li>-->
                                     </td>
                                 </tr>
 
                                 </tbody>
                             </table>
                             <br/>
-                            <a th:href="@{/retail/transfer/local/new}" class="btn">Add Beneficiary</a>
+                            <a th:href="@{/retail/transfer/local/new}" class="btn">New Beneficiary</a>
 
                            <!-- <button type="submit" class="btn btn-default" style="float: right">Add beneficiary</button>
                        --> </form>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3 sidebar" >
-                <div class="sidebar-bg">
-
-                    <p class="related">Related Information</p>
-                    <hr class="hrhr"/>
-                </div>
-            </div>
-            <div th:replace="cust_layout :: sidebar" class="col-md-3 sidebar">
-            </div>
+            <div class="col-md-3 pull-right">
+                            <div th:replace="cust_layout :: sidebar" class="" >
+                            </div>
+                        </div>
         </div>
     </div>
 </section>

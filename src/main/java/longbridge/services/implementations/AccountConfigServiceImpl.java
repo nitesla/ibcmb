@@ -13,6 +13,7 @@ import longbridge.repositories.AccountRestrictionRepo;
 import longbridge.services.AccountConfigService;
 import longbridge.services.CodeService;
 import longbridge.utils.DateFormatter;
+import longbridge.utils.Verifiable;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -44,9 +45,8 @@ public class AccountConfigServiceImpl implements AccountConfigService {
 
     @Autowired
     private AccountRepo accountRepo;
-
     @Autowired
-    MessageSource messageSource;
+    private MessageSource messageSource;
 
     private Locale locale = LocaleContextHolder.getLocale();
 
@@ -72,6 +72,7 @@ public class AccountConfigServiceImpl implements AccountConfigService {
     }
 
     @Override
+    @Verifiable(operation="ADD_ACCT_RESTRICT",description="Adding Account Restriction")
     public String addAccountRestriction(AccountRestrictionDTO accountRestrictionDTO) throws InternetBankingException {
 
         validateNoAccountDuplication(accountRestrictionDTO);
@@ -87,6 +88,7 @@ public class AccountConfigServiceImpl implements AccountConfigService {
 
 
     @Override
+    @Verifiable(operation="UPDATE_ACCT_RESTRICT",description="Updating Account Restriction")
     public String updateAccountRestriction(AccountRestrictionDTO accountRestrictionDTO) throws InternetBankingException {
 
         validateNoAccountDuplication(accountRestrictionDTO);
@@ -116,6 +118,7 @@ public class AccountConfigServiceImpl implements AccountConfigService {
 
     @Override
     @Transactional
+    @Verifiable(operation="DELETE_ACCT_RESTRICT",description="Deleting Account Restriction")
     public String deleteAccountRestriction(Long id) throws InternetBankingException {
         try {
             accountRestrictionRepo.delete(id);
@@ -128,6 +131,7 @@ public class AccountConfigServiceImpl implements AccountConfigService {
     }
 
     @Override
+    @Verifiable(operation="ADD_ACCT_CLASS_RESTRICT",description="Adding Account Class Restriction")
     public String addAccountClassRestriction(AccountClassRestrictionDTO accountClassRestrictionDTO) throws InternetBankingException {
 
         validateNoAccountClassDuplication(accountClassRestrictionDTO);
@@ -142,6 +146,7 @@ public class AccountConfigServiceImpl implements AccountConfigService {
     }
 
     @Override
+    @Verifiable(operation="UPDATE_ACCT_RESTRICT",description="Update Account Class Restriction")
     public String updateAccountClassRestriction(AccountClassRestrictionDTO accountClassRestrictionDTO) throws InternetBankingException {
 
         validateNoAccountClassDuplication(accountClassRestrictionDTO);
@@ -160,7 +165,7 @@ public class AccountConfigServiceImpl implements AccountConfigService {
     }
 
     @Override
-
+    @Verifiable(operation="DELETE_ACCT_CLASS_RESTRICT",description="Delete Account Class Restriction")
     public String deleteAccountClassRestriction(Long id) throws InternetBankingException {
         try {
             AccountClassRestriction accountClassRestriction = accountClassRestrictionRepo.findOne(id);

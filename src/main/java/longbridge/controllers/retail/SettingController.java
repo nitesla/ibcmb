@@ -1,13 +1,11 @@
 package longbridge.controllers.retail;
 
+import longbridge.api.ExchangeRate;
 import longbridge.dtos.AccountDTO;
 import longbridge.dtos.CodeDTO;
 import longbridge.dtos.RetailUserDTO;
 import longbridge.dtos.SettingDTO;
-import longbridge.exception.PasswordException;
-import longbridge.exception.PasswordMismatchException;
-import longbridge.exception.PasswordPolicyViolationException;
-import longbridge.exception.WrongPasswordException;
+import longbridge.exception.*;
 import longbridge.forms.AlertPref;
 import longbridge.forms.CustChangePassword;
 import longbridge.forms.CustResetPassword;
@@ -64,6 +62,9 @@ public class SettingController {
     private ConfigurationService configService;
 
     @Autowired
+    private IntegrationService integrationService;
+
+    @Autowired
     private FinancialInstitutionService financialInstitutionService;
     @Autowired
     private MailService mailService;
@@ -78,7 +79,7 @@ public class SettingController {
         return "cust/dashboard";
     }
 
-    @GetMapping("/change_password")
+    @GetMapping("/settings/change_password")
     public String ChangePaswordPage(Model model) {
         List<String> passwordPolicy = passwordPolicyService.getPasswordRules();
         logger.info("PASSWORD RULES {}", passwordPolicy);
@@ -87,7 +88,7 @@ public class SettingController {
         return "cust/settings/pword";
     }
 
-    @PostMapping("/change_password")
+    @PostMapping("/settings/change_password")
     public String ChangePassword(@ModelAttribute("custChangePassword") @Valid CustChangePassword custChangePassword, BindingResult result, Principal principal, Model model, RedirectAttributes redirectAttributes) throws Exception {
         if (result.hasErrors()) {
             List<String> passwordPolicy = passwordPolicyService.getPasswordRules();
@@ -102,7 +103,7 @@ public class SettingController {
         try {
             String message = retailUserService.changePassword(user, custChangePassword);
             redirectAttributes.addFlashAttribute("message", message);
-            return "redirect:/retail/dashboard";
+            return "redirect:/retail/logout";
         } catch (WrongPasswordException wpe) {
             model.addAttribute("failure", wpe.getMessage());
             logger.error("Wrong password from retail user {}", user.getUserName(), wpe.toString());
@@ -191,7 +192,7 @@ public class SettingController {
         }
     }
 
-    @GetMapping("/alert_preference")
+    @GetMapping("/settings/alert_preference")
     public String AlertPreferencePage(AlertPref alertPref, Model model, Principal principal) {
         RetailUser user = retailUserService.getUserByName(principal.getName());
         Iterable<CodeDTO> pref = codeService.getCodesByType("ALERT_PREFERENCE");
@@ -200,7 +201,7 @@ public class SettingController {
         return "cust/settings/alertpref";
     }
 
-    @PostMapping("/alert_preference")
+    @PostMapping("/settings/alert_preference")
     public String ChangeAlertPreference(@Valid AlertPref alertPref, Principal principal, BindingResult result, Model model, RedirectAttributes redirectAttributes) throws Exception {
         if (result.hasErrors()) {
             model.addAttribute("failure", "Pls correct the errors");
@@ -234,7 +235,7 @@ public class SettingController {
 
 
         RetailUser user = retailUserService.getUserByName(principal.getName());
-        String fullname=user.getFirstName()+' '+user.getLastName();
+        String fullname=user.getFirstName();
         String custemail=user.getEmail();
         String custId=user.getCustomerId();
         String acctNumber=request.getParameter("acctNumber");
@@ -270,18 +271,36 @@ public class SettingController {
     }
 
     @PostMapping("/contact")
-    public String sendContactForm(WebRequest webRequest, Principal principal, Model model){
+    public String sendContactForm(WebRequest webRequest, Principal principal, Model model, Locale locale, RedirectAttributes redirectAttributes){
         String message = webRequest.getParameter("message");
         if (message == null){
             model.addAttribute("failure", "Field is required");
             return "cust/contact";
         }
-        RetailUser user = retailUserService.getUserByName(principal.getName());
-        messageService.sendRetailContact(message, user);
-        return "redirect:/retail/dashboard";
 
+        RetailUser user = retailUserService.getUserByName(principal.getName());
+        try{
+            messageService.sendRetailContact(message, user);
+            redirectAttributes.addFlashAttribute("message", "message sent successfully");
+            return "redirect:/retail/contact";
+        }catch (InternetBankingException e){
+            logger.error("Failed to send Email request", e);
+            String mes = e.getMessage();
+            model.addAttribute("failure", mes);
+            return "cust/contact";
+        }
     }
 
+    @GetMapping("/exchangerate")
+    public String viewCurrencyExchangeRate(Model model) {
+        List<ExchangeRate> rate = integrationService.getExchangeRate();
+        model.addAttribute("rates", rate);
+        return "cust/exchangerate";
+    }
 
+    @GetMapping("/faq")
+    public String fAQ(){
+        return "cust/faq";
+    }
 
 }

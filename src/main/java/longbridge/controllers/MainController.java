@@ -1,5 +1,6 @@
 package longbridge.controllers;
 
+import longbridge.dtos.FaqsDTO;
 import longbridge.dtos.SettingDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.PasswordException;
@@ -52,6 +53,8 @@ public class MainController {
     private ConfigurationService configurationService;
     @Autowired
     private MailService mailService;
+    @Autowired
+    private  FaqsService faqsService;
 
 
     @RequestMapping(value = {"/", "/home"})
@@ -66,43 +69,45 @@ public class MainController {
     public ModelAndView getLoginPage(@RequestParam Optional<String> error, @RequestParam Optional<HttpServletRequest> request) {
 
         if (request.isPresent()) request.get().getSession().invalidate();
-
+        //clearSession();
 
         return new ModelAndView("retpage1", "error", error);
     }
 
     @RequestMapping(value = "/login/corporate", method = RequestMethod.GET)
-    public ModelAndView getCorpLoginPage(@RequestParam Optional<String> error) {
+    public ModelAndView getCorpLoginPage(@RequestParam Optional<String> error, @RequestParam Optional<HttpServletRequest> request) {
 
+        if (request.isPresent()) request.get().getSession().invalidate();
+        //clearSession();
         return new ModelAndView("corppage1", "error", error);
+
     }
 
     @GetMapping(value = "/login/admin")
-    public ModelAndView adminLogin(@RequestParam Optional<HttpSession> session) {
-        if (session.isPresent()) session.get().invalidate();
+    public ModelAndView adminLogin() {
+        //clearSession();
+
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("admlogin");
         return modelAndView;
     }
 
     @GetMapping(value = "/login/ops")
-    public ModelAndView opsLogin(@RequestParam Optional<HttpSession> session) {
-
-        if (session.isPresent()) session.get().invalidate();
+    public ModelAndView opsLogin() {
+        //clearSession();
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("opslogin");
         return modelAndView;
     }
 
-    @RequestMapping(value = {"/admin/dashboard", "/admin"})
-    public String getAdminDashboard() {
-        return "adm/dashboard";
-    }
 
 
     @GetMapping("/faqs")
-    public String viewFAQs() {
-        return "cust/faqs"; //TODO
+    public String viewFAQs(Model model) {
+        List<FaqsDTO> faqs = faqsService.getFaqs();
+        logger.info("FAQS {}", faqs);
+        model.addAttribute("faqList", faqs);
+        return "faqs";
     }
 
     @GetMapping("/login/retail/failure")
@@ -177,7 +182,7 @@ public class MainController {
                         .findFirst()
                         .orElse("");
 
-                logger.info("SECIMAGE"+ image);
+//                logger.info("SECIMAGE"+ image);
 
                 model.addAttribute("secImage", image);
             }
@@ -328,19 +333,20 @@ public class MainController {
 
     @GetMapping("/contact")
     public String contactUs(){
-        return "/index";
+        return "index";
     }
 
     @PostMapping("/contact")
-    public String sendContactForm(WebRequest webRequest, Principal principal, Model model,RedirectAttributes redirectAttributes){
+    public String sendContactForm(WebRequest webRequest, Model model,RedirectAttributes redirectAttributes){
         String name = webRequest.getParameter("name");
         String email = webRequest.getParameter("email");
         String message = webRequest.getParameter("message");
         if (message == null){
             model.addAttribute("failure", "Field is required");
-            return "/home";
+            return "index";
         }
         SettingDTO setting = configurationService.getSettingByName("CUSTOMER_CARE_EMAIL");
+        logger.info("SETTING RETRIEVED");
         if (setting != null && setting.isEnabled()) {
             try {
                 Email mail = new Email.Builder()
@@ -356,8 +362,45 @@ public class MainController {
                 redirectAttributes.addFlashAttribute("failure", "Failed to send message");
             }
         }
-        return "redirect:/index";
+
+        return "redirect:/#contact_us";
 
     }
+
+    @PostMapping("/request/callback")
+    public String requestCallback(WebRequest webRequest, Model model,RedirectAttributes redirectAttributes){
+        String name = webRequest.getParameter("name");
+        String phone = webRequest.getParameter("phone");
+        if (phone == null){
+            model.addAttribute("failure", "Field is required");
+            return "index";
+        }
+        SettingDTO setting = configurationService.getSettingByName("CUSTOMER_CARE_EMAIL");
+        logger.info("SETTING RETRIEVED");
+        if (setting != null && setting.isEnabled()) {
+            try {
+                Email mail = new Email.Builder()
+                        .setRecipient(setting.getValue())
+                        .setSubject("Call back Request from "+name )
+                        .setBody("Preferred phone number for call back is " + phone)
+                        .build();
+                mailService.send(mail);
+                redirectAttributes.addFlashAttribute("message", "Message sent successfully");
+
+            } catch (Exception ex) {
+                logger.error("Failed to send Email", ex);
+                redirectAttributes.addFlashAttribute("failure", "Failed to send message");
+            }
+        }
+        return "redirect:/#contact_us";
+    }
+
+  /*  private void clearSession(){
+        ServletRequestAttributes attr = (ServletRequestAttributes)
+                RequestContextHolder.currentRequestAttributes();
+        HttpSession session = attr.getRequest().getSession(false);
+        if (session!=null)
+        session.invalidate();
+    }*/
 
 }

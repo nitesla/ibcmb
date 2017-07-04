@@ -35,8 +35,6 @@
                 <ul class="nav child_menu">
                     <li sec:authorize="hasAuthority('ADMIN_USER_MANAGEMENT')"><a href="/admin/users/">Administrators</a></li>
                     <li sec:authorize="hasAuthority('OPS_USER_MANAGEMENT')"><a href="/admin/operations/users">Operators</a></li>
-                    <li sec:authorize="hasAuthority('CORPORATE_USER_MANAGEMENT')"><a href="/admin/corporates/">Corporate</a></li>
-                    <li sec:authorize="hasAuthority('RETAIL_USER_MANAGEMENT')"><a href="/admin/retail/users/">Retail</a></li>
                 </ul>
             </li>
             <li sec:authorize="hasAuthority('MANAGE_CONFIG')"><a><i class="fa fa-gears"></i> Configurations <span class="fa fa-chevron-down"></span></a>
@@ -44,6 +42,8 @@
                     <li sec:authorize="hasAuthority('CODE_CONFIG')"><a href="/admin/codes/alltypes">Codes</a></li>
                     <li sec:authorize="hasAuthority('SETTING_CONFIG')"><a href="/admin/settings">System Settings</a></li>
                     <li sec:authorize="hasAuthority('AUDIT_CONFIG')"><a href="/admin/audit">Audit</a></li>
+                    <li><a href="/admin/checker">Maker Checker</a></li>
+                    <li><a href="/admin/job">Batch Job</a></li>
                 </ul>
             </li>
             <li sec:authorize="hasAuthority('BANK_CONFIG')"><a><i class="fa fa-bank"></i> Bank Setup <span class="fa fa-chevron-down"></span></a>
@@ -51,6 +51,8 @@
                     <li sec:authorize="hasAuthority('FIN_INST')"><a href="/admin/finst">Financial Institutions</a></li>
                     <li sec:authorize="hasAuthority('CONTACT_GRP')"><a href="/admin/groups/">Contact Groups</a></li>
                     <li sec:authorize="hasAuthority('SERVICE_REQ')"><a href="/admin/srconfig">Service Requests</a></li>
+                    <li sec:authorize="hasAuthority('LIMIT_CORPORATE_GLOBAL')" class="sub_menu"><a href="/admin/limits/corporate/global">Corporate Global Limit</a></li>
+                    <li sec:authorize="hasAuthority('LIMIT_RETAIL_GLOBAL')" class="sub_menu"><a href="/admin/limits/retail/global">Retail Global Limit</a></li>
                 </ul>
             </li>
 
@@ -62,13 +64,12 @@
                     <!--<li><a href="/admin/secquestions/">Phishing Image</a></li>-->
                 </ul>
             </li>
-            <!--<li><a><i class="fa fa-bar-chart-o"></i> Reports <span class="fa fa-chevron-down"></span></a>-->
-                <!--<ul class="nav child_menu">-->
-                    <!--<li><a href="view.html">Transfer</a></li>-->
-                    <!--<li><a href="add.html">Transaction</a></li>-->
-                    <!--<li><a href="edit.html">Edit FI</a></li>-->
-                <!--</ul>-->
-            <!--</li>-->
+            <li><a><i class="fa fa-bar-chart-o"></i> Content Management <span class="fa fa-chevron-down"></span></a>
+                <ul class="nav child_menu">
+                    <li><a href="/admin/faq">FAQ</a></li>
+                    <li><a href="/admin/notification">System Notifications</a></li>
+                </ul>
+            </li>
             <li sec:authorize="hasAuthority('TOKEN_MANAGEMENT')"><a><i class="fa fa-key"></i> Token Management <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
                     <li><a href="/admin/token/assign">Assign Token</a></li>
@@ -77,16 +78,17 @@
                     <li><a href="/admin/token/deactivate/username">Deactivate Token</a></li>
                     <li><a href="/admin/token/synchronize">Synchronize Token</a></li>
                     <li><a href="/admin/token/unlock">Unlock Token</a></li>
+                </ul>
+            </li>
+
+            <li><a><i class="fa fa-check"></i> Verifications <span class="fa fa-chevron-down"></span></a>
+                <ul class="nav child_menu">
+                    <li><a href="/admin/verifications/verified"> My Approvals </a></li>
+                    <li><a href="/admin/verifications/operations"> Pending  <button class="badge bg-orange"  th:text="${verificationNumber}"></button> </a></li>
+                    <li><a href="/admin/verifications/pendingops">My Requests <button class="badge bg-orange" disabled="disabled" th:text="${totalPending}" ></button>  </a></li>
 
                 </ul>
             </li>
-            <!--<li><a><i class="fa fa-check"></i> Approvals <span class="fa fa-chevron-down"></span></a>-->
-                <!--&lt;!&ndash;<ul class="nav child_menu">&ndash;&gt;-->
-                    <!--&lt;!&ndash;<li><a href="view.html">View TR</a></li>&ndash;&gt;-->
-                    <!--&lt;!&ndash;<li><a href="add.html">Add TR</a></li>&ndash;&gt;-->
-                    <!--&lt;!&ndash;<li><a href="edit.html">Edit TR</a></li>&ndash;&gt;-->
-                <!--&lt;!&ndash;</ul>&ndash;&gt;-->
-            <!--</li>-->
         </ul>
     </div>
 
@@ -99,12 +101,17 @@
     <div class="menu_section">
         <h3>Operations Console</h3>
         <ul class="nav side-menu">
+            <li sec:authorize="hasAuthority('USER_MANAGEMENT')"><a><i class="fa fa-users"></i> User Management <span class="fa fa-chevron-down"></span></a>
+                <ul class="nav child_menu">
+                    <li><a href="/ops/corporates/">Corporate</a></li>
+                    <li ><a href="/ops/retail/users/">Retail</a></li>
+                </ul>
+            </li>
             <li sec:authorize="hasAuthority('OPS_SERV_REQ')"><a href="/ops/requests/"><i class="fa fa-question-circle"></i> Service Requests</a></li>
             <li sec:authorize="hasAuthority('OPS_LIMIT')"><a><i class="fa fa-money"></i> Limits <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
                     <li sec:authorize="hasAuthority('LIMIT_CORPORATE')"><a> Corporate <span class="fa fa-chevron-down"></span></a>
                         <ul class="nav child_menu">
-                            <li sec:authorize="hasAuthority('LIMIT_CORPORATE_GLOBAL')" class="sub_menu"><a href="/ops/limits/corporate/global">Global Level</a></li>
                             <li sec:authorize="hasAuthority('LIMIT_CORPORATE_CLASS')" class="sub_menu"><a href="/ops/limits/corporate/class">Class Level</a></li>
                             <li sec:authorize="hasAuthority('LIMIT_CORPORATE_ACCOUNT')" class="sub_menu"><a href="/ops/limits/corporate/account">Account Level</a></li>
 
@@ -112,13 +119,16 @@
                     </li>
                     <li sec:authorize="hasAuthority('LIMIT_RETAIL')"><a> Retail <span class="fa fa-chevron-down"></span></a>
                         <ul class="nav child_menu">
-                            <li sec:authorize="hasAuthority('LIMIT_RETAIL_GLOBAL')" class="sub_menu"><a href="/ops/limits/retail/global">Global Level</a></li>
                             <li sec:authorize="hasAuthority('LIMIT_RETAIL_CLASS')" class="sub_menu"><a href="/ops/limits/retail/class">Class Level</a></li>
                             <li sec:authorize="hasAuthority('LIMIT_RETAIL_ACCOUNT')" class="sub_menu"><a href="/ops/limits/retail/account">Account Level</a></li>
 
                         </ul>
                     </li>
+
+
+
                 </ul>
+
             </li>
 
 
@@ -145,9 +155,14 @@
                 </ul>
             </li>
 
-            <!--<li><a><i class="fa fa-bar-chart-o"></i> Reports <span class="fa fa-chevron-down"></span></a>-->
-                <!--<ul class="nav child_menu"></ul>-->
-            <!--</li>-->
+            <li><a><i class="fa fa-check"></i> Verifications <span class="fa fa-chevron-down"></span></a>
+                <ul class="nav child_menu">
+                    <li><a href="/ops/verifications/verified"> My Approvals </a></li>
+                    <li><a href="/ops/verifications/operations"> Pending  <button class="badge bg-orange"  th:text="${verificationNumber}"></button> </a></li>
+                    <li><a href="/ops/verifications/pendingops">My Requests <button class="badge bg-orange bt-select" disabled="disabled" th:text="${totalPending}" >count</button></a></li>
+
+                </ul>
+            </li>
         </ul>
     </div>
 </div>

@@ -1,5 +1,6 @@
 package longbridge.controllers.admin;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.umd.cs.findbugs.annotations.Confidence;
 import longbridge.dtos.AdminUserDTO;
 import longbridge.dtos.RoleDTO;
@@ -8,10 +9,10 @@ import longbridge.exception.*;
 import longbridge.forms.ChangeDefaultPassword;
 import longbridge.forms.ChangePassword;
 import longbridge.models.AdminUser;
-import longbridge.services.AdminUserService;
-import longbridge.services.ConfigurationService;
-import longbridge.services.PasswordPolicyService;
-import longbridge.services.RoleService;
+import longbridge.models.User;
+import longbridge.services.*;
+
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.security.Principal;
 import java.util.Locale;
+
+import static org.springframework.data.repository.init.ResourceReader.Type.JSON;
 
 /**
  * Created by SYLVESTER on 31/03/2017.
@@ -58,42 +61,34 @@ public class AdminUserController {
     private MessageSource messageSource;
 
     @Autowired
-    ConfigurationService configService;
+    private ConfigurationService configService;
 
+    @Autowired
+    private VerificationService verificationService;
 
-    /**
-     * Page for adding a new user
-     *
-     * @return
-     */
+    ObjectMapper mapper = new ObjectMapper();
+
     @GetMapping("/new")
     public String addUser(Model model) {
         Iterable<RoleDTO> roles = roleService.getRoles();
         model.addAttribute("adminUser", new AdminUserDTO());
         model.addAttribute("roles", roles);
-        return "adm/admin/add";
+        return "/adm/admin/add";
     }
 
-
-    /**
-     * Creates a new user
-     *
-     * @param adminUser
-     * @param redirectAttributes
-     * @return
-     * @throws Exception
-     */
     @PostMapping
-    public String createUser(@ModelAttribute("adminUser") @Valid AdminUserDTO adminUser, BindingResult result, RedirectAttributes redirectAttributes, Locale locale) {
+    public String createUser(@ModelAttribute("adminUser") @Valid AdminUserDTO adminUser, BindingResult result, RedirectAttributes redirectAttributes, Locale locale,Principal principal) {
         if (result.hasErrors()) {
             result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
             return "adm/admin/add";
         }
         try {
+             AdminUser userCreatedBy = adminUserService.getUserByName(principal.getName());
             String message = adminUserService.addUser(adminUser);
             redirectAttributes.addFlashAttribute("message", message);
             return "redirect:/admin/users";
-        } catch (DuplicateObjectException doe) {
+        }
+        catch (DuplicateObjectException doe) {
             result.addError(new ObjectError("error", doe.getMessage()));
             logger.error("Error creating admin user {}", adminUser.getUserName(), doe);
             return "adm/admin/add";
@@ -121,9 +116,15 @@ public class AdminUserController {
     @GetMapping("/all")
     public
     @ResponseBody
-    DataTablesOutput<AdminUserDTO> getUsers(DataTablesInput input) {
+    DataTablesOutput<AdminUserDTO> getUsers(DataTablesInput input,@RequestParam("csearch") String search) {
         Pageable pageable = DataTablesUtils.getPageable(input);
-        Page<AdminUserDTO> adminUsers = adminUserService.getUsers(pageable);
+        
+        Page<AdminUserDTO> adminUsers = null;
+        if (StringUtils.isNoneBlank(search)) {
+        	adminUsers = adminUserService.findUsers(search,pageable);
+		}else{
+			adminUsers = adminUserService.getUsers(pageable);
+		}
         DataTablesOutput<AdminUserDTO> out = new DataTablesOutput<AdminUserDTO>();
         out.setDraw(input.getDraw());
         out.setData(adminUsers.getContent());
@@ -174,16 +175,8 @@ public class AdminUserController {
     }
 
 
-    /**
-     * Updates the user
-     *
-     * @param adminUser
-     * @param redirectAttributes
-     * @return
-     * @throws Exception
-     */
     @PostMapping("/update")
-    public String updateUser(@ModelAttribute("adminUser") @Valid AdminUserDTO adminUser, BindingResult result, RedirectAttributes redirectAttributes, Locale locale) {
+    public String updateUser(@ModelAttribute("adminUser") @Valid AdminUserDTO adminUser, BindingResult result, RedirectAttributes redirectAttributes, Locale locale,Principal principal) {
         if (result.hasErrors()) {
             result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
             return "adm/admin/edit";
@@ -192,7 +185,13 @@ public class AdminUserController {
             String message = adminUserService.updateUser(adminUser);
             redirectAttributes.addFlashAttribute("message", message);
             return "redirect:/admin/users";
-        } catch (InternetBankingException ibe) {
+        }
+        catch (DuplicateObjectException ibe) {
+            result.addError(new ObjectError("error", ibe.getMessage()));
+            logger.error("Existing user found", ibe);
+            return "adm/admin/edit";
+        }
+        catch (InternetBankingException ibe) {
             result.addError(new ObjectError("error", ibe.getMessage()));
             logger.error("Error updating admin user", ibe);
             return "adm/admin/edit";
@@ -269,7 +268,7 @@ public class AdminUserController {
         try {
             String message = adminUserService.changePassword(user, changePassword);
             redirectAttributes.addFlashAttribute("message", message);
-            return "redirect:/admin/dashboard";
+            return "redirect:/admin/logout";
         } catch (WrongPasswordException wpe) {
             result.reject("oldPassword", wpe.getMessage());
             logger.error("Wrong password from admin user {}", user.getUserName(), wpe.toString());

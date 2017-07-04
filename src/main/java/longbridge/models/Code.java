@@ -6,15 +6,17 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
+
+import longbridge.utils.PrettySerializer;
+
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import longbridge.dtos.CodeDTO;
 
 /**
  * The {@code Code} class model represents unique data that can be used for system configurations.
@@ -34,9 +36,13 @@ import longbridge.dtos.CodeDTO;
 		@UniqueConstraint(columnNames={"code", "type","deletedOn"})
 )
 @Where(clause ="del_Flag='N'" )
-public class Code extends AbstractEntity {
+public class Code extends AbstractEntity implements PrettySerializer{
 
-    private String code;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -5786181085941056612L;
+	private String code;
     private String type;
     private String description;
 
@@ -106,29 +112,22 @@ public class Code extends AbstractEntity {
 				'}';
 	}
 
-	@Override
-	public String serialize() throws JsonProcessingException {
-		ObjectMapper mapper = new ObjectMapper();
-        String data = mapper.writeValueAsString(this);
-        return data;
+	
+
+	@Override @JsonIgnore
+	public JsonSerializer<Code> getSerializer() {
+		return new JsonSerializer<Code>() {
+			@Override
+			public void serialize(Code value, JsonGenerator gen, SerializerProvider serializers)
+					throws IOException, JsonProcessingException
+			{
+				gen.writeStartObject();
+				gen.writeStringField("Code",value.code);
+				gen.writeStringField("Description",value.description);
+				gen.writeStringField("Type",value.type);
+				gen.writeEndObject();
+			}
+		};
 	}
 
-	@Override
-	public void deserialize(String data) throws JsonParseException, JsonMappingException, IOException {
-		ObjectMapper mapper = new ObjectMapper();
-        Code code = mapper.readValue(data, Code.class);
-        this.code = code.code;
-        this.delFlag = code.delFlag;
-        this.description = code.description;
-        this.type = code.type;
-        this.version = code.version;
 	}
-
-	public static OperationCode getAddCode() {
-        return OperationCode.ADD_CODE;
-	}
-
-	public static OperationCode getModifyCode() {
-		return OperationCode.MODIFY_CODE;
-	}
-}

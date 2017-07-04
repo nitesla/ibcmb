@@ -7,6 +7,7 @@ import longbridge.models.FinancialInstitution;
 import longbridge.models.FinancialInstitutionType;
 import longbridge.repositories.FinancialInstitutionRepo;
 import longbridge.services.FinancialInstitutionService;
+import longbridge.utils.Verifiable;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,6 +71,7 @@ public class FinancialInstitutionServiceImpl implements FinancialInstitutionServ
     }
 
     @Override
+    @Verifiable(operation="ADD_FIN_INST",description="Adding a Financial Institution")
     public String addFinancialInstitution(FinancialInstitutionDTO financialInstitutionDTO) throws InternetBankingException {
 
         FinancialInstitution financialInstitution;
@@ -92,6 +94,7 @@ public class FinancialInstitutionServiceImpl implements FinancialInstitutionServ
     }
 
     @Override
+    @Verifiable(operation="UPDATE_FIN_INST",description="Updating a Financial Institution")
     public String updateFinancialInstitution(FinancialInstitutionDTO financialInstitutionDTO) throws InternetBankingException {
         try {
             FinancialInstitution financialInstitution = new FinancialInstitution();
@@ -133,6 +136,7 @@ public class FinancialInstitutionServiceImpl implements FinancialInstitutionServ
     }
 
     @Override
+    @Verifiable(operation="DELETE_FIN_INST",description="Deleting a Financial Institution")
     public String deleteFinancialInstitution(Long id) throws InternetBankingException {
       try {
           this.financialInstitutionRepo.delete(id);
@@ -159,4 +163,15 @@ public class FinancialInstitutionServiceImpl implements FinancialInstitutionServ
     public FinancialInstitution getFinancialInstitutionByCode(String institutionCode) {
         return financialInstitutionRepo.findByInstitutionCode(institutionCode);
     }
+
+	@Override
+	public Page<FinancialInstitutionDTO> findFinancialInstitutions(String pattern, Pageable pageDetails) {
+		 Page<FinancialInstitution> page = financialInstitutionRepo.findUsingPattern(pattern,pageDetails);
+	        List<FinancialInstitutionDTO> dtOs = convertEntitiesToDTOs(page.getContent());
+	        long t = page.getTotalElements();
+
+	        // return  new PageImpl<ServiceReqConfigDTO>(dtOs,pageDetails,page.getTotalElements());
+	        Page<FinancialInstitutionDTO> pageImpl = new PageImpl<FinancialInstitutionDTO>(dtOs, pageDetails, t);
+	        return pageImpl;
+	}
 }

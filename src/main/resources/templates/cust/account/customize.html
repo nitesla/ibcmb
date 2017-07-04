@@ -10,20 +10,28 @@
     </header>
 
     <section class="content-wrapper">
-        <div class="container">
+        <div class="containe">
             <div class="row">
                 <div class="col-md-4 col-sm-4">
                     <h5 class="page_header"> Customize Account</h5>
+                     <select class="form-control invisible">
+                        <option value="account">Account Overview</option>
+                    </select>
                 </div>
+
+                <p class="col-xs-12">
+                    Fields marked <span style="color:red">*</span> are compulsory
+            </p>
+
             </div>
             <div class="row">
                 <div class="col-md-9 content-bg">
 
-                        <div class="">
+                        <div class="col-md-6">
                             <form method="post" th:action="@{/retail/account/customize}" th:object="${customizeAccount}">
                                 <div class="form-group">
                                     <label>Preferred Name</label>
-                                    <span class="required"></span><input class="form-control"  placeholder="Preferred name" name="accountName" th:value="${account}" />
+                                    <input class="form-control"  placeholder="Preferred name" name="accountName" th:value="${account}" /><span class='req-inner'></span>
                                     <p class="errors" th:if="${#fields.hasErrors('accountName')}" th:errors="*{accountName}">&times;</p>
                                 </div>
 

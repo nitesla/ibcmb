@@ -26,7 +26,7 @@ public interface RetailUserService {
     @PreAuthorize("hasAuthority('GET_RETAIL_USER')")
     RetailUserDTO getUser(Long id);
 
-
+    @PreAuthorize("hasAuthority('UNLOCK_RETAIL_USER')")
     String unlockUser(Long id) throws InternetBankingException;
 
 
@@ -48,6 +48,9 @@ public interface RetailUserService {
 
     @PreAuthorize("hasAuthority('GET_RETAIL_USER')")
     Page<RetailUserDTO> getUsers(Pageable pageDetails);
+    
+    @PreAuthorize("hasAuthority('GET_RETAIL_USER')")
+    Page<RetailUserDTO> findUsers(String pattern,Pageable pageDetails);
 
     /**
      * Adds a new retail user to the system

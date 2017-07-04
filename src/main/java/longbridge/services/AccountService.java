@@ -4,7 +4,7 @@ import longbridge.api.AccountInfo;
 import longbridge.dtos.AccountDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.Account;
-import longbridge.utils.AccountStatement;
+import longbridge.utils.statement.AccountStatement;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -79,7 +79,7 @@ public interface AccountService {
      * @param toDate   the ending date
      * @return a {@link AccountStatement} containing details of the transactions
      */
-    AccountStatement getAccountStatements(Account account, Date fromDate, Date toDate);
+    AccountStatement getAccountStatements(Account account, Date fromDate, Date toDate,String transType);
 
 
 

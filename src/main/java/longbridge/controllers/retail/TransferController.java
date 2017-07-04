@@ -1,9 +1,12 @@
 package longbridge.controllers.retail;
 
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import longbridge.api.NEnquiryDetails;
 import longbridge.dtos.LocalBeneficiaryDTO;
 import longbridge.dtos.TransferRequestDTO;
 import longbridge.exception.InternetBankingException;
+import longbridge.exception.InternetBankingSecurityException;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferErrorService;
 import longbridge.models.Account;
@@ -13,6 +16,8 @@ import longbridge.repositories.RetailUserRepo;
 import longbridge.services.*;
 import longbridge.utils.ResultType;
 import longbridge.utils.TransferType;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
@@ -152,7 +157,8 @@ public class TransferController {
 
         try {
             if (principal!=null){
-                return integrationService.viewAccountDetails(accountNo).getAcctName();
+                String name =integrationService.viewAccountDetails(accountNo).getAcctName();
+                return name;
             }
 
         } catch (Exception e) {
@@ -166,25 +172,24 @@ public class TransferController {
     @GetMapping("/{accountNo}/{bank}/nameEnquiry")
     public
     @ResponseBody
-    String getInterBankAccountName(@PathVariable String accountNo, @PathVariable String bank,Principal principal) {
+    String getInterBankAccountName(@PathVariable String accountNo, @PathVariable String bank, Principal principal) {
 
-        try {
+      if (principal!=null){
+          NEnquiryDetails details= integrationService.doNameEnquiry(bank,accountNo);
+          if (details==null)
+              return createMessage("service down please try later", false);
 
-            if (principal!=null)
-            {
-                if (bank.equalsIgnoreCase(bankCode)) return integrationService.viewAccountDetails(accountNo).getAcctName();
-
-                return (integrationService.doNameEnquiry(bank, accountNo)).getAccountName();
-
-            }
+          if (details.getAccountName()==null)
+              return createMessage("invalid account number or Bank details", false);
 
 
+          return createMessage(details.getAccountName(), true);
+      }
 
-        } catch (Exception e) {
 
-        }
+        return createMessage("session expired", false);
 
-        return "";
+
     }
 
 
@@ -195,14 +200,20 @@ public class TransferController {
 
             if (request.getSession().getAttribute("auth-needed") != null) {
                 String token = request.getParameter("token");
-                boolean ok = securityService.performTokenValidation(principal.getName(), token);
 
-                if (!ok) {
-                    model.addAttribute("failure", messages.getMessage("auth.token.failure", null, locale));
+                boolean ok=false;
+                try {
+                  ok = securityService.performTokenValidation(principal.getName(), token);
+                }catch (InternetBankingSecurityException ibse){
+
+                    model.addAttribute("failure", ibse.getMessage());
                     return "/cust/transfer/transferauth";
-                } else {
-                    request.getSession().removeAttribute("auth-needed");
                 }
+
+
+                    request.getSession().removeAttribute("auth-needed");
+
+
 
 
             }
@@ -214,19 +225,56 @@ public class TransferController {
             request.getSession().removeAttribute("transferRequest");
 
 
-            if (request.getSession().getAttribute("Lbeneficiary") != null) {
 
-                LocalBeneficiaryDTO l = (LocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary");
-                model.addAttribute("message", messages.getMessage("transaction.success", null, locale));
-                model.addAttribute("beneficiary", l);
-                return "/cust/transfer/transferbeneficiary";
+            if (request.getParameter("add") != null) {
+                //checkbox  checked
+                if (request.getSession().getAttribute("Lbeneficiary") != null) {
+                    LocalBeneficiaryDTO l = (LocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary");
+                    RetailUser user = retailUserService.getUserByName(principal.getName());
+                    model.addAttribute("message", messages.getMessage("transaction.success", null, locale));
+
+                   try {
+                       localBeneficiaryService.addLocalBeneficiary(user, l);
+                       request.getSession().removeAttribute("Lbeneficiary");
+                       model.addAttribute("beneficiary", l);
+                   }
+                   catch (InternetBankingException de){
+                       redirectAttributes.addFlashAttribute("message", messages.getMessage("transaction.success", null, locale));
+                       return index(transferRequestDTO.getTransferType());
+
+                   }
+                }
             }
 
             redirectAttributes.addFlashAttribute("message", messages.getMessage("transaction.success", null, locale));
             return index(transferRequestDTO.getTransferType());
             //return "redirect:/retail/dashboard";
-        } catch (InternetBankingTransferException e) {
+        }
+
+
+
+        catch (InternetBankingTransferException e) {
             e.printStackTrace();
+
+            if(request.getParameter("add") != null){
+                //checkbox  checked
+                System.out.println("checkbox checked");
+                if (request.getSession().getAttribute("Lbeneficiary") != null) {
+                    LocalBeneficiaryDTO l = (LocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary");
+                    RetailUser user = retailUserService.getUserByName(principal.getName());
+                    model.addAttribute("message", messages.getMessage("transaction.success", null, locale));
+                    try {
+                        localBeneficiaryService.addLocalBeneficiary(user, l);
+                        request.getSession().removeAttribute("Lbeneficiary");
+                        model.addAttribute("beneficiary", l);
+                    }
+                    catch (InternetBankingException de){
+                        String errorMessage = transferErrorService.getMessage(e, request);
+                        redirectAttributes.addFlashAttribute("failure", errorMessage);
+                        return "redirect:/retail/dashboard";
+                    }
+                }
+            }
             if (request.getSession().getAttribute("Lbeneficiary") != null)
                 request.getSession().removeAttribute("Lbeneficiary");
             String errorMessage = transferErrorService.getMessage(e, request);
@@ -269,6 +317,20 @@ public class TransferController {
 
         return "redirect:/retail/dashboard";
     }
+
+    private String createMessage(String message, boolean successOrFailure){
+        JSONObject object = new JSONObject();
+        //ObjectNode object = Json.newObject();
+        try {
+            object.put("message", message);
+            object.put("success", successOrFailure);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return object.toString();
+    }
+
 
     }
 

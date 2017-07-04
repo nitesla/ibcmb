@@ -4,19 +4,26 @@
 
 </head>
 <body>
+<div class="container">
 <header th:replace="corp_layout :: corp-header">
 </header>
 
 <section class="content-wrapper">
-    <div class="container">
+    <div class="">
         <div class="row">
             <div class="col-md-4 col-sm-4">
                 <h5 class="page_header"> New Beneficiary</h5>
+                <select class="form-control invisible">
+                    <option value="account">Account Overview</option>
+                </select>
             </div>
+            <p class="col-xs-12">
+                Fields marked <span style="color:red">*</span> are compulsory
+            </p>
         </div>
         <div class="row">
-            <div class="col-md-8 content-bg">
-                <div class="row form-spacing">
+            <div class="col-md-9 content-bg">
+                <div class="row">
                     <div class="col-md-6 col-sm-6">
                         <div class="form-group">
                             <label>Beneficiary Type</label>
@@ -46,7 +53,7 @@
                             <div class="form-group">
                                 <input type="text" class="form-control" name="preferredName" placeholder="Preferred Name"/>
                             </div>
-                            <button class="btn btn-primary">Save</button>
+                            <button class="btn btn-link required-step">Save</button>
                         </form>
 
                         <form id="foreign" method="post" th:action="@{/corporate/beneficiary/foreign}" th:object="${corpInternationalBeneficiaryDTO}" style="display: none">
@@ -81,12 +88,14 @@
                             <div class="form-group">
                                 <input type="text" class="form-control" name="intermediaryBankAcctNo" placeholder="Intermediary Bank Account Number"/>
                             </div>
-                            <button class="btn btn-primary">Save</button>
+                            <button class="btn btn-link required-step">Save</button>
                         </form>
                     </div>
                 </div>
             </div>
-            <div th:replace="corp_layout :: corp-sidebar" class="col-md-3 sidebar">
+            <div class="col-md-3 pull-right " >
+                <div th:replace="cust_layout :: sidebar" class="" >
+                </div>
             </div>
         </div>
     </div>
@@ -109,5 +118,6 @@
         }
     });
 </script>
+</div>
 </body>
 </html>

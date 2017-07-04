@@ -7,6 +7,7 @@ import longbridge.models.*;
 import longbridge.repositories.*;
 import longbridge.services.*;
 import longbridge.utils.DateFormatter;
+import longbridge.utils.Verifiable;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -21,6 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -67,6 +69,8 @@ public class CorporateServiceImpl implements CorporateService {
     @Autowired
     private CorporateRoleRepo corporateRoleRepo;
 
+    @Autowired
+    private EntityManager entityManager;
 
     private Locale locale = LocaleContextHolder.getLocale();
     private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -80,6 +84,7 @@ public class CorporateServiceImpl implements CorporateService {
 
     @Override
     @Transactional
+    @Verifiable(operation="ADD_CORPORATE",description="Adding Corporate Entity")
     public String addCorporate(CorporateDTO corporateDTO, CorporateUserDTO user) throws InternetBankingException {
 
         Corporate corporate = corporateRepo.findByCustomerId(corporateDTO.getCustomerId());
@@ -174,9 +179,11 @@ public class CorporateServiceImpl implements CorporateService {
     }
 
     @Override
+    @Verifiable(operation="UPDATE_CORPORATE",description="Updating Corporate Entity")
     public String updateCorporate(CorporateDTO corporateDTO) throws InternetBankingException {
         try {
             Corporate corporate = corporateRepo.findOne(corporateDTO.getId());
+            entityManager.detach(corporate);
             corporate.setVersion(corporateDTO.getVersion());
             corporate.setEmail(corporateDTO.getEmail());
             corporate.setName(corporateDTO.getName());
@@ -227,9 +234,11 @@ public class CorporateServiceImpl implements CorporateService {
 
     @Override
     @Transactional
+    @Verifiable(operation="UPDATE_CORPORATE_STATUS",description="Change Corporate Activation Status")
     public String changeActivationStatus(Long id) throws InternetBankingException {
         try {
             Corporate corporate = corporateRepo.findOne(id);
+            entityManager.detach(corporate);
             String oldStatus = corporate.getStatus();
             String newStatus = "A".equals(oldStatus) ? "I" : "A";
             corporate.setStatus(newStatus);
@@ -293,6 +302,7 @@ public class CorporateServiceImpl implements CorporateService {
     }
 
     @Override
+    @Verifiable(operation="ADD_CORPORATE_RULE",description="Add Corporate Transfer Rule")
     public String addCorporateRule(CorpTransferRuleDTO transferRuleDTO) throws InternetBankingException {
 
 
@@ -323,6 +333,7 @@ public class CorporateServiceImpl implements CorporateService {
 
     @Override
     @Transactional
+    @Verifiable(operation="UPDATE_CORPORATE_RULE",description="Update Corporate Transfer Rule")
     public String updateCorporateRule(CorpTransferRuleDTO transferRuleDTO) throws InternetBankingException {
 
         if (new BigDecimal(transferRuleDTO.getLowerLimitAmount()).compareTo(new BigDecimal("0")) < 0) {
@@ -370,6 +381,7 @@ public class CorporateServiceImpl implements CorporateService {
     }
 
     @Override
+    @Verifiable(operation="DELETE_CORPORATE_RULE",description="Delete Corporate Transfer Rule")
     public String deleteCorporateRule(Long id) throws InternetBankingException {
         try {
             CorpTransRule transferRule = corpTransferRuleRepo.findOne(id);
@@ -384,6 +396,7 @@ public class CorporateServiceImpl implements CorporateService {
     }
 
     @Override
+    @Verifiable(operation="ADD_CORPORATE_ROLE",description="Adding a Corporate Role")
     public String addCorporateRole(CorporateRoleDTO roleDTO) throws InternetBankingException {
 
 
@@ -408,6 +421,7 @@ public class CorporateServiceImpl implements CorporateService {
     }
 
     @Override
+    @Verifiable(operation="UPDATE_CORPORATE_ROLE",description="Updating a Corporate Role")
     public String updateCorporateRole(CorporateRoleDTO roleDTO) throws InternetBankingException {
         try {
             Set<CorporateUser> oldUsers = corporateRoleRepo.findOne(roleDTO.getId()).getUsers();
@@ -446,6 +460,7 @@ public class CorporateServiceImpl implements CorporateService {
     }
 
     @Override
+    @Verifiable(operation="DELETE_CORPORATE_ROLE",description="Deleting a Corporate Role")
     public String deleteCorporateRole(Long id) throws InternetBankingException {
 
         try {
@@ -664,16 +679,14 @@ public class CorporateServiceImpl implements CorporateService {
         }
         return corporateDTOList;
     }
-    //    private List<AccountDTO> convertAccountEntitiesToDTOs(Iterable<Account> accounts){
-//        List<AccountDTO> accountDTOList = new ArrayList<>();
-//        for(Account account: accounts){
-//            AccountDTO accountDTO = convertAccountEntityToDTO(account);
-//            accountDTOList.add(accountDTO);
-//        }
-//        return accountDTOList;
-//    }
-//
-//    private AccountDTO convertAccountEntityToDTO(Account account){
-//        return  modelMapper.map(account,AccountDTO.class);
-//    }
+
+	@Override
+	public Page<CorporateDTO> findCorporates(String pattern, Pageable pageDetails) {
+		 Page<Corporate> page = corporateRepo.findUsingPattern(pattern,pageDetails);
+	        List<CorporateDTO> dtOs = convertEntitiesToDTOs(page.getContent());
+	        long t = page.getTotalElements();
+
+	        Page<CorporateDTO> pageImpl = new PageImpl<CorporateDTO>(dtOs, pageDetails, t);
+	        return pageImpl;
+	}
 }

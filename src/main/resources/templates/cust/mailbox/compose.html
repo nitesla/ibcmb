@@ -9,76 +9,73 @@
     </header>
 
 <section class="wrapper content-wrapper">
-    <div class="container conts">
-        <div class="wrapper wrapper-content">
-            <div class="containe">
-                <div class="row">
-                    <div class="col-lg-3 col-md-3">
-                        <div class="ibox float-e-margins">
-                            <div class="ibox-content mailbox-content">
-                                <div class="margin-bottoms"></div>
-                                <div class="file-manager">
-                                    <a class="btn btn-block btn-primary compose-mail" th:href="@{/retail/mailbox/inbox}">Back to inbox</a>
-                                    <div class="margin-bottoms"></div>
-                                    <ul class="folder-list">
-                                        <li><a th:href="@{/retail/mailbox/inbox}"> <i class="fa fa-inbox "></i> Inbox </a></li>
-                                        <li><a th:href="@{/retail/mailbox/sentmail}"> <i class="fa fa-sign-out"></i> Sent Mail</a></li>
-                                        <!--<li><a th:href="@{/retail/mailbox/draft}"> <i class="fa fa-file-text-o"></i> Drafts </a></li>-->
-                                        <!--<li><a th:href="@{/retail/mailbox/trash}"> <i class="fa fa-trash-o"></i> Trash</a></li>-->
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-9 col-md-9 animated fadeInRight">
-                        <div class="col-lg-12">
-                            <div class="contain">
-                                <div class="margin-bottom"></div>
-                                <div class="mail-box-header">
-                                    <h2 class="in-box">
-                                        Compose Mail
-                                    </h2>
-                                    <br/>
-                                </div>
-                                <div class="mail-box">
-
-                                    <div class="mail-body">
-                                        <form class="form-horizontal" method="post" th:action="@{/retail/mailbox}" th:object="${messageDTO}">
-                                            <!--<div class="form-group"><label class="col-sm-2 control-label">To:</label>-->
-                                                <!--<div class="col-sm-10"><input type="checkbox" value="" class="i-checks" name="CustomerCare"/>&nbsp; Customer Care</div>-->
-                                                <!--<div class="col-sm-10"><input type="checkbox" value="" class="i-checks" name="AccountOfficer"/>&nbsp; Account Officer</div>-->
-                                            <!--</div>-->
-                                            <div class="form-group">
-                                                <div class="col-sm-2 control-label"><label>Subject:</label></div>
-                                                <div class="col-sm-10"><input type="text" class="form-control" th:field="*{subject}"/></div>
-                                            </div>
-
-                                    <div class="mail-text h-200">
-
-                                        <div class="form-group txtarea">
-                                            <textarea name="Message" value="Message" class="form-control" rows="10" th:field="*{body}"></textarea>
-                                        </div>
-                                        <div class="clearfix"></div>
-                                    </div>
-                                    <div class="mail-body text-right tooltip-demo fas">
-                                        <button type="reset" class="btn-sm" data-placement="top"><i class="fa fa-times"></i> Cancel</button>
-                                        <button type="submit" class="btn-sm btn-success" data-placement="top"><i class="fa fa-send"></i> Send</button>
-                                    </div>
-                                    <div class="clearfix"></div>
-                                        </form>
-                                    </div>
-
-                                </div>
-                            </div>
-                            <div class="margin-bottoms"></div>
-                        </div>
-                    </div>
-
+    <form class="col-sm-4" role="search">
+            <label for="" class='message-label'>Message Center</label>
+            <div class="input-group add-on">
+                <input class="form-control" placeholder="Search" name="srch-term" id="srch-term" type="text"/>
+                <div class="input-group-btn  bg-white">
+                    <button class="btn btn-default search-icon" type="submit"><i class="fa fa-search icon-search"></i></button>
                 </div>
             </div>
-        </div>
-    </div>
+        </form>
+         <p class="col-xs-12 invisible">
+                    Fields marked <span style="color:red">*</span> are compulsory
+            </p>
 
+        <div class="row">
+
+            <div class="col-md-9 bg-coronation content-mail"  >
+                <aside class="col-md-3 alert  mail-links-box">
+                    <div class="">
+                         <ul class='mail-links'>
+                           <a th:href="@{/retail/mailbox/compose}"><li class='bg-white coronation-blue' style="border-bottom:0px !important;font-size:13px;font-weight:bolder">Compose Message
+                            </li></a>
+                            <a th:href="@{/retail/mailbox/inbox}"><li >Inbox (1) <i class=' pull-right fa fa-angle-right' style="font-size:20px"></i></li></a>
+                            <a th:href="@{/retail/mailbox/sentmail}"><li class=''>Sent (1)<i class='pull-right fa fa-angle-right' style="font-size:20px"></i></li></a>
+                            <a th:href="@{/retail/mailbox/draft}"><li > Drafts (1) <i class=' pull-right fa fa-angle-right' style="font-size:20px"></i></li></a>
+
+                        </ul>
+                    </div>
+                </aside>
+                <article class="col-md-9 article">  
+                    <div class="alert alert-bottom bg-coronation-blue">
+                        <p style="color:white">Compose Message</p>
+                    </div>
+
+                   <form method="post" th:action="@{/retail/mailbox}" th:object="${messageDTO}">
+                       
+
+                       <div class='form-group compose '>
+                           <div class="col-md-2">
+                                <label class='mail-label'>Subject: </label>
+                           </div>
+                           <div class="col-md-10">
+                               <input type ='text' class='form-control no-bd' th:field="*{subject}" />
+                           </div>
+                       </div>
+
+
+                       <div class='form-group compose '>
+                           <div class="col-md-2">
+                                <label class='mail-label'>Compose: </label>
+                           </div>
+                           <div class="col-md-10">
+                               <textarea name="message" class='form-control no-bd mail-textarea' th:field="*{body}"></textarea>
+                           </div>
+                       </div>
+
+                       <div class='pull-right' style="margin:20px;">
+                           <button class="btn btn-link">Save as draft</button>
+                            <button class="btn btn-link" type='submit'>Send</button>
+                       </div>
+                   </form>
+                </article>
+            </div>
+             <div class="col-md-3  pull-right">
+                            <div th:replace="cust_layout :: sidebar" class="" >
+                            </div>
+            </div>
+        </div>
 </section>
 
 

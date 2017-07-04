@@ -135,6 +135,7 @@ public interface CorporateUserService{
 
     List<CorporateUserDTO> getUsersWithoutRole(Long corpId);
 
+    @PreAuthorize("hasAuthority('UNLOCK_CORP_USER')")
     String unlockUser(Long id) throws InternetBankingException;
 
 

@@ -11,8 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public interface AuditConfigRepo extends CommonRepo<AuditConfig, Long>
 {
-
-
     AuditConfig findFirstByEntityName(String name);
     boolean existsByEntityName(String name);
     boolean existsByEntityNameAndEnabled(String name, String enabled);

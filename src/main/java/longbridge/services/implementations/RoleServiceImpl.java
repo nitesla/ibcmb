@@ -8,6 +8,7 @@ import longbridge.models.*;
 import longbridge.repositories.*;
 import longbridge.services.RoleService;
 import longbridge.services.VerificationService;
+import longbridge.utils.Verifiable;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,47 +67,10 @@ public class RoleServiceImpl implements RoleService {
         this.corpRepo = corpRepo;
     }
 
-// @Override
-    // public Role deserialize(String data) throws IOException {
-    // Role role = new Role();
-    // ObjectMapper mapper = new ObjectMapper();
-    // JsonNode node = mapper.readTree(data);
-    // ObjectNode objectNode = nodeFactory.objectNode();
-    // role.setId(objectNode.get("id").asLong());
-    // role.setVersion(objectNode.get("version").asInt());
-    // role.setName(objectNode.get("name").asText());
-    // role.setEmail(objectNode.get("email").asText());
-    // role.setUserType(UserType.valueOf(objectNode.get("userType").asText()));
-    //
-    // //deserialize the listentity
-    // List<String> ids = objectNode.findValuesAsText("permissions");
-    // Collection<Permission> permissionCollection = new
-    // LinkedList<Permission>();
-    // for(String id: ids){
-    // Permission permission = new Permission();
-    // permission.setId();
-    // }
-    //// ArrayNode arrayNode = objectNode.putArray("permissions");
-    // objectNode.put("permissions",serializeEntityList(role.getPermissions(),
-    // arrayNode));
-    // return objectNode.toString();
-    // }
-    //
-    //// @Override
-    // public String serialize(Role role) throws JsonProcessingException {
-    // ObjectNode objectNode = nodeFactory.objectNode();
-    // objectNode.put("id", role.getId());
-    // objectNode.put("email", role.getEmail());
-    // objectNode.put("name", role.getName());
-    // objectNode.put("userType", role.getUserType().toString());
-    //// ArrayNode arrayNode = objectNode.putArray("permissions");
-    // objectNode.put("permissions",serializeEntityList(role.getPermissions(),
-    // arrayNode));
-    // return objectNode.toString();
-    // }
 
 
     @Override
+    @Verifiable(operation="ADD_ROLE",description="Adding a Role")
     public String addRole(RoleDTO roleDTO) throws InternetBankingException {
 
         Role role = roleRepo.findByName(roleDTO.getName());
@@ -151,6 +115,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+    @Verifiable(operation="UPDATE_ROLE",description="Updating a Role")
     public String updateRole(RoleDTO roleDTO) throws InternetBankingException {
         try {
             Role role = convertDTOToEntity(roleDTO);
@@ -163,6 +128,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+    @Verifiable(operation="DELETE_ROLE",description="Deleting a Role")
     public String deleteRole(Long id) throws InternetBankingException {
 
         	Role role = roleRepo.getOne(id);
@@ -234,6 +200,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+    @Verifiable(operation="DELETE_PERMISSION",description="Deleting a Permission")
     public String deletePermission(Long id) throws InternetBankingException {
         try {
             permissionRepo.delete(id);
@@ -249,7 +216,9 @@ public class RoleServiceImpl implements RoleService {
     }
 
     private Role convertDTOToEntity(RoleDTO roleDTO) {
-        return modelMapper.map(roleDTO, Role.class);
+        Role role = modelMapper.map(roleDTO, Role.class);
+        role.setPermissions(convertPermissionDTOsToEntities(roleDTO.getPermissions()));
+        return role;
     }
 
     private List<RoleDTO> convertRoleEntitiesToDTOs(Iterable<Role> roles) {
@@ -266,16 +235,32 @@ public class RoleServiceImpl implements RoleService {
     }
 
     private Permission convertDTOToEntity(PermissionDTO permissionDTO) {
-        return modelMapper.map(permissionDTO, Permission.class);
+        Permission permission;
+        if(permissionDTO.getId()==null){
+            permission = convertDTOToEntity(permissionDTO);
+        }
+        else {
+            permission = permissionRepo.findOne(permissionDTO.getId());
+        }
+        return permission;
     }
 
     private List<PermissionDTO> convertPermissionEntitiesToDTOs(Iterable<Permission> permissions) {
         List<PermissionDTO> permissionDTOList = new ArrayList<>();
         for (Permission permission : permissions) {
-            PermissionDTO permissionDTO = modelMapper.map(permission, PermissionDTO.class);
+            PermissionDTO permissionDTO = convertEntityToDTO(permission);
             permissionDTOList.add(permissionDTO);
         }
         return permissionDTOList;
+    }
+
+    private List<Permission> convertPermissionDTOsToEntities(Iterable<PermissionDTO> permissionDTOs) {
+        List<Permission> permissions = new ArrayList<>();
+        for (PermissionDTO permissionDTO : permissionDTOs) {
+            Permission permission = convertDTOToEntity(permissionDTO);
+            permissions.add(permission);
+        }
+        return permissions;
     }
 
 
@@ -363,4 +348,26 @@ public class RoleServiceImpl implements RoleService {
         }
         return cnt;
     }
+
+
+
+	@Override
+	public Page<RoleDTO> findRoles(String pattern, Pageable pageDetails) {
+		 Page<Role> page = roleRepo.findUsingPattern(pattern,pageDetails);
+	        List<RoleDTO> dtOs = convertRoleEntitiesToDTOs(page.getContent());
+	        long t = page.getTotalElements();
+	        Page<RoleDTO> pageImpl = new PageImpl<RoleDTO>(dtOs, pageDetails, t);
+	        return pageImpl;
+	}
+
+
+
+	@Override
+	public Page<PermissionDTO> findPermissions(String pattern, Pageable pageDetails) {
+		Page<Permission> page = permissionRepo.findUsingPattern(pattern,pageDetails);
+        List<PermissionDTO> dtOs = convertPermissionEntitiesToDTOs(page.getContent());
+        long t = page.getTotalElements();
+        Page<PermissionDTO> pageImpl = new PageImpl<PermissionDTO>(dtOs, pageDetails, t);
+        return pageImpl;
+	}
 }

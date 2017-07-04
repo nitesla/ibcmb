@@ -8,25 +8,34 @@ import longbridge.models.Account;
 import longbridge.models.Corporate;
 import longbridge.models.CorporateUser;
 
-import longbridge.services.AccountService;
-import longbridge.services.CorporateUserService;
-import longbridge.services.IntegrationService;
-import longbridge.services.RetailUserService;
+import longbridge.models.RetailUser;
+import longbridge.repositories.AccountRepo;
+import longbridge.services.*;
+import longbridge.utils.statement.AccountStatement;
+import longbridge.utils.statement.TransactionDetails;
+import longbridge.utils.statement.TransactionHistory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.Local;
+import org.springframework.context.MessageSource;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -44,10 +53,19 @@ public class CorpAccountController {
 
     @Autowired
     private IntegrationService integrationService;
+    @Autowired
+    private MessageSource messageSource;
+
+    @Autowired
+    private TransferService transferService;
+
+    @Autowired
+    AccountRepo accountRepo;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private Long customizeAccountId;
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("dd-mm-yyyy");
 
     @GetMapping
     public String listAccounts(){
@@ -167,4 +185,140 @@ catch(InternetBankingException e){
     public String getAccountOfficer(){
         return "corp/account/officer";
     }
+
+    @GetMapping("/{id}/statement")
+    public String getTransactionHistory(@PathVariable Long id, Model model, Principal principal) {
+        CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
+
+        Account account = accountRepo.findOne(id);
+        String LAST_TEN_TRANSACTION="10";
+        List<AccountDTO> accountList = accountService.getAccountsAndBalances(corporateUser.getCorporate().getCustomerId());
+        List<TransactionHistory> transRequestList=integrationService.getLastNTransactions(account.getAccountNumber(),LAST_TEN_TRANSACTION);
+        if (transRequestList != null  && ! transRequestList.isEmpty()) {
+            model.addAttribute("transRequestList", transRequestList);
+            model.addAttribute("accountList", accountList);
+            System.out.println("what is the " + transRequestList);
+            return "corp/account/accountstatement";
+        }
+        return "redirect:/corporate/dashboard";
+    }
+
+    @PostMapping("/history")
+    public String getAccountHistory(Model model, Principal principal) {
+
+        return "cust/account/history";
+    }
+
+    @GetMapping("/viewstatement")
+    public String getViewOnly(Model model, Principal principal) throws ParseException {
+
+        return "corp/account/view";
+    }
+
+    @GetMapping("/viewstatement/display/data")
+    public @ResponseBody
+    DataTablesOutput<TransactionDetails> getStatementData(DataTablesInput input, String acctNumber,
+                                                          String fromDate, String toDate, String tranType) {
+        // Pageable pageable = DataTablesUtils.getPageable(input);
+
+        Date from;
+        Date to;
+        DataTablesOutput<TransactionDetails> out = new DataTablesOutput<TransactionDetails>();
+        try {
+            from = dateFormat.parse(fromDate);
+            to = dateFormat.parse(toDate);
+            AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to,tranType);
+            logger.info("TransactionType {}",tranType);
+            out.setDraw(input.getDraw());
+            List<TransactionDetails> list = new ArrayList<>();
+            if (list != null && !list.isEmpty()) {
+                list=accountStatement.getTransactionDetails();
+                System.out.println(accountStatement.toString());
+                System.out.println("Whats in the list "+list);
+
+
+                out.setData(list);
+                out.setRecordsFiltered(list.size());
+                out.setRecordsTotal(list.size());
+            }
+        } catch (ParseException e) {
+            logger.warn("didn't parse date", e);
+        }
+        return out;
+
+    }
+
+    @GetMapping("/downloadstatement")
+    public ModelAndView downloadStatementData(ModelMap modelMap, DataTablesInput input, String acctNumber,
+                                              String fromDate, String toDate, String tranType, Principal principal) {
+        // Pageable pageable = DataTablesUtils.getPageable(input);
+
+        Date from;
+        Date to;
+        DataTablesOutput<TransactionDetails> out = new DataTablesOutput<TransactionDetails>();
+        try {
+            from = dateFormat.parse(fromDate);
+            to = dateFormat.parse(toDate);
+            AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to,tranType);
+            out.setDraw(input.getDraw());
+            List<TransactionDetails> list = accountStatement.getTransactionDetails();
+            CorporateUser corporateUser=corporateUserService.getUserByName(principal.getName());
+            System.out.println("list = " + list);
+            modelMap.put("datasource", list);
+            modelMap.put("format", "pdf");
+            modelMap.put("summary.accountNum", acctNumber);
+            modelMap.put("customerName",corporateUser.getFirstName()+" "+corporateUser.getLastName());
+            logger.info("Customer's Name {}"+corporateUser.getFirstName()+" "+corporateUser.getLastName());
+
+            if(accountStatement.getAccountNumber()!=null) {
+                modelMap.put("customerNo", acctNumber);
+            }
+            else if(accountStatement.getAccountNumber()==null ||accountStatement.getAccountNumber().isEmpty()){
+                modelMap.put("customerNo","");
+            }
+            else{};
+            modelMap.put("summary.openingBalance", accountStatement.getOpeningBalance());
+            if (accountStatement.getDebitCount() != null) {
+                modelMap.put("debitCount", accountStatement.getDebitCount());
+            }
+            else{
+                modelMap.put("debitCount","");
+            }
+            if (accountStatement.getCreditCount() != null) {
+                modelMap.put("creditCount", accountStatement.getCreditCount());
+            }
+            else{
+                modelMap.put("creditCount","");
+            }
+            modelMap.put("summary.currencyCode", accountStatement.getCurrencyCode());
+            if(accountStatement.getClosingBalance()!=null) {
+                modelMap.put("summary.closingBalance", accountStatement.getClosingBalance());
+            }
+            else{
+                modelMap.put("summary.closingBalance","0");
+            }
+            modelMap.put("summary.totalDebit", accountStatement.getTotalDebit());
+            modelMap.put("summary.totalCredit", accountStatement.getTotalCredit());
+            if(accountStatement.getAddress()!=null ) {
+                modelMap.put("address", accountStatement.getAddress());
+            }
+            else if(accountStatement.getAddress()==null){
+                modelMap.put("address","");
+            }
+            else{};
+
+            modelMap.put("fromDate", fromDate);
+            modelMap.put("toDate", toDate);
+            Date today=new Date();
+            modelMap.put("today",today);
+
+        } catch (ParseException e) {
+            logger.warn("didn't parse date", e);
+        }
+
+        ModelAndView modelAndView = new ModelAndView("rpt_account-statement", modelMap);
+        return modelAndView;
+
+    }
+
 }

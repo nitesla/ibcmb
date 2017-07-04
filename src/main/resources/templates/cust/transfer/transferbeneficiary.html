@@ -16,9 +16,9 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-8 content-bg">
+            <div class="col-md-9 content-bg">
 
-                    <!--<div class="col-md-6 col-sm-6">-->
+                <div class="spacing">
 
 
                     <table class="table table-responsive">
@@ -56,10 +56,13 @@
 
                         <a th:href="@{/retail/dashboard}" class="btn btn-link"  >Skip</a>
                     </div>
-                    <!--</div>-->
+                </div>
 
             </div>
-
+            <div class="col-md-3 pull-right " >
+                <div th:replace="cust_layout :: sidebar" class="" >
+                </div>
+            </div>
         </div>
     </div>
 </section>

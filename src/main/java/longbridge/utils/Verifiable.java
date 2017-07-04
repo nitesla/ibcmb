@@ -8,8 +8,11 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(METHOD)
-public @interface Verifiable {
+public @interface Verifiable
+{
 
 	String operation() default "";
 	String description() default "";
 }
+
+

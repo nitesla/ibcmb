@@ -77,15 +77,7 @@ public class UserGroup extends AbstractEntity {
 		this.users = users;
 	}
 
-	public static OperationCode getAddCode() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
-	public static OperationCode getModifyCode() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 //    @ManyToMany(cascade = CascadeType.ALL)
 //    @JoinTable(name = "user_userGroup", joinColumns =

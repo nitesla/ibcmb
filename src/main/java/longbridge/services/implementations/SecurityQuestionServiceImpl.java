@@ -5,6 +5,7 @@ import longbridge.exception.InternetBankingException;
 import longbridge.models.SecurityQuestions;
 import longbridge.repositories.SecQuestionRepo;
 import longbridge.services.SecurityQuestionService;
+import longbridge.utils.Verifiable;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,6 +50,7 @@ public class SecurityQuestionServiceImpl implements SecurityQuestionService {
     }
 
     @Override
+
     public Page<SecQuestionDTO> getSecQuestions(Pageable pageDetails) {
         Page<SecurityQuestions> page = secQuestionRepo.findAll(pageDetails);
         List<SecQuestionDTO> dtOs = convertEntitiesToDTOs(page.getContent());
@@ -60,6 +62,7 @@ public class SecurityQuestionServiceImpl implements SecurityQuestionService {
     }
 
     @Override
+    @Verifiable(operation="ADD_SQ",description="Adding Security Question")
     public String addSecQuestion(String question) throws InternetBankingException {
 
         try {
@@ -74,6 +77,7 @@ public class SecurityQuestionServiceImpl implements SecurityQuestionService {
     }
 
     @Override
+    @Verifiable(operation="UPDATE_SQ",description="Updating Security Question")
     public String updateSecQuestion(SecQuestionDTO secQuestionDTO) {
         try {
             SecurityQuestions securityQuestions = convertDTOToEntity(secQuestionDTO);
@@ -86,6 +90,7 @@ public class SecurityQuestionServiceImpl implements SecurityQuestionService {
     }
 
     @Override
+    @Verifiable(operation="DELETE_SQ",description="Deleting Security Question")
     public String deleteSecQuestion(Long id) {
         try{
             SecurityQuestions securityQuestions = secQuestionRepo.findOne(id);

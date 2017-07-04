@@ -1,15 +1,8 @@
 package longbridge.controllers.corporate;
 
-import longbridge.dtos.AccountDTO;
-import longbridge.dtos.CodeDTO;
-import longbridge.dtos.CorporateUserDTO;
-import longbridge.dtos.SettingDTO;
-import longbridge.exception.PasswordException;
-import longbridge.exception.PasswordMismatchException;
-import longbridge.exception.PasswordPolicyViolationException;
-import longbridge.exception.WrongPasswordException;
+import longbridge.dtos.*;
+import longbridge.exception.*;
 import longbridge.forms.AlertPref;
-import longbridge.forms.ChangePassword;
 import longbridge.forms.CustChangePassword;
 import longbridge.forms.CustResetPassword;
 import longbridge.models.CorporateUser;
@@ -25,12 +18,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.security.Principal;
 import java.util.List;
+import java.util.Locale;
 
 
 @Controller
@@ -56,6 +51,9 @@ public class CorpSettingController {
     @Autowired
     ConfigurationService configService;
 
+    @Autowired
+    private MessageService messageService;
+
     @RequestMapping("/dashboard")
     public String getCorporateDashboard(Model model, Principal principal) {
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
@@ -64,7 +62,7 @@ public class CorpSettingController {
         return "corp/dashboard";
     }
 
-    @GetMapping("/change_password")
+    @GetMapping("/settings/change_password")
     public String ChangePaswordPage( Model model)
     {
         List<String> passwordPolicy = passwordPolicyService.getPasswordRules();
@@ -75,7 +73,7 @@ public class CorpSettingController {
 
     }
 
-   @PostMapping("/change_password")
+   @PostMapping("/settings/change_password")
     public String ChangePassword(@ModelAttribute("custChangePassword") @Valid CustChangePassword custChangePassword, BindingResult result,Principal principal,  Model model, RedirectAttributes redirectAttributes) throws Exception{
         if(result.hasErrors()){
             List<String> passwordPolicy = passwordPolicyService.getPasswordRules();
@@ -90,7 +88,7 @@ public class CorpSettingController {
        try {
            String message =corporateUserService.changePassword(user,custChangePassword);
            redirectAttributes.addFlashAttribute("message", message);
-           return "redirect:/corporate/dashboard";
+           return "redirect:/corporate/logout";
        } catch (WrongPasswordException wpe) {
            model.addAttribute("failure",wpe.getMessage());
            logger.error("Wrong password from corporate user {}", user.getUserName(), wpe.toString());
@@ -181,7 +179,7 @@ public class CorpSettingController {
         }
     }
 
-    @GetMapping("/alert_preference")
+    @GetMapping("/settings/alert_preference")
     public String AlertPreferencePage(AlertPref alertPref, Model model, Principal principal){
         CorporateUser user=corporateUserService.getUserByName(principal.getName());
         Iterable<CodeDTO> pref = codeService.getCodesByType("ALERT_PREFERENCE");
@@ -190,7 +188,7 @@ public class CorpSettingController {
         return "corp/settings/alertpref";
     }
 
-    @PostMapping("/alert_preference")
+    @PostMapping("/settings/alert_preference")
     public String ChangeAlertPreference(@Valid AlertPref alertPref, Principal principal, BindingResult result, Model model, RedirectAttributes redirectAttributes) throws Exception{
         if(result.hasErrors()){
             model.addAttribute("message","Pls correct the errors");
@@ -204,8 +202,35 @@ public class CorpSettingController {
         Iterable<CodeDTO> pref = codeService.getCodesByType("ALERT_PREFERENCE");
         model.addAttribute("alertP", user.getAlertPreference());
         model.addAttribute("prefs", pref);
-        model.addAttribute("message","Preference Change Successful successful");
+        model.addAttribute("message","Preference Change Successful");
         return "corp/settings/alertpref";
+    }
+
+    @GetMapping("/contact")
+    public String contactUs(){
+        return "corp/contact";
+    }
+
+    @PostMapping("/contact")
+    public String sendContactForm(WebRequest webRequest, Principal principal, Model model, Locale locale, RedirectAttributes redirectAttributes){
+        String message = webRequest.getParameter("message");
+        if (message == null){
+            model.addAttribute("failure", "Field is required");
+            return "corp/contact";
+        }
+
+        CorporateUser user = corporateUserService.getUserByName(principal.getName());
+        CorporateDTO corporate = corporateService.getCorporate(user.getCorporate().getId());
+        try{
+            messageService.sendCorporateContact(message, corporate);
+            redirectAttributes.addFlashAttribute("message", "message sent successfully");
+            return "redirect:/corporate/contact";
+        }catch (InternetBankingException e){
+            logger.error("Failed to send Email request", e);
+            String mes = e.getMessage();
+            model.addAttribute("failure", mes);
+            return "corp/contact";
+        }
     }
 
     @GetMapping("/bvn")

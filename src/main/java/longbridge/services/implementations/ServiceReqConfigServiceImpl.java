@@ -8,6 +8,7 @@ import longbridge.models.ServiceReqFormField;
 import longbridge.repositories.ServiceReqConfigRepo;
 import longbridge.repositories.ServiceReqFormFieldRepo;
 import longbridge.services.ServiceReqConfigService;
+import longbridge.utils.Verifiable;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
 import org.slf4j.Logger;
@@ -51,6 +52,7 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 
 	@Override
 	@Transactional
+	@Verifiable(operation="ADD_SERV_REQ_CONFIG",description="Adding a Service Request Configuration")
 	public String addServiceReqConfig(ServiceReqConfigDTO serviceReqConfigDTO) throws InternetBankingException {
 		try {
 			SRConfig SRConfig = convertDTOToEntity(serviceReqConfigDTO);
@@ -102,6 +104,7 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 
 	@Override
 	@Transactional
+	@Verifiable(operation="UPDATE_SERV_REQ_CONFIG",description="Updating a Service Request Configuration")
 	public String updateServiceReqConfig(ServiceReqConfigDTO serviceReqConfigDTO) throws InternetBankingException {
 		try {
 			SRConfig SRConfig = serviceReqConfigRepo.findOne(serviceReqConfigDTO.getId());
@@ -141,6 +144,7 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 	}
 
 	@Override
+	@Verifiable(operation="DELETE_SERV_REQ_CONFIG",description="Deleting a Service Request Configuration")
 	public String delServiceReqConfig(Long id) throws InternetBankingException {
 		try {
 			serviceReqConfigRepo.delete(id);

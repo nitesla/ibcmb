@@ -2,12 +2,14 @@ package longbridge.services.implementations;
 
 import longbridge.dtos.CodeDTO;
 import longbridge.dtos.CodeTypeDTO;
+import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.AdminUser;
 import longbridge.models.Code;
 import longbridge.repositories.CodeRepo;
 import longbridge.services.CodeService;
 import longbridge.services.VerificationService;
+import longbridge.utils.Verifiable;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,7 +47,8 @@ public class CodeServiceImpl implements CodeService {
     MessageSource messageSource;
 
     @Autowired
-    public CodeServiceImpl(CodeRepo codeRepository, VerificationService verificationService, ModelMapper modelMapper) {
+    public CodeServiceImpl(CodeRepo codeRepository, VerificationService verificationService, ModelMapper modelMapper)
+    {
         codeRepo = codeRepository;
         this.verificationService = verificationService;
         this.modelMapper = modelMapper;
@@ -54,6 +57,7 @@ public class CodeServiceImpl implements CodeService {
 
     @Override
     @Transactional
+    @Verifiable(operation="DELETE_CODE",description="Deleting a Code")
     public String deleteCode(Long codeId) throws InternetBankingException{
           try{
 
@@ -92,14 +96,16 @@ public class CodeServiceImpl implements CodeService {
   
 
     @Transactional
+    @Verifiable(operation="UPDATE_CODE",description="Updating a Code")
     public String updateCode(CodeDTO codeDTO, AdminUser adminUser) throws InternetBankingException{
         try {
             Code code = convertDTOToEntity(codeDTO);
-            // Code originalObject = codeRepo.findOne(code.getId());
-            //check if maker checker is enabled
             codeRepo.save(code);
             logger.info("Updated code with Id {}",code.getId());
             return messageSource.getMessage("code.update.success", null, locale);
+        }
+        catch (DuplicateObjectException e) {
+            throw new DuplicateObjectException(e.getMessage());
         }
         catch (Exception e){
             throw new InternetBankingException(messageSource.getMessage("code.update.failure",null,locale));
@@ -152,10 +158,10 @@ public class CodeServiceImpl implements CodeService {
 
 
 	@Override
+    @Verifiable(operation="ADD_CODE",description="Adding a Code")
 	public String addCode(CodeDTO codeDTO, AdminUser adminUser) throws InternetBankingException {
 		try {
             Code code = convertDTOToEntity(codeDTO);
-            //check if maker checker is enabled
             codeRepo.save(code);
             logger.info("Added new code {} of type {}",code.getDescription(),code.getType());
             return messageSource.getMessage("code.add.success", null, locale);
@@ -173,6 +179,7 @@ public class CodeServiceImpl implements CodeService {
 	}
 
     @Override
+
     public Code getByTypeAndCode(String type, String code) {
         return codeRepo.findByTypeAndCode(type,code);
     }

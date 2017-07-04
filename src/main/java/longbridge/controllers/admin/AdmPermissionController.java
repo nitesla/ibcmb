@@ -1,8 +1,11 @@
 package longbridge.controllers.admin;
 
 import longbridge.dtos.PermissionDTO;
+import longbridge.dtos.RoleDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.services.RoleService;
+
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,9 +78,14 @@ public class AdmPermissionController {
     @GetMapping(path = "/all")
     public
     @ResponseBody
-    DataTablesOutput<PermissionDTO> getPermissions(DataTablesInput input) {
+    DataTablesOutput<PermissionDTO> getPermissions(DataTablesInput input,@RequestParam("csearch") String search) {
         Pageable pageable = DataTablesUtils.getPageable(input);
-        Page<PermissionDTO> permissions = roleService.getPermissions(pageable);
+        Page<PermissionDTO> permissions = null;
+        if (StringUtils.isNoneBlank(search)) {
+        	permissions = roleService.findPermissions(search,pageable);
+		}else{
+			permissions = roleService.getPermissions(pageable);
+		}
         DataTablesOutput<PermissionDTO> out = new DataTablesOutput<PermissionDTO>();
         out.setDraw(input.getDraw());
         out.setData(permissions.getContent());

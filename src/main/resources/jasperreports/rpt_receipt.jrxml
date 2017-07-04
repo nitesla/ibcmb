@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="accountStatment" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" whenResourceMissingType="Empty" uuid="b1c76af6-01a7-4384-8820-23f298be1610">
+	<property name="ireport.zoom" value="1.1"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<subDataset name="JSONdata" uuid="7604951b-25ba-4a57-8b64-f83d19444a3a">
+		<queryString language="JSON">
+			<![CDATA[]]>
+		</queryString>
+		<field name="tranPartclr" class="java.lang.String"/>
+	</subDataset>
+	<subDataset name="New Dataset 1" uuid="169fec4f-b0c2-449c-8845-764aa9b49546"/>
+	<parameter name="AccountNum" class="java.lang.String"/>
+	<parameter name="date" class="java.lang.String"/>
+	<parameter name="remarks" class="java.lang.String"/>
+	<parameter name="refNUm" class="java.lang.String"/>
+	<parameter name="tranDate" class="java.lang.String"/>
+	<parameter name="sender" class="java.lang.String"/>
+	<parameter name="recipient" class="java.lang.String"/>
+	<parameter name="recipientBank" class="java.lang.String"/>
+	<parameter name="acctNo2" class="java.lang.String"/>
+	<parameter name="acctNo1" class="java.lang.String"/>
+	<parameter name="amount" class="java.lang.String"/>
+	<queryString language="json">
+		<![CDATA[]]>
+	</queryString>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="21" splitType="Stretch">
+			<staticText>
+				<reportElement key="FIN_PAGE_HEADER-1" stretchType="RelativeToTallestObject" x="0" y="0" width="450" height="20" forecolor="#000000" uuid="f77e60f4-934a-4b4f-878b-ee528a3e9493"/>
+				<textElement textAlignment="Justified" verticalAlignment="Middle">
+					<font fontName="Monospaced" size="14" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[CORONATION MERCHANT BANK TRANSFER]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="150" splitType="Stretch">
+			<rectangle>
+				<reportElement x="1" y="62" width="553" height="19" backcolor="#EBE9E8" uuid="8fd0d94d-c621-4e57-96e1-97ff7d41e76a">
+					<printWhenExpression><![CDATA[($V{REPORT_COUNT}%2)==1]]></printWhenExpression>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.0"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="2" y="103" width="553" height="20" backcolor="#EBE9E8" uuid="170719aa-cb32-48b2-be5c-3ca61430c279">
+					<printWhenExpression><![CDATA[($V{REPORT_COUNT}%2)==1]]></printWhenExpression>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.0"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="2" y="1" width="553" height="40" backcolor="#EBE9E8" uuid="29efd964-1abe-48d4-a4a5-3aadd3adc476">
+					<printWhenExpression><![CDATA[($V{REPORT_COUNT}%2)==1]]></printWhenExpression>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.0"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement x="246" y="62" width="100" height="20" uuid="7978be47-69e2-4b55-9085-80a94d185d9d"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Account Number:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="102" y="103" width="451" height="19" uuid="99f9a564-11d2-46c2-a1ca-34d9e5f9e0d7"/>
+				<textFieldExpression><![CDATA[$P{remarks}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="246" y="20" width="298" height="19" uuid="ce0a6cb2-b2b4-4d99-b2e5-0b1a36127cd8"/>
+				<textFieldExpression><![CDATA[$P{refNUm}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="2" y="103" width="100" height="20" uuid="d6e864e7-ecb0-491c-84ca-37a0752b3f77"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Remarks:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="1" y="41" width="100" height="20" uuid="0d45b7ac-be0e-46fe-af84-e7464e5cd029"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Sender:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="1" y="83" width="100" height="20" uuid="db515bea-c897-40f8-8172-f47d9de80558"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Amount:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="1" y="20" width="138" height="20" uuid="d4d0d6cd-4efc-4851-bae2-387251a99a05"/>
+				<textFieldExpression><![CDATA[$P{tranDate}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="100" y="43" width="138" height="20" uuid="7dcc536d-dc2f-472f-99e0-fe6d039e8b87"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{sender}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="246" y="83" width="100" height="20" uuid="8fa7b9f1-db87-4016-b198-623412439ac6"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Recipeint Bank:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="346" y="42" width="209" height="19" uuid="fab2855b-4155-46ed-85b8-bdb4f8bfa4e1"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{recipient}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="1" y="62" width="100" height="20" uuid="3d86894d-63ec-449d-9e0f-bbc88a4e2d39"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Account Number:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="346" y="85" width="100" height="19" uuid="ac375403-dd64-4e06-a07c-a40b450a51d1"/>
+				<textFieldExpression><![CDATA[$P{recipientBank}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="346" y="62" width="209" height="19" uuid="823b6655-13c1-4270-8d4c-e77e001c364d"/>
+				<textFieldExpression><![CDATA[$P{acctNo2}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="246" y="41" width="100" height="20" uuid="e4e7437c-35f2-4571-9cba-2b65a62efb67"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Recipient:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="246" y="0" width="100" height="20" uuid="8c873953-1c88-4921-b06f-35af8a3970c8"/>
+				<text><![CDATA[Reference Number: ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="1" y="0" width="100" height="20" uuid="15ec05cd-8116-4487-8593-54efd8a90836"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Transaction Date:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="100" y="63" width="138" height="20" uuid="d35e1113-c3b0-4834-8955-86eab3c46a17"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{acctNo1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="100" y="85" width="138" height="20" uuid="1d96cdfe-f9d4-4261-a6a5-b0f5c7829eb6"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{amount}]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement mode="Transparent" x="1" y="40" width="553" height="21" forecolor="#FFFFFF" backcolor="#4F8EC1" uuid="c85ad416-d6ee-4894-9c5a-4c267f91230b">
+					<printWhenExpression><![CDATA[($V{REPORT_COUNT}%2)==1]]></printWhenExpression>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.0"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement mode="Transparent" x="2" y="82" width="553" height="22" forecolor="#FFCCCC" backcolor="#CCCCCC" uuid="66cbee03-589b-417c-860b-630eacf876ff">
+					<printWhenExpression><![CDATA[($V{REPORT_COUNT}%2)==1]]></printWhenExpression>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.0"/>
+				</graphicElement>
+			</rectangle>
+		</band>
+	</columnHeader>
+
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

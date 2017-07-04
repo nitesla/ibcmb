@@ -41,7 +41,7 @@
                             </ul>
                         </li>
                         <li><a href="/register">REGISTER</a></li>
-                        <li><a href="/">CONTACT US</a></li>
+                        <li><a href="/#contact_us">CONTACT US</a></li>
                         <li><a href="/">HELP</a></li>
                     </ul>
                 </div>
@@ -70,19 +70,15 @@
                             <section>
                                 <div class="row">
                                     <div class="col-md-offset-4 col-md-4">
-                                        <div class='alert alert-danger' id="myspan">
-                                        </div>
                                         <div class="form-group clearfix">
 
                                             <label>Account Number</label>
-                                            <span class='req'></span><input type="text" name="accountNumber"  class="form-control required" placeholder="Account Number"/>
-                                        </div>
-                                        <div id="loader" style='display:none'>
+                                            <span class='req'></span><input type="text" name="accountNumber" autocomplete="off" class="my-select required" placeholder="Account Number"/>
                                         </div>
 
                                         <div class="form-group">
                                             <label>Select Email or Date of birth to complete registration</label>
-                                            <select name="userdet" id="userdet" class="form-control">
+                                            <select name="userdet" id="userdet" class="my-select">
                                                 <option th:value="email">Use Email</option>
                                                 <option th:value="dob">Use Date of Birth</option>
                                             </select>
@@ -90,11 +86,11 @@
 
                                         <div id="email" class="form-group clearfix">
                                             <label>Email</label>
-                                            <span class='req'></span><input type="email" name="email" class="form-control" placeholder="Email"/>
+                                            <span class='req'></span><input type="email" name="email" autocomplete="off" class="my-select" placeholder="Email"/>
                                         </div>
                                         <div id="dob" style="display: none;" class="form-group clearfix">
                                             <label>Date of Birth</label>
-                                            <span class='req'></span><input name="birthDate" type="text" class="form-control" data-mask="99-99-9999" placeholder="DD-MM-YYYY"/>
+                                            <span class='req'></span><input name="birthDate" type="text" class="my-select" data-mask="99-99-9999" placeholder="DD-MM-YYYY"/>
                                         </div>
 
 
@@ -105,34 +101,23 @@
                             <section>
                                 <div class="row">
                                     <div class="col-md-offset-4 col-md-4">
-                                        <div class='alert alert-danger alert-dismissable' id="myspan1" style="display:none">
-                                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                                        </div>
-
-                                        <div class='alert alert-success alert-dismissable' id="successReg" style="display:none">
-                                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                                        </div>
-
 
                                         <div class="form-group clearfix">
                                             <label>Username</label>
-                                            <span class='req'></span><input type="text" name="userName" class="form-control required" placeholder="Preferred Username"/>
+                                            <span class='req'></span><input type="text" name="userName" autocomplete="off" class="my-select required" placeholder="Preferred Username"/>
                                             <div id="myModal" class="modal fade" role="dialog">
 
 
 
                                                     <!-- Modal content-->
                                                 <div id="load" style='display:none'></div>
-
-
-
                                                 </div>
 
                                         </div>
 
                                         <div class="form-group clearfix">
                                             <label>Password</label>
-                                            <span class='req'></span><input onKeyUp="passwordStrength(this.value)" type="password" id="password" name="password" class="form-control required" placeholder="Password"/>
+                                            <span class='req'></span><input onKeyUp="passwordStrength(this.value)" type="password" id="password" name="password" class="my-select required" placeholder="Password"/>
 
                                             <label for="passwordStrength">Password strength</label>
                                             <div id="passwordDescription">Password not entered</div>
@@ -140,14 +125,14 @@
                                         </div>
                                         <div class="form-group clearfix">
                                             <label>Confirm Password</label>
-                                            <span class='req'></span><input type="password" id="confirm" name="confirm" class="form-control required" placeholder="Confirm Password"/>
+                                            <span class='req'></span><input type="password" id="confirm" name="confirm" class="my-select required" placeholder="Confirm Password"/>
                                         </div>
 
                                         <a id="send" href="javascript:void(0)" onclick="sendRegCode();" class="btn "> Send Verification Code</a>
 
                                         <div id='regcodebox' class="form-group clearfix">
                                             <label>Registration Code</label>
-                                            <span class='req'></span><input type="text" id="code" name="regCode" class="col-md-8 form-control required" placeholder="Registration Code"/>
+                                            <span class='req'></span><input type="text" id="code" name="regCode" class="col-md-8 my-select required" placeholder="Registration Code"/>
                                         </div>
                                         <input id="customerId" name="customerId" type="hidden"/>
                                     </div>
@@ -171,13 +156,13 @@
                                         <input id="returnValue" type="hidden"/>
                                         <div class="form-group clearfix">
                                             <label>Question</label>
-                                            <select name="securityQuestion" class="form-control required">
+                                            <select name="securityQuestion" class="my-select required">
                                                 <option th:each="question : ${secQuestions}" th:text="*{question.securityQuestion}"></option>
                                             </select>
                                         </div>
                                         <div class="form-group clearfix">
                                             <label>Question</label>
-                                            <input type="text" name="securityAnswer" class="form-control required" placeholder="Security Answer"/>
+                                            <input type="text" name="securityAnswer" class="my-select required" placeholder="Security Answer"/>
                                         </div>
                                     </div>
                                 </div>
@@ -212,7 +197,7 @@
                                         </div>
                                     </div>
                                     <div class="col-md-offset-4 col-md-4">
-                                        <input type="text" name="caption" class="form-control required" placeholder="Enter Image Caption"/>
+                                        <input type="text" name="caption" class="my-select required" placeholder="Enter Image Caption"/>
                                     </div>
                                 </div>
                             </section>
@@ -230,16 +215,61 @@
             </div>
         </div>
         <!-- End row-->
-
     </div>
 </section>
 
+<div id="myModalError" class="modal fade " role="dialog">
+    <div class="modal-dialog">
 
+        <!-- Modal content-->
+
+        <div class="modal-content no-bd-rad content ">
+
+            <div class="modal-body">
+
+
+                <p id='errorMess' class='mess text-danger'>Put something here iff need be.</p>
+
+
+            </div>
+
+
+            <div class="modal-footer no-bd-top">
+                <button type="button" class="btn btn-link" data-dismiss="modal">OK</button>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+
+<div id="myModalSuccess" class="modal fade " role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+
+        <div class="modal-content no-bd-rad content ">
+
+            <div class="modal-body">
+
+
+                <p id='successMess' class='mess text-primary'>Put something here iff need be.</p>
+
+
+            </div>
+
+
+            <div class="modal-footer no-bd-top">
+                <button type="button" class="btn btn-link" data-dismiss="modal">OK</button>
+            </div>
+
+        </div>
+
+    </div>
+</div>
 
 <footer>
-
-
-
     <div class="container">
         <div class="footer_bar">
             <div class="col-md-6 col-xs-12">

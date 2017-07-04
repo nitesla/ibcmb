@@ -1,5 +1,6 @@
 package longbridge.services.implementations;
 
+import longbridge.api.AccountDetails;
 import longbridge.dtos.SettingDTO;
 import longbridge.dtos.TransferRequestDTO;
 import longbridge.exception.InternetBankingTransferException;
@@ -19,6 +20,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContext;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -29,6 +33,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -46,12 +51,14 @@ public class TransferServiceImpl implements TransferService {
     private AccountService accountService;
     private FinancialInstitutionService financialInstitutionService;
     private ConfigurationService configService;
+    private MessageSource messages;
+    private Locale locale= LocaleContextHolder.getLocale();
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
     @Autowired
     public TransferServiceImpl(TransferRequestRepo transferRequestRepo, IntegrationService integrationService, TransactionLimitServiceImpl limitService, ModelMapper modelMapper, AccountService accountService, FinancialInstitutionService financialInstitutionService, ConfigurationService configurationService
-            , RetailUserRepo retailUserRepo) {
+            , RetailUserRepo retailUserRepo,MessageSource messages) {
         this.transferRequestRepo = transferRequestRepo;
         this.integrationService = integrationService;
         this.limitService = limitService;
@@ -60,8 +67,8 @@ public class TransferServiceImpl implements TransferService {
         this.financialInstitutionService = financialInstitutionService;
         this.configService = configurationService;
         this.retailUserRepo = retailUserRepo;
+        this.messages=messages;
     }
-
 
 
     public TransferRequestDTO makeTransfer(TransferRequestDTO transferRequestDTO) throws InternetBankingTransferException {
@@ -71,11 +78,14 @@ public class TransferServiceImpl implements TransferService {
         if (transRequest != null) {
 
             logger.trace("params {}", transRequest);
+
             saveTransfer(convertEntityToDTO(transRequest));
 
-            if (transRequest.getStatus() != null){
-                if ( transRequest.getStatus().equalsIgnoreCase("000") || transRequest.getStatus().equals("00"))
+            if (transRequest.getStatus() != null) {
+                if (transRequest.getStatus().equalsIgnoreCase("000") || transRequest.getStatus().equalsIgnoreCase("00"))
                     return convertEntityToDTO(transRequest);
+
+                throw new InternetBankingTransferException(transRequest.getStatusDescription());
             }
 
 
@@ -132,10 +142,6 @@ public class TransferServiceImpl implements TransferService {
 
     @Override
     public void validateTransfer(TransferRequestDTO dto) throws InternetBankingTransferException {
-        if (dto.getAmount().compareTo(new BigDecimal(0)) <= 0) {
-
-        }
-
 
         if (dto.getBeneficiaryAccountNumber().equalsIgnoreCase(dto.getCustomerAccountNumber())) {
             throw new InternetBankingTransferException(TransferExceptions.SAME_ACCOUNT.toString());
@@ -204,17 +210,29 @@ public class TransferServiceImpl implements TransferService {
 
     private void validateAccounts(TransferRequestDTO dto) throws InternetBankingTransferException {
 
-        if (!StringUtils.isNumeric(dto.getAmount().toString()) || dto.getAmount().compareTo(new BigDecimal(0))==0)
+        String bvn = integrationService.viewCustomerDetails(dto.getCustomerAccountNumber()).getBvn();
+        if (bvn == null || bvn.isEmpty() || bvn.equalsIgnoreCase(""))
+            throw new InternetBankingTransferException(TransferExceptions.NO_BVN.toString());
+
+
+        if (!integrationService.viewAccountDetails(dto.getCustomerAccountNumber()).getAcctStatus().equalsIgnoreCase("A"))
+            throw new InternetBankingTransferException(TransferExceptions.INVALID_ACCOUNT.toString());
+
+
+        if (!StringUtils.isNumeric(dto.getAmount().toString()) || dto.getAmount().compareTo(new BigDecimal(0)) == 0)
             throw new InternetBankingTransferException(TransferExceptions.INVALID_AMOUNT.toString());
 
 
-
         if (dto.getTransferType().equals(TransferType.OWN_ACCOUNT_TRANSFER) || dto.getTransferType().equals(TransferType.CORONATION_BANK_TRANSFER)) {
-            if (integrationService.viewAccountDetails(dto.getCustomerAccountNumber()) == null)
+            AccountDetails sourceAccount = integrationService.viewAccountDetails(dto.getCustomerAccountNumber());
+            AccountDetails destAccount = integrationService.viewAccountDetails(dto.getBeneficiaryAccountNumber());
+            if (sourceAccount == null)
                 throw new InternetBankingTransferException(TransferExceptions.INVALID_ACCOUNT.toString());
-            if (integrationService.viewAccountDetails(dto.getBeneficiaryAccountNumber()) == null)
+            if (destAccount == null)
                 throw new InternetBankingTransferException(TransferExceptions.INVALID_BENEFICIARY.toString());
+            if ((("NGN").equalsIgnoreCase(sourceAccount.getAcctCrncyCode()))&& !("NGN").equalsIgnoreCase(destAccount.getAcctCrncyCode()))
 
+            throw new InternetBankingTransferException(TransferExceptions.NOT_ALLOWED.toString());
 
         }
         if (dto.getTransferType().equals(TransferType.INTER_BANK_TRANSFER)) {

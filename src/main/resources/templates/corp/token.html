@@ -4,11 +4,12 @@
 
 </head>
 <body>
+<div class="container">
 <header th:replace="corp_layout :: corp-header">
 </header>
 
 <section class="content-wrapper">
-    <div class="container">
+    <div class="containe">
         <div class="row">
             <div class="col-md-offset-4 col-md-4 col-sm-6">
                 <h5 class="page_header">Token Authenticaion</h5>
@@ -23,7 +24,7 @@
                         <input type="text" class="form-control" placeholder="Token Code" required="required"/>
                     </div>
 
-                    <button type="submit" class="btn btn-default">Report</button>
+                    <button type="submit" class="btn btn-link  required-step ">Report</button>
                 </form>
             </div>
         </div>
@@ -33,5 +34,6 @@
 <!-- CONTENT-WRAPPER SECTION END-->
 <footer th:replace="corp_layout :: corp-footer">
 </footer>
+</div>
 </body>
 </html>

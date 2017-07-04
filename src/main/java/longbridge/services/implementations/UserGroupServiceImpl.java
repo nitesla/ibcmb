@@ -10,6 +10,7 @@ import longbridge.models.UserGroup;
 import longbridge.repositories.OperationsUserRepo;
 import longbridge.repositories.UserGroupRepo;
 import longbridge.services.UserGroupService;
+import longbridge.utils.Verifiable;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,6 +51,7 @@ public class UserGroupServiceImpl implements UserGroupService {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
+    @Verifiable(operation="ADD_USER_GRP",description="Adding a Group")
     public String addGroup(UserGroupDTO userGroupDTO) throws InternetBankingException {
         try {
             UserGroup userGroup = convertDTOToEntity(userGroupDTO);
@@ -61,6 +63,7 @@ public class UserGroupServiceImpl implements UserGroupService {
         }
     }
 
+    @Verifiable(operation="UPDATE_USER_GRP",description="Updating a Group")
     public String updateGroup(UserGroupDTO userGroupDTO) throws InternetBankingException{
         try {
             UserGroup userGroup = convertDTOToEntity(userGroupDTO);
@@ -74,6 +77,7 @@ public class UserGroupServiceImpl implements UserGroupService {
         }
     }
 
+    @Verifiable(operation="DELETE_USER_GRP",description="Deleting a Group")
     public String deleteGroup(Long id) throws InternetBankingException{
         try {
             userGroupRepo.delete(id);

@@ -46,12 +46,14 @@ public class SessionUtils {
             if (settingDTO.isEnabled()) {
                 String preference = user.getAlertPreference().getCode();
                 if (preference.equalsIgnoreCase("SMS")) {
-                    //  integrationService.sendSMS()
+
+                    // integrationService.sendSMS(user.getPhoneNumber())
                 } else if (preference.equalsIgnoreCase("EMAIL")) {
                     //   mailService.send();
+                	;
 
                 } else if (preference.equalsIgnoreCase("BOTH")) {
-
+                		;
                 }
 
             }

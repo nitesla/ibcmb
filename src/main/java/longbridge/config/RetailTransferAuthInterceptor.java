@@ -28,30 +28,29 @@ public class RetailTransferAuthInterceptor extends HandlerInterceptorAdapter {
         SettingDTO setting = configService.getSettingByName("ENABLE_RETAIL_2FA");
 
 
-
         if (/* service to check if token is enabled comes in here  */
 
-               ( setting!=null && setting.isEnabled())
-                     &&
-                     httpServletRequest.getSession().getAttribute("auth-needed")==null
+                (setting != null && setting.isEnabled())
+                        &&
+                        httpServletRequest.getSession().getAttribute("auth-needed") == null
 
-                     )  {
+                ) {
 
 
-                 httpServletRequest.getSession().setAttribute("auth-needed", "auth-needed");
+            httpServletRequest.getSession().setAttribute("auth-needed", "auth-needed");
 
-                 ModelAndView view = new ModelAndView("forwarded-view");
-                 TransferRequestDTO dto= (TransferRequestDTO) httpServletRequest.getSession().getAttribute("transferRequest");
+            ModelAndView view = new ModelAndView("forwarded-view");
+            TransferRequestDTO dto = (TransferRequestDTO) httpServletRequest.getSession().getAttribute("transferRequest");
 
-                  if (dto!=null) view.addObject("transferRequest", dto);
+            if (dto != null) view.addObject("transferRequest", dto);
 
-                 view.setViewName("/cust/transfer/transferauth");
+            view.setViewName("/cust/transfer/transferauth");
 
 //                 httpServletResponse.sendRedirect(httpServletRequest.getContextPath()+"/retail/transfer/interbank/auth");
 
-                 throw new ModelAndViewDefiningException(view);
+            throw new ModelAndViewDefiningException(view);
 
-             }
+        }
 
 
         return true;
@@ -60,11 +59,10 @@ public class RetailTransferAuthInterceptor extends HandlerInterceptorAdapter {
     @Override
     public void postHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o, ModelAndView modelAndView) throws Exception {
 
-       // String uri=httpServletRequest.getRequestURI();
+        // String uri=httpServletRequest.getRequestURI();
 
 
-
-       // if (httpServletRequest.getSession().getAttribute("auth-needed")!=null)
+        // if (httpServletRequest.getSession().getAttribute("auth-needed")!=null)
 
 //          if ( httpServletRequest.getSession().getAttribute("AUTH") !=null){
 //
@@ -81,16 +79,7 @@ public class RetailTransferAuthInterceptor extends HandlerInterceptorAdapter {
 //          }
 
 
-        }
-
-
-
-
-
-
-
-
-
+    }
 
 
     @Override

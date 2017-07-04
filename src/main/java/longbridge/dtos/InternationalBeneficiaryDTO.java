@@ -1,5 +1,7 @@
 package longbridge.dtos;
 
+import java.io.Serializable;
+
 import org.hibernate.validator.constraints.NotEmpty;
 
 /**
@@ -7,7 +9,7 @@ import org.hibernate.validator.constraints.NotEmpty;
  */
 
 
-public class InternationalBeneficiaryDTO {
+public class InternationalBeneficiaryDTO implements Serializable{
 
     private Long id;
     @NotEmpty(message = "Please enter a Beneficiary Name")
@@ -23,7 +25,7 @@ public class InternationalBeneficiaryDTO {
     private String beneficiaryAddress;
     private String intermediaryBankName;
     private String intermediaryBankAcctNo;
-    private String currency;
+    private String currencyCode;
 
     public Long getId() {
         return id;
@@ -97,11 +99,11 @@ public class InternationalBeneficiaryDTO {
         this.intermediaryBankAcctNo = intermediaryBankAcctNo;
     }
 
-    public String getCurrency() {
-        return currency;
+    public String getCurrencyCode() {
+        return currencyCode;
     }
 
-    public void setCurrency(String currency) {
-        this.currency = currency;
+    public void setCurrencyCode(String currencyCode) {
+        this.currencyCode = currencyCode;
     }
 }

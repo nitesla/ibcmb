@@ -1,5 +1,8 @@
 package longbridge.models;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -9,11 +12,14 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import longbridge.dtos.RoleDTO;
+import longbridge.utils.PrettySerializer;
 
 import javax.persistence.*;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Created by Wunmi on 27/03/2017.
@@ -21,7 +27,7 @@ import java.util.Collection;
 @Entity
 @Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
-public class Role extends AbstractEntity{
+public class Role extends AbstractEntity implements PrettySerializer{
 
     private String name;
     private String email;
@@ -76,14 +82,6 @@ public class Role extends AbstractEntity{
         this.email = email;
     }
 
-    //    public Collection<User> getUsers() {
-//        return users;
-//    }
-//
-//    public void setUsers(Collection<User> users) {
-//        this.users = users;
-//    }
-
 
     @Override
     public String toString() {
@@ -96,13 +94,41 @@ public class Role extends AbstractEntity{
     }
 
 
-	public static OperationCode getAddCode() {
-		// TODO Auto-generated method stub
-		return null;
+
+	@Override @JsonIgnore
+    public JsonSerializer<Role> getSerializer() {
+        return new JsonSerializer<Role>() {
+            @Override
+            public void serialize(Role value, JsonGenerator gen, SerializerProvider serializers)
+                    throws IOException, JsonProcessingException {
+
+                gen.writeStartObject();
+                gen.writeStringField("Name", value.name);
+                gen.writeStringField("Type",value.userType.name());
+                gen.writeStringField("Email", value.email);
+                gen.writeStringField("Description", value.description);
+
+                // gen.writeArrayFieldStart("permissions");
+                gen.writeObjectFieldStart("Permissions");
+                for(Permission p : value.permissions){
+                    gen.writeObjectFieldStart(p.getId().toString());
+                    //gen.writeStartObject();
+                    gen.writeStringField("Name",p.getName());
+                    gen.writeStringField("Code",p.getCode());
+                    gen.writeStringField("Description",p.getDescription());
+                    gen.writeEndObject();
+                }
+                gen.writeEndObject();
+                //gen.writeEndArray();
+                gen.writeEndObject();
+            }
+        };
+    }
+
+	@Override
+	public List<String> getDefaultSearchFields() {
+		return Arrays.asList("name", "description","email");
 	}
 
-	public static OperationCode getModifyCode() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+
 }

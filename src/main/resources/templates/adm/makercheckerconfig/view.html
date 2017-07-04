@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout :: site-head">
+</head>
+
+
+
+<body class="nav-md">
+<div class="container body">
+    <div class="main_container">
+        <div class="col-md-3 left_col">
+            <div class="left_col scroll-view">
+                <div class="navbar nav_title" style="border: 0;">
+                    <!--<a href="index.html"><img th:src="@{~/images/cmb_logo.png}"/></a>-->
+                </div>
+
+                <div class="clearfix"></div>
+
+                <div th:replace="layout :: admin-menu"></div>
+                <div th:replace="layout :: menu-footer-adm"></div>
+
+            </div>
+        </div>
+        <div th:replace="layout :: top-nav"></div>
+
+        <!-- page content -->
+        <div class="right_col" role="main">
+            <div class="">
+                <div class="page-title">
+                    <div class="title_left">
+                        <h3>Maker Checker Configuration</h3>
+                    </div>
+
+                </div>
+
+
+                <!--<ul class="nav navbar-right panel_toolbox">-->
+
+                    <!--<li>-->
+                        <!--<div class="col-lg-4">-->
+                            <!--<div class="title-action">-->
+                                <!--<a href="/admin/checker/new" class="btn btn-sm btn-primary"><i-->
+                                        <!--class="fa fa-plus"></i> Add</a>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</li>-->
+
+
+                    <!--<li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>-->
+                    <!--</li>-->
+
+                <!--</ul>-->
+                <div class="clearfix"></div>
+            </div>
+
+                <div class="clearfix"></div>
+
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <!--<div class="row wrapper border-bottom white-bg page-heading">-->
+
+
+                                <!--</div>-->
+                                <ul class="nav navbar-right panel_toolbox">
+
+                                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                    </li>
+
+                                </ul>
+                                 <ul class="nav navbar-right panel_toolbox col-lg-4 pull-right">
+
+                                   <li class="pull-right" >
+								<div class="input-group col-lg-12">
+									<input type="text" class="form-control" id="pattern" placeholder="Search for..."/> <span
+										class="input-group-btn">
+										<button class="btn btn-success" id="search" type="button">Go!</button>
+									</span>
+							</div>
+</li>
+                                    
+                                </ul>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+
+                                <table class="table table-striped table-bordered table-hover" id="checker">
+                                    <thead>
+                                    <tr>
+                                        <th>Operations</th>
+                                        <th>Description</th>
+                                        <th>Enabled</th>
+
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+
+                                    </tbody>
+                                    <tfoot>
+                                    <tr>
+                                        <th>Operation</th>
+                                        <th>Description</th>
+                                        <th>Enabled</th>
+
+                                    </tr>
+                                    </tfoot>
+                                </table>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- footer content -->
+        <footer th:replace="layout :: footer">
+        </footer>
+        <!-- /footer content -->
+    </div>
+
+
+
+<script th:src="@{~/bank/vendors/datatables.net/js/jquery.dataTables.js}"></script>
+<script th:src="@{~/bank/js/dataTables.bootstrap.js}"></script>
+<script th:src="@{~/bank/js/dataTables.select.js}"></script>
+<script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
+
+<!-- Page-Level Scripts -->
+<script>
+    /*<![CDATA[*/
+    $(document).ready(function() {
+
+
+        $('#checker').DataTable({
+            responsive: true,
+            "lengthMenu" : [ [ 5, 10, 50, -1 ],	[ 5, 10, 50, "All" ] ],
+            "pagingType" : "simple_numbers",
+            "searching": false,
+            "paging": true,
+            "processing" : true,
+            "serverSide" : true,
+            "ajax" : {
+				url : "/admin/checker/all",
+				"type" : "GET",
+				"data" : function(d) {
+					d.csearch = $('#pattern').val();
+				}
+			},
+            "dom": 'T<"clear">frtlp',
+            "drawCallback": function( settings ) {
+                var elems = Array.prototype.slice.call(document.querySelectorAll('.js-switch'));
+                elems.forEach(function(html) {
+                    var switchery = new Switchery(html, { size: 'small' ,color: '#2A3F54'});
+                });
+            },
+            "columns": [
+                { "data": "operation" },
+                { "data": "description" },
+                { "data": "enabled" }
+
+            ] ,
+            "columnDefs" : [ {
+                "targets" : 2,
+                "data" : "enabled",
+                "render" : function(data, type,full, meta) {
+                    if (type === 'display') {
+                        if (data == 'Y') {
+                            return "<input type='checkbox' data-pk='"+full.id+"' data-version='"+full.version+"' data-description='"+full.description+"' data-userType='"+full.userType+"' data-switchery='true' class='js-switch' checked value='"+full.operation+"' />";
+                        } else if (data == 'N') {
+                            return "<input type='checkbox' data-pk='"+full.id+"' data-version='"+full.version+"'  data-description='"+full.description+"' data-userType='"+full.userType+"' data-switchery='true' class='js-switch' value='"+full.operation+"' />";
+                        }
+                    }
+                    return data;
+                }
+
+            } ]
+        });
+
+
+    } );
+    
+    $("#search").on("click", function(e) {
+		e.preventDefault();
+		dt = $('#checker').DataTable();
+		dt.ajax.reload(null, true);
+		
+	});
+    /*]]>*/
+</script>
+
+<script>
+
+
+    $(document).on("change","input[type=checkbox]", function(e) {
+        var updateUrl = "/admin/checker";
+        var cb = $(e.currentTarget);
+        var op = cb.val();
+        var pk = cb.attr("data-pk");
+        var vers = cb.attr("data-version");
+        var desc= cb.attr("data-description");
+        var user= cb.attr("data-userType");
+
+        var isEnabled  ;
+        if(cb.is(':checked')){
+            isEnabled = 'Y';
+        }else{
+            isEnabled = 'N';
+        }
+        var objectData =
+            {
+                operation : op,
+                enabled : isEnabled,
+                version : vers,
+                id : pk,
+                description:desc,
+                userType:user
+
+            };
+        var objectDataString = JSON.stringify(objectData);
+        $.ajax({
+            type : "POST",
+            contentType : "application/json",
+            url : updateUrl,
+            data: objectDataString,
+            dataType : 'json',
+            timeout : 100000,
+            success : function(data) {
+                console.log("SUCCESS: ", data);
+                var tab = $('#checker').DataTable();
+                /* tab.ajax.reload(); */
+                tab.draw(false);
+            },
+            error : function(e) {
+                console.log("ERROR: ", e);
+            },
+            done : function(e) {
+                console.log("DONE");
+            }
+        });
+
+        //goto url
+    });
+    
+    
+</script>
+
+
+</body>
+</html>

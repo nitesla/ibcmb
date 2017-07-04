@@ -1,5 +1,6 @@
 package longbridge.controllers.retail;
 
+import longbridge.dtos.LocalBeneficiaryDTO;
 import longbridge.dtos.TransferRequestDTO;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferErrorService;
@@ -8,12 +9,15 @@ import longbridge.services.*;
 import longbridge.utils.ResultType;
 import longbridge.utils.TransferType;
 import longbridge.validator.transfer.TransferValidator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.LocaleResolver;
@@ -25,6 +29,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -49,6 +54,7 @@ public class OwnTransferController {
     private String page = "cust/transfer/ownaccount/";
     @Value("${bank.code}")
     private String bankCode;
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     public OwnTransferController(TransferService transferService, AccountService accountService, MessageSource messages, LocaleResolver localeResolver, LocalBeneficiaryService localBeneficiaryService, TransferValidator validator, FinancialInstitutionService financialInstitutionService, ApplicationContext appContext, TransferErrorService errorService) {
@@ -114,15 +120,44 @@ public class OwnTransferController {
 
 
     @RequestMapping(path = "{id}/receipt", method = RequestMethod.GET)
-    public ModelAndView report(@PathVariable Long id) {
-
+    public ModelAndView report(@PathVariable Long id,HttpServletRequest servletRequest, TransferRequestDTO transferRequestDTO) {
+        /**
+         * Created a stub to test transaction receiptpt
+         */
         JasperReportsPdfView view = new JasperReportsPdfView();
-        view.setUrl("classpath:pdf/a");
+        view.setUrl("classpath:jasperreports/rpt_receipt.jrxml");
         view.setApplicationContext(appContext);
 
-        Map<String, Object> params = new HashMap<>();
-        params.put("datasource", transferService.getTransfer(id));
+        Map<String, Object> modelMap = new HashMap<>();
 
-        return new ModelAndView(view, params);
+        modelMap.put("datasource",new ArrayList<>());
+//        modelMap.put("format", "pdf");
+        modelMap.put("amount", "1,000,000.00");
+        modelMap.put("recipient", "BANKOLE D. ONEY");
+        modelMap.put("AccountNum", "10986433737332");
+        modelMap.put("sender", "CHEERFUL GIVER CHOICE");
+        modelMap.put("bank", "BANK OF AFRICA");
+        modelMap.put("remarks", "MY BUILDING PROJECT");
+        modelMap.put("recipientBank", "AGONORONA BANK");
+        modelMap.put("acctNo2", "0986879765");
+        modelMap.put("acctNo1", "4343758667");
+        modelMap.put("refNUm", "65566586787");
+        modelMap.put("date", "08-09-2017");
+        modelMap.put("amountInWords", "30 BILLION ");
+        modelMap.put("tranDate", "08-09-2017");
+        return new ModelAndView(view, modelMap);
+
+//        logger.info("Transaction Receipt {}",modelMap);
+//
+//        ModelAndView modelAndView = new ModelAndView("rpt_receipt", modelMap);
+//        return modelAndView;
     }
+    @PostMapping("/edit")
+    public String editTransfer(@ModelAttribute("transferRequest")  TransferRequestDTO transferRequestDTO,Model model,HttpServletRequest request){
+        transferRequestDTO.setTransferType(TransferType.OWN_ACCOUNT_TRANSFER);
+        transferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode(bankCode));
+        model.addAttribute("transferRequest",transferRequestDTO);
+        return page + "pagei";
+    }
+
 }

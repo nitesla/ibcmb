@@ -4,9 +4,12 @@
 
 </head>
 <body>
+
     <div class="container">
-        <header th:replace="cust_layout :: header">
-        </header>
+        
+            <header th:replace="cust_layout :: header">
+            </header>
+       
 
         <section class="content-wrapper">
         <div class="">
@@ -17,90 +20,84 @@
                         <option value="account">Account Overview</option>
                     </select>
                 </div>
+
+                <p class="col-xs-12 invisible">
+                    Fields marked <span style="color:red">*</span> are compulsory
+                </p>
+
+                
             </div>
             <div class="row">
-                <div class="" style="margin-top: 20px">
-                    <div class="col-md-9 content-bg" >
+                    <div class=" col-m-1" style="margin-op:20px">
+                       
+                        <div class="col-md-9 content-bg " >
 
-                            <div class="col-md">
-                                <table class="table table-responsive" id="users">
-                                    <thead>
-                                    <tr>
-                                        <th class="text-center">Account Number</th>
-                                        <th class="text-center">Account type</th>
-                                        <th class="text-center">Currency</th>
-                                        <th class="text-center">Available Balance</th>
-                                        <th class="text-center">Ledger Balance</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr th:each="list : ${accountList}">
-                                        <td th:align="center" th:text="${list.accountNumber}"></td>
-                                        <td th:align="center" th:text="${list.schemeType}"></td>
-                                        <td th:align="center" th:text="${list.currencyCode}"></td>
-                                        <td th:align="center" th:text="${list.accountBalance}"></td>
-                                        <td th:align="center" th:text="${list.ledgerBalance}"></td>
+                                <div class="col-md table-responsive">
+                                    <table class="table " id="users">
+                                        <thead>
+                                        <tr>
+                                            <th class="text-center">Account Number</th>
+                                            <th class="text-center">Account type</th>
+                                            <th class="text-center">Currency</th>
+                                            <th class="text-center">Available Balance</th>
+                                            <th class="text-center">Ledger Balance</th>
+                                            <th class="text-center">&nbsp;</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="list : ${accountList}">
+                                            <td th:align="center" th:text="${list.accountNumber}"></td>
+                                            <td th:align="center" th:text="${list.schemeType}"></td>
+                                            <td th:align="center" th:text="${list.currencyCode}"></td>
+                                            <td th:align="center" th:text="${list.accountBalance}"></td>
+                                            <td th:align="center" th:text="${list.ledgerBalance}"></td>
 
-                                        <td th:align="center" >
-                                            <select>
-                                                <option>Quick Actions</option>
-                                                <option>
-                                                    <a th:href="@{'/retail/account/' + ${list.id} + '/statement'}">
-                                                        <i class=" fa fa-angle-right">Item</i>
-                                                    </a>
-                                                </option>
-                                                <option>
-                                                    <a th:href="@{'/retail/account/' + ${list.id} + '/statement'}">
-                                                        <i class=" fa fa-angle-right">Another Item</i>
-                                                    </a>
-                                                </option>
-                                                <option>
-                                                    <a th:href="@{'/retail/account/' + ${list.id} + '/statement'}">
-                                                        <i class=" fa fa-angle-right">Yet another iTem</i>
-                                                    </a>
-                                                </option>
-                                            </select>
+                                            <td th:align="center">
+                                                <select class="quickAccess" th:attr="onchange='javascript:getId(\'' + ${list.id} + '\');'">
+                                                    <option>Quick Actions</option>
+                                                    <option value="Transaction History">Transaction History</option>
 
-                                        </td>
-                                          </tr>
-                                    </tbody>
-                                </table>
-                            </div>
+                                                </select>
+
+                                            </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
 
 
-                    </div>
-
-                    <!--<div class="col-md-3 sidebar" style="overflow:scroll; height:200x; ">-->
-                        <!--<div class="sidebar-bg">-->
-                            <!--<table class="table " style="border:dotted; border-style:none;  outline-style:none;" id="users" >-->
-                                <!--<thead>-->
-                                <!--<tr>-->
-                                    <!--<th>Date</th>-->
-                                    <!--<th>Narration</th>-->
-                                    <!--<th>Amount</th>-->
-                                <!--</tr>-->
-                                <!--</thead>-->
-                                <!--<tbody>-->
-                                <!--</tbody>-->
-                            <!--</table>-->
-
-                        <!--</div>-->
-                    <!--</div>-->
-                    <div class="col-md-3 pull-right " >
-                        <div th:replace="cust_layout :: sidebar" class="" >
                         </div>
-                    </div>
+                        
+                        <div class="col-md-3 pull-right">
+                            <div th:replace="cust_layout :: sidebar" class="" >
+                            </div>
+                        </div>
+                       
 
+                </div>
             </div>
             </div>
         </div>
-    </section>
-    </div>
+        </section>
+    
 <!-- CONTENT-WRAPPER SECTION END-->
     <footer th:replace="cust_layout :: footer">
     </footer>
+</div>
 <script>
 
 </script>
+    <script>
+
+                function getId(Id) {
+                    if ($('.quickAccess').val() === "Transaction History") {
+                        if (( Id != null || Id != '' )) {
+                            window.location.href = "/retail/account/" + Id + "/statement";
+                        }
+                    }
+                }
+
+    </script>
+
 </body>
 </html>

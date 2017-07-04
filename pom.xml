@@ -91,6 +91,10 @@
 			<artifactId>guava</artifactId>
 			<version>${guava.version}</version>
 		</dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-batch</artifactId>
+        </dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -124,11 +128,11 @@
 			<!--<version>4.3.7.RELEASE</version>-->
 		<!--</dependency>-->
 
-        <!--<dependency>-->
-            <!--<groupId>org.springframework.boot</groupId>-->
-            <!--<artifactId>spring-boot-starter-tomcat</artifactId>-->
-            <!--<scope>provided</scope>-->
-         <!--</dependency>-->
+       <!-- <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+            <scope>provided</scope>
+         </dependency>-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web-services</artifactId>
@@ -216,7 +220,16 @@
             <!--<artifactId>jaxws-rt</artifactId>-->
             <!--<version>2.1.4</version>-->
         <!--</dependency>-->
-
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-instrument</artifactId>
+            <version>4.3.8.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjrt</artifactId>
+            <version>1.8.4</version>
+        </dependency>
 
 
         <dependency>
@@ -230,6 +243,30 @@
             <artifactId>httpclient</artifactId>
             <version>4.5</version>
         </dependency>
+      
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.1.1</version>
+        </dependency>
+       
+        <dependency>
+            <groupId>commons-digester</groupId>
+            <artifactId>commons-digester</artifactId>
+            <version>2.1</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/commons-beanutils/commons-beanutils -->
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+            <version>4.3.7.RELEASE</version>
+        </dependency>
+        <!-- homtps://mvnrepository.com/artifact/org.eclipse.birt.runtime.3_7_1/com.lowagie.text -->
+
         <dependency>
             <groupId>net.sf.jasperreports</groupId>
             <artifactId>jasperreports</artifactId>
@@ -241,49 +278,53 @@
             <version>3.16</version>
         </dependency>
         <dependency>
-            <groupId>com.lowagie</groupId>
-            <artifactId>itext</artifactId>
-            <version>2.1.7</version>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>itextpdf</artifactId>
+            <version>5.5.11</version>
         </dependency>
-
-        <!--<dependency>-->
-            <!--<groupId>com.oracle</groupId>-->
-            <!--<artifactId>ojdbc6</artifactId>-->
-            <!--<version>11.2.0</version>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>net.sf.jasperreports</groupId>-->
-            <!--<artifactId>jasperreports</artifactId>-->
-            <!--<artifactId>5.6.0</artifactId>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>net.sf.j</groupId>-->
-        <!--</dependency>-->
+        <!-- https://mvnrepository.com/artifact/org.quartz-scheduler/quartz -->
         <dependency>
-            <groupId>commons-digester</groupId>
-            <artifactId>commons-digester</artifactId>
-            <version>2.1</version>
+            <groupId>org.quartz-scheduler</groupId>
+            <artifactId>quartz</artifactId>
+            <version>2.2.1</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/commons-beanutils/commons-beanutils -->
         <dependency>
-            <groupId>commons-beanutils</groupId>
-            <artifactId>commons-beanutils</artifactId>
-            <version>1.6</version>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.5</version>
+            <scope>provided</scope>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.eclipse.birt.runtime.3_7_1/com.lowagie.text -->
-        <!--<dependency>-->
-            <!--<groupId>org.eclipse.birt.runtime.3_7_1</groupId>-->
-            <!--<artifactId>com.lowagie.text</artifactId>-->
-            <!--<version>2.1.7</version>-->
-        <!--</dependency>-->
-        <!-- https://mvnrepository.com/artifact/org.apache.poi/poi -->
-        <!--<dependency>-->
-            <!--<groupId>org.apache.poi</groupId>-->
-            <!--<artifactId>poi</artifactId>-->
-            <!--<version>3.7</version>-->
-        <!--</dependency>-->
+        <dependency>
+            <groupId>org.quartz-scheduler</groupId>
+            <artifactId>quartz</artifactId>
+            <version>2.2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.transaction</groupId>
+            <artifactId>jta</artifactId>
+            <version>1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.7.5</version>
+        </dependency>
 
-
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-instrument</artifactId>
+            <version>4.3.8.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjrt</artifactId>
+            <version>1.8.4</version>
+        </dependency>
+        <dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjweaver</artifactId>
+			<version>1.8.9</version>
+		</dependency>
     </dependencies>
 
     <build>
@@ -292,6 +333,24 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+            <plugin>
+			<groupId>org.codehaus.mojo</groupId>
+			<artifactId>aspectj-maven-plugin</artifactId>
+			<version>1.10</version>
+			<configuration>
+				<complianceLevel>1.8</complianceLevel>
+				<source>1.8</source>
+				<target>1.8</target>
+			</configuration>
+			<executions>
+				<execution>
+					<goals>
+						<goal>compile</goal>       <!-- use this goal to weave all your main classes -->
+						<goal>test-compile</goal>  <!-- use this goal to weave all your test classes -->
+					</goals>
+				</execution>
+			</executions>
+</plugin>
         </plugins>
     </build>
 

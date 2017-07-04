@@ -1,5 +1,6 @@
 package longbridge.services.implementations;
 
+import longbridge.dtos.CorporateDTO;
 import longbridge.dtos.MessageDTO;
 import longbridge.dtos.SettingDTO;
 import longbridge.exception.InternetBankingException;
@@ -204,9 +205,28 @@ public class MessageServiceImpl implements MessageService {
             String message = stringBuilder.toString();
 
             mailService.send(email, "CUSTOMER SUPPORT REQUEST", message);
-            return messageSource.getMessage("contactus.failure", null, locale);
-        }catch (InternetBankingException e){
-            throw new InternetBankingException(messageSource.getMessage("contactus.failure", null, locale),e);
+            return messageSource.getMessage("contactus.send.success", null, locale);
+        }catch (Exception e){
+            throw new InternetBankingException(messageSource.getMessage("contactus.send.failure", null, locale),e);
+        }
+    }
+
+    @Override
+    public String sendCorporateContact(String msg, CorporateDTO corporate) {
+        try {
+            SettingDTO settingDTO = configurationService.getSettingByName("CUSTOMER_CARE_EMAIL");
+            String email = settingDTO.getValue();
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append("Customer Name:  " + corporate.getName() + "\n\n");
+            stringBuilder.append("Customer Email:  " + corporate.getEmail() + "\n\n");
+            stringBuilder.append("Request Time:  " + new Date() + "\n\n\n\n");
+            stringBuilder.append(" " + msg + "\n\n");
+            String message = stringBuilder.toString();
+
+            mailService.send(email, "CUSTOMER SUPPORT REQUEST", message);
+            return messageSource.getMessage("contactus.send.success", null, locale);
+        }catch (Exception e){
+            throw new InternetBankingException(messageSource.getMessage("contactus.send.failure", null, locale),e);
         }
     }
 

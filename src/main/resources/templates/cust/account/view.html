@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="cust_layout :: site-head">
-
 </head>
 <body>
 <div class="container">
@@ -9,65 +8,96 @@
     </header>
 
 <section class="content-wrapper">
-    <div class="containe">
+    <div>
         <div class="row">
             <div class="col-md-4 col-sm-4">
                 <h5 class="page_header"> Account Statement</h5>
+                 <select class="form-control invisible">
+                        <option value="account">Account Overview</option>
+                </select>
             </div>
+            <p class="col-xs-12 invisible">
+                    Fields marked <span style="color:red">*</span> are compulsory
+            </p>
         </div>
         <div class="row">
             <div class="col-md-9 content-bg">
+                <form method="post" th:action="@{/retail/account/viewstatement/display}">
 
-                    <div class="col-md">
+                <div class="col-md">
                         <br/>
+                    <div class="form-group col-md-12 col-sm-12">
                         <div class="form-group col-md-6 col-sm-6">
                             <label>Date Range</label>
                             <div class="input-daterange input-group" id="date-range">
-                                <input type="text" class="form-control" name="start" placeholder="Start date" />
-                                <span class="input-group-addon no-border text-white">to</span>
-                                <input type="text" class="form-control" name="end" placeholder="End date" />
+                                <input type="text" data-date-format="dd-mm-yyyy" class="form-control datepicker" id="start" name="fromDate" placeholder="Start date" required="required" />
+                                <span class="input-group-addon no-border">to</span>
+                                <input type="text"  data-date-format="dd-mm-yyyy" class="form-control datepicker" name="toDate" id="endDate" placeholder="End date" required="required" />
                             </div>
                         </div>
-
                         <div class="form-group col-md-6 col-sm-6">
                             <label>Transaction Type</label>
-                            <select id="transType"  class="form-control">
-                                <option></option>
+                            <select name="tranType"  class="form-control">
+                             	<option value="B">All</option>
+                                <option value="C">Credit</option>
+                                <option value="D">Debit</option>
                             </select>
                         </div>
-<div class="row-spacing col-md-12">
-                        <a th:href="@{'#'}" class="btn pull-right"><i class="fa fa-search" style="color: white" ></i>&nbsp; find</a>
-</div>
-
-<!--<p>
-                        <a th:href="@{'#'}" class="btn bt-select bt-link-act" disabled="disabled"><i class="fa fa-print" style="color: white" ></i>&nbsp; print</a>
-                        <a th:href="@{'#'}" class="btn " disabled="disabled"><i class="fa fa-envelope" style="color: white" ></i>&nbsp; send mail</a>
-</p>-->
-                        <table class="table" id="users">
-                            <thead>
-                            <tr>
-                                <th>Amount</th>
-                                <th>Currency Code</th>
-                                <th>Post Date</th>
-                                <th>Transaction Particulars</th>
-                                <th>Transaction Type</th>
-                                <th>Value Date</th>
-
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr th:each="list : ${accountStatement}">
-                                <td  th:text="${list.amount}"></td>
-                                <td  th:text="${list.currencyCode}"></td>
-                                <td th:text="${list.postDate}"></td>
-                                <td  th:text="${list.transactionParticulars}"></td>
-                                <td  th:text="${list.tranType}"></td>
-                                <td th:text="${list.valueDate}"></td>
-                            </tr>
-                            </tbody>
-                        </table>
-
                     </div>
+                    <div class="form-group col-md-12 col-sm-12">
+                        <div class="form-group col-md-6 col-sm-6">
+                            <label>Account Number</label>
+                            <span class="req"></span>
+                            <select name="acctNumber" id="acctNumber" class="form-control"
+                                    required="required">
+                                <option th:each="s: ${accounts}" th:value="${s}" th:text="${s}"></option></select>
+                        </div>
+
+                        <div class="form-group col-md-6">
+                            <label>&nbsp;</label>
+                            <button type="submit" class="btn btn-link " id="btn-find"><i class="fa fa-search" style="color: whit" ></i>&nbsp; view</button>
+                        </div>
+                    </div>
+
+
+
+                    <p>
+                        <a id="btn-print" th:href="@{'~/viewstatement/display/data'}"  class="btn bt-link-act pull-right"> <i class="fa fa-print"  ></i>&nbsp; print</a>
+                        <!--<a id="btn-email" onclick="getEmail();" th:href="@{'#'}" class="btn pull-right "> <i class="fa fa-envelope" style="color: white" ></i>&nbsp; send mail</a>-->
+                    </p>
+
+                        <h2>TRANSACTION DETAILS</h2>
+
+                    <div class="table-responsive" >
+                            <table class="table" id="tranDetails">
+                                <thead>
+                                <tr>
+                                    <th>Account Balance</th>
+                                    <th>Currency Code</th>
+                                    <th>Post Date</th>
+                                    <th>Transaction Narration</th>
+                                    <th>Debit/Credit</th>
+                                    <th>Value Date</th>
+
+                                </tr>
+                                </thead>
+                                <tfoot>
+                                <tr>
+                                    <th>Account Balance</th>
+                                    <th>Currency Code</th>
+                                    <th>Post Date</th>
+                                    <th>Transaction Narration</th>
+                                    <th>Debit/Credit</th>
+                                    <th>Value Date</th>
+
+                                </tr>
+                                </tfoot>
+                            </table>
+                    </div>
+
+
+                </div>
+                </form>
 
             </div>
             <div class="col-md-3 pull-right " >
@@ -83,68 +113,128 @@
 </footer>
 <script th:inline="javascript">
     /*<![CDATA[*/
+    jQuery.download = function(url, key, data) {
+		// Build a form
+		var form = $('<form></form>').attr('action', url).attr('target', '_blank')
+				.attr('method', 'get');
+		// Add the one key/value
+		form.append($("<input></input>").attr('type', 'hidden').attr('name',
+				key).attr('value', data));
+
+		$.each( data, function( propertyName, valueOfProperty ){
+		   form.append($("<input></input>").attr('type', 'hidden').attr('name',
+				   propertyName).attr('value', valueOfProperty));
+		});
+
+		//send request
+		form.appendTo('body').submit().remove();
+	};
+
     $(document).ready(function() {
-        var url = "/retail/account/all";
-        var table = $('#users').DataTable({
-            select: true,
+
+    	$('.datepicker').datepicker({ dateFormat: 'dd-mm-yy' });//
+
+    	$('#tranDetails').DataTable({
             responsive: true,
-            "lengthMenu": [[5, 10], [5, 10]],
+
+            "lengthMenu": [[5, 10,20], [5, 10,20]],
             "pagingType": "simple_numbers",
-            "searching": false,
-            "paging": true,
-            "serverSide": true,
-            "ajax": url,
+            "searching" : false,
+            "fields": [  {
+                name:      'valueDate',
+                type:      'datetime',
+                def:       function () { return new Date(); },
+                format:    'dd-MM-yyyy '  }
+            ],
+    		"processing" : true,
+    		"serverSide" : false,
+    		"ordering" : false,
             "dom": 'T<"clear">frtlp',
-            "columns": [
-                {"data": "transactionNarration"},
-                {"data": "postingDate"},
-                {"data": "valueDate"},
-                {"data": "debitCredit"},
-                {"data": "transRefId"},
-                {"data": "accountBalance"}
-            ]
+            "columns" : [
+            	{"data" : "accountBalance"},
+            	{"data" : "currencyCode"},
+            	{"data" : "postDate"} ,
+            	{"data" : "narration"},
+            	{"data" : "tranType"},
+            	{"data" : "valueDate"}
+            	],
+            "ajax" : {
+            	"url":"viewstatement/display/data",
+            	"type" : "GET",
+				"data" : function(d) {
+					d.acctNumber = $('[name=acctNumber]').val();
+					d.fromDate = $('[name=fromDate]').val();
+					d.toDate = $('[name=toDate]').val();
+					d.tranType = $('[name=tranType]').val();
+				}
+			}
+
         });
 
-        table.on('select', function() {
-            if (table.rows({
-                        selected : true
-                    }).indexes().length === 0) {
-                $('.bt-select').attr("disabled", true);
-            } else {
-                $('.bt-select').removeAttr("disabled");
-            }
+        $("#btn-find").on("click", function(e) {
+
+			e.preventDefault();
+			dt = $('#tranDetails').DataTable();
+			dt.ajax.reload(null, true);
+
+		});
+
+        $("#btn-print").on("click", function(e) {
+        	e.preventDefault();
+    		var table = $('#tranDetails').DataTable();
+    		var data = table.ajax.params();
+    		$.download("downloadstatement", "data", data);
+
+    	});
 
 
         });
 
-        table.on('deselect', function() {
-            if (table.rows({
-                        selected : true
-                    }).indexes().length === 0) {
-                $('.bt-select').attr("disabled", true);
-            } else {
-                $('.bt-select').removeAttr("disabled");
-            }
-        });
-    });
 
-    $("a.bt-link-act").on("click", function(e) {
-        e.preventDefault();
-        var link = $(e.currentTarget);
-        if($(link).attr("disabled")){
-            return;
-        }
-
-        var dt = $('#users').DataTable();
-        var id = $(dt.row({
-            selected: true
-        }).node()).attr("id");
-        var ooo = link.attr("href").replace("index",id);
-        window.location.assign(ooo);
-
-    } );
 
     /*]]>*/
 </script>
+<script>
+    function getEmail()
+    {
+        $('#emailModal').modal({
+            backdrop: 'static',
+            keyboard: false,
+            show: true
+
+        })
+    }
+
+</script>
+<div id="emailModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+<div class="modal-content no-bd-rad tokenBox" >
+    <form id="loginform" th:action="@{/}" method="POST" >
+        <div class="modal-body no-bd-rad">
+
+            <div class="margin-bottom">
+                <p style="margin-bottom:20px">Kindly enter email address</p>
+                <div id="username_div" class="form-group">
+                    <input  type="email" id="token" name="token" class='my-select tokenInput' placeholder="Email address" />
+                </div>
+                <div id='errorMess' class=" text-danger "></div>
+                <div id='successMess' class=" text-success "></div>
+            </div>
+
+
+        </div>
+        <div class="modal-footer no-bd-top ">
+            <button  class="btn btn-link token-btn remove-item" data-dismiss="modal" >Back</button>
+
+            <button type='submit' class="btn btn-link token-btn" >Continue</button>
+        </div>
+
+    </form>
+
+
+
+</div>
+    </div>
+</div>
 </body>
 </html>

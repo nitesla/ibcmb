@@ -3,6 +3,9 @@ package longbridge.models;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
+import java.util.Arrays;
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -19,6 +22,7 @@ import javax.persistence.UniqueConstraint;
 @Table(uniqueConstraints=@UniqueConstraint(columnNames={"institutionCode","institutionType","deletedOn"}))
 
 public class FinancialInstitution extends AbstractEntity {
+
 
 
     private String institutionCode;
@@ -61,15 +65,9 @@ public class FinancialInstitution extends AbstractEntity {
     }
 
 
-
-	public static OperationCode getAddCode() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public static OperationCode getModifyCode() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+   	public List<String> getDefaultSearchFields() {
+   		return Arrays.asList("institutionCode", "institutionName");
+   	}
 }
 

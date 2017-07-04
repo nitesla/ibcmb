@@ -13,183 +13,278 @@
 
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/bootstrap.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/custom.css}"/>
-    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/calendar.css}"/>
-    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/select.bootstrap.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/select.bootstrap.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/font-awesome/font-awesome.min.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/bootstrap-daterangepicker/daterangepicker.css}"/>
-
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/datatables/css/jquery.dataTables.min.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/datatables/css/dataTables.bootstrap.css}"/>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.0/css/bootstrap-datepicker.min.css"/>
     <title>Coronation Merchant Bank</title>
 
 </head>
 
 <body>
-
-<header class="header" th:fragment="header">
-    <div class="containe">
-        <div class="top_bar">
-            <ul class="list_group">
-                <li><a href="/retail/contact"> Contact Us</a>&nbsp;</li>
-                <li><a href="https://coronationmb.com" target="_blank"> Coronation merchant bank</a>&nbsp;</li>
-                <li><a href="#"> Help&nbsp;</a></li>
-            </ul>
+<div th:fragment="header">
+    <header class="heade " >
+        <div class="row">
+            <div class="top-bar col-xs-12">
+                    <ul class="top-link">
+                        <li><a href="/retail/contact"> Contact Us</a>&nbsp;</li>
+                        <li><a href="https://www.coronationmb.com/" target="_blank"> Coronation merchant bank</a>&nbsp;</li>
+                        <li><a target="_blank" th:href="@{/faqs}" >Help</a>&nbsp;</li>
+                    </ul>
+            </div>
         </div>
-        <nav class="navbar navbar-default">
-            <div class="container-fluid">
-                <div class="navbar-header navbar-left">
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
-                        <span class="sr-only">MENU</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="#" data-toggle="collapse" data-target="#navbar-collapse-1">Menu</a>
-                </div>
-                <div class="row ">
-                    <div class="col-md-3 col-sm-4 header_info bvn"><p>Your Bank verification number</p>
-                        <h5 th:if="${bvn=='Not available'}"><a style ='color:#003056' th:href="@{/retail/bvn}" th:text="'BVN: ' + ${bvn}"></a></h5>
-                        <h5 th:unless="${bvn=='Not available'}"><div th:text="'BVN: ' + ${bvn}"></div></h5>
+        <div class="row header-bar">
+            <div class="col-xs-12 col-sm-9 no-pad-left ">
+                <div class='bvn-tab col-md-5 col-sm-5 '>
+                    <div class=" header_inf bv"><p>Your Bank verification number</p>
+                            <h5 th:if="${bvn=='Not available'}">
+                                <a style='color:#003056' th:href="@{/retail/bvn}"
+                                                                th:text="'BVN: ' + ${bvn}"></a></h5>
+                            <h5 th:unless="${bvn=='Not available'}">
+                                <span style='color:#003056' th:text="'BVN: ' + ${bvn}"></span><span class="bvn-add-info"> Lorem ipsum</span>
+                            </h5>
 
-                    </div><div class="col-md-5 col-sm-4 header_info"><h5><span th:text="*{greeting}"></span><br
-                    class="break"/><b th:text="*{name}"></b> &nbsp; <a th:href="@{/retail/mailbox/inbox}">
-                    <i class="fa fa-envelope" style="color:#003056"></i>
-                    <span th:if="${numOfUnreadMessages}" class="badge bg-green" th:text="${numOfUnreadMessages}">count</span>
-                    </a>
-                    </h5>
-
-                        <div class="hide-faq"><h6>FAQS &nbsp; &nbsp;<i class="fa fa-question-circle"></i><span
-                        class="date2 lorem">&nbsp; &nbsp;Login History:&nbsp;</span>&nbsp;
-                        <span class="lorem" th:text="*{lastLogin}">21st March 2017 10:30am</span></h6></div>
                         </div>
                 </div>
-                <div class="row">
-                    <div class="collapse navbar-collapse links" id="navbar-collapse-1">
-                        <ul class="nav navbar-nav">
-                            <li><a th:href="@{/retail/dashboard}" >Dashboard</a></li>
-                            <li class="dropdown" sec:authorize="hasAuthority('MANAGE_ACCOUNT')">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.account}"> My Accounts</a>
-                                <ul class="dropdown-menu">
-                                    <li sec:authorize="hasAuthority('CUSTOMIZE_ACCOUNT')"><a th:href="@{/retail/account/customize}" th:text="#{menu.account.customize}">Customise Accounts</a></li>
-                                    <li sec:authorize="hasAuthority('ACCOUNT_SETTINGS')"><a th:href="@{/retail/account/settings}" th:text="#{menu.account.settings}">Account Settings</a></li>
-                                    <li sec:authorize="hasAuthority('VIEW_ACCOUNT_OFFICER')"><a th:href="@{/retail/account/officer}" th:text="#{menu.account.officer}">Account Officer</a></li>
-                                    <!--<li sec:authorize="hasAuthority('CREATE_ACCOUNT')"><a th:href="@{/retail/account/viewstatement}" >Account Statement</a></li>-->
-                                    <!--<li sec:authorize="hasAuthority('CREATE_ACCOUNT')"><a th:href="@{'#'}" th:text="#{menu.account.create}">Create New Acoount</a></li>-->
-                                </ul>
-                            </li>
-                        <li class="dropdown" sec:authorize="hasAuthority('MANAGE_TRANSFERS')">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.transfer}"> Transfers</a>
-                        <ul class="dropdown-menu">
-                        <li sec:authorize="hasAuthority('OWN_ACCOUNT_TRANSFER')"><a th:href="@{/retail/transfer/ownaccount}" th:text="#{menu.transfer.own}">Own account transfers </a></li>
-                        <li sec:authorize="hasAuthority('CMB_CMB_TRANSFER')"><a th:href="@{/retail/transfer/local}" th:text="#{menu.transfer.cmb}">Transfer to Coronation account </a></li>
-                        <li sec:authorize="hasAuthority('INTERBANK_TRANSFER')"><a th:href="@{/retail/transfer/interbank}" th:text="#{menu.transfer.other}">Transfer to other banks</a></li>
-                        <li sec:authorize="hasAuthority('INTERNATIONAL_TRANSFERs')"><a th:href="@{/retail/transfer/international}" th:text="#{menu.transfer.int}">International transfer</a></li>
-                        <li sec:authorize="hasAuthority('RET_TRANSACTION_LIMITs.')"><a th:href="@{/retail/transfer/settransferlimit}" th:text="#{menu.transfer.limit}">Set transfer limit</a></li>
-                        <li sec:authorize="hasAuthority('STANDING_ORDER')"><a th:href="@{/retail/directdebit}" th:text="#{menu.transfer.order}">Standing order</a></li>
-                        </ul>
-                        </li>
-                        <!--<li sec:authorize="hasAuthority('MANAGE_BILL_PAYMENT')"><a href="#" th:text="#{menu.bill}">Bill Payments</a></li>-->
-                        <!--<li sec:authorize="hasAuthority('MANAGE_INVESTMENT')"><a href="#" th:text="#{menu.investment}">Investment</a></li>-->
-                        <li class="dropdown" sec:authorize="hasAuthority('MANAGE_SERV_REQ')">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.servreq}"> Service Requests </a>
-                        <ul class="dropdown-menu">
-                        <li sec:authorize="hasAuthority('TRACK_SERV_REQ')"><a th:href="@{/retail/requests/track}" th:text="#{menu.servreq.track}">Track Requests</a></li>
-                        <li role="separator" class="divider"></li>
-                        <p th:each="requests : ${serviceRequests}">
-                        <li sec:authorize="hasAuthority('MAKE_SERV_REQ')"><a th:href="@{/retail/requests/} + ${requests.id}" th:text="${requests.requestName}"></a></li>
-                        </p>
-                        </ul>
-                        </li>
+                <div class="col-sm-7 col-md-7 user-info ">
+                    <div class=" ">
+                        <h5>
+                            <span class='greeting' th:text="*{greeting}"></span>
+                            <br class="break"/>
+                            <b class="greeting-user" th:text="*{name}"></b> &nbsp; 
+                            <a th:href="@{/retail/mailbox/inbox}">
+                                <i class="fa fa-envelope" style="color:#003056"></i>
+                                <span th:if="${numOfUnreadMessages}" class="badge bg-green" th:text="${numOfUnreadMessages}">count</span>
+                            </a>
+                        </h5>
 
-                        <li class="dropdown" sec:authorize="hasAuthority('RET_USER_SETTINGS')">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.settings}"> Settings </a>
-                        <ul class="dropdown-menu">
-                        <li sec:authorize="hasAuthority('SET_ALERT_PREFERENCE')"><a th:href="@{/retail/alert_preference}" th:text="#{menu.settings.alert}">Alert Preference</a></li>
-                        <li sec:authorize="hasAuthority('RET_CHANGE_PASSWORD')"><a th:href="@{/retail/change_password}" th:text="#{menu.settings.password}">Change Password</a></li>
-                        </ul>
-                        </li>
-                        <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> More </a>
-                        <ul class="dropdown-menu">
-                        <li sec:authorize="hasAuthority('RET_SYNC_TOKEN')"><a th:href="@{/retail/token/sync}" th:text="#{menu.token.sync}">Synchronize Token</a></li>
-                        <li sec:authorize="hasAuthority('RET_LOST_TOKEN')"><a th:href="@{/retail/token/lost}" th:text="#{menu.token.report}">Report Lost Token</a></li>
-                        <li sec:authorize="hasAuthority('MANAGE_BEN')"><a th:href="@{/retail/beneficiary}" th:text="#{menu.beneficiary}">Beneficiaries</a></li>
-                        <li sec:authorize="hasAuthority('RET_MAILBOX')"><a th:href="@{/retail/mailbox/inbox}" th:text="#{menu.mail}"> Mailbox</a></li>
-                        </ul>
-                        </li>
-                        </ul>
 
-                        <ul class="nav navbar-nav navbar-right">
-                        <li><a th:href="@{/retail/logout}"> Log out <span class="fa-stack fa-lg">
-                        <i class="fa fa-square fa-stack-1x fa-lg"></i>
-                        <i class="fa fa-power-off fa-stack-1x fa-inverse"></i>
-                        </span></a></li>
-                        </ul>
+                        <div class="hide-faq">
+                                <h6><a target="_blank" th:href="@{/faqs}" style="text-decoration:none;"> FAQS
+                                    <i style="font-size: 16px;" class="fa fa-question-circle"></i></a>
+                                    <span class="date2 lorem">&nbsp; &nbsp;Login History:&nbsp;</span>&nbsp;
+                                    <span class="lorem" th:text="*{lastLogin}">21st March 2017 10:30am</span>
+                                </h6>
+                        </div>
+
                     </div>
                 </div>
-
-
-
-
             </div>
 
+            <div class="col-xs-12 col-sm-3 ">
+                <a href="/retail/dashboard" class="">
+                    <img class='img-responsive pull-right' style="height:70px" th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank"/>
+                </a>
+            </div>
+        </div>
+        
+    </header>
 
 
-        </nav>
+     <nav class="navbar navbar-default" style="margin: 0px !important;">
+                <div class="">
+
+                    
+                    <div class="navbar-header navbar-left">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                                data-target="#navbar-collapse-1" aria-expanded="false">
+                            <span class="sr-only">MENU</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand" href="#" data-toggle="collapse" data-target="#navbar-collapse-1">Menu</a>
+                    </div>
+                   
+                    <div class="">
+                       
+                        <div class="collapse navbar-collapse" id="navbar-collapse-1">
+                            <ul class="nav navbar-nav menu">
+                                <li th:classappend="${#httpServletRequest.getRequestURI().startsWith('/retail/dashboard') ? 'active':''}"><a th:href="@{/retail/dashboard}">Dashboard</a></li>
+                                <li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI().startsWith('/retail/account') ? 'active':''}" sec:authorize="hasAuthority('MANAGE_ACCOUNT')">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                    aria-haspopup="true" aria-expanded="false" th:text="#{menu.account}"> My Accounts</a>
+                                    <ul class="dropdown-menu">
+                                        <li sec:authorize="hasAuthority('CUSTOMIZE_ACCOUNT')"><a
+                                                th:href="@{/retail/account/customize}" th:text="#{menu.account.customize}">Customise
+                                            Accounts</a></li>
+                                        <li sec:authorize="hasAuthority('ACCOUNT_SETTINGS')"><a
+                                                th:href="@{/retail/account/settings}" th:text="#{menu.account.settings}">Account
+                                            Settings</a></li>
+                                        <li sec:authorize="hasAuthority('VIEW_ACCOUNT_OFFICER')"><a
+                                                th:href="@{/retail/account/officer}" th:text="#{menu.account.officer}">Account
+                                            Officer</a></li>
+                                        <li sec:authorize="hasAuthority('CREATE_ACCOUNT')"><a
+                                                th:href="@{/retail/account/viewstatement}">Account Statement</a></li>
+                                        <!--<li sec:authorize="hasAuthority('CREATE_ACCOUNT')"><a th:href="@{'#'}" th:text="#{menu.account.create}">Create New Acoount</a></li>-->
+                                    </ul>
+                                </li>
+                                <li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI().startsWith('/retail/transfer') ? 'active':''}" sec:authorize="hasAuthority('MANAGE_TRANSFERS')">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                    aria-haspopup="true" aria-expanded="false" th:text="#{menu.transfer}"> Transfers</a>
+                                    <ul class="dropdown-menu">
+                                        <li sec:authorize="hasAuthority('OWN_ACCOUNT_TRANSFER')"><a
+                                                th:href="@{/retail/transfer/ownaccount}" th:text="#{menu.transfer.own}">Own
+                                            account transfers </a></li>
+                                        <li sec:authorize="hasAuthority('CMB_CMB_TRANSFER')"><a
+                                                th:href="@{/retail/transfer/local}" th:text="#{menu.transfer.cmb}">Transfer
+                                            to Coronation account </a></li>
+                                        <li sec:authorize="hasAuthority('INTERBANK_TRANSFER')"><a
+                                                th:href="@{/retail/transfer/interbank}" th:text="#{menu.transfer.other}">Transfer
+                                            to other banks</a></li>
+                                        <!--<li sec:authorize="hasAuthority('INTERNATIONAL_TRANSFERssss')"><a th:href="@{/retail/transfer/international}" th:text="#{menu.transfer.int}">International transfer</a></li>-->
+                                        <li sec:authorize="hasAuthority('RET_TRANSACTION_LIMITs.')"><a
+                                                th:href="@{/retail/transfer/settransferlimit}"
+                                                th:text="#{menu.transfer.limit}">Set transfer limit</a></li>
+                                        <li sec:authorize="hasAuthority('STANDING_ORDER')"><a
+                                                th:href="@{/retail/directdebit}" th:text="#{menu.transfer.order}">Standing
+                                            order</a></li>
+                                    </ul>
+                                </li>
+                                <!--<li sec:authorize="hasAuthority('MANAGE_BILL_PAYMENT')"><a href="#" th:text="#{menu.bill}">Bill Payments</a></li>-->
+                                <!--<li sec:authorize="hasAuthority('MANAGE_INVESTMENT')"><a href="#" th:text="#{menu.investment}">Investment</a></li>-->
+                                <li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI().startsWith('/retail/requests') ? 'active':''}" sec:authorize="hasAuthority('MANAGE_SERV_REQ')">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                    aria-haspopup="true" aria-expanded="false" th:text="#{menu.servreq}"> Service
+                                        Requests </a>
+                                    <ul class="dropdown-menu">
+                                        <li sec:authorize="hasAuthority('TRACK_SERV_REQ')"><a
+                                                th:href="@{/retail/requests/track}" th:text="#{menu.servreq.track}">Track
+                                            Requests</a></li>
+                                        <!--<li role="separator" class="divider"></li>-->
+                                        <p th:each="requests : ${serviceRequests}">
+                                        <li sec:authorize="hasAuthority('MAKE_SERV_REQ')"><a
+                                                th:href="@{/retail/requests/} + ${requests.id}"
+                                                th:text="${requests.requestName}"></a></li>
+                                        </p>
+                                    </ul>
+                                </li>
+
+                                <li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI().startsWith('/retail/settings') ? 'active':''}" sec:authorize="hasAuthority('RET_USER_SETTINGS')">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                    aria-haspopup="true" aria-expanded="false" th:text="#{menu.settings}"> Settings </a>
+                                    <ul class="dropdown-menu">
+                                        <li sec:authorize="hasAuthority('SET_ALERT_PREFERENCE')"><a
+                                                th:href="@{/retail/settings/alert_preference}" th:text="#{menu.settings.alert}">Alert
+                                            Preference</a></li>
+                                        <li sec:authorize="hasAuthority('RET_CHANGE_PASSWORD')"><a
+                                                th:href="@{/retail/settings/change_password}" th:text="#{menu.settings.password}">Change
+                                            Password</a></li>
+                                    </ul>
+                                </li>
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                    aria-haspopup="true" aria-expanded="false"> More </a>
+                                    <ul class="dropdown-menu">
+                                        <li sec:authorize="hasAuthority('RET_SYNC_TOKEN')"><a
+                                                th:href="@{/retail/token/sync}" th:text="#{menu.token.sync}">Synchronize
+                                            Token</a></li>
+                                        <li sec:authorize="hasAuthority('RET_LOST_TOKEN')"><a
+                                                th:href="@{/retail/token/lost}" th:text="#{menu.token.report}">Report Lost
+                                            Token</a></li>
+                                        <li sec:authorize="hasAuthority('MANAGE_BEN')"><a th:href="@{/retail/beneficiary}"
+                                                                                        th:text="#{menu.beneficiary}">Beneficiaries</a>
+                                        </li>
+                                        <li sec:authorize="hasAuthority('RET_MAILBOX')"><a
+                                                th:href="@{/retail/mailbox/inbox}" th:text="#{menu.mail}"> Mailbox</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+
+                            <ul class="nav navbar-nav pull-right">
+                                <li><a th:href="@{/retail/logout}"> Log out 
+                                <!--<span class="fa-stack fa-lg no-bd-rad">-->
+                            <!--<i class="fa fa-square fa-stack-1x fa-lg no-bd-rad"></i>-->
+                                <i class="fa fa-power-off fa-inverse no-bd-rad power" style="font-size:12px"></i>
+                                <!--</span>-->
+                                </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </nav>
 
 
 
+    <!--<div class=' alert alert-info text-white  no-bd-rad' style="margin:1px 15px 1px 1px!important;background-color:#003056;color:white;"><marquee class='marquee'>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</marquee></div>-->
+
+    <div class="info-bar">
+        Lorem Ipsum Dorem er uu
+    </div>
+</div>
+
+<div th:fragment="sidebar" class="sideba" style=" adding-top:20px;">
+
+    <!--date-->
+    <div class=" hidden-xs bg-dan">
+        <div class="no-bd no-bd-rad   time" style=" margin-top: 6px !important;margin-bottom:0px !important;border-top:2px solid #ebdfdb !important;border-bottom:2px solid #ebdfdb !important;">
+             <span class=" ">
+                <i class="fa fa-calendar-plus-o datepicker cal-icon " data-provide="datepicker" onclick="show()" style="font-size:20px;background:transparent !important;border:0px !important"></i>
+            </span>
+            <span class="  " >
+                <span class="time-icon" id='day' style="font-size:13px;"></span><span>,</span>
+                <span class='text-bold time-icon' id='cal_date' style="font-size:14px;"></span>                 
+            </span>        
+             <script>
+                      setInterval(
+                          function()
+                          {
+                               
+
+                                var timer = moment().format('LTS'); //timer in hours,minutes and seconds
+                                var day = moment().format('dddd'); // get the current day
+                                var cur_date = moment().format("D MMMM");
+
+
+                                var time_holder = document.getElementById('time');// get where to insert the timer
+                                var day_holder = document.getElementById('day'); // get where to insert the current day
+                                var cur_date_holder = document.getElementById('cal_date'); // get where to insert the current date
+                                
+                                time_holder.innerHTML = timer;
+                                day_holder.innerHTML = day;
+                                cur_date_holder.innerHTML = cur_date;
+                            //   var time_function = moment().format('Do MMMM YYYY, h:mm:ss a');
+                            //   var holder = document.getElementById('time_');
+                            //   holder.innerHTML = time_function;
+                          },
+                          1000) ;
+                  </script>
+             
+
+        </div>
+        <!--<div  id="calendar" style="display: block; margin: 0px auto;" class=" calendar hidden-xs hidden-sm "></div>-->
     </div>
 
-    <a href="/retail/dashboard" class="logo navbar-right">
-        <img th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
-    </a>
-
-
-</header>
-
-    <div th:fragment="sidebar" class="sideba">
-
-
-        <div class="sidebar-b calende cal  ">
-            <div  class="alert  time" style="margin-top: 0px !important;">
-                <span id="time_">
-                <script>
-                    setInterval(
-                        function()
-                        {
-
-                            var time_function = moment().format('Do MMMM YYYY, h:mm:ss a');
-                            var holder = document.getElementById('time_');
-                            holder.innerHTML = time_function;
-                        },
-                        1000) ;
-
-                    function showCal()
-                    {
-                        alert();
-
-                        $( function() {
-                            $( "#datepicker" ).datepicker();
-                        } );
-                        alert();
-                    }
-                </script>
-                </span>
-
-                <i class="fa fa-calendar pull-right" id ='datepicker' onclick="showCal()"></i>
-
-
-            </div>
-
-            <!--<div  id="calendar" style="display: block; margin: 0px auto;" class=" calendar hidden-xs hidden-sm "></div>-->
-       </div>
-        <div class="sidebar- hidden-xs hidden-sm" >
-            <img style="display: block; margin: 0px auto;" class="center" th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
+    <!--time-->
+    <div class="">
+        <div class='time no-bd no-bd-rad ' style="border-bottom:2px solid #ebdfdb !important;">
+             <span class=" ">
+                <i class="fa fa-hourglass-o datepicker cal-icon " data-provide="datepicker" onclick="show()" style="font-size:20px;background:transparent !important;border:0px !important"></i>
+            </span>
+             <span id='time' class="text-bold no-bd" style="font-size:14px;padding-left:10px;"></span>
         </div>
     </div>
+    
+    
+
+    <!--image placeholdder-->
+    <div class="sidebar-bg hidden-xs hidden-sm bg-succes" style="max-height:300px;margin-top:10px;">
+        <img style="display: block; margin: 0px auto;" class="center img-responsive" th:src="@{~/customer/img/advert.jpg}"
+             alt="Coronation Merchant Bank"/>
+    </div>
+</div>
+
+<div th:fragment="mail">
+
+</div>
+
 
 <!-- footer content -->
 <footer th:fragment="footer">
-    <div class="container">
+    <div class="containe">
         <div class="footer_bar">
             <div class="col-md-6 col-xs-12">
                 <ul class="list_group">
@@ -207,7 +302,7 @@
     <div th:if="${message}">
         <div hidden="hidden">
             <ul class="actionMessage">
-                <li th:each="msg : ${message}" th:text="${msg}" >Message</li>
+                <li th:each="msg : ${message}" th:text="${msg}">Message</li>
             </ul>
         </div>
     </div>
@@ -219,6 +314,59 @@
             </ul>
         </div>
     </div>
+
+
+    <div id="myModalError" class="modal fade " role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+
+            <div class="modal-content no-bd-rad content ">
+
+                <div class="modal-body">
+
+
+                    <p id='errorMess' class='mess text-danger'>Put something here iff need be.</p>
+
+
+                </div>
+
+
+                <div class="modal-footer no-bd-top">
+                    <button type="button" class="btn btn-link" data-dismiss="modal">OK</button>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+
+    <div id="myModalSuccess" class="modal fade " role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+
+            <div class="modal-content no-bd-rad content ">
+
+                <div class="modal-body">
+
+
+                    <p id='successMess' class='mess text-primary'>Put something here iff need be.</p>
+
+
+                </div>
+
+
+                <div class="modal-footer no-bd-top">
+                    <button type="button" class="btn btn-link" data-dismiss="modal">OK</button>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
 
     <!-- CORE JQUERY SCRIPTS -->
 
@@ -232,30 +380,59 @@
     <script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
     <script th:src="@{~/customer/plugins/bootstrap-daterangepicker/daterangepicker.js}"></script>
     <script th:src="@{~/customer/js/coronation.js}"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
+
     <!-- BOOTSTRAP SCRIPTS  -->
     <script th:src="@{~/customer/js/bootstrap.js}"></script>
-    <!--<script>-->
-        <!--$(document).ready(function(){-->
-            <!--$(".dropdown").hover(-->
-                <!--function() {-->
-                    <!--$('.dropdown-menu', this).not('.in .dropdown-menu').stop(true,true);-->
-                    <!--$(this).toggleClass('open');-->
-                <!--},-->
-                <!--function() {-->
-                    <!--$('.dropdown-menu', this).not('.in .dropdown-menu').stop(true,true);-->
-                    <!--$(this).toggleClass('open');-->
-                <!--}-->
-            <!--);-->
-        <!--});-->
+    <script th:src="@{~/customer/js/bootstrap-session-timeout.js}"></script>
 
-    <!--</script>-->
-    <script>
-        $(document).ready(function(){
+    <script th:inline='javascript'>
+        /*<![CDATA[*/
+
+        $(document).ready(function () 
+    {
             $('[data-toggle="tooltip"]').tooltip();
+            $('.datepicker').datepicker({
+        autoclose: true,
+        todayBtn: true,
+        todayHighlight: true});
 
+            var text = ['Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+             'i am two  Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+              'i am 3 Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+               'i am 4 Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry. '];
+        var x = 0;
+        var end = 0;
 
+        function textArray()
+        {
+            $(".marquee").fadeOut(function() {
+        $(this).text(text[x]).fadeIn();
 
-        });
+            });
+            x++;
+
+            end = x + 1;
+            if (text.length < end)
+            {
+                x = 0;
+            }
+        }
+        setInterval(textArray,30000 );
+        
+    })
+
+        /*]]>*/
+    </script>
+    <script th:inline='javascript'>
+            $.sessionTimeout({
+                keepAliveUrl: '',
+                logoutUrl: '/retail/logout',
+                redirUrl: '/retail/logout',
+                warnAfter: [[${timeOut}]],
+                redirAfter: 10000,
+                countdownBar: true
+            });
     </script>
 </footer>
 <!-- /footer content -->

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- BEGIN PAGE LEVEL STYLES -->
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/jquery-steps/css/jquery.steps.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/jquery-ui.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/font-awesome/font-awesome.min.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/bootstrap.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/custom.css}"/>
+
+    <title>Report Token</title>
+</head>
+<body>
+
+<header class="header">
+    <div class="container">
+        <div class="top_bar">
+            <ul class="list_group">
+                <li><a href="https://www.coronationmb.com/" target="_blank"> CORONATION MERCHANT BANK</a></li>
+            </ul>
+        </div>
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <div class="navbar-header navbar-left">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
+                        <span class="sr-only">MENU</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#" data-toggle="collapse" data-target="#navbar-collapse-1">Menu</a>
+                </div>
+                <div class="collapse navbar-collapse" id="navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                        <li><a href="/">HOME</a></li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> LOGIN</a>
+                            <ul class="dropdown-menu">
+                                <li><a th:href="@{/login/retail}"> INDIVIDUAL </a></li>
+                                <li><a th:href="@{/login/corporate}"> CORPORATE </a></li>
+                            </ul>
+                        </li>
+                        <li><a th:href="@{/register}">REGISTER</a></li>
+                        <li><a href="/">CONTACT US</a></li>
+                        <li><a href="/">HELP</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <a href="#" class="logo">
+            <img th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
+        </a>
+    </div>
+</header>
+<br/>
+<br/>
+<br/>
+<section class="content-wrapper">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 col-sm-12">
+                <div class="row">
+                    <h5 class="page_header">Report Lost Token</h5>
+
+                    <form id="reg-form" action="/reporttoken" method="post">
+
+                        <div>
+                            <h3>Username</h3>
+                            <section>
+                                <div class="row">
+
+                                    <div class="col-md-offset-4 col-md-4">
+                                        <br/>
+                                        <div class='alert alert-danger' id="myspan" style="margin:0px;">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>Username</label>
+                                            <span class='req'></span><input style="width:100% !important" type="text" name="username" class="form-control required" placeholder="Enter Username"/>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                            <h3>Security Information</h3>
+                            <section>
+                                <div class="row">
+                                    <div class="col-md-offset-4 col-md-4">
+                                        <br/>
+                                        <div class='alert alert-danger' id="myspan2">
+                                        </div>
+                                        <br/>
+                                        <br/>
+                                        <div class="form-group">
+                                            <label>Security Question</label>
+                                            <input name="securityQuestion" readonly="readonly" class="form-control"/>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Security Answer</label>
+                                            <span class="required"></span><input type="text" name="securityAnswer" class="form-control required" placeholder="Security Answer"/>
+                                        </div>
+                                        <input name="customerId" type="hidden"/>
+                                        <input id="returnValue" type="hidden"/>
+                                    </div>
+                                </div>
+                            </section>
+                            <h3>Token Select</h3>
+                            <section>
+                                <div class="row">
+
+                                    <div class="col-md-offset-4 col-md-4">
+                                        <br/>
+                                        <div class='alert alert-danger' id="myspan" style="margin:0px;">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>Select missing token device </label>
+                                            <span class='req'></span><select id="userTokens" name="token" class="form-control"></select>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                            <h3>Summary</h3>
+                            <section>
+                                <div class="row">
+                                    <div class="col-md-7">
+                                        <br/>
+                                        <h4 style="font-size: 16px;">Operation successful</h4>
+                                        <br/>
+                                        Your report of a lost token was successful and has been blocked.
+                                        <br/>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<div id="myModalError" class="modal fade " role="dialog">
+    <div class="modal-dialog" >
+
+        <!-- Modal content-->
+
+        <div class="modal-content no-bd-rad content ">
+
+            <div class="modal-body">
+
+
+                <p id='errorMess' class='mess text-danger'>Put something here iff need be.</p>
+
+
+
+            </div>
+
+
+            <div class="modal-footer no-bd-top" >
+                <button type="button" class="btn btn-link" data-dismiss="modal">OK</button>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+
+<div id="myModalSuccess" class="modal fade " role="dialog">
+    <div class="modal-dialog" >
+
+        <!-- Modal content-->
+
+        <div class="modal-content no-bd-rad content ">
+
+            <div class="modal-body">
+
+
+                <p id='successMess' class='mess text-primary'>Put something here iff need be.</p>
+
+
+
+            </div>
+
+
+            <div class="modal-footer no-bd-top" >
+                <button type="button" class="btn btn-link" data-dismiss="modal">OK</button>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<footer>
+    <div class="container">
+        <div class="footer_bar">
+            <div class="col-md-6 col-xs-12">
+                <ul class="list_group">
+                    <li><a href="#" target="_blank">Privacy policy</a></li>
+                    <li><a href="#" target="_blank">Disclaimer</a></li>
+                    <li><a href="#" target="_blank">Terms &amp; Conditions</a></li>
+                </ul>
+
+            </div>
+            <div class="col-md-6 col-xs-12"><p> &copy; 2017 Coronation Merchant Bank. - All rights reserved</p></div>
+
+        </div>
+    </div>
+</footer>
+<!-- CORE JQUERY SCRIPTS -->
+<script th:src="@{/customer/js/jquery-1.11.1.js}"></script>
+<!-- BOOTSTRAP SCRIPTS  -->
+<script th:src="@{/customer/js/bootstrap.js}"></script>
+
+<script th:src="@{~/customer/js/jquery.validate.min.js}"></script>
+<script th:src="@{~/customer/js/jquery-ui.js}"></script>
+<script th:src="@{~/customer/plugins/jquery-steps/js/jquery.steps.min.js}" type="text/javascript"></script>
+<script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
+<script th:src="@{~/customer/js/reporttoken.js}" type="text/javascript"></script>
+</body>
+</html>

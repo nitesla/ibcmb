@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout :: site-head">
+</head>
+
+<body class="nav-md">
+<div class="container body">
+    <div class="main_container">
+        <div class="col-md-3 left_col">
+            <div class="left_col scroll-view">
+                <div class="navbar nav_title" style="border: 0;">
+
+                    <!--<a href="index.html"><img th:src="@{~/images/cmb_logo.png}"/></a>-->
+                </div>
+
+                <div class="clearfix"></div>
+                <div class="clearfix"></div>
+
+                <div th:replace="layout :: ops-menu"></div>
+                <div th:replace="layout :: menu-footer-adm"></div>
+
+            </div>
+        </div>
+        <div th:replace="layout :: top-nav"></div>
+
+        <!-- page content -->
+        <div class="right_col" role="main">
+            <div class="">
+                <div class="page-title">
+                    <div class="title_left">
+                        <h3>Pending verification</h3>
+                    </div>
+
+                </div>
+
+
+                <ul class="nav navbar-right panel_toolbox">
+
+                    <!--<li>-->
+                    <!--<div class="col-lg-4">-->
+                    <!--<div class="title-action">-->
+                    <!--<a class="btn btn-app" href="/admin/verifications/pendingops">-->
+                    <!--<button class="badge bg-orange bt-select"   th:text="${totalPending}">count</button>-->
+                    <!--<i class="fa fa-envelope"></i>My approval-->
+                    <!--</a>-->
+                    <!--</div>-->
+                    <!--</div>-->
+                    <!--</li>-->
+
+
+                    <!--<li>-->
+                    <!--<div class="col-lg-4">-->
+                    <!--<div class="title-action">-->
+                    <!--<a  class=" btn btn-app btn  btn-sm bt-select bt-link-act" href="#" disabled="disabled" >-->
+                    <!--<button class="badge bg-orange" disabled="disabled" th:text="${verificationNumber}"></button>-->
+                    <!--<i class="fa fa-envelope"></i>Approval Queue-->
+                    <!--</a>-->
+                    <!--</div>-->
+                    <!--</div>-->
+                    <!--</li>-->
+
+
+
+                </ul>
+
+
+                <div class="clearfix"></div>
+
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="x_panel">
+                            <div class="">
+
+
+
+                                <div class="clearfix"></div>
+                            </div>
+
+                            <div class="x_content">
+                                <div class="ibox-content">
+                                    <form method="post" class="form-horizontal" >
+
+
+
+                                        <label style="font-size:large" th:text="${verify.description}"></label>
+
+                                        <!--<div id="before" style="overflow-wrap: break-word;border-left: 1px solid;margin-right: 1px;padding:5px; ">-->
+
+                                        <table class="table table-striped dt-responsive no-wrap table-bordered table-hover" id="table">
+                                            <thead>
+                                            <tr>
+                                                <th>Before</th>
+                                                <th>After</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr>
+                                                <td style ="word-break:break-all;width:50%;">
+                                                    <th:block th:text="${verify.beforeObject}"></th:block>
+                                                </td>
+                                                <td style ="word-break:break-all;">
+                                                    <th:block th:text="${verify.afterObject}"></th:block>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+
+
+
+                                        <div>
+                                            <!--<input  th:hidden="hidden" th:field="*{version}"/>-->
+                                            <!--<input  th:hidden="hidden" th:field="*{id}"/>-->
+
+
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div id="myModal" class="modal fade" role="dialog">
+            <div class="modal-dialog modal-lg">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title" style="color:#2A3F54">Reason</h4>
+                    </div>
+                    <div class="modal-body" style="text-align: center">
+                        <input style="width:700px;height:100px"/>
+
+                    </div>
+                    <div class="modal-footer">
+                        <input type="submit" class="btn btn-primary" value="Submit"  data-dismiss="modal"/>
+
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /page content -->
+
+        <!-- footer content -->
+        <footer th:replace="layout :: footer">
+        </footer>
+        <!-- /footer content -->
+    </div>
+</div>
+<script th:src="@{~/bank/vendors/datatables.net/js/jquery.dataTables.js}"></script>
+<script th:src="@{~/bank/js/dataTables.bootstrap.js}"></script>
+<!--<script th:src="@{~/bank/js/dataTables.select.js}"></script>-->
+<!--<script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>-->
+<script th:src="@{~/bank/js/jsonpath-0.8.0.js}"></script>
+<!-- Page-Level Scripts -->
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var parseJsonAsList = function(jsn,path){
+
+        var result = '';
+        for(node in jsn){
+
+            if(Object.prototype.toString.call(jsn[node]) === '[object Array]')
+            {
+
+                current_path = path.endsWith('[') ? path + node + ']' : path + '.' +node;
+
+                b = jsonPath(beforeData,current_path)[0] ;
+                a = jsonPath(afterData,current_path)[0];
+                if(true ){
+
+                    result += '<li class="list-group-item">'+ node +':<ul class="list-group">' + parseJsonAsList(jsn[node],current_path+'[') + '</ul></li>';
+                }else{
+                    result += '<li class="list-group-item list-group-item-danger">'+ node +':<ul class="list-group">' + parseJsonAsHTMLTree(jsn[node],current_path+'[') + '</ul></li>';
+                }
+            }
+            else if(Object.prototype.toString.call(jsn[node]) === '[object Object]')
+            {
+
+
+                current_path = path.endsWith('[') ? path + node + ']' : path + '.' +node;
+                /* if(jsonPath(beforeData,current_path)){
+
+                 }
+                 b = jsonPath(beforeData,current_path)[0] ;
+                 a = jsonPath(afterData,current_path)[0];
+                 */
+                if(true){
+                    result += '<li class="list-group-item">'+ node +':<ul class="list-group">' + parseJsonAsList(jsn[node],current_path) + '</ul></li>';
+                }else{
+                    result += '<li class="list-group-item list-group-item-danger">'+ node +':<ul class="list-group">' + parseJsonAsList(jsn[node],current_path) + '</ul></li>';
+                }
+            }
+            else{
+
+
+                current_path = path.endsWith('[') ? path + node + ']' : path + '.' +node;
+
+                b = jsonPath(beforeData,current_path) ? jsonPath(beforeData,current_path)[0] : 'undefined' ;
+
+                a = jsonPath(afterData,current_path) ? jsonPath(afterData,current_path)[0] : 'undefined' ;
+
+                if(a == b && typeof a != 'undefined' && typeof b != 'undefined' ){
+
+                    result += '<li class="list-group-item">' + node + ':'+jsn[node] +'</li>'
+                }else{
+
+                    result += '<li class="list-group-item list-group-item-danger">' + node + ':'+jsn[node] +'</li>'
+                }
+            }
+
+        }
+        return result;
+    }
+    var beforeData = JSON.parse([[${verify.beforeObject}]]);
+    var afterData =JSON.parse([[${verify.afterObject}]]);
+    console.log(beforeData);
+    $(document).ready(function() {
+
+        $("#table").DataTable({
+            "searching" : false,
+            "processing" : true,
+            "ordering" : false,
+            dom : 't',
+            "columnDefs" : [ {
+                "targets" : 0,
+                "className" : "dt-center",
+                "render" : function(data, type, full, meta) {
+
+                    if (type === 'display') {
+                        temp = data;
+                        if(!temp || 0 === temp.length){
+                            temp = '{}'
+                        }
+                        before = JSON.parse(temp);
+
+                        return '<ul>'+parseJsonAsList(before,'$')+'</ul>';
+                    }
+                    return data;
+                }
+            },{
+                "targets" : 1,
+                "className" : "dt-center",
+                "render" : function(data, type, full, meta) {
+                    if (type === 'display') {
+                        temp = data;
+                        if(!temp || 0 === temp.length ){
+                            temp = '{}'
+                        }
+                        before = JSON.parse(temp);
+
+                        return '<ul>'+parseJsonAsList(before,'$')+'</ul>';
+                    }
+                    return data;
+                }
+            }  ]
+        });
+
+    });
+    /*]]>*/
+</script>
+
+</body>
+</html>
