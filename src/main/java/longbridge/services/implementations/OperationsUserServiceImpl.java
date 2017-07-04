@@ -190,8 +190,8 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             opsUser.setCreatedOnDate(new Date());
             Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
             opsUser.setRole(role);
-            operationsUserRepo.save(opsUser);
-            createUserOnEntrust(opsUser);
+            OperationsUser newUser =  operationsUserRepo.save(opsUser);
+            createUserOnEntrust(newUser);
             logger.info("New Operation user  {} created", opsUser.getUserName());
             return messageSource.getMessage("user.add.success", null, LocaleContextHolder.getLocale());
         } catch (InternetBankingSecurityException se) {
