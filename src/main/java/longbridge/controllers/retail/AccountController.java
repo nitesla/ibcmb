@@ -238,7 +238,7 @@ public class AccountController {
 		if (transRequestList != null && !transRequestList.isEmpty()) {
 			model.addAttribute("transRequestList", transRequestList);
 			model.addAttribute("accountList", accountList);
-			System.out.println("what is the " + transRequestList);
+			logger.info("Last 10 Transaction {}", transRequestList);
 			return "cust/account/accountstatement";
 		}
 		return "redirect:/retail/dashboard";
@@ -248,7 +248,7 @@ public class AccountController {
 		public ModelAndView getTransPDF(@PathVariable String id, Model model, Principal principal) {
 			RetailUser retailUser = retailUserService.getUserByName(principal.getName());
 
-		Account account=accountRepo.findFirstAccountByCustomerId(retailUser.getCustomerId());
+			Account account=accountService.getAccountByCustomerId(retailUser.getCustomerId());
 			logger.info("Retail account {}",account);
 		String LAST_TEN_TRANSACTION = "10";
 		List<TransactionHistory> transRequestList = integrationService.getLastNTransactions(account.getAccountNumber(),
@@ -298,15 +298,15 @@ public class AccountController {
 		try {
 			from = dateFormat.parse(fromDate);
 			to = dateFormat.parse(toDate);
+
 			//int diffInDays = (int) ((to.getTime() - from.getTime()) / (1000 * 60 * 60 * 24));
 			Duration diffInDays= new Duration(new DateTime(from),new DateTime(to));
 			logger.info("Day difference {}",diffInDays.getStandardDays());
+
 			AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to, tranType);
 			logger.info("TransactionType {}", tranType);
 			out.setDraw(input.getDraw());
 			List<TransactionDetails> list = accountStatement.getTransactionDetails();
-			System.out.println(accountStatement.toString());
-			System.out.println("Whats in the list " + list);
 
 			out.setData(list);
 			int sz = list==null?0:list.size();
@@ -334,7 +334,6 @@ public class AccountController {
 			out.setDraw(input.getDraw());
 			List<TransactionDetails> list = accountStatement.getTransactionDetails();
 			RetailUser retailUser = retailUserService.getUserByName(principal.getName());
-			System.out.println("list = " + list);
 			modelMap.put("datasource", list);
 			modelMap.put("format", "pdf");
 			modelMap.put("summary.accountNum",acctNumber);
