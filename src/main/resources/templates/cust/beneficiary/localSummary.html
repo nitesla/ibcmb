@@ -25,7 +25,7 @@
                         <tr>
 
                             <th>Beneficiary Bank</th>
-                            <td th:text="${beneficiary.beneficiaryBank}"></td>
+                            <td th:text="${bank}"></td>
 
                         </tr>
                         <tr>
@@ -48,15 +48,28 @@
                         </tr>
 
                     </table>
+                    <form method="post" th:action="@{/retail/beneficiary/local}" th:object="${beneficiary}">
+
+                        <input type="hidden" th:field="*{beneficiaryBank}"/>
+                        <input type="hidden" th:field="*{accountNumber}"/>
+                        <input type="hidden" th:field="*{accountName}"/>
+                        <input type="hidden" th:field="*{preferredName}"/>
 
 
                     <div class="form-group">
+                        <div th:if="${auth}!=null">
+                            <label >Token *</label>
+                            <input type="text" name="token" placeholder="" class="form-control"/>
+                        </div>
 
-                        <a th:href="@{/retail/transfer/newbeneficiary}" class="btn btn-link" >Save</a>
+                        <br/>
+                        <button type="submit" class="btn btn-default">Save</button>
 
-                        <a th:href="@{/retail/dashboard}" class="btn btn-link"  >Skip</a>
+                        <a th:href="@{/retail/beneficiary/new}" class="btn btn-link"  >Cancel</a>
                     </div>
+                    </form>
                 </div>
+
 
             </div>
             <div class="col-md-3 pull-right " >

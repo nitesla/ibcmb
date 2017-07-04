@@ -3,7 +3,9 @@ package longbridge.controllers.retail;
 import longbridge.dtos.FinancialInstitutionDTO;
 import longbridge.dtos.InternationalBeneficiaryDTO;
 import longbridge.dtos.LocalBeneficiaryDTO;
+import longbridge.dtos.SettingDTO;
 import longbridge.exception.InternetBankingException;
+import longbridge.exception.InternetBankingSecurityException;
 import longbridge.models.*;
 import longbridge.services.*;
 import org.slf4j.Logger;
@@ -17,6 +19,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.security.Principal;
 import java.util.Comparator;
@@ -43,21 +46,28 @@ public class BeneficiaryController {
     private InternationalBeneficiaryService internationalBeneficiaryService;
 
     private FinancialInstitutionService financialInstitutionService;
+    private SecurityService securityService;
 
     private RetailUserService retailUserService;
     private CodeService codeService;
     @Value("${bank.code}")
     private String bankCode;
+    private ConfigurationService configService;
 
 
     @Autowired
-    public BeneficiaryController(LocalBeneficiaryService localBeneficiaryService, MessageSource messages, InternationalBeneficiaryService internationalBeneficiaryService, FinancialInstitutionService financialInstitutionService, RetailUserService retailUserService, CodeService codeService) {
+    public BeneficiaryController(LocalBeneficiaryService localBeneficiaryService, MessageSource messages, InternationalBeneficiaryService internationalBeneficiaryService, FinancialInstitutionService financialInstitutionService, RetailUserService retailUserService, CodeService codeService
+    ,ConfigurationService configService,SecurityService securityService
+
+    ) {
         this.localBeneficiaryService = localBeneficiaryService;
         this.messages = messages;
         this.internationalBeneficiaryService = internationalBeneficiaryService;
         this.financialInstitutionService = financialInstitutionService;
         this.retailUserService = retailUserService;
         this.codeService = codeService;
+        this.configService=configService;
+        this.securityService=securityService;
     }
 
     @GetMapping
@@ -94,14 +104,35 @@ public class BeneficiaryController {
     }
 
     @PostMapping("/local")
-    public String createLocalBeneficiary(@Valid LocalBeneficiaryDTO localBeneficiaryDTO, BindingResult result, Principal principal, Model model, RedirectAttributes redirectAttributes, Locale locale) {
-        if (result.hasErrors()) {
-            model.addAttribute("internationalBeneficiaryDTO", new InternationalBeneficiaryDTO());
+    public String createLocalBeneficiary(@Valid LocalBeneficiaryDTO localBeneficiaryDTO, Principal principal, Model model, RedirectAttributes redirectAttributes, Locale  locale, HttpServletRequest request) {
 
-            return "cust/beneficiary/add";
+        SettingDTO setting = configService.getSettingByName("ENABLE_RETAIL_2FA");
+
+
+
+        if (/* service to check if token is enabled comes in here  */
+
+                (setting != null && setting.isEnabled())
+                ){
+
+
+            try {
+                String token =request.getParameter("token");
+              securityService.performTokenValidation(principal.getName(), token);
+            } catch (InternetBankingSecurityException ibse) {
+
+                model.addAttribute("failure", ibse.getMessage());
+                model.addAttribute("beneficiary",localBeneficiaryDTO);
+                return "cust/beneficiary/localSummary";
+            }
+
+
         }
 
+
+
         try {
+
             RetailUser user = retailUserService.getUserByName(principal.getName());
             String message = localBeneficiaryService.addLocalBeneficiary(user, localBeneficiaryDTO);
             redirectAttributes.addFlashAttribute("message", message);
@@ -113,12 +144,6 @@ public class BeneficiaryController {
                 redirectAttributes.addFlashAttribute("failure", messages.getMessage("beneficiary.add.failure", null, locale));
 
             }
-
-
-
-
-
-
         }
         return "redirect:/retail/beneficiary";
     }
@@ -196,5 +221,36 @@ public class BeneficiaryController {
         dtos.sort(Comparator.comparing(FinancialInstitutionDTO::getInstitutionName));
        model.addAttribute("localBanks",dtos );
    }
+
+
+
+    @PostMapping("/local/summary")
+    public String createLocalBeneficiary(@Valid LocalBeneficiaryDTO localBeneficiaryDTO, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            model.addAttribute("internationalBeneficiaryDTO", new InternationalBeneficiaryDTO());
+
+
+            return "cust/beneficiary/add";
+        }
+
+        try {
+            model.addAttribute("bank",financialInstitutionService.getFinancialInstitutionByCode(localBeneficiaryDTO.getBeneficiaryBank()).getInstitutionName());
+          model.addAttribute("beneficiary",localBeneficiaryDTO);
+            SettingDTO setting = configService.getSettingByName("ENABLE_RETAIL_2FA");
+
+
+
+            if (/* service to check if token is enabled comes in here  */
+
+                    (setting != null && setting.isEnabled())
+                    )
+                model.addAttribute("auth","auth");
+
+        } catch (InternetBankingException e) {
+
+
+        }
+        return "cust/beneficiary/localSummary";
+    }
 
 }
