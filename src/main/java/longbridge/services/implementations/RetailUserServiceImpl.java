@@ -10,10 +10,7 @@ import longbridge.exception.*;
 import longbridge.forms.AlertPref;
 import longbridge.forms.CustChangePassword;
 import longbridge.forms.CustResetPassword;
-import longbridge.models.Account;
-import longbridge.models.Code;
-import longbridge.models.Email;
-import longbridge.models.RetailUser;
+import longbridge.models.*;
 import longbridge.repositories.RetailUserRepo;
 import longbridge.security.FailedLoginService;
 import longbridge.services.*;
@@ -28,6 +25,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -92,7 +90,7 @@ public class RetailUserServiceImpl implements RetailUserService {
     }
 
     @Override
-    @Verifiable(operation = "RET_USER_UNLOCK", description = "Unlocking a Retail User")
+    @Verifiable(operation = "UNLOCK_RETAIL_USER", description = "Unlocking a Retail User")
     public String unlockUser(Long id) throws InternetBankingException {
 
         RetailUser user = retailUserRepo.findOne(id);
@@ -272,26 +270,24 @@ public class RetailUserServiceImpl implements RetailUserService {
 
     @Override
     @Transactional
-    @Verifiable(operation = "RET_ACTIVATION", description = "Change Retail User Activation Status")
+    @Verifiable(operation = "UPDATE_RETAIL_STATUS", description = "Change Retail User Activation Status")
     public String changeActivationStatus(Long userId) throws InternetBankingException {
         try {
             RetailUser user = retailUserRepo.findOne(userId);
             String oldStatus = user.getStatus();
             String newStatus = "A".equals(oldStatus) ? "I" : "A";
             user.setStatus(newStatus);
-            retailUserRepo.save(user);
+            String fullName = user.getFirstName() + " " + user.getLastName();
             if ((oldStatus == null) || ("I".equals(oldStatus)) && "A".equals(newStatus)) {
                 String password = passwordPolicyService.generatePassword();
                 user.setPassword(passwordEncoder.encode(password));
                 user.setExpiryDate(new Date());
                 passwordPolicyService.saveRetailPassword(user);
-                String fullName = user.getFirstName()+" "+user.getLastName();
-                Email email = new Email.Builder()
-                        .setRecipient(user.getEmail())
-                        .setSubject(messageSource.getMessage("customer.reactivation.subject",null,locale))
-                        .setBody(String.format(messageSource.getMessage("customer.reactivation.message",null,locale), fullName, user.getUserName(),password))
-                        .build();
-                mailService.send(email);
+                retailUserRepo.save(user);
+                sendPostActivateMessage(user, fullName,user.getUserName(),password);
+            } else{
+                user.setStatus(newStatus);
+                retailUserRepo.save(user);
             }
 
             logger.info("Retail user {} status changed from {} to {}", user.getUserName(), oldStatus, newStatus);
@@ -304,6 +300,18 @@ public class RetailUserServiceImpl implements RetailUserService {
     }
 
 
+
+    @Async
+    public void sendPostActivateMessage(User user, String ... args ){
+        if("A".equals(user.getStatus())) {
+            Email email = new Email.Builder()
+                    .setRecipient(user.getEmail())
+                    .setSubject(messageSource.getMessage("customer.reactivation.subject", null, locale))
+                    .setBody(String.format(messageSource.getMessage("customer.reactivation.message", null, locale), args))
+                    .build();
+            mailService.send(email);
+        }
+    }
 
     @Override
     @Transactional
@@ -489,5 +497,14 @@ public class RetailUserServiceImpl implements RetailUserService {
 
         return retailUser.getUserName();
     }
+
+	@Override
+	public Page<RetailUserDTO> findUsers(String pattern, Pageable pageDetails) {
+		Page<RetailUser> page = retailUserRepo.findUsingPattern(pattern,pageDetails);
+        List<RetailUserDTO> dtOs = convertEntitiesToDTOs(page.getContent());
+        long t = page.getTotalElements();
+        Page<RetailUserDTO> pageImpl = new PageImpl<RetailUserDTO>(dtOs, pageDetails, t);
+        return pageImpl;
+	}
 
 }

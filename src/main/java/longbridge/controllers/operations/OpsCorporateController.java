@@ -6,6 +6,8 @@ import longbridge.exception.InternetBankingException;
 import longbridge.exception.TransferRuleException;
 import longbridge.models.*;
 import longbridge.services.*;
+
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -214,10 +216,15 @@ public class OpsCorporateController {
     @GetMapping(path = "/all")
     public
     @ResponseBody
-    DataTablesOutput<CorporateDTO> getCorporates(DataTablesInput input) {
+    DataTablesOutput<CorporateDTO> getCorporates(DataTablesInput input,@RequestParam("csearch") String search) {
 
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<CorporateDTO> corps = corporateService.getCorporates(pageable);
+        if (StringUtils.isNoneBlank(search)) {
+        	corps = corporateService.findCorporates(search,pageable);
+		}else{
+			corps = corporateService.getCorporates(pageable);
+		}
         DataTablesOutput<CorporateDTO> out = new DataTablesOutput<CorporateDTO>();
         out.setDraw(input.getDraw());
         out.setData(corps.getContent());
@@ -309,7 +316,7 @@ public class OpsCorporateController {
     @GetMapping("{corpId}/rules/new")
     public String addCorporateRule(@PathVariable Long corpId, Model model) {
         CorporateDTO corporate = corporateService.getCorporate(corpId);
-        Set<CorporateRoleDTO> roles = corporateService.getRoles(corpId);
+        List<CorporateRoleDTO> roles = corporateService.getRoles(corpId);
         Iterable<CodeDTO> currencies = codeService.getCodesByType("CURRENCY");
         model.addAttribute("corporate", corporate);
         model.addAttribute("roleList", roles);
@@ -329,7 +336,7 @@ public class OpsCorporateController {
             }
         } catch (NumberFormatException nfe) {
             CorporateDTO corporate = corporateService.getCorporate(NumberUtils.toLong(transferRuleDTO.getCorporateId()));
-            Set<CorporateRoleDTO> corporateRoles = corporateService.getRoles(NumberUtils.toLong(transferRuleDTO.getCorporateId()));
+            List<CorporateRoleDTO> corporateRoles = corporateService.getRoles(NumberUtils.toLong(transferRuleDTO.getCorporateId()));
             Iterable<CodeDTO> currencies = codeService.getCodesByType("CURRENCY");
 
             model.addAttribute("corporate", corporate);
@@ -343,7 +350,7 @@ public class OpsCorporateController {
 
         String[] roleIds;
         roleIds = webRequest.getParameterValues("roles");
-        Set<CorporateRoleDTO> roleDTOs = new HashSet<CorporateRoleDTO>();
+        List<CorporateRoleDTO> roleDTOs = new ArrayList<CorporateRoleDTO>();
         CorporateRoleDTO corporateRole;
 
         if (roleIds != null) {
@@ -368,7 +375,7 @@ public class OpsCorporateController {
             logger.error("Failed to create transfer rule", tre);
             bindingResult.addError(new ObjectError("exception", tre.getMessage()));
             CorporateDTO corporate = corporateService.getCorporate(NumberUtils.toLong(transferRuleDTO.getCorporateId()));
-            Set<CorporateRoleDTO> roles = corporateService.getRoles(NumberUtils.toLong(transferRuleDTO.getCorporateId()));
+            List<CorporateRoleDTO> roles = corporateService.getRoles(NumberUtils.toLong(transferRuleDTO.getCorporateId()));
             Iterable<CodeDTO> currencies = codeService.getCodesByType("CURRENCY");
             model.addAttribute("corporate", corporate);
             model.addAttribute("roleList", roles);
@@ -379,7 +386,7 @@ public class OpsCorporateController {
             logger.error("Failed to create transfer rule", ibe);
             bindingResult.addError(new ObjectError("exception", ibe.getMessage()));
             CorporateDTO corporate = corporateService.getCorporate(NumberUtils.toLong(transferRuleDTO.getCorporateId()));
-            Set<CorporateRoleDTO> roles = corporateService.getRoles(NumberUtils.toLong(transferRuleDTO.getCorporateId()));
+            List<CorporateRoleDTO> roles = corporateService.getRoles(NumberUtils.toLong(transferRuleDTO.getCorporateId()));
             Iterable<CodeDTO> currencies = codeService.getCodesByType("CURRENCY");
             model.addAttribute("corporate", corporate);
             model.addAttribute("roleList", roles);
@@ -391,7 +398,7 @@ public class OpsCorporateController {
     @GetMapping("/rules/{id}/edit")
     public String editCorporateRule(@PathVariable Long id, Model model) {
         CorpTransferRuleDTO transferRuleDTO = corporateService.getCorporateRule(id);
-        Set<CorporateRoleDTO> roles = corporateService.getRoles(NumberUtils.toLong(transferRuleDTO.getCorporateId()));
+        List<CorporateRoleDTO> roles = corporateService.getRoles(NumberUtils.toLong(transferRuleDTO.getCorporateId()));
         Iterable<CodeDTO> currencies = codeService.getCodesByType("CURRENCY");
 
         for (CorporateRoleDTO role : roles) {
@@ -421,7 +428,7 @@ public class OpsCorporateController {
             }
         } catch (NumberFormatException nfe) {
             CorporateDTO corporate = corporateService.getCorporate(NumberUtils.toLong(transferRuleDTO.getCorporateId()));
-            Set<CorporateRoleDTO> roles = corporateService.getRoles(NumberUtils.toLong(transferRuleDTO.getCorporateId()));
+            List<CorporateRoleDTO> roles = corporateService.getRoles(NumberUtils.toLong(transferRuleDTO.getCorporateId()));
             Iterable<CodeDTO> currencies = codeService.getCodesByType("CURRENCY");
 
             model.addAttribute("corporate", corporate);
@@ -434,7 +441,7 @@ public class OpsCorporateController {
         }
         String[] roleIds;
         roleIds = webRequest.getParameterValues("roles");
-        Set<CorporateRoleDTO> roleDTOs = new HashSet<CorporateRoleDTO>();
+        List<CorporateRoleDTO> roleDTOs = new ArrayList<>();
         CorporateRoleDTO corporateRole;
 
         if (roleIds != null) {
@@ -460,7 +467,7 @@ public class OpsCorporateController {
             logger.error("Failed to update transfer rule", tre);
             bindingResult.addError(new ObjectError("exception", tre.getMessage()));
             CorporateDTO corporate = corporateService.getCorporate(NumberUtils.toLong(transferRuleDTO.getCorporateId()));
-            Set<CorporateRoleDTO> roles = corporateService.getRoles(NumberUtils.toLong(transferRuleDTO.getCorporateId()));
+            List<CorporateRoleDTO> roles = corporateService.getRoles(NumberUtils.toLong(transferRuleDTO.getCorporateId()));
             Iterable<CodeDTO> currencies = codeService.getCodesByType("CURRENCY");
             model.addAttribute("corporate", corporate);
             model.addAttribute("roleList", roles);
@@ -471,7 +478,7 @@ public class OpsCorporateController {
             logger.error("Failed to update transfer rule", ibe);
             bindingResult.addError(new ObjectError("exception", ibe.getMessage()));
             CorporateDTO corporate = corporateService.getCorporate(NumberUtils.toLong(transferRuleDTO.getCorporateId()));
-            Set<CorporateRoleDTO> roles = corporateService.getRoles(NumberUtils.toLong(transferRuleDTO.getCorporateId()));
+            List<CorporateRoleDTO> roles = corporateService.getRoles(NumberUtils.toLong(transferRuleDTO.getCorporateId()));
             Iterable<CodeDTO> currencies = codeService.getCodesByType("CURRENCY");
             model.addAttribute("corporate", corporate);
             model.addAttribute("roleList", roles);

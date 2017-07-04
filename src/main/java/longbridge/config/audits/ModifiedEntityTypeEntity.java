@@ -1,14 +1,14 @@
 package longbridge.config.audits;
 
+import java.io.Serializable;
+
 import javax.persistence.*;
 
 /**
  * Created by ayoade_farooq@yahoo.com on 4/7/2017.
  */
 @Entity
-public class ModifiedEntityTypeEntity {
-
-
+public class ModifiedEntityTypeEntity implements Serializable{
 
     @Id
     @GeneratedValue

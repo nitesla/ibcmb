@@ -17,6 +17,7 @@ public class AuditConfigInitializer implements InitializingBean {
 
     @Autowired
     EntityManager entityManager;
+
     @Autowired
     private AuditConfigRepo configRepo;
 
@@ -24,26 +25,25 @@ public class AuditConfigInitializer implements InitializingBean {
     @Override
     public void afterPropertiesSet() throws Exception
     {
-        try {
-
+        try
+        {
             entityManager.getEntityManagerFactory().getMetamodel().getEntities().stream()
                     .filter(i -> !i.getName().endsWith("AUD")).filter(i -> !i.getName().endsWith("Entity"))
                     .filter(i -> !i.getName().equalsIgnoreCase("AuditConfig")).map(i -> i.getName())
                     .collect(Collectors.toList()).forEach(e -> {
-                if (!configRepo.existsByEntityName(e)) {
+                if (!configRepo.existsByEntityName(e))
+                {
                     AuditConfig entity = new AuditConfig();
                     entity.setEnabled("N");
                     entity.setEntityName(e);
                     configRepo.save(entity);
                 }
-                     });
-
-            }
+            });
+        }
         catch (Exception e)
         {
             e.printStackTrace();
         }
     }
-
 
 }

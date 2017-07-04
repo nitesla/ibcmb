@@ -4,6 +4,7 @@ package longbridge.models;
 import org.hibernate.annotations.Where;
 import org.modelmapper.ModelMapper;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -16,7 +17,9 @@ import javax.persistence.Version;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * The {@code AbstractEntity} abstract class is a superclass for all entities.
@@ -26,9 +29,14 @@ import java.util.Date;
 
 
 @MappedSuperclass
-public abstract class AbstractEntity implements Serializable, SerializableEntity<AbstractEntity>{
+public abstract class AbstractEntity implements Serializable{
 
-    @javax.persistence.Id
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -2361696892354119780L;
+
+	@javax.persistence.Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
 
@@ -106,22 +114,11 @@ public abstract class AbstractEntity implements Serializable, SerializableEntity
         return true;
     }
     
-	@Override
-	public String serialize() throws JsonProcessingException {
-		ObjectMapper mapper = new ObjectMapper();
-        String data = mapper.writeValueAsString(this);
-        return data;
-	}
-
-	@Override
-	public void deserialize(String data) throws JsonParseException, JsonMappingException, IOException {
-		ObjectMapper mapper = new ObjectMapper();
-         AbstractEntity readValue = mapper.readValue(data, this.getClass());
-         ModelMapper modelMapper = new ModelMapper();
-         modelMapper.map(readValue, this);
-         
-	}
-
+    @JsonIgnore
+	 public List<String> getDefaultSearchFields(){
+		return new ArrayList<String>();
+	};
+	
     @Override
     public String toString() {
         return

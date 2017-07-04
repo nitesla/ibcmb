@@ -1,9 +1,8 @@
 package longbridge.repositories;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import longbridge.exception.VerificationException;
-import longbridge.models.SerializableEntity;
-import longbridge.models.User;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.NoRepositoryBean;
 
@@ -15,5 +14,5 @@ import java.io.Serializable;
 @NoRepositoryBean
 public interface CommonRepo<T, ID extends Serializable> extends JpaRepository<T, ID> {
 
-
+	public Page<T> findUsingPattern(String pattern, Pageable details);
 }

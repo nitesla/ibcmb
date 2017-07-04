@@ -1,8 +1,11 @@
 package longbridge.controllers;
 
+import longbridge.exception.InternetBankingSecurityException;
 import longbridge.exception.PasswordException;
 import longbridge.services.AdminUserService;
 import longbridge.services.SecurityService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
@@ -32,6 +35,8 @@ public class AdminUserGeneralController {
     @Autowired
     SecurityService securityService;
 
+    Logger logger = LoggerFactory.getLogger(this.getClass());
+
 
     @GetMapping("/password/reset")
     public String getAdminUsername(){
@@ -50,13 +55,18 @@ public class AdminUserGeneralController {
             return "/adm/admin/username";
         }
 
-        boolean result = securityService.sendOtp(username);
-        if(result) {
-            session.setAttribute("username", username);
-            session.setAttribute("redirectUrl", "/password/reset");
-            session.setAttribute("otpUrl","/adm/admin/otp");
-            model.addAttribute("message",messageSource.getMessage("otp.send.failure",null,locale));
-            return "/adm/admin/otp";
+        try {
+            boolean result = securityService.sendOtp(username);
+            if (result) {
+                session.setAttribute("username", username);
+                session.setAttribute("redirectUrl", "/password/reset");
+                session.setAttribute("otpUrl", "/adm/admin/otp");
+                model.addAttribute("message", messageSource.getMessage("otp.send.failure", null, locale));
+                return "/adm/admin/otp";
+            }
+        }
+        catch (InternetBankingSecurityException se){
+            logger.error("Error sending OTP to user",se);
         }
         model.addAttribute("failure",messageSource.getMessage("otp.send.failure",null,locale));
         return "/adm/admin/username";

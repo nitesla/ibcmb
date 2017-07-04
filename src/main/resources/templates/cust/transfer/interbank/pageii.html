@@ -14,10 +14,15 @@
         <div class="row">
 
             <div class="col-md-4 col-sm-4">
-                <h5 class="page_header"> Transfer to <span th:text="${benName}"></span></h5>
-                <select class="form-control invisible">
+
+                <h5 class="page_header"> Transfer to
+                    <span  th:if="${benName}== null"  th:text="${transferRequest.beneficiaryAccountName}"></span>
+                    <span th:if="${benName}!= null" th:text="${benName}"></span>
+                    <select class="form-control invisible">
                         <option value="account">Account Overview</option>
-                </select>
+                    </select>
+                </h5>
+
             </div>
              <p class="col-xs-12">
                     Fields marked <span style="color:red">*</span> are compulsory
@@ -36,10 +41,12 @@
 
 
                             <div class="form-group">
-                                <label>Source account</label>
+                                <label class="my-label">Source account</label>
 
 
                                 <span id="scurency"></span>
+                                <span class="alert no-bd-rad my-border bg-white hide-content-only">NGN</span>
+
                                 <select name="source" class="form-control" id="source"
                                         th:field="*{customerAccountNumber}" onchange="getBalance()">
                                     <option value=""> select an account</option>
@@ -57,27 +64,33 @@
                             <input type="hidden" th:field="*{transferType}" />
 
                             <div class="form-group">
-                                <label>Amount</label>
+                                <label class="my-label">Amount</label>
+                                <span class="alert no-bd-rad my-border bg-white">NGN</span>
+
                                 <input type="number" name="amount" step="any" placeholder="Enter an amount"
-                                       th:field="*{amount}" class="form-control"/>
+                                       th:field="*{amount}" class="form-control"/><span class='req-inner'></span>
                                 <p th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}"
                                    class="errors"></p>
                             </div>
                             <div class="form-group">
-                                <label>Remark</label>
+                                <label class="my-label">Remark</label>
+                                <span class="alert no-bd-rad my-border bg-white hide-content-only">NGN</span>
+
                                 <input type="text" name="remarks" placeholder="" th:field="*{remarks}"
                                        class="form-control"/>
                             </div>
 
 
-                            <button class="btn btn-primary" type="submit">Submit</button>
+                            <span class="alert no-bd-rad my-border bg-white hide-content-only">NGN</span>
+                            <button class="btn btn-link required-step" type="submit">Submit</button>
                         </form>
                         <!--</div>-->
 
                 </div>
                 <div class="col-md-4 col-sm-4 well">
                     <!--<p class="related" style="padding-top: 5%">Related Information</p>-->
-                    <hr/>
+                    Related Information
+                    <hr class="related-info"/>
                     <!--<input type="availBal" name="availBal"/>-->
                     <p id="availBal"><b></b></p>
                 </div>

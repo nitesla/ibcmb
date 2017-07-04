@@ -11,7 +11,9 @@ import longbridge.utils.PrettySerializer;
 
 import javax.persistence.*;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 /**
  * Created by Wunmi on 29/03/2017.
  */
@@ -31,6 +33,7 @@ public class User extends AbstractEntity implements PrettySerializer {
     protected Date lastLoginDate;
     protected int noOfLoginAttempts;
 
+
     //@Enumerated(value = EnumType.STRING)
     @Enumerated(EnumType.ORDINAL)
     protected UserType userType;
@@ -41,6 +44,7 @@ public class User extends AbstractEntity implements PrettySerializer {
     @ManyToOne
     protected Role role;
     protected String entrustId;
+
 
 
     public String getEntrustId() {
@@ -184,6 +188,10 @@ public class User extends AbstractEntity implements PrettySerializer {
         return super.equals(o);
     }
 
+    @Override @JsonIgnore
+	public List<String> getDefaultSearchFields() {
+		return Arrays.asList("userName", "firstName","lastName");
+	}
 
     @Override
     @JsonIgnore
@@ -194,11 +202,11 @@ public class User extends AbstractEntity implements PrettySerializer {
                     throws IOException, JsonProcessingException {
 
                 gen.writeStartObject();
-                gen.writeStringField("userName", value.userName);
-                gen.writeStringField("firstName", value.firstName);
-                gen.writeStringField("lastName", value.lastName);
-                gen.writeStringField("email", value.email);
-                gen.writeStringField("phone", value.phoneNumber);
+                gen.writeStringField("User Name", value.userName);
+                gen.writeStringField("First Name", value.firstName);
+                gen.writeStringField("Last Name", value.lastName);
+                gen.writeStringField("Email", value.email);
+                gen.writeStringField("Phone", value.phoneNumber);
                 String status =null;
                 if ("A".equals(value.status))
                     status = "Active";
@@ -206,7 +214,7 @@ public class User extends AbstractEntity implements PrettySerializer {
                     status = "Inactive";
                 else if ("L".equals(value.status))
                     status = "Locked";
-                gen.writeStringField("status", status);
+                gen.writeStringField("Status", status);
                 gen.writeStringField("Role", value.role.getName());
                 gen.writeEndObject();
             }

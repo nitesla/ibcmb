@@ -66,13 +66,13 @@
                             </div>
                             <div class="form-group">
                                 <label>Set New Password</label>
-                                <input id="password" type="password" th:field="*{newPassword}"  class="form-control"/>
+                                <input id="password" type="password" th:field="*{newPassword}" autocomplete="off" class="form-control"/>
                             </div>
                             <div class="form-group">
                                 <label>Confirm New Password</label>
-                                <input id="password" type="password" th:field="*{confirmPassword}"  class="form-control"/>
+                                <input id="confirm" type="password" th:field="*{confirmPassword}" autocomplete="off" class="form-control"/>
                             </div>
-                            <button class="btn btn-primary form-control"> Submit</button>
+                            <button class="btn btn-link required-step form-control"> Submit</button>
                             <div th:replace="layout :: form-validation"></div>
 
                         </form>
@@ -115,6 +115,58 @@
         </ul>
     </div>
 </div>
+
+<div id="myModalError" class="modal fade " role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+
+        <div class="modal-content no-bd-rad content ">
+
+            <div class="modal-body">
+
+
+                <p id='errorMess' class='mess text-danger'>Put something here iff need be.</p>
+
+
+            </div>
+
+
+            <div class="modal-footer no-bd-top">
+                <button type="button" class="btn btn-link" data-dismiss="modal">OK</button>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+
+<div id="myModalSuccess" class="modal fade " role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+
+        <div class="modal-content no-bd-rad content ">
+
+            <div class="modal-body">
+
+
+                <p id='successMess' class='mess text-primary'>Put something here iff need be.</p>
+
+
+            </div>
+
+
+            <div class="modal-footer no-bd-top">
+                <button type="button" class="btn btn-link" data-dismiss="modal">OK</button>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
 <!-- CORE JQUERY SCRIPTS -->
 <script th:src="@{~/customer/js/jquery-1.11.1.js}"></script>
 <script th:src="@{~/customer/js/jquery-ui.js}"></script>
@@ -131,6 +183,10 @@
 <script>
     $(document).ready(function() {
         $('#password').bind("cut copy paste", function (e) {
+            e.preventDefault();
+        });
+
+        $('#confirm').bind("cut copy paste", function (e) {
             e.preventDefault();
         });
     });

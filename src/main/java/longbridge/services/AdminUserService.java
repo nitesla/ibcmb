@@ -59,6 +59,7 @@ public interface AdminUserService {
 //     */
 //    Iterable<AdminUser> getAdminUsers();
 
+    Page<AdminUserDTO> findUsers(String pattern ,Pageable pageDetails);
     boolean userExists(String username) throws InternetBankingException;
 
     /**
@@ -81,6 +82,8 @@ public interface AdminUserService {
     String changeActivationStatus(Long userId) throws InternetBankingException;
 
 
+    public void createUserOnEntrust(AdminUser adminUser);
+
     /**
      * Updates the details of the specified Admin user
      * @param user the admin user whose details are to be updated
@@ -94,6 +97,10 @@ public interface AdminUserService {
      */
     @PreAuthorize("hasAuthority('RESET_ADMIN_USER_PASSWD')")
     String resetPassword(Long userId) throws PasswordException;
+
+
+
+    void sendPostActivateMessage(User user,String ... args );
 
     /**
      * Replaces the old password of the admin user with the new password.

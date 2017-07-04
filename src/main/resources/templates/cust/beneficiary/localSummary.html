@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="cust_layout :: site-head">
+
+</head>
+<body>
+<div class="container">
+    <header th:replace="cust_layout :: header">
+    </header>
+
+<section class="content-wrapper">
+    <div class="containe">
+        <div class="row">
+            <div class="col-md-4 col-sm-4">
+                <h5 class="page_header"> New  Beneficiary</h5>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-9 content-bg">
+
+                <div class="spacing">
+
+
+                    <table>
+                        <tr>
+
+                            <th>Beneficiary Bank</th>
+                            <td th:text="${bank}"></td>
+
+                        </tr>
+                        <tr>
+
+                            <th>Beneficiary account</th>
+                            <td th:text="${beneficiary.accountNumber}"></td>
+
+                        </tr>
+                        <tr>
+
+                            <th>Beneficiary name</th>
+                            <td th:text="${beneficiary.accountName}"></td>
+
+                        </tr>
+                        <tr>
+
+                            <th>Beneficiary Alias</th>
+                            <td th:text="${beneficiary.preferredName}"></td>
+
+                        </tr>
+
+                    </table>
+                    <form method="post" th:action="@{/retail/beneficiary/local}" th:object="${beneficiary}">
+
+                        <input type="hidden" th:field="*{beneficiaryBank}"/>
+                        <input type="hidden" th:field="*{accountNumber}"/>
+                        <input type="hidden" th:field="*{accountName}"/>
+                        <input type="hidden" th:field="*{preferredName}"/>
+
+
+                    <div class="form-group">
+                        <div th:if="${auth}!=null">
+                            <label >Token *</label>
+                            <input type="text" name="token" placeholder="" class="form-control"/>
+                        </div>
+
+                        <br/>
+                        <button type="submit" class="btn btn-default">Save</button>
+
+                        <a th:href="@{/retail/beneficiary/new}" class="btn btn-link"  >Cancel</a>
+                    </div>
+                    </form>
+                </div>
+
+
+            </div>
+            <div class="col-md-3 pull-right " >
+                <div th:replace="cust_layout :: sidebar" class="" >
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- CONTENT-WRAPPER SECTION END-->
+<footer th:replace="cust_layout ::footer">
+</footer>
+</div>
+</body>
+</html>

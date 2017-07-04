@@ -1,6 +1,7 @@
 package longbridge.services.implementations;
 
 import longbridge.api.AccountDetails;
+import longbridge.api.NEnquiryDetails;
 import longbridge.dtos.SettingDTO;
 import longbridge.dtos.TransferRequestDTO;
 import longbridge.exception.InternetBankingTransferException;
@@ -52,13 +53,13 @@ public class TransferServiceImpl implements TransferService {
     private FinancialInstitutionService financialInstitutionService;
     private ConfigurationService configService;
     private MessageSource messages;
-    private Locale locale= LocaleContextHolder.getLocale();
+    private Locale locale = LocaleContextHolder.getLocale();
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
     @Autowired
     public TransferServiceImpl(TransferRequestRepo transferRequestRepo, IntegrationService integrationService, TransactionLimitServiceImpl limitService, ModelMapper modelMapper, AccountService accountService, FinancialInstitutionService financialInstitutionService, ConfigurationService configurationService
-            , RetailUserRepo retailUserRepo,MessageSource messages) {
+            , RetailUserRepo retailUserRepo, MessageSource messages) {
         this.transferRequestRepo = transferRequestRepo;
         this.integrationService = integrationService;
         this.limitService = limitService;
@@ -67,7 +68,7 @@ public class TransferServiceImpl implements TransferService {
         this.financialInstitutionService = financialInstitutionService;
         this.configService = configurationService;
         this.retailUserRepo = retailUserRepo;
-        this.messages=messages;
+        this.messages = messages;
     }
 
 
@@ -79,11 +80,11 @@ public class TransferServiceImpl implements TransferService {
 
             logger.trace("params {}", transRequest);
 
-            saveTransfer(convertEntityToDTO(transRequest));
+            transferRequestDTO = saveTransfer(convertEntityToDTO(transRequest));
 
             if (transRequest.getStatus() != null) {
                 if (transRequest.getStatus().equalsIgnoreCase("000") || transRequest.getStatus().equalsIgnoreCase("00"))
-                    return convertEntityToDTO(transRequest);
+                    return transferRequestDTO;
 
                 throw new InternetBankingTransferException(transRequest.getStatusDescription());
             }
@@ -109,8 +110,8 @@ public class TransferServiceImpl implements TransferService {
     }
 
     @Override
-    public boolean saveTransfer(TransferRequestDTO transferRequestDTO) throws InternetBankingTransferException {
-        boolean result = false;
+    public TransferRequestDTO saveTransfer(TransferRequestDTO transferRequestDTO) throws InternetBankingTransferException {
+
         try {
             TransRequest transRequest = convertDTOToEntity(transferRequestDTO);
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -119,13 +120,13 @@ public class TransferServiceImpl implements TransferService {
                 RetailUser user = retailUserRepo.findFirstByUserName(currentUserName);
                 transRequest.setUserReferenceNumber("RET_" + user.getId());
             }
-            transferRequestRepo.save(transRequest);
-            result = true;
+            transferRequestDTO = convertEntityToDTO(transferRequestRepo.save(transRequest));
+
 
         } catch (Exception e) {
             logger.error("Exception occurred {}", e.getMessage());
         }
-        return result;
+        return transferRequestDTO;
     }
 
 
@@ -142,9 +143,6 @@ public class TransferServiceImpl implements TransferService {
 
     @Override
     public void validateTransfer(TransferRequestDTO dto) throws InternetBankingTransferException {
-        if (dto.getAmount().compareTo(new BigDecimal(0)) <= 0) {
-
-        }
 
 
         if (dto.getBeneficiaryAccountNumber().equalsIgnoreCase(dto.getCustomerAccountNumber())) {
@@ -234,14 +232,16 @@ public class TransferServiceImpl implements TransferService {
                 throw new InternetBankingTransferException(TransferExceptions.INVALID_ACCOUNT.toString());
             if (destAccount == null)
                 throw new InternetBankingTransferException(TransferExceptions.INVALID_BENEFICIARY.toString());
-            if ((("NGN").equalsIgnoreCase(sourceAccount.getAcctCrncyCode()))&& !("NGN").equalsIgnoreCase(destAccount.getAcctCrncyCode()))
+            if ((("NGN").equalsIgnoreCase(sourceAccount.getAcctCrncyCode())) && !("NGN").equalsIgnoreCase(destAccount.getAcctCrncyCode()))
 
-            throw new InternetBankingTransferException(TransferExceptions.NOT_ALLOWED.toString());
+                throw new InternetBankingTransferException(TransferExceptions.NOT_ALLOWED.toString());
 
         }
         if (dto.getTransferType().equals(TransferType.INTER_BANK_TRANSFER)) {
-            if (integrationService.doNameEnquiry(dto.getFinancialInstitution().getInstitutionCode(), dto.getBeneficiaryAccountNumber()) == null)
-                throw new InternetBankingTransferException(TransferExceptions.INVALID_BENEFICIARY.toString());
+            NEnquiryDetails details = integrationService.doNameEnquiry(dto.getFinancialInstitution().getInstitutionCode(), dto.getBeneficiaryAccountNumber());
+          /*  if (details != null && details.getAccountName() == null)
+                throw new InternetBankingTransferException(TransferExceptions.INVALID_BENEFICIARY.toString());*/
+
             if (integrationService.viewAccountDetails(dto.getCustomerAccountNumber()) == null)
                 throw new InternetBankingTransferException(TransferExceptions.INVALID_ACCOUNT.toString());
         }

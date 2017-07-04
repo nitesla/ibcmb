@@ -41,7 +41,8 @@ public class SecurityServiceImpl implements SecurityService {
     private String appGroup;
     @Value("${ENTRUST.app.desc}")
     private String appDesc;
-    ;
+    @Value("${ENTRUST.app.user}")
+    private String defaultUser;
 
     private BCryptPasswordEncoder passwordEncoder;
     private ModelMapper modelMapper;
@@ -526,27 +527,24 @@ public class SecurityServiceImpl implements SecurityService {
 
 
             boolean isSuccessful = responseMessage.contains(charSequence);
+            if (!isSuccessful) {
+                String erroMessg = StringUtils.substringBetween(responseMessage, "<respMessage>", "</respMessage>");
+                throw new InternetBankingSecurityException(erroMessg);
+            }
             String msg = StringUtils.substringBetween(responseMessage, "<respMessageCode>", "</respMessageCode>");
 
             logger.trace("response message code : {}", msg);
-            if (!isSuccessful) throw new InternetBankingSecurityException(msg);
 
             String[] questions = StringUtils.substringsBetween(responseMessage, "<questions>", "</questions>");
             String[] answers = StringUtils.substringsBetween(responseMessage, "<answers>", "</answers>");
             List<String> questionList = Arrays.asList(questions);
             List<String> answerList = Arrays.asList(answers);
 
-
             list.put("questions", questionList);
             list.put("answers", answerList);
 
-
             logger.info("******************END RESPONSE***********");
-            if (!isSuccessful) {
-                String erroMessg = StringUtils.substringBetween(responseMessage, "<respMessage>", "</respMessage>");
-                throw new InternetBankingSecurityException(erroMessg);
-            }
-
+           
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new InternetBankingSecurityException(e.getMessage(), e);
@@ -577,18 +575,17 @@ public class SecurityServiceImpl implements SecurityService {
 
 
             boolean isSuccessful = responseMessage.contains(charSequence);
-            String msg = StringUtils.substringBetween(responseMessage, "<respMessageCode>", "</respMessageCode>");
-
-            logger.trace("response message code : {}", msg);
-            if (!isSuccessful) throw new InternetBankingSecurityException(msg);
-
-
-            logger.info("******************END RESPONSE***********");
             if (!isSuccessful) {
                 String erroMessg = StringUtils.substringBetween(responseMessage, "<respMessage>", "</respMessage>");
                 throw new InternetBankingSecurityException(erroMessg);
             }
 
+            String msg = StringUtils.substringBetween(responseMessage, "<respMessageCode>", "</respMessageCode>");
+
+            logger.trace("response message code : {}", msg);
+
+            logger.info("******************END RESPONSE***********");
+           
             Integer number = Integer.parseInt(StringUtils.substringBetween(responseMessage, "<questionSize>", "</questionSize>"));
             return number;
 
@@ -602,14 +599,14 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
-    public Integer geUserQASize(String username) {
+    public Integer getMinUserQA() {
         try {
             StringWriter writer = new StringWriter();
-            this.t = this.ve.getTemplate("entrust/performGetQASize.vm");
+            this.t = this.ve.getTemplate("entrust/performGetMinQASize.vm");
             this.context.put("appCode", appCode);
             this.context.put("appDesc", appDesc);
             this.context.put("appGroup", appGroup);
-            this.context.put("userName", username);
+            this.context.put("userName", defaultUser);
             this.t.merge(this.context, writer);
             String payload = writer.toString();
             EntrustServiceResponse webServiceResponse = httpClient.sendHttpRequest(payload);
@@ -630,6 +627,45 @@ public class SecurityServiceImpl implements SecurityService {
                 String erroMessg = StringUtils.substringBetween(responseMessage, "<respMessage>", "</respMessage>");
                 throw new InternetBankingSecurityException(erroMessg);
             }
+
+            Integer number = Integer.parseInt(StringUtils.substringBetween(responseMessage, "<questionSize>", "</questionSize>"));
+            return number;
+
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new InternetBankingSecurityException(e.getMessage(), e);
+
+        }
+    }
+
+    @Override
+    public Integer geUserQASize(String username) {
+        try {
+            StringWriter writer = new StringWriter();
+            this.t = this.ve.getTemplate("entrust/performGetQASize.vm");
+            this.context.put("appCode", appCode);
+            this.context.put("appDesc", appDesc);
+            this.context.put("appGroup", appGroup);
+            this.context.put("userName", username);
+            this.t.merge(this.context, writer);
+            String payload = writer.toString();
+            EntrustServiceResponse webServiceResponse = httpClient.sendHttpRequest(payload);
+            String responseMessage = webServiceResponse.getResponseMessage();
+            logger.trace("response {}", responseMessage);
+            CharSequence charSequence = "<respCode>1</respCode>";
+
+
+            boolean isSuccessful = responseMessage.contains(charSequence);
+            if (!isSuccessful) {
+                String erroMessg = StringUtils.substringBetween(responseMessage, "<respMessage>", "</respMessage>");
+                throw new InternetBankingSecurityException(erroMessg);
+            }
+            String msg = StringUtils.substringBetween(responseMessage, "<respMessageCode>", "</respMessageCode>");
+
+            logger.trace("response message code : {}", msg);
+
+            logger.info("******************END RESPONSE***********");
+           
 
             Integer number = Integer.parseInt(StringUtils.substringBetween(responseMessage, "<questionSize>", "</questionSize>"));
             return number;

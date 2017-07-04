@@ -12,11 +12,14 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import longbridge.dtos.RoleDTO;
+import longbridge.utils.PrettySerializer;
 
 import javax.persistence.*;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Created by Wunmi on 27/03/2017.
@@ -79,14 +82,6 @@ public class Role extends AbstractEntity implements PrettySerializer{
         this.email = email;
     }
 
-    //    public Collection<User> getUsers() {
-//        return users;
-//    }
-//
-//    public void setUsers(Collection<User> users) {
-//        this.users = users;
-//    }
-
 
     @Override
     public String toString() {
@@ -99,16 +94,6 @@ public class Role extends AbstractEntity implements PrettySerializer{
     }
 
 
-	public static OperationCode getAddCode() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public static OperationCode getModifyCode() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 
 	@Override @JsonIgnore
     public JsonSerializer<Role> getSerializer() {
@@ -118,16 +103,19 @@ public class Role extends AbstractEntity implements PrettySerializer{
                     throws IOException, JsonProcessingException {
 
                 gen.writeStartObject();
-                gen.writeStringField("name", value.name);
-                gen.writeStringField("email", value.email);
+                gen.writeStringField("Name", value.name);
+                gen.writeStringField("Type",value.userType.name());
+                gen.writeStringField("Email", value.email);
+                gen.writeStringField("Description", value.description);
+
                 // gen.writeArrayFieldStart("permissions");
-                gen.writeObjectFieldStart("permissions");
+                gen.writeObjectFieldStart("Permissions");
                 for(Permission p : value.permissions){
                     gen.writeObjectFieldStart(p.getId().toString());
                     //gen.writeStartObject();
-                    gen.writeStringField("name", p.getName());
-                    gen.writeStringField("category", p.getCategory());
-                    gen.writeStringField("description", p.getDescription());
+                    gen.writeStringField("Name",p.getName());
+                    gen.writeStringField("Code",p.getCode());
+                    gen.writeStringField("Description",p.getDescription());
                     gen.writeEndObject();
                 }
                 gen.writeEndObject();
@@ -137,6 +125,10 @@ public class Role extends AbstractEntity implements PrettySerializer{
         };
     }
 
+	@Override
+	public List<String> getDefaultSearchFields() {
+		return Arrays.asList("name", "description","email");
+	}
 
 
 }

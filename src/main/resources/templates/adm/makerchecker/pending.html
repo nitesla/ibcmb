@@ -28,38 +28,13 @@
             <div class="">
                 <div class="page-title">
                     <div class="title_left">
-                        <h3>Pending Operations</h3>
+                        <h3>My Requests</h3>
                     </div>
                 </div>
 
 
 
-                <ul class="nav navbar-right panel_toolbox">
-
-                    <li>
-                        <div class="col-lg-4">
-                            <div class="title-action" >
-                                <a class="btn btn-app" href="#"  disabled="disabled" >
-                                    <button class="badge bg-orange bt-select" disabled="disabled" th:text="${totalPending}" >count</button>
-                                    <i class="fa fa-check"></i>My approvals
-                                </a>
-                            </div>
-                        </div>
-
-                    </li>
-
-                    <li>
-                        <div class="col-lg-4">
-                            <div class="title-action">
-                                <a  class=" btn btn-app btn bt-select btn-sm  bt-link-act" href="/admin/verifications/operations">
-                                    <button class="badge bg-orange"  th:text="${verificationNumber}"></button>
-                                    <i class="fa fa-check"></i>Approval Queue
-                                </a>
-                            </div>
-                        </div>
-                    </li>
-
-                </ul>
+                
                 <div class="clearfix"></div>
             </div>
 
@@ -97,8 +72,10 @@
                                 <thead>
                                 <tr>
                                     <th>Operation</th>
-                                    <th>Created By</th>
+                                    <th>Initiated By</th>
+                                    <th>Date</th>
                                     <th>Verified By</th>
+                                    <th> Date</th>
                                     <th>Status</th>
 
                                 </tr>
@@ -112,8 +89,10 @@
                                 <tfoot>
                                 <tr>
                                     <th>Operation</th>
-                                    <th>Created By</th>
+                                    <th>Initiated By</th>
+                                    <th>Date</th>
                                     <th>Verified By</th>
+                                    <th>Date </th>
                                     <th>Status</th>
                                 </tr>
                                 </tfoot>
@@ -139,6 +118,7 @@
 <script th:src="@{~/bank/js/dataTables.bootstrap.js}"></script>
 <script th:src="@{~/bank/js/dataTables.select.js}"></script>
 <script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
+<script th:src="@{~/bank/js/momentMin.js}"></script>
 
 <!-- Page-Level Scripts -->
 <script>
@@ -156,22 +136,51 @@
             "dom": 'T<"clear">frtlp',
             "columns": [
                 {"data":"description"},
-                { "data": "initiatedBy" },
-                { "data": "verifiedBy" },
-                { "data": "status" },
+                { "data": "initiatedBy"},
+                { "data": "initiatedOn"},
+                { "data": "verifiedBy" ,"defaultContent": "<i>Not Verified</i>"},
+                { "data": "verifiedOn", "defaultContent": "<i>Not Verified</i>" },
+                { "data": "status" }
 
             ] ,"columnDefs" : [ {
-                "targets" : 3,
+                "targets" : 2,
+                "data" : "initiatedOn",
+                "render" : function(data, type,full, meta) {
+                    if (type === 'display') {
+                    	if(data == null)
+                    		return data;
+                    	var dtStart = new Date(parseInt(data));
+                     	var dtStartWrapper = moment(dtStart);
+                     	//return dtStartWrapper.format('DD/MM/YYYY HH:mm');
+                     	return dtStartWrapper.format('LLLL');
+                    }
+                    return data;
+                }
+            } ,{
+                "targets" : 4,
+                "data" : "verifiedOn",
+                "render" : function(data, type,full, meta) {
+                    if (type === 'display') {
+                    	if(data == null)
+                    		return data;
+                    	var dtStart = new Date(parseInt(data));
+                     	var dtStartWrapper = moment(dtStart);
+                     	return dtStartWrapper.format('LLLL');
+                    }
+                    return data;
+                }
+            } , {
+                "targets" : 5,
                 "data" : "status",
                 "render" : function(data, type,full, meta) {
                     if (type === 'display') {
                         if (data == "PENDING") {
                             return "<i class='fa fa-question dt-body-center' style='color:green;display:block; text-align:center; margin:0 auto;' ></i>";
-                        } else if (data == "VERIFIED") {
+                        } else if (data == "APPROVED") {
                             return "<i class='fa fa-check  dt-body-center' style='color:green;display:block; text-align:center; margin:0 auto;'></i>";
                         }
                         else{
-                            return "<i class='fa fa-ban  dt-body-center' style='color:red;display:block; text-align:center; margin:0 auto;'></i>"
+                            return "<i class='fa fa-times  dt-body-center' style='color:red;display:block; text-align:center; margin:0 auto;'></i>"
                         }
                     }
                     return data;

@@ -15,13 +15,19 @@
 
             <div class="col-md-4 col-sm-4" >
                 <h5 class="page_header"> Own Account Transaction</h5>
+                <select class="form-control invisible">
+                        <option value="account">Account Overview</option>
+                </select>
             </div>
+            <p class="col-xs-12 invisible">
+                    Fields marked <span style="color:red">*</span> are compulsory
+            </p>
         </div>
         <div class="row">
             <div class="col-md-9 content-bg">
                 <!--<div class="row spacing">-->
 
-                    <div class="spacing" >
+                    <div class="spacin" >
 
 
                         <table class="">
@@ -63,13 +69,13 @@
                             <input type="hidden" th:field="*{beneficiaryAccountName}"/>
                             <input type="hidden" th:field="*{amount}"/>
                             <input type="hidden" th:field="*{remarks}"/>
-
+                            <input type="hidden" th:field="*{id}"/>
 
                             <div class="form-group">
                                 <!--<a style="cursor: pointer;" onclick="goBack()" >Modify</a>-->
                                 <button type="submit" class="btn btn-link">Proceed</button>
                                 <a th:href="@{/retail/transfer/ownaccount}">Cancel</a>
-
+                                <!--<a th:href="@{'/retail/transfer/ownaccount/' + ${transferRequest.id} + '/receipt'}">Print</a>-->
 
                             </div>
                         </form>

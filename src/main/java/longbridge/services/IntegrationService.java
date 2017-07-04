@@ -5,11 +5,13 @@ import longbridge.api.*;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.models.TransRequest;
 import longbridge.utils.statement.*;
+import org.springframework.scheduling.annotation.Async;
 
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * The {@IntegrationService} interface provides the methods for accessing the various integration service
@@ -39,6 +41,7 @@ public interface IntegrationService {
      * @param toDate    the Date to stop fetching the account statement (inclusive)
      * @return {@code AccountStatement} object
      */
+    AccountStatement getAccountStatements(String accountNo, Date fromDate, Date toDate, String tranType,PaginationDetails paginationDetails);
     AccountStatement getAccountStatements(String accountNo, Date fromDate, Date toDate, String tranType);
 
     List<TransactionHistory> getLastNTransactions(String accountNo, String numberOfRecords);
@@ -115,10 +118,10 @@ public interface IntegrationService {
 
 
     BigDecimal getAvailableBalance(String s);
-
-    ObjectNode sendSMS(String message, String contact, String subject);
-
-    Rate getFee(String channel);
+    @Async
+    CompletableFuture<ObjectNode>  sendSMS(String message, String contact, String subject);
+    @Async
+    CompletableFuture<Rate> getFee(String channel);
 
 
 }

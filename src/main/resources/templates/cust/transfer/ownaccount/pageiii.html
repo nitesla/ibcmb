@@ -15,7 +15,13 @@
 
             <div class="col-md-4 col-sm-4">
                 <h5 class="page_header"> Own Account Transaction</h5>
+                 <select class="form-control invisible">
+                        <option value="account">Account Overview</option>
+                </select>
             </div>
+            <p class="col-xs-12 invisible">
+                    Fields marked <span style="color:red">*</span> are compulsory
+            </p>
         </div>
         <div class="row">
             <div class="col-md-9 content-bg">
@@ -63,14 +69,23 @@
                                     <input type="text" name="token" placeholder="" class="form-control"/>
                                     <br/>
                                     <div class="form-group">
-                                        <button type="submit" class="btn btn-default">Proceed</button>
-                                        <a th:href="@{/retail/transfer/ownaccount}" >Cancel</a>
+                                        <button type="submit" class="btn btn-link required-step">Proceed</button>
+                                        <button onclick="cancel();" class='btn btn-link less-required'>Cancel</button>
+                                         <button type='button' class='btn btn-link less-required'>Modify</button>
                                     </div>
 
 
                                 </div>
 
                             </form>
+                        <form method="post" id="form_edit" th:action="@{/retail/transfer/ownaccount/edit}"
+                              th:object="${transRequest}">
+                            <input type="hidden" th:field="*{customerAccountNumber}"/>
+                            <input type="hidden" th:field="*{beneficiaryAccountNumber}"/>
+                            <input type="hidden" th:field="*{beneficiaryAccountName}"/>
+                            <input type="hidden" th:field="*{amount}"/>
+                            <input type="hidden" th:field="*{remarks}"/>
+                        </form>
 
 
                     </div>
@@ -89,6 +104,16 @@
 <footer th:replace="cust_layout ::footer">
 </footer>
 </div>
+<script>
+    function edit(){
+        $("#form_edit").submit();
+    }
+
+    function cancel(){
+        window.location.href="/retail/transfer/ownaccount";
+    }
+
+</script>
 </body>
 
 </html>

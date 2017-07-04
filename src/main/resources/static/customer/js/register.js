@@ -22,30 +22,25 @@ form.children("div").steps({
     onStepChanging: function (event, currentIndex, newIndex)
     {
 
-        $("#myspan1").hide();
-         $("#loader").hide();
-        
-
-        $("#successReg").hide();
-
         form.validate().settings.ignore = ":disabled,:hidden";
         console.log(currentIndex);
         var isValid = form.valid();
 
-        // Allways allow previous action even if the current form is not valid!
+        // Always allow previous action even if the current form is not valid!
         if (currentIndex > newIndex)
         {
-            $("#myspan").hide();
-           
+            // $('#myModalSuccess').modal('hide');
             return true;
         }
 
         // Needed in some cases if the user went back (clean up)
         if (currentIndex < newIndex)
-        {    $("#myspan").hide();
+        {
             // To remove error styles
             form.find(".body:eq(" + newIndex + ") label.error").remove();
             form.find(".body:eq(" + newIndex + ") .error").removeClass("error");
+            $('#myModalSuccess').modal('hide');
+            $('#myModalError').modal('hide');
         }
 
         if(ACCOUNT_DETAILS_STEP === currentIndex){
@@ -60,6 +55,7 @@ form.children("div").steps({
 
         }
         if(PROFILE_DETAILS_STEP === currentIndex){
+
             console.log("Current stp is the profile details step");
             var username = $('input[name="userName"]').val();
             var confirm = $('input[name="confirm"]').val();
@@ -125,14 +121,11 @@ var customerId = "null";
  * @param accountNumber the account number to check
  */
 function validateAccountDetails(accountNumber, email, birthDate){
-    // var loader = document.getElementById('loader');
-    // loader.style.display = "block";
-    $("#loader").show();
     if(email == ""){
         email = "ib@coronationmb.com"
     }
     if(birthDate == ""){
-        birthDate = "11-12-1970"
+        birthDate = "11-11-1111"
     }
     var customerId;
     $.ajax({
@@ -144,25 +137,10 @@ function validateAccountDetails(accountNumber, email, birthDate){
 
             if(customerId == "" || customerId === null){
 
-                loader.style.display = "none";
-                //invalid account number
-                // $.notify({
-                //     title: '<strong></strong>',
-                //     message: 'Invalid Account Number, Contact the bank'
-                // },{
-                //     type: 'danger'
-                // });
+                document.getElementById("errorMess").textContent="Invalid Account Credentials, Ensure details were correctly inputted. If problem persists, Please contact the bank.";
+                $('#myModalError').modal('show');
 
-                document.getElementById("myspan").textContent="Invalid Account Credentials, Ensure details were correctly inputted. If problem persists, Please contact the bank.";
-                $("#myspan").show();
-                $("#loader").hide();
-
-                //alert("Account number not found");
             }else{
-                //loader.style.display = "none";
-
-                //valid account number
-                //alert("Customer Id: " + customerId);
                 $('input[name=customerId]').val(customerId);
             }
         }
@@ -176,13 +154,11 @@ function validateAccountDetails(accountNumber, email, birthDate){
 }
 
 function validateExists(accountNumber, email, birthDate){
-    var loader = document.getElementById('loader');
-    loader.style.display = "block";
     if(email == ""){
         email = "ib@coronationmb.com"
     }
     if(birthDate == ""){
-        birthDate = "11-12-1970"
+        birthDate = "11-11-1111"
     }
     var cif;
     $.ajax({
@@ -194,20 +170,14 @@ function validateExists(accountNumber, email, birthDate){
 
             if(cif == "" || cif === null){
 
-                loader.style.display = "none";
                 //invalid account number
 
-                document.getElementById("myspan").textContent="Account has been previously registered, please try to login with credentials.";
-                $("#myspan").show();
-                loader.style.display = "none";
+                document.getElementById("errorMess").textContent="This account already exists on our internet banking platform, Please try logging in.";
+                $('#myModalError').modal('show');
 
                 //alert("Account number not found");
             }else{
-                loader.style.display = "none";
-
-                //valid account number
-                //alert("Customer Id: " + customerId);
-                //$('input[name=customerId]').val(cif);
+                sendRegCode();
             }
         }
     });
@@ -229,8 +199,8 @@ function validateUsername(username){
             result = ''+String(data1);
             if(result == 'false'){
                 //invalid account number
-                document.getElementById("myspan1").textContent="Username already exists";
-                $("#myspan1").show();
+                document.getElementById("errorMess").textContent="Username already exists.";
+                $('#myModalError').modal('show');
             }else{
                 //valid account number
                 //alert("user name: " + result);
@@ -257,8 +227,8 @@ function validatePassword(password){
             if(result === 'true'){
                 //success
             }else{
-                document.getElementById("myspan1").textContent="The entered password might not meet the set password policy";
-                $("#myspan1").show();
+                document.getElementById("errorMess").textContent=result;
+                $('#myModalError').modal('show');
             }
         }
     });
@@ -281,16 +251,8 @@ function validateRegCode(code){
             result = ''+String(data1);
             if(result == 'false'){
                 //invalid account number
-                //alert("user name not found");
-                // $.notify({
-                //     title: '<strong></strong>',
-                //     message: 'Enter the Registration code sent to your mobile'
-                // },{
-                //     type: 'danger'
-                // });
-
-                document.getElementById("myspan1").textContent="Enter the Registration code sent to your mobile";
-                $("#myspan1").show();
+                document.getElementById("errorMess").textContent="Invalid reg code, Enter the Registration code sent to your mobile phone.";
+                $('#myModalError').modal('show');
 
             }else{
                 //valid account number
@@ -310,22 +272,16 @@ function validateRegCode(code){
 
 function sendRegCode(){
 
-    $('#myModal').modal('show');
-
     var accountNumber = $('input[name="accountNumber"]').val();
     var email = $('input[name="email"]').val();
     if(email == ""){
-        email = "ib@coronationmb.com"
+        email = "ib@coronationmb.com";
     }
     var birthDate = $('input[name="birthDate"]').val();
     if(birthDate == ""){
-        birthDate = "11-12-1970"
+        birthDate = "11-11-1111";
     }
     var result;
-
-    var loader = document.getElementById('load');
-    loader.style.display = "block";
-
 
     $.ajax({
         type:'GET',
@@ -334,23 +290,18 @@ function sendRegCode(){
         success:function(data1){
             result = ''+String(data1);
             if(result === 'false' || result=== '' || result === null){
-                loader.style.display = "none";
                 //invalid account number
-                document.getElementById("myspan1").textContent="Failed to send registration code. Please try again.";
-                $("#myspan1").show();
-                $('#myModal').modal('hide');
+                document.getElementById("errorMess").textContent="Failed to send registration code. Please try again.";
+                $('#myModalError').modal('show');
 
             }else{
 
-                loader.style.display = "none";
-                $("#myspan1").hide();
-                document.getElementById("successReg").innerHTML="Registration code has been successfully sent. If you do not receive a message after 5 minutes, please retry.";
-                $("#successReg").show();
+                document.getElementById("successMess").textContent="Registration code has been successfully sent. If you do not receive a message after 3 minutes, please retry.";
+                $('#myModalSuccess').modal('show');
 
                 var showreg = document.getElementById('regcodebox');
                 showreg.style.display = "block";
 
-                $('#myModal').modal('hide');
 
                 //valid account number
                 //alert("code sent: " + result);
@@ -361,7 +312,6 @@ function sendRegCode(){
 }
 
 function registerUser(){
-    $("#myMode").modal("show");
 
     var returnValue = false;
     $('#reg-form').submit(function(e){
@@ -377,21 +327,10 @@ function registerUser(){
                 //alert(data+" return ");
                 //callback methods go right here
                 if(data==="true"){
-                    $("#myMode").modal("hide");
                     $('#returnValue').val(true);
-
                 }else {
-                    // $.notify({
-                    //     title: '<strong></strong>',
-                    //     message: 'Self Registration Failed'
-                    // },{
-                    //     type: 'danger'
-                    // });
-
-                    document.getElementById("myspan3").textContent="Self Registration Failed";
-                    $("#myspan3").show();
-                    $("#myMode").modal("hide");
-
+                    document.getElementById("errorMess").textContent="Self registration could not be completed due to service unavailability.";
+                    $('#myModalError').modal('show');
                 }
             }
         });
@@ -400,5 +339,6 @@ function registerUser(){
     returnValue = $('#returnValue').val();
     //alert(returnValue);
     return Boolean(returnValue);
+
 }
 

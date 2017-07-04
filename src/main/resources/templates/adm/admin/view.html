@@ -63,15 +63,13 @@
                                             </div>
                                         </div>
                                     </li>
-                                    <li >
-                                        <div class="col-lg-4">
-                                            <div class="title-action">
-                                                <a id="delete-btn" class="btn btn-danger btn-sm bt-select" href="/admin/users/index/delete" disabled="disabled" ><i class="fa fa-trash"></i> Delete</a>
-                                            </div>
-                                        </div>
-                                    </li>
-                                   </ul>
-                                <ul class="nav navbar-right panel_toolbox">
+                                    <!--<li >-->
+                                        <!--<div class="col-lg-4">-->
+                                            <!--<div class="title-action">-->
+                                                <!--<a id="delete-btn" class="btn btn-danger btn-sm bt-select" href="/admin/users/index/delete" disabled="disabled" ><i class="fa fa-trash"></i> Delete</a>-->
+                                            <!--</div>-->
+                                        <!--</div>-->
+                                    <!--</li>-->
                                     <li >
                                         <div class="col-lg-4">
                                             <div class="title-action">
@@ -79,10 +77,25 @@
                                             </div>
                                         </div>
                                     </li>
+                                   </ul>
+                                <ul class="nav navbar-right panel_toolbox">
+                                    
 
                                     <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                                     </li>
 
+                                </ul>
+                                 <ul class="nav navbar-right panel_toolbox col-lg-4 pull-right">
+
+                                   <li class="pull-right" >
+								<div class="input-group col-lg-12">
+									<input type="text" class="form-control" id="pattern" placeholder="Search for..."/> <span
+										class="input-group-btn">
+										<button class="btn btn-success" id="search" type="button">Go!</button>
+									</span>
+							</div>
+</li>
+                                    
                                 </ul>
                                 <div class="clearfix"></div>
                             </div>
@@ -141,6 +154,7 @@
 <script th:src="@{~/bank/js/dataTables.bootstrap.js}"></script>
 <script th:src="@{~/bank/js/dataTables.select.js}"></script>
 <script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
+<script th:src="@{~/bank/js/momentMin.js}"></script>
 
 <!-- Page-Level Scripts -->
 <script>
@@ -154,7 +168,13 @@
             "searching": false,
             "paging": true,
             "serverSide" : true,
-            "ajax": "/admin/users/all",
+            "ajax" : {
+				url : "/admin/users/all",
+				"type" : "GET",
+				"data" : function(d) {
+					d.csearch = $('#pattern').val();
+				}
+			},
             "dom": 'T<"clear">frtlp',
             "columns": [
                 { "data": "userName" },
@@ -185,6 +205,17 @@
                   return data;
               }
 
+          } ,{
+              "targets" : 5,
+              "data" : "status",
+              "render" : function(data, type,full, meta) {
+                  if (type === 'display') {
+                  	var dtStart = new Date(parseInt(data));
+                   	var dtStartWrapper = moment(dtStart);
+                   	return dtStartWrapper.format('DD/MM/YYYY HH:mm');
+                  }
+                  return data;
+              }
           } ]
 
       });
@@ -214,6 +245,13 @@
         });
 
     });
+    
+    $("#search").on("click", function(e) {
+		e.preventDefault();
+		dt = $('#admin').DataTable();
+		dt.ajax.reload(null, true);
+		
+	});
 
         $("a.bt-link-act").on("click", function(e) {
             e.preventDefault();

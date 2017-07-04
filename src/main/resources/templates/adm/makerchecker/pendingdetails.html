@@ -28,7 +28,7 @@
             <div class="">
                 <div class="page-title">
                     <div class="title_left">
-                        <h3>Pending verification</h3>
+                        <h3 th:text="${verify.status}"></h3>
                     </div>
 
                 </div>
@@ -36,28 +36,28 @@
 
                 <ul class="nav navbar-right panel_toolbox">
 
-                    <li>
-                        <div class="col-lg-4">
-                            <div class="title-action">
-                                <a class="btn btn-app" href="/admin/verifications/pendingops">
-                                    <button class="badge bg-orange bt-select"   th:text="${totalPending}">count</button>
-                                    <i class="fa fa-envelope"></i>My approval
-                                </a>
-                            </div>
-                        </div>
-                    </li>
+                    <!--<li>-->
+                        <!--<div class="col-lg-4">-->
+                            <!--<div class="title-action">-->
+                                <!--<a class="btn btn-app" href="/admin/verifications/pendingops">-->
+                                    <!--<button class="badge bg-orange bt-select"   th:text="${totalPending}">count</button>-->
+                                    <!--<i class="fa fa-envelope"></i>My approval-->
+                                <!--</a>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</li>-->
 
 
-                    <li>
-                        <div class="col-lg-4">
-                            <div class="title-action">
-                                <a  class=" btn btn-app btn  btn-sm bt-select bt-link-act" href="#" disabled="disabled" >
-                                    <button class="badge bg-orange" disabled="disabled" th:text="${verificationNumber}"></button>
-                                    <i class="fa fa-envelope"></i>Approval Queue
-                                </a>
-                            </div>
-                        </div>
-                    </li>
+                    <!--<li>-->
+                        <!--<div class="col-lg-4">-->
+                            <!--<div class="title-action">-->
+                                <!--<a  class=" btn btn-app btn  btn-sm bt-select bt-link-act" href="#" disabled="disabled" >-->
+                                    <!--<button class="badge bg-orange" disabled="disabled" th:text="${verificationNumber}"></button>-->
+                                    <!--<i class="fa fa-envelope"></i>Approval Queue-->
+                                <!--</a>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</li>-->
 
 
 
@@ -80,9 +80,15 @@
                                 <div class="ibox-content">
                                     <form method="post" class="form-horizontal" >
 
+                                        <div class="form-group">
+                                            <label for="comments" class="col-sm-2 control-label" style="text-align: left">Comments</label>
+                                            <div class="col-sm-10">
+                                                <input type="text"  th:field="${verify.comments}" class="form-control" id="comments"/>
+                                            </div>
+                                        </div>
 
 
-                                        <label style="font-size:large">Previous Changes</label>
+                                        <label style="font-size:large" th:text="${verify.description}"></label>
 
                                         <!--<div id="before" style="overflow-wrap: break-word;border-left: 1px solid;margin-right: 1px;padding:5px; ">-->
 
@@ -96,10 +102,10 @@
                                             <tbody>
                                             <tr>
                                                 <td style ="word-break:break-all;width:50%;">
-                                                    <th:block th:text="*{beforeObject}"></th:block>
+                                                    <th:block th:text="${verify.beforeObject}"></th:block>
                                                 </td>
                                                 <td style ="word-break:break-all;">
-                                                    <th:block th:text="*{afterObject}"></th:block>
+                                                    <th:block th:text="${verify.afterObject}"></th:block>
                                                 </td>
                                             </tr>
                                             </tbody>
@@ -217,8 +223,8 @@
         }
         return result;
     }
-    var beforeData = JSON.parse([[${beforeObject}]]);
-    var afterData =JSON.parse([[${afterObject}]]);
+    var beforeData = JSON.parse([[${verify.beforeObject}]]);
+    var afterData =JSON.parse([[${verify.afterObject}]]);
     console.log(beforeData);
     $(document).ready(function() {
 

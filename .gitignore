@@ -25,3 +25,5 @@ nbdist/
 ##Application logs
 .log
 application.log
+.DS_Store
+application-local.properties

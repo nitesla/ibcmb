@@ -16,7 +16,7 @@
                 <div class="clearfix"></div>
                 <div class="clearfix"></div>
 
-                <div th:replace="layout :: admin-menu"></div>
+                <div th:replace="layout :: ops-menu"></div>
                 <div th:replace="layout :: menu-footer-adm"></div>
 
             </div>
@@ -28,7 +28,7 @@
             <div class="">
                 <div class="page-title">
                     <div class="title_left">
-                        <h3>Pending verification</h3>
+                        <h3 th:text="${verify.status}"></h3>
                     </div>
 
                 </div>
@@ -36,28 +36,28 @@
 
                 <ul class="nav navbar-right panel_toolbox">
 
-                    <li>
-                        <div class="col-lg-4">
-                            <div class="title-action">
-                                <a class="btn btn-app" href="/admin/verifications/pendingops">
-                                    <button class="badge bg-orange bt-select"   th:text="${totalPending}">count</button>
-                                    <i class="fa fa-envelope"></i>My approval
-                                </a>
-                            </div>
-                        </div>
-                    </li>
+                    <!--<li>-->
+                    <!--<div class="col-lg-4">-->
+                    <!--<div class="title-action">-->
+                    <!--<a class="btn btn-app" href="/admin/verifications/pendingops">-->
+                    <!--<button class="badge bg-orange bt-select"   th:text="${totalPending}">count</button>-->
+                    <!--<i class="fa fa-envelope"></i>My approval-->
+                    <!--</a>-->
+                    <!--</div>-->
+                    <!--</div>-->
+                    <!--</li>-->
 
 
-                    <li>
-                        <div class="col-lg-4">
-                            <div class="title-action">
-                                <a  class=" btn btn-app btn  btn-sm bt-select bt-link-act" href="#" disabled="disabled" >
-                                    <button class="badge bg-orange" disabled="disabled" th:text="${verificationNumber}"></button>
-                                    <i class="fa fa-envelope"></i>Approval Queue
-                                </a>
-                            </div>
-                        </div>
-                    </li>
+                    <!--<li>-->
+                    <!--<div class="col-lg-4">-->
+                    <!--<div class="title-action">-->
+                    <!--<a  class=" btn btn-app btn  btn-sm bt-select bt-link-act" href="#" disabled="disabled" >-->
+                    <!--<button class="badge bg-orange" disabled="disabled" th:text="${verificationNumber}"></button>-->
+                    <!--<i class="fa fa-envelope"></i>Approval Queue-->
+                    <!--</a>-->
+                    <!--</div>-->
+                    <!--</div>-->
+                    <!--</li>-->
 
 
 
@@ -80,9 +80,14 @@
                                 <div class="ibox-content">
                                     <form method="post" class="form-horizontal" >
 
+                                        <div class="form-group">
+                                            <label for="comments" class="col-sm-2 control-label" style="text-align: left">Comments</label>
+                                            <div class="col-sm-10">
+                                                <input type="text"  th:field="${verify.comments}" class="form-control" id="comments"/>
+                                            </div>
+                                        </div>
 
-
-                                        <label style="font-size:large">Previous Changes</label>
+                                        <label style="font-size:large" th:text="${verify.description}"></label>
 
                                         <!--<div id="before" style="overflow-wrap: break-word;border-left: 1px solid;margin-right: 1px;padding:5px; ">-->
 
@@ -96,10 +101,10 @@
                                             <tbody>
                                             <tr>
                                                 <td style ="word-break:break-all;width:50%;">
-                                                    <th:block th:text="*{beforeObject}"></th:block>
+                                                    <th:block th:text="${verify.beforeObject}"></th:block>
                                                 </td>
                                                 <td style ="word-break:break-all;">
-                                                    <th:block th:text="*{afterObject}"></th:block>
+                                                    <th:block th:text="${verify.afterObject}"></th:block>
                                                 </td>
                                             </tr>
                                             </tbody>
@@ -184,8 +189,12 @@
 
 
                 current_path = path.endsWith('[') ? path + node + ']' : path + '.' +node;
-                b = jsonPath(beforeData,current_path)[0] ;
-                a = jsonPath(afterData,current_path)[0];
+                /* if(jsonPath(beforeData,current_path)){
+
+                 }
+                 b = jsonPath(beforeData,current_path)[0] ;
+                 a = jsonPath(afterData,current_path)[0];
+                 */
                 if(true){
                     result += '<li class="list-group-item">'+ node +':<ul class="list-group">' + parseJsonAsList(jsn[node],current_path) + '</ul></li>';
                 }else{
@@ -196,8 +205,11 @@
 
 
                 current_path = path.endsWith('[') ? path + node + ']' : path + '.' +node;
-                b = jsonPath(beforeData,current_path)[0] ;
-                a = jsonPath(afterData,current_path)[0];
+
+                b = jsonPath(beforeData,current_path) ? jsonPath(beforeData,current_path)[0] : 'undefined' ;
+
+                a = jsonPath(afterData,current_path) ? jsonPath(afterData,current_path)[0] : 'undefined' ;
+
                 if(a == b && typeof a != 'undefined' && typeof b != 'undefined' ){
 
                     result += '<li class="list-group-item">' + node + ':'+jsn[node] +'</li>'
@@ -210,8 +222,8 @@
         }
         return result;
     }
-    var beforeData = JSON.parse([[${beforeObject}]]);
-    var afterData =JSON.parse([[${afterObject}]]);
+    var beforeData = JSON.parse([[${verify.beforeObject}]]);
+    var afterData =JSON.parse([[${verify.afterObject}]]);
     console.log(beforeData);
     $(document).ready(function() {
 
@@ -224,8 +236,14 @@
                 "targets" : 0,
                 "className" : "dt-center",
                 "render" : function(data, type, full, meta) {
+
                     if (type === 'display') {
-                        before = JSON.parse(data);
+                        temp = data;
+                        if(!temp || 0 === temp.length){
+                            temp = '{}'
+                        }
+                        before = JSON.parse(temp);
+
                         return '<ul>'+parseJsonAsList(before,'$')+'</ul>';
                     }
                     return data;
@@ -235,8 +253,13 @@
                 "className" : "dt-center",
                 "render" : function(data, type, full, meta) {
                     if (type === 'display') {
-                        after = JSON.parse(data);
-                        return '<ul class="list-group">'+parseJsonAsList(after,'$')+'</ul>';
+                        temp = data;
+                        if(!temp || 0 === temp.length ){
+                            temp = '{}'
+                        }
+                        before = JSON.parse(temp);
+
+                        return '<ul>'+parseJsonAsList(before,'$')+'</ul>';
                     }
                     return data;
                 }

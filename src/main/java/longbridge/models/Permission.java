@@ -5,11 +5,16 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
+
+import longbridge.utils.PrettySerializer;
+
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.Entity;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by Wunmi on 27/03/2017.
@@ -99,15 +104,18 @@ public class Permission extends AbstractEntity  implements PrettySerializer{
                     throws IOException, JsonProcessingException
             {
                 gen.writeStartObject();
-                gen.writeStringField("name",value.name);
-                gen.writeStringField("description",value.description);
-                gen.writeStringField("userType",value.userType);
-                gen.writeStringField("category",value.category);
+                gen.writeStringField("Name",value.name);
+                gen.writeStringField("Description",value.description);
+                gen.writeStringField("User Type",value.userType);
+                gen.writeStringField("Category",value.category);
                 gen.writeEndObject();
             }
         };
     }
 
-
+    @Override
+	public List<String> getDefaultSearchFields() {
+		return Arrays.asList("name", "description","category");
+	}
 
 }

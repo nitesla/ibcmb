@@ -1,5 +1,6 @@
 package longbridge.controllers.retail;
 
+import longbridge.dtos.LocalBeneficiaryDTO;
 import longbridge.dtos.TransferRequestDTO;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferErrorService;
@@ -117,29 +118,12 @@ public class OwnTransferController {
         return availBal;
     }
 
-
-    @RequestMapping(path = "{id}/receipt", method = RequestMethod.GET)
-    public ModelAndView report(@PathVariable Long id,ModelMap modelMap,HttpServletRequest servletRequest, TransferRequestDTO transferRequestDTO) {
-        /**
-         * Created a stub to test transaction receiptpt
-         */
-
-    modelMap.put("datasource",new ArrayList<>());
-    modelMap.put("format", "pdf");
-    modelMap.put("amount", "1,000,000.00");
-    modelMap.put("recipient", "BANKOLE D. ONEY");
-    modelMap.put("acctNum1", "10986433737332");
-    modelMap.put("sender", "CHEERFUL GIVER CHOICE");
-    modelMap.put("bank", "BANK OF AFRICA");
-    modelMap.put("remarks", "MY BUILDING PROJECT");
-    modelMap.put("recipientBank", "AGONORONA BANK");
-    modelMap.put("acctNo2", "0986879765");
-    modelMap.put("refNUm", "65566586787");
-    modelMap.put("tranDate", "08-09-2017");
-    modelMap.put("amountInWords", "30 BILLION ");
-        logger.info("Transaction Receipt {}",modelMap);
-
-        ModelAndView modelAndView = new ModelAndView("rpt_reciept4", modelMap);
-        return modelAndView;
+    @PostMapping("/edit")
+    public String editTransfer(@ModelAttribute("transferRequest")  TransferRequestDTO transferRequestDTO,Model model,HttpServletRequest request){
+        transferRequestDTO.setTransferType(TransferType.OWN_ACCOUNT_TRANSFER);
+        transferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode(bankCode));
+        model.addAttribute("transferRequest",transferRequestDTO);
+        return page + "pagei";
     }
+
 }

@@ -9,17 +9,26 @@
 </header>
 
 <section class="content-wrapper">
-    <div class="container">
+    <div class="">
         <div class="row">
-            <div class="col-md-8 col-sm-8">
-                <h5 class="page_header"> Beneficiary List</h5>
-                <a th:href="@{/corporate/beneficiary/new}" class="pull-right">Add New Beneficiary</a>
+            <div class="col-md col-sm">
+                <div class=" col-sm-4 page_header">
+                    <h5 > Beneficiary List</h5>
+                    <select class="form-control invisible">
+                        <option value="account">Account Overview</option>
+                    </select>
+                </div>
+                <div class='col-sm-5' style='margin-top:80px;'>
+
+                    <a th:href="@{/corporate/beneficiary/new}" class="pull-right">Add New Beneficiary</a>
+
+                </div>
             </div>
         </div>
         <div class="row">
-            <div class="col-md-8 content-bg">
-                <div class="row spacing">
-                    <div class="col-md-10">
+            <div class="col-md-9 content-bg">
+                <div class="row">
+                    <div class="col-md-12">
                         <h4 class="sub_header">Local Beneficiaries</h4>
                         <table class="table">
                             <thead>
@@ -58,7 +67,9 @@
                     </div>
                 </div>
             </div>
-            <div th:replace="corp_layout :: corp-sidebar" class="col-md-3 sidebar">
+            <div class="col-md-3 pull-right " >
+                <div th:replace="cust_layout :: sidebar" class="" >
+                </div>
             </div>
         </div>
     </div>

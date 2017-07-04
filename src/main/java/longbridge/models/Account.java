@@ -27,6 +27,7 @@ public class Account extends AbstractEntity{
     private String primaryFlag;
     private String hiddenFlag;
     private String currencyCode;
+    private String status;
 
     public Account() {
     }
@@ -122,6 +123,14 @@ public class Account extends AbstractEntity{
 
     public void setCurrencyCode(String currencyCode) {
         this.currencyCode = currencyCode;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     @Override

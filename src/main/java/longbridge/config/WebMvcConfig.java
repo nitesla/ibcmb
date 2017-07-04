@@ -13,6 +13,7 @@ import org.springframework.context.annotation.CommonAnnotationBeanPostProcessor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.http.HttpMethod;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
@@ -35,6 +36,7 @@ import java.net.URL;
 import java.util.Locale;
 
 @Configuration
+//@EnableAsync
 public class WebMvcConfig extends WebMvcConfigurerAdapter {
 
     @Bean
@@ -58,6 +60,7 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
     public RestTemplate restTemplate(RestTemplateBuilder builder) {
         builder.setConnectTimeout(1*60);
         builder.setReadTimeout(1*60);
+       // builder.basicAuthorization()
         return builder.build();
     }
 
@@ -122,7 +125,8 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
     }
 
     @Bean
-    public OpUserLoginInterceptor OpUserLoginInterceptor() {
+    public OpUserLoginInterceptor OpUserLoginInterceptor()
+    {
         return new OpUserLoginInterceptor();
     }
 

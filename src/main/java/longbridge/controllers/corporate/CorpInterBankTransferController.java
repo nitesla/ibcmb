@@ -95,7 +95,7 @@ public class CorpInterBankTransferController {
             return page + "pageiB";
         }
 
-        CorpTransferRequestDTO corpTransferRequestDTO = (CorpTransferRequestDTO) new TransferRequestDTO();
+        CorpTransferRequestDTO corpTransferRequestDTO = new CorpTransferRequestDTO();
         corpTransferRequestDTO.setBeneficiaryAccountName(corpLocalBeneficiaryDTO.getAccountName());
         corpTransferRequestDTO.setBeneficiaryAccountNumber(corpLocalBeneficiaryDTO.getAccountNumber());
 

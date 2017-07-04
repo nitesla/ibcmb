@@ -11,8 +11,8 @@
                 if(result == "" || result === null){
                     //invalid account number
                     //alert("Account number not found");
-                    document.getElementById("myspan").textContent="Wrong Answer to Security Question Provided.";
-                    $("#myspan").show();
+                    document.getElementById("errorMess").textContent="Wrong Answer to Security Question Provided.";
+                    $('#myModalError').modal('show');
                 }else{
                     //valid account number
                     $('input[name=username]').val(result);
@@ -38,8 +38,9 @@
                 if(res === 'true'){
                     //success
                 }else{
-                    document.getElementById("myspan1").textContent="The entered password might not meet the set password policy";
-                    $("#myspan1").show();
+
+                    document.getElementById("errorMess").textContent="The entered password might not meet the set password policy.";
+                    $('#myModalError').modal('show');
                 }
             }
         });
@@ -69,8 +70,9 @@
                     if(data==="true"){
                         $('#returnValue').val(true);
                     }else {
-                        document.getElementById("myspan1").textContent=data;
-                        $("#myspan1").show();
+                        document.getElementById("errorMess").textContent=data;
+                        $('#myModalError').modal('show');
+
                     }
                 }
             });

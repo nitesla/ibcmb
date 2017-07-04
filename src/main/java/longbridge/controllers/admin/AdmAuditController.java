@@ -1,5 +1,6 @@
 package longbridge.controllers.admin;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import longbridge.models.AuditConfig;
@@ -37,9 +39,15 @@ public class AdmAuditController {
 	}
     
     @GetMapping(path = "/all")
-    public @ResponseBody DataTablesOutput<AuditConfig> getAllCodes(DataTablesInput input){
+    public @ResponseBody DataTablesOutput<AuditConfig> getAllCodes(DataTablesInput input,@RequestParam("csearch") String search){
         Pageable pageable = DataTablesUtils.getPageable(input);
-        Page<AuditConfig> auditConf = auditCfgService.getEntities(pageable);
+        Page<AuditConfig> auditConf = null;
+        if (StringUtils.isNoneBlank(search)) {
+        	auditConf = auditCfgService.findEntities(search,pageable);
+		}else{
+			auditConf = auditCfgService.getEntities(pageable);
+		}
+        
         DataTablesOutput<AuditConfig> out = new DataTablesOutput<AuditConfig>();
         out.setDraw(input.getDraw());
         out.setData(auditConf.getContent());
@@ -47,6 +55,31 @@ public class AdmAuditController {
         out.setRecordsTotal(auditConf.getTotalElements());
         return out;
     }
+
+
+
+    @GetMapping(path = "all/entityname")
+    public @ResponseBody DataTablesOutput<AuditConfig> getAllEntities(DataTablesInput input)
+    {
+        Pageable pageable=DataTablesUtils.getPageable(input);
+        Page<AuditConfig> auditConfig=null;
+        auditConfig=auditCfgService.getEntities(pageable);
+        DataTablesOutput<AuditConfig> out=new DataTablesOutput<>();
+        out.setDraw(input.getDraw());
+        out.setData(auditConfig.getContent());
+        out.setRecordsFiltered(auditConfig.getTotalElements());
+        out.setRecordsTotal(auditConfig.getTotalElements());
+        return out;
+    }
+
+
+
+    @GetMapping("/view")
+    public String listEntity(Model model) {
+        return "adm/audit/view";
+    }
+
+
     
     @PostMapping
     @ResponseBody

@@ -46,6 +46,55 @@ start
     padding-left:0px !important;
 }
 
+.active{
+    border-bottom: 2px solid #9F614B !important;
+}
+
+.datepicker-switch
+{
+    background-color: #e5eaee !important;
+   
+}
+
+
+.datepicker-orient-top:before
+{
+    top:0px !important;border:0 !important;
+}
+.datepicker-dropdown.datepicker-orient-top:after
+{
+    top:0px !important;
+    border:0 !important;
+   
+}
+
+.text-blue
+{
+    color: #003056;
+}
+
+.cal-icon
+{
+    background:  red !important;
+}
+
+.cal-icon:hover
+{
+     background: white !important;
+     border:1px solid #003056 !important;
+}
+
+.datepicker
+{
+    background: white !important;
+     border:1px solid #003056 !important;
+}
+
+.today
+{
+    background: #003056 !important;
+    color: white !important;
+}
 
 .invisible
 {
@@ -57,7 +106,6 @@ start
     list-style-type: none
 
 }
-
 
 .mail-links li
 {
@@ -190,7 +238,7 @@ label
 span.req
 {
     position: absolute;
-    top:18px;
+    top:22px;
     left:-7px;
     display: inline-block;
 
@@ -200,6 +248,7 @@ span.req
 {
     visibility: hidden;
 }
+
 span.req-inner
 {
     position: relative;
@@ -306,8 +355,17 @@ select
     /*animation: spin 2s linear infinite;*/
 /*}*/
 
+.sent-info
+{
+    padding: 5px;
+}
 
 
+.sm-box
+{
+    min-height: 250px;
+    padding:20px;
+}
 
 #myspan
 {
@@ -369,6 +427,8 @@ select
     animation: spin 2s linear infinite;
 }
 
+
+
 @-webkit-keyframes spin {
     0% { -webkit-transform: rotate(0deg); }
     100% { -webkit-transform: rotate(360deg); }
@@ -419,6 +479,24 @@ tokenInput
 {
     background: #003056;
 }
+
+.inline-tag
+{
+    display:inline;
+}
+
+.related-info
+{
+    border:1px solid #9F614B;
+    color:blue;
+}
+
+ .tab tr th
+    {
+        font-weight: bold;
+        font-size: 15px;
+        
+    }
 
 
 .tokenBox
@@ -913,7 +991,6 @@ body {
 
 .navbar-nav li a{
     color: #777;
-    margin-top: 5px;
     padding-top: 8px;
     padding-bottom: 0px;
 }
@@ -1135,9 +1212,10 @@ body {
     padding: 0 15px 0 15px;
 }
 .errors{
-    padding: 5px 0 5px 0;
+    padding: 5px 0px 5px 0;
     color: #9F614B;
     font-size: 12px;
+    margin-left:45px
 }
 .calender{
     position: inherit;
@@ -1238,12 +1316,12 @@ nav li a {
 }
 
 .navbar-right{
-    margin-top: -10px;
+    margin-top: -15px;
 }
 
 .footer_bar {
     display: block;
-    padding: 37px 0 0 0;
+    margin: 20px 0 0 0;
 
 }
 
@@ -1298,6 +1376,11 @@ button, input, optgroup, select, textarea {
     color: inherit;
 }
 
+.navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus {
+    color: #555;
+    background-color: #fff;
+}
+
 .content-wrapper {
     /*margin: 0 60px;*/
     min-height: 500px;
@@ -1316,6 +1399,12 @@ button, input, optgroup, select, textarea {
     margin: 15px 0 10px 0px;
     padding: 0px;
     background-color: #ebecef;
+    padding-bottom: 7px !important;
+}
+
+.full-width
+{
+    width: 100% !important;
 }
 
 .bg{
@@ -1507,6 +1596,14 @@ button, input, optgroup, select, textarea {
 
     .blue-bg{
         background-color: #003056;
+    }
+
+    .info-acc
+    {
+        padding: 10px !important;
+        padding-top:3px !important;
+        background: #ebecef !important;
+
     }
 
     .sidebar{

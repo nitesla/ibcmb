@@ -5,6 +5,7 @@ import longbridge.models.AdminUser;
 import longbridge.models.OperationCode;
 import longbridge.models.Verification;
 import longbridge.utils.verificationStatus;
+import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -35,11 +36,8 @@ public class VerificationDTO {
 
     private Date initiatedOn;
 
-    private String declinedBy;
-    private Date declinedOn;
-    private String declineReason;
-
-    private String comment;
+    @NotEmpty(message = "comments")
+    private String comments;
 
     private String verifiedBy;
     private Date verifiedOn;
@@ -70,12 +68,13 @@ public class VerificationDTO {
         this.original = original;
     }
 
-    public String getComment() {
-        return comment;
+
+    public String getComments() {
+        return comments;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
+    public void setComments(String comments) {
+        this.comments = comments;
     }
 
     public verificationStatus getStatus() {
@@ -110,22 +109,6 @@ public class VerificationDTO {
         this.entityName = entityName;
     }
 
-     public Date getDeclinedOn() {
-        return declinedOn;
-    }
-
-    public void setDeclinedOn(Date declinedOn) {
-        this.declinedOn = declinedOn;
-    }
-
-
-    public String getDeclineReason() {
-        return declineReason;
-    }
-
-    public void setDeclineReason(String declineReason) {
-        this.declineReason = declineReason;
-    }
 
     public String getOperation() {
         return operation;
@@ -149,14 +132,6 @@ public class VerificationDTO {
 
     public void setInitiatedOn(Date initiatedOn) {
         this.initiatedOn = initiatedOn;
-    }
-
-    public String getDeclinedBy() {
-        return declinedBy;
-    }
-
-    public void setDeclinedBy(String declinedBy) {
-        this.declinedBy = declinedBy;
     }
 
     public String getVerifiedBy() {
@@ -197,5 +172,24 @@ public class VerificationDTO {
 
     public void setVersion(int version) {
         this.version = version;
+    }
+
+    @Override
+    public String toString() {
+        return "VerificationDTO{" +
+                "id=" + id +
+                ", version=" + version +
+                 ", status=" + status +
+                ", description='" + description + '\'' +
+                ", entityId=" + entityId +
+                ", entityName='" + entityName + '\'' +
+                ", operation='" + operation + '\'' +
+                ", initiatedBy='" + initiatedBy + '\'' +
+                ", initiatedOn=" + initiatedOn +
+                ", comments='" + comments + '\'' +
+                ", verifiedBy='" + verifiedBy + '\'' +
+                ", verifiedOn=" + verifiedOn +
+                ", dependency=" + dependency +
+                '}';
     }
 }

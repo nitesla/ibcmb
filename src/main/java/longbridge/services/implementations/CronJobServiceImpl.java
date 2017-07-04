@@ -96,22 +96,34 @@ public class CronJobServiceImpl implements CronJobService {
 
     @Override
     public void updateAccountStatus(Account account, AccountDetails accountDetails) throws InternetBankingException {
-            if (!account.getAccountName().equalsIgnoreCase(accountDetails.getAcctName())) {
-                account.setAccountName(accountDetails.getAcctName());
-                System.out.println("the account name after setting is" + account.getAccountName());
-//            accountRepo.save(account);
+            if ((account.getStatus()==null)||(!account.getStatus().equalsIgnoreCase(""))||(!account.getStatus().equalsIgnoreCase(accountDetails.getAcctStatus()))) {
+                account.setStatus(accountDetails.getAcctStatus());
+                System.out.println("the account status after setting is" + account.getStatus());
+            accountRepo.save(account);}
     }
-    }
+
 
     @Override
     public boolean updateAccountDetials() throws InternetBankingException {
+        logger.info("updating status");
+
         List<Account> allAccounts = accountRepo.findAll();
-//        logger.info("The account size {}",allAccounts.size());
+        logger.info("The account size {}",allAccounts.size());
+        if(allAccounts.size()>0){
         for (Account account : allAccounts) {
             AccountDetails accountDetails = integrationService.viewAccountDetails(account.getAccountNumber());
-//            updateAllAccountName(account,accountDetails);
-//            updateAllAccountCurrency(account,accountDetails);
-//            updateAccountStatus(account,accountDetails);
+            logger.info("account details {}",accountDetails.getAcctStatus());
+
+            try {
+//                updateAllAccountName(account,accountDetails);
+//                updateAllAccountCurrency(account,accountDetails);
+                updateAccountStatus(account,accountDetails);
+                return true;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
         }
         return false;
     }

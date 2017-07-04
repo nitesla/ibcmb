@@ -34,7 +34,8 @@ public class AuditConfigImpl implements AuditConfigService {
 
 	@Override
 	@Verifiable(operation="AUDIT_CONFIG",description="Configuring Audit")
-    public boolean saveAuditConfig(AuditConfig cfg) throws InternetBankingException {
+    public boolean saveAuditConfig(AuditConfig cfg) throws InternetBankingException
+	{
 		configRepo.save(cfg);
 		return true;
 	}
@@ -42,5 +43,10 @@ public class AuditConfigImpl implements AuditConfigService {
 	@Override
 	public Page<AuditConfig> getEntities(Pageable pageDetails) {
 		return configRepo.findAll(pageDetails);
+	}
+
+	@Override
+	public Page<AuditConfig> findEntities(String pattern, Pageable pageDetails) {
+		return configRepo.findUsingPattern(pattern,pageDetails);
 	}
 }

@@ -4,10 +4,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import longbridge.api.*;
 import longbridge.dtos.SettingDTO;
 import longbridge.exception.InternetBankingTransferException;
-
 import longbridge.exception.TransferErrorService;
 import longbridge.exception.TransferExceptions;
-import longbridge.models.FinancialTransaction;
 import longbridge.models.TransRequest;
 import longbridge.services.ConfigurationService;
 import longbridge.services.IntegrationService;
@@ -20,18 +18,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 /**
@@ -42,8 +38,7 @@ import java.util.stream.Collectors;
 @Service
 public class IntegrationServiceImpl implements IntegrationService {
 
-    @Value("${excel.path}")
-    String PROPERTY_EXCEL_SOURCE_FILE_PATH;
+
     private Logger logger = LoggerFactory.getLogger(getClass());
     @Value("${ebank.service.uri}")
     private String URI;
@@ -103,20 +98,21 @@ public class IntegrationServiceImpl implements IntegrationService {
     }
 
     @Override
-    public AccountStatement getAccountStatements(String accountNo, Date fromDate, Date toDate, String tranType) {
+    public AccountStatement getAccountStatements(String accountNo, Date fromDate, Date toDate, String tranType,PaginationDetails paginationDetails) {
         AccountStatement statement = new AccountStatement();
         try {
             SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
        /* String dateInString = "7-Jun-2013";
         Date date = formatter.parse(dateInString);*/
             String uri = URI + "/statement";
-            Map<String, String> params = new HashMap<>();
+            Map<String, Object> params = new HashMap<>();
             params.put("accountNumber", accountNo);
             params.put("fromDate", formatter.format(fromDate));
             params.put("solId", viewAccountDetails(accountNo).getSolId());
             if (tranType != null)
                 params.put("tranType", tranType);
             if (toDate != null) params.put("toDate", formatter.format(toDate));
+            if (paginationDetails != null) params.put("paginationDetails", paginationDetails);
 
 
             statement = template.postForObject(uri, params, AccountStatement.class);
@@ -129,7 +125,34 @@ public class IntegrationServiceImpl implements IntegrationService {
 
         return statement;
     }
+    @Override
+    public AccountStatement getAccountStatements(String accountNo, Date fromDate, Date toDate, String tranType) {
+        AccountStatement statement = new AccountStatement();
+        try {
+            SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
+       /* String dateInString = "7-Jun-2013";
+        Date date = formatter.parse(dateInString);*/
+            String uri = URI + "/statement";
+            Map<String, Object> params = new HashMap<>();
+            params.put("accountNumber", accountNo);
+            params.put("fromDate", formatter.format(fromDate));
+            params.put("solId", viewAccountDetails(accountNo).getSolId());
+            if (tranType != null)
+                params.put("tranType", tranType);
+            if (toDate != null) params.put("toDate", formatter.format(toDate));
 
+
+
+            statement = template.postForObject(uri, params, AccountStatement.class);
+
+
+        } catch (Exception e) {
+
+        }
+
+
+        return statement;
+    }
     @Override
     public List<TransactionHistory> getLastNTransactions(String accountNo, String numberOfRecords) {
         List<TransactionHistory> histories = new ArrayList<>();
@@ -449,6 +472,7 @@ public class IntegrationServiceImpl implements IntegrationService {
     }
 
     @Override
+    @Async
     public BigDecimal getAvailableBalance(String s) {
         try {
             Map<String, BigDecimal> getBalance = getBalance(s);
@@ -463,10 +487,10 @@ public class IntegrationServiceImpl implements IntegrationService {
     }
 
     @Override
-    public ObjectNode sendSMS(String message, String contact, String subject) {
+    @Async
+    public CompletableFuture<ObjectNode> sendSMS(String message, String contact, String subject) {
         List<String> contacts = new ArrayList<>();
         contacts.add(contact);
-
         ObjectNode result = null;
         String uri = cmbAlert;
         Map<String, Object> params = new HashMap<>();
@@ -479,27 +503,29 @@ public class IntegrationServiceImpl implements IntegrationService {
         try {
 
             result = template.postForObject(uri, params, ObjectNode.class);
+
         } catch (Exception e) {
             e.printStackTrace();
 
 
         }
 
-        return result;
+        return  CompletableFuture.completedFuture(result);
     }
 
     @Override
-    public Rate getFee(String channel) {
+    @Async
+    public CompletableFuture<Rate> getFee(String channel) {
 
         String uri = URI + "/transfer/fee";
         Map<String, String> params = new HashMap<>();
         params.put("transactionChannel", channel);
         try {
             Rate details = template.postForObject(uri, params, Rate.class);
-            return details;
+            return CompletableFuture.completedFuture(details);
         } catch (Exception e) {
 
-            return new Rate("", "0", "");
+            return  CompletableFuture.completedFuture(new Rate("", "0", ""));
         }
 
 

@@ -1,12 +1,9 @@
 package longbridge.controllers.retail;
 
-import longbridge.dtos.ServiceRequestDTO;
-import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingSecurityException;
 import longbridge.forms.CustSyncTokenForm;
 import longbridge.forms.TokenProp;
 import longbridge.services.SecurityService;
-import longbridge.utils.HostMaster;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,11 +20,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.security.Principal;
-import java.security.PublicKey;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -48,8 +44,9 @@ public class TokenManagementController {
     private MessageSource messageSource;
 
     @GetMapping
-    public String getRetailToken( HttpServletRequest httpServletRequest){
+    public String getRetailToken( HttpServletRequest httpServletRequest, Principal principal, Model model){
         httpServletRequest.getSession().setAttribute("2FA", "2FA");
+        model.addAttribute("username", principal.getName());
         return "/cust/logintoken";
     }
 
@@ -112,8 +109,6 @@ public class TokenManagementController {
         }catch (InternetBankingSecurityException ibe){
             logger.error("Error Synchronizing Token", ibe);
             redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("token.sync.failure", null, locale));
-
-
         }
         return "redirect:/retail/token/sync";
 

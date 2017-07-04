@@ -1,9 +1,20 @@
 package longbridge.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
+
+import longbridge.utils.PrettySerializer;
+
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by LB-PRJ-020 on 4/5/2017.
@@ -13,17 +24,14 @@ import javax.persistence.*;
 @Where(clause ="del_Flag='N'" )
 @Table(uniqueConstraints=@UniqueConstraint(columnNames={"name","deletedOn"}))
 
-public class Setting extends AbstractEntity{
+public class Setting extends AbstractEntity implements PrettySerializer{
 
     private String name;
-
     private String type;
     private String description;
     private String value;
     private boolean enabled ;
 
-    @ManyToOne
-    private AdminUser modifiedBy;
 
 
     public String getName() {
@@ -67,14 +75,6 @@ public class Setting extends AbstractEntity{
     }
 
 
-	public AdminUser getModifiedBy() {
-        return modifiedBy;
-    }
-
-    public void setModifiedBy(AdminUser modifiedBy) {
-        this.modifiedBy = modifiedBy;
-    }
-
     @Override
     public String toString() {
         return "Setting{" +
@@ -82,17 +82,30 @@ public class Setting extends AbstractEntity{
                 ", description='" + description + '\'' +
                 ", value='" + value + '\'' +
                 ", enabled=" + enabled +
-                ", modifiedBy=" + modifiedBy +
                 '}';
     }
 
-	public static OperationCode getAddCode() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+   	public List<String> getDefaultSearchFields() {
+   		return Arrays.asList("name", "type","description");
+   	}
 
-	public static OperationCode getModifyCode() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override @JsonIgnore
+    public JsonSerializer<Setting> getSerializer() {
+        return new JsonSerializer<Setting>() {
+            @Override
+            public void serialize(Setting value, JsonGenerator gen, SerializerProvider serializers)
+                    throws IOException, JsonProcessingException
+            {
+                gen.writeStartObject();
+                gen.writeStringField("Name",value.name);
+                gen.writeStringField("Description",value.description);
+                gen.writeStringField("Value",value.value);
+                gen.writeBooleanField("Enabled",value.enabled);
+                gen.writeStringField("Type",value.type);
+                gen.writeEndObject();
+            }
+        };
+    }
+
 }

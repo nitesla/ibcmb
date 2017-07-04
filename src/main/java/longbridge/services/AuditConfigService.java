@@ -7,7 +7,8 @@ import org.springframework.data.domain.Pageable;
 import longbridge.models.AuditConfig;
 import org.springframework.security.access.prepost.PreAuthorize;
 
-public interface AuditConfigService {
+public interface AuditConfigService
+{
 
 	AuditConfig findEntity(String entityName);
 
@@ -18,5 +19,8 @@ public interface AuditConfigService {
 
 	@PreAuthorize("hasAuthority('GET_AUDIT_TABLES')")
 	Page<AuditConfig> getEntities(Pageable pageDetails);
+	
+	@PreAuthorize("hasAuthority('GET_AUDIT_TABLES')")
+	Page<AuditConfig> findEntities(String pattern,Pageable pageDetails);
 
 }
