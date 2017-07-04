@@ -219,7 +219,7 @@ public class TransferController {
 
         try {
 
-            if (request.getSession().getAttribute("auth-needed") != null) {
+            if (request.getSession().getAttribute("auth-needed") != null && request.getParameter("token")!=null) {
 
                 String token = request.getParameter("token");
 
