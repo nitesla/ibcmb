@@ -27,6 +27,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.mail.MailException;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -147,7 +148,13 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             }
             corporateUserRepo.save(corporateUser);
             return messageSource.getMessage("user.update.success", null, locale);
-        } catch (Exception e) {
+        }
+
+        catch (InternetBankingException ibe){
+            throw ibe;
+        }
+
+        catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("corporate.update.failure", null, locale), e);
 
         }
@@ -190,6 +197,10 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             mailService.send(email);
             logger.info("New corporate user {} created", corporateUser.getUserName());
             return messageSource.getMessage("user.add.success", null, locale);
+        }
+
+        catch (MailException me) {
+            throw new InternetBankingException(messageSource.getMessage("mail.failure", null, locale), me);
         }
 
         catch (Exception e) {
@@ -252,7 +263,11 @@ public class CorporateUserServiceImpl implements CorporateUserService {
                 mailService.send(email);
             logger.info("New corporate user {} created", corporateUser.getUserName());
             return messageSource.getMessage("user.add.success", null, locale);
-        } catch (Exception e) {
+        }
+        catch (MailException me) {
+            throw new InternetBankingException(messageSource.getMessage("mail.failure", null, locale), me);
+        }
+        catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("user.add.failure", null, locale), e);
         }
     }
@@ -285,7 +300,16 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             logger.info("Corporate user {} status changed from {} to {}", user.getUserName(), oldStatus, newStatus);
             return messageSource.getMessage("user.status.success", null, locale);
 
-        } catch (Exception e) {
+        }
+
+
+        catch (MailException me) {
+            throw new InternetBankingException(messageSource.getMessage("mail.failure", null, locale), me);
+        }
+        catch (InternetBankingException ibe) {
+            throw  ibe;
+        }
+        catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("user.status.failure", null, locale), e);
 
         }
@@ -356,7 +380,12 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             mailService.send(email);
             logger.info("Corporate user {} password reset successfully", user.getUserName());
             return messageSource.getMessage("password.reset.success", null, locale);
-        } catch (Exception e) {
+        }
+
+        catch (MailException me) {
+            throw new InternetBankingException(messageSource.getMessage("mail.failure", null, locale), me);
+        }
+        catch (Exception e) {
             throw new PasswordException(messageSource.getMessage("password.reset.failure", null, locale), e);
         }
     }
@@ -390,7 +419,6 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     }
 
     @Override
-    @Verifiable(operation="UNLOCK_CORP_USER",description="Unlocking a Corporate User")
     public String unlockUser(Long id) throws InternetBankingException {
 
         CorporateUser user = corporateUserRepo.findOne(id);

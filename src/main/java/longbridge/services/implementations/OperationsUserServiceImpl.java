@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.*;
+import org.springframework.mail.MailException;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -145,7 +146,13 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             logger.info("Operations user {} status changed from {} to {}", user.getUserName(), oldStatus, newStatus);
             return messageSource.getMessage("user.status.success", null, locale);
 
-        } catch (Exception e) {
+        }
+        catch (MailException me) {
+            throw new InternetBankingException(messageSource.getMessage("mail.failure", null, locale), me);
+        } catch (InternetBankingException ibe) {
+            throw ibe;
+        }
+        catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("user.status.failure", null, locale), e);
 
         }
@@ -237,8 +244,13 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     @Transactional
     @Verifiable(operation="UPDATE_OPS_USER",description="Updating an Operations User")
     public String updateUser(OperationsUserDTO user) throws InternetBankingException {
+
+        OperationsUser opsUser = operationsUserRepo.findOne(user.getId());
+        if ("I".equals(opsUser.getStatus())) {
+            throw new InternetBankingException(messageSource.getMessage("user.deactivated", null, locale));
+        }
+
         try {
-            OperationsUser opsUser = operationsUserRepo.findOne(user.getId());
             entityManager.detach(opsUser);
             opsUser.setVersion(user.getVersion());
             opsUser.setFirstName(user.getFirstName());
@@ -250,7 +262,11 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             this.operationsUserRepo.save(opsUser);
             logger.info("Operations user {} updated", opsUser.getUserName());
             return messageSource.getMessage("user.update.success", null, locale);
-        } catch (Exception e) {
+        }
+        catch (InternetBankingException ibe) {
+            throw ibe;
+        }
+        catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("user.update.failure", null, locale), e);
         }
     }
@@ -296,7 +312,11 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             mailService.send(email);
             logger.info("Operations user {} password reset successfully", user.getUserName());
             return messageSource.getMessage("password.reset.success", null, locale);
-        } catch (Exception e) {
+        }
+        catch (MailException me) {
+            throw new PasswordException(messageSource.getMessage("mail.failure", null, locale), me);
+        }
+        catch (Exception e) {
             throw new PasswordException(messageSource.getMessage("password.reset.failure", null, locale), e);
         }
     }
@@ -319,7 +339,11 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             mailService.send(email);
             logger.info("Operations user {} password reset successfully", user.getUserName());
             return messageSource.getMessage("password.reset.success", null, locale);
-        } catch (Exception e) {
+        }
+        catch (MailException me) {
+            throw new PasswordException(messageSource.getMessage("mail.failure", null, locale), me);
+        }
+        catch (Exception e) {
             throw new PasswordException(messageSource.getMessage("password.reset.failure", null, locale), e);
         }
     }

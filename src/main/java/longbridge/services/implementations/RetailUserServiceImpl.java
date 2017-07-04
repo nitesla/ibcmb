@@ -25,6 +25,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.mail.MailException;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -90,7 +91,6 @@ public class RetailUserServiceImpl implements RetailUserService {
     }
 
     @Override
-    @Verifiable(operation = "UNLOCK_RETAIL_USER", description = "Unlocking a Retail User")
     public String unlockUser(Long id) throws InternetBankingException {
 
         RetailUser user = retailUserRepo.findOne(id);
@@ -293,7 +293,14 @@ public class RetailUserServiceImpl implements RetailUserService {
             logger.info("Retail user {} status changed from {} to {}", user.getUserName(), oldStatus, newStatus);
             return messageSource.getMessage("user.status.success", null, locale);
 
-        } catch (Exception e) {
+        }
+        catch (MailException me) {
+            throw new InternetBankingException(messageSource.getMessage("mail.failure", null, locale), me);
+        }
+        catch (InternetBankingException ibe) {
+            throw  ibe;
+        }
+        catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("user.status.failure", null, locale), e);
 
         }
@@ -333,7 +340,11 @@ public class RetailUserServiceImpl implements RetailUserService {
             mailService.send(email);
             logger.info("Retail user {} password reset successfully", user.getUserName());
             return messageSource.getMessage("password.reset.success", null, locale);
-        } catch (Exception e) {
+        }
+        catch (MailException me) {
+            throw new InternetBankingException(messageSource.getMessage("mail.failure", null, locale), me);
+        }
+        catch (Exception e) {
             throw new PasswordException(messageSource.getMessage("password.reset.failure", null, locale), e);
         }
     }
@@ -360,7 +371,12 @@ public class RetailUserServiceImpl implements RetailUserService {
             this.retailUserRepo.save(retailUser);
             logger.info("User {} password has been updated", user.getId());
             return messageSource.getMessage("password.change.success", null, locale);
-        } catch (Exception e) {
+        }
+
+        catch (MailException me) {
+            throw new InternetBankingException(messageSource.getMessage("mail.failure", null, locale), me);
+        }
+        catch (Exception e) {
             throw new PasswordException(messageSource.getMessage("password.change.failure", null, locale), e);
         }
     }

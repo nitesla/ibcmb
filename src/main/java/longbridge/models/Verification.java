@@ -20,7 +20,6 @@ import java.util.List;
  * Created by LB-PRJ-020 on 4/7/2017.
  */
 @Entity
-@Audited(withModifiedFlag = true)
 @Where(clause = "del_Flag='N'")
 public class Verification extends AbstractEntity {
 
