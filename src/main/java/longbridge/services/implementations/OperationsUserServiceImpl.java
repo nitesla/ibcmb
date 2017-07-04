@@ -136,7 +136,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
                 user.setExpiryDate(new Date());
                 passwordPolicyService.saveOpsPassword(user);
                 operationsUserRepo.save(user);
-                sendPostActivateMessage(user, fullName,user.getUserName(),password);
+                sendActivateMessage(user, fullName,user.getUserName(),password);
             } else{
                 user.setStatus(newStatus);
                 operationsUserRepo.save(user);
@@ -162,8 +162,20 @@ public class OperationsUserServiceImpl implements OperationsUserService {
 
     @Async
     public void sendPostActivateMessage(User user, String ... args ){
-        //check if records exist send else return
-        if("A".equals(user.getStatus())) {
+
+            Email email = new Email.Builder()
+                    .setRecipient(user.getEmail())
+                    .setSubject(messageSource.getMessage("ops.activation.subject", null, locale))
+                    .setBody(String.format(messageSource.getMessage("ops.activation.message", null, locale), args))
+                    .build();
+            mailService.send(email);
+    }
+
+
+    @Async
+    private void sendActivateMessage(User user, String ... args ) {
+        OperationsUser opsUser = getUserByName(user.getUserName());
+        if ("A".equals(opsUser.getStatus())) {
             Email email = new Email.Builder()
                     .setRecipient(user.getEmail())
                     .setSubject(messageSource.getMessage("ops.activation.subject", null, locale))

@@ -283,15 +283,14 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             String oldStatus = user.getStatus();
             String newStatus = "A".equals(oldStatus) ? "I" : "A";
             user.setStatus(newStatus);
-            corporateUserRepo.save(user);
             String fullName = user.getFirstName() + " " + user.getLastName();
             if ((oldStatus == null) || ("I".equals(oldStatus)) && "A".equals(newStatus)) {
                 String password = passwordPolicyService.generatePassword();
                 user.setPassword(passwordEncoder.encode(password));
                 user.setExpiryDate(new Date());
                 passwordPolicyService.saveCorporatePassword(user);
-                corporateUserRepo.save(user);
-                sendPostActivateMessage(user, fullName,user.getUserName(),password,user.getCorporate().getCustomerId());
+                CorporateUser corpUser = corporateUserRepo.save(user);
+                sendActivationMessage(corpUser, fullName,user.getUserName(),password,user.getCorporate().getCustomerId());
             } else{
                 user.setStatus(newStatus);
                 corporateUserRepo.save(user);
@@ -318,7 +317,18 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
     @Async
     public void sendPostActivateMessage(User user, String ... args ){
-        if("A".equals(user.getStatus())) {
+            Email email = new Email.Builder()
+                    .setRecipient(user.getEmail())
+                    .setSubject(messageSource.getMessage("corporate.customer.reactivation.subject", null, locale))
+                    .setBody(String.format(messageSource.getMessage("corporate.customer.reactivation.message", null, locale), args))
+                    .build();
+            mailService.send(email);
+    }
+
+    @Async
+    private void sendActivationMessage(User user, String... args) {
+        CorporateUser corpUser = getUserByName(user.getUserName());
+        if ("A".equals(corpUser.getStatus())) {
             Email email = new Email.Builder()
                     .setRecipient(user.getEmail())
                     .setSubject(messageSource.getMessage("corporate.customer.reactivation.subject", null, locale))

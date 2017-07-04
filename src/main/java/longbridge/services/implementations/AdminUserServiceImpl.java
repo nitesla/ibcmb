@@ -204,8 +204,8 @@ public class AdminUserServiceImpl implements AdminUserService {
                 user.setPassword(passwordEncoder.encode(password));
                 user.setExpiryDate(new Date());
                 passwordPolicyService.saveAdminPassword(user);
-                adminUserRepo.save(user);
-                sendPostActivateMessage(user, fullName, user.getUserName(), password);
+                AdminUser admin = adminUserRepo.save(user);
+                sendActivateMessage(admin, fullName, user.getUserName(), password);
             } else {
                 user.setStatus(newStatus);
                 adminUserRepo.save(user);
@@ -227,8 +227,18 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     @Async
     public void sendPostActivateMessage(User user, String... args) {
-        //check if records exist send else return
-        if ("A".equals(user.getStatus())) {
+            Email email = new Email.Builder()
+                    .setRecipient(user.getEmail())
+                    .setSubject(messageSource.getMessage("admin.activation.subject", null, locale))
+                    .setBody(String.format(messageSource.getMessage("admin.activation.message", null, locale), args))
+                    .build();
+            mailService.send(email);
+    }
+
+    @Async
+    private void sendActivateMessage(User user, String... args) {
+        AdminUser adminUser = getUserByName(user.getUserName());
+        if ("A".equals(adminUser.getStatus())) {
             Email email = new Email.Builder()
                     .setRecipient(user.getEmail())
                     .setSubject(messageSource.getMessage("admin.activation.subject", null, locale))

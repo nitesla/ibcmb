@@ -284,7 +284,7 @@ public class RetailUserServiceImpl implements RetailUserService {
                 user.setExpiryDate(new Date());
                 passwordPolicyService.saveRetailPassword(user);
                 retailUserRepo.save(user);
-                sendPostActivateMessage(user, fullName,user.getUserName(),password);
+                sendActivationMessage(user, fullName,user.getUserName(),password);
             } else{
                 user.setStatus(newStatus);
                 retailUserRepo.save(user);
@@ -310,7 +310,20 @@ public class RetailUserServiceImpl implements RetailUserService {
 
     @Async
     public void sendPostActivateMessage(User user, String ... args ){
-        if("A".equals(user.getStatus())) {
+            Email email = new Email.Builder()
+                    .setRecipient(user.getEmail())
+                    .setSubject(messageSource.getMessage("customer.reactivation.subject", null, locale))
+                    .setBody(String.format(messageSource.getMessage("customer.reactivation.message", null, locale), args))
+                    .build();
+            mailService.send(email);
+
+    }
+
+
+    @Async
+    private void sendActivationMessage(User user, String... args) {
+        RetailUser corpUser = getUserByName(user.getUserName());
+        if ("A".equals(corpUser.getStatus())) {
             Email email = new Email.Builder()
                     .setRecipient(user.getEmail())
                     .setSubject(messageSource.getMessage("customer.reactivation.subject", null, locale))

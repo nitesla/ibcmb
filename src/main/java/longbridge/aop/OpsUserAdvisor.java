@@ -1,5 +1,6 @@
 package longbridge.aop;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.querydsl.core.types.Template;
 import longbridge.dtos.VerificationDTO;
 import longbridge.models.AdminUser;
@@ -25,6 +26,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import sun.rmi.runtime.Log;
 
 import javax.persistence.EntityManager;
+import java.io.IOException;
 import java.util.Date;
 
 /**
@@ -92,24 +94,24 @@ public class OpsUserAdvisor {
 
     // this runs after execution
     @After("isVerification() && verified() && args(verificationDto)")
-    public void postAdminUserCreation2(JoinPoint p, VerificationDTO verificationDto)
-    {
+    public void postAdminUserCreation2(JoinPoint p, VerificationDTO verificationDto) throws IOException {
 
-        logger.info("Entering Second Post Ops Advice...");
-        logger.info("Verification dto {}",verificationDto);
-        logger.info("VerificationRepo {}",verificationRepo);
-
-        Verification verification  = verificationRepo.findOne(verificationDto.getId());
+         Verification verification  = verificationRepo.findOne(verificationDto.getId());
         if(verification.getOperation().equals("UPDATE_OPS_STATUS")){
 
             OperationsUser user = operationsUserRepo.findOne(verification.getEntityId());
-            String fullName = user.getFirstName()+" "+user.getLastName();
-            String password = passwordPolicyService.generatePassword();
-            user.setPassword(passwordEncoder.encode(password));
-            user.setExpiryDate(new Date());
-            passwordPolicyService.saveOpsPassword(user);
-            operationsUserRepo.save(user);
-            operationsUserService.sendPostActivateMessage(user, fullName,user.getUserName(),password);
+            entityManager.detach(user);
+            ObjectMapper objectMapper = new ObjectMapper();
+            OperationsUser opsUser = objectMapper.readValue(verification.getOriginalObject(),OperationsUser.class);
+            if("A".equals(opsUser.getStatus())){
+                String fullName = user.getFirstName()+" "+user.getLastName();
+                String password = passwordPolicyService.generatePassword();
+                user.setPassword(passwordEncoder.encode(password));
+                user.setExpiryDate(new Date());
+                passwordPolicyService.saveOpsPassword(user);
+                operationsUserRepo.save(user);
+                operationsUserService.sendPostActivateMessage(opsUser, fullName,user.getUserName(),password);
+            }
         }
 
 
