@@ -17,7 +17,7 @@ import java.util.Date;
  */
 @Service
 @EnableScheduling
-public class CronJobs implements SchedulingConfigurer {
+public class CronJobsbkp2 implements SchedulingConfigurer {
 @Autowired
 private CronJobService cronJobService;
     private String cronConfig() {
@@ -34,6 +34,7 @@ private CronJobService cronJobService;
             public void run() {
 //                cronJobService.updateAllAccountName();
 //                cronJobService.updateAllBVN();
+//                cronJobService.updateAllAccountCurrency();
 //                System.out.println("Cron job running");
             }
         }, new Trigger() {
@@ -43,6 +44,8 @@ private CronJobService cronJobService;
 //                System.out.println("cron job "+cron);
                 CronTrigger trigger = new CronTrigger(cron);
                 Date nextExec = trigger.nextExecutionTime(triggerContext);
+
+//                System.out.println("the expression is "+trigger.getExpression());
                 return nextExec;
             }
         });

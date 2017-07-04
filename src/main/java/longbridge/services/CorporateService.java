@@ -64,6 +64,8 @@ public interface CorporateService{
     @PreAuthorize("hasAuthority('GET_CORPORATE')")
     Page<CorporateDTO> getCorporates(Pageable pageDetails);
 
+    @PreAuthorize("hasAuthority('GET_CORPORATE')")
+    Page<CorporateDTO> findCorporates(String pattern,Pageable pageDetails);
     /**
      * Sets the limit of transaction amount for the corporate customer
      *
@@ -112,7 +114,7 @@ public interface CorporateService{
      * @return a message is the status is changed successfully
      * @throws InternetBankingException if changing the status fails
      */
-    @PreAuthorize("hasAuthority('UPDATE_CORPORATE')")
+    @PreAuthorize("hasAuthority('UPDATE_CORPORATE_STATUS')")
     String changeActivationStatus(Long id) throws InternetBankingException;
 
     /**
@@ -194,16 +196,20 @@ public interface CorporateService{
     CorpTransRule getApplicableTransferRule(CorpTransRequest transferRequest);
 
 
+    @PreAuthorize("hasAuthority('ADD_CORPORATE_ROLE')")
     String addCorporateRole(CorporateRoleDTO roleDTO) throws InternetBankingException;
 
+    @PreAuthorize("hasAuthority('UPDATE_CORPORATE_ROLE')")
     String updateCorporateRole(CorporateRoleDTO roleDTO) throws  InternetBankingException;
 
+    @PreAuthorize("hasAuthority('GET_CORPORATE_ROLE')")
     CorporateRoleDTO getCorporateRole(Long id);
 
+    @PreAuthorize("hasAuthority('GET_CORPORATE_ROLE')")
     Set<CorporateRoleDTO> getCorporateRoles(Long corporateId);
 
+    @PreAuthorize("hasAuthority('DELETE_CORPORATE_ROLE')")
     String deleteCorporateRole(Long id) throws InternetBankingException;
-
 
 
 }

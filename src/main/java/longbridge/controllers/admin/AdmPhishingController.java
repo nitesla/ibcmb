@@ -1,5 +1,6 @@
 package longbridge.controllers.admin;
 
+import longbridge.dtos.PhishingImageDTO;
 import longbridge.dtos.SecQuestionDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.PhishingImage;
@@ -102,10 +103,10 @@ public class AdmPhishingController {
     @GetMapping(path = "/all")
     public
     @ResponseBody
-    DataTablesOutput<PhishingImage> getAllPhishingImages(DataTablesInput input) {
+    DataTablesOutput<PhishingImageDTO> getAllPhishingImages(DataTablesInput input) {
         Pageable pageable = DataTablesUtils.getPageable(input);
-        Page<PhishingImage> sq = phishingImageService.getAllPhishingImages(pageable);
-        DataTablesOutput<PhishingImage> out = new DataTablesOutput<PhishingImage>();
+        Page<PhishingImageDTO> sq = phishingImageService.getAllPhishingImages(pageable);
+        DataTablesOutput<PhishingImageDTO> out = new DataTablesOutput<PhishingImageDTO>();
         out.setDraw(input.getDraw());
         out.setData(sq.getContent());
         out.setRecordsFiltered(sq.getTotalElements());

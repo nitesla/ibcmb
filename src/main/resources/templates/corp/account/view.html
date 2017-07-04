@@ -4,6 +4,7 @@
 </head>
 <body>
 <div class="container">
+<<<<<<< HEAD
     <header th:replace="corp_layout :: header">
     </header>
 
@@ -13,6 +14,23 @@
                 <div class="col-md-4 col-sm-4">
                     <h5 class="page_header"> Account Statement</h5>
                 </div>
+=======
+    <header th:replace="corp_layout :: corp-header">
+    </header>
+
+    <section class="content-wrapper">
+        <div class="containe">
+            <div class="row">
+                <div class="col-md-4 col-sm-4">
+                    <h5 class="page_header"> Account Statement</h5>
+                    <select class="form-control invisible">
+                        <option value="account">Account Overview</option>
+                    </select>
+                </div>
+                <p class="col-xs-12 invisible">
+                    Fields marked <span style="color:red">*</span> are compulsory
+                </p>
+>>>>>>> e1e5b51825a3aa4d930ff872e8ca5a8a2eb2862e
             </div>
             <div class="row">
                 <div class="col-md-9 content-bg">
@@ -49,18 +67,27 @@
 
                                 <div class="form-group col-md-6">
                                     <label>&nbsp;</label>
+<<<<<<< HEAD
                                     <button type="submit" class="btn " id="btn-find"><i class="fa fa-search" style="color: white" ></i>&nbsp; view</button>
+=======
+                                    <button type="submit" class="btn btn-link " id="btn-find"><i class="fa fa-search" style="color: whit" ></i>&nbsp; view</button>
+>>>>>>> e1e5b51825a3aa4d930ff872e8ca5a8a2eb2862e
                                 </div>
                             </div>
 
 
 
                             <p>
+<<<<<<< HEAD
                                 <a id="btn-print" th:href="@{'~/viewstatement/display/data'}" class="btn bt-link-act pull-right"> <i class="fa fa-print" style="color: white" ></i>&nbsp; print</a>
+=======
+                                <a id="btn-print" th:href="@{'~/viewstatement/display/data'}"  class="btn bt-link-act pull-right"> <i class="fa fa-print"  ></i>&nbsp; print</a>
+>>>>>>> e1e5b51825a3aa4d930ff872e8ca5a8a2eb2862e
                                 <!--<a th:href="@{'#'}" class="btn "> <i class="fa fa-envelope" style="color: white" ></i>&nbsp; send mail</a>-->
                             </p>
 
                             <h2>TRANSACTION DETAILS</h2>
+<<<<<<< HEAD
                             <table class="table" id="tranDetails">
                                 <thead>
                                 <tr>
@@ -85,6 +112,35 @@
                                 </tr>
                                 </tfoot>
                             </table>
+=======
+
+                            <div class="table-responsive" >
+                                <table class="table" id="tranDetails">
+                                    <thead>
+                                    <tr>
+                                        <th>Account Balance</th>
+                                        <th>Currency Code</th>
+                                        <th>Post Date</th>
+                                        <th>Transaction Narration</th>
+                                        <th>Debit/Credit</th>
+                                        <th>Value Date</th>
+
+                                    </tr>
+                                    </thead>
+                                    <tfoot>
+                                    <tr>
+                                        <th>Account Balance</th>
+                                        <th>Currency Code</th>
+                                        <th>Post Date</th>
+                                        <th>Transaction Narration</th>
+                                        <th>Debit/Credit</th>
+                                        <th>Value Date</th>
+
+                                    </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+>>>>>>> e1e5b51825a3aa4d930ff872e8ca5a8a2eb2862e
 
 
                         </div>
@@ -92,7 +148,11 @@
 
                 </div>
                 <div class="col-md-3 pull-right " >
+<<<<<<< HEAD
                     <div th:replace="corp_layout :: sidebar" class="" >
+=======
+                    <div th:replace="corp_layout :: corp-sidebar" class="" >
+>>>>>>> e1e5b51825a3aa4d930ff872e8ca5a8a2eb2862e
                     </div>
                 </div>
             </div>
@@ -107,6 +167,7 @@
     jQuery.download = function(url, key, data) {
         // Build a form
         var form = $('<form></form>').attr('action', url).attr('target', '_blank')
+<<<<<<< HEAD
             .attr('method', 'get');
         // Add the one key/value
         form.append($("<input></input>").attr('type', 'hidden').attr('name',
@@ -115,6 +176,16 @@
         $.each( data, function( propertyName, valueOfProperty ){
             form.append($("<input></input>").attr('type', 'hidden').attr('name',
                 propertyName).attr('value', valueOfProperty));
+=======
+                .attr('method', 'get');
+        // Add the one key/value
+        form.append($("<input></input>").attr('type', 'hidden').attr('name',
+                key).attr('value', data));
+
+        $.each( data, function( propertyName, valueOfProperty ){
+            form.append($("<input></input>").attr('type', 'hidden').attr('name',
+                    propertyName).attr('value', valueOfProperty));
+>>>>>>> e1e5b51825a3aa4d930ff872e8ca5a8a2eb2862e
         });
 
         //send request
@@ -126,9 +197,23 @@
         $('.datepicker').datepicker({ dateFormat: 'dd-mm-yy' });//
 
         $('#tranDetails').DataTable({
+<<<<<<< HEAD
             "lengthMenu": [[5, 10,20], [5, 10,20]],
             "pagingType": "simple_numbers",
             "searching" : false,
+=======
+            responsive: true,
+
+            "lengthMenu": [[5, 10,20], [5, 10,20]],
+            "pagingType": "simple_numbers",
+            "searching" : false,
+            "fields": [  {
+                name:      'valueDate',
+                type:      'datetime',
+                def:       function () { return new Date(); },
+                format:    'dd-MM-yyyy '  }
+            ],
+>>>>>>> e1e5b51825a3aa4d930ff872e8ca5a8a2eb2862e
             "processing" : true,
             "serverSide" : false,
             "ordering" : false,

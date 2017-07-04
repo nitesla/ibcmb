@@ -50,9 +50,10 @@ public class SessionUtils {
                     // integrationService.sendSMS(user.getPhoneNumber())
                 } else if (preference.equalsIgnoreCase("EMAIL")) {
                     //   mailService.send();
+                	;
 
                 } else if (preference.equalsIgnoreCase("BOTH")) {
-
+                		;
                 }
 
             }

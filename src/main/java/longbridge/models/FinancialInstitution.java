@@ -1,7 +1,17 @@
 package longbridge.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import longbridge.utils.PrettySerializer;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -18,7 +28,7 @@ import javax.persistence.UniqueConstraint;
 @Where(clause ="del_Flag='N'" )
 @Table(uniqueConstraints=@UniqueConstraint(columnNames={"institutionCode","institutionType","deletedOn"}))
 
-public class FinancialInstitution extends AbstractEntity {
+public class FinancialInstitution extends AbstractEntity implements PrettySerializer{
 
 
 
@@ -62,15 +72,27 @@ public class FinancialInstitution extends AbstractEntity {
     }
 
 
+    @Override
+   	public List<String> getDefaultSearchFields() {
+   		return Arrays.asList("institutionCode", "institutionName");
+   	}
 
-	public static OperationCode getAddCode() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
-	public static OperationCode getModifyCode() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override @JsonIgnore
+    public JsonSerializer<FinancialInstitution> getSerializer() {
+        return new JsonSerializer<FinancialInstitution>() {
+            @Override
+            public void serialize(FinancialInstitution value, JsonGenerator gen, SerializerProvider serializers)
+                    throws IOException, JsonProcessingException
+            {
+                gen.writeStartObject();
+                gen.writeStringField("Institution Code",value.institutionCode);
+                gen.writeStringField("Institution Name",value.institutionName);
+                gen.writeStringField("Institution Type",value.institutionType.name());
+                gen.writeEndObject();
+            }
+        };
+    }
+
 }
 

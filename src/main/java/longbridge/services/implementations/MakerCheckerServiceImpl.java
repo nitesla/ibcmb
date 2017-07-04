@@ -41,26 +41,10 @@ public class MakerCheckerServiceImpl implements MakerCheckerService {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Override
-    @Verifiable(operation="Add_MakerChecker",description="Add Maker Checker")
-    public String addMakerChecker(MakerCheckerDTO makerCheckerDTO) throws InternetBankingException
-    {
 
-        try {
-            MakerChecker checker = convertDTOToEntity(makerCheckerDTO);
-            makerCheckerRepo.save(checker);
-            logger.info("Added MakerChecker {}", checker.toString());
-            return messageSource.getMessage("makerchecker.add.success", null, locale);
-        }
-        catch (Exception e)
-        {
-            throw new InternetBankingException(messageSource.getMessage("makerchecker.add.failure", null, locale), e);
-        }
 
-    }
-
-    @Verifiable(operation="Update_MakerChecker",description="Update Maker Checker")
-    public String updateMakerChecker(MakerChecker makerChecker) throws InternetBankingException
+    @Verifiable(operation="CONFIGURE_MAKER_CHECKER",description="Update Maker Checker")
+    public String configureMakerChecker(MakerChecker makerChecker) throws InternetBankingException
     {
 
         try {
@@ -83,7 +67,8 @@ public class MakerCheckerServiceImpl implements MakerCheckerService {
     }
 
     @Override
-    public boolean isEnabled(String operation) {
+    public boolean isEnabled(String operation)
+    {
         return makerCheckerRepo.existsByOperationAndEnabled(operation,"Y");
     }
 

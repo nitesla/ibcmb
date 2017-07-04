@@ -224,7 +224,6 @@ public class TransferController {
 
             if (request.getParameter("add") != null) {
                 //checkbox  checked
-                System.out.println("checkbox checked");
                 if (request.getSession().getAttribute("Lbeneficiary") != null) {
                     LocalBeneficiaryDTO l = (LocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary");
                     RetailUser user = retailUserService.getUserByName(principal.getName());
@@ -318,6 +317,9 @@ public class TransferController {
 
         return "redirect:/retail/dashboard";
     }
+
+
+
 
     }
 

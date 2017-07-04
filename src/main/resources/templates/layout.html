@@ -44,7 +44,8 @@
                     <li sec:authorize="hasAuthority('AUDIT_CONFIG')"><a href="/admin/audit">Audit</a></li>
                     <li><a href="/admin/secquestions/">Security Questions</a></li>
                     <li><a href="/admin/phishing/">Phishing Image</a></li>
-                    <li><a href="/admin/checker">Checker</a></li>
+                    <li><a href="/admin/checker">Maker Checker</a></li>
+                    <li><a href="/admin/job">Batch Job</a></li>
                 </ul>
             </li>
             <li sec:authorize="hasAuthority('BANK_CONFIG')"><a><i class="fa fa-bank"></i> Bank Setup <span class="fa fa-chevron-down"></span></a>
@@ -83,8 +84,9 @@
 
             <li><a><i class="fa fa-check"></i> Verifications <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
-                    <li><a href="/admin/verifications/operations">Approval</a></li>
-                    <li><a href="/admin/verifications/pendingops">Approval Queue</a></li>
+                    <li><a href="/admin/verifications/verified"> My Approvals </a></li>
+                    <li><a href="/admin/verifications/operations"> Pending  <button class="badge bg-orange"  th:text="${verificationNumber}"></button> </a></li>
+                    <li><a href="/admin/verifications/pendingops">My Requests <button class="badge bg-orange" disabled="disabled" th:text="${totalPending}" ></button>  </a></li>
 
                 </ul>
             </li>
@@ -102,8 +104,8 @@
         <ul class="nav side-menu">
             <li sec:authorize="hasAuthority('USER_MANAGEMENT')"><a><i class="fa fa-users"></i> User Management <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
-                    <li sec:authorize="hasAuthority('CORPORATE_USER_MANAGEMENT')"><a href="/ops/corporates/">Corporate</a></li>
-                    <li sec:authorize="hasAuthority('RETAIL_USER_MANAGEMENT')"><a href="/ops/retail/users/">Retail</a></li>
+                    <li><a href="/ops/corporates/">Corporate</a></li>
+                    <li ><a href="/ops/retail/users/">Retail</a></li>
                 </ul>
             </li>
             <li sec:authorize="hasAuthority('OPS_SERV_REQ')"><a href="/ops/requests/"><i class="fa fa-question-circle"></i> Service Requests</a></li>
@@ -123,7 +125,11 @@
 
                         </ul>
                     </li>
+
+
+
                 </ul>
+
             </li>
 
 
@@ -150,9 +156,14 @@
                 </ul>
             </li>
 
-            <!--<li><a><i class="fa fa-bar-chart-o"></i> Reports <span class="fa fa-chevron-down"></span></a>-->
-                <!--<ul class="nav child_menu"></ul>-->
-            <!--</li>-->
+            <li><a><i class="fa fa-check"></i> Verifications <span class="fa fa-chevron-down"></span></a>
+                <ul class="nav child_menu">
+                    <li><a href="/ops/verifications/verified"> My Approvals </a></li>
+                    <li><a href="/ops/verifications/operations"> Pending  <button class="badge bg-orange"  th:text="${verificationNumber}"></button> </a></li>
+                    <li><a href="/ops/verifications/pendingops">My Requests <button class="badge bg-orange bt-select" disabled="disabled" th:text="${totalPending}" >count</button></a></li>
+
+                </ul>
+            </li>
         </ul>
     </div>
 </div>

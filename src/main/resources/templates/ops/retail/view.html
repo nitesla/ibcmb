@@ -60,33 +60,27 @@
                                             </div>
                                         </div>
                                     </li>
-                                    <li >
-                                        <div class="col-lg-4">
-                                            <div class="title-action">
-                                                <a id="delete-btn"  class="btn btn-danger btn-sm bt-select" href="/ops/retail/users/index/delete" disabled="disabled" ><i class="fa fa-trash"></i> Delete</a>
-                                            </div>
-                                        </div>
-                                    </li>
 
                                 </ul>
 
                                 <ul class="nav navbar-right panel_toolbox">
-                                   <!-- <li>
-                                        <div class="col-lg-8">
-                                            <h2>Admin Management</h2>
-                                        </div>
-                                    </li>-->
-                                    <!--<li >-->
-                                        <!--<div class="col-lg-4">-->
-                                            <!--<div class="title-action">-->
-                                                <!--<a href="/admin/retail/users/new" class="btn btn-primary"><i class="fa fa-plus"></i> Add new user </a>-->
-                                            <!--</div>-->
-                                        <!--</div>-->
-                                    <!--</li>-->
+                                   
 
                                     <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                                     </li>
 
+                                </ul>
+                                <ul class="nav navbar-right panel_toolbox col-lg-4 pull-right">
+
+                                   <li class="pull-right" >
+								<div class="input-group col-lg-12">
+									<input type="text" class="form-control" id="pattern" placeholder="Search for..."/> <span
+										class="input-group-btn">
+										<button class="btn btn-success" id="search" type="button">Go!</button>
+									</span>
+							</div>
+</li>
+                                    
                                 </ul>
                                 <div class="clearfix"></div>
                             </div>
@@ -173,7 +167,13 @@
             "searching": false,
             "paging": true,
             "serverSide" : true,
-            "ajax": "/ops/retail/users/all",
+            "ajax" : {
+				url : "/ops/retail/users/all",
+				"type" : "GET",
+				"data" : function(d) {
+					d.csearch = $('#pattern').val();
+				}
+			},
             "dom": 'T<"clear">frtlp',
             "columns": [
                 { "data": "customerId" },
@@ -246,6 +246,13 @@
         window.location.assign(ooo);
         //goto url
     });
+    $("#search").on("click", function(e) {
+		e.preventDefault();
+		dt = $('#retail').DataTable();
+		dt.ajax.reload(null, true);
+		
+	});
+    
     $("#delete-btn").on("click", function(e) {
         e.preventDefault();
         var link = $(e.currentTarget);

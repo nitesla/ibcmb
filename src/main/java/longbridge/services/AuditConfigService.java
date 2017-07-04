@@ -18,5 +18,8 @@ public interface AuditConfigService {
 
 	@PreAuthorize("hasAuthority('GET_AUDIT_TABLES')")
 	Page<AuditConfig> getEntities(Pageable pageDetails);
+	
+	@PreAuthorize("hasAuthority('GET_AUDIT_TABLES')")
+	Page<AuditConfig> findEntities(String pattern,Pageable pageDetails);
 
 }

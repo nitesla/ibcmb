@@ -13,16 +13,23 @@
             <div class="row">
                 <div class="col-md-4 col-sm-4">
                     <h5 class="page_header"> Transaction Summary</h5>
+                    <select class="form-control invisible">
+                        <option value="account">Account Overview</option>
+                </select>
                 </div>
+                 <p class="col-xs-12 invisible">
+                    Fields marked <span style="color:red">*</span> are compulsory
+            </p>
             </div>
             <div class="row">
                 <div class="col-md-9 content-bg">
-                    <div class="row form-spacing">
+                    <div class="col-sm-offset-3  col-sm-6 form-spacin">
                         <!--<div class="col-md-6 col-sm-6">-->
 
 
 
-                        <table>
+                        <table class="table table-hover center text-center">
+                            <tbody class="tab">
                             <tr>
 
                                 <th>Source account</th>
@@ -53,6 +60,7 @@
                                 <td th:text="${transferRequest.remarks}"></td>
 
                             </tr>
+                            </tbody>
                         </table>
 
 
@@ -68,10 +76,28 @@
                                 <label style="font-weight: bold; color: black"><input type="checkbox" id="add" name="add"/>Add Beneficiary</label>
                                 </div>
                             </span>
+
+                            <input type="hidden" th:field="*{id}"/>
+                        <div class="checkbox">
+                            <label style="font-weight: bold; color: black"><input type="checkbox" id="add" name="add"/>Add Beneficiary</label>
+                        </div>
+
                         <div class="form-group">
                             <!--<a style="cursor: pointer;" onclick="goBack()" >Modify</a>-->
                             <button type="submit" class="btn btn-outline-primary">Proceed</button>
                             <a th:href="@{/retail/transfer/local}">Cancel</a>
+                            <a th:href="@{/retail/transfer/ownaccount/5/receipt}">Cancel</a>
+
+                        </div>
+                        <span class="form-group checkbox col-xs-5" th:if="${newBen}!=null">
+                            <label style="font-weight: bold; color: black;margin-left:10px !important">
+                                <input  type="checkbox" id="add" name="add"/>Add Beneficiary
+                            </label>
+                        </span>
+                        <div class="form-group col-xs-12">
+                            <!--<a style="cursor: pointer;" onclick="goBack()" >Modify</a>-->
+                            <button type="submit" class="btn btn-link required-step">Proceed</button>
+
 
                         <!--<div class="checkbox">-->
                             <!--<label style="font-weight: bold; color: black"><input type="checkbox" id="add" name="add"/>Add Beneficiary</label>-->
@@ -82,7 +108,8 @@
                             <!--<a th:href="@{/retail/transfer/local}">Cancel</a>-->
 
                         <!--</div>-->
-
+                            <button th:href="@{/retail/transfer/local}" class='btn btn-link less-required'>Cancel</button>
+                             <button type='button' class='btn btn-link less-required'>Modify</button>
 
                             </div>
                         </form>

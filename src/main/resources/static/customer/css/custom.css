@@ -23,7 +23,11 @@ start
 .req:after { content:" * ";color:#ff6666;font-size: 13px;font-weight: bolder }
 .req-inner:before { content:" * ";color:#ff6666;font-size: 13px;font-weight: bolder }
 
-
+.row
+{
+    margin-right: 0px !important;
+    margin-left: 0px !important;
+}
 .req ~ input
 {
     width:100% !important;
@@ -40,6 +44,15 @@ start
     font-size:16px;
     padding:15px !important;
     padding-left:0px !important;
+}
+
+.active{
+    border-bottom: 5px solid #9F614B !important;
+}
+
+.invisible
+{
+    visibility: hidden;
 }
 
 .mail-links
@@ -73,7 +86,6 @@ start
 .mail-active
 {
      background-color: #f2dede;
-}
 }
 
 .content-mail
@@ -191,6 +203,7 @@ span.req
 {
     visibility: hidden;
 }
+
 span.req-inner
 {
     position: relative;
@@ -217,18 +230,42 @@ span.req-inner
     padding: 7px !important;
 }
 
-.my-select
-{
-    height: 30px !important;
-    width:70% !important;
-    margin: 0px auto !important;
-    /*-webkit-appearance: menulist;*/
-    
+.my-select {
+    display: block;
+    width: 100%;
+    height: 34px;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+    -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+    -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
 }
+
+select
+{
+    /*-webkit-appearance: none !important;
+    -moz-appearance: none;
+    appearance:none;
+     background: url('../img/select.jpg') white no-repeat calc(100%);*/
+}
+
 .my-input
 {
     height: 30px !important;
     width:70% !important;
+     padding:6px 12px !important;
+}
+
+.no-pad-left
+{
+    padding-left: 0px !important;
 }
 
 .form-group
@@ -273,8 +310,17 @@ span.req-inner
     /*animation: spin 2s linear infinite;*/
 /*}*/
 
+.sent-info
+{
+    padding: 5px;
+}
 
 
+.sm-box
+{
+    min-height: 250px;
+    padding:20px;
+}
 
 #myspan
 {
@@ -287,6 +333,7 @@ span.req-inner
 .time
 {
     background: #ebecef;
+    margin-top: 0px !important;
 }
 
 /*#loa {*/
@@ -351,6 +398,18 @@ span.req-inner
 }
 
 
+.required-step
+{
+    color:#003056;
+}
+
+
+.less-required
+{
+    color: #777 !important;
+}
+
+
 .tokenHeader
 {
     font-size: 20px;
@@ -367,6 +426,30 @@ tokenInput
 {
     border: 1px solid grey !important;
 }
+
+
+.alert-info
+{
+    background: #003056;
+}
+
+.inline-tag
+{
+    display:inline;
+}
+
+.related-info
+{
+    border:1px solid #9F614B;
+    color:blue;
+}
+
+ .tab tr th
+    {
+        font-weight: bold;
+        font-size: 15px;
+        
+    }
 
 
 .tokenBox
@@ -797,7 +880,7 @@ body {
     color: #003056;
     font-size: 16px;
     font-weight: 100;
-    margin-top: 40px;
+    margin-top: 20px;
     margin-bottom: 5px;
     text-align: left;
 }
@@ -861,7 +944,6 @@ body {
 
 .navbar-nav li a{
     color: #777;
-    margin-top: 5px;
     padding-top: 8px;
     padding-bottom: 0px;
 }
@@ -1083,9 +1165,10 @@ body {
     padding: 0 15px 0 15px;
 }
 .errors{
-    padding: 5px 0 5px 0;
+    padding: 5px 0px 5px 0;
     color: #9F614B;
     font-size: 12px;
+    margin-left:45px
 }
 .calender{
     position: inherit;
@@ -1104,7 +1187,7 @@ body {
 }
 .prog-time{
     color: #032A4F;
-    font-weight: 100%
+    font-weight: 100;
 }
 
 /*.modal-footer .btn {*/
@@ -1186,12 +1269,12 @@ nav li a {
 }
 
 .navbar-right{
-    margin-top: -10px;
+    margin-top: -15px;
 }
 
 .footer_bar {
     display: block;
-    padding: 37px 0 0 0;
+    margin: 20px 0 0 0;
 
 }
 
@@ -1241,8 +1324,14 @@ button {
 
 button, input, optgroup, select, textarea {
     margin: 0;
+    margin-top: 6px !important;
     font: inherit;
     color: inherit;
+}
+
+.navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus {
+    color: #555;
+    background-color: #fff;
 }
 
 .content-wrapper {
@@ -1252,10 +1341,11 @@ button, input, optgroup, select, textarea {
 }
 
 .content-bg{
-    margin: 20px 0 10px 0;
+    margin: 6px 0 0 0;
     background-color: #ebecef;
     min-height: 350px;
     padding-top:20px;
+    padding-bottom:20px;
 }
 
 .sidebar-bg{
@@ -1268,7 +1358,7 @@ button, input, optgroup, select, textarea {
     margin: 30px 0 0;
     width: 100%;
     min-height: 500px;
-    background-image: url('../img/bg.png');
+    background-image: url('../img/bg.jpg');
     background-size: 100% 100%;
     /*overflow: hidden;*/
 }
@@ -1314,10 +1404,9 @@ button, input, optgroup, select, textarea {
     border: none;
 }
 
-.btn:hover{
-    color: #fff;
-    background-color: #9A6B57;
-    border: none;
+.btn-link:hover, .btn-link:focus
+{
+    text-decoration: none;
 }
 
 
@@ -1376,7 +1465,7 @@ button, input, optgroup, select, textarea {
 /*}*/
 .table tbody tr{
     background-color: #fff;
-    border-top: 2px solid grey;
+    border-top: 1px solid grey;
 }
 .table th, td{
     padding: 15px;
@@ -1652,3 +1741,7 @@ button, input, optgroup, select, textarea {
         /*font-size: 10px;*/
     }
 }
+
+
+
+

@@ -16,7 +16,7 @@
 
                 <div class="clearfix"></div>
 
-                <div th:replace="layout :: admin-menu"></div>
+                <div th:replace="layout :: ops-menu"></div>
                 <div th:replace="layout :: menu-footer-adm"></div>
 
             </div>
@@ -39,7 +39,7 @@
                     <li>
                         <div class="col-lg-4">
                             <div class="title-action" >
-                                <a class="btn btn-app" href="/admin/verifications/pendingops"  disabled="disabled" >
+                                <a class="btn btn-app" href="/ops/verifications/pendingops"  disabled="disabled" >
                                     <button class="badge bg-orange bt-select" disabled="disabled" th:text="${totalPending}" >count</button>
                                     <i class="fa fa-envelope"></i>My approval
                                 </a>
@@ -51,7 +51,7 @@
                     <li>
                         <div class="col-lg-4">
                             <div class="title-action">
-                                <a  class=" btn btn-app btn bt-select btn-sm  bt-link-act" href="/admin/verifications/operations">
+                                <a  class=" btn btn-app btn bt-select btn-sm  bt-link-act" href="/ops/verifications/operations">
                                     <button class="badge bg-orange"  th:text="${verificationNumber}"></button>
                                     <i class="fa fa-envelope"></i>Approval Queue
                                 </a>

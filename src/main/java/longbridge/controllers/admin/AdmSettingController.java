@@ -1,6 +1,8 @@
 package longbridge.controllers.admin;
 
 import longbridge.exception.InternetBankingException;
+
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -104,9 +107,15 @@ public class AdmSettingController {
 	}
 	
 	  @GetMapping(path = "/all")
-	    public @ResponseBody DataTablesOutput<SettingDTO> getAllCodes(DataTablesInput input){
+	    public @ResponseBody DataTablesOutput<SettingDTO> getAllCodes(DataTablesInput input, @RequestParam("csearch") String search){
 	        Pageable pageable = DataTablesUtils.getPageable(input);
-	        Page<SettingDTO> settings = configurationService.getSettings(pageable);
+	        Page<SettingDTO> settings = null;
+	        if (StringUtils.isNoneBlank(search)) {
+	        	 settings = configurationService.findSetting(search,pageable);
+			}else{
+				 settings = configurationService.getSettings(pageable);
+			}
+	       
 	        DataTablesOutput<SettingDTO> out = new DataTablesOutput<SettingDTO>();
 	        out.setDraw(input.getDraw());
 	        out.setData(settings.getContent());

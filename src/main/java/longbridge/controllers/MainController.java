@@ -1,5 +1,6 @@
 package longbridge.controllers;
 
+import longbridge.dtos.FaqsDTO;
 import longbridge.dtos.SettingDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.PasswordException;
@@ -16,8 +17,6 @@ import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -54,6 +53,8 @@ public class MainController {
     private ConfigurationService configurationService;
     @Autowired
     private MailService mailService;
+    @Autowired
+    private  FaqsService faqsService;
 
 
     @RequestMapping(value = {"/", "/home"})
@@ -99,14 +100,13 @@ public class MainController {
         return modelAndView;
     }
 
-    @RequestMapping(value = {"/admin/dashboard", "/admin"})
-    public String getAdminDashboard() {
-        return "adm/dashboard";
-    }
 
 
     @GetMapping("/faqs")
-    public String viewFAQs() {
+    public String viewFAQs(Model model) {
+        List<FaqsDTO> faqs = faqsService.getFaqs();
+        logger.info("FAQS {}", faqs);
+        model.addAttribute("faqList", faqs);
         return "faqs";
     }
 

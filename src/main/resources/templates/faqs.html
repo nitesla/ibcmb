@@ -4,6 +4,7 @@
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/bootstrap.css}" />
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/custom.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/font-awesome/font-awesome.min.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/datatables/css/jquery.dataTables.min.css}"/>
     <title>Test</title>
 </head>
 <body>
@@ -12,7 +13,7 @@
 <div class="container">
     <div class="top_bar">
         <ul class="list_group">
-            <li><a href="#"> Coronation merchnat bank</a></li>
+            <li><a href="https://www.coronationmb.com/" target="_blank"> Coronation merchant bank</a></li>
         </ul>
     </div>
     <br/>
@@ -40,7 +41,7 @@
                     </li>
                     <li><a href="/register"> REGISTER</a></li>
                     <li><a href="#contact_us"> CONTACT US</a></li>
-                    <li><a href="/"> HELP</a></li>
+                    <li><a href="/faqs"> FAQ</a></li>
                 </ul>
 
             </div>
@@ -62,56 +63,27 @@
                     <div class="">
 
                         <h5 class="page_header">Frequently Asked Questions</h5>
-                        
-                        <div class='faq'>
-                        	<div class="bg-coronation alert" style="margin-bottom:0px !important;">
-                                <span>Can i use the platform to transfer money abroad?</span>
-                                <i data-toggle="collapse" data-target="#demo" class='pull-right fa fa-plus faq-icon' style="font-sizepx"></i>
-                            </div>
-                            <div id="demo" class="collapse alert bg-danger" style="margin-top:5px !important;">
-                            Lorem ipsum dolor text....
-                            </div>
 
-                            <div class="bg-coronation alert" style="margin-bottom:0px !important;">
-                                <span>Can i use the platform to transfer money abroad?</span>
-                                <i data-toggle="collapse" data-target="#demo1" class='pull-right fa fa-plus faq-icon' style="font-sizepx"></i>
-                            </div>
-                            <div id="demo1" class="collapse alert bg-danger" style="margin-top:5px !important;">
-                            Lorem ipsum dolor text....
-                            </div>
-
-                            <div class="bg-coronation alert" style="margin-bottom:0px !important;">
-                                <span>Can i use the platform to transfer money abroad?</span>
-                                <i data-toggle="collapse" data-target="#demo2" class='pull-right fa fa-plus faq-icon' style="font-sizepx"></i>
-                            </div>
-                            <div id="demo2" class="collapse alert bg-danger" style="margin-top:5px !important;">
-                            Lorem ipsum dolor text....
-                            </div>
-
-                            <div class="bg-coronation alert" style="margin-bottom:0px !important;">
-                                <span>Can i use the platform to transfer money abroad?</span>
-                                <i data-toggle="collapse" data-target="#demo3" class='pull-right fa fa-plus faq-icon' style="font-sizepx"></i>
-                            </div>
-                            <div id="demo3" class="collapse alert bg-danger" style="margin-top:5px !important;">
-                            Lorem ipsum dolor text....
-                            </div>
-
-                            <div class="bg-coronation alert" style="margin-bottom:0px !important;">
-                                <span>Can i use the platform to transfer money abroad?</span>
-                                <i data-toggle="collapse" data-target="#demo4" class='pull-right fa fa-plus faq-icon' style="font-sizepx"></i>
-                            </div>
-                            <div id="demo4" class="collapse alert bg-danger " style="margin-top:5px !important;">
-                            Lorem ipsum dolor text....
-                            </div>
-                        	
-                        	
-                        </div>
-
+                        <table id="faqs">
+                            <thead>
+                                <tr></tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="faq : ${faqList}">
+                                    <div class="bg-coronation alert" style="margin-bottom:0px !important;">
+                                        <span th:text="${faq.question}">Can i use the platform to transfer money abroad?</span>
+                                        <i data-toggle="collapse" th:attr="data-target='#'+${faq.id}" class='pull-right fa fa-plus faq-icon' style="font-sizepx"></i>
+                                    </div>
+                                    <div th:id="${faq.id}" class="collapse alert bg-danger" style="margin-top:5px !important;" th:text="${faq.answer}">
+                                        Lorem ipsum dolor text....
+                                    </div>
+                                </tr>
+                            </tbody>
+                        </table>
                   
                     </div>
                 </div>
                 <div class="col-md-3 col-sm-3">
-                            hhh
                 </div>
             </div>
            
@@ -140,10 +112,21 @@
 <script th:src="@{~/customer/js/jquery-1.11.1.js}"></script>
 <!-- BOOTSTRAP SCRIPTS  -->
 <script th:src="@{~/customer/js/bootstrap.js}"></script>
+<script th:src="@{~/customer/plugins/datatables/js/jquery.dataTables.js}"></script>
+<script th:src="@{~/customer/js/jquery.spring-friendly.min.js}"></script>
 
-
+<!-- Page-Level Scripts -->
 <script>
+    /*<![CDATA[*/
+    $( document ).ready( function() {
 
+        $('#faqs').DataTable( {
+            "lengthMenu": [5, 10, 20]
+        });
+
+    });
+
+    /*]]>*/
 </script>
 </body>
 </html>

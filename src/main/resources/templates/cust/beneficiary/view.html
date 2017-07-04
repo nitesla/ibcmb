@@ -30,16 +30,28 @@
 <section class="content-wrapper">
     <div class="containe">
         <div class="row">
-            <div class="col-md-8 col-sm-8">
-                <div class="page_header">
-                <h5 > Beneficiary List</h5></div>
+<<<<<<< HEAD
+
+=======
+>>>>>>> master
+            <div class="col-md col-sm">
+                <div class=" col-md-9 col-sm-9">
+                    <h5 class="page_header"> Beneficiary List</h5>
+                    <select class="form-control invisible">
+                        <option value="account">Account Overview</option>
+                </select>
                 <a th:href="@{/retail/beneficiary/new}" class="pull-right">Add New Beneficiary</a>
+
+                </div>
+                 <p class="col-xs-12 invisible">
+                    Fields marked <span style="color:red">*</span> are compulsory
+            </p>
             </div>
         </div>
         <div class="row">
             <div class="col-md-9 content-bg">
-                <div class=" spacing">
-                    <div class="col-md-10">
+
+                    <div class="col-md-12 table-responsive">
                         <h4 class="sub_header">Local Beneficiaries</h4>
                         <table class="table" id="mytab">
                             <thead>
@@ -76,7 +88,7 @@
                             </tbody>
                         </table>
                     </div>
-                </div>
+
             </div>
             <div class="col-md-3 pull-right " >
                 <div th:replace="cust_layout :: sidebar" class="" >

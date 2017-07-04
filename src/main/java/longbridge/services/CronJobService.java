@@ -11,4 +11,5 @@ public interface CronJobService {
     Boolean updateAllBVN() throws InternetBankingException;
     void keepJobDetial(String username, String cronExp) throws InternetBankingException;
     void deleteRunningJob() throws InternetBankingException;
+    Boolean updateAllAccountCurrency() throws InternetBankingException;
 }

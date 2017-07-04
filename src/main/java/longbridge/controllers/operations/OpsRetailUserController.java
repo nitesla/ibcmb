@@ -6,6 +6,8 @@ import longbridge.exception.PasswordException;
 import longbridge.forms.ChangePassword;
 import longbridge.security.FailedLoginService;
 import longbridge.services.RetailUserService;
+
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,10 +77,15 @@ public class OpsRetailUserController {
 
     @GetMapping("/all")
     public @ResponseBody
-    DataTablesOutput<RetailUserDTO> getRetailUsers(DataTablesInput input){
+    DataTablesOutput<RetailUserDTO> getRetailUsers(DataTablesInput input,@RequestParam("csearch") String search){
 
         Pageable pageable = DataTablesUtils.getPageable(input);
-        Page<RetailUserDTO> retailUsers = retailUserService.getUsers(pageable);
+        Page<RetailUserDTO> retailUsers = null;
+        if (StringUtils.isNoneBlank(search)) {
+        	retailUsers = retailUserService.findUsers(search,pageable);
+		}else{
+			retailUsers = retailUserService.getUsers(pageable);
+		}
         DataTablesOutput<RetailUserDTO> out = new DataTablesOutput<RetailUserDTO>();
         out.setDraw(input.getDraw());
         out.setData(retailUsers.getContent());
