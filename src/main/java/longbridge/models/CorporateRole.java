@@ -12,6 +12,8 @@ import longbridge.utils.PrettySerializer;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
@@ -36,7 +38,9 @@ public class CorporateRole extends AbstractEntity implements PrettySerializer{
     @ManyToOne
     Corporate corporate;
 
-    @OneToMany(cascade={CascadeType.MERGE})
+    @OneToMany(cascade={CascadeType.ALL})
+    @JoinTable(name="corp_role_user")
+    @JoinColumn(name="user_id")
     Set<CorporateUser> users = new HashSet<CorporateUser>();
 
     @OneToMany
