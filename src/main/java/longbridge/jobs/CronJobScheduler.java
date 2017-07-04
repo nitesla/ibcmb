@@ -1,11 +1,6 @@
 package longbridge.jobs;
 
-import javax.servlet.ServletContext;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.annotation.WebListener;
-
 import org.quartz.*;
-import org.quartz.ee.servlet.QuartzInitializerListener;
 import org.quartz.impl.StdSchedulerFactory;
 /**
  * Created by Longbridge on 6/25/2017.
@@ -13,7 +8,7 @@ import org.quartz.impl.StdSchedulerFactory;
 public class CronJobScheduler {
     public static void startJobs() {
         JobKey OneTimeKey = new JobKey("OneTime", "ibtest");
-        JobDetail OneTimeJobs = JobBuilder.newJob(TestClass.class)
+        JobDetail OneTimeJobs = JobBuilder.newJob(RunningJob.class)
                 .withIdentity(OneTimeKey).build();
 
 //        JobKey FiveMinsKey = new JobKey("FiveMins", "ibtest");

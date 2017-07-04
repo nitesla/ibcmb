@@ -34,22 +34,16 @@ public class CronJobServiceImpl implements CronJobService {
     @Autowired
     private CronJobRepo cronJobRepo;
     @Override
-    public Boolean updateAllAccountName() throws InternetBankingException {
-        List<Account> allAccounts = accountRepo.findAll();
-//        logger.info("The account size {}",allAccounts.size());
-        for (Account account : allAccounts) {
-            AccountDetails accountDetails = integrationService.viewAccountDetails(account.getAccountNumber());
+    public void updateAllAccountName(Account account, AccountDetails accountDetails) throws InternetBankingException {
             if (!account.getAccountName().equalsIgnoreCase(accountDetails.getAcctName())) {
             account.setAccountName(accountDetails.getAcctName());
                     System.out.println("the account name after setting is" + account.getAccountName());
 //            accountRepo.save(account);
             }
-        }
-        return null;
     }
 
     @Override
-    public Boolean updateAllBVN() throws InternetBankingException {
+    public boolean updateAllBVN() throws InternetBankingException {
         List<RetailUser>retailUsers =  retailUserRepo.findAll();
         for (RetailUser retailUser:retailUsers) {
             try {
@@ -67,15 +61,15 @@ public class CronJobServiceImpl implements CronJobService {
 
         }
 //        viewCustomerDetailsByCif();
-        return null;
+        return false;
     }
 
     @Override
-    public void keepJobDetial(String username,String cronExpression) throws InternetBankingException {
+    public void keepJobDetials(String username,String cronExpression) throws InternetBankingException {
             CronJob cronJob = new CronJob();
             cronJob.setUsername(username);
             cronJob.setCreatedOn(new Date());
-            cronJob.setDelFlag("Y");
+            cronJob.setFlag("Y");
             cronJob.setCronExpression(cronExpression);
             cronJobRepo.save(cronJob);
     }
@@ -84,23 +78,42 @@ public class CronJobServiceImpl implements CronJobService {
     public void deleteRunningJob() throws InternetBankingException {
         CronJob cronJob = cronJobRepo.findByFlag("Y");
         if (cronJob != null){
-            cronJob.setDelFlag("N");
+            logger.info("about deleting");
+            cronJob.setFlag("N");
             cronJobRepo.save(cronJob);
         }
     }
 
     @Override
-    public Boolean updateAllAccountCurrency() throws InternetBankingException {
-        List<Account> allAccounts = accountRepo.findAll();
+    public void updateAllAccountCurrency(Account account, AccountDetails accountDetails) throws InternetBankingException {
 //        logger.info("The account size {}",allAccounts.size());
-        for (Account account : allAccounts) {
-            AccountDetails accountDetails = integrationService.viewAccountDetails(account.getAccountNumber());
             if ((account.getCurrencyCode()==null)||(!account.getCurrencyCode().equalsIgnoreCase(""))||(!accountDetails.getAcctCrncyCode().equalsIgnoreCase(account.getCurrencyCode()))) {
             account.setCurrencyCode(accountDetails.getAcctCrncyCode());
                 logger.info("the new account currency {} and {}" , account.getCurrencyCode(),accountDetails.getAcctCrncyCode());
             accountRepo.save(account);
-            }
-        }
-        return null;
     }
+    }
+
+    @Override
+    public void updateAccountStatus(Account account, AccountDetails accountDetails) throws InternetBankingException {
+            if (!account.getAccountName().equalsIgnoreCase(accountDetails.getAcctName())) {
+                account.setAccountName(accountDetails.getAcctName());
+                System.out.println("the account name after setting is" + account.getAccountName());
+//            accountRepo.save(account);
+    }
+    }
+
+    @Override
+    public boolean updateAccountDetials() throws InternetBankingException {
+        List<Account> allAccounts = accountRepo.findAll();
+//        logger.info("The account size {}",allAccounts.size());
+        for (Account account : allAccounts) {
+            AccountDetails accountDetails = integrationService.viewAccountDetails(account.getAccountNumber());
+//            updateAllAccountName(account,accountDetails);
+//            updateAllAccountCurrency(account,accountDetails);
+//            updateAccountStatus(account,accountDetails);
+        }
+        return false;
+    }
+
 }
