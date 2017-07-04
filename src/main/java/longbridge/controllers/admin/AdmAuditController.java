@@ -1,6 +1,7 @@
 package longbridge.controllers.admin;
 
 import jdk.internal.util.xml.impl.Input;
+import longbridge.models.AdminUser;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -13,12 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import longbridge.models.AuditConfig;
 import longbridge.services.AuditConfigService;
@@ -41,7 +37,8 @@ public class AdmAuditController {
 	}
     
     @GetMapping(path = "/all")
-    public @ResponseBody DataTablesOutput<AuditConfig> getAllCodes(DataTablesInput input,@RequestParam("csearch") String search){
+    public @ResponseBody DataTablesOutput<AuditConfig> getAllCodes(DataTablesInput input,@RequestParam("csearch") String search)
+    {
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<AuditConfig> auditConf = null;
         if (StringUtils.isNoneBlank(search)) {
@@ -60,6 +57,8 @@ public class AdmAuditController {
 
 
 
+
+
     @GetMapping(path = "all/entityname")
     public @ResponseBody DataTablesOutput<AuditConfig> getAllEntities(DataTablesInput input)
     {
@@ -75,14 +74,12 @@ public class AdmAuditController {
     }
 
 
-
     @GetMapping("/view")
     public String listEntity(Model model) {
         return "adm/audit/view";
     }
 
 
-    
     @PostMapping
     @ResponseBody
     public ResponseEntity<HttpStatus> changeAuditEntry(@RequestBody AuditConfig auditEntry) {

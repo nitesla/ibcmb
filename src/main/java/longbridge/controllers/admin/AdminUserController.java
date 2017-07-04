@@ -147,13 +147,7 @@ public class AdminUserController {
         return "adm/admin/view";
     }
 
-    /**
-     * Returns user
-     *
-     * @param userId
-     * @param model
-     * @return
-     */
+
     @GetMapping("/{userId}/details")
     public String getAdminUser(@PathVariable String userId, Model model) {
         AdminUser adminUser = adminUserService.getUser(Long.parseLong(userId));
@@ -161,11 +155,6 @@ public class AdminUserController {
         return "admin/details";
     }
 
-    /**
-     * Edit an existing user
-     *
-     * @return
-     */
     @GetMapping("/{userId}/edit")
     public String editUser(@PathVariable Long userId, Model model) {
         AdminUserDTO user = adminUserService.getAdminUser(userId);

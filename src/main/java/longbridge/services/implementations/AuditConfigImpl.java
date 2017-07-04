@@ -1,7 +1,9 @@
 package longbridge.services.implementations;
 
+import longbridge.dtos.CodeDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.AuditConfig;
+import longbridge.models.Code;
 import longbridge.repositories.AuditConfigRepo;
 import longbridge.services.AuditConfigService;
 import longbridge.utils.Verifiable;
@@ -44,6 +46,8 @@ public class AuditConfigImpl implements AuditConfigService {
 	public Page<AuditConfig> getEntities(Pageable pageDetails) {
 		return configRepo.findAll(pageDetails);
 	}
+
+
 
 	@Override
 	public Page<AuditConfig> findEntities(String pattern, Pageable pageDetails) {
