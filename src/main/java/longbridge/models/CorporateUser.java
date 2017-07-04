@@ -31,9 +31,8 @@ public class CorporateUser extends User {
 	@ManyToOne @JsonIgnore
     private Corporate corporate;
 
-	@ManyToOne
-	private CorporateRole corporateRole;
-
+//	private CorporateRole corporateRole;
+//
 
     public String getIsFirstTimeLogon() {
         return isFirstTimeLogon;
@@ -56,13 +55,13 @@ public class CorporateUser extends User {
 	}
 
 
-	public CorporateRole getCorporateRole() {
-		return corporateRole;
-	}
-
-	public void setCorporateRole(CorporateRole corporateRole) {
-		this.corporateRole = corporateRole;
-	}
+//	public CorporateRole getCorporateRole() {
+//		return corporateRole;
+//	}
+//
+//	public void setCorporateRole(CorporateRole corporateRole) {
+//		this.corporateRole = corporateRole;
+//	}
 
 
 	@Override
