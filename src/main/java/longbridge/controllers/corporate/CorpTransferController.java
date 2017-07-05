@@ -247,7 +247,7 @@ public class CorpTransferController {
                         request.getSession().removeAttribute("Lbeneficiary");
                         // model.addAttribute("beneficiary", l);
                     } catch (InternetBankingException de) {
-
+                        logger.error("Error occured processing transfer");
 
                     }
                 }
@@ -255,7 +255,6 @@ public class CorpTransferController {
 
 
             corpTransferRequestDTO = (CorpTransferRequestDTO) request.getSession().getAttribute("corpTransferRequest");
-
 
             corpTransferRequestDTO = transferService.makeTransfer(corpTransferRequestDTO);
 
@@ -271,8 +270,6 @@ public class CorpTransferController {
             String errorMessage = transferErrorService.getExactMessage(e.getMessage());
             redirectAttributes.addFlashAttribute("failure", errorMessage);
             return index(request);
-
-
         }
     }
 
@@ -284,58 +281,54 @@ public class CorpTransferController {
             corpLocalBeneficiaryService.addCorpLocalBeneficiary(user.getCorporate(), l);
         }
 
-
         attributes.addFlashAttribute("message", "New Beneficiary Added");
         return "redirect:/corporate/dashboard";
 
     }
     @GetMapping("/pending")
-    public String getPendingTransfer(Principal principal,Model model){
+    public String getPendingAuth(@ModelAttribute("transferRequest") CorpTransRequest transRequest, Model model){
+
+        CorpTransferAuth corpTransferAuth = corpTransferService.getAuthorizations(transRequest);
+        model.addAttribute("transferAuth",corpTransferAuth);
+
 
         //List<PendAuth> pendAuths = corpTransferService.getPendingAuthorizations();
         //model.addAttribute("pendAuths", pendAuths);
         return "corp/transfer/pendingtransfer/view";
     }
 
-    @GetMapping("/{id}/authorize")
-    public String authorizeTransfer(@PathVariable Long id, Principal principal, Model model, RedirectAttributes redirectAttributes) {
-        try {
-            String message = corpTransferService.authorizeTransfer(id);
-            redirectAttributes.addFlashAttribute("message", message);
-        } catch (InvalidAuthorizationException iae) {
-            logger.error("Failed to authorize transfer", iae);
-            redirectAttributes.addFlashAttribute("failure", iae.getMessage());
-
-        } catch (TransferRuleException tre) {
-            logger.error("Failed to authorize transfer", tre);
-            redirectAttributes.addFlashAttribute("failure", tre.getMessage());
-
-        } catch (InternetBankingException e) {
-            logger.error("Failed to authorize transfer", e);
-            redirectAttributes.addFlashAttribute("failure", e.getMessage());
-
-        }
-        return "redirect:/corporate/pending";
-    }
+//    @GetMapping("/{id}/authorize")
+//    public String authorizeTransfer(@PathVariable Long id, Principal principal, Model model, RedirectAttributes redirectAttributes) {
+//        try {
+//            String message = corpTransferService.authorizeTransfer(id);
+//            redirectAttributes.addFlashAttribute("message", message);
+//        } catch (InvalidAuthorizationException iae) {
+//            logger.error("Failed to authorize transfer", iae);
+//            redirectAttributes.addFlashAttribute("failure", iae.getMessage());
+//
+//        } catch (TransferRuleException tre) {
+//            logger.error("Failed to authorize transfer", tre);
+//            redirectAttributes.addFlashAttribute("failure", tre.getMessage());
+//
+//        } catch (InternetBankingException e) {
+//            logger.error("Failed to authorize transfer", e);
+//            redirectAttributes.addFlashAttribute("failure", e.getMessage());
+//
+//        }
+//        return "redirect:/corporate/pending";
+//    }
 
     @PostMapping("/authorize")
-    public String addAuthorization(@ModelAttribute("corpTransReqEntry") CorpTransReqEntry corpTransReqEntry, CorpTransRequest corpTransRequest, RedirectAttributes redirectAttributes){
+    public String addAuthorization(@ModelAttribute("corpTransRequest") CorpTransReqEntry corpTransReqEntry, CorpTransRequest corpTransRequest, RedirectAttributes redirectAttributes){
 
 
         try {
             String message = corpTransferService.addAuthorization(corpTransReqEntry,corpTransRequest);
             redirectAttributes.addFlashAttribute("message", message);
-        } catch (InvalidAuthorizationException iae) {
-            logger.error("Failed to authorize transfer", iae);
-            redirectAttributes.addFlashAttribute("failure", iae.getMessage());
 
-        } catch (TransferRuleException tre) {
-            logger.error("Failed to authorize transfer", tre);
-            redirectAttributes.addFlashAttribute("failure", tre.getMessage());
-
-        } catch (InternetBankingException e) {
-            logger.error("Failed to authorize transfer", e);
-            redirectAttributes.addFlashAttribute("failure", e.getMessage());
+        } catch (InternetBankingException ibe) {
+            logger.error("Failed to authorize transfer", ibe);
+            redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
 
         }
         return "redirect:/corporate/pending";
