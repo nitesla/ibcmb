@@ -3,22 +3,31 @@ package longbridge.services.implementations;
 import longbridge.dtos.CodeDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.AuditConfig;
+import longbridge.models.AuditRetrieve;
 import longbridge.models.Code;
 import longbridge.repositories.AuditConfigRepo;
 import longbridge.services.AuditConfigService;
 import longbridge.utils.Verifiable;
+import org.apache.poi.ss.formula.functions.T;
+import org.hibernate.envers.AuditReader;
+import org.hibernate.envers.AuditReaderFactory;
+import org.hibernate.envers.query.AuditQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by ayoade_farooq@yahoo.com on 4/19/2017.
  */
 @Service
 public class AuditConfigImpl implements AuditConfigService {
+
+	private static final String PACKAGE_NAME = "longbridge.models.";
 
     @Autowired
     private AuditConfigRepo configRepo;
@@ -47,10 +56,36 @@ public class AuditConfigImpl implements AuditConfigService {
 		return configRepo.findAll(pageDetails);
 	}
 
-
+	@Override
+	public List<T> revisedEntity(String entityName)
+	{
+		List<T> revisionList = new ArrayList<>();
+		try
+		{
+			//Class<?> cls = Class.forName(entityName);
+			Class<?> clazz  = Class.forName(PACKAGE_NAME + entityName);
+			AuditReader auditReader = AuditReaderFactory.get(entityManager);
+			AuditQuery query = auditReader.createQuery().forRevisionsOfEntity(clazz, true, true);
+			revisionList = query.getResultList();
+		}
+		catch (ClassNotFoundException e)
+		{
+			e.printStackTrace();
+		}
+		return revisionList;
+	  }
 
 	@Override
 	public Page<AuditConfig> findEntities(String pattern, Pageable pageDetails) {
 		return configRepo.findUsingPattern(pattern,pageDetails);
+	}
+
+
+
+	@Override
+	public AuditConfig getAuditEntity(Long id)
+	{
+		AuditConfig auditConfig = this.configRepo.findOne(id);
+		return auditConfig;
 	}
 }

@@ -91,11 +91,13 @@ public class AdmVerificationController {
         String approval = request.getParameter("approve");
 
         try {
-            if ("true".equals(approval)) {
+            if ("true".equals(approval))
+            {
                 verificationService.verify(verification);
                 redirectAttributes.addFlashAttribute("message", "Operation approved successfully");
 
-            } else if ("false".equals(approval)) {
+            } else if ("false".equals(approval))
+            {
                 if (result.hasErrors())
                 {
                      VerificationDTO verification2=verificationService.getVerification(verification.getId());

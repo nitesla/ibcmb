@@ -142,7 +142,8 @@ public class VerificationServiceImpl implements VerificationService {
 
         User initiatedBy = null;
 
-        switch (verification.getUserType()){
+        switch (verification.getUserType())
+        {
             case ADMIN:
                 initiatedBy = adminUserRepo.findFirstByUserName(initiator);
                 break;
@@ -150,8 +151,10 @@ public class VerificationServiceImpl implements VerificationService {
                 initiatedBy = operationsUserRepo.findFirstByUserName(initiator);
                 break;
         }
-        if(initiatedBy!=null) {
-            if (initiatedBy.getEmail() != null) {
+        if(initiatedBy!=null)
+        {
+            if (initiatedBy.getEmail() != null)
+            {
                 String initiatorName = initiatedBy.getFirstName()+" "+initiatedBy.getLastName();
                 String verifierName = verifiedBy.getFirstName()+" "+verifiedBy.getLastName();
                 Date date = verification.getVerifiedOn();
@@ -163,10 +166,12 @@ public class VerificationServiceImpl implements VerificationService {
                         .setSubject(messageSource.getMessage("verification.subject", null, locale))
                         .setBody(String.format(messageSource.getMessage("verification.message", null, locale),initiatorName, verifierName, operation, status, DateFormatter.format(date),comment))
                         .build();
-                try {
+                try
+                {
                     mailService.send(email);
                 }
-                catch (MailException me){
+                catch (MailException me)
+                {
                     logger.error("Failed to send email to the initiator",me);
                 }
             }
