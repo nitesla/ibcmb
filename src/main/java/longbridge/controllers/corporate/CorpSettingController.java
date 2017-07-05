@@ -74,7 +74,7 @@ public class CorpSettingController {
 
     }
 
-   @PostMapping("/settings/change_password")
+    @PostMapping("/settings/change_password")
     public String ChangePassword(@ModelAttribute("custChangePassword") @Valid CustChangePassword custChangePassword, BindingResult result,Principal principal,  Model model, RedirectAttributes redirectAttributes) throws Exception{
         if(result.hasErrors()){
             List<String> passwordPolicy = passwordPolicyService.getPasswordRules();
@@ -86,37 +86,37 @@ public class CorpSettingController {
 
         CorporateUser user = corporateUserService.getUserByName(principal.getName());
 
-       try {
-           String message =corporateUserService.changePassword(user,custChangePassword);
-           redirectAttributes.addFlashAttribute("message", message);
-           return "redirect:/corporate/logout";
-       } catch (WrongPasswordException wpe) {
-           model.addAttribute("failure",wpe.getMessage());
-           logger.error("Wrong password from corporate user {}", user.getUserName(), wpe.toString());
-           List<String> passwordPolicy = passwordPolicyService.getPasswordRules();
-           model.addAttribute("passwordRules", passwordPolicy);
-           return "corp/settings/pword";
-       } catch (PasswordPolicyViolationException pve) {
-           model.addAttribute("failure",pve.getMessage());
-           logger.error("Password policy violation from corporate user {} error {}", user.getUserName(), pve.toString());
-           List<String> passwordPolicy = passwordPolicyService.getPasswordRules();
-           logger.info("PASSWORD RULES {}", passwordPolicy);
-           model.addAttribute("passwordRules", passwordPolicy);
-           return "corp/settings/pword";
-       } catch (PasswordMismatchException pme) {
-           model.addAttribute("failure",pme.getMessage());
-           List<String> passwordPolicy = passwordPolicyService.getPasswordRules();
-           model.addAttribute("passwordRules", passwordPolicy);
-           logger.error("New password mismatch from corporate user {}", user.getUserName(), pme.toString());
-           return "corp/settings/pword";
-       } catch (PasswordException pe) {
-           result.addError(new ObjectError("error", pe.getMessage()));
-           logger.error("Error changing password for corporate user {}", user.getUserName(), pe);
-           List<String> passwordPolicy = passwordPolicyService.getPasswordRules();
-           logger.info("PASSWORD RULES {}", passwordPolicy);
-           model.addAttribute("passwordRules", passwordPolicy);
-           return "corp/settings/pword";
-       }
+        try {
+            String message =corporateUserService.changePassword(user,custChangePassword);
+            redirectAttributes.addFlashAttribute("message", message);
+            return "redirect:/corporate/logout";
+        } catch (WrongPasswordException wpe) {
+            model.addAttribute("failure",wpe.getMessage());
+            logger.error("Wrong password from corporate user {}", user.getUserName(), wpe.toString());
+            List<String> passwordPolicy = passwordPolicyService.getPasswordRules();
+            model.addAttribute("passwordRules", passwordPolicy);
+            return "corp/settings/pword";
+        } catch (PasswordPolicyViolationException pve) {
+            model.addAttribute("failure",pve.getMessage());
+            logger.error("Password policy violation from corporate user {} error {}", user.getUserName(), pve.toString());
+            List<String> passwordPolicy = passwordPolicyService.getPasswordRules();
+            logger.info("PASSWORD RULES {}", passwordPolicy);
+            model.addAttribute("passwordRules", passwordPolicy);
+            return "corp/settings/pword";
+        } catch (PasswordMismatchException pme) {
+            model.addAttribute("failure",pme.getMessage());
+            List<String> passwordPolicy = passwordPolicyService.getPasswordRules();
+            model.addAttribute("passwordRules", passwordPolicy);
+            logger.error("New password mismatch from corporate user {}", user.getUserName(), pme.toString());
+            return "corp/settings/pword";
+        } catch (PasswordException pe) {
+            result.addError(new ObjectError("error", pe.getMessage()));
+            logger.error("Error changing password for corporate user {}", user.getUserName(), pe);
+            List<String> passwordPolicy = passwordPolicyService.getPasswordRules();
+            logger.info("PASSWORD RULES {}", passwordPolicy);
+            model.addAttribute("passwordRules", passwordPolicy);
+            return "corp/settings/pword";
+        }
     }
 
     @GetMapping("/reset_password")

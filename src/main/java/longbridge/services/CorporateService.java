@@ -185,7 +185,7 @@ public interface CorporateService{
     @PreAuthorize("hasAuthority('DELETE_CORPORATE_RULE')")
    String deleteCorporateRule(Long id) throws InternetBankingException;
 
-    Set<CorporateRoleDTO> getRoles(Long corpId);
+    List<CorporateRoleDTO> getRoles(Long corpId);
 
     Page<CorporateRoleDTO> getRoles(Long corpId, Pageable pageable);
 

@@ -1,6 +1,6 @@
 table.dataTable tbody > tr.selected,
 table.dataTable tbody > tr > .selected {
-  background-color: #08C;
+  background-color: #f2f2f1;
 }
 table.dataTable.stripe tbody > tr.odd.selected,
 table.dataTable.stripe tbody > tr.odd > .selected, table.dataTable.display tbody > tr.odd.selected,
@@ -106,5 +106,5 @@ table.dataTable tbody td.selected {
 table.dataTable tbody tr.selected a,
 table.dataTable tbody th.selected a,
 table.dataTable tbody td.selected a {
-  color: #a2d4ed;
+  color: #F2F2F1;
 }

@@ -163,7 +163,7 @@
       var table = $('#admin').DataTable({
             select:true,
             responsive: true,
-          "lengthMenu" : [ [ 5, 10, 20],	[ 5, 10, 20 ] ],
+          "lengthMenu" : [ [ 20, 30, 40, -1],	[ 20 ,30, 40, "All"] ],
             "pagingType" : "simple_numbers",
             "searching": false,
             "paging": true,
@@ -205,18 +205,7 @@
                   return data;
               }
 
-          } ,{
-              "targets" : 5,
-              "data" : "status",
-              "render" : function(data, type,full, meta) {
-                  if (type === 'display') {
-                  	var dtStart = new Date(parseInt(data));
-                   	var dtStartWrapper = moment(dtStart);
-                   	return dtStartWrapper.format('DD/MM/YYYY HH:mm');
-                  }
-                  return data;
-              }
-          } ]
+          }  ]
 
       });
 

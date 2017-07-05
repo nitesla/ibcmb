@@ -504,10 +504,14 @@ public class CorporateServiceImpl implements CorporateService {
 
     @Override
     @Transactional
-    public Set<CorporateRoleDTO> getRoles(Long corpId) {
+    public List<CorporateRoleDTO> getRoles(Long corpId) {
         Corporate corporate = corporateRepo.findOne(corpId);
-        Set<CorporateRole> corporateRoles = corporateRoleRepo.findByCorporate(corporate);
-        Set<CorporateRoleDTO> roles = convertCorporateRoleEntitiesToDTOs(corporateRoles);
+
+
+        List<CorporateRole> corporateRoles = corporateRoleRepo.findByCorporate(corporate);
+        List<CorporateRoleDTO> roles = convertCorporateRoleEntitiesToDTOs(corporateRoles);
+
+
         return roles;
     }
 
@@ -562,6 +566,17 @@ public class CorporateServiceImpl implements CorporateService {
         return roles;
     }
 
+//    public CorporateRole getNextRoleForAuthorization(PendAuth pendAuth){
+//        pendAuth.
+//        List<CorporateRole> corporateRoles = rule.getRoles();
+//        sortRolesByRank(corporateRoles);
+//        CorporateRole corporateRole = null;
+//        Iterator<CorporateRole> iterator = corporateRoles.iterator();
+//        while (iterator.hasNext()){
+//            return  iterator.next();
+//        }
+//        return corporateRole;
+//    }
 
     private void sortRolesByRank(List<CorporateRole> roles){
         Collections.sort(roles,new Comparator<CorporateRole>(){
@@ -643,7 +658,7 @@ public class CorporateServiceImpl implements CorporateService {
         corpTransferRuleDTO.setCorporateId(transferRule.getCorporate().getId().toString());
         corpTransferRuleDTO.setCorporateName(transferRule.getCorporate().getName());
 
-        Set<CorporateRoleDTO> roleDTOs = new HashSet<CorporateRoleDTO>();
+        List<CorporateRoleDTO> roleDTOs = new ArrayList<>();
         for (CorporateRole role : transferRule.getRoles()) {
             CorporateRoleDTO roleDTO = new CorporateRoleDTO();
             roleDTO.setId(role.getId());

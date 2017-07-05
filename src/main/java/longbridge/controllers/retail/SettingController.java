@@ -242,26 +242,26 @@ public class SettingController {
 
 
 
-            SettingDTO setting = configService.getSettingByName("CUSTOMER_CARE_EMAIL");
-            if (setting != null && setting.isEnabled()) {
-                try {
+        SettingDTO setting = configService.getSettingByName("CUSTOMER_CARE_EMAIL");
+        if (setting != null && setting.isEnabled()) {
+            try {
                 Email email = new Email.Builder()
                         .setRecipient(setting.getValue())
                         .setSubject(messageSource.getMessage("customer.bvn.link.subject", null, locale))
                         .setBody(String.format(messageSource.getMessage("customer.bvn.link.message", null, locale),user.getUserName(),fullname, bvn,acctNumber,custId,custemail))
                         .build();
                 mailService.send(email);
-                    String message =  messageSource.getMessage("bvn.add.success", null, locale);
-                    redirectAttributes.addFlashAttribute("message", message);
+                String message =  messageSource.getMessage("bvn.add.success", null, locale);
+                redirectAttributes.addFlashAttribute("message", message);
 
-                } catch (Exception ex) {
-                    logger.error("Failed to send BVN request", ex);
-                    String message = messageSource.getMessage("bvn.add.failure", null, locale);
-                    redirectAttributes.addFlashAttribute("failure", message);
-                }
+            } catch (Exception ex) {
+                logger.error("Failed to send BVN request", ex);
+                String message = messageSource.getMessage("bvn.add.failure", null, locale);
+                redirectAttributes.addFlashAttribute("failure", message);
             }
+        }
 
-            return "redirect:/retail/dashboard";
+        return "redirect:/retail/dashboard";
     }
 
 

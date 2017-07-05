@@ -113,7 +113,6 @@ public class GlobalLimit extends  AbstractEntity implements PrettySerializer{
                 gen.writeStringField("Currency",value.currency);
                 gen.writeStringField("Frequency",value.frequency);
                 gen.writeStringField("Description",value.description);
-
                 gen.writeEndObject();
             }
         };

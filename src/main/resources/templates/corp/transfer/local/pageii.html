@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html xmlns:th="http://www.thymeleaf.org" >
 <head th:replace="corp_layout :: site-head">
 
 </head>
@@ -31,8 +31,8 @@
                         <div th:if="${message != null}" class="alert alert-info" th:text="${message}">message</div>
                         <div th:if="${error != null}" class="alert alert-info" th:text="${error}">message</div>
 
-                        <form method="post" th:action="@{/retail/transfer/local/summary}"
-                              th:object="${transferRequest}">
+                        <form method="post" th:action="@{/corporate/transfer/local/summary}"
+                              th:object="${corpTransferRequest}">
 
 
                             <div class="form-group">
@@ -105,7 +105,7 @@
         function getBalance() {
             var accountNumber = $('#source').val();
             $.ajax({
-                url: "/retail/transfer/local/balance/" + accountNumber,
+                url: "/corporate/transfer/balance/" + accountNumber,
                 type: 'GET',
                 async: false,
                 success: function (availBal) {

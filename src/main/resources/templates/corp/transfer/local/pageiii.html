@@ -33,43 +33,44 @@
                             <tr>
 
                                 <th>Source account</th>
-                                <td th:text="${transferRequest.customerAccountNumber}"></td>
+                                <td th:text="${corpTransferRequest.customerAccountNumber}"></td>
 
                             </tr>
                             <tr>
 
                                 <th>Destination account</th>
-                                <td th:text="${transferRequest.beneficiaryAccountNumber}"></td>
+                                <td th:text="${corpTransferRequest.beneficiaryAccountNumber}"></td>
 
                             </tr>
                             <tr>
 
                                 <th>Destination account owner</th>
-                                <td th:text="${transferRequest.beneficiaryAccountName}"></td>
+                                <td th:text="${corpTransferRequest.beneficiaryAccountName}"></td>
 
                             </tr>
                             <tr>
 
                                 <th>Amount</th>
-                                <td th:text="${transferRequest.amount}"></td>
+                                <td th:text="${corpTransferRequest.amount}"></td>
 
                             </tr>
                             <tr>
 
                                 <th>Remarks</th>
-                                <td th:text="${transferRequest.remarks}"></td>
+                                <td th:text="${corpTransferRequest.remarks}"></td>
 
                             </tr>
                             </tbody>
                         </table>
 
 
-                        <form method="post" th:action="@{/retail/transfer/process}" th:object="${transferRequest}">
+                        <form method="post" th:action="@{/corporate/transfer/process}" th:object="${corpTransferRequest}">
                             <input type="hidden" th:field="*{customerAccountNumber}"/>
                             <input type="hidden" th:field="*{beneficiaryAccountNumber}"/>
                             <input type="hidden" th:field="*{beneficiaryAccountName}"/>
                             <input type="hidden" th:field="*{amount}"/>
                             <input type="hidden" th:field="*{remarks}"/>
+<<<<<<< HEAD
 
                             <input type="hidden" th:field="*{id}"/>
                         <div class="checkbox">
@@ -83,6 +84,8 @@
 
 
 
+=======
+>>>>>>> 0b1e7ef362a6d42a0af3eef3b26d1025d5c816cb
                         <span class="form-group checkbox col-xs-5" th:if="${newBen}!=null">
                             <label style="font-weight: bold; color: black;margin-left:10px !important">
                                 <input  type="checkbox" id="add" name="add"/>Add Beneficiary
@@ -92,14 +95,14 @@
                             <!--<a style="cursor: pointer;" onclick="goBack()" >Modify</a>-->
                             <button type="submit" class="btn btn-link required-step">Proceed</button>
 
-                            <button th:href="@{/retail/transfer/local}" class='btn btn-link less-required'>Cancel</button>
+                            <button onclick="cancel();" class='btn btn-link less-required'>Cancel</button>
 
                              <button type='button' class='btn btn-link less-required' onclick="edit();">Modify</button>
 
                             </div>
                         </form>
 
-                        <form method="post" id="form_edit" th:action="@{/retail/transfer/local/edit}" th:object="${transferRequest}">
+                        <form method="post" id="form_edit" th:action="@{/corporate/transfer/local/edit}" th:object="${corpTransferRequest}">
                             <input type="hidden" th:field="*{customerAccountNumber}"/>
                             <input type="hidden" th:field="*{beneficiaryAccountNumber}"/>
                             <input type="hidden" th:field="*{beneficiaryAccountName}"/>
@@ -126,6 +129,9 @@
     <script>
          function edit(){
              $("#form_edit").submit();
+         }
+         function cancel(){
+            window.location.href="/corporate/transfer/local";
          }
 
 

@@ -35,7 +35,7 @@
 
 
 
-                            <form id="local" method="post" th:action="@{/retail/beneficiary/local}"
+                            <form id="local" method="post" th:action="@{/retail/beneficiary/local/summary}"
                                   th:object="${localBeneficiaryDTO}">
                                 <input type="hidden" th:value="local" class="form-control"/>
                                 <div class="form-group">
@@ -137,7 +137,7 @@
                                 <button class="btn btn-primary">Save</button>
                             </form>
 
-                            <form id="intrabank" method="post" th:action="@{/retail/beneficiary/local}"
+                            <form id="intrabank" method="post" th:action="@{/retail/beneficiary/local/summary}"
                                   th:object="${localBeneficiaryDTO}" style="display: none">
                                 <input type="hidden" th:value="intrabank" class="form-control"/>
                                 <div class="form-group">
@@ -230,20 +230,25 @@
 
 
         function getAccountName() {
+            $('#loading-icon').show();
+            $('#localsave').hide();
             //make sure alert message is not empty
             var acct = $('#acct_num').val();
             var bank = $('#beneficiaryBank').val();
 
-            if (( acct == null || acct == '' ) || ( bank == null || bank == '' )) {
-
-
+            if(( acct==null || acct=='' ) || ( bank==null || bank=='' ))
+            {
+                $('#loading-icon').hide();
                 $('.acctError').show().css("color", "red");
+                $('#loading-icon').hide();
                 return false;
             }
 
             $.getJSON('/retail/transfer/' + acct + '/'+bank+'/nameEnquiry', function(jd) {
                 var message = jd.message;
                 var success =  jd.success;
+                console.log(message);
+                console.log(success);
                 if (success==false){
                     $('.acctError').text(message);
                     $('.acctError').show().css("color", "red");
@@ -252,6 +257,7 @@
                     $('#acct_name').val(message);
                     $('#localsave').show();
                     $('#neq').hide();
+                    $('.acctError').hide()
                     document.getElementById('loading-icon').style.display = 'none';
                     $('#loading-icon').hide();
                 }
@@ -261,8 +267,9 @@
 
 
             });
-        }
-        ;
+
+        };
+
 
         function getIntraBankAccountName() {
             //make sure alert message is not empty

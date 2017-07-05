@@ -9,21 +9,25 @@
 </header>
 
 <section class="content-wrapper">
-    <div class="container">
+    <div class="">
         <div class="row">
-            <div class="col-md-8 col-sm-8">
-                <div class="page_header">
+            <div class="col-md-4 col-sm-4">
                     <h5 class="page_header"> User Management</h5>
-                </div>
+                <select class="form-control invisible" id="view">
+                    <option value="account">Account Overview</option>
+                </select>
             </div>
+            <p class="col-xs-12 invisible">
+                Fields marked <span style="color:red">*</span> are compulsory
+            </p>
         </div>
         <div class="row">
-            <div class="col-md-8 content-bg"><br/>
-                <div class="row spacing">
+            <div class="col-md-9 content-bg"><br/>
+                <div class="row">
                     <a th:href="@{/corporate/users/add}" class="btn btn-sm"><i class="fa fa-plus" style="color: white"></i>&nbsp; Add New User</a>
                     <a th:href="@{/corporate/users/index/status}" class="btn btn-sm pull-right bt-select bt-link-act" disabled="disabled">Activate/Deactivate</a>
                 </div>
-                <div class="row spacing">
+                <div class="row">
                     <div class="col-md-12">
                         <table class="table" id="users">
                             <thead>
@@ -40,7 +44,9 @@
                     </div>
                 </div>
             </div>
-            <div th:replace="corp_layout :: corp-sidebar" class="col-md-3">
+            <div class="col-md-3 pull-right">
+                <div th:replace="corp_layout :: corp-sidebar" class="" >
+                </div>
             </div>
         </div>
     </div>
@@ -49,6 +55,8 @@
 <!-- CONTENT-WRAPPER SECTION END-->
 <footer th:replace="corp_layout :: corp-footer">
 </footer>
+
+
 <script th:inline="javascript">
     /*<![CDATA[*/
     $(document).ready(function() {
@@ -74,12 +82,12 @@
                 "data" : "status",
                 "render" : function(data, type,full, meta) {
                     if (type === 'display') {
-                        if (data == "ACTIVE") {
+                        if (data == "A") {
                             return "<i class='fa fa-check' style='color:green;display:block;  margin:0 auto;' ></i>";
-                        } else if (data == "INACTIVE") {
+                        } else if (data == "I") {
                             return "<i class='fa fa-ban' style='color:red;display:block; margin:0 auto;'></i>";
                         }
-                        else if (data == "LOCKED") {
+                        else if (data == "L") {
                             return "<i class='fa fa-lock' style='color:red;display:block;  margin:0 auto;'></i>";
                         }else {
                             return "<i class='fa fa-question' style='color:red;display:block;  margin:0 auto;'></i>";
