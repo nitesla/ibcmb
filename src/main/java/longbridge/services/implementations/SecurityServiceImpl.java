@@ -509,6 +509,18 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
+    public void setUserQA(String username, List<String> questions, List<String> answers) throws InternetBankingTransferException
+    {
+        if ( questions==null  ||questions.isEmpty())throw new IllegalArgumentException();
+        if ( answers==null  ||answers.isEmpty())throw new IllegalArgumentException();
+
+
+
+
+
+    }
+
+    @Override
     public Map<String, List<String>> getUserQA(String username) {
         Map<String, List<String>> list = new HashMap<>();
         try {

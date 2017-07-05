@@ -134,19 +134,20 @@
                     <p>Our Internet Banking lets you access your account 24 hours a day!</p>
                     <div class="biglit  col-md-offse col-md-12 col-xs-12" style="magin:0px auto">
                         <div class="lists col-md-6 col-sm-6  text-cente" >
-                            <ul class='col-md-offset-4 col-md-8 col-sm-offset-2 col-sm-10'>
-                                <li data-toggle="collapse" data-target="#list1"><i class="fa fa-plus-square"></i>&nbsp; View account statements</li>
-                                <div id="list1" class="collapse info-acc " style="background:#ebecef;padding:10px;">
+                            <ul id='accordion' class='col-md-offset-4 col-md-8 col-sm-offset-2 col-sm-10'>
+                                <li data-parent="#accordion" data-toggle="collapse" data-target="#list1" onclick="serviceToggle('#li1')" id='li1'><i class="fa fa-plus-square"></i>&nbsp; View account statements</li>
+                                <div id="list1" class="collapse info-acc service" style="background:#ebecef;padding:10px;">
                                     Lorem ipsum dolor sit amet, consectetur adipisicing elit,
                                     sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
                                 </div>
-                                <li  data-toggle="collapse" data-target="#list2"><i class="fa fa-plus-square"></i>&nbsp; Transfer money</li>
-                                <div id="list2" class="collapse info-acc " style="background:#ebecef;padding:10px;">
+                                <li data-parent="#accordion"  data-toggle="collapse" data-target="#list2" onclick="serviceToggle('#li2')" id='li2'><i class="fa fa-plus-square"></i>&nbsp; Transfer money</li>
+                                <div id="list2" class="collapse info-acc service" style="background:#ebecef;padding:10px;">
                                     Lorem ipsum dolor sit amet, consectetur adipisicing elit,
                                     sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
                                 </div>
-                                <li  data-toggle="collapse" data-target="#list3"><i class="fa fa-plus-square"></i>&nbsp; Make payment</li>
-                                <div id="list3" class="collapse info-acc" style="background:#ebecef;padding:10px;">
+                                <li data-parent="#accordion"  data-toggle="collapse" data-target="#list3" onclick="serviceToggle('#li3')" id='li3'>
+                                    <i class="fa fa-plus-square"></i>&nbsp; Make payment</li>
+                                <div id="list3" class="collapse info-acc service" style="background:#ebecef;padding:10px;">
                                     Lorem ipsum dolor sit amet, consectetur adipisicing elit,
                                     sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
                                 </div>
@@ -154,18 +155,18 @@
                         </div>
                         <div class="lists col-sm-6 col-md-6">
                             <ul class='col-md-offs col-md-8 col-sm-offset-2 col-sm-10'>
-                                <li  data-toggle="collapse" data-target="#list4"><i class="fa fa-plus-square"></i>&nbsp; Pay bills</li>
-                                <div id="list4" class="collapse info-acc " style="background:#ebecef;padding:10px;">
+                                <li data-parent="#accordion" data-toggle="collapse" data-target="#list4" onclick="serviceToggle('#li4')" id='li4'><i class="fa fa-plus-square"></i>&nbsp; Pay bills</li>
+                                <div id="list4" class="collapse info-acc service" style="background:#ebecef;padding:10px;">
                                     Lorem ipsum dolor sit amet, consectetur adipisicing elit,
                                     sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
                                 </div>
-                                <li  data-toggle="collapse" data-target="#list5"><i class="fa fa-plus-square"></i>&nbsp; Manage your payments</li>
-                                <div id="list5" class="collapse info-acc " style="background:#ebecef;padding:10px;">
+                                <li data-parent="#accordion"  data-toggle="collapse" data-target="#list5" onclick="serviceToggle('#li5')" id='li5'><i class="fa fa-plus-square"></i>&nbsp; Manage your payments</li>
+                                <div id="list5" class="collapse info-acc service" style="background:#ebecef;padding:10px;">
                                     Lorem ipsum dolor sit amet, consectetur adipisicing elit,
                                     sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
                                 </div>
-                                <li  data-toggle="collapse" data-target="#list6"><i class="fa fa-plus-square"></i>&nbsp; Credit card management</li>
-                                <div id="list6" class="collapse info-acc" style="background:#ebecef;padding:10px;">
+                                <li data-parent="#accordion"  data-toggle="collapse" data-target="#list6" onclick="serviceToggle('#li6')" id='li6'><i class="fa fa-plus-square"></i>&nbsp; Credit card management</li>
+                                <div id="list6" class="collapse info-acc service" style="background:#ebecef;padding:10px;">
                                     Lorem ipsum dolor sit amet, consectetur adipisicing elit,
                                     sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
                                 </div>
@@ -366,6 +367,22 @@
 <script th:src="@{~/customer/js/bootstrap.js}"></script>
 <script th:src="@{~/customer/js/coronation.js}"></script>
 
+<script>
+
+    function serviceToggle(id)
+    {
+        
+        $(id).find('i').toggleClass('fa fa-plus-square fa fa-minus-square');
+        // $('.service').collapse('hide');
+        // $(id).next('div').show('show');
+       
+
+
+
+
+
+    }
+</script>
 
 </body>
 </html>

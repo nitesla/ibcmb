@@ -66,7 +66,7 @@ public class MainController {
     }
 
     @RequestMapping(value = "/login/retail", method = RequestMethod.GET)
-    public ModelAndView getLoginPage(@RequestParam Optional<String> error, @RequestParam Optional<HttpServletRequest> request) {
+    public ModelAndView getLoginPage(@RequestParam Optional<String> error, @RequestParam Optional<HttpServletRequest> request, Model model) {
 
         if (request.isPresent()) request.get().getSession().invalidate();
         //clearSession();

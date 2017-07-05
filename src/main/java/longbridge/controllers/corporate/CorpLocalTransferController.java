@@ -79,6 +79,13 @@ public class CorpLocalTransferController {
     public String transferSummary(@ModelAttribute("corpTransferRequest") @Valid CorpTransferRequestDTO corpTransferRequestDTO, BindingResult result, Model model, HttpServletRequest servletRequest) throws Exception {
         model.addAttribute("corpTransferRequest", corpTransferRequestDTO);
         validator.validate(corpTransferRequestDTO, result);
+        if (servletRequest.getSession().getAttribute("Lbeneficiary") != null) {
+            CorpLocalBeneficiaryDTO beneficiary = (CorpLocalBeneficiaryDTO) servletRequest.getSession().getAttribute("Lbeneficiary");
+            model.addAttribute("beneficiary", beneficiary);
+            if (beneficiary.getId()==null)
+                model.addAttribute("newBen","newBen");
+
+        }
         if (result.hasErrors()) {
             return page + "pageii";
         }
@@ -142,13 +149,20 @@ public class CorpLocalTransferController {
     }
 
 
-    @PostMapping("/auth")
-    public String processTransfer(@ModelAttribute("corpTransferRequest") @Valid CorpTransferRequestDTO corpTransferRequestDTO, Model model) throws Exception {
+    @ModelAttribute
+    public void getBankCode(Model model) {
+        model.addAttribute("bankCode", bankCode);
+    }
+    @PostMapping("/edit")
+    public String editCorpsTransfer(@ModelAttribute("transferRequest")  CorpTransferRequestDTO  requestDTO,Model model,HttpServletRequest request){
 
+        requestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode(bankCode));
+        model.addAttribute("corpTransferRequest",requestDTO);
+        if ( request.getSession().getAttribute("Lbeneficiary")!=null)
+            model.addAttribute("beneficiary",(CorpLocalBeneficiaryDTO)request.getSession().getAttribute("Lbeneficiary"));
+        requestDTO.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
 
-        model.addAttribute("corpTransferRequest", corpTransferRequestDTO);
-        return page + "pageiv";
-
+        return page + "pageii";
     }
 
 }

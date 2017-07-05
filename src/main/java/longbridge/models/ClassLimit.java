@@ -24,7 +24,6 @@ import java.util.Date;
 @Entity
 @Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
-
 public class ClassLimit extends  AbstractEntity implements PrettySerializer{
 
     private String customerType;

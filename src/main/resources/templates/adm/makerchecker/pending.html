@@ -127,7 +127,7 @@
         var table = $('#verification').DataTable({
             select:true,
             responsive: true,
-            "lengthMenu" : [ [ 5, 10, 20],	[ 5, 10, 20 ] ],
+            "lengthMenu" : [ [ 20, 40, 60, -1],	[ 20, 40, 60, "All" ] ],
             "pagingType" : "simple_numbers",
             "searching": false,
             "paging": true,
@@ -144,7 +144,7 @@
 
             ] ,"columnDefs" : [ {
                 "targets" : 2,
-                "data" : "status",
+                "data" : "initiatedOn",
                 "render" : function(data, type,full, meta) {
                     if (type === 'display') {
                     	if(data == null)
@@ -158,7 +158,7 @@
                 }
             } ,{
                 "targets" : 4,
-                "data" : "status",
+                "data" : "verifiedOn",
                 "render" : function(data, type,full, meta) {
                     if (type === 'display') {
                     	if(data == null)

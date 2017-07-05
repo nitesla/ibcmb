@@ -237,10 +237,15 @@ public class RoleServiceImpl implements RoleService {
     private Permission convertDTOToEntity(PermissionDTO permissionDTO) {
         Permission permission;
         if(permissionDTO.getId()==null){
-            permission = convertDTOToEntity(permissionDTO);
+            permission = modelMapper.map(permissionDTO,Permission.class);
         }
         else {
             permission = permissionRepo.findOne(permissionDTO.getId());
+            permission.setVersion(permissionDTO.getVersion());
+            permission.setName(permission.getName());
+            permission.setUserType(permissionDTO.getUserType());
+            permission.setDescription(permissionDTO.getDescription());
+            permission.setCode(permissionDTO.getCode());
         }
         return permission;
     }

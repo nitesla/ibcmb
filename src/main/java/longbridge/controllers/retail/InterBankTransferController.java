@@ -131,7 +131,8 @@ public class InterBankTransferController {
     @PostMapping("/summary")
     public String transferSummary(@ModelAttribute("transferRequest") @Valid TransferRequestDTO transferRequestDTO, BindingResult result, Model model, HttpServletRequest request) throws Exception {
         model.addAttribute("transferRequest", transferRequestDTO);
-        String benName = (String) request.getSession().getAttribute("benName");
+        String charge="NAN";
+                String benName = (String) request.getSession().getAttribute("benName");
         if (request.getSession().getAttribute("Lbeneficiary") != null) {
             LocalBeneficiaryDTO beneficiary = (LocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary");
             model.addAttribute("beneficiary", beneficiary);
@@ -150,17 +151,23 @@ public class InterBankTransferController {
 
         if (request.getSession().getAttribute("NIP") != null) {
             String type = (String) request.getSession().getAttribute("NIP");
-            if (type.equalsIgnoreCase("RTGS"))
+            if (type.equalsIgnoreCase("RTGS")){
                 transferRequestDTO.setTransferType(TransferType.RTGS);
+                charge= integrationService.getFee("RTGS").get().getFeeValue();
+
+            }
+
             else {
                 transferRequestDTO.setTransferType(TransferType.INTER_BANK_TRANSFER);
+                charge= integrationService.getFee("NIP").get().getFeeValue();
             }
-            request.getSession().removeAttribute("NIP");
+           // request.getSession().removeAttribute("NIP");
 
         } else {
             transferRequestDTO.setTransferType(TransferType.INTER_BANK_TRANSFER);
         }
         request.getSession().setAttribute("transferRequest", transferRequestDTO);
+        model.addAttribute("charge",charge);
         return page + "pageiii";
     }
 
@@ -249,11 +256,24 @@ public class InterBankTransferController {
 
     @PostMapping("/edit")
     public String editTransfer(@ModelAttribute("transferRequest") TransferRequestDTO transferRequestDTO, Model model, HttpServletRequest request) {
+        String type = (String) request.getSession().getAttribute("NIP");
+        if (type.equalsIgnoreCase("RTGS")){
+            transferRequestDTO.setTransferType(TransferType.RTGS);
+
+
+        }
+
+        else {
+            transferRequestDTO.setTransferType(TransferType.INTER_BANK_TRANSFER);
+
+        }
+
+
          model.addAttribute("transferRequest", transferRequestDTO);
         if (request.getSession().getAttribute("Lbeneficiary") != null){
             LocalBeneficiaryDTO dto=         (LocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary");
             model.addAttribute("beneficiary", dto);
-            transferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode(dto.getBeneficiaryBank()));
+            transferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByName(dto.getBeneficiaryBank()));
         }
 
 

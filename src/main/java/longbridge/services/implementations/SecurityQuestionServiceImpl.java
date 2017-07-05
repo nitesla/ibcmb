@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -35,7 +36,7 @@ public class SecurityQuestionServiceImpl implements SecurityQuestionService {
     @Autowired
     private MessageSource messageSource;
 
-    private Locale locale;
+    private Locale locale = LocaleContextHolder.getLocale();
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 

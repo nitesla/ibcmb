@@ -218,13 +218,21 @@ public class TransferController {
     public String bankTransfer(@ModelAttribute("transferRequest") @Valid TransferRequestDTO transferRequestDTO, Model model, RedirectAttributes redirectAttributes, Locale locale, HttpServletRequest request, Principal principal) throws Exception {
 
         try {
+            String type = (String) request.getSession().getAttribute("NIP");
+            if (type!=null){
+                request.getSession().removeAttribute("NIP");
+            }
 
-            if (request.getSession().getAttribute("auth-needed") != null) {
+            if (request.getSession().getAttribute("auth-needed") != null ) {
+
                 String token = request.getParameter("token");
+                if (request.getParameter("token")!=null)
+                    return "/cust/transfer/transferauth";
 
                 boolean ok = false;
                 try {
                     ok = securityService.performTokenValidation(principal.getName(), token);
+
                 } catch (InternetBankingSecurityException ibse) {
 
                     model.addAttribute("failure", ibse.getMessage());
@@ -270,7 +278,7 @@ public class TransferController {
                 request.getSession().removeAttribute("Lbeneficiary");
             String errorMessage = transferErrorService.getMessage(e, request);
             redirectAttributes.addFlashAttribute("failure", errorMessage);
-            return "redirect:/retail/dashboard";
+            return  index(request);
 
 
         }

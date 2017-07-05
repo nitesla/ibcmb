@@ -8,49 +8,49 @@
     <header th:replace="cust_layout :: header">
     </header>
 
-<section class="content-wrapper">
-    <div class="containe">
-        <div class="row">
-            <div class="col-md-4 col-sm-4">
-                <h5 class="page_header"> Alert Preference</h5>
-                <select class="form-control invisible">
-                <option value="account">Account Overview</option>
-            </select>
+    <section class="content-wrapper">
+        <div class="containe">
+            <div class="row">
+                <div class="col-md-4 col-sm-4">
+                    <h5 class="page_header"> Alert Preference</h5>
+                    <select class="form-control invisible">
+                        <option value="account">Account Overview</option>
+                    </select>
+                </div>
+                <p class="col-xs-12">
+                    Fields marked <span style="color:red">*</span> are compulsory
+                </p>
             </div>
-            <p class="col-xs-12">
-                Fields marked <span style="color:red">*</span> are compulsory
-            </p>
-        </div>
-        <div class="row">
-            <div class="col-md-9 content-bg">
+            <div class="row">
+                <div class="col-md-9 content-bg">
 
                     <div class="col-md-6 col-sm-6">
                         <form method="post" th:action="@{/retail/settings/alert_preference}" th:object="${alertPref}">
                             <div class="form-group">
                                 <label>Select Preference</label>
-                                <select th:field="*{preference}" class="form-control">
-                                    <option th:each="pref : ${prefs}" th:value="${pref.code}" th:text="${pref.description}" th:selected="${pref == alertP}"></option>
+                                <select th:field="*{code}" class="form-control">
+                                    <option th:each="pref : ${prefs}" th:value="${pref.code}" th:text="${pref.description}" th:selected="(${pref.code} == *{code})"></option>
                                 </select><span class='req-inner'></span>
-                                <p class="errors" th:if="${#fields.hasErrors('preference')}" th:errors="*{preference}">&times;</p>
+                                <p class="errors" th:if="${#fields.hasErrors('code')}" th:errors="*{code}">&times;</p>
                             </div>
 
                             <button type="submit" class="btn btn-link required-step">Submit</button>
                         </form>
                     </div>
 
-            </div>
-            <div class="col-md-3 pull-right " >
-                <div th:replace="cust_layout :: sidebar" class="" >
+                </div>
+                <div class="col-md-3 pull-right " >
+                    <div th:replace="cust_layout :: sidebar" class="" >
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
 
-<!-- CONTENT-WRAPPER SECTION END-->
-<footer th:replace="cust_layout ::footer">
-</footer>
+    <!-- CONTENT-WRAPPER SECTION END-->
+    <footer th:replace="cust_layout ::footer">
+    </footer>
 </div>
 </body>
 </html>

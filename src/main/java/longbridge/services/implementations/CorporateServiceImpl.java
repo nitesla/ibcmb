@@ -504,10 +504,14 @@ public class CorporateServiceImpl implements CorporateService {
 
     @Override
     @Transactional
-    public Set<CorporateRoleDTO> getRoles(Long corpId) {
+    public List<CorporateRoleDTO> getRoles(Long corpId) {
         Corporate corporate = corporateRepo.findOne(corpId);
-        Set<CorporateRole> corporateRoles = corporateRoleRepo.findByCorporate(corporate);
-        Set<CorporateRoleDTO> roles = convertCorporateRoleEntitiesToDTOs(corporateRoles);
+
+
+        List<CorporateRole> corporateRoles = corporateRoleRepo.findByCorporate(corporate);
+        List<CorporateRoleDTO> roles = convertCorporateRoleEntitiesToDTOs(corporateRoles);
+
+
         return roles;
     }
 
@@ -643,7 +647,7 @@ public class CorporateServiceImpl implements CorporateService {
         corpTransferRuleDTO.setCorporateId(transferRule.getCorporate().getId().toString());
         corpTransferRuleDTO.setCorporateName(transferRule.getCorporate().getName());
 
-        Set<CorporateRoleDTO> roleDTOs = new HashSet<CorporateRoleDTO>();
+        List<CorporateRoleDTO> roleDTOs = new ArrayList<>();
         for (CorporateRole role : transferRule.getRoles()) {
             CorporateRoleDTO roleDTO = new CorporateRoleDTO();
             roleDTO.setId(role.getId());
