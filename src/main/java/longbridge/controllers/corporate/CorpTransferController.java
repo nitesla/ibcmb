@@ -2,10 +2,7 @@ package longbridge.controllers.corporate;
 
 
 import longbridge.api.NEnquiryDetails;
-import longbridge.dtos.CorpLocalBeneficiaryDTO;
-import longbridge.dtos.CorpTransferRequestDTO;
-import longbridge.dtos.LocalBeneficiaryDTO;
-import longbridge.dtos.TransferRequestDTO;
+import longbridge.dtos.*;
 import longbridge.exception.*;
 import longbridge.models.*;
 
@@ -20,6 +17,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+import org.springframework.data.jpa.datatables.repository.DataTablesUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -81,24 +83,6 @@ public class CorpTransferController {
     @Autowired
     private CorpTransferService corpTransferService;
 
-    @GetMapping("/{corpId}/{amount}")
-    public void getQualifiedRoles(@PathVariable Long corpId, @PathVariable String amount) {
-
-        CorpTransRequest transferRequest = new CorpTransRequest();
-        transferRequest.setAmount(new BigDecimal(amount));
-        Corporate corporate = corporateRepo.findOne(corpId);
-        transferRequest.setCorporate(corporate);
-        List<CorporateRole> roles = corporateService.getQualifiedRoles(transferRequest);
-        PendAuth pendAuth = new PendAuth();
-        List<PendAuth> pendAuths = new ArrayList<>();
-        for (CorporateRole role : roles) {
-            pendAuth.setRole(role);
-            pendAuths.add(pendAuth);
-        }
-//        transferRequest.setPendAuths(pendAuths);
-        transferRequestRepo.save(transferRequest);
-
-    }
 
     @GetMapping(value = "")
     public String index(HttpServletRequest request) {
@@ -282,6 +266,8 @@ public class CorpTransferController {
         return "redirect:/corporate/dashboard";
 
     }
+
+
     @GetMapping("/pending")
     public String getPendingAuth(@ModelAttribute("transferRequest") CorpTransRequest transRequest, Model model){
 
@@ -291,26 +277,21 @@ public class CorpTransferController {
         return "corp/transfer/pendingtransfer/view";
     }
 
-//    @GetMapping("/{id}/authorize")
-//    public String authorizeTransfer(@PathVariable Long id, Principal principal, Model model, RedirectAttributes redirectAttributes) {
-//        try {
-//            String message = corpTransferService.authorizeTransfer(id);
-//            redirectAttributes.addFlashAttribute("message", message);
-//        } catch (InvalidAuthorizationException iae) {
-//            logger.error("Failed to authorize transfer", iae);
-//            redirectAttributes.addFlashAttribute("failure", iae.getMessage());
-//
-//        } catch (TransferRuleException tre) {
-//            logger.error("Failed to authorize transfer", tre);
-//            redirectAttributes.addFlashAttribute("failure", tre.getMessage());
-//
-//        } catch (InternetBankingException e) {
-//            logger.error("Failed to authorize transfer", e);
-//            redirectAttributes.addFlashAttribute("failure", e.getMessage());
-//
-//        }
-//        return "redirect:/corporate/pending";
-//    }
+    @GetMapping("/requests")
+    public @ResponseBody
+    DataTablesOutput<CorpTransRequest> getTransferRequests(DataTablesInput input) {
+        Pageable pageable = DataTablesUtils.getPageable(input);
+        Page<CorpTransRequest> requests = corpTransferService.getTransfers(pageable);
+        DataTablesOutput<CorpTransRequest> out = new DataTablesOutput<CorpTransRequest>();
+        out.setDraw(input.getDraw());
+        out.setData(requests.getContent());
+        out.setRecordsFiltered(requests.getTotalElements());
+        out.setRecordsTotal(requests.getTotalElements());
+        return out;
+    }
+
+
+
 
     @PostMapping("/authorize")
     public String addAuthorization(@ModelAttribute("corpTransRequest") CorpTransReqEntry corpTransReqEntry, CorpTransRequest corpTransRequest, RedirectAttributes redirectAttributes){
