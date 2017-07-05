@@ -42,6 +42,8 @@ import java.util.stream.StreamSupport;
 @RequestMapping("/corporate/transfer")
 public class CorpTransferController {
 
+    @Autowired
+    CorpTransferRequestRepo transferRequestRepo;
     private CorporateService corporateService;
     private CorporateRepo corporateRepo;
     private CorporateUserService corporateUserService;
@@ -54,9 +56,9 @@ public class CorpTransferController {
     private FinancialInstitutionService financialInstitutionService;
     private TransferErrorService transferErrorService;
     private SecurityService securityService;
-
-
-
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    @Autowired
+    private CorpTransferService corpTransferService;
     @Autowired
     public CorpTransferController(CorporateService corporateService, CorporateRepo corporateRepo, CorporateUserService corporateUserService, IntegrationService integrationService, CorpTransferService transferService, AccountService accountService, MessageSource messages, LocaleResolver localeResolver, CorpLocalBeneficiaryService corpLocalBeneficiaryService, FinancialInstitutionService financialInstitutionService, TransferErrorService transferErrorService, SecurityService securityService) {
         this.corporateService = corporateService;
@@ -72,14 +74,6 @@ public class CorpTransferController {
         this.transferErrorService = transferErrorService;
         this.securityService = securityService;
     }
-
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
-
-
-    @Autowired
-    CorpTransferRequestRepo transferRequestRepo;
-    @Autowired
-    private CorpTransferService corpTransferService;
 
     @GetMapping("/{corpId}/{amount}")
     public void getQualifiedRoles(@PathVariable Long corpId, @PathVariable String amount) {
@@ -240,6 +234,7 @@ public class CorpTransferController {
                     CorporateUser user = corporateUserService.getUserByName(principal.getName());
                     try {
                         Corporate corporate = corporateService.getCorporateByCustomerId(user.getCorporate().getCustomerId());
+
                         corpLocalBeneficiaryService.addCorpLocalBeneficiary(corporate, l);
                         request.getSession().removeAttribute("Lbeneficiary");
                         // model.addAttribute("beneficiary", l);
@@ -252,16 +247,17 @@ public class CorpTransferController {
 
 
             corpTransferRequestDTO = (CorpTransferRequestDTO) request.getSession().getAttribute("corpTransferRequest");
+            String corporateId = "" + corporateUserService.getUserByName(principal.getName()).getCorporate().getId();
+            corpTransferRequestDTO.setCorporateId(corporateId);
 
-
-            String response  = transferService.addTransferRequest(corpTransferRequestDTO);
+            String response = transferService.addTransferRequest(corpTransferRequestDTO);
 
 
             model.addAttribute("transRequest", corpTransferRequestDTO);
             model.addAttribute("message", response);
             return "corp/transfer/transferdetails";
 
-        } catch (InternetBankingTransferException e) {
+        } catch (InternetBankingTransferException | TransferRuleException e) {
             e.printStackTrace();
             if (request.getSession().getAttribute("Lbeneficiary") != null)
                 request.getSession().removeAttribute("Lbeneficiary");
@@ -286,8 +282,9 @@ public class CorpTransferController {
         return "redirect:/corporate/dashboard";
 
     }
+
     @GetMapping("/pending")
-    public String getPendingTransfer(Principal principal,Model model){
+    public String getPendingTransfer(Principal principal, Model model) {
 
 //        List<PendAuth> pendAuths = corpTransferService.getPendingAuthorizations();
 //        model.addAttribute("pendAuths", pendAuths);
@@ -316,11 +313,11 @@ public class CorpTransferController {
     }
 
     @PostMapping("/authorize")
-    public String addAuthorization(@ModelAttribute("corpTransReqEntry") CorpTransReqEntry corpTransReqEntry, CorpTransRequest corpTransRequest, RedirectAttributes redirectAttributes){
+    public String addAuthorization(@ModelAttribute("corpTransReqEntry") CorpTransReqEntry corpTransReqEntry, CorpTransRequest corpTransRequest, RedirectAttributes redirectAttributes) {
 
 
         try {
-            String message = corpTransferService.addAuthorization(corpTransReqEntry,corpTransRequest);
+            String message = corpTransferService.addAuthorization(corpTransReqEntry, corpTransRequest);
             redirectAttributes.addFlashAttribute("message", message);
         } catch (InvalidAuthorizationException iae) {
             logger.error("Failed to authorize transfer", iae);
@@ -338,8 +335,6 @@ public class CorpTransferController {
         return "redirect:/corporate/pending";
 
     }
-
-
 
 
     @RequestMapping(value = "/balance/{accountNumber}", method = RequestMethod.GET, produces = "application/json")

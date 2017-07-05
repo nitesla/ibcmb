@@ -255,7 +255,7 @@ public class TransferController {
                         request.getSession().removeAttribute("Lbeneficiary");
                         // model.addAttribute("beneficiary", l);
                     } catch (InternetBankingException de) {
-
+                        de.printStackTrace();
 
                     }
                 }
