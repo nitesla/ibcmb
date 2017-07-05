@@ -10,6 +10,7 @@ import longbridge.repositories.CorporateRepo;
 import longbridge.repositories.CorporateRoleRepo;
 import longbridge.repositories.CorporateUserRepo;
 import longbridge.repositories.PendingAuthorizationRepo;
+import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.*;
 import longbridge.utils.ResultType;
 import longbridge.utils.TransferType;
@@ -23,6 +24,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +32,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -56,6 +59,9 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     private CorporateService corporateService;
     @Autowired
     private MessageSource messageSource;
+
+    @Autowired
+    private CorporateRepo corporateRepo;
     
     @Autowired
     private CorporateRoleRepo corpRoleRepo;
@@ -132,14 +138,6 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         return corpTransferRequestRepo.findById(id);
     }
 
-    @Override
-    public Iterable<CorpTransRequest> getTransfers(User user) {
-        return corpTransferRequestRepo.findAll()
-                .stream()
-                .filter(i -> i.getUserReferenceNumber().equals(user.getId()))
-                .collect(Collectors.toList());
-
-    }
 
     @Override
 
@@ -157,23 +155,52 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     }
 
 
+
+
+    public List<PendAuth> getPendingAuthorizations(){
+        CorporateUser corporateUser = getCurrentUser();
+        Corporate corporate = corporateUser.getCorporate();
+        Set<CorporateRole> roles = corporate.getCorporateRoles();
+        List<PendAuth> pendAuths = new ArrayList<>();
+        for (CorporateRole role : roles) {
+            if (!role.getPendAuths().isEmpty()) {
+                Set<CorporateUser> users = role.getUsers();
+                if (users.contains(corporateUser)) {
+                    pendAuths = role.getPendAuths();
+                }
+            }
+        }
+        return pendAuths;
+    }
+
     @Override
     @Transactional
-    public String authorizeTransfer(CorporateUser user, Long authId) throws InternetBankingException {
+    public String authorizeTransfer(Long authId) throws InternetBankingException {
         PendAuth pendAuth = pendAuthRepo.findOne(authId);
-        //TODO: get role use belongs to
+
+        CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        CorporateUser corporateUser = (CorporateUser)principal.getUser();
+
+
+        //TODO: get role user belongs to
 //        if (!role.getPendAuths().contains(pendAuth)) {
 //            throw new InvalidAuthorizationException(messageSource.getMessage("transfer.auth.invalid", null, locale));
 //        }
+
         try {
             CorpTransRequest transferRequest = pendAuth.getCorpTransferRequest();
-            transferRequest.getPendAuths().remove(transferRequest);
-            if (corporateService.getApplicableTransferRule(transferRequest).isAnyCanAuthorize()) {
+
+            CorpTransRule corporateTransferRule = corporateService.getApplicableTransferRule(transferRequest);
+
+            if (corporateTransferRule.isAnyCanAuthorize()) {
                 makeTransfer(convertEntityToDTO(transferRequest));
                 transferRequest.getPendAuths().clear();
             }
-            else if (transferRequest.getPendAuths().isEmpty()) {
-                makeTransfer(convertEntityToDTO(transferRequest));
+            else{
+                transferRequest.getPendAuths().remove(pendAuth);
+                if (transferRequest.getPendAuths().isEmpty()) {
+                    makeTransfer(convertEntityToDTO(transferRequest));
+                }
             }
             corpTransferRequestRepo.save(transferRequest);
         } catch (Exception e) {
@@ -233,9 +260,11 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     }
 
     @Override
-    public Page<CorpTransRequest> getTransfers(User user, Pageable pageDetails) {
-        // TODO Auto-generated method stub
-        return null;
+    public Page<CorpTransRequest> getTransfers( Pageable pageDetails) {
+        CorporateUser corporateUser = getCurrentUser();
+        Corporate corporate = corporateUser.getCorporate();
+        Page<CorpTransRequest> corpTransRequests = corpTransferRequestRepo.findByCorporate(corporate,pageDetails);
+        return corpTransRequests;
     }
 
     public CorpTransferRequestDTO convertEntityToDTO(CorpTransRequest corpTransRequest) {
@@ -244,7 +273,9 @@ public class CorpTransferServiceImpl implements CorpTransferService {
 
 
     public CorpTransRequest convertDTOToEntity(CorpTransferRequestDTO corpTransferRequestDTO) {
-        return modelMapper.map(corpTransferRequestDTO, CorpTransRequest.class);
+        CorpTransRequest corpTransRequest =  modelMapper.map(corpTransferRequestDTO, CorpTransRequest.class);
+        corpTransRequest.setCorporate(corporateRepo.findOne(Long.parseLong(corpTransferRequestDTO.getCorporateId())));
+        return corpTransRequest;
     }
 
     public List<CorpTransferRequestDTO> convertEntitiesToDTOs(Iterable<CorpTransRequest> corpTransferRequests) {
@@ -264,5 +295,11 @@ public class CorpTransferServiceImpl implements CorpTransferService {
                 throw new InternetBankingTransferException(TransferExceptions.INVALID_ACCOUNT.toString());
 
         }
+    }
+
+    private CorporateUser getCurrentUser(){
+        CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        CorporateUser corporateUser = (CorporateUser)principal.getUser();
+        return corporateUser;
     }
 }

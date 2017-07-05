@@ -22,20 +22,18 @@ public interface CorpTransferService {
     @PreAuthorize("hasAuthority('GET_TRANSFER')")
     CorpTransRequest getTransfer(Long id);
 
-    @PreAuthorize("hasAuthority('GET_TRANSFER')")
-    Iterable<CorpTransRequest> getTransfers(User user);
 
     @PreAuthorize("hasAuthority('GET_TRANSFER')")
-    Page<CorpTransRequest> getTransfers(User user, Pageable pageDetails);
+    Page<CorpTransRequest> getTransfers(Pageable pageDetails);
 
     @PreAuthorize("hasAuthority('MAKE_TRANSFER')")
     boolean saveTransfer(CorpTransferRequestDTO corpTransferRequestDTO) throws TransferException;
     @PreAuthorize("hasAuthority('MAKE_TRANSFER')")
     void validateTransfer(CorpTransferRequestDTO corpTransferRequestDTO) throws InternetBankingTransferException;
 
-    String authorizeTransfer(CorporateUser user, Long authId) throws InternetBankingException;
+    String authorizeTransfer(Long authId) throws InternetBankingException;
 
     String addTransferRequest(CorpTransferRequestDTO transferRequestDTO) throws InternetBankingException;
 
-
+    List<PendAuth> getPendingAuthorizations();
 }

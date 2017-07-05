@@ -20,6 +20,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
@@ -68,10 +69,10 @@ public class CorpTransferController {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
-
     @Autowired
     CorpTransferRequestRepo transferRequestRepo;
-    @Autowired private CorpTransferService corpTransferService;
+    @Autowired
+    private CorpTransferService corpTransferService;
 
     @GetMapping("/{corpId}/{amount}")
     public void getQualifiedRoles(@PathVariable Long corpId, @PathVariable String amount) {
@@ -227,55 +228,37 @@ public class CorpTransferController {
             corpLocalBeneficiaryService.addCorpLocalBeneficiary(user.getCorporate(), l);
         }
 
-
         attributes.addFlashAttribute("message", "New Beneficiary Added");
         return "redirect:/corporate/dashboard";
 
     }
+
     @GetMapping("/pending")
-    public String getPendingTransfer(Principal principal,Model model){
+    public String getPendingTransfer(Principal principal, Model model) {
 
-        CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
-
-        Corporate corporate = corporateUser.getCorporate();
-        Set<CorporateRole> roles = corporate.getCorporateRoles();
-        List<PendAuth> pendAuths = new ArrayList<>();
-        for(CorporateRole role: roles){
-            if(!role.getPendAuths().isEmpty()){
-                Set<CorporateUser> users = role.getUsers();
-                if(users.contains(corporateUser)) {
-                    pendAuths = role.getPendAuths();
-
-                }
-            }
-        }
-
-//        List<PendAuth> pendAuths =corporateUser.getCorporate().getCorporateRole().getPendAuths();
+        List<PendAuth> pendAuths = corpTransferService.getPendingAuthorizations();
         model.addAttribute("pendAuths", pendAuths);
         return "corp/transfer/pendingtransfer/view";
     }
+
     @GetMapping("/{id}/authorize")
-    public String authorizeTransfer(@PathVariable Long id, Principal principal, Model model, RedirectAttributes redirectAttributes){
-try {
-    CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
-    String message = corpTransferService.authorizeTransfer(corporateUser, id);
-    redirectAttributes.addFlashAttribute("message", message);
-}
-catch (InvalidAuthorizationException iae){
-    logger.error("Failed to authorize transfer",iae);
-    redirectAttributes.addFlashAttribute("failure", iae.getMessage());
+    public String authorizeTransfer(@PathVariable Long id, Principal principal, Model model, RedirectAttributes redirectAttributes) {
+        try {
+            String message = corpTransferService.authorizeTransfer(id);
+            redirectAttributes.addFlashAttribute("message", message);
+        } catch (InvalidAuthorizationException iae) {
+            logger.error("Failed to authorize transfer", iae);
+            redirectAttributes.addFlashAttribute("failure", iae.getMessage());
 
-}
-catch (TransferRuleException tre){
-    logger.error("Failed to authorize transfer",tre);
-    redirectAttributes.addFlashAttribute("failure", tre.getMessage());
+        } catch (TransferRuleException tre) {
+            logger.error("Failed to authorize transfer", tre);
+            redirectAttributes.addFlashAttribute("failure", tre.getMessage());
 
-}
-catch (InternetBankingException e){
-    logger.error("Failed to authorize transfer",e);
-    redirectAttributes.addFlashAttribute("failure", e.getMessage());
+        } catch (InternetBankingException e) {
+            logger.error("Failed to authorize transfer", e);
+            redirectAttributes.addFlashAttribute("failure", e.getMessage());
 
-}
+        }
         return "redirect:/corporate/pending";
     }
 
