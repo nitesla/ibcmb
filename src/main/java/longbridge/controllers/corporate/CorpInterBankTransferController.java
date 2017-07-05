@@ -63,20 +63,28 @@ public class CorpInterBankTransferController {
 
     @PostMapping(value = "/index")
 
-    public String startTransfer(HttpServletRequest request, Model model, Principal principal) {
-        CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
-        model.addAttribute("localBen",
-                StreamSupport.stream(corpLocalBeneficiaryService.getCorpLocalBeneficiaries(corporateUser.getCorporate()).spliterator(), false)
-                        .filter(i -> i.getBeneficiaryBank().equalsIgnoreCase(financialInstitutionService.getFinancialInstitutionByCode(bankCode).getInstitutionCode()))
-                        .collect(Collectors.toList())
+    public String startTransfer(HttpServletRequest request, Model model) {
 
-        );
+
         CorpTransferRequestDTO requestDTO = new CorpTransferRequestDTO();
         String type = request.getParameter("tranType");
 
+        if ("NIP".equalsIgnoreCase(type)) {
 
-        model.addAttribute("corpTransferRequest", requestDTO);
-        return page + "pageiA";
+            request.getSession().setAttribute("NIP", "NIP");
+            requestDTO.setTransferType(TransferType.INTER_BANK_TRANSFER);
+
+            model.addAttribute("corpTransferRequest", requestDTO);
+            return page + "pageiA";
+        } else {
+            request.getSession().setAttribute("NIP", "RTGS");
+            requestDTO.setTransferType(TransferType.RTGS);
+
+            model.addAttribute("corpTransferRequest", requestDTO);
+            return page + "pageiAb";
+        }
+
+
     }
 
 
@@ -185,11 +193,7 @@ public class CorpInterBankTransferController {
         List<FinancialInstitutionDTO> sortedNames = financialInstitutionService.getOtherLocalBanks(bankCode);
         sortedNames.sort(Comparator.comparing(FinancialInstitutionDTO::getInstitutionName));
 
-        model.addAttribute("localBanks"
-                , sortedNames
-
-
-        );
+        model.addAttribute("banks",sortedNames);
 
 
         try {
@@ -221,7 +225,7 @@ public class CorpInterBankTransferController {
         if (request.getSession().getAttribute("Lbeneficiary") != null) {
             CorpLocalBeneficiaryDTO dto = (CorpLocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary");
             model.addAttribute("beneficiary", dto);
-            transferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByName(dto.getBeneficiaryBank()));
+            transferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode(dto.getBeneficiaryBank()));
         }
 
 

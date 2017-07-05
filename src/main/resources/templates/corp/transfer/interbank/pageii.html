@@ -16,7 +16,7 @@
             <div class="col-md-4 col-sm-4">
 
                 <h5 class="page_header"> Transfer to
-                    <span  th:if="${benName}== null"  th:text="${transferRequest.beneficiaryAccountName}"></span>
+                    <span  th:if="${benName}== null"  th:text="${corpTransferRequest.beneficiaryAccountName}"></span>
                     <span th:if="${benName}!= null" th:text="${benName}"></span>
                     <select class="form-control invisible">
                         <option value="account">Account Overview</option>
@@ -114,7 +114,7 @@
 
             var accountNumber = $('#source').val();
             $.ajax({
-                url: "/corporate/transfer/interbank/balance/"+accountNumber,
+                url: "/corporate/transfer/balance/"+accountNumber,
                 type: 'GET',
                 async: false,
                 success:function(availBal){
