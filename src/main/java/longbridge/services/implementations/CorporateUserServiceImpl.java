@@ -2,7 +2,6 @@ package longbridge.services.implementations;
 
 import longbridge.dtos.CorpCorporateUserDTO;
 import longbridge.dtos.CorporateUserDTO;
-import longbridge.dtos.ServiceReqConfigDTO;
 import longbridge.dtos.SettingDTO;
 import longbridge.exception.*;
 import longbridge.forms.AlertPref;
@@ -18,7 +17,6 @@ import longbridge.services.*;
 import longbridge.utils.DateFormatter;
 import longbridge.utils.Verifiable;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.PropertyMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
