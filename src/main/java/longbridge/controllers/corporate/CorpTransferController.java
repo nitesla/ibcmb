@@ -128,7 +128,7 @@ public class CorpTransferController {
             }
             return "redirect:/corporate/transfer/ownaccount";
         }
-        return "redirect:/retail/dashboard";
+        return "redirect:/corporate/dashboard";
     }
 
 
