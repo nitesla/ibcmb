@@ -18,6 +18,7 @@ public interface CorporateRoleRepo extends CommonRepo<CorporateRole,Long> {
 
     Page<CorporateRole> findByCorporate(Corporate corporate, Pageable pageable);
 
+
     List<CorporateRole> findByCorporate(Corporate corporate);
 
 

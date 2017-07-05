@@ -8,97 +8,113 @@
     <header th:replace="corp_layout :: corp-header">
     </header>
 
-<section class="content-wrapper">
-    <div class="containe">
+    <section class="content-wrapper">
+        <div class="containe">
 
-        <div class="row">
+            <div class="row">
 
-            <div class="col-md-4 col-sm-4" >
-                <h5 class="page_header"> Own Account Transaction</h5>
-                <select class="form-control invisible">
+                <div class="col-md-4 col-sm-4">
+                    <h5 class="page_header"> Own Account Transaction</h5>
+                    <select class="form-control invisible">
                         <option value="account">Account Overview</option>
-                </select>
-            </div>
-            <p class="col-xs-12 invisible">
+                    </select>
+                </div>
+                <p class="col-xs-12 invisible">
                     Fields marked <span style="color:red">*</span> are compulsory
-            </p>
-        </div>
-        <div class="row">
-            <div class="col-md-9 content-bg">
-                <!--<div class="row spacing">-->
-
-                    <div class="spacin" >
-
-
-                        <table class="">
-                            <tr>
-
-                                <th colspan="2">Transaction Summary</th>
+                </p>
+            </div>
+            <div class="row">
+                <div class="col-md-9 content-bg">
+                    <!--<div class="row form-spacing">-->
+                    <div class="">
 
 
-                            </tr>
+                        <table>
                             <tr>
 
                                 <th>Source account</th>
-                                <td th:text="${transferRequest.customerAccountNumber}"></td>
+                                <td th:text="${transRequest.customerAccountNumber}"></td>
 
                             </tr>
                             <tr>
 
                                 <th>Destination account</th>
-                                <td th:text="${transferRequest.beneficiaryAccountNumber}"></td>
+                                <td th:text="${transRequest.beneficiaryAccountNumber}"></td>
 
                             </tr>
                             <tr>
 
                                 <th>Amount</th>
-                                <td th:text="${transferRequest.amount}"></td>
+                                <td th:text="${transRequest.amount}"></td>
 
                             </tr>
                             <tr>
 
                                 <th>Remarks</th>
-                                <td th:text="${transferRequest.remarks}"></td>
+                                <td th:text="${transRequest.remarks}"></td>
 
                             </tr>
                         </table>
 
-                        <form method="post" th:action="@{/retail/transfer/process}" th:object="${transferRequest}">
+                        <form method="post" th:action="@{/corporate/transfer/ownaccount}"
+                              th:object="${transRequest}">
                             <input type="hidden" th:field="*{customerAccountNumber}"/>
                             <input type="hidden" th:field="*{beneficiaryAccountNumber}"/>
                             <input type="hidden" th:field="*{beneficiaryAccountName}"/>
                             <input type="hidden" th:field="*{amount}"/>
                             <input type="hidden" th:field="*{remarks}"/>
-                            <input type="hidden" th:field="*{id}"/>
-
                             <div class="form-group">
-                                <!--<a style="cursor: pointer;" onclick="goBack()" >Modify</a>-->
-                                <button type="submit" class="btn btn-link">Proceed</button>
-                                <a th:href="@{/retail/transfer/ownaccount}">Cancel</a>
-                                <!--<a th:href="@{'/retail/transfer/ownaccount/' + ${transferRequest.id} + '/receipt'}">Print</a>-->
+                                <label>Token *</label>
+                                <input type="text" name="token" placeholder="" class="form-control"/>
+                                <br/>
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-link required-step">Proceed</button>
+                                    <button type="button" onclick="cancel()" class='btn btn-link less-required'>
+                                        Cancel
+                                    </button>
+                                    <button type='button' class='btn btn-link less-required' onclick="edit()">Modify
+                                    </button>
+                                </div>
+
 
                             </div>
+
+                        </form>
+                        <form method="post" id="form_edit" th:action="@{/corporate/transfer/ownaccount/edit}"
+                              th:object="${transRequest}">
+                            <input type="hidden" th:field="*{customerAccountNumber}"/>
+                            <input type="hidden" th:field="*{beneficiaryAccountNumber}"/>
+                            <input type="hidden" th:field="*{beneficiaryAccountName}"/>
+                            <input type="hidden" th:field="*{amount}"/>
+                            <input type="hidden" th:field="*{remarks}"/>
                         </form>
 
-                    </div>
 
-            </div>
-            <div class="col-md-3 pull-right " >
-                <div th:replace="corp_layout :: corp-sidebar" class="" >
+                    </div>
+                </div>
+                <div class="col-md-3 pull-right ">
+                    <div th:replace="corp_layout :: corp-sidebar" class="">
+                    </div>
                 </div>
             </div>
         </div>
 
-    </div>
-
-</section>
+    </section>
 
 
-<!-- CONTENT-WRAPPER SECTION END-->
-<footer th:replace="corp_layout ::corp-footer">
-</footer>
+    <!-- CONTENT-WRAPPER SECTION END-->
+    <footer th:replace="corp_layout ::corp-footer">
+    </footer>
 </div>
+<script>
+    function edit() {
+        $("#form_edit").submit();
+    }
+    function cancel() {
+        window.location.href = "/corporate/transfer/ownaccount";
+    }
 
+</script>
 </body>
 
 </html>

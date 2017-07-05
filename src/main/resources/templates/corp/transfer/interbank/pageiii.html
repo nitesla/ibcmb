@@ -31,31 +31,31 @@
                             <tr>
 
                                 <th>Source account</th>
-                                <td th:text="${transferRequest.customerAccountNumber}"></td>
+                                <td th:text="${corpTransferRequest.customerAccountNumber}"></td>
 
                             </tr>
                             <tr>
 
                                 <th>Destination account</th>
-                                <td th:text="${transferRequest.beneficiaryAccountNumber}"></td>
+                                <td th:text="${corpTransferRequest.beneficiaryAccountNumber}"></td>
 
                             </tr>
                             <tr>
 
                                 <th>Destination account owner</th>
-                                <td th:text="${transferRequest.beneficiaryAccountName}"></td>
+                                <td th:text="${corpTransferRequest.beneficiaryAccountName}"></td>
 
                             </tr>
                             <tr>
 
                                 <th>Amount</th>
-                                <td th:text="${transferRequest.amount}"></td>
+                                <td th:text="${corpTransferRequest.amount}"></td>
 
                             </tr>
                             <tr>
 
                                 <th>Remarks</th>
-                                <td th:text="${transferRequest.remarks}"></td>
+                                <td th:text="${corpTransferRequest.remarks}"></td>
 
                             </tr>
                             </tbody>
@@ -66,21 +66,11 @@
 
 
 
-                    <form method="post" th:action="@{/retail/transfer/interbank/edit}" th:object="${transferRequest}" style="display:none;">
-                        <input type="hidden" th:field="*{customerAccountNumber}"/>
-                        <input type="hidden" th:field="*{beneficiaryAccountNumber}"/>
-                        <input type="hidden" th:field="*{beneficiaryAccountName}"/>
-                        <input type="hidden" th:field="*{amount}"/>
-                        <input type="hidden" th:field="*{remarks}"/>
-
-                    </form>
 
 
 
 
-
-
-                    <form method="post" th:action="@{/retail/transfer/process}" th:object="${transferRequest}">
+                    <form method="post" th:action="@{/corporate/transfer/process}" th:object="${corpTransferRequest}">
                         <input type="hidden" th:field="*{customerAccountNumber}"/>
                         <input type="hidden" th:field="*{beneficiaryAccountNumber}"/>
                         <input type="hidden" th:field="*{beneficiaryAccountName}"/>
@@ -96,14 +86,14 @@
                         <div class="form-group col-xs-12">
                             <!--<input value="Modify" style="cursor: pointer;" type="button" onclick="history.go(-1);" />-->
                             <button type="submit" class="btn btn-link required-step">Proceed</button>
-                            <button th:href="@{/retail/transfer/interbank}" class="btn btn-link less-required">Cancel</button>
+                            <button type="button" onclick="cancel();" class="btn btn-link less-required">Cancel</button>
                             <button type='button' class='btn btn-link less-required' onclick="edit();">Modify</button>
 
                         </div>
                     </form>
 
 
-                    <form method="post" id="form_edit" th:action="@{/retail/transfer/interbank/edit}" th:object="${transferRequest}">
+                    <form method="post" id="form_edit" th:action="@{/corporate/transfer/interbank/edit}" th:object="${corpTransferRequest}">
                         <input type="hidden" th:field="*{customerAccountNumber}"/>
                         <input type="hidden" th:field="*{beneficiaryAccountNumber}"/>
                         <input type="hidden" th:field="*{beneficiaryAccountName}"/>
@@ -131,7 +121,9 @@
     function edit(){
         $("#form_edit").submit();
     }
-
+    function cancel(){
+       window.location.href="/corporate/transfer/interbank";
+    }
 
 </script>
 </body>

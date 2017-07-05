@@ -141,12 +141,12 @@ public class CorpTransferServiceImpl implements CorpTransferService {
 
     @Override
 
-    public boolean saveTransfer(CorpTransferRequestDTO corpTransferRequestDTO) throws InternetBankingTransferException {
-        boolean result = false;
+    public CorpTransferRequestDTO saveTransfer(CorpTransferRequestDTO corpTransferRequestDTO) throws InternetBankingTransferException {
+        CorpTransferRequestDTO result = new CorpTransferRequestDTO();
         try {
             CorpTransRequest transRequest = convertDTOToEntity(corpTransferRequestDTO);
-            corpTransferRequestRepo.save(transRequest);
-            result = true;
+            result=  convertEntityToDTO(corpTransferRequestRepo.save(transRequest));
+
 
         } catch (Exception e) {
             logger.error("Exception occurred {}", e.getMessage());

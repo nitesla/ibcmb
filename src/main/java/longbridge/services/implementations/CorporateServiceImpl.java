@@ -506,8 +506,12 @@ public class CorporateServiceImpl implements CorporateService {
     @Transactional
     public List<CorporateRoleDTO> getRoles(Long corpId) {
         Corporate corporate = corporateRepo.findOne(corpId);
+
+
         List<CorporateRole> corporateRoles = corporateRoleRepo.findByCorporate(corporate);
         List<CorporateRoleDTO> roles = convertCorporateRoleEntitiesToDTOs(corporateRoles);
+
+
         return roles;
     }
 

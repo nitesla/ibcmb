@@ -27,7 +27,7 @@ public interface CorpTransferService {
     Page<CorpTransRequest> getTransfers(Pageable pageDetails);
 
     @PreAuthorize("hasAuthority('MAKE_TRANSFER')")
-    boolean saveTransfer(CorpTransferRequestDTO corpTransferRequestDTO) throws TransferException;
+    CorpTransferRequestDTO saveTransfer(CorpTransferRequestDTO corpTransferRequestDTO) throws TransferException;
     @PreAuthorize("hasAuthority('MAKE_TRANSFER')")
     void validateTransfer(CorpTransferRequestDTO corpTransferRequestDTO) throws InternetBankingTransferException;
 
