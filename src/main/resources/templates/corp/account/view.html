@@ -8,7 +8,7 @@
     </header>
 
     <section class="content-wrapper">
-        <div class="containe">
+        <div>
             <div class="row">
                 <div class="col-md-4 col-sm-4">
                     <h5 class="page_header"> Account Statement</h5>
@@ -31,7 +31,7 @@
                                     <label>Date Range</label>
                                     <div class="input-daterange input-group" id="date-range">
                                         <input type="text" data-date-format="dd-mm-yyyy" class="form-control datepicker" id="start" name="fromDate" placeholder="Start date" required="required" />
-                                        <span class=" no-border">to</span>
+                                        <span class="input-group-addon no-border">to</span>
                                         <input type="text"  data-date-format="dd-mm-yyyy" class="form-control datepicker" name="toDate" id="endDate" placeholder="End date" required="required" />
                                     </div>
                                 </div>
@@ -140,12 +140,6 @@
             "lengthMenu": [[5, 10,20], [5, 10,20]],
             "pagingType": "simple_numbers",
             "searching" : false,
-            "fields": [  {
-                name:      'valueDate',
-                type:      'datetime',
-                def:       function () { return new Date(); },
-                format:    'dd-MM-yyyy '  }
-            ],
             "processing" : true,
             "serverSide" : false,
             "ordering" : false,
