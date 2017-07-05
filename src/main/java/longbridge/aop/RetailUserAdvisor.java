@@ -1,11 +1,9 @@
 package longbridge.aop;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.querydsl.core.types.Template;
 import longbridge.dtos.VerificationDTO;
-import longbridge.models.AdminUser;
-import longbridge.models.OperationsUser;
-import longbridge.models.RetailUser;
-import longbridge.models.Verification;
+import longbridge.models.*;
 import longbridge.repositories.AdminUserRepo;
 import longbridge.repositories.OperationsUserRepo;
 import longbridge.repositories.RetailUserRepo;
@@ -24,6 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import sun.rmi.runtime.Log;
 
 import javax.persistence.EntityManager;
+import java.io.IOException;
 import java.util.Date;
 
 /**
@@ -81,20 +80,24 @@ public class RetailUserAdvisor {
 
     // this runs after execution
     @After("isVerification() && verified() && args(verificationDto)")
-    public void postRetailUserCreation(JoinPoint p, VerificationDTO verificationDto)
-    {
+    public void postRetailUserCreation(JoinPoint p, VerificationDTO verificationDto) throws IOException {
 
         Verification verification  = verificationRepo.findOne(verificationDto.getId());
         if(verification.getOperation().equals("UPDATE_RETAIL_STATUS")){
 
             RetailUser user = retailUserRepo.findOne(verification.getEntityId());
-            String fullName = user.getFirstName()+" "+user.getLastName();
-            String password = passwordPolicyService.generatePassword();
-            user.setPassword(passwordEncoder.encode(password));
-            user.setExpiryDate(new Date());
-            passwordPolicyService.saveRetailPassword(user);
-            retailUserRepo.save(user);
-            retailUserService.sendPostActivateMessage(user, fullName,user.getUserName(),password);
+            entityManager.detach(user);
+            ObjectMapper objectMapper = new ObjectMapper();
+            RetailUser corpUser = objectMapper.readValue(verification.getOriginalObject(),RetailUser.class);
+            if("A".equals(corpUser.getStatus())){
+                String fullName = user.getFirstName()+" "+user.getLastName();
+                String password = passwordPolicyService.generatePassword();
+                user.setPassword(passwordEncoder.encode(password));
+                user.setExpiryDate(new Date());
+                passwordPolicyService.saveRetailPassword(user);
+                retailUserRepo.save(user);
+                retailUserService.sendPostActivateMessage(corpUser, fullName,user.getUserName(),password);
+            }
         }
 
     }

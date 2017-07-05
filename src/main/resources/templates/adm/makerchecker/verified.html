@@ -126,7 +126,7 @@
         var table = $('#verification').DataTable({
             select:true,
             responsive: true,
-            "lengthMenu" : [ [ 5, 10, 20],	[ 5, 10, 20 ] ],
+            "lengthMenu" : [ [ 20, 40, 60, -1],	[ 20, 40, 60, "All" ] ],
             "pagingType" : "simple_numbers",
             "searching": false,
             "paging": true,
@@ -134,14 +134,14 @@
             "ajax": "/admin/verifications/verified/all",
             "dom": 'T<"clear">frtlp',
             "columns": [
-                {"data":"description"},
+                {"data":   "description"},
                 { "data": "initiatedBy" },
                 { "data": "initiatedOn" },
-                { "data": "verifiedBy" ,"defaultContent": "<i>Not Verified</i>"},
-                { "data": "verifiedOn", "defaultContent": "<i>Not Verified</i>" },
+                { "data": "verifiedBy","defaultContent": "<i>Not Verified</i>"},
+                { "data": "verifiedOn","defaultContent": "<i>Not Verified</i>" },
                 { "data": "status" }
 
-            ] , "columnDefs" : [ {
+            ] ,"columnDefs" : [ {
                 "targets" : 2,
                 "data" : "initiatedOn",
                 "render" : function(data, type,full, meta) {
@@ -149,47 +149,45 @@
                         if(data == null)
                             return data;
                         var dtStart = new Date(parseInt(data));
+
                         var dtStartWrapper = moment(dtStart);
-                        //return dtStartWrapper.format('DD/MM/YYYY HH:mm');
                         return dtStartWrapper.format('LLLL');
                     }
                     return data;
                 }
-            } ],
-            "columnDefs" : [ {
-                "targets" : 4,
-                "data" : "verifiedOn",
-                "render" : function(data, type,full, meta) {
+            } , {
+                "targets": 4,
+                "data": "initiatedOn",
+                "render": function (data, type, full, meta) {
                     if (type === 'display') {
-                        if(data == null)
+
+                        if (data == null)
                             return data;
                         var dtStart = new Date(parseInt(data));
                         var dtStartWrapper = moment(dtStart);
-                        //return dtStartWrapper.format('DD/MM/YYYY HH:mm');
                         return dtStartWrapper.format('LLLL');
                     }
                     return data;
                 }
-            } ],
-
-            "columnDefs" : [ {
-                "targets" : 5,
-                "data" : "status",
-                "render" : function(data, type,full, meta) {
-                    if (type === 'display') {
-                        if (data == "PENDING") {
-                            return "<i class='fa fa-question dt-body-center' style='color:green;display:block; text-align:center; margin:0 auto;' ></i>";
-                        } else if (data == "APPROVED") {
-                            return "<i class='fa fa-check  dt-body-center' style='color:green;display:block; text-align:center; margin:0 auto;'></i>";
+            },
+                {
+                    "targets": 5,
+                    "data": "status",
+                    "render": function (data, type, full, meta) {
+                        if (type === 'display') {
+                            if (data == "PENDING") {
+                                return "<i class='fa fa-question dt-body-center' style='color:green;display:block; text-align:center; margin:0 auto;'></i>";
+                            } else if (data == "APPROVED") {
+                                return "<i class='fa fa-check  dt-body-center' style='color:green;display:block; text-align:center; margin:0 auto;'></i>";
+                            }
+                            else {
+                                return "<i class='fa fa-times  dt-body-center' style='color:red;display:block; text-align:center; margin:0 auto;'></i>"
+                            }
                         }
-                        else{
-                            return "<i class='fa fa-times  dt-body-center' style='color:red;display:block; text-align:center; margin:0 auto;'></i>"
-                        }
+                        return data;
                     }
-                    return data;
                 }
-
-            } ]});
+            ]});
 
         table.on('select', function() {
 

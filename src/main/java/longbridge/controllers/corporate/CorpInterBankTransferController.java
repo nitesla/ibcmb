@@ -134,7 +134,7 @@ public class CorpInterBankTransferController {
             } else {
                 corpTransferRequestDTO.setTransferType(TransferType.INTER_BANK_TRANSFER);
             }
-            request.getSession().removeAttribute("NIP");
+//            request.getSession().removeAttribute("NIP");
 
         } else {
             corpTransferRequestDTO.setTransferType(TransferType.INTER_BANK_TRANSFER);

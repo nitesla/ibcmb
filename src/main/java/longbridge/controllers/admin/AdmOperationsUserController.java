@@ -10,7 +10,7 @@ import longbridge.repositories.VerificationRepo;
 import longbridge.services.OperationsUserService;
 import longbridge.services.PasswordPolicyService;
 import longbridge.services.RoleService;
-import longbridge.utils.verificationStatus;
+import longbridge.utils.VerificationStatus;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -252,7 +252,7 @@ public class AdmOperationsUserController {
         OperationsUser operationsUser = operationsUserRepo.findOne(1l);
         Verification verification = verificationRepo.findOne(id);
 
-        if (verification == null || verificationStatus.PENDING != verification.getStatus())
+        if (verification == null || VerificationStatus.PENDING != verification.getStatus())
             return "Verification not found";
 
 //        try {
@@ -270,7 +270,7 @@ public class AdmOperationsUserController {
         OperationsUser operationsUser = operationsUserRepo.findOne(1l);
         Verification verification = verificationRepo.findOne(id);
 
-        if (verification == null || verificationStatus.PENDING != verification.getStatus())
+        if (verification == null || VerificationStatus.PENDING != verification.getStatus())
             return "Verification not found";
 
        // operationsUserService.decline(verification, operationsUser, "todo get the  reason from the frontend");
