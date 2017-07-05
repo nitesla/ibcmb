@@ -152,6 +152,8 @@ public class CorpTransferServiceImpl implements CorpTransferService {
 //        return pendAuths;
 //    }
 
+
+
     @Override
     @Transactional
     public String authorizeTransfer(Long authId) throws InternetBankingException {

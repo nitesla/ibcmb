@@ -292,8 +292,8 @@ public class CorpTransferController {
     @GetMapping("/pending")
     public String getPendingTransfer(Principal principal,Model model){
 
-//        List<PendAuth> pendAuths = corpTransferService.getPendingAuthorizations();
-//        model.addAttribute("pendAuths", pendAuths);
+        //List<PendAuth> pendAuths = corpTransferService.getPendingAuthorizations();
+        //model.addAttribute("pendAuths", pendAuths);
         return "corp/transfer/pendingtransfer/view";
     }
 
