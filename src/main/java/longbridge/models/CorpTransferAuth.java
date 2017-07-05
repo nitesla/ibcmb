@@ -23,7 +23,7 @@ public class CorpTransferAuth extends  AbstractEntity {
     private Date lastEntry;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Set<CorpTransReqEntry> authorizations;
+    private Set<CorpTransReqEntry> auths;
 
     @OneToOne
     private CorpTransRequest corpTransRequest;
@@ -36,12 +36,12 @@ public class CorpTransferAuth extends  AbstractEntity {
         this.corpTransRequest = corpTransRequest;
     }
 
-    public Set<CorpTransReqEntry> getAuthorizations() {
-        return authorizations;
+    public Set<CorpTransReqEntry> getAuths() {
+        return auths;
     }
 
-    public void setAuthorizations(Set<CorpTransReqEntry> authorizations) {
-        this.authorizations = authorizations;
+    public void setAuths(Set<CorpTransReqEntry> auths) {
+        this.auths = auths;
     }
 
     public String getStatus() {

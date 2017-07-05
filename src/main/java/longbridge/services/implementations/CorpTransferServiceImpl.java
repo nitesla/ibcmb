@@ -2,15 +2,12 @@ package longbridge.services.implementations;
 
 import longbridge.dtos.CorpTransferRequestDTO;
 import longbridge.dtos.SettingDTO;
-import longbridge.dtos.TransferRequestDTO;
 import longbridge.exception.*;
 import longbridge.models.*;
 import longbridge.repositories.*;
 import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.*;
-import longbridge.utils.ResultType;
 import longbridge.utils.TransferType;
-import longbridge.utils.Verifiable;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -26,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.*;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 /**
@@ -279,7 +274,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     }
 
     @Override
-    public void addAuthorization(CorpTransReqEntry transReqEntry, CorpTransRequest corpTransRequest) {
+    public String addAuthorization(CorpTransReqEntry transReqEntry, CorpTransRequest corpTransRequest) {
 
         CorporateUser corporateUser = getCurrentUser();
         CorpTransRule transferRule = corporateService.getApplicableTransferRule(corpTransRequest);
@@ -299,7 +294,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         }
 
         CorpTransferAuth transferAuth = corpTransRequest.getTransferAuth();
-        Set<CorpTransReqEntry> transReqEntries = transferAuth.getAuthorizations();
+        Set<CorpTransReqEntry> transReqEntries = transferAuth.getAuths();
 
         if (transReqEntries.contains(transReqEntry)) {
             throw new InternetBankingException("User has already authorized the transaction");
@@ -310,20 +305,22 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         }
         transReqEntry.setEntryDate(new Date());
         transReqEntry.setCorporateRole(userRole);
-        transferAuth.getAuthorizations().add(transReqEntry);
+        transferAuth.getAuths().add(transReqEntry);
         transferAuthRepo.save(transferAuth);
         if(isAuthorizationComplete(corpTransRequest)){
             transferAuth.setStatus("C");;
             transferAuth.setLastEntry(new Date());
             transferAuthRepo.save(transferAuth);
             makeTransfer(convertEntityToDTO(corpTransRequest));
+            return "Transaction completed successfully";
         }
 
+        return "Authorization added successfully to the transaction request";
     }
 
     private boolean isAuthorizationComplete(CorpTransRequest transRequest){
         CorpTransferAuth transferAuth = transRequest.getTransferAuth();
-        Set<CorpTransReqEntry> transReqEntries = transferAuth.getAuthorizations();
+        Set<CorpTransReqEntry> transReqEntries = transferAuth.getAuths();
         CorpTransRule corpTransRule = corporateService.getApplicableTransferRule(transRequest);
         List<CorporateRole> roles = corpTransRule.getRoles();
         boolean any = false;
@@ -334,7 +331,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         }
 
         for(CorporateRole role: roles){
-            for(CorpTransReqEntry corpTransReqEntry: transferAuth.getAuthorizations()){
+            for(CorpTransReqEntry corpTransReqEntry: transferAuth.getAuths()){
                 if(corpTransReqEntry.getCorporateRole().equals(role)){
                     approvalCount++;
                     if(any) return true;

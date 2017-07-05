@@ -318,6 +318,32 @@ public class CorpTransferController {
         return "redirect:/corporate/pending";
     }
 
+    @PostMapping("/authorize")
+    public String addAuthorization(@ModelAttribute("corpTransReqEntry") CorpTransReqEntry corpTransReqEntry, CorpTransRequest corpTransRequest, RedirectAttributes redirectAttributes){
+
+
+        try {
+            String message = corpTransferService.addAuthorization(corpTransReqEntry,corpTransRequest);
+            redirectAttributes.addFlashAttribute("message", message);
+        } catch (InvalidAuthorizationException iae) {
+            logger.error("Failed to authorize transfer", iae);
+            redirectAttributes.addFlashAttribute("failure", iae.getMessage());
+
+        } catch (TransferRuleException tre) {
+            logger.error("Failed to authorize transfer", tre);
+            redirectAttributes.addFlashAttribute("failure", tre.getMessage());
+
+        } catch (InternetBankingException e) {
+            logger.error("Failed to authorize transfer", e);
+            redirectAttributes.addFlashAttribute("failure", e.getMessage());
+
+        }
+        return "redirect:/corporate/pending";
+
+    }
+
+
+
 
     @RequestMapping(value = "/balance/{accountNumber}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
