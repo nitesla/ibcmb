@@ -29,11 +29,11 @@ public interface CorpTransferService {
     Page<CorpTransRequest> getTransfers(User user, Pageable pageDetails);
 
     @PreAuthorize("hasAuthority('MAKE_TRANSFER')")
-    boolean saveTransfer(CorpTransferRequestDTO corpTransferRequestDTO) throws TransferException;
+    CorpTransferRequestDTO saveTransfer(CorpTransferRequestDTO corpTransferRequestDTO) throws TransferException;
     @PreAuthorize("hasAuthority('MAKE_TRANSFER')")
     void validateTransfer(CorpTransferRequestDTO corpTransferRequestDTO) throws InternetBankingTransferException;
 
-    String authorizeTransfer(CorporateRole role, Long authId) throws InternetBankingException;
+    String authorizeTransfer(CorporateUser user, Long authId) throws InternetBankingException;
 
     String addTransferRequest(CorpTransferRequestDTO transferRequestDTO) throws InternetBankingException;
 

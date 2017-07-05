@@ -55,7 +55,7 @@
 
                                 <div class="form-group col-md-6">
                                     <label>&nbsp;</label>
-                                    <button type="submit" class="btn btn-link " id="btn-find"><i class="fa fa-search" style="color: whit" ></i>&nbsp; view</button>
+                                    <button type="submit" class="btn btn-link " id="btn-find"><i class="fa fa-search" style="color: white" ></i>&nbsp; view</button>
                                 </div>
                             </div>
 
@@ -158,6 +158,36 @@
                 {"data" : "tranType"},
                 {"data" : "valueDate"}
             ],
+            "columnDefs" : [ {
+                "targets" : 2,
+                "data" : "postDate",
+                "render" : function(data, type,full, meta) {
+                    if (type === 'display') {
+                        if(data == null)
+                            return data;
+                        var dtStart = new Date(parseInt(data));
+
+                        var dtStartWrapper = moment(dtStart);
+                        return dtStartWrapper.format('DD/MM/YYYY HH:mm');
+                    }
+                    return data;
+                }
+            }
+                , {
+                    "targets": 5,
+                    "data": "valueDate",
+                    "render": function (data, type, full, meta) {
+                        if (type === 'display') {
+
+                            if (data == null)
+                                return data;
+                            var dtStart = new Date(parseInt(data));
+                            var dtStartWrapper = moment(dtStart);
+                            return dtStartWrapper.format('DD/MM/YYYY HH:mm');
+                        }
+                        return data;
+                    }
+                } ],
             "ajax" : {
                 "url":"viewstatement/display/data",
                 "type" : "GET",

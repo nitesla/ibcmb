@@ -140,12 +140,6 @@
             "lengthMenu": [[5, 10,20], [5, 10,20]],
             "pagingType": "simple_numbers",
             "searching" : false,
-            "fields": [  {
-                name:      'valueDate',
-                type:      'datetime',
-                def:       function () { return new Date(); },
-                format:    'dd-MM-yyyy '  }
-            ],
     		"processing" : true,
     		"serverSide" : false,
     		"ordering" : false,
@@ -158,7 +152,37 @@
             	{"data" : "tranType"},
             	{"data" : "valueDate"}
             	],
-            "ajax" : {
+            "columnDefs" : [ {
+                "targets" : 2,
+                "data" : "postDate",
+                "render" : function(data, type,full, meta) {
+                    if (type === 'display') {
+                        if(data == null)
+                            return data;
+                        var dtStart = new Date(parseInt(data));
+
+                        var dtStartWrapper = moment(dtStart);
+                        return dtStartWrapper.format('DD/MM/YYYY HH:mm');
+                    }
+                    return data;
+                }
+            }
+                , {
+                "targets": 5,
+                "data": "valueDate",
+                "render": function (data, type, full, meta) {
+                    if (type === 'display') {
+
+                        if (data == null)
+                            return data;
+                        var dtStart = new Date(parseInt(data));
+                        var dtStartWrapper = moment(dtStart);
+                        return dtStartWrapper.format('DD/MM/YYYY HH:mm');
+                    }
+                    return data;
+                }
+                } ],
+                    "ajax" : {
             	"url":"viewstatement/display/data",
             	"type" : "GET",
 				"data" : function(d) {

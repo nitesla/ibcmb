@@ -2,7 +2,9 @@ package longbridge.repositories;
 
 import longbridge.models.CorporateRole;
 import longbridge.models.Corporate;
-import longbridge.models.CorporateRole;
+
+import java.util.Set;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -15,6 +17,7 @@ public interface CorporateRoleRepo extends CommonRepo<CorporateRole,Long> {
 
 
     Page<CorporateRole> findByCorporate(Corporate corporate, Pageable pageable);
+
 
     List<CorporateRole> findByCorporate(Corporate corporate);
 

@@ -4,90 +4,117 @@
 
 </head>
 <body>
-<header th:replace="corp_layout :: corp-header">
-</header>
+<div class="container">
+    <header th:replace="corp_layout :: corp-header">
+    </header>
 
-<section class="content-wrapper">
-    <div class="container">
+    <section class="content-wrapper">
+        <div class="containe">
 
-        <div class="row">
+            <div class="row">
 
-            <div class="col-md-4 col-sm-4">
-                <h5 class="page_header"> Own Account Transaction</h5>
+                <div class="col-md-4 col-sm-4">
+                    <h5 class="page_header"> Own Account Transaction</h5>
+                    <select class="form-control invisible">
+                        <option value="account">Account Overview</option>
+                    </select>
+                </div>
+                <p class="col-xs-12 invisible">
+                    Fields marked <span style="color:red">*</span> are compulsory
+                </p>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-md-8 content-bg">
-                <!--<div class="row form-spacing">-->
-                <div class="col-md-6 col-sm-6">
-                    <div class="row form-spacing">
+            <div class="row">
+                <div class="col-md-9 content-bg">
+                    <!--<div class="row form-spacing">-->
+                    <div class="">
+
 
                         <table>
                             <tr>
 
-                                <th colspan="2">Transaction Summary</th>
-
-
-                            </tr>
-                            <tr>
-
                                 <th>Source account</th>
-                                <td th:text="${corpTransferRequest.customerAccountNumber}"></td>
+                                <td th:text="${transRequest.customerAccountNumber}"></td>
 
                             </tr>
                             <tr>
 
                                 <th>Destination account</th>
-                                <td th:text="${corpTransferRequest.beneficiaryAccountNumber}"></td>
+                                <td th:text="${transRequest.beneficiaryAccountNumber}"></td>
 
                             </tr>
                             <tr>
 
                                 <th>Amount</th>
-                                <td th:text="${corpTransferRequest.amount}"></td>
+                                <td th:text="${transRequest.amount}"></td>
 
                             </tr>
                             <tr>
 
                                 <th>Remarks</th>
-                                <td th:text="${corpTransferRequest.remarks}"></td>
+                                <td th:text="${transRequest.remarks}"></td>
 
                             </tr>
                         </table>
 
-                        <form method="post" th:action="@{/corporate/transfer/process}" th:object="${corpTransferRequest}">
+                        <form method="post" th:action="@{/corporate/transfer/ownaccount}"
+                              th:object="${transRequest}">
                             <input type="hidden" th:field="*{customerAccountNumber}"/>
                             <input type="hidden" th:field="*{beneficiaryAccountNumber}"/>
                             <input type="hidden" th:field="*{beneficiaryAccountName}"/>
                             <input type="hidden" th:field="*{amount}"/>
                             <input type="hidden" th:field="*{remarks}"/>
-
-
                             <div class="form-group">
-                                <a  onclick="goBack()" >Modify</a>
-                                <button type="submit" class="btn btn-link">Proceed</button>
-                                <a th:href="@{/corporate/transfer/ownaccount}">Cancel</a>
+                                <label>Token *</label>
+                                <input type="text" name="token" placeholder="" class="form-control"/>
+                                <br/>
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-link required-step">Proceed</button>
+                                    <button type="button" onclick="cancel()" class='btn btn-link less-required'>
+                                        Cancel
+                                    </button>
+                                    <button type='button' class='btn btn-link less-required' onclick="edit()">Modify
+                                    </button>
+                                </div>
 
 
                             </div>
+
                         </form>
+                        <form method="post" id="form_edit" th:action="@{/corporate/transfer/ownaccount/edit}"
+                              th:object="${transRequest}">
+                            <input type="hidden" th:field="*{customerAccountNumber}"/>
+                            <input type="hidden" th:field="*{beneficiaryAccountNumber}"/>
+                            <input type="hidden" th:field="*{beneficiaryAccountName}"/>
+                            <input type="hidden" th:field="*{amount}"/>
+                            <input type="hidden" th:field="*{remarks}"/>
+                        </form>
+
+
                     </div>
                 </div>
-
-            </div>
-            <div th:replace="corp_layout :: corp-sidebar" class="col-md-3 sidebar">
+                <div class="col-md-3 pull-right ">
+                    <div th:replace="corp_layout :: corp-sidebar" class="">
+                    </div>
+                </div>
             </div>
         </div>
 
-    </div>
-
-</section>
+    </section>
 
 
+    <!-- CONTENT-WRAPPER SECTION END-->
+    <footer th:replace="corp_layout ::corp-footer">
+    </footer>
+</div>
+<script>
+    function edit() {
+        $("#form_edit").submit();
+    }
+    function cancel() {
+        window.location.href = "/corporate/transfer/ownaccount";
+    }
 
-<!-- CONTENT-WRAPPER SECTION END-->
-<footer th:replace="corp_layout ::corp-footer">
-</footer>
+</script>
 </body>
 
 </html>

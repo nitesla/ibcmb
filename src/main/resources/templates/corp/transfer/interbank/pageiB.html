@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="corp_layout :: site-head">
+
+</head>
+<body>
+<div class="container">
+    <header th:replace="corp_layout :: corp-header">
+    </header>
+
+<section class="content-wrapper">
+    <div class="containe">
+        <div class="row">
+            <div class="col-md-4 col-sm-4">
+                <h5 class="page_header"> New Beneficiary</h5>
+                <select class="form-control invisible">
+                        <option value="account">Account Overview</option>
+                </select>
+            </div>
+
+             <p class="col-xs-12">
+                    Fields marked <span style="color:red">*</span> are compulsory
+            </p>
+        </div>
+        <div class="row">
+            <div class="col-md-9 content-bg">
+
+                    <div class="form-spacig col-sm-8">
+                        <form id="local" method="post" th:action="@{/corporate/transfer/interbank/new}"
+                              th:object="${corpLocalBeneficiaryDTO}">
+                            <div class="form-group">
+                                <label>Beneficiary Bank</label>
+                                <select name="beneficiaryBank" class="form-control" th:field="*{beneficiaryBank}" id="bank_code" required="required">
+                                    <option th:each="bank : ${localBanks}" th:value="${bank.institutionCode}" th:text="${bank.institutionName}"></option>
+                                </select><span class='req-inner'></span>
+                                <p th:if="${#fields.hasErrors('beneficiaryBank')}" th:errors="*{beneficiaryBank}"
+                                   class="errors"></p>
+                            </div>
+                            <div class="form-group">
+                                <label >Account Number</label>
+                                <input onblur="getAccountName()" type="text" class="form-control" name="accountNumber" th:field="*{accountNumber}"
+                                       id="acct_num" placeholder="Account Number" required="required"/><span class='req-inner'></span>
+                                <p class="errors" th:if="${#fields.hasErrors('accountNumber')}" th:errors="*{accountNumber}">&times;</p>
+                                <p class="acctError" style="display:none;">invalid account number or Bank details</p>
+                                <p id='loading-icon' style="display:none"><i class='fa fa-spinner fa-spin' style="font-size:10px;color:#003056"></i> Getting Account Name. Please Wait</p>
+
+                            </div>
+
+                            <div class="form-group">
+                                <label >Account Name</label>
+                                <input type="text" class="form-control" name="accountName" th:field="*{accountName}"
+                                       id="acct_name" readonly="readonly" required="required"/>
+                                <p class="errors" th:if="${#fields.hasErrors('accountName')}" th:errors="*{accountName}">&times;</p>
+                            </div>
+                            <div class="form-group">
+                                <input type="text" class="form-control" name="preferredName"
+                                       placeholder="Beneficiary Alias" th:field="*{preferredName}"/>
+                            </div>
+                            <button id="localsave" style="display: none;" class="btn btn-link required-step" >Next</button>
+                            <!--<button id="neq" type="button" class="btn btn-link required-step" onclick="getAccountName();">Name Enquiry</button>-->
+                        </form>
+
+                    </div>
+
+            </div>
+            <div class="col-md-3 pull-right " >
+                <div th:replace="corp_layout :: corp-sidebar" class="" >
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- CONTENT-WRAPPER SECTION END-->
+<footer th:replace="corp_layout ::corp-footer">
+</footer>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    $(document).ready(function () {
+        $('#bank_code').change(function () {
+            $('#acct_name').val("");
+            $('.acctError').hide();
+        });
+
+        $('#acct_num').change(function () {
+            $('#acct_name').val("");
+            $('.acctError').hide();
+        });
+//        sortSelect('#bank_code', 'text', 'asc');
+
+        $("#bank_code").prop("selectedIndex", -1);
+
+    });
+
+
+    function getAccountName() {
+        $('#loading-icon').show();
+        //make sure alert message is not empty
+        var acct = $('#acct_num').val();
+        var bank = $('#bank_code').val();
+
+        if(( acct==null || acct=='' ) || ( bank==null || bank=='' )) {
+
+             $('#loading-icon').hide();
+            $('.acctError').show().css("color", "red");
+            $('#loading-icon').hide();
+            return false;
+        }
+
+        $.getJSON('/corporate/transfer/' + acct + '/'+bank+'/nameEnquiry', function(jd) {
+            var message = jd.message;
+            var success =  jd.success;
+           if (success==false){
+               $('.acctError').text(message);
+               $('.acctError').show().css("color", "red");
+               $('#loading-icon').hide();
+           }else{
+               $('#acct_name').val(message);
+               $('#localsave').show();
+               $('#neq').hide();
+               document.getElementById('loading-icon').style.display = 'none';
+               $('#loading-icon').hide();
+           }
+
+
+
+
+
+        });
+
+    };
+
+
+
+
+
+    /*]]>*/
+</script>
+
+
+
+</div>
+</body>
+</html>

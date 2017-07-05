@@ -2,8 +2,11 @@
  * Created by Showboy on 20/06/2017.
  */
 
-function passwordStrength(password)
+
+
+function passwordStrength(password, strength)
 {
+
 
     var desc = new Array();
     desc[0] = "Very Weak";
@@ -16,7 +19,7 @@ function passwordStrength(password)
     var score   = 0;
 
     //if password bigger than 6 give 1 point
-    if (password.length > 6) score++;
+    if (password.length > [[${strength.minLength}]]) score++;
 
     //if password has both lower and uppercase characters give 1 point
     if ( ( password.match(/[a-z]/) ) && ( password.match(/[A-Z]/) ) ) score++;

@@ -190,8 +190,8 @@
 
 .wizard > .content > .body input.error
 {
-    background: rgb(251, 227, 228);
-    border: 1px solid #fbc2c4;
+    background: rgb(221, 200, 186);
+    border: 1px solid #DDC8BA;
     color: #032A4F;
 }
 

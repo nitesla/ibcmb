@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" >
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head th:replace="corp_layout :: site-head">
 
 </head>
@@ -8,30 +8,35 @@
     <header th:replace="corp_layout :: corp-header">
     </header>
 
-    <section class="content-wrapper">
-        <div class="containe">
+<section class="content-wrapper">
+    <div class="containe">
+
         <div class="row">
 
             <div class="col-md-4 col-sm-4">
-                <span th:if="${beneficiary.preferredName} !=''" th:text="${beneficiary.preferredName}"></span>
-                <span th:if="${beneficiary.preferredName} ==''" th:text="${beneficiary.accountName}"></span>
-                 <select class="form-control invisible">
+
+                <h5 class="page_header"> Transfer to
+                    <span  th:if="${benName}== null"  th:text="${transferRequest.beneficiaryAccountName}"></span>
+                    <span th:if="${benName}!= null" th:text="${benName}"></span>
+                    <select class="form-control invisible">
                         <option value="account">Account Overview</option>
-                </select>
+                    </select>
+                </h5>
+
             </div>
-            <p class="col-xs-12">
+             <p class="col-xs-12">
                     Fields marked <span style="color:red">*</span> are compulsory
             </p>
         </div>
         <div class="row">
             <div class="col-md-9 content-bg">
 
-                <div class="col-md-6 col-sm-6 col-xs-12">
-                    <div class="r form-spacin">
+                <div class="form-spacin col-md-7 col-sm-7">
+
                         <div th:if="${message != null}" class="alert alert-info" th:text="${message}">message</div>
                         <div th:if="${error != null}" class="alert alert-info" th:text="${error}">message</div>
 
-                        <form method="post" th:action="@{/corporate/transfer/local/summary}"
+                        <form method="post" th:action="@{/corporate/transfer/interbank/summary}"
                               th:object="${corpTransferRequest}">
 
 
@@ -40,13 +45,17 @@
 
 
                                 <span id="scurency"></span>
-                                <span class="alert no-bd-rad my-border bg-white invisible">NGN</span>
+                                <span class="alert no-bd-rad my-border bg-white hide-content-only">NGN</span>
+
                                 <select name="source" class="form-control" id="source"
-                                        th:field="*{customerAccountNumber}" required="required" onchange="getBalance()">
+                                        th:field="*{customerAccountNumber}" onchange="getBalance()">
                                     <option value=""> select an account</option>
                                     <option th:each="s: ${accounts}" th:value="${s}" th:text="${s}"></option>
+
+
                                 </select>
-                                <p class="errors" th:if="${#fields.hasErrors('customerAccountNumber')}" th:errors="*{customerAccountNumber}">&times;</p>
+                                <p th:if="${#fields.hasErrors('customerAccountNumber')}" th:errors="*{customerAccountNumber}"
+                                   class="errors"></p>
                             </div>
 
                             <input type="hidden" th:field="*{financialInstitution}" />
@@ -55,27 +64,27 @@
                             <input type="hidden" th:field="*{transferType}" />
 
                             <div class="form-group">
-                                <label class='my-label'>Amount</label>
+                                <label class="my-label">Amount</label>
                                 <span class="alert no-bd-rad my-border bg-white">NGN</span>
-                                <input type="number" name="amount" min="0" step="0.01" placeholder="Enter an amount"
-                                       th:field="*{amount}" class="form-control" required="required"/><span class='req-inner'></span>
-                                <p class="errors" th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}">&times;</p>
+
+                                <input type="number" name="amount" step="any" placeholder="Enter an amount"
+                                       th:field="*{amount}" class="form-control"/><span class='req-inner'></span>
+                                <p th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}"
+                                   class="errors"></p>
                             </div>
                             <div class="form-group">
-                                <label class='my-label'>Remark</label>
-                                <span class="alert no-bd-rad my-border bg-white invisible">NGN</span>
-                                <input type="text" name="textname" placeholder="" th:field="*{remarks}"
+                                <label class="my-label">Remark</label>
+                                <span class="alert no-bd-rad my-border bg-white hide-content-only">NGN</span>
+
+                                <input type="text" name="remarks" placeholder="" th:field="*{remarks}"
                                        class="form-control"/>
                             </div>
 
-
-                            <div class="col-md-6 col-sm-6">
-                        <!--<p class="related" style="padding-top: 5%">Related Information</p>-->
-                            <span class="alert no-bd-rad my-border bg-white invisible">NGN</span><button class="btn btn-link required-step" type="submit">Submit</button>
-                            </div>
+                            <span class="alert no-bd-rad my-border bg-white hide-content-only">NGN</span>
+                            <button class="btn btn-link required-step" type="submit">Submit</button>
                         </form>
                         <!--</div>-->
-                    </div>
+
                 </div>
                 <div class="col-md-4 col-sm-4 well">
                     <!--<p class="related" style="padding-top: 5%">Related Information</p>-->
@@ -85,36 +94,38 @@
                     <p id="availBal"><b></b></p>
                 </div>
             </div>
-            <div class="col-md-3 pull-right">
+            <div class="col-md-3 pull-right " >
                 <div th:replace="corp_layout :: corp-sidebar" class="" >
                 </div>
             </div>
         </div>
-        </div>
-    </section>
+    </div>
+</section>
 
 
-    <!-- CONTENT-WRAPPER SECTION END-->
-    <footer th:replace="corp_layout ::corp-footer">
-    </footer>
-    <!--<script th:src="@{~/customer/js/accountdetails.js}"></script>-->
+<!-- CONTENT-WRAPPER SECTION END-->
+<footer th:replace="corp_layout ::corp-footer">
+</footer>
+<!--<script th:src="@{~/customer/js/accountdetails.js}"></script>-->
+    <script th:src="@{~/customer/js/jquery-1.11.1.js}"></script>
     <script th:inline="javascript">
         /*<![CDATA[*/
-        function getBalance() {
+        function getBalance(){
+
             var accountNumber = $('#source').val();
             $.ajax({
-                url: "/corporate/transfer/balance/" + accountNumber,
+                url: "/corporate/transfer/interbank/balance/"+accountNumber,
                 type: 'GET',
                 async: false,
-                success: function (availBal) {
-                    bal = '' + String(availBal);
-                    if (bal == "") {
-                        document.getElementById("myspan").textContent = "Could not get balance from server, please try again.";
+                success:function(availBal){
+                    bal = ''+String(availBal);
+                    if(bal == "" ){
+                        document.getElementById("myspan").textContent="Could not get balance from server, please try again.";
                         $("#myspan").show();
-                    } else {
+                    }else{
 //                    $('input[name=availBal]').val(bal);
 
-                        $('#availBal').text("Available Balance: " + bal);
+                        $('#availBal').text("Available Balance: "+bal);
 
                     }
                 }
@@ -125,8 +136,6 @@
 
 
     </script>
-
-
 </div>
 </body>
 

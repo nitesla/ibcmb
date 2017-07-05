@@ -17,7 +17,7 @@ public class AccountDTO{
     private String hiddenFlag;
     private String currencyCode;
 
-    
+
     private String accountType;
     private String accountBalance;
     private String ledgerBalance;
@@ -55,7 +55,7 @@ public class AccountDTO{
 		this.accountBalance = accountBalance;
 	}
 
-	
+
 
     public Long getId() {
         return id;
