@@ -278,8 +278,9 @@ public class CorpTransferController {
 
         CorpTransRequest corpTransRequest = corpTransferService.getTransfer(id);
         CorpTransferAuth corpTransferAuth = corpTransferService.getAuthorizations(corpTransRequest);
-        model.addAttribute("transferAuth",corpTransferAuth);
-        model.addAttribute("transferRequest",corpTransRequest);
+        model.addAttribute("corpTransferAuth",corpTransferAuth);
+        model.addAttribute("corpTransRequest",corpTransRequest);
+        model.addAttribute("corpTransReqEntry", new CorpTransReqEntry());
         return "corp/transfer/pendingtransfer/view";
     }
 
