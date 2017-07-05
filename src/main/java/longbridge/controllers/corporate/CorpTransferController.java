@@ -301,6 +301,12 @@ public class CorpTransferController {
     }
 
     @GetMapping("/requests")
+    public String getTransfers(){
+        return "";
+    }
+
+
+        @GetMapping("/requests/all")
     public @ResponseBody
     DataTablesOutput<CorpTransRequest> getTransferRequests(DataTablesInput input) {
         Pageable pageable = DataTablesUtils.getPageable(input);
