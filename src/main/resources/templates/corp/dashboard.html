@@ -5,8 +5,8 @@
 </head>
 <body>
 <div class="container">
-<header th:replace="corp_layout :: corp-header">
-</header>
+    <header th:replace="corp_layout :: corp-header">
+    </header>
 
 <section class="content-wrapper">
     <div class="">
@@ -36,12 +36,12 @@
                                 <th class="text-center">&nbsp;</th>
                                 </thead>
                                 <tbody>
-                                <tr th:each="list : ${accountList}">
+                                <tr th:each="list : ${accountList}" class="tt">
                                     <td th:align="center" th:text="${list.accountNumber}"></td>
                                     <td th:align="center" th:text="${list.schemeType}"></td>
                                     <td th:align="center" th:text="${list.currencyCode}"></td>
-                                    <td th:align="center" th:text="${list.accountBalance}"></td>
-                                    <td th:align="center" th:text="${list.ledgerBalance}"></td>
+                                    <td th:align="center" th:text="${list.accountBalance}" class="bal"></td>
+                                    <td th:align="center" th:text="${list.ledgerBalance}" class="bal"></td>
 
                                     <td th:align="center">
                                         <select class="quickAccess" th:attr="onchange='javascript:getId(\'' + ${list.id} + '\');'">
@@ -71,6 +71,20 @@
 </footer>
 
     <script>
+
+        $(document).ready(function () {
+            $('.tt').each(function () {
+                var sth = $(this).find(".bal").html();
+                $(this).find(".bal").html(numberWithCommas(sth));
+//                $(this).find(".bal").html('₦'+ numberWithCommas(sth));
+            })
+        });
+
+
+        function numberWithCommas(x) {
+            return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
         function getId(Id) {
             if ($('.quickAccess').val() === "Transaction History") {
                 if (( Id != null || Id != '' )) {

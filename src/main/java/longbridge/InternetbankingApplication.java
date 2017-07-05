@@ -1,5 +1,6 @@
 package longbridge;
 
+
 //import longbridge.config.makerchecker.MakerCheckerInitializer;
 
 import longbridge.config.MakerCheckerInitializer;
@@ -8,7 +9,6 @@ import longbridge.config.MakerCheckerInitializer;
 import longbridge.repositories.CustomJpaRepositoryFactoryBean;
 //import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -22,9 +22,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @EnableJpaRepositories(repositoryFactoryBeanClass = CustomJpaRepositoryFactoryBean.class)
 @EnableBatchProcessing
 @EnableAsync
-
 public class InternetbankingApplication extends SpringBootServletInitializer implements CommandLineRunner {
-
 
     public static void main(String[] args) {
         SpringApplication.run(InternetbankingApplication.class, args);
@@ -38,6 +36,9 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
 
     @Override
     public void run(String... strings) throws Exception {
+
+
+
     }
 }
 

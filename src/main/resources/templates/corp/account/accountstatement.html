@@ -5,27 +5,15 @@
 </head>
 <body>
 <div class="container">
-<<<<<<< HEAD
-    <header th:replace="corp_layout :: header">
-=======
+
     <header th:replace="corp_layout :: corp-header">
->>>>>>> e1e5b51825a3aa4d930ff872e8ca5a8a2eb2862e
     </header>
 
 
 <section class="content-wrapper">
-<<<<<<< HEAD
-<<<<<<< HEAD
+
     <div class="containe">
-        <div class="row">
-            <div class="col-md-4 col-sm-4">
-                <h5 class="page_header"> Transaction History</h5>
-            </div>
-=======
-    <div class="container">
-=======
-    <div class="containe">
->>>>>>> 6782e5b563e41dfca71c82990351bd147558d299
+
         <div class="row">
             <div class="col-md-4 col-sm-4">
                 <h5 class="page_header"> Transaction History</h5>
@@ -38,28 +26,19 @@
               <p class="col-xs-12 invisible">
                     Fields marked <span style="color:red">*</span> are compulsory
                 </p>
->>>>>>> e1e5b51825a3aa4d930ff872e8ca5a8a2eb2862e
+
         </div>
         <div class="row">
             <div class="col-md-9 content-bg">
 
-<<<<<<< HEAD
-                    <div class="col-md- col-sm-">
-                        <form method="post" th:action="@{/corporate/account/history}">
-=======
+
                     <div  class="col-md- col-sm-">
                         <form method="post">
                             <h2 class="page_header">Last 10 transaction</h2>
->>>>>>> e1e5b51825a3aa4d930ff872e8ca5a8a2eb2862e
 
                             <table class="table" id="users">
                                 <thead>
                                 <tr>
-<<<<<<< HEAD
-                                    <th>Date</th>
-                                    <th >Narration</th>
-                                    <th>Amount</th>
-=======
 
                                     <th>Post Date</th>
                                     <th>Transaction Narration</th>
@@ -67,26 +46,10 @@
                                     <th>Debit/Credit</th>
                                     <th>Value Date</th>
 
->>>>>>> e1e5b51825a3aa4d930ff872e8ca5a8a2eb2862e
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <tr th:each="list : ${transRequestList}">
-<<<<<<< HEAD
-                                    <td  th:text="${list.postedDate}"></td>
-                                    <td  th:text="${list.narration}"></td>
-                                    <td th:text="${list.balance}"></td>
-
-                                </tr>
-                                </tbody>
-                                <tfoot>
-                                <tr>
-                                    <th>Date</th>
-                                    <th >Narration</th>
-                                    <th>Amount</th>
-                                </tr>
-                                </tfoot>
-=======
                                     <td th:text="${#dates.format(list.postedDate, 'dd-MMM-yyyy')}"></td>
                                     <td  th:text="${list.narration}"></td>
                                     <td th:text="${#numbers.formatDecimal(list.balance, 0, 'COMMA', 2, 'POINT')}"></td>
@@ -95,39 +58,12 @@
                                    </tr>
                                 </tbody>
 
->>>>>>> e1e5b51825a3aa4d930ff872e8ca5a8a2eb2862e
                             </table>
 
                         </form>
 
                     </div>
-<<<<<<< HEAD
-                </div>
-            </div>
-            <div th:replace="cust_layout :: sidebar" class="col-md-3 sidebar">
-            </div>
-        </div>
 
-</section>
-
-<!-- CONTENT-WRAPPER SECTION END-->
-<footer th:replace="corp_layout ::footer">
-</footer>
-<script>
-    $(document).ready(function() {
-
-        var table = $('#users').DataTable({
-            select: true,
-            responsive: true,
-            "lengthMenu": [[10], [10]],
-            "pagingType": "simple_numbers",
-            "searching": false,
-            "paging": true
-          });
-
-
-    });
-=======
             </div>
 
              <div class="col-md-3 pull-right">
@@ -143,7 +79,6 @@
 </footer>
 <script>
 
->>>>>>> e1e5b51825a3aa4d930ff872e8ca5a8a2eb2862e
 
 </script>
 </div>

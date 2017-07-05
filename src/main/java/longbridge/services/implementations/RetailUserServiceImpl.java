@@ -423,7 +423,7 @@ public class RetailUserServiceImpl implements RetailUserService {
             }
 
             RetailUser retailUser = convertDTOToEntity(user);
-            Code code = codeService.getByTypeAndCode("ALERT_PREFERENCE", alertPreference.getPreference());
+            Code code = codeService.getByTypeAndCode("ALERT_PREFERENCE", alertPreference.getCode());
             retailUser.setAlertPreference(code);
             this.retailUserRepo.save(retailUser);
             logger.info("USER {}'s alert preference set", user.getId());

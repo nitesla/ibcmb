@@ -67,7 +67,7 @@ public class CorpBeneficiaryController {
     }
 
     @PostMapping("/local")
-    public String createCorpLocalBeneficiary(@Valid CorpLocalBeneficiaryDTO corpLocalBeneficiaryDTO, BindingResult result, Principal principal, Model model) {
+    public String createCorpLocalBeneficiary(@Valid CorpLocalBeneficiaryDTO corpLocalBeneficiaryDTO, BindingResult result, Principal principal, Model model, RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
             model.addAttribute("corpInternationalBeneficiaryDTO", new CorpInternationalBeneficiaryDTO());
             model.addAttribute("foreignBanks", financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.FOREIGN));
@@ -76,20 +76,24 @@ public class CorpBeneficiaryController {
         }
 
         CorporateUser user = corporateUserService.getUserByName(principal.getName());
+        String message2 = corpLocalBeneficiaryService.addCorpLocalBeneficiary(user.getCorporate(), corpLocalBeneficiaryDTO);
         corpLocalBeneficiaryService.addCorpLocalBeneficiary(user.getCorporate(), corpLocalBeneficiaryDTO);
-        model.addAttribute("success", "Beneficiary added successfully");
+//        model.addAttribute("success", "Beneficiary added successfully");
+        redirectAttributes.addFlashAttribute("message", message2);
         return "redirect:/corporate/beneficiary";
     }
 
     @PostMapping("/foreign")
-    public String createForeignBeneficiary(@ModelAttribute("corpInternationalBeneficiary") @Valid CorpInternationalBeneficiaryDTO corpInternationalBeneficiaryDTO, Principal principal, BindingResult result, Model model) {
+    public String createForeignBeneficiary(@ModelAttribute("corpInternationalBeneficiary") @Valid CorpInternationalBeneficiaryDTO corpInternationalBeneficiaryDTO, Principal principal, BindingResult result, Model model, RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
             return "corp/beneficiary/add";
         }
 
         CorporateUser user = corporateUserService.getUserByName(principal.getName());
+        String message2 = corpInternationalBeneficiaryService.addCorpInternationalBeneficiary(user, corpInternationalBeneficiaryDTO);
         corpInternationalBeneficiaryService.addCorpInternationalBeneficiary(user, corpInternationalBeneficiaryDTO);
         model.addAttribute("success", "Beneficiary added successfully");
+        redirectAttributes.addFlashAttribute("message", message2);
         return "redirect:/corporate/beneficiary";
     }
 

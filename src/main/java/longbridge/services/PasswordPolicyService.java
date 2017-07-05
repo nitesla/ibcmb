@@ -1,5 +1,6 @@
 package longbridge.services;
 
+import longbridge.dtos.PasswordStrengthDTO;
 import longbridge.dtos.SettingDTO;
 import longbridge.models.*;
 import longbridge.repositories.*;
@@ -258,5 +259,49 @@ public class PasswordPolicyService {
             }
         }
         return false;
+    }
+
+
+    public PasswordStrengthDTO getPasswordStengthParams(){
+        init();
+        char backslash = '\\';
+        PasswordStrengthDTO passwordStrengthDTO = new PasswordStrengthDTO();
+        String digits = "/";
+        if (numOfDigits == 1){
+//            digits+=backslash;
+            digits+="d+";
+        }else {
+            digits+="(";
+            for (int i=0;i<numOfDigits;i++){
+                digits+=".*[0-9]";
+            }
+            digits+=")";
+        }
+        digits+="/";
+
+
+        String sp = specialCharacters.replaceAll(".(?=.)", "$0,");
+
+        String specChars = "/";
+        if (noOfSpecial == 1){
+            specChars +=".[";
+            specChars +=sp;
+            specChars +="]";
+        }else {
+            specChars+="(";
+            for (int i=0;i<noOfSpecial;i++){
+                specChars+=".*[";
+                specChars+=sp;
+                specChars+="]";
+            }
+            specChars+=")";
+        }
+        specChars += "/";
+
+        passwordStrengthDTO.setDigits(digits);
+        passwordStrengthDTO.setSpecialChars(specChars);
+        passwordStrengthDTO.setMinLength(minLength);
+
+        return passwordStrengthDTO;
     }
 }

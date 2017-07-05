@@ -17,26 +17,75 @@
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/bootstrap-daterangepicker/daterangepicker.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/datatables/css/jquery.dataTables.min.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/datatables/css/dataTables.bootstrap.css}"/>
-    
-    <link rel="stylesheet" type="text/css"
-          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.0/css/bootstrap-datepicker.min.css"/>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.0/css/bootstrap-datepicker.min.css"/>
     <title>Coronation Merchant Bank</title>
 
 </head>
 
 <body>
-
 <div th:fragment="header">
-    <header class="header" >
-        <div class="containe">
-            <div class="top_bar">
-                <ul class="list_group">
-                    <li><a href="/retail/contact"> Contact Us</a>&nbsp;</li>
-                    <li><a href="https://www.coronationmb.com/" target="_blank"> Coronation merchant bank</a>&nbsp;</li>
-                </ul>
+    <header class="heade " >
+        <div class="row">
+            <div class="top-bar col-xs-12">
+                    <ul class="top-link">
+                        <li><a href="/retail/contact"> Contact Us</a>&nbsp;</li>
+                        <li><a href="https://www.coronationmb.com/" target="_blank"> Coronation merchant bank</a>&nbsp;</li>
+                        <li><a target="_blank" th:href="@{/faqs}" >Help</a>&nbsp;</li>
+                    </ul>
             </div>
-            <nav class="navbar navbar-default">
-                <div class="container-fluid">
+        </div>
+        <div class="row header-bar">
+            <div class="col-xs-12 col-sm-9 no-pad-left ">
+                <div class='bvn-tab col-md-5 col-sm-5 '>
+                    <div class=" header_inf bv"><p>Your Bank verification number</p>
+                            <h5 th:if="${bvn=='Not available'}">
+                                <a style='color:#003056' th:href="@{/retail/bvn}"
+                                                                th:text="'BVN: ' + ${bvn}"></a></h5>
+                            <h5 th:unless="${bvn=='Not available'}">
+                                <span style='color:#003056' th:text="'BVN: ' + ${bvn}"></span><span class="bvn-add-info"> Lorem ipsum</span>
+                            </h5>
+
+                        </div>
+                </div>
+                <div class="col-sm-7 col-md-7 user-info ">
+                    <div class=" ">
+                        <h5>
+                            <span class='greeting' th:text="*{greeting}"></span>
+                            <br class="break"/>
+                            <b class="greeting-user" th:text="*{name}"></b> &nbsp; 
+                            <a th:href="@{/retail/mailbox/inbox}">
+                                <i class="fa fa-envelope" style="color:#003056"></i>
+                                <span th:if="${numOfUnreadMessages}" class="badge bg-green" th:text="${numOfUnreadMessages}">count</span>
+                            </a>
+                        </h5>
+
+
+                        <div class="hide-faq">
+                                <h6><a target="_blank" th:href="@{/faqs}" style="text-decoration:none;"> FAQS
+                                    <i style="font-size: 16px;" class="fa fa-question-circle"></i></a>
+                                    <span class="date2 lorem">&nbsp; &nbsp;Login History:&nbsp;</span>&nbsp;
+                                    <span class="lorem" th:text="*{lastLogin}">21st March 2017 10:30am</span>
+                                </h6>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xs-12 col-sm-3 ">
+                <a href="/retail/dashboard" class="">
+                    <img class='img-responsive pull-right' style="height:70px" th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank"/>
+                </a>
+            </div>
+        </div>
+        
+    </header>
+
+
+     <nav class="navbar navbar-default" style="margin: 0px !important;">
+                <div class="">
+
+                    
                     <div class="navbar-header navbar-left">
                         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
                                 data-target="#navbar-collapse-1" aria-expanded="false">
@@ -47,40 +96,14 @@
                         </button>
                         <a class="navbar-brand" href="#" data-toggle="collapse" data-target="#navbar-collapse-1">Menu</a>
                     </div>
-                    <div class=" ">
-                        <div class="col-md-3 col-sm-4 header_info bvn"><p>Your Bank verification number</p>
-                            <h5 th:if="${bvn=='Not available'}"><a style='color:#003056' th:href="@{/retail/bvn}"
-                                                                th:text="'BVN: ' + ${bvn}"></a></h5>
-                            <h5 th:unless="${bvn=='Not available'}">
-                                <div th:text="'BVN: ' + ${bvn}"></div>
-                            </h5>
-
-                        </div>
-                        <div class="col-md-5 col-sm-4 header_info"><h5><span th:text="*{greeting}"></span><br
-                                class="break"/><b th:text="*{name}"></b> &nbsp; <a th:href="@{/retail/mailbox/inbox}">
-                            <i class="fa fa-envelope" style="color:#003056"></i>
-                            <span th:if="${numOfUnreadMessages}" class="badge bg-green" th:text="${numOfUnreadMessages}">count</span>
-                        </a>
-                        </h5>
-
-
-                            <div class="hide-faq">
-                                <h6><a target="_blank" th:href="@{/faqs}" style="text-decoration:none;"> FAQS &nbsp; &nbsp;
-                                    <i style="font-size: 16px;" class="fa fa-question-circle"></i></a>
-                                    <span class="date2 lorem">&nbsp; &nbsp;Login History:&nbsp;</span>&nbsp;
-                                    <span class="lorem" th:text="*{lastLogin}">21st March 2017 10:30am</span>
-                                </h6>
-                            </div>
-
-                        </div>
-                    </div>
+                   
                     <div class="">
                        
-                        <div class="collapse navbar-collapse links" id="navbar-collapse-1">
-                            <ul class="nav navbar-nav">
-                                <li th:classappend="${#httpServletRequest.getRequestURI().startsWith('/retail/dashboard') ? 'active':''}"><a th:href="@{/retail/dashboard}">Dashboard</a></li>
+                        <div class="collapse navbar-collapse" id="navbar-collapse-1">
+                            <ul class="nav navbar-nav menu">
+                                <li th:classappend="${#httpServletRequest.getRequestURI().startsWith('/retail/dashboard') ? 'active':''}"><a class="menu-link" th:href="@{/retail/dashboard}">Dashboard</a></li>
                                 <li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI().startsWith('/retail/account') ? 'active':''}" sec:authorize="hasAuthority('MANAGE_ACCOUNT')">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                    <a href="#" class="dropdown-toggle menu-link" data-toggle="dropdown" role="button"
                                     aria-haspopup="true" aria-expanded="false" th:text="#{menu.account}"> My Accounts</a>
                                     <ul class="dropdown-menu">
                                         <li sec:authorize="hasAuthority('CUSTOMIZE_ACCOUNT')"><a
@@ -98,7 +121,7 @@
                                     </ul>
                                 </li>
                                 <li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI().startsWith('/retail/transfer') ? 'active':''}" sec:authorize="hasAuthority('MANAGE_TRANSFERS')">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                    <a href="#" class="dropdown-toggle menu-link" data-toggle="dropdown" role="button"
                                     aria-haspopup="true" aria-expanded="false" th:text="#{menu.transfer}"> Transfers</a>
                                     <ul class="dropdown-menu">
                                         <li sec:authorize="hasAuthority('OWN_ACCOUNT_TRANSFER')"><a
@@ -122,7 +145,7 @@
                                 <!--<li sec:authorize="hasAuthority('MANAGE_BILL_PAYMENT')"><a href="#" th:text="#{menu.bill}">Bill Payments</a></li>-->
                                 <!--<li sec:authorize="hasAuthority('MANAGE_INVESTMENT')"><a href="#" th:text="#{menu.investment}">Investment</a></li>-->
                                 <li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI().startsWith('/retail/requests') ? 'active':''}" sec:authorize="hasAuthority('MANAGE_SERV_REQ')">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                    <a href="#" class="dropdown-toggle menu-link" data-toggle="dropdown" role="button"
                                     aria-haspopup="true" aria-expanded="false" th:text="#{menu.servreq}"> Service
                                         Requests </a>
                                     <ul class="dropdown-menu">
@@ -139,7 +162,7 @@
                                 </li>
 
                                 <li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI().startsWith('/retail/settings') ? 'active':''}" sec:authorize="hasAuthority('RET_USER_SETTINGS')">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                    <a href="#" class="dropdown-toggle menu-link" data-toggle="dropdown" role="button"
                                     aria-haspopup="true" aria-expanded="false" th:text="#{menu.settings}"> Settings </a>
                                     <ul class="dropdown-menu">
                                         <li sec:authorize="hasAuthority('SET_ALERT_PREFERENCE')"><a
@@ -151,7 +174,7 @@
                                     </ul>
                                 </li>
                                 <li class="dropdown">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                    <a href="#" class="dropdown-toggle menu-link" data-toggle="dropdown" role="button"
                                     aria-haspopup="true" aria-expanded="false"> More </a>
                                     <ul class="dropdown-menu">
                                         <li sec:authorize="hasAuthority('RET_SYNC_TOKEN')"><a
@@ -169,49 +192,42 @@
                                 </li>
                             </ul>
 
-                            <ul class="nav navbar-nav navbar-right">
-                                <li><a th:href="@{/retail/logout}"> Log out <span class="fa-stack fa-lg">
-                            <i class="fa fa-square fa-stack-1x fa-lg"></i>
-                            <i class="fa fa-power-off fa-stack-1x fa-inverse"></i>
-                            </span></a></li>
+                            <ul class="nav navbar-nav pull-right">
+                                <li><a th:href="@{/retail/logout}"> Log out 
+                                <!--<span class="fa-stack fa-lg no-bd-rad">-->
+                            <!--<i class="fa fa-square fa-stack-1x fa-lg no-bd-rad"></i>-->
+                                <i class="fa fa-power-off fa-inverse no-bd-rad power" style="font-size:12px"></i>
+                                <!--</span>-->
+                                </a>
+                                </li>
                             </ul>
                         </div>
 
                     </div>
                 </div>
             </nav>
-        </div>
 
-        <a href="/retail/dashboard" class="logo navbar-right">
-            <img th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank"/>
-        </a>
-    </header>
 
-    <div class=' alert alert-info text-white  no-bd-rad' style="margin:1px 15px 1px 1px!important;background-color:#003056;color:white;"><marquee class='marquee'>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</marquee></div>
+
+    <!--<div class=' alert alert-info text-white  no-bd-rad' style="margin:1px 15px 1px 1px!important;background-color:#003056;color:white;"><marquee class='marquee'>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</marquee></div>-->
+
+    <div class="info-bar">
+        Lorem Ipsum Dorem er uu
+    </div>
 </div>
 
 <div th:fragment="sidebar" class="sideba" style=" adding-top:20px;">
 
-    <div class="sidebar-b calende cal  hidden-xs">
-        <div class="alert no-b   time" style=" margin-top: 6px !important;">
-
-
-           
-
-            <span id='time' class="time pull-lef alert no-bd" style="font-size:14px"></span>
-
-
-             <span class="pull-right  ">
-                <i class="fa fa-calendar datepicker cal-icon " data-provide="datepicker" onclick="show()" style="font-size:13px;background:transparent !important;border:0px !important"></i>
+    <!--date-->
+    <div class=" hidden-xs bg-dan">
+        <div class="no-bd no-bd-rad   time" style=" margin-top: 6px !important;margin-bottom:0px !important;border-top:2px solid #ebdfdb !important;border-bottom:2px solid #ebdfdb !important;">
+             <span class=" ">
+                <i class="fa fa-calendar-plus-o datepicker cal-icon " data-provide="datepicker" onclick="show()" style="font-size:20px;background:transparent !important;border:0px !important"></i>
             </span>
-
-            <span class="pull-right  " >
-                <span class="text-blue" id='day' style="paddng:5px !important;font-size:14px"></span><span>,</span>
-                <span class='' id='cal_date' style="paddin:5px !important;font-size:14px"></span>
-                 
-            </span>
-           
-
+            <span class="  " >
+                <span class="time-icon" id='day' style="font-size:13px;"></span><span>,</span>
+                <span class='text-bold time-icon' id='cal_date' style="font-size:14px;"></span>                 
+            </span>        
              <script>
                       setInterval(
                           function()
@@ -220,7 +236,7 @@
 
                                 var timer = moment().format('LTS'); //timer in hours,minutes and seconds
                                 var day = moment().format('dddd'); // get the current day
-                                var cur_date = moment().format("MMM Do YY");
+                                var cur_date = moment().format("D MMMM");
 
 
                                 var time_holder = document.getElementById('time');// get where to insert the timer
@@ -241,7 +257,21 @@
         </div>
         <!--<div  id="calendar" style="display: block; margin: 0px auto;" class=" calendar hidden-xs hidden-sm "></div>-->
     </div>
-    <div class="sidebar-bg hidden-xs hidden-sm alert" style="max-height:250px;">
+
+    <!--time-->
+    <div class="">
+        <div class='time no-bd no-bd-rad ' style="border-bottom:2px solid #ebdfdb !important;">
+             <span class=" ">
+                <i class="fa fa-clock-o datepicker cal-icon " data-provide="datepicker" onclick="show()" style="font-size:20px;background:transparent !important;border:0px !important"></i>
+            </span>
+             <span id='time' class="text-bold no-bd" style="font-size:14px;padding-left:10px;"></span>
+        </div>
+    </div>
+    
+    
+
+    <!--image placeholdder-->
+    <div class="sidebar-bg hidden-xs hidden-sm bg-succes" style="max-height:300px;margin-top:10px;">
         <img style="display: block; margin: 0px auto;" class="center img-responsive" th:src="@{~/customer/img/advert.jpg}"
              alt="Coronation Merchant Bank"/>
     </div>

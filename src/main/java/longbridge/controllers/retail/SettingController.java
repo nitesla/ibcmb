@@ -196,7 +196,7 @@ public class SettingController {
     public String AlertPreferencePage(AlertPref alertPref, Model model, Principal principal) {
         RetailUser user = retailUserService.getUserByName(principal.getName());
         Iterable<CodeDTO> pref = codeService.getCodesByType("ALERT_PREFERENCE");
-        model.addAttribute("alertP", user.getAlertPreference());
+        model.addAttribute("alertPref", user.getAlertPreference());
         model.addAttribute("prefs", pref);
         return "cust/settings/alertpref";
     }
@@ -212,10 +212,10 @@ public class SettingController {
         retailUserService.changeAlertPreference(user, alertPref);
 
         Iterable<CodeDTO> pref = codeService.getCodesByType("ALERT_PREFERENCE");
-        model.addAttribute("alertP", user.getAlertPreference());
+        model.addAttribute("alertPref", user.getAlertPreference());
         model.addAttribute("prefs", pref);
         model.addAttribute("message", "Preference Change Successful successful");
-        return "cust/settings/alertpref";
+        return "redirect:/cust/settings/alertpref";
     }
 
 

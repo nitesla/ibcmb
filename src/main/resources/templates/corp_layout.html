@@ -9,192 +9,240 @@
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/jquery-ui.css}"/>
     <!--<link rel="stylesheet" type="text/css" th:href="@{~/customer/css/date/css/bootstrap-datepicker.css}"/>-->
     <!--<link rel="stylesheet" type="text/css" th:href="@{~/customer/css/date/css/bootstrap-datepicker.standalone.css}"/>-->
-
-
+    
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/bootstrap.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/custom.css}"/>
-    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/calendar.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/select.bootstrap.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/font-awesome/font-awesome.min.css}"/>
-    <link rel="stylesheet" type="text/css"
-          th:href="@{~/customer/plugins/bootstrap-daterangepicker/daterangepicker.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/bootstrap-daterangepicker/daterangepicker.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/datatables/css/jquery.dataTables.min.css}"/>
     <!--<link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/datatables/css/dataTables.bootstrap.css}"/>-->
-
-    <link rel="stylesheet" type="text/css"
-          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.0/css/bootstrap-datepicker.min.css"/>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.0/css/bootstrap-datepicker.min.css"/>
     <title>Coronation Merchant Bank</title>
 
 </head>
 
 <body>
-<div th:fragment="corp-header">
-    <header class="header">
-        <div class="containe">
-            <div class="top_bar">
-                <ul class="list_group">
-                    <li><a href="/corporate/contact"> Contact Us&nbsp;</a></li>
-                    <li><a href="https://www.coronationmb.com/" target="_blank"> Coronation merchant bank&nbsp;</a></li>
-                </ul>
+    <div th:fragment="corp-header">
+        <header class="heade">
+            <div class="row">
+                <div class="top-bar col-xs-12">
+                    <ul class="top-link">
+                        <li><a href="/corporate/contact"> Contact Us&nbsp;</a></li>
+                        <li><a href="https://www.coronationmb.com/" target="_blank"> Coronation merchant bank&nbsp;</a></li>
+                
+                    </ul>
+                </div>
             </div>
-            <nav class="navbar navbar-default">
-                <div class="container-fluid">
-                    <div class="navbar-header navbar-left">
-                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
-                            <span class="sr-only">MENU</span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                        </button>
-                        <a class="navbar-brand" href="#" data-toggle="collapse" data-target="#navbar-collapse-1">Menu</a>
-                    </div>
-                    <div class=" ">
-                        <div class="col-md-3 col-sm-4 header_info bvn"><p th:text="${compName}">Your RC Number</p>
-                            <h5 th:text="'RC N0: ' + ${RcNo}"></h5></div>
-                        <div class="col-md-5 col-sm-4 header_info"><h5><span th:text="*{greeting}"></span><br class="break"/><b th:text="*{name}"></b> &nbsp; <a th:href="@{/corporate/mailbox/inbox}"><i class="fa fa-envelope" style="color:#003056"></i>
-                            <span th:if="${numOfUnreadMessages}" class="badge bg-green" th:text="${numOfUnreadMessages}">count</span>
+            <div class='row header-bar'>
+                <div class="col-xs-12 col-sm-9 no-pad-left  ">
+                    <div class="bvn-tab col-md-5 col-sm-5 ">
+                        <div class="header_inf bv">
+                            <p th:text="${compName}">Your RC Number</p>
+                            <h5 th:text="'RC N0: ' + ${RcNo}"></h5>
 
-                        </a></h5>
+                        </div>
+                    </div>
+                    <div class="col-sm-7 col-md-7 user-info">
+                        <div class="">
+                            <h5>
+                                <span class='greeting' th:text="*{greeting}"></span>
+                                <br class="break"/>
+                                <b class="greeting-user" th:text="*{name}"></b> &nbsp; 
+                                <a th:href="@{/corporate/mailbox/inbox}"><i class="fa fa-envelope" style="color:#003056"></i>
+                                <span th:if="${numOfUnreadMessages}" class="badge bg-green" th:text="${numOfUnreadMessages}">count</span>
+
+                            </a>
+                            </h5>
 
                             <div class="hide-faq">
-                                <h6>
-                                    <a target="_blank" th:href="@{/faqs}">FAQS &nbsp; &nbsp;<i class="fa fa-question-circle"></i></a><span class="date2 lorem">&nbsp; &nbsp;Login History:&nbsp;</span>&nbsp;
-                                <span class="lorem" th:text="*{lastLogin}"></span>
-                            </h6>
+                                    <h6>
+                                        <a target="_blank" th:href="@{/faqs}">FAQS &nbsp; &nbsp;
+                                        <i class="fa fa-question-circle"></i></a>
+                                        <span class="date2 lorem">&nbsp; &nbsp;Login History:&nbsp;</span>&nbsp;
+                                        <span class="lorem" th:text="*{lastLogin}"></span>
+                                    </h6>
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="collapse navbar-collapse links" id="navbar-collapse-1">
-                    <ul class="nav navbar-nav">
-                        <li th:classappend="${#httpServletRequest.getRequestURI().startsWith('/corporate/dashboard') ? 'active':''}"><a th:href="@{/corporate/dashboard}">Dashboard</a></li>
-                        <li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI().startsWith('/corporate/account') ? 'active':''}">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.account}"> My Accounts</a>
-                            <ul class="dropdown-menu">
-                                <li><a th:href="@{/corporate/account/customize}" th:text="#{menu.account.customize}">Customise Accounts</a></li>
-                                <li><a th:href="@{/corporate/account/settings}" th:text="#{menu.account.settings}">Account Settings</a></li>
-                                <li><a th:href="@{/corporate/account/officer}" th:text="#{menu.account.officer}">Account Officer</a></li>
-                                <li><a th:href="@{/corporate/account/viewstatement}" th:text="#{menu.account.statement}">Account Statement</a></li>
-                                <li><a th:href="@{'#'}" th:text="#{menu.account.create}">Create New Account</a></li>
-                                <li><a th:href="@{/corporate/account/viewstatement}">Account Statement</a></li>
-                                <!--<li><a th:href="@{'#'}" th:text="#{menu.account.create}">Create New Acoount</a></li>-->
-                            </ul>
-                        </li>
-                        <li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI().startsWith('/corporate/transfer') ? 'active':''}">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.transfer}"> Transfers</a>
-                            <ul class="dropdown-menu">
-                                <li><a th:href="@{/corporate/transfer/ownaccount}" th:text="#{menu.transfer.own}">Own account transfers </a></li>
-                                <li><a th:href="@{/corporate/transfer/local}" th:text="#{menu.transfer.cmb}">Transfer to Coronation account </a></li>
-                                <li><a th:href="@{/corporate/transfer/interbank}" th:text="#{menu.transfer.other}">Transfer to other banks</a></li>
-                                <!--<li><a th:href="@{/corporate/transfer}" th:text="#{menu.transfer.int}">International transfer</a></li>-->
-                                <li><a th:href="@{/corporate/transfer/bulk}" th:text="#{menu.transfer.bulk}">Bulk transfer</a></li>
 
-                                <!--<li><a th:href="@{/corporate/transfer/settransferlimit}" th:text="#{menu.transfer.limit}">Set transfer limit</a></li>-->
-                                <!--<li><a th:href="@{/corporate/transfer/standingorder}" th:text="#{menu.transfer.order}">Standing order</a></li>-->
-                                <li><a th:href="@{/corporate/transfer/pending}">Pending Transfer</a></li>
-
-                            </ul>
-                        </li>
-                        <!--<li><a href="#" th:text="#{menu.bill}">Bill Payments</a></li>-->
-                        <!--<li><a href="#" th:text="#{menu.investment}">Investment</a></li>-->
-                        <!--<li class="dropdown">-->
-                            <!--<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.servreq}"> Service Requests </a>-->
-                            <!--<ul class="dropdown-menu">-->
-                                <!--<li><a th:href="@{/corporate/requests/track}" th:text="#{menu.servreq.track}">Track Requests</a></li>-->
-                                <!--<li role="separator" class="divider"></li>-->
-                                <!--<p th:each="requests : ${serviceRequests}">-->
-                                <!--<li><a th:href="@{/corporate/requests/} + ${requests.id}" th:text="${requests.requestName}"></a></li>-->
-                                <!--</p>-->
-                            <!--</ul>-->
-                        <!--</li>-->
-
-              <li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI().startsWith('/corporate/requests') ? 'active':''}">
-
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.servreq}"> Service Requests </a>
-                            <ul class="dropdown-menu">
-                                <li><a th:href="@{/corporate/requests/track}" th:text="#{menu.servreq.track}">Track Requests</a></li>
-                                <p th:each="requests : ${serviceRequests}">
-                                <li><a th:href="@{/corporate/requests/} + ${requests.id}" th:text="${requests.requestName}"></a></li>
-                                </p>
-                            </ul>
-                        </li>
-
-                        <li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI().startsWith('/corporate/settings') ? 'active':''}">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.settings}"> Settings </a>
-                            <ul class="dropdown-menu">
-                                <li><a th:href="@{/corporate/settings/alert_preference}" th:text="#{menu.settings.alert}">Alert Preference</a></li>
-                                <li><a th:href="@{/corporate/settings/change_password}" th:text="#{menu.settings.password}">Change Password</a></li>
-                            </ul>
-                        </li>
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> More </a>
-                            <ul class="dropdown-menu">
-                                <li><a th:href="@{/corporate/token/sync}" th:text="#{menu.token.sync}">Synchronize Token</a></li>
-                                <li><a th:href="@{/corporate/token/lost}" th:text="#{menu.token.report}">Report Lost Token</a></li>
-                                <li><a th:href="@{/corporate/beneficiary}">Beneficiaries</a></li>
-                                <li><a th:href="@{/corporate/mailbox/inbox}" th:text="#{menu.mail}"> Mailbox</a></li>
-                                <li sec:authorize="hasAuthority('ADD_CORPORATE_USER')"><a th:href="@{/corporate/users}" th:text="#{menu.usermanagement}">User Management</a></li>
-                            </ul>
-                        </li>
-
-
-                    </ul>
-
-                    <ul class="nav navbar-nav navbar-right">
-                        <li><a th:href="@{/corporate/logout}"> Log out <span class="fa-stack fa-lg">
-                                  <i class="fa fa-square fa-stack-1x fa-lg"></i>
-                                  <i class="fa fa-power-off fa-stack-1x fa-inverse"></i>
-                                </span></a></li>
-                    </ul>
-                    </div>
-                    </div>
                 </div>
-            </nav>
-        </div>
-        <a href="/corporate/dashboard" class="logo navbar-right">
-            <img th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
-        </a>
-    </header>
-    <div class=' alert alert-info text-white  no-bd-rad' style="margin:1px !important;background-color:#003056;color:white;"><marquee>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</marquee></div>
-</div>
-
-    <div th:fragment="corp-sidebar" >
-
-        <div class="sidebar-b calende cal  hidden-xs">
-            <div class="alert  time" style=" margin-top: 6px !important;">
 
 
-                <i class="fa fa-calendar " id='datepickerImage' onclick="show()" style="font-size:25px"></i>
+
+                <div class="col-xs-12 col-sm-3 ">
+                    <a href="/corporate/dashboard" class="">
+                        <img class='img-responsive pull-right' style="height:70px" th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
+                    </a>
+                </div>
 
 
-                <!--<div id="time_" class="pull-right text-bold " style="font-weight:bold;color:#003056">
-
-                      <script>
-                          setInterval(
-                              function()
-                              {
-
-                                  var time_function = moment().format('Do MMMM YYYY, h:mm:ss a');
-                                  var holder = document.getElementById('time_');
-                                  holder.innerHTML = time_function;
-                              },
-                              1000) ;
-                      </script>
-                  </div>-->
 
             </div>
-            <!--<div  id="calendar" style="display: block; margin: 0px auto;" class=" calendar hidden-xs hidden-sm "></div>-->
-        </div>
-        <div class="sidebar-bg hidden-xs hidden-sm" style="max-height:200px;">
-            <img style="display: block; margin: 0px auto;" class="center img-responsive" th:src="@{~/customer/img/advert.jpg}"
-                 alt="Coronation Merchant Bank"/>
+            
+        </header>
+
+    
+        <nav class="navbar navbar-default" style="margin: 0px !important;">
+            <div class="">
+                <div class="navbar-header navbar-left">
+                            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                                    data-target="#navbar-collapse-1" aria-expanded="false">
+                                <span class="sr-only">MENU</span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                            </button>
+                            <a class="navbar-brand" href="#" data-toggle="collapse" data-target="#navbar-collapse-1">Menu</a>
+                </div>
+
+                <div class="">
+
+                    <div class="collapse navbar-collapse " id="navbar-collapse-1">
+                        <ul class="nav navbar-nav">
+                            <li th:classappend="${#httpServletRequest.getRequestURI().startsWith('/corporate/dashboard') ? 'active':''}"><a class="menu-link" th:href="@{/corporate/dashboard}">Dashboard</a></li>
+                            <li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI().startsWith('/corporate/account') ? 'active':''}">
+                                <a href="#" class="dropdown-toggle menu-link menu-link" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.account}"> My Accounts</a>
+                                <ul class="dropdown-menu">
+                                    <li><a th:href="@{/corporate/account/customize}" th:text="#{menu.account.customize}">Customise Accounts</a></li>
+                                    <li><a th:href="@{/corporate/account/settings}" th:text="#{menu.account.settings}">Account Settings</a></li>
+                                    <li><a th:href="@{/corporate/account/officer}" th:text="#{menu.account.officer}">Account Officer</a></li>
+                                    <li><a th:href="@{/corporate/account/viewstatement}">Account Statement</a></li>
+                                    <!--<li><a th:href="@{'#'}" th:text="#{menu.account.create}">Create New Acoount</a></li>-->
+                                </ul>
+                            </li>
+                            <li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI().startsWith('/corporate/transfer') ? 'active':''}">
+                                <a href="#" class="dropdown-toggle menu-link" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.transfer}"> Transfers</a>
+                                <ul class="dropdown-menu">
+                                    <li><a th:href="@{/corporate/transfer/ownaccount}" th:text="#{menu.transfer.own}">Own account transfers </a></li>
+                                    <li><a th:href="@{/corporate/transfer/local}" th:text="#{menu.transfer.cmb}">Transfer to Coronation account </a></li>
+                                    <li><a th:href="@{/corporate/transfer/interbank}" th:text="#{menu.transfer.other}">Transfer to other banks</a></li>
+                                    <!--<li><a th:href="@{/corporate/transfer}" th:text="#{menu.transfer.int}">International transfer</a></li>-->
+                                    <!--<li><a th:href="@{/corporate/transfer/bulk}" th:text="#{menu.transfer.bulk}">Bulk transfer</a></li>-->
+
+                                    <!--<li><a th:href="@{/corporate/transfer/settransferlimit}" th:text="#{menu.transfer.limit}">Set transfer limit</a></li>-->
+                                    <!--<li><a th:href="@{/corporate/transfer/standingorder}" th:text="#{menu.transfer.order}">Standing order</a></li>-->
+                                    <li><a th:href="@{/corporate/transfer/pending}">Pending Transfer</a></li>
+
+                                </ul>
+                            </li>
+                            <!--<li><a href="#" th:text="#{menu.bill}">Bill Payments</a></li>-->
+                            <!--<li><a href="#" th:text="#{menu.investment}">Investment</a></li>-->
+                            <li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI().startsWith('/corporate/requests') ? 'active':''}">
+                                <a href="#" class="dropdown-toggle menu-link" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.servreq}"> Service Requests </a>
+                                <ul class="dropdown-menu">
+                                    <li><a th:href="@{/corporate/requests/track}" th:text="#{menu.servreq.track}">Track Requests</a></li>
+                                    <p th:each="requests : ${serviceRequests}">
+                                    <li><a th:href="@{/corporate/requests/} + ${requests.id}" th:text="${requests.requestName}"></a></li>
+                                    </p>
+                                </ul>
+                            </li>
+
+                            <li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI().startsWith('/corporate/settings') ? 'active':''}">
+                                <a href="#" class="dropdown-toggle menu-link" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="#{menu.settings}"> Settings </a>
+                                <ul class="dropdown-menu">
+                                    <li><a th:href="@{/corporate/settings/alert_preference}" th:text="#{menu.settings.alert}">Alert Preference</a></li>
+                                    <li><a th:href="@{/corporate/settings/change_password}" th:text="#{menu.settings.password}">Change Password</a></li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle menu-link" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> More </a>
+                                <ul class="dropdown-menu">
+                                    <li><a th:href="@{/corporate/token/sync}" th:text="#{menu.token.sync}">Synchronize Token</a></li>
+                                    <li><a th:href="@{/corporate/token/lost}" th:text="#{menu.token.report}">Report Lost Token</a></li>
+                                    <li><a th:href="@{/corporate/beneficiary}">Beneficiaries</a></li>
+                                    <li><a th:href="@{/corporate/mailbox/inbox}" th:text="#{menu.mail}"> Mailbox</a></li>
+                                    <li sec:authorize="hasAuthority('ADD_CORPORATE_USER')"><a th:href="@{/corporate/users}" th:text="#{menu.usermanagement}">User Management</a></li>
+                                </ul>
+                            </li>
+
+
+                        </ul>
+
+                        <ul class="nav navbar-nav pull-right">
+                                    <li><a th:href="@{/corporate/logout}"> Log out 
+                                    <!--<span class="fa-stack fa-lg no-bd-rad">-->
+                                <!--<i class="fa fa-square fa-stack-1x fa-lg no-bd-rad"></i>-->
+                                    <i class="fa fa-power-off fa-inverse no-bd-rad power" style="font-size:12px"></i>
+                                    <!--</span>-->
+                                    </a>
+                                    </li>
+                                </ul>
+                    </div>
+                </div>
+
+            </div>
+        </nav>
+        <div class="info-bar">
+            Lorem Ipsum Dorem er uu
         </div>
     </div>
 
+    <div th:fragment="corp-sidebar" >
+
+        <!--date-->
+    <div class=" hidden-xs bg-dan">
+        <div class="no-bd no-bd-rad   time" style=" margin-top: 6px !important;margin-bottom:0px !important;border-top:2px solid #ebdfdb !important;border-bottom:2px solid #ebdfdb !important;">
+             <span class=" ">
+                <i class="fa fa-calendar-plus-o datepicker cal-icon " data-provide="datepicker" onclick="show()" style="font-size:20px;background:transparent !important;border:0px !important"></i>
+            </span>
+            <span class="  " >
+                <span class="time-icon" id='day' style="font-size:13px;"></span><span>,</span>
+                <span class='text-bold time-icon' id='cal_date' style="font-size:14px;"></span>                 
+            </span>        
+             <script>
+                      setInterval(
+                          function()
+                          {
+                               
+
+                                var timer = moment().format('LTS'); //timer in hours,minutes and seconds
+                                var day = moment().format('dddd'); // get the current day
+                                var cur_date = moment().format("D MMMM");
+
+
+                                var time_holder = document.getElementById('time');// get where to insert the timer
+                                var day_holder = document.getElementById('day'); // get where to insert the current day
+                                var cur_date_holder = document.getElementById('cal_date'); // get where to insert the current date
+                                
+                                time_holder.innerHTML = timer;
+                                day_holder.innerHTML = day;
+                                cur_date_holder.innerHTML = cur_date;
+                            //   var time_function = moment().format('Do MMMM YYYY, h:mm:ss a');
+                            //   var holder = document.getElementById('time_');
+                            //   holder.innerHTML = time_function;
+                          },
+                          1000) ;
+                  </script>
+             
+
+        </div>
+        <!--<div  id="calendar" style="display: block; margin: 0px auto;" class=" calendar hidden-xs hidden-sm "></div>-->
+    </div>
+
+    <!--time-->
+    <div class="">
+        <div class='time no-bd no-bd-rad ' style="border-bottom:2px solid #ebdfdb !important;">
+             <span class=" ">
+                <i class="fa fa-clock-o datepicker cal-icon " data-provide="datepicker" onclick="show()" style="font-size:20px;background:transparent !important;border:0px !important"></i>
+            </span>
+             <span id='time' class="text-bold no-bd" style="font-size:14px;padding-left:10px;"></span>
+        </div>
+    </div>
+    
+    
+
+    <!--image placeholdder-->
+    <div class="sidebar-bg hidden-xs hidden-sm bg-succes" style="max-height:300px;margin-top:10px;">
+        <img style="display: block; margin: 0px auto;" class="center img-responsive" th:src="@{~/customer/img/advert.jpg}"
+             alt="Coronation Merchant Bank"/>
+    </div>
+    </div>
+
 <!-- footer content -->
-<footer th:fragment="corp-footer">
-    <div class="container">
-        <div class="footer_bar">
+<footer th:fragment="corp-footer" style='background:#ebecef !important' >
+    <div class="c">
+        <div class="footer_bar "  >
             <div class="col-md-6 col-xs-12">
                 <ul class="list_group">
                     <li><a href="#" target="_blank">Privacy policy</a></li>

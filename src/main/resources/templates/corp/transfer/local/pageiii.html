@@ -4,91 +4,132 @@
 
 </head>
 <body>
-<header th:replace="corp_layout :: corp-header">
-</header>
+<div class="container">
+    <header th:replace="corp_layout :: corp-header">
+    </header>
 
-<section class="content-wrapper">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-4 col-sm-4">
-                <h5 class="page_header"> Transaction Summary</h5>
+    <section class="content-wrapper">
+        <div class="containe">
+            <div class="row">
+                <div class="col-md-4 col-sm-4">
+                    <h5 class="page_header"> Transaction Summary</h5>
+                    <select class="form-control invisible">
+                        <option value="account">Account Overview</option>
+                </select>
+                </div>
+                 <p class="col-xs-12 invisible">
+                    Fields marked <span style="color:red">*</span> are compulsory
+            </p>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-md-8 content-bg">
-                <div class="row form-spacing">
-                    <!--<div class="col-md-6 col-sm-6">-->
+            <div class="row">
+                <div class="col-md-9 content-bg">
+                    <div class="col-sm-offset-3  col-sm-6 form-spacin">
+                        <!--<div class="col-md-6 col-sm-6">-->
 
 
-                    <table>
-                        <tr>
 
-                            <th>Source account</th>
-                            <td th:text="${transRequest.customerAccountNumber}"></td>
+                        <table class="table table-hover center text-center">
+                            <tbody class="tab">
+                            <tr>
 
-                        </tr>
-                        <tr>
+                                <th>Source account</th>
+                                <td th:text="${transferRequest.customerAccountNumber}"></td>
 
-                            <th>Destination account</th>
-                            <td th:text="${transRequest.beneficiaryAccountNumber}"></td>
+                            </tr>
+                            <tr>
 
-                        </tr>
-                        <tr>
+                                <th>Destination account</th>
+                                <td th:text="${transferRequest.beneficiaryAccountNumber}"></td>
 
-                            <th>Destination account owner</th>
-                            <td th:text="${transRequest.beneficiaryAccountName}"></td>
+                            </tr>
+                            <tr>
 
-                        </tr>
-                        <tr>
+                                <th>Destination account owner</th>
+                                <td th:text="${transferRequest.beneficiaryAccountName}"></td>
 
-                            <th>Amount</th>
-                            <td th:text="${transRequest.amount}"></td>
+                            </tr>
+                            <tr>
 
-                        </tr>
-                        <tr>
+                                <th>Amount</th>
+                                <td th:text="${transferRequest.amount}"></td>
 
-                            <th>Remarks</th>
-                            <td th:text="${transRequest.remarks}"></td>
+                            </tr>
+                            <tr>
 
-                        </tr>
-                    </table>
+                                <th>Remarks</th>
+                                <td th:text="${transferRequest.remarks}"></td>
 
-
-                    <form method="post" th:action="@{/corporate/transfer/local/auth}" th:object="${transRequest}">
-                        <input type="hidden" th:field="*{customerAccountNumber}"/>
-                        <input type="hidden" th:field="*{beneficiaryAccountNumber}"/>
-                        <input type="hidden" th:field="*{beneficiaryAccountName}"/>
-                        <input type="hidden" th:field="*{amount}"/>
-                        <input type="hidden" th:field="*{remarks}"/>
+                            </tr>
+                            </tbody>
+                        </table>
 
 
+                        <form method="post" th:action="@{/retail/transfer/process}" th:object="${transferRequest}">
+                            <input type="hidden" th:field="*{customerAccountNumber}"/>
+                            <input type="hidden" th:field="*{beneficiaryAccountNumber}"/>
+                            <input type="hidden" th:field="*{beneficiaryAccountName}"/>
+                            <input type="hidden" th:field="*{amount}"/>
+                            <input type="hidden" th:field="*{remarks}"/>
+
+                            <input type="hidden" th:field="*{id}"/>
                         <div class="checkbox">
                             <label style="font-weight: bold; color: black"><input type="checkbox" id="add" name="add"/>Add Beneficiary</label>
                         </div>
 
                         <div class="form-group">
-                            <a style="cursor: pointer;" onclick="goBack()" >Modify</a>
+                            <!--<a style="cursor: pointer;" onclick="goBack()" >Modify</a>-->
                             <button type="submit" class="btn btn-outline-primary">Proceed</button>
-                            <a th:href="@{/corporate/transfer/local}">Cancel</a>
+                            <a th:href="@{/retail/transfer/local}">Cancel</a>
 
 
-                        </div>
-                    </form>
-                    <!--</div>-->
+
+                        <span class="form-group checkbox col-xs-5" th:if="${newBen}!=null">
+                            <label style="font-weight: bold; color: black;margin-left:10px !important">
+                                <input  type="checkbox" id="add" name="add"/>Add Beneficiary
+                            </label>
+                        </span>
+                        <div class="form-group col-xs-12">
+                            <!--<a style="cursor: pointer;" onclick="goBack()" >Modify</a>-->
+                            <button type="submit" class="btn btn-link required-step">Proceed</button>
+
+                            <button th:href="@{/retail/transfer/local}" class='btn btn-link less-required'>Cancel</button>
+
+                             <button type='button' class='btn btn-link less-required' onclick="edit();">Modify</button>
+
+                            </div>
+                        </form>
+
+                        <form method="post" id="form_edit" th:action="@{/retail/transfer/local/edit}" th:object="${transferRequest}">
+                            <input type="hidden" th:field="*{customerAccountNumber}"/>
+                            <input type="hidden" th:field="*{beneficiaryAccountNumber}"/>
+                            <input type="hidden" th:field="*{beneficiaryAccountName}"/>
+                            <input type="hidden" th:field="*{amount}"/>
+                            <input type="hidden" th:field="*{remarks}"/>
+                        </form>
+                        <!--</div>-->
+                    </div>
                 </div>
-            </div>
-            <div class="col-md-3 sidebar">
-                <div class="sidebar-bg">hfdhgk</div>
-                <div class="sidebar-bg">jgjgjk</div>
+                <div class="col-md-3 pull-right">
+                    <div th:replace="corp_layout :: corp-sidebar" class="" >
+                    </div>
+                </div>
+
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
 
-<!-- CONTENT-WRAPPER SECTION END-->
-<footer th:replace="corp_layout ::corp-footer">
-</footer>
-<script th:src="@{~/customer/js/accountdetails.js}"></script>
+    <!-- CONTENT-WRAPPER SECTION END-->
+    <footer th:replace="corp_layout ::corp-footer">
+    </footer>
+    <script th:src="@{~/customer/js/accountdetails.js}"></script>
+    <script>
+         function edit(){
+             $("#form_edit").submit();
+         }
+
+
+    </script>
+</div>
 </body>
 </html>

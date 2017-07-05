@@ -131,7 +131,7 @@ public interface CorporateUserService{
      * @param alertPreference
      * @return
      */
-    boolean changeAlertPreference(CorporateUserDTO corporateUser, AlertPref alertPreference);
+    boolean changeAlertPreference(CorporateUser corporateUser, AlertPref alertPreference);
 
     public String addUserFromCorporateAdmin(CorpCorporateUserDTO user) throws InternetBankingException;
 

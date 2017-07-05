@@ -113,25 +113,7 @@ public class BeneficiaryController {
             RetailUser user = retailUserService.getUserByName(principal.getName());
             String message2 = localBeneficiaryService.addLocalBeneficiary(user, localBeneficiaryDTO);
 
-            //String email = user.getEmail();
 
-            String message = messages.getMessage("newbeneficiary.alert.message",null,locale);
-            System.out.println(message);
-            try {
-                Email mail = new Email.Builder()
-                        .setRecipient("adebimpe.ayoola@longbridgetech.com")
-                        .setSender("ayoolabimpe@gmail.com")
-                        .setSubject("New Beneficiary Notification")
-                        .setBody(message)
-                        .build();
-                mailService.send(mail);
-                logger.debug("Message sent successfully");
-                //redirectAttributes.addFlashAttribute("message", "Message sent successfully");
-
-            } catch (Exception ex) {
-                logger.error("Failed to send Email", ex);
-                //redirectAttributes.addFlashAttribute("failure", "Failed to send message");
-            }
             redirectAttributes.addFlashAttribute("message", message2);
         } catch (InternetBankingException e) {
 

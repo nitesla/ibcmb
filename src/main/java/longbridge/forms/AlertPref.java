@@ -8,14 +8,13 @@ import org.hibernate.validator.constraints.NotEmpty;
 public class AlertPref {
 
     @NotEmpty
-    private String preference;
+    private String code;
 
-    public String getPreference() {
-        return preference;
+    public String getCode() {
+        return code;
     }
 
-    public void setPreference(String preference) {
-        this.preference = preference;
+    public void setCode(String code) {
+        this.code = code;
     }
-
 }
