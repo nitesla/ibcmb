@@ -3,7 +3,9 @@ package longbridge.models;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.Entity;
+import javax.persistence.*;
+import java.util.Date;
+import java.util.Set;
 
 /**
  * Created by Fortune on 7/5/2017.
@@ -13,16 +15,15 @@ import javax.persistence.Entity;
 @Where(clause = "del_Flag='N'")
 public class CorpTransferAuth extends  AbstractEntity {
 
-    CorporateRole role;
-    CorpTransRequest corpTransRequest;
 
-    public CorporateRole getRole() {
-        return role;
-    }
+    private String status;
+    private Date lastEntry;
 
-    public void setRole(CorporateRole role) {
-        this.role = role;
-    }
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<CorpTransReqEntry> authorizations;
+
+    @OneToOne
+    private CorpTransRequest corpTransRequest;
 
     public CorpTransRequest getCorpTransRequest() {
         return corpTransRequest;
@@ -30,5 +31,29 @@ public class CorpTransferAuth extends  AbstractEntity {
 
     public void setCorpTransRequest(CorpTransRequest corpTransRequest) {
         this.corpTransRequest = corpTransRequest;
+    }
+
+    public Set<CorpTransReqEntry> getAuthorizations() {
+        return authorizations;
+    }
+
+    public void setAuthorizations(Set<CorpTransReqEntry> authorizations) {
+        this.authorizations = authorizations;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public Date getLastEntry() {
+        return lastEntry;
+    }
+
+    public void setLastEntry(Date lastEntry) {
+        this.lastEntry = lastEntry;
     }
 }

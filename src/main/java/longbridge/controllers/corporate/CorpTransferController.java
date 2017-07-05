@@ -42,8 +42,6 @@ import java.util.stream.StreamSupport;
 @RequestMapping("/corporate/transfer")
 public class CorpTransferController {
 
-    @Autowired
-    CorpTransferRequestRepo transferRequestRepo;
     private CorporateService corporateService;
     private CorporateRepo corporateRepo;
     private CorporateUserService corporateUserService;
@@ -56,9 +54,8 @@ public class CorpTransferController {
     private FinancialInstitutionService financialInstitutionService;
     private TransferErrorService transferErrorService;
     private SecurityService securityService;
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
-    @Autowired
-    private CorpTransferService corpTransferService;
+
+
 
     @Autowired
     public CorpTransferController(CorporateService corporateService, CorporateRepo corporateRepo, CorporateUserService corporateUserService, IntegrationService integrationService, CorpTransferService transferService, AccountService accountService, MessageSource messages, LocaleResolver localeResolver, CorpLocalBeneficiaryService corpLocalBeneficiaryService, FinancialInstitutionService financialInstitutionService, TransferErrorService transferErrorService, SecurityService securityService) {
@@ -98,7 +95,7 @@ public class CorpTransferController {
             pendAuth.setRole(role);
             pendAuths.add(pendAuth);
         }
-        transferRequest.setPendAuths(pendAuths);
+//        transferRequest.setPendAuths(pendAuths);
         transferRequestRepo.save(transferRequest);
 
     }
@@ -292,8 +289,8 @@ public class CorpTransferController {
     @GetMapping("/pending")
     public String getPendingTransfer(Principal principal,Model model){
 
-        List<PendAuth> pendAuths = corpTransferService.getPendingAuthorizations();
-        model.addAttribute("pendAuths", pendAuths);
+//        List<PendAuth> pendAuths = corpTransferService.getPendingAuthorizations();
+//        model.addAttribute("pendAuths", pendAuths);
         return "corp/transfer/pendingtransfer/view";
     }
 

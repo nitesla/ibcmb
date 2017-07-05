@@ -35,5 +35,12 @@ public interface CorpTransferService {
 
     String addTransferRequest(CorpTransferRequestDTO transferRequestDTO) throws InternetBankingException;
 
-    List<PendAuth> getPendingAuthorizations();
+//    List<PendAuth> getPendingAuthorizations();
+
+    CorpTransferAuth getAuthorizations(CorpTransRequest transRequest);
+
+    void addAuthorization(CorpTransReqEntry transReqEntry, CorpTransRequest corpTransRequest);
+
+
+
 }
