@@ -71,9 +71,9 @@
                                 <tr>
                                     <th>Operation</th>
                                     <th>Initiated By</th>
-                                    <!--<th>Date</th>-->
+                                    <th>Date</th>
                                     <th>Verified By</th>
-                                    <!--<th>Date</th>-->
+                                    <th>Date</th>
                                     <th>Status</th>
 
                                 </tr>
@@ -88,9 +88,9 @@
                                 <tr>
                                     <th>Operation</th>
                                     <th>Initiated By</th>
-                                    <!--<th>Date</th>-->
+                                    <th>Date</th>
                                     <th>Verified By</th>
-                                    <!--<th>Date</th>-->
+                                    <th>Date</th>
                                     <th>Status</th>
                                 </tr>
                                 </tfoot>
@@ -134,64 +134,60 @@
             "ajax": "/admin/verifications/verified/all",
             "dom": 'T<"clear">frtlp',
             "columns": [
-                {"data":"description"},
+                {"data":   "description"},
                 { "data": "initiatedBy" },
-//                { "data": "initiatedOn" },
-                { "data": "verifiedBy" ,"defaultContent": "<i>Not Verified</i>"},
-//                { "data": "verifiedOn", "defaultContent": "<i>Not Verified</i>" },
+                { "data": "initiatedOn" },
+                { "data": "verifiedBy","defaultContent": "<i>Not Verified</i>"},
+                { "data": "verifiedOn","defaultContent": "<i>Not Verified</i>" },
                 { "data": "status" }
 
-            ] ,
-//
-//            , "columnDefs" : [ {
-//                "targets" : 2,
-//                "data" : "initiatedOn",
-//                "render" : function(data, type,full, meta) {
-//                    if (type === 'display') {
-//                        if(data == null)
-//                            return data;
-//                        var dtStart = new Date(parseInt(data));
-//                        var dtStartWrapper = moment(dtStart);
-//                        //return dtStartWrapper.format('DD/MM/YYYY HH:mm');
-//                        return dtStartWrapper.format('LLLL');
-//                    }
-//                    return data;
-//                }
-//            } ],
-//            "columnDefs" : [ {
-//                "targets" : 4,
-//                "data" : "verifiedOn",
-//                "render" : function(data, type,full, meta) {
-//                    if (type === 'display') {
-//                        if(data == null)
-//                            return data;
-//                        var dtStart = new Date(parseInt(data));
-//                        var dtStartWrapper = moment(dtStart);
-//                        //return dtStartWrapper.format('DD/MM/YYYY HH:mm');
-//                        return dtStartWrapper.format('LLLL');
-//                    }
-//                    return data;
-//                }
-//            } ],
-
-            "columnDefs" : [ {
-                "targets" : 3,
-                "data" : "status",
+            ] ,"columnDefs" : [ {
+                "targets" : 2,
+                "data" : "initiatedOn",
                 "render" : function(data, type,full, meta) {
                     if (type === 'display') {
-                        if (data == "PENDING") {
-                            return "<i class='fa fa-question dt-body-center' style='color:green;display:block; text-align:center; margin:0 auto;' ></i>";
-                        } else if (data == "APPROVED") {
-                            return "<i class='fa fa-check  dt-body-center' style='color:green;display:block; text-align:center; margin:0 auto;'></i>";
-                        }
-                        else{
-                            return "<i class='fa fa-times  dt-body-center' style='color:red;display:block; text-align:center; margin:0 auto;'></i>"
-                        }
+                        if(data == null)
+                            return data;
+                        var dtStart = new Date(parseInt(data));
+
+                        var dtStartWrapper = moment(dtStart);
+                        return dtStartWrapper.format('LLLL');
                     }
                     return data;
                 }
+            } , {
+                "targets": 4,
+                "data": "initiatedOn",
+                "render": function (data, type, full, meta) {
+                    if (type === 'display') {
 
-            } ]});
+                        if (data == null)
+                            return data;
+                        var dtStart = new Date(parseInt(data));
+                        var dtStartWrapper = moment(dtStart);
+                        return dtStartWrapper.format('LLLL');
+                    }
+                    return data;
+                }
+            },
+                {
+                    "targets": 5,
+                    "data": "status",
+                    "render": function (data, type, full, meta) {
+                        if (type === 'display') {
+                            if (data == "PENDING") {
+                                return "<i class='fa fa-question dt-body-center' style='color:green;display:block; text-align:center; margin:0 auto;'></i>";
+                            } else if (data == "APPROVED") {
+                                return "<i class='fa fa-check  dt-body-center' style='color:green;display:block; text-align:center; margin:0 auto;'></i>";
+                            }
+                            else {
+                                return "<i class='fa fa-times  dt-body-center' style='color:red;display:block; text-align:center; margin:0 auto;'></i>"
+                            }
+                        }
+                        return data;
+                    }
+                }
+       ]});
 
         table.on('select', function() {
 

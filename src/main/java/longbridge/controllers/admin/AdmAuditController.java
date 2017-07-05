@@ -1,6 +1,11 @@
 package longbridge.controllers.admin;
 
+import longbridge.dtos.CodeDTO;
+import longbridge.models.AuditRetrieve;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.formula.functions.T;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,15 +16,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import longbridge.models.AuditConfig;
 import longbridge.services.AuditConfigService;
+
+import java.util.List;
 
 
 /**
@@ -28,6 +30,7 @@ import longbridge.services.AuditConfigService;
 @Controller
 @RequestMapping(value = "/admin/audit")
 public class AdmAuditController {
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     AuditConfigService auditCfgService;
@@ -57,6 +60,40 @@ public class AdmAuditController {
     }
 
 
+    @GetMapping("/{id}/edit")
+    public String ListRevisedEnties(@PathVariable Long id)
+    {
+        AuditConfig audit = auditCfgService.getAuditEntity(id);
+       String entityName= audit.getEntityName();
+        List<T>  entity =auditCfgService.revisedEntity(entityName);
+
+        System.out.println("this is the size"+entity.size());
+
+        return "adm/audit/view";
+//       try
+//       {
+//           Class<?> cls = Class.forName(entityName);
+//           AuditRetrieve auditRetrieve=new AuditRetrieve();
+//           auditRetrieve.getRevisions(cls);
+//       }
+//       catch (ClassNotFoundException e)
+//       {
+//           e.printStackTrace();
+//       }
+    }
+
+//    @GetMapping(path = "all/revision")
+//    public @ResponseBody DataTablesOutput<T> getAllRevisionForEntity(DataTablesInput input)
+//    {
+//        Pageable pageable=DataTablesUtils.getPageable(input);
+//
+//
+//
+//
+//
+//    }
+
+
 
     @GetMapping(path = "all/entityname")
     public @ResponseBody DataTablesOutput<AuditConfig> getAllEntities(DataTablesInput input)
@@ -64,6 +101,7 @@ public class AdmAuditController {
         Pageable pageable=DataTablesUtils.getPageable(input);
         Page<AuditConfig> auditConfig=null;
         auditConfig=auditCfgService.getEntities(pageable);
+
         DataTablesOutput<AuditConfig> out=new DataTablesOutput<>();
         out.setDraw(input.getDraw());
         out.setData(auditConfig.getContent());
@@ -78,7 +116,6 @@ public class AdmAuditController {
     public String listEntity(Model model) {
         return "adm/audit/view";
     }
-
 
     
     @PostMapping

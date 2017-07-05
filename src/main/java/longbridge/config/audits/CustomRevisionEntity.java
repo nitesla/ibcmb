@@ -37,8 +37,7 @@ public class CustomRevisionEntity extends DefaultRevisionEntity implements Seria
     public void setLastChangedBy(String lastChangedBy) {
         this.lastChangedBy = lastChangedBy;
     }
-    
-    
+
     public String getIpAddress() {
 		return ipAddress;
 	}

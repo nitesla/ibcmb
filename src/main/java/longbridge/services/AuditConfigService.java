@@ -1,11 +1,16 @@
 package longbridge.services;
 
+import longbridge.dtos.AuditConfigDTO;
 import longbridge.exception.InternetBankingException;
+import longbridge.models.Code;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import longbridge.models.AuditConfig;
 import org.springframework.security.access.prepost.PreAuthorize;
+
+import java.util.List;
 
 public interface AuditConfigService
 {
@@ -22,5 +27,9 @@ public interface AuditConfigService
 	
 	@PreAuthorize("hasAuthority('GET_AUDIT_TABLES')")
 	Page<AuditConfig> findEntities(String pattern,Pageable pageDetails);
+
+	AuditConfig getAuditEntity(Long auditId);
+
+	List<T> revisedEntity(String entityName);
 
 }
