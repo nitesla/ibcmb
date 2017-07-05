@@ -268,12 +268,12 @@ public class CorpTransferController {
     }
 
 
-    @GetMapping("/pending")
-    public String getPendingAuth(@ModelAttribute("transferRequest") CorpTransRequest transRequest, Model model){
+    @GetMapping("/{id}/pending")
+    public String getPendingAuth(@PathVariable Long id,  Model model){
 
-        CorpTransferAuth corpTransferAuth = corpTransferService.getAuthorizations(transRequest);
+        CorpTransRequest corpTransRequest = corpTransferService.getTransfer(id);
+        CorpTransferAuth corpTransferAuth = corpTransferService.getAuthorizations(corpTransRequest);
         model.addAttribute("transferAuth",corpTransferAuth);
-
         return "corp/transfer/pendingtransfer/view";
     }
 
