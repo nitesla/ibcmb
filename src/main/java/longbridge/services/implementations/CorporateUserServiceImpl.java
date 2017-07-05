@@ -2,7 +2,6 @@ package longbridge.services.implementations;
 
 import longbridge.dtos.CorpCorporateUserDTO;
 import longbridge.dtos.CorporateUserDTO;
-import longbridge.dtos.ServiceReqConfigDTO;
 import longbridge.dtos.SettingDTO;
 import longbridge.exception.*;
 import longbridge.forms.AlertPref;
@@ -18,7 +17,6 @@ import longbridge.services.*;
 import longbridge.utils.DateFormatter;
 import longbridge.utils.Verifiable;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.PropertyMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -257,8 +255,8 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             createUserOnEntrust(corporateUser);
                 Email email = new Email.Builder()
                         .setRecipient(user.getEmail())
-                        .setSubject(messageSource.getMessage("customer.create.subject", null, locale))
-                        .setBody(String.format(messageSource.getMessage("customer.create.message", null, locale), fullName, user.getUserName(), password))
+                        .setSubject(messageSource.getMessage("corporate.customer.create.subject", null, locale))
+                        .setBody(String.format(messageSource.getMessage("corporate.customer.create.message", null, locale), fullName, user.getUserName(), password, corporateUser.getCorporate().getCustomerId()))
                         .build();
                 mailService.send(email);
             logger.info("New corporate user {} created", corporateUser.getUserName());

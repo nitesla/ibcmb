@@ -509,6 +509,7 @@ public class CorporateServiceImpl implements CorporateService {
 
 
         List<CorporateRole> corporateRoles = corporateRoleRepo.findByCorporate(corporate);
+        sortRolesByRank(corporateRoles);
         List<CorporateRoleDTO> roles = convertCorporateRoleEntitiesToDTOs(corporateRoles);
 
 
