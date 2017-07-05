@@ -1,15 +1,9 @@
 package longbridge.controllers.corporate;
 
-import longbridge.dtos.CorpLocalBeneficiaryDTO;
-import longbridge.dtos.CorpTransferRequestDTO;
-import longbridge.dtos.LocalBeneficiaryDTO;
-import longbridge.dtos.TransferRequestDTO;
+import longbridge.dtos.*;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferErrorService;
-import longbridge.models.Account;
-import longbridge.models.CorpLocalBeneficiary;
-import longbridge.models.CorporateUser;
-import longbridge.models.FinancialInstitutionType;
+import longbridge.models.*;
 import longbridge.services.*;
 import longbridge.utils.TransferType;
 import longbridge.validator.transfer.TransferValidator;
@@ -26,10 +20,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 /**
@@ -47,12 +39,14 @@ public class CorpLocalTransferController {
     private FinancialInstitutionService financialInstitutionService;
     private TransferValidator validator;
     private TransferErrorService transferErrorService;
+    private CorporateService corporateService;
     private String page = "corp/transfer/local/";
     @Value("${bank.code}")
     private String bankCode;
 
     @Autowired
-    public CorpLocalTransferController(CorporateUserService corporateUserService, CorpTransferService corpTransferService, MessageSource messages, LocaleResolver localeResolver, CorpLocalBeneficiaryService corpLocalBeneficiaryService, FinancialInstitutionService financialInstitutionService, TransferValidator validator, TransferErrorService transferErrorService) {
+    public CorpLocalTransferController(CorporateUserService corporateUserService, CorpTransferService corpTransferService, MessageSource messages, LocaleResolver localeResolver, CorpLocalBeneficiaryService corpLocalBeneficiaryService, FinancialInstitutionService financialInstitutionService, TransferValidator validator, TransferErrorService transferErrorService
+            ,CorporateService corporateService) {
         this.corporateUserService = corporateUserService;
         this.corpTransferService = corpTransferService;
         this.messages = messages;
@@ -61,13 +55,14 @@ public class CorpLocalTransferController {
         this.financialInstitutionService = financialInstitutionService;
         this.validator = validator;
         this.transferErrorService = transferErrorService;
+        this.corporateService=corporateService;
     }
 
 
     @GetMapping("")
     public String index(Model model, Principal principal) throws Exception {
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
-        model.addAttribute("localBen", corpLocalBeneficiaryService.getCorpLocalBeneficiaries(corporateUser.getCorporate()));
+
 
         return page + "pagei";
     }
@@ -108,7 +103,7 @@ public class CorpLocalTransferController {
 
     @GetMapping("/{id}")
     public String transfer(@PathVariable Long id, Model model, HttpServletRequest request) throws Exception {
-        CorpLocalBeneficiary beneficiary = corpLocalBeneficiaryService.getCorpLocalBeneficiary(id);
+        CorpLocalBeneficiaryDTO beneficiary = corpLocalBeneficiaryService.convertEntityToDTO(corpLocalBeneficiaryService.getCorpLocalBeneficiary(id));
         CorpTransferRequestDTO corpTransferRequestDTO = new CorpTransferRequestDTO();
         corpTransferRequestDTO.setBeneficiaryAccountName(beneficiary.getAccountName());
         corpTransferRequestDTO.setBeneficiaryAccountNumber(beneficiary.getAccountNumber());
@@ -163,6 +158,28 @@ public class CorpLocalTransferController {
         requestDTO.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
 
         return page + "pageii";
+    }
+
+
+
+    @ModelAttribute
+    public void getBankBeneficiaries(Model model, Principal principal) {
+        CorporateUser user = corporateUserService.getUserByName(principal.getName());
+        Corporate corporate = corporateService.getCorporateByCustomerId(user.getCorporate().getCustomerId());
+        List<CorpLocalBeneficiary> beneficiaries = StreamSupport.stream(corpLocalBeneficiaryService.getCorpLocalBeneficiaries(corporate).spliterator(), false)
+                .filter(i -> !i.getBeneficiaryBank().equalsIgnoreCase(financialInstitutionService.getFinancialInstitutionByCode(bankCode).getInstitutionCode()))
+                .collect(Collectors.toList());
+
+        beneficiaries = beneficiaries
+                .stream()
+                .filter(Objects::nonNull)
+                .filter(i -> bankCode.equalsIgnoreCase(i.getBeneficiaryBank()))
+                 .collect(Collectors.toList());
+
+        model.addAttribute("localBen", beneficiaries);
+
+
+
     }
 
 }

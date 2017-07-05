@@ -98,9 +98,9 @@ public class CorpTransferController {
     @GetMapping(value = "")
     public String index(HttpServletRequest request) {
 
-        CorpTransferRequestDTO dto = (CorpTransferRequestDTO) request.getSession().getAttribute("transferRequest");
+        CorpTransferRequestDTO dto = (CorpTransferRequestDTO) request.getSession().getAttribute("corpTransferRequest");
         if (dto != null) {
-            request.getSession().removeAttribute("transferRequest");
+            request.getSession().removeAttribute("corpTransferRequest");
             TransferType tranType = dto.getTransferType();
             switch (tranType) {
                 case CORONATION_BANK_TRANSFER:
@@ -249,11 +249,11 @@ public class CorpTransferController {
             corpTransferRequestDTO = (CorpTransferRequestDTO) request.getSession().getAttribute("corpTransferRequest");
 
 
-            corpTransferRequestDTO = transferService.makeTransfer(corpTransferRequestDTO);
+            String response  = transferService.addTransferRequest(corpTransferRequestDTO);
 
 
             model.addAttribute("transRequest", corpTransferRequestDTO);
-            model.addAttribute("message", messages.getMessage("transaction.success", null, locale));
+            model.addAttribute("message", response);
             return "corp/transfer/transferdetails";
 
         } catch (InternetBankingTransferException e) {
