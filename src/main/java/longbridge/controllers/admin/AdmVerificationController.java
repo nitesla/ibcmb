@@ -1,16 +1,11 @@
 package longbridge.controllers.admin;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Version;
 import javax.validation.Valid;
 
 //import longbridge.dtos.PendingDTO;
-import longbridge.dtos.PendingVerification;
 import longbridge.dtos.VerificationDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.VerificationException;
-import longbridge.utils.verificationStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +21,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
-import longbridge.models.AdminUser;
 import longbridge.models.Verification;
 import longbridge.repositories.VerificationRepo;
 import longbridge.services.AdminUserService;
@@ -34,9 +28,6 @@ import longbridge.services.VerificationService;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.security.Principal;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 @Controller
@@ -69,9 +60,10 @@ public class AdmVerificationController {
         try {
             verificationService.verify(id);
             redirectAttributes.addFlashAttribute("message", "Operation approved successfully");
-        }
+            }
 
-        catch (VerificationException ve){
+        catch (VerificationException ve)
+        {
             logger.error("Error verifying the operation",ve);
             redirectAttributes.addFlashAttribute("failure", ve.getMessage());
         }
@@ -151,7 +143,8 @@ public class AdmVerificationController {
 
 
     @GetMapping("/{opId}/pending")
-    public String getPendingOperation(@PathVariable Long opId, Model model) {
+    public String getPendingOperation(@PathVariable Long opId, Model model)
+    {
 
         VerificationDTO verificationDTO = verificationService.getVerification(opId);
         model.addAttribute("operation", verificationDTO.getOperation());
@@ -174,7 +167,8 @@ public class AdmVerificationController {
 
 
     @GetMapping("/verified")
-    public String getVerifiedOperations() {
+    public String getVerifiedOperations()
+    {
         return "adm/makerchecker/verified";
     }
 
@@ -213,7 +207,6 @@ public class AdmVerificationController {
     @GetMapping("/{id}/view")
     public String getObjectsForVerification(@PathVariable Long id, Model model)
     {
-
         VerificationDTO verification = verificationService.getVerification(id);
         model.addAttribute("verification",new VerificationDTO());
         model.addAttribute("verify", verification);
@@ -221,12 +214,11 @@ public class AdmVerificationController {
     }
 
     @GetMapping("/{id}/pendingviews")
-    public String getObjectsForPending(@PathVariable Long id, Model model) {
-
+    public String getObjectsForPending(@PathVariable Long id, Model model)
+    {
         VerificationDTO verification = verificationService.getVerification(id);
         model.addAttribute("verify", verification);
         return "adm/makerchecker/pendingdetails";
     }
-
 
 }

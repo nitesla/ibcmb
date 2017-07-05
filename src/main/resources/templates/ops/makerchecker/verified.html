@@ -21,7 +21,7 @@
 
             </div>
         </div>
-        <div th:replace="layout :: top-nav"></div>
+        <div th:replace="layout :: ops-top-nav"></div>
 
         <!-- page content -->
         <div class="right_col" role="main">
@@ -98,7 +98,9 @@
                                 <tr>
                                     <th>Operation</th>
                                     <th>Initiated By</th>
+                                    <th>Date</th>
                                     <th>Verified By</th>
+                                    <th>Date</th>
                                     <th>Status</th>
 
                                 </tr>
@@ -113,7 +115,9 @@
                                 <tr>
                                     <th>Operation</th>
                                     <th>Initiated By</th>
+                                    <th>Date</th>
                                     <th>Verified By</th>
+                                    <th>Date</th>
                                     <th>Status</th>
                                 </tr>
                                 </tfoot>
@@ -139,6 +143,8 @@
 <script th:src="@{~/bank/js/dataTables.bootstrap.js}"></script>
 <script th:src="@{~/bank/js/dataTables.select.js}"></script>
 <script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
+<script th:src="@{~/bank/js/momentMin.js}"></script>
+
 
 <!-- Page-Level Scripts -->
 <script>
@@ -147,7 +153,7 @@
         var table = $('#verification').DataTable({
             select:true,
             responsive: true,
-            "lengthMenu" : [ [ 5, 10, 20],	[ 5, 10, 20 ] ],
+            "lengthMenu" : [ [ 20, 40, 60, -1],	[ 20, 40, 60, "All" ] ],
             "pagingType" : "simple_numbers",
             "searching": false,
             "paging": true,
@@ -155,29 +161,62 @@
             "ajax": "/ops/verifications/verified/all",
             "dom": 'T<"clear">frtlp',
             "columns": [
-                {"data":"description"},
+                {"data":   "description"},
                 { "data": "initiatedBy" },
-                { "data": "verifiedBy" },
-                { "data": "status" },
+                { "data": "initiatedOn" },
+                { "data": "verifiedBy","defaultContent": "<i>Not Verified</i>"},
+                { "data": "verifiedOn","defaultContent": "<i>Not Verified</i>" },
+                { "data": "status" }
 
             ] ,"columnDefs" : [ {
-                "targets" : 3,
-                "data" : "status",
+                "targets" : 2,
+                "data" : "initiatedOn",
                 "render" : function(data, type,full, meta) {
                     if (type === 'display') {
-                        if (data == "PENDING") {
-                            return "<i class='fa fa-question dt-body-center' style='color:green;display:block; text-align:center; margin:0 auto;' ></i>";
-                        } else if (data == "APPROVED") {
-                            return "<i class='fa fa-check  dt-body-center' style='color:green;display:block; text-align:center; margin:0 auto;'></i>";
-                        }
-                        else{
-                            return "<i class='fa fa-times  dt-body-center' style='color:red;display:block; text-align:center; margin:0 auto;'></i>"
-                        }
+                        if(data == null)
+                            return data;
+                        var dtStart = new Date(parseInt(data));
+
+                        var dtStartWrapper = moment(dtStart);
+                        return dtStartWrapper.format('LLLL');
                     }
                     return data;
                 }
+            }
 
-            } ]});
+            , {
+                "targets": 4,
+                "data": "verifiedOn",
+                "render": function (data, type, full, meta) {
+                    if (type === 'display') {
+
+                        if (data == null)
+                            return data;
+                        var dtStart = new Date(parseInt(data));
+                        var dtStartWrapper = moment(dtStart);
+                        return dtStartWrapper.format('LLLL');
+                    }
+                    return data;
+                }
+            },
+                {
+                    "targets": 5,
+                    "data": "status",
+                    "render": function (data, type, full, meta) {
+                        if (type === 'display') {
+                            if (data == "PENDING") {
+                                return "<i class='fa fa-question dt-body-center' style='color:green;display:block; text-align:center; margin:0 auto;'></i>";
+                            } else if (data == "APPROVED") {
+                                return "<i class='fa fa-check  dt-body-center' style='color:green;display:block; text-align:center; margin:0 auto;'></i>";
+                            }
+                            else {
+                                return "<i class='fa fa-times  dt-body-center' style='color:red;display:block; text-align:center; margin:0 auto;'></i>"
+                            }
+                        }
+                        return data;
+                    }
+                }
+            ]});
 
         table.on('select', function() {
 
@@ -283,7 +322,6 @@
 
     /*]]>*/
 </script>
-
 
 </body>
 </html>

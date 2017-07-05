@@ -2,6 +2,7 @@ package longbridge.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -23,7 +24,7 @@ public class CorpTransferRuleDTO {
     private String roleNames;
     private String corporateName;
     private boolean rank;
-    private Set<CorporateRoleDTO> roles;
+    private List<CorporateRoleDTO> roles;
 
     public Long getId() {
         return id;
@@ -123,11 +124,11 @@ public class CorpTransferRuleDTO {
         this.rank = rank;
     }
 
-    public Set<CorporateRoleDTO> getRoles() {
+    public List<CorporateRoleDTO> getRoles() {
         return roles;
     }
 
-    public void setRoles(Set<CorporateRoleDTO> roles) {
+    public void setRoles(List<CorporateRoleDTO> roles) {
         this.roles = roles;
     }
 }

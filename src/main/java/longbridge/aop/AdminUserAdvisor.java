@@ -1,5 +1,6 @@
 package longbridge.aop;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import longbridge.dtos.VerificationDTO;
 import longbridge.models.AdminUser;
 import longbridge.models.Verification;
@@ -21,6 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import sun.rmi.runtime.Log;
 
 import javax.persistence.EntityManager;
+import java.io.IOException;
 import java.util.Date;
 
 /**
@@ -58,8 +60,8 @@ public class AdminUserAdvisor {
     public void isVerification() {
     }
 
-    @Pointcut("withincode(* verify(..)) && args(verificationDto)")
-    public void isVerify(VerificationDTO verificationDto) {
+    @Pointcut("withincode(* verify(..))")
+    public void isVerify() {
     }
 
 
@@ -68,43 +70,44 @@ public class AdminUserAdvisor {
     }
 
 
-    @Pointcut("execution(public * verify(..)) && args(verificationDto)")
-    public void verified(VerificationDTO verificationDto) {
+    @Pointcut("execution(public * verify(..))")
+    public void verified() {
     }
 
 
 
     //this is after merge of verification
-    @After("isVerification() && isMerging() && isVerify(verificationDto) && args(user)")
-    public void postAdminUserCreation(JoinPoint p, AdminUser user,VerificationDTO verificationDto) {
+    @After("isVerification() && isMerging() && isVerify() && args(user)")
+    public void postAdminUserCreation(JoinPoint p, AdminUser user) {
 
         logger.info("Executing ADD_ADMIN_USER operation");
         adminUserService.createUserOnEntrust(user);
-        logger.info("Created User on entrust");
 //        user.setEntrustId(user.getUserName());
 //        entityManager.merge(user);
         logger.info("After Executing first Post Admin Advice");
     }
-    
+
    // this runs after execution
-    @After("isVerification() && verified(verificationDto)")
-    public void postAdminUserCreation2(JoinPoint p, VerificationDTO verificationDto)
-    {
+    @After("isVerification() && verified() && args(verificationDto)")
+    public void postAdminUserStatusUpdate(JoinPoint p, VerificationDTO verificationDto) throws IOException {
 
-        logger.info("Entering Second Post Admin Advice...");
-        logger.info("Verification dto {}",verificationDto);
-        logger.info("VerificationRepo {}",verificationRepo);
+      Verification verification  = verificationRepo.findOne(verificationDto.getId());
 
+        if(verification.getOperation().equals("UPDATE_ADMIN_STATUS")){
 
-        if(verificationDto.getOperation().equals("UPDATE_ADMIN_STATUS")){
-            AdminUser user = adminUserRepo.findOne(verificationDto.getEntityId());
-    	    String fullName = user.getFirstName()+" "+user.getLastName();
-            String password = passwordPolicyService.generatePassword();
-            user.setPassword(passwordEncoder.encode(password));
-            user.setExpiryDate(new Date());
-            passwordPolicyService.saveAdminPassword(user);
-            adminUserRepo.save(user);
-            adminUserService.sendPostActivateMessage(user, fullName,user.getUserName(),password);
+            AdminUser user = adminUserRepo.findOne(verification.getEntityId());
+            entityManager.detach(user);
+            ObjectMapper objectMapper = new ObjectMapper();
+            AdminUser adminUser = objectMapper.readValue(verification.getOriginalObject(),AdminUser.class);
+            if("A".equals(adminUser.getStatus())){
+                String fullName = user.getFirstName()+" "+user.getLastName();
+                String password = passwordPolicyService.generatePassword();
+                user.setPassword(passwordEncoder.encode(password));
+                user.setExpiryDate(new Date());
+                passwordPolicyService.saveAdminPassword(user);
+                adminUserRepo.save(user);
+                adminUserService.sendPostActivateMessage(adminUser, fullName,user.getUserName(),password);
+            }
     	}
 
 
@@ -112,12 +115,12 @@ public class AdminUserAdvisor {
 
     	//general user creation
 
-    	
+
     	//activation
-    	
-    	
+
+
     }
-    
-   
+
+
 
 }

@@ -10,8 +10,6 @@ import javax.persistence.*;
 @Entity
 public class ModifiedEntityTypeEntity implements Serializable{
 
-
-
     @Id
     @GeneratedValue
     private Integer id;

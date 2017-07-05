@@ -32,8 +32,6 @@ public class Setting extends AbstractEntity implements PrettySerializer{
     private String value;
     private boolean enabled ;
 
-    @ManyToOne
-    private AdminUser modifiedBy;
 
 
     public String getName() {
@@ -77,14 +75,6 @@ public class Setting extends AbstractEntity implements PrettySerializer{
     }
 
 
-	public AdminUser getModifiedBy() {
-        return modifiedBy;
-    }
-
-    public void setModifiedBy(AdminUser modifiedBy) {
-        this.modifiedBy = modifiedBy;
-    }
-
     @Override
     public String toString() {
         return "Setting{" +
@@ -92,7 +82,6 @@ public class Setting extends AbstractEntity implements PrettySerializer{
                 ", description='" + description + '\'' +
                 ", value='" + value + '\'' +
                 ", enabled=" + enabled +
-                ", modifiedBy=" + modifiedBy +
                 '}';
     }
 
@@ -111,6 +100,7 @@ public class Setting extends AbstractEntity implements PrettySerializer{
                 gen.writeStartObject();
                 gen.writeStringField("Name",value.name);
                 gen.writeStringField("Description",value.description);
+                gen.writeStringField("Value",value.value);
                 gen.writeBooleanField("Enabled",value.enabled);
                 gen.writeStringField("Type",value.type);
                 gen.writeEndObject();

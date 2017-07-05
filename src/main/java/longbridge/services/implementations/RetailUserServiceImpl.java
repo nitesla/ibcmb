@@ -10,10 +10,7 @@ import longbridge.exception.*;
 import longbridge.forms.AlertPref;
 import longbridge.forms.CustChangePassword;
 import longbridge.forms.CustResetPassword;
-import longbridge.models.Account;
-import longbridge.models.Code;
-import longbridge.models.Email;
-import longbridge.models.RetailUser;
+import longbridge.models.*;
 import longbridge.repositories.RetailUserRepo;
 import longbridge.security.FailedLoginService;
 import longbridge.services.*;
@@ -28,6 +25,8 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.mail.MailException;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -92,7 +91,6 @@ public class RetailUserServiceImpl implements RetailUserService {
     }
 
     @Override
-    @Verifiable(operation = "UNLOCK_RETAIL_USER", description = "Unlocking a Retail User")
     public String unlockUser(Long id) throws InternetBankingException {
 
         RetailUser user = retailUserRepo.findOne(id);
@@ -272,38 +270,68 @@ public class RetailUserServiceImpl implements RetailUserService {
 
     @Override
     @Transactional
-    @Verifiable(operation = "UPDATE_RETAIL_USER", description = "Change Retail User Activation Status")
+    @Verifiable(operation = "UPDATE_RETAIL_STATUS", description = "Change Retail User Activation Status")
     public String changeActivationStatus(Long userId) throws InternetBankingException {
         try {
             RetailUser user = retailUserRepo.findOne(userId);
             String oldStatus = user.getStatus();
             String newStatus = "A".equals(oldStatus) ? "I" : "A";
             user.setStatus(newStatus);
-            retailUserRepo.save(user);
+            String fullName = user.getFirstName() + " " + user.getLastName();
             if ((oldStatus == null) || ("I".equals(oldStatus)) && "A".equals(newStatus)) {
                 String password = passwordPolicyService.generatePassword();
                 user.setPassword(passwordEncoder.encode(password));
                 user.setExpiryDate(new Date());
                 passwordPolicyService.saveRetailPassword(user);
-                String fullName = user.getFirstName()+" "+user.getLastName();
-                Email email = new Email.Builder()
-                        .setRecipient(user.getEmail())
-                        .setSubject(messageSource.getMessage("customer.reactivation.subject",null,locale))
-                        .setBody(String.format(messageSource.getMessage("customer.reactivation.message",null,locale), fullName, user.getUserName(),password))
-                        .build();
-                mailService.send(email);
+                retailUserRepo.save(user);
+                sendActivationMessage(user, fullName,user.getUserName(),password);
+            } else{
+                user.setStatus(newStatus);
+                retailUserRepo.save(user);
             }
 
             logger.info("Retail user {} status changed from {} to {}", user.getUserName(), oldStatus, newStatus);
             return messageSource.getMessage("user.status.success", null, locale);
 
-        } catch (Exception e) {
+        }
+        catch (MailException me) {
+            throw new InternetBankingException(messageSource.getMessage("mail.failure", null, locale), me);
+        }
+        catch (InternetBankingException ibe) {
+            throw  ibe;
+        }
+        catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("user.status.failure", null, locale), e);
 
         }
     }
 
 
+
+    @Async
+    public void sendPostActivateMessage(User user, String ... args ){
+            Email email = new Email.Builder()
+                    .setRecipient(user.getEmail())
+                    .setSubject(messageSource.getMessage("customer.reactivation.subject", null, locale))
+                    .setBody(String.format(messageSource.getMessage("customer.reactivation.message", null, locale), args))
+                    .build();
+            mailService.send(email);
+
+    }
+
+
+    @Async
+    private void sendActivationMessage(User user, String... args) {
+        RetailUser corpUser = getUserByName(user.getUserName());
+        if ("A".equals(corpUser.getStatus())) {
+            Email email = new Email.Builder()
+                    .setRecipient(user.getEmail())
+                    .setSubject(messageSource.getMessage("customer.reactivation.subject", null, locale))
+                    .setBody(String.format(messageSource.getMessage("customer.reactivation.message", null, locale), args))
+                    .build();
+            mailService.send(email);
+        }
+    }
 
     @Override
     @Transactional
@@ -325,7 +353,11 @@ public class RetailUserServiceImpl implements RetailUserService {
             mailService.send(email);
             logger.info("Retail user {} password reset successfully", user.getUserName());
             return messageSource.getMessage("password.reset.success", null, locale);
-        } catch (Exception e) {
+        }
+        catch (MailException me) {
+            throw new InternetBankingException(messageSource.getMessage("mail.failure", null, locale), me);
+        }
+        catch (Exception e) {
             throw new PasswordException(messageSource.getMessage("password.reset.failure", null, locale), e);
         }
     }
@@ -352,7 +384,12 @@ public class RetailUserServiceImpl implements RetailUserService {
             this.retailUserRepo.save(retailUser);
             logger.info("User {} password has been updated", user.getId());
             return messageSource.getMessage("password.change.success", null, locale);
-        } catch (Exception e) {
+        }
+
+        catch (MailException me) {
+            throw new InternetBankingException(messageSource.getMessage("mail.failure", null, locale), me);
+        }
+        catch (Exception e) {
             throw new PasswordException(messageSource.getMessage("password.change.failure", null, locale), e);
         }
     }
@@ -415,7 +452,7 @@ public class RetailUserServiceImpl implements RetailUserService {
             }
 
             RetailUser retailUser = convertDTOToEntity(user);
-            Code code = codeService.getByTypeAndCode("ALERT_PREFERENCE", alertPreference.getPreference());
+            Code code = codeService.getByTypeAndCode("ALERT_PREFERENCE", alertPreference.getCode());
             retailUser.setAlertPreference(code);
             this.retailUserRepo.save(retailUser);
             logger.info("USER {}'s alert preference set", user.getId());

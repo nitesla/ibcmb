@@ -7,6 +7,7 @@ import longbridge.exception.*;
 import longbridge.models.*;
 import longbridge.repositories.CorpTransferRequestRepo;
 import longbridge.repositories.CorporateRepo;
+import longbridge.repositories.CorporateRoleRepo;
 import longbridge.repositories.CorporateUserRepo;
 import longbridge.repositories.PendingAuthorizationRepo;
 import longbridge.services.*;
@@ -55,6 +56,9 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     private CorporateService corporateService;
     @Autowired
     private MessageSource messageSource;
+    
+    @Autowired
+    private CorporateRoleRepo corpRoleRepo;
 
     @Autowired
     public CorpTransferServiceImpl(CorpTransferRequestRepo corpTransferRequestRepo, IntegrationService integrationService, TransactionLimitServiceImpl limitService, ModelMapper modelMapper, AccountService accountService, FinancialInstitutionService financialInstitutionService, ConfigurationService configService) {
@@ -139,12 +143,12 @@ public class CorpTransferServiceImpl implements CorpTransferService {
 
     @Override
 
-    public boolean saveTransfer(CorpTransferRequestDTO corpTransferRequestDTO) throws InternetBankingTransferException {
-        boolean result = false;
+    public CorpTransferRequestDTO saveTransfer(CorpTransferRequestDTO corpTransferRequestDTO) throws InternetBankingTransferException {
+        CorpTransferRequestDTO result = new CorpTransferRequestDTO();
         try {
             CorpTransRequest transRequest = convertDTOToEntity(corpTransferRequestDTO);
-            corpTransferRequestRepo.save(transRequest);
-            result = true;
+            result=  convertEntityToDTO(corpTransferRequestRepo.save(transRequest));
+
 
         } catch (Exception e) {
             logger.error("Exception occurred {}", e.getMessage());
@@ -155,11 +159,12 @@ public class CorpTransferServiceImpl implements CorpTransferService {
 
     @Override
     @Transactional
-    public String authorizeTransfer(CorporateRole role, Long authId) throws InternetBankingException {
+    public String authorizeTransfer(CorporateUser user, Long authId) throws InternetBankingException {
         PendAuth pendAuth = pendAuthRepo.findOne(authId);
-        if (!role.getPendAuths().contains(pendAuth)) {
-            throw new InvalidAuthorizationException(messageSource.getMessage("transfer.auth.invalid", null, locale));
-        }
+        //TODO: get role use belongs to
+//        if (!role.getPendAuths().contains(pendAuth)) {
+//            throw new InvalidAuthorizationException(messageSource.getMessage("transfer.auth.invalid", null, locale));
+//        }
         try {
             CorpTransRequest transferRequest = pendAuth.getCorpTransferRequest();
             transferRequest.getPendAuths().remove(transferRequest);

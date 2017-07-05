@@ -1,5 +1,6 @@
 package longbridge.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
@@ -27,9 +28,11 @@ public class RetailUser extends User{
 	private Date birthDate;
 
 	@OneToMany
+	@JsonIgnore
 	private Collection<RetailCustLimit> rtlCustLmt;
 
 	@OneToMany(mappedBy= "user")
+	@JsonIgnore
     private Collection<LocalBeneficiary> beneficiaries;
 
 
@@ -90,14 +93,4 @@ public class RetailUser extends User{
 	}
 
 
-
-	@Override
-	public String toString() {
-		return "RetailUser ["+super.toString()+"]" +
-				"customerId='" + customerId + '\'' +
-				", birthDate=" + birthDate +
-				", rtlCustLmt=" + rtlCustLmt +
-				", beneficiaries=" + beneficiaries +
-				'}';
-	}
 }

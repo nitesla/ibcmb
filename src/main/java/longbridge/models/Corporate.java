@@ -38,16 +38,15 @@ public class Corporate extends AbstractEntity implements PrettySerializer{
 
 
     @OneToMany
+    @JsonIgnore
     Set<CorporateRole> corporateRoles = new HashSet<CorporateRole>();
 
-
     @OneToMany(mappedBy = "corporate",cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<CorporateUser> users =  new ArrayList<CorporateUser>();
 
-//    @OneToMany
-//    private Collection<Beneficiary> beneficiaries;
-
-    @OneToMany @JsonIgnore
+    @OneToMany
+    @JsonIgnore
     private Collection<CorpLimit> corpLimits;
 
     @OneToMany(mappedBy = "corporate")
@@ -55,6 +54,7 @@ public class Corporate extends AbstractEntity implements PrettySerializer{
     List<CorpTransRequest> corpTransferRequests;
 
     @OneToMany(cascade = CascadeType.ALL)
+    @JsonIgnore
     List<CorpTransRule> corpTransRules;
 
     public Collection<CorpLimit> getCorpLimits() {
@@ -180,26 +180,16 @@ public class Corporate extends AbstractEntity implements PrettySerializer{
         this.createdOnDate = createdOnDate;
     }
 
+
+
     @Override
-    public String toString() {
-        return "Corporate{" +
-                "rcNumber='" + rcNumber + '\'' +
-                ", customerId='" + customerId + '\'' +
-                ", corporateType='" + corporateType + '\'' +
-                ", name='" + name + '\'' +
-                ", email='" + email + '\'' +
-                ", address='" + address + '\'' +
-                ", status='" + status + '\'' +
-                ", createdOnDate=" + createdOnDate +
-                ", bvn='" + bvn + '\'' +
-                ", users=" + users +
-                ", corpLimits=" + corpLimits +
-                ", corpTransferRequests=" + corpTransferRequests +
-                ", corpTransRules=" + corpTransRules +
-                '}';
-    }
-    
-    @Override @JsonIgnore
+	public String toString() {
+		return "Corporate [rcNumber=" + rcNumber + ", customerId=" + customerId + ", corporateType=" + corporateType
+				+ ", name=" + name + ", email=" + email + ", address=" + address + ", status=" + status
+				+ ", createdOnDate=" + createdOnDate + ", bvn=" + bvn + "]";
+	}
+
+	@Override @JsonIgnore
    	public List<String> getDefaultSearchFields() {
    		return Arrays.asList("name", "rcNumber","customerId");
    	}

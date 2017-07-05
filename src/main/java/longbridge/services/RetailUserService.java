@@ -9,6 +9,7 @@ import longbridge.forms.AlertPref;
 import longbridge.forms.CustChangePassword;
 import longbridge.forms.CustResetPassword;
 import longbridge.models.RetailUser;
+import longbridge.models.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -90,7 +91,7 @@ public interface RetailUserService {
 
 
 
-    @PreAuthorize("hasAuthority('UPDATE_RETAIL_USER')")
+    @PreAuthorize("hasAuthority('UPDATE_RETAIL_STATUS')")
     String changeActivationStatus(Long userId) throws InternetBankingException;
 
 
@@ -114,6 +115,8 @@ public interface RetailUserService {
     @PreAuthorize("hasAuthority('UPDATE_RETAIL_USER')")
     String changePassword(RetailUser retailUser, CustChangePassword custChangePassword) throws PasswordException;
 
+
+    void sendPostActivateMessage(User user, String ... args );
 
     /**
      *Generates a password and send it to the specified user

@@ -55,13 +55,13 @@
 
 
                             <ul class="nav navbar-right panel_toolbox">
-                                <li>
-                                    <div class="col-lg-4">
-                                        <div class="title-action">
-                                            <a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/verifications/index/verify" disabled="disabled" ><i class="fa fa-check"></i> Approve</a>
-                                        </div>
-                                    </div>
-                                </li>
+                                <!--<li>-->
+                                    <!--<div class="col-lg-4">-->
+                                        <!--<div class="title-action">-->
+                                            <!--<a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/verifications/index/verify" disabled="disabled" ><i class="fa fa-check"></i> Approve</a>-->
+                                        <!--</div>-->
+                                    <!--</div>-->
+                                <!--</li>-->
 
                             </ul>
 
@@ -73,7 +73,11 @@
                                 <thead>
                                 <tr>
                                     <th>Operation</th>
-                                    <th>Initiated  By</th>
+                                    <th>Initiated By</th>
+                                    <th>Date</th>
+                                    <th>Verified By</th>
+                                    <th>Date</th>
+
 
                                 </tr>
                                 </thead>
@@ -87,6 +91,9 @@
                                 <tr>
                                     <th>Operation</th>
                                     <th>Initiated By</th>
+                                    <th>Date</th>
+                                    <th>Verified By</th>
+                                    <th>Date</th>
                                 </tr>
                                 </tfoot>
                             </table>
@@ -111,6 +118,8 @@
 <script th:src="@{~/bank/js/dataTables.bootstrap.js}"></script>
 <script th:src="@{~/bank/js/dataTables.select.js}"></script>
 <script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
+<script th:src="@{~/bank/js/momentMin.js}"></script>
+
 
 <!-- Page-Level Scripts -->
 <script>
@@ -119,10 +128,10 @@
         var table = $('#verification').DataTable({
             select:true,
             responsive: true,
-            "lengthMenu" : [ [ 5, 10, 20],	[ 5, 10, 20 ] ],
+            "lengthMenu" : [ [ 20, 40, 60, -1],	[ 20, 40, 60, "All" ] ],
             "pagingType" : "simple_numbers",
             "searching": false,
-              rowId: 'id',
+            rowId: 'id',
             "paging": true,
             "serverSide" : true,
             "ajax": "/admin/verifications/allverification",
@@ -130,6 +139,40 @@
             "columns": [
                 {"data":"description"},
                 {"data":"initiatedBy"},
+                {"data":"initiatedOn"},
+                { "data": "verifiedBy" ,"defaultContent": "<i>Not Verified</i>"},
+                { "data": "verifiedOn", "defaultContent": "<i>Not Verified</i>" }
+            ]
+            ,"columnDefs" : [ {
+                "targets" : 2,
+                "data" : "initiatedOn",
+                "render" : function(data, type,full, meta) {
+                    if (type === 'display') {
+                        if(data == null)
+                            return data;
+                        var dtStart = new Date(parseInt(data));
+                        var dtStartWrapper = moment(dtStart);
+                        //return dtStartWrapper.format('DD/MM/YYYY HH:mm');
+                        return dtStartWrapper.format('LLLL');
+                    }
+                    return data;
+                }
+            },
+                {
+                    "targets" : 4,
+                    "data" : "verifiedOn",
+                    "render" : function(data, type,full, meta) {
+                        if (type === 'display') {
+                            if(data == null)
+                                return data;
+                            var dtStart = new Date(parseInt(data));
+                            var dtStartWrapper = moment(dtStart);
+                            //return dtStartWrapper.format('DD/MM/YYYY HH:mm');
+                            return dtStartWrapper.format('LLLL');
+                        }
+                        return data;
+                    }
+                }
 
 
             ]

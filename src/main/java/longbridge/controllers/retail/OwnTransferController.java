@@ -5,6 +5,7 @@ import longbridge.dtos.TransferRequestDTO;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferErrorService;
 import longbridge.models.Account;
+import longbridge.models.RetailUser;
 import longbridge.services.*;
 import longbridge.utils.ResultType;
 import longbridge.utils.TransferType;
@@ -29,10 +30,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.StreamSupport;
 
 /**
  * Created by ayoade_farooq@yahoo.com on 5/4/2017.
@@ -50,6 +49,7 @@ public class OwnTransferController {
     private FinancialInstitutionService financialInstitutionService;
     private ApplicationContext appContext;
     private TransferErrorService errorService;
+    private RetailUserService retailUserService;
 
     private String page = "cust/transfer/ownaccount/";
     @Value("${bank.code}")
@@ -57,7 +57,8 @@ public class OwnTransferController {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    public OwnTransferController(TransferService transferService, AccountService accountService, MessageSource messages, LocaleResolver localeResolver, LocalBeneficiaryService localBeneficiaryService, TransferValidator validator, FinancialInstitutionService financialInstitutionService, ApplicationContext appContext, TransferErrorService errorService) {
+    public OwnTransferController(TransferService transferService, AccountService accountService, MessageSource messages, LocaleResolver localeResolver, LocalBeneficiaryService localBeneficiaryService, TransferValidator validator, FinancialInstitutionService financialInstitutionService, ApplicationContext appContext,
+                                 TransferErrorService errorService,RetailUserService retailUserService) {
         this.transferService = transferService;
         this.accountService = accountService;
         this.messages = messages;
@@ -67,6 +68,7 @@ public class OwnTransferController {
         this.financialInstitutionService = financialInstitutionService;
         this.appContext = appContext;
         this.errorService = errorService;
+        this.retailUserService=retailUserService;
     }
 
 
@@ -118,46 +120,43 @@ public class OwnTransferController {
         return availBal;
     }
 
-
-    @RequestMapping(path = "{id}/receipt", method = RequestMethod.GET)
-    public ModelAndView report(@PathVariable Long id,HttpServletRequest servletRequest, TransferRequestDTO transferRequestDTO) {
-        /**
-         * Created a stub to test transaction receiptpt
-         */
-        JasperReportsPdfView view = new JasperReportsPdfView();
-        view.setUrl("classpath:jasperreports/rpt_receipt.jrxml");
-        view.setApplicationContext(appContext);
-
-        Map<String, Object> modelMap = new HashMap<>();
-
-        modelMap.put("datasource",new ArrayList<>());
-//        modelMap.put("format", "pdf");
-        modelMap.put("amount", "1,000,000.00");
-        modelMap.put("recipient", "BANKOLE D. ONEY");
-        modelMap.put("AccountNum", "10986433737332");
-        modelMap.put("sender", "CHEERFUL GIVER CHOICE");
-        modelMap.put("bank", "BANK OF AFRICA");
-        modelMap.put("remarks", "MY BUILDING PROJECT");
-        modelMap.put("recipientBank", "AGONORONA BANK");
-        modelMap.put("acctNo2", "0986879765");
-        modelMap.put("acctNo1", "4343758667");
-        modelMap.put("refNUm", "65566586787");
-        modelMap.put("date", "08-09-2017");
-        modelMap.put("amountInWords", "30 BILLION ");
-        modelMap.put("tranDate", "08-09-2017");
-        return new ModelAndView(view, modelMap);
-
-//        logger.info("Transaction Receipt {}",modelMap);
-//
-//        ModelAndView modelAndView = new ModelAndView("rpt_receipt", modelMap);
-//        return modelAndView;
-    }
     @PostMapping("/edit")
     public String editTransfer(@ModelAttribute("transferRequest")  TransferRequestDTO transferRequestDTO,Model model,HttpServletRequest request){
         transferRequestDTO.setTransferType(TransferType.OWN_ACCOUNT_TRANSFER);
         transferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode(bankCode));
         model.addAttribute("transferRequest",transferRequestDTO);
         return page + "pagei";
+    }
+
+
+    @ModelAttribute
+    public void getDestAccounts(Model model, Principal principal) {
+
+        if (principal != null || principal.getName() != null) {
+
+            RetailUser user = retailUserService.getUserByName(principal.getName());
+            if (user != null) {
+                List<String> accountList = new ArrayList<>();
+
+                Iterable<Account> accounts = accountService.getAccountsForCredit(user.getCustomerId());
+
+                StreamSupport.stream(accounts.spliterator(), false)
+                        .filter(Objects::nonNull)
+
+                        .forEach(i -> accountList.add(i.getAccountNumber()));
+
+
+                model.addAttribute("destAccounts", accountList);
+            }
+
+
+
+        }
+
+
+
+
+
     }
 
 }

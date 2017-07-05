@@ -154,6 +154,7 @@
 <script th:src="@{~/bank/js/dataTables.bootstrap.js}"></script>
 <script th:src="@{~/bank/js/dataTables.select.js}"></script>
 <script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
+<script th:src="@{~/bank/js/momentMin.js}"></script>
 
 <!-- Page-Level Scripts -->
 <script>
@@ -162,7 +163,7 @@
       var table = $('#admin').DataTable({
             select:true,
             responsive: true,
-          "lengthMenu" : [ [ 5, 10, 20],	[ 5, 10, 20 ] ],
+          "lengthMenu" : [ [ 20, 30, 40, -1],	[ 20 ,30, 40, "All"] ],
             "pagingType" : "simple_numbers",
             "searching": false,
             "paging": true,
@@ -204,7 +205,7 @@
                   return data;
               }
 
-          } ]
+          }  ]
 
       });
 

@@ -170,14 +170,14 @@ public class PasswordValidator {
     /**
      * Checks if the specified password can be reused by the user
      * The password policy allows a password to be reused after a certain number of different
-     * passwords have been used by the user
+     * passwords have been used.
      *
      * @param password      the password to be used
      * @param user the user whose passwords are to be checked
      * @return true if the password can be reused
      */
     private boolean isPasswordReuseable(String password, User user) {
-        if (numOfChanges==0 || user==null) {
+        if (numOfChanges<=0 || user==null) {
             return true;
         }
 

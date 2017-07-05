@@ -106,11 +106,63 @@
             </ul>
         </div>
     </div>
+
+    <div id="myModalError" class="modal fade " role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+
+            <div class="modal-content no-bd-rad content ">
+
+                <div class="modal-body">
+
+
+                    <p id='errorMess' class='mess text-danger'>Put something here iff need be.</p>
+
+
+                </div>
+
+
+                <div class="modal-footer no-bd-top">
+                    <button type="button" class="btn btn-link" data-dismiss="modal">OK</button>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+
+    <div id="myModalSuccess" class="modal fade " role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+
+            <div class="modal-content no-bd-rad content ">
+
+                <div class="modal-body">
+
+
+                    <p id='successMess' class='mess text-primary'>Put something here iff need be.</p>
+
+
+                </div>
+
+
+                <div class="modal-footer no-bd-top">
+                    <button type="button" class="btn btn-link" data-dismiss="modal">OK</button>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
 </footer>
 <!-- CORE JQUERY SCRIPTS -->
 <script th:src="@{~/customer/js/jquery-1.11.1.js}"></script>
 <!-- BOOTSTRAP SCRIPTS  -->
 <script th:src="@{~/customer/js/bootstrap.js}"></script>
+<script th:src="@{~/customer/js/coronation.js}"></script>
 <script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
 
 <script>

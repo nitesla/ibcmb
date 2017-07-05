@@ -1,7 +1,7 @@
 package longbridge.config;
 
-import longbridge.aop.AdminUserAdvisor;
-import longbridge.aop.MakerCheckerAdvisor;
+//import longbridge.aop.AdminUserAdvisor;
+import longbridge.aop.*;
 import org.aspectj.lang.Aspects;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,6 +30,27 @@ public class AspectConfig {
     public AdminUserAdvisor postAdminAspect(){
 
         AdminUserAdvisor aspect = Aspects.aspectOf(AdminUserAdvisor.class);
+        return aspect;
+    }
+
+    @Bean
+    public OpsUserAdvisor postOpsAspect(){
+
+        OpsUserAdvisor aspect = Aspects.aspectOf(OpsUserAdvisor.class);
+        return aspect;
+    }
+
+    @Bean
+    public RetailUserAdvisor postRetailAspect(){
+
+        RetailUserAdvisor aspect = Aspects.aspectOf(RetailUserAdvisor.class);
+        return aspect;
+    }
+
+    @Bean
+    public CorporateUserAdvisor postCorporateAspect(){
+
+        CorporateUserAdvisor aspect = Aspects.aspectOf(CorporateUserAdvisor.class);
         return aspect;
     }
 }

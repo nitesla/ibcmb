@@ -23,6 +23,7 @@ public class CorporateUserDTO {
     private String lastName;
     @NotEmpty(message = "email")
     private String email;
+    @NotEmpty(message = "phoneNumber")
     private String  phoneNumber;
     private String roleId;
     private String role;
@@ -238,4 +239,33 @@ public class CorporateUserDTO {
                 ", createdOn='" + createdOn + '\'' +
                 '}';
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		CorporateUserDTO other = (CorporateUserDTO) obj;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		return true;
+	}
+
+	
+    
+    
 }

@@ -9,6 +9,7 @@ import longbridge.forms.CustChangePassword;
 import longbridge.forms.CustResetPassword;
 import longbridge.models.Corporate;
 import longbridge.models.CorporateUser;
+import longbridge.models.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -85,6 +86,9 @@ public interface CorporateUserService{
     @PreAuthorize("hasAuthority('CORP_USER_STATUS')")
     String changeCorpActivationStatus(Long userId) throws InternetBankingException;
 
+
+    void sendPostActivateMessage(User user, String ... args );
+
     /**
      * resets the password for the specified corporate user
      * @param userId
@@ -127,7 +131,7 @@ public interface CorporateUserService{
      * @param alertPreference
      * @return
      */
-    boolean changeAlertPreference(CorporateUserDTO corporateUser, AlertPref alertPreference);
+    boolean changeAlertPreference(CorporateUser corporateUser, AlertPref alertPreference);
 
     public String addUserFromCorporateAdmin(CorpCorporateUserDTO user) throws InternetBankingException;
 

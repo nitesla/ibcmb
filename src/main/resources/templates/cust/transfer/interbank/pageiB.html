@@ -82,9 +82,11 @@
         $('#bank_code').change(function () {
             $('#acct_name').val("");
             $('.acctError').hide();
+            $('#localsave').hide();
+            $('#neq').show();
         });
 
-        $('#acct_num').change(function () {
+        $('#acct_num').blur(function () {
             $('#acct_name').val("");
             $('.acctError').hide();
         });
@@ -97,6 +99,7 @@
 
     function getAccountName() {
         $('#loading-icon').show();
+        $('#localsave').hide();
         //make sure alert message is not empty
         var acct = $('#acct_num').val();
         var bank = $('#bank_code').val();
@@ -112,6 +115,8 @@
         $.getJSON('/retail/transfer/' + acct + '/'+bank+'/nameEnquiry', function(jd) {
             var message = jd.message;
             var success =  jd.success;
+            console.log(message);
+            console.log(success);
            if (success==false){
                $('.acctError').text(message);
                $('.acctError').show().css("color", "red");
@@ -120,6 +125,7 @@
                $('#acct_name').val(message);
                $('#localsave').show();
                $('#neq').hide();
+               $('.acctError').hide()
                document.getElementById('loading-icon').style.display = 'none';
                $('#loading-icon').hide();
            }

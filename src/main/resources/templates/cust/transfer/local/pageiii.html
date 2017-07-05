@@ -72,30 +72,31 @@
                             <input type="hidden" th:field="*{remarks}"/>
 
                             <input type="hidden" th:field="*{id}"/>
-                        <div class="checkbox">
+                        <div class="checkbox" th:if="${newBen}!=null">
                             <label style="font-weight: bold; color: black"><input type="checkbox" id="add" name="add"/>Add Beneficiary</label>
                         </div>
-                        <div class="form-group">
-                            <!--<a style="cursor: pointer;" onclick="goBack()" >Modify</a>-->
-                            <button type="submit" class="btn btn-outline-primary">Proceed</button>
-                            <a th:href="@{/retail/transfer/local}">Cancel</a>
+                        <!--<div class="form-group">-->
+                            <!--&lt;!&ndash;<a style="cursor: pointer;" onclick="goBack()" >Modify</a>&ndash;&gt;-->
+                            <!--<button type="submit" class="btn btn-outline-primary">Proceed</button>-->
+                            <!--<a th:href="@{/retail/transfer/local}">Cancel</a>-->
 
 
 
-                        <span class="form-group checkbox col-xs-5" th:if="${newBen}!=null">
-                            <label style="font-weight: bold; color: black;margin-left:10px !important">
-                                <input  type="checkbox" id="add" name="add"/>Add Beneficiary
-                            </label>
-                        </span>
+                        <!--<span class="form-group checkbox col-xs-5" th:if="${newBen}!=null">-->
+                            <!--<label style="font-weight: bold; color: black;margin-left:10px !important">-->
+                                <!--<input  type="checkbox" id="add" name="add"/>Add Beneficiary-->
+                            <!--</label>-->
+                        <!--</span>-->
                         <div class="form-group col-xs-12">
                             <!--<a style="cursor: pointer;" onclick="goBack()" >Modify</a>-->
                             <button type="submit" class="btn btn-link required-step">Proceed</button>
 
-                            <button th:href="@{/retail/transfer/local}" class='btn btn-link less-required'>Cancel</button>
+                            <button type="button" onclick="cancel();" class='btn btn-link less-required'>Cancel</button>
 
                              <button type='button' class='btn btn-link less-required' onclick="edit();">Modify</button>
 
                             </div>
+                        <!--</div>-->
                         </form>
 
                         <form method="post" id="form_edit" th:action="@{/retail/transfer/local/edit}" th:object="${transferRequest}">
@@ -126,7 +127,9 @@
          function edit(){
              $("#form_edit").submit();
          }
-
+         function cancel(){
+           window.location.href="/retail/transfer/local";
+         }
 
     </script>
 </div>

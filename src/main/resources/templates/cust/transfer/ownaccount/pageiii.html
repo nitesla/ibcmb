@@ -70,7 +70,7 @@
                                     <br/>
                                     <div class="form-group">
                                         <button type="submit" class="btn btn-link required-step">Proceed</button>
-                                        <button th:href="@{/retail/transfer/ownaccount}" class='btn btn-link less-required'>Cancel</button>
+                                        <button onclick="cancel();" class='btn btn-link less-required'>Cancel</button>
                                          <button type='button' class='btn btn-link less-required'>Modify</button>
                                     </div>
 
@@ -109,6 +109,9 @@
         $("#form_edit").submit();
     }
 
+    function cancel(){
+        window.location.href="/retail/transfer/ownaccount";
+    }
 
 </script>
 </body>

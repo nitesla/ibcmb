@@ -26,8 +26,8 @@
             <div class="col-md-9 content-bg">
                 <div class="form-spacin">
                     <div class="col-sm-8">
-                        <form id="local" method="post" th:action="@{/retail/transfer/local/new}"
-                              th:object="${localBeneficiaryDTO}">
+                        <form id="local" method="post" th:action="@{/corporate/transfer/local/new}"
+                              th:object="${corpLocalBeneficiaryDTO}">
                             <div class="form-group">
                                 <label>Beneficiary Bank</label>
                                 <select name="beneficiaryBank" class="form-control " th:field="*{beneficiaryBank}"
@@ -58,7 +58,7 @@
                             </div>
                             <button id="localsave" style="display: none;" class="btn btn-link required-step">NEXT</button>
                             <!--<button id="neq" type="button" class="btn btn-link required-step" onclick="getAccountName();">Name Enquiry</button>-->
-                            <form th:href="@{/retail/benficiary}">
+                            <form th:href="@{/corporate/benficiary}">
                                  <button  type='submit'  class="btn btn-link less-required"  >Cancel</button>
                             </form>
                            
@@ -109,7 +109,7 @@
 
         var options = {
             type: 'GET',
-            url: '/retail/transfer/local/' + acct + '/nameEnquiry',
+            url: '/corporate/transfer/local/' + acct + '/nameEnquiry',
 //					dataType: 'jsonp',
             error: function (xhr, textStatus, errorThrown) {
                  $('#loading-icon').hide();

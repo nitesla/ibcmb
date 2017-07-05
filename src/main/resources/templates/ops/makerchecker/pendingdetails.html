@@ -21,14 +21,14 @@
 
             </div>
         </div>
-        <div th:replace="layout :: top-nav"></div>
+        <div th:replace="layout :: ops-top-nav"></div>
 
         <!-- page content -->
         <div class="right_col" role="main">
             <div class="">
                 <div class="page-title">
                     <div class="title_left">
-                        <h3>Pending verification</h3>
+                        <h3 th:text="${verify.status}"></h3>
                     </div>
 
                 </div>
@@ -80,7 +80,12 @@
                                 <div class="ibox-content">
                                     <form method="post" class="form-horizontal" >
 
-
+                                        <div class="form-group">
+                                            <label for="comments" class="col-sm-2 control-label" style="text-align: left">Comments</label>
+                                            <div class="col-sm-10">
+                                                <input type="text"  th:field="${verify.comments}" class="form-control" id="comments"/>
+                                            </div>
+                                        </div>
 
                                         <label style="font-size:large" th:text="${verify.description}"></label>
 

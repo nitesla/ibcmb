@@ -20,8 +20,8 @@ start
 */
 
 
-.req:after { content:" * ";color:#ff6666;font-size: 13px;font-weight: bolder }
-.req-inner:before { content:" * ";color:#ff6666;font-size: 13px;font-weight: bolder }
+.req:after { content:" * ";color:#9F614B;font-size: 13px;font-weight: bolder }
+.req-inner:before { content:" * ";color:#9F614B;font-size: 13px;font-weight: bolder }
 
 .time-icon
 {
@@ -123,7 +123,7 @@ start
 
 .cal-icon
 {
-    background:  red !important;
+    background:  #9F614B !important;
 }
 
 .cal-icon:hover
@@ -831,26 +831,26 @@ tokenInput
 .strength2
 {
     width:100px;
-    background:#ff5f5f;
+    background:#56e500;
 }
 
 .strength3
 {
     width:150px;
-    background:#56e500;
-}
-
-.strength4
-{
-    background:#4dcd00;
-    width:200px;
-}
-
-.strength5
-{
     background:#399800;
-    width:250px;
 }
+
+/*.strength4*/
+/*{*/
+    /*background:#4dcd00;*/
+    /*width:200px;*/
+/*}*/
+
+/*.strength5*/
+/*{*/
+    /*background:#399800;*/
+    /*width:250px;*/
+/*}*/
 
 
 
@@ -1617,7 +1617,7 @@ button, input, optgroup, select, textarea {
 .bod{
     margin-top: 50px;
     min-height: 400px;
-    border: 2px solid red;
+    border: 2px solid #9F614B;
 }
 .form-reg{
     max-width: 450px;
