@@ -80,7 +80,7 @@ public class RetailUserAdvisor {
 
     // this runs after execution
     @After("isVerification() && verified() && args(verificationDto)")
-    public void postRetailUserCreation(JoinPoint p, VerificationDTO verificationDto) throws IOException {
+    public void postRetailUserActivation(JoinPoint p, VerificationDTO verificationDto) throws IOException {
 
         Verification verification  = verificationRepo.findOne(verificationDto.getId());
         if(verification.getOperation().equals("UPDATE_RETAIL_STATUS")){
@@ -97,6 +97,9 @@ public class RetailUserAdvisor {
                 passwordPolicyService.saveRetailPassword(user);
                 retailUserRepo.save(user);
                 retailUserService.sendPostActivateMessage(corpUser, fullName,user.getUserName(),password);
+            }
+            else {
+                retailUserRepo.save(user);
             }
         }
 

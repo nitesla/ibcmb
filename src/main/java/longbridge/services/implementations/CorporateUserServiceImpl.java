@@ -136,7 +136,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     public String updateUser(CorporateUserDTO user) throws InternetBankingException {
         try {
             CorporateUser corporateUser = corporateUserRepo.findOne(user.getId());
-
+            entityManager.detach(corporateUser);
             corporateUser.setEmail(user.getEmail());
             corporateUser.setLastName(user.getLastName());
             corporateUser.setUserName(user.getUserName());
