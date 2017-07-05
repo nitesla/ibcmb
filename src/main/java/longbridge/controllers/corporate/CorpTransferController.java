@@ -291,8 +291,6 @@ public class CorpTransferController {
     }
 
 
-
-
     @PostMapping("/authorize")
     public String addAuthorization(@ModelAttribute("corpTransRequest") CorpTransReqEntry corpTransReqEntry, CorpTransRequest corpTransRequest, RedirectAttributes redirectAttributes){
 
