@@ -283,7 +283,7 @@ public class CorpTransferController {
     }
 
 
-        @GetMapping("/requests/all")
+    @GetMapping("/requests/all")
     public @ResponseBody
     DataTablesOutput<CorpTransRequest> getTransferRequests(DataTablesInput input) {
         Pageable pageable = DataTablesUtils.getPageable(input);
@@ -299,7 +299,6 @@ public class CorpTransferController {
 
     @PostMapping("/authorize")
     public String addAuthorization(@ModelAttribute("corpTransRequest") CorpTransReqEntry corpTransReqEntry, CorpTransRequest corpTransRequest, RedirectAttributes redirectAttributes){
-
 
         try {
             String message = corpTransferService.addAuthorization(corpTransReqEntry,corpTransRequest);
