@@ -33,7 +33,7 @@ public interface CorporateUserRepo extends JpaRepository<CorporateUser, Long> {
     List<CorporateUser> findUsersWithoutRole(@Param("corp") Corporate corporate);
 
     @Query()
-    CorporateUser findByRrole(CorporateRole role );
+    CorporateUser findByRole(CorporateRole role );
     @Query("select u from CorporateRole cr inner join cr.users u inner join u.corporate c where c=:corp")
     List<CorporateUser> findUsersInRole2(@Param("corp") Corporate corporate);
   
