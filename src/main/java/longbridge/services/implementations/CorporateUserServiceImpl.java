@@ -538,17 +538,12 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
     @Override
     public List<CorporateUserDTO> getUsersWithoutRole(Long corpId) {
-        boolean withoutRole = true;
         Corporate corporate = corporateRepo.findOne(corpId);
-        List<CorporateUser> users = corporateUserRepo.findUsersInRole2(corporate);
-        List<CorporateUser> userNotInRole = new ArrayList<>();
-        for(CorporateUser user : corporate.getUsers()){
-        	if(!users.contains(user))
-        		userNotInRole.add(user);
-        }
+        List<CorporateUser> userNotInRole = corporateUserRepo.findUsersWithoutRole(corporate);
         return  convertEntitiesToDTOs(userNotInRole);
     }
 
+  
 
     @Override
     public boolean changeAlertPreference(CorporateUser corporateUser, AlertPref alertPreference) {
