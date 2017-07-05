@@ -42,8 +42,6 @@ import java.util.stream.StreamSupport;
 @RequestMapping("/corporate/transfer")
 public class CorpTransferController {
 
-    @Autowired
-    CorpTransferRequestRepo transferRequestRepo;
     private CorporateService corporateService;
     private CorporateRepo corporateRepo;
     private CorporateUserService corporateUserService;
@@ -56,9 +54,8 @@ public class CorpTransferController {
     private FinancialInstitutionService financialInstitutionService;
     private TransferErrorService transferErrorService;
     private SecurityService securityService;
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
-    @Autowired
-    private CorpTransferService corpTransferService;
+
+
 
     @Autowired
     public CorpTransferController(CorporateService corporateService, CorporateRepo corporateRepo, CorporateUserService corporateUserService, IntegrationService integrationService, CorpTransferService transferService, AccountService accountService, MessageSource messages, LocaleResolver localeResolver, CorpLocalBeneficiaryService corpLocalBeneficiaryService, FinancialInstitutionService financialInstitutionService, TransferErrorService transferErrorService, SecurityService securityService) {
@@ -76,6 +73,14 @@ public class CorpTransferController {
         this.securityService = securityService;
     }
 
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+
+
+    @Autowired
+    CorpTransferRequestRepo transferRequestRepo;
+    @Autowired
+    private CorpTransferService corpTransferService;
+
     @GetMapping("/{corpId}/{amount}")
     public void getQualifiedRoles(@PathVariable Long corpId, @PathVariable String amount) {
 
@@ -90,7 +95,7 @@ public class CorpTransferController {
             pendAuth.setRole(role);
             pendAuths.add(pendAuth);
         }
-        transferRequest.setPendAuths(pendAuths);
+//        transferRequest.setPendAuths(pendAuths);
         transferRequestRepo.save(transferRequest);
 
     }
@@ -281,35 +286,18 @@ public class CorpTransferController {
         return "redirect:/corporate/dashboard";
 
     }
-
     @GetMapping("/pending")
-    public String getPendingTransfer(Principal principal, Model model) {
+    public String getPendingTransfer(Principal principal,Model model){
 
-        CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
-
-        Corporate corporate = corporateUser.getCorporate();
-        Set<CorporateRole> roles = corporate.getCorporateRoles();
-        List<PendAuth> pendAuths = new ArrayList<>();
-        for (CorporateRole role : roles) {
-            if (!role.getPendAuths().isEmpty()) {
-                Set<CorporateUser> users = role.getUsers();
-                if (users.contains(corporateUser)) {
-                    pendAuths = role.getPendAuths();
-
-                }
-            }
-        }
-
-//        List<PendAuth> pendAuths =corporateUser.getCorporate().getCorporateRole().getPendAuths();
-        model.addAttribute("pendAuths", pendAuths);
+//        List<PendAuth> pendAuths = corpTransferService.getPendingAuthorizations();
+//        model.addAttribute("pendAuths", pendAuths);
         return "corp/transfer/pendingtransfer/view";
     }
 
     @GetMapping("/{id}/authorize")
     public String authorizeTransfer(@PathVariable Long id, Principal principal, Model model, RedirectAttributes redirectAttributes) {
         try {
-            CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
-            String message = corpTransferService.authorizeTransfer(corporateUser, id);
+            String message = corpTransferService.authorizeTransfer(id);
             redirectAttributes.addFlashAttribute("message", message);
         } catch (InvalidAuthorizationException iae) {
             logger.error("Failed to authorize transfer", iae);

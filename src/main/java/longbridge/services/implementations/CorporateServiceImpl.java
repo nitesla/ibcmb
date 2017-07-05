@@ -566,6 +566,17 @@ public class CorporateServiceImpl implements CorporateService {
         return roles;
     }
 
+//    public CorporateRole getNextRoleForAuthorization(PendAuth pendAuth){
+//        pendAuth.
+//        List<CorporateRole> corporateRoles = rule.getRoles();
+//        sortRolesByRank(corporateRoles);
+//        CorporateRole corporateRole = null;
+//        Iterator<CorporateRole> iterator = corporateRoles.iterator();
+//        while (iterator.hasNext()){
+//            return  iterator.next();
+//        }
+//        return corporateRole;
+//    }
 
     private void sortRolesByRank(List<CorporateRole> roles){
         Collections.sort(roles,new Comparator<CorporateRole>(){

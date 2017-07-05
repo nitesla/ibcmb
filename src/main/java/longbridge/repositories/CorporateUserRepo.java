@@ -1,6 +1,7 @@
 package longbridge.repositories;
 
 import longbridge.models.Corporate;
+import longbridge.models.CorporateRole;
 import longbridge.models.CorporateUser;
 import longbridge.models.Role;
 import org.springframework.data.domain.Page;
@@ -30,8 +31,9 @@ public interface CorporateUserRepo extends JpaRepository<CorporateUser, Long> {
     
     @Query("select cu from CorporateUser cu where not exists (select 1 from CorporateRole cr where cu member of cr.users and cr.corporate=:corp) and cu.corporate=:corp")
     List<CorporateUser> findUsersWithoutRole(@Param("corp") Corporate corporate);
-  
-    
+
+    @Query()
+    CorporateUser findByRrole(CorporateRole role );
     @Query("select u from CorporateRole cr inner join cr.users u inner join u.corporate c where c=:corp")
     List<CorporateUser> findUsersInRole2(@Param("corp") Corporate corporate);
   
