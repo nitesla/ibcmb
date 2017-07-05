@@ -116,7 +116,7 @@ public class CorpAccountController {
     @PostMapping("/customize")
     public String updateCustom(@Valid CustomizeAccount customizeAccount, BindingResult result,RedirectAttributes redirectAttributes, Model model)throws Exception{
         if (result.hasErrors()){
-            model.addAttribute("message","Pls correct the errors");
+            model.addAttribute("message","Name field cannot be empty");
             return "corp/account/customize";
         }
 try {
