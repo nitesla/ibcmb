@@ -47,7 +47,7 @@ public class CorpLocalTransferController {
     private FinancialInstitutionService financialInstitutionService;
     private TransferValidator validator;
     private TransferErrorService transferErrorService;
-    private String page ="corp/transfer/local/";
+    private String page = "corp/transfer/local/";
     @Value("${bank.code}")
     private String bankCode;
 
@@ -62,8 +62,6 @@ public class CorpLocalTransferController {
         this.validator = validator;
         this.transferErrorService = transferErrorService;
     }
-
-
 
 
     @GetMapping("")
@@ -82,8 +80,8 @@ public class CorpLocalTransferController {
         if (servletRequest.getSession().getAttribute("Lbeneficiary") != null) {
             CorpLocalBeneficiaryDTO beneficiary = (CorpLocalBeneficiaryDTO) servletRequest.getSession().getAttribute("Lbeneficiary");
             model.addAttribute("beneficiary", beneficiary);
-            if (beneficiary.getId()==null)
-                model.addAttribute("newBen","newBen");
+            if (beneficiary.getId() == null)
+                model.addAttribute("newBen", "newBen");
 
         }
         if (result.hasErrors()) {
@@ -109,7 +107,7 @@ public class CorpLocalTransferController {
 
 
     @GetMapping("/{id}")
-    public String transfer(@PathVariable Long id, Model model) throws Exception {
+    public String transfer(@PathVariable Long id, Model model, HttpServletRequest request) throws Exception {
         CorpLocalBeneficiary beneficiary = corpLocalBeneficiaryService.getCorpLocalBeneficiary(id);
         CorpTransferRequestDTO corpTransferRequestDTO = new CorpTransferRequestDTO();
         corpTransferRequestDTO.setBeneficiaryAccountName(beneficiary.getAccountName());
@@ -118,6 +116,7 @@ public class CorpLocalTransferController {
         corpTransferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode(bankCode));
         model.addAttribute("corpTransferRequest", corpTransferRequestDTO);
         model.addAttribute("beneficiary", beneficiary);
+        request.getSession().setAttribute("Lbeneficiary", beneficiary);
         return page + "pageii";
     }
 
@@ -130,7 +129,7 @@ public class CorpLocalTransferController {
     }
 
     @PostMapping("/new")
-    public String newBeneficiary(@ModelAttribute("corpLocalBeneficiary") @Valid CorpLocalBeneficiaryDTO corpLocalBeneficiaryDTO, BindingResult result, Model model,HttpServletRequest request) throws Exception {
+    public String newBeneficiary(@ModelAttribute("corpLocalBeneficiary") @Valid CorpLocalBeneficiaryDTO corpLocalBeneficiaryDTO, BindingResult result, Model model, HttpServletRequest request) throws Exception {
         if (result.hasErrors()) {
             return page + "pageiA";
         }
@@ -153,13 +152,14 @@ public class CorpLocalTransferController {
     public void getBankCode(Model model) {
         model.addAttribute("bankCode", bankCode);
     }
+
     @PostMapping("/edit")
-    public String editCorpsTransfer(@ModelAttribute("transferRequest")  CorpTransferRequestDTO  requestDTO,Model model,HttpServletRequest request){
+    public String editCorpsTransfer(@ModelAttribute("corpLocalBeneficiaryDTO") CorpTransferRequestDTO requestDTO, Model model, HttpServletRequest request) {
 
         requestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode(bankCode));
-        model.addAttribute("corpTransferRequest",requestDTO);
-        if ( request.getSession().getAttribute("Lbeneficiary")!=null)
-            model.addAttribute("beneficiary",(CorpLocalBeneficiaryDTO)request.getSession().getAttribute("Lbeneficiary"));
+        model.addAttribute("corpTransferRequest", requestDTO);
+        if (request.getSession().getAttribute("Lbeneficiary") != null)
+            model.addAttribute("beneficiary", (CorpLocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary"));
         requestDTO.setTransferType(TransferType.CORONATION_BANK_TRANSFER);
 
         return page + "pageii";

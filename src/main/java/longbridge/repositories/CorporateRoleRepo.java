@@ -5,8 +5,11 @@ import longbridge.models.Corporate;
 
 import java.util.Set;
 
+import longbridge.models.CorporateUser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -18,8 +21,10 @@ public interface CorporateRoleRepo extends CommonRepo<CorporateRole,Long> {
 
     Page<CorporateRole> findByCorporate(Corporate corporate, Pageable pageable);
 
-
     List<CorporateRole> findByCorporate(Corporate corporate);
+
+    @Query("select count(cr) > 0 from CorporateRole cr where :user member of cr.users and cr=:role")
+    boolean existInRole(@Param("role") CorporateRole role, @Param("user") CorporateUser user);
 
 
 

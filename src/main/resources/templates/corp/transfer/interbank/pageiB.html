@@ -82,9 +82,11 @@
         $('#bank_code').change(function () {
             $('#acct_name').val("");
             $('.acctError').hide();
+            $('#localsave').hide();
+            $('#neq').show();
         });
 
-        $('#acct_num').change(function () {
+        $('#acct_num').blur(function () {
             $('#acct_name').val("");
             $('.acctError').hide();
         });
@@ -93,7 +95,6 @@
         $("#bank_code").prop("selectedIndex", -1);
 
     });
-
 
     function getAccountName() {
         $('#loading-icon').show();

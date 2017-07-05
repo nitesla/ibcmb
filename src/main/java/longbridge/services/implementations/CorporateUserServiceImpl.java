@@ -257,8 +257,8 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             createUserOnEntrust(corporateUser);
                 Email email = new Email.Builder()
                         .setRecipient(user.getEmail())
-                        .setSubject(messageSource.getMessage("customer.create.subject", null, locale))
-                        .setBody(String.format(messageSource.getMessage("customer.create.message", null, locale), fullName, user.getUserName(), password))
+                        .setSubject(messageSource.getMessage("corporate.customer.create.subject", null, locale))
+                        .setBody(String.format(messageSource.getMessage("corporate.customer.create.message", null, locale), fullName, user.getUserName(), password, corporateUser.getCorporate().getCustomerId()))
                         .build();
                 mailService.send(email);
             logger.info("New corporate user {} created", corporateUser.getUserName());
