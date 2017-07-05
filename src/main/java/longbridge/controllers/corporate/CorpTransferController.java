@@ -288,25 +288,25 @@ public class CorpTransferController {
     }
 
 
+//    @GetMapping("/pending")
+//    public String getPendingAuth(@ModelAttribute("transferRequest") CorpTransRequest transRequest, Model model){
+//
+//        CorpTransferAuth corpTransferAuth = corpTransferService.getAuthorizations(transRequest);
+//        model.addAttribute("transferAuth",corpTransferAuth);
+//
+//
+//        //List<PendAuth> pendAuths = corpTransferService.getPendingAuthorizations();
+//        //model.addAttribute("pendAuths", pendAuths);
+//        return "corp/transfer/pendingtransfer/view";
+//    }
+
     @GetMapping("/pending")
-    public String getPendingAuth(@ModelAttribute("transferRequest") CorpTransRequest transRequest, Model model){
-
-        CorpTransferAuth corpTransferAuth = corpTransferService.getAuthorizations(transRequest);
-        model.addAttribute("transferAuth",corpTransferAuth);
-
-
-        //List<PendAuth> pendAuths = corpTransferService.getPendingAuthorizations();
-        //model.addAttribute("pendAuths", pendAuths);
+    public String getTransfers(){
         return "corp/transfer/pendingtransfer/view";
     }
 
-    @GetMapping("/requests")
-    public String getTransfers(){
-        return "";
-    }
 
-
-        @GetMapping("/requests/all")
+    @GetMapping("/requests/all")
     public @ResponseBody
     DataTablesOutput<CorpTransRequest> getTransferRequests(DataTablesInput input) {
         Pageable pageable = DataTablesUtils.getPageable(input);
