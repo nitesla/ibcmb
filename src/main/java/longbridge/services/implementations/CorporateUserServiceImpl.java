@@ -551,18 +551,18 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
 
     @Override
-    public boolean changeAlertPreference(CorporateUserDTO corporateUser, AlertPref alertPreference) {
+    public boolean changeAlertPreference(CorporateUser corporateUser, AlertPref alertPreference) {
         boolean ok = false;
         try {
             if (getUser(corporateUser.getId()) == null) {
                 logger.error("USER DOES NOT EXIST");
                 return ok;
             }
-            CorporateUser corp = convertDTOToEntity(corporateUser);
-            Code code = codeService.getByTypeAndCode("ALERT_PREFERENCE", alertPreference.getPreference());
-            corp.setAlertPreference(code);
-            this.corporateUserRepo.save(corp);
-            logger.info("User {}'s alert preference set", corp.getId());
+
+            Code code = codeService.getByTypeAndCode("ALERT_PREFERENCE", alertPreference.getCode());
+            corporateUser.setAlertPreference(code);
+            this.corporateUserRepo.save(corporateUser);
+            logger.info("User {}'s alert preference set", corporateUser.getId());
             ok = true;
         } catch (Exception e) {
             e.printStackTrace();

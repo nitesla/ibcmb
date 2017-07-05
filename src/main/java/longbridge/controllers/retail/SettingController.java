@@ -196,7 +196,7 @@ public class SettingController {
     public String AlertPreferencePage(AlertPref alertPref, Model model, Principal principal) {
         RetailUser user = retailUserService.getUserByName(principal.getName());
         Iterable<CodeDTO> pref = codeService.getCodesByType("ALERT_PREFERENCE");
-        model.addAttribute("alertP", user.getAlertPreference());
+        model.addAttribute("alertPref", user.getAlertPreference());
         model.addAttribute("prefs", pref);
         return "cust/settings/alertpref";
     }
@@ -212,10 +212,10 @@ public class SettingController {
         retailUserService.changeAlertPreference(user, alertPref);
 
         Iterable<CodeDTO> pref = codeService.getCodesByType("ALERT_PREFERENCE");
-        model.addAttribute("alertP", user.getAlertPreference());
+        model.addAttribute("alertPref", user.getAlertPreference());
         model.addAttribute("prefs", pref);
         model.addAttribute("message", "Preference Change Successful successful");
-        return "cust/settings/alertpref";
+        return "redirect:/cust/settings/alertpref";
     }
 
 
@@ -242,26 +242,26 @@ public class SettingController {
 
 
 
-            SettingDTO setting = configService.getSettingByName("CUSTOMER_CARE_EMAIL");
-            if (setting != null && setting.isEnabled()) {
-                try {
+        SettingDTO setting = configService.getSettingByName("CUSTOMER_CARE_EMAIL");
+        if (setting != null && setting.isEnabled()) {
+            try {
                 Email email = new Email.Builder()
                         .setRecipient(setting.getValue())
                         .setSubject(messageSource.getMessage("customer.bvn.link.subject", null, locale))
                         .setBody(String.format(messageSource.getMessage("customer.bvn.link.message", null, locale),user.getUserName(),fullname, bvn,acctNumber,custId,custemail))
                         .build();
                 mailService.send(email);
-                    String message =  messageSource.getMessage("bvn.add.success", null, locale);
-                    redirectAttributes.addFlashAttribute("message", message);
+                String message =  messageSource.getMessage("bvn.add.success", null, locale);
+                redirectAttributes.addFlashAttribute("message", message);
 
-                } catch (Exception ex) {
-                    logger.error("Failed to send BVN request", ex);
-                    String message = messageSource.getMessage("bvn.add.failure", null, locale);
-                    redirectAttributes.addFlashAttribute("failure", message);
-                }
+            } catch (Exception ex) {
+                logger.error("Failed to send BVN request", ex);
+                String message = messageSource.getMessage("bvn.add.failure", null, locale);
+                redirectAttributes.addFlashAttribute("failure", message);
             }
+        }
 
-            return "redirect:/retail/dashboard";
+        return "redirect:/retail/dashboard";
     }
 
 
@@ -279,6 +279,7 @@ public class SettingController {
         }
 
         RetailUser user = retailUserService.getUserByName(principal.getName());
+
         try{
             messageService.sendRetailContact(message, user);
             redirectAttributes.addFlashAttribute("message", "message sent successfully");
