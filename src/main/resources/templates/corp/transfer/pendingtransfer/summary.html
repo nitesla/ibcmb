@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" >
+<head th:replace="corp_layout :: site-head">
+
+</head>
+<body>
+<div class="container">
+    <header th:replace="corp_layout :: header">
+    </header>
+
+    <section class="content-wrapper">
+        <div class="containe">
+
+            <div class="row">
+
+                <div class="col-md-4 col-sm-4">
+                    <h5 class="page_header">Summary</h5>
+                    <select class="form-control invisible">
+                        <option value="account">Transfer Overview</option>
+                    </select>
+                </div>
+
+
+            </div>
+            <div class="row">
+                <div class="col-md-9 content-bg">
+                    <!--<div class="row form-spacing">-->
+                    <div class="">
+
+
+
+                        <table class="''table table-responsive">
+                            <tr>
+
+                                <th>Transfer Type</th>
+                                <td th:text="${corpTransRequest.customerAccountNumber}"></td>
+
+                            </tr>
+                            <tr>
+
+                                <th>Beneficiary Account Name</th>
+                                <td th:text="${corpTransferRequest.beneficiaryAccountName}"></td>
+
+                            </tr>
+                            <tr>
+
+                                <th>Beneficiary Bank</th>
+                                <td th:text="${corpTransferRequest.financialInstitution.institutionName}"></td>
+
+                            </tr>
+                            <tr>
+
+                                <th>Amount</th>
+                                <td th:text="${corpTransferRequest.amount}"></td>
+
+                            </tr>
+                            <tr>
+
+                                <th>Status</th>
+                                <td th:text="${transferAuth.status}"></td>
+
+                            </tr>
+                        </table>
+
+
+                        <div class="form-group">
+
+
+                            <a type="button" id="approve" class="btn btn-default pull-left"><i class="fa fa-plus"></i>Approve</a>
+
+                            <a th:href="@{/corporate/transfer/pending}" >Back</a>
+
+                        </div>
+
+
+
+
+                    </div>
+                </div>
+                <div class="col-md-3 pull-right " >
+                    <div th:replace="corp_layout :: sidebar" class="" >
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+
+    <!-- CONTENT-WRAPPER SECTION END-->
+    <footer th:replace="corp_layout ::footer">
+    </footer>
+</div>
+</body>
+
+</html>

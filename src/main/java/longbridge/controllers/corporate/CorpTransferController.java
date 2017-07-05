@@ -10,12 +10,14 @@ import longbridge.models.*;
 import longbridge.repositories.CorpTransferRequestRepo;
 import longbridge.repositories.CorporateRepo;
 import longbridge.services.*;
+import longbridge.utils.DateFormatter;
 import longbridge.utils.TransferType;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,7 +28,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.LocaleResolver;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -57,6 +61,8 @@ public class CorpTransferController {
     private TransferErrorService transferErrorService;
     private SecurityService securityService;
 
+
+    private  ApplicationContext appContext;
 
 
     @Autowired
@@ -288,6 +294,7 @@ public class CorpTransferController {
     }
 
 
+
 //    @GetMapping("/pending")
 //    public String getPendingAuth(@ModelAttribute("transferRequest") CorpTransRequest transRequest, Model model){
 //
@@ -299,6 +306,17 @@ public class CorpTransferController {
 //        //model.addAttribute("pendAuths", pendAuths);
 //        return "corp/transfer/pendingtransfer/view";
 //    }
+
+
+    @GetMapping("/{id}/pending")
+    public String getPendingAuth(@PathVariable Long id,  Model model){
+
+        CorpTransRequest corpTransRequest = corpTransferService.getTransfer(id);
+        CorpTransferAuth corpTransferAuth = corpTransferService.getAuthorizations(corpTransRequest);
+        model.addAttribute("corpTransRequest", corpTransRequest);
+        model.addAttribute("transferAuth",corpTransferAuth);
+        return "corp/transfer/pendingtransfer/summary";
+    }
 
     @GetMapping("/pending")
     public String getTransfers(){
@@ -322,7 +340,6 @@ public class CorpTransferController {
 
     @PostMapping("/authorize")
     public String addAuthorization(@ModelAttribute("corpTransRequest") CorpTransReqEntry corpTransReqEntry, CorpTransRequest corpTransRequest, RedirectAttributes redirectAttributes){
-
 
         try {
             String message = corpTransferService.addAuthorization(corpTransReqEntry,corpTransRequest);
@@ -361,4 +378,28 @@ public class CorpTransferController {
         }
         return object.toString();
     }
+
+    @RequestMapping(path = "{id}/receipt", method = RequestMethod.GET)
+    public ModelAndView report(@PathVariable Long id, HttpServletRequest servletRequest, Principal principal) {
+        CorporateUser corporateUser=corporateUserService.getUserByName(principal.getName());
+        JasperReportsPdfView view = new JasperReportsPdfView();
+        view.setUrl("classpath:jasperreports/rpt_receipt.jrxml");
+        view.setApplicationContext(appContext);
+        Map<String, Object> modelMap = new HashMap<>();
+        modelMap.put("datasource",new ArrayList<>());
+        modelMap.put("amount",transferService.getTransfer(id).getAmount());
+        modelMap.put("recipient",transferService.getTransfer(id).getBeneficiaryAccountName());
+        modelMap.put("AccountNum", transferService.getTransfer(id).getCustomerAccountNumber());
+        modelMap.put("sender",corporateUser.getFirstName()+" "+corporateUser.getLastName() );
+        modelMap.put("remarks", transferService.getTransfer(id).getRemarks());
+        modelMap.put("recipientBank", transferService.getTransfer(id).getFinancialInstitution().getInstitutionName());
+        modelMap.put("acctNo2", transferService.getTransfer(id).getBeneficiaryAccountNumber());
+        modelMap.put("acctNo1", transferService.getTransfer(id).getCustomerAccountNumber());
+        modelMap.put("refNUm", transferService.getTransfer(id).getReferenceNumber());
+        modelMap.put("date", DateFormatter.format(transferService.getTransfer(id).getTranDate()));
+        modelMap.put("tranDate", DateFormatter.format(transferService.getTransfer(id).getTranDate()));
+        ModelAndView modelAndView=new ModelAndView(view, modelMap);
+        return modelAndView;
+    }
+
 }

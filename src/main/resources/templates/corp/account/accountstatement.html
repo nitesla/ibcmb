@@ -40,22 +40,28 @@
                                 <thead>
                                 <tr>
 
-                                    <th>Post Date</th>
                                     <th>Transaction Narration</th>
-                                    <th>Account Balance</th>
-                                    <th>Debit/Credit</th>
+                                    <th>Post Date</th>
                                     <th>Value Date</th>
+                                    <th>Debit/Credit</th>
+                                    <th>Transaction ReferenceID</th>
+                                    <th>Account Balance</th>
+
 
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <tr th:each="list : ${transRequestList}">
-                                    <td th:text="${#dates.format(list.postedDate, 'dd-MMM-yyyy')}"></td>
                                     <td  th:text="${list.narration}"></td>
-                                    <td th:text="${#numbers.formatDecimal(list.balance, 0, 'COMMA', 2, 'POINT')}"></td>
-                                    <td th:text="${list.tranType}"></td>
+                                    <td th:text="${#dates.format(list.postedDate, 'dd-MMM-yyyy')}"></td>
                                     <td th:text="${#dates.format(list.valueDate, 'dd-MMM-yyyy')}"></td>
-                                   </tr>
+                                    <td th:text="${list.tranType}"></td>
+                                    <td th:text="${list.tranId}"></td>
+                                    <td th:text="${#numbers.formatDecimal(list.balance, 0, 'COMMA', 2, 'POINT')}"></td>
+
+                                    <td><a target="_blank"  th:href="@{'/corporate/account/' + ${list.tranId} + '/downloadhistory'}">Print</a></td>
+
+                                </tr>
                                 </tbody>
 
                             </table>

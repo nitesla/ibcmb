@@ -28,8 +28,8 @@
             <div class="col-md-9 content-bg">
                 <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
                     <div class="btn-group" role="group" aria-label="First group">
-                        <a type="button" th:href="@{/corporate/transfer/upload}" class="btn btn-default bt-link-act"><i class="fa fa-plus"></i>Edit</a>
-                        <a  type="button" class="btn bt-select btn-default bt-link-act" th:href="@{/corporate/transfer/index/view}" disabled="disabled" ><i class="fa fa-eye"></i> View</a>
+                        <a type="button" th:href="@{/corporate/transfer/index/pending}" class="btn btn-default bt-link-act"><i class="fa fa-plus" disabled="disabled" ></i>Edit</a>
+                        <a  type="button" class="btn bt-select btn-default bt-link-act" th:href="@{/corporate/transfer/index/pending}" disabled="disabled" ><i class="fa fa-eye"></i> View</a>
                     </div>
                 </div>
                 <br/>
@@ -120,7 +120,7 @@
         if($(link).attr("disabled")){
             return;
         }
-        var dt = $('#bulk').DataTable();
+        var dt = $('#requests').DataTable();
         var id = $(dt.row({
             selected: true
         }).node()).attr("id");
