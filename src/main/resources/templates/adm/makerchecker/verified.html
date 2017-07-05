@@ -4,7 +4,6 @@
 </head>
 
 
-
 <body class="nav-md">
 <div class="container body">
     <div class="main_container">
@@ -46,10 +45,12 @@
                         <div class="x_title">
 
                             <ul class="nav navbar-left panel_toolbox">
-                                <li >
+                                <li>
                                     <div class="col-lg-4">
                                         <div class="title-action">
-                                            <a id="operation" class="btn btn-primary btn-sm bt-select" href="/admin/verifications/operation/pendingviews" disabled="disabled" ><i class="fa fa-eye"></i> View</a>
+                                            <a id="operation" class="btn btn-primary btn-sm bt-select"
+                                               href="/admin/verifications/operation/pendingviews" disabled="disabled"><i
+                                                    class="fa fa-eye"></i> View</a>
                                         </div>
                                     </div>
                                 </li>
@@ -111,7 +112,6 @@
 </div>
 
 
-
 <script th:src="@{~/bank/vendors/datatables.net/js/jquery.dataTables.js}"></script>
 <script th:src="@{~/bank/js/dataTables.bootstrap.js}"></script>
 <script th:src="@{~/bank/js/dataTables.select.js}"></script>
@@ -122,31 +122,31 @@
 <!-- Page-Level Scripts -->
 <script>
     /*<![CDATA[*/
-    $(document).ready(function() {
+    $(document).ready(function () {
         var table = $('#verification').DataTable({
-            select:true,
+            select: true,
             responsive: true,
-            "lengthMenu" : [ [ 20, 40, 60, -1],	[ 20, 40, 60, "All" ] ],
-            "pagingType" : "simple_numbers",
+            "lengthMenu": [[20, 40, 60, -1], [20, 40, 60, "All"]],
+            "pagingType": "simple_numbers",
             "searching": false,
             "paging": true,
-            "serverSide" : true,
+            "serverSide": true,
             "ajax": "/admin/verifications/verified/all",
             "dom": 'T<"clear">frtlp',
             "columns": [
-                {"data":   "description"},
-                { "data": "initiatedBy" },
-                { "data": "initiatedOn" },
-                { "data": "verifiedBy","defaultContent": "<i>Not Verified</i>"},
-                { "data": "verifiedOn","defaultContent": "<i>Not Verified</i>" },
-                { "data": "status" }
+                {"data": "description"},
+                {"data": "initiatedBy"},
+                {"data": "initiatedOn"},
+                {"data": "verifiedBy", "defaultContent": "<i>Not Verified</i>"},
+                {"data": "verifiedOn", "defaultContent": "<i>Not Verified</i>"},
+                {"data": "status"}
 
-            ] ,"columnDefs" : [ {
-                "targets" : 2,
-                "data" : "initiatedOn",
-                "render" : function(data, type,full, meta) {
+            ], "columnDefs": [{
+                "targets": 2,
+                "data": "initiatedOn",
+                "render": function (data, type, full, meta) {
                     if (type === 'display') {
-                        if(data == null)
+                        if (data == null)
                             return data;
                         var dtStart = new Date(parseInt(data));
 
@@ -155,9 +155,9 @@
                     }
                     return data;
                 }
-            } , {
+            }, {
                 "targets": 4,
-                "data": "initiatedOn",
+                "data": "verifiedOn",
                 "render": function (data, type, full, meta) {
                     if (type === 'display') {
 
@@ -187,28 +187,27 @@
                         return data;
                     }
                 }
-            ]});
+            ]
+        });
 
-        table.on('select', function() {
+        table.on('select', function () {
 
             if (table.rows({
 
-                    selected : true
+                    selected: true
                 }).indexes().length === 0) {
                 $('.bt-select').attr("disabled", true);
             } else {
                 $('.bt-select').removeAttr("disabled");
             }
-            var d = table.rows( this ).data();
-
+            var d = table.rows(this).data();
 
 
         });
 
-        table.on('deselect', function()
-        {
+        table.on('deselect', function () {
             if (table.rows({
-                    selected : true
+                    selected: true
                 }).indexes().length === 0) {
                 $('.bt-select').attr("disabled", true);
             } else {
@@ -218,14 +217,14 @@
 
     });
 
-    $("a.bt-link-act").on("click", function(e) {
+    $("a.bt-link-act").on("click", function (e) {
         e.preventDefault();
         var link = $(e.currentTarget);
-        if($(link).attr("disabled")){
+        if ($(link).attr("disabled")) {
             return;
         }
         var dt = $('#verification').DataTable();
-        var data = dt.rows({selected:  true}).data();
+        var data = dt.rows({selected: true}).data();
 
         // alert (data[dt.row][1]);
 
@@ -236,16 +235,16 @@
 //            alert(data[i][0]);
 //            console.log(data[i][0]);
 //        }
-        var ooo = link.attr("href").replace("index",data);
+        var ooo = link.attr("href").replace("index", data);
         window.location.assign(ooo);
 
-    } );
+    });
 
 
-    $("#operation").on("click", function(e) {
+    $("#operation").on("click", function (e) {
         e.preventDefault();
         var link = $(e.currentTarget);
-        if($(link).attr("disabled")){
+        if ($(link).attr("disabled")) {
             return;
         }
 
@@ -254,15 +253,15 @@
             selected: true
         }).node()).attr("id");
 
-        var ooo = link.attr("href").replace("operation",id);
+        var ooo = link.attr("href").replace("operation", id);
         window.location.assign(ooo);
 
-    } );
+    });
 
-    $("#delete-btn").on("click", function(e) {
+    $("#delete-btn").on("click", function (e) {
         e.preventDefault();
         var link = $(e.currentTarget);
-        if($(link).attr("disabled")){
+        if ($(link).attr("disabled")) {
             return;
         }
         var dt = $('#verification').DataTable();
@@ -270,10 +269,10 @@
             selected: true
         }).node()).attr("id");
         alert(id);
-        var ooo = link.attr("href").replace("index",id);
+        var ooo = link.attr("href").replace("index", id);
         warnBeforeRedirect(ooo);
 
-    } );
+    });
 
 
     function warnBeforeRedirect(ooo) {
@@ -285,7 +284,7 @@
             confirmButtonColor: "#DD6B55",
             confirmButtonText: "Yes, delete code!",
             closeOnConfirm: false
-        }, function() {
+        }, function () {
             // Redirect the user
             window.location.assign(ooo);
         });

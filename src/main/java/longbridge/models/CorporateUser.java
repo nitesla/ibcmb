@@ -28,7 +28,7 @@ public class CorporateUser extends User {
 
 	protected String isFirstTimeLogon;
 
-	@ManyToOne @JsonIgnore
+	@ManyToOne
     private Corporate corporate;
 
 //	private CorporateRole corporateRole;
@@ -73,23 +73,6 @@ public class CorporateUser extends User {
 	public boolean equals(Object o){
 		return super.equals(o);
 	}
-
-
-
-//	@Override @JsonIgnore
-//	public JsonSerializer<CorporateUser> getSerializer() {
-//		return new JsonSerializer<AccountClassRestriction>() {
-//			@Override
-//			public void serialize(AccountClassRestriction value, JsonGenerator gen, SerializerProvider serializers)
-//					throws IOException, JsonProcessingException
-//			{
-//				gen.writeStartObject();
-//				gen.writeStringField("Account Class",value.);
-//				gen.writeStringField("Restriction Type",value.restrictionType);
-//				gen.writeEndObject();
-//			}
-//		};
-//	}
 
 
 
