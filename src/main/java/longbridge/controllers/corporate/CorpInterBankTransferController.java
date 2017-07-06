@@ -228,7 +228,7 @@ public class CorpInterBankTransferController {
     }
 
     @PostMapping("/edit")
-    public String editTransfer(@ModelAttribute("transferRequest") CorpTransferRequestDTO transferRequestDTO, Model model, HttpServletRequest request) {
+    public String editTransfer(@ModelAttribute("corpTransferRequest") CorpTransferRequestDTO transferRequestDTO, Model model, HttpServletRequest request) {
         String type = (String) request.getSession().getAttribute("NIP");
         if (type.equalsIgnoreCase("RTGS")) {
             transferRequestDTO.setTransferType(TransferType.RTGS);

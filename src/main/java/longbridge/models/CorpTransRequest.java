@@ -1,5 +1,6 @@
 package longbridge.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
@@ -16,9 +17,11 @@ import java.util.List;
 public class CorpTransRequest extends TransRequest {
 
     @ManyToOne
+    @JsonIgnore
     private Corporate corporate;
 
     @OneToOne
+    @JsonIgnore
     private  CorpTransferAuth transferAuth;
 
     public Corporate getCorporate() {

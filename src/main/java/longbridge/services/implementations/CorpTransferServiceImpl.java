@@ -78,7 +78,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
 
         CorpTransRequest transferRequest = convertDTOToEntity(transferRequestDTO);
 
-        if (transferRequest.getCorporate().getCorporateType().equals("SOLE")) {
+        if ("SOLE".equals(transferRequest.getCorporate().getCorporateType())) {
             makeTransfer(transferRequestDTO);
             return messageSource.getMessage("transaction.success", null, locale);
         }
@@ -87,10 +87,14 @@ public class CorpTransferServiceImpl implements CorpTransferService {
             throw new TransferRuleException(messageSource.getMessage("rule.unavailable", null, locale));
         }
         if (corporateService.getQualifiedRoles(transferRequest).isEmpty()) {
-            throw new NoDefinedRoleException(transferRequestDTO.getAmount());
+            throw new NoDefinedRoleException(messageSource.getMessage("transfer.role.unavailable", null, locale),transferRequestDTO.getAmount());
         }
 
         try{
+            transferRequest.setStatus("P");
+            CorpTransferAuth transferAuth = new CorpTransferAuth();
+            transferAuth.setStatus("P");
+            transferRequest.setTransferAuth(transferAuth);
             corpTransferRequestRepo.save(transferRequest);
         } catch (Exception e) {
             throw new InternetBankingTransferException();
@@ -127,7 +131,6 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         try {
             CorpTransRequest transRequest = convertDTOToEntity(corpTransferRequestDTO);
             result = convertEntityToDTO(corpTransferRequestRepo.save(transRequest));
-
 
         } catch (Exception e) {
             logger.error("Exception occurred {}", e.getMessage());

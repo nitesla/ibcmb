@@ -509,6 +509,7 @@ public class CorporateServiceImpl implements CorporateService {
 
 
         List<CorporateRole> corporateRoles = corporateRoleRepo.findByCorporate(corporate);
+        sortRolesByRank(corporateRoles);
         List<CorporateRoleDTO> roles = convertCorporateRoleEntitiesToDTOs(corporateRoles);
 
 
@@ -558,10 +559,6 @@ public class CorporateServiceImpl implements CorporateService {
         List<CorporateRole> roles = new ArrayList<>();
         if (applicableTransferRule != null) {
             roles = applicableTransferRule.getRoles();
-
-            if(applicableTransferRule.isRank()){
-                sortRolesByRank(roles);
-            }
         }
         return roles;
     }
