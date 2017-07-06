@@ -267,7 +267,14 @@ public class InterBankTransferController {
         if (request.getSession().getAttribute("Lbeneficiary") != null) {
             LocalBeneficiaryDTO dto = (LocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary");
             model.addAttribute("beneficiary", dto);
-            transferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByName(dto.getBeneficiaryBank()));
+            if (null==dto.getId()){
+                transferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode(dto.getBeneficiaryBank()));
+
+            }else{
+                transferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByName(dto.getBeneficiaryBank()));
+
+            }
+
         }
 
 
@@ -279,7 +286,7 @@ public class InterBankTransferController {
 
         RetailUser user = retailUserService.getUserByName(principal.getName());
         if (user != null) {
-            List<String> accountList = new ArrayList<>();
+            List<Account> accountList = new ArrayList<>();
 
             Iterable<Account> accounts = accountService.getAccountsForDebit(user.getCustomerId());
 
@@ -287,8 +294,7 @@ public class InterBankTransferController {
                     .filter(Objects::nonNull)
                     .filter(i-> "NGN".equalsIgnoreCase(i.getCurrencyCode()))
 
-                    .forEach(i -> accountList.add(i.getAccountNumber()));
-
+                    .forEach(i -> accountList.add(i));
 
             model.addAttribute("accountList", accountList);
 

@@ -46,7 +46,7 @@
                                                     th:field="*{customerAccountNumber}" onchange="getBalance();getSourceCurrency()" >
 
                                                 <!--<option value=""> select an account</option>-->
-                                                <option th:each="s: ${accounts}" th:value="${s}" th:text="${s}" ></option>
+                                                <option th:each="s: ${accounts}" th:value="${s.accountNumber}" th:text="${s.accountNumber}" th:selected="${s.primaryFlag=='Y'}"></option>
                                             </select><span class='req-inner'></span>
                                         </div>
 
@@ -136,13 +136,15 @@
     /*<![CDATA[*/
 
     $(document).ready(function(){
-        document.getElementById("source").selectedIndex = -1;
-        document.getElementById("destination").selectedIndex = -1;
+//       document.getElementById("source").selectedIndex = -1;
+    document.getElementById("destination").selectedIndex = -1;
 
-        sortSelect('#source', 'text', 'asc');
+//        sortSelect('#source', 'text', 'asc');
 
-        $("#source").prop("selectedIndex", -1);
-        $("#destination").prop("selectedIndex", -1);
+//  $("#source").prop("selectedIndex", -1);
+  $("#destination").prop("selectedIndex", -1);
+        getBalance();
+        getSourceCurrency();
 
     })
 
@@ -201,7 +203,7 @@
             success:function(currency){
                 cur = ''+String(currency);
                 if(cur == "" ){
-                    document.getElementById("sourceCurrency").textContent=" Unknown";
+                    document.getElementById("sourceCurrency").textContent=" NAN";
                    // $("#myspan").show();
                 }else{
 //                    $('input[name=availBal]').val(bal);
