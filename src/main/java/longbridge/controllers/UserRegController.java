@@ -90,15 +90,10 @@ public class UserRegController {
         logger.info("Email : " + email);
         logger.info("BirthDate : " + birthDate);
         CustomerDetails details = integrationService.isAccountValid(accountNumber, email, birthDate);
-        if (details != null){
-              customerId = details.getCifId();
-                logger.info("CustomerId", customerId);
-//            RetailUser retailUser = retailUserService.getUserByCustomerId(details.getCifId());
-//            if (retailUser != null) {
-//               customerId = retailUser.getCustomerId();
-//            }else {
-//                customerId="";
-//            }
+        if (details != null && !details.isCorp()){
+
+            customerId = details.getCifId();
+            logger.info("CustomerId", customerId);
 
         }else {
             //nothing
@@ -345,10 +340,11 @@ public class UserRegController {
     }
 
     @GetMapping("/rest/regCode/check/{code}")
-    public @ResponseBody String checkRegCode(@PathVariable Integer code, HttpSession session){
+    public @ResponseBody String checkRegCode(@PathVariable String code, HttpSession session){
         String regCode = (String) session.getAttribute("regCode");
-        Integer reg = Integer.parseInt(regCode);
-        if (!code.equals(reg)){
+        logger.info("REGCODE IN SESSION {} ", regCode);
+//        Integer reg = Integer.parseInt(regCode);
+        if (!code.equals(regCode)){
             return "false";
         }
         return "true";

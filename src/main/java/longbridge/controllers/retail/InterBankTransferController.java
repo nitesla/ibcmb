@@ -131,14 +131,14 @@ public class InterBankTransferController {
     @PostMapping("/summary")
     public String transferSummary(@ModelAttribute("transferRequest") @Valid TransferRequestDTO transferRequestDTO, BindingResult result, Model model, HttpServletRequest request) throws Exception {
         model.addAttribute("transferRequest", transferRequestDTO);
-        String charge="NAN";
-                String benName = (String) request.getSession().getAttribute("benName");
+        String charge = "NAN";
+        String benName = (String) request.getSession().getAttribute("benName");
+
         if (request.getSession().getAttribute("Lbeneficiary") != null) {
             LocalBeneficiaryDTO beneficiary = (LocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary");
             model.addAttribute("beneficiary", beneficiary);
             if (beneficiary.getId() == null)
                 model.addAttribute("newBen", "newBen");
-
         }
 
         model.addAttribute("benName", benName);
@@ -151,23 +151,21 @@ public class InterBankTransferController {
 
         if (request.getSession().getAttribute("NIP") != null) {
             String type = (String) request.getSession().getAttribute("NIP");
-            if (type.equalsIgnoreCase("RTGS")){
+            if (type.equalsIgnoreCase("RTGS")) {
                 transferRequestDTO.setTransferType(TransferType.RTGS);
-                charge= integrationService.getFee("RTGS").get().getFeeValue();
+                charge = integrationService.getFee("RTGS").get().getFeeValue();
 
-            }
-
-            else {
+            } else {
                 transferRequestDTO.setTransferType(TransferType.INTER_BANK_TRANSFER);
-                charge= integrationService.getFee("NIP").get().getFeeValue();
+                charge = integrationService.getFee("NIP").get().getFeeValue();
             }
-           // request.getSession().removeAttribute("NIP");
+            // request.getSession().removeAttribute("NIP");
 
         } else {
             transferRequestDTO.setTransferType(TransferType.INTER_BANK_TRANSFER);
         }
         request.getSession().setAttribute("transferRequest", transferRequestDTO);
-        model.addAttribute("charge",charge);
+        model.addAttribute("charge", charge);
         return page + "pageiii";
     }
 
@@ -198,21 +196,19 @@ public class InterBankTransferController {
     @ModelAttribute
     public void getOtherBankBeneficiaries(Model model, Principal principal) {
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
-        List<LocalBeneficiary> beneficiaries =  StreamSupport.stream(localBeneficiaryService.getLocalBeneficiaries(retailUser).spliterator(), false)
+        List<LocalBeneficiary> beneficiaries = StreamSupport.stream(localBeneficiaryService.getLocalBeneficiaries(retailUser).spliterator(), false)
                 .filter(i -> !i.getBeneficiaryBank().equalsIgnoreCase(financialInstitutionService.getFinancialInstitutionByCode(bankCode).getInstitutionCode()))
                 .collect(Collectors.toList());
 
         beneficiaries
                 .stream()
                 .filter(Objects::nonNull)
-                .forEach(i->
+                .forEach(i ->
                         {
-                     FinancialInstitution financialInstitution=       financialInstitutionService.getFinancialInstitutionByCode(i.getBeneficiaryBank());
+                            FinancialInstitution financialInstitution = financialInstitutionService.getFinancialInstitutionByCode(i.getBeneficiaryBank());
 
-                          if (financialInstitution!=null)
-                            i.setBeneficiaryBank(financialInstitution.getInstitutionName());
-
-
+                            if (financialInstitution != null)
+                                i.setBeneficiaryBank(financialInstitution.getInstitutionName());
 
 
                         }
@@ -238,7 +234,7 @@ public class InterBankTransferController {
             e.printStackTrace();
         } catch (ExecutionException e) {
             model.addAttribute("nip", new Rate());
-            model.addAttribute("rtgs",new Rate());
+            model.addAttribute("rtgs", new Rate());
             e.printStackTrace();
         }
 
@@ -257,21 +253,19 @@ public class InterBankTransferController {
     @PostMapping("/edit")
     public String editTransfer(@ModelAttribute("transferRequest") TransferRequestDTO transferRequestDTO, Model model, HttpServletRequest request) {
         String type = (String) request.getSession().getAttribute("NIP");
-        if (type.equalsIgnoreCase("RTGS")){
+        if (type.equalsIgnoreCase("RTGS")) {
             transferRequestDTO.setTransferType(TransferType.RTGS);
 
 
-        }
-
-        else {
+        } else {
             transferRequestDTO.setTransferType(TransferType.INTER_BANK_TRANSFER);
 
         }
 
 
-         model.addAttribute("transferRequest", transferRequestDTO);
-        if (request.getSession().getAttribute("Lbeneficiary") != null){
-            LocalBeneficiaryDTO dto=         (LocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary");
+        model.addAttribute("transferRequest", transferRequestDTO);
+        if (request.getSession().getAttribute("Lbeneficiary") != null) {
+            LocalBeneficiaryDTO dto = (LocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary");
             model.addAttribute("beneficiary", dto);
             transferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByName(dto.getBeneficiaryBank()));
         }
@@ -279,5 +273,29 @@ public class InterBankTransferController {
 
         return page + "pageii";
     }
+
+    @ModelAttribute
+    public void setNairaSourceAccount(Model model, Principal principal) {
+
+        RetailUser user = retailUserService.getUserByName(principal.getName());
+        if (user != null) {
+            List<String> accountList = new ArrayList<>();
+
+            Iterable<Account> accounts = accountService.getAccountsForDebit(user.getCustomerId());
+
+            StreamSupport.stream(accounts.spliterator(), false)
+                    .filter(Objects::nonNull)
+                    .filter(i-> "NGN".equalsIgnoreCase(i.getCurrencyCode()))
+
+                    .forEach(i -> accountList.add(i.getAccountNumber()));
+
+
+            model.addAttribute("accountList", accountList);
+
+
+        }
+
+    }
+
 
 }

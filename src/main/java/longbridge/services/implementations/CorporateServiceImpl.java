@@ -509,6 +509,7 @@ public class CorporateServiceImpl implements CorporateService {
 
 
         List<CorporateRole> corporateRoles = corporateRoleRepo.findByCorporate(corporate);
+        sortRolesByRank(corporateRoles);
         List<CorporateRoleDTO> roles = convertCorporateRoleEntitiesToDTOs(corporateRoles);
 
 
@@ -558,14 +559,21 @@ public class CorporateServiceImpl implements CorporateService {
         List<CorporateRole> roles = new ArrayList<>();
         if (applicableTransferRule != null) {
             roles = applicableTransferRule.getRoles();
-
-            if(applicableTransferRule.isRank()){
-                sortRolesByRank(roles);
-            }
         }
         return roles;
     }
 
+//    public CorporateRole getNextRoleForAuthorization(PendAuth pendAuth){
+//        pendAuth.
+//        List<CorporateRole> corporateRoles = rule.getRoles();
+//        sortRolesByRank(corporateRoles);
+//        CorporateRole corporateRole = null;
+//        Iterator<CorporateRole> iterator = corporateRoles.iterator();
+//        while (iterator.hasNext()){
+//            return  iterator.next();
+//        }
+//        return corporateRole;
+//    }
 
     private void sortRolesByRank(List<CorporateRole> roles){
         Collections.sort(roles,new Comparator<CorporateRole>(){

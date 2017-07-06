@@ -2,18 +2,12 @@ package longbridge.services.implementations;
 
 import longbridge.dtos.CorpTransferRequestDTO;
 import longbridge.dtos.SettingDTO;
-import longbridge.dtos.TransferRequestDTO;
 import longbridge.exception.*;
 import longbridge.models.*;
-import longbridge.repositories.CorpTransferRequestRepo;
-import longbridge.repositories.CorporateRepo;
-import longbridge.repositories.CorporateRoleRepo;
-import longbridge.repositories.CorporateUserRepo;
-import longbridge.repositories.PendingAuthorizationRepo;
+import longbridge.repositories.*;
+import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.*;
-import longbridge.utils.ResultType;
 import longbridge.utils.TransferType;
-import longbridge.utils.Verifiable;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,16 +15,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.stream.Collectors;
+import java.util.*;
 import java.util.stream.StreamSupport;
 
 /**
@@ -49,6 +40,8 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     private ConfigurationService configService;
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private Locale locale = LocaleContextHolder.getLocale();
+    @Autowired
+    private CorpTransferAuthRepo transferAuthRepo;
 
     @Autowired
     private PendingAuthorizationRepo pendAuthRepo;
@@ -56,9 +49,15 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     private CorporateService corporateService;
     @Autowired
     private MessageSource messageSource;
-    
+
+    @Autowired
+    private CorporateRepo corporateRepo;
+
     @Autowired
     private CorporateRoleRepo corpRoleRepo;
+
+    @Autowired
+    CorpTransReqEntryRepo reqEntryRepo;
 
     @Autowired
     public CorpTransferServiceImpl(CorpTransferRequestRepo corpTransferRequestRepo, IntegrationService integrationService, TransactionLimitServiceImpl limitService, ModelMapper modelMapper, AccountService accountService, FinancialInstitutionService financialInstitutionService, ConfigurationService configService) {
@@ -74,13 +73,11 @@ public class CorpTransferServiceImpl implements CorpTransferService {
 
     @Override
     @Transactional
-
     public String addTransferRequest(CorpTransferRequestDTO transferRequestDTO) throws InternetBankingException {
 
         CorpTransRequest transferRequest = convertDTOToEntity(transferRequestDTO);
 
-
-        if (transferRequest.getCorporate().getCorporateType().equals("SOLE")) {
+        if ("SOLE".equals(transferRequest.getCorporate().getCorporateType())) {
             makeTransfer(transferRequestDTO);
             return messageSource.getMessage("transaction.success", null, locale);
         }
@@ -89,23 +86,16 @@ public class CorpTransferServiceImpl implements CorpTransferService {
             throw new TransferRuleException(messageSource.getMessage("rule.unavailable", null, locale));
         }
         if (corporateService.getQualifiedRoles(transferRequest).isEmpty()) {
-            throw new NoDefinedRoleException(transferRequestDTO.getAmount());
+            throw new NoDefinedRoleException(messageSource.getMessage("transfer.role.unavailable", null, locale),transferRequestDTO.getAmount());
         }
 
-        try {
-
-            transferRequest.setStatus("PENDING");
-            List<CorporateRole> roles = corporateService.getQualifiedRoles(transferRequest);
-            List<PendAuth> pendAuths = new ArrayList<>();
-            for (CorporateRole role : roles) {
-                PendAuth pendAuth = new PendAuth();
-                pendAuth.setRole(role);
-                pendAuths.add(pendAuth);
-            }
-
-            transferRequest.setPendAuths(pendAuths);
+        try{
+            transferRequest.setStatus("P");
+            transferRequest.setStatusDescription("Pending");
+            CorpTransferAuth transferAuth = new CorpTransferAuth();
+            transferAuth.setStatus("P");
+            transferRequest.setTransferAuth(transferAuth);
             corpTransferRequestRepo.save(transferRequest);
-
         } catch (Exception e) {
             throw new InternetBankingTransferException();
         }
@@ -120,7 +110,8 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         if (corpTransRequest != null) {
             logger.trace("params {}", corpTransRequest);
             saveTransfer(convertEntityToDTO(corpTransRequest));
-            if (corpTransRequest.getStatus().equals("000")||corpTransRequest.getStatus().equals("00")) return convertEntityToDTO(corpTransRequest);
+            if (corpTransRequest.getStatus().equals("000") || corpTransRequest.getStatus().equals("00"))
+                return convertEntityToDTO(corpTransRequest);
             throw new InternetBankingTransferException(TransferExceptions.ERROR.toString());
         }
         throw new InternetBankingTransferException();
@@ -132,14 +123,6 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         return corpTransferRequestRepo.findById(id);
     }
 
-    @Override
-    public Iterable<CorpTransRequest> getTransfers(User user) {
-        return corpTransferRequestRepo.findAll()
-                .stream()
-                .filter(i -> i.getUserReferenceNumber().equals(user.getId()))
-                .collect(Collectors.toList());
-
-    }
 
     @Override
 
@@ -147,8 +130,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         CorpTransferRequestDTO result = new CorpTransferRequestDTO();
         try {
             CorpTransRequest transRequest = convertDTOToEntity(corpTransferRequestDTO);
-            result=  convertEntityToDTO(corpTransferRequestRepo.save(transRequest));
-
+            result = convertEntityToDTO(corpTransferRequestRepo.save(transRequest));
 
         } catch (Exception e) {
             logger.error("Exception occurred {}", e.getMessage());
@@ -157,32 +139,43 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     }
 
 
-    @Override
-    @Transactional
-    public String authorizeTransfer(CorporateUser user, Long authId) throws InternetBankingException {
-        PendAuth pendAuth = pendAuthRepo.findOne(authId);
-        //TODO: get role use belongs to
-//        if (!role.getPendAuths().contains(pendAuth)) {
-//            throw new InvalidAuthorizationException(messageSource.getMessage("transfer.auth.invalid", null, locale));
+//    public List<PendAuth> getPendingAuthorizations() {
+//        CorporateUser corporateUser = getCurrentUser();
+//        Corporate corporate = corporateUser.getCorporate();
+//        Set<CorporateRole> roles = corporate.getCorporateRoles();
+//        List<PendAuth> pendAuths = new ArrayList<>();
+//        for (CorporateRole role : roles) {
+//            if (!role.getPendAuths().isEmpty()) {
+//                Set<CorporateUser> users = role.getUsers();
+//                if (users.contains(corporateUser)) {
+//                    pendAuths = role.getPendAuths();
+//                }
+//            }
 //        }
-        try {
-            CorpTransRequest transferRequest = pendAuth.getCorpTransferRequest();
-            transferRequest.getPendAuths().remove(transferRequest);
-            if (corporateService.getApplicableTransferRule(transferRequest).isAnyCanAuthorize()) {
-                makeTransfer(convertEntityToDTO(transferRequest));
-                transferRequest.getPendAuths().clear();
-            }
-            else if (transferRequest.getPendAuths().isEmpty()) {
-                makeTransfer(convertEntityToDTO(transferRequest));
-            }
-            corpTransferRequestRepo.save(transferRequest);
-        } catch (Exception e) {
-            throw new InternetBankingException(messageSource.getMessage("transfer.auth.failure", null, locale), e);
-        }
-
-        return messageSource.getMessage("transfer.auth.success", null, locale);
-
-    }
+//        return pendAuths;
+//    }
+//
+//    @Override
+//    @Transactional
+//    public String authorizeTransfer(Long authId) throws InternetBankingException {
+//        PendAuth pendAuth = pendAuthRepo.findOne(authId);
+//
+//        CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//        CorporateUser corporateUser = (CorporateUser) principal.getUser();
+//
+//        try {
+//            CorpTransRequest transferRequest = pendAuth.getCorpTransferRequest();
+//
+//            CorpTransRule corporateTransferRule = corporateService.getApplicableTransferRule(transferRequest);
+//
+//            corpTransferRequestRepo.save(transferRequest);
+//        } catch (Exception e) {
+//            throw new InternetBankingException(messageSource.getMessage("transfer.auth.failure", null, locale), e);
+//        }
+//
+//        return messageSource.getMessage("transfer.auth.success", null, locale);
+//
+//    }
 
     private void validateBalance(CorpTransferRequestDTO corpTransferRequest) throws InternetBankingTransferException {
 
@@ -218,24 +211,27 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         if (!acctPresent) {
             throw new InternetBankingTransferException(TransferExceptions.NO_DEBIT_ACCOUNT.toString());
         }
-        if(validateBalance()) {
+        if (validateBalance()) {
             validateBalance(dto);
         }
 
 
     }
+
     private boolean validateBalance() {
         SettingDTO setting = configService.getSettingByName("ACCOUNT_BALANCE_VALIDATION");
-        if(setting!=null&&setting.isEnabled()) {
+        if (setting != null && setting.isEnabled()) {
             return ("YES".equals(setting.getValue()));
         }
         return true;
     }
 
     @Override
-    public Page<CorpTransRequest> getTransfers(User user, Pageable pageDetails) {
-        // TODO Auto-generated method stub
-        return null;
+    public Page<CorpTransRequest> getTransfers(Pageable pageDetails) {
+        CorporateUser corporateUser = getCurrentUser();
+        Corporate corporate = corporateUser.getCorporate();
+        Page<CorpTransRequest> corpTransRequests = corpTransferRequestRepo.findByCorporate(corporate, pageDetails);
+        return corpTransRequests;
     }
 
     public CorpTransferRequestDTO convertEntityToDTO(CorpTransRequest corpTransRequest) {
@@ -244,7 +240,9 @@ public class CorpTransferServiceImpl implements CorpTransferService {
 
 
     public CorpTransRequest convertDTOToEntity(CorpTransferRequestDTO corpTransferRequestDTO) {
-        return modelMapper.map(corpTransferRequestDTO, CorpTransRequest.class);
+        CorpTransRequest corpTransRequest = modelMapper.map(corpTransferRequestDTO, CorpTransRequest.class);
+        corpTransRequest.setCorporate(corporateRepo.findOne(Long.parseLong(corpTransferRequestDTO.getCorporateId())));
+        return corpTransRequest;
     }
 
     public List<CorpTransferRequestDTO> convertEntitiesToDTOs(Iterable<CorpTransRequest> corpTransferRequests) {
@@ -264,5 +262,111 @@ public class CorpTransferServiceImpl implements CorpTransferService {
                 throw new InternetBankingTransferException(TransferExceptions.INVALID_ACCOUNT.toString());
 
         }
+    }
+
+
+    @Override
+    public CorpTransferAuth getAuthorizations(CorpTransRequest transRequest) {
+
+        CorpTransRequest corpTransRequest = corpTransferRequestRepo.findOne(transRequest.getId());
+        return corpTransRequest.getTransferAuth();
+
+    }
+
+
+    public boolean userCanAuthorize(CorpTransRequest corpTransRequest){
+        CorporateUser corporateUser = getCurrentUser();
+        CorpTransRule transferRule = corporateService.getApplicableTransferRule(corpTransRequest);
+
+        if(transferRule==null){
+            return  false;
+        }
+
+        List<CorporateRole> roles = transferRule.getRoles();
+
+        for (CorporateRole corporateRole : roles) {
+            if (corpRoleRepo.countInRole(corporateRole, corporateUser)>0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public String addAuthorization(CorpTransReqEntry transReqEntry, CorpTransRequest transferRequest) {
+
+        CorporateUser corporateUser = getCurrentUser();
+        CorpTransRequest corpTransRequest = corpTransferRequestRepo.findOne(transferRequest.getId());
+        CorpTransRule transferRule = corporateService.getApplicableTransferRule(corpTransRequest);
+        List<CorporateRole> roles = transferRule.getRoles();
+        CorporateRole userRole = null;
+
+
+        for (CorporateRole corporateRole : roles) {
+            if (corpRoleRepo.countInRole(corporateRole, corporateUser)>0) {
+                userRole = corporateRole;
+                break;
+            }
+        }
+
+        if (userRole == null) {
+            throw new InternetBankingException("User is not authorized to approve the transaction");
+        }
+
+        CorpTransferAuth transferAuth = corpTransRequest.getTransferAuth();
+        Set<CorpTransReqEntry> transReqEntries = transferAuth.getAuths();
+
+        if (transReqEntries.contains(transReqEntry)) {
+            throw new InternetBankingException("User has already authorized the transaction");
+        }
+
+        if (!"P".equals(transferAuth.getStatus())) {
+            throw new InternetBankingException("Transaction is not pending");
+        }
+        transReqEntry.setEntryDate(new Date());
+        transReqEntry.setCorporateRole(userRole);
+        transReqEntry.setCorporateUser(corporateUser);
+        transReqEntry.setStatus("A");
+        transferAuth.getAuths().add(transReqEntry);
+        transferAuthRepo.save(transferAuth);
+        if(isAuthorizationComplete(corpTransRequest)){
+            transferAuth.setStatus("C");;
+            transferAuth.setLastEntry(new Date());
+            transferAuthRepo.save(transferAuth);
+            makeTransfer(convertEntityToDTO(corpTransRequest));
+            return "Transaction completed successfully";
+        }
+
+        return "Authorization added successfully to the transaction request";
+    }
+
+    private boolean isAuthorizationComplete(CorpTransRequest transRequest){
+        CorpTransferAuth transferAuth = transRequest.getTransferAuth();
+        Set<CorpTransReqEntry> transReqEntries = transferAuth.getAuths();
+        CorpTransRule corpTransRule = corporateService.getApplicableTransferRule(transRequest);
+        List<CorporateRole> roles = corpTransRule.getRoles();
+        boolean any = false;
+        int approvalCount = 0;
+
+        if(corpTransRule.isAnyCanAuthorize()){
+            any = true;
+        }
+
+        for(CorporateRole role: roles){
+            for(CorpTransReqEntry corpTransReqEntry: transferAuth.getAuths()){
+                if(corpTransReqEntry.getCorporateRole().equals(role)){
+                    approvalCount++;
+                    if(any) return true;
+                }
+            }
+        }
+        return approvalCount >= roles.size() ;
+
+    }
+
+    private CorporateUser getCurrentUser() {
+        CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        CorporateUser corporateUser = (CorporateUser) principal.getUser();
+        return corporateUser;
     }
 }

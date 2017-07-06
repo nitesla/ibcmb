@@ -1,6 +1,5 @@
 package longbridge.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
@@ -38,6 +37,9 @@ public class CorpTransRule extends AbstractEntity implements PrettySerializer{
 
     @ManyToMany
     private List<CorporateRole> roles;
+
+    @ManyToMany
+    private List<CorpTransRole> tranRoles;
 
     public BigDecimal getLowerLimitAmount() {
         return lowerLimitAmount;
@@ -94,6 +96,14 @@ public class CorpTransRule extends AbstractEntity implements PrettySerializer{
 
     public void setRoles(List<CorporateRole> roles) {
         this.roles = roles;
+    }
+
+    public List<CorpTransRole> getTranRoles() {
+        return tranRoles;
+    }
+
+    public void setTranRoles(List<CorpTransRole> tranRoles) {
+        this.tranRoles = tranRoles;
     }
 
     public boolean isRank() {

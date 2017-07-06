@@ -19,6 +19,7 @@ import javax.validation.Valid;
 import java.security.Principal;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
@@ -125,10 +126,18 @@ public class CorpInterBankTransferController {
     public String transferSummary(@ModelAttribute("corpTransferRequest") @Valid CorpTransferRequestDTO corpTransferRequestDTO, BindingResult result, Model model, HttpServletRequest request) throws Exception {
         model.addAttribute("corpTransferRequest", corpTransferRequestDTO);
         String benName = (String) request.getSession().getAttribute("benName");
+        String charge="NAN";
 
         model.addAttribute("benName", benName);
 
         validator.validate(corpTransferRequestDTO, result);
+
+        if (request.getSession().getAttribute("Lbeneficiary") != null) {
+            CorpLocalBeneficiaryDTO beneficiary = (CorpLocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary");
+            model.addAttribute("beneficiary", beneficiary);
+            if (beneficiary.getId() == null)
+                model.addAttribute("newBen", "newBen");
+        }
 
         if (result.hasErrors()) {
 
@@ -139,6 +148,7 @@ public class CorpInterBankTransferController {
             String type = (String) request.getSession().getAttribute("NIP");
             if (type.equalsIgnoreCase("RTGS")) {
                 corpTransferRequestDTO.setTransferType(TransferType.RTGS);
+                charge= integrationService.getFee("RTGS").get().getFeeValue();
             } else {
                 corpTransferRequestDTO.setTransferType(TransferType.INTER_BANK_TRANSFER);
             }
@@ -146,21 +156,30 @@ public class CorpInterBankTransferController {
 
         } else {
             corpTransferRequestDTO.setTransferType(TransferType.INTER_BANK_TRANSFER);
+            charge= integrationService.getFee("NIP").get().getFeeValue();
         }
         request.getSession().setAttribute("corpTransferRequest", corpTransferRequestDTO);
+        model.addAttribute("charge",charge);
         return page + "pageiii";
     }
 
     @GetMapping("/{id}")
-    public String transfer(@PathVariable Long id, Model model, HttpServletRequest request) throws Exception {
+    public String transfer(@PathVariable Long id, Model model, HttpServletRequest request, Locale locale) throws Exception {
         CorpLocalBeneficiary beneficiary = corpLocalBeneficiaryService.getCorpLocalBeneficiary(id);
         CorpTransferRequestDTO requestDTO = new CorpTransferRequestDTO();
         requestDTO.setBeneficiaryAccountName(beneficiary.getAccountName());
         requestDTO.setBeneficiaryAccountNumber(beneficiary.getAccountNumber());
         requestDTO.setTransferType(TransferType.INTER_BANK_TRANSFER);
+        FinancialInstitution institution = financialInstitutionService.getFinancialInstitutionByName(beneficiary.getBeneficiaryBank());
+        if (institution == null) {
 
-        model.addAttribute("transferRequest", requestDTO);
-        model.addAttribute("beneficiary", beneficiary);
+            model.addAttribute("failure", messages.getMessage("transfer.beneficiary.invalid", null, locale));
+            return page + "pageiA";
+        }
+        requestDTO.setFinancialInstitution(institution);
+
+        model.addAttribute("corpTransferRequest", requestDTO);
+        model.addAttribute("beneficiary",corpLocalBeneficiaryService.convertEntityToDTO(beneficiary));
         model.addAttribute("benName", beneficiary.getPreferredName());
         request.getSession().setAttribute("benName", beneficiary.getPreferredName());
         return page + "pageii";
@@ -193,7 +212,7 @@ public class CorpInterBankTransferController {
         List<FinancialInstitutionDTO> sortedNames = financialInstitutionService.getOtherLocalBanks(bankCode);
         sortedNames.sort(Comparator.comparing(FinancialInstitutionDTO::getInstitutionName));
 
-        model.addAttribute("banks",sortedNames);
+        model.addAttribute("banks", sortedNames);
 
 
         try {
@@ -209,7 +228,7 @@ public class CorpInterBankTransferController {
     }
 
     @PostMapping("/edit")
-    public String editTransfer(@ModelAttribute("transferRequest") CorpTransferRequestDTO transferRequestDTO, Model model, HttpServletRequest request) {
+    public String editTransfer(@ModelAttribute("corpTransferRequest") CorpTransferRequestDTO transferRequestDTO, Model model, HttpServletRequest request) {
         String type = (String) request.getSession().getAttribute("NIP");
         if (type.equalsIgnoreCase("RTGS")) {
             transferRequestDTO.setTransferType(TransferType.RTGS);
@@ -221,13 +240,13 @@ public class CorpInterBankTransferController {
         }
 
 
-        model.addAttribute("corpTransferRequest", transferRequestDTO);
+
         if (request.getSession().getAttribute("Lbeneficiary") != null) {
             CorpLocalBeneficiaryDTO dto = (CorpLocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary");
             model.addAttribute("beneficiary", dto);
-            transferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode(dto.getBeneficiaryBank()));
+            transferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByName(dto.getBeneficiaryBank()));
         }
-
+        model.addAttribute("corpTransferRequest", transferRequestDTO);
 
         return page + "pageii";
     }

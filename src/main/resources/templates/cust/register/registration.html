@@ -101,6 +101,15 @@
                             <section>
                                 <div class="row">
                                     <div class="col-md-offset-4 col-md-4">
+                                        <br/>
+
+
+
+                                        <div id='regcodebox' class="form-group clearfix">
+                                            <label>Registration Code</label>
+                                            <span class='req'></span><input type="number" min="0" id="code" name="regCode" class="col-md-8 my-select required" autocomplete="off" placeholder="Registration Code"/>
+                                            <a id="send" href="javascript:void(0)" onclick="sendRegCode();" data-toggle="tooltip" data-placement="right" title="Resend verification code">Resend Verification Code</a>
+                                        </div>
 
                                         <div class="form-group clearfix">
                                             <label>Username</label>
@@ -119,21 +128,16 @@
                                             <label>Password</label>
                                             <span class='req'></span><input onKeyUp="passwordStrength(this.value)" type="password" id="password" name="password" class="my-select required" placeholder="Password"/>
 
-                                            <!--<label for="passwordStrength">Password strength</label>-->
-                                            <!--<div id="passwordDescription">Password not entered</div>-->
-                                            <!--<div id="passwordStrength" class="strength0"></div>-->
+                                            <label for="passwordStrength">Password strength</label>
+                                            <div id="passwordDescription">Password not entered</div>
+                                            <div id="passwordStrength" class="strength0"></div>
                                         </div>
                                         <div class="form-group clearfix">
                                             <label>Confirm Password</label>
                                             <span class='req'></span><input type="password" id="confirm" name="confirm" class="my-select required" placeholder="Confirm Password"/>
                                         </div>
 
-                                        <a id="send" href="javascript:void(0)" onclick="sendRegCode();" class="btn "> Send Verification Code</a>
 
-                                        <div id='regcodebox' class="form-group clearfix">
-                                            <label>Registration Code</label>
-                                            <span class='req'></span><input type="text" id="code" name="regCode" class="col-md-8 my-select required" placeholder="Registration Code"/>
-                                        </div>
                                         <input id="customerId" name="customerId" type="hidden"/>
                                     </div>
                                     <div id="loa"  class='loader' style='display:none'>
@@ -282,16 +286,15 @@
     </div>
 </footer>
 <!-- CORE JQUERY SCRIPTS -->
-<script th:src="@{/customer/js/jquery-1.11.1.js}"></script>
+<script th:src="@{~/customer/js/jquery-1.11.1.js}"></script>
 <!-- BOOTSTRAP SCRIPTS  -->
-<script th:src="@{/customer/js/bootstrap.js}"></script>
+<script th:src="@{~/customer/js/bootstrap.js}"></script>
 
 <script th:src="@{~/customer/js/jquery.validate.min.js}"></script>
 <script th:src="@{~/customer/js/jquery-ui.js}"></script>
 <script th:src="@{~/customer/plugins/jquery-steps/js/jquery.steps.min.js}" type="text/javascript"></script>
 <script th:src="@{~/customer/js/jasny-bootstrap.min.js}"></script>
 <script th:src="@{~/customer/js/register.js}" type="text/javascript"></script>
-<!--<script th:src="@{~/customer/js/passwordStrength.js}" type="text/javascript"></script>-->
 <script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
 
 <script th:inline="javascript" type="text/javascript">
@@ -330,16 +333,14 @@
 
 
         //if password has at least one number give 1 point
-        if (password.match([[${passwordStrength.digits}]])) score++;
+        if (password.match(new RegExp([[${passwordStrength.digits}]]))) score++;
 
         //if password has at least one special caracther give 1 point
         if ( password.match([[${passwordStrength.SpecialChars}]]) ) score++;
 
-        //if password bigger than 12 give another 1 point
-//        if (password.length > 12) score++;
 
-        document.getElementById("passwordDescription").innerHTML = desc[score];
-        document.getElementById("passwordStrength").className = "strength" + score;
+        $('#passwordDescription').html(desc[score]);
+        $('#passwordStrength').addClass("strength" + score);
 
     }
 
