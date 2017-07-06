@@ -314,7 +314,6 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         }
 
         CorpTransferAuth transferAuth = corpTransRequest.getTransferAuth();
-//        Set<CorpTransReqEntry> transReqEntries = transferAuth.getAuths();
 
         if (reqEntryRepo.existsByTranReqIdAndUserAndRole(corpTransRequest.getId(),corporateUser,userRole)) {
             throw new InternetBankingException("User has already authorized the transaction");
@@ -326,7 +325,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         transReqEntry.setEntryDate(new Date());
         transReqEntry.setRole(userRole);
         transReqEntry.setUser(corporateUser);
-        transReqEntry.setStatus("A");
+        transReqEntry.setStatus("Approved");
         transferAuth.getAuths().add(transReqEntry);
         transferAuthRepo.save(transferAuth);
         if(isAuthorizationComplete(corpTransRequest)){
