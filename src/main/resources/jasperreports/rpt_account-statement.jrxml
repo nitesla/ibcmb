@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
-<!-- 2017-06-28T21:15:52 -->
+<!-- Created with Jaspersoft Studio version 6.4.0.final using JasperReports Library version 6.4.1  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="accountStatment" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="b1c76af6-01a7-4384-8820-23f298be1610">
 	<property name="ireport.zoom" value="1.1"/>
 	<property name="ireport.x" value="0"/>
@@ -166,7 +165,7 @@
 			</staticText>
 			<textField>
 				<reportElement x="454" y="55" width="100" height="20" uuid="0655f18d-a233-48dd-b3f9-df56c3ec0ec9"/>
-				<textFieldExpression><![CDATA[$P{summary.openingBalance}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[new java.text.DecimalFormat("#,##0.00").format(Double.valueOf($P{summary.openingBalance}))]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="454" y="75" width="100" height="20" uuid="24c378e0-1fbf-4fe9-aaa0-e71cf8b104f2"/>
@@ -280,15 +279,15 @@
 			</textField>
 			<textField>
 				<reportElement x="459" y="2" width="92" height="58" uuid="e05ff331-6988-466e-a9b9-bde3fde9e3cf"/>
-				<textFieldExpression><![CDATA[$F{accountBalance}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[new java.text.DecimalFormat("#,##0.00").format(Double.valueOf($F{accountBalance}))]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00">
 				<reportElement x="386" y="2" width="73" height="55" uuid="73612d66-3a04-494d-b16e-0b02e6bc8f4a"/>
-				<textFieldExpression><![CDATA[$F{tranType}.contentEquals("C") ? $F{tranAmount}: 0.0]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{tranType}.contentEquals("C") ? new java.text.DecimalFormat("#,##0.00").format(Double.valueOf($F{tranAmount})): 0.0]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00">
 				<reportElement x="315" y="2" width="71" height="55" uuid="8fcfc291-29c0-40e4-86bf-1dc83676dbf5"/>
-				<textFieldExpression><![CDATA[$F{tranType}.contentEquals("D") ? $F{tranAmount}: 0.0]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{tranType}.contentEquals("D") ? new java.text.DecimalFormat("#,##0.00").format(Double.valueOf($F{tranAmount})): 0.0]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
