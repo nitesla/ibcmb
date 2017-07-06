@@ -39,7 +39,7 @@ public interface CorpTransferService {
 
     CorpTransferAuth getAuthorizations(CorpTransRequest transRequest);
 
-    String addAuthorization(CorpTransReqEntry transReqEntry, CorpTransRequest corpTransRequest);
+    String addAuthorization(CorpTransReqEntry transReqEntry);
 
 
     boolean userCanAuthorize(CorpTransRequest corpTransRequest);

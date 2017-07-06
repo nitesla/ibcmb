@@ -34,7 +34,8 @@ private CronJobService cronJobService;
             public void run() {
 //                cronJobService.updateAllAccountName();
 //                cronJobService.updateAllBVN();
-//                cronJobService.updateAllAccountCurrency();
+                cronJobService.updateAllAccountCurrency();
+
 //                System.out.println("Cron job running");
             }
         }, new Trigger() {
