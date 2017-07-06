@@ -89,7 +89,9 @@
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">Select Roles</label>
                                             <div class="col-sm-6">
+
                                                 <p th:each="role: ${roleList}">
+                                                    <!--<input type="number" name="numRole" value="1"/>-->
                                                     <label class="checkbox-inline">
                                                     <input type="checkbox" th:field="*{roles}"
                                                            th:value="${role.id}"/>
@@ -109,13 +111,15 @@
                                                     <span>Any of the roles selected above can authorize
                                                     transactions</span>
                                                 </label>
-                                                </p><p>
-                                                    <label class="checkbox-inline">
+                                                </p>
 
-                                                    <input id="rank" type="checkbox" class="checkbox-inline" th:field="*{rank}"/>
-                                                    <span>Follow role rank for authorization</span>
-                                                    </label>
-                                            </p>
+                                                <!--<p>-->
+                                                    <!--<label class="checkbox-inline">-->
+
+                                                    <!--<input id="rank" type="checkbox" class="checkbox-inline" th:field="*{rank}"/>-->
+                                                    <!--<span>Use role rank for authorization</span>-->
+                                                    <!--</label>-->
+                                            <!--</p>-->
 
                                             </div>
                                         </div>

@@ -1,5 +1,6 @@
 package longbridge;
 
+import longbridge.models.Code;
 import longbridge.repositories.CustomJpaRepositoryFactoryBean;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.boot.CommandLineRunner;
@@ -29,6 +30,7 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
 
     @Override
     public void run(String... strings) throws Exception {
+
 
 
 

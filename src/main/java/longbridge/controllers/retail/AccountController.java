@@ -293,8 +293,8 @@ public class AccountController {
 		// Pageable pageable = DataTablesUtils.getPageable(input);
 		logger.info("fromDate {}",fromDate);
 		logger.info("toDate {}",toDate);
-		Duration diffInDays= new Duration(new DateTime(fromDate),new DateTime(toDate));
-		logger.info("Day difference {}",diffInDays.getStandardDays());
+//		Duration diffInDays= new Duration(new DateTime(fromDate),new DateTime(toDate));
+//		logger.info("Day difference {}",diffInDays.getStandardDays());
 
 		Date from;
 		Date to;

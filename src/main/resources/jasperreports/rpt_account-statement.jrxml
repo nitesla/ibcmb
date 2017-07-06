@@ -165,7 +165,7 @@
 			</staticText>
 			<textField>
 				<reportElement x="454" y="55" width="100" height="20" uuid="0655f18d-a233-48dd-b3f9-df56c3ec0ec9"/>
-				<textFieldExpression><![CDATA[$P{summary.openingBalance}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[new java.text.DecimalFormat("#,##0.00").format(Double.valueOf($P{summary.openingBalance}))]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="454" y="75" width="100" height="20" uuid="24c378e0-1fbf-4fe9-aaa0-e71cf8b104f2"/>

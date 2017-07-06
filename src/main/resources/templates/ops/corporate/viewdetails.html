@@ -294,7 +294,7 @@
                                                                             <th>Currency</th>
                                                                             <th>Roles</th>
                                                                             <th>Any Role</th>
-                                                                            <th>Follow Rank</th>
+                                                                            <!--<th>Follow Rank</th>-->
 
                                                                         </tr>
                                                                         </thead>
@@ -307,7 +307,7 @@
                                                                             <th>Currency</th>
                                                                             <th>Roles</th>
                                                                             <th>Any Role</th>
-                                                                            <th>Follow Rank</th>
+                                                                            <!--<th>Follow Rank</th>-->
 
                                                                         </tr>
                                                                         </tfoot>
@@ -636,8 +636,8 @@
                 { "data" : "upperLimitAmount" },
                 { "data" : "currency" },
                 { "data" : "roleNames" },
-                { "data" : "anyCanAuthorize" },
-                { "data" : "rank" }
+                { "data" : "anyCanAuthorize" }
+//                { "data" : "rank" }
 
             ],
             "columnDefs" : [ {
@@ -654,22 +654,7 @@
                     return data;
                 }
 
-            } ,
-                {
-                    "targets" : 5,
-                    "data" : "rank",
-                    "render" : function(data, type,full, meta) {
-                        if (type === 'display') {
-                            if (data == true) {
-                                return "<i class='fa fa-check dt-body-center' style='color:green;display:block; text-align:center; margin:0 auto;'></i>";
-                            } else{
-                                return "<i class='fa fa-times dt-body-center' style='color:red;display:block; text-align:center; margin:0 auto;'></i>";
-                            }
-                        }
-                        return data;
-                    }
-
-                }
+            }
             ]
 
         });

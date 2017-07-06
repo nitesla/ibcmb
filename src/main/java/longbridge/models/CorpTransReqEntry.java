@@ -16,15 +16,15 @@ import java.util.Date;
 @Where(clause ="del_Flag='N'" )
 public class CorpTransReqEntry extends AbstractEntity {
 
+    private Long tranReqId;
     private String comments;
-
     private String status;
 
     @ManyToOne
-    private CorporateRole corporateRole;
+    private CorporateRole role;
 
     @ManyToOne
-    private CorporateUser corporateUser;
+    private CorporateUser user;
     private Date entryDate;
 
 
@@ -45,20 +45,20 @@ public class CorpTransReqEntry extends AbstractEntity {
         this.status = status;
     }
 
-    public CorporateRole getCorporateRole() {
-        return corporateRole;
+    public CorporateRole getRole() {
+        return role;
     }
 
-    public void setCorporateRole(CorporateRole corporateRole) {
-        this.corporateRole = corporateRole;
+    public void setRole(CorporateRole role) {
+        this.role = role;
     }
 
-    public CorporateUser getCorporateUser() {
-        return corporateUser;
+    public CorporateUser getUser() {
+        return user;
     }
 
-    public void setCorporateUser(CorporateUser corporateUser) {
-        this.corporateUser = corporateUser;
+    public void setUser(CorporateUser user) {
+        this.user = user;
     }
 
     public Date getEntryDate() {
@@ -67,5 +67,13 @@ public class CorpTransReqEntry extends AbstractEntity {
 
     public void setEntryDate(Date entryDate) {
         this.entryDate = entryDate;
+    }
+
+    public Long getTranReqId() {
+        return tranReqId;
+    }
+
+    public void setTranReqId(Long tranReqId) {
+        this.tranReqId = tranReqId;
     }
 }
