@@ -23,10 +23,14 @@
         </div>
         <div class="row">
             <div class="col-md-9 content-bg"><br/>
-                <div class="row">
-                    <a th:href="@{/corporate/users/add}" class="btn btn-sm"><i class="fa fa-plus" style="color: white"></i>&nbsp; Add New User</a>
-                    <a th:href="@{/corporate/users/index/status}" class="btn btn-sm pull-right bt-select bt-link-act" disabled="disabled">Activate/Deactivate</a>
+                <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+                    <div class="btn-group" role="group" aria-label="First group">
+                        <a type="button" th:href="@{/corporate/users/add}" class="btn btn-link btn-sm"><i class="fa fa-plus" style="color: white"></i>&nbsp; Add New User</a>
+                        <a type="button" th:href="@{/corporate/users/index/status}" class="btn btn-sm btn-link bt-select bt-link-act" disabled="disabled">Activate/Deactivate</a>
+                        <a type="button" th:href="@{/corporate/users/index/password/reset}" class="btn btn-sm btn-link bt-select bt-link-act" disabled="disabled">Reset Password</a>
+                    </div>
                 </div>
+                <br/>
                 <div class="row">
                     <div class="col-md-12">
                         <table class="table" id="users">
