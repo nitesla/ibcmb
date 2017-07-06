@@ -291,20 +291,25 @@ public class CorpTransferController {
 
 
 
-    @GetMapping("/{id}/pending")
-    public String getPendingAuth(@PathVariable Long id,  Model model){
+
+    @GetMapping("/{id}/authorizations")
+    public String getAuthorizations(@PathVariable Long id,  Model model){
 
         CorpTransRequest corpTransRequest = corpTransferService.getTransfer(id);
         CorpTransferAuth corpTransferAuth = corpTransferService.getAuthorizations(corpTransRequest);
-        model.addAttribute("corpTransferAuth",corpTransferAuth);
+        CorpTransRule corpTransRule = corporateService.getApplicableTransferRule(corpTransRequest);
+        boolean userCanAuthorize = corpTransferService.userCanAuthorize(corpTransRequest);
+        model.addAttribute("authorizationMap",corpTransferAuth);
         model.addAttribute("corpTransRequest",corpTransRequest);
         model.addAttribute("corpTransReqEntry", new CorpTransReqEntry());
-        return "corp/transfer/pendingtransfer/view";
+        model.addAttribute("corpTransRule", corpTransRule);
+        model.addAttribute("userCanAuthorize",userCanAuthorize);
+        return "corp/transfer/request/summary";
     }
 
     @GetMapping("/requests")
     public String getTransfers(){
-        return "";
+        return "corp/transfer/request/view";
     }
 
 
@@ -324,7 +329,7 @@ public class CorpTransferController {
 
 
     @PostMapping("/authorize")
-    public String addAuthorization(@ModelAttribute CorpTransReqEntry corpTransReqEntry, CorpTransRequest corpTransRequest, RedirectAttributes redirectAttributes){
+    public String addAuthorization(@ModelAttribute("corpTransReqEntry") CorpTransReqEntry corpTransReqEntry, @ModelAttribute("corpTransRequest") CorpTransRequest corpTransRequest, RedirectAttributes redirectAttributes){
 
         try {
             String message = corpTransferService.addAuthorization(corpTransReqEntry, corpTransRequest);
@@ -335,7 +340,7 @@ public class CorpTransferController {
             redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
 
         }
-        return "redirect:/corporate/pending";
+        return "redirect:/corporate/transfer/requests";
 
     }
 

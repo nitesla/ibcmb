@@ -43,8 +43,6 @@ public class CorporateRole extends AbstractEntity implements PrettySerializer{
     @JoinColumn(name="user_id")
     Set<CorporateUser> users = new HashSet<CorporateUser>();
 
-    @OneToMany
-    List<PendAuth> pendAuths;
 
     public String getName() {
         return name;
@@ -86,13 +84,6 @@ public class CorporateRole extends AbstractEntity implements PrettySerializer{
         this.roleType = roleType;
     }
 
-    public List<PendAuth> getPendAuths() {
-        return pendAuths;
-    }
-
-    public void setPendAuths(List<PendAuth> pendAuths) {
-        this.pendAuths = pendAuths;
-    }
 
 	@Override
 	public JsonSerializer<CorporateRole> getSerializer() {

@@ -20,7 +20,7 @@ public class CorpTransRequest extends TransRequest {
     @JsonIgnore
     private Corporate corporate;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JsonIgnore
     private  CorpTransferAuth transferAuth;
 

@@ -31,7 +31,7 @@ public interface CorpTransferService {
     @PreAuthorize("hasAuthority('MAKE_TRANSFER')")
     void validateTransfer(CorpTransferRequestDTO corpTransferRequestDTO) throws InternetBankingTransferException;
 
-    String authorizeTransfer(Long authId) throws InternetBankingException;
+//    String authorizeTransfer(Long authId) throws InternetBankingException;
 
     String addTransferRequest(CorpTransferRequestDTO transferRequestDTO) throws InternetBankingException;
 
@@ -42,5 +42,5 @@ public interface CorpTransferService {
     String addAuthorization(CorpTransReqEntry transReqEntry, CorpTransRequest corpTransRequest);
 
 
-
+    boolean userCanAuthorize(CorpTransRequest corpTransRequest);
 }
