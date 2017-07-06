@@ -17,10 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.security.Principal;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -38,13 +35,14 @@ public class CorpInterBankTransferController {
     private TransferValidator validator;
     private CorporateService corporateService;
     private IntegrationService integrationService;
+    private AccountService accountService;
     private String page = "corp/transfer/interbank/";
     @Value("${bank.code}")
     private String bankCode;
 
     @Autowired
     public CorpInterBankTransferController(CorporateUserService corporateUserService, CorpTransferService corpTransferService, MessageSource messages, CorpLocalBeneficiaryService corpLocalBeneficiaryService, FinancialInstitutionService financialInstitutionService
-            , TransferValidator validator, CorporateService corporateService, IntegrationService integrationService) {
+            , TransferValidator validator, CorporateService corporateService, IntegrationService integrationService, AccountService accountService) {
         this.corporateUserService = corporateUserService;
         this.corpTransferService = corpTransferService;
         this.messages = messages;
@@ -53,6 +51,8 @@ public class CorpInterBankTransferController {
         this.validator = validator;
         this.corporateService = corporateService;
         this.integrationService = integrationService;
+        this.accountService = accountService;
+
     }
 
     @GetMapping(value = "")
@@ -126,7 +126,7 @@ public class CorpInterBankTransferController {
     public String transferSummary(@ModelAttribute("corpTransferRequest") @Valid CorpTransferRequestDTO corpTransferRequestDTO, BindingResult result, Model model, HttpServletRequest request) throws Exception {
         model.addAttribute("corpTransferRequest", corpTransferRequestDTO);
         String benName = (String) request.getSession().getAttribute("benName");
-        String charge="NAN";
+        String charge = "NAN";
 
         model.addAttribute("benName", benName);
 
@@ -148,7 +148,7 @@ public class CorpInterBankTransferController {
             String type = (String) request.getSession().getAttribute("NIP");
             if (type.equalsIgnoreCase("RTGS")) {
                 corpTransferRequestDTO.setTransferType(TransferType.RTGS);
-                charge= integrationService.getFee("RTGS").get().getFeeValue();
+                charge = integrationService.getFee("RTGS").get().getFeeValue();
             } else {
                 corpTransferRequestDTO.setTransferType(TransferType.INTER_BANK_TRANSFER);
             }
@@ -156,10 +156,10 @@ public class CorpInterBankTransferController {
 
         } else {
             corpTransferRequestDTO.setTransferType(TransferType.INTER_BANK_TRANSFER);
-            charge= integrationService.getFee("NIP").get().getFeeValue();
+            charge = integrationService.getFee("NIP").get().getFeeValue();
         }
         request.getSession().setAttribute("corpTransferRequest", corpTransferRequestDTO);
-        model.addAttribute("charge",charge);
+        model.addAttribute("charge", charge);
         return page + "pageiii";
     }
 
@@ -179,7 +179,7 @@ public class CorpInterBankTransferController {
         requestDTO.setFinancialInstitution(institution);
 
         model.addAttribute("corpTransferRequest", requestDTO);
-        model.addAttribute("beneficiary",corpLocalBeneficiaryService.convertEntityToDTO(beneficiary));
+        model.addAttribute("beneficiary", corpLocalBeneficiaryService.convertEntityToDTO(beneficiary));
         model.addAttribute("benName", beneficiary.getPreferredName());
         request.getSession().setAttribute("benName", beneficiary.getPreferredName());
         return page + "pageii";
@@ -240,7 +240,6 @@ public class CorpInterBankTransferController {
         }
 
 
-
         if (request.getSession().getAttribute("Lbeneficiary") != null) {
             CorpLocalBeneficiaryDTO dto = (CorpLocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary");
             model.addAttribute("beneficiary", dto);
@@ -251,5 +250,26 @@ public class CorpInterBankTransferController {
         return page + "pageii";
     }
 
+    @ModelAttribute
+    public void setNairaSourceAccount(Model model, Principal principal) {
 
+        CorporateUser user = corporateUserService.getUserByName(principal.getName());
+        if (user != null) {
+            List<String> accountList = new ArrayList<>();
+
+            Iterable<Account> accounts = accountService.getAccountsForDebit(user.getCorporate().getCustomerId());
+
+            StreamSupport.stream(accounts.spliterator(), false)
+                    .filter(Objects::nonNull)
+                    .filter(i -> "NGN".equalsIgnoreCase(i.getCurrencyCode()))
+
+                    .forEach(i -> accountList.add(i.getAccountNumber()));
+
+
+            model.addAttribute("accountList", accountList);
+
+
+        }
+
+    }
 }
