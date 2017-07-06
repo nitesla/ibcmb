@@ -3,6 +3,7 @@ package longbridge.controllers;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import longbridge.api.CustomerDetails;
 import longbridge.dtos.AccountDTO;
+import longbridge.dtos.PasswordStrengthDTO;
 import longbridge.dtos.RetailUserDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.PasswordException;
@@ -552,7 +553,9 @@ public class UserRegController {
             logger.info("master question "+i+" "+masterList[i]);
         }
         logger.info("master question "+masterList);
-
+        PasswordStrengthDTO passwordStrengthDTO = passwordPolicyService.getPasswordStengthParams();
+        logger.info("Password Strength {}" + passwordStrengthDTO);
+        model.addAttribute("passwordStrength", passwordStrengthDTO);
 
 //
 //        ArrayList[] masterList = new ArrayList[noOfQuestions];
@@ -568,7 +571,7 @@ public class UserRegController {
 //        }
 //
 //        logger.info("MASTER LIST {}", masterList);
-        model.addAttribute("secQuestions", secQues);
+        model.addAttribute("questionBank", masterList);
 
         //logger.info("MIN SEC {}", noOfQuestions);
 
