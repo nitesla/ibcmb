@@ -266,7 +266,7 @@ public class PasswordPolicyService {
         init();
         char backslash = '\\';
         PasswordStrengthDTO passwordStrengthDTO = new PasswordStrengthDTO();
-        String digits = "/";
+        String digits = "";
         if (numOfDigits == 1){
 //            digits+=backslash;
             digits+="d+";
@@ -277,12 +277,12 @@ public class PasswordPolicyService {
             }
             digits+=")";
         }
-        digits+="/";
+//        digits+="/";
 
 
         String sp = specialCharacters.replaceAll(".(?=.)", "$0,");
 
-        String specChars = "/";
+        String specChars = "";
         if (noOfSpecial == 1){
             specChars +=".[";
             specChars +=sp;
@@ -296,7 +296,7 @@ public class PasswordPolicyService {
             }
             specChars+=")";
         }
-        specChars += "/";
+//        specChars += "/";
 
         passwordStrengthDTO.setDigits(digits);
         passwordStrengthDTO.setSpecialChars(specChars);
