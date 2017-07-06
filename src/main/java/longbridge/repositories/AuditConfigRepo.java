@@ -18,7 +18,6 @@ import javax.persistence.EntityManager;
  */
 @Repository
 @Transactional
-
 public interface AuditConfigRepo extends CommonRepo<AuditConfig, Long>
 {
 

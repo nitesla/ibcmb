@@ -96,4 +96,5 @@ public class AuditConfigImpl implements AuditConfigService {
 		AuditConfig auditConfig = this.configRepo.findOne(id);
 		return auditConfig;
 	}
+
 }
