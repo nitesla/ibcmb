@@ -655,8 +655,16 @@ tokenInput
 
 .related-info
 {
-    border:1px solid #9F614B;
-    color:blue;
+  
+   
+    padding: 20px;
+   
+}
+
+.related-box
+{
+    min-height: 250px;
+     background: #ebecef;
 }
 
  .tab tr th
@@ -1344,6 +1352,7 @@ body {
 
 .lists li{
     list-style: none;
+    padding-top:12px !important;
 }
 .fa{
     color: #9F614B;
@@ -2010,7 +2019,7 @@ button, input, optgroup, select, textarea {
 .current-body
 {
     /*background-image: url('../img/content-image.jpg');*/
-    min-height: 400px;
+    min-height: 430px;
     margin-top:5px;
     /*background-size: cover;*/
     background: rgb(0,48,87);
@@ -2069,8 +2078,8 @@ button, input, optgroup, select, textarea {
     padding:20px !important;
     max-height:120px;
     overflow-y: scroll;
-    /*background: #ebecef !important;*/
-    background: linear-gradient(to top left,rgb(152,153,173),rgb(216,216,223),rgb(224,223,229),rgb(248,248,248),rgb(220,221,222));
+    background: #ebecef !important;
+    /*background: linear-gradient(to top left,rgb(152,153,173),rgb(216,216,223),rgb(224,223,229),rgb(248,248,248),rgb(220,221,222));*/
 
 }
 .advert h1
@@ -2079,4 +2088,10 @@ button, input, optgroup, select, textarea {
     font-size:16px;
     font-weight:bold;
 }
-
+.related-bar
+{
+    background: white;
+    padding:20px;
+    font-size:16px;
+    font-weight: bold;
+}
