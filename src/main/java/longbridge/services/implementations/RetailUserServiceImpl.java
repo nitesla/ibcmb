@@ -224,7 +224,7 @@ public class RetailUserServiceImpl implements RetailUserService {
         }
     }
 
-    private void setEntrustUserQA(String username, String securityQuestion, String securityAnswer){
+    private void setEntrustUserQA(String username, List<String> securityQuestion, List<String> securityAnswer){
         try{
             securityService.setUserQA(username, securityQuestion, securityAnswer);
         }catch (InternetBankingSecurityException e){
