@@ -1,5 +1,6 @@
 package longbridge.services;
 
+import longbridge.config.audits.CustomRevisionEntity;
 import longbridge.dtos.AuditConfigDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.Code;
