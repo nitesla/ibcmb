@@ -67,7 +67,7 @@ public class AdmAuditController {
        String entityName= audit.getEntityName();
         List<T>  entity =auditCfgService.revisedEntity(entityName);
 
-        System.out.println("this is the size"+entity.size());
+        System.out.println("this is the size"+entity);
 
         return "adm/audit/view";
 //       try

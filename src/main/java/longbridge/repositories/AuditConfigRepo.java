@@ -29,4 +29,5 @@ public interface AuditConfigRepo extends CommonRepo<AuditConfig, Long>
 
 
 
+
 }

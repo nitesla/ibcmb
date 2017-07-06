@@ -67,12 +67,14 @@ public class AuditConfigImpl implements AuditConfigService {
 			//Class<?> cls = Class.forName(entityName);
 			Class<?> clazz  = Class.forName(PACKAGE_NAME + entityName);
 			AuditReader auditReader = AuditReaderFactory.get(entityManager);
-			AuditQuery query = auditReader.createQuery().forRevisionsOfEntity(clazz, true, true)
-					;
-			query.addProjection(AuditEntity.revisionNumber());
-			query.addProjection(AuditEntity.id());
+//			AuditQuery query = auditReader.createQuery().forEntitiesAtRevision(clazz,2141);
+			AuditQuery query = auditReader.createQuery().forRevisionsOfEntity(clazz, true, true);
 			revisionList = query.getResultList();
-			System.out.println("list gotten {}");
+			System.out.println("list gotten {}"+revisionList);
+			query.addProjection(AuditEntity.revisionNumber());
+//			query.addProjection(AuditEntity.id());
+			revisionList = query.getResultList();
+			System.out.println("list gotten 2 {}"+revisionList);
 
 
 		}
