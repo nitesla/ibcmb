@@ -4,10 +4,12 @@ import longbridge.api.AccountDetails;
 import longbridge.api.CustomerDetails;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.Account;
-import longbridge.models.CronJob;
+import longbridge.models.CronJobExpression;
+import longbridge.models.CronJobMonitor;
 import longbridge.models.RetailUser;
 import longbridge.repositories.AccountRepo;
-import longbridge.repositories.CronJobRepo;
+import longbridge.repositories.CronJobExpressionRepo;
+import longbridge.repositories.CronJobMonitorRepo;
 import longbridge.repositories.RetailUserRepo;
 import longbridge.services.CronJobService;
 import longbridge.services.IntegrationService;
@@ -32,7 +34,9 @@ public class CronJobServiceImpl implements CronJobService {
     @Autowired
     private RetailUserRepo retailUserRepo;
     @Autowired
-    private CronJobRepo cronJobRepo;
+    private CronJobExpressionRepo cronJobExpressionRepo;
+    @Autowired
+    private CronJobMonitorRepo cronJobMonitorRepo;
     @Override
     public void updateAllAccountName(Account account, AccountDetails accountDetails) throws InternetBankingException {
             if (!account.getAccountName().equalsIgnoreCase(accountDetails.getAcctName())) {
@@ -65,22 +69,22 @@ public class CronJobServiceImpl implements CronJobService {
     }
 
     @Override
-    public void keepJobDetials(String username,String cronExpression) throws InternetBankingException {
-            CronJob cronJob = new CronJob();
-            cronJob.setUsername(username);
-            cronJob.setCreatedOn(new Date());
-            cronJob.setFlag("Y");
-            cronJob.setCronExpression(cronExpression);
-            cronJobRepo.save(cronJob);
+    public void keepCronJobEprsDetials(String username, String cronExpression) throws InternetBankingException {
+            CronJobExpression cronJobExpression = new CronJobExpression();
+            cronJobExpression.setUsername(username);
+            cronJobExpression.setCreatedOn(new Date());
+            cronJobExpression.setFlag("Y");
+            cronJobExpression.setCronExpression(cronExpression);
+            cronJobExpressionRepo.save(cronJobExpression);
     }
 
     @Override
     public void deleteRunningJob() throws InternetBankingException {
-        CronJob cronJob = cronJobRepo.findByFlag("Y");
-        if (cronJob != null){
+        CronJobExpression cronJobExpression = cronJobExpressionRepo.findByFlag("Y");
+        if (cronJobExpression != null){
             logger.info("about deleting");
-            cronJob.setFlag("N");
-            cronJobRepo.save(cronJob);
+            cronJobExpression.setFlag("N");
+            cronJobExpressionRepo.save(cronJobExpression);
         }
     }
 
@@ -116,7 +120,7 @@ public class CronJobServiceImpl implements CronJobService {
 
             try {
 //                updateAllAccountName(account,accountDetails);
-//                updateAllAccountCurrency(account,accountDetails);
+                updateAllAccountCurrency(account,accountDetails);
                 updateAccountStatus(account,accountDetails);
                 return true;
             } catch (Exception e) {
@@ -127,5 +131,41 @@ public class CronJobServiceImpl implements CronJobService {
         }
         return false;
     }
+
+    @Override
+    public void saveRunningJob(String jobCategory, String cronExpression) throws InternetBankingException {
+        CronJobMonitor jobMonitor = new CronJobMonitor();
+        jobMonitor.setExpression(cronExpression);
+        jobMonitor.setJobStartTime(new Date());
+        jobMonitor.setJobCategory(jobCategory);
+        jobMonitor.setStillRunning(true);
+        cronJobMonitorRepo.save(jobMonitor);
+    }
+
+    @Override
+    public String getCurrentExpression() throws InternetBankingException {
+        CronJobExpression cronJobExpression = cronJobExpressionRepo.findByFlag("Y");
+
+        return cronJobExpression.getCronExpression();
+    }
+
+    @Override
+    public boolean updateRunningJob() throws InternetBankingException {
+        List<CronJobMonitor> incompleteJobs = cronJobMonitorRepo.findLastByStillRunning(true);
+        if(incompleteJobs.size()>0){
+            CronJobMonitor jobMonitor = incompleteJobs.get(incompleteJobs.size()-1);
+        if(incompleteJobs.get(incompleteJobs.size()-1) != null) {
+            logger.info("monitor time is {}", jobMonitor.getJobStartTime());
+            jobMonitor.setJobEndTime(new Date());
+            jobMonitor.setStillRunning(false);
+            cronJobMonitorRepo.save(jobMonitor);
+            return true;
+        }else {
+            return false;
+        }
+        }
+        return false;
+    }
+
 
 }

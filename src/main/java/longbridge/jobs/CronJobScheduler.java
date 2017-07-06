@@ -1,7 +1,10 @@
 package longbridge.jobs;
 
+import longbridge.config.SpringContext;
+import longbridge.services.CronJobService;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 /**
@@ -10,6 +13,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class CronJobScheduler {
     public static void startJobs() {
+        ApplicationContext context = SpringContext.getApplicationContext();
+        CronJobService cronJobService = context.getBean (CronJobService.class);
+
         JobKey OneTimeKey = new JobKey("OneTime", "ibtest");
         JobDetail OneTimeJobs = JobBuilder.newJob(RunningJob.class)
                 .withIdentity(OneTimeKey).build();
@@ -62,7 +68,8 @@ public class CronJobScheduler {
                 .newTrigger()
                 .withIdentity("oneTime", "ibtest")
                 .withSchedule(
-                        CronScheduleBuilder.cronSchedule("0/10 0/1 * 1/1 * ? *"))
+                        CronScheduleBuilder.cronSchedule(cronJobService.getCurrentExpression()))
+//                        CronScheduleBuilder.cronSchedule("0/10 0/1 * 1/1 * ? *"))
                 .build();
 //        Trigger fiveMins = TriggerBuilder
 //                .newTrigger()
@@ -161,5 +168,6 @@ public class CronJobScheduler {
             e.printStackTrace();
         }
     }
+
 
 }

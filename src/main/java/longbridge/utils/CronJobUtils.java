@@ -13,10 +13,10 @@ public class CronJobUtils {
     private static Logger logger = LoggerFactory.getLogger(new CronJobUtils().getClass());
     public static String getSecondExpression(String second){
         if(second!=null && !second.equalsIgnoreCase("")) {
-            String exrInit = "*/";
+            String exrInit = "0/";
             StringBuilder stringBuilder = new StringBuilder(exrInit);
             stringBuilder.append(second);
-            stringBuilder.append(" * * * * *");
+            stringBuilder.append(" 0/1 * 1/1 * ? *");
             logger.info("seconds expression {}", stringBuilder);
             return stringBuilder.toString();
         }
@@ -28,7 +28,6 @@ public class CronJobUtils {
         stringBuilder.append(minute);
         stringBuilder.append(" * 1/1 * ? *");
         logger.info("minute expression {}",stringBuilder);
-
         return stringBuilder.toString();
     }
     public static String getHourExpression(String hourChecker, String exactHour, String hour, String minute){

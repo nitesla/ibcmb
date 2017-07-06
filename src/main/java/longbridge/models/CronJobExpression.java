@@ -7,7 +7,7 @@ import java.util.Date;
  * Created by Longbridge on 6/15/2017.
  */
 @Entity
-public class CronJob extends AbstractEntity {
+public class CronJobExpression extends AbstractEntity {
     private String cronExpression;
     private Date createdOn;
     private String username;
@@ -47,7 +47,7 @@ public class CronJob extends AbstractEntity {
 
     @Override
     public String toString() {
-        return "CronJob{" +
+        return "CronJobExpression{" +
                 "cronExpression='" + cronExpression + '\'' +
                 ", createdOn=" + createdOn +
                 ", username=" + username +

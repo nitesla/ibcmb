@@ -12,6 +12,7 @@ import longbridge.models.AuditConfig;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
+import java.util.Map;
 
 public interface AuditConfigService
 {
@@ -32,5 +33,6 @@ public interface AuditConfigService
 	AuditConfig getAuditEntity(Long auditId);
 
 	List<T> revisedEntity(String entityName);
+	Map<String,Object> revisedEntityDetails(String entityName);
 
 }

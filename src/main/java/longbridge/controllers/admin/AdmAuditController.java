@@ -21,7 +21,9 @@ import org.springframework.web.bind.annotation.*;
 import longbridge.models.AuditConfig;
 import longbridge.services.AuditConfigService;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -66,8 +68,11 @@ public class AdmAuditController {
         AuditConfig audit = auditCfgService.getAuditEntity(id);
        String entityName= audit.getEntityName();
        String entityNames=entityName;
-        List<T>  entity = auditCfgService.revisedEntity(entityNames);
-
+        Map<String, Object> entityDetails = auditCfgService.revisedEntityDetails(entityNames);
+        logger.info("class detials are {}",entityDetails.get("classDetials"));
+        logger.info("reference numbers are {}",entityDetails.get("revisionNumbers"));
+        logger.info("reference detials are {}",entityDetails.get("revisionDetails"));
+        List<String> mergedClassDetails = new ArrayList<>();
         return "adm/audit/view";
 //       try
 //       {

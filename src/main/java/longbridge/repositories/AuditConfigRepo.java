@@ -18,7 +18,6 @@ import javax.persistence.EntityManager;
  */
 @Repository
 @Transactional
-
 public interface AuditConfigRepo extends CommonRepo<AuditConfig, Long>
 {
 
@@ -26,6 +25,7 @@ public interface AuditConfigRepo extends CommonRepo<AuditConfig, Long>
     AuditConfig findFirstByEntityName(String name);
     boolean existsByEntityName(String name);
     boolean existsByEntityNameAndEnabled(String name, String enabled);
+
 
 
 
