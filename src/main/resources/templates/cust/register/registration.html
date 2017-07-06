@@ -109,9 +109,9 @@
 
 
 
-                                                    <!-- Modal content-->
+                                                <!-- Modal content-->
                                                 <div id="load" style='display:none'></div>
-                                                </div>
+                                            </div>
 
                                         </div>
 
@@ -154,17 +154,26 @@
                                         <div class='alert alert-danger' id="myspan2">
                                         </div>
                                         <input id="returnValue" type="hidden"/>
+                                        <input th:name="noOfQuestions" th:value="${noOfQuestions}" type="hidden"/>
                                         <!--<p th:each="question,id : ${securityQuestion}" th:text="${question.securityQuestion.}"></p>-->
-                                        <div class="form-group clearfix">
-                                            <label>Question</label>
-                                            <select name="securityQuestion" class="my-select required">
-                                                <option th:each="question : ${secQuestions}" th:text="*{question.securityQuestion}"></option>
-                                            </select>
+
+                                        <!--<select name="securityQuestion" class="my-select required">-->
+                                        <!--<option th:each="question : ${secQuestions}" th:text="*{question.securityQuestion}"></option>-->
+                                        <!--</select>-->
+                                        <div th:each="questionList,ind : ${questionBank}">
+                                            <div class="form-group clearfix">
+                                                <label>Question</label>
+                                                <select th:name="'secretQuestion'+${ind.index}" class="my-select">
+                                                    <p th:each="question : ${questionList}">
+                                                        <option th:text="${question.securityQuestion}" th:value="${question.securityQuestion}"></option>
+                                                    </p></select>
+                                            </div>
+                                            <div class="form-group clearfix">
+                                                <label>Answer</label>
+                                                <input type="text" th:name="'securityAnswer'+${ind.index}" class="my-select required" placeholder="Security Answer"/>
+                                            </div>
                                         </div>
-                                        <div class="form-group clearfix">
-                                            <label>Question</label>
-                                            <input type="text" name="securityAnswer" class="my-select required" placeholder="Security Answer"/>
-                                        </div>
+
                                     </div>
                                 </div>
                             </section>
@@ -184,10 +193,10 @@
                                             </div>
 
                                             <!--<table>-->
-                                                <!--<td th:each="image : ${images}" style="position: relative;">-->
-                                                    <!--<img th:src="${imagePath} + ${image}" width="100px" height="100px"/>-->
-                                                    <!--<input type="radio" name="phishing" th:value="${image}" id="check1" class="required" style="position: absolute; bottom: 20px; right: 20px;" />-->
-                                                <!--</td>-->
+                                            <!--<td th:each="image : ${images}" style="position: relative;">-->
+                                            <!--<img th:src="${imagePath} + ${image}" width="100px" height="100px"/>-->
+                                            <!--<input type="radio" name="phishing" th:value="${image}" id="check1" class="required" style="position: absolute; bottom: 20px; right: 20px;" />-->
+                                            <!--</td>-->
                                             <!--</table>-->
 
                                         </div>

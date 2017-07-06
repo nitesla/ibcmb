@@ -11,7 +11,10 @@ import longbridge.utils.Verifiable;
 import org.apache.poi.ss.formula.functions.T;
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
+import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,7 +31,6 @@ import java.util.List;
 public class AuditConfigImpl implements AuditConfigService {
 
 	private static final String PACKAGE_NAME = "longbridge.models.";
-
     @Autowired
     private AuditConfigRepo configRepo;
     @Autowired
@@ -65,8 +67,14 @@ public class AuditConfigImpl implements AuditConfigService {
 			//Class<?> cls = Class.forName(entityName);
 			Class<?> clazz  = Class.forName(PACKAGE_NAME + entityName);
 			AuditReader auditReader = AuditReaderFactory.get(entityManager);
-			AuditQuery query = auditReader.createQuery().forRevisionsOfEntity(clazz, true, true);
+			AuditQuery query = auditReader.createQuery().forRevisionsOfEntity(clazz, true, true)
+					;
+			query.addProjection(AuditEntity.revisionNumber());
+			query.addProjection(AuditEntity.id());
 			revisionList = query.getResultList();
+			System.out.println("list gotten {}");
+
+
 		}
 		catch (ClassNotFoundException e)
 		{

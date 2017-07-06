@@ -532,10 +532,29 @@ public class UserRegController {
         model.addAttribute("policies", policies);
 
         List<SecurityQuestions> secQues = securityQuestionService.getSecQuestions();
-        logger.info("security questions "+secQues);
-//        int noOfQuestions = securityService.getMinUserQA();
+        int noOfQuestions = securityService.getMinUserQA();
+        logger.info("num of qs on entrust {}",noOfQuestions);
+        ArrayList[] masterList = new ArrayList[noOfQuestions];
+        int questionsPerSection = (secQues.size()-(secQues.size()%noOfQuestions))/noOfQuestions;
+        logger.info("question per section {}",questionsPerSection);
+        int questnPostn = 0;
+        for(int i=0;i< noOfQuestions;i++) {
+            masterList[i] =  new ArrayList<>();
+            for (int j = 0; j <questionsPerSection; j++) {
+                masterList[i].add(secQues.get(questnPostn));
+                questnPostn++;
+            }
+
+        }
+                logger.info("master question length"+masterList.length);
+
+        for (int i=0;i<masterList.length;i++  ) {
+            logger.info("master question "+i+" "+masterList[i]);
+        }
+        logger.info("master question "+masterList);
+
+
 //
-//        ArrayList[] masterList = new ArrayList[noOfQuestions];
 //
 //        //init arrays
 //        for (int idx=0; idx < noOfQuestions ; ++idx) {
@@ -544,10 +563,20 @@ public class UserRegController {
 //
 //        //porpulate arrays
 //        for(int idx=0 ; idx < secQues.size() ; ++idx){
+//            logger.info("the sec ques {}",secQues.get(idx));
 //            masterList[idx / noOfQuestions].add(secQues.get(idx));
 //        }
 //
+//                for (int i=0;i<masterList.length;i++  ) {
+//
+//            logger.info("master question "+i+" "+masterList[i]);
+////                    logger.info("i value is {}",i);
+//        }
 //        logger.info("MASTER LIST {}", masterList);
+//        logger.info("MASTER size {}", masterList.length);
+
+        model.addAttribute("questionBank", masterList);
+        model.addAttribute("noOfQuestions", noOfQuestions);
         model.addAttribute("secQuestions", secQues);
 
         //logger.info("MIN SEC {}", noOfQuestions);
@@ -587,14 +616,28 @@ public class UserRegController {
         String userName = webRequest.getParameter("userName");
         String password = webRequest.getParameter("password");
         String confirmPassword = webRequest.getParameter("confirm");
-        String secQuestion = webRequest.getParameter("securityQuestion");
-        String secAnswer = webRequest.getParameter("securityAnswer");
+
         String customerId = webRequest.getParameter("customerId");
         String phishing = webRequest.getParameter("phishing");
         String caption = webRequest.getParameter("caption");
-
+        String noOfQuestions = webRequest.getParameter("noOfQuestions");
+        logger.info("no of questions {}",noOfQuestions);
         String bvn ="";
+        String secQuestion = webRequest.getParameter("secretQuestion1");
+        String secAnswer = webRequest.getParameter("securityAnswer1");
+        List<String> secQuestions = new ArrayList<>();
+        List<String> securityAnswers = new ArrayList<>();
         logger.info("Customer Id {}:", customerId);
+        if(noOfQuestions != null){
+        for(int i =0; i<Integer.parseInt(noOfQuestions); i++){
+            secQuestions.add(webRequest.getParameter("secretQuestion"+i));
+            securityAnswers.add(webRequest.getParameter("securityAnswer"+i));
+
+
+        }
+            logger.info(" sec questions list {}",secQuestions);
+            logger.info("sec answer list {}",securityAnswers);
+        }
         CustomerDetails details = integrationService.isAccountValid(accountNumber, email, dob);
 
 
