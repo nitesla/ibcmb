@@ -86,7 +86,7 @@ public class AuditConfigImpl implements AuditConfigService {
 			System.out.println("list gotten 2 {}"+revisionList);
 			query.getResultList();
 			revID=customRevisionEntityRepo.findCustomRevisionId(revisionList);
-			logger.trace("Added Revision Number"  +  revisionList);
+			logger.trace("Added Revision Number"  +  revID);
 		}
 		catch (ClassNotFoundException e)
 		{
