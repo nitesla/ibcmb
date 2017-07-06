@@ -60,7 +60,7 @@ form.children("div").steps({
             var username = $('input[name="userName"]').val();
             var confirm = $('input[name="confirm"]').val();
             var regCode = $('input[name="regCode"]').val();
-            return validateUsername(username) && validatePassword(confirm) && validateRegCode(regCode);
+            return isValid && validateUsername(username) && validatePassword(confirm) && validateRegCode(regCode);
         }
         if(SECURITY_QUESTION_STEP === currentIndex){
             console.log("Current Step is the security question step");

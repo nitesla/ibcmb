@@ -514,6 +514,10 @@ public class SecurityServiceImpl implements SecurityService {
         if ( questions==null  ||questions.isEmpty())throw new IllegalArgumentException();
         if ( answers==null  ||answers.isEmpty())throw new IllegalArgumentException();
 
+        Iterator<String> stringIterator= answers.iterator();
+        questions.forEach(i ->
+            setUserQA(username,i,stringIterator.next()));
+
 
 
 
