@@ -96,40 +96,6 @@
     </section>
 
 
-    <!-- CONTENT-WRAPPER SECTION END-->
-    <footer th:replace="corp_layout ::corp-footer">
-    </footer>
-    <!--<script th:src="@{~/customer/js/accountdetails.js}"></script>-->
-    <script th:inline="javascript">
-        /*<![CDATA[*/
-        function getBalance() {
-            var accountNumber = $('#source').val();
-            $.ajax({
-                url: "/corporate/transfer/balance/" + accountNumber,
-                type: 'GET',
-                async: false,
-                success: function (availBal) {
-                    bal = '' + String(availBal);
-                    if (bal == "") {
-                        document.getElementById("myspan").textContent = "Could not get balance from server, please try again.";
-                        $("#myspan").show();
-                    } else {
-//                    $('input[name=availBal]').val(bal);
-
-                        $('#availBal').text("Available Balance: " + bal);
-
-                    }
-                }
-            })
-        }
-
-        /*]]>*/
-
-
-    </script>
-
-
-<<<<<<< HEAD
 <!-- CONTENT-WRAPPER SECTION END-->
 <footer th:replace="corp_layout ::corp-footer">
 </footer>

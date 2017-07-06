@@ -70,22 +70,6 @@
                             <input type="hidden" th:field="*{beneficiaryAccountName}"/>
                             <input type="hidden" th:field="*{amount}"/>
                             <input type="hidden" th:field="*{remarks}"/>
-<<<<<<< HEAD
-
-                            <input type="hidden" th:field="*{id}"/>
-                        <div class="checkbox">
-                            <label style="font-weight: bold; color: black"><input type="checkbox" id="add" name="add"/>Add Beneficiary</label>
-                        </div>
-
-                        <div class="form-group">
-                            <!--<a style="cursor: pointer;" onclick="goBack()" >Modify</a>-->
-                            <button type="submit" class="btn btn-outline-primary">Proceed</button>
-                            <a th:href="@{/retail/transfer/local}">Cancel</a>
-
-
-
-=======
->>>>>>> 0b1e7ef362a6d42a0af3eef3b26d1025d5c816cb
                         <span class="form-group checkbox col-xs-5" th:if="${newBen}!=null">
                             <label style="font-weight: bold; color: black;margin-left:10px !important">
                                 <input  type="checkbox" id="add" name="add"/>Add Beneficiary

@@ -90,15 +90,10 @@ public class UserRegController {
         logger.info("Email : " + email);
         logger.info("BirthDate : " + birthDate);
         CustomerDetails details = integrationService.isAccountValid(accountNumber, email, birthDate);
-        if (details != null){
-              customerId = details.getCifId();
-                logger.info("CustomerId", customerId);
-//            RetailUser retailUser = retailUserService.getUserByCustomerId(details.getCifId());
-//            if (retailUser != null) {
-//               customerId = retailUser.getCustomerId();
-//            }else {
-//                customerId="";
-//            }
+        if (details != null && !details.isCorp()){
+
+            customerId = details.getCifId();
+            logger.info("CustomerId", customerId);
 
         }else {
             //nothing
