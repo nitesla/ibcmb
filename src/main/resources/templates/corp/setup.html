@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="corp_layout :: site-head">
+
+</head>
+<body>
+<div class="container">
+    <header th:replace="corp_layout :: corp-header">
+    </header>
+
+    <section class="content-wrapper">
+        <div class="">
+            <div class="row">
+                <div class="col-md-4 col-sm-4">
+                    <h5 class="page_header"> Dashboard</h5>
+                    <select class="form-control" id="view">
+                        <option value="account">Account Overview</option>
+                    </select>
+                </div>
+                <p class="col-xs-12 invisible">
+                    Fields marked <span style="color:red">*</span> are compulsory
+                </p>
+            </div>
+            <div class="row">
+                <div class=" col-m-1" style="margin-op:20px">
+                    <div class="col-md-9 content-bg">
+                        <div class="row">
+                            <div class="col-md-12">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 pull-right">
+                    <div th:replace="corp_layout :: corp-sidebar" class="" >
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTENT-WRAPPER SECTION END-->
+    <footer th:replace="corp_layout ::corp-footer">
+    </footer>
+
+</div>
+</body>
+</html>

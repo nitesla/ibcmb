@@ -1,19 +1,12 @@
 package longbridge.models;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import longbridge.utils.PrettySerializer;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import javax.persistence.*;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 /**
  * Created by Wunmi on 27/03/2017. CorporateUser is a bank customer. Typically
@@ -26,7 +19,7 @@ import java.util.List;
 @Table(uniqueConstraints=@UniqueConstraint(columnNames={"userName","deletedOn"}))
 public class CorporateUser extends User {
 
-	protected String isFirstTimeLogon;
+	protected String isFirstTimeLogon = "Y";
 
 	@ManyToOne
     private Corporate corporate;

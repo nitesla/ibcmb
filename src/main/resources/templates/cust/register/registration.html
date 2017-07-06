@@ -158,16 +158,18 @@
                                         <div class='alert alert-danger' id="myspan2">
                                         </div>
                                         <input id="returnValue" type="hidden"/>
-                                        <!--<p th:each="question,id : ${securityQuestion}" th:text="${question.securityQuestion.}"></p>-->
-                                        <div class="form-group clearfix">
-                                            <label>Question</label>
-                                            <select name="securityQuestion" class="my-select required">
-                                                <option th:each="question : ${secQuestions}" th:text="*{question.securityQuestion}"></option>
-                                            </select>
-                                        </div>
-                                        <div class="form-group clearfix">
-                                            <label>Question</label>
-                                            <input type="text" name="securityAnswer" class="my-select required" placeholder="Security Answer"/>
+                                        <input th:name="noOfQuestions" th:value="${noOfQuestions}" type="hidden"/>
+                                        <div th:each="questionList,ind : ${secQuestions}">
+                                            <div class="form-group clearfix">
+                                                <label>Question</label>
+                                                <select th:name="'securityQuestion'+${ind.index}" class="my-select">
+                                                    <option th:each="question : ${questionList}" th:text="${question.securityQuestion}" th:value="${question.securityQuestion}"></option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group clearfix">
+                                                <label>Answer</label>
+                                                <input type="text" th:name="'securityAnswer'+${ind.index}" class="my-select required" placeholder="Security Answer"/>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
