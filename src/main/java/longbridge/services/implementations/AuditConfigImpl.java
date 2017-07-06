@@ -24,7 +24,9 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by ayoade_farooq@yahoo.com on 4/19/2017.
@@ -80,13 +82,10 @@ public class AuditConfigImpl implements AuditConfigService {
 			AuditReader auditReader = AuditReaderFactory.get(entityManager);
 			AuditQuery query = auditReader.createQuery().forRevisionsOfEntity(clazz, true, true);
 			revisionList = query.getResultList();
-			System.out.println("list gotten {}"+revisionList);
 			query.addProjection(AuditEntity.revisionNumber());
 			revisionList = query.getResultList();
-			System.out.println("list gotten 2 {}"+revisionList);
 			query.getResultList();
 			revID=customRevisionEntityRepo.findCustomRevisionId(revisionList);
-			logger.trace("Added Revision Number"  +  revID);
 		}
 		catch (ClassNotFoundException e)
 		{
@@ -95,7 +94,34 @@ public class AuditConfigImpl implements AuditConfigService {
 
 		return revisionList;
 	  }
+	@Override
+	public Map revisedEntityDetails(String entityName)
+	{
+		List<T> revisionList = new ArrayList<>();
+		List<CustomRevisionEntity> revID=new ArrayList<>();
+		Map<String,Object> classAuditDetails =  new HashMap<>();
+		try
+		{
+			Class<?> clazz  = Class.forName(PACKAGE_NAME + entityName);
 
+			AuditReader auditReader = AuditReaderFactory.get(entityManager);
+			AuditQuery query = auditReader.createQuery().forRevisionsOfEntity(clazz, true, true);
+			revisionList = query.getResultList();
+			classAuditDetails.put("classDetials",revisionList);
+			query.addProjection(AuditEntity.revisionNumber());
+			revisionList = query.getResultList();
+			classAuditDetails.put("revisionNumbers",revisionList);
+			query.getResultList();
+			revID=customRevisionEntityRepo.findCustomRevisionId(revisionList);
+			classAuditDetails.put("revisionDetails",revID);
+		}
+		catch (ClassNotFoundException e)
+		{
+			e.printStackTrace();
+		}
+
+		return classAuditDetails;
+	}
 	@Override
 	public Page<AuditConfig> findEntities(String pattern, Pageable pageDetails) {
 		return configRepo.findUsingPattern(pattern,pageDetails);
