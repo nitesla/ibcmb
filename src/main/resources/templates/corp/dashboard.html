@@ -5,72 +5,86 @@
 </head>
 <body>
 <div class="container">
-<header th:replace="corp_layout :: corp-header">
-</header>
+    <header th:replace="corp_layout :: corp-header">
+    </header>
 
-<section class="content-wrapper">
-    <div class="">
-        <div class="row">
-            <div class="col-md-4 col-sm-4">
-                <h5 class="page_header"> Dashboard</h5>
-                <select class="form-control" id="view">
-                    <option value="account">Account Overview</option>
-                </select>
+    <section class="content-wrapper">
+        <div class="">
+            <div class="row">
+                <div class="col-md-4 col-sm-4">
+                    <h5 class="page_header"> Dashboard</h5>
+                    <select class="form-control" id="view">
+                        <option value="account">Account Overview</option>
+                    </select>
+                </div>
+                <p class="col-xs-12 invisible">
+                    Fields marked <span style="color:red">*</span> are compulsory
+                </p>
             </div>
-            <p class="col-xs-12 invisible">
-                Fields marked <span style="color:red">*</span> are compulsory
-            </p>
-        </div>
-        <div class="row">
-            <div class=" col-m-1" style="margin-op:20px">
-                <div class="col-md-9 content-bg">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <table class="table">
-                                <thead>
-                                <th class="text-center">Account Number</th>
-                                <th class="text-center">Account type</th>
-                                <th class="text-center">Currency</th>
-                                <th class="text-center">Available Balance</th>
-                                <th class="text-center">Ledger Balance</th>
-                                <th class="text-center">&nbsp;</th>
-                                </thead>
-                                <tbody>
-                                <tr th:each="list : ${accountList}">
-                                    <td th:align="center" th:text="${list.accountNumber}"></td>
-                                    <td th:align="center" th:text="${list.schemeType}"></td>
-                                    <td th:align="center" th:text="${list.currencyCode}"></td>
-                                    <td th:align="center" th:text="${list.accountBalance}"></td>
-                                    <td th:align="center" th:text="${list.ledgerBalance}"></td>
+            <div class="row">
+                <div class=" col-m-1" style="margin-op:20px">
+                    <div class="col-md-9 content-bg">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <table class="table">
+                                    <thead>
+                                    <th class="text-center">Account Number</th>
+                                    <th class="text-center">Account type</th>
+                                    <th class="text-center">Currency</th>
+                                    <th class="text-center">Available Balance</th>
+                                    <th class="text-center">Ledger Balance</th>
+                                    <th class="text-center">&nbsp;</th>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="list : ${accountList}" class="tt">
+                                        <td th:align="center" th:text="${list.accountNumber}"></td>
+                                        <td th:align="center" th:text="${list.schemeType}"></td>
+                                        <td th:align="center" th:text="${list.currencyCode}"></td>
+                                        <td th:align="center" th:text="${list.accountBalance}" class="bal"></td>
+                                        <td th:align="center" th:text="${list.ledgerBalance}" class="bal"></td>
 
-                                    <td th:align="center">
-                                        <select class="quickAccess" th:attr="onchange='javascript:getId(\'' + ${list.id} + '\');'">
-                                            <option>Quick Actions</option>
-                                            <option value="Transaction History">Transaction History</option>
+                                        <td th:align="center">
+                                            <select class="quickAccess" th:attr="onchange='javascript:getId(\'' + ${list.id} + '\');'">
+                                                <option>Quick Actions</option>
+                                                <option value="Transaction History">Transaction History</option>
 
-                                        </select>
+                                            </select>
 
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-3 pull-right">
-                <div th:replace="corp_layout :: corp-sidebar" class="" >
+                <div class="col-md-3 pull-right">
+                    <div th:replace="corp_layout :: corp-sidebar" class="" >
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<!-- CONTENT-WRAPPER SECTION END-->
-<footer th:replace="corp_layout ::corp-footer">
-</footer>
+    <!-- CONTENT-WRAPPER SECTION END-->
+    <footer th:replace="corp_layout ::corp-footer">
+    </footer>
 
     <script>
+
+        $(document).ready(function () {
+            $('.tt').each(function () {
+                var sth = $(this).find(".bal").html();
+                $(this).find(".bal").html(numberWithCommas(sth));
+//                $(this).find(".bal").html('₦'+ numberWithCommas(sth));
+            })
+        });
+
+
+        function numberWithCommas(x) {
+            return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
         function getId(Id) {
             if ($('.quickAccess').val() === "Transaction History") {
                 if (( Id != null || Id != '' )) {

@@ -9,16 +9,22 @@
 </header>
 
 <section class="content-wrapper">
-    <div class="container">
+    <div class="">
         <div class="row">
             <div class="col-md-4 col-sm-4">
-                <div class="page_header">
-                    <h5 class="page_header"> Add New User</h5></div>
+                <h5 class="page_header"> Add New User</h5>
+                <select class="form-control invisible" id="view">
+                    <option value="account">Account Overview</option>
+                </select>
             </div>
+            <p class="col-xs-12">
+                Fields marked <span style="color:red">*</span> are compulsory
+            </p>
+
         </div>
         <div class="row">
-            <div class="col-md-8 content-bg">
-                <div class="row form-spacing">
+            <div class="col-md-9 content-bg">
+                <div class="row ">
                     <div class="col-md-6 col-sm-6">
                         <form method="post" class="form-horizontal" th:action="@{/corporate/users}" th:object="${corporateUser}">
 
@@ -26,7 +32,7 @@
 
                             <div class="form-group">
                                 <label>Username</label>
-                                <input type="text" class="form-control" th:field="*{userName}"/>
+                                <input type="text" class="form-control" th:field="*{userName}"/><span class='req-inner'></span>
                                 <p class="errors" th:if="${#fields.hasErrors('userName')}" th:errors="*{userName}">&times;</p>
                             </div>
 
@@ -34,17 +40,17 @@
 
                             <div class="form-group">
                                 <label>First Name</label>
-                                <input type="text" class="form-control" th:field="*{firstName}"/>
+                                <input type="text" class="form-control" th:field="*{firstName}"/><span class='req-inner'></span>
                                 <p class="errors" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}">&times;</p>
                             </div>
                             <div class="form-group">
                                 <label>Last Name</label>
-                                <input type="text" class="form-control" th:field="*{lastName}" />
+                                <input type="text" class="form-control" th:field="*{lastName}" /><span class='req-inner'></span>
                                 <p class="errors" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}">&times;</p>
                             </div>
                             <div class="form-group">
                                 <label>Email</label>
-                                <input type="text" class="form-control" th:field="*{email}"/>
+                                <input type="text" class="form-control" th:field="*{email}"/><span class='req-inner'></span>
                                 <p class="errors" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">&times;</p>
                             </div>
 
@@ -52,18 +58,20 @@
                                 <label>Role</label>
                                 <select class="form-control" th:field="*{roleId}">
                                     <option th:each="role : ${roles.?[#strings.equalsIgnoreCase(userType, 'corporate')]}" th:value="${role.id}" th:text="${role.name}"></option>
-                                </select>
+                                </select><span class='req-inner'></span>
                             </div>
 
                             <div class="form-group">
-                                    <button class="btn btn-primary btn-sm" type="submit">Submit</button>
+                                    <button class="btn btn-link required-step" type="submit">Create User</button>
                             </div>
 
                         </form>
                     </div>
                 </div>
             </div>
-            <div th:replace="corp_layout :: corp-sidebar" class="col-md-3 sidebar">
+            <div class="col-md-3 pull-right">
+                <div th:replace="corp_layout :: corp-sidebar" class="" >
+                </div>
             </div>
         </div>
     </div>

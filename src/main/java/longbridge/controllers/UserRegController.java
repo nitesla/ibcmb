@@ -613,8 +613,8 @@ public class UserRegController {
         String noOfQuestions = webRequest.getParameter("noOfQuestions");
         logger.info("no of questions {}",noOfQuestions);
         String bvn ="";
-        String secQuestion = webRequest.getParameter("securityQuestion1");
-        String secAnswer = webRequest.getParameter("securityAnswer1");
+//        String secQuestion = webRequest.getParameter("securityQuestion1");
+//        String secAnswer = webRequest.getParameter("securityAnswer1");
         List<String> secQuestions = new ArrayList<>();
         List<String> securityAnswers = new ArrayList<>();
         logger.info("Customer Id {}:", customerId);
@@ -654,11 +654,11 @@ public class UserRegController {
 
 
         //security questions
-        String securityQuestion = secQuestion;
-        String securityAnswer = secAnswer;
+//        String securityQuestion = secQuestion;
+//        String securityAnswer = secAnswer;
 
-        logger.info("Question" + secQuestion);
-        logger.info("Answer" + secAnswer);
+//        logger.info("Question" + secQuestion);
+//        logger.info("Answer" + secAnswer);
 
         //phishing image
         //byte[] encodedBytes = Base64.encodeBase64(phishing.getBytes());

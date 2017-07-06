@@ -6,7 +6,7 @@ import javax.persistence.EntityManager;
 
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import longbridge.exception.DuplicateObjectException;
+import longbridge.exception.InternetBankingException;
 import longbridge.models.AbstractEntity;
 import longbridge.models.User;
 import longbridge.models.Verification;
@@ -16,7 +16,7 @@ import longbridge.services.MakerCheckerService;
 import longbridge.services.VerificationService;
 import longbridge.utils.PrettySerializer;
 import longbridge.utils.Verifiable;
-import longbridge.utils.verificationStatus;
+import longbridge.utils.VerificationStatus;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -93,6 +93,7 @@ public class MakerCheckerAdvisor {
 		log.info("JB Around: " + pjp);
 
 		if (!makerCheckerService.isEnabled(verifier.operation())) {
+			log.info("Maker checker is disabled for operation");
 			pjp.proceed();
 			return entity;
 		}
@@ -129,18 +130,20 @@ public class MakerCheckerAdvisor {
 			AbstractEntity originalEntity = entityManager.find(entity.getClass(), id);
 
 			Verification pendingVerification = verificationRepo.findFirstByEntityNameAndEntityIdAndStatus(entityName,
-					id, verificationStatus.PENDING);
+					id, VerificationStatus.PENDING);
 			if (pendingVerification != null) {
 				// found pending verification
-				throw new DuplicateObjectException(entityName + " has pending verification");
+				throw new InternetBankingException(entityName + " has pending verification");
 			}
 
 			verification.setBeforeObject(prettyMapper.writeValueAsString(originalEntity));
 			verification.setEntityId(entity.getId());
 		}
 		verification.setAfterObject(prettyMapper.writeValueAsString(entity));
-		verification.setStatus(verificationStatus.PENDING);
+		verification.setStatus(VerificationStatus.PENDING);
 		verificationRepo.save(verification);
+
+		log.info(entityName+ "has been saved for verification");
 
 		System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
 

@@ -291,6 +291,10 @@ public class AccountController {
 	DataTablesOutput<TransactionDetails> getStatementData(DataTablesInput input, String acctNumber,
 														  String fromDate, String toDate, String tranType) {
 		// Pageable pageable = DataTablesUtils.getPageable(input);
+		logger.info("fromDate {}",fromDate);
+		logger.info("toDate {}",toDate);
+//		Duration diffInDays= new Duration(new DateTime(fromDate),new DateTime(toDate));
+//		logger.info("Day difference {}",diffInDays.getStandardDays());
 
 		Date from;
 		Date to;
@@ -298,10 +302,9 @@ public class AccountController {
 		try {
 			from = dateFormat.parse(fromDate);
 			to = dateFormat.parse(toDate);
-
+			logger.info("fromDate {}",from);
+			logger.info("toDate {}",to);
 			//int diffInDays = (int) ((to.getTime() - from.getTime()) / (1000 * 60 * 60 * 24));
-			Duration diffInDays= new Duration(new DateTime(from),new DateTime(to));
-			logger.info("Day difference {}",diffInDays.getStandardDays());
 
 			AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to, tranType);
 			logger.info("TransactionType {}", tranType);

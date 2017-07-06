@@ -241,6 +241,11 @@ public class RoleServiceImpl implements RoleService {
         }
         else {
             permission = permissionRepo.findOne(permissionDTO.getId());
+            permission.setVersion(permissionDTO.getVersion());
+            permission.setName(permission.getName());
+            permission.setUserType(permissionDTO.getUserType());
+            permission.setDescription(permissionDTO.getDescription());
+            permission.setCode(permissionDTO.getCode());
         }
         return permission;
     }

@@ -23,6 +23,7 @@ public class CorporateUserDTO {
     private String lastName;
     @NotEmpty(message = "email")
     private String email;
+    @NotEmpty(message = "phoneNumber")
     private String  phoneNumber;
     private String roleId;
     private String role;

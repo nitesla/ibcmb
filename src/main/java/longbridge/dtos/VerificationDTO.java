@@ -1,16 +1,10 @@
 package longbridge.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import longbridge.models.AdminUser;
-import longbridge.models.OperationCode;
 import longbridge.models.Verification;
-import longbridge.utils.verificationStatus;
+import longbridge.utils.VerificationStatus;
 import org.hibernate.validator.constraints.NotEmpty;
 
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import java.util.Date;
 
 /**
@@ -25,7 +19,7 @@ public class VerificationDTO {
     private String afterObject; //json
     private String original; //json
 
-    private verificationStatus status;
+    private VerificationStatus status;
 
     private String description;
     private Long entityId;
@@ -77,11 +71,11 @@ public class VerificationDTO {
         this.comments = comments;
     }
 
-    public verificationStatus getStatus() {
+    public VerificationStatus getStatus() {
         return status;
     }
 
-    public void setStatus(verificationStatus status) {
+    public void setStatus(VerificationStatus status) {
         this.status = status;
     }
 

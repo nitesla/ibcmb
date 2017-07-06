@@ -8,7 +8,7 @@
     </header>
 
     <section class="content-wrapper">
-        <div class="containe">
+        <div>
             <div class="row">
                 <div class="col-md-4 col-sm-4">
                     <h5 class="page_header"> Account Statement</h5>
@@ -31,7 +31,7 @@
                                     <label>Date Range</label>
                                     <div class="input-daterange input-group" id="date-range">
                                         <input type="text" data-date-format="dd-mm-yyyy" class="form-control datepicker" id="start" name="fromDate" placeholder="Start date" required="required" />
-                                        <span class=" no-border">to</span>
+                                        <span class="input-group-addon no-border">to</span>
                                         <input type="text"  data-date-format="dd-mm-yyyy" class="form-control datepicker" name="toDate" id="endDate" placeholder="End date" required="required" />
                                     </div>
                                 </div>
@@ -55,7 +55,7 @@
 
                                 <div class="form-group col-md-6">
                                     <label>&nbsp;</label>
-                                    <button type="submit" class="btn btn-link " id="btn-find"><i class="fa fa-search" style="color: whit" ></i>&nbsp; view</button>
+                                    <button type="submit" class="btn btn-link " id="btn-find"><i class="fa fa-search" style="color: white" ></i>&nbsp; view</button>
                                 </div>
                             </div>
 
@@ -140,12 +140,6 @@
             "lengthMenu": [[5, 10,20], [5, 10,20]],
             "pagingType": "simple_numbers",
             "searching" : false,
-            "fields": [  {
-                name:      'valueDate',
-                type:      'datetime',
-                def:       function () { return new Date(); },
-                format:    'dd-MM-yyyy '  }
-            ],
             "processing" : true,
             "serverSide" : false,
             "ordering" : false,
@@ -158,6 +152,36 @@
                 {"data" : "tranType"},
                 {"data" : "valueDate"}
             ],
+            "columnDefs" : [ {
+                "targets" : 2,
+                "data" : "postDate",
+                "render" : function(data, type,full, meta) {
+                    if (type === 'display') {
+                        if(data == null)
+                            return data;
+                        var dtStart = new Date(parseInt(data));
+
+                        var dtStartWrapper = moment(dtStart);
+                        return dtStartWrapper.format('LLLL');
+                    }
+                    return data;
+                }
+            }
+                , {
+                    "targets": 5,
+                    "data": "valueDate",
+                    "render": function (data, type, full, meta) {
+                        if (type === 'display') {
+
+                            if (data == null)
+                                return data;
+                            var dtStart = new Date(parseInt(data));
+                            var dtStartWrapper = moment(dtStart);
+                            return dtStartWrapper.format('DD/MM/YYYY HH:mm');
+                        }
+                        return data;
+                    }
+                } ],
             "ajax" : {
                 "url":"viewstatement/display/data",
                 "type" : "GET",

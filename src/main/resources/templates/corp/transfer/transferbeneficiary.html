@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="corp_layout :: site-head">
+<head th:replace="cust_layout :: site-head">
 
 </head>
 <body>
 <div class="container">
-<header th:replace="corp_layout :: corp-header">
-</header>
+    <header th:replace="cust_layout :: header">
+    </header>
 
 <section class="content-wrapper">
-    <div class="container">
+    <div class="containe">
         <div class="row">
             <div class="col-md-4 col-sm-4">
                 <h5 class="page_header"> New  Beneficiary</h5>
             </div>
         </div>
         <div class="row">
-            <div class="col-md-8 content-bg">
-                <div class="row form-spacing">
-                    <!--<div class="col-md-6 col-sm-6">-->
+            <div class="col-md-9 content-bg">
+
+                <div class="spacing">
 
 
                     <table>
@@ -52,21 +52,24 @@
 
                     <div class="form-group">
 
-                        <a th:href="@{/corporate/transfer/newbeneficiaary}" class="btn btn-link" >Save</a>
+                        <a th:href="@{/corporate/transfer/newbeneficiary}" class="btn btn-link" >Save</a>
 
                         <a th:href="@{/corporate/dashboard}" class="btn btn-link"  >Skip</a>
                     </div>
-                    <!--</div>-->
+                </div>
+
+            </div>
+            <div class="col-md-3 pull-right " >
+                <div th:replace="cust_layout :: sidebar" class="" >
                 </div>
             </div>
-
         </div>
     </div>
 </section>
 
 
 <!-- CONTENT-WRAPPER SECTION END-->
-<footer th:replace="corp_layout ::corp-footer">
+<footer th:replace="cust_layout ::footer">
 </footer>
 </div>
 </body>
