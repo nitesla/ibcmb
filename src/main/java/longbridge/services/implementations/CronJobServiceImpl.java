@@ -97,7 +97,7 @@ public class CronJobServiceImpl implements CronJobService {
             AccountDetails accountDetails = integrationService.viewAccountDetails(account.getAccountNumber());
             if ((account.getCurrencyCode()==null)||(!account.getCurrencyCode().equalsIgnoreCase(""))||(!accountDetails.getAcctCrncyCode().equalsIgnoreCase(account.getCurrencyCode()))) {
             account.setCurrencyCode(accountDetails.getAcctCrncyCode());
-                logger.info("the new account currency {} and {}" , account.getCurrencyCode(),accountDetails.getAcctCrncyCode());
+//                logger.info("the new account currency {} and {}" , account.getCurrencyCode(),accountDetails.getAcctCrncyCode());
             accountRepo.save(account);
             }
         }

@@ -64,6 +64,8 @@ public class InterBankTransferController {
         this.accountService = accountService;
     }
 
+
+
     @GetMapping(value = "")
     public String index() {
 
@@ -78,6 +80,10 @@ public class InterBankTransferController {
 
         TransferRequestDTO requestDTO = new TransferRequestDTO();
         String type = request.getParameter("tranType");
+
+
+
+
 
         if ("NIP".equalsIgnoreCase(type)) {
 
@@ -153,11 +159,15 @@ public class InterBankTransferController {
             String type = (String) request.getSession().getAttribute("NIP");
             if (type.equalsIgnoreCase("RTGS")) {
                 transferRequestDTO.setTransferType(TransferType.RTGS);
-                charge = integrationService.getFee("RTGS").get().getFeeValue();
+                charge = integrationService.getFee("RTGS").getFeeValue();
+                System.out.println("RTGS TRANSFER");
+                System.out.println(charge);
 
             } else {
                 transferRequestDTO.setTransferType(TransferType.INTER_BANK_TRANSFER);
-                charge = integrationService.getFee("NIP").get().getFeeValue();
+                charge = integrationService.getFee("NIP").getFeeValue();
+                System.out.println("NIP TRANSFER");
+                System.out.println(charge);
             }
             // request.getSession().removeAttribute("NIP");
 
@@ -228,11 +238,9 @@ public class InterBankTransferController {
 
 
         try {
-            model.addAttribute("nip", integrationService.getFee("NIP").get());
-            model.addAttribute("rtgs", integrationService.getFee("RTGS").get());
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
+            model.addAttribute("nip", integrationService.getFee("NIP"));
+            model.addAttribute("rtgs", integrationService.getFee("RTGS"));
+        }catch (Exception e) {
             model.addAttribute("nip", new Rate());
             model.addAttribute("rtgs", new Rate());
             e.printStackTrace();
