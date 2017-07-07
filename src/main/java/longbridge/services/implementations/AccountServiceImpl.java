@@ -11,8 +11,6 @@ import longbridge.services.AccountConfigService;
 import longbridge.services.AccountService;
 import longbridge.services.ConfigurationService;
 import longbridge.services.IntegrationService;
-//import longbridge.utils.AccountStatement;
-import longbridge.utils.Verifiable;
 import longbridge.utils.statement.AccountStatement;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
@@ -29,6 +27,8 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.StreamSupport;
+
+//import longbridge.utils.AccountStatement;
 
 /**
  * Created by chigozirim on 3/29/17.
@@ -64,6 +64,7 @@ public class AccountServiceImpl implements AccountService {
         Account account = new Account();
         account.setPrimaryFlag("N");
         account.setHiddenFlag("N");
+        account.setStatus(acct.getAccountStatus());
         account.setCustomerId(acct.getCustomerId());
         account.setAccountName(acct.getAccountName());
         account.setAccountNumber(acct.getAccountNumber());
