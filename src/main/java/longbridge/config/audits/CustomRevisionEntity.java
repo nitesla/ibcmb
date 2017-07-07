@@ -4,6 +4,7 @@ package longbridge.config.audits;
 import longbridge.config.audits.listeners.EntityRevisionListener;
 import org.hibernate.envers.DefaultRevisionEntity;
 import org.hibernate.envers.RevisionEntity;
+import org.hibernate.envers.RevisionTimestamp;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -25,11 +26,24 @@ public class CustomRevisionEntity extends DefaultRevisionEntity implements Seria
 	private static final long serialVersionUID = 1767924677148716529L;
 	private String lastChangedBy;
 	private String ipAddress;
-
+    private int revisionId;
+    private long timestamp;
     public CustomRevisionEntity() {
         super();
     }
 
+    public void setRevisionId(){
+        this.revisionId = getId();
+    }
+    public int getRevisionId(){
+        return revisionId;
+    }
+    public void setTimestamp(){
+        this.timestamp= getTimestamp();
+    }
+    public long getTimestamp(){
+        return timestamp;
+    }
     public String getLastChangedBy() {
         return lastChangedBy;
     }

@@ -33,7 +33,7 @@
                     </div>
 
                 </div>
-<input type="text" id="entityname" th:value="${entityName}"/>
+
                 <div class="clearfix"></div>
 
                 <div class="row">
@@ -58,7 +58,7 @@
                                 <table class="table table-striped table-bordered table-hover" id="auditview">
                                     <thead>
                                     <tr>
-                                        <th>id</th><th>Date Modiified</th><th>Modifier</th><th>Ip adrress</th>
+                                        <th>Name</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -66,7 +66,7 @@
                                     </tbody>
                                     <tfoot>
                                     <tr>
-                                        <!--<th>Name</th>-->
+                                        <th>Name</th>
 
                                     </tr>
                                     </tfoot>
@@ -97,10 +97,17 @@
 
 
 <!-- Page-Level Scripts -->
-<script>
+<script th:inline="javascript">
+
+//    alert('i am here')
+//    var beforeData = ([[${audit.entityName}]]);
+//    console.log(beforeData);
+
     /*<![CDATA[*/
     $(document).ready(function() {
-        console.log($('#entityName').val() );
+
+        alert([[${entityName}]]);
+        var entityName = [${audit.entityName}];
         var table = $('#auditview').DataTable({
             select:true,
             responsive: true,
@@ -110,10 +117,15 @@
             rowId: 'id',
             "paging": true,
             "serverSide" : true,
-            "ajax": "/admin/audit/all/entityname/details",
+            "ajax": "/admin/audit/revisedentity/index",
             "dom": 'T<"clear">frtlp',
             "columns": [
-                { "data": $('#entityName').val() }
+                {
+                    "data": "revisionId",
+                    "data": "ipAddress",
+                    "data": "lastChangedBy",
+                    "data": "timestamp"
+                }
             ] });
 
         table.on('select', function() {
@@ -149,7 +161,7 @@
         var id = $(dt.row({
             selected: true
         }).node()).attr("id");
-        var ooo = link.attr("href").replace("index",id);
+        var ooo = link.attr("href").replace("index",entityName);
         window.location.assign(ooo);
 
     } );

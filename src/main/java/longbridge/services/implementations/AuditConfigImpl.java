@@ -2,10 +2,12 @@ package longbridge.services.implementations;
 
 import longbridge.config.audits.CustomRevisionEntity;
 import longbridge.dtos.CodeDTO;
+import longbridge.dtos.CustomEntityRevisionDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.AuditConfig;
 import longbridge.models.AuditRetrieve;
 import longbridge.models.Code;
+import longbridge.models.Verification;
 import longbridge.repositories.AuditConfigRepo;
 import longbridge.repositories.CustomRevisionEntityRepo;
 import longbridge.services.AuditConfigService;
@@ -23,9 +25,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by ayoade_farooq@yahoo.com on 4/19/2017.
@@ -69,84 +72,60 @@ public class AuditConfigImpl implements AuditConfigService {
 		return configRepo.findAll(pageDetails);
 	}
 
-	@Override
-	public List<T> revisedEntity(String entityName)
-	{
-		List<T> revisionList = new ArrayList<>();
-
-		List<CustomRevisionEntity> revID=new ArrayList<>();
-		try
-		{
-			Class<?> clazz  = Class.forName(PACKAGE_NAME + entityName);
-
-			AuditReader auditReader = AuditReaderFactory.get(entityManager);
-			AuditQuery query = auditReader.createQuery().forRevisionsOfEntity(clazz, true, true);
-			ListIterator revisionList1 = query.getResultList().listIterator();
-			while (revisionList1.hasNext()) {
-				logger.info("gate value {}",revisionList1.next());
-			}
-//			revisionList.get(0)
-			query.addProjection(AuditEntity.revisionNumber());
-			revisionList = query.getResultList();
-			query.getResultList();
-			revID=customRevisionEntityRepo.findCustomRevisionId(revisionList);
-			logger.info("the entity revision details {}",revID.get(0));
-//			while (revisionList1.hasNext()) {
-//				logger.info("gate value {}",revisionList1.next());
-//			}
-		}
-		catch (ClassNotFoundException e)
-		{
-			e.printStackTrace();
-		}
-
-		return revisionList;
-	  }
-	@Override
-	public Map revisedEntityDetails(String entityName)
-	{
-		List<T> classDetails = new ArrayList<>();
-		List<T> allClassDetails = new ArrayList<>();
-		List<T> revisionList = new ArrayList<>();
-		List<CustomRevisionEntity> revIDs=new ArrayList<>();
-		Map<String,Object> classAuditDetails =  new HashMap<>();
-		try
-		{
-			Class<?> clazz  = Class.forName(PACKAGE_NAME + entityName);
-
-			AuditReader auditReader = AuditReaderFactory.get(entityManager);
-			AuditQuery query = auditReader.createQuery().forRevisionsOfEntity(clazz, true, true);
-			classDetails = query.getResultList();
-			classAuditDetails.put("classDetails",classDetails);
-			int counter = 1;
-//			for (Object eachItem: classDetails) {
+//	@Override
+//	public List<T> revisedEntity(String entityName)
+//	{
+//		List<T> revisionList = new ArrayList<>();
+//		List<CustomRevisionEntity> revID=new ArrayList<>();
+//		try
+//		{
+//			Class<?> clazz  = Class.forName(PACKAGE_NAME + entityName);
+//			AuditReader auditReader = AuditReaderFactory.get(entityManager);
+//			AuditQuery query = auditReader.createQuery().forRevisionsOfEntity(clazz, true, true);
+//			revisionList = query.getResultList();
+//			query.addProjection(AuditEntity.revisionNumber());
+//			revisionList = query.getResultList();
+//			query.getResultList();
+//			revID=customRevisionEntityRepo.findCustomRevisionId(revisionList);
+//		}
+//		catch (ClassNotFoundException e)
+//		{
+//			e.printStackTrace();
+//		}
 //
-//				logger.trace("details {} is {}",counter,eachItem);
-//				Pattern p = Pattern.compile("(?:^|\\s)'([^']*?)'(?:$|\\s)");
-//				Matcher m = p.matcher(eachItem.toString());
-//				while (m.find()) {
-//					System.out.println("details split is "+m.group(1));
-//				}
-//				counter++;
-//			}
-			query.addProjection(AuditEntity.revisionNumber());
+//		return revisionList;
+//	  }
+	@Override
+	public Page<CustomRevisionEntity>  revisedEntityDetails(String entityName,Pageable pageable)
+	{
+		List<T> revisionList = new ArrayList<>();
+		Page<CustomRevisionEntity> page = null;
+        List<CustomEntityRevisionDTO> entityRevisionDTOs =new ArrayList<>();
+		try
+		{
+			Class<?> clazz  = Class.forName(PACKAGE_NAME + entityName);
+			AuditReader auditReader = AuditReaderFactory.get(entityManager);
+			AuditQuery query = auditReader.createQuery().forRevisionsOfEntity(clazz, true, true);
 			revisionList = query.getResultList();
-
-			classAuditDetails.put("revisionNumbers",revisionList);
+            List<CustomRevisionEntity> customRevisionId = customRevisionEntityRepo.findCustomRevisionId(revisionList);
+            for (CustomRevisionEntity detials:customRevisionId) {
+                CustomEntityRevisionDTO revisionDTO = new CustomEntityRevisionDTO();
+revisionDTO.setIpAddress(detials.getIpAddress());
+//                revisionDTO.
+            }
+//            page=customRevisionEntityRepo.findCustomRevisionId(revisionList);
 			query.getResultList();
-			revIDs=customRevisionEntityRepo.findCustomRevisionId(revisionList);
-			classAuditDetails.put("revisionDetails",revIDs);
-
 		}
 		catch (ClassNotFoundException e)
 		{
 			e.printStackTrace();
 		}
 
-		return classAuditDetails;
+		return page;
 	}
 	@Override
-	public Page<AuditConfig> findEntities(String pattern, Pageable pageDetails) {
+	public Page<AuditConfig> findEntities(String pattern, Pageable pageDetails)
+	{
 		return configRepo.findUsingPattern(pattern,pageDetails);
 	}
 
