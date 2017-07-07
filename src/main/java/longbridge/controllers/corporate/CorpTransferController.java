@@ -289,32 +289,48 @@ public class CorpTransferController {
     }
 
 
-
-
-
     @GetMapping("/{id}/authorizations")
-    public String getAuthorizations(@PathVariable Long id,  Model model){
+    public String getAuthorizations(@PathVariable Long id, Model model) {
 
         CorpTransRequest corpTransRequest = corpTransferService.getTransfer(id);
         CorpTransferAuth corpTransferAuth = corpTransferService.getAuthorizations(corpTransRequest);
         CorpTransRule corpTransRule = corporateService.getApplicableTransferRule(corpTransRequest);
         boolean userCanAuthorize = corpTransferService.userCanAuthorize(corpTransRequest);
-        model.addAttribute("authorizationMap",corpTransferAuth);
-        model.addAttribute("corpTransRequest",corpTransRequest);
+        model.addAttribute("authorizationMap", corpTransferAuth);
+        model.addAttribute("corpTransRequest", corpTransRequest);
         model.addAttribute("corpTransReqEntry", new CorpTransReqEntry());
         model.addAttribute("corpTransRule", corpTransRule);
-        model.addAttribute("userCanAuthorize",userCanAuthorize);
+        model.addAttribute("userCanAuthorize", userCanAuthorize);
+
+        List<CorporateRole> rolesNotInAuthList = new ArrayList<>();
+        List<CorporateRole> rolesInAuth = new ArrayList<>();
+
+            for (CorpTransReqEntry transReqEntry : corpTransferAuth.getAuths()) {
+               rolesInAuth.add(transReqEntry.getRole());
+
+            }
+
+            for(CorporateRole role: corpTransRule.getRoles()){
+                if(!rolesInAuth.contains(role)){
+                    rolesNotInAuthList.add(role);
+                }
+            }
+
+        logger.info("Roles not In Auth List..{}", rolesNotInAuthList.toString());
+        model.addAttribute("rolesNotAuth", rolesNotInAuthList);
+
         return "corp/transfer/request/summary";
     }
 
     @GetMapping("/requests")
-    public String getTransfers(){
+    public String getTransfers() {
         return "corp/transfer/request/view";
     }
 
 
     @GetMapping("/requests/all")
-    public @ResponseBody
+    public
+    @ResponseBody
     DataTablesOutput<CorpTransRequest> getTransferRequests(DataTablesInput input) {
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<CorpTransRequest> requests = corpTransferService.getTransfers(pageable);
@@ -327,9 +343,8 @@ public class CorpTransferController {
     }
 
 
-
     @PostMapping("/authorize")
-    public String addAuthorization(@ModelAttribute("corpTransReqEntry") CorpTransReqEntry corpTransReqEntry, RedirectAttributes redirectAttributes){
+    public String addAuthorization(@ModelAttribute("corpTransReqEntry") CorpTransReqEntry corpTransReqEntry, RedirectAttributes redirectAttributes) {
 
         try {
             String message = corpTransferService.addAuthorization(corpTransReqEntry);
@@ -366,7 +381,6 @@ public class CorpTransferController {
         }
         return object.toString();
     }
-
 
 
 }
