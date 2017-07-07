@@ -44,7 +44,7 @@
                                     <li >
                                         <div class="col-lg-4">
                                             <div class="title-action">
-                                                <!--<a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/audit/index/edit" disabled="disabled" ><i class="fa fa-pencil"></i>  View</a>-->
+                                                <a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/index/view" disabled="disabled" ><i class="fa fa-pencil"></i>View</a>
                                             </div>
                                         </div>
                                     </li>
@@ -61,8 +61,9 @@
                                     <tr>
                                         <th> Name</th>
                                         <th>IP Address</th>
-                                        <th>Modifed By</th>
                                         <th>Time</th>
+                                        <th>Modifed By</th>
+
 
                                     </tr>
                                     </thead>
@@ -73,8 +74,9 @@
                                     <tr>
                                         <th>Name</th>
                                         <th>IP Address</th>
-                                        <th>Modified By</th>
                                         <th>Time</th>
+                                        <th>Modified By</th>
+
 
 
                                     </tr>
@@ -103,6 +105,7 @@
 <script th:src="@{~/bank/js/dataTables.bootstrap.js}"></script>
 <script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
 <script th:src="@{~/bank/vendors/bootstrap-dialog/js/bootstrap-dialog.js}"></script>
+<script th:src="@{~/bank/js/momentMin.js}"></script>
 
 
 <!-- Page-Level Scripts -->
@@ -113,6 +116,8 @@
     /*<![CDATA[*/
     $(document).ready(function() {
         var table = $('#auditview').DataTable({
+
+
             select:true,
             responsive: true,
             "lengthMenu" : [ [ 5, 10, 20],	[ 5, 10, 20 ] ],
@@ -129,7 +134,21 @@
                 { "data": "revision.timestamp" },
                 { "data": "revision.lastChangedBy" }
 
-            ] });
+            ] ,"columnDefs" : [ {
+            "targets" : 2,
+            "data" : "initiatedDate",
+            "render" : function(data, type,full, meta) {
+                if (type === 'display') {
+                    if(data == null)
+                        return data;
+                    var dtStart = new Date(parseInt(data));
+
+                    var dtStartWrapper = moment(dtStart);
+                    return dtStartWrapper.format('LLLL');
+                }
+                return data;
+            }
+        }]});
 
         table.on('select', function() {
             if (table.rows({
