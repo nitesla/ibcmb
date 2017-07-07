@@ -33,6 +33,6 @@ public interface AuditConfigService
 	AuditConfig getAuditEntity(Long auditId);
 
 	List<T> revisedEntity(String entityName);
-	Map<String,Object> revisedEntityDetails(String entityName);
+	Map<String,List<Object>> revisedEntityDetails(String entityName);
 
 }

@@ -23,10 +23,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by ayoade_farooq@yahoo.com on 4/19/2017.
@@ -74,6 +73,7 @@ public class AuditConfigImpl implements AuditConfigService {
 	public List<T> revisedEntity(String entityName)
 	{
 		List<T> revisionList = new ArrayList<>();
+
 		List<CustomRevisionEntity> revID=new ArrayList<>();
 		try
 		{
@@ -81,11 +81,19 @@ public class AuditConfigImpl implements AuditConfigService {
 
 			AuditReader auditReader = AuditReaderFactory.get(entityManager);
 			AuditQuery query = auditReader.createQuery().forRevisionsOfEntity(clazz, true, true);
-			revisionList = query.getResultList();
+			ListIterator revisionList1 = query.getResultList().listIterator();
+			while (revisionList1.hasNext()) {
+				logger.info("gate value {}",revisionList1.next());
+			}
+//			revisionList.get(0)
 			query.addProjection(AuditEntity.revisionNumber());
 			revisionList = query.getResultList();
 			query.getResultList();
 			revID=customRevisionEntityRepo.findCustomRevisionId(revisionList);
+			logger.info("the entity revision details {}",revID.get(0));
+//			while (revisionList1.hasNext()) {
+//				logger.info("gate value {}",revisionList1.next());
+//			}
 		}
 		catch (ClassNotFoundException e)
 		{
@@ -97,8 +105,10 @@ public class AuditConfigImpl implements AuditConfigService {
 	@Override
 	public Map revisedEntityDetails(String entityName)
 	{
+		List<T> classDetails = new ArrayList<>();
+		List<T> allClassDetails = new ArrayList<>();
 		List<T> revisionList = new ArrayList<>();
-		List<CustomRevisionEntity> revID=new ArrayList<>();
+		List<CustomRevisionEntity> revIDs=new ArrayList<>();
 		Map<String,Object> classAuditDetails =  new HashMap<>();
 		try
 		{
@@ -106,14 +116,27 @@ public class AuditConfigImpl implements AuditConfigService {
 
 			AuditReader auditReader = AuditReaderFactory.get(entityManager);
 			AuditQuery query = auditReader.createQuery().forRevisionsOfEntity(clazz, true, true);
-			revisionList = query.getResultList();
-			classAuditDetails.put("classDetials",revisionList);
+			classDetails = query.getResultList();
+			classAuditDetails.put("classDetails",classDetails);
+			int counter = 1;
+//			for (Object eachItem: classDetails) {
+//
+//				logger.trace("details {} is {}",counter,eachItem);
+//				Pattern p = Pattern.compile("(?:^|\\s)'([^']*?)'(?:$|\\s)");
+//				Matcher m = p.matcher(eachItem.toString());
+//				while (m.find()) {
+//					System.out.println("details split is "+m.group(1));
+//				}
+//				counter++;
+//			}
 			query.addProjection(AuditEntity.revisionNumber());
 			revisionList = query.getResultList();
+
 			classAuditDetails.put("revisionNumbers",revisionList);
 			query.getResultList();
-			revID=customRevisionEntityRepo.findCustomRevisionId(revisionList);
-			classAuditDetails.put("revisionDetails",revID);
+			revIDs=customRevisionEntityRepo.findCustomRevisionId(revisionList);
+			classAuditDetails.put("revisionDetails",revIDs);
+
 		}
 		catch (ClassNotFoundException e)
 		{

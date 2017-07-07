@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import longbridge.models.AuditConfig;
 import longbridge.services.AuditConfigService;
+import org.springframework.web.context.request.WebRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,17 +64,24 @@ public class AdmAuditController {
 
 
     @GetMapping("/{id}/edit")
-    public String ListRevisedEnties(@PathVariable Long id)
+    public String ListRevisedEnties(@PathVariable Long id,Model  model)
     {
         AuditConfig audit = auditCfgService.getAuditEntity(id);
        String entityName= audit.getEntityName();
        String entityNames=entityName;
-        Map<String, Object> entityDetails = auditCfgService.revisedEntityDetails(entityNames);
-        logger.info("class detials are {}",entityDetails.get("classDetials"));
-        logger.info("reference numbers are {}",entityDetails.get("revisionNumbers"));
-        logger.info("reference detials are {}",entityDetails.get("revisionDetails"));
-        List<String> mergedClassDetails = new ArrayList<>();
-        return "adm/audit/view";
+        model.addAttribute("entityName",entityName);
+        List<T> datails = auditCfgService.revisedEntity(entityName);
+//        Map<String, List<Object>> entityDetails = auditCfgService.revisedEntityDetails(entityNames);
+//        entityDetails.get("classDetails");
+//        for (Object h:entityDetails.get("classDetails")) {
+//
+//        }
+//        logger.info("class detials are {}",entityDetails.get("classDetails"));
+//        logger.info("class detials are {}",entityDetails.get("classDetials"));
+//        logger.info("reference numbers are {}",entityDetails.get("revisionNumbers"));
+//        logger.info("reference detials are {}",entityDetails.get("revisionDetails"));
+//        List<String> mergedClassDetails = new ArrayList<>();
+        return "adm/audit/revisedview";
 //       try
 //       {
 //           Class<?> cls = Class.forName(entityName);
@@ -113,8 +121,13 @@ public class AdmAuditController {
         out.setRecordsTotal(auditConfig.getTotalElements());
         return out;
     }
-
-
+    @GetMapping("/all/entityname/details")
+    public List getEnvityDetails(WebRequest webRequest){
+        String entityName = webRequest.getParameter("entityName");
+        logger.info("the entity nam is {}",entityName);
+        List<T> datails = auditCfgService.revisedEntity(entityName);
+        return datails;
+    }
 
     @GetMapping("/view")
     public String listEntity(Model model) {
