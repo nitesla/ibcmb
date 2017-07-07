@@ -5,7 +5,6 @@
 
     <groupId>longbridge</groupId>
     <artifactId>ROOT</artifactId>
-    <version></version>
     <packaging>war</packaging>
 
     <name>internetbanking</name>
