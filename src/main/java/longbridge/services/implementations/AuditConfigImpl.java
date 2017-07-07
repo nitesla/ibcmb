@@ -2,6 +2,7 @@ package longbridge.services.implementations;
 
 import longbridge.config.audits.CustomRevisionEntity;
 import longbridge.dtos.CodeDTO;
+import longbridge.dtos.VerificationDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.AuditConfig;
 import longbridge.models.AuditRetrieve;
@@ -20,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -98,13 +100,15 @@ public class AuditConfigImpl implements AuditConfigService {
 	public Page<CustomRevisionEntity>  revisedEntityDetails(String entityName,Pageable pageable)
 	{
 		List<T> revisionList = new ArrayList<>();
+		Page<CustomRevisionEntity> revisionEntities=null;
 		try
 		{
 			Class<?> clazz  = Class.forName(PACKAGE_NAME + entityName);
 			AuditReader auditReader = AuditReaderFactory.get(entityManager);
 			AuditQuery query = auditReader.createQuery().forRevisionsOfEntity(clazz, true, true);
 			revisionList = query.getResultList();
-			Page<CustomRevisionEntity> page=customRevisionEntityRepo.findCustomRevisionId(revisionList);
+			revisionEntities=customRevisionEntityRepo.findCustomRevisionId(revisionList,pageable);
+			logger.info("this is the revision list",revisionEntities);
 			query.getResultList();
 		}
 		catch (ClassNotFoundException e)
@@ -112,7 +116,7 @@ public class AuditConfigImpl implements AuditConfigService {
 			e.printStackTrace();
 		}
 
-		//return page;
+		return revisionEntities;
 	}
 	@Override
 	public Page<AuditConfig> findEntities(String pattern, Pageable pageDetails)
@@ -127,5 +131,10 @@ public class AuditConfigImpl implements AuditConfigService {
 	{
 		AuditConfig auditConfig = this.configRepo.findOne(id);
 		return auditConfig;
+	}
+
+	@Override
+	public List<T> revisedEntity(String entityName) {
+		return null;
 	}
 }

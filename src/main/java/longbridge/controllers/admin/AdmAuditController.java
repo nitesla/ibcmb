@@ -2,7 +2,9 @@ package longbridge.controllers.admin;
 
 import longbridge.config.audits.CustomRevisionEntity;
 import longbridge.dtos.CodeDTO;
+import longbridge.dtos.VerificationDTO;
 import longbridge.models.AuditRetrieve;
+import longbridge.models.Verification;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.formula.functions.T;
 import org.apache.poi.ss.formula.functions.Value;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 
 import longbridge.models.AuditConfig;
 import longbridge.services.AuditConfigService;
+import org.springframework.web.context.request.WebRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,7 +71,7 @@ public class AdmAuditController {
     {
         AuditConfig audit = auditCfgService.getAuditEntity(id);
         String entityName = audit.getEntityName();
-        model.addAttribute("entityName", entityName);
+        model.addAttribute("audit", audit);
         return "adm/audit/revisedview";
     }
 
@@ -88,14 +91,20 @@ public class AdmAuditController {
 
 
 
-//    @GetMapping("revisedentity/{entityname}")
-//    public @ResponseBody DataTablesOutput<T> getAllRevisedEntity(@PathVariable String name,DataTablesInput input)
-//    {
-//        List<CustomRevisionEntity> revisedEntity=auditCfgService.revisedEntityDetails(name);
-//       // List<Object> mergedClassDetails = new ArrayList<Object>(entityDetails.values());
-//
-//
-//    }
+    @GetMapping("revisedentity/{entityname}")
+    public @ResponseBody DataTablesOutput<CustomRevisionEntity> getAllRevisedEntity(@RequestParam("entityName") String entityName, DataTablesInput input)
+    {
+//        String name= request.getParameter("entityName");
+        logger.info("entity name {}",entityName);
+        Pageable pageable = DataTablesUtils.getPageable(input);
+        DataTablesOutput<CustomRevisionEntity> out = new DataTablesOutput<CustomRevisionEntity>();
+        Page<CustomRevisionEntity> auditConf = auditCfgService.revisedEntityDetails(entityName,pageable);
+        out.setDraw(input.getDraw());
+        out.setData(auditConf.getContent());
+        out.setRecordsFiltered(auditConf.getTotalElements());
+        out.setRecordsTotal(auditConf.getTotalElements());
+        return out;
+    }
 
 
 //    @GetMapping("/{id}/edit")
