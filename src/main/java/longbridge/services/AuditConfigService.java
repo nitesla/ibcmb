@@ -1,7 +1,9 @@
 package longbridge.services;
 
 import longbridge.config.audits.CustomRevisionEntity;
+import longbridge.config.audits.ModifiedEntityTypeEntity;
 import longbridge.dtos.AuditConfigDTO;
+import longbridge.dtos.RevisionInfo;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.Code;
 import org.apache.poi.ss.formula.functions.T;
@@ -34,5 +36,7 @@ public interface AuditConfigService
 
 	List<T> revisedEntity(String entityName);
 	Page<CustomRevisionEntity> revisedEntityDetails(String entityName,Pageable pageable);
+
+	Page<ModifiedEntityTypeEntity> getRevisionEntities(Pageable pageable);
 
 }

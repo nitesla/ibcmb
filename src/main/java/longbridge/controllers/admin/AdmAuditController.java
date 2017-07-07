@@ -1,10 +1,14 @@
 package longbridge.controllers.admin;
 
 import longbridge.config.audits.CustomRevisionEntity;
+import longbridge.config.audits.ModifiedEntityTypeEntity;
 import longbridge.dtos.CodeDTO;
+import longbridge.dtos.RevisionInfo;
 import longbridge.dtos.VerificationDTO;
 import longbridge.models.AuditRetrieve;
+import longbridge.models.User;
 import longbridge.models.Verification;
+import longbridge.security.userdetails.CustomUserPrincipal;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.formula.functions.T;
 import org.apache.poi.ss.formula.functions.Value;
@@ -18,6 +22,7 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.data.jpa.datatables.repository.DataTablesUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -66,65 +71,32 @@ public class AdmAuditController {
         return out;
     }
 
-    @GetMapping("/{id}/edit")
-    public String ListRevisedEnties(@PathVariable Long id,Model model)
+    @GetMapping("/revised/entity")
+    public String ListRevisedEnties()
     {
-        AuditConfig audit = auditCfgService.getAuditEntity(id);
-        String entityName = audit.getEntityName();
-        model.addAttribute("audit", audit);
+
         return "adm/audit/revisedview";
     }
 
 
 
-//       try
-//       {
-//           Class<?> cls = Class.forName(entityName);
-//           AuditRetrieve auditRetrieve=new AuditRetrieve();
-//           auditRetrieve.getRevisions(cls);
-//       }
-//       catch (ClassNotFoundException e)
-//       {
-//           e.printStackTrace();
-//       }
-
-
-
-
-    @GetMapping("revisedentity/{entityname}")
-    public @ResponseBody DataTablesOutput<CustomRevisionEntity> getAllRevisedEntity(@RequestParam("entityName") String entityName, DataTablesInput input)
+    @GetMapping("all/revisedentities")
+    public @ResponseBody DataTablesOutput<ModifiedEntityTypeEntity> getAllRevisedEntity(DataTablesInput input)
     {
-//        String name= request.getParameter("entityName");
-        logger.info("entity name {}",entityName);
+        logger.info("in data table");
+
         Pageable pageable = DataTablesUtils.getPageable(input);
-        DataTablesOutput<CustomRevisionEntity> out = new DataTablesOutput<CustomRevisionEntity>();
-        Page<CustomRevisionEntity> auditConf = auditCfgService.revisedEntityDetails(entityName,pageable);
+        DataTablesOutput<ModifiedEntityTypeEntity> out = new DataTablesOutput<ModifiedEntityTypeEntity>();
+        Page<ModifiedEntityTypeEntity> auditConf = auditCfgService.getRevisionEntities(pageable);
+        while (auditConf.hasNext()){
+            logger.info("the value returned is {}",auditConf.getContent());
+        }
         out.setDraw(input.getDraw());
         out.setData(auditConf.getContent());
         out.setRecordsFiltered(auditConf.getTotalElements());
         out.setRecordsTotal(auditConf.getTotalElements());
         return out;
     }
-
-
-//    @GetMapping("/{id}/edit")
-//    public String ListRevisedEntity<T> getAudited(@PathVariable Long id,Model model)
-//    {
-//        AuditConfig audit = auditCfgService.getAuditEntity(id);
-//        String entityName = audit.getEntityName();
-//       // String entityNames =entityName;
-//        model.addAttribute(entityName);
-//
-//        return "all/auditedview";
-//
-//
-//
-////        Map<String, Object> entityDetails = auditCfgService.revisedEntityDetails(entityNames);
-////        List<Object> mergedClassDetails = new ArrayList<Object>(entityDetails.values());
-////        System.out.println("This the merge Class Details  @@@@@ " +mergedClassDetails);
-//
-//        //return "adm/audit/view";
-//    }
 
 
     @GetMapping(path = "all/entityname")

@@ -27,7 +27,9 @@ public interface CustomRevisionEntityRepo extends CommonRepo<CustomRevisionEntit
     Page<CustomRevisionEntity> findCustomRevisionId(@Param("revisionList") List<T> revision, Pageable pageable);
 
 
-    @Query("select new RevisionInfo(cre.id,cre.lastChangedBy,cre.ipAddress,cre.timestamp,met.entityClassName) " +
-            "from CustomRevisionEntity cre join cre.modifiedEntityTypes met order by cre.timestamp")
-    Page<RevisionInfo> getRevisonList(Pageable pageable);
+//
+// ;
+
+
+
 }
