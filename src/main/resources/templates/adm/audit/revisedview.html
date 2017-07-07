@@ -59,6 +59,7 @@
 
                                     <thead>
                                     <tr>
+                                        <th> Name</th>
                                         <th>IP Address</th>
                                         <th>Modifed By</th>
                                         <th>Time</th>
@@ -70,9 +71,11 @@
                                     </tbody>
                                     <tfoot>
                                     <tr>
-                                        <!--<th>IP Address</th>-->
-                                        <!--<th>Modified By</th>-->
-                                        <!--<th>Time</th>-->
+                                        <th>Name</th>
+                                        <th>IP Address</th>
+                                        <th>Modified By</th>
+                                        <th>Time</th>
+
 
                                     </tr>
                                     </tfoot>
@@ -105,7 +108,7 @@
 <!-- Page-Level Scripts -->
 <script th:inline="javascript">
 
-  console.log([[${audit.entityName}]]);
+
 
     /*<![CDATA[*/
     $(document).ready(function() {
@@ -118,20 +121,32 @@
             rowId: 'id',
             "paging": true,
             "serverSide" : true,
-           // "ajax": "/admin/audit/revisedentity/"+[[${audit.entityName}]],
-            "ajax" : {
-                url : "/admin/audit/revisedentity/entityname",
-                "type" : "GET",
-                "data" : {
-                    entityName : [[${audit.entityName}]]
-                }
-            },
+           "ajax": "/admin/audit/all/revisedentities",
             "dom": 'T<"clear">frtlp',
             "columns": [
-                { "data": "lastChangedBy" ,
-                "data": "ipAddress" ,
-                "data": "timestamp" }
-            ] });
+                { "data": "entityClassName" },
+                { "data": "revision.ipAddress" },
+                { "data": "revision.timestamp" },
+                { "data": "revision.lastChangedBy" }
+
+            ]
+//            ,
+//            "columnDefs" : [ {
+//                "targets" : 2,
+//                "data" : "status",
+//                "render" : function(data, type,full, meta) {
+//                    if (type === 'display') {
+//                        if(data == null)
+//                            return data;
+//                        var dtStart = new Date(parseInt(data));
+//                        var dtStartWrapper = moment(dtStart);
+//                        //return dtStartWrapper.format('DD/MM/YYYY HH:mm');
+//                        return dtStartWrapper.format('LLLL');
+//                    }
+//                    return data;
+//                }
+//            } ]
+        });
 
         table.on('select', function() {
             if (table.rows({
@@ -173,7 +188,7 @@
         var id = $(dt.row({
             selected: true
         }).node()).attr("id");
-        var ooo = link.attr("href").replace("pageno",[[${audit.entityName}]]);
+        var ooo = link.attr("href").replace("id",id);
         window.location.assign(ooo);
 
     } );

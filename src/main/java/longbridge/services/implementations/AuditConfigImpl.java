@@ -1,15 +1,16 @@
 package longbridge.services.implementations;
 
 import longbridge.config.audits.CustomRevisionEntity;
+import longbridge.config.audits.ModifiedEntityTypeEntity;
 import longbridge.dtos.CodeDTO;
+//import longbridge.dtos.RevisionInfo;
 import longbridge.dtos.VerificationDTO;
 import longbridge.exception.InternetBankingException;
-import longbridge.models.AuditConfig;
-import longbridge.models.AuditRetrieve;
-import longbridge.models.Code;
-import longbridge.models.Verification;
+import longbridge.models.*;
 import longbridge.repositories.AuditConfigRepo;
 import longbridge.repositories.CustomRevisionEntityRepo;
+import longbridge.repositories.ModifiedEntityTypeEntityRepo;
+import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.AuditConfigService;
 import longbridge.utils.Verifiable;
 import org.apache.poi.ss.formula.functions.T;
@@ -23,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
@@ -50,6 +52,9 @@ public class AuditConfigImpl implements AuditConfigService {
     @Autowired
 	CustomRevisionEntityRepo customRevisionEntityRepo;
 
+    @Autowired
+	ModifiedEntityTypeEntityRepo modifiedEntityTypeEntityRepo;
+
 
 	public AuditConfig findEntity(String s) {
 		return configRepo.findFirstByEntityName(s);
@@ -73,29 +78,17 @@ public class AuditConfigImpl implements AuditConfigService {
 		return configRepo.findAll(pageDetails);
 	}
 
-//	@Override
-//	public List<T> revisedEntity(String entityName)
-//	{
-//		List<T> revisionList = new ArrayList<>();
-//		List<CustomRevisionEntity> revID=new ArrayList<>();
-//		try
-//		{
-//			Class<?> clazz  = Class.forName(PACKAGE_NAME + entityName);
-//			AuditReader auditReader = AuditReaderFactory.get(entityManager);
-//			AuditQuery query = auditReader.createQuery().forRevisionsOfEntity(clazz, true, true);
-//			revisionList = query.getResultList();
-//			query.addProjection(AuditEntity.revisionNumber());
-//			revisionList = query.getResultList();
-//			query.getResultList();
-//			revID=customRevisionEntityRepo.findCustomRevisionId(revisionList);
-//		}
-//		catch (ClassNotFoundException e)
-//		{
-//			e.printStackTrace();
-//		}
-//
-//		return revisionList;
-//	  }
+
+
+	public Page<ModifiedEntityTypeEntity> getRevisionEntities(Pageable pageable)
+	{
+//		Page<RevisionInfo> customRevision = customRevisionEntityRepo.getRevisonList(pageable);
+		Page<ModifiedEntityTypeEntity> modifiedEntityTypeEntities=modifiedEntityTypeEntityRepo.findAll(pageable);
+
+		logger.info("Custom Revision{}",modifiedEntityTypeEntityRepo.findAll());
+
+		return modifiedEntityTypeEntities;
+	}
 	@Override
 	public Page<CustomRevisionEntity>  revisedEntityDetails(String entityName,Pageable pageable)
 	{
@@ -103,6 +96,7 @@ public class AuditConfigImpl implements AuditConfigService {
 		Page<CustomRevisionEntity> revisionEntities=null;
 		try
 		{
+			logger.info("this is the revision list",revisionEntities);
 			Class<?> clazz  = Class.forName(PACKAGE_NAME + entityName);
 			AuditReader auditReader = AuditReaderFactory.get(entityManager);
 			AuditQuery query = auditReader.createQuery().forRevisionsOfEntity(clazz, true, true);

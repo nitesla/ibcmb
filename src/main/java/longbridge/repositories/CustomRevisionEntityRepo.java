@@ -1,6 +1,7 @@
 package longbridge.repositories;
 
 import longbridge.config.audits.CustomRevisionEntity;
+//import longbridge.dtos.RevisionInfo;
 import longbridge.models.UserType;
 import longbridge.models.Verification;
 import org.apache.commons.digester.annotations.rules.BeanPropertySetter;
@@ -24,5 +25,11 @@ public interface CustomRevisionEntityRepo extends CommonRepo<CustomRevisionEntit
 {
     @Query( "select c from CustomRevisionEntity c where  c.id in :revisionList")
     Page<CustomRevisionEntity> findCustomRevisionId(@Param("revisionList") List<T> revision, Pageable pageable);
+
+
+//
+// ;
+
+
 
 }

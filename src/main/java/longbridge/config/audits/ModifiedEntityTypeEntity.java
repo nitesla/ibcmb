@@ -17,8 +17,11 @@ public class ModifiedEntityTypeEntity implements Serializable{
     @ManyToOne
     private CustomRevisionEntity revision;
 
+
     private String entityClassName;
 
+    public ModifiedEntityTypeEntity() {
+    }
 
     public ModifiedEntityTypeEntity(CustomRevisionEntity revision, String entityClassName)
     {
@@ -49,5 +52,14 @@ public class ModifiedEntityTypeEntity implements Serializable{
 
     public void setEntityClassName(String entityClassName) {
         this.entityClassName = entityClassName;
+    }
+
+    @Override
+    public String toString() {
+        return "ModifiedEntityTypeEntity{" +
+                "id=" + id +
+                ", revision=" + revision +
+                ", entityClassName='" + entityClassName + '\'' +
+                '}';
     }
 }
