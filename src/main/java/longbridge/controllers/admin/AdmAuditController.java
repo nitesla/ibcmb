@@ -88,9 +88,9 @@ public class AdmAuditController {
         Pageable pageable = DataTablesUtils.getPageable(input);
         DataTablesOutput<ModifiedEntityTypeEntity> out = new DataTablesOutput<ModifiedEntityTypeEntity>();
         Page<ModifiedEntityTypeEntity> auditConf = auditCfgService.getRevisionEntities(pageable);
-        while (auditConf.hasNext()){
-            logger.info("the value returned is {}",auditConf.getContent());
-        }
+//        while (auditConf.hasNext()){
+//            logger.info("the value returned is {}",auditConf.getContent());
+//        }
         out.setDraw(input.getDraw());
         out.setData(auditConf.getContent());
         out.setRecordsFiltered(auditConf.getTotalElements());
