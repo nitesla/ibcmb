@@ -34,6 +34,8 @@ public interface RetailUserService {
 //    @PreAuthorize("hasAuthority('GET_RETAIL_USER')")
     RetailUser getUserByName(String name);
 
+    RetailUser getUserByEmail(String email);
+
 //    @PreAuthorize("hasAuthority('GET_RETAIL_USER')")
     RetailUserDTO getUserDTOByName(String name);
 

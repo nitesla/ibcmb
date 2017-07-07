@@ -1657,7 +1657,7 @@ button, input, optgroup, select, textarea {
 
 .wizard > .content {
     background: #ffffff;
-    min-height: 240px;
+    min-height: 30em;
 }
 
 .wizard > .content > .body {

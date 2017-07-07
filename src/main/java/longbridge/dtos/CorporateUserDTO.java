@@ -5,6 +5,8 @@ import longbridge.models.Code;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import java.util.Date;
+import java.util.List;
+
 /**
  * Created by Fortune on 4/5/2017.
  */
@@ -38,6 +40,10 @@ public class CorporateUserDTO {
     private Code alertPreference;
     private String createdOn;
     private String corporateRole;
+    private List<String> securityQuestion;
+    private List<String> securityAnswer;
+    private String phishingSec;
+    private String captionSec;
 
     public Long getId() {return id;}
 
@@ -212,6 +218,38 @@ public class CorporateUserDTO {
 
     public void setCorporateRole(String corporateRole) {
         this.corporateRole = corporateRole;
+    }
+
+    public List<String> getSecurityQuestion() {
+        return securityQuestion;
+    }
+
+    public void setSecurityQuestion(List<String> securityQuestion) {
+        this.securityQuestion = securityQuestion;
+    }
+
+    public List<String> getSecurityAnswer() {
+        return securityAnswer;
+    }
+
+    public void setSecurityAnswer(List<String> securityAnswer) {
+        this.securityAnswer = securityAnswer;
+    }
+
+    public String getPhishingSec() {
+        return phishingSec;
+    }
+
+    public void setPhishingSec(String phishingSec) {
+        this.phishingSec = phishingSec;
+    }
+
+    public String getCaptionSec() {
+        return captionSec;
+    }
+
+    public void setCaptionSec(String captionSec) {
+        this.captionSec = captionSec;
     }
 
     @Override

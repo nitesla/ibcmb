@@ -114,6 +114,12 @@ public class RetailUserServiceImpl implements RetailUserService {
     }
 
     @Override
+    public RetailUser getUserByEmail(String email) {
+        RetailUser retailUser = this.retailUserRepo.findFirstByEmailIgnoreCase(email);
+        return retailUser;
+    }
+
+    @Override
     public RetailUserDTO getUserDTOByName(String name) {
         RetailUser retailUser = this.retailUserRepo.findFirstByUserNameIgnoreCase(name);
         return convertEntityToDTO(retailUser);

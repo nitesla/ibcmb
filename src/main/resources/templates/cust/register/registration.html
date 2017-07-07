@@ -69,6 +69,7 @@
                             <h3>Account Details</h3>
                             <section>
                                 <div class="row">
+                                    <br/>
                                     <div class="col-md-offset-4 col-md-4">
                                         <div class="form-group clearfix">
 
@@ -103,8 +104,6 @@
                                     <div class="col-md-offset-4 col-md-4">
                                         <br/>
 
-
-
                                         <div id='regcodebox' class="form-group clearfix">
                                             <label>Registration Code</label>
                                             <span class='req'></span><input type="number" min="0" id="code" name="regCode" class="col-md-8 my-select required" autocomplete="off" placeholder="Registration Code"/>
@@ -114,13 +113,7 @@
                                         <div class="form-group clearfix">
                                             <label>Username</label>
                                             <span class='req'></span><input type="text" name="userName" autocomplete="off" class="my-select required" placeholder="Preferred Username"/>
-                                            <div id="myModal" class="modal fade" role="dialog">
 
-
-
-                                                    <!-- Modal content-->
-                                                <div id="load" style='display:none'></div>
-                                                </div>
 
                                         </div>
 
@@ -140,9 +133,6 @@
 
                                         <input id="customerId" name="customerId" type="hidden"/>
                                     </div>
-                                    <div id="loa"  class='loader' style='display:none'>
-
-                                    </div>
 
                                     <div class="col-md-4">
                                         <br/>
@@ -155,13 +145,12 @@
                             <section>
                                 <div class="row">
                                     <div class="col-md-offset-4 col-md-4">
-                                        <div class='alert alert-danger' id="myspan2">
-                                        </div>
+                                        <br/>
                                         <input id="returnValue" type="hidden"/>
                                         <input th:name="noOfQuestions" th:value="${noOfQuestions}" type="hidden"/>
                                         <div th:each="questionList,ind : ${secQuestions}">
                                             <div class="form-group clearfix">
-                                                <label>Question</label>
+                                                <label th:text="'Security Question '+${ind.index+1}" >Question</label>
                                                 <select th:name="'securityQuestion'+${ind.index}" class="my-select">
                                                     <option th:each="question : ${questionList}" th:text="${question.securityQuestion}" th:value="${question.securityQuestion}"></option>
                                                 </select>
@@ -177,6 +166,7 @@
                             <h3>Phishing Image</h3>
                             <section>
                                 <div class="row">
+                                    <br/>
                                     <div class="col-md-offset-3 col-md-6">
 
                                         <div class="form-group">
@@ -189,12 +179,6 @@
                                                 </div>
                                             </div>
 
-                                            <!--<table>-->
-                                                <!--<td th:each="image : ${images}" style="position: relative;">-->
-                                                    <!--<img th:src="${imagePath} + ${image}" width="100px" height="100px"/>-->
-                                                    <!--<input type="radio" name="phishing" th:value="${image}" id="check1" class="required" style="position: absolute; bottom: 20px; right: 20px;" />-->
-                                                <!--</td>-->
-                                            <!--</table>-->
 
                                         </div>
                                     </div>
@@ -224,22 +208,13 @@
     <div class="modal-dialog">
 
         <!-- Modal content-->
-
         <div class="modal-content no-bd-rad content ">
-
             <div class="modal-body">
-
-
                 <p id='errorMess' class='mess text-danger'>Put something here iff need be.</p>
-
-
             </div>
-
-
             <div class="modal-footer no-bd-top">
                 <button type="button" class="btn btn-link" data-dismiss="modal">OK</button>
             </div>
-
         </div>
 
     </div>
@@ -250,22 +225,13 @@
     <div class="modal-dialog">
 
         <!-- Modal content-->
-
         <div class="modal-content no-bd-rad content ">
-
             <div class="modal-body">
-
-
                 <p id='successMess' class='mess text-primary'>Put something here iff need be.</p>
-
-
             </div>
-
-
             <div class="modal-footer no-bd-top">
                 <button type="button" class="btn btn-link" data-dismiss="modal">OK</button>
             </div>
-
         </div>
 
     </div>

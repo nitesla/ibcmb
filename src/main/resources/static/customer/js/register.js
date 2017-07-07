@@ -125,7 +125,7 @@ function validateAccountDetails(accountNumber, email, birthDate){
         email = "ib@coronationmb.com"
     }
     if(birthDate == ""){
-        birthDate = "11-11-1111"
+        birthDate = "19-20-1970"
     }
     var customerId;
     $.ajax({
@@ -134,22 +134,27 @@ function validateAccountDetails(accountNumber, email, birthDate){
         async:false,
         success:function(data1){
             customerId = ''+String(data1);
+            if(customerId == "true" ){
 
-            if(customerId == "" || customerId === null){
-
-                $('#errorMess').text("Invalid Account Credentials, Ensure details were correctly inputted. If problem persists, Please contact the bank.");
+            }else {
+                $('#errorMess').text(customerId);
                 $('#myModalError').modal('show');
-
-            }else{
-                $('input[name=customerId]').val(customerId);
             }
+            // if(customerId == "" || customerId === null){
+            //
+            //     $('#errorMess').text(customerId);
+            //     $('#myModalError').modal('show');
+            //
+            // }else{
+            //     $('input[name=customerId]').val(customerId);
+            // }
         }
     });
 
-    if(customerId == "" || customerId == null ){
-        return false;
-    }else{
+    if(customerId == "true"){
         return true;
+    }else{
+        return false;
     }
 }
 
@@ -158,7 +163,7 @@ function validateExists(accountNumber, email, birthDate){
         email = "ib@coronationmb.com"
     }
     if(birthDate == ""){
-        birthDate = "11-11-1111"
+        birthDate = "19-20-1970"
     }
     var cif;
     $.ajax({
@@ -171,12 +176,12 @@ function validateExists(accountNumber, email, birthDate){
             if(cif == "" || cif === null){
 
                 //invalid account number
-
                 $('#errorMess').text("This account already exists on our internet banking platform, Please try logging in.");
                 $('#myModalError').modal('show');
 
                 //alert("Account number not found");
             }else{
+                $('input[name=customerId]').val(cif);
                 sendRegCode();
             }
         }

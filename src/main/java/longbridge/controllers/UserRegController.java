@@ -91,14 +91,20 @@ public class UserRegController {
         logger.info("Email : " + email);
         logger.info("BirthDate : " + birthDate);
         CustomerDetails details = integrationService.isAccountValid(accountNumber, email, birthDate);
-        if (details != null && !details.isCorp()){
+        logger.info("DETAILS {} ", details);
+        if (details.getCifId() != null && !details.isCorp()){
 
             customerId = details.getCifId();
             logger.info("CustomerId", customerId);
+            return "true";
 
-        }else {
+        }
+        else if (details != null && details.isCorp()){
+            customerId= messageSource.getMessage("not.retail.account", null, locale);
+        }
+        else {
             //nothing
-            customerId = "";
+            customerId= messageSource.getMessage("not.valid.account", null, locale);
         }
         return customerId;
     }
@@ -110,17 +116,17 @@ public class UserRegController {
         logger.info("Email : " + email);
         logger.info("BirthDate : " + birthDate);
         CustomerDetails details = integrationService.isAccountValid(accountNumber, email, birthDate);
-        if (details != null){
+        logger.info("details {} ", details);
+        if (details.getCifId() != null){
             RetailUser user = retailUserService.getUserByCustomerId(details.getCifId());
             List<AccountDTO> account = accountService.getAccounts(details.getCifId());
             logger.info("ACCOUNT {} ", account);
-            if (user != null || !account.isEmpty()) {
-
-                customerId="";
-
+            if (user == null && account.isEmpty()) {
+                logger.info("customer does not exist on the platform currently " + details.getCifId());
+                customerId = details.getCifId();
             }else {
-                customerId="does not exist";
-                logger.info("customer does not exist");
+                logger.info("user exists on out system");
+                customerId="";
             }
 
         }else {
