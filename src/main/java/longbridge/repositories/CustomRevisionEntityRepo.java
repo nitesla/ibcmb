@@ -23,7 +23,6 @@ import java.util.List;
 public interface CustomRevisionEntityRepo extends CommonRepo<CustomRevisionEntity,Long>
 {
     @Query( "select c from CustomRevisionEntity c where  c.id in :revisionList")
-//    Page<CustomRevisionEntity> findCustomRevisionId(@Param("revisionList") List<T> revision);
     Page<CustomRevisionEntity> findCustomRevisionId(@Param("revisionList") List<T> revision, Pageable pageable);
 
 }

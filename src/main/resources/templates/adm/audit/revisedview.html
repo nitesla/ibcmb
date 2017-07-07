@@ -35,7 +35,7 @@
                 </div>
 
                 <div class="clearfix"></div>
-                <input type="text" id="entityname" th:value="${entityName}"/>
+
                 <div class="row">
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="x_panel">
@@ -56,12 +56,13 @@
                             <div class="x_content">
 
                                 <table class="table table-striped table-bordered table-hover" id="auditview">
+
                                     <thead>
                                     <tr>
-                                        <th>id</th>
-                                        <th>Ip Address</th>
-                                        <th>Last ChangedBy</th>
-                                        <th>Date Modified</th>
+                                        <th>IP Address</th>
+                                        <th>Modifed By</th>
+                                        <th>Time</th>
+
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -69,7 +70,9 @@
                                     </tbody>
                                     <tfoot>
                                     <tr>
-                                        <!--<th>Name</th>-->
+                                        <!--<th>IP Address</th>-->
+                                        <!--<th>Modified By</th>-->
+                                        <!--<th>Time</th>-->
 
                                     </tr>
                                     </tfoot>
@@ -102,15 +105,10 @@
 <!-- Page-Level Scripts -->
 <script th:inline="javascript">
 
-//    alert('i am here')
-//    var beforeData = ([[${audit.entityName}]]);
-//    console.log(beforeData);
+  console.log([[${audit.entityName}]]);
 
     /*<![CDATA[*/
     $(document).ready(function() {
-
-        alert($('#entityName').val());
-        var entityName = $('#entityName').val();
         var table = $('#auditview').DataTable({
             select:true,
             responsive: true,
@@ -120,15 +118,19 @@
             rowId: 'id',
             "paging": true,
             "serverSide" : true,
-            "ajax": "/admin/audit/revisedentity/index",
+           // "ajax": "/admin/audit/revisedentity/"+[[${audit.entityName}]],
+            "ajax" : {
+                url : "/admin/audit/revisedentity/entityname",
+                "type" : "GET",
+                "data" : {
+                    entityName : [[${audit.entityName}]]
+                }
+            },
             "dom": 'T<"clear">frtlp',
             "columns": [
-                {
-                    "data": "id",
-                    "data": "ipAddress",
-                    "data": "lastChangedBy",
-                    "data": "timestamp"
-                }
+                { "data": "lastChangedBy" ,
+                "data": "ipAddress" ,
+                "data": "timestamp" }
             ] });
 
         table.on('select', function() {
@@ -139,6 +141,13 @@
             } else {
                 $('.bt-select').removeAttr("disabled");
             }
+
+        });
+
+        $("#search").on("click", function(e) {
+            e.preventDefault();
+            dt = $('#auditview').DataTable();
+            dt.ajax.reload(null, true);
 
         });
 
@@ -164,7 +173,7 @@
         var id = $(dt.row({
             selected: true
         }).node()).attr("id");
-        var ooo = link.attr("href").replace("index",entityName);
+        var ooo = link.attr("href").replace("pageno",[[${audit.entityName}]]);
         window.location.assign(ooo);
 
     } );
@@ -209,7 +218,7 @@
         var id = $(dt.row({
             selected: true
         }).node()).attr("id");
-        alert(id);
+//        alert(id);
         $.ajax({
             type: 'GET',
             url: '/admin/audit/edit',
