@@ -6,6 +6,7 @@ import longbridge.models.Verification;
 import org.apache.commons.digester.annotations.rules.BeanPropertySetter;
 import org.apache.poi.ss.formula.functions.T;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -21,6 +22,6 @@ import java.util.List;
 public interface CustomRevisionEntityRepo extends CommonRepo<CustomRevisionEntity,Long>
 {
     @Query( "select c from CustomRevisionEntity c where  c.id in :revisionList")
-    List<CustomRevisionEntity> findCustomRevisionId(@Param("revisionList") List<T> revision);
+    Page<CustomRevisionEntity> findCustomRevisionId(@Param("revisionList") List<T> revision);
 
 }
