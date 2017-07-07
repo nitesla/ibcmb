@@ -50,7 +50,7 @@
                                 <select name="source" class="form-control" id="source"
                                         th:field="*{customerAccountNumber}" onchange="getBalance()">
                                     <option value=""> select an account</option>
-                                    <option th:each="s: ${accounts}" th:value="${s}" th:text="${s}"></option>
+                                    <option th:each="s: ${accountList}" th:value="${s}" th:text="${s}"></option>
 
 
                                 </select>

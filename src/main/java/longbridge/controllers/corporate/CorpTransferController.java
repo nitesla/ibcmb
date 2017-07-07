@@ -329,10 +329,10 @@ public class CorpTransferController {
 
 
     @PostMapping("/authorize")
-    public String addAuthorization(@ModelAttribute("corpTransReqEntry") CorpTransReqEntry corpTransReqEntry, @ModelAttribute("corpTransRequest") CorpTransRequest corpTransRequest, RedirectAttributes redirectAttributes){
+    public String addAuthorization(@ModelAttribute("corpTransReqEntry") CorpTransReqEntry corpTransReqEntry, RedirectAttributes redirectAttributes){
 
         try {
-            String message = corpTransferService.addAuthorization(corpTransReqEntry, corpTransRequest);
+            String message = corpTransferService.addAuthorization(corpTransReqEntry);
             redirectAttributes.addFlashAttribute("message", message);
 
         } catch (InternetBankingException ibe) {

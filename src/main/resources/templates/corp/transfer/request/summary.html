@@ -110,7 +110,7 @@
                         <thead>
                         <td>Role</td>
 
-                        <td>Authorizer</td>
+                        <td>Author</td>
                         <td>Status</td>
                         <td>Comments</td>
                         <td>Entry Date</td>
@@ -121,23 +121,23 @@
 
 
                         <tr th:each="trn : ${corpTransRule.roles}">
-                            <td th:text="${trn.name+' '+trn.rank}"></td>
+                            <td th:text="${trn.name}"></td>
 
                             <span
-                                    th:each="auth : ${authorizationMap.auths}"
-                                    th:if="${authorizationMap.auths != null }">
-                                      <span th:if="${auth.corporateRole.name} == ${trn.name}">
-                                        <td th:text="${auth.corporateUser.userName}"></td>
-                                        <td th:text="${auth.status}"></td>
-                                        <td th:text="${auth.comments}"></td>
-                                        <td th:text="${auth.entryDate}"></td>
-                                      </span>
-                                </span>
+                                    th:each="auth : ${authorizationMap.auths}" th:if="${authorizationMap.auths != null }">
+                                      <!--<span th:if="${auth.corporateRole.name} == ${trn.name}">-->
+                                        <td th:if="${auth.role.id} == ${trn.id}" th:text="${auth.user.userName}"></td>
+                                        <td th:unless="${auth.role.id} == ${trn.id}"></td>
+                                        <td th:if="${auth.role.id} == ${trn.id}" th:text="${auth.status}"></td>
+                                        <td th:unless="${auth.role.id} == ${trn.id}"></td>
+                                        <td th:if="${auth.role.id} == ${trn.id}" th:text="${auth.comments}"></td>
+                                        <td th:if="${auth.role.id} == ${trn.id}"></td>
 
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
+                                        <td th:if="${auth.role.id} == ${trn.id}" th:text="${auth.entryDate}"></td>
+                                        <td th:if="${auth.role.id} == ${trn.id}"></td>
+
+                                <!--</span>-->
+                                </span>
                             <span th:if="${corpTransRule.anyCanAuthorize == false}">
                                         <td>Required</td>
                                 </span>
@@ -149,16 +149,15 @@
                         </tbody>
                     </table>
 
-
                     <form th:action="@{/corporate/transfer/authorize}" method="post">
                         <label class="control-label">Comments</label>
-                        <input type="text" class="form-control" th:field="${corpTransReqEntry.comments}"/>
+                        <textarea th:if="${userCanAuthorize}" class="form-control" th:field="${corpTransReqEntry.comments}"></textarea>
                         <div>
-                            <input type="hidden" th:field="${corpTransRequest.id}"/>
+                            <input type="hidden" name="tranReqId" th:value="${corpTransRequest.id}"/>
                         </div>
                         <div>
-                            <input th:if="${userCanAuthorize}" type="submit" value="Approve"/>
-                            <a th:href="@{/corporate/transfer/requests}">Back</a>
+                            <button class="btn btn-link required-step" th:if="${userCanAuthorize}" type="submit">Approve</button>
+                            <a id="canc" class="btn btn-link less-required" th:href="@{/corporate/transfer/requests}">Back</a>
                         </div>
                     </form>
 
@@ -269,9 +268,20 @@
         });
     }
 
+
+    function goBack() {
+
+        $("#canc").click(function () {
+
+            location.href = "/corporate/transfer/requests";
+
+        });
+    }
+
+
+
     /*]]>*/
 </script>
-
 
 </body>
 </html>

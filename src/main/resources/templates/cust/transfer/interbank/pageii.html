@@ -45,12 +45,11 @@
 
 
                                 <span id="scurency"></span>
-                                <span class="alert no-bd-rad my-border bg-white hide-content-only">NGN</span>
+                                <span class="alert no-bd-rad my-border bg-white" id="sourceCurrency">CCY</span>
 
                                 <select name="source" class="form-control" id="source"
-                                        th:field="*{customerAccountNumber}" onchange="getBalance()">
-                                    <option value=""> select an account</option>
-                                    <option th:each="s: ${accountList}"   th:value="${s}" th:text="${s}"></option>
+                                        th:field="*{customerAccountNumber}" onchange="getBalance();getDestCurrency();">
+                                    <option th:each="s: ${accountList}" th:value="${s.accountNumber}" th:text="${s.accountNumber}" th:selected="${s.primaryFlag=='Y'}"></option>
 
 
                                 </select>
@@ -107,10 +106,17 @@
 <!-- CONTENT-WRAPPER SECTION END-->
 <footer th:replace="cust_layout ::footer">
 </footer>
-<!--<script th:src="@{~/customer/js/accountdetails.js}"></script>-->
     <script th:src="@{~/customer/js/jquery-1.11.1.js}"></script>
     <script th:inline="javascript">
         /*<![CDATA[*/
+
+
+        $(document).ready(function(){
+            getBalance();
+            getDestCurrency();
+
+        })
+
         function getBalance(){
 
             var accountNumber = $('#source').val();
@@ -127,6 +133,27 @@
 //                    $('input[name=availBal]').val(bal);
 
                         $('#availBal').text("Available Balance: "+bal);
+
+                    }
+                }
+            })
+        }
+
+        function getDestCurrency(){
+            var accountNumber = $('#source').val();
+            $.ajax({
+                url: "/retail/transfer/"+accountNumber+"/currency",
+                type: 'GET',
+                async: false,
+                success:function(currency){
+                    cur = ''+String(currency);
+                    if(cur == "" ){
+                        document.getElementById("sourceCurrency").textContent="NAN";
+                        // $("#myspan").show();
+                    }else{
+//                    $('input[name=availBal]').val(bal);
+
+                        $('#sourceCurrency').text(cur);
 
                     }
                 }

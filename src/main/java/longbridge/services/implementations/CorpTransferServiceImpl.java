@@ -293,10 +293,10 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     }
 
     @Override
-    public String addAuthorization(CorpTransReqEntry transReqEntry, CorpTransRequest transferRequest) {
+    public String addAuthorization(CorpTransReqEntry transReqEntry) {
 
         CorporateUser corporateUser = getCurrentUser();
-        CorpTransRequest corpTransRequest = corpTransferRequestRepo.findOne(transferRequest.getId());
+        CorpTransRequest corpTransRequest = corpTransferRequestRepo.findOne(transReqEntry.getTranReqId());
         CorpTransRule transferRule = corporateService.getApplicableTransferRule(corpTransRequest);
         List<CorporateRole> roles = transferRule.getRoles();
         CorporateRole userRole = null;
@@ -314,9 +314,8 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         }
 
         CorpTransferAuth transferAuth = corpTransRequest.getTransferAuth();
-        Set<CorpTransReqEntry> transReqEntries = transferAuth.getAuths();
 
-        if (transReqEntries.contains(transReqEntry)) {
+        if (reqEntryRepo.existsByTranReqIdAndUserAndRole(corpTransRequest.getId(),corporateUser,userRole)) {
             throw new InternetBankingException("User has already authorized the transaction");
         }
 
@@ -324,9 +323,9 @@ public class CorpTransferServiceImpl implements CorpTransferService {
             throw new InternetBankingException("Transaction is not pending");
         }
         transReqEntry.setEntryDate(new Date());
-        transReqEntry.setCorporateRole(userRole);
-        transReqEntry.setCorporateUser(corporateUser);
-        transReqEntry.setStatus("A");
+        transReqEntry.setRole(userRole);
+        transReqEntry.setUser(corporateUser);
+        transReqEntry.setStatus("Approved");
         transferAuth.getAuths().add(transReqEntry);
         transferAuthRepo.save(transferAuth);
         if(isAuthorizationComplete(corpTransRequest)){
@@ -354,7 +353,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
 
         for(CorporateRole role: roles){
             for(CorpTransReqEntry corpTransReqEntry: transferAuth.getAuths()){
-                if(corpTransReqEntry.getCorporateRole().equals(role)){
+                if(corpTransReqEntry.getRole().equals(role)){
                     approvalCount++;
                     if(any) return true;
                 }

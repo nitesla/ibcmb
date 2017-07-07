@@ -1,7 +1,6 @@
 package longbridge.controllers.retail;
 
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import longbridge.api.NEnquiryDetails;
 import longbridge.dtos.LocalBeneficiaryDTO;
 import longbridge.dtos.TransferRequestDTO;
@@ -10,12 +9,9 @@ import longbridge.exception.InternetBankingSecurityException;
 import longbridge.exception.InternetBankingTransferException;
 import longbridge.exception.TransferErrorService;
 import longbridge.models.Account;
-import longbridge.models.FinancialInstitutionType;
 import longbridge.models.RetailUser;
-import longbridge.repositories.RetailUserRepo;
 import longbridge.services.*;
 import longbridge.utils.DateFormatter;
-import longbridge.utils.ResultType;
 import longbridge.utils.TransferType;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -25,7 +21,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ModelAndView;
@@ -33,7 +28,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 import java.security.Principal;
 import java.util.*;
 import java.util.stream.StreamSupport;
