@@ -79,8 +79,10 @@ public class AdmAuditController {
     @GetMapping("/{id}/edit")
     public String ListRevisedEnties(@PathVariable Long id,Model model)
     {
+        logger.info("entity number is {}",id);
         AuditConfig audit = auditCfgService.getAuditEntity(id);
         String entityName = audit.getEntityName();
+        logger.info("entity name is {}",entityName);
         model.addAttribute("entityName", entityName);
         return "adm/audit/revisedview";
     }

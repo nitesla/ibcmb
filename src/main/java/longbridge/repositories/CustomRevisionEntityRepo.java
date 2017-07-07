@@ -7,6 +7,7 @@ import org.apache.commons.digester.annotations.rules.BeanPropertySetter;
 import org.apache.poi.ss.formula.functions.T;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -23,6 +24,6 @@ public interface CustomRevisionEntityRepo extends CommonRepo<CustomRevisionEntit
 {
     @Query( "select c from CustomRevisionEntity c where  c.id in :revisionList")
 //    Page<CustomRevisionEntity> findCustomRevisionId(@Param("revisionList") List<T> revision);
-    List<CustomRevisionEntity> findCustomRevisionId(@Param("revisionList") List<T> revision);
+    Page<CustomRevisionEntity> findCustomRevisionId(@Param("revisionList") List<T> revision, Pageable pageable);
 
 }

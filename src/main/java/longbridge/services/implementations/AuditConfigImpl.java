@@ -2,7 +2,6 @@ package longbridge.services.implementations;
 
 import longbridge.config.audits.CustomRevisionEntity;
 import longbridge.dtos.CodeDTO;
-import longbridge.dtos.CustomEntityRevisionDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.AuditConfig;
 import longbridge.models.AuditRetrieve;
@@ -100,20 +99,13 @@ public class AuditConfigImpl implements AuditConfigService {
 	{
 		List<T> revisionList = new ArrayList<>();
 		Page<CustomRevisionEntity> page = null;
-        List<CustomEntityRevisionDTO> entityRevisionDTOs =new ArrayList<>();
 		try
 		{
 			Class<?> clazz  = Class.forName(PACKAGE_NAME + entityName);
 			AuditReader auditReader = AuditReaderFactory.get(entityManager);
 			AuditQuery query = auditReader.createQuery().forRevisionsOfEntity(clazz, true, true);
 			revisionList = query.getResultList();
-            List<CustomRevisionEntity> customRevisionId = customRevisionEntityRepo.findCustomRevisionId(revisionList);
-            for (CustomRevisionEntity detials:customRevisionId) {
-                CustomEntityRevisionDTO revisionDTO = new CustomEntityRevisionDTO();
-revisionDTO.setIpAddress(detials.getIpAddress());
-//                revisionDTO.
-            }
-//            page=customRevisionEntityRepo.findCustomRevisionId(revisionList);
+			page=customRevisionEntityRepo.findCustomRevisionId(revisionList,pageable);
 			query.getResultList();
 		}
 		catch (ClassNotFoundException e)

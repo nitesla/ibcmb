@@ -32,7 +32,7 @@ public interface AuditConfigService
 
 	AuditConfig getAuditEntity(Long auditId);
 
-	List<T> revisedEntity(String entityName);
+//	List<T> revisedEntity(String entityName);
 	Page<CustomRevisionEntity> revisedEntityDetails(String entityName,Pageable pageable);
 
 }
