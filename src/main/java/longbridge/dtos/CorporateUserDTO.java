@@ -14,11 +14,13 @@ public class CorporateUserDTO {
 
     @JsonProperty("DT_RowId")
     private Long id;
+    private int version;
     private String corporateId;
     private String corporateType;
     private String corporateName;
     @NotEmpty(message = "userName")
     private String userName;
+    private String entrustId;
     @NotEmpty(message = "firstName")
     private String firstName;
     @NotEmpty(message = "lastName")
@@ -44,11 +46,20 @@ public class CorporateUserDTO {
     private List<String> securityAnswer;
     private String phishingSec;
     private String captionSec;
+    private String isFirstTimeLogon;
 
     public Long getId() {return id;}
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
     }
 
     public String getCorporateId() {
@@ -57,6 +68,14 @@ public class CorporateUserDTO {
 
     public void setCorporateId(String corporateId) {
         this.corporateId = corporateId;
+    }
+
+    public String getEntrustId() {
+        return entrustId;
+    }
+
+    public void setEntrustId(String entrustId) {
+        this.entrustId = entrustId;
     }
 
     public String getUserName() {
@@ -252,6 +271,14 @@ public class CorporateUserDTO {
         this.captionSec = captionSec;
     }
 
+    public String getIsFirstTimeLogon() {
+        return isFirstTimeLogon;
+    }
+
+    public void setIsFirstTimeLogon(String isFirstTimeLogon) {
+        this.isFirstTimeLogon = isFirstTimeLogon;
+    }
+
     @Override
     public String toString() {
         return "CorporateUserDTO{" +
@@ -263,6 +290,7 @@ public class CorporateUserDTO {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
                 ", roleId='" + roleId + '\'' +
                 ", role='" + role + '\'' +
                 ", ruleMember=" + ruleMember +
@@ -275,10 +303,16 @@ public class CorporateUserDTO {
                 ", noOfLoginAttempts=" + noOfLoginAttempts +
                 ", alertPreference=" + alertPreference +
                 ", createdOn='" + createdOn + '\'' +
+                ", corporateRole='" + corporateRole + '\'' +
+                ", securityQuestion=" + securityQuestion +
+                ", securityAnswer=" + securityAnswer +
+                ", phishingSec='" + phishingSec + '\'' +
+                ", captionSec='" + captionSec + '\'' +
+                ", isFirstTimeLogon='" + isFirstTimeLogon + '\'' +
                 '}';
     }
 
-	@Override
+    @Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
