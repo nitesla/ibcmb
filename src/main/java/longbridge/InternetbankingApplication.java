@@ -25,8 +25,7 @@ public class InternetbankingApplication /*extends SpringBootServletInitializer *
 
 
 
-    @Autowired
-    SecurityService service;
+
     public static void main(String[] args) {
         SpringApplication.run(InternetbankingApplication.class, args);
 
@@ -39,11 +38,6 @@ public class InternetbankingApplication /*extends SpringBootServletInitializer *
 
     @Override
     public void run(String... strings) throws Exception {
-
-  String username= "wunmi";
-        List<String> questions = Arrays.asList("how old are you ","whats ur girlfriedns name ");
-        List<String> answers = Arrays.asList("28","meize");
-        service.setUserQA(username,questions,answers);
 
 
 
