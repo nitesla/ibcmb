@@ -305,17 +305,19 @@ public class CorpTransferController {
         List<CorporateRole> rolesNotInAuthList = new ArrayList<>();
         List<CorporateRole> rolesInAuth = new ArrayList<>();
 
+        if(corpTransferAuth.getAuths()!=null) {
             for (CorpTransReqEntry transReqEntry : corpTransferAuth.getAuths()) {
-               rolesInAuth.add(transReqEntry.getRole());
-
+                rolesInAuth.add(transReqEntry.getRole());
             }
+        }
 
-            for(CorporateRole role: corpTransRule.getRoles()){
-                if(!rolesInAuth.contains(role)){
-                    rolesNotInAuthList.add(role);
+            if(corpTransRule!=null) {
+                for (CorporateRole role : corpTransRule.getRoles()) {
+                    if (!rolesInAuth.contains(role)) {
+                        rolesNotInAuthList.add(role);
+                    }
                 }
             }
-
         logger.info("Roles not In Auth List..{}", rolesNotInAuthList.toString());
         model.addAttribute("rolesNotAuth", rolesNotInAuthList);
 

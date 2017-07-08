@@ -233,19 +233,24 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             if ("".equals(user.getEntrustId())||user.getEntrustId()==null){
                 String fullName = user.getFirstName() + " " + user.getLastName();
                 SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_CREATION");
+                String entrustId= user.getUserType().toString()+"_"+user.getUserName();
+
                 if (setting != null && setting.isEnabled()) {
                     if ("YES".equalsIgnoreCase(setting.getValue())) {
-                        boolean creatResult = securityService.createEntrustUser(user.getUserName(), fullName, true);
+                        boolean creatResult = securityService.createEntrustUser(entrustId, fullName, true);
                         if (!creatResult) {
                             throw new EntrustException(messageSource.getMessage("entrust.create.failure", null, locale));
                         }
 
-                        boolean contactResult = securityService.addUserContacts(user.getEmail(), user.getPhoneNumber(), true, user.getUserName());
+                        boolean contactResult = securityService.addUserContacts(user.getEmail(), user.getPhoneNumber(), true, entrustId);
                         if (!contactResult) {
                             logger.error("Failed to add user contacts on Entrust");
+                            securityService.deleteEntrustUser(entrustId);
+                            throw new EntrustException(messageSource.getMessage("entrust.contact.failure", null, locale));
+
                         }
                     }
-                    user.setEntrustId(user.getUserName());
+                    user.setEntrustId(entrustId);
                     operationsUserRepo.save(user);
                 }
             }

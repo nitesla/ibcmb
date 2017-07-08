@@ -104,6 +104,17 @@
                                             </div>
                                         </div>
 
+                                        <div  th:if ="${corporate.corporateType=='MULTI'}" class="form-group">
+                                            <label class="col-sm-2 control-label"></label>
+
+                                            <p><label class="checkbox-inline">
+                                                        <input type="checkbox" class="checkbox-inline"
+                                                               th:field="*{admin}"/>
+                                                        <span>Make Corporate Admin</span>
+                                                    </label>
+                                                </p>
+                                        </div>
+
                                         <div class="form-group">
                                             <div class="col-sm-4 col-sm-offset-2">
                                                 <button class="btn btn-white" type="reset" id="cancel">Cancel</button>

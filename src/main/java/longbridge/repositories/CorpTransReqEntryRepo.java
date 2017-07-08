@@ -13,5 +13,5 @@ import java.util.List;
 public interface CorpTransReqEntryRepo extends CommonRepo<CorpTransReqEntry, Long>{
 
 
-    boolean existsByTranReqIdAndUserAndRole(Long reqId, CorporateUser user,CorporateRole role);
+    boolean existsByTranReqIdAndRole(Long reqId, CorporateRole role);
 }
