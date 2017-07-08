@@ -77,7 +77,7 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
         registry.addInterceptor(retailUserLoginInterceptor()).addPathPatterns("/retail/**");
         registry.addInterceptor(corporateUserLoginInterceptor()).addPathPatterns("/corporate/**");
      registry.addInterceptor(retailTransferAuthInterceptor()).addPathPatterns("/retail/transfer/process");
-      //  registry.addInterceptor(webContentInterceptor()).addPathPatterns("/retail/**");
+     registry.addInterceptor(webContentInterceptor()).addPathPatterns("/retail/**");
       //  registry.addInterceptor(webContentInterceptor()).addPathPatterns("/retail/**");
        // registry.addInterceptor(webContentInterceptor()).addPathPatterns("/retail/**");
     }
@@ -155,19 +155,16 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
     public SessionRegistry sessionRegistry() {
         return new SessionRegistryImpl();
     }
-
-
-
-//    @Bean
-//    public WebContentInterceptor webContentInterceptor() {
-//        WebContentInterceptor interceptor = new WebContentInterceptor();
-//        interceptor.setCacheSeconds(-1);
-//        interceptor.setUseExpiresHeader(true);
-//        interceptor.setAlwaysMustRevalidate(true);
-//        interceptor.setUseCacheControlHeader(true);
-//        interceptor.setUseCacheControlNoStore(true);
-//        return interceptor;
-//    }
+    @Bean
+    public WebContentInterceptor webContentInterceptor() {
+        WebContentInterceptor interceptor = new WebContentInterceptor();
+        interceptor.setCacheSeconds(-1);
+        interceptor.setUseExpiresHeader(true);
+        interceptor.setAlwaysMustRevalidate(true);
+        interceptor.setUseCacheControlHeader(true);
+        interceptor.setUseCacheControlNoStore(true);
+        return interceptor;
+    }
 
 
 //

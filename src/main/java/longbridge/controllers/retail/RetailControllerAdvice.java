@@ -136,14 +136,14 @@ public class RetailControllerAdvice {
 
         RetailUser user = retailUserService.getUserByName(principal.getName());
         if (user != null) {
-            List<String> accountList = new ArrayList<>();
+            List<Account> accountList = new ArrayList<>();
 
             Iterable<Account> accounts = accountService.getAccountsForDebit(user.getCustomerId());
 
             StreamSupport.stream(accounts.spliterator(), false)
                     .filter(Objects::nonNull)
 
-                    .forEach(i -> accountList.add(i.getAccountNumber()));
+                    .forEach(i -> accountList.add(i));
 
 
             model.addAttribute("accounts", accountList);

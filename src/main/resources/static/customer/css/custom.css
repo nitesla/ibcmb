@@ -52,6 +52,15 @@ start
 }
 
 
+.no-bd-rad
+{
+    border-radius:0px !important;
+}
+.no-bd-top
+{
+    border-top:none !important;
+}
+
 .no-margin
 {
     margin:0px !important;
@@ -236,6 +245,12 @@ start
     background-color: #003056;
 }
 
+
+.coronation-blue
+{
+    color: #003056;
+}
+
 .inbox-row
 {
     border-top:0px !important;
@@ -271,7 +286,8 @@ label
 
 .bg-grey
 {
-    background: #F3F3F4;
+    /*background: #F3F3F4;*/
+    background: #ebecef;
 }
 
 span.req
@@ -350,6 +366,11 @@ select
 .no-pad-left
 {
     padding-left: 0px !important;
+}
+
+.no-pad-right
+{
+    padding-right: 0px !important;
 }
 
 .form-group
@@ -455,6 +476,8 @@ select
 /*}*/
 
 
+
+
 .menu-link
 {
     padding: 10px 20px !important;
@@ -497,7 +520,7 @@ select
 
 .top-link
 {
-    padding: 10px;
+    padding: 3px;
     padding-left: 0px !important;
 }
 
@@ -632,8 +655,16 @@ tokenInput
 
 .related-info
 {
-    border:1px solid #9F614B;
-    color:blue;
+  
+   
+    padding: 20px;
+   
+}
+
+.related-box
+{
+    min-height: 250px;
+     background: #ebecef;
 }
 
  .tab tr th
@@ -646,7 +677,7 @@ tokenInput
 
 .tokenBox
 {
-    width:65%;
+    width:85%;
     margin: 0px auto;
    
     margin-top: 180px;
@@ -656,6 +687,7 @@ tokenInput
 {
     color: black !important;
 }
+
 
 
 .modal-box
@@ -1277,11 +1309,30 @@ body {
     font-size: 14px;
 }
 
+.demo
+{
+    font-size: 12px;
+    margin-top: 5px;
+    padding: 15px;
+    text-align: left;
+    background-color: #f1f1f1;
+}
+
+
+.time
+{
+    padding: 15px;
+    width:100%;
+    /*background-color: #ebecef;*/
+    font-weight: bolder;
+    font-size:14px;
+}
+
 .biglist{
     margin: 0 auto;
-    padding: 20px 0;
-    min-height: 80px;
-    max-width: 500px;
+    /*padding: 20px 0;*/
+    /*min-height: 80px;*/
+    /*max-width: 500px;*/
 
 }
 
@@ -1301,6 +1352,7 @@ body {
 
 .lists li{
     list-style: none;
+    padding-top:12px !important;
 }
 .fa{
     color: #9F614B;
@@ -1545,10 +1597,7 @@ button, input, optgroup, select, textarea {
     padding-bottom: 7px !important;
 }
 
-.full-width
-{
-    width: 100% !important;
-}
+
 
 .bg{
     margin: 30px 0 0;
@@ -1608,7 +1657,7 @@ button, input, optgroup, select, textarea {
 
 .wizard > .content {
     background: #ffffff;
-    min-height: 240px;
+    min-height: 30em;
 }
 
 .wizard > .content > .body {
@@ -1947,5 +1996,102 @@ button, input, optgroup, select, textarea {
 }
 
 
+/*another css by Etoka francis to override any other css*/
+
+.current-bar
+{
+    padding:18px !important;
+    padding-left:35px !important;
+    margin-bottom: 5px !important;
+    text-transform: capitalize;
+    font-size:20px !important;
+    color:white !important;
+    font-weight: bold;
+    /*background-image: url('../img/currentbar.jpg');
+    background-size: cover;*/
+     /*background: rgb(154,106,79);*/
+      /* For browsers that do not support gradients */
+    background: linear-gradient(to top,rgb(154,106,79),rgb(166,124,98),rgb(187,154,132));
+
+    /*text-shadow: 2px 2px 2px black;*/
+}
+
+.current-body
+{
+    /*background-image: url('../img/content-image.jpg');*/
+    min-height: 430px;
+    margin-top:5px;
+    /*background-size: cover;*/
+    background: rgb(0,48,87);
+    background: linear-gradient(to top left,rgb(152,153,173),rgb(216,216,223),rgb(224,223,229),rgb(248,248,248),rgb(220,221,222));
+
+}
+
+.overlay
+{
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.full-width
+{
+    width: 100% !important;
+}
+
+.coronation-form-control
+{
+    font-size: 12px;
+    margin-left: 15px;
+}
+
+.ml-15
+{
+     margin-left: 15px;
+}
+
+.table .thead
+{
+    border-bottom:2px solid #9F614B !important;
+    font-weight: 900;
+    font-size: 13px;
+    text-align:left;
+}
 
 
+.tt
+{
+    text-align: left !important;
+    font-weight: 900;
+    font-size: 12px;
+    padding:10px;
+
+}
+
+.left-side
+{
+    padding:0px !important;
+    padding-left:15px !important;
+    
+}
+
+.advert
+{
+    padding:20px !important;
+    max-height:120px;
+    overflow-y: scroll;
+    background: #ebecef !important;
+    /*background: linear-gradient(to top left,rgb(152,153,173),rgb(216,216,223),rgb(224,223,229),rgb(248,248,248),rgb(220,221,222));*/
+
+}
+.advert h1
+{
+    color:#9F614B;
+    font-size:16px;
+    font-weight:bold;
+}
+.related-bar
+{
+    background: white;
+    padding:20px;
+    font-size:16px;
+    font-weight: bold;
+}
