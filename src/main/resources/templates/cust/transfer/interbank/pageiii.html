@@ -93,23 +93,6 @@
                         <input type="hidden" th:field="*{amount}"/>
                         <input type="hidden" th:field="*{remarks}"/>
 
-<<<<<<< HEAD
-
-                        <!--<div class="form-group">-->
-                            <!--<label >Add Beneficiary</label>-->
-                            <!--<input type="checkbox" class="checkbox-inline" id="add" name="add"/>-->
-                        <!--</div>-->
-
-                        <div class="checkbox">
-                            <label style="font-weight: bold; color: black"><input type="checkbox" id="add" name="add"/>Add Beneficiary</label>
-                        </div>
-                        <div class="form-group">
-                            <!--<input value="Modify" style="cursor: pointer;" type="button" onclick="history.go(-1);" />-->
-                            <!--<button type="submit" class="btn btn-link">Proceed</button>-->
-                            <button type="submit" class="btn btn-link">Proceed</button>
-                            <a th:href="@{/retail/transfer/interbank}">Cancel</a>
-=======
->>>>>>> e1e5b51825a3aa4d930ff872e8ca5a8a2eb2862e
 
                          <span class="form-group checkbox col-xs-5" th:if="${newBen}!=null">
                             <label style="font-weight: bold; color: black;margin-left:10px !important">
@@ -149,7 +132,6 @@
 <footer th:replace="cust_layout ::footer">
 </footer>
 </div>
-<script th:src="@{~/customer/js/accountdetails.js}"></script>
 <script>
     function edit(){
         $("#form_edit").submit();

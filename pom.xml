@@ -8,7 +8,7 @@
     <!--<version></version>-->
     <packaging>war</packaging>
 
-    <name>internetbanking</name>
+    <name>ROOT</name>
     <description>internet banking application</description>
 
     <parent>

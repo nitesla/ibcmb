@@ -88,10 +88,10 @@ public class CorporateAuthenticationSuccessHandler implements AuthenticationSucc
       CorporateUser corporateUser = corporateUserRepo.findFirstByUserName(userDetails.getUsername());
         boolean isUser = corporateUser.getUserType().equals(UserType.CORPORATE);
 
-//        boolean isFirstLogon= corporateUser.isFirstTimeLogon();
-//        if (isFirstLogon){
-//            return "/corporate/setup";
-//        }
+        String isFirstLogon= corporateUser.getIsFirstTimeLogon();
+        if ("Y".equalsIgnoreCase(isFirstLogon)){
+            return "/corporate/setup";
+        }
 
         SettingDTO setting = configService.getSettingByName("ENABLE_CORPORATE_2FA");
         boolean tokenAuth = false;

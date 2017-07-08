@@ -114,6 +114,12 @@ public class RetailUserServiceImpl implements RetailUserService {
     }
 
     @Override
+    public RetailUser getUserByEmail(String email) {
+        RetailUser retailUser = this.retailUserRepo.findFirstByEmailIgnoreCase(email);
+        return retailUser;
+    }
+
+    @Override
     public RetailUserDTO getUserDTOByName(String name) {
         RetailUser retailUser = this.retailUserRepo.findFirstByUserNameIgnoreCase(name);
         return convertEntityToDTO(retailUser);
@@ -224,7 +230,7 @@ public class RetailUserServiceImpl implements RetailUserService {
         }
     }
 
-    private void setEntrustUserQA(String username, String securityQuestion, String securityAnswer){
+    private void setEntrustUserQA(String username, List<String> securityQuestion, List<String> securityAnswer){
         try{
             securityService.setUserQA(username, securityQuestion, securityAnswer);
         }catch (InternetBankingSecurityException e){

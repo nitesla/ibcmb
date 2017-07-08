@@ -3,11 +3,16 @@
     <performSetQA xmlns="http://ws.entrustplugin.expertedge.com/">
         <!-- Optional -->
         <arg0 xmlns="">
-            <answers>${answer}</answers>
+            #foreach ($answer in $answers)
+                <answers>${answer}</answers>
+            #end
             <appCode>${appCode}</appCode>
             <appDesc>${appDesc}</appDesc>
             <group>${appGroup}</group>
-            <questions>${question}</questions>
+            #foreach ($question in $questions)
+                <questions>${question}</questions>
+            #end
+
             <userName>${userName}</userName>
         </arg0>
     </performSetQA>

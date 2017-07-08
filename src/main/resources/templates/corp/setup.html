@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="corp_layout :: site-head">
+
+</head>
+<body>
+<div class="container">
+    <header th:replace="corp_layout :: corp-header">
+    </header>
+
+    <section class="content-wrapper">
+        <div class="">
+            <div class="row">
+                <div class="col-md-4 col-sm-4">
+                    <h5 class="page_header"> Complete Registration</h5>
+                </div>
+                <p class="col-xs-12">
+                    Fields marked <span style="color:red">*</span> are compulsory
+                </p>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <form id="reg-form"  action="/register" method="post">
+
+                        <div class="col-md-12">
+                            <h3>Security Questions</h3>
+                            <section class="col-md-12">
+                                <!--<div class="row">-->
+                                    <div class="col-md-offset-3 col-md-6">
+                                        <br/>
+                                        <input id="returnValue" type="hidden"/>
+                                        <input th:name="noOfQuestions" th:value="${noOfQuestions}" type="hidden"/>
+                                        <div th:each="questionList,ind : ${secQuestions}">
+                                            <div class="form-group clearfix">
+                                                <label>Question</label>
+                                                <select th:name="'securityQuestion'+${ind.index}" class="form-control">
+                                                    <option th:each="question : ${questionList}" th:text="${question.securityQuestion}" th:value="${question.securityQuestion}"></option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group clearfix">
+                                                <label>Answer</label>
+                                                <input type="text" th:name="'securityAnswer'+${ind.index}" class="form-control required" placeholder="Security Answer"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <!--</div>-->
+                            </section>
+                            <h3>Phishing Image</h3>
+                            <section>
+                                <div class="row">
+                                    <br/>
+                                    <div class="col-md-offset-3 col-md-6">
+
+                                        <div class="form-group">
+                                            <label>Select Phishing Image</label>
+
+                                            <div class="col-md-12" style="max-height: 250px; max-width: 450px;overflow: scroll;">
+                                                <div class="col-md-3" th:each="image : ${images}" style="position: relative; max-height: 100px;">
+                                                    <img th:src="${imagePath} + ${image}" width="100px" height="100px" style="padding: 5px;"/>
+                                                    <input type="radio" name="phishing" th:value="${image}" id="check1" class="required" style="position: absolute; bottom: 20px; right: 20px;" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-offset-4 col-md-4">
+                                        <input type="text" name="caption" class="form-control required" placeholder="Enter Image Caption"/>
+                                    </div>
+                                </div>
+                            </section>
+                            <h3>Summary</h3>
+                            <section>
+                                <div class="row">
+                                    <div class="col-md-offset-4 col-md-4">
+                                        Self Registration Successful
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTENT-WRAPPER SECTION END-->
+    <footer th:replace="corp_layout ::corp-footer">
+    </footer>
+
+    <script>
+        /*<![CDATA[*/
+        var form = $("#reg-form");
+        form.children("div").steps({
+            headerTag: "h3",
+            bodyTag: "section",
+            transitionEffect: "slideLeft",
+            onStepChanging: function (event, currentIndex, newIndex)
+            {
+
+                form.validate().settings.ignore = ":disabled,:hidden";
+                console.log(currentIndex);
+                var isValid = form.valid();
+
+
+                return form.valid();
+            },
+            onStepChanged: function (event, currentIndex, priorIndex)
+            {
+                // Used to skip the "Warning" step if the user is old enough and wants to the previous step.
+                if (currentIndex === 2 && priorIndex === 3)
+                {
+                    form.steps("previous");
+                }
+                if (currentIndex === 1 && priorIndex === 2)
+                {
+                    form.steps("previous");
+                }
+            },
+            onFinishing: function (event, currentIndex)
+            {
+                //form.validate().settings.ignore = ":disabled";
+                return form.valid();
+            },
+            onFinished: function (event, currentIndex)
+            {
+//            alert("Submitted!");
+                window.location.href = "/corporate/dashboard";
+            }
+        });
+        /*]]>*/
+    </script>
+
+</div>
+</body>
+</html>

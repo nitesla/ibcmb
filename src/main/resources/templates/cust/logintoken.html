@@ -114,6 +114,8 @@
                         <p style="margin-bottom:20px">Kindly enter the OTP from your token device</p>
                          <div id="username_div" class="form-group">
                                 <input  type="text" id="token" name="token" class='my-select tokenInput' placeholder="Token Code" />
+                                <p id='loading-icon' style="display:none"><i class='fa fa-spinner fa-spin' style="font-size:10px;color:#003056"></i> Sending OTP. Please Wait...</p>
+
                          </div>
                          <div id='errorMess' class=" text-danger "></div>
                          <div id='successMess' class=" text-success "></div>
@@ -182,6 +184,8 @@
 <script th:src="@{~/customer/js/bootstrap.js}"></script>
 <script>
     function sendOtp() {
+         $('#loading-icon').show();
+          $('#errorMess').hide();
         //make sure alert message is not empty
 //        alert("send otp");
 //        console.log(acct);
@@ -191,17 +195,24 @@
             asyn:false,
 //					dataType: 'String',
             error: function (data) {
-                alert("failure");
+                 $('#loading-icon').hide();
+                // alert("failure");
 //                $('#sub').disabled();
             },
             success: function (reponse) {
                 if (reponse === 'success') {
+                     $('#loading-icon').hide();
+                      $('#errorMess').show();
                     document.getElementById("successMess").textContent = "Successfully sent";
 
                 }else{
                     if(reponse==="empty"){
+                        $('#loading-icon').hide();
+                         $('#errorMess').show();
                         document.getElementById("errorMess").textContent = "Invalid username";
                     }else{
+                        $('#loading-icon').hide();
+                         $('#errorMess').show();
                     document.getElementById("errorMess").textContent = "Sending OTP failed!";
                     }
                 }
