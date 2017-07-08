@@ -253,12 +253,14 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             corporateUserRepo.save(corporateUser);
             String fullName = user.getFirstName() + " " + user.getLastName();
             createUserOnEntrust(corporateUser);
+
                 Email email = new Email.Builder()
                         .setRecipient(user.getEmail())
                         .setSubject(messageSource.getMessage("corporate.customer.create.subject", null, locale))
                         .setBody(String.format(messageSource.getMessage("corporate.customer.create.message", null, locale), fullName, user.getUserName(), password, corporateUser.getCorporate().getCustomerId()))
                         .build();
                 mailService.send(email);
+
             logger.info("New corporate user {} created", corporateUser.getUserName());
             return messageSource.getMessage("user.add.success", null, locale);
         }

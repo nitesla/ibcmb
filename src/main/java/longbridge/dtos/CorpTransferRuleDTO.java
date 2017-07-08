@@ -25,6 +25,8 @@ public class CorpTransferRuleDTO {
     private String corporateName;
     private boolean rank;
     private List<CorporateRoleDTO> roles;
+    private List<CorpTransRoleDTO> corpTransRoles;
+
 
     public Long getId() {
         return id;
@@ -130,5 +132,13 @@ public class CorpTransferRuleDTO {
 
     public void setRoles(List<CorporateRoleDTO> roles) {
         this.roles = roles;
+    }
+
+    public List<CorpTransRoleDTO> getCorpTransRoles() {
+        return corpTransRoles;
+    }
+
+    public void setCorpTransRoles(List<CorpTransRoleDTO> corpTransRoles) {
+        this.corpTransRoles = corpTransRoles;
     }
 }

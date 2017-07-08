@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="corp_layout :: site-head">
+
+</head>
+<body>
+
+<div class="container">
+    <header th:replace="corp_layout ::corp-header">
+    </header>
+
+    <section class="content-wrapper">
+
+        <div class="">
+
+            <div class="row">
+                <div class="col-md-4 col-sm-4">
+                    <h5 class="page_header"> Pending Transfers</h5>
+
+                    <select class="form-control invisible" name="beneficiaries">
+                        <option value="Overveiw">Beneficiaries</option>
+                    </select>
+                </div>
+                <p class="col-xs-12 invisible">
+                    Fields marked <span style="color:red">*</span> are compulsory
+                </p>
+            </div>
+
+            <div class="row">
+                <div class="col-md-9 content-bg">
+                    <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+                        <div class="btn-group" role="group" aria-label="First group">
+                            <a type="button" th:href="@{/corporate/transfer/index/authorizations}" class="btn btn-default bt-link-act"><i class="fa fa-plus" disabled="disabled" ></i>Edit</a>
+                            <a  type="button" class="btn bt-select btn-default bt-link-act" th:href="@{/corporate/transfer/index/authorizations}" disabled="disabled" ><i class="fa fa-eye"></i> View</a>
+                        </div>
+                    </div>
+                    <br/>
+                    <div class="table-responsive">
+
+                        <table class="table" id="requests">
+
+                            <thead>
+                            <td>Transfer type</td>
+                            <td>Beneficiary</td>
+                            <td>Bank</td>
+                            <td>Amount</td>
+                            <!--<td>Action</td>-->
+                            </thead>
+                            <tbody>
+
+                            <!--<tr th:each="pnd : ${corpTransferAuth}">-->
+                            <!--<td th:text="${pnd.corpTransferRequest.transferType}"></td>-->
+                            <!--<td th:text="${pnd.corpTransferRequest.beneficiaryAccountName}"></td>-->
+                            <!--<td th:text="${pnd.corpTransferRequest.financialInstitution.institutionName}"></td>-->
+                            <!--<td th:text="${pnd.corpTransferRequest.amount}"></td>-->
+                            <!--<td><a class="btn btn-sm" th:href="@{'/corporate/' + ${pnd.id} + '/authorize'}"><i></i>Approve</a></td>-->
+                            <!--</tr>-->
+
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+                <div class="col-md-3 pull-right">
+                    <div th:replace="corp_layout :: corp-sidebar">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTENT-WRAPPER SECTION END-->
+    <footer th:replace="corp_layout ::corp-footer">
+    </footer>
+</div>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    $(document).ready(function() {
+        var table = $('#requests').DataTable({
+            select:true,
+            responsive: true,
+            "lengthMenu" : [ [ 5, 10, 20],  [ 5, 10, 20 ] ],
+            "pagingType" : "simple_numbers",
+            "searching": false,
+            "paging": true,
+            "serverSide" : true,
+            rowId:'id',
+            "ajax": "/corporate/transfer/requests/all",
+            "dom": 'T<"clear">frtlp',
+            "columns": [
+                { "data": "transferType" },
+                { "data": "beneficiaryAccountName" },
+                { "data": "financialInstitution.institutionName" },
+                { "data": "amount" }
+            ] });
+
+        table.on('select', function() {
+            if (table.rows({
+                    selected : true
+                }).indexes().length === 0) {
+                $('.bt-select').attr("disabled", true);
+            } else {
+                $('.bt-select').removeAttr("disabled");
+            }
+
+        });
+
+        table.on('deselect', function() {
+            if (table.rows({
+                    selected : true
+                }).indexes().length === 0) {
+                $('.bt-select').attr("disabled", true);
+            } else {
+                $('.bt-select').removeAttr("disabled");
+            }
+        });
+
+    });
+
+    $("a.bt-link-act").on("click", function(e) {
+        e.preventDefault();
+        var link = $(e.currentTarget);
+        if($(link).attr("disabled")){
+            return;
+        }
+        var dt = $('#requests').DataTable();
+        var id = $(dt.row({
+            selected: true
+        }).node()).attr("id");
+        var ooo = link.attr("href").replace("index",id);
+        window.location.assign(ooo);
+
+    } );
+
+    $("#delete-btn").on("click", function(e) {
+        e.preventDefault();
+        var link = $(e.currentTarget);
+        if($(link).attr("disabled")){
+            return;
+        }
+        var dt = $('#requests').DataTable();
+        var id = $(dt.row({
+            selected: true
+        }).node()).attr("id");
+        //window.location.href = link.attr("formaction") + '?id=' + id;
+        //replace {id} with id
+        var ooo = link.attr("href").replace("index",id);
+        warnBeforeRedirect(ooo);
+
+    } );
+
+
+    function warnBeforeRedirect(ooo) {
+        swal({
+            title: "Are you sure?",
+            text: "Are you sure that you want to delete this code?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes, delete code!",
+            closeOnConfirm: false
+        }, function() {
+            // Redirect the user
+            window.location.assign(ooo);
+        });
+    }
+
+    /*]]>*/
+</script>
+
+
+</body>
+</html>

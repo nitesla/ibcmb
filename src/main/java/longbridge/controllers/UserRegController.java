@@ -340,10 +340,11 @@ public class UserRegController {
     }
 
     @GetMapping("/rest/regCode/check/{code}")
-    public @ResponseBody String checkRegCode(@PathVariable Integer code, HttpSession session){
+    public @ResponseBody String checkRegCode(@PathVariable String code, HttpSession session){
         String regCode = (String) session.getAttribute("regCode");
-        Integer reg = Integer.parseInt(regCode);
-        if (!code.equals(reg)){
+        logger.info("REGCODE IN SESSION {} ", regCode);
+//        Integer reg = Integer.parseInt(regCode);
+        if (!code.equals(regCode)){
             return "false";
         }
         return "true";

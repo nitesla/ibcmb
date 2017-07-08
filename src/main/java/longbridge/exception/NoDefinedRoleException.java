@@ -7,10 +7,12 @@ import java.math.BigDecimal;
  */
 public class NoDefinedRoleException extends TransferRuleException{
 
-    public NoDefinedRoleException(){super("No qualified authorizer found for the transfer request");}
+    public NoDefinedRoleException(){}
 
     public NoDefinedRoleException(String message){super(message);}
 
-    public NoDefinedRoleException(BigDecimal amount){super("No qualified authorizer found for the transfer of amount "+amount.toString());}
+    public NoDefinedRoleException(String message,BigDecimal amount){
+        super(message+" "+amount.toString());
+    }
 
 }
