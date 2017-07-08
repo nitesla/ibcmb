@@ -103,6 +103,9 @@ public class CorporateControllerAdvice {
             model.addAttribute("numOfUnreadMessages",numOfUnreadMessages);
         }
 
+        if (corporateUser.getIsFirstTimeLogon().equals("Y")){
+            return "redirect:/corporate/setup";
+        }
 
         return "";
     }

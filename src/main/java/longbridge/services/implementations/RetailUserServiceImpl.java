@@ -114,6 +114,12 @@ public class RetailUserServiceImpl implements RetailUserService {
     }
 
     @Override
+    public RetailUser getUserByEntrustId(String entrustId){
+        RetailUser retailUser = this.retailUserRepo.findFirstByEntrustIdIgnoreCase(entrustId);
+        return retailUser;
+    }
+
+    @Override
     public RetailUser getUserByEmail(String email) {
         RetailUser retailUser = this.retailUserRepo.findFirstByEmailIgnoreCase(email);
         return retailUser;
@@ -184,13 +190,16 @@ public class RetailUserServiceImpl implements RetailUserService {
             SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_CREATION");
             if (setting != null && setting.isEnabled()) {
                 if ("YES".equalsIgnoreCase(setting.getValue())) {
-                    createEntrustUser(user.getUserName(), fullName, true);
 
-                    addUserContact(user.getUserName(), phoneNo, user.getEmail());
+                    retailUser.setEntrustId(UserType.RETAIL.toString()+"_"+user.getUserName());
 
-                    setEntrustUserQA(user.getUserName(), user.getSecurityQuestion(), user.getSecurityAnswer());
+                    createEntrustUser(retailUser.getEntrustId(), fullName, true);
 
-                    setEntrustUserMutualAuth(user.getUserName(), user.getCaptionSec(), user.getPhishingSec());
+                    addUserContact(retailUser.getEntrustId(), phoneNo, user.getEmail());
+
+                    setEntrustUserQA(retailUser.getEntrustId(), user.getSecurityQuestion(), user.getSecurityAnswer());
+
+                    setEntrustUserMutualAuth(retailUser.getEntrustId(), user.getCaptionSec(), user.getPhishingSec());
                 }
             }
 

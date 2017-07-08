@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -45,7 +46,7 @@ public class CorpSetupController {
     private String fullImagePath;
 
     @Autowired
-    private MessageService messageService;
+    MessageSource messageSource;
 
     @Autowired
     private SecurityQuestionService securityQuestionService;
@@ -58,6 +59,9 @@ public class CorpSetupController {
 
     @Autowired
     private CorporateUserService corporateUserService;
+
+    @Autowired
+    private CorpProfileUpdateService corpProfileUpdateService;
 
     // array of supported extensions (use a List if you prefer)
     static final String[] EXTENSIONS = new String[]{
@@ -174,6 +178,16 @@ public class CorpSetupController {
         userDTO.setSecurityQuestion(secQuestions);
         userDTO.setSecurityAnswer(securityAnswers);
         userDTO.setPhishingSec(encPhishImage);
+        userDTO.setCaptionSec(caption);
+
+        try {
+            String message = corpProfileUpdateService.completeEntrustProfileCreation(userDTO);
+            logger.info("MESSAGE", message);
+            return "true";
+        }catch (Exception e){
+            logger.error("Error creating retail user", e);
+            redirectAttributes.addFlashAttribute(messageSource.getMessage("user.add.failure", null, locale));
+        }
 
 
         return "false";

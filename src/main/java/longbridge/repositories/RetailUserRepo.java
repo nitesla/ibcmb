@@ -24,6 +24,7 @@ public interface RetailUserRepo extends CommonRepo<RetailUser, Long> {
     Integer countByRole(Role r);
     RetailUser findFirstByUserName(String username);
     RetailUser findFirstByUserNameIgnoreCase(String username);
+    RetailUser findFirstByEntrustIdIgnoreCase(String entrustId);
     RetailUser findFirstByEmailIgnoreCase(String email);
     RetailUser findFirstByCustomerId(String customerId);
     @Modifying

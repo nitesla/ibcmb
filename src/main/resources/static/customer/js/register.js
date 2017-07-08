@@ -344,6 +344,5 @@ function registerUser(){
     returnValue = $('#returnValue').val();
     //alert(returnValue);
     return Boolean(returnValue);
-
 }
 
