@@ -9,120 +9,130 @@
     </header>
 
 <section class="content-wrapper">
-    <div class="containe">
 
-        <div class="row">
+   <div class="row">
 
-            <div class="col-md-4 col-sm-4 col-xs-12">
-                <h5 class="page_header"> Own Account Transaction</h5>
-                <select class="form-control invisible">
-                        <option value="account">Account Overview</option>
-                </select>
-                
-            </div>
+            <div class="col-md-9 no-ml no-pad-left no-pad-right col-xs-12 ">
+                <div class="">
+                    <div class="current-bar  col-md-12 no-ml no-pad-left alert no-mb no-bd-rad " style="">
+                        <div class="">
+                            <strong>Own Accounts Transfer</strong>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-md-12 no-pad-right no-ml no-pad-left bg-danger alert no-mb no-mt no-bd-rad current-body">
+                        <div class="col-md-5 col-sm-5">
 
-            <p class="col-xs-12">
-                    Fields marked <span style="color:red">*</span> are compulsory
-            </p>
-        </div>
-        <div class="row">
-            <div class="col-md-9 col-xs-12 content-bg">
-                <div class="col-md-6 col-xs-12 col-sm-6 form-spacin">
+                           <p class="col-xs-12" style="margin-bottom:22px;">
+                                    Fields marked <span style="color:red">*</span> are compulsory
+                            </p>
 
-                        <div th:if="${message != null}" class="alert alert-info" th:text="${message}">message</div>
-                        <div th:if="${error != null}" class="alert alert-info" th:text="${error}">message</div>
-                        <div>
-                             <form class='' method="post" th:action="@{/retail/transfer/ownaccount/summary}" th:object="${transferRequest}">
-                                    <input type="hidden" th:field="*{financialInstitution}"/>
+                        </div>
 
-                                    <div class="form-group">
-                                        <label class="my-label">Source account</label>
+                        <div class="col-xs-12 ml-15 " >
+                            <div class="col-xs-12 no-pad-lef no-bd alert">
 
-                                        <span id="scurency"></span>
-                                        <div>
+                                <div th:if="${message != null}" class="alert alert-info" th:text="${message}">message</div>
+                                <div th:if="${error != null}" class="alert alert-info" th:text="${error}">message</div>
 
-                                        <span class="alert no-bd-rad my-border bg-white" id="sourceCurrency">CCY</span>
-                                            <select name="source" class="form-control" id="source"
-                                                    th:field="*{customerAccountNumber}" onchange="getBalance();getSourceCurrency()" >
+                                <div class=" col-xs-12 col-sm-offset-1 col-sm-11">
+                                    <div class="col-xs-12 col-sm-7">
+                                        <form class='' method="post" th:action="@{/retail/transfer/ownaccount/summary}" th:object="${transferRequest}">
+                                                <input type="hidden" th:field="*{financialInstitution}"/>
+
+                                                <div class="form-group">
+                                                    <label class="my-label">Source account</label>
+
+                                                    <span id="scurency"></span>
+                                                    <div>
+
+                                                    <span class="alert no-bd-rad my-border bg-white" id="sourceCurrency">CCY</span>
+                                                        <select name="source" class="form-control" id="source"
+                                                                th:field="*{customerAccountNumber}" onchange="getBalance();getSourceCurrency()" >
 
                                                 <!--<option value=""> select an account</option>-->
                                                 <option th:each="s: ${accounts}" th:value="${s.accountNumber}" th:text="${s.accountNumber}" th:selected="${s.primaryFlag=='Y'}"></option>
                                             </select><span class='req-inner'></span>
                                         </div>
 
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="my-label">Destination account</label>
+
+                                                    <span id="dcurency"></span>
+                                                    <div>
+                                                    <span class="alert no-bd-rad my-border bg-white" id="destCurrency">CCY</span>
+                                                    <select name="destination" class="form-control" id="destination"
+                                                            th:field="*{beneficiaryAccountNumber}"  onchange="getDestCurrency();"  required="required">
+
+                                                        <option th:each="s: ${destAccounts}" th:value="${s}" th:text="${s}"></option>
+
+
+                                                    </select><span class='req-inner'></span>
+                                                    </div>
+                                                    <label	th:if="${#fields.hasErrors('beneficiaryAccountNumber')}" th:errors="*{beneficiaryAccountNumber}"
+                                                            class="validation-message"></label>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label class="my-label">Amount</label>
+                                                    <div>
+                                                        <span class="alert no-bd-rad my-border bg-white hide-content-only">NGN</span>
+
+                                                        <input type="number" name="textname" min="0"  placeholder="Enter an amount"
+                                                        th:field="*{amount}"
+                                                        class="form-control"/><span class='req-inner'></span>
+                                                    </div>
+                                                    <label	th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}"
+                                                            class="validation-message"></label>
+                                                </div>
+
+                                                <input type="hidden" th:field="*{financialInstitution}" />
+                                                <div class="form-group">
+                                                    <label  class="my-label">Remark</label>
+
+                                                    <div>
+                                                    <span class="alert no-bd-rad my-border bg-white hide-content-only">NGN</span>
+
+                                                    <input type="text" name="textname" placeholder="" th:field="*{remarks}"
+                                                        class="form-control"/>
+                                                    </div>
+                                                </div>
+
+                                                <div class='pull-right' style="margin-right:50px;">
+                                                    <span class="alert no-bd-rad my-border bg-white hide-content-only">NGN</span>
+                                                    <button class="btn btn-link required-step" type="submit">Submit</button>
+                                                    <button class="btn btn-link less-required" type="button ">Cancel</button>
+
+                                                </div>
+
+
+                                        </form>
                                     </div>
-                                    <div class="form-group">
-                                        <label class="my-label">Destination account</label>
+                                    <div class="col-xs-12 col-sm-5 wel ">
+                                         <!--<p class="related" style="padding-top: 5%">Related Information</p>-->
+                                        <div  class="related-box">
+                                            <h3 class="related-bar">Related Information</h3>
 
-                                        <span id="dcurency"></span>
-                                        <div>
-                                         <span class="alert no-bd-rad my-border bg-white" id="destCurrency">CCY</span>
-                                        <select name="destination" class="form-control" id="destination"
-                                                th:field="*{beneficiaryAccountNumber}"  onchange="getDestCurrency();"  required="required">
+                                            <!--<input type="availBal" name="availBal"/>-->
+                                            <p class="related-info coronation-blue" id="availBal"><b></b></p>
 
-                                            <option th:each="s: ${destAccounts}" th:value="${s}" th:text="${s}"></option>
-
-
-                                        </select><span class='req-inner'></span>
                                         </div>
-                                        <label	th:if="${#fields.hasErrors('beneficiaryAccountNumber')}" th:errors="*{beneficiaryAccountNumber}"
-                                                class="validation-message"></label>
                                     </div>
-
-                                    <div class="form-group">
-                                        <label class="my-label">Amount</label>
-                                        <div>
-                                            <span class="alert no-bd-rad my-border bg-white hide-content-only">NGN</span>
-
-                                            <input type="number" name="textname" min="0" step=".10" placeholder="Enter an amount"
-                                            th:field="*{amount}"
-                                            class="form-control"/><span class='req-inner'></span>
-                                        </div>
-                                        <label	th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}"
-                                                class="validation-message"></label>
-                                    </div>
-
-                                    <input type="hidden" th:field="*{financialInstitution}" />
-                                    <div class="form-group">
-                                        <label  class="my-label">Remark</label>
-
-                                        <div>
-                                         <span class="alert no-bd-rad my-border bg-white hide-content-only">NGN</span>
-
-                                        <input type="text" name="textname" placeholder="" th:field="*{remarks}"
-                                            class="form-control"/>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class='ull-right' style="margin-right:50px;">
-                                         <span class="alert no-bd-rad my-border bg-white hide-content-only">NGN</span>
-                                         <button class="btn btn-link required-step" type="submit">Submit</button>
-                                         <button class="btn btn-link less-required" type="button ">Cancel</button>
-                                   
-                                    </div>
-                                   
-                                   
-                            </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-md-3  no-bd alert no-bd-rad left-side">
+               <div class=" ">
+                        <div th:replace="cust_layout :: sidebar" class="" >
 
                         </div>
-
-                </div>
-                <div class="col-md-4 col-sm-4 well">
-                    <!--<p class="related" style="padding-top: 5%">Related Information</p>-->
-                    Related Information
-                    <hr class="related-info"/>
-                    <!--<input type="availBal" name="availBal"/>-->
-                    <p id="availBal"><b></b></p>
-                </div>
+                    </div>
             </div>
 
-            <div class="col-md-3 pull-right " >
-                <div th:replace="cust_layout :: sidebar" class="" >
-                </div>
-            </div>
         </div>
-
-    </div>
 
 </section>
 
