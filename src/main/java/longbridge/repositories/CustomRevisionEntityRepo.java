@@ -1,7 +1,7 @@
 package longbridge.repositories;
 
 import longbridge.config.audits.CustomRevisionEntity;
-import longbridge.dtos.RevisionInfo;
+//import longbridge.dtos.RevisionInfo;
 import longbridge.models.UserType;
 import longbridge.models.Verification;
 import org.apache.commons.digester.annotations.rules.BeanPropertySetter;

@@ -3,7 +3,7 @@ package longbridge.services.implementations;
 import longbridge.config.audits.CustomRevisionEntity;
 import longbridge.config.audits.ModifiedEntityTypeEntity;
 import longbridge.dtos.CodeDTO;
-import longbridge.dtos.RevisionInfo;
+//import longbridge.dtos.RevisionInfo;
 import longbridge.dtos.VerificationDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.models.*;
@@ -127,8 +127,8 @@ public class AuditConfigImpl implements AuditConfigService {
 		return auditConfig;
 	}
 
-	@Override
-	public List<T> revisedEntity(String entityName) {
-		return null;
-	}
+//	@Override
+//	public List<T> revisedEntity(String entityName) {
+//		return null;
+//	}
 }

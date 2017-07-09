@@ -185,6 +185,32 @@
             window.location.assign(ooo);
         });
     }
+    function fetchEntityName() {
+        //make sure alert message is not empty
+//        alert("send otp");
+//        console.log(acct);
+        var dt = $('#audit').DataTable()
+        var id = $(dt.row({
+            selected: true
+        }).node()).attr("id");
+        alert(id);
+        $.ajax({
+            type: 'GET',
+            url: '/admin/audit/edit',
+            asyn:false,
+					data: {id:id},
+//					dataType: 'String',
+            error: function (data) {
+                alert("failure");
+//                $('#sub').disabled();
+            },
+            success: function (reponse) {
+               alert(reponse);
+            }
+
+        });
+//        $.ajax({options});
+    }
 
     /*]]>*/
 </script>

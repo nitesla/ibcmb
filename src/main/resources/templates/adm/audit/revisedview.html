@@ -44,7 +44,7 @@
                                     <li >
                                         <div class="col-lg-4">
                                             <div class="title-action">
-                                                <a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/audit/revised/index" disabled="disabled" ><i class="fa fa-pencil"></i>  View</a>
+                                                <a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/index/view" disabled="disabled" ><i class="fa fa-pencil"></i>View</a>
                                             </div>
                                         </div>
                                     </li>
@@ -61,7 +61,7 @@
                                     <tr>
                                         <th> Name</th>
                                         <th>IP Address</th>
-                                        <th>Date</th>
+                                        <th>Time</th>
                                         <th>Modifed By</th>
 
 
@@ -74,7 +74,7 @@
                                     <tr>
                                         <th>Name</th>
                                         <th>IP Address</th>
-                                        <th>Date</th>
+                                        <th>Time</th>
                                         <th>Modified By</th>
 
 
@@ -148,19 +148,27 @@
             }
         },{
                 "targets" : 0,
-                "data" : "initiatedDate",
+                "data" : "entityClassName",
                 "render" : function(data, type,full, meta) {
-                    if (type === 'display') {
-                        if(data == null)
-                        {
-
-                        }
+                    if(type ==='display') {
+//                        alert(data.lastIndexOf("."));
+                           data= data.substring((data.lastIndexOf(".")+1),(data.length));
+//                        alert(data.substring(data.lastIndexOf("."),(data.length)));
+//                        return data;
 
                     }
+//                    if (type != 'display') {
+//                        if(data == null)
+//                            return data;
+//                        var dtStart = new Date(parseInt(data));
+//
+//                        var dtStartWrapper = moment(dtStart);
+//                        return dtStartWrapper.format('LLLL');
+//                    }
+//                    alert(data);
                     return data;
                 }
-            }
-        ]});
+            }]});
 
         table.on('select', function() {
             if (table.rows({
@@ -201,7 +209,8 @@
         var dt = $('#audit').DataTable();
         var id = $(dt.row({
             selected: true
-        }).node()).attr("href").replace("index",id);
+        }).node()).attr("id");
+        var ooo = link.attr("href").replace("id",id);
         window.location.assign(ooo);
 
     } );
