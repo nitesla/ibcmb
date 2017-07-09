@@ -173,8 +173,8 @@ public interface CorporateService{
      * @param corpId the Id of the corporate entity
      * @return a list of corporate rules
      */
-    @PreAuthorize("hasAuthority('GET_CORPORATE_RULE')")
-   Page<CorpTransferRuleDTO> getCorporateRules(Long corpId, Pageable pageable);
+//    @PreAuthorize("hasAuthority('GET_CORPORATE_RULE')")
+//   Page<CorpTransferRuleDTO> getCorporateRules(Long corpId, Pageable pageable);
 
     /**
      * Deletes the corporate transfer rule

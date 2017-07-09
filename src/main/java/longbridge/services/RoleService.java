@@ -8,6 +8,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 
+import java.util.List;
+
 /**
  * Created by LB-PRJ-020 on 4/11/2017.
  */
@@ -113,5 +115,6 @@ public interface RoleService {
     @PreAuthorize("hasAuthority('DELETE_PERMISSION')")
     String deletePermission(Long id) throws InternetBankingException;
 
- 
+ List<RoleDTO> getRolesByUserType(UserType userType);
+
 }

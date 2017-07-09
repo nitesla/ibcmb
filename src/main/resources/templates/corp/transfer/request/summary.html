@@ -87,7 +87,6 @@
                         <hr class="related-info"/>
                         <table class="table-condensed">
                             <tr>
-
                                 <th>Lower Amount:</th>
                                 <td th:text="${corpTransRule.currency+''+corpTransRule.lowerLimitAmount}"></td>
 
@@ -95,7 +94,8 @@
                             <tr>
 
                                 <th>Upper Amount:</th>
-                                <td th:text="${corpTransRule.currency+''+corpTransRule.upperLimitAmount}"></td>
+                                <td th:unless="${corpTransRule.unlimited}" th:text="${corpTransRule.currency+''+corpTransRule.upperLimitAmount}"></td>
+                                <td th:if="${corpTransRule.unlimited}">Unlimited</td>
 
                             </tr>
                         </table>
@@ -125,7 +125,7 @@
                             <td  th:text="${auth.user.firstName+' '+auth.user.lastName}"></td>
                             <td  th:text="${auth.status}"></td>
                             <td th:text="${auth.comments}"></td>
-                            <td th:text="${auth.entryDate}"></td>
+                            <td th:text="${#dates.format(auth.entryDate,'dd-MM-yyyy hh:mm a')}"></td>
                             <td  th:if="${corpTransRule.anyCanAuthorize}">Optional</td>
                             <td  th:unless="${corpTransRule.anyCanAuthorize}">Required</td>
                         </tr>
@@ -152,7 +152,7 @@
                             <button class="btn btn-link required-step" th:if="${userCanAuthorize}" type="submit">
                                 Approve
                             </button>
-                            <a id="canc" class="btn btn-link less-required" th:href="@{/corporate/transfer/requests}">Back</a>
+                            <button id="cancel" class="btn btn-link required-less" type="reset" >Back</button>
                         </div>
                     </form>
 
@@ -272,8 +272,8 @@
 
         });
     }
-
-
+    document.getElementById("cancel").onclick = function () {
+        location.href = "/corporate/transfer/requests";}
     /*]]>*/
 </script>
 

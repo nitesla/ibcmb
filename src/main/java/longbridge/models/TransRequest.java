@@ -22,7 +22,6 @@ public class TransRequest extends AbstractEntity{
 
 
     private  String customerAccountNumber;
-   //@Enumerated
     private TransferType transferType;
     private Date tranDate= new Date();
 

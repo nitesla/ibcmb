@@ -51,18 +51,18 @@ public class RetailUserServiceImpl implements RetailUserService {
     private ModelMapper modelMapper;
 
     @Autowired
-    MessageSource messageSource;
+    private MessageSource messageSource;
 
     @Autowired
-    PasswordPolicyService passwordPolicyService;
+    private PasswordPolicyService passwordPolicyService;
 
     @Autowired
-    MailService mailService;
+    private MailService mailService;
 
     @Autowired
-    FailedLoginService failedLoginService;
+    private FailedLoginService failedLoginService;
 
-    Locale locale = LocaleContextHolder.getLocale();
+    private Locale locale = LocaleContextHolder.getLocale();
 
     private CodeService codeService;
     private AccountService accountService;
@@ -142,17 +142,6 @@ public class RetailUserServiceImpl implements RetailUserService {
         return retailUser;
     }
 
-//    @Override
-//    public String setPassword(RetailUser user, String password) throws PasswordException {
-//        boolean ok = false;
-//        if (user != null) {
-//            user.setPassword(this.passwordEncoder.encode(user.getPassword()));
-//        } else {
-//            throw new RuntimeException("Null user provided");
-//        }
-//        return null;
-//
-//    }
 
     @Override
     @Transactional

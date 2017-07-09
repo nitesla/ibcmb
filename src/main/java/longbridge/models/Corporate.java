@@ -52,9 +52,6 @@ public class Corporate extends AbstractEntity implements PrettySerializer{
     @JsonIgnore
     private Collection<CorpLimit> corpLimits;
 
-    @OneToMany(mappedBy = "corporate")
-    @JsonIgnore
-    List<CorpTransRequest> corpTransferRequests;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JsonIgnore
@@ -68,13 +65,6 @@ public class Corporate extends AbstractEntity implements PrettySerializer{
         this.corpLimits = corpLimits;
     }
 
-    public List<CorpTransRequest> getCorpTransferRequests() {
-        return corpTransferRequests;
-    }
-
-    public void setCorpTransferRequests(List<CorpTransRequest> corpTransferRequests) {
-        this.corpTransferRequests = corpTransferRequests;
-    }
 
     public Set<CorporateRole> getCorporateRoles() {
         return corporateRoles;

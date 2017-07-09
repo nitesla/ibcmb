@@ -27,6 +27,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import sun.awt.image.PixelConverter;
 
 import javax.persistence.EntityManager;
 import java.util.*;
@@ -128,8 +129,14 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     @Override
     @Verifiable(operation = "UPDATE_CORPORATE_USER", description = "Updating Corporate User")
     public String updateUser(CorporateUserDTO user) throws InternetBankingException {
+
+        CorporateUser corporateUser = corporateUserRepo.findOne(user.getId());
+        Corporate corporate = corporateUser.getCorporate();
+        if("I".equals(corporate.getStatus())){
+            throw new InternetBankingException(messageSource.getMessage("corporate.deactivated", null, locale));
+        }
+
         try {
-            CorporateUser corporateUser = corporateUserRepo.findOne(user.getId());
             entityManager.detach(corporateUser);
             corporateUser.setEmail(user.getEmail());
             corporateUser.setLastName(user.getLastName());
@@ -269,8 +276,14 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     @Transactional
     @Verifiable(operation = "CORP_USER_STATUS", description = "Change corporate user activation status")
     public String changeActivationStatus(Long userId) throws InternetBankingException {
+
+        CorporateUser user = corporateUserRepo.findOne(userId);
+        Corporate corporate = user.getCorporate();
+
+        if("I".equals(corporate.getStatus())){
+            throw new InternetBankingException(messageSource.getMessage("corporate.deactivated", null, locale));
+        }
         try {
-            CorporateUser user = corporateUserRepo.findOne(userId);
             entityManager.detach(user);
             String oldStatus = user.getStatus();
             String newStatus = "A".equals(oldStatus) ? "I" : "A";
@@ -397,8 +410,13 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     @Override
     public String resetPassword(Long userId) throws PasswordException {
 
+        CorporateUser user = corporateUserRepo.findOne(userId);
+        Corporate corporate = user.getCorporate();
+
+        if("I".equals(corporate.getStatus())){
+            throw new InternetBankingException(messageSource.getMessage("corporate.deactivated", null, locale));
+        }
         try {
-            CorporateUser user = corporateUserRepo.findOne(userId);
             String newPassword = passwordPolicyService.generatePassword();
             user.setPassword(passwordEncoder.encode(newPassword));
             user.setExpiryDate(new Date());
@@ -448,7 +466,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             failedLoginService.unLockUser(user);
             return messageSource.getMessage("unlock.success", null, locale);
         } catch (Exception e) {
-            throw new InternetBankingException(messageSource.getMessage("unlock.failure", null, locale));
+            throw new InternetBankingException(messageSource.getMessage("unlock.failure", null, locale),e);
 
         }
     }

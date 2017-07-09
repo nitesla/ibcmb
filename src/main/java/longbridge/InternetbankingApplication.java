@@ -21,7 +21,7 @@ import java.util.List;
 @EnableJpaRepositories(repositoryFactoryBeanClass = CustomJpaRepositoryFactoryBean.class)
 @EnableBatchProcessing
 @EnableAsync
-public class InternetbankingApplication /*extends SpringBootServletInitializer */implements CommandLineRunner {
+public class InternetbankingApplication extends SpringBootServletInitializer implements CommandLineRunner {
 
 
 
@@ -39,13 +39,6 @@ public class InternetbankingApplication /*extends SpringBootServletInitializer *
 
     @Override
     public void run(String... strings) throws Exception {
-
-  String username= "wunmi";
-        List<String> questions = Arrays.asList("how old are you ","whats ur girlfriedns name ");
-        List<String> answers = Arrays.asList("28","meize");
-        service.setUserQA(username,questions,answers);
-
-
 
 
     }

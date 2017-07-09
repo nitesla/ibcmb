@@ -54,21 +54,21 @@
                                         <input th:type="hidden" name="corporateId" th:value="${corporate.Id}"/>
 
                                         <div class="form-group">
-                                            <label class="col-sm-2 control-label">Lower Limit Amount</label>
+                                            <label class="col-sm-2 control-label">Lower Limit Amount <span style="color: red">*</span></label>
                                             <div class="col-sm-6">
-                                                <input type="text" class="form-control" th:field="*{lowerLimitAmount}"/>
+                                                <input type="number" class="form-control" th:field="*{lowerLimitAmount}"/>
                                             </div>
                                         </div>
 
                                         <div class="form-group">
-                                            <label class="col-sm-2 control-label">Upper Limit Amount</label>
+                                            <label class="col-sm-2 control-label">Upper Limit Amount <span style="color: red">*</span></label>
                                             <div class="col-sm-6">
-                                                <input id="upperLimit" type="text" class="form-control"
+                                                <input id="upperLimit" type="number" class="form-control"
                                                        th:field="*{upperLimitAmount}"/>
                                             </div>
                                             <input id="unlimited" type="checkbox" class="checkbox-inline"
                                                    th:field="*{unlimited}"/>
-                                            <label><strong>Unlimited Amount</strong></label>
+                                            <label><strong>No Upper Limit</strong></label>
 
                                         </div>
 
@@ -87,42 +87,37 @@
                                         </div>
                                         <hr/>
                                         <div class="form-group">
-                                            <label class="col-sm-2 control-label">Select Roles</label>
+                                            <label class="col-sm-2 control-label">Approval Roles <span style="color: red">*</span></label>
                                             <div class="col-sm-6">
 
                                                 <p th:each="role: ${roleList}">
                                                     <!--<input type="number" name="numRole" value="1"/>-->
                                                     <label class="checkbox-inline">
-                                                    <input type="checkbox" th:field="*{roles}"
-                                                           th:value="${role.id}"/>
-                                                    <span th:text="${role.name}+' '+${role.rank}"></span>
+                                                        <input type="checkbox" th:field="*{roles}"
+                                                               th:value="${role.id}"/>
+                                                        <span th:text="${role.name}+' '+${role.rank}"></span>
                                                     </label>
                                                 </p>
                                             </div>
                                         </div>
-<hr/>
+                                        <hr/>
                                         <div class="form-group">
-                                            <label class="col-sm-2 control-label">Check If</label>
-                                            <div class="col-sm-8">
-                                                <p>
-                                                <label class="checkbox-inline">
-                                                <input id="anyAuthorizer" type="checkbox" class="checkbox-inline"
-                                                       th:field="*{anyCanAuthorize}"/>
-                                                    <span>Any of the roles selected above can authorize
-                                                    transactions</span>
-                                                </label>
-                                                </p>
+                                            <div>
+                                            <div class="radio">
+                                                <label class="col-sm-2 control-label"></label>
 
-                                                <!--<p>-->
-                                                    <!--<label class="checkbox-inline">-->
+                                                <label><input type="radio" name="anyCanAuthorize" value="N" checked="checked"/>All the
+                                                    roles selected above must authorize transaction</label>
+                                            </div>
+                                            <div class="radio">
+                                                <label class="col-sm-2 control-label"></label>
 
-                                                    <!--<input id="rank" type="checkbox" class="checkbox-inline" th:field="*{rank}"/>-->
-                                                    <!--<span>Use role rank for authorization</span>-->
-                                                    <!--</label>-->
-                                            <!--</p>-->
-
+                                                <label><input type="radio" name="anyCanAuthorize" value="Y" />Any of
+                                                    the roles selected above can authorize transaction</label>
+                                            </div>
                                             </div>
                                         </div>
+                                        <br/>
 
                                         <div class="form-group">
                                             <div class="col-sm-4 col-sm-offset-2">
@@ -172,26 +167,23 @@
             }
 
 
-
         });
     })
 
 
-
     var corpId = [[${corporate.id}]];
-    if(corpId!=null) {
+    if (corpId != null) {
         document.getElementById("cancel").onclick = function () {
             location.href = "/ops/corporates/" + corpId + "/view";
         }
-    }else{
+    } else {
         document.getElementById("cancel").onclick = function () {
             location.href = "/ops/corporates/";
         }
     }
 
 
-
-/*]]>*/
+    /*]]>*/
 </script>
 
 </body>

@@ -6,6 +6,7 @@ import longbridge.utils.TransferType;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Date;
 
 /** *
  * Created by Fortune on 4/5/2017.
@@ -30,6 +31,8 @@ public class TransferRequestDTO implements Serializable{
     private String remarks;
 
     private String status;
+
+    private Date tranDate;
 
     private String referenceNumber;
 
@@ -119,6 +122,15 @@ public class TransferRequestDTO implements Serializable{
 
     public void setBeneficiaryAccountName(String beneficiaryAccountName) {
         this.beneficiaryAccountName = beneficiaryAccountName;
+    }
+
+
+    public Date getTranDate() {
+        return tranDate;
+    }
+
+    public void setTranDate(Date tranDate) {
+        this.tranDate = tranDate;
     }
 
     public String getRemarks() {
