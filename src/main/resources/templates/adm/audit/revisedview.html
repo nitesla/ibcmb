@@ -44,7 +44,7 @@
                                     <li >
                                         <div class="col-lg-4">
                                             <div class="title-action">
-                                                <a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/index/view" disabled="disabled" ><i class="fa fa-pencil"></i>View</a>
+                                                <a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/audit/revised/index" disabled="disabled" ><i class="fa fa-pencil"></i>  View</a>
                                             </div>
                                         </div>
                                     </li>
@@ -61,7 +61,7 @@
                                     <tr>
                                         <th> Name</th>
                                         <th>IP Address</th>
-                                        <th>Time</th>
+                                        <th>Date</th>
                                         <th>Modifed By</th>
 
 
@@ -74,7 +74,7 @@
                                     <tr>
                                         <th>Name</th>
                                         <th>IP Address</th>
-                                        <th>Time</th>
+                                        <th>Date</th>
                                         <th>Modified By</th>
 
 
@@ -116,8 +116,6 @@
     /*<![CDATA[*/
     $(document).ready(function() {
         var table = $('#auditview').DataTable({
-
-
             select:true,
             responsive: true,
             "lengthMenu" : [ [ 5, 10, 20],	[ 5, 10, 20 ] ],
@@ -148,7 +146,21 @@
                 }
                 return data;
             }
-        }]});
+        },{
+                "targets" : 0,
+                "data" : "initiatedDate",
+                "render" : function(data, type,full, meta) {
+                    if (type === 'display') {
+                        if(data == null)
+                        {
+
+                        }
+
+                    }
+                    return data;
+                }
+            }
+        ]});
 
         table.on('select', function() {
             if (table.rows({
@@ -189,8 +201,7 @@
         var dt = $('#audit').DataTable();
         var id = $(dt.row({
             selected: true
-        }).node()).attr("id");
-        var ooo = link.attr("href").replace("id",id);
+        }).node()).attr("href").replace("index",id);
         window.location.assign(ooo);
 
     } );

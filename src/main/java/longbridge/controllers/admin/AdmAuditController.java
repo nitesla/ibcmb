@@ -71,6 +71,9 @@ public class AdmAuditController {
         return out;
     }
 
+
+
+
     @GetMapping("/revised/entity")
     public String ListRevisedEnties()
     {
@@ -80,6 +83,12 @@ public class AdmAuditController {
 
 
 
+    @GetMapping("/revised/{revisedid}")
+    public  String getRevisionId(@PathVariable Long revisedid)
+    {
+        logger.info("this is the id",+revisedid);
+        return  "adm/audit/revisedview";
+    }
     @GetMapping("all/revisedentities")
     public @ResponseBody DataTablesOutput<ModifiedEntityTypeEntity> getAllRevisedEntity(DataTablesInput input)
     {
@@ -88,9 +97,6 @@ public class AdmAuditController {
         Pageable pageable = DataTablesUtils.getPageable(input);
         DataTablesOutput<ModifiedEntityTypeEntity> out = new DataTablesOutput<ModifiedEntityTypeEntity>();
         Page<ModifiedEntityTypeEntity> auditConf = auditCfgService.getRevisionEntities(pageable);
-//        while (auditConf.hasNext()){
-//            logger.info("the value returned is {}",auditConf.getContent());
-//        }
         out.setDraw(input.getDraw());
         out.setData(auditConf.getContent());
         out.setRecordsFiltered(auditConf.getTotalElements());
