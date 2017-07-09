@@ -103,7 +103,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     }
 
 
-    public CorpTransferRequestDTO makeTransfer(CorpTransferRequestDTO corpTransferRequestDTO) throws InternetBankingTransferException {
+    private CorpTransferRequestDTO makeTransfer(CorpTransferRequestDTO corpTransferRequestDTO) throws InternetBankingTransferException {
         validateTransfer(corpTransferRequestDTO);
         logger.trace("Transfer details valid {}", corpTransferRequestDTO);
         CorpTransRequest corpTransRequest = (CorpTransRequest) integrationService.makeTransfer(convertDTOToEntity(corpTransferRequestDTO));
@@ -235,13 +235,16 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     }
 
     public CorpTransferRequestDTO convertEntityToDTO(CorpTransRequest corpTransRequest) {
-        return modelMapper.map(corpTransRequest, CorpTransferRequestDTO.class);
+        CorpTransferRequestDTO transferRequestDTO =  modelMapper.map(corpTransRequest, CorpTransferRequestDTO.class);
+        transferRequestDTO.setCorporateId(corpTransRequest.getCorporate().getId().toString());
+        return transferRequestDTO;
     }
 
 
     public CorpTransRequest convertDTOToEntity(CorpTransferRequestDTO corpTransferRequestDTO) {
-        CorpTransRequest corpTransRequest = modelMapper.map(corpTransferRequestDTO, CorpTransRequest.class);
-        corpTransRequest.setCorporate(corporateRepo.findOne(Long.parseLong(corpTransferRequestDTO.getCorporateId())));
+        CorpTransRequest corpTransRequest = new CorpTransRequest();
+        Corporate corporate = corporateRepo.findOne(Long.parseLong(corpTransferRequestDTO.getCorporateId()));
+        corpTransRequest.setCorporate(corporate);
         return corpTransRequest;
     }
 
@@ -315,7 +318,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
 
         CorpTransferAuth transferAuth = corpTransRequest.getTransferAuth();
 
-        if (reqEntryRepo.existsByTranReqIdAndUserAndRole(corpTransRequest.getId(),corporateUser,userRole)) {
+        if (reqEntryRepo.existsByTranReqIdAndRole(corpTransRequest.getId(),userRole)) {
             throw new InternetBankingException("User has already authorized the transaction");
         }
 
@@ -329,7 +332,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         transferAuth.getAuths().add(transReqEntry);
         transferAuthRepo.save(transferAuth);
         if(isAuthorizationComplete(corpTransRequest)){
-            transferAuth.setStatus("C");;
+            transferAuth.setStatus("C");
             transferAuth.setLastEntry(new Date());
             transferAuthRepo.save(transferAuth);
             makeTransfer(convertEntityToDTO(corpTransRequest));
@@ -352,7 +355,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         }
 
         for(CorporateRole role: roles){
-            for(CorpTransReqEntry corpTransReqEntry: transferAuth.getAuths()){
+            for(CorpTransReqEntry corpTransReqEntry: transReqEntries){
                 if(corpTransReqEntry.getRole().equals(role)){
                     approvalCount++;
                     if(any) return true;

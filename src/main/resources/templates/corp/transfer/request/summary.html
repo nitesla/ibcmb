@@ -116,47 +116,42 @@
                         <td>Entry Date</td>
                         <td>Attribute</td>
                         </thead>
-
                         <tbody>
 
 
-                        <tr th:each="trn : ${corpTransRule.roles}">
-                            <td th:text="${trn.name}"></td>
 
-                            <span
-                                    th:each="auth : ${authorizationMap.auths}" th:if="${authorizationMap.auths != null }">
-                                      <!--<span th:if="${auth.corporateRole.name} == ${trn.name}">-->
-                                        <td th:if="${auth.role.id} == ${trn.id}" th:text="${auth.user.userName}"></td>
-                                        <td th:unless="${auth.role.id} == ${trn.id}"></td>
-                                        <td th:if="${auth.role.id} == ${trn.id}" th:text="${auth.status}"></td>
-                                        <td th:unless="${auth.role.id} == ${trn.id}"></td>
-                                        <td th:if="${auth.role.id} == ${trn.id}" th:text="${auth.comments}"></td>
-                                        <td th:if="${auth.role.id} == ${trn.id}"></td>
-
-                                        <td th:if="${auth.role.id} == ${trn.id}" th:text="${auth.entryDate}"></td>
-                                        <td th:if="${auth.role.id} == ${trn.id}"></td>
-
-                                <!--</span>-->
-                                </span>
-                            <span th:if="${corpTransRule.anyCanAuthorize == false}">
-                                        <td>Required</td>
-                                </span>
-                            <span th:if="${corpTransRule.anyCanAuthorize == true}">
-                                         <td>Optional</td>
-                                  </span>
+                        <tr th:each="auth : ${authorizationMap.auths}" th:if="${authorizationMap.auths != null }">
+                            <td th:text="${auth.role.name+' '+auth.role.rank}"></td>
+                            <td  th:text="${auth.user.firstName+' '+auth.user.lastName}"></td>
+                            <td  th:text="${auth.status}"></td>
+                            <td th:text="${auth.comments}"></td>
+                            <td th:text="${auth.entryDate}"></td>
+                            <td  th:if="${corpTransRule.anyCanAuthorize}">Optional</td>
+                            <td  th:unless="${corpTransRule.anyCanAuthorize}">Required</td>
                         </tr>
-
+                        <tr th:each="trn : ${rolesNotAuth}">
+                            <td th:text="${trn.name + ' ' + trn.rank }"></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td  th:if="${corpTransRule.anyCanAuthorize}">Optional</td>
+                            <td  th:unless="${corpTransRule.anyCanAuthorize}">Required</td>
+                        </tr>
                         </tbody>
                     </table>
 
                     <form th:action="@{/corporate/transfer/authorize}" method="post">
                         <label class="control-label">Comments</label>
-                        <textarea th:if="${userCanAuthorize}" class="form-control" th:field="${corpTransReqEntry.comments}"></textarea>
+                        <textarea th:if="${userCanAuthorize}" class="form-control"
+                                  th:field="${corpTransReqEntry.comments}"></textarea>
                         <div>
                             <input type="hidden" name="tranReqId" th:value="${corpTransRequest.id}"/>
                         </div>
                         <div>
-                            <button class="btn btn-link required-step" th:if="${userCanAuthorize}" type="submit">Approve</button>
+                            <button class="btn btn-link required-step" th:if="${userCanAuthorize}" type="submit">
+                                Approve
+                            </button>
                             <a id="canc" class="btn btn-link less-required" th:href="@{/corporate/transfer/requests}">Back</a>
                         </div>
                     </form>
@@ -277,7 +272,6 @@
 
         });
     }
-
 
 
     /*]]>*/

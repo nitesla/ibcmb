@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.http.HttpMethod;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
@@ -34,9 +35,9 @@ import org.springframework.web.servlet.mvc.WebContentInterceptor;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Locale;
+import java.util.concurrent.Executor;
 
 @Configuration
-//@EnableAsync
 public class WebMvcConfig extends WebMvcConfigurerAdapter {
 
     @Bean
@@ -76,7 +77,7 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
         registry.addInterceptor(retailUserLoginInterceptor()).addPathPatterns("/retail/**");
         registry.addInterceptor(corporateUserLoginInterceptor()).addPathPatterns("/corporate/**");
      registry.addInterceptor(retailTransferAuthInterceptor()).addPathPatterns("/retail/transfer/process");
-      //  registry.addInterceptor(webContentInterceptor()).addPathPatterns("/retail/**");
+     registry.addInterceptor(webContentInterceptor()).addPathPatterns("/retail/**");
       //  registry.addInterceptor(webContentInterceptor()).addPathPatterns("/retail/**");
        // registry.addInterceptor(webContentInterceptor()).addPathPatterns("/retail/**");
     }
@@ -154,16 +155,16 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
     public SessionRegistry sessionRegistry() {
         return new SessionRegistryImpl();
     }
-//    @Bean
-//    public WebContentInterceptor webContentInterceptor() {
-//        WebContentInterceptor interceptor = new WebContentInterceptor();
-//        interceptor.setCacheSeconds(-1);
-//        interceptor.setUseExpiresHeader(true);
-//        interceptor.setAlwaysMustRevalidate(true);
-//        interceptor.setUseCacheControlHeader(true);
-//        interceptor.setUseCacheControlNoStore(true);
-//        return interceptor;
-//    }
+    @Bean
+    public WebContentInterceptor webContentInterceptor() {
+        WebContentInterceptor interceptor = new WebContentInterceptor();
+        interceptor.setCacheSeconds(-1);
+        interceptor.setUseExpiresHeader(true);
+        interceptor.setAlwaysMustRevalidate(true);
+        interceptor.setUseCacheControlHeader(true);
+        interceptor.setUseCacheControlNoStore(true);
+        return interceptor;
+    }
 
 
 //

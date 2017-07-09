@@ -163,25 +163,30 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
 
-    public void createUserOnEntrust(AdminUser adminUser) {
+    public void createUserOnEntrust(AdminUser adminUser) throws EntrustException{
         AdminUser user = adminUserRepo.findFirstByUserName(adminUser.getUserName());
         if (user != null) {
             if ("".equals(user.getEntrustId()) || user.getEntrustId() == null) {
                 String fullName = adminUser.getFirstName() + " " + adminUser.getLastName();
                 SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_CREATION");
+                String entrustId= user.getUserType().toString()+"_"+user.getUserName();
+
                 if (setting != null && setting.isEnabled()) {
                     if ("YES".equalsIgnoreCase(setting.getValue())) {
-                        boolean creatResult = securityService.createEntrustUser(adminUser.getUserName(), fullName, true);
+                        boolean creatResult = securityService.createEntrustUser(entrustId, fullName, true);
                         if (!creatResult) {
                             throw new EntrustException(messageSource.getMessage("entrust.create.failure", null, locale));
                         }
 
-                        boolean contactResult = securityService.addUserContacts(adminUser.getEmail(), adminUser.getPhoneNumber(), true, adminUser.getUserName());
+                        boolean contactResult = securityService.addUserContacts(adminUser.getEmail(), adminUser.getPhoneNumber(), true, entrustId);
                         if (!contactResult) {
                             logger.error("Failed to add user contacts on Entrust");
+                            securityService.deleteEntrustUser(entrustId);
+                            throw new EntrustException(messageSource.getMessage("entrust.contact.failure", null, locale));
+
                         }
                     }
-                    user.setEntrustId(user.getUserName());
+                    user.setEntrustId(entrustId);
                     adminUserRepo.save(user);
                 }
             }

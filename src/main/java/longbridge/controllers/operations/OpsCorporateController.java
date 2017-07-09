@@ -494,12 +494,12 @@ public class OpsCorporateController {
     DataTablesOutput<CorpTransferRuleDTO> getCorporateRules(@PathVariable Long id, DataTablesInput input) {
 
         Pageable pageable = DataTablesUtils.getPageable(input);
-        List<CorpTransferRuleDTO> transferRules = corporateService.getCorporateRules(id);
+        Page<CorpTransferRuleDTO> transferRules = corporateService.getCorporateRules(id,pageable);
         DataTablesOutput<CorpTransferRuleDTO> out = new DataTablesOutput<CorpTransferRuleDTO>();
         out.setDraw(input.getDraw());
-        out.setData(transferRules);
-        out.setRecordsFiltered(transferRules.size());
-        out.setRecordsTotal(transferRules.size());
+        out.setData(transferRules.getContent());
+        out.setRecordsFiltered(transferRules.getTotalElements());
+        out.setRecordsTotal(transferRules.getTotalElements());
         return out;
     }
 

@@ -50,9 +50,6 @@ public class OpsCorporateUserController {
     @Autowired
     private MessageSource messageSource;
 
-    @Autowired
-    private FailedLoginService failedLoginService;
-
 
 
     @ModelAttribute
@@ -152,16 +149,15 @@ public class OpsCorporateUserController {
 
 
     @GetMapping("/{userId}/unlock")
-    public String unlockUser(@PathVariable Long userId, RedirectAttributes redirectAttributes,Locale locale){
+    public String unlockUser(@PathVariable Long userId, RedirectAttributes redirectAttributes, Locale locale) {
 
-        try{
+        try {
             String message = corporateUserService.unlockUser(userId);
-            redirectAttributes.addFlashAttribute("message",message);
+            redirectAttributes.addFlashAttribute("message", message);
 
-        }
-        catch (InternetBankingException e){
-            logger.error("Error unlocking user",e.getMessage());
-            redirectAttributes.addFlashAttribute("message",messageSource.getMessage("unlock.failure",null, locale));
+        } catch (InternetBankingException e) {
+            logger.error("Error unlocking user", e.getMessage());
+            redirectAttributes.addFlashAttribute("message", messageSource.getMessage("unlock.failure", null, locale));
 
         }
 
