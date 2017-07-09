@@ -159,10 +159,22 @@
                     if (type === 'display') {
                         if(data == null)
                             return data;
-                        var dtStart = new Date(parseInt(data));
 
-                        var dtStartWrapper = moment(dtStart);
-                        return dtStartWrapper.format('LLLL');
+                        var pattern = /(\d{2})\.(\d{2})\.(\d{4})/;
+                        var dt = new Date(data.replace(pattern,'$3-$2-$1'));
+                        return dt.toDateString();
+                    }
+                    return data;
+                }
+            },{
+                "targets" : 0,
+                "data" : "accountBalance",
+                "render" : function(data, type,full, meta) {
+                    if (type === 'display') {
+                        if(data == null)
+                            return data;
+                        var twoPlacedFloat = parseFloat(data).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
+                        return twoPlacedFloat;
                     }
                     return data;
                 }
@@ -175,9 +187,9 @@
 
                             if (data == null)
                                 return data;
-                            var dtStart = new Date(parseInt(data));
-                            var dtStartWrapper = moment(dtStart);
-                            return dtStartWrapper.format('DD/MM/YYYY HH:mm');
+                            var pattern = /(\d{2})\.(\d{2})\.(\d{4})/;
+                            var dt = new Date(data.replace(pattern,'$3-$2-$1'));
+                            return dt.toDateString();
                         }
                         return data;
                     }
