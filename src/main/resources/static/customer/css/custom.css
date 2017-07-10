@@ -337,7 +337,7 @@ span.req-inner
 
 .alert
 {
-    padding: 7px !important;
+    padding: 5px !important;
 }
 
 .my-select {
@@ -1765,6 +1765,14 @@ button, input, optgroup, select, textarea {
         padding: 0 45px;
     }
 
+    .menu-link
+{
+    padding: 10px 5px !important;
+    font-size: 16px;
+    font-weight: bold;
+
+}
+
     .top_bar {
         padding-left: 45px;
     }
@@ -1851,6 +1859,16 @@ button, input, optgroup, select, textarea {
     .header {
         min-height: 1px;
         padding-bottom: 10px;
+    }
+
+    .ml-15
+    {
+        margin-left: 0px !important;
+    }
+
+    .coronation-form-control
+    {
+         margin-left: 0px !important;
     }
 
     .margin-xs{
