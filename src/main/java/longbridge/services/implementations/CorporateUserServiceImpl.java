@@ -143,6 +143,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             corporateUser.setUserName(user.getUserName());
             corporateUser.setFirstName(user.getFirstName());
             corporateUser.setPhoneNumber(user.getPhoneNumber());
+            corporateUser.setAdmin(user.isAdmin());
             if (user.getRoleId() != null) {
                 Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
                 corporateUser.setRole(role);
@@ -385,7 +386,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             String newStatus = "A".equals(oldStatus) ? "I" : "A";
             user.setStatus(newStatus);
             String fullName = user.getFirstName() + " " + user.getLastName();
-            if ((oldStatus == null) || ("I".equals(oldStatus)) && "A".equals(newStatus)) {
+            if ("I".equals(oldStatus) && "A".equals(newStatus)) {
                 String password = passwordPolicyService.generatePassword();
                 user.setPassword(passwordEncoder.encode(password));
                 user.setExpiryDate(new Date());
@@ -416,6 +417,30 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         if("I".equals(corporate.getStatus())){
             throw new InternetBankingException(messageSource.getMessage("corporate.deactivated", null, locale));
         }
+        try {
+            String newPassword = passwordPolicyService.generatePassword();
+            user.setPassword(passwordEncoder.encode(newPassword));
+            user.setExpiryDate(new Date());
+            String fullName = user.getFirstName() + " " + user.getLastName();
+            passwordPolicyService.saveCorporatePassword(user);
+            corporateUserRepo.save(user);
+            sendPostPasswordResetMessage(user, fullName, user.getUserName(), newPassword, user.getCorporate().getCustomerId());
+            logger.info("Corporate user {} password reset successfully", user.getUserName());
+            return messageSource.getMessage("password.reset.success", null, locale);
+        } catch (MailException me) {
+            throw new InternetBankingException(messageSource.getMessage("mail.failure", null, locale), me);
+        } catch (Exception e) {
+            throw new PasswordException(messageSource.getMessage("password.reset.failure", null, locale), e);
+        }
+    }
+
+
+
+    @Override
+    public String resetCorpPassword(Long userId) throws PasswordException {
+
+        CorporateUser user = corporateUserRepo.findOne(userId);
+
         try {
             String newPassword = passwordPolicyService.generatePassword();
             user.setPassword(passwordEncoder.encode(newPassword));

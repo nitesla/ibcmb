@@ -96,6 +96,9 @@ public interface CorporateUserService{
     @PreAuthorize("hasAuthority('UPDATE_CORPORATE_USER')")
     String resetPassword(Long userId) throws PasswordException;
 
+
+    String resetCorpPassword(Long userId) throws PasswordException;
+
     /**
      * Deletes the specified corporate user
      * @param userId the corporate user's id

@@ -152,7 +152,7 @@
                                     <li><a th:href="@{/corporate/token/lost}" th:text="#{menu.token.report}">Report Lost Token</a></li>
                                     <li><a th:href="@{/corporate/beneficiary}">Beneficiaries</a></li>
                                     <li><a th:href="@{/corporate/mailbox/inbox}" th:text="#{menu.mail}"> Mailbox</a></li>
-                                    <li sec:authorize="hasAuthority('ADD_CORPORATE_USER')"><a th:href="@{/corporate/users}" th:text="#{menu.usermanagement}">User Management</a></li>
+                                    <li th:if="${isUserAdmin}"><a th:href="@{/corporate/users}" th:text="#{menu.usermanagement}">User Management</a></li>
                                 </ul>
                             </li>
 
