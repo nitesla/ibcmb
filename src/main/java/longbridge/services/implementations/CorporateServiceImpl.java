@@ -86,7 +86,7 @@ public class CorporateServiceImpl implements CorporateService {
 
     @Override
     @Transactional
-    @Verifiable(operation = "ADD_CORPORATE", description = "Adding Corporate Entity")
+//    @Verifiable(operation = "ADD_CORPORATE", description = "Adding Corporate Entity")
     public String addCorporate(CorporateDTO corporateDTO, CorporateUserDTO user) throws InternetBankingException {
 
         Corporate corporate = corporateRepo.findByCustomerId(corporateDTO.getCustomerId());
@@ -121,11 +121,13 @@ public class CorporateServiceImpl implements CorporateService {
                 corporateUser.setRole(role);
             }
             corporateUser.setCorporate(corporate);
-            corporate.getUsers().add(corporateUser);
+//            corporate.getUsers().add(corporateUser);
             Corporate newCorporate = corporateRepo.save(corporate);
-            for (CorporateUser corpUser : newCorporate.getUsers()) {
-                createUserOnEntrustAndSendCredentials(corpUser);
-            }
+//            for (CorporateUser corpUser : newCorporate.getUsers()) {
+            corporateUser.setCorporate(newCorporate);
+            CorporateUser corpUser  = corporateUserRepo.save(corporateUser);
+            createUserOnEntrustAndSendCredentials(corpUser);
+//            }
             addAccounts(corporate);
 
             logger.info("Corporate {} created", corporate.getName());
@@ -213,7 +215,7 @@ public class CorporateServiceImpl implements CorporateService {
     }
 
     @Override
-    @Verifiable(operation = "UPDATE_CORPORATE", description = "Updating Corporate Entity")
+//    @Verifiable(operation = "UPDATE_CORPORATE", description = "Updating Corporate Entity")
     public String updateCorporate(CorporateDTO corporateDTO) throws InternetBankingException {
         try {
             Corporate corporate = corporateRepo.findOne(corporateDTO.getId());
@@ -269,7 +271,7 @@ public class CorporateServiceImpl implements CorporateService {
     @Override
 
     @Transactional
-    @Verifiable(operation = "UPDATE_CORPORATE_STATUS", description = "Change Corporate Activation Status")
+//    @Verifiable(operation = "UPDATE_CORPORATE_STATUS", description = "Change Corporate Activation Status")
     public String changeActivationStatus(Long id) throws InternetBankingException {
         try {
             Corporate corporate = corporateRepo.findOne(id);
@@ -339,7 +341,7 @@ public class CorporateServiceImpl implements CorporateService {
     }
 
     @Override
-    @Verifiable(operation = "ADD_CORPORATE_RULE", description = "Add Corporate Transfer Rule")
+//    @Verifiable(operation = "ADD_CORPORATE_RULE", description = "Add Corporate Transfer Rule")
     public String addCorporateRule(CorpTransferRuleDTO transferRuleDTO) throws InternetBankingException {
 
 
@@ -370,7 +372,7 @@ public class CorporateServiceImpl implements CorporateService {
 
     @Override
     @Transactional
-    @Verifiable(operation = "UPDATE_CORPORATE_RULE", description = "Update Corporate Transfer Rule")
+//    @Verifiable(operation = "UPDATE_CORPORATE_RULE", description = "Update Corporate Transfer Rule")
     public String updateCorporateRule(CorpTransferRuleDTO transferRuleDTO) throws InternetBankingException {
 
         if (new BigDecimal(transferRuleDTO.getLowerLimitAmount()).compareTo(new BigDecimal("0")) < 0) {
@@ -403,7 +405,6 @@ public class CorporateServiceImpl implements CorporateService {
     }
 
 
-
     @Override
     @Transactional
     public List<CorpTransferRuleDTO> getCorporateRules(Long corpId) {
@@ -414,7 +415,7 @@ public class CorporateServiceImpl implements CorporateService {
     }
 
     @Override
-    @Verifiable(operation="DELETE_CORPORATE_RULE",description="Delete Corporate Transfer Rule")
+//    @Verifiable(operation="DELETE_CORPORATE_RULE",description="Delete Corporate Transfer Rule")
     public String deleteCorporateRule(Long id) throws InternetBankingException {
         try {
             CorpTransRule transferRule = corpTransferRuleRepo.findOne(id);
@@ -429,7 +430,7 @@ public class CorporateServiceImpl implements CorporateService {
     }
 
     @Override
-    @Verifiable(operation = "ADD_CORPORATE_ROLE", description = "Adding a Corporate Role")
+//    @Verifiable(operation = "ADD_CORPORATE_ROLE", description = "Adding a Corporate Role")
     public String addCorporateRole(CorporateRoleDTO roleDTO) throws InternetBankingException {
         try {
             Corporate corporate = corporateRepo.findOne(NumberUtils.toLong(roleDTO.getCorporateId()));
@@ -454,9 +455,8 @@ public class CorporateServiceImpl implements CorporateService {
     }
 
 
-
     @Override
-    @Verifiable(operation = "UPDATE_CORPORATE_ROLE", description = "Updating a Corporate Role")
+//    @Verifiable(operation = "UPDATE_CORPORATE_ROLE", description = "Updating a Corporate Role")
     public String updateCorporateRole(CorporateRoleDTO roleDTO) throws InternetBankingException {
         try {
             CorporateRole role = corporateRoleRepo.findOne(roleDTO.getId());
@@ -494,7 +494,7 @@ public class CorporateServiceImpl implements CorporateService {
     }
 
     @Override
-    @Verifiable(operation = "DELETE_CORPORATE_ROLE", description = "Deleting a Corporate Role")
+//    @Verifiable(operation = "DELETE_CORPORATE_ROLE", description = "Deleting a Corporate Role")
     public String deleteCorporateRole(Long id) throws InternetBankingException {
 
         try {
@@ -520,23 +520,22 @@ public class CorporateServiceImpl implements CorporateService {
     @Transactional
     public CorpTransRule getApplicableTransferRule(CorpTransRequest transferRequest) {
 
-        logger.info("Transfer request got is "+transferRequest);
+        logger.info("Transfer request got is " + transferRequest);
         Corporate corporate = transferRequest.getCorporate();
         List<CorpTransRule> transferRules = corporate.getCorpTransRules();
         Collections.sort(transferRules, new TransferRuleComparator());
         BigDecimal transferAmount = transferRequest.getAmount();
         CorpTransRule applicableTransferRule = null;
         for (CorpTransRule transferRule : transferRules) {
-            logger.info("Transfer rule is "+transferRule);
+            logger.info("Transfer rule is " + transferRule);
 
             BigDecimal lowerLimit = transferRule.getLowerLimitAmount();
-            logger.info("Transfer rule lower amount is "+lowerLimit);
+            logger.info("Transfer rule lower amount is " + lowerLimit);
 
             BigDecimal upperLimit = transferRule.getUpperLimitAmount();
-            logger.info("Transfer rule upper amount is "+upperLimit);
+            logger.info("Transfer rule upper amount is " + upperLimit);
 
-            logger.info("Transfer amount is "+transferAmount);
-
+            logger.info("Transfer amount is " + transferAmount);
 
 
             if (transferAmount.compareTo(lowerLimit) >= 0 && (transferAmount.compareTo(upperLimit) <= 0)) {
@@ -553,7 +552,7 @@ public class CorporateServiceImpl implements CorporateService {
     @Transactional
     public List<CorporateRole> getQualifiedRoles(CorpTransRequest transRequest) {
 
-      CorpTransRule applicableTransferRule = getApplicableTransferRule(transRequest);
+        CorpTransRule applicableTransferRule = getApplicableTransferRule(transRequest);
         List<CorporateRole> roles = new ArrayList<>();
 
         if (applicableTransferRule != null) {
@@ -574,8 +573,8 @@ public class CorporateServiceImpl implements CorporateService {
 //        return corporateRole;
 //    }
 
-    private void sortRolesByRank(List<CorporateRole> roles){
-        Collections.sort(roles,new Comparator<CorporateRole>(){
+    private void sortRolesByRank(List<CorporateRole> roles) {
+        Collections.sort(roles, new Comparator<CorporateRole>() {
             @Override
             public int compare(CorporateRole o1, CorporateRole o2) {
                 return o1.getRank().compareTo(o2.getRank());

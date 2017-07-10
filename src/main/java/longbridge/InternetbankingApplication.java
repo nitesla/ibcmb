@@ -1,7 +1,7 @@
 package longbridge;
 
-import longbridge.models.Code;
-import longbridge.repositories.CustomJpaRepositoryFactoryBean;
+import longbridge.models.*;
+import longbridge.repositories.*;
 import longbridge.services.SecurityService;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +36,15 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
         return application.sources(InternetbankingApplication.class);
     }
 
+@Autowired
+    AdminUserRepo adminUserRepo;
+    @Autowired
+    OperationsUserRepo operationsUserRepo;
 
+    @Autowired
+    CorporateUserRepo corporateUserRepo;
+            @Autowired
+    RetailUserRepo retailUserRepo;
     @Override
     public void run(String... strings) throws Exception {
 
