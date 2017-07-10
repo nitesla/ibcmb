@@ -326,8 +326,14 @@ public class TransferController {
         modelMap.put("acctNo2", transferService.getTransfer(id).getBeneficiaryAccountNumber());
         modelMap.put("acctNo1", transferService.getTransfer(id).getCustomerAccountNumber());
         modelMap.put("refNUm", transferService.getTransfer(id).getReferenceNumber());
-        modelMap.put("date", DateFormatter.format(transferService.getTransfer(id).getTranDate()));
-        modelMap.put("tranDate", DateFormatter.format(transferService.getTransfer(id).getTranDate()));
+        if(transferService.getTransfer(id).getTranDate()!=null){
+            modelMap.put("date", transferService.getTransfer(id).getTranDate());
+        }
+       else{ modelMap.put("date", transferService.getTransfer(id).getTranDate());}
+        if(transferService.getTransfer(id).getTranDate()!=null) {
+            modelMap.put("tranDate", DateFormatter.format(transferService.getTransfer(id).getTranDate()));
+        }
+        else{modelMap.put("tranDate","");}
         ModelAndView modelAndView = new ModelAndView(view, modelMap);
         return modelAndView;
     }

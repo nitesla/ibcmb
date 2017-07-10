@@ -62,6 +62,7 @@ public class CorpTransferController {
     private FinancialInstitutionService financialInstitutionService;
     private TransferErrorService transferErrorService;
     private SecurityService securityService;
+    private ApplicationContext appContext;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
@@ -384,5 +385,33 @@ public class CorpTransferController {
         return object.toString();
     }
 
+    @RequestMapping(path = "{id}/receipt", method = RequestMethod.GET)
+    public ModelAndView report(@PathVariable Long id, HttpServletRequest servletRequest, Principal principal) {
+        CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
+        JasperReportsPdfView view = new JasperReportsPdfView();
+        view.setUrl("classpath:jasperreports/rpt_receipt.jrxml");
+        view.setApplicationContext(appContext);
+        Map<String, Object> modelMap = new HashMap<>();
+        modelMap.put("datasource", new ArrayList<>());
+        modelMap.put("amount", transferService.getTransfer(id).getAmount());
+        modelMap.put("recipient", transferService.getTransfer(id).getBeneficiaryAccountName());
+        modelMap.put("AccountNum", transferService.getTransfer(id).getCustomerAccountNumber());
+        modelMap.put("sender", corporateUser.getFirstName() + " " + corporateUser.getLastName());
+        modelMap.put("remarks", transferService.getTransfer(id).getRemarks());
+        modelMap.put("recipientBank", transferService.getTransfer(id).getFinancialInstitution().getInstitutionName());
+        modelMap.put("acctNo2", transferService.getTransfer(id).getBeneficiaryAccountNumber());
+        modelMap.put("acctNo1", transferService.getTransfer(id).getCustomerAccountNumber());
+        modelMap.put("refNUm", transferService.getTransfer(id).getReferenceNumber());
+        if(transferService.getTransfer(id).getTranDate()!=null){
+            modelMap.put("date", transferService.getTransfer(id).getTranDate());
+        }
+        else{ modelMap.put("date", transferService.getTransfer(id).getTranDate());}
+        if(transferService.getTransfer(id).getTranDate()!=null) {
+            modelMap.put("tranDate", DateFormatter.format(transferService.getTransfer(id).getTranDate()));
+        }
+        else{modelMap.put("tranDate","");}
+        ModelAndView modelAndView = new ModelAndView(view, modelMap);
+        return modelAndView;
+    }
 
 }
