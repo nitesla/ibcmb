@@ -70,7 +70,7 @@ public class OperationsUserController {
         String tokenCode = request.getParameter("token");
 
         try{
-            boolean result = securityService.performTokenValidation(username,tokenCode);
+            boolean result = securityService.performTokenValidation(opsUser.getEntrustId(),tokenCode);
             if(result){
                 if( request.getSession().getAttribute("2FA") !=null) {
                     request.getSession().removeAttribute("2FA");
@@ -166,7 +166,7 @@ public class OperationsUserController {
             SettingDTO setting = configService.getSettingByName("ENABLE_OPS_2FA");
             boolean tokenAuth = false;
             if (setting != null && setting.isEnabled()) {
-                tokenAuth = (setting.getValue().equalsIgnoreCase("yes") ? true : false);
+                tokenAuth = (setting.getValue().equalsIgnoreCase("YES") ? true : false);
             }
             if (tokenAuth) {
                 return "redirect:/ops/token";

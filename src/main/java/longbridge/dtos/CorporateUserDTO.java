@@ -29,6 +29,8 @@ public class CorporateUserDTO {
     private String email;
     @NotEmpty(message = "phoneNumber")
     private String  phoneNumber;
+    private boolean admin;
+    private String designation;
     private String roleId;
     private String role;
     private boolean ruleMember;
@@ -277,6 +279,23 @@ public class CorporateUserDTO {
 
     public void setIsFirstTimeLogon(String isFirstTimeLogon) {
         this.isFirstTimeLogon = isFirstTimeLogon;
+    }
+
+    public boolean isAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(boolean admin) {
+        this.admin = admin;
+    }
+
+
+    public String getDesignation() {
+        return designation;
+    }
+
+    public void setDesignation(String designation) {
+        this.designation = designation;
     }
 
     @Override

@@ -202,7 +202,7 @@ public class User extends AbstractEntity implements PrettySerializer {
                     throws IOException, JsonProcessingException {
 
                 gen.writeStartObject();
-                gen.writeStringField("User Name", value.userName);
+                gen.writeStringField("Username", value.userName);
                 gen.writeStringField("First Name", value.firstName);
                 gen.writeStringField("Last Name", value.lastName);
                 gen.writeStringField("Email", value.email);

@@ -285,6 +285,11 @@ public class AccountController {
 		return "cust/account/view";
 	}
 
+	@GetMapping("/viewonlyhistory")
+	public String getViewOnlyHist(Model model, Principal principal) throws ParseException {
+		return "cust/account/tranhistory";
+	}
+
 	@GetMapping("/viewstatement/display/data")
 
 	public @ResponseBody
@@ -337,6 +342,7 @@ public class AccountController {
 			out.setDraw(input.getDraw());
 			List<TransactionDetails> list = accountStatement.getTransactionDetails();
 			RetailUser retailUser = retailUserService.getUserByName(principal.getName());
+
 			modelMap.put("datasource", list);
 			modelMap.put("format", "pdf");
 			modelMap.put("summary.accountNum",acctNumber);

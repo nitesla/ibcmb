@@ -77,19 +77,8 @@ public class AdmCodeController {
 
         try {
 			String message = codeService.addCode(codeDTO, adminUser);
-//        Code code = codeService.convertDTOToEntity(codeDTO);
-//        try {
-//			verificationService.addNewVerificationRequest(code);
-//		} catch (JsonProcessingException e) {
-//			// TODO Auto-generated catch block
-//			logger.error("Error", e);
-//		}
-//        codeService.updateCode(codeDTO,adminUser);//
-//        codeService.addObject(code);
-//        codeService.addCode(codeDTO);
-
 			redirectAttributes.addFlashAttribute("message", message);
-			return "redirect:/admin/codes";
+			return "redirect:/admin/codes/alltypes";
 		}
 		catch (InternetBankingException ibe){
         	result.addError(new ObjectError("error",ibe.getMessage()));
@@ -198,9 +187,8 @@ public class AdmCodeController {
 		try {
 			AdminUser adminUser = adminUserService.getUserByName(principal.getName());
 			String message = codeService.updateCode(codeDTO, adminUser);
-//		// codeService.modify(codeDTO, adminUser);
 			redirectAttributes.addFlashAttribute("message", message);
-			return "redirect:/admin/codes";
+			return "redirect:/admin/codes/alltypes";
 		}
 		catch (InternetBankingException ibe){
 			result.addError(new ObjectError("error",ibe.getMessage()));
@@ -221,6 +209,6 @@ public class AdmCodeController {
 			redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
 
 		}
-		return "redirect:/admin/codes";
+		return "redirect:/admin/codes/alltypes";
 	}
 }

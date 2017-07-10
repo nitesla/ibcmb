@@ -51,18 +51,18 @@ public class RetailUserServiceImpl implements RetailUserService {
     private ModelMapper modelMapper;
 
     @Autowired
-    MessageSource messageSource;
+    private MessageSource messageSource;
 
     @Autowired
-    PasswordPolicyService passwordPolicyService;
+    private PasswordPolicyService passwordPolicyService;
 
     @Autowired
-    MailService mailService;
+    private MailService mailService;
 
     @Autowired
-    FailedLoginService failedLoginService;
+    private FailedLoginService failedLoginService;
 
-    Locale locale = LocaleContextHolder.getLocale();
+    private Locale locale = LocaleContextHolder.getLocale();
 
     private CodeService codeService;
     private AccountService accountService;
@@ -99,9 +99,8 @@ public class RetailUserServiceImpl implements RetailUserService {
         }
         try {
             failedLoginService.unLockUser(user);
-            return messageSource.getMessage("unlock.success",null,locale);
-        }
-        catch (Exception e){
+            return messageSource.getMessage("unlock.success", null, locale);
+        } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("unlock.failure", null, locale));
 
         }
@@ -143,17 +142,6 @@ public class RetailUserServiceImpl implements RetailUserService {
         return retailUser;
     }
 
-//    @Override
-//    public String setPassword(RetailUser user, String password) throws PasswordException {
-//        boolean ok = false;
-//        if (user != null) {
-//            user.setPassword(this.passwordEncoder.encode(user.getPassword()));
-//        } else {
-//            throw new RuntimeException("Null user provided");
-//        }
-//        return null;
-//
-//    }
 
     @Override
     @Transactional
@@ -180,13 +168,13 @@ public class RetailUserServiceImpl implements RetailUserService {
             retailUser.setRole(roleService.getTheRole("RETAIL"));
             retailUser.setStatus("A");
             retailUser.setAlertPreference(codeService.getByTypeAndCode("ALERT_PREFERENCE", "BOTH"));
-            String errorMsg = passwordPolicyService.validate(user.getPassword(),null);
-            if(!"".equals(errorMsg)){
+            String errorMsg = passwordPolicyService.validate(user.getPassword(), null);
+            if (!"".equals(errorMsg)) {
                 throw new PasswordPolicyViolationException(errorMsg);
             }
 
             String phoneNo = details.getPhone();
-            String fullName = details.getFirstName()+" "+details.getLastName();
+            String fullName = details.getFirstName() + " " + details.getLastName();
             SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_CREATION");
             if (setting != null && setting.isEnabled()) {
                 if ("YES".equalsIgnoreCase(setting.getValue())) {
@@ -204,7 +192,7 @@ public class RetailUserServiceImpl implements RetailUserService {
             }
 
 
-            retailUser.setPassword(this.passwordEncoder.encode(user.getPassword()));
+            retailUser.setPassword(passwordEncoder.encode(user.getPassword()));
             retailUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
             passwordPolicyService.saveRetailPassword(retailUser);
             retailUserRepo.save(retailUser);
@@ -216,24 +204,23 @@ public class RetailUserServiceImpl implements RetailUserService {
 
             logger.info("Retail user {} created", user.getUserName());
             return messageSource.getMessage("user.add.success", null, locale);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("user.add.failure", null, locale), e);
         }
     }
 
-    private void createEntrustUser(String username, String fullName, boolean enableOtp){
-        try{
+    private void createEntrustUser(String username, String fullName, boolean enableOtp) {
+        try {
             securityService.createEntrustUser(username, fullName, true);
-        }catch (InternetBankingSecurityException e){
+        } catch (InternetBankingSecurityException e) {
             throw new InternetBankingSecurityException(messageSource.getMessage("entrust.create.failure", null, locale), e);
         }
     }
 
-    private void addUserContact(String username, String phone, String email){
-        try{
+    private void addUserContact(String username, String phone, String email) {
+        try {
             securityService.addUserContacts(email, phone, true, username);
-        }catch (InternetBankingSecurityException e){
+        } catch (InternetBankingSecurityException e) {
             securityService.deleteEntrustUser(username);
             throw new InternetBankingSecurityException(messageSource.getMessage("entrust.create.failure", null, locale), e);
         }
@@ -242,17 +229,17 @@ public class RetailUserServiceImpl implements RetailUserService {
     private void setEntrustUserQA(String username, List<String> securityQuestion, List<String> securityAnswer){
         try{
             securityService.setUserQA(username, securityQuestion, securityAnswer);
-        }catch (InternetBankingSecurityException e){
+        } catch (InternetBankingSecurityException e) {
             securityService.deleteEntrustUser(username);
             throw new InternetBankingSecurityException(messageSource.getMessage("entrust.create.failure", null, locale), e);
         }
     }
 
-    private void setEntrustUserMutualAuth(String username, String captionSec, String phishingSec){
-        try{
+    private void setEntrustUserMutualAuth(String username, String captionSec, String phishingSec) {
+        try {
             securityService.setMutualAuth(username, captionSec, phishingSec);
 
-        }catch (InternetBankingSecurityException e){
+        } catch (InternetBankingSecurityException e) {
             securityService.deleteEntrustUser(username);
             throw new InternetBankingSecurityException(messageSource.getMessage("entrust.create.failure", null, locale), e);
         }
@@ -264,7 +251,6 @@ public class RetailUserServiceImpl implements RetailUserService {
 
             RetailUser retailUser = retailUserRepo.findOne(userId);
             retailUserRepo.delete(userId);
-            String fullName = retailUser.getFirstName()+" "+retailUser.getLastName();
             SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_DELETION");
 
             if (setting != null && setting.isEnabled()) {
@@ -272,13 +258,11 @@ public class RetailUserServiceImpl implements RetailUserService {
                     securityService.deleteEntrustUser(retailUser.getUserName());
                 }
             }
-            return messageSource.getMessage("user.delete.success",null,locale);
-        }
-        catch (InternetBankingSecurityException se) {
+            return messageSource.getMessage("user.delete.success", null, locale);
+        } catch (InternetBankingSecurityException se) {
             throw new InternetBankingSecurityException(messageSource.getMessage("entrust.delete.failure", null, locale));
-        }
-        catch (Exception e){
-            throw new InternetBankingException(messageSource.getMessage("user.delete.failure",null,locale),e);
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("user.delete.failure", null, locale), e);
         }
     }
 
@@ -299,8 +283,8 @@ public class RetailUserServiceImpl implements RetailUserService {
                 user.setExpiryDate(new Date());
                 passwordPolicyService.saveRetailPassword(user);
                 retailUserRepo.save(user);
-                sendActivationMessage(user, fullName,user.getUserName(),password);
-            } else{
+                sendActivationMessage(user, fullName, user.getUserName(), password);
+            } else {
                 user.setStatus(newStatus);
                 retailUserRepo.save(user);
             }
@@ -308,29 +292,45 @@ public class RetailUserServiceImpl implements RetailUserService {
             logger.info("Retail user {} status changed from {} to {}", user.getUserName(), oldStatus, newStatus);
             return messageSource.getMessage("user.status.success", null, locale);
 
-        }
-        catch (MailException me) {
+        } catch (MailException me) {
             throw new InternetBankingException(messageSource.getMessage("mail.failure", null, locale), me);
-        }
-        catch (InternetBankingException ibe) {
-            throw  ibe;
-        }
-        catch (Exception e) {
+        } catch (InternetBankingException ibe) {
+            throw ibe;
+        } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("user.status.failure", null, locale), e);
 
         }
     }
 
 
+    @Async
+    public void sendPostPasswordResetMessage(User user, String... args) {
+        try {
+            Email email = new Email.Builder()
+                    .setRecipient(user.getEmail())
+                    .setSubject(messageSource.getMessage("customer.password.reset.subject", null, locale))
+                    .setBody(String.format(messageSource.getMessage("customer.password.reset.message", null, locale), args))
+                    .build();
+            mailService.send(email);
+        } catch (MailException me) {
+            logger.error("Failed to send reactivation mail to {}", user.getEmail(), me);
+        }
+
+    }
+
 
     @Async
-    public void sendPostActivateMessage(User user, String ... args ){
+    public void sendPostActivateMessage(User user, String... args) {
+        try {
             Email email = new Email.Builder()
                     .setRecipient(user.getEmail())
                     .setSubject(messageSource.getMessage("customer.reactivation.subject", null, locale))
                     .setBody(String.format(messageSource.getMessage("customer.reactivation.message", null, locale), args))
                     .build();
             mailService.send(email);
+        } catch (MailException me) {
+            logger.error("Failed to send reactivation mail to {}", user.getEmail(), me);
+        }
 
     }
 
@@ -359,20 +359,13 @@ public class RetailUserServiceImpl implements RetailUserService {
             user.setExpiryDate(new Date());
             passwordPolicyService.saveRetailPassword(user);
             retailUserRepo.save(user);
-            String fullName = user.getFirstName()+" "+user.getLastName();
-            Email email = new Email.Builder()
-                    .setRecipient(user.getEmail())
-                    .setSubject(messageSource.getMessage("customer.password.reset.subject",null,locale))
-                    .setBody(String.format(messageSource.getMessage("customer.password.reset.message",null,locale),fullName, newPassword))
-                    .build();
-            mailService.send(email);
+            String fullName = user.getFirstName() + " " + user.getLastName();
+            sendPostPasswordResetMessage(user,fullName,user.getUserName(),newPassword);
             logger.info("Retail user {} password reset successfully", user.getUserName());
             return messageSource.getMessage("password.reset.success", null, locale);
-        }
-        catch (MailException me) {
+        } catch (MailException me) {
             throw new InternetBankingException(messageSource.getMessage("mail.failure", null, locale), me);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new PasswordException(messageSource.getMessage("password.reset.failure", null, locale), e);
         }
     }
@@ -399,12 +392,9 @@ public class RetailUserServiceImpl implements RetailUserService {
             this.retailUserRepo.save(retailUser);
             logger.info("User {} password has been updated", user.getId());
             return messageSource.getMessage("password.change.success", null, locale);
-        }
-
-        catch (MailException me) {
+        } catch (MailException me) {
             throw new InternetBankingException(messageSource.getMessage("mail.failure", null, locale), me);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new PasswordException(messageSource.getMessage("password.change.failure", null, locale), e);
         }
     }
@@ -480,21 +470,19 @@ public class RetailUserServiceImpl implements RetailUserService {
     }
 
 
-
-
     private RetailUserDTO convertEntityToDTO(RetailUser retailUser) {
-        RetailUserDTO retailUserDTO =  modelMapper.map(retailUser, RetailUserDTO.class);
-        if(retailUser.getCreatedOnDate()!=null) {
+        RetailUserDTO retailUserDTO = modelMapper.map(retailUser, RetailUserDTO.class);
+        if (retailUser.getCreatedOnDate() != null) {
             retailUserDTO.setCreatedOn(DateFormatter.format(retailUser.getCreatedOnDate()));
         }
-        if(retailUser.getLastLoginDate()!=null) {
+        if (retailUser.getLastLoginDate() != null) {
             retailUserDTO.setLastLogin(DateFormatter.format(retailUser.getLastLoginDate()));
         }
         return retailUserDTO;
     }
 
     private RetailUser convertDTOToEntity(RetailUserDTO retailUserDTO) {
-       return   modelMapper.map(retailUserDTO, RetailUser.class);
+        return modelMapper.map(retailUserDTO, RetailUser.class);
     }
 
     private List<RetailUserDTO> convertEntitiesToDTOs(Iterable<RetailUser> RetailUsers) {
@@ -542,13 +530,13 @@ public class RetailUserServiceImpl implements RetailUserService {
         return retailUser.getUserName();
     }
 
-	@Override
-	public Page<RetailUserDTO> findUsers(String pattern, Pageable pageDetails) {
-		Page<RetailUser> page = retailUserRepo.findUsingPattern(pattern,pageDetails);
+    @Override
+    public Page<RetailUserDTO> findUsers(String pattern, Pageable pageDetails) {
+        Page<RetailUser> page = retailUserRepo.findUsingPattern(pattern, pageDetails);
         List<RetailUserDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
         Page<RetailUserDTO> pageImpl = new PageImpl<RetailUserDTO>(dtOs, pageDetails, t);
         return pageImpl;
-	}
+    }
 
 }

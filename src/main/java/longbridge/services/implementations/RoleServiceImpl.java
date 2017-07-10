@@ -211,6 +211,12 @@ public class RoleServiceImpl implements RoleService {
         }
     }
 
+    @Override
+    public List<RoleDTO> getRolesByUserType(UserType userType) {
+        List<Role> roles = roleRepo.findByUserType(userType);
+        return  convertRoleEntitiesToDTOs(roles);
+    }
+
     public RoleDTO convertEntityToDTO(Role role) {
         return modelMapper.map(role, RoleDTO.class);
     }
@@ -241,11 +247,6 @@ public class RoleServiceImpl implements RoleService {
         }
         else {
             permission = permissionRepo.findOne(permissionDTO.getId());
-            permission.setVersion(permissionDTO.getVersion());
-            permission.setName(permission.getName());
-            permission.setUserType(permissionDTO.getUserType());
-            permission.setDescription(permissionDTO.getDescription());
-            permission.setCode(permissionDTO.getCode());
         }
         return permission;
     }

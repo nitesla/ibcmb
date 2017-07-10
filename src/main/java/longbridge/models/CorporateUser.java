@@ -1,5 +1,6 @@
 package longbridge.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
@@ -16,16 +17,16 @@ import javax.persistence.UniqueConstraint;
 @Entity
 @Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
-@Table(uniqueConstraints=@UniqueConstraint(columnNames={"userName","deletedOn"}))
+@Table(uniqueConstraints=@UniqueConstraint(columnNames={"userName"}))
 public class CorporateUser extends User {
 
 	protected String isFirstTimeLogon = "Y";
 
-	@ManyToOne
-    private Corporate corporate;
+	private boolean admin;
 
-//	private CorporateRole corporateRole;
-//
+	@ManyToOne
+	@JsonBackReference
+	private Corporate corporate;
 
     public String getIsFirstTimeLogon() {
         return isFirstTimeLogon;
@@ -47,15 +48,13 @@ public class CorporateUser extends User {
 		this.corporate = corporate;
 	}
 
+	public boolean isAdmin() {
+		return admin;
+	}
 
-//	public CorporateRole getCorporateRole() {
-//		return corporateRole;
-//	}
-//
-//	public void setCorporateRole(CorporateRole corporateRole) {
-//		this.corporateRole = corporateRole;
-//	}
-
+	public void setAdmin(boolean admin) {
+		this.admin = admin;
+	}
 
 	@Override
 	public int hashCode(){

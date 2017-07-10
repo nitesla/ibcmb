@@ -102,12 +102,7 @@ public interface CorporateUserService{
      */
     @PreAuthorize("hasAuthority('DELETE_CORPORATE_USER')")
     String deleteUser(Long userId) throws InternetBankingException;
-    
-    /**
-     * Temporarily Locks the corporate user
-     * @param user the corporate user
-     */
-    void lockUser(CorporateUser user, Date unlocked);
+
 
     /**
      * Replaces the old password with the new password for the specified corporate user.
@@ -119,11 +114,6 @@ public interface CorporateUserService{
     @PreAuthorize("hasAuthority('UPDATE_CORPORATE_USER')")
     String changePassword(CorporateUser user, CustChangePassword changePassword) throws PasswordException;
 
-    /**
-     * Generates and sends a password to the specified user
-     * @param user the corporate user
-     */
-    void generateAndSendPassword(CorporateUser user);
 
     /** This sets the Alert preference of the specified user. Alert preference may
      * be SMS, EMAIL or BOTH

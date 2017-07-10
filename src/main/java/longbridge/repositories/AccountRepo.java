@@ -28,6 +28,8 @@ public interface AccountRepo extends CommonRepo<Account,Long> {
 
     Account findFirstAccountByCustomerId(String customerId);
 
+    boolean existsByCustomerId(String customerId);
+
     Page<Account> findAccountByCustomerId(String customerId, Pageable pageable);
 
     List<Account> findByCustomerId(String customerId);

@@ -89,7 +89,7 @@ public class MakerCheckerAdvisor {
 		log.info("In operation [ " + verifier.operation() + "] ...{" + verifier.description() + "}");
 
 		// pjp.getSignature().getDeclaringType().getAnnotations()
-		log.info(entity.toString());
+//		log.info(entity.toString());
 		log.info("JB Around: " + pjp);
 
 		if (!makerCheckerService.isEnabled(verifier.operation())) {
@@ -148,7 +148,6 @@ public class MakerCheckerAdvisor {
 		System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
 
 		return entity;
-		// return pjp.proceed();
 	}
 
 

@@ -8,6 +8,17 @@ public class CorpTransferRequestDTO extends TransferRequestDTO {
 
     private String corporateId;
 
+    private String transAuthId;
+
+
+    public String getTransAuthId() {
+        return transAuthId;
+    }
+
+    public void setTransAuthId(String transAuthId) {
+        this.transAuthId = transAuthId;
+    }
+
     public String getCorporateId() {
         return corporateId;
     }
