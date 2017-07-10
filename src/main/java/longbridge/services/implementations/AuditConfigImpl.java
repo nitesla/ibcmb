@@ -90,8 +90,7 @@ public class AuditConfigImpl implements AuditConfigService {
 		return modifiedEntityTypeEntities;
 	}
 	@Override
-	public Page<T>  revisedEntityDetails(String entityName,Integer revisionNo,Pageable pageable)
-	{
+	public Page<T>  revisedEntityDetails(String entityName,Integer revisionNo,Pageable pageable){
 		List<Object> revisionList = new ArrayList<>();
 		Page<CustomRevisionEntity> revisionEntities=null;
 		List<String> RevisionDetails = new ArrayList<>();
