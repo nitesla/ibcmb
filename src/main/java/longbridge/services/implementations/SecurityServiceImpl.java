@@ -933,12 +933,12 @@ public class SecurityServiceImpl implements SecurityService {
             this.t = this.ve.getTemplate("entrust/performAddContactDetail.vm");
             this.context.put("appCode", appCode);
             this.context.put("appDesc", appDesc);
-            this.context.put("phoneDefault", phoneDefault);
+            this.context.put("phoneDefault", false);
             this.context.put("email", email);
             this.context.put("appGroup", appGroup);
             this.context.put("userName", userName);
             this.context.put("emailDevLabel", "CmbEmailOtp");
-            this.context.put("emailDefault", false);
+            this.context.put("emailDefault", true);
             this.context.put("PhoneDevLabel", "Vanso");
             this.context.put("phone", phone);
 

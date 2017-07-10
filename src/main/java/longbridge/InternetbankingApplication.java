@@ -1,7 +1,10 @@
 package longbridge;
 
+import longbridge.models.Account;
 import longbridge.models.Code;
+import longbridge.repositories.AccountRepo;
 import longbridge.repositories.CustomJpaRepositoryFactoryBean;
+import longbridge.services.IntegrationService;
 import longbridge.services.SecurityService;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +24,11 @@ import java.util.List;
 @EnableJpaRepositories(repositoryFactoryBeanClass = CustomJpaRepositoryFactoryBean.class)
 @EnableBatchProcessing
 @EnableAsync
-public class InternetbankingApplication /*extends SpringBootServletInitializer */implements CommandLineRunner {
-
-
+public class InternetbankingApplication /*extends SpringBootServletInitializer */ implements CommandLineRunner {
+    @Autowired
+    AccountRepo repo;
+    @Autowired
+    IntegrationService service;
 
 
     public static void main(String[] args) {
@@ -39,7 +44,22 @@ public class InternetbankingApplication /*extends SpringBootServletInitializer *
     @Override
     public void run(String... strings) throws Exception {
 
+        repo.findAll()
+                .stream()
+                .forEach(
+                        i ->
+                        {
+                            i.setCurrencyCode(service.viewAccountDetails(i.getAccountNumber()).getAcctCrncyCode());
 
+                            repo.save(
+
+
+                                    i
+
+                            );
+
+                        }
+                );
 
 
     }
