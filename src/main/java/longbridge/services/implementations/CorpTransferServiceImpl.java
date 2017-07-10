@@ -112,9 +112,14 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         CorpTransRequest corpTransRequest = (CorpTransRequest) integrationService.makeTransfer(convertDTOToEntity(corpTransferRequestDTO));
         if (corpTransRequest != null) {
             logger.trace("params {}", corpTransRequest);
-            saveTransfer(convertEntityToDTO(corpTransRequest));
-            if (corpTransRequest.getStatus().equals("000") || corpTransRequest.getStatus().equals("00"))
-                return convertEntityToDTO(corpTransRequest);
+            corpTransferRequestDTO =   saveTransfer(convertEntityToDTO(corpTransRequest));
+
+
+            if (corpTransRequest.getStatus()!=null){
+                if (corpTransRequest.getStatus().equals("000") || corpTransRequest.getStatus().equals("00"))
+                    return corpTransferRequestDTO;
+                throw new InternetBankingTransferException(corpTransRequest.getStatusDescription());
+            }
             throw new InternetBankingTransferException(TransferExceptions.ERROR.toString());
         }
         throw new InternetBankingTransferException();

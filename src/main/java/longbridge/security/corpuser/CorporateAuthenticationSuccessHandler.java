@@ -89,6 +89,7 @@ public class CorporateAuthenticationSuccessHandler implements AuthenticationSucc
         boolean isUser = corporateUser.getUserType().equals(UserType.CORPORATE);
 
         String isFirstLogon= corporateUser.getIsFirstTimeLogon();
+
         if ("Y".equalsIgnoreCase(isFirstLogon)){
             return "/corporate/setup";
         }
