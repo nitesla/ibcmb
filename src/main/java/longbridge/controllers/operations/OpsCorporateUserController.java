@@ -8,6 +8,7 @@ import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingSecurityException;
 import longbridge.exception.PasswordException;
 import longbridge.forms.ChangePassword;
+import longbridge.models.UserType;
 import longbridge.security.FailedLoginService;
 import longbridge.services.CorporateService;
 import longbridge.services.CorporateUserService;
@@ -54,11 +55,11 @@ public class OpsCorporateUserController {
 
     @ModelAttribute
     public void init(Model model) {
-        Iterable<RoleDTO> roles = roleService.getRoles();
+        Iterable<RoleDTO> roles = roleService.getRolesByUserType(UserType.CORPORATE);
         Iterator<RoleDTO> roleDTOIterator = roles.iterator();
         while (roleDTOIterator.hasNext()) {
             RoleDTO roleDTO = roleDTOIterator.next();
-            if (roleDTO.getName().equals("Sole Admin")) {
+            if (roleDTO.getName().equals("SOLE")) {
                 roleDTOIterator.remove();
             }
         }
@@ -230,11 +231,11 @@ public class OpsCorporateUserController {
             redirectAttributes.addFlashAttribute("message", message);
         } catch (PasswordException pe) {
             redirectAttributes.addFlashAttribute("failure", pe.getMessage());
-            logger.error("Error resetting password for operation user", pe);
+            logger.error("Error resetting password for corporate user", pe);
         }
         catch (InternetBankingException ibe) {
             redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
-            logger.error("Error resetting password for operation user", ibe);
+            logger.error("Error resetting password for corporate user", ibe);
         }
         return "redirect:/ops/corporates/" + corpId + "/view";
     }

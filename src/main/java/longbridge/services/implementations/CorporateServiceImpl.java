@@ -110,6 +110,7 @@ public class CorporateServiceImpl implements CorporateService {
             corporateUser.setUserName(user.getUserName());
             corporateUser.setEmail(user.getEmail());
             corporateUser.setPhoneNumber(user.getPhoneNumber());
+            corporateUser.setAdmin(user.isAdmin());
             corporateUser.setCreatedOnDate(new Date());
             corporateUser.setStatus("A");
 
