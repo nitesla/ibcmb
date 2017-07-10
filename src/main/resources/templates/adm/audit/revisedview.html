@@ -139,13 +139,13 @@
             "serverSide" : true,
            "ajax": "/admin/audit/revised/entity/all",
 
-            "ajax" : {
-                url : "/admin/audit/all/revisedentities",
-                "type" : "GET",
-                "data" : function(d) {
-                    d.csearch = $('#pattern').val();
-                }
-                  },
+//            "ajax" : {
+//                url : "/admin/audit/all/revisedentities",
+//                "type" : "GET",
+//                "data" : function(d) {
+//                    d.csearch = $('#pattern').val();
+//                }
+//                  },
 
             "dom": 'T<"clear">frtlp',
             "columns": [
@@ -215,7 +215,8 @@
     });
     var id;
     var className;
-    $("#auditview").on("click", "tr", function() {
+    $("#auditview").on("click", "tr", function()
+    {
         var table =  $('#auditview').DataTable();
         className = $(this).children(":first").text();
         var $name2 = $(this).children(":nth-child(3)").text();
@@ -240,7 +241,8 @@
 
     } );
 
-    $("#delete-btn").on("click", function(e) {
+    $("#delete-btn").on("click", function(e)
+    {
         e.preventDefault();
         var link = $(e.currentTarget);
         if($(link).attr("disabled")){

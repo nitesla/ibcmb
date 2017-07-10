@@ -89,8 +89,6 @@ public class AdmAuditController {
 
 
     @GetMapping("/revised/entity/all")
-    public @ResponseBody DataTablesOutput<ModifiedEntityTypeEntity> getAllRevisedEntity(DataTablesInput input)
-    @GetMapping("all/revisedentities")
     public @ResponseBody DataTablesOutput<ModifiedEntityTypeEntity> getAllRevisedEntity(DataTablesInput input,@RequestParam("csearch") String search)
     {
         Pageable pageable = DataTablesUtils.getPageable(input);

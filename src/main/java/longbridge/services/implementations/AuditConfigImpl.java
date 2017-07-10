@@ -95,6 +95,10 @@ public class AuditConfigImpl implements AuditConfigService {
 
 		return modifiedEntityTypeEntities;
 	}
+
+
+
+
 	@Override
 	public Page<T>  revisedEntityDetails(String entityName,Integer revisionNo,Pageable pageable){
 		List<Object> revisionList = new ArrayList<>();
@@ -125,6 +129,19 @@ public class AuditConfigImpl implements AuditConfigService {
 		String[] classDetails = StringUtils.substringsBetween(details,"'","'");
 		return Arrays.asList(classDetails);
 	}
+
+	@Override
+	public Page<T> getRevisedEntitiesDetails(List<T> entities, List<String> revisionNumber)
+	{
+
+		for(T  classname :entities)
+		{
+
+
+		}
+
+	}
+
 	private List<String> getHeaders(String details){
 		List<String> headerDetails = new ArrayList<>();
 		String firstHeader = StringUtils.substringBetween(details,"{","'");

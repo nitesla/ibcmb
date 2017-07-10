@@ -41,4 +41,7 @@ public interface AuditConfigService
 
 	Page<ModifiedEntityTypeEntity> getRevisionEntities(String pattern,Pageable pageDetails);
 
+
+	Page<T> getRevisedEntitiesDetails(List<T> entities,List<String> revisionNumber);
+
 }
