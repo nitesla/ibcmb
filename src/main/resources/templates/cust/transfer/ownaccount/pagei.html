@@ -45,7 +45,7 @@
                                                     <span id="scurency"></span>
                                                     <div>
 
-                                                    <span class="alert no-bd-rad my-border bg-white" id="sourceCurrency">CCY</span>
+                                                    <span class="alert no-bd-rad my-border bg-white hide-content-only" id="sourceCurrency">CCY</span>
                                                         <select name="source" class="form-control" id="source"
                                                                 th:field="*{customerAccountNumber}" onchange="getBalance();getSourceCurrency()" >
 
@@ -60,7 +60,7 @@
 
                                                     <span id="dcurency"></span>
                                                     <div>
-                                                    <span class="alert no-bd-rad my-border bg-white" id="destCurrency">CCY</span>
+                                                    <span class="alert no-bd-rad my-border bg-white hide-content-only" id="destCurrency">NGN</span>
                                                     <select name="destination" class="form-control" id="destination"
                                                             th:field="*{beneficiaryAccountNumber}"  onchange="getDestCurrency();"  required="required">
 
@@ -146,6 +146,8 @@
     /*<![CDATA[*/
 
     $(document).ready(function(){
+        
+
 //       document.getElementById("source").selectedIndex = -1;
     document.getElementById("destination").selectedIndex = -1;
 
@@ -219,6 +221,8 @@
 //                    $('input[name=availBal]').val(bal);
 
                     $('#sourceCurrency').text(cur);
+                   document.getElementById('sourceCurrency').style.visibility = 'visible';
+                    
 
                 }
             }
@@ -239,8 +243,9 @@
                     // $("#myspan").show();
                 }else{
 //                    $('input[name=availBal]').val(bal);
-
+                    
                     $('#destCurrency').text(cur);
+                     document.getElementById('destCurrency').style.visibility = 'visible';
 
                 }
             }
