@@ -44,8 +44,21 @@
                                     <li >
                                         <div class="col-lg-4">
                                             <div class="title-action">
-                                                <a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/index/view" disabled="disabled" ><i class="fa fa-pencil"></i>View</a>
+                                                <a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/index/view" disabled="disabled" ><i class="fa fa-pencil"></i> View</a>
                                             </div>
+                                        </div>
+                                    </li>
+
+                                </ul>
+
+                                <ul class="nav navbar-right panel_toolbox col-lg-4 pull-right">
+
+                                    <li class="pull-right" >
+                                        <div class="input-group col-lg-12">
+                                            <input type="text" class="form-control" id="pattern" placeholder="Search for..."/> <span
+                                                class="input-group-btn">
+										     <button class="btn btn-success" id="search" type="button">Go!</button>
+									       </span>
                                         </div>
                                     </li>
 
@@ -124,7 +137,15 @@
             rowId: 'id',
             "paging": true,
             "serverSide" : true,
-           "ajax": "/admin/audit/all/revisedentities",
+
+            "ajax" : {
+                url : "/admin/audit/all/revisedentities",
+                "type" : "GET",
+                "data" : function(d) {
+                    d.csearch = $('#pattern').val();
+                }
+            },
+
             "dom": 'T<"clear">frtlp',
             "columns": [
                 { "data": "entityClassName" },
@@ -150,22 +171,12 @@
                 "targets" : 0,
                 "data" : "entityClassName",
                 "render" : function(data, type,full, meta) {
-                    if(type ==='display') {
-//                        alert(data.lastIndexOf("."));
-                           data= data.substring((data.lastIndexOf(".")+1),(data.length));
-//                        alert(data.substring(data.lastIndexOf("."),(data.length)));
-//                        return data;
+                    if(type ==='display')
+                    {
+                     data= data.substring((data.lastIndexOf(".")+1),(data.length));
 
                     }
-//                    if (type != 'display') {
-//                        if(data == null)
-//                            return data;
-//                        var dtStart = new Date(parseInt(data));
-//
-//                        var dtStartWrapper = moment(dtStart);
-//                        return dtStartWrapper.format('LLLL');
-//                    }
-//                    alert(data);
+
                     return data;
                 }
             }]});
@@ -181,12 +192,14 @@
 
         });
 
-        $("#search").on("click", function(e) {
+        $("#search").on("click", function(e)
+        {
             e.preventDefault();
             dt = $('#auditview').DataTable();
             dt.ajax.reload(null, true);
-
         });
+
+
 
         table.on('deselect', function() {
             if (table.rows({
