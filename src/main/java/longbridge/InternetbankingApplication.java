@@ -20,7 +20,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @EnableBatchProcessing
 @EnableAsync
 
-public class InternetbankingApplication /*extends SpringBootServletInitializer */ implements CommandLineRunner {
+public class InternetbankingApplication extends SpringBootServletInitializer  implements CommandLineRunner {
     @Autowired
     AccountRepo repo;
     @Autowired
@@ -41,7 +41,18 @@ public class InternetbankingApplication /*extends SpringBootServletInitializer *
     @Override
     public void run(String... strings) throws Exception {
 
+  repo.findAll()
+          .stream()
+          .forEach(
 
+                  i->
+                  {
+                     i.setSchemeType(service.viewAccountDetails(i.getAccountNumber()).getAcctType());
+                     i.setCurrencyCode(service.viewAccountDetails(i.getAccountNumber()).getAcctCrncyCode());
+                    repo.save(i);
+                  }
+
+          );
 
     }
 }
