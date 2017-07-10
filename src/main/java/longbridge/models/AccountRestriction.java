@@ -24,18 +24,10 @@ import java.util.Date;
 @Where(clause ="del_Flag='N'" )
 public class AccountRestriction extends AbstractEntity implements PrettySerializer{
 
-    private String accountNumber;
     private String restrictionType;
+    private String restrictionValue;
+    private String restrictedFor;
     private Date dateCreated;
-
-
-    public String getAccountNumber() {
-        return accountNumber;
-    }
-
-    public void setAccountNumber(String accountNumber) {
-        this.accountNumber = accountNumber;
-    }
 
     public String getRestrictionType() {
         return restrictionType;
@@ -43,6 +35,23 @@ public class AccountRestriction extends AbstractEntity implements PrettySerializ
 
     public void setRestrictionType(String restrictionType) {
         this.restrictionType = restrictionType;
+    }
+
+
+    public String getRestrictionValue() {
+        return restrictionValue;
+    }
+
+    public void setRestrictionValue(String restrictionValue) {
+        this.restrictionValue = restrictionValue;
+    }
+
+    public String getRestrictedFor() {
+        return restrictedFor;
+    }
+
+    public void setRestrictedFor(String restrictedFor) {
+        this.restrictedFor = restrictedFor;
     }
 
     public Date getDateCreated() {
@@ -53,13 +62,14 @@ public class AccountRestriction extends AbstractEntity implements PrettySerializ
         this.dateCreated = dateCreated;
     }
 
+
     @Override
-    public String
-    toString() {
+    public String toString() {
         return "AccountRestriction{" +
-                "accountNumber='" + accountNumber + '\'' +
-                ", restrictionType='" + restrictionType + '\'' +
-                ", dateCreated='" + dateCreated + '\'' +
+                "restrictionType='" + restrictionType + '\'' +
+                ", restrictionValue='" + restrictionValue + '\'' +
+                ", restrictedFor='" + restrictedFor + '\'' +
+                ", dateCreated=" + dateCreated +
                 '}';
     }
 
@@ -71,7 +81,7 @@ public class AccountRestriction extends AbstractEntity implements PrettySerializ
                     throws IOException, JsonProcessingException
             {
                 gen.writeStartObject();
-                gen.writeStringField("Account Number",value.accountNumber);
+                gen.writeStringField("Restriction Value",value.restrictionValue);
                 gen.writeStringField("Restriction Type",value.restrictionType);
 
 

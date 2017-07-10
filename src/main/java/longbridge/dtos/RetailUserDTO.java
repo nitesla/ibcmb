@@ -18,6 +18,7 @@ public class RetailUserDTO {
     private Long id;
     @NotEmpty
     private String userName;
+    private String entrustId;
     private String customerId;
     private String version;
     private String firstName;
@@ -72,6 +73,13 @@ public class RetailUserDTO {
         this.version = version;
     }
 
+    public String getEntrustId() {
+        return entrustId;
+    }
+
+    public void setEntrustId(String entrustId) {
+        this.entrustId = entrustId;
+    }
 
     public String getLastLogin() {
         return lastLogin;
@@ -80,7 +88,6 @@ public class RetailUserDTO {
     public void setLastLogin(String lastLogin) {
         this.lastLogin = lastLogin;
     }
-
 
     public String getFirstName() {
         return firstName;

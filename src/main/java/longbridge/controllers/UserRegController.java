@@ -13,10 +13,7 @@ import longbridge.forms.CustResetPassword;
 import longbridge.forms.RegistrationForm;
 import longbridge.forms.ResetPasswordForm;
 import longbridge.forms.RetrieveUsernameForm;
-import longbridge.models.Account;
-import longbridge.models.Email;
-import longbridge.models.RetailUser;
-import longbridge.models.SecurityQuestions;
+import longbridge.models.*;
 import longbridge.services.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -365,7 +362,9 @@ public class UserRegController {
     public @ResponseBody String checkUsername(@PathVariable String username){
         RetailUser user = retailUserService.getUserByName(username);
         logger.info("USER RETURNED{}", user);
-        if(user == null){
+        RetailUser retailUser = retailUserService.getUserByEntrustId(UserType.RETAIL.toString()+"_"+username);
+        logger.info("ENTRUST USER RETURNED{}", retailUser);
+        if(user == null && retailUser == null){
             return "true";
         }
         return "false";

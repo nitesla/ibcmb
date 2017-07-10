@@ -29,7 +29,7 @@
             <div class="">
                 <div class="page-title">
                     <div class="title_left">
-                        <h3>Account Class Restriction</h3>
+                        <h3>Account Restriction</h3>
                     </div>
 
                 </div>
@@ -41,7 +41,7 @@
                         <div class="x_panel">
                             <div class="x_title">
                                 <ul class="nav navbar-left panel_toolbox">
-                                    <h2>Edit Restriction</h2>
+                                    <h2>Add  New Restriction</h2>
                                 </ul>
                                 <ul class="nav navbar-right panel_toolbox">
 
@@ -54,20 +54,7 @@
 
                             <div class="x_content">
 
-                                <form method="post" class="form-horizontal" th:action="@{/ops/accounts/restriction/class/update}" th:object="${accountClassRestriction}">
-
-                                    <div class="form-group">
-                                        <label class="col-sm-2 control-label">Account Class</label>
-
-                                        <div class="col-sm-6">
-                                            <select class="form-control" th:field="*{accountClass}">
-                                                <option th:each="c: ${accountClasses}" th:value="${c.code}" th:text="${c.description}" th:selected="${c.code==accountClassRestriction.accountClass}"></option>
-
-                                            </select>
-                                        </div>
-
-                                    </div>
-
+                                <form method="post" class="form-horizontal" th:action="@{/ops/accounts/restriction/account}" th:object="${accountRestriction}">
 
                                     <div class="form-group">
                                         <label class="col-sm-2 control-label">Restriction Type</label>
@@ -75,25 +62,43 @@
                                         <div class="col-sm-6">
                                             <select class="form-control" th:field="*{restrictionType}">
                                                 <option value="">--Select--</option>
-                                                <option th:each="type: ${restrictionTypes}" th:value="${type.code}" th:text="${type.description}" th:selected="${type.code==accountClassRestriction.restrictionType}"></option>
+                                                <option th:each="type: ${restrictedFor}" th:value="${type.code}" th:text="${type.description}" th:selected="${type.code==accountRestriction.restrictedFor}"></option>
+                                            </select>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">Restriction Value</label>
+
+                                        <div class="col-sm-6">
+                                            <input class="form-control" type="text" th:field="*{restrictionValue}"/>
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">Restricted For</label>
+
+                                        <div class="col-sm-6">
+                                            <select class="form-control" th:field="*{restrictedFor}">
+                                                <option value="">--Select--</option>
+                                                <option th:each="type: ${restrictedFor}" th:value="${type.code}" th:text="${type.description}" th:selected="${type.code==accountRestriction.restrictedFor}"></option>
 
                                             </select>
                                         </div>
 
                                     </div>
 
-                                    <input type="hidden" name="id" th:value="*{id}" />
-                                    <input type="hidden" name="version" th:value="*{version}" />
-
 
 
                                     <div class="form-group">
                                         <div class="col-sm-4 col-sm-offset-2">
                                             <button class="btn btn-white" type="reset" id="cancel">Cancel</button>
-                                            <button class="btn btn-primary" type="submit">Save</button>
+                                            <button class="btn btn-primary" type="submit">Restrict</button>
                                         </div>
                                     </div>
-
 
                                     <div th:replace="layout::form-validation"></div>
 

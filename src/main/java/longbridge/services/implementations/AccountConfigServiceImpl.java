@@ -95,7 +95,7 @@ public class AccountConfigServiceImpl implements AccountConfigService {
         try {
             AccountRestriction accountRestriction = accountRestrictionRepo.findOne(accountRestrictionDTO.getId());
             accountRestriction.setVersion(accountRestrictionDTO.getVersion());
-            accountRestriction.setAccountNumber(accountRestrictionDTO.getAccountNumber());
+            accountRestriction.setRestrictionValue(accountRestrictionDTO.getRestrictionValue());
             accountRestriction.setRestrictionType(accountRestrictionDTO.getRestrictionType());
             accountRestrictionRepo.save(accountRestriction);
             return messageSource.getMessage("account.restrict.update.success", null, locale);
@@ -184,7 +184,7 @@ public class AccountConfigServiceImpl implements AccountConfigService {
     @Override
     public boolean isAccountRestrictedForDebit(String accountNumber) {
         boolean isRestricted = false;
-        AccountRestriction accountRestriction = accountRestrictionRepo.findByAccountNumber(accountNumber);
+        AccountRestriction accountRestriction = accountRestrictionRepo.findByRestrictionValue(accountNumber);
         if (accountRestriction != null) {
             if (accountRestriction.getRestrictionType().equals("D")) {
                 isRestricted = true;
@@ -196,7 +196,7 @@ public class AccountConfigServiceImpl implements AccountConfigService {
     @Override
     public boolean isAccountRestrictedForCredit(String accountNumber) {
         boolean isRestricted = false;
-        AccountRestriction accountRestriction = accountRestrictionRepo.findByAccountNumber(accountNumber);
+        AccountRestriction accountRestriction = accountRestrictionRepo.findByRestrictionValue(accountNumber);
         if (accountRestriction != null) {
             if (accountRestriction.getRestrictionType().equals("C")) {
                 isRestricted = true;
@@ -209,7 +209,7 @@ public class AccountConfigServiceImpl implements AccountConfigService {
     @Transactional
     public boolean isAccountRestrictedForDebitAndCredit(String accountNumber) {
         boolean isRestricted = false;
-        AccountRestriction accountRestriction = accountRestrictionRepo.findByAccountNumber(accountNumber);
+        AccountRestriction accountRestriction = accountRestrictionRepo.findByRestrictionValue(accountNumber);
         if (accountRestriction != null) {
             if (accountRestriction.getRestrictionType().equals("CD")) {
                 isRestricted = true;
@@ -221,7 +221,7 @@ public class AccountConfigServiceImpl implements AccountConfigService {
     @Override
     public boolean isAccountRestrictedForView(String accountNumber) {
         boolean isRestricted = false;
-        AccountRestriction accountRestriction = accountRestrictionRepo.findFirstByAccountNumberAndRestrictionTypeIgnoreCase(accountNumber,"V");
+        AccountRestriction accountRestriction = accountRestrictionRepo.findFirstByRestrictionValueAndRestrictedForIgnoreCase(accountNumber,"V");
         if (accountRestriction != null) {
 
                 isRestricted = true;
@@ -309,12 +309,12 @@ public class AccountConfigServiceImpl implements AccountConfigService {
     }
 
     private void validateNoAccountDuplication(AccountRestrictionDTO accountRestrictionDTO) throws DuplicateObjectException {
-        AccountRestriction accountRestriction = accountRestrictionRepo.findByAccountNumber(accountRestrictionDTO.getAccountNumber());
+        AccountRestriction accountRestriction = accountRestrictionRepo.findByRestrictionValue(accountRestrictionDTO.getRestrictionValue());
         if (accountRestrictionDTO.getId() == null && accountRestriction != null) {
-            throw new DuplicateObjectException(String.format(messageSource.getMessage("account.restrict.exists", null, locale), accountRestrictionDTO.getAccountNumber())); //Duplication on creation
+            throw new DuplicateObjectException(String.format(messageSource.getMessage("account.restrict.exists", null, locale), accountRestrictionDTO.getRestrictionValue())); //Duplication on creation
         }
         if (accountRestriction != null && (!accountRestriction.getId().equals(accountRestrictionDTO.getId()))) {
-            throw new DuplicateObjectException(String.format(messageSource.getMessage("account.restrict.exists", null, locale), accountRestrictionDTO.getAccountNumber())); //Duplication on update
+            throw new DuplicateObjectException(String.format(messageSource.getMessage("account.restrict.exists", null, locale), accountRestrictionDTO.getRestrictionValue())); //Duplication on update
 
         }
     }

@@ -218,13 +218,28 @@ public class MainController {
         String corpKey = webRequest.getParameter("corporateId");
         CorporateUser user = corporateUserService.getUserByName(username);
         Corporate corporate = corporateService.getCorporateByCustomerId(corpKey);
-//        Map<List<String>, List<String>> mutualAuth = securityService.getMutualAuth(user.getUserName());
-
-        //get map
 
         if (corporate != null && user != null) {
 //            model.addAttribute("images", mutualAuth.get("imageSecret"));
 //            model.addAttribute("captions", mutualAuth.get("captionSecret"));
+            try{
+                Map<String, List<String>> mutualAuth =  securityService.getMutualAuth(user.getEntrustId());
+                if (mutualAuth != null){
+                    String image = mutualAuth.get("imageSecret")
+                            .stream()
+                            .filter(Objects::nonNull)
+                            .findFirst()
+                            .orElse("");
+
+//                logger.info("SECIMAGE"+ image);
+
+                    model.addAttribute("secImage", image);
+                }
+            }catch (InternetBankingException e){
+                model.addAttribute("imageException", "You are yet to set your antiphishing image");
+            }
+
+
             model.addAttribute("username", user.getUserName());
             model.addAttribute("corpKey", corpKey);
             return "corppage2";

@@ -1,6 +1,8 @@
 package longbridge.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
@@ -12,6 +14,7 @@ import org.hibernate.envers.Audited;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import java.io.IOException;
 import java.util.*;
@@ -44,7 +47,7 @@ public class Corporate extends AbstractEntity implements PrettySerializer{
     Set<CorporateRole> corporateRoles = new HashSet<CorporateRole>();
 
     @OneToMany(mappedBy = "corporate",cascade = CascadeType.ALL)
-    @JsonIgnore
+    @JsonManagedReference
     private List<CorporateUser> users =  new ArrayList<CorporateUser>();
 
     @OneToMany
@@ -154,8 +157,6 @@ public class Corporate extends AbstractEntity implements PrettySerializer{
     public void setAddress(String address) {
         this.address = address;
     }
-    
-    
 
 	public List<CorporateUser> getUsers() {
 		return users;
@@ -164,15 +165,6 @@ public class Corporate extends AbstractEntity implements PrettySerializer{
 	public void setUsers(List<CorporateUser> users) {
 		this.users = users;
 	}
-
-//	public Collection<Beneficiary> getBeneficiaries() {
-//		return beneficiaries;
-//	}
-//
-//	public void setBeneficiaries(Collection<Beneficiary> beneficiaries) {
-//		this.beneficiaries = beneficiaries;
-//	}
-
 
     public String getBvn() {
         return bvn;
@@ -214,10 +206,42 @@ public class Corporate extends AbstractEntity implements PrettySerializer{
                 gen.writeStartObject();
                 gen.writeStringField("Name",value.name);
                 gen.writeStringField("Customer Id",value.customerId);
+                gen.writeStringField("Type",value.corporateType);
                 gen.writeStringField("RC Number",value.rcNumber);
+                gen.writeStringField("Status",getStatusDescription(value.status));
+
+                gen.writeObjectFieldStart("User");
+
+                for(CorporateUser user: users){
+                    if(user.getId()!=null) {
+                        gen.writeObjectFieldStart(user.getId().toString());
+                    }
+
+                    gen.writeStringField("Username", user.userName);
+                    gen.writeStringField("First Name", user.firstName);
+                    gen.writeStringField("Last Name", user.lastName);
+                    gen.writeStringField("Email", user.email);
+                    gen.writeStringField("Phone", user.phoneNumber);
+                    gen.writeStringField("Status",getStatusDescription(user.status));
+
+                    if(user.getId()!=null) {
+                        gen.writeEndObject();
+                    }
+                }
+                gen.writeEndObject();
                 gen.writeEndObject();
             }
         };
     }
 
+    private  String getStatusDescription(String status){
+        String description =null;
+        if ("A".equals(status))
+            description = "Active";
+        else if ("I".equals(status))
+            description = "Inactive";
+        else if ("L".equals(status))
+            description = "Locked";
+        return description;
+    }
 }

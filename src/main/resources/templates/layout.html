@@ -66,7 +66,7 @@
                     <li><a href="/admin/phishing/">Phishing Image</a></li>
                 </ul>
             </li>
-            <li><a><i class="fa fa-bar-chart-o"></i> Content Management <span class="fa fa-chevron-down"></span></a>
+            <li><a><i class="fa fa-table"></i> Content Management <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
                     <li><a href="/admin/faq">FAQ</a></li>
                     <li><a href="/admin/notification">System Notifications</a></li>
@@ -138,8 +138,9 @@
                 <ul class="nav child_menu">
                     <li sec:authorize="hasAuthority('ACCOUNT_RESTRICTION')"><a> Account Restrictions <span class="fa fa-chevron-down"></span></a>
                         <ul class="nav child_menu">
-                            <li sec:authorize="hasAuthority('ACCOUNT_CLASS_RESTRICTION')" class="sub_menu"><a href="/ops/accounts/restriction/class">Global</a></li>
-                            <li sec:authorize="hasAuthority('SINGLE_ACCOUNT_RESTRICTION')" class="sub_menu"><a href="/ops/accounts/restriction/account">Individual</a></li>
+                            <li sec:authorize="hasAuthority('ACCOUNT_RESTRICTION')" class="sub_menu"><a href="/ops/accounts/restriction/account">General</a></li>
+                            <!--<li sec:authorize="hasAuthority('ACCOUNT_CLASS_RESTRICTION')" class="sub_menu"><a href="/ops/accounts/restriction/class">Global</a></li>-->
+                            <!--<li sec:authorize="hasAuthority('SINGLE_ACCOUNT_RESTRICTION')" class="sub_menu"><a href="/ops/accounts/restriction/account">Individual</a></li>-->
 
                         </ul>
                     </li>
