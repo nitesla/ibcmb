@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="corp_layout :: site-head">
+<head th:replace="cust_layout :: site-head">
 </head>
 <body>
 <div class="container">
-    <header th:replace="corp_layout :: corp-header">
+    <header th:replace="cust_layout :: header">
     </header>
 
     <section class="content-wrapper">
@@ -101,7 +101,7 @@
 
                 </div>
                 <div class="col-md-3 pull-right " >
-                    <div th:replace="corp_layout :: corp-sidebar" class="" >
+                    <div th:replace="cust_layout :: sidebar" class="" >
                     </div>
                 </div>
             </div>
@@ -109,7 +109,7 @@
     </section>
 </div>
 <!-- CONTENT-WRAPPER SECTION END-->
-<footer th:replace="corp_layout ::corp-footer">
+<footer th:replace="cust_layout ::footer">
 </footer>
 <script th:inline="javascript">
     /*<![CDATA[*/
