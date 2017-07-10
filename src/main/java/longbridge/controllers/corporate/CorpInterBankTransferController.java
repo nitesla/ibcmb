@@ -73,12 +73,14 @@ public class CorpInterBankTransferController {
         if ("NIP".equalsIgnoreCase(type)) {
 
             request.getSession().setAttribute("NIP", "NIP");
+
             requestDTO.setTransferType(TransferType.INTER_BANK_TRANSFER);
 
             model.addAttribute("corpTransferRequest", requestDTO);
             return page + "pageiA";
         } else {
             request.getSession().setAttribute("NIP", "RTGS");
+
             requestDTO.setTransferType(TransferType.RTGS);
 
             model.addAttribute("corpTransferRequest", requestDTO);
@@ -149,9 +151,12 @@ public class CorpInterBankTransferController {
 
             if (type.equalsIgnoreCase("RTGS")) {
                 //TODO used RTGS
+
                 corpTransferRequestDTO.setTransferType(TransferType.RTGS);
                 charge = integrationService.getFee("RTGS").getFeeValue();
             } else {
+
+                charge = integrationService.getFee("NIP").getFeeValue();
                 corpTransferRequestDTO.setTransferType(TransferType.INTER_BANK_TRANSFER);
             }
 //            request.getSession().removeAttribute("NIP");
@@ -184,6 +189,7 @@ public class CorpInterBankTransferController {
         model.addAttribute("beneficiary", corpLocalBeneficiaryService.convertEntityToDTO(beneficiary));
         model.addAttribute("benName", beneficiary.getPreferredName());
         request.getSession().setAttribute("benName", beneficiary.getPreferredName());
+        request.getSession().setAttribute("Lbeneficiary", corpLocalBeneficiaryService.convertEntityToDTO(beneficiary));
         return page + "pageii";
     }
 
@@ -248,6 +254,21 @@ public class CorpInterBankTransferController {
             transferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByName(dto.getBeneficiaryBank()));
         }
         model.addAttribute("corpTransferRequest", transferRequestDTO);
+
+
+        if (request.getSession().getAttribute("Lbeneficiary") != null) {
+            CorpLocalBeneficiaryDTO dto = (CorpLocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary");
+            model.addAttribute("beneficiary", dto);
+            if (null==dto.getId()){
+                transferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode(dto.getBeneficiaryBank()));
+
+            }else{
+                transferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByName(dto.getBeneficiaryBank()));
+
+            }
+
+        }
+
 
         return page + "pageii";
     }

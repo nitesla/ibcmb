@@ -167,20 +167,7 @@ public class RetailControllerAdvice {
 
     }
 
-    @ModelAttribute
-    public void sessionTimeout(Model model){
-        SettingDTO setting = configurationService.getSettingByName("SESSION_TIMEOUT");
-            try{
-                if (setting != null && setting.isEnabled()){
-                    Long timeOuts = Long.parseLong(setting.getValue())* 60000;
-                    logger.info("SESSION TIME OUT PERIOD" + timeOuts);
-                    model.addAttribute("timeOut", timeOuts);
-                }
 
-        }catch(Exception ex){
-            }
-
-    }
 
 
 

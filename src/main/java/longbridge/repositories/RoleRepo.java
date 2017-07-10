@@ -23,6 +23,8 @@ public interface RoleRepo extends CommonRepo<Role, Long>{
 
     Role findByUserTypeAndName( UserType userType, String name);
 
+    List<Role> findByUserType(UserType userType);
+
 
 
 }

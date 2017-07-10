@@ -103,9 +103,12 @@ public class CorporateControllerAdvice {
             model.addAttribute("numOfUnreadMessages",numOfUnreadMessages);
         }
 
-        if (corporateUser.getIsFirstTimeLogon().equals("Y")){
+        if ("Y".equals(corporateUser.getIsFirstTimeLogon())){
             return "redirect:/corporate/setup";
         }
+
+        boolean isUserAdmin = corporateUser.isAdmin();
+        model.addAttribute("isUserAdmin",isUserAdmin);
 
         return "";
     }

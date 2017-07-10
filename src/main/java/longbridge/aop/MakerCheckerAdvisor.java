@@ -85,11 +85,11 @@ public class MakerCheckerAdvisor {
 	public Object proceed3(ProceedingJoinPoint pjp, AbstractEntity entity, Verifiable verifier) throws Throwable {
 		System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
 		log.info("Again testing that this save works");
-//		entityManager.detach(entity);
+		entityManager.detach(entity);
 		log.info("In operation [ " + verifier.operation() + "] ...{" + verifier.description() + "}");
 
 		// pjp.getSignature().getDeclaringType().getAnnotations()
-		log.info(entity.toString());
+//		log.info(entity.toString());
 		log.info("JB Around: " + pjp);
 
 		if (!makerCheckerService.isEnabled(verifier.operation())) {
