@@ -27,7 +27,6 @@ import java.security.Principal;
 import java.util.List;
 import java.util.Locale;
 
-
 @Controller
 @RequestMapping("/corporate")
 public class CorpSettingController {
