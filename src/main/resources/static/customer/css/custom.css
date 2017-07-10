@@ -176,6 +176,11 @@ start
     color:#003056;
 }
 
+.coronation-brown
+{
+    color: #9F614B;
+}
+
 .mail-active
 {
      background-color: #f2dede;
@@ -242,7 +247,7 @@ start
 
 .bg-coronation-blue
 {
-    background-color: #003056;
+    background-color: #003056 !important;
 }
 
 
@@ -276,7 +281,12 @@ label
 }
 .text-white
 {
-    color:white;
+    color:white !important;
+}
+
+.dropdn-margin
+{
+    margin:0px 10px;
 }
 
 .bg-white
@@ -1979,20 +1989,20 @@ button, input, optgroup, select, textarea {
     /*}*/
 
     .carousel-caption {
-        display: none;
-        /*position: absolute;*/
-        /*top: 65%;*/
-        /*right: 0%;*/
-        /*bottom: -15px;*/
-        /*left: 0%;*/
-        /*z-index: 10;*/
-        /*padding: 5px 10px 0 10px;*/
-        /*color: #fff;*/
-        /*background-color: #9F614B;*/
-        /*opacity: 0.8;*/
-        /*text-align: center;*/
-        /*font-size: 10px;*/
-    }
+
+    position: relative;
+    width:100%;
+    bottom: 10%;
+    display: none;
+    z-index: 10;
+    padding: 40px 0 40px 0;
+    color: #fff;
+    background-color: #9F614B;
+    opacity: 0.8;
+    line-height: 20px;
+    text-align: center;
+    font-size: 18px;
+}
 }
 
 
@@ -2107,4 +2117,26 @@ button, input, optgroup, select, textarea {
     padding:20px 50px;
     font-size:14px;
     
+}
+
+.contact-details
+{
+    background: #ebecef !important;
+    margin-top: 5px;
+    padding:10px;
+}
+
+.contact-details li
+{
+    padding-top:5px;
+}
+
+.bg-btn
+{
+    background: grey !important;
+}
+
+.bg-btn:focus
+{
+    background: #003056 !important;
 }
