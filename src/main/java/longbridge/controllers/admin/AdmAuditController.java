@@ -75,9 +75,7 @@ public class AdmAuditController {
 
 
     @GetMapping("/revised/entity")
-    public String ListRevisedEnties()
-    {
-
+    public String ListRevisedEnties(){
         return "adm/audit/revisedview";
     }
 
@@ -90,6 +88,8 @@ public class AdmAuditController {
     }
 
 
+    @GetMapping("/revised/entity/all")
+    public @ResponseBody DataTablesOutput<ModifiedEntityTypeEntity> getAllRevisedEntity(DataTablesInput input)
     @GetMapping("all/revisedentities")
     public @ResponseBody DataTablesOutput<ModifiedEntityTypeEntity> getAllRevisedEntity(DataTablesInput input,@RequestParam("csearch") String search)
     {
@@ -112,6 +112,34 @@ public class AdmAuditController {
         return out;
     }
 
+    @GetMapping("/{id}/{classname}/view")
+    public String ListRevisedEnties(@PathVariable String id,@PathVariable String classname, Model model)
+    {
+        logger.info("entity number is {}",id);
+        logger.info("entity class is {}",classname);
+        auditCfgService.revisedEntityDetails(classname,Integer.parseInt(id),null);
+//        AuditConfig audit = auditCfgService.getAuditEntity(id);
+//        String entityName = audit.getEntityName();
+//        logger.info("entity name is {}",entityName);
+//        model.addAttribute("entityName", entityName);
+        return "adm/audit/view";
+    }
+
+
+
+    @GetMapping(path = "all/entityname")
+    public @ResponseBody DataTablesOutput<AuditConfig> getAllEntities(DataTablesInput input)
+    {
+        Pageable pageable=DataTablesUtils.getPageable(input);
+        Page<AuditConfig> auditConfig=null;
+        auditConfig=auditCfgService.getEntities(pageable);
+        DataTablesOutput<AuditConfig> out=new DataTablesOutput<>();
+        out.setDraw(input.getDraw());
+        out.setData(auditConfig.getContent());
+        out.setRecordsFiltered(auditConfig.getTotalElements());
+        out.setRecordsTotal(auditConfig.getTotalElements());
+        return out;
+    }
 
 
 

@@ -44,7 +44,7 @@
                                     <li >
                                         <div class="col-lg-4">
                                             <div class="title-action">
-                                                <a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/audit/revised/index" disabled="disabled" ><i class="fa fa-pencil"></i> View</a>
+                                                <a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/audit/id/classname/view" disabled="disabled" ><i class="fa fa-pencil"></i>View</a>
                                             </div>
                                         </div>
                                     </li>
@@ -134,9 +134,10 @@
             "lengthMenu" : [ [ 5, 10, 20],	[ 5, 10, 20 ] ],
             "pagingType" : "simple_numbers",
             "searching": false,
-            rowId: 'id',
+            rowId: 'revision.id',
             "paging": true,
             "serverSide" : true,
+           "ajax": "/admin/audit/revised/entity/all",
 
             "ajax" : {
                 url : "/admin/audit/all/revisedentities",
@@ -163,6 +164,7 @@
                     var dtStart = new Date(parseInt(data));
 
                     var dtStartWrapper = moment(dtStart);
+
                     return dtStartWrapper.format('LLLL');
                 }
                 return data;
@@ -189,7 +191,6 @@
             } else {
                 $('.bt-select').removeAttr("disabled");
             }
-
         });
 
         $("#search").on("click", function(e)
@@ -201,30 +202,41 @@
 
 
 
-        table.on('deselect', function() {
-            if (table.rows({
-                        selected : true
-                    }).indexes().length === 0) {
-                $('.bt-select').attr("disabled", true);
-            } else {
-                $('.bt-select').removeAttr("disabled");
-            }
-        });
+//        table.on('deselect', function() {
+//            if (table.rows({
+//                        selected : true
+//                    }).indexes().length === 0) {
+//                $('.bt-select').attr("disabled", true);
+//            } else {
+//                $('.bt-select').removeAttr("disabled");
+//            }
+//        });
 
     });
+    var id;
+    var className;
+    $("#auditview").on("click", "tr", function() {
+        var table =  $('#auditview').DataTable();
+        className = $(this).children(":first").text();
+        var $name2 = $(this).children(":nth-child(3)").text();
+        id =table.row( this ).id();
+//        alert(id);
+//        alert(className);
+//        alert($name2);
 
+    });
     $("a.bt-link-act").on("click", function(e) {
         e.preventDefault();
         var link = $(e.currentTarget);
         if($(link).attr("disabled")){
             return;
         }
-        var dt = $('#audit').DataTable();
-        var id = $(dt.row({
-            selected: true
-        }).node()).attr("id");
-        var ooo = link.attr("href").replace("index",id);
-        window.location.assign(ooo);
+        var dt = $('#auditview').DataTable();
+//        alert(id);
+//        alert(className);
+        var details = id+"/"+className;
+        var refDetials = link.attr("href").replace("id/classname",details);
+        window.location.assign(refDetials);
 
     } );
 

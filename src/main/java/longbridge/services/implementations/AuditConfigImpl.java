@@ -13,6 +13,7 @@ import longbridge.repositories.ModifiedEntityTypeEntityRepo;
 import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.AuditConfigService;
 import longbridge.utils.Verifiable;
+import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.formula.functions.T;
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
@@ -28,10 +29,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by ayoade_farooq@yahoo.com on 4/19/2017.
@@ -91,33 +91,76 @@ public class AuditConfigImpl implements AuditConfigService {
 //		Page<RevisionInfo> customRevision = customRevisionEntityRepo.getRevisonList(pageable);
 		Page<ModifiedEntityTypeEntity> modifiedEntityTypeEntities=modifiedEntityTypeEntityRepo.findAll(pageable);
 
-		logger.info("Custom Revision{}",modifiedEntityTypeEntityRepo.findAll());
+//		logger.info("Custom Revision{}",modifiedEntityTypeEntityRepo.findAll());
 
 		return modifiedEntityTypeEntities;
 	}
 	@Override
-	public Page<CustomRevisionEntity>  revisedEntityDetails(String entityName,Pageable pageable)
-	{
-		List<T> revisionList = new ArrayList<>();
+	public Page<T>  revisedEntityDetails(String entityName,Integer revisionNo,Pageable pageable){
+		List<Object> revisionList = new ArrayList<>();
 		Page<CustomRevisionEntity> revisionEntities=null;
+		List<String> RevisionDetails = new ArrayList<>();
 		try
 		{
-			logger.info("this is the revision list",revisionEntities);
 			Class<?> clazz  = Class.forName(PACKAGE_NAME + entityName);
+			Class aClass = Class.forName(PACKAGE_NAME + entityName);
+
 			AuditReader auditReader = AuditReaderFactory.get(entityManager);
-			AuditQuery query = auditReader.createQuery().forRevisionsOfEntity(clazz, true, true);
+			AuditQuery query = auditReader.createQuery().forEntitiesAtRevision(clazz,revisionNo);
 			revisionList = query.getResultList();
-			revisionEntities=customRevisionEntityRepo.findCustomRevisionId(revisionList,pageable);
-			logger.info("this is the revision list",revisionEntities);
-			query.getResultList();
+			List<Code> classes = query.getResultList();
+
+			logger.info("this is the revision list {}",revisionList);
+			getEachDetails(String.valueOf(revisionList));
+
 		}
 		catch (ClassNotFoundException e)
 		{
 			e.printStackTrace();
 		}
 
-		return revisionEntities;
+		return null;
 	}
+	private List<String> getEachDetails(String details){
+		String[] classDetails = StringUtils.substringsBetween(details,"'","'");
+		return Arrays.asList(classDetails);
+	}
+	private List<String> getHeaders(String details){
+		List<String> headerDetails = new ArrayList<>();
+		String firstHeader = StringUtils.substringBetween(details,"{","'");
+		headerDetails.add(firstHeader);
+		String[] midItems = StringUtils.substringsBetween(details,", ","=");
+		for (String midItem:midItems) {
+			headerDetails.add(midItem);
+		}
+		String lastHeader= StringUtils.substringBetween(details,"{","'");
+		headerDetails.add(lastHeader);
+		return null;
+
+	}
+//	@Override
+//	public Page<CustomRevisionEntity>  revisedEntityDetails(String entityName,Pageable pageable)
+//	{
+//		List<T> revisionList = new ArrayList<>();
+//		Page<CustomRevisionEntity> revisionEntities=null;
+//		try
+//		{
+//			logger.info("this is the revision list",revisionEntities);
+//			Class<?> clazz  = Class.forName(PACKAGE_NAME + entityName);
+//			AuditReader auditReader = AuditReaderFactory.get(entityManager);
+//			AuditQuery query = auditReader.createQuery().forRevisionsOfEntity(clazz, true, true);
+//			revisionList = query.getResultList();
+//			revisionEntities=customRevisionEntityRepo.findCustomRevisionId(revisionList,pageable);
+//			logger.info("this is the revision list",revisionEntities);
+//			query.getResultList();
+//		}
+//		catch (ClassNotFoundException e)
+//		{
+//			e.printStackTrace();
+//		}
+//
+//		return revisionEntities;
+//	}
 	@Override
 	public Page<AuditConfig> findEntities(String pattern, Pageable pageDetails)
 	{
