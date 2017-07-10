@@ -39,4 +39,6 @@ public interface AuditConfigService
 
 	Page<ModifiedEntityTypeEntity> getRevisionEntities(Pageable pageable);
 
+	Page<ModifiedEntityTypeEntity> getRevisionEntities(String pattern,Pageable pageDetails);
+
 }

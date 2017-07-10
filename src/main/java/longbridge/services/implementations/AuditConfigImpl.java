@@ -79,6 +79,12 @@ public class AuditConfigImpl implements AuditConfigService {
 	}
 
 
+	@Override
+	public Page<ModifiedEntityTypeEntity> getRevisionEntities(String pattern, Pageable pageDetails)
+	{
+		Page<ModifiedEntityTypeEntity> page=modifiedEntityTypeEntityRepo.findUsingPattern(pattern,pageDetails);
+		return  page;
+	}
 
 	public Page<ModifiedEntityTypeEntity> getRevisionEntities(Pageable pageable)
 	{

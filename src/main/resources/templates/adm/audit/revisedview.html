@@ -44,7 +44,7 @@
                                     <li >
                                         <div class="col-lg-4">
                                             <div class="title-action">
-                                                <a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/index/view" disabled="disabled" ><i class="fa fa-pencil"></i> View</a>
+                                                <a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/audit/revised/index" disabled="disabled" ><i class="fa fa-pencil"></i> View</a>
                                             </div>
                                         </div>
                                     </li>
@@ -144,7 +144,7 @@
                 "data" : function(d) {
                     d.csearch = $('#pattern').val();
                 }
-            },
+                  },
 
             "dom": 'T<"clear">frtlp',
             "columns": [
@@ -223,7 +223,7 @@
         var id = $(dt.row({
             selected: true
         }).node()).attr("id");
-        var ooo = link.attr("href").replace("id",id);
+        var ooo = link.attr("href").replace("index",id);
         window.location.assign(ooo);
 
     } );
