@@ -17,6 +17,6 @@ public class TestClass implements Job {
 //        cronJobService.updateAllAccountName();
 //        cronJobService.updateAllBVN();
 //        cronJobService.updateAllAccountCurrency();
-        System.out.println("job runing");
+//        System.out.println("job runing");
     }
 }

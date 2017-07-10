@@ -468,7 +468,29 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
-    public void setUserQA(String username, String questions, String answer) {
+    public void setUserQA(String username, String question, String answer) {
+        try {
+           List<String>  questions= new ArrayList<>();
+           List<String>  answers= new ArrayList<>();
+             questions.add(question);
+             answers.add(answer);
+             setUserQA(username,questions,answers);
+
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new InternetBankingSecurityException(e.getMessage(), e);
+
+        }
+
+
+    }
+
+    @Override
+    public void setUserQA(String username, List<String> questions, List<String> answers) throws InternetBankingTransferException
+    {
+        if ( questions==null  ||questions.isEmpty())throw new IllegalArgumentException();
+        if ( answers==null  ||answers.isEmpty())throw new IllegalArgumentException();
+
         try {
             StringWriter writer = new StringWriter();
             this.t = this.ve.getTemplate("entrust/performSetQA.vm");
@@ -476,8 +498,8 @@ public class SecurityServiceImpl implements SecurityService {
             this.context.put("appDesc", appDesc);
             this.context.put("userName", username);
             this.context.put("appGroup", appGroup);
-            this.context.put("question", questions);
-            this.context.put("answer", answer);
+            this.context.put("questions", questions);
+            this.context.put("answers", answers);
             this.t.merge(this.context, writer);
             String payload = writer.toString();
             EntrustServiceResponse webServiceResponse = httpClient.sendHttpRequest(payload);
@@ -504,21 +526,6 @@ public class SecurityServiceImpl implements SecurityService {
             throw new InternetBankingSecurityException(e.getMessage(), e);
 
         }
-
-
-    }
-
-    @Override
-    public void setUserQA(String username, List<String> questions, List<String> answers) throws InternetBankingTransferException
-    {
-        if ( questions==null  ||questions.isEmpty())throw new IllegalArgumentException();
-        if ( answers==null  ||answers.isEmpty())throw new IllegalArgumentException();
-
-        Iterator<String> stringIterator= answers.iterator();
-        questions.forEach(i ->
-            setUserQA(username,i,stringIterator.next()));
-
-
 
 
 
@@ -926,12 +933,12 @@ public class SecurityServiceImpl implements SecurityService {
             this.t = this.ve.getTemplate("entrust/performAddContactDetail.vm");
             this.context.put("appCode", appCode);
             this.context.put("appDesc", appDesc);
-            this.context.put("phoneDefault", phoneDefault);
+            this.context.put("phoneDefault", false);
             this.context.put("email", email);
             this.context.put("appGroup", appGroup);
             this.context.put("userName", userName);
             this.context.put("emailDevLabel", "CmbEmailOtp");
-            this.context.put("emailDefault", false);
+            this.context.put("emailDefault", true);
             this.context.put("PhoneDevLabel", "Vanso");
             this.context.put("phone", phone);
 

@@ -1,19 +1,13 @@
 package longbridge.models;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import longbridge.utils.PrettySerializer;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import javax.persistence.*;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 /**
  * Created by Wunmi on 27/03/2017. CorporateUser is a bank customer. Typically
@@ -23,16 +17,16 @@ import java.util.List;
 @Entity
 @Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
-@Table(uniqueConstraints=@UniqueConstraint(columnNames={"userName","deletedOn"}))
+@Table(uniqueConstraints=@UniqueConstraint(columnNames={"userName"}))
 public class CorporateUser extends User {
 
-	protected String isFirstTimeLogon;
+	protected String isFirstTimeLogon = "Y";
+
+	private boolean admin;
 
 	@ManyToOne
-    private Corporate corporate;
-
-//	private CorporateRole corporateRole;
-//
+	@JsonBackReference
+	private Corporate corporate;
 
     public String getIsFirstTimeLogon() {
         return isFirstTimeLogon;
@@ -54,15 +48,13 @@ public class CorporateUser extends User {
 		this.corporate = corporate;
 	}
 
+	public boolean isAdmin() {
+		return admin;
+	}
 
-//	public CorporateRole getCorporateRole() {
-//		return corporateRole;
-//	}
-//
-//	public void setCorporateRole(CorporateRole corporateRole) {
-//		this.corporateRole = corporateRole;
-//	}
-
+	public void setAdmin(boolean admin) {
+		this.admin = admin;
+	}
 
 	@Override
 	public int hashCode(){

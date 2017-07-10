@@ -9,7 +9,7 @@
     </header>
 
 <section class="content-wrapper">
-  
+
    <div class="row">
 
             <div class="col-md-9 no-ml no-pad-left no-pad-right col-xs-12 ">
@@ -21,16 +21,16 @@
                     </div>
                     <div class="col-xs-12 col-md-12 no-pad-right no-ml no-pad-left bg-danger alert no-mb no-mt no-bd-rad current-body">
                         <div class="col-md-5 col-sm-5">
-                           
+
                            <p class="col-xs-12" style="margin-bottom:22px;">
                                     Fields marked <span style="color:red">*</span> are compulsory
                             </p>
-                            
+
                         </div>
 
                         <div class="col-xs-12 ml-15 " >
                             <div class="col-xs-12 no-pad-lef no-bd alert">
-                                
+
                                 <div th:if="${message != null}" class="alert alert-info" th:text="${message}">message</div>
                                 <div th:if="${error != null}" class="alert alert-info" th:text="${error}">message</div>
 
@@ -49,10 +49,10 @@
                                                         <select name="source" class="form-control" id="source"
                                                                 th:field="*{customerAccountNumber}" onchange="getBalance();getSourceCurrency()" >
 
-                                                            <!--<option value=""> select an account</option>-->
-                                                            <option th:each="s: ${accounts}" th:value="${s}" th:text="${s}" ></option>
-                                                        </select><span class='req-inner'></span>
-                                                    </div>
+                                                <!--<option value=""> select an account</option>-->
+                                                <option th:each="s: ${accounts}" th:value="${s.accountNumber}" th:text="${s.accountNumber}" th:selected="${s.primaryFlag=='Y'}"></option>
+                                            </select><span class='req-inner'></span>
+                                        </div>
 
                                                 </div>
                                                 <div class="form-group">
@@ -97,22 +97,22 @@
                                                         class="form-control"/>
                                                     </div>
                                                 </div>
-                                                
+
                                                 <div class='pull-right' style="margin-right:50px;">
                                                     <span class="alert no-bd-rad my-border bg-white hide-content-only">NGN</span>
                                                     <button class="btn btn-link required-step" type="submit">Submit</button>
                                                     <button class="btn btn-link less-required" type="button ">Cancel</button>
-                                            
+
                                                 </div>
-                                            
-                                            
+
+
                                         </form>
                                     </div>
                                     <div class="col-xs-12 col-sm-5 wel ">
                                          <!--<p class="related" style="padding-top: 5%">Related Information</p>-->
                                         <div  class="related-box">
                                             <h3 class="related-bar">Related Information</h3>
-                                           
+
                                             <!--<input type="availBal" name="availBal"/>-->
                                             <p class="related-info coronation-blue" id="availBal"><b></b></p>
 
@@ -131,7 +131,7 @@
                         </div>
                     </div>
             </div>
-           
+
         </div>
 
 </section>
@@ -146,13 +146,15 @@
     /*<![CDATA[*/
 
     $(document).ready(function(){
-        document.getElementById("source").selectedIndex = -1;
-        document.getElementById("destination").selectedIndex = -1;
+//       document.getElementById("source").selectedIndex = -1;
+    document.getElementById("destination").selectedIndex = -1;
 
-        sortSelect('#source', 'text', 'asc');
+//        sortSelect('#source', 'text', 'asc');
 
-        $("#source").prop("selectedIndex", -1);
-        $("#destination").prop("selectedIndex", -1);
+//  $("#source").prop("selectedIndex", -1);
+  $("#destination").prop("selectedIndex", -1);
+        getBalance();
+        getSourceCurrency();
 
     })
 
@@ -173,7 +175,7 @@
                 }));
                 $(select).get(0).selectedIndex = 0;
                 // e.preventDefault();
-            }// end desc 
+            }// end desc
         }
 
     };
@@ -211,7 +213,7 @@
             success:function(currency){
                 cur = ''+String(currency);
                 if(cur == "" ){
-                    document.getElementById("sourceCurrency").textContent=" Unknown";
+                    document.getElementById("sourceCurrency").textContent=" NAN";
                    // $("#myspan").show();
                 }else{
 //                    $('input[name=availBal]').val(bal);

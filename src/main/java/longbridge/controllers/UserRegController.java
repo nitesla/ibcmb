@@ -13,10 +13,7 @@ import longbridge.forms.CustResetPassword;
 import longbridge.forms.RegistrationForm;
 import longbridge.forms.ResetPasswordForm;
 import longbridge.forms.RetrieveUsernameForm;
-import longbridge.models.Account;
-import longbridge.models.Email;
-import longbridge.models.RetailUser;
-import longbridge.models.SecurityQuestions;
+import longbridge.models.*;
 import longbridge.services.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -24,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -70,7 +68,7 @@ public class UserRegController {
     @Autowired
     private CodeService codeService;
 
-    private Locale locale;
+    private Locale locale = LocaleContextHolder.getLocale();
 
     private Logger logger= LoggerFactory.getLogger(this.getClass());
 
@@ -90,14 +88,20 @@ public class UserRegController {
         logger.info("Email : " + email);
         logger.info("BirthDate : " + birthDate);
         CustomerDetails details = integrationService.isAccountValid(accountNumber, email, birthDate);
-        if (details != null && !details.isCorp()){
+        logger.info("DETAILS {} ", details);
+        if (details.getCifId() != null && !details.isCorp()){
 
             customerId = details.getCifId();
             logger.info("CustomerId", customerId);
+            return "true";
 
-        }else {
+        }
+        else if (details != null && details.isCorp()){
+            customerId= messageSource.getMessage("not.retail.account", null, locale);
+        }
+        else {
             //nothing
-            customerId = "";
+            customerId= messageSource.getMessage("not.valid.account", null, locale);
         }
         return customerId;
     }
@@ -109,14 +113,17 @@ public class UserRegController {
         logger.info("Email : " + email);
         logger.info("BirthDate : " + birthDate);
         CustomerDetails details = integrationService.isAccountValid(accountNumber, email, birthDate);
-        if (details != null){
+        logger.info("details {} ", details);
+        if (details.getCifId() != null){
             RetailUser user = retailUserService.getUserByCustomerId(details.getCifId());
-            if (user != null) {
-                customerId="";
-
+            List<AccountDTO> account = accountService.getAccounts(details.getCifId());
+            logger.info("ACCOUNT {} ", account);
+            if (user == null && account.isEmpty()) {
+                logger.info("customer does not exist on the platform currently " + details.getCifId());
+                customerId = details.getCifId();
             }else {
-                customerId="does not exsist";
-                logger.info("customer does not exist");
+                logger.info("user exists on out system");
+                customerId="";
             }
 
         }else {
@@ -355,7 +362,9 @@ public class UserRegController {
     public @ResponseBody String checkUsername(@PathVariable String username){
         RetailUser user = retailUserService.getUserByName(username);
         logger.info("USER RETURNED{}", user);
-        if(user == null){
+        RetailUser retailUser = retailUserService.getUserByEntrustId(UserType.RETAIL.toString()+"_"+username);
+        logger.info("ENTRUST USER RETURNED{}", retailUser);
+        if(user == null && retailUser == null){
             return "true";
         }
         return "false";
@@ -530,30 +539,53 @@ public class UserRegController {
 
 
 
+//        List<SecurityQuestions> secQues = securityQuestionService.getSecQuestions();
+//        logger.info("security questions "+secQues);
+//        int noOfQuestions = securityService.getMinUserQA();
+//
+//        ArrayList[] masterList = new ArrayList[noOfQuestions];
+//
+//        //init arrays
+//        for (int idx=0; idx < noOfQuestions ; ++idx) {
+//           masterList[idx] = new ArrayList();
+//        }
+//
+//        //porpulate arrays
+//        for(int idx=0 ; idx < secQues.size() ; ++idx){
+//            masterList[idx % noOfQuestions].add(secQues.get(idx));
+//        }
+//
+//        for (ArrayList m:masterList
+//                ) {
+//            logger.info("master question "+masterList);
+//        }
+
         List<SecurityQuestions> secQues = securityQuestionService.getSecQuestions();
-        logger.info("security questions "+secQues);
         int noOfQuestions = securityService.getMinUserQA();
-
+        logger.info("num of qs on entrust {}",noOfQuestions);
         ArrayList[] masterList = new ArrayList[noOfQuestions];
+        int questionsPerSection = (secQues.size()-(secQues.size()%noOfQuestions))/noOfQuestions;
+        logger.info("question per section {}",questionsPerSection);
+        int questnPostn = 0;
+        for(int i=0;i< noOfQuestions;i++) {
+            masterList[i] =  new ArrayList<>();
+            for (int j = 0; j <questionsPerSection; j++) {
+                masterList[i].add(secQues.get(questnPostn));
+                questnPostn++;
+            }
 
-        //init arrays
-        for (int idx=0; idx < noOfQuestions ; ++idx) {
-           masterList[idx] = new ArrayList();
         }
+        logger.info("master question length"+masterList.length);
 
-        //porpulate arrays
-        for(int idx=0 ; idx < secQues.size() ; ++idx){
-            masterList[idx % noOfQuestions].add(secQues.get(idx));
+        for (int i=0;i<masterList.length;i++  ) {
+            logger.info("master question "+i+" "+masterList[i]);
         }
-
-        for (ArrayList m:masterList
-                ) {
-            logger.info("master question "+masterList);
-        }
+        logger.info("master question "+masterList);
 
 
         logger.info("MASTER LIST {}", masterList);
-        model.addAttribute("secQuestions", secQues);
+        model.addAttribute("secQuestions", masterList);
+        model.addAttribute("noOfQuestions", noOfQuestions);
 
         PasswordStrengthDTO passwordStrengthDTO = passwordPolicyService.getPasswordStengthParams();
         logger.info("Password Strength {}" + passwordStrengthDTO);
@@ -596,14 +628,26 @@ public class UserRegController {
         String userName = webRequest.getParameter("userName");
         String password = webRequest.getParameter("password");
         String confirmPassword = webRequest.getParameter("confirm");
-        String secQuestion = webRequest.getParameter("securityQuestion");
-        String secAnswer = webRequest.getParameter("securityAnswer");
         String customerId = webRequest.getParameter("customerId");
         String phishing = webRequest.getParameter("phishing");
         String caption = webRequest.getParameter("caption");
-
+        String noOfQuestions = webRequest.getParameter("noOfQuestions");
+        logger.info("no of questions {} ", noOfQuestions);
         String bvn ="";
+//        String secQuestion = webRequest.getParameter("securityQuestion1");
+//        String secAnswer = webRequest.getParameter("securityAnswer1");
+        List<String> secQuestions = new ArrayList<>();
+        List<String> securityAnswers = new ArrayList<>();
         logger.info("Customer Id {}:", customerId);
+        if(noOfQuestions != null){
+            for(int i =0; i < Integer.parseInt(noOfQuestions); i++){
+                secQuestions.add(webRequest.getParameter("securityQuestion"+i));
+                securityAnswers.add(webRequest.getParameter("securityAnswer"+i));
+
+                logger.info(" sec questions list {}",secQuestions);
+                logger.info("sec answer list {}",securityAnswers);
+            }
+        }
         CustomerDetails details = integrationService.isAccountValid(accountNumber, email, dob);
 
 
@@ -631,11 +675,12 @@ public class UserRegController {
 
 
         //security questions
-        String securityQuestion = secQuestion;
-        String securityAnswer = secAnswer;
+//        String securityQuestion = secQuestion;
+//        String securityAnswer = secAnswer;
 
-        logger.info("Question" + secQuestion);
-        logger.info("Answer" + secAnswer);
+//        logger.info("Question" + secQuestion);
+//        logger.info("Answer" + secAnswer);
+
 
         //phishing image
         //byte[] encodedBytes = Base64.encodeBase64(phishing.getBytes());
@@ -648,8 +693,8 @@ public class UserRegController {
 
         try {
             FileInputStream fis = new FileInputStream(image);
-                int cnt = fis.read(buffer);
-                //ensure cnt == length
+            int cnt = fis.read(buffer);
+            //ensure cnt == length
         }catch (Exception e){
             //TODO: handle exception
         }
@@ -666,8 +711,8 @@ public class UserRegController {
         retailUserDTO.setPassword(password);
         retailUserDTO.setCustomerId(customerId);
         retailUserDTO.setBvn(bvn);
-        retailUserDTO.setSecurityQuestion(securityQuestion);
-        retailUserDTO.setSecurityAnswer(securityAnswer);
+        retailUserDTO.setSecurityQuestion(secQuestions);
+        retailUserDTO.setSecurityAnswer(securityAnswers);
         retailUserDTO.setPhishingSec(encPhishImage);
         retailUserDTO.setCaptionSec(caption);
         try {
@@ -682,6 +727,7 @@ public class UserRegController {
         }
 
         return "false";
+
     }
 
     private void doesUserExist(String customerId){

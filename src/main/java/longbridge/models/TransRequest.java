@@ -22,7 +22,6 @@ public class TransRequest extends AbstractEntity{
 
 
     private  String customerAccountNumber;
-   //@Enumerated
     private TransferType transferType;
     private Date tranDate= new Date();
 
@@ -30,22 +29,13 @@ public class TransRequest extends AbstractEntity{
     private FinancialInstitution financialInstitution;
 
     private String beneficiaryAccountNumber;
-
     private String beneficiaryAccountName;
-
     private String remarks;
-
     private String status;
-
     private String referenceNumber;
-
     private String userReferenceNumber;
-
     private String narration;
     private String statusDescription;
-
-
-
     private BigDecimal amount;
 
     public TransRequest() {

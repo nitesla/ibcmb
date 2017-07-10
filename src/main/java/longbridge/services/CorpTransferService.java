@@ -16,8 +16,6 @@ import java.util.List;
  */
 public interface CorpTransferService {
 
-    @PreAuthorize("hasAuthority('MAKE_TRANSFER')")
-    CorpTransferRequestDTO makeTransfer(CorpTransferRequestDTO corpTransferRequest) throws TransferException;
 
     @PreAuthorize("hasAuthority('GET_TRANSFER')")
     CorpTransRequest getTransfer(Long id);
@@ -39,7 +37,7 @@ public interface CorpTransferService {
 
     CorpTransferAuth getAuthorizations(CorpTransRequest transRequest);
 
-    String addAuthorization(CorpTransReqEntry transReqEntry, CorpTransRequest corpTransRequest);
+    String addAuthorization(CorpTransReqEntry transReqEntry);
 
 
     boolean userCanAuthorize(CorpTransRequest corpTransRequest);

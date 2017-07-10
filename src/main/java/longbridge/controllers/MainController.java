@@ -218,13 +218,28 @@ public class MainController {
         String corpKey = webRequest.getParameter("corporateId");
         CorporateUser user = corporateUserService.getUserByName(username);
         Corporate corporate = corporateService.getCorporateByCustomerId(corpKey);
-//        Map<List<String>, List<String>> mutualAuth = securityService.getMutualAuth(user.getUserName());
-
-        //get map
 
         if (corporate != null && user != null) {
 //            model.addAttribute("images", mutualAuth.get("imageSecret"));
 //            model.addAttribute("captions", mutualAuth.get("captionSecret"));
+            try{
+                Map<String, List<String>> mutualAuth =  securityService.getMutualAuth(user.getEntrustId());
+                if (mutualAuth != null){
+                    String image = mutualAuth.get("imageSecret")
+                            .stream()
+                            .filter(Objects::nonNull)
+                            .findFirst()
+                            .orElse("");
+
+//                logger.info("SECIMAGE"+ image);
+
+                    model.addAttribute("secImage", image);
+                }
+            }catch (InternetBankingException e){
+                model.addAttribute("imageException", "You are yet to set your antiphishing image");
+            }
+
+
             model.addAttribute("username", user.getUserName());
             model.addAttribute("corpKey", corpKey);
             return "corppage2";
@@ -403,4 +418,22 @@ public class MainController {
         session.invalidate();
     }*/
 
+
+
+
+
+    @ModelAttribute
+    public void sessionTimeout(Model model){
+        SettingDTO setting = configurationService.getSettingByName("SESSION_TIMEOUT");
+        try{
+            if (setting != null && setting.isEnabled()){
+                Long timeOuts = Long.parseLong(setting.getValue())* 60000;
+                logger.info("SESSION TIME OUT PERIOD" + timeOuts);
+                model.addAttribute("timeOut", timeOuts);
+            }
+
+        }catch(Exception ex){
+        }
+
+    }
 }

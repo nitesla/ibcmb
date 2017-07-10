@@ -9,9 +9,11 @@
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/jquery-ui.css}"/>
     <!--<link rel="stylesheet" type="text/css" th:href="@{~/customer/css/date/css/bootstrap-datepicker.css}"/>-->
     <!--<link rel="stylesheet" type="text/css" th:href="@{~/customer/css/date/css/bootstrap-datepicker.standalone.css}"/>-->
-    
+
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/jquery-steps/css/jquery.steps.css}" />
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/bootstrap.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/custom.css}"/>
+
     <!--<link rel="stylesheet" type="text/css" th:href="@{~/customer/css/select.bootstrap.css}"/>-->
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/font-awesome/font-awesome.min.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/bootstrap-daterangepicker/daterangepicker.css}"/>
@@ -150,7 +152,7 @@
                                     <li><a th:href="@{/corporate/token/lost}" th:text="#{menu.token.report}">Report Lost Token</a></li>
                                     <li><a th:href="@{/corporate/beneficiary}">Beneficiaries</a></li>
                                     <li><a th:href="@{/corporate/mailbox/inbox}" th:text="#{menu.mail}"> Mailbox</a></li>
-                                    <li sec:authorize="hasAuthority('ADD_CORPORATE_USER')"><a th:href="@{/corporate/users}" th:text="#{menu.usermanagement}">User Management</a></li>
+                                    <li th:if="${isUserAdmin}"><a th:href="@{/corporate/users}" th:text="#{menu.usermanagement}">User Management</a></li>
                                 </ul>
                             </li>
 
@@ -339,6 +341,7 @@
     <script th:src="@{~/customer/plugins/bootstrap-daterangepicker/daterangepicker.js}"></script>
     <script th:src="@{~/customer/js/coronation.js}"></script>
     <script th:src="@{~/customer/js/dataTables.select.js}"></script>
+
     <!--<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>-->
 
     <!-- BOOTSTRAP SCRIPTS  -->
@@ -368,8 +371,8 @@
     <script th:inline="javascript">
         $.sessionTimeout({
             keepAliveUrl: '',
-            logoutUrl: '/retail/logout',
-            redirUrl: '/retail/logout',
+            logoutUrl: '/corporate/logout',
+            redirUrl: '/corporate/logout',
             warnAfter: [[${timeOut}]],
             redirAfter: 10000,
             countdownBar: true

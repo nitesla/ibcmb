@@ -514,18 +514,18 @@ public class IntegrationServiceImpl implements IntegrationService {
     }
 
     @Override
-    @Async
-    public CompletableFuture<Rate> getFee(String channel) {
+    //@Async
+    public Rate  getFee(String channel) {
 
         String uri = URI + "/transfer/fee";
         Map<String, String> params = new HashMap<>();
         params.put("transactionChannel", channel);
         try {
             Rate details = template.postForObject(uri, params, Rate.class);
-            return CompletableFuture.completedFuture(details);
+            return details;
         } catch (Exception e) {
 
-            return  CompletableFuture.completedFuture(new Rate("", "0", ""));
+            return  new Rate("", "0", "");
         }
 
 

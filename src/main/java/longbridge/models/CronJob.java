@@ -13,6 +13,14 @@ public class CronJob extends AbstractEntity {
     private String username;
     private String flag;
 
+    public String getFlag() {
+        return flag;
+    }
+
+    public void setFlag(String flag) {
+        this.flag = flag;
+    }
+
     public String getCronExpression() {
         return cronExpression;
     }

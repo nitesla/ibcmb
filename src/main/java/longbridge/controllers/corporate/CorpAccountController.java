@@ -191,7 +191,7 @@ catch(InternetBankingException e){
     }
 
     @GetMapping("/{id}/statement")
-    public String getTransactionHistory(@PathVariable Long id, Model model, Principal principal) {
+    public String getLastTenTransaction(@PathVariable Long id, Model model, Principal principal) {
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
 
         Account account = accountRepo.findOne(id);
@@ -244,6 +244,11 @@ catch(InternetBankingException e){
     public String getViewOnly(Model model, Principal principal) throws ParseException {
 
         return "corp/account/view";
+    }
+
+    @GetMapping("/viewonlyhistory")
+    public String getViewOnlyHist(Model model, Principal principal) throws ParseException {
+       return "corp/account/tranhistory";
     }
 
     @GetMapping("/viewstatement/display/data")

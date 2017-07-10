@@ -75,21 +75,24 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     @Transactional
     public String addTransferRequest(CorpTransferRequestDTO transferRequestDTO) throws InternetBankingException {
 
+        logger.info("Transfer request is " + transferRequestDTO);
+
         CorpTransRequest transferRequest = convertDTOToEntity(transferRequestDTO);
+
+        logger.info("Transfer request is after conversion is" + transferRequest);
+
 
         if ("SOLE".equals(transferRequest.getCorporate().getCorporateType())) {
             makeTransfer(transferRequestDTO);
             return messageSource.getMessage("transaction.success", null, locale);
         }
 
-        if (corporateService.getCorporateRules(transferRequest.getCorporate().getId()).isEmpty()) {
-            throw new TransferRuleException(messageSource.getMessage("rule.unavailable", null, locale));
-        }
-        if (corporateService.getQualifiedRoles(transferRequest).isEmpty()) {
-            throw new NoDefinedRoleException(messageSource.getMessage("transfer.role.unavailable", null, locale),transferRequestDTO.getAmount());
+        if (corporateService.getApplicableTransferRule(transferRequest) == null) {
+            throw new TransferRuleException(messageSource.getMessage("rule.unapplicable", null, locale));
         }
 
-        try{
+
+        try {
             transferRequest.setStatus("P");
             transferRequest.setStatusDescription("Pending");
             CorpTransferAuth transferAuth = new CorpTransferAuth();
@@ -103,15 +106,20 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     }
 
 
-    public CorpTransferRequestDTO makeTransfer(CorpTransferRequestDTO corpTransferRequestDTO) throws InternetBankingTransferException {
+    private CorpTransferRequestDTO makeTransfer(CorpTransferRequestDTO corpTransferRequestDTO) throws InternetBankingTransferException {
         validateTransfer(corpTransferRequestDTO);
         logger.trace("Transfer details valid {}", corpTransferRequestDTO);
         CorpTransRequest corpTransRequest = (CorpTransRequest) integrationService.makeTransfer(convertDTOToEntity(corpTransferRequestDTO));
         if (corpTransRequest != null) {
             logger.trace("params {}", corpTransRequest);
-            saveTransfer(convertEntityToDTO(corpTransRequest));
-            if (corpTransRequest.getStatus().equals("000") || corpTransRequest.getStatus().equals("00"))
-                return convertEntityToDTO(corpTransRequest);
+            corpTransferRequestDTO =   saveTransfer(convertEntityToDTO(corpTransRequest));
+
+
+            if (corpTransRequest.getStatus()!=null){
+                if (corpTransRequest.getStatus().equals("000") || corpTransRequest.getStatus().equals("00"))
+                    return corpTransferRequestDTO;
+                throw new InternetBankingTransferException(corpTransRequest.getStatusDescription());
+            }
             throw new InternetBankingTransferException(TransferExceptions.ERROR.toString());
         }
         throw new InternetBankingTransferException();
@@ -235,13 +243,50 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     }
 
     public CorpTransferRequestDTO convertEntityToDTO(CorpTransRequest corpTransRequest) {
-        return modelMapper.map(corpTransRequest, CorpTransferRequestDTO.class);
+        CorpTransferRequestDTO transferRequestDTO = new CorpTransferRequestDTO();
+        transferRequestDTO.setId(corpTransRequest.getId());
+        transferRequestDTO.setVersion(corpTransRequest.getVersion());
+        transferRequestDTO.setCustomerAccountNumber(corpTransRequest.getCustomerAccountNumber());
+        transferRequestDTO.setTransferType(corpTransRequest.getTransferType());
+        transferRequestDTO.setFinancialInstitution(corpTransRequest.getFinancialInstitution());
+        transferRequestDTO.setBeneficiaryAccountNumber(corpTransRequest.getBeneficiaryAccountNumber());
+        transferRequestDTO.setBeneficiaryAccountName(corpTransRequest.getBeneficiaryAccountName());
+        transferRequestDTO.setRemarks(corpTransRequest.getRemarks());
+        transferRequestDTO.setStatus(corpTransRequest.getStatus());
+        transferRequestDTO.setReferenceNumber(corpTransRequest.getReferenceNumber());
+        transferRequestDTO.setNarration(corpTransRequest.getNarration());
+        transferRequestDTO.setStatusDescription(corpTransRequest.getStatusDescription());
+        transferRequestDTO.setAmount(corpTransRequest.getAmount());
+        transferRequestDTO.setTranDate(corpTransRequest.getTranDate());
+        transferRequestDTO.setCorporateId(corpTransRequest.getCorporate().getId().toString());
+        if(corpTransRequest.getTransferAuth()!=null) {
+            transferRequestDTO.setTransAuthId(corpTransRequest.getTransferAuth().getId().toString());
+        }
+        return transferRequestDTO;
     }
 
 
-    public CorpTransRequest convertDTOToEntity(CorpTransferRequestDTO corpTransferRequestDTO) {
-        CorpTransRequest corpTransRequest = modelMapper.map(corpTransferRequestDTO, CorpTransRequest.class);
-        corpTransRequest.setCorporate(corporateRepo.findOne(Long.parseLong(corpTransferRequestDTO.getCorporateId())));
+    public CorpTransRequest convertDTOToEntity(CorpTransferRequestDTO transferRequestDTO) {
+        CorpTransRequest corpTransRequest = new CorpTransRequest();
+        corpTransRequest.setId(transferRequestDTO.getId());
+        corpTransRequest.setVersion(transferRequestDTO.getVersion());
+        corpTransRequest.setCustomerAccountNumber(transferRequestDTO.getCustomerAccountNumber());
+        corpTransRequest.setTransferType(transferRequestDTO.getTransferType());
+        corpTransRequest.setFinancialInstitution(transferRequestDTO.getFinancialInstitution());
+        corpTransRequest.setBeneficiaryAccountNumber(transferRequestDTO.getBeneficiaryAccountNumber());
+        corpTransRequest.setBeneficiaryAccountName(transferRequestDTO.getBeneficiaryAccountName());
+        corpTransRequest.setRemarks(transferRequestDTO.getRemarks());
+        corpTransRequest.setStatus(transferRequestDTO.getStatus());
+        corpTransRequest.setReferenceNumber(transferRequestDTO.getReferenceNumber());
+        corpTransRequest.setNarration(transferRequestDTO.getNarration());
+        corpTransRequest.setStatusDescription(transferRequestDTO.getStatusDescription());
+        corpTransRequest.setAmount(transferRequestDTO.getAmount());
+        Corporate corporate = corporateRepo.findOne(Long.parseLong(transferRequestDTO.getCorporateId()));
+        corpTransRequest.setCorporate(corporate);
+        if (transferRequestDTO.getTransAuthId() != null) {
+            CorpTransferAuth transferAuth = transferAuthRepo.findOne(Long.parseLong(transferRequestDTO.getTransAuthId()));
+            corpTransRequest.setTransferAuth(transferAuth);
+        }
         return corpTransRequest;
     }
 
@@ -267,25 +312,24 @@ public class CorpTransferServiceImpl implements CorpTransferService {
 
     @Override
     public CorpTransferAuth getAuthorizations(CorpTransRequest transRequest) {
-
         CorpTransRequest corpTransRequest = corpTransferRequestRepo.findOne(transRequest.getId());
         return corpTransRequest.getTransferAuth();
 
     }
 
 
-    public boolean userCanAuthorize(CorpTransRequest corpTransRequest){
+    public boolean userCanAuthorize(CorpTransRequest corpTransRequest) {
         CorporateUser corporateUser = getCurrentUser();
         CorpTransRule transferRule = corporateService.getApplicableTransferRule(corpTransRequest);
 
-        if(transferRule==null){
-            return  false;
+        if (transferRule == null) {
+            return false;
         }
 
         List<CorporateRole> roles = transferRule.getRoles();
 
         for (CorporateRole corporateRole : roles) {
-            if (corpRoleRepo.countInRole(corporateRole, corporateUser)>0) {
+            if (corpRoleRepo.countInRole(corporateRole, corporateUser) > 0) {
                 return true;
             }
         }
@@ -293,17 +337,17 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     }
 
     @Override
-    public String addAuthorization(CorpTransReqEntry transReqEntry, CorpTransRequest transferRequest) {
+    public String addAuthorization(CorpTransReqEntry transReqEntry) {
 
         CorporateUser corporateUser = getCurrentUser();
-        CorpTransRequest corpTransRequest = corpTransferRequestRepo.findOne(transferRequest.getId());
+        CorpTransRequest corpTransRequest = corpTransferRequestRepo.findOne(transReqEntry.getTranReqId());
         CorpTransRule transferRule = corporateService.getApplicableTransferRule(corpTransRequest);
         List<CorporateRole> roles = transferRule.getRoles();
         CorporateRole userRole = null;
 
 
         for (CorporateRole corporateRole : roles) {
-            if (corpRoleRepo.countInRole(corporateRole, corporateUser)>0) {
+            if (corpRoleRepo.countInRole(corporateRole, corporateUser) > 0) {
                 userRole = corporateRole;
                 break;
             }
@@ -314,9 +358,8 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         }
 
         CorpTransferAuth transferAuth = corpTransRequest.getTransferAuth();
-        Set<CorpTransReqEntry> transReqEntries = transferAuth.getAuths();
 
-        if (transReqEntries.contains(transReqEntry)) {
+        if (reqEntryRepo.existsByTranReqIdAndRole(corpTransRequest.getId(), userRole)) {
             throw new InternetBankingException("User has already authorized the transaction");
         }
 
@@ -324,13 +367,13 @@ public class CorpTransferServiceImpl implements CorpTransferService {
             throw new InternetBankingException("Transaction is not pending");
         }
         transReqEntry.setEntryDate(new Date());
-        transReqEntry.setCorporateRole(userRole);
-        transReqEntry.setCorporateUser(corporateUser);
-        transReqEntry.setStatus("A");
+        transReqEntry.setRole(userRole);
+        transReqEntry.setUser(corporateUser);
+        transReqEntry.setStatus("Approved");
         transferAuth.getAuths().add(transReqEntry);
         transferAuthRepo.save(transferAuth);
-        if(isAuthorizationComplete(corpTransRequest)){
-            transferAuth.setStatus("C");;
+        if (isAuthorizationComplete(corpTransRequest)) {
+            transferAuth.setStatus("C");
             transferAuth.setLastEntry(new Date());
             transferAuthRepo.save(transferAuth);
             makeTransfer(convertEntityToDTO(corpTransRequest));
@@ -340,7 +383,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         return "Authorization added successfully to the transaction request";
     }
 
-    private boolean isAuthorizationComplete(CorpTransRequest transRequest){
+    private boolean isAuthorizationComplete(CorpTransRequest transRequest) {
         CorpTransferAuth transferAuth = transRequest.getTransferAuth();
         Set<CorpTransReqEntry> transReqEntries = transferAuth.getAuths();
         CorpTransRule corpTransRule = corporateService.getApplicableTransferRule(transRequest);
@@ -348,19 +391,19 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         boolean any = false;
         int approvalCount = 0;
 
-        if(corpTransRule.isAnyCanAuthorize()){
+        if (corpTransRule.isAnyCanAuthorize()) {
             any = true;
         }
 
-        for(CorporateRole role: roles){
-            for(CorpTransReqEntry corpTransReqEntry: transferAuth.getAuths()){
-                if(corpTransReqEntry.getCorporateRole().equals(role)){
+        for (CorporateRole role : roles) {
+            for (CorpTransReqEntry corpTransReqEntry : transReqEntries) {
+                if (corpTransReqEntry.getRole().equals(role)) {
                     approvalCount++;
-                    if(any) return true;
+                    if (any) return true;
                 }
             }
         }
-        return approvalCount >= roles.size() ;
+        return approvalCount >= roles.size();
 
     }
 

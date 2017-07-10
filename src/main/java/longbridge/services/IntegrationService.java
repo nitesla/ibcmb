@@ -120,8 +120,8 @@ public interface IntegrationService {
     BigDecimal getAvailableBalance(String s);
     @Async
     CompletableFuture<ObjectNode>  sendSMS(String message, String contact, String subject);
-    @Async
-    CompletableFuture<Rate> getFee(String channel);
+
+    Rate getFee(String channel);
 
 
 }
