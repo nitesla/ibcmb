@@ -58,6 +58,9 @@ public class OpsCorporateController {
     @Autowired
     IntegrationService integrationService;
 
+    @Autowired
+            ConfigurationService configService;
+
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
@@ -337,9 +340,15 @@ public class OpsCorporateController {
         roleIds = webRequest.getParameterValues("roles");
         List<CorporateRoleDTO> roleDTOs = new ArrayList<CorporateRoleDTO>();
         CorporateRoleDTO corporateRole;
+        int num = 2;
+        SettingDTO setting = configService.getSettingByName("MIN_CORPORATE_APPROVERS");
+        if(setting!=null&& setting.isEnabled()){
+
+            num = Integer.parseInt(setting.getValue());
+        }
 
         if (roleIds != null) {
-            if (roleIds.length > 0) {
+            if (roleIds.length >= num) {
                 for (String roleId : roleIds) {
                     corporateRole = new CorporateRoleDTO();
                     corporateRole.setId(NumberUtils.toLong(roleId));
@@ -347,14 +356,12 @@ public class OpsCorporateController {
                 }
             } else {
                 reInitializeModel(model, corporateId);
-                bindingResult.addError(new ObjectError("exception", messageSource.getMessage("role.required", null, locale)));
-
-                return "/ops/corporate/editrule";
+                bindingResult.addError(new ObjectError("exception", String.format(messageSource.getMessage("role.required", null, locale),num)));
+                return "/ops/corporate/addrule";
             }
         } else {
             reInitializeModel(model, corporateId);
-            bindingResult.addError(new ObjectError("exception", messageSource.getMessage("role.required", null, locale)));
-
+            bindingResult.addError(new ObjectError("exception", String.format(messageSource.getMessage("role.required", null, locale),num)));
             return "/ops/corporate/addrule";
         }
         if (transferRuleDTO.isUnlimited()) {
@@ -431,23 +438,29 @@ public class OpsCorporateController {
         List<CorporateRoleDTO> roleDTOs = new ArrayList<>();
         CorporateRoleDTO corporateRole;
 
+        int num = 2;
+        SettingDTO setting = configService.getSettingByName("MIN_CORPORATE_APPROVERS");
+        if(setting!=null&& setting.isEnabled()){
+
+            num = Integer.parseInt(setting.getValue());
+        }
+
         if (roleIds != null) {
-            if (roleIds.length > 0) {
+            if (roleIds.length >= num) {
                 for (String roleId : roleIds) {
                     corporateRole = new CorporateRoleDTO();
                     corporateRole.setId(NumberUtils.toLong(roleId));
                     roleDTOs.add(corporateRole);
                 }
             } else {
-                bindingResult.addError(new ObjectError("exception", messageSource.getMessage("role.required", null, locale)));
+                bindingResult.addError(new ObjectError("exception", String.format(messageSource.getMessage("role.required", null, locale),num)));
                 reloadModel(model,transferRuleDTO.getId());
 
                 return "/ops/corporate/editrule";
             }
         } else {
-            bindingResult.addError(new ObjectError("exception", messageSource.getMessage("role.required", null, locale)));
+            bindingResult.addError(new ObjectError("exception", String.format(messageSource.getMessage("role.required", null, locale),num)));
             reloadModel(model,transferRuleDTO.getId());
-
             return "/ops/corporate/editrule";
         }
         if (transferRuleDTO.isUnlimited()) {

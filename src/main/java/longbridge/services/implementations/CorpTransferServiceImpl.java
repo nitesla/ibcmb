@@ -112,10 +112,10 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         CorpTransRequest corpTransRequest = (CorpTransRequest) integrationService.makeTransfer(convertDTOToEntity(corpTransferRequestDTO));
         if (corpTransRequest != null) {
             logger.trace("params {}", corpTransRequest);
-            corpTransferRequestDTO =   saveTransfer(convertEntityToDTO(corpTransRequest));
+            corpTransferRequestDTO = saveTransfer(convertEntityToDTO(corpTransRequest));
 
 
-            if (corpTransRequest.getStatus()!=null){
+            if (corpTransRequest.getStatus() != null) {
                 if (corpTransRequest.getStatus().equals("000") || corpTransRequest.getStatus().equals("00"))
                     return corpTransferRequestDTO;
                 throw new InternetBankingTransferException(corpTransRequest.getStatusDescription());
@@ -145,7 +145,6 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         }
         return result;
     }
-
 
 
     private void validateBalance(CorpTransferRequestDTO corpTransferRequest) throws InternetBankingTransferException {
@@ -222,7 +221,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         transferRequestDTO.setAmount(corpTransRequest.getAmount());
         transferRequestDTO.setTranDate(corpTransRequest.getTranDate());
         transferRequestDTO.setCorporateId(corpTransRequest.getCorporate().getId().toString());
-        if(corpTransRequest.getTransferAuth()!=null) {
+        if (corpTransRequest.getTransferAuth() != null) {
             transferRequestDTO.setTransAuthId(corpTransRequest.getTransferAuth().getId().toString());
         }
         return transferRequestDTO;
@@ -305,7 +304,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         CorporateUser corporateUser = getCurrentUser();
         CorpTransRequest corpTransRequest = corpTransferRequestRepo.findOne(transReqEntry.getTranReqId());
         CorpTransRule transferRule = corporateService.getApplicableTransferRule(corpTransRequest);
-        List<CorporateRole> roles = transferRule.getRoles();
+        List<CorporateRole> roles = getExistingRoles(transferRule.getRoles());
         CorporateRole userRole = null;
 
 
@@ -350,7 +349,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         CorpTransferAuth transferAuth = transRequest.getTransferAuth();
         Set<CorpTransReqEntry> transReqEntries = transferAuth.getAuths();
         CorpTransRule corpTransRule = corporateService.getApplicableTransferRule(transRequest);
-        List<CorporateRole> roles = corpTransRule.getRoles();
+        List<CorporateRole> roles = getExistingRoles(corpTransRule.getRoles());
         boolean any = false;
         int approvalCount = 0;
 
@@ -374,5 +373,16 @@ public class CorpTransferServiceImpl implements CorpTransferService {
         CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         CorporateUser corporateUser = (CorporateUser) principal.getUser();
         return corporateUser;
+    }
+
+    private List<CorporateRole> getExistingRoles(List<CorporateRole> roles) {
+        List<CorporateRole> existingRoles = new ArrayList<>();
+        for (CorporateRole role : roles) {
+            if ("N".equals(role.getDelFlag())) {
+                existingRoles.add(role);
+            }
+        }
+        return existingRoles;
+
     }
 }

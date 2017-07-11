@@ -145,6 +145,7 @@ public class RoleServiceImpl implements RoleService {
         }
     }
 
+    @Verifiable(operation="ADD_PERMISSION",description="Adding a Permission")
     public String addPermission(PermissionDTO permissionDTO) throws InternetBankingException {
         try {
             Permission permission = convertDTOToEntity(permissionDTO);
@@ -188,6 +189,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+    @Verifiable(operation="UPDATE_PERMISSION",description="Updating a Permission")
     public String updatePermission(PermissionDTO permissionDTO) throws InternetBankingException {
         try {
             Permission permission = convertDTOToEntity(permissionDTO);

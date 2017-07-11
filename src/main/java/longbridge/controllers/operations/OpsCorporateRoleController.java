@@ -103,14 +103,14 @@ public class OpsCorporateRoleController {
                 usersList.add(userDTO);
             }
         }
-        else {
-            result.addError(new ObjectError("invalid", "No Users in Role"));
-            CorporateDTO corporate = corporateService.getCorporate(NumberUtils.toLong(roleDTO.getCorporateId()));
-            List<CorporateUserDTO> users = corporateUserService.getUsersWithoutRole(NumberUtils.toLong(roleDTO.getCorporateId()));
-            model.addAttribute("users",users);
-            model.addAttribute("corporate",corporate);
-            return "ops/corporate/addrole";
-        }
+//        else {
+//            result.addError(new ObjectError("invalid", "No Users in Role"));
+//            CorporateDTO corporate = corporateService.getCorporate(NumberUtils.toLong(roleDTO.getCorporateId()));
+//            List<CorporateUserDTO> users = corporateUserService.getUsersWithoutRole(NumberUtils.toLong(roleDTO.getCorporateId()));
+//            model.addAttribute("users",users);
+//            model.addAttribute("corporate",corporate);
+//            return "ops/corporate/addrole";
+//        }
 
 
         roleDTO.setUsers(usersList);
@@ -173,15 +173,15 @@ public class OpsCorporateRoleController {
                 usersList.add(userDTO);
             }
         }
-        else{
-            result.addError(new ObjectError("invalid", "No Users in Role"));
-            CorporateDTO corporate = corporateService.getCorporate(NumberUtils.toLong(roleDTO.getCorporateId()));
-            List<CorporateUserDTO> users = corporateUserService.getUsersWithoutRole(NumberUtils.toLong(roleDTO.getCorporateId()));
-            model.addAttribute("users",users);
-            model.addAttribute("corporate",corporate);
-            model.addAttribute("role", roleDTO);
-            return "ops/corporate/editrole";
-        }
+//        else{
+//            result.addError(new ObjectError("invalid", "No Users in Role"));
+//            CorporateDTO corporate = corporateService.getCorporate(NumberUtils.toLong(roleDTO.getCorporateId()));
+//            List<CorporateUserDTO> users = corporateUserService.getUsersWithoutRole(NumberUtils.toLong(roleDTO.getCorporateId()));
+//            model.addAttribute("users",users);
+//            model.addAttribute("corporate",corporate);
+//            model.addAttribute("role", roleDTO);
+//            return "ops/corporate/editrole";
+//        }
 
         roleDTO.setUsers(usersList);
         try {
