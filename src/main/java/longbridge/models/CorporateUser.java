@@ -31,7 +31,6 @@ public class CorporateUser extends User implements PrettySerializer{
 	private boolean admin ;
 
 	@ManyToOne
-	@JsonBackReference
 	private Corporate corporate;
 
     public String getIsFirstTimeLogon() {

@@ -343,8 +343,7 @@ public class OpsCorporateController {
         int num = 2;
         SettingDTO setting = configService.getSettingByName("MIN_CORPORATE_APPROVERS");
         if(setting!=null&& setting.isEnabled()){
-
-            num = Integer.parseInt(setting.getValue());
+            num = NumberUtils.toInt(setting.getValue());
         }
 
         if (roleIds != null) {
