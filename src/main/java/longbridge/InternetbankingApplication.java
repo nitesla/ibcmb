@@ -25,7 +25,6 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
     IntegrationService service;
 
 
-
     public static void main(String[] args) {
         SpringApplication.run(InternetbankingApplication.class, args);
 
@@ -38,7 +37,6 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
 
     @Override
     public void run(String... strings) throws Exception {
-
 
     }
 }

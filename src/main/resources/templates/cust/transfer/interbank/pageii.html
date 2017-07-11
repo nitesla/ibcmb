@@ -92,6 +92,8 @@
                     <hr class="related-info"/>
                     <!--<input type="availBal" name="availBal"/>-->
                     <p id="availBal"><b></b></p>
+                    <p id="limit"><b></b></p>
+
                 </div>
             </div>
             <div class="col-md-3 pull-right " >
@@ -133,11 +135,38 @@
 //                    $('input[name=availBal]').val(bal);
 
                         $('#availBal').text("Available Balance: "+bal);
+                        getLimit();
 
                     }
                 }
             })
         }
+
+
+
+        function getLimit(){
+
+            var accountNumber = $('#source').val();
+            $.ajax({
+                url: "/retail/transfer/limit/"+accountNumber,
+                type: 'GET',
+                async: false,
+                success:function(limit){
+                    bal = ''+String(limit);
+                    if(bal == "" ){
+                        document.getElementById("mylimit").textContent="Could not get limit from server, please try again.";
+                        $("#mylimit").show();
+                    }else{
+//                    $('input[name=availBal]').val(bal);
+
+                        $('#limit').text("Limit: "+bal);
+
+                    }
+                }
+            })
+        }
+
+
 
         function getDestCurrency(){
             var accountNumber = $('#source').val();

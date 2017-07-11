@@ -434,15 +434,15 @@ public class IntegrationServiceImpl implements IntegrationService {
 
 
     @Override
-    public BigDecimal getDailyAccountLimit(String accNo, String channel) {
-        BigDecimal result = new BigDecimal(0);
+    public String getDailyAccountLimit(String accNo, String channel) {
+        String result = "NAN";
         String uri = URI + "/transfer/limit";
         Map<String, String> params = new HashMap<>();
         params.put("accountNumber", accNo);
         params.put("transactionChannel", channel);
         try {
             String response = template.postForObject(uri, params, String.class);
-            result = new BigDecimal(response);
+            result =(response);
         } catch (Exception e) {
 
             e.printStackTrace();

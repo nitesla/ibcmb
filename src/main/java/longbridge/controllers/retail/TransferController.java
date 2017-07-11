@@ -29,6 +29,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView;
 
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.*;
 import java.util.stream.StreamSupport;
@@ -339,6 +340,11 @@ public class TransferController {
         return getPreviousPageByRequest(request).orElse("/retail/dashboard"); //else go to home page
     }
 
+    @RequestMapping(value = "/limit/{accountNumber}", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public String getBalance(@PathVariable String accountNumber) throws Exception {
 
+        return integrationService.getDailyAccountLimit(accountNumber,"NIP");
+    }
 }
 
