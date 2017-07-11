@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.Date;
 
 @Component("corporateAuthenticationSuccessHandler")
 public class CorporateAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
@@ -66,6 +67,7 @@ public class CorporateAuthenticationSuccessHandler implements AuthenticationSucc
             CorporateUser user = corporateUserRepo.findFirstByUserNameIgnoreCase(userName);
             if (user != null)
                 sessionUtils.validateExpiredPassword(user, session);
+            user.setLastLoginDate(new Date());
                 failedLoginService.loginSucceeded(user);
 
         }
