@@ -75,11 +75,7 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     @Transactional
     public String addTransferRequest(CorpTransferRequestDTO transferRequestDTO) throws InternetBankingException {
 
-        logger.info("Transfer request is " + transferRequestDTO);
-
         CorpTransRequest transferRequest = convertDTOToEntity(transferRequestDTO);
-
-        logger.info("Transfer request is after conversion is" + transferRequest);
 
 
         if ("SOLE".equals(transferRequest.getCorporate().getCorporateType())) {

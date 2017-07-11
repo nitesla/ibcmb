@@ -144,7 +144,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             corporateUser.setFirstName(user.getFirstName());
             corporateUser.setPhoneNumber(user.getPhoneNumber());
             corporateUser.setAdmin(user.isAdmin());
-            corporateUser.setCorporate(corporate);
+
             if (user.getRoleId() != null) {
                 Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
                 corporateUser.setRole(role);
@@ -276,7 +276,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
     @Override
     @Transactional
-    @Verifiable(operation = "CORP_USER_STATUS", description = "Change corporate user activation status")
+    @Verifiable(operation = "UPDATE_CORP_USER_STATUS", description = "Change corporate user activation status")
     public String changeActivationStatus(Long userId) throws InternetBankingException {
 
         CorporateUser user = corporateUserRepo.findOne(userId);

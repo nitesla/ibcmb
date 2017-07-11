@@ -357,9 +357,7 @@ public class CorporateServiceImpl implements CorporateService {
         try {
             CorpTransRule corpTransRule = convertTransferRuleDTOToEntity(transferRuleDTO);
             corpTransferRuleRepo.save(corpTransRule);
-            //            Corporate corporate = corpTransRule.getCorporate();
-//            corporate.getCorpTransRules().add(corpTransRule);
-//            corporateRepo.save(corporate);
+
             logger.info("Added transfer rule for corporate with Id {}", transferRuleDTO.getCorporateId());
             return messageSource.getMessage("rule.add.success", null, locale);
         } catch (Exception e) {
@@ -441,9 +439,7 @@ public class CorporateServiceImpl implements CorporateService {
         try {
             CorpTransRule transferRule = corpTransferRuleRepo.findOne(id);
             corpTransferRuleRepo.delete(transferRule);
-//            Corporate corporate = corporateRepo.findOne(transferRule.getCorporate().getId());
-//            corporate.getCorpTransRules().remove(transferRule);
-//            corporateRepo.save(corporate);
+
             logger.info("Updated transfer rule  with Id {}", id);
             return messageSource.getMessage("rule.delete.success", null, locale);
         } catch (Exception e) {
@@ -566,18 +562,6 @@ public class CorporateServiceImpl implements CorporateService {
         return applicableTransferRule;
     }
 
-    @Override
-    @Transactional
-    public List<CorporateRole> getQualifiedRoles(CorpTransRequest transRequest) {
-
-        CorpTransRule applicableTransferRule = getApplicableTransferRule(transRequest);
-        List<CorporateRole> roles = new ArrayList<>();
-
-        if (applicableTransferRule != null) {
-            roles = applicableTransferRule.getRoles();
-        }
-        return roles;
-    }
 
 //    public CorporateRole getNextRoleForAuthorization(PendAuth pendAuth){
 //        pendAuth.
