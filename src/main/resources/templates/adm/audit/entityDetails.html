@@ -29,7 +29,7 @@
             <div class="">
                 <div class="page-title">
                     <div class="title_left">
-                        <h3>Audits</h3>
+                        <input type="text" id="classname" th:value="${classname}"/><h3> Audits Revision</h3>
                     </div>
 
                 </div>
@@ -44,8 +44,22 @@
                                     <li >
                                         <div class="col-lg-4">
                                             <div class="title-action">
-                                                <a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/audit/index/edit" disabled="disabled" ><i class="fa fa-pencil"></i>  View</a>
+                                                <a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/audit/id/classname/view" disabled="disabled" ><i class="fa fa-pencil"></i>  View</a>
+                                            <input id="itemId" type="hidden" th:value="${itemId}"/>
                                             </div>
+                                        </div>
+                                    </li>
+
+                                </ul>
+
+                                <ul class="nav navbar-right panel_toolbox col-lg-4 pull-right">
+
+                                    <li class="pull-right" >
+                                        <div class="input-group col-lg-12">
+                                            <input type="text" class="form-control" id="pattern" placeholder="Search for..."/> <span
+                                                class="input-group-btn">
+										     <button class="btn btn-success" id="search" type="button">Go!</button>
+									       </span>
                                         </div>
                                     </li>
 
@@ -55,10 +69,16 @@
                             </div>
                             <div class="x_content">
 
-                                <table class="table table-striped table-bordered table-hover" id="audit">
+                                <table class="table table-striped table-bordered table-hover" id="auditview">
+
                                     <thead>
                                     <tr>
-                                        <th>Name</th>
+                                        <th> Name</th>
+                                        <th>IP Address</th>
+                                        <th>Time</th>
+                                        <th>Modifed By</th>
+
+
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -67,6 +87,11 @@
                                     <tfoot>
                                     <tr>
                                         <th>Name</th>
+                                        <th>IP Address</th>
+                                        <th>Time</th>
+                                        <th>Modified By</th>
+
+
 
                                     </tr>
                                     </tfoot>
@@ -94,75 +119,135 @@
 <script th:src="@{~/bank/js/dataTables.bootstrap.js}"></script>
 <script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
 <script th:src="@{~/bank/vendors/bootstrap-dialog/js/bootstrap-dialog.js}"></script>
+<script th:src="@{~/bank/js/momentMin.js}"></script>
 
 
 <!-- Page-Level Scripts -->
-<script>
+<script th:inline="javascript">
+
+
+
     /*<![CDATA[*/
     $(document).ready(function() {
-        var table = $('#audit').DataTable({
+        var itemid = $('#itemId').val();
+        var classRef = $('#classname').val();
+        alert(itemid);
+        alert(classRef);
+        var table = $('#auditview').DataTable({
             select:true,
             responsive: true,
             "lengthMenu" : [ [ 5, 10, 20],	[ 5, 10, 20 ] ],
             "pagingType" : "simple_numbers",
             "searching": false,
-            rowId: 'id',
+            rowId: 'revision.id',
             "paging": true,
             "serverSide" : true,
             "ajax": {
                 url: '/admin/audit/revised/entity/details',
-                type: 'POST',
-                async: true,
-                success: function (data) {
-                    alert("hh");
-                },error: function (data) {
-
-                }
+                type: 'GET',
+                async: false,
+                data:{itemId:itemid,classname:classRef}
+//                success: function (data) {
+//                    alert("hh");
+//                },error: function (data) {
+//                    alert("yy");
+//
+//                }
             },
             "dom": 'T<"clear">frtlp',
             "columns": [
-                { "data": "entityName" }
-            ] });
+                { "data": "entityClassName" },
+                { "data": "revision.ipAddress" },
+                { "data": "revision.timestamp" },
+                { "data": "revision.lastChangedBy" }
+
+            ] ,"columnDefs" : [ {
+                "targets" : 2,
+                "data" : "initiatedDate",
+                "render" : function(data, type,full, meta) {
+                    if (type === 'display') {
+                        if(data == null)
+                            return data;
+                        var dtStart = new Date(parseInt(data));
+                        var dtStartWrapper = moment(dtStart);
+                        return dtStartWrapper.format('LLLL');
+                    }
+                    return data;
+                }
+            },{
+                "targets" : 0,
+                "data" : "entityClassName",
+                "render" : function(data, type,full, meta) {
+                    if(type ==='display')
+                    {
+                        data= data.substring((data.lastIndexOf(".")+1),(data.length));
+
+                    }
+
+                    return data;
+                }
+            }]});
 
         table.on('select', function() {
             if (table.rows({
-                    selected : true
-                }).indexes().length === 0) {
-                $('.bt-select').attr("disabled", true);
-            } else {
-                $('.bt-select').removeAttr("disabled");
-            }
-
-        });
-
-        table.on('deselect', function() {
-            if (table.rows({
-                    selected : true
-                }).indexes().length === 0) {
+                        selected : true
+                    }).indexes().length === 0) {
                 $('.bt-select').attr("disabled", true);
             } else {
                 $('.bt-select').removeAttr("disabled");
             }
         });
+
+        $("#search").on("click", function(e)
+        {
+            e.preventDefault();
+            dt = $('#auditview').DataTable();
+            dt.ajax.reload(null, true);
+        });
+
+
+
+//        table.on('deselect', function() {
+//            if (table.rows({
+//                        selected : true
+//                    }).indexes().length === 0) {
+//                $('.bt-select').attr("disabled", true);
+//            } else {
+//                $('.bt-select').removeAttr("disabled");
+//            }
+//        });
 
     });
+    var id;
+    var className;
+    $("#auditview").on("click", "tr", function()
+    {
+        var table =  $('#auditview').DataTable();
+        className = $(this).children(":first").text();
+        var $name2 = $(this).children(":nth-child(3)").text();
+        id =table.row( this ).id();
+//        alert(id);
+//        alert(className);
+//        alert($name2);
 
+    });
     $("a.bt-link-act").on("click", function(e) {
         e.preventDefault();
         var link = $(e.currentTarget);
         if($(link).attr("disabled")){
             return;
         }
-        var dt = $('#audit').DataTable();
-        var id = $(dt.row({
-            selected: true
-        }).node()).attr("id");
-        var ooo = link.attr("href").replace("index",id);
-        window.location.assign(ooo);
+        var dt = $('#auditview').DataTable();
+//        alert(id);
+//        alert(className);
+        var details = id+"/"+className;
+        var refDetials = link.attr("href").replace("id/classname",details);
+        window.location.assign(refDetials);
 
     } );
 
-    $("#delete-btn").on("click", function(e) {
+    $("#delete-btn").on("click", function(e)
+    {
         e.preventDefault();
         var link = $(e.currentTarget);
         if($(link).attr("disabled")){
@@ -202,19 +287,19 @@
         var id = $(dt.row({
             selected: true
         }).node()).attr("id");
-        alert(id);
+//        alert(id);
         $.ajax({
             type: 'GET',
             url: '/admin/audit/edit',
             asyn:false,
-					data: {id:id},
+            data: {itemId:itemId,classname:className},
 //					dataType: 'String',
             error: function (data) {
                 alert("failure");
 //                $('#sub').disabled();
             },
             success: function (reponse) {
-               alert(reponse);
+                alert(reponse);
             }
 
         });

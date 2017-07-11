@@ -2,6 +2,7 @@ package longbridge.controllers.admin;
 
 import longbridge.config.audits.CustomRevisionEntity;
 import longbridge.config.audits.ModifiedEntityTypeEntity;
+import longbridge.config.audits.RevisedEntitiesUtil;
 import longbridge.dtos.CodeDTO;
 //import longbridge.dtos.RevisionInfo;
 import longbridge.dtos.VerificationDTO;
@@ -47,6 +48,7 @@ public class AdmAuditController {
     @Autowired
     AuditConfigService auditCfgService;
 
+
     
     @GetMapping()
 	public String listSettings(Model model)
@@ -71,22 +73,29 @@ public class AdmAuditController {
         return out;
     }
 
+
+
+
     @GetMapping("/revised/entity")
     public String ListRevisedEnties(){
         return "adm/audit/revisedview";
     }
 
 
+    @GetMapping("/revised/{revisedid}")
+    public  String getRevisionId(@PathVariable Long revisedid)
+    {
+        return  "adm/audit/revisedview";
+    }
+
 
     @GetMapping("/revised/entity/all")
     public @ResponseBody DataTablesOutput<ModifiedEntityTypeEntity> getAllRevisedEntity(DataTablesInput input)
     {
         Pageable pageable = DataTablesUtils.getPageable(input);
+        Page<ModifiedEntityTypeEntity> auditConf=null;
+        auditConf = auditCfgService.getRevisionEntities(pageable);
         DataTablesOutput<ModifiedEntityTypeEntity> out = new DataTablesOutput<ModifiedEntityTypeEntity>();
-        Page<ModifiedEntityTypeEntity> auditConf = auditCfgService.getRevisionEntities(pageable);
-//        while (auditConf.hasNext()){
-//            logger.info("the value returned is {}",auditConf.getContent());
-//        }
         out.setDraw(input.getDraw());
         out.setData(auditConf.getContent());
         out.setRecordsFiltered(auditConf.getTotalElements());
@@ -94,18 +103,48 @@ public class AdmAuditController {
         return out;
     }
 
+
     @GetMapping("/{id}/{classname}/view")
-    public String ListRevisedEnties(@PathVariable String id,@PathVariable String classname, Model model)
+    public String getRevisionEntites(@PathVariable String id,@PathVariable String classname,Model model)
     {
-        logger.info("entity number is {}",id);
-        logger.info("entity class is {}",classname);
-        auditCfgService.revisedEntityDetails(classname,Integer.parseInt(id),null);
-//        AuditConfig audit = auditCfgService.getAuditEntity(id);
-//        String entityName = audit.getEntityName();
-//        logger.info("entity name is {}",entityName);
-//        model.addAttribute("entityName", entityName);
-        return "adm/audit/view";
+        logger.info("id {}, class {}",id,classname);
+       // auditCfgService.revisedEntityDetails(classname,id,pageable);
+//        RevisedEntitiesUtil.revisedEntityDetails(classname,Integer.parseInt(id));
+//        auditCfgService.getRevisedDetailsForEntity(Integer.parseInt(id),classname,pageable);
+        model.addAttribute("classname",classname);
+        model.addAttribute("itemId",id);
+
+        return  "adm/audit/entityDetails";
     }
+    @GetMapping("/revised/entity/details")
+    public @ResponseBody DataTablesOutput<ModifiedEntityTypeEntity> getRevisedEntityDetails(DataTablesInput input)
+    {
+        Pageable pageable = DataTablesUtils.getPageable(input);
+        Page<ModifiedEntityTypeEntity> auditConf=null;
+        auditConf = auditCfgService.getRevisionEntities(pageable);
+        DataTablesOutput<ModifiedEntityTypeEntity> out = new DataTablesOutput<ModifiedEntityTypeEntity>();
+        out.setDraw(input.getDraw());
+        out.setData(auditConf.getContent());
+        out.setRecordsFiltered(auditConf.getTotalElements());
+        out.setRecordsTotal(auditConf.getTotalElements());
+        return out;
+    }
+
+
+
+//    @GetMapping("/{id}/{classname}/view")
+//    public  @ResponseBody DataTablesOutput<T> ListRevisedEnties(@PathVariable String id,@PathVariable String classname,DataTablesInput input)
+//    {
+//        Pageable pageable = DataTablesUtils.getPageable(input);
+//        Page<T> revisionEntity=null;
+//        revisionEntity=auditCfgService.revisedEntityDetails(classname,id,pageable);
+////        DataTablesOutput<T> out=new DataTablesOutput<T>();
+////        out.setDraw(input.getDraw());
+////        out.setData(revisionEntity.getContent());
+////        out.setRecordsFiltered(revisionEntity.getTotalElements());
+////        out.setRecordsTotal(revisionEntity.getTotalElements());
+////        return out;
+//    }
 
 
 

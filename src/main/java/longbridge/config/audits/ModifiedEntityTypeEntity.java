@@ -1,5 +1,7 @@
 package longbridge.config.audits;
 
+import longbridge.models.AbstractEntity;
+
 import java.io.Serializable;
 
 import javax.persistence.*;
@@ -8,7 +10,7 @@ import javax.persistence.*;
  * Created by ayoade_farooq@yahoo.com on 4/7/2017.
  */
 @Entity
-public class ModifiedEntityTypeEntity implements Serializable{
+public class ModifiedEntityTypeEntity  implements Serializable{
 
     @Id
     @GeneratedValue

@@ -19,10 +19,9 @@ public class CustomJdbcUtil {
 
  static 	Logger logger = LoggerFactory.getLogger(CustomJdbcUtil.class);
 
-
-
 	@Transactional
-	public static boolean auditEntity(String entityName) {
+	public static boolean auditEntity(String entityName)
+	{
 		logger.debug("@@@@@@@@@@ Entity name:"+entityName);
 		ApplicationContext context = SpringContext.getApplicationContext();
 		if(context == null){//too early in lifecycle, wait

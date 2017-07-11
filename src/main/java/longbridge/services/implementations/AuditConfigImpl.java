@@ -2,6 +2,7 @@ package longbridge.services.implementations;
 
 import longbridge.config.audits.CustomRevisionEntity;
 import longbridge.config.audits.ModifiedEntityTypeEntity;
+import longbridge.config.audits.RevisedEntitiesUtil;
 import longbridge.dtos.CodeDTO;
 //import longbridge.dtos.RevisionInfo;
 import longbridge.dtos.VerificationDTO;
@@ -56,6 +57,8 @@ public class AuditConfigImpl implements AuditConfigService {
 	ModifiedEntityTypeEntityRepo modifiedEntityTypeEntityRepo;
 
 
+
+
 	public AuditConfig findEntity(String s) {
 		return configRepo.findFirstByEntityName(s);
 	}
@@ -79,6 +82,12 @@ public class AuditConfigImpl implements AuditConfigService {
 	}
 
 
+	@Override
+	public Page<ModifiedEntityTypeEntity> getRevisionEntities(String pattern, Pageable pageDetails)
+	{
+		Page<ModifiedEntityTypeEntity> page=modifiedEntityTypeEntityRepo.findUsingPattern(pattern,pageDetails);
+		return  page;
+	}
 
 	public Page<ModifiedEntityTypeEntity> getRevisionEntities(Pageable pageable)
 	{
@@ -89,25 +98,29 @@ public class AuditConfigImpl implements AuditConfigService {
 
 		return modifiedEntityTypeEntities;
 	}
+
+
+
+
+
+
+
+
 	@Override
-	public Page<T>  revisedEntityDetails(String entityName,Integer revisionNo,Pageable pageable){
+	public Page<T>  revisedEntityDetails(String entityName,String revisionNo,Pageable pageable){
 		List<Object> revisionList = new ArrayList<>();
 		Page<CustomRevisionEntity> revisionEntities=null;
 		List<String> RevisionDetails = new ArrayList<>();
 		try
 		{
 			Class<?> clazz  = Class.forName(PACKAGE_NAME + entityName);
-			Class aClass = Class.forName(PACKAGE_NAME + entityName);
-			if (clazz instanceof Code){
-
-			}
-
 			AuditReader auditReader = AuditReaderFactory.get(entityManager);
-			AuditQuery query = auditReader.createQuery().forEntitiesAtRevision(clazz,revisionNo);
+			Integer revNo=Integer.parseInt(revisionNo);
+			AuditQuery query = auditReader.createQuery().forEntitiesAtRevision(clazz,revNo);
 			revisionList = query.getResultList();
+			logger.info("this is the revision list"+query);
+			logger.info("this is the revision list"+revisionList);
 			List<Code> classes = query.getResultList();
-
-			logger.info("this is the revision list {}",revisionList);
 			getEachDetails(String.valueOf(revisionList));
 
 		}
@@ -116,12 +129,45 @@ public class AuditConfigImpl implements AuditConfigService {
 			e.printStackTrace();
 		}
 
+		catch (NumberFormatException e)
+		{
+			e.printStackTrace();
+		}
+
 		return null;
 	}
-	private List<String> getEachDetails(String details){
+	private List<String> getEachDetails(String details)
+	{
 		String[] classDetails = StringUtils.substringsBetween(details,"'","'");
 		return Arrays.asList(classDetails);
 	}
+
+	@Override
+	public Page<ModifiedEntityTypeEntity> getRevisedEntitiesDetails(Integer id,Pageable pageable)
+	{
+		System.out.println("this is the page"+id);
+
+		CustomRevisionEntity revisionEntity = customRevisionEntityRepo.findUniqueCustomEnity(id);
+
+		Page<ModifiedEntityTypeEntity> modifiedEntityTypeEntities=modifiedEntityTypeEntityRepo.findEnityByRevision(revisionEntity,pageable);
+
+		return modifiedEntityTypeEntities;
+
+	}
+	public Page<ModifiedEntityTypeEntity> getRevisedDetailsForEntity(Integer id,String classname,Pageable pageable)
+	{
+
+		List<Integer> revIds = RevisedEntitiesUtil.revisedEntityDetails(classname,id);
+		System.out.println("this is the page"+revIds);
+		List<CustomRevisionEntity> revisionEntity = customRevisionEntityRepo.findCustomEnityDetails(revIds);
+
+		logger.info("The custom revision is {}",revisionEntity);
+		Page<ModifiedEntityTypeEntity> modifiedEntityTypeEntities=modifiedEntityTypeEntityRepo.findEnityByRevisions(revisionEntity,pageable);
+		logger.info("modified entities is {}",modifiedEntityTypeEntities);
+		return modifiedEntityTypeEntities;
+
+	}
+
 	private List<String> getHeaders(String details){
 		List<String> headerDetails = new ArrayList<>();
 		String firstHeader = StringUtils.substringBetween(details,"{","'");

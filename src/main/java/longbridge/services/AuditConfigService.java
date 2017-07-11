@@ -35,8 +35,14 @@ public interface AuditConfigService
 	AuditConfig getAuditEntity(Long auditId);
 
 //	List<T> revisedEntity(String entityName);
-	Page<T> revisedEntityDetails(String entityName,Integer revisionNo,Pageable pageable);
+	Page<T> revisedEntityDetails(String entityName,String revisionNo,Pageable pageable);
 
 	Page<ModifiedEntityTypeEntity> getRevisionEntities(Pageable pageable);
+
+	Page<ModifiedEntityTypeEntity> getRevisionEntities(String pattern,Pageable pageDetails);
+
+
+	Page<ModifiedEntityTypeEntity> getRevisedEntitiesDetails(Integer id,Pageable pageable);
+	Page<ModifiedEntityTypeEntity> getRevisedDetailsForEntity(Integer id,String classname,Pageable pageable);
 
 }
