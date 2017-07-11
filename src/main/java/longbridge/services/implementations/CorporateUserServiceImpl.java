@@ -132,7 +132,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
         CorporateUser corporateUser = corporateUserRepo.findOne(user.getId());
         Corporate corporate = corporateUser.getCorporate();
-        if("I".equals(corporate.getStatus())){
+        if ("I".equals(corporate.getStatus())) {
             throw new InternetBankingException(messageSource.getMessage("corporate.deactivated", null, locale));
         }
 
@@ -282,7 +282,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         CorporateUser user = corporateUserRepo.findOne(userId);
         Corporate corporate = user.getCorporate();
 
-        if("I".equals(corporate.getStatus())){
+        if ("I".equals(corporate.getStatus())) {
             throw new InternetBankingException(messageSource.getMessage("corporate.deactivated", null, locale));
         }
         try {
@@ -415,7 +415,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         CorporateUser user = corporateUserRepo.findOne(userId);
         Corporate corporate = user.getCorporate();
 
-        if("I".equals(corporate.getStatus())){
+        if ("I".equals(corporate.getStatus())) {
             throw new InternetBankingException(messageSource.getMessage("corporate.deactivated", null, locale));
         }
         try {
@@ -434,7 +434,6 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             throw new PasswordException(messageSource.getMessage("password.reset.failure", null, locale), e);
         }
     }
-
 
 
     @Override
@@ -492,7 +491,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             failedLoginService.unLockUser(user);
             return messageSource.getMessage("unlock.success", null, locale);
         } catch (Exception e) {
-            throw new InternetBankingException(messageSource.getMessage("unlock.failure", null, locale),e);
+            throw new InternetBankingException(messageSource.getMessage("unlock.failure", null, locale), e);
 
         }
     }
@@ -589,12 +588,12 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         return corporateUserDTOList;
     }
 
-    private String getUserDesignation(CorporateUser corporateUser){
+    private String getUserDesignation(CorporateUser corporateUser) {
 
         List<CorporateRole> roles = corporateRoleRepo.findByCorporate(corporateUser.getCorporate());
         for (CorporateRole corporateRole : roles) {
-            if (corporateRoleRepo.countInRole(corporateRole, corporateUser)>0) {
-                return corporateRole.getName()+" "+corporateRole.getRank();
+            if (corporateRoleRepo.countInRole(corporateRole, corporateUser) > 0) {
+                return corporateRole.getName() + " " + corporateRole.getRank();
             }
         }
         return null;
