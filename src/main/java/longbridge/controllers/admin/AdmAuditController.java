@@ -2,6 +2,7 @@ package longbridge.controllers.admin;
 
 import longbridge.config.audits.CustomRevisionEntity;
 import longbridge.config.audits.ModifiedEntityTypeEntity;
+import longbridge.config.audits.RevisedEntitiesUtil;
 import longbridge.dtos.CodeDTO;
 //import longbridge.dtos.RevisionInfo;
 import longbridge.dtos.VerificationDTO;
@@ -47,6 +48,7 @@ public class AdmAuditController {
     @Autowired
     AuditConfigService auditCfgService;
 
+
     
     @GetMapping()
 	public String listSettings(Model model)
@@ -89,20 +91,12 @@ public class AdmAuditController {
 
 
     @GetMapping("/revised/entity/all")
-    public @ResponseBody DataTablesOutput<ModifiedEntityTypeEntity> getAllRevisedEntity(DataTablesInput input,@RequestParam("csearch") String search)
+    public @ResponseBody DataTablesOutput<ModifiedEntityTypeEntity> getAllRevisedEntity(DataTablesInput input)
     {
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<ModifiedEntityTypeEntity> auditConf=null;
-        if (StringUtils.isNoneBlank(search))
-        {
-            auditConf = auditCfgService.getRevisionEntities(search,pageable);
-        }
-        else
-        {
-            auditConf = auditCfgService.getRevisionEntities(pageable);
-        }
+        auditConf = auditCfgService.getRevisionEntities(pageable);
         DataTablesOutput<ModifiedEntityTypeEntity> out = new DataTablesOutput<ModifiedEntityTypeEntity>();
-      //  Page<ModifiedEntityTypeEntity> auditConf = auditCfgService.getRevisionEntities(pageable);
         out.setDraw(input.getDraw());
         out.setData(auditConf.getContent());
         out.setRecordsFiltered(auditConf.getTotalElements());
@@ -111,17 +105,29 @@ public class AdmAuditController {
     }
 
     @GetMapping("/{id}/{classname}/view")
-    public String ListRevisedEnties(@PathVariable String id,@PathVariable String classname, Model model)
+    public String getRevisionEntites(@PathVariable String id,@PathVariable String classname,Pageable pageable)
     {
-        logger.info("entity number is {}",id);
-        logger.info("entity class is {}",classname);
-        auditCfgService.revisedEntityDetails(classname,Integer.parseInt(id),null);
-//        AuditConfig audit = auditCfgService.getAuditEntity(id);
-//        String entityName = audit.getEntityName();
-//        logger.info("entity name is {}",entityName);
-//        model.addAttribute("entityName", entityName);
-        return "adm/audit/view";
+       // auditCfgService.revisedEntityDetails(classname,id,pageable);
+        RevisedEntitiesUtil.revisedEntityDetails(classname,id);
+        return  "adm/audit/revisedview";
     }
+
+
+
+
+//    @GetMapping("/{id}/{classname}/view")
+//    public  @ResponseBody DataTablesOutput<T> ListRevisedEnties(@PathVariable String id,@PathVariable String classname,DataTablesInput input)
+//    {
+//        Pageable pageable = DataTablesUtils.getPageable(input);
+//        Page<T> revisionEntity=null;
+//        revisionEntity=auditCfgService.revisedEntityDetails(classname,id,pageable);
+////        DataTablesOutput<T> out=new DataTablesOutput<T>();
+////        out.setDraw(input.getDraw());
+////        out.setData(revisionEntity.getContent());
+////        out.setRecordsFiltered(revisionEntity.getTotalElements());
+////        out.setRecordsTotal(revisionEntity.getTotalElements());
+////        return out;
+//    }
 
 
 

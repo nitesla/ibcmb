@@ -26,6 +26,9 @@ public interface CustomRevisionEntityRepo extends CommonRepo<CustomRevisionEntit
     @Query( "select c from CustomRevisionEntity c where  c.id in :revisionList")
     Page<CustomRevisionEntity> findCustomRevisionId(@Param("revisionList") List<T> revision, Pageable pageable);
 
+    @Query("select c from CustomRevisionEntity c where c.id=:rev")
+    CustomRevisionEntity findUniqueCustomEnity(@Param("rev") Integer revisionNumber);
+
 
 //
 // ;

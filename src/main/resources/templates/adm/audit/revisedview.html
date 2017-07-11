@@ -44,7 +44,7 @@
                                     <li >
                                         <div class="col-lg-4">
                                             <div class="title-action">
-                                                <a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/audit/id/classname/view" disabled="disabled" ><i class="fa fa-pencil"></i>View</a>
+                                                <a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/audit/id/classname/view" disabled="disabled" ><i class="fa fa-pencil"></i>  View</a>
                                             </div>
                                         </div>
                                     </li>
@@ -138,15 +138,6 @@
             "paging": true,
             "serverSide" : true,
            "ajax": "/admin/audit/revised/entity/all",
-
-//            "ajax" : {
-//                url : "/admin/audit/all/revisedentities",
-//                "type" : "GET",
-//                "data" : function(d) {
-//                    d.csearch = $('#pattern').val();
-//                }
-//                  },
-
             "dom": 'T<"clear">frtlp',
             "columns": [
                 { "data": "entityClassName" },
@@ -162,9 +153,7 @@
                     if(data == null)
                         return data;
                     var dtStart = new Date(parseInt(data));
-
                     var dtStartWrapper = moment(dtStart);
-
                     return dtStartWrapper.format('LLLL');
                 }
                 return data;

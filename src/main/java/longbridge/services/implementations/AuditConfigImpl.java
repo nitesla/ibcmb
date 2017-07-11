@@ -56,6 +56,8 @@ public class AuditConfigImpl implements AuditConfigService {
 	ModifiedEntityTypeEntityRepo modifiedEntityTypeEntityRepo;
 
 
+
+
 	public AuditConfig findEntity(String s) {
 		return configRepo.findFirstByEntityName(s);
 	}
@@ -99,22 +101,25 @@ public class AuditConfigImpl implements AuditConfigService {
 
 
 
+
+
+
+
 	@Override
-	public Page<T>  revisedEntityDetails(String entityName,Integer revisionNo,Pageable pageable){
+	public Page<T>  revisedEntityDetails(String entityName,String revisionNo,Pageable pageable){
 		List<Object> revisionList = new ArrayList<>();
 		Page<CustomRevisionEntity> revisionEntities=null;
 		List<String> RevisionDetails = new ArrayList<>();
 		try
 		{
 			Class<?> clazz  = Class.forName(PACKAGE_NAME + entityName);
-			Class aClass = Class.forName(PACKAGE_NAME + entityName);
-
 			AuditReader auditReader = AuditReaderFactory.get(entityManager);
-			AuditQuery query = auditReader.createQuery().forEntitiesAtRevision(clazz,revisionNo);
+			Integer revNo=Integer.parseInt(revisionNo);
+			AuditQuery query = auditReader.createQuery().forEntitiesAtRevision(clazz,revNo);
 			revisionList = query.getResultList();
+			logger.info("this is the revision list"+query);
+			logger.info("this is the revision list"+revisionList);
 			List<Code> classes = query.getResultList();
-
-			logger.info("this is the revision list {}",revisionList);
 			getEachDetails(String.valueOf(revisionList));
 
 		}
@@ -123,22 +128,29 @@ public class AuditConfigImpl implements AuditConfigService {
 			e.printStackTrace();
 		}
 
+		catch (NumberFormatException e)
+		{
+			e.printStackTrace();
+		}
+
 		return null;
 	}
-	private List<String> getEachDetails(String details){
+	private List<String> getEachDetails(String details)
+	{
 		String[] classDetails = StringUtils.substringsBetween(details,"'","'");
 		return Arrays.asList(classDetails);
 	}
 
 	@Override
-	public Page<T> getRevisedEntitiesDetails(List<T> entities, List<String> revisionNumber)
+	public Page<ModifiedEntityTypeEntity> getRevisedEntitiesDetails(Integer id,Pageable pageable)
 	{
+		System.out.println("this is the page"+id);
 
-		for(T  classname :entities)
-		{
+		CustomRevisionEntity revisionEntity = customRevisionEntityRepo.findUniqueCustomEnity(id);
 
+		Page<ModifiedEntityTypeEntity> modifiedEntityTypeEntities=modifiedEntityTypeEntityRepo.findEnityByRevision(revisionEntity,pageable);
 
-		}
+		return modifiedEntityTypeEntities;
 
 	}
 
