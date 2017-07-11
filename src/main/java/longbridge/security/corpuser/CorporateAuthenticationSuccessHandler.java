@@ -6,6 +6,7 @@ import longbridge.models.UserType;
 import longbridge.repositories.CorporateUserRepo;
 import longbridge.security.FailedLoginService;
 import longbridge.security.SessionUtils;
+import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.ConfigurationService;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
@@ -13,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.WebAttributes;
@@ -84,8 +84,11 @@ public class CorporateAuthenticationSuccessHandler implements AuthenticationSucc
     }
 
     protected String determineTargetUrl(final Authentication authentication) {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-      CorporateUser corporateUser = corporateUserRepo.findFirstByUserName(userDetails.getUsername());
+        CustomUserPrincipal userDetails = (CustomUserPrincipal) authentication.getPrincipal();
+//      CorporateUser corporateUser = corporateUserRepo.findFirstByUserName(userDetails.getUsername());
+
+      CorporateUser corporateUser = corporateUserRepo.findFirstByUserNameIgnoreCaseAndCorporate_Id(userDetails.getUsername(),userDetails.getCorpId());
+
         boolean isUser = corporateUser.getUserType().equals(UserType.CORPORATE);
 
         String isFirstLogon= corporateUser.getIsFirstTimeLogon();

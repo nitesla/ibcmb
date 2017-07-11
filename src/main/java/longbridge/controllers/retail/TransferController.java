@@ -183,10 +183,9 @@ public class TransferController {
     @ResponseBody
     String getInterBankAccountName(@PathVariable String accountNo, @PathVariable String bank, Principal principal) {
 
-        if (principal != null) {
-            transferUtils.doInterBankNameLookup(bank,accountNo);
-        }
-     return "";
+
+        return   transferUtils.doInterBankNameLookup(bank,accountNo);
+
     }
     @PostMapping("/process")
     public String bankTransfer(Model model, RedirectAttributes redirectAttributes, Locale locale, HttpServletRequest request, Principal principal) throws Exception {
