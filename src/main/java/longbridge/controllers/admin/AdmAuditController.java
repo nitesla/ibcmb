@@ -107,21 +107,19 @@ public class AdmAuditController {
     @GetMapping("/{id}/{classname}/view")
     public String getRevisionEntites(@PathVariable String id,@PathVariable String classname,Model model)
     {
-        logger.info("id {}, class {}",id,classname);
-       // auditCfgService.revisedEntityDetails(classname,id,pageable);
-//        RevisedEntitiesUtil.revisedEntityDetails(classname,Integer.parseInt(id));
-//        auditCfgService.getRevisedDetailsForEntity(Integer.parseInt(id),classname,pageable);
         model.addAttribute("classname",classname);
         model.addAttribute("itemId",id);
-
         return  "adm/audit/entityDetails";
     }
     @GetMapping("/revised/entity/details")
-    public @ResponseBody DataTablesOutput<ModifiedEntityTypeEntity> getRevisedEntityDetails(DataTablesInput input)
+    public @ResponseBody DataTablesOutput<ModifiedEntityTypeEntity> getRevisedEntityDetails(DataTablesInput input,WebRequest webRequest)
     {
+//        logger.info("The id and class is {} {}",webRequest.getParameter("itemId"),webRequest.getParameter("classname"));
+        Integer refId = Integer.parseInt(webRequest.getParameter("itemId"));
+        String classname = webRequest.getParameter("classname");
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<ModifiedEntityTypeEntity> auditConf=null;
-        auditConf = auditCfgService.getRevisionEntities(pageable);
+        auditConf = auditCfgService.getRevisedDetailsForEntity(refId,classname,pageable);
         DataTablesOutput<ModifiedEntityTypeEntity> out = new DataTablesOutput<ModifiedEntityTypeEntity>();
         out.setDraw(input.getDraw());
         out.setData(auditConf.getContent());

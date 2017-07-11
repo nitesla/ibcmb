@@ -29,7 +29,7 @@
             <div class="">
                 <div class="page-title">
                     <div class="title_left">
-                        <input type="text" id="classname" th:value="${classname}"/><h3> Audits Revision</h3>
+                        <h3>Audits Revision</h3>
                     </div>
 
                 </div>
@@ -46,6 +46,7 @@
                                             <div class="title-action">
                                                 <a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/audit/id/classname/view" disabled="disabled" ><i class="fa fa-pencil"></i>  View</a>
                                             <input id="itemId" type="hidden" th:value="${itemId}"/>
+                                                <input type="hidden" id="classname" th:value="${classname}"/>
                                             </div>
                                         </div>
                                     </li>
@@ -58,7 +59,7 @@
                                         <div class="input-group col-lg-12">
                                             <input type="text" class="form-control" id="pattern" placeholder="Search for..."/> <span
                                                 class="input-group-btn">
-										     <button class="btn btn-success" id="search" type="button">Go!</button>
+										     <!--<button class="btn btn-success" id="search" type="button">Go!</button>-->
 									       </span>
                                         </div>
                                     </li>
@@ -67,6 +68,7 @@
 
                                 <div class="clearfix"></div>
                             </div>
+                            
                             <div class="x_content">
 
                                 <table class="table table-striped table-bordered table-hover" id="auditview">
@@ -131,8 +133,8 @@
     $(document).ready(function() {
         var itemid = $('#itemId').val();
         var classRef = $('#classname').val();
-        alert(itemid);
-        alert(classRef);
+//        alert(itemid);
+//        alert(classRef);
         var table = $('#auditview').DataTable({
             select:true,
             responsive: true,
