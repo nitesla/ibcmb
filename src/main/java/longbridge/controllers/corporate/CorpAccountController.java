@@ -193,21 +193,22 @@ catch(InternetBankingException e){
     }
 
     @GetMapping("/{id}/statement")
-    public String getLastTenTransaction(@PathVariable Long id, Model model, Principal principal) {
+    public String getTransactionHistory(@PathVariable Long id, Model model, Principal principal) {
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
 
         Account account = accountRepo.findOne(id);
-        String LAST_TEN_TRANSACTION="10";
+        String LAST_TEN_TRANSACTION = "10";
         List<AccountDTO> accountList = accountService.getAccountsAndBalances(corporateUser.getCorporate().getCustomerId());
-        List<TransactionHistory> transRequestList=integrationService.getLastNTransactions(account.getAccountNumber(),LAST_TEN_TRANSACTION);
-        if (transRequestList != null  && ! transRequestList.isEmpty()) {
+        List<TransactionHistory> transRequestList = integrationService.getLastNTransactions(account.getAccountNumber(), LAST_TEN_TRANSACTION);
+        if (transRequestList != null && !transRequestList.isEmpty()) {
             model.addAttribute("transRequestList", transRequestList);
             model.addAttribute("accountList", accountList);
-           logger.info("Transaction list {}", transRequestList);
+            logger.info("Last 10 Transaction {}", transRequestList);
             return "corp/account/accountstatement";
         }
         return "redirect:/corporate/dashboard";
     }
+
     @RequestMapping(path = "{id}/downloadhistory", method = RequestMethod.GET)
     public ModelAndView getTransPDF(@PathVariable String id, Model model, Principal principal) {
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());

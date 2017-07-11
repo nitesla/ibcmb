@@ -23,6 +23,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -43,6 +44,10 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 
 	@Autowired
 	private MessageSource messageSource;
+
+
+	@Autowired
+	private EntityManager entityManager;
 
 	public ServiceReqConfigServiceImpl(ServiceReqConfigRepo serviceReqConfigRepo,
 			ServiceReqFormFieldRepo serviceReqFormFieldRepo) {
@@ -126,6 +131,7 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 				fields.add(onefield);
 
 			}
+			entityManager.detach(SRConfig);
 			SRConfig.setId(serviceReqConfigDTO.getId());
 			SRConfig.setVersion(serviceReqConfigDTO.getVersion());
 			SRConfig.setRequestName(serviceReqConfigDTO.getRequestName());

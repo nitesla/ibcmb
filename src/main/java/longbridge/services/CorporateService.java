@@ -215,5 +215,7 @@ public interface CorporateService{
 
     void createUserOnEntrustAndSendCredentials(CorporateUser corporateUser);
 
+    Page<CorpTransferRuleDTO> getCorporateRules(Long corpId, Pageable pageable);
+
 
 }

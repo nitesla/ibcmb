@@ -144,6 +144,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             corporateUser.setFirstName(user.getFirstName());
             corporateUser.setPhoneNumber(user.getPhoneNumber());
             corporateUser.setAdmin(user.isAdmin());
+            corporateUser.setCorporate(corporate);
             if (user.getRoleId() != null) {
                 Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
                 corporateUser.setRole(role);

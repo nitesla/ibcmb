@@ -18,7 +18,7 @@ import java.util.List;
  * Created by Wunmi on 29/03/2017.
  */
 @MappedSuperclass
-public class User extends AbstractEntity implements PrettySerializer {
+public class User extends AbstractEntity{
 
     protected String userName;
     protected String firstName;
@@ -193,31 +193,5 @@ public class User extends AbstractEntity implements PrettySerializer {
 		return Arrays.asList("userName", "firstName","lastName");
 	}
 
-    @Override
-    @JsonIgnore
-    public JsonSerializer<User> getSerializer() {
-        return new JsonSerializer<User>() {
-            @Override
-            public void serialize(User value, JsonGenerator gen, SerializerProvider serializers)
-                    throws IOException, JsonProcessingException {
 
-                gen.writeStartObject();
-                gen.writeStringField("Username", value.userName);
-                gen.writeStringField("First Name", value.firstName);
-                gen.writeStringField("Last Name", value.lastName);
-                gen.writeStringField("Email", value.email);
-                gen.writeStringField("Phone", value.phoneNumber);
-                String status =null;
-                if ("A".equals(value.status))
-                    status = "Active";
-                else if ("I".equals(value.status))
-                    status = "Inactive";
-                else if ("L".equals(value.status))
-                    status = "Locked";
-                gen.writeStringField("Status", status);
-                gen.writeStringField("Role", value.role.getName());
-                gen.writeEndObject();
-            }
-        };
-    }
 }

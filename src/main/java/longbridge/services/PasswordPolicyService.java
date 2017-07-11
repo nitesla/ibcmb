@@ -239,6 +239,10 @@ public class PasswordPolicyService {
 
 
     public boolean displayPasswordExpiryDate(Date expiryDate) {
+
+        if(expiryDate==null){
+            return false;
+        }
         SettingDTO setting = configService.getSettingByName("PASSWORD_AUTO_RESET");
         if (setting != null && setting.isEnabled()) {
 

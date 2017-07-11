@@ -37,6 +37,7 @@ public class UserGroupServiceImpl implements UserGroupService {
     @Autowired
     private UserGroupRepo userGroupRepo;
 
+
     @Autowired
     private ModelMapper modelMapper;
 
@@ -80,7 +81,8 @@ public class UserGroupServiceImpl implements UserGroupService {
     @Verifiable(operation="DELETE_USER_GRP",description="Deleting a Group")
     public String deleteGroup(Long id) throws InternetBankingException{
         try {
-            userGroupRepo.delete(id);
+           UserGroup group = userGroupRepo.findOne(id);
+           userGroupRepo.delete(group);
             return messageSource.getMessage("group.delete.success",null,locale);
         }
         catch (Exception e){
