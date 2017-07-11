@@ -98,6 +98,9 @@ public class AuditConfigImpl implements AuditConfigService {
 		{
 			Class<?> clazz  = Class.forName(PACKAGE_NAME + entityName);
 			Class aClass = Class.forName(PACKAGE_NAME + entityName);
+			if (clazz instanceof Code){
+
+			}
 
 			AuditReader auditReader = AuditReaderFactory.get(entityManager);
 			AuditQuery query = auditReader.createQuery().forEntitiesAtRevision(clazz,revisionNo);
