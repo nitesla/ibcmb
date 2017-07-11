@@ -3,7 +3,7 @@
 <head th:replace="cust_layout :: site-head">
 
 </head>
-<body>
+<body onload="currentBar('dashboard')">
 
 <div class="container" style="">
 
@@ -16,10 +16,9 @@
 
             <div class="col-xs-12  col-md-9  no-ml no-pad-left no-pad-right">
                 <div class="">
-                    <div class="current-bar  col-md-12 no-ml no-pad-left alert no-mb no-bd-rad " style="">
-                        <div class="">
-                            <strong>dashboard</strong>
-                        </div>
+                   
+
+                    <div th:replace="cust_layout :: current-bar">
                     </div>
                     <div class="col-xs-12 col-md-12 no-pad-right no-ml no-pad-left bg-danger alert no-mb no-mt no-bd-rad current-body">
                         <div class="col-md-5 col-sm-5 ">
@@ -89,6 +88,9 @@
 <script>
 
     $(document).ready(function () {
+
+        
+
         $('.tt').each(function () {
             var sth = $(this).find(".bal").html();
             $(this).find(".bal").html(numberWithCommas(sth));
