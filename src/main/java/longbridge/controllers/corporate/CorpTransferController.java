@@ -85,24 +85,7 @@ public class CorpTransferController {
     }
 
 
-    @GetMapping("/{corpId}/{amount}")
-    public void getQualifiedRoles(@PathVariable Long corpId, @PathVariable String amount) {
 
-        CorpTransRequest transferRequest = new CorpTransRequest();
-        transferRequest.setAmount(new BigDecimal(amount));
-        Corporate corporate = corporateRepo.findOne(corpId);
-        transferRequest.setCorporate(corporate);
-        List<CorporateRole> roles = corporateService.getQualifiedRoles(transferRequest);
-        PendAuth pendAuth = new PendAuth();
-        List<PendAuth> pendAuths = new ArrayList<>();
-        for (CorporateRole role : roles) {
-            pendAuth.setRole(role);
-            pendAuths.add(pendAuth);
-        }
-//        transferRequest.setPendAuths(pendAuths);
-        transferRequestRepo.save(transferRequest);
-
-    }
 
 
     @GetMapping(value = "")
@@ -402,14 +385,8 @@ public class CorpTransferController {
         modelMap.put("acctNo2", transferService.getTransfer(id).getBeneficiaryAccountNumber());
         modelMap.put("acctNo1", transferService.getTransfer(id).getCustomerAccountNumber());
         modelMap.put("refNUm", transferService.getTransfer(id).getReferenceNumber());
-        if(transferService.getTransfer(id).getTranDate()!=null){
-            modelMap.put("date", transferService.getTransfer(id).getTranDate());
-        }
-        else{ modelMap.put("date", transferService.getTransfer(id).getTranDate());}
-        if(transferService.getTransfer(id).getTranDate()!=null) {
-            modelMap.put("tranDate", DateFormatter.format(transferService.getTransfer(id).getTranDate()));
-        }
-        else{modelMap.put("tranDate","");}
+        modelMap.put("date",DateFormatter.format(new Date()));
+        modelMap.put("tranDate", DateFormatter.format(new Date()));
         ModelAndView modelAndView = new ModelAndView(view, modelMap);
         return modelAndView;
     }

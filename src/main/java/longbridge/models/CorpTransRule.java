@@ -1,5 +1,6 @@
 package longbridge.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
@@ -106,6 +107,7 @@ public class CorpTransRule extends AbstractEntity implements PrettySerializer{
 
 
     @Override
+    @JsonIgnore
     public JsonSerializer<CorpTransRule> getSerializer() {
         return new JsonSerializer<CorpTransRule>() {
 
@@ -115,13 +117,19 @@ public class CorpTransRule extends AbstractEntity implements PrettySerializer{
                 gen.writeStartObject();
                 gen.writeStringField("Corporate", value.corporate.getName());
                 gen.writeNumberField("Lower Amount",value.lowerLimitAmount);
-                gen.writeNumberField("Upper Amount",value.lowerLimitAmount);
+                if(value.unlimited){
+                    gen.writeStringField("Upper Amount","No Upper Limit");
+
+                }
+                else {
+                    gen.writeNumberField("Upper Amount",value.upperLimitAmount);
+
+                }
                 gen.writeStringField("Currency", value.currency);
-                gen.writeBooleanField("Unlimited", value.unlimited);
                 gen.writeBooleanField("Any Role", value.anyCanAuthorize);
 
 
-                gen.writeObjectFieldStart("Participating Roles");
+                gen.writeObjectFieldStart("Approval Roles");
                 for(CorporateRole role : value.roles){
                     gen.writeObjectFieldStart(role.getId().toString());
                     //gen.writeStartObject();

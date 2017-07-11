@@ -107,6 +107,10 @@ public class CorporateControllerAdvice {
             return "redirect:/corporate/setup";
         }
 
+        if ("Y".equals(corporateUser.getIsFirstTimeLogon())){
+            return "redirect:/corporate/setup";
+        }
+
         boolean isUserAdmin = corporateUser.isAdmin();
         model.addAttribute("isUserAdmin",isUserAdmin);
 

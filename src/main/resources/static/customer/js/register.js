@@ -22,6 +22,8 @@ form.children("div").steps({
     onStepChanging: function (event, currentIndex, newIndex)
     {
 
+       
+
         form.validate().settings.ignore = ":disabled,:hidden";
         console.log(currentIndex);
         var isValid = form.valid();
@@ -30,6 +32,7 @@ form.children("div").steps({
         if (currentIndex > newIndex)
         {
             // $('#myModalSuccess').modal('hide');
+            $('#loading-icon').hide();
             return true;
         }
 
@@ -83,6 +86,7 @@ form.children("div").steps({
     },
     onStepChanged: function (event, currentIndex, priorIndex)
     {
+        $('#loading-icon').hide();
         // Used to skip the "Warning" step if the user is old enough and wants to the previous step.
         if (currentIndex === 2 && priorIndex === 3)
         {
@@ -139,6 +143,7 @@ function validateAccountDetails(accountNumber, email, birthDate){
             }else {
                 $('#errorMess').text(customerId);
                 $('#myModalError').modal('show');
+                $('#loading-icon').hide();
             }
             // if(customerId == "" || customerId === null){
             //
@@ -178,6 +183,7 @@ function validateExists(accountNumber, email, birthDate){
                 //invalid account number
                 $('#errorMess').text("This account already exists on our internet banking platform, Please try logging in.");
                 $('#myModalError').modal('show');
+                $('#loading-icon').hide();
 
                 //alert("Account number not found");
             }else{
@@ -206,6 +212,7 @@ function validateUsername(username){
                 //invalid account number
                 $('#errorMess').text("Username already exists.");
                 $('#myModalError').modal('show');
+                $('#loading-icon').hide();
             }else{
                 //valid account number
                 //alert("user name: " + result);
@@ -234,6 +241,7 @@ function validatePassword(password){
             }else{
                 $('#errorMess').text(result);
                 $('#myModalError').modal('show');
+                $('#loading-icon').hide();
             }
         }
     });

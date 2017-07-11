@@ -43,12 +43,11 @@ public class MakerCheckerServiceImpl implements MakerCheckerService {
 
 
 
-    @Verifiable(operation="CONFIGURE_MAKER_CHECKER",description="Update Maker Checker")
+//    @Verifiable(operation="CONFIGURE_MAKER_CHECKER",description="Update Maker Checker")
     public String configureMakerChecker(MakerChecker makerChecker) throws InternetBankingException
     {
 
         try {
-            //  MakerChecker checker = convertDTOToEntity(makerChecker);
                makerCheckerRepo.save(makerChecker);
                logger.info("Added MakerChecker {}", makerChecker.toString());
               return messageSource.getMessage("makerchecker.add.success", null, locale);

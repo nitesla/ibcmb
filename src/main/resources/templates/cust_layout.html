@@ -116,9 +116,9 @@
                                         <li sec:authorize="hasAuthority('VIEW_ACCOUNT_OFFICER')"><a
                                                 th:href="@{/retail/account/officer}" th:text="#{menu.account.officer}">Account
                                             Officer</a></li>
-                                        <li sec:authorize="hasAuthority('CREATE_ACCOUNT')"><a
+                                        <li sec:authorize="hasAuthority('ACCOUNT_STATEMENT')"><a
                                                 th:href="@{/retail/account/viewstatement}">Account Statement</a></li>
-                                        <!--<li sec:authorize="hasAuthority('CREATE_ACCOUNT')"><a th:href="@{'#'}" th:text="#{menu.account.create}">Create New Acoount</a></li>-->
+                                        <li sec:authorize="hasAuthority('CREATE_ACCOUNT')"><a th:href="@{'#'}" th:text="#{menu.account.create}">Create New Account</a></li>
                                     </ul>
                                 </li>
                                 <li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI().startsWith('/retail/transfer') ? 'active':''}" sec:authorize="hasAuthority('MANAGE_TRANSFERS')">
@@ -134,17 +134,17 @@
                                         <li sec:authorize="hasAuthority('INTERBANK_TRANSFER')"><a
                                                 th:href="@{/retail/transfer/interbank}" th:text="#{menu.transfer.other}">Transfer
                                             to other banks</a></li>
-                                        <!--<li sec:authorize="hasAuthority('INTERNATIONAL_TRANSFERssss')"><a th:href="@{/retail/transfer/international}" th:text="#{menu.transfer.int}">International transfer</a></li>-->
-                                        <li sec:authorize="hasAuthority('RET_TRANSACTION_LIMITs.')"><a
+                                        <li sec:authorize="hasAuthority('INTERNATIONAL_TRANSFER')"><a th:href="@{/retail/transfer/international}" th:text="#{menu.transfer.int}">International transfer</a></li>
+                                        <li sec:authorize="hasAuthority('RET_TRANSACTION_LIMIT')"><a
                                                 th:href="@{/retail/transfer/settransferlimit}"
                                                 th:text="#{menu.transfer.limit}">Set transfer limit</a></li>
-                                        <li sec:authorize="hasAuthority('STANDING_ORDERs.')"><a
+                                        <li sec:authorize="hasAuthority('STANDING_ORDER')"><a
                                                 th:href="@{/retail/directdebit}" th:text="#{menu.transfer.order}">Standing
                                             order</a></li>
                                     </ul>
                                 </li>
-                                <!--<li sec:authorize="hasAuthority('MANAGE_BILL_PAYMENT')"><a href="#" th:text="#{menu.bill}">Bill Payments</a></li>-->
-                                <!--<li sec:authorize="hasAuthority('MANAGE_INVESTMENT')"><a href="#" th:text="#{menu.investment}">Investment</a></li>-->
+                                <li sec:authorize="hasAuthority('MANAGE_BILL_PAYMENT')"><a href="#" th:text="#{menu.bill}">Bill Payments</a></li>
+                                <li sec:authorize="hasAuthority('MANAGE_INVESTMENT')"><a href="#" th:text="#{menu.investment}">Investment</a></li>
                                 <li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI().startsWith('/retail/requests') ? 'active':''}" sec:authorize="hasAuthority('MANAGE_SERV_REQ')">
                                     <a href="#" class="dropdown-toggle menu-link" data-toggle="dropdown" role="button"
                                     aria-haspopup="true" aria-expanded="false" th:text="#{menu.servreq}"> Service
@@ -381,7 +381,7 @@
 <div th:if="${message}">
         <div hidden="hidden">
             <ul class="actionMessage">
-                <li th:each="msg : ${message}" th:text="${msg}">Message</li>
+                <li th:each="msg : ${message}" th:utext="${msg}">Message</li>
             </ul>
         </div>
     </div>
@@ -445,10 +445,6 @@
 
         </div>
     </div>
-
-
-
-
     <!-- CORE JQUERY SCRIPTS -->
 
 </footer>

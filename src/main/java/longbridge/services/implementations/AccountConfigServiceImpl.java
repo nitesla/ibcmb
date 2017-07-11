@@ -121,7 +121,8 @@ public class AccountConfigServiceImpl implements AccountConfigService {
     @Verifiable(operation="DELETE_ACCT_RESTRICT",description="Deleting Account Restriction")
     public String deleteAccountRestriction(Long id) throws InternetBankingException {
         try {
-            accountRestrictionRepo.delete(id);
+            AccountRestriction accountRestriction = accountRestrictionRepo.findOne(id);
+            accountRestrictionRepo.delete(accountRestriction);
             return messageSource.getMessage("account.restrict.delete.success", null, LocaleContextHolder.getLocale());
 
         } catch (Exception e) {
