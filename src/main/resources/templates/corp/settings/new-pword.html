@@ -1,136 +1,129 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <!-- BEGIN PAGE LEVEL STYLES -->
-    <link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/jquery-steps/css/jquery.steps.css}" />
-    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/jquery-ui.css}" />
-    <link rel="stylesheet" type="text/css" th:href="@{~/customer/font-awesome/font-awesome.min.css}"/>
-    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/bootstrap.css}"/>
-    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/custom.css}"/>
+<head th:replace="corp_layout :: site-head">
 
-    <title>Password Reset</title>
 </head>
 <body>
-
-<header class="header">
-    <div class="container">
-        <div class="top_bar">
-            <ul class="list_group">
-                <li><a href="#"> CORONATION MERCHANT BANK</a></li>
-            </ul>
-        </div>
-        <nav class="navbar navbar-default">
-            <div class="container-fluid">
-                <div class="navbar-header navbar-left">
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
-                        <span class="sr-only">MENU</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="#" data-toggle="collapse" data-target="#navbar-collapse-1">Menu</a>
-                </div>
-                <div class="collapse navbar-collapse" id="navbar-collapse-1">
-                    <ul class="nav navbar-nav">
-                        <li><a href="/">HOME</a></li>
-                        <li><a href="/">CONTACT US</a></li>
-                        <li><a href="/">HELP</a></li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-        <a href="#" class="logo">
-            <img th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
-        </a>
-    </div>
-</header>
-<br/>
-<br/>
-<section class="content-wrapper">
-    <div class="container">
+<div class="container">
+    <header class="heade">
         <div class="row">
-            <div class="col-md-12 col-sm-12">
-                <div class="row">
-                    <h5 class="page_header col-md-offset-4 col-md-4 col-sm-6">Password Reset</h5>
+            <div class="top-bar col-xs-12">
+                <ul class="top-link">
+                    <li><a target="_blank" href="/corporate/contact"> Contact Us&nbsp;</a></li>
+                    <li><a href="https://www.coronationmb.com/" target="_blank"> Coronation merchant bank&nbsp;</a></li>
 
-                    <div class="col-md-offset-4 col-md-4 col-sm-6">
-                        <form method="POST" th:action="@{/corporate/reset_password}" th:object="${custResetPassword}">
+                </ul>
+            </div>
+        </div>
+        <div class='row header-bar'>
+            <div class="col-xs-12 col-sm-9 no-pad-left  ">
+                <div class="bvn-tab col-md-5 col-sm-5 ">
+                    <div class="header_inf bv">
+                        <p th:text="${compName}">Your RC Number</p>
+                        <h5 th:text="'RC N0: ' + ${RcNo}"></h5>
 
-                            <p class="alert alert-danger"><span style="color: red;">Your current password has expired.</span> <br/>Please enter a new password.</p>
-                            <div class="form-group">
-                                <p id="">
-                                    <span th:each="rule : ${passwordRules}" th:text="${rule}">Input is incorrect</span>
-                                </p>
-                            </div>
-                            <div class="form-group">
-                                <label>Set New Password</label>
-                                <input id="password" type="password" th:field="*{newPassword}"  class="form-control"/>
-                                <p class="errors" th:if="${#fields.hasErrors('newPassword')}" th:errors="*{newPassword}">&times;</p>
-                            </div>
-                            <div class="form-group">
-                                <label>Confirm New Password</label>
-                                <input id="password" type="password" th:field="*{confirmPassword}"  class="form-control"/>
-                                <p class="errors" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}">&times;</p>
-                            </div>
-                            <button class="btn btn-link required-step form-control"> Submit</button>
-                        </form>
                     </div>
                 </div>
+                <div class="col-sm-7 col-md-7 user-info">
+                    <div class="">
+                        <h5>
+                            <span class='greeting' th:text="*{greeting}"></span>
+                            <br class="break"/>
+                            <b class="greeting-user" th:text="*{name}"></b> &nbsp;
+                            <a th:href="@{/corporate/mailbox/inbox}"><i class="fa fa-envelope" style="color:#003056"></i>
+                                <span th:if="${numOfUnreadMessages}" class="badge bg-green" th:text="${numOfUnreadMessages}">count</span>
 
+                            </a>
+                        </h5>
+
+                        <div class="hide-faq">
+                            <h6>
+                                <a target="_blank" th:href="@{/faqs}">FAQS &nbsp; &nbsp;
+                                    <i class="fa fa-question-circle"></i></a>
+                                <span class="date2 lorem">&nbsp; &nbsp;Login History:&nbsp;</span>&nbsp;
+                                <span class="lorem" th:text="*{lastLogin}"></span>
+                            </h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-xs-12 col-sm-3 ">
+                <a href="/corporate/dashboard" class="">
+                    <img class='img-responsive pull-right' style="height:70px" th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
+                </a>
+            </div>
+
+
+
+        </div>
+
+    </header>
+    <section class="content-wrapper">
+        <div class="">
+            <div class="row">
+                <div class="col-md-4 col-sm-4">
+                    <h5 class="page_header"> Change Password</h5>
+                    <select class="form-control invisible">
+                        <option value="account">Account Overview</option>
+                    </select>
+                </div>
+                <p class="col-xs-12">
+                    Fields marked <span style="color:red">*</span> are compulsory
+                </p>
+            </div>
+            <div class="row">
+                <div class="col-md-9 content-bg">
+                    <div class="row">
+                        <div class="col-md-6 col-sm-6">
+                        <p class="alert alert-danger"><span style="color: red;">Your current password has expired.</span> <br/>Please enter a new password.</p>
+
+                            <form method="POST" th:action="@{/corporate/reset_password}" th:object="${custResetPassword}">
+                                <div class="form-group">
+                                    <label>Set New Password</label>
+                                    <input id="password" type="password" th:field="*{newPassword}"  class="form-control"/>
+                                    <p class="errors" th:if="${#fields.hasErrors('newPassword')}" th:errors="*{newPassword}">&times;</p>
+                                </div>
+                                <div class="form-group">
+                                    <label>Confirm New Password</label>
+                                    <input id="confirm" type="password" th:field="*{confirmPassword}"  class="form-control"/>
+                                    <p class="errors" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}">&times;</p>
+                                </div>
+                                <button class="btn btn-link required-step"> Submit</button>
+                            </form>
+
+                        </div>
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                <p th:each="rule : ${passwordRules}" th:text="${rule}">
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 pull-right " >
+                    <div th:replace="corp_layout :: corp-sidebar" class="" >
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<footer>
-    <div class="container">
-        <div class="footer_bar">
-            <div class="col-md-6 col-xs-12">
-                <ul class="list_group">
-                    <li><a href="#" target="_blank">Privacy policy</a></li>
-                    <li><a href="#" target="_blank">Disclaimer</a></li>
-                    <li><a href="#" target="_blank">Terms &amp; Conditions</a></li>
-                </ul>
+    <!-- CONTENT-WRAPPER SECTION END-->
+    <footer th:replace="corp_layout ::corp-footer">
+    </footer>
+    <script>
+        $(document).ready(function() {
+            $('#password').bind("cut copy paste", function (e) {
+                e.preventDefault();
+            });
 
-            </div>
-            <div class="col-md-6 col-xs-12"><p> &copy; 2017 - All rights reserved</p></div>
-
-        </div>
-    </div>
-</footer>
-
-<div th:if="${message}">
-    <div hidden="hidden">
-        <ul class="actionMessage">
-            <li th:each="msg : ${message}" th:text="${msg}">Message</li>
-        </ul>
-    </div>
+            $('#confirm').bind("cut copy paste", function (e) {
+                e.preventDefault();
+            });
+        });
+    </script>
 </div>
-
-<div th:if="${failure}">
-    <div hidden="hidden">
-        <ul class="actionError">
-            <li th:each="msg : ${failure}" th:text="${msg}">Message</li>
-        </ul>
-    </div>
-</div>
-
-<!-- CORE JQUERY SCRIPTS -->
-<script th:src="@{~/customer/js/jquery-1.11.1.js}"></script>
-<script th:src="@{~/customer/js/jquery-ui.js}"></script>
-<script th:src="@{~/customer/js/jquery.dataTables.js}"></script>
-<script th:src="@{~/customer/js/momentMin.js}"></script>
-<script th:src="@{~/customer/js/calendar.js}"></script>
-<script th:src="@{~/customer/js/jquery.spring-friendly.min.js}"></script>
-<script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
-<script th:src="@{~/customer/js/coronation.js}"></script>
-<!-- BOOTSTRAP SCRIPTS  -->
-<script th:src="@{~/customer/js/bootstrap.js}"></script>
-
-<script>
-    $('#password').bind("cut copy paste",function(e) {
-        e.preventDefault();
-    });
-</script>
 </body>
 </html>

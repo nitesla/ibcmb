@@ -381,7 +381,7 @@
 <div th:if="${message}">
         <div hidden="hidden">
             <ul class="actionMessage">
-                <li th:each="msg : ${message}" th:text="${msg}">Message</li>
+                <li th:each="msg : ${message}" th:utext="${msg}">Message</li>
             </ul>
         </div>
     </div>
@@ -431,7 +431,7 @@
                 <div class="modal-body">
 
 
-                    <p id='successMess' class='mess text-primary'>Put something here iff need be.</p>
+                    <p id='successMess' class='mess text-primary' escape="false">Put something here iff need be.</p>
 
 
                 </div>

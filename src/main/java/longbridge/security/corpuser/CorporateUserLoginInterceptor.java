@@ -1,6 +1,5 @@
 package longbridge.security.corpuser;
 
-import longbridge.forms.ChangeDefaultPassword;
 import longbridge.forms.CustResetPassword;
 import longbridge.services.PasswordPolicyService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +23,7 @@ private PasswordPolicyService passwordPolicyService;
         String uri=httpServletRequest.getRequestURI();
         if (httpServletRequest.getSession().getAttribute("expired-password")!=null&& !(uri.equalsIgnoreCase("/corporate/reset_password")))
         {
-            System.out.println("Password epired");
+
             CustResetPassword changePassword = new CustResetPassword();
 
             ModelAndView modelAndView = new ModelAndView("forwarded-view");
