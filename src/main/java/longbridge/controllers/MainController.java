@@ -5,10 +5,7 @@ import longbridge.dtos.SettingDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.PasswordException;
 import longbridge.exception.UnknownResourceException;
-import longbridge.models.Corporate;
-import longbridge.models.CorporateUser;
-import longbridge.models.Email;
-import longbridge.models.RetailUser;
+import longbridge.models.*;
 import longbridge.services.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -174,7 +171,7 @@ public class MainController {
         }
 
         try{
-            Map<String, List<String>> mutualAuth =  securityService.getMutualAuth(username);
+            Map<String, List<String>> mutualAuth =  securityService.getMutualAuth(user.getEntrustId());
             if (mutualAuth != null){
                 String image = mutualAuth.get("imageSecret")
                         .stream()
@@ -202,7 +199,7 @@ public class MainController {
         RetailUser user =  retailUserService.getUserByName(username);
         if (user != null && phishing != null) {
             model.addAttribute("username", user.getUserName());
-            session.setAttribute("username", user.getUserName());
+            session.setAttribute("username", UserType.RETAIL+"_"+user.getUserName());
             return "retaillogin";
         }
 
