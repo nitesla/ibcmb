@@ -147,6 +147,7 @@ public class RetailControllerAdvice {
 
 
             model.addAttribute("accounts", accountList);
+            System.out.println("fetch accounts from account table: "+accountList);
         }
 
         return "";
