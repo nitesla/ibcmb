@@ -4,6 +4,9 @@ import com.sun.javafx.binding.StringFormatter;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingSecurityException;
 import longbridge.exception.InternetBankingTransferException;
+import longbridge.models.RetailUser;
+import longbridge.models.UserType;
+import longbridge.services.RetailUserService;
 import longbridge.services.SecurityService;
 import longbridge.utils.HostMaster;
 import org.slf4j.Logger;
@@ -35,16 +38,22 @@ public class TokenAuthController {
 
     @Autowired
     private MessageSource messageSource;
+
+    @Autowired
+    RetailUserService retailUserService;
+
 @Autowired
         HostMaster hostMaster;
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @PostMapping("/otp/authenticate")
-    public String authenticate(HttpServletRequest request, RedirectAttributes redirectAttributes, Locale locale) {
+    public String authenticate(HttpServletRequest request, RedirectAttributes redirectAttributes, Locale locale, Principal principal) {
 
         String redirectUrl = "";
         String otpUrl="";
         String username = "";
+
+        RetailUser user  = retailUserService.getUserByName(principal.getName());
 
 
         if (request.getSession().getAttribute("redirectUrl") != null) {
@@ -64,7 +73,7 @@ public class TokenAuthController {
             }
 
         try {
-            boolean result = securityService.performOtpValidation(username, otp);
+            boolean result = securityService.performOtpValidation(user.getEntrustId(), otp);
             if (result) {
                 redirectAttributes.addFlashAttribute("message", messageSource.getMessage("token.auth.success", null, locale));
                 return "redirect:/" + redirectUrl;
@@ -88,7 +97,7 @@ public class TokenAuthController {
         if(!username.equalsIgnoreCase("")) {
             boolean sendOtp;
             try {
-                if (securityService.sendOtp(username)) sendOtp = true;
+                if (securityService.sendOtp(UserType.RETAIL.toString()+"_"+username)) sendOtp = true;
                 else sendOtp = false;
                 logger.info("otp sent {}",sendOtp);
                 if (sendOtp){

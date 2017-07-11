@@ -53,7 +53,7 @@ public class Corporate extends AbstractEntity implements PrettySerializer{
     private Collection<CorpLimit> corpLimits;
 
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany
     @JsonIgnore
     List<CorpTransRule> corpTransRules;
 

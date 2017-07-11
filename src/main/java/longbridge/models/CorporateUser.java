@@ -4,10 +4,8 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+import javax.annotation.Nullable;
+import javax.persistence.*;
 
 /**
  * Created by Wunmi on 27/03/2017. CorporateUser is a bank customer. Typically
@@ -22,7 +20,8 @@ public class CorporateUser extends User {
 
 	protected String isFirstTimeLogon = "Y";
 
-	private boolean admin;
+	@Nullable
+	private boolean admin ;
 
 	@ManyToOne
 	@JsonBackReference

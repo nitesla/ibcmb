@@ -213,14 +213,15 @@ public class OpsCorporateRoleController {
 
     @GetMapping("/roles/{roleId}/delete")
     public String deleteRole(@PathVariable Long roleId, RedirectAttributes redirectAttributes, Locale locale) {
+
+       CorporateRoleDTO roleDTO = corporateService.getCorporateRole(roleId);
         try {
             String message = corporateService.deleteCorporateRole(roleId);
             redirectAttributes.addFlashAttribute("message", message);
-            return "redirect:/ops/corporate/roles";
         } catch (InternetBankingException ibe) {
             logger.error("Error deleting role", ibe);
             redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
-            return "redirect:/ops/corporate/roles";
         }
+        return "redirect:/ops/corporates/" + roleDTO.getCorporateId() + "/view";
     }
 }

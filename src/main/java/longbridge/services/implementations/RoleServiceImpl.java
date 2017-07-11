@@ -137,7 +137,7 @@ public class RoleServiceImpl implements RoleService {
         		throw new InternetBankingException(messageSource.getMessage("role.delete.users.exist", null, locale));
         	}
         	try{
-            roleRepo.delete(id);
+            roleRepo.delete(role);
             logger.warn("Deleted role with Id {}", id);
             return messageSource.getMessage("role.delete.success", null, locale);
         } catch (Exception e) {
@@ -203,7 +203,8 @@ public class RoleServiceImpl implements RoleService {
     @Verifiable(operation="DELETE_PERMISSION",description="Deleting a Permission")
     public String deletePermission(Long id) throws InternetBankingException {
         try {
-            permissionRepo.delete(id);
+            Permission permission = permissionRepo.findOne(id);
+            permissionRepo.delete(permission);
             logger.warn("Deleted permission with Id {}", id);
             return messageSource.getMessage("permission.delete.success", null, locale);
         } catch (Exception e) {

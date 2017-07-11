@@ -147,43 +147,6 @@ public class CorpTransferServiceImpl implements CorpTransferService {
     }
 
 
-//    public List<PendAuth> getPendingAuthorizations() {
-//        CorporateUser corporateUser = getCurrentUser();
-//        Corporate corporate = corporateUser.getCorporate();
-//        Set<CorporateRole> roles = corporate.getCorporateRoles();
-//        List<PendAuth> pendAuths = new ArrayList<>();
-//        for (CorporateRole role : roles) {
-//            if (!role.getPendAuths().isEmpty()) {
-//                Set<CorporateUser> users = role.getUsers();
-//                if (users.contains(corporateUser)) {
-//                    pendAuths = role.getPendAuths();
-//                }
-//            }
-//        }
-//        return pendAuths;
-//    }
-//
-//    @Override
-//    @Transactional
-//    public String authorizeTransfer(Long authId) throws InternetBankingException {
-//        PendAuth pendAuth = pendAuthRepo.findOne(authId);
-//
-//        CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//        CorporateUser corporateUser = (CorporateUser) principal.getUser();
-//
-//        try {
-//            CorpTransRequest transferRequest = pendAuth.getCorpTransferRequest();
-//
-//            CorpTransRule corporateTransferRule = corporateService.getApplicableTransferRule(transferRequest);
-//
-//            corpTransferRequestRepo.save(transferRequest);
-//        } catch (Exception e) {
-//            throw new InternetBankingException(messageSource.getMessage("transfer.auth.failure", null, locale), e);
-//        }
-//
-//        return messageSource.getMessage("transfer.auth.success", null, locale);
-//
-//    }
 
     private void validateBalance(CorpTransferRequestDTO corpTransferRequest) throws InternetBankingTransferException {
 

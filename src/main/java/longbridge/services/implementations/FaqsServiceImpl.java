@@ -93,7 +93,8 @@ public class FaqsServiceImpl implements FaqsService {
     @Verifiable(operation = "DELETE_FAQ", description = "Deleting FAQs")
     public String deleteFaq(Long id) {
         try{
-            faqsRepo.delete(id);
+            Faqs faqs = faqsRepo.findOne(id);
+            faqsRepo.delete(faqs);
             logger.info("Notification {} has been deleted",id.toString());
             return messageSource.getMessage("faq.delete.success",null,locale);
         }
