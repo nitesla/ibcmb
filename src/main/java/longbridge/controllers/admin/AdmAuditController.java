@@ -13,6 +13,7 @@ import longbridge.security.userdetails.CustomUserPrincipal;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.formula.functions.T;
 import org.apache.poi.ss.formula.functions.Value;
+import org.codehaus.jettison.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,8 @@ import org.springframework.web.context.request.WebRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import static java.lang.Integer.parseInt;
 
 
 /**
@@ -105,17 +108,29 @@ public class AdmAuditController {
 
 
     @GetMapping("/{id}/{classname}/view")
-    public String getRevisionEntites(@PathVariable String id,@PathVariable String classname,Model model)
+    public String revisionEntites(@PathVariable String id,@PathVariable String classname,Model model)
     {
         model.addAttribute("classname",classname);
         model.addAttribute("itemId",id);
+        return  "adm/audit/entityDetails";
+    }
+    @GetMapping("/{revisionId}/{classname}/view/compare")
+    public String compareEntityDetails(@PathVariable String revisionId,@PathVariable String classname,Model model)
+    {
+        logger.info("id and class is {}, {}",revisionId,classname);
+        model.addAttribute("classname",classname);
+        model.addAttribute("itemId",revisionId);
+        Map entityPastDetails = RevisedEntitiesUtil.getEntityPastDetails(classname, parseInt(revisionId));
+        logger.info("entity details is {}",entityPastDetails);
+        model.addAttribute("pastDetails",entityPastDetails.get("pastDetails"));
+        model.addAttribute("currentDetails",entityPastDetails.get("currentDetails"));
         return  "adm/audit/entityDetails";
     }
     @GetMapping("/revised/entity/details")
     public @ResponseBody DataTablesOutput<ModifiedEntityTypeEntity> getRevisedEntityDetails(DataTablesInput input,WebRequest webRequest)
     {
 //        logger.info("The id and class is {} {}",webRequest.getParameter("itemId"),webRequest.getParameter("classname"));
-        Integer refId = Integer.parseInt(webRequest.getParameter("itemId"));
+        Integer refId = parseInt(webRequest.getParameter("itemId"));
         String classname = webRequest.getParameter("classname");
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<ModifiedEntityTypeEntity> auditConf=null;

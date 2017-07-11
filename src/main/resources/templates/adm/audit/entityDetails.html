@@ -44,7 +44,7 @@
                                     <li >
                                         <div class="col-lg-4">
                                             <div class="title-action">
-                                                <a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/audit/id/classname/view" disabled="disabled" ><i class="fa fa-pencil"></i>  View</a>
+                                                <a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/audit/id/classname/view/compare" disabled="disabled" ><i class="fa fa-pencil"></i>  View</a>
                                             <input id="itemId" type="hidden" th:value="${itemId}"/>
                                                 <input type="hidden" id="classname" th:value="${classname}"/>
                                             </div>
@@ -68,7 +68,24 @@
 
                                 <div class="clearfix"></div>
                             </div>
-                            
+                                <table class="table table-striped dt-responsive no-wrap table-bordered table-hover" id="itemTable">
+                                    <thead>
+                                    <tr>
+                                        <th>Past Detials</th>
+                                        <th>Current Details</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td style ="word-break:break-all;width:50%;">
+                                            <th:block th:text="${pastDetails}"></th:block>
+                                        </td>
+                                        <td style ="word-break:break-all;">
+                                            <th:block th:text="${currentDetails}"></th:block>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
                             <div class="x_content">
 
                                 <table class="table table-striped table-bordered table-hover" id="auditview">
@@ -240,8 +257,6 @@
             return;
         }
         var dt = $('#auditview').DataTable();
-//        alert(id);
-//        alert(className);
         var details = id+"/"+className;
         var refDetials = link.attr("href").replace("id/classname",details);
         window.location.assign(refDetials);
