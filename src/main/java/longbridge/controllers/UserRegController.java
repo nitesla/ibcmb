@@ -677,7 +677,6 @@ public class UserRegController {
         //security questions
 //        String securityQuestion = secQuestion;
 //        String securityAnswer = secAnswer;
-
 //        logger.info("Question" + secQuestion);
 //        logger.info("Answer" + secAnswer);
 
@@ -769,6 +768,8 @@ public class UserRegController {
             }
 
             model.addAttribute("forgotPasswordForm", resetPasswordForm);
+            List<String> policies = passwordPolicyService.getPasswordRules();
+            model.addAttribute("policies", policies);
             return "cust/passwordreset";
         }catch (InternetBankingException e){
             return "redirect:/login/retail";

@@ -4,7 +4,7 @@
 <head>
     <title>Insert title here</title>
 </head>
-<body>
+<body onload="currentBar('dashboard')">
 
 <div layout:fragment="content">
     <div class="col-md-5 col-sm-5 ">
@@ -55,46 +55,46 @@
 
 
 <th:block layout:fragment="scripts">
-</th:block>
+
+    <script>
+
+        $(document).ready(function () {
 
 
-</body>
-</html>
-<script>
 
-    $(document).ready(function () {
-        $('.tt').each(function () {
-            var sth = $(this).find(".bal").html();
-            $(this).find(".bal").html(numberWithCommas(sth));
+            $('.tt').each(function () {
+                var sth = $(this).find(".bal").html();
+                $(this).find(".bal").html(numberWithCommas(sth));
 //                $(this).find(".bal").html('₦'+ numberWithCommas(sth));
-        })
-    });
+            })
+        });
 
 
-    function numberWithCommas(x) {
-        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    }
+        function numberWithCommas(x) {
+            return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
 
 
-    function getId(Id) {
-        if ($('.quickAccess').val() === "Last 10 Transaction") {
-            if (( Id != null || Id != '' )) {
-                window.location.href = "/retail/account/" + Id + "/statement";
+        function getId(Id) {
+            if ($('.quickAccess').val() === "Last 10 Transaction") {
+                if (( Id != null || Id != '' )) {
+                    window.location.href = "/retail/account/" + Id + "/statement";
+                }
+            }
+            if ($('.quickAccess').val() === "Transaction History") {
+                if (( Id != null || Id != '' )) {
+                    window.location.href = "/retail/account/viewonlyhistory";
+                }
+            }
+            if ($('.quickAccess').val() === "Account Statement") {
+                if (( Id != null || Id != '' )) {
+                    window.location.href = "/retail/account/viewstatement";
+                }
             }
         }
-        if ($('.quickAccess').val() === "Transaction History") {
-            if (( Id != null || Id != '' )) {
-                window.location.href = "/retail/account/viewonlyhistory";
-            }
-        }
-        if ($('.quickAccess').val() === "Account Statement") {
-            if (( Id != null || Id != '' )) {
-                window.location.href = "/retail/account/viewstatement";
-            }
-        }
-    }
 
-</script>
+    </script>
+</th:block>
 
 </body>
 </html>
