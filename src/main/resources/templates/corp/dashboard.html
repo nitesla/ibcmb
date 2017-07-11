@@ -90,6 +90,7 @@
         function getId(Id) {
             if ($('.quickAccess').val() === "Last 10 Transaction") {
                 if (( Id != null || Id != '' )) {
+                    alert(Id);
                     window.location.href = "/corporate/account/" + Id + "/statement";
                 }
             }
