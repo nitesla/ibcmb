@@ -45,7 +45,7 @@ public class Corporate extends AbstractEntity implements PrettySerializer{
     Set<CorporateRole> corporateRoles = new HashSet<CorporateRole>();
 
     @OneToMany(mappedBy = "corporate")
-    @JsonManagedReference
+    @JsonIgnore
     private List<CorporateUser> users =  new ArrayList<CorporateUser>();
 
     @OneToMany
@@ -53,7 +53,7 @@ public class Corporate extends AbstractEntity implements PrettySerializer{
     private Collection<CorpLimit> corpLimits;
 
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany
     @JsonIgnore
     List<CorpTransRule> corpTransRules;
 

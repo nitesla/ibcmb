@@ -380,7 +380,7 @@
 <div th:if="${message}">
         <div hidden="hidden">
             <ul class="actionMessage">
-                <li th:each="msg : ${message}" th:text="${msg}">Message</li>
+                <li th:each="msg : ${message}" th:utext="${msg}">Message</li>
             </ul>
         </div>
     </div>
@@ -444,10 +444,6 @@
 
         </div>
     </div>
-
-
-
-
     <!-- CORE JQUERY SCRIPTS -->
 
 </footer>

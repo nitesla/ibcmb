@@ -85,24 +85,7 @@ public class CorpTransferController {
     }
 
 
-    @GetMapping("/{corpId}/{amount}")
-    public void getQualifiedRoles(@PathVariable Long corpId, @PathVariable String amount) {
 
-        CorpTransRequest transferRequest = new CorpTransRequest();
-        transferRequest.setAmount(new BigDecimal(amount));
-        Corporate corporate = corporateRepo.findOne(corpId);
-        transferRequest.setCorporate(corporate);
-        List<CorporateRole> roles = corporateService.getQualifiedRoles(transferRequest);
-        PendAuth pendAuth = new PendAuth();
-        List<PendAuth> pendAuths = new ArrayList<>();
-        for (CorporateRole role : roles) {
-            pendAuth.setRole(role);
-            pendAuths.add(pendAuth);
-        }
-//        transferRequest.setPendAuths(pendAuths);
-        transferRequestRepo.save(transferRequest);
-
-    }
 
 
     @GetMapping(value = "")

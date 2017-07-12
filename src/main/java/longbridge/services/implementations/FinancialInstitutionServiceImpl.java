@@ -139,7 +139,8 @@ public class FinancialInstitutionServiceImpl implements FinancialInstitutionServ
     @Verifiable(operation="DELETE_FIN_INST",description="Deleting a Financial Institution")
     public String deleteFinancialInstitution(Long id) throws InternetBankingException {
       try {
-          this.financialInstitutionRepo.delete(id);
+          FinancialInstitution finInst = financialInstitutionRepo.findOne(id);
+          financialInstitutionRepo.delete(finInst);
           logger.info("Financial institution  with Id {} deleted ", id.toString());
           return messageSource.getMessage("institution.delete.success", null, locale);
       }

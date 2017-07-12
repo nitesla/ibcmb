@@ -124,7 +124,8 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 	@Verifiable(operation="DELETE_SETTING",description="Delete Settings")
 	public String deleteSetting(Long id) throws InternetBankingException {
 		try {
-			settingRepo.delete(id);
+			Setting setting = settingRepo.findOne(id);
+			settingRepo.delete(setting);
 			return messageSource.getMessage("setting.delete.success", null, locale);
 		}
 		catch (Exception e){
