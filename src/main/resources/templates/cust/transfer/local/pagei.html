@@ -12,12 +12,12 @@
         </select>
     </div>
 
-    <div class="col-xs-12 ml-15 " >
-        <div class="col-xs-11 no-pad-lef alert no-bd">
+    <div class="col-xs-12 ml-15 no-pad-left" >
+        <div class="col-xs-11 no-pad-left alert no-bd">
            <div class="">
 
 
-                    <div class="col-md-12 col-sm-12 table-responsive">
+                    <div class="col-md-12 col-sm-12  table-responsive">
                         <h6 class="sub_header">Beneficiaries</h6>
                         <form method="post" >
                             <table class="table">
@@ -58,11 +58,12 @@
                                 </tbody>
                             </table>
                             <br/>
-                            <a th:href="@{/retail/transfer/local/new}" class="btn">New Beneficiary</a>
+                            
 
                            <!-- <button type="submit" class="btn btn-default" style="float: right">Add beneficiary</button>
                        --> </form>
                     </div>
+                    <a th:href="@{/retail/transfer/local/new}" class="btn btn-link less-required">New Beneficiary</a>
                                
            </div>
         </div>

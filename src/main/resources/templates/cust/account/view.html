@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{ret-layout}">
 
-<body onload="currentBar('Customize Account')">
+<body onload="currentBar('Account statement')">
 
 <div layout:fragment="content">
     <div class="col-md-5 col-sm-5 ">
@@ -13,13 +13,13 @@
     </div>
 
     <div class="col-xs-12 ml-15 " >
-        <div class="col-xs-11 no-pad-lef  alert no-bd">
+        <div class="col-xs-12 no-pad-left no-mt  alert no-bd">
            <form method="post" th:action="@{/retail/account/viewstatement/display}">
 
-                <div class="col-md">
-                        <br/>
-                    <div class="form-group col-md-12 col-sm-12">
-                        <div class="form-group col-md-6 col-sm-6">
+                <div class="col-sm-12 no-pad-left">
+                        
+                    <div class="">
+                        <div class="form-group no-pad-left ">
                             <label>Date Range</label>
                             <div class="input-daterange input-group" id="date-range">
                                 <input type="text" data-date-format="dd-mm-yyyy" class="form-control datepicker" id="start" name="fromDate" placeholder="Start date" required="required" />
@@ -27,20 +27,22 @@
                                 <input type="text"  data-date-format="dd-mm-yyyy" class="form-control datepicker" name="toDate" id="endDate" placeholder="End date" required="required" />
                             </div>
                         </div>
-                        <div class="form-group col-md-6 col-sm-6">
+                        <div class="form-group no-pad-left col-md-6 col-sm-6">
                             <label>Transaction Type</label>
-                            <select name="tranType"  class="form-control">
+                            <select name="tranType"  class="form-control full-width">
                              	<option value="B">All</option>
                                 <option value="C">Credit</option>
                                 <option value="D">Debit</option>
                             </select>
                         </div>
+                        
                     </div>
-                    <div class="form-group col-md-12 col-sm-12">
-                        <div class="form-group col-md-6 col-sm-6">
+                    <div class="">
+                       
+                        <div class="form-group no-pad-left col-md-6 col-sm-6" >
                             <label>Account Number</label>
                             <span class="req"></span>
-                            <select name="acctNumber" id="acctNumber" class="form-control"
+                            <select name="acctNumber" id="acctNumber" class="form-control full-width"
                                     required="required">
                                 <option th:each="s: ${accounts}" th:value="${s.accountNumber}" th:text="${s.accountNumber}"></option></select>
                         </div>

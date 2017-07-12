@@ -13,10 +13,14 @@
     </div>
 
     <div class="col-xs-12 ml-15 " >
-        <div class="col-xs-11 no-pad-lef alert no-bd">
-           <div class="">
-                   <table class="''table table-responsive">
-                            <tr>
+        <div class="col-xs-12 no-pad-lef alert  no-bd">
+           <div class="col-sm-offset-3  col-sm-6 table-responsive">
+
+
+               
+                        <table class="table table-hover center text-center">
+                            <tbody class="tab">
+                             <tr>
 
                                 <th>Source account</th>
                                 <td th:text="${transRequest.customerAccountNumber}"></td>
@@ -40,16 +44,17 @@
                                 <td th:text="${transRequest.remarks}"></td>
 
                             </tr>
+                            </tbody>
                         </table>
 
 
-                                <div class="form-group">
+                                <div class="form-group col-xs-12 text-center no-pad-left no-pad-right">
 
 
-                                    <a target="_blank" th:href="@{'/retail/transfer/' + ${transRequest.id} +'/receipt'}" >Receipt</a>
+                                    <a class="btn btn-link required-step my-buttons" target="_blank" th:href="@{'/retail/transfer/' + ${transRequest.id} +'/receipt'}" >Receipt</a>
 
-                                    <a th:href="@{/retail/dashboard}" >Home</a>
-                                    <a th:href="@{/retail/transfer/}" >Make another transfer</a>
+                                    <a class="btn btn-link less-required my-buttons" th:href="@{/retail/dashboard}" >Home</a>
+                                    <a class="btn btn-link less-required my-buttons" th:href="@{/retail/transfer/}" >Make another transfer</a>
                                 </div>
   
                  
