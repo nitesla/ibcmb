@@ -208,17 +208,23 @@
 
                     return data;
                 }
-            }]});
-
-        table.on('select', function() {
-            if (table.rows({
-                        selected : true
-                    }).indexes().length === 0) {
-                $('.bt-select').attr("disabled", true);
-            } else {
-                $('.bt-select').removeAttr("disabled");
-            }
+            }],
         });
+        $('#auditview tbody').on( 'click', 'tr', function () {
+//            alert("selected");
+//            $(this).toggleClass('selected');
+            $(this).toggleClass('selected');
+        } );
+//        table.on('select', function() {
+//            if (table.rows({
+//                        selected : true
+//                    }).indexes().length === 0) {
+//                $('.bt-select').attr("disabled", true);
+//
+//            } else {
+//                $('.bt-select').removeAttr("disabled");
+//            }
+//        });
 
         $("#search").on("click", function(e)
         {
@@ -229,15 +235,15 @@
 
 
 
-//        table.on('deselect', function() {
-//            if (table.rows({
-//                        selected : true
-//                    }).indexes().length === 0) {
-//                $('.bt-select').attr("disabled", true);
-//            } else {
-//                $('.bt-select').removeAttr("disabled");
-//            }
-//        });
+        table.on('deselect', function() {
+            if (table.rows({
+                        selected : true
+                    }).indexes().length < 0) {
+                $('.bt-select').attr("disabled", true);
+            } else {
+                $('.bt-select').removeAttr("disabled");
+            }
+        });
 
     });
     var id;

@@ -32,11 +32,9 @@ public class RevisedEntitiesUtil {
     {
         List<Map<String ,Object>> mapList=null;
         List<Integer> revIds = new ArrayList<>();
+        entityName = getOracleEntity(entityName);
 
-        try
-        {
             String auditEntity = entityName + "_AUD";
-            Class<?> clazz = Class.forName(PACKAGE_NAME + entityName);
             ApplicationContext context = SpringContext.getApplicationContext();
             DataSource dataSource = context.getBean(DataSource.class);
             NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
@@ -49,14 +47,20 @@ public class RevisedEntitiesUtil {
 
                 }
             }
-        }
-
-        catch (ClassNotFoundException e)
-        {
-            e.printStackTrace();
-        }
 
         return revIds;
+    }
+    private static String getOracleEntity(String enttyname){
+        StringBuilder builder = new StringBuilder();
+        for(int y = 0; y < enttyname.length(); y++){
+            if(Character.isUpperCase(enttyname.charAt(y)) && y != 0){
+                builder.append("_");
+                builder.append(enttyname.charAt(y));
+            }else{
+                builder.append(enttyname.charAt(y));
+            }
+        }
+        return builder.toString();
     }
     @Transactional
     public static  Map<String, JSONObject> getEntityPastDetails(String entityName,Integer rev)
@@ -64,6 +68,7 @@ public class RevisedEntitiesUtil {
         Map<String,JSONObject> mergedDetails =  new HashMap<>();
         JSONObject jsonObject = null;
         List<Integer> revId = new ArrayList<>();
+        entityName = getOracleEntity(entityName);
         String auditEntity = entityName + "_AUD";
         ApplicationContext context = SpringContext.getApplicationContext();
         DataSource dataSource = context.getBean(DataSource.class);
