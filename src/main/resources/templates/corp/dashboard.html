@@ -1,8 +1,10 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="corp_layout :: site-head">
-
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
+<head>
+    <title>Insert title here</title>
 </head>
+<<<<<<< HEAD
 <body>
 <div class="container">
     <header th:replace="corp_layout :: corp-header">
@@ -65,12 +67,57 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+=======
+<body onload="currentBar('dashboard')">
 
-    <!-- CONTENT-WRAPPER SECTION END-->
-    <footer th:replace="corp_layout ::corp-footer">
-    </footer>
+<div layout:fragment="content">
+    <div class="col-md-5 col-sm-5 ">
+
+        <select class="form-control full-width coronation-form-control" id="view">
+            <option value="account">Overview</option>
+        </select>
+    </div>
+
+    <div class="col-xs-12 ml-15 " >
+        <div class="col-xs-11 no-pad-lef table-responsive bg-white alert">
+            <table class="table table-hover no-pad-lef" id="users">
+                <thead class='thead'>
+                <strong><th class="text-cente">Account Number</th></strong>
+                <th class="text-cente">Account type</th>
+                <th class="text-cente">Currency</th>
+                <th class="text-cente">Available Balance</th>
+                <th class="text-cente">Ledger Balance</th>
+                <th class="text-cente">&nbsp;</th>
+                </thead>
+                <tbody>
+                <tr th:each="list : ${accountList}" class="tt">
+                    <td th:align="center" th:text="${list.accountNumber}"></td>
+                    <td th:align="center" th:text="${list.schemeType}"></td>
+                    <td th:align="center" th:text="${list.currencyCode}"></td>
+                    <td th:align="center" th:text="${list.accountBalance}" class="bal"></td>
+                    <td th:align="center" th:text="${list.ledgerBalance}" class="bal"></td>
+
+                    <td th:align="center">
+                        <select class="quickAccess" th:attr="onchange='javascript:getId(\'' + ${list.id} + '\');'">
+                            <option>Quick Actions</option>
+                            <option value="Last 10 Transaction">Last 10 Transaction</option>
+                            <option value="Transaction History">Transaction History</option>
+                            <option value="Account Statement">Account Statement</option>
+
+                        </select>
+
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+>>>>>>> 2d78b282c2eecdc2e9e2f86d7247006d11f78eb4
+        </div>
+    </div>
+
+</div>
+
+
+<th:block layout:fragment="scripts">
 
     <script>
 
@@ -98,7 +145,11 @@
                     window.location.href = "/corporate/account/viewonlyhistory";
                 }
             }
+<<<<<<< HEAD
           if ($('#'+Id).val() === "Account Statement") {
+=======
+            if ($('.quickAccess').val() === "Account Statement") {
+>>>>>>> 2d78b282c2eecdc2e9e2f86d7247006d11f78eb4
                 if (( Id != null || Id != '' )) {
                     window.location.href = "/corporate/account/viewstatement";
                 }
@@ -106,6 +157,7 @@
 
         }
     </script>
-</div>
+</th:block>
+
 </body>
 </html>
