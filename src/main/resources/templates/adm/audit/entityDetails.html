@@ -71,8 +71,8 @@
                                 <table class="table table-striped dt-responsive no-wrap table-bordered table-hover" id="table">
                                     <thead>
                                     <tr>
-                                        <th>Past Detials</th>
-                                        <th>Current Details</th>
+                                        <th>Detials</th>
+                                        <th>Details</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -140,13 +140,12 @@
 <script th:src="@{~/bank/vendors/bootstrap-dialog/js/bootstrap-dialog.js}"></script>
 <script th:src="@{~/bank/js/momentMin.js}"></script>
 <script th:src="@{~/bank/js/jsonpath-0.8.0.js}"></script>
-
+<script th:src="@{~/bank/js/TableTools.js}"></script>
 <!-- Page-Level Scripts -->
 <script th:inline="javascript">
     /*<![CDATA[*/
 
     var parseJsonAsList = function(jsn,path){
-        alert('i am here oooo');
         var result = '';
         for(node in jsn){
 
@@ -166,9 +165,6 @@
             }
             else if(Object.prototype.toString.call(jsn[node]) === '[object Object]')
             {
-
-                alert('i am here');
-
                 current_path = path.endsWith('[') ? path + node + ']' : path + '.' +node;
                 /* if(jsonPath(beforeData,current_path)){
 
@@ -202,7 +198,7 @@
 
         }
         return result;
-    }
+    };
 
         var pastData =([[$('#pastDetails').val()]]);
          var beforeData=(pastData);
@@ -213,8 +209,8 @@
 
 
     $(document).ready(function() {
-        console.log('json past '+$('#pastDetails').val());
-        console.log('json  current '+$('#currentDetails').val());
+//        console.log('json past '+$('#pastDetails').val());
+//        console.log('json  current '+$('#currentDetails').val());
         console.log('id '+[[${itemId}]]);
         var itemid = [[${itemId}]];
         var classRef = [[${classname}]];
@@ -234,6 +230,9 @@
                 type: 'GET',
                 async: false,
                 data:{itemId:itemid,classname:classRef}
+            },
+            "TableTools": {
+                "sRowSelect": "os"
             },
             "dom": 'T<"clear">frtlp',
             "columns": [
@@ -272,7 +271,7 @@
         table.on('select', function() {
             if (table.rows({
                         selected : true
-                    }).indexes().length === 0) {
+                    }).indexes().length != 2) {
                 $('.bt-select').attr("disabled", true);
             } else {
                 $('.bt-select').removeAttr("disabled");
@@ -333,36 +332,14 @@
     var ids=[];
     $("#auditview").on("click", "tr", function()
     {
-        $(this).toggleClass('selected');
+//        $(this).toggleClass('selected');
         var table =  $('#auditview').DataTable();
         className = $(this).children(":first").text();
         var $name2 = $(this).children(":nth-child(3)").text();
         id =table.row( this ).id();
-
     });
-
-//    $("a.bt-link-act").on("click", function(e)
-//    {
-//
-//       var data=$('#auditview').DataTable().rows('.selected').data().length;
-//
-//        for (var i=0; i < data.length ;i++)
-//        {
-//            alert("Name: " + data[i][0] + " Address: " + data[i][1] + " Office: " + data[i][2]);
-////            newarray.push(data[i][0]);
-////            newarray.push(data[i][1]);
-//
-//        }
-//
-//        console.log(key);
-//
-//    } );
-
-
-
     $('#auditview tbody').on('click', 'tr', function ()
     {
-        $(this).toggleClass('selected');
         var id = this.id;
         console.log("id is "+id);
         Array.prototype.remove = function() {
@@ -476,7 +453,6 @@
             success: function (reponse) {
                 alert(reponse);
             }
-
         });
 //        $.ajax({options});
     }
