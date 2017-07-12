@@ -97,7 +97,7 @@ public class AdmAuditController {
     {
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<ModifiedEntityTypeEntity> auditConf=null;
-        auditConf = auditCfgService.getRevisionEntities(pageable);
+        auditConf = auditCfgService.getRevisionEntitiesByDate(pageable);
         DataTablesOutput<ModifiedEntityTypeEntity> out = new DataTablesOutput<ModifiedEntityTypeEntity>();
         out.setDraw(input.getDraw());
         out.setData(auditConf.getContent());

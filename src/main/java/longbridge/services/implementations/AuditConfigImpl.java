@@ -98,14 +98,11 @@ public class AuditConfigImpl implements AuditConfigService {
 
 		return modifiedEntityTypeEntities;
 	}
-
-
-
-
-
-
-
-
+	public Page<ModifiedEntityTypeEntity> getRevisionEntitiesByDate(Pageable pageable)
+	{
+		Page<ModifiedEntityTypeEntity> modifiedEntityTypeEntities=modifiedEntityTypeEntityRepo.findAllEnityByRevision(pageable);
+		return modifiedEntityTypeEntities;
+	}
 	@Override
 	public Page<T>  revisedEntityDetails(String entityName,String revisionNo,Pageable pageable){
 		List<Object> revisionList = new ArrayList<>();

@@ -27,6 +27,11 @@ public interface ModifiedEntityTypeEntityRepo extends CommonRepo<ModifiedEntityT
     @Query("select r from ModifiedEntityTypeEntity r inner join r.revision  where r.revision.id in :revidList")
     Page<ModifiedEntityTypeEntity> findEnityByRevisions(@Param("revidList") List<CustomRevisionEntity> revision, Pageable pageable);
 
+    @Query("select r from ModifiedEntityTypeEntity r  order by r.revision.timestamp desc")
+    Page<ModifiedEntityTypeEntity> findAllEnityByRevision(Pageable pageable);
+
+
+
 
 
 }
