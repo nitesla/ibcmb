@@ -61,7 +61,6 @@ public class RevisedEntitiesUtil {
     @Transactional
     public static  Map<String, JSONObject> getEntityPastDetails(String entityName,Integer rev)
     {
-        List<Map<String ,Object>> entityDetails=null;
         Map<String,JSONObject> mergedDetails =  new HashMap<>();
         JSONObject jsonObject = null;
         List<Integer> revId = new ArrayList<>();
@@ -72,30 +71,34 @@ public class RevisedEntitiesUtil {
         NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
         String sql = "select * from "+ auditEntity +" a where a.REV = :revId";
         SqlParameterSource namedParameters = new MapSqlParameterSource("revId", rev);
-        entityDetails= namedParameterJdbcTemplate.queryForList(sql, namedParameters);
-        logger.info("the details before {}",entityDetails);
-        if(!entityDetails.isEmpty()) {
-            if(entityDetails.get(0).containsKey("REV")) {
-                entityDetails.get(0).remove("REV");
+        List<Map<String ,Object>> pastDetails = namedParameterJdbcTemplate.queryForList(sql, namedParameters);
+        logger.info("the details before {}",pastDetails);
+        if(!pastDetails.isEmpty()) {
+            logger.info("the map key set {}",pastDetails.get(0).keySet());
+            if(pastDetails.get(0).containsKey("REV")) {
+                pastDetails.get(0).remove("REV");
             }
-            if(entityDetails.get(0).containsKey("REVTYPE")) {
-                entityDetails.get(0).remove("REVTYPE");
+            if(pastDetails.get(0).containsKey("REVTYPE")) {
+                pastDetails.get(0).remove("REVTYPE");
             }
-            jsonObject =  new JSONObject(entityDetails.get(0));
+            jsonObject =  new JSONObject(pastDetails.get(0));
             logger.info("json details {}",jsonObject);
             mergedDetails.put("pastDetails",jsonObject);
-            logger.info("the map key set {}",jsonObject);
-            entityDetails = getCurrentDetails(namedParameterJdbcTemplate, entityName, entityDetails.get(0));
-            if(!entityDetails.isEmpty()) {
-                jsonObject = new JSONObject(entityDetails.get(0));
+            List<Map<String ,Object>> currentDetails = getCurrentDetails(namedParameterJdbcTemplate, entityName, pastDetails.get(0));
+            if(!currentDetails.isEmpty()) {
+                jsonObject = new JSONObject(currentDetails.get(0));
                 mergedDetails.put("currentDetails", jsonObject);
-                logger.info("The current details is {}", entityDetails);
+                logger.info("The current details is {}", currentDetails);
+
             }
 
 
         }
 
         return mergedDetails;
+    }
+    public static Map removeIrrelevantDetails(List<Map<String ,Object>> pastDetails,List<Map<String ,Object>> pastDetaisls){
+        return null;
     }
     @Transactional
     public static  List<Map<String ,Object>> getCurrentDetails(NamedParameterJdbcTemplate namedParameterJdbcTemplate,String entity,Map refDetails)

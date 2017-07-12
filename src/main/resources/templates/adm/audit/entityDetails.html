@@ -45,8 +45,8 @@
                                         <div class="col-lg-4">
                                             <div class="title-action">
                                                 <a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/audit/id/classname/view/compare" disabled="disabled" ><i class="fa fa-pencil"></i>  View</a>
-                                            <input id="itemId" type="hidden" th:value="${itemId}"/>
-                                                <input type="hidden" id="classname" th:value="${classname}"/>
+                                            <input id="pastDetails" type="hidden" th:value="${pastDetails}"/>
+                                                <input type="hidden" id="currentDetails" th:value="${currentDetails}"/>
                                             </div>
                                         </div>
                                     </li>
@@ -148,8 +148,11 @@
 
     /*<![CDATA[*/
     $(document).ready(function() {
-        var itemid = $('#itemId').val();
-        var classRef = $('#classname').val();
+        console.log('json past '+$('#pastDetails').val());
+        console.log('json  current '+$('#currentDetails').val());
+        console.log('id '+[[${itemId}]]);
+        var itemid = [[${itemId}]];
+        var classRef = [[${classname}]];
 //        alert(itemid);
 //        alert(classRef);
         var table = $('#auditview').DataTable({
