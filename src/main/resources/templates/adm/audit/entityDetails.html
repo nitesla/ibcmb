@@ -80,6 +80,7 @@
                                         <td style ="word-break:break-all;width:50%;">
                                             <th:block th:text="${pastDetails}"></th:block>
                                         </td>
+
                                         <td style ="word-break:break-all;">
                                             <th:block th:text="${currentDetails}"></th:block>
                                         </td>
@@ -146,13 +147,14 @@
     /*<![CDATA[*/
 
     var parseJsonAsList = function(jsn,path){
-        alert('i am here oooo');
+
         var result = '';
         for(node in jsn){
 
             if(Object.prototype.toString.call(jsn[node]) === '[object Array]')
             {
 
+                //alert('i am here');
                 current_path = path.endsWith('[') ? path + node + ']' : path + '.' +node;
 
                 b = jsonPath(beforeData,current_path)[0] ;
@@ -182,40 +184,39 @@
                     result += '<li class="list-group-item list-group-item-danger">'+ node +':<ul class="list-group">' + parseJsonAsList(jsn[node],current_path) + '</ul></li>';
                 }
             }
-            else{
-
+            else
+                {
 
                 current_path = path.endsWith('[') ? path + node + ']' : path + '.' +node;
+                alert(current_path);
+                alert(beforeData);
 
-                b = jsonPath(beforeData,current_path) ? jsonPath(beforeData,current_path)[0] : 'undefined' ;
+                b = jsonPath(beforeData,current_path) ? jsonPath(beforeData,current_path)[0] : 'undefined';
 
-                a = jsonPath(afterData,current_path) ? jsonPath(afterData,current_path)[0] : 'undefined' ;
+                a = jsonPath(afterData,current_path) ? jsonPath(afterData,current_path)[0] : 'undefined';
 
-                if(a == b && typeof a != 'undefined' && typeof b != 'undefined' ){
+                if(a == b && typeof a != 'undefined' && typeof b != 'undefined' )
+                {
 
                     result += '<li class="list-group-item">' + node + ':'+jsn[node] +'</li>'
-                }else{
+                }
+                else
+                    {
 
                     result += '<li class="list-group-item list-group-item-danger">' + node + ':'+jsn[node] +'</li>'
+                  }
                 }
-            }
 
         }
         return result;
     }
 
-        var pastData =([[$('#pastDetails').val()]]);
-         var beforeData=(pastData);
-         console.log("this is where i am"+beforeData);
-        var presentData =([[$('#pastDetails').val()]]);
-       var afterData=(presentData);
-       console.log("this is where i am"+afterData);
+        var  beforeData =([[$('#pastDetails')]]);
+        var  afterData =([[$('#currentDetails')]]);
 
 
     $(document).ready(function() {
-        console.log('json past '+$('#pastDetails').val());
-        console.log('json  current '+$('#currentDetails').val());
-        console.log('id '+[[${itemId}]]);
+
         var itemid = [[${itemId}]];
         var classRef = [[${classname}]];
 
@@ -324,10 +325,8 @@
                 }
             }  ]
         });
-
-
-
     });
+
     var id;
     var className;
     var ids=[];
@@ -340,24 +339,6 @@
         id =table.row( this ).id();
 
     });
-
-//    $("a.bt-link-act").on("click", function(e)
-//    {
-//
-//       var data=$('#auditview').DataTable().rows('.selected').data().length;
-//
-//        for (var i=0; i < data.length ;i++)
-//        {
-//            alert("Name: " + data[i][0] + " Address: " + data[i][1] + " Office: " + data[i][2]);
-////            newarray.push(data[i][0]);
-////            newarray.push(data[i][1]);
-//
-//        }
-//
-//        console.log(key);
-//
-//    } );
-
 
 
     $('#auditview tbody').on('click', 'tr', function ()
@@ -377,18 +358,11 @@
         };
         if ( ids.length <2 ) {
             if((jQuery.inArray("ids",id))=== -1) {
-//                alert("exist");
+
                 ids.push(id);
             }
         }else {
-//            var table = $('#auditview').DataTable();
-//            var indexes = table.rows().eq( 0 ).filter( function (rowIdx) {
-//                return table.cell( rowIdx, ids[0] ).data() === 'Yes' ? true : false;
-//            } );
-//            table.rows( indexes )
-//                    .nodes()
-//                    .to$()
-//                    .addClass( 'highlight' );
+
             ids.remove(ids[0]);
             if(((jQuery.inArray("ids",id))=== -1)) {
                 ids.push(id);
@@ -403,9 +377,6 @@
 
 
 
-//    $('#auditview tbody').on( 'click', 'tr', function () {
-//        $(this).toggleClass('selected');
-//    } );
 
     $("a.bt-link-act").on("click", function(e) {
         e.preventDefault();
@@ -432,8 +403,7 @@
         var id = $(dt.row({
             selected: true
         }).node()).attr("id");
-        //window.location.href = link.attr("formaction") + '?id=' + id;
-        //replace {id} with id
+
         var ooo = link.attr("href").replace("index",id);
         warnBeforeRedirect(ooo);
 
@@ -455,30 +425,26 @@
         });
     }
     function fetchEntityName() {
-        //make sure alert message is not empty
-//        alert("send otp");
-//        console.log(acct);
+
         var dt = $('#audit').DataTable()
         var id = $(dt.row({
             selected: true
         }).node()).attr("id");
-//        alert(id);
+
         $.ajax({
             type: 'GET',
             url: '/admin/audit/edit',
             asyn:false,
             data: {itemId:itemId,classname:className},
-//					dataType: 'String',
             error: function (data) {
                 alert("failure");
-//                $('#sub').disabled();
+
             },
             success: function (reponse) {
                 alert(reponse);
             }
 
         });
-//        $.ajax({options});
     }
 
     /*]]>*/
