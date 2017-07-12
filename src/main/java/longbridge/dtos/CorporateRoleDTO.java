@@ -20,7 +20,6 @@ public class CorporateRoleDTO {
     @NotEmpty(message = "name")
     private String name;
 
-    @NotNull(message = "rank")
     Integer rank;
 
     String corporateId;
@@ -89,6 +88,11 @@ public class CorporateRoleDTO {
 
     @Override
     public String toString() {
-       return name+" "+rank;
+        if(rank!=null) {
+            return name + " " + rank;
+        }
+        else{
+            return name;
+        }
     }
 }

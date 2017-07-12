@@ -27,7 +27,7 @@
             <div class="">
                 <div class="page-title">
                     <div class="title_left">
-                        <h3 th:text="${corporateRule.corporateName}"></h3>
+                        <h3 th:text="${corporate.name}"></h3>
                     </div>
 
                 </div>
@@ -86,8 +86,8 @@
                                             <div class="col-sm-6">
                                                 <p th:each="role: ${roleList}">
                                                     <input type="checkbox" name="roles" th:value="${role.id}" th:checked="${role.ruleMember}"/>
-                                                    <label th:text="${role.name +' ' +role.rank}"></label>
-                                                </p>
+                                                    <span th:if="${role.rank!=null}" th:text="${role.name}+' '+${role.rank}"></span>
+                                                    <span th:if="${role.rank==null}" th:text="${role.name}"></span>                                                </p>
                                             </div>
                                         </div>
 

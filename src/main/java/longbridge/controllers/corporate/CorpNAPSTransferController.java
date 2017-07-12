@@ -68,9 +68,6 @@ public class CorpNAPSTransferController {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private static final String SERVER_FILE_PATH = "/Users/user/Documents/UPLOAD_FOLDER/Copy-of-NEFT-ECOB-ABC-old-mutual.xls";
-
-
     @GetMapping("/bulk")
     public String getBulkTransfers(Model model) {
         return "/corp/transfer/bulktransfer/list";
@@ -97,15 +94,15 @@ public class CorpNAPSTransferController {
         *   - inside project, located in resources folder.
         *   Added by Bimpe Ayoola
      */
-    //private static final String SERVER_FILE_PATH="C:\\ibanking\\files\\Copy-of-NEFT-ECOB-ABC-old-mutual.xls\\";
+    private static final String SERVER_FILE_PATH="C:\\ibanking\\files\\Copy-of-NEFT-ECOB-ABC-old-mutual.xls";
     private static final String FILENAME = "Copy-of-NEFT-ECOB-ABC-old-mutual.xls";
 
     @GetMapping("/bulk/download")
     public void downloadFile(HttpServletResponse response) throws IOException {
         File file = null;
-        //file = new File(SERVER_FILE_PATH);
-        ClassLoader classloader = Thread.currentThread().getContextClassLoader();
-        file = new File(classloader.getResource(FILENAME).getFile());
+        file = new File(SERVER_FILE_PATH);
+//        ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+//        file = new File(classloader.getResource(FILENAME).getFile());
         if (!file.exists()) {
             String errorMessage = "Sorry. The file you are looking for does not exist";
             System.out.println(errorMessage);

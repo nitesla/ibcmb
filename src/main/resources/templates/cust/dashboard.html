@@ -50,7 +50,7 @@
                                     <td th:align="cente" th:text="${list.ledgerBalance}" class="bal"></td>
 
                                     <td th:align="cente">
-                                        <select class="quickAccess" th:attr="onchange='javascript:getId(\'' + ${list.id} + '\');'">
+                                        <select th:id="${list.id}" class="quickAccess" th:attr="onchange='javascript:getId(\'' + ${list.id} + '\');'">
                                             <option>Quick Actions</option>
                                             <option value="Last 10 Transaction">Last 10 Transaction</option>
                                             <option value="Transaction History">Transaction History</option>
@@ -105,17 +105,18 @@
 
 
     function getId(Id) {
-        if ($('.quickAccess').val() === "Last 10 Transaction") {
+
+        if ($('#'+Id).val() === "Last 10 Transaction") {
             if (( Id != null || Id != '' )) {
                 window.location.href = "/retail/account/" + Id + "/statement";
             }
         }
-        if ($('.quickAccess').val() === "Transaction History") {
+        if ($('#'+Id).val() === "Transaction History") {
             if (( Id != null || Id != '' )) {
                 window.location.href = "/retail/account/viewonlyhistory";
             }
         }
-        if ($('.quickAccess').val() === "Account Statement") {
+        if ($('#'+Id).val() === "Account Statement") {
             if (( Id != null || Id != '' )) {
                 window.location.href = "/retail/account/viewstatement";
             }

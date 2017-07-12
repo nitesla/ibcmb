@@ -132,7 +132,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
         CorporateUser corporateUser = corporateUserRepo.findOne(user.getId());
         Corporate corporate = corporateUser.getCorporate();
-        if("I".equals(corporate.getStatus())){
+        if ("I".equals(corporate.getStatus())) {
             throw new InternetBankingException(messageSource.getMessage("corporate.deactivated", null, locale));
         }
 
@@ -144,11 +144,16 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             corporateUser.setFirstName(user.getFirstName());
             corporateUser.setPhoneNumber(user.getPhoneNumber());
             corporateUser.setAdmin(user.isAdmin());
+
             if (user.getRoleId() != null) {
                 Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
                 corporateUser.setRole(role);
             }
-            corporateUserRepo.save(corporateUser);
+            try {
+                corporateUserRepo.save(corporateUser);
+            } catch (VerificationInterruptException e) {
+                return e.getMessage();
+            }
             return messageSource.getMessage("user.update.success", null, locale);
         } catch (InternetBankingException ibe) {
             throw ibe;
@@ -186,10 +191,15 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             corporate.setId(Long.parseLong(user.getCorporateId()));
             corporateUser.setCorporate(corporate);
             passwordPolicyService.saveCorporatePassword(corporateUser);
-            corporateUserRepo.save(corporateUser);
-            createUserOnEntrust(corporateUser);
-            String fullName = corporateUser.getFirstName() + " " + corporateUser.getLastName();
-            sendPostCreationMessage(corporateUser, fullName, user.getUserName(), password, corporateUser.getCorporate().getCustomerId());
+            try {
+                corporateUserRepo.save(corporateUser);
+                createUserOnEntrust(corporateUser);
+                String fullName = corporateUser.getFirstName() + " " + corporateUser.getLastName();
+                sendPostCreationMessage(corporateUser, fullName, user.getUserName(), password, corporateUser.getCorporate().getCustomerId());
+
+            } catch (VerificationInterruptException e) {
+                return e.getMessage();
+            }
             logger.info("New corporate user {} created", corporateUser.getUserName());
             return messageSource.getMessage("user.add.success", null, locale);
         } catch (MailException me) {
@@ -275,13 +285,13 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
     @Override
     @Transactional
-    @Verifiable(operation = "CORP_USER_STATUS", description = "Change corporate user activation status")
+    @Verifiable(operation = "UPDATE_CORP_USER_STATUS", description = "Change corporate user activation status")
     public String changeActivationStatus(Long userId) throws InternetBankingException {
 
         CorporateUser user = corporateUserRepo.findOne(userId);
         Corporate corporate = user.getCorporate();
 
-        if("I".equals(corporate.getStatus())){
+        if ("I".equals(corporate.getStatus())) {
             throw new InternetBankingException(messageSource.getMessage("corporate.deactivated", null, locale));
         }
         try {
@@ -295,8 +305,12 @@ public class CorporateUserServiceImpl implements CorporateUserService {
                 user.setPassword(passwordEncoder.encode(password));
                 user.setExpiryDate(new Date());
                 passwordPolicyService.saveCorporatePassword(user);
-                CorporateUser corpUser = corporateUserRepo.save(user);
-                sendActivationMessage(corpUser, fullName, user.getUserName(), password, user.getCorporate().getCustomerId());
+                try {
+                    CorporateUser corpUser = corporateUserRepo.save(user);
+                    sendActivationMessage(corpUser, fullName, user.getUserName(), password, user.getCorporate().getCustomerId());
+                } catch (VerificationInterruptException e) {
+                    return e.getMessage();
+                }
             } else {
                 user.setStatus(newStatus);
                 corporateUserRepo.save(user);
@@ -317,7 +331,6 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
     @Async
     private void sendPostCreationMessage(User user, String... args) {
-
         try {
             Email email = new Email.Builder()
                     .setRecipient(user.getEmail())
@@ -348,16 +361,12 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
     @Async
     public void sendPostPasswordResetMessage(User user, String... args) {
-        try {
-            Email email = new Email.Builder()
-                    .setRecipient(user.getEmail())
-                    .setSubject(messageSource.getMessage("corp.customer.password.reset.subject", null, locale))
-                    .setBody(String.format(messageSource.getMessage("corp.customer.password.reset.message", null, locale), args))
-                    .build();
-            mailService.send(email);
-        } catch (MailException me) {
-            logger.error("Failed to send activation mail to {}", user.getEmail(), me);
-        }
+        Email email = new Email.Builder()
+                .setRecipient(user.getEmail())
+                .setSubject(messageSource.getMessage("corp.customer.password.reset.subject", null, locale))
+                .setBody(String.format(messageSource.getMessage("corp.customer.password.reset.message", null, locale), args))
+                .build();
+        mailService.send(email);
     }
 
     @Async
@@ -414,7 +423,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         CorporateUser user = corporateUserRepo.findOne(userId);
         Corporate corporate = user.getCorporate();
 
-        if("I".equals(corporate.getStatus())){
+        if ("I".equals(corporate.getStatus())) {
             throw new InternetBankingException(messageSource.getMessage("corporate.deactivated", null, locale));
         }
         try {
@@ -433,7 +442,6 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             throw new PasswordException(messageSource.getMessage("password.reset.failure", null, locale), e);
         }
     }
-
 
 
     @Override
@@ -491,7 +499,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             failedLoginService.unLockUser(user);
             return messageSource.getMessage("unlock.success", null, locale);
         } catch (Exception e) {
-            throw new InternetBankingException(messageSource.getMessage("unlock.failure", null, locale),e);
+            throw new InternetBankingException(messageSource.getMessage("unlock.failure", null, locale), e);
 
         }
     }
@@ -539,7 +547,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             corporateUser.setPassword(this.passwordEncoder.encode(changePassword.getNewPassword()));
             corporateUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
             passwordPolicyService.saveCorporatePassword(corporateUser);
-            this.corporateUserRepo.save(corporateUser);
+            corporateUserRepo.save(corporateUser);
             logger.info("User {} password has been updated", user.getId());
             return messageSource.getMessage("password.change.success", null, locale);
         } catch (Exception e) {
@@ -566,7 +574,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             }
             Code code = codeService.getByTypeAndCode("ALERT_PREFERENCE", alertPreference.getCode());
             corporateUser.setAlertPreference(code);
-            this.corporateUserRepo.save(corporateUser);
+            corporateUserRepo.save(corporateUser);
             logger.info("User {}'s alert preference set", corporateUser.getId());
             ok = true;
         } catch (Exception e) {
@@ -588,12 +596,16 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         return corporateUserDTOList;
     }
 
-    private String getUserDesignation(CorporateUser corporateUser){
+    private String getUserDesignation(CorporateUser corporateUser) {
 
         List<CorporateRole> roles = corporateRoleRepo.findByCorporate(corporateUser.getCorporate());
         for (CorporateRole corporateRole : roles) {
-            if (corporateRoleRepo.countInRole(corporateRole, corporateUser)>0) {
-                return corporateRole.getName()+" "+corporateRole.getRank();
+            if (corporateRoleRepo.countInRole(corporateRole, corporateUser) > 0) {
+                if (corporateRole.getRank() != null) {
+                    return corporateRole.getName() + " " + corporateRole.getRank();
+                } else {
+                    return corporateRole.getName();
+                }
             }
         }
         return null;
@@ -607,7 +619,6 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         corporateUserDTO.setCorporateType(corporateUser.getCorporate().getCorporateType());
         corporateUserDTO.setCorporateName(corporateUser.getCorporate().getName());
         corporateUserDTO.setCorporateId(corporateUser.getCorporate().getId().toString());
-
 
         if (corporateUser.getCreatedOnDate() != null) {
             corporateUserDTO.setCreatedOn(DateFormatter.format(corporateUser.getCreatedOnDate()));
@@ -627,19 +638,16 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         long t = page.getTotalElements();
         Page<CorporateUserDTO> pageImpl = new PageImpl<CorporateUserDTO>(dtOs, pageDetails, t);
         return pageImpl;
-        // TODO Auto-gene
     }
 
 
     @Override
     public Page<CorporateUserDTO> getUsers(Pageable pageDetails) {
-        // TODO Auto-generated method stub
 
         Page<CorporateUser> page = corporateUserRepo.findAll(pageDetails);
         List<CorporateUserDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
 
-        // return  new PageImpl<ServiceReqConfigDTO>(dtOs,pageDetails,page.getTotalElements());
         Page<CorporateUserDTO> pageImpl = new PageImpl<CorporateUserDTO>(dtOs, pageDetails, t);
         return pageImpl;
     }

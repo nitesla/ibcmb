@@ -4,6 +4,10 @@ import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingSecurityException;
 import longbridge.forms.CustSyncTokenForm;
 import longbridge.forms.TokenProp;
+import longbridge.models.AdminUser;
+import longbridge.models.CorporateUser;
+import longbridge.models.UserType;
+import longbridge.services.CorporateUserService;
 import longbridge.services.SecurityService;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.envers.internal.synchronization.work.ModWorkUnit;
@@ -44,6 +48,9 @@ public class CorpTokenManagementController {
     @Autowired
     private MessageSource messageSource;
 
+    @Autowired
+    private CorporateUserService corporateUserService;
+
 
     @GetMapping
     public String getCorporateToken(HttpServletRequest httpServletRequest) {
@@ -55,10 +62,11 @@ public class CorpTokenManagementController {
     @PostMapping
     public String performTokenAuthentication(HttpServletRequest request, Principal principal, RedirectAttributes redirectAttributes, Locale locale) {
 
-        String username = principal.getName();
+        CorporateUser user  = corporateUserService.getUserByName(principal.getName());
+
         String tokenCode = request.getParameter("token");
         try {
-            boolean result = securityService.performTokenValidation(username, tokenCode);
+            boolean result = securityService.performTokenValidation(user.getEntrustId(), tokenCode);
             if (result) {
                 if (request.getSession().getAttribute("2FA") != null) {
                     request.getSession().removeAttribute("2FA");
@@ -77,9 +85,9 @@ public class CorpTokenManagementController {
 
     @GetMapping("/sync")
     public String syncToken(Model model, Principal principal) {
-
+        CorporateUser user  = corporateUserService.getUserByName(principal.getName());
         try {
-            String serials = securityService.getTokenSerials(principal.getName());
+            String serials = securityService.getTokenSerials(user.getEntrustId());
             if (serials != null && !"".equals(serials)) {
                 List<String> serialNos = Arrays.asList(StringUtils.split(serials, ","));
                 model.addAttribute("serials", serialNos);
@@ -100,9 +108,10 @@ public class CorpTokenManagementController {
             if (result.hasErrors()) {
                 return "corp/token/sync";
             }
+            CorporateUser user  = corporateUserService.getUserByName(principal.getName());
 
             try {
-                boolean res = securityService.synchronizeToken(principal.getName(), custSyncTokenForm.getSerialNo(), custSyncTokenForm.getTokenCode1(), custSyncTokenForm.getTokenCode2());
+                boolean res = securityService.synchronizeToken(user.getEntrustId(), custSyncTokenForm.getSerialNo(), custSyncTokenForm.getTokenCode1(), custSyncTokenForm.getTokenCode2());
                 if (res) {
                     redirectAttributes.addFlashAttribute("message", messageSource.getMessage("token.sync.success", null, locale));
                 }else{
@@ -122,7 +131,8 @@ public class CorpTokenManagementController {
         public String lostToken (Model model, Principal principal){
 
             try {
-                String serials = securityService.getTokenSerials(principal.getName());
+                CorporateUser user  = corporateUserService.getUserByName(principal.getName());
+                String serials = securityService.getTokenSerials(user.getEntrustId());
                 if (serials != null && !"".equals(serials)) {
                     List<String> serialNos = Arrays.asList(StringUtils.split(serials, ","));
                     model.addAttribute("serials", serialNos);
@@ -143,9 +153,9 @@ public class CorpTokenManagementController {
             if (bindingResult.hasErrors()) {
                 return "corp/token/lost";
             }
-
+            CorporateUser user  = corporateUserService.getUserByName(principal.getName());
             try {
-                boolean result = securityService.deActivateToken(principal.getName(), tokenProp.getSerialNo());
+                boolean result = securityService.deActivateToken(user.getEntrustId(), tokenProp.getSerialNo());
                 if (result) {
                     redirectAttributes.addFlashAttribute("message", messageSource.getMessage("token.deactivate.success", null, locale));
                     return "redirect:/corporate/token/lost";

@@ -95,7 +95,10 @@
                                                     <label class="checkbox-inline">
                                                         <input type="checkbox" th:field="*{roles}"
                                                                th:value="${role.id}"/>
-                                                        <span th:text="${role.name}+' '+${role.rank}"></span>
+                                                        <span th:if="${role.rank!=null}" th:text="${role.name}+' '+${role.rank}"></span>
+                                                        <span th:if="${role.rank==null}" th:text="${role.name}"></span>
+
+
                                                     </label>
                                                 </p>
                                             </div>

@@ -75,6 +75,7 @@ public class OpsCorporateRoleController {
     public String addRole(@PathVariable Long corpId, Model model) {
         CorporateDTO corporate = corporateService.getCorporate(corpId);
         CorporateRoleDTO roleDTO = new CorporateRoleDTO();
+        roleDTO.setRank(1);
         List<CorporateUserDTO> users = corporateUserService.getUsersWithoutRole(corpId);
         model.addAttribute("users",users);
         model.addAttribute("corporate",corporate);
@@ -103,14 +104,14 @@ public class OpsCorporateRoleController {
                 usersList.add(userDTO);
             }
         }
-        else {
-            result.addError(new ObjectError("invalid", "No Users in Role"));
-            CorporateDTO corporate = corporateService.getCorporate(NumberUtils.toLong(roleDTO.getCorporateId()));
-            List<CorporateUserDTO> users = corporateUserService.getUsersWithoutRole(NumberUtils.toLong(roleDTO.getCorporateId()));
-            model.addAttribute("users",users);
-            model.addAttribute("corporate",corporate);
-            return "ops/corporate/addrole";
-        }
+//        else {
+//            result.addError(new ObjectError("invalid", "No Users in Role"));
+//            CorporateDTO corporate = corporateService.getCorporate(NumberUtils.toLong(roleDTO.getCorporateId()));
+//            List<CorporateUserDTO> users = corporateUserService.getUsersWithoutRole(NumberUtils.toLong(roleDTO.getCorporateId()));
+//            model.addAttribute("users",users);
+//            model.addAttribute("corporate",corporate);
+//            return "ops/corporate/addrole";
+//        }
 
 
         roleDTO.setUsers(usersList);
@@ -173,15 +174,15 @@ public class OpsCorporateRoleController {
                 usersList.add(userDTO);
             }
         }
-        else{
-            result.addError(new ObjectError("invalid", "No Users in Role"));
-            CorporateDTO corporate = corporateService.getCorporate(NumberUtils.toLong(roleDTO.getCorporateId()));
-            List<CorporateUserDTO> users = corporateUserService.getUsersWithoutRole(NumberUtils.toLong(roleDTO.getCorporateId()));
-            model.addAttribute("users",users);
-            model.addAttribute("corporate",corporate);
-            model.addAttribute("role", roleDTO);
-            return "ops/corporate/editrole";
-        }
+//        else{
+//            result.addError(new ObjectError("invalid", "No Users in Role"));
+//            CorporateDTO corporate = corporateService.getCorporate(NumberUtils.toLong(roleDTO.getCorporateId()));
+//            List<CorporateUserDTO> users = corporateUserService.getUsersWithoutRole(NumberUtils.toLong(roleDTO.getCorporateId()));
+//            model.addAttribute("users",users);
+//            model.addAttribute("corporate",corporate);
+//            model.addAttribute("role", roleDTO);
+//            return "ops/corporate/editrole";
+//        }
 
         roleDTO.setUsers(usersList);
         try {
@@ -213,14 +214,15 @@ public class OpsCorporateRoleController {
 
     @GetMapping("/roles/{roleId}/delete")
     public String deleteRole(@PathVariable Long roleId, RedirectAttributes redirectAttributes, Locale locale) {
+
+       CorporateRoleDTO roleDTO = corporateService.getCorporateRole(roleId);
         try {
             String message = corporateService.deleteCorporateRole(roleId);
             redirectAttributes.addFlashAttribute("message", message);
-            return "redirect:/ops/corporate/roles";
         } catch (InternetBankingException ibe) {
             logger.error("Error deleting role", ibe);
             redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
-            return "redirect:/ops/corporate/roles";
         }
+        return "redirect:/ops/corporates/" + roleDTO.getCorporateId() + "/view";
     }
 }

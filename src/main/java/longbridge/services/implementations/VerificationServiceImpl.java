@@ -162,12 +162,9 @@ public class VerificationServiceImpl implements VerificationService {
                         .setSubject(messageSource.getMessage("verification.subject", null, locale))
                         .setBody(String.format(messageSource.getMessage("verification.message", null, locale),initiatorName, verifierName, operation, status, DateFormatter.format(date),comment))
                         .build();
-                try {
+                new Thread(() -> {
                     mailService.send(email);
-                }
-                catch (MailException me){
-                    logger.error("Failed to send email to the initiator",me);
-                }
+                }).start();
             }
         }
     }

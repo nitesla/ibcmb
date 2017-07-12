@@ -189,8 +189,6 @@ public interface CorporateService{
 
     Page<CorporateRoleDTO> getRoles(Long corpId, Pageable pageable);
 
-    @PreAuthorize("hasAuthority('GET_CORPORATE_USER')")
-    List<CorporateRole> getQualifiedRoles(CorpTransRequest transferRequest);
 
     @PreAuthorize("hasAuthority('GET_TRANSFER_RULE')")
     CorpTransRule getApplicableTransferRule(CorpTransRequest transferRequest);
@@ -214,6 +212,8 @@ public interface CorporateService{
     void addAccounts(Corporate corporate);
 
     void createUserOnEntrustAndSendCredentials(CorporateUser corporateUser);
+
+    Page<CorpTransferRuleDTO> getCorporateRules(Long corpId, Pageable pageable);
 
 
 }
