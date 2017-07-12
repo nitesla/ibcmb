@@ -44,7 +44,7 @@
                                     <li >
                                         <div class="col-lg-4">
                                             <div class="title-action">
-                                                <a  class="btn btn-primary btn-sm bt-select bt-link-act" href="#" disabled="disabled" ><i class="fa fa-pencil"></i>  View</a>
+                                                <a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/audit/ids/classname/view/compare" disabled="disabled" ><i class="fa fa-pencil"></i>  View</a>
                                             <input id="pastDetails" type="hidden" th:value="${pastDetails}"/>
                                                 <input type="hidden" id="currentDetails" th:value="${currentDetails}"/>
                                             </div>
@@ -228,6 +228,7 @@
 
 
     });
+
     var id;
     var className;
     var ids=[];
@@ -241,36 +242,13 @@
 
     });
 
-    $("a.bt-link-act").on("click", function(e)
-    {
-        var data=$('#auditview').DataTable().rows('.selected').data().length;
-
-        for (var i=0; i < data.length ;i++)
-        {
-            alert("Name: " + data[i][0] + " Address: " + data[i][1] + " Office: " + data[i][2]);
-        }
-        console.log(key);
-    } );
-
-
-
     $('#auditview tbody').on('click', 'tr', function ()
     {
-        var id = this.id;
-        var index = $.inArray(id, selected);
-        if ( index === -1 )
-        {
-            selected.push( id );
-
-        } else
-            {
-            selected.splice( index, 1 );
-            }
-
         $(this).toggleClass('selected');
         var id = this.id;
         console.log("id is "+id);
-        Array.prototype.remove = function() {
+        Array.prototype.remove = function()
+        {
             var what, a = arguments, L = a.length, ax;
             while (L && this.length) {
                 what = a[--L];
@@ -280,51 +258,43 @@
             }
             return this;
         };
-        if ( ids.length <2 ) {
-            if((jQuery.inArray("ids",id))=== -1) {
-                alert("exist");
+        if ( ids.length <2 )
+        {
+            if((jQuery.inArray("ids",id))=== -1)
+            {
+
                 ids.push(id);
             }
-        }else {
-//            var table = $('#auditview').DataTable();
-//            var indexes = table.rows().eq( 0 ).filter( function (rowIdx) {
-//                return table.cell( rowIdx, ids[0] ).data() === 'Yes' ? true : false;
-//            } );
-//            table.rows( indexes )
-//                    .nodes()
-//                    .to$()
-//                    .addClass( 'highlight' );
-            ids.remove(ids[0]);
-            if(((jQuery.inArray("ids",id))=== -1)) {
+        }
+        else
+            {
+              ids.remove(ids[0]);
+              if(((jQuery.inArray("ids",id))=== -1))
+                {
                 ids.push(id);
                 console.log("the new array index "+ids[0]);
+               }
+           }
 
-            }
+        console.log("the array size "+ids.length+ " "+ids);
 
-        }
-
-console.log("the array size "+ids.length+ " "+ids);
     } );
 
 
+    $("a.bt-link-act").on("click", function(e) {
+        e.preventDefault();
 
-//    $('#auditview tbody').on( 'click', 'tr', function () {
-//        $(this).toggleClass('selected');
-//    } );
+        var link = $(e.currentTarget);
+        if($(link).attr("disabled")){
+            return;
+        }
+        var dt = $('#auditview').DataTable();
+        var details = ids+"/"+className;
+        var refDetials = link.attr("href").replace("ids/classname",details);
+        window.location.assign(refDetials);
 
-//    $("a.bt-link-act").on("click", function(e) {
-//        e.preventDefault();
-//
-//        var link = $(e.currentTarget);
-//        if($(link).attr("disabled")){
-//            return;
-//        }
-//        var dt = $('#auditview').DataTable();
-//        var details = id+"/"+className;
-//        var refDetials = link.attr("href").replace("id/classname",details);
-//        window.location.assign(refDetials);
-//
-//    } );
+    } );
+
 
     $("#delete-btn").on("click", function(e)
     {
@@ -337,8 +307,6 @@ console.log("the array size "+ids.length+ " "+ids);
         var id = $(dt.row({
             selected: true
         }).node()).attr("id");
-        //window.location.href = link.attr("formaction") + '?id=' + id;
-        //replace {id} with id
         var ooo = link.attr("href").replace("index",id);
         warnBeforeRedirect(ooo);
 
@@ -360,14 +328,11 @@ console.log("the array size "+ids.length+ " "+ids);
         });
     }
     function fetchEntityName() {
-        //make sure alert message is not empty
-//        alert("send otp");
-//        console.log(acct);
+
         var dt = $('#audit').DataTable()
         var id = $(dt.row({
             selected: true
         }).node()).attr("id");
-//        alert(id);
         $.ajax({
             type: 'GET',
             url: '/admin/audit/edit',
