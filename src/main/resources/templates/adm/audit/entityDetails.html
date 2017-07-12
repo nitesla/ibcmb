@@ -230,8 +230,10 @@
     });
     var id;
     var className;
+    var ids=[];
     $("#auditview").on("click", "tr", function()
     {
+        $(this).toggleClass('selected');
         var table =  $('#auditview').DataTable();
         className = $(this).children(":first").text();
         var $name2 = $(this).children(":nth-child(3)").text();
@@ -243,7 +245,6 @@
     {
         var data=$('#auditview').DataTable().rows('.selected').data().length;
 
-        var newarray=[];
         for (var i=0; i < data.length ;i++)
         {
             alert("Name: " + data[i][0] + " Address: " + data[i][1] + " Office: " + data[i][2]);
@@ -267,7 +268,42 @@
             }
 
         $(this).toggleClass('selected');
+        var id = this.id;
+        console.log("id is "+id);
+        Array.prototype.remove = function() {
+            var what, a = arguments, L = a.length, ax;
+            while (L && this.length) {
+                what = a[--L];
+                while ((ax = this.indexOf(what)) !== -1) {
+                    this.splice(ax, 1);
+                }
+            }
+            return this;
+        };
+        if ( ids.length <2 ) {
+            if((jQuery.inArray("ids",id))=== -1) {
+                alert("exist");
+                ids.push(id);
+            }
+        }else {
+//            var table = $('#auditview').DataTable();
+//            var indexes = table.rows().eq( 0 ).filter( function (rowIdx) {
+//                return table.cell( rowIdx, ids[0] ).data() === 'Yes' ? true : false;
+//            } );
+//            table.rows( indexes )
+//                    .nodes()
+//                    .to$()
+//                    .addClass( 'highlight' );
+            ids.remove(ids[0]);
+            if(((jQuery.inArray("ids",id))=== -1)) {
+                ids.push(id);
+                console.log("the new array index "+ids[0]);
 
+            }
+
+        }
+
+console.log("the array size "+ids.length+ " "+ids);
     } );
 
 
