@@ -13,6 +13,7 @@ import longbridge.models.RetailUser;
 import longbridge.services.*;
 import longbridge.utils.DateFormatter;
 import longbridge.utils.TransferType;
+import longbridge.utils.TransferUtils;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,12 +47,11 @@ public class TransferController {
     private TransferService transferService;
     private AccountService accountService;
     private MessageSource messages;
-    private LocaleResolver localeResolver;
     private LocalBeneficiaryService localBeneficiaryService;
-    private FinancialInstitutionService financialInstitutionService;
     private TransferErrorService transferErrorService;
     private SecurityService securityService;
     private ApplicationContext appContext;
+    private TransferUtils transferUtils;
 
     @Value("${bank.code}")
     private String bankCode;
@@ -60,18 +60,17 @@ public class TransferController {
     @Autowired
 
     public TransferController(RetailUserService retailUserService, IntegrationService integrationService, TransferService transferService, AccountService accountService, MessageSource messages, LocaleResolver localeResolver, LocalBeneficiaryService localBeneficiaryService, FinancialInstitutionService financialInstitutionService, TransferErrorService transferErrorService, SecurityService securityService
-            , ApplicationContext appContext) {
+            , ApplicationContext appContext,TransferUtils transferUtils) {
         this.retailUserService = retailUserService;
         this.integrationService = integrationService;
         this.transferService = transferService;
         this.accountService = accountService;
         this.messages = messages;
-        this.localeResolver = localeResolver;
         this.localBeneficiaryService = localBeneficiaryService;
-        this.financialInstitutionService = financialInstitutionService;
         this.transferErrorService = transferErrorService;
         this.securityService = securityService;
         this.appContext = appContext;
+        this.transferUtils=transferUtils;
 
     }
 
@@ -160,15 +159,15 @@ public class TransferController {
     }
 
 
-    @GetMapping("/local/{accountNo}/nameEnquiry")
+    @GetMapping("{accountNo}/nameEnquiry")
     public
     @ResponseBody
     String getBankAccountName(@PathVariable String accountNo, Principal principal) {
 
         try {
             if (principal != null) {
-                String name = integrationService.viewAccountDetails(accountNo).getAcctName();
-                return name;
+
+                return transferUtils.doIntraBankkNameLookup (accountNo);
             }
 
         } catch (Exception e) {
@@ -185,26 +184,10 @@ public class TransferController {
     String getInterBankAccountName(@PathVariable String accountNo, @PathVariable String bank, Principal principal) {
 
         if (principal != null) {
-            NEnquiryDetails details = integrationService.doNameEnquiry(bank, accountNo);
-            if (details == null)
-                return createMessage("service down please try later", false);
-
-
-            if (details.getResponseCode() != null && !details.getResponseCode().equalsIgnoreCase("00"))
-                return createMessage(details.getResponseDescription(), false);
-
-
-            if (details.getAccountName() != null && details.getResponseCode() != null && details.getResponseCode().equalsIgnoreCase("00"))
-                return createMessage(details.getAccountName(), true);
+            transferUtils.doInterBankNameLookup(bank,accountNo);
         }
-
-
-        return createMessage("session expired", false);
-
-
+     return "";
     }
-
-
     @PostMapping("/process")
     public String bankTransfer(Model model, RedirectAttributes redirectAttributes, Locale locale, HttpServletRequest request, Principal principal) throws Exception {
         TransferRequestDTO transferRequestDTO = (TransferRequestDTO) request.getSession().getAttribute("transferRequest");
@@ -312,18 +295,7 @@ public class TransferController {
             return "redirect:/retail/dashboard";
         }
 
-    private String createMessage(String message, boolean successOrFailure) {
-        JSONObject object = new JSONObject();
-        //ObjectNode object = Json.newObject();
-        try {
-            object.put("message", message);
-            object.put("success", successOrFailure);
 
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return object.toString();
-    }
 
     /**
      * Returns the viewName to return for coming back to the sender url

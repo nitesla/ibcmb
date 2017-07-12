@@ -7,9 +7,9 @@ import org.hibernate.validator.constraints.NotEmpty;
  */
 public class TokenForm {
 
+    private String userType;
     @NotEmpty(message = "username")
     private String username;
-    @NotEmpty(message = "serialNumber")
     private String serialNumber;
 
     public String getUsername() {
@@ -18,6 +18,14 @@ public class TokenForm {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getUserType() {
+        return userType;
+    }
+
+    public void setUserType(String userType) {
+        this.userType = userType;
     }
 
     public String getSerialNumber() {

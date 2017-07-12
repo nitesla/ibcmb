@@ -8,6 +8,7 @@ import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingSecurityException;
 import longbridge.exception.PasswordException;
 import longbridge.forms.ChangePassword;
+import longbridge.models.UserType;
 import longbridge.security.FailedLoginService;
 import longbridge.services.CorporateService;
 import longbridge.services.CorporateUserService;
@@ -54,11 +55,11 @@ public class OpsCorporateUserController {
 
     @ModelAttribute
     public void init(Model model) {
-        Iterable<RoleDTO> roles = roleService.getRoles();
+        Iterable<RoleDTO> roles = roleService.getRolesByUserType(UserType.CORPORATE);
         Iterator<RoleDTO> roleDTOIterator = roles.iterator();
         while (roleDTOIterator.hasNext()) {
             RoleDTO roleDTO = roleDTOIterator.next();
-            if (roleDTO.getName().equals("Sole Admin")) {
+            if (roleDTO.getName().equals("SOLE")) {
                 roleDTOIterator.remove();
             }
         }
@@ -151,20 +152,22 @@ public class OpsCorporateUserController {
     @GetMapping("/{userId}/unlock")
     public String unlockUser(@PathVariable Long userId, RedirectAttributes redirectAttributes, Locale locale) {
 
+        String corpId = corporateUserService.getUser(userId).getCorporateId();
+
         try {
             String message = corporateUserService.unlockUser(userId);
             redirectAttributes.addFlashAttribute("message", message);
 
         } catch (InternetBankingException e) {
-            logger.error("Error unlocking user", e.getMessage());
-            redirectAttributes.addFlashAttribute("message", messageSource.getMessage("unlock.failure", null, locale));
+            logger.error("Error unlocking user", e);
+            redirectAttributes.addFlashAttribute("failure", e.getMessage());
 
         }
 
-        return "redirect:/ops/corporates/users";
+        return "redirect:/ops/corporates/" + corpId + "/view";
     }
 
-    @GetMapping("{userId}/edit")
+    @GetMapping("/{userId}/edit")
     public String getUser(@PathVariable Long userId, Model model) {
         CorporateUserDTO user = corporateUserService.getUser(userId);
         model.addAttribute("corporateUser", user);
@@ -176,9 +179,16 @@ public class OpsCorporateUserController {
         if (result.hasErrors()) {
             return "/ops/corporate/editUser";
         }
+      try {
+          String message = corporateUserService.updateUser(corporateUserDTO);
+          redirectAttributes.addFlashAttribute("message", message);
+      }
+      catch (InternetBankingException ibe){
+            logger.error("Failed to update corporate user",ibe);
+          redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
 
-        String message = corporateUserService.updateUser(corporateUserDTO);
-        redirectAttributes.addFlashAttribute("message", message);
+
+      }
 
         return "redirect:/ops/corporates/" + corporateUserDTO.getCorporateId() + "/view";
     }
@@ -221,7 +231,11 @@ public class OpsCorporateUserController {
             redirectAttributes.addFlashAttribute("message", message);
         } catch (PasswordException pe) {
             redirectAttributes.addFlashAttribute("failure", pe.getMessage());
-            logger.error("Error resetting password for operation user", pe);
+            logger.error("Error resetting password for corporate user", pe);
+        }
+        catch (InternetBankingException ibe) {
+            redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
+            logger.error("Error resetting password for corporate user", ibe);
         }
         return "redirect:/ops/corporates/" + corpId + "/view";
     }

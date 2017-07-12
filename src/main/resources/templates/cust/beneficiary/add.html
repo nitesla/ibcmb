@@ -27,9 +27,10 @@
                         <div class="col-md-6 col-sm-6">
                             <div class="form-group">
                                 <label>Beneficiary Type</label>
-                                <span class="req"></span><select name="beneficiaryType" id="benType" class="form-control">
+                                <span class="req"></span><select name="beneficiaryType" id="benType"
+                                                                 class="form-control">
                                 <option th:value="local">Other Banks</option>
-                                <option th:value="foreign">Foreign Banks</option>
+                                <!--<option th:value="foreign">Foreign Banks</option>-->
                                 <option th:value="intrabank">Coronation Bank</option>
                             </select>
 
@@ -41,7 +42,8 @@
                                 <div class="form-group">
                                     <label>Beneficiary Bank</label>
                                     <span class="req"></span>
-                                    <select name="beneficiaryBank" id="beneficiaryBank" class="form-control" placeholder="select"
+                                    <select name="beneficiaryBank" id="beneficiaryBank" class="form-control"
+                                            placeholder="select"
                                             th:field="*{beneficiaryBank}" required="required">
                                         <option th:each="bank : ${localBanks}" th:value="${bank.institutionCode}"
                                                 th:text="${bank.institutionName}"></option>
@@ -49,17 +51,25 @@
                                 </div>
                                 <div class="form-group">
                                     <label>Account Number</label>
-                                    <span class="req"></span><input type="number" min="0" id="acct_num" name="acct_num" class="form-control"
-                                                                    th:field="*{accountNumber}" placeholder="Account Number"/>
+                                    <span class="req"></span><input onblur="getAccountName()" type="number" min="0"
+                                                                    id="acct_num" name="acct_num" class="form-control"
+                                                                    th:field="*{accountNumber}"
+                                                                    placeholder="Account Number"/>
                                     <p class="errors" th:if="${#fields.hasErrors('accountNumber')}"
                                        th:errors="*{accountNumber}">&times;</p>
-                                    <p class="acctError" style="display:none;">invalid account number or Bank details</p>
+                                    <p id='loading-icon' style="display:none"><i class='fa fa-spinner fa-spin'
+                                                                                 style="font-size:10px;color:#003056"></i>
+                                        Getting Account Name. Please Wait</p>
+                                    <p class="acctError" style="display:none;">invalid account number or Bank
+                                        details</p>
                                 </div>
 
                                 <div class="form-group">
                                     <label>Account Name</label>
-                                    <span class="req"></span><input type="text" id="acct_name" name="acct_name" class="form-control"
-                                                                    th:field="*{accountName}" placeholder="Beneficiary Name" readonly="readonly"/>
+                                    <span class="req"></span><input type="text" id="acct_name" name="acct_name"
+                                                                    class="form-control"
+                                                                    th:field="*{accountName}"
+                                                                    placeholder="Beneficiary Name" readonly="readonly"/>
                                     <p class="errors" th:if="${#fields.hasErrors('accountName')}"
                                        th:errors="*{accountName}">&times;</p>
                                 </div>
@@ -69,9 +79,9 @@
                                            placeholder="Preferred Name"/>
                                 </div>
                                 <button id="localsave" style="display: none;" class="btn btn-link">Save</button>
-                                <button id="neq" type="button" class="btn btn-link" onclick="getAccountName();">Name
-                                    Enquiry
-                                </button>
+                                <!--<button id="neq" type="button" class="btn btn-link" onclick="getAccountName();">Name-->
+                                <!--Enquiry-->
+                                <!--</button>-->
                                 <a th:href="@{/retail/benficiary}" class="btn btn-link">Cancel</a>
                             </form>
 
@@ -81,23 +91,27 @@
                                 <div class="form-group">
                                     <label>Beneficiary Bank</label>
                                     <span class="req"></span><input type="text" class="form-control"
-                                                                    placeholder="Beneficiary Bank" th:field="*{beneficiaryBank}"/>
+                                                                    placeholder="Beneficiary Bank"
+                                                                    th:field="*{beneficiaryBank}"/>
                                 </div>
                                 <div class="form-group">
 
                                     <label>Swift Code</label>
-                                    <span class="req"></span><input type="text" class="form-control" name="swiftCode" placeholder="Bank SWIFT Code"
+                                    <span class="req"></span><input type="text" class="form-control" name="swiftCode"
+                                                                    placeholder="Bank SWIFT Code"
                                                                     th:field="*{swiftCode}" required="required"/>
                                 </div>
                                 <div class="form-group">
                                     <label>Sort Code</label>
-                                    <span class="req"></span><input type="text" class="form-control" name="sortCode" placeholder="Bank Sort Code"
+                                    <span class="req"></span><input type="text" class="form-control" name="sortCode"
+                                                                    placeholder="Bank Sort Code"
                                                                     th:field="*{sortCode}" required="required"/>
                                 </div>
                                 <div class="form-group">
                                     <label>Beneficiary Name</label>
                                     <span class="req"></span><input type="text" class="form-control" name="accountName"
-                                                                    placeholder="Beneficiary Name" th:field="*{accountName}" required="required"/>
+                                                                    placeholder="Beneficiary Name"
+                                                                    th:field="*{accountName}" required="required"/>
                                 </div>
 
                                 <div class="form-group">
@@ -111,7 +125,8 @@
                                 <div class="form-group">
                                     <label>Currency Code</label>
                                     <span class="req"></span>
-                                    <select name="currencyCode" id="currencyCode" class="form-control" required="required">
+                                    <select name="currencyCode" id="currencyCode" class="form-control"
+                                            required="required">
 
                                         <option th:each="ccyCode : ${foreignCurrencyCodes}" th:value="${ccyCode.code}"
                                                 th:text="${ccyCode.code}"></option>
@@ -142,23 +157,30 @@
                                 <input type="hidden" th:value="intrabank" class="form-control"/>
                                 <div class="form-group">
                                     <label>Beneficiary Bank</label>
-                                    <span class="required"></span><select name="beneficiaryBank" class="form-control" th:field="*{beneficiaryBank}"
+                                    <span class="required"></span><select name="beneficiaryBank" class="form-control"
+                                                                          th:field="*{beneficiaryBank}"
                                                                           required="required">
                                     <option th:value="${bankCode}">Coronation Merchant Bank</option>
                                 </select>
-                                    <p class="iacctError" style="display:none;">invalid account number or Bank details</p>
+                                    <p class="iacctError" style="display:none;">invalid account number or Bank
+                                        details</p>
                                 </div>
                                 <div class="form-group">
                                     <label>Account Number</label>
-                                    <span class="required"></span><input type="number" min="0" class="form-control" name="accountNumber" th:field="*{accountNumber}"
-                                                                         id="iacct_num" placeholder="Account Number" required="required"/>
+                                    <span class="required"></span><input onblur="getIntraBankAccountName();" type="number" min="0" class="form-control"
+                                                                         name="accountNumber"
+                                                                         th:field="*{accountNumber}"
+                                                                         id="iacct_num" placeholder="Account Number"
+                                                                         required="required"/>
 
                                 </div>
 
                                 <div class="form-group">
                                     <label>Account Name</label>
-                                    <span class="required"></span><input type="text" class="form-control" name="accountNumber" th:field="*{accountName}"
-                                                                         id="iacct_name" readonly="readonly" required="required"/>
+                                    <span class="required"></span><input type="text" class="form-control"
+                                                                         name="accountNumber" th:field="*{accountName}"
+                                                                         id="iacct_name" readonly="readonly"
+                                                                         required="required"/>
                                     <label
                                             th:if="${#fields.hasErrors('accountName')}" th:errors="*{accountName}"
                                             class="validation-message"></label>
@@ -166,20 +188,26 @@
                                 <div class="form-group">
                                     <label>Preferred Name</label>
                                     <input type="text" class="form-control" name="preferredName"
-                                           placeholder="Beneficiary Alias" th:field="*{preferredName}" required="required"/>
+                                           placeholder="Beneficiary Alias" th:field="*{preferredName}"
+                                           required="required"/>
                                 </div>
                                 <button id="ilocalsave" style="display: none;" class="btn btn-link">Save</button>
+<<<<<<< HEAD
                                 <button id="ineq" type="button" class="btn btn-link" onclick="getIntraBankAccountName();">
                                     Name Enquiry
                                 </button>
                                 <a th:href="@{/retail/beneficiary}" class="btn btn-link">Cancel</a>
+=======
+
+                                <a th:href="@{/retail/benficiary}" class="btn btn-link">Cancel</a>
+>>>>>>> 7793600c5a324575ed63b4fdec5335ba1996dedf
                             </form>
 
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3 pull-right " >
-                    <div th:replace="cust_layout :: sidebar" class="" >
+                <div class="col-md-3 pull-right ">
+                    <div th:replace="cust_layout :: sidebar" class="">
                     </div>
                 </div>
             </div>
@@ -236,24 +264,23 @@
             var acct = $('#acct_num').val();
             var bank = $('#beneficiaryBank').val();
 
-            if(( acct==null || acct=='' ) || ( bank==null || bank=='' ))
-            {
+            if (( acct == null || acct == '' ) || ( bank == null || bank == '' )) {
                 $('#loading-icon').hide();
                 $('.acctError').show().css("color", "red");
                 $('#loading-icon').hide();
                 return false;
             }
 
-            $.getJSON('/retail/transfer/' + acct + '/'+bank+'/nameEnquiry', function(jd) {
+            $.getJSON('/retail/transfer/' + acct + '/' + bank + '/nameEnquiry', function (jd) {
                 var message = jd.message;
-                var success =  jd.success;
+                var success = jd.success;
                 console.log(message);
                 console.log(success);
-                if (success==false){
+                if (success == false) {
                     $('.acctError').text(message);
                     $('.acctError').show().css("color", "red");
                     $('#loading-icon').hide();
-                }else{
+                } else {
                     $('#acct_name').val(message);
                     $('#localsave').show();
                     $('#neq').hide();
@@ -263,52 +290,46 @@
                 }
 
 
-
-
-
             });
 
-        };
+        }
+        ;
 
 
         function getIntraBankAccountName() {
             //make sure alert message is not empty
+            $('#iacct_name').val("");
+            $('#ilocalsave').hide()
             var acct = $('#iacct_num').val();
             if (( acct == null || acct == '' )) {
 
 
-                $('.acctError').show().css("color", "red");
+                $('.iacctError').show().css("color", "red");
                 return false;
             }
 
-            var options = {
-                type: 'GET',
-                url: '/retail/transfer/local/' + acct + '/nameEnquiry',
-                //					dataType: 'jsonp',
-                error: function (xhr, textStatus, errorThrown) {
+
+            $.getJSON('/retail/transfer/' + acct + '/nameEnquiry', function (jd) {
+                var message = jd.message;
+                var success = jd.success;
+                console.log(message);
+                console.log(success);
+                if (success == false) {
+                    $('.iacctError').text(message);
                     $('.iacctError').show().css("color", "red");
-                },
-                success: function (data, textStatus) {
-                    console.log(data);
-                    console.log(textStatus);
-                    var result = data;
-                    //var result = (new Function("return " + result))();
-                    // $('#acct_name').val(result.message);
-                    $('#iacct_name').val(result);
-                    $('.iacctError').hide();
-
-                    if (result != null && result != '') {
-
-                        $('#ilocalsave').show();
-                        $('#ineq').hide();
-                    } else {
-
-                        $('.iacctError').show().css("color", "red");
-                    }
-
+                    $('#iloading-icon').hide();
+                } else {
+                    $('#iacct_name').val(message);
+                    $('#ilocalsave').show();
+                    $('.iacctError').hide()
+                    document.getElementById('iloading-icon').style.display = 'none';
+                    $('#loading-icon').hide();
                 }
-            };
-            $.ajax(options);
+
+
+            });
+
+
         }
         /*]]>*/
     </script>

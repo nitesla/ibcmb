@@ -7,6 +7,7 @@ import org.hibernate.validator.constraints.NotEmpty;
  */
 public class SyncTokenForm {
 
+    private String userType;
     @NotEmpty(message = "username")
     private String username;
     @NotEmpty(message = "serialNumber")
@@ -16,6 +17,13 @@ public class SyncTokenForm {
     @NotEmpty(message = "tokenCode2")
     private String tokenCode2;
 
+    public String getUserType() {
+        return userType;
+    }
+
+    public void setUserType(String userType) {
+        this.userType = userType;
+    }
 
     public String getUsername() {
         return username;

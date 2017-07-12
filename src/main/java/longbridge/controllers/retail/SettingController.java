@@ -74,7 +74,7 @@ public class SettingController {
     @RequestMapping("/dashboard")
     public String getRetailDashboard(Model model, Principal principal) {
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
-        List<AccountDTO> accountList = accountService.getAccountsAndBalances(retailUser.getCustomerId());
+        List<AccountDTO> accountList = accountService.getAccounts(retailUser.getCustomerId());
         model.addAttribute("accountList", accountList);
         return "cust/dashboard";
     }

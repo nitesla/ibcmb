@@ -46,7 +46,9 @@
                                         <td th:align="center">
                                             <select class="quickAccess" th:attr="onchange='javascript:getId(\'' + ${list.id} + '\');'">
                                                 <option>Quick Actions</option>
+                                                <option value="Last 10 Transaction">Last 10 Transaction</option>
                                                 <option value="Transaction History">Transaction History</option>
+                                                <option value="Account Statement">Account Statement</option>
 
                                             </select>
 
@@ -86,11 +88,22 @@
         }
 
         function getId(Id) {
-            if ($('.quickAccess').val() === "Transaction History") {
+            if ($('.quickAccess').val() === "Last 10 Transaction") {
                 if (( Id != null || Id != '' )) {
                     window.location.href = "/corporate/account/" + Id + "/statement";
                 }
             }
+            if ($('.quickAccess').val() === "Transaction History") {
+                if (( Id != null || Id != '' )) {
+                    window.location.href = "/corporate/account/viewonlyhistory";
+                }
+            }
+          if ($('.quickAccess').val() === "Account Statement") {
+                if (( Id != null || Id != '' )) {
+                    window.location.href = "/corporate/account/viewstatement";
+                }
+            }
+
         }
     </script>
 </div>

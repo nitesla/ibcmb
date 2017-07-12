@@ -15,7 +15,11 @@
 
             <div class="row">
                 <div class="col-md-4 col-sm-4">
+<<<<<<< HEAD
                     <h5 class="page_header"> Pending Transfers</h5>
+=======
+                    <h5 class="page_header">Transactions</h5>
+>>>>>>> 7793600c5a324575ed63b4fdec5335ba1996dedf
 
                     <select class="form-control invisible" name="beneficiaries">
                         <option value="Overveiw">Beneficiaries</option>
@@ -30,8 +34,14 @@
                 <div class="col-md-9 content-bg">
                     <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
                         <div class="btn-group" role="group" aria-label="First group">
+<<<<<<< HEAD
                             <a type="button" th:href="@{/corporate/transfer/index/authorizations}" class="btn btn-default bt-link-act"><i class="fa fa-plus" disabled="disabled" ></i>Edit</a>
                             <a  type="button" class="btn bt-select btn-default bt-link-act" th:href="@{/corporate/transfer/index/authorizations}" disabled="disabled" ><i class="fa fa-eye"></i> View</a>
+=======
+                            <a type="button" class="btn bt-select btn-default bt-link-act"
+                               th:href="@{/corporate/transfer/index/authorizations}" disabled="disabled"><i
+                                    class="fa fa-eye"></i> View</a>
+>>>>>>> 7793600c5a324575ed63b4fdec5335ba1996dedf
                         </div>
                     </div>
                     <br/>
@@ -44,7 +54,12 @@
                             <td>Beneficiary</td>
                             <td>Bank</td>
                             <td>Amount</td>
+<<<<<<< HEAD
                             <!--<td>Action</td>-->
+=======
+                            <td>Date</td>
+                            <td>Status</td>
+>>>>>>> 7793600c5a324575ed63b4fdec5335ba1996dedf
                             </thead>
                             <tbody>
 
@@ -76,28 +91,54 @@
 
 <script th:inline="javascript">
     /*<![CDATA[*/
-    $(document).ready(function() {
+    $(document).ready(function () {
         var table = $('#requests').DataTable({
-            select:true,
+            select: true,
             responsive: true,
-            "lengthMenu" : [ [ 5, 10, 20],  [ 5, 10, 20 ] ],
-            "pagingType" : "simple_numbers",
+            "lengthMenu": [[5, 10, 20], [5, 10, 20]],
+            "pagingType": "simple_numbers",
             "searching": false,
             "paging": true,
-            "serverSide" : true,
-            rowId:'id',
+            "serverSide": true,
+            rowId: 'id',
             "ajax": "/corporate/transfer/requests/all",
             "dom": 'T<"clear">frtlp',
             "columns": [
+<<<<<<< HEAD
                 { "data": "transferType" },
                 { "data": "beneficiaryAccountName" },
                 { "data": "financialInstitution.institutionName" },
                 { "data": "amount" }
             ] });
+=======
+                {"data": "transferType"},
+                {"data": "beneficiaryAccountName"},
+                {"data": "financialInstitution.institutionName"},
+                {"data": "amount"},
+                {"data": "tranDate"},
+                {"data": "statusDescription"}
 
-        table.on('select', function() {
+            ], "columnDefs": [{
+                "targets": 4,
+                "data": "verifiedOn",
+                "render": function (data, type, full, meta) {
+                    if (type === 'display') {
+
+                        if (data == null)
+                            return data;
+                        var dtStart = new Date(parseInt(data));
+                        var dtStartWrapper = moment(dtStart);
+                        return dtStartWrapper.format('LLL');
+                    }
+                    return data;
+                }
+            }]
+        });
+>>>>>>> 7793600c5a324575ed63b4fdec5335ba1996dedf
+
+        table.on('select', function () {
             if (table.rows({
-                    selected : true
+                    selected: true
                 }).indexes().length === 0) {
                 $('.bt-select').attr("disabled", true);
             } else {
@@ -106,9 +147,9 @@
 
         });
 
-        table.on('deselect', function() {
+        table.on('deselect', function () {
             if (table.rows({
-                    selected : true
+                    selected: true
                 }).indexes().length === 0) {
                 $('.bt-select').attr("disabled", true);
             } else {
@@ -118,25 +159,25 @@
 
     });
 
-    $("a.bt-link-act").on("click", function(e) {
+    $("a.bt-link-act").on("click", function (e) {
         e.preventDefault();
         var link = $(e.currentTarget);
-        if($(link).attr("disabled")){
+        if ($(link).attr("disabled")) {
             return;
         }
         var dt = $('#requests').DataTable();
         var id = $(dt.row({
             selected: true
         }).node()).attr("id");
-        var ooo = link.attr("href").replace("index",id);
+        var ooo = link.attr("href").replace("index", id);
         window.location.assign(ooo);
 
-    } );
+    });
 
-    $("#delete-btn").on("click", function(e) {
+    $("#delete-btn").on("click", function (e) {
         e.preventDefault();
         var link = $(e.currentTarget);
-        if($(link).attr("disabled")){
+        if ($(link).attr("disabled")) {
             return;
         }
         var dt = $('#requests').DataTable();
@@ -145,10 +186,10 @@
         }).node()).attr("id");
         //window.location.href = link.attr("formaction") + '?id=' + id;
         //replace {id} with id
-        var ooo = link.attr("href").replace("index",id);
+        var ooo = link.attr("href").replace("index", id);
         warnBeforeRedirect(ooo);
 
-    } );
+    });
 
 
     function warnBeforeRedirect(ooo) {
@@ -160,7 +201,7 @@
             confirmButtonColor: "#DD6B55",
             confirmButtonText: "Yes, delete code!",
             closeOnConfirm: false
-        }, function() {
+        }, function () {
             // Redirect the user
             window.location.assign(ooo);
         });

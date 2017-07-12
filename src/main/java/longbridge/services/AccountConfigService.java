@@ -91,12 +91,6 @@ public interface AccountConfigService {
      */
     boolean isAccountRestrictedForCredit(String accountNumber);
 
-    /**
-     * Checks if the specified account is restricted for both debit and credit
-     * @param accountNumber the account number
-     * @return true if the account cannot be debited or credited
-     */
-    boolean isAccountRestrictedForDebitAndCredit(String accountNumber);
 
 
     /**
@@ -112,21 +106,15 @@ public interface AccountConfigService {
      * @param accountClass the account class
      * @return true if the account class cannot be debited
      */
-    boolean isAccountClassRestrictedForDebit(String accountClass);
+    boolean isAccountSchemeTypeRestrictedForDebit(String accountClass);
 
     /**
      * Checks if the specified account class is restricted for credit
      * @param accountClass the account class
      * @return true if the account class cannot be credited
      */
-    boolean isAccountClassRestrictedForCredit(String accountClass);
+    boolean isAccountSchemeTypeRestrictedForCredit(String accountClass);
 
-    /**
-     * Checks if the specified account class is restricted for both debit and credit
-     * @param accountClass the account class
-     * @return true if the account class cannot be debited or credited
-     */
-    boolean isAccountClassRestrictedForDebitAndCredit(String accountClass);
 
 
     /**
@@ -134,7 +122,7 @@ public interface AccountConfigService {
      * @param accountClass the account class
      * @return true if the account class not be viewed from the platform
      */
-    boolean isAccountClassRestrictedForView(String accountClass);
+    boolean isAccountSchemeTypeRestrictedForView(String accountClass);
 
 
     /**
@@ -169,6 +157,14 @@ public interface AccountConfigService {
      */
     @PreAuthorize("hasAuthority('GET_ACCT_CLASS_RESTRICTS')")
     Page<AccountClassRestrictionDTO> getAccountClassRestrictions(Pageable pageable);
+
+
+
+    boolean isAccountSchemeCodeRestrictedForDebit(String schemeCode);
+
+    boolean isAccountSchemeCodeRestrictedForCredit(String schemeCode);
+
+    boolean isAccountSchemeCodeRestrictedForView(String schemeCode);
 
 
 }

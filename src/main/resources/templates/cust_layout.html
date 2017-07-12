@@ -138,7 +138,7 @@
                                         <li sec:authorize="hasAuthority('RET_TRANSACTION_LIMITs.')"><a
                                                 th:href="@{/retail/transfer/settransferlimit}"
                                                 th:text="#{menu.transfer.limit}">Set transfer limit</a></li>
-                                        <li sec:authorize="hasAuthority('STANDING_ORDER')"><a
+                                        <li sec:authorize="hasAuthority('STANDING_ORDERs.')"><a
                                                 th:href="@{/retail/directdebit}" th:text="#{menu.transfer.order}">Standing
                                             order</a></li>
                                     </ul>

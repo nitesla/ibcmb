@@ -1,6 +1,8 @@
 package longbridge.utils.statement;
 
 
+import java.util.Date;
+
 /**
  * Created by ayoade_farooq@yahoo.com on 6/15/2017.
  */
@@ -15,14 +17,6 @@ public class TransactionDetails {
     private String tranType;
     private String tranAmount;
 
-
-    public String getTranAmount() {
-        return tranAmount;
-    }
-
-    public void setTranAmount(String tranAmount) {
-        this.tranAmount = tranAmount;
-    }
 
     public String getCurrencyCode() {
         return currencyCode;
@@ -70,6 +64,14 @@ public class TransactionDetails {
 
     public void setTranType(String tranType) {
         this.tranType = tranType;
+    }
+
+    public String getTranAmount() {
+        return tranAmount;
+    }
+
+    public void setTranAmount(String tranAmount) {
+        this.tranAmount = tranAmount;
     }
 
     @Override

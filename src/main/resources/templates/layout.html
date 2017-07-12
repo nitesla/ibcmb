@@ -136,13 +136,13 @@
 
             <li sec:authorize="hasAuthority('MANAGE_TRANSACTION')"><a><i class="fa fa-tasks"></i> Transactions <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
-                    <li sec:authorize="hasAuthority('ACCOUNT_RESTRICTION')"><a> Account Restrictions <span class="fa fa-chevron-down"></span></a>
-                        <ul class="nav child_menu">
-                            <li sec:authorize="hasAuthority('ACCOUNT_RESTRICTION')" class="sub_menu"><a href="/ops/accounts/restriction/account">General</a></li>
+
+                    <li sec:authorize="hasAuthority('ACCOUNT_RESTRICTION')"><a href="/ops/accounts/restriction/account"> Account Restriction</a>
+                        <!--<ul class="nav child_menu">-->
                             <!--<li sec:authorize="hasAuthority('ACCOUNT_CLASS_RESTRICTION')" class="sub_menu"><a href="/ops/accounts/restriction/class">Global</a></li>-->
                             <!--<li sec:authorize="hasAuthority('SINGLE_ACCOUNT_RESTRICTION')" class="sub_menu"><a href="/ops/accounts/restriction/account">Individual</a></li>-->
 
-                        </ul>
+                        <!--</ul>-->
                     </li>
                     <!--<li sec:authorize="hasAuthority('MANAGE_FEES')"><a href="/ops/fees">Fees</a></li>-->
 

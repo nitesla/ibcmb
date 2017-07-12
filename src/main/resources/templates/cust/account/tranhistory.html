@@ -4,7 +4,6 @@
 </head>
 <body>
 <div class="container">
-
     <header th:replace="corp_layout :: corp-header">
     </header>
 
@@ -12,7 +11,7 @@
         <div>
             <div class="row">
                 <div class="col-md-4 col-sm-4">
-                    <h5 class="page_header"> Account Statement</h5>
+                    <h5 class="page_header"> Transaction History</h5>
                     <select class="form-control invisible">
                         <option value="account">Account Overview</option>
                     </select>
@@ -20,11 +19,10 @@
                 <p class="col-xs-12 invisible">
                     Fields marked <span style="color:red">*</span> are compulsory
                 </p>
-
             </div>
             <div class="row">
                 <div class="col-md-9 content-bg">
-                    <form method="post" th:action="@{/corporate/account/viewstatement/display}">
+                    <form method="post" th:action="@{/retail/account/viewstatement/display}">
 
                         <div class="col-md">
                             <br/>
@@ -57,25 +55,18 @@
 
                                 <div class="form-group col-md-6">
                                     <label>&nbsp;</label>
-
-
-
                                     <button type="submit" class="btn btn-link " id="btn-find"><i class="fa fa-search" style="color: white" ></i>&nbsp; view</button>
-
                                 </div>
                             </div>
 
 
 
                             <p>
-
-                                <a id="btn-print" th:href="@{'~/viewstatement/display/data'}"  class="btn bt-link-act pull-right"> <i class="fa fa-print"  ></i>&nbsp; print</a>
-
+                                <!--<a id="btn-print" th:href="@{'~/viewstatement/display/data'}"  class="btn bt-link-act pull-right"> <i class="fa fa-print"  ></i>&nbsp; print</a>-->
                                 <!--<a th:href="@{'#'}" class="btn "> <i class="fa fa-envelope" style="color: white" ></i>&nbsp; send mail</a>-->
                             </p>
 
                             <h2>TRANSACTION DETAILS</h2>
-
 
                             <div class="" >
                                 <table class="table" id="tranDetails">
@@ -105,15 +96,12 @@
                             </div>
 
 
-
                         </div>
                     </form>
 
                 </div>
                 <div class="col-md-3 pull-right " >
-
                     <div th:replace="corp_layout :: corp-sidebar" class="" >
-
                     </div>
                 </div>
             </div>
@@ -121,14 +109,13 @@
     </section>
 </div>
 <!-- CONTENT-WRAPPER SECTION END-->
-<footer th:replace="corp_layout ::footer">
+<footer th:replace="corp_layout ::corp-footer">
 </footer>
 <script th:inline="javascript">
     /*<![CDATA[*/
     jQuery.download = function(url, key, data) {
         // Build a form
         var form = $('<form></form>').attr('action', url).attr('target', '_blank')
-
                 .attr('method', 'get');
         // Add the one key/value
         form.append($("<input></input>").attr('type', 'hidden').attr('name',
@@ -137,7 +124,6 @@
         $.each( data, function( propertyName, valueOfProperty ){
             form.append($("<input></input>").attr('type', 'hidden').attr('name',
                     propertyName).attr('value', valueOfProperty));
-
         });
 
         //send request
@@ -149,22 +135,11 @@
         $('.datepicker').datepicker({ dateFormat: 'dd-mm-yy' });//
 
         $('#tranDetails').DataTable({
-
             responsive: true,
 
             "lengthMenu": [[5, 10,20], [5, 10,20]],
             "pagingType": "simple_numbers",
             "searching" : false,
-<<<<<<< HEAD
-            "fields": [  {
-                name:      'valueDate',
-                type:      'datetime',
-                def:       function () { return new Date(); },
-                format:    'dd-MM-yyyy '  }
-            ],
-
-=======
->>>>>>> da52dbbfcf007ea3ea440b494a8df8b5a4347309
             "processing" : true,
             "serverSide" : false,
             "ordering" : false,

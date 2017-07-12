@@ -23,6 +23,7 @@ public class CorpCorporateUserDTO {
     private String lastName;
     @NotEmpty(message = "Email address Field Cannot be empty")
     private String email;
+    @NotEmpty(message = "Phone Number Field Cannot be empty")
     private String  phoneNumber;
     private String roleId;
     private String role;
