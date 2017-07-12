@@ -117,7 +117,6 @@ public class AdmAuditController {
     @GetMapping("/revised/entity/details")
     public @ResponseBody DataTablesOutput<ModifiedEntityTypeEntity> getRevisedEntityDetails(DataTablesInput input,WebRequest webRequest)
     {
-//        logger.info("The id and class is {} {}",webRequest.getParameter("itemId"),webRequest.getParameter("classname"));
         Integer refId = parseInt(webRequest.getParameter("itemId"));
         String classname = webRequest.getParameter("classname");
         Pageable pageable = DataTablesUtils.getPageable(input);
