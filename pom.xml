@@ -322,14 +322,6 @@
 		</dependency>
 
         <dependency>
-            <groupId>dummiesmind</groupId>
-            <artifactId>springmvc.breadcrumb</artifactId>
-            <version>0.0.1</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/springmvc.breadcrumb.jar</systemPath>
-        </dependency>
-
-        <dependency>
             <groupId>org.graylog2</groupId>
             <artifactId>gelfj</artifactId>
             <version>1.1.14</version>
