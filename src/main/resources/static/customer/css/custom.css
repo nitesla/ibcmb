@@ -668,6 +668,8 @@ tokenInput
   
    
     padding: 20px;
+    padding-bottom: 5px;
+    padding-top: 5px;
    
 }
 
@@ -1768,6 +1770,31 @@ button, input, optgroup, select, textarea {
 }
 
 
+@media screen and (max-width: 388px) and (min-width: 325px){
+   
+   .my-buttons
+   {
+       padding: 6px 2px !important;
+   }
+
+
+}
+
+
+@media screen and (max-width: 324px) and (min-width: 0px){
+   
+   .my-buttons
+   {
+       padding: 6px 1px !important;
+   }
+
+
+}
+
+
+
+
+
 @media screen and (max-width: 992px) and (min-width: 760px){
     .logo {
         right: 45px;
@@ -1872,6 +1899,9 @@ button, input, optgroup, select, textarea {
 
     }
 }
+
+
+
 
 @media screen and (max-width: 759px) and (min-width: 0){
     .header {

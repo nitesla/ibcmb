@@ -1,93 +1,89 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="cust_layout :: site-head">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{ret-layout}">
 
-</head>
-<body>
-    <div class="container">
-    <header th:replace="cust_layout :: header">
-    </header>
+<body onload="currentBar('Service Request')">
 
-    <section class="content-wrapper">
-        <div class="containe">
-            <div class="row">
-                <div class="col-md-4 col-sm-4">
-                    <h5 class="page_header"> Service Requests</h5><select class="form-control invisible">
-                    <option value="account">Account Overview</option>
-                </select>
-                </div>
-                <p class="col-xs-12">
-                    Fields marked <span style="color:red">*</span> are compulsory
-                </p>
-            </div>
-            <div class="row">
-                <div class="col-md-9 content-bg">
-                        <div class="col-md-6 col-sm-6">
-                            <h5 class="sub_header" th:text="${requestConfig.requestName}"></h5>
-                            <form method="post" th:action="@{/retail/requests}" th:object="${requestDTO}" id="reqForm">
-                                <p><input class="form-control" type="hidden" id="requestName" name="requestName" th:value="${requestConfig.requestName}"/></p>
-                                <input type="hidden" name="serviceReqConfigId" th:value="${requestConfig.id}"/>
-                                <p th:each="field : ${requestConfig.formFields}">
-                                    <div class="form-group">
-                                        <label th:text="${field.fieldLabel}"></label>
+<div layout:fragment="content">
+    <div class="col-md-5 col-sm-5 ">
 
-                                        <p th:if="${field.fieldType} == 'TEXT'"><input class="form-control" type="text" th:name="${field.fieldName}" required="required"/><span class='req-inner'></span></p>
+        <select class="form-control full-width coronation-form-control hide-content-only" id="view">
+            <option value="account">Overview</option>
+        </select>
+    </div>
 
-                                        <p th:if="${field.fieldType} == 'NUMBER'"><input class="form-control" type="number" min="0" th:name="${field.fieldName}" required="required"/><span class='req-inner'></span></p>
+    <div class="col-xs-12 ml-15 no-pad-left no-pad-right " >
+        <div class="col-xs-11 no-pad-lef no-mt alert no-bd">
+            <div class="col-md-6 col-xs-12">
+                            <p class="col-xs-12">
+                                Fields marked <span style="color:red">*</span> are compulsory
+                            </p>
+                            <div class="col-md-6 col-sm-6">
+                                <h5 class="sub_header" th:text="${requestConfig.requestName}"></h5>
+                                <form method="post" th:action="@{/retail/requests}" th:object="${requestDTO}" id="reqForm">
+                                    <p><input class="form-control" type="hidden" id="requestName" name="requestName" th:value="${requestConfig.requestName}"/></p>
+                                    <input type="hidden" name="serviceReqConfigId" th:value="${requestConfig.id}"/>
+                                    <p th:each="field : ${requestConfig.formFields}">
+                                        <div class="form-group">
+                                            <label th:text="${field.fieldLabel}"></label>
+
+                                            <p th:if="${field.fieldType} == 'TEXT'"><input class="form-control" type="text" th:name="${field.fieldName}" required="required"/><span class='req-inner'></span></p>
+
+                                            <p th:if="${field.fieldType} == 'NUMBER'"><input class="form-control" type="number" min="0" th:name="${field.fieldName}" required="required"/><span class='req-inner'></span></p>
 
 
-                                        <p th:if="${field.fieldType} == 'TEXTAREA'" required="required">
-                                            <textarea class="form-control" th:name="${field.fieldName}">
-                                            </textarea><span class='req-inner'></span>
-                                        </p>
+                                            <p th:if="${field.fieldType} == 'TEXTAREA'" required="required">
+                                                <textarea class="form-control" th:name="${field.fieldName}">
+                                                </textarea><span class='req-inner'></span>
+                                            </p>
 
-                                        <p th:if="${field.fieldType} == 'DATE'"><input class="form-control" id="datepicker" type="text" th:name="${field.fieldName}" required="required"/><span class='req-inner'></span></p>
+                                            <p th:if="${field.fieldType} == 'DATE'"><input class="form-control" id="datepicker" type="text" th:name="${field.fieldName}" required="required"/><span class='req-inner'></span></p>
 
-                                        <p th:if="${field.fieldType} == 'CODE'">
-                                            <select class="form-control" th:name="${field.fieldName}" required="required">
-                                                <option th:each="code : ${codes}" th:value="${code.code}" th:text="${code.description}"></option>
-                                            </select><span class='req-inner'></span>
-                                        </p>
+                                            <p th:if="${field.fieldType} == 'CODE'">
+                                                <select class="form-control" th:name="${field.fieldName}" required="required">
+                                                    <option th:each="code : ${codes}" th:value="${code.code}" th:text="${code.description}"></option>
+                                                </select><span class='req-inner'></span>
+                                            </p>
 
-                                        <p th:if="${field.fieldType} == 'FI'">
-                                            <select class="form-control" th:name="${field.fieldName}" required="required">
-                                                <option th:each="bank : ${banks}" th:value="${bank.institutionCode}" th:text="${bank.institutionName}"></option>
-                                            </select><span class='req-inner'></span>
-                                        </p>
+                                            <p th:if="${field.fieldType} == 'FI'">
+                                                <select class="form-control" th:name="${field.fieldName}" required="required">
+                                                    <option th:each="bank : ${banks}" th:value="${bank.institutionCode}" th:text="${bank.institutionName}"></option>
+                                                </select><span class='req-inner'></span>
+                                            </p>
 
-                                        <p th:if="${field.fieldType} == 'ACCT'">
-                                            <select class="form-control" th:name="${field.fieldName}" required="required">
-                                                <option th:each="acc : ${accts}" th:value="${acc.accountNumber}" th:text="${acc.accountNumber}"></option>
-                                            </select><span class='req-inner'></span>
-                                        </p>
-                                        <p th:if="${field.fieldType} == 'LIST'">
-                                            <select class="form-control" th:name="${field.fieldName}" required="required">
-                                                <option th:each="type : ${fixedList}" th:value="${type}" th:text="${type}"></option>
-                                            </select><span class='req-inner'></span>
-                                        </p>
+                                            <p th:if="${field.fieldType} == 'ACCT'">
+                                                <select class="form-control" th:name="${field.fieldName}" required="required">
+                                                    <option th:each="acc : ${accts}" th:value="${acc.accountNumber}" th:text="${acc.accountNumber}"></option>
+                                                </select><span class='req-inner'></span>
+                                            </p>
+                                            <p th:if="${field.fieldType} == 'LIST'">
+                                                <select class="form-control" th:name="${field.fieldName}" required="required">
+                                                    <option th:each="type : ${fixedList}" th:value="${type}" th:text="${type}"></option>
+                                                </select><span class='req-inner'></span>
+                                            </p>
 
-                                    </div>
-                                </p>
+                                        </div>
+                                    </p>
 
-                                <button type="submit" class="btn btn-link required-step">Submit</button>
-                            </form>
-                    </div>
-                </div>
-                 <div class="col-md-3 pull-right">
-                            <div th:replace="cust_layout :: sidebar" class="" >
+                                    <button type="submit" class="btn btn-link required-step">Submit</button>
+                                </form>
+
+
+                                
+                                <form id="submitform" action="/retail/requests" method="post">
+                                    <input type="hidden" id="body" name="requestName"/>
+                                </form>
                             </div>
-                        </div>
             </div>
-
-            <form id="submitform" action="/retail/requests" method="post">
-                <input type="hidden" id="body" name="requestName"/>
-            </form>
         </div>
-    </section>
+    </div>
 
-<!-- CONTENT-WRAPPER SECTION END-->
-    <footer th:replace="cust_layout ::footer">
-    </footer>
+</div>
+
+
+<th:block layout:fragment="scripts">
+
+
     <script>
         $( function() {
             $( "#datepicker" ).datepicker(
@@ -140,6 +136,9 @@
 
         });
     </script>
-    </div>
+
+   
+</th:block>
+
 </body>
 </html>

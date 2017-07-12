@@ -343,30 +343,6 @@
             autoclose: true,
             todayBtn: true,
             todayHighlight: true});
-
-            var text = ['Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-             'i am two  Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-              'i am 3 Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-               'i am 4 Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry. '];
-            var x = 0;
-            var end = 0;
-
-            function textArray()
-            {
-                $(".marquee").fadeOut(function() {
-                $(this).text(text[x]).fadeIn();
-
-                });
-                x++;
-
-                end = x + 1;
-                if (text.length < end)
-                {
-                    x = 0;
-                }
-            }
-            setInterval(textArray,30000 );
-        
         })
 
         /*]]>*/
