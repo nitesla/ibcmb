@@ -205,18 +205,14 @@
                 }
             }]});
 
-        table.on('select', function()
-        {
+        table.on('select', function() {
             if (table.rows({
                         selected : true
-                    }).indexes().length === 0)
-            {
+                    }).indexes().length === 0) {
                 $('.bt-select').attr("disabled", true);
-            }
-            else
-                {
+            } else {
                 $('.bt-select').removeAttr("disabled");
-                }
+            }
         });
 
         $("#search").on("click", function(e)
@@ -228,7 +224,6 @@
 
 
     });
-
     var id;
     var className;
     var ids=[];
@@ -242,13 +237,31 @@
 
     });
 
+//    $("a.bt-link-act").on("click", function(e)
+//    {
+//
+//       var data=$('#auditview').DataTable().rows('.selected').data().length;
+//
+//        for (var i=0; i < data.length ;i++)
+//        {
+//            alert("Name: " + data[i][0] + " Address: " + data[i][1] + " Office: " + data[i][2]);
+////            newarray.push(data[i][0]);
+////            newarray.push(data[i][1]);
+//
+//        }
+//
+//        console.log(key);
+//
+//    } );
+
+
+
     $('#auditview tbody').on('click', 'tr', function ()
     {
         $(this).toggleClass('selected');
         var id = this.id;
         console.log("id is "+id);
-        Array.prototype.remove = function()
-        {
+        Array.prototype.remove = function() {
             var what, a = arguments, L = a.length, ax;
             while (L && this.length) {
                 what = a[--L];
@@ -258,28 +271,37 @@
             }
             return this;
         };
-        if ( ids.length <2 )
-        {
-            if((jQuery.inArray("ids",id))=== -1)
-            {
-
+        if ( ids.length <2 ) {
+            if((jQuery.inArray("ids",id))=== -1) {
+//                alert("exist");
                 ids.push(id);
             }
-        }
-        else
-            {
-              ids.remove(ids[0]);
-              if(((jQuery.inArray("ids",id))=== -1))
-                {
+        }else {
+//            var table = $('#auditview').DataTable();
+//            var indexes = table.rows().eq( 0 ).filter( function (rowIdx) {
+//                return table.cell( rowIdx, ids[0] ).data() === 'Yes' ? true : false;
+//            } );
+//            table.rows( indexes )
+//                    .nodes()
+//                    .to$()
+//                    .addClass( 'highlight' );
+            ids.remove(ids[0]);
+            if(((jQuery.inArray("ids",id))=== -1)) {
                 ids.push(id);
                 console.log("the new array index "+ids[0]);
-               }
-           }
 
-        console.log("the array size "+ids.length+ " "+ids);
+            }
 
+        }
+
+console.log("the array size "+ids.length+ " "+ids);
     } );
 
+
+
+//    $('#auditview tbody').on( 'click', 'tr', function () {
+//        $(this).toggleClass('selected');
+//    } );
 
     $("a.bt-link-act").on("click", function(e) {
         e.preventDefault();
@@ -295,7 +317,6 @@
 
     } );
 
-
     $("#delete-btn").on("click", function(e)
     {
         e.preventDefault();
@@ -307,6 +328,8 @@
         var id = $(dt.row({
             selected: true
         }).node()).attr("id");
+        //window.location.href = link.attr("formaction") + '?id=' + id;
+        //replace {id} with id
         var ooo = link.attr("href").replace("index",id);
         warnBeforeRedirect(ooo);
 
@@ -328,11 +351,14 @@
         });
     }
     function fetchEntityName() {
-
+        //make sure alert message is not empty
+//        alert("send otp");
+//        console.log(acct);
         var dt = $('#audit').DataTable()
         var id = $(dt.row({
             selected: true
         }).node()).attr("id");
+//        alert(id);
         $.ajax({
             type: 'GET',
             url: '/admin/audit/edit',

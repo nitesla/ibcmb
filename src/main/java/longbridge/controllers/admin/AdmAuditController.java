@@ -130,12 +130,12 @@ public class AdmAuditController {
         return out;
     }
     @GetMapping("/{revisionId}/{classname}/view/compare")
-    public String compareEntityDetails(@PathVariable String revisionId,@PathVariable String classname,Model model)
+    public String compareEntityDetails(@PathVariable String[] revisionId,@PathVariable String classname,Model model)
     {
         logger.info("id and class is {}, {}",revisionId,classname);
         model.addAttribute("classname",classname);
-        model.addAttribute("itemId",revisionId);
-        Map entityPastDetails = RevisedEntitiesUtil.getEntityPastDetails(classname, parseInt(revisionId));
+        model.addAttribute("itemId",revisionId[0]);
+        Map entityPastDetails = RevisedEntitiesUtil.getEntityPastDetails(classname, revisionId);
         logger.info("entity details is {}",entityPastDetails);
         model.addAttribute("pastDetails",entityPastDetails.get("pastDetails"));
         model.addAttribute("currentDetails",entityPastDetails.get("currentDetails"));
