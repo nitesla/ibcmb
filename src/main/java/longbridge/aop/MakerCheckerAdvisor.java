@@ -7,6 +7,7 @@ import javax.persistence.EntityManager;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import longbridge.exception.InternetBankingException;
+import longbridge.exception.VerificationInterruptException;
 import longbridge.models.AbstractEntity;
 import longbridge.models.User;
 import longbridge.models.Verification;
@@ -143,10 +144,10 @@ public class MakerCheckerAdvisor {
         verification.setStatus(VerificationStatus.PENDING);
         verificationRepo.save(verification);
 
-        log.info(entityName + "has been saved for verification");
+        log.info(entityName + " has been saved for verification");
 
         System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-        return entity;
+        throw new VerificationInterruptException(verifier.description()+" has gone for verification");
 
     }
 
@@ -161,7 +162,7 @@ public class MakerCheckerAdvisor {
         log.info("JB Around: " + pjp);
 
         if (!makerCheckerService.isEnabled(verifier.operation())) {
-            log.info("Maker checker is disabled for operation");
+            log.info("Maker checker is disabled for the operation");
             pjp.proceed();
             return entity;
         }
@@ -206,7 +207,7 @@ public class MakerCheckerAdvisor {
         verification.setStatus(VerificationStatus.PENDING);
         verificationRepo.save(verification);
 
-        log.info(entityName + "has been saved for verification");
+        log.info(entityName + " has been saved for verification");
 
         return entity;
     }

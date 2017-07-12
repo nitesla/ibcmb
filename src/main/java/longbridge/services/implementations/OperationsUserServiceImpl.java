@@ -121,7 +121,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
 
     @Override
     @Transactional
-    @Verifiable(operation="UPDATE_OPS_STATUS",description="Change Operations User Activation Status")
+    @Verifiable(operation = "UPDATE_OPS_STATUS", description = "Change Operations User Activation Status")
     public String changeActivationStatus(Long userId) throws InternetBankingException {
         try {
             OperationsUser user = operationsUserRepo.findOne(userId);
@@ -135,45 +135,50 @@ public class OperationsUserServiceImpl implements OperationsUserService {
                 user.setPassword(passwordEncoder.encode(password));
                 user.setExpiryDate(new Date());
                 passwordPolicyService.saveOpsPassword(user);
-                operationsUserRepo.save(user);
-                sendActivateMessage(user, fullName,user.getUserName(),password);
-            } else{
+                try {
+                    operationsUserRepo.save(user);
+                    sendActivateMessage(user, fullName, user.getUserName(), password);
+                } catch (VerificationInterruptException e) {
+                    return e.getMessage();
+                }
+            } else {
                 user.setStatus(newStatus);
-                operationsUserRepo.save(user);
+                try {
+                    operationsUserRepo.save(user);
+                } catch (VerificationInterruptException e) {
+                    e.getMessage();
+                }
             }
 
 
             logger.info("Operations user {} status changed from {} to {}", user.getUserName(), oldStatus, newStatus);
             return messageSource.getMessage("user.status.success", null, locale);
 
-        }
-        catch (MailException me) {
+        } catch (MailException me) {
             throw new InternetBankingException(messageSource.getMessage("mail.failure", null, locale), me);
         } catch (InternetBankingException ibe) {
             throw ibe;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("user.status.failure", null, locale), e);
 
         }
     }
 
 
-
     @Async
-    public void sendPostActivateMessage(User user, String ... args ){
+    public void sendPostActivateMessage(User user, String... args) {
 
-            Email email = new Email.Builder()
-                    .setRecipient(user.getEmail())
-                    .setSubject(messageSource.getMessage("ops.activation.subject", null, locale))
-                    .setBody(String.format(messageSource.getMessage("ops.activation.message", null, locale), args))
-                    .build();
-            mailService.send(email);
+        Email email = new Email.Builder()
+                .setRecipient(user.getEmail())
+                .setSubject(messageSource.getMessage("ops.activation.subject", null, locale))
+                .setBody(String.format(messageSource.getMessage("ops.activation.message", null, locale), args))
+                .build();
+        mailService.send(email);
     }
 
 
     @Async
-    private void sendActivateMessage(User user, String ... args ) {
+    private void sendActivateMessage(User user, String... args) {
         OperationsUser opsUser = getUserByName(user.getUserName());
         if ("A".equals(opsUser.getStatus())) {
             Email email = new Email.Builder()
@@ -193,7 +198,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
 
     @Override
     @Transactional
-    @Verifiable(operation="ADD_OPS_USER",description="Adding an Operations User")
+    @Verifiable(operation = "ADD_OPS_USER", description = "Adding an Operations User")
     public String addUser(OperationsUserDTO user) throws InternetBankingException {
         OperationsUser opsUser = operationsUserRepo.findFirstByUserNameIgnoreCase(user.getUserName());
         if (opsUser != null) {
@@ -209,15 +214,19 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             opsUser.setCreatedOnDate(new Date());
             Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
             opsUser.setRole(role);
-            OperationsUser newUser =  operationsUserRepo.save(opsUser);
-            createUserOnEntrust(newUser);
+            try {
+                OperationsUser newUser = operationsUserRepo.save(opsUser);
+                createUserOnEntrust(newUser);
+            } catch (VerificationInterruptException e) {
+                return e.getMessage();
+            }
             logger.info("New Operation user  {} created", opsUser.getUserName());
             return messageSource.getMessage("user.add.success", null, LocaleContextHolder.getLocale());
         } catch (InternetBankingSecurityException se) {
             throw new InternetBankingSecurityException(messageSource.getMessage("entrust.create.failure", null, locale), se);
         } catch (Exception e) {
             if (e instanceof EntrustException) {
-                throw new EntrustException(messageSource.getMessage("entrust.create.failure", null, locale));
+                throw e;
             } else {
                 throw new InternetBankingException(messageSource.getMessage("user.add.failure", null, locale), e);
             }
@@ -229,11 +238,11 @@ public class OperationsUserServiceImpl implements OperationsUserService {
 
     public void createUserOnEntrust(OperationsUser opsUser) {
         OperationsUser user = operationsUserRepo.findFirstByUserName(opsUser.getUserName());
-        if(user!=null) {
-            if ("".equals(user.getEntrustId())||user.getEntrustId()==null){
+        if (user != null) {
+            if ("".equals(user.getEntrustId()) || user.getEntrustId() == null) {
                 String fullName = user.getFirstName() + " " + user.getLastName();
                 SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_CREATION");
-                String entrustId= user.getUserType().toString()+"_"+user.getUserName();
+                String entrustId = user.getUserType().toString() + "_" + user.getUserName();
 
                 if (setting != null && setting.isEnabled()) {
                     if ("YES".equalsIgnoreCase(setting.getValue())) {
@@ -259,7 +268,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
 
     @Override
     @Transactional
-    @Verifiable(operation="UPDATE_OPS_USER",description="Updating an Operations User")
+    @Verifiable(operation = "UPDATE_OPS_USER", description = "Updating an Operations User")
     public String updateUser(OperationsUserDTO user) throws InternetBankingException {
 
         OperationsUser opsUser = operationsUserRepo.findOne(user.getId());
@@ -279,11 +288,9 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             this.operationsUserRepo.save(opsUser);
             logger.info("Operations user {} updated", opsUser.getUserName());
             return messageSource.getMessage("user.update.success", null, locale);
-        }
-        catch (InternetBankingException ibe) {
+        } catch (InternetBankingException ibe) {
             throw ibe;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("user.update.failure", null, locale), e);
         }
     }
@@ -329,11 +336,9 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             mailService.send(email);
             logger.info("Operations user {} password reset successfully", user.getUserName());
             return messageSource.getMessage("password.reset.success", null, locale);
-        }
-        catch (MailException me) {
+        } catch (MailException me) {
             throw new PasswordException(messageSource.getMessage("mail.failure", null, locale), me);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new PasswordException(messageSource.getMessage("password.reset.failure", null, locale), e);
         }
     }
@@ -356,11 +361,9 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             mailService.send(email);
             logger.info("Operations user {} password reset successfully", user.getUserName());
             return messageSource.getMessage("password.reset.success", null, locale);
-        }
-        catch (MailException me) {
+        } catch (MailException me) {
             throw new PasswordException(messageSource.getMessage("mail.failure", null, locale), me);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new PasswordException(messageSource.getMessage("password.reset.failure", null, locale), e);
         }
     }
@@ -421,7 +424,6 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     }
 
 
-
     private OperationsUserDTO convertEntityToDTO(OperationsUser operationsUser) {
         OperationsUserDTO operationsUserDTO = modelMapper.map(operationsUser, OperationsUserDTO.class);
         operationsUserDTO.setRole(operationsUser.getRole().getName());
@@ -462,15 +464,15 @@ public class OperationsUserServiceImpl implements OperationsUserService {
     }
 
 
-	@Override
-	public Page<OperationsUserDTO> findUsers(String pattern, Pageable pageDetails) {
-	 	Page<OperationsUser> page = operationsUserRepo.findUsingPattern(pattern,pageDetails);
+    @Override
+    public Page<OperationsUserDTO> findUsers(String pattern, Pageable pageDetails) {
+        Page<OperationsUser> page = operationsUserRepo.findUsingPattern(pattern, pageDetails);
         List<OperationsUserDTO> dtOs = convertEntitiesToDTOs(page.getContent());
         long t = page.getTotalElements();
 
         Page<OperationsUserDTO> pageImpl = new PageImpl<OperationsUserDTO>(dtOs, pageDetails, t);
         return pageImpl;
-	}
+    }
 
 
 }
