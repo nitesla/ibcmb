@@ -44,7 +44,7 @@
                                     <li >
                                         <div class="col-lg-4">
                                             <div class="title-action">
-                                                <a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/audit/id/classname/view/compare" disabled="disabled" ><i class="fa fa-pencil"></i>  View</a>
+                                                <a  class="btn btn-primary btn-sm bt-select bt-link-act" href="#" disabled="disabled" ><i class="fa fa-pencil"></i>  View</a>
                                             <input id="pastDetails" type="hidden" th:value="${pastDetails}"/>
                                                 <input type="hidden" id="currentDetails" th:value="${currentDetails}"/>
                                             </div>
@@ -153,9 +153,10 @@
         console.log('id '+[[${itemId}]]);
         var itemid = [[${itemId}]];
         var classRef = [[${classname}]];
-//        alert(itemid);
-//        alert(classRef);
+
         var table = $('#auditview').DataTable({
+
+
             select:true,
             responsive: true,
             "lengthMenu" : [ [ 5, 10, 20],	[ 5, 10, 20 ] ],
@@ -169,12 +170,6 @@
                 type: 'GET',
                 async: false,
                 data:{itemId:itemid,classname:classRef}
-//                success: function (data) {
-//                    alert("hh");
-//                },error: function (data) {
-//                    alert("yy");
-//
-//                }
             },
             "dom": 'T<"clear">frtlp',
             "columns": [
@@ -228,17 +223,6 @@
         });
 
 
-
-//        table.on('deselect', function() {
-//            if (table.rows({
-//                        selected : true
-//                    }).indexes().length === 0) {
-//                $('.bt-select').attr("disabled", true);
-//            } else {
-//                $('.bt-select').removeAttr("disabled");
-//            }
-//        });
-
     });
     var id;
     var className;
@@ -248,23 +232,66 @@
         className = $(this).children(":first").text();
         var $name2 = $(this).children(":nth-child(3)").text();
         id =table.row( this ).id();
-//        alert(id);
-//        alert(className);
-//        alert($name2);
 
     });
-    $("a.bt-link-act").on("click", function(e) {
-        e.preventDefault();
-        var link = $(e.currentTarget);
-        if($(link).attr("disabled")){
-            return;
+
+    $("a.bt-link-act").on("click", function(e)
+    {
+
+       var data=$('#auditview').DataTable().rows('.selected').data().length;
+
+        var newarray=[];
+        for (var i=0; i < data.length ;i++)
+        {
+            alert("Name: " + data[i][0] + " Address: " + data[i][1] + " Office: " + data[i][2]);
+//            newarray.push(data[i][0]);
+//            newarray.push(data[i][1]);
+
         }
-        var dt = $('#auditview').DataTable();
-        var details = id+"/"+className;
-        var refDetials = link.attr("href").replace("id/classname",details);
-        window.location.assign(refDetials);
+
+        console.log(key);
 
     } );
+
+
+
+    $('#auditview tbody').on('click', 'tr', function ()
+    {
+        alert('i am here');
+        var id = this.id;
+        alert(id);
+        var index = $.inArray(id, selected);
+
+        if ( index === -1 ) {
+            selected.push( id );
+        } else
+            {
+            selected.splice( index, 1 );
+        }
+
+        $(this).toggleClass('selected');
+
+    } );
+
+
+
+//    $('#auditview tbody').on( 'click', 'tr', function () {
+//        $(this).toggleClass('selected');
+//    } );
+
+//    $("a.bt-link-act").on("click", function(e) {
+//        e.preventDefault();
+//
+//        var link = $(e.currentTarget);
+//        if($(link).attr("disabled")){
+//            return;
+//        }
+//        var dt = $('#auditview').DataTable();
+//        var details = id+"/"+className;
+//        var refDetials = link.attr("href").replace("id/classname",details);
+//        window.location.assign(refDetials);
+//
+//    } );
 
     $("#delete-btn").on("click", function(e)
     {
