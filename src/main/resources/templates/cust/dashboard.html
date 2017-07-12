@@ -1,9 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{ret-layout}">
-<head>
-    <title>Insert title here</title>
-</head>
+
 <body onload="currentBar('dashboard')">
 
 <div layout:fragment="content">
@@ -62,36 +60,36 @@
 
 
 
-            $('.tt').each(function () {
-                var sth = $(this).find(".bal").html();
-                $(this).find(".bal").html(numberWithCommas(sth));
-//                $(this).find(".bal").html('₦'+ numberWithCommas(sth));
-            })
-        });
+                $('.tt').each(function () {
+                    var sth = $(this).find(".bal").html();
+                    $(this).find(".bal").html(numberWithCommas(sth));
+        //                $(this).find(".bal").html('₦'+ numberWithCommas(sth));
+                })
+            });
 
 
-        function numberWithCommas(x) {
-            return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-        }
-
-
-        function getId(Id) {
-            if ($('.quickAccess').val() === "Last 10 Transaction") {
-                if (( Id != null || Id != '' )) {
-                    window.location.href = "/retail/account/" + Id + "/statement";
-                }
+            function numberWithCommas(x) {
+                return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             }
-            if ($('.quickAccess').val() === "Transaction History") {
-                if (( Id != null || Id != '' )) {
-                    window.location.href = "/retail/account/viewonlyhistory";
-                }
+
+
+                function getId(Id) {
+                    if ($('.quickAccess').val() === "Last 10 Transaction") {
+                        if (( Id != null || Id != '' )) {
+                            window.location.href = "/retail/account/" + Id + "/statement";
+                        }
+                    }
+                    if ($('.quickAccess').val() === "Transaction History") {
+                        if (( Id != null || Id != '' )) {
+                            window.location.href = "/retail/account/viewonlyhistory";
+                        }
+                    }
+                    if ($('.quickAccess').val() === "Account Statement") {
+                        if (( Id != null || Id != '' )) {
+                            window.location.href = "/retail/account/viewstatement";
+                        }
+                    }
             }
-            if ($('.quickAccess').val() === "Account Statement") {
-                if (( Id != null || Id != '' )) {
-                    window.location.href = "/retail/account/viewstatement";
-                }
-            }
-        }
 
     </script>
 </th:block>

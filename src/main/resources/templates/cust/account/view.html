@@ -1,28 +1,20 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="cust_layout :: site-head">
-</head>
-<body>
-<div class="container">
-    <header th:replace="cust_layout :: header">
-    </header>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{ret-layout}">
 
-<section class="content-wrapper">
-    <div>
-        <div class="row">
-            <div class="col-md-4 col-sm-4">
-                <h5 class="page_header"> Account Statement</h5>
-                 <select class="form-control invisible">
-                        <option value="account">Account Overview</option>
-                </select>
-            </div>
-            <p class="col-xs-12 invisible">
-                    Fields marked <span style="color:red">*</span> are compulsory
-            </p>
-        </div>
-        <div class="row">
-            <div class="col-md-9 content-bg">
-                <form method="post" th:action="@{/retail/account/viewstatement/display}">
+<body onload="currentBar('Customize Account')">
+
+<div layout:fragment="content">
+    <div class="col-md-5 col-sm-5 ">
+
+        <select class="form-control full-width coronation-form-control hide-content-only" id="view">
+            <option value="account">Overview</option>
+        </select>
+    </div>
+
+    <div class="col-xs-12 ml-15 " >
+        <div class="col-xs-11 no-pad-lef  alert no-bd">
+           <form method="post" th:action="@{/retail/account/viewstatement/display}">
 
                 <div class="col-md">
                         <br/>
@@ -98,20 +90,14 @@
 
                 </div>
                 </form>
-
-            </div>
-            <div class="col-md-3 pull-right " >
-                <div th:replace="cust_layout :: sidebar" class="" >
-                </div>
-            </div>
         </div>
     </div>
-</section>
+
 </div>
-<!-- CONTENT-WRAPPER SECTION END-->
-<footer th:replace="cust_layout ::footer">
-</footer>
-<script th:inline="javascript">
+
+
+<th:block layout:fragment="scripts">
+    <script th:inline="javascript">
     /*<![CDATA[*/
     jQuery.download = function(url, key, data) {
         // Build a form
@@ -243,6 +229,12 @@
     }
 
 </script>
+   
+</th:block>
+
+
+
+
 <div id="emailModal" class="modal fade" role="dialog">
     <div class="modal-dialog">
 <div class="modal-content no-bd-rad tokenBox" >
@@ -272,6 +264,6 @@
 
 </div>
     </div>
-</div>
+
 </body>
 </html>

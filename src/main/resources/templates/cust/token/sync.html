@@ -1,30 +1,21 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="cust_layout :: site-head">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{ret-layout}">
 
-</head>
-<body>
-<div class="container">
-    <header th:replace="cust_layout :: header">
-    </header>
+<body onload="currentBar('sychronize token')">
 
-<section class="content-wrapper">
-    <div class="containe">
-        <div class="row">
-            <div class="col-md-4 col-sm-4">
-                <h5 class="page_header"> Synchronize Token</h5>
-                 <select class="form-control invisible">
-                <option value="account">Account Overview</option>
-            </select>
-            </div>
-            <p class="col-xs-12 invisible">
-                Fields marked <span style="color:red">*</span> are compulsory
-            </p>
-        </div>
-        <div class="row">
-            <div class="col-md-9 content-bg">
+<div layout:fragment="content">
+    <div class="col-md-5 col-sm-5 ">
 
-                    <div class="col-md-6">
+        <select class="form-control full-width coronation-form-control hide-content-only" id="view">
+            <option value="account">Overview</option>
+        </select>
+    </div>
+
+    <div class="col-xs-12 ml-15 " >
+        <div class="col-xs-11 no-pad-lef alert no-bd">
+           <div class="">
+                 <div class="col-md-6">
                         <form method="post" th:action="@{/retail/token/sync}" th:object="${tokenSync}">
                             <div class="form-group">
                                 <label>Token Serial Number</label>
@@ -49,19 +40,16 @@
                             <button type="submit" class="btn btn-link required-step">Synchronize</button>
                         </form>
                     </div>
-
-            </div>
-            <div class="col-md-3 pull-right " >
-                <div th:replace="cust_layout :: sidebar" class="" >
-                </div>
             </div>
         </div>
     </div>
-</section>
 
-<!-- CONTENT-WRAPPER SECTION END-->
-<footer th:replace="cust_layout ::footer">
-</footer>
 </div>
+
+
+<th:block layout:fragment="scripts">
+   
+</th:block>
+
 </body>
 </html>
