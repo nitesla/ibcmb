@@ -114,18 +114,6 @@ public class AdmAuditController {
         model.addAttribute("itemId",id);
         return  "adm/audit/entityDetails";
     }
-    @GetMapping("/{revisionId}/{classname}/view/compare")
-    public String compareEntityDetails(@PathVariable String revisionId,@PathVariable String classname,Model model)
-    {
-        logger.info("id and class is {}, {}",revisionId,classname);
-        model.addAttribute("classname",classname);
-        model.addAttribute("itemId",revisionId);
-        Map entityPastDetails = RevisedEntitiesUtil.getEntityPastDetails(classname, parseInt(revisionId));
-        logger.info("entity details is {}",entityPastDetails);
-        model.addAttribute("pastDetails",entityPastDetails.get("pastDetails"));
-        model.addAttribute("currentDetails",entityPastDetails.get("currentDetails"));
-        return  "adm/audit/entityDetails";
-    }
     @GetMapping("/revised/entity/details")
     public @ResponseBody DataTablesOutput<ModifiedEntityTypeEntity> getRevisedEntityDetails(DataTablesInput input,WebRequest webRequest)
     {
@@ -142,6 +130,19 @@ public class AdmAuditController {
         out.setRecordsTotal(auditConf.getTotalElements());
         return out;
     }
+    @GetMapping("/{revisionId}/{classname}/view/compare")
+    public String compareEntityDetails(@PathVariable String revisionId,@PathVariable String classname,Model model)
+    {
+        logger.info("id and class is {}, {}",revisionId,classname);
+        model.addAttribute("classname",classname);
+        model.addAttribute("itemId",revisionId);
+        Map entityPastDetails = RevisedEntitiesUtil.getEntityPastDetails(classname, parseInt(revisionId));
+        logger.info("entity details is {}",entityPastDetails);
+        model.addAttribute("pastDetails",entityPastDetails.get("pastDetails"));
+        model.addAttribute("currentDetails",entityPastDetails.get("currentDetails"));
+        return  "adm/audit/entityDetails";
+    }
+
 
 
 

@@ -28,10 +28,10 @@ public class RevisedEntitiesUtil {
     private static final String PACKAGE_NAME = "longbridge.models.";
 
     @Transactional
-    public static  List<Integer> revisedEntityDetails(String entityName,Integer rev)
+    public static  List<Integer> revisedEntityDetails(String entityName,Integer revId)
     {
         List<Map<String ,Object>> mapList=null;
-        List<Integer> revId = new ArrayList<>();
+        List<Integer> revIds = new ArrayList<>();
 
         try
         {
@@ -41,11 +41,11 @@ public class RevisedEntitiesUtil {
             DataSource dataSource = context.getBean(DataSource.class);
             NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
             String sql = "select a.rev from "+ auditEntity +" a where a.id in (select ar.id from " + auditEntity + " ar where ar.rev = :revisionid)";
-            SqlParameterSource namedParameters = new MapSqlParameterSource("revisionid", rev);
+            SqlParameterSource namedParameters = new MapSqlParameterSource("revisionid", revId);
             mapList= namedParameterJdbcTemplate.queryForList(sql, namedParameters);
             if(!mapList.isEmpty()) {
                 for (Map map : mapList) {
-                    revId.add(Integer.parseInt(map.get("REV").toString()));
+                    revIds.add(Integer.parseInt(map.get("REV").toString()));
 
                 }
             }
@@ -56,7 +56,7 @@ public class RevisedEntitiesUtil {
             e.printStackTrace();
         }
 
-        return revId;
+        return revIds;
     }
     @Transactional
     public static  Map<String, JSONObject> getEntityPastDetails(String entityName,Integer rev)
