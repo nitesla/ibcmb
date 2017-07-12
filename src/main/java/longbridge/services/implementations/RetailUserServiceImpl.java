@@ -282,11 +282,21 @@ public class RetailUserServiceImpl implements RetailUserService {
                 user.setPassword(passwordEncoder.encode(password));
                 user.setExpiryDate(new Date());
                 passwordPolicyService.saveRetailPassword(user);
-                retailUserRepo.save(user);
-                sendActivationMessage(user, fullName, user.getUserName(), password);
+                try {
+                    retailUserRepo.save(user);
+                    sendActivationMessage(user, fullName, user.getUserName(), password);
+                }
+                catch (VerificationInterruptException e){
+                    return e.getMessage();
+                }
             } else {
                 user.setStatus(newStatus);
-                retailUserRepo.save(user);
+                try {
+                    retailUserRepo.save(user);
+                }
+                catch (VerificationInterruptException e){
+                    return  e.getMessage();
+                }
             }
 
             logger.info("Retail user {} status changed from {} to {}", user.getUserName(), oldStatus, newStatus);

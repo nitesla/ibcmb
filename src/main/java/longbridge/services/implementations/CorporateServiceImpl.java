@@ -533,7 +533,7 @@ public class CorporateServiceImpl implements CorporateService {
     public List<CorporateRoleDTO> getRoles(Long corpId) {
         Corporate corporate = corporateRepo.findOne(corpId);
         List<CorporateRole> corporateRoles = corporateRoleRepo.findByCorporate(corporate);
-        sortRolesByRank(corporateRoles);
+//        sortRolesByRank(corporateRoles);
         List<CorporateRoleDTO> roles = convertCorporateRoleEntitiesToDTOs(corporateRoles);
         return roles;
     }
@@ -575,14 +575,14 @@ public class CorporateServiceImpl implements CorporateService {
 //        return corporateRole;
 //    }
 
-    private void sortRolesByRank(List<CorporateRole> roles) {
-        Collections.sort(roles, new Comparator<CorporateRole>() {
-            @Override
-            public int compare(CorporateRole o1, CorporateRole o2) {
-                return o1.getRank().compareTo(o2.getRank());
-            }
-        });
-    }
+//    private void sortRolesByRank(List<CorporateRole> roles) {
+//        Collections.sort(roles, new Comparator<CorporateRole>() {
+//            @Override
+//            public int compare(CorporateRole o1, CorporateRole o2) {
+//                return o1.getRank().compareTo(o2.getRank());
+//            }
+//        });
+//    }
 
     private CorporateRole convertCorporateRoleDTOToEntity(CorporateRoleDTO roleDTO) {
         CorporateRole corporateRole = new CorporateRole();

@@ -256,7 +256,6 @@ public class OperationsUserServiceImpl implements OperationsUserService {
                             logger.error("Failed to add user contacts on Entrust");
                             securityService.deleteEntrustUser(entrustId);
                             throw new EntrustException(messageSource.getMessage("entrust.contact.failure", null, locale));
-
                         }
                     }
                     user.setEntrustId(entrustId);
@@ -285,7 +284,11 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             opsUser.setPhoneNumber(user.getPhoneNumber());
             Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
             opsUser.setRole(role);
-            this.operationsUserRepo.save(opsUser);
+            try {
+                operationsUserRepo.save(opsUser);
+            } catch (VerificationInterruptException e) {
+               return e.getMessage();
+            }
             logger.info("Operations user {} updated", opsUser.getUserName());
             return messageSource.getMessage("user.update.success", null, locale);
         } catch (InternetBankingException ibe) {
@@ -389,7 +392,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             opsUser.setPassword(this.passwordEncoder.encode(changePassword.getNewPassword()));
             opsUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
             passwordPolicyService.saveOpsPassword(user);
-            this.operationsUserRepo.save(opsUser);
+            operationsUserRepo.save(opsUser);
             logger.info("User {}'s password has been updated", user.getId());
             return messageSource.getMessage("password.change.success", null, locale);
         } catch (Exception e) {

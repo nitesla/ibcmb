@@ -75,6 +75,7 @@ public class OpsCorporateRoleController {
     public String addRole(@PathVariable Long corpId, Model model) {
         CorporateDTO corporate = corporateService.getCorporate(corpId);
         CorporateRoleDTO roleDTO = new CorporateRoleDTO();
+        roleDTO.setRank(1);
         List<CorporateUserDTO> users = corporateUserService.getUsersWithoutRole(corpId);
         model.addAttribute("users",users);
         model.addAttribute("corporate",corporate);
