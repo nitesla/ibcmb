@@ -44,5 +44,7 @@ public interface AuditConfigService
 
 	Page<ModifiedEntityTypeEntity> getRevisedEntitiesDetails(Integer id,Pageable pageable);
 	Page<ModifiedEntityTypeEntity> getRevisedDetailsForEntity(Integer id,String classname,Pageable pageable);
+	Page<ModifiedEntityTypeEntity> getRevisionEntitiesByDate(Pageable pageable);
+
 
 }

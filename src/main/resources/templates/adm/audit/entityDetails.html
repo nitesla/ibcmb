@@ -71,8 +71,8 @@
                                 <table class="table table-striped dt-responsive no-wrap table-bordered table-hover" id="table">
                                     <thead>
                                     <tr>
-                                        <th>Past Detials</th>
-                                        <th>Current Details</th>
+                                        <th>Detials</th>
+                                        <th>Details</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -141,7 +141,7 @@
 <script th:src="@{~/bank/vendors/bootstrap-dialog/js/bootstrap-dialog.js}"></script>
 <script th:src="@{~/bank/js/momentMin.js}"></script>
 <script th:src="@{~/bank/js/jsonpath-0.8.0.js}"></script>
-
+<script th:src="@{~/bank/js/TableTools.js}"></script>
 <!-- Page-Level Scripts -->
 <script th:inline="javascript">
     /*<![CDATA[*/
@@ -154,7 +154,6 @@
             if(Object.prototype.toString.call(jsn[node]) === '[object Array]')
             {
 
-                //alert('i am here');
                 current_path = path.endsWith('[') ? path + node + ']' : path + '.' +node;
 
                 b = jsonPath(beforeData,current_path)[0] ;
@@ -204,8 +203,8 @@
                     {
 
                     result += '<li class="list-group-item list-group-item-danger">' + node + ':'+jsn[node] +'</li>'
-                  }
                 }
+            }
 
         }
         return result;
@@ -216,7 +215,9 @@
 
 
     $(document).ready(function() {
-
+        console.log('json past '+$('#pastDetails').val());
+        console.log('json  current '+$('#currentDetails').val());
+        console.log('id '+[[${itemId}]]);
         var itemid = [[${itemId}]];
         var classRef = [[${classname}]];
 
@@ -235,6 +236,9 @@
                 type: 'GET',
                 async: false,
                 data:{itemId:itemid,classname:classRef}
+            },
+            "TableTools": {
+                "sRowSelect": "os"
             },
             "dom": 'T<"clear">frtlp',
             "columns": [
@@ -273,7 +277,7 @@
         table.on('select', function() {
             if (table.rows({
                         selected : true
-                    }).indexes().length === 0) {
+                    }).indexes().length != 2) {
                 $('.bt-select').attr("disabled", true);
             } else {
                 $('.bt-select').removeAttr("disabled");
@@ -403,7 +407,8 @@
         var id = $(dt.row({
             selected: true
         }).node()).attr("id");
-
+        //window.location.href = link.attr("formaction") + '?id=' + id;
+        //replace {id} with id
         var ooo = link.attr("href").replace("index",id);
         warnBeforeRedirect(ooo);
 
@@ -425,12 +430,14 @@
         });
     }
     function fetchEntityName() {
-
+        //make sure alert message is not empty
+//        alert("send otp");
+//        console.log(acct);
         var dt = $('#audit').DataTable()
         var id = $(dt.row({
             selected: true
         }).node()).attr("id");
-
+//        alert(id);
         $.ajax({
             type: 'GET',
             url: '/admin/audit/edit',
