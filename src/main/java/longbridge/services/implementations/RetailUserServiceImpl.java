@@ -165,7 +165,9 @@ public class RetailUserServiceImpl implements RetailUserService {
             retailUser.setCreatedOnDate(new Date());
             retailUser.setBirthDate(user.getBirthDate());
             retailUser.setBvn(user.getBvn());
-            retailUser.setRole(roleService.getTheRole("RETAIL"));
+            SettingDTO settingDTO = configService.getSettingByName("DEFAULT_RETAIL_ROLE");
+            Role role = roleService.getTheRole(settingDTO.getValue());
+            retailUser.setRole(role);
             retailUser.setStatus("A");
             retailUser.setAlertPreference(codeService.getByTypeAndCode("ALERT_PREFERENCE", "BOTH"));
             String errorMsg = passwordPolicyService.validate(user.getPassword(), null);
