@@ -1,7 +1,9 @@
 package longbridge.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.hibernate.validator.constraints.NotEmpty;
 
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -25,6 +27,7 @@ public class CorpTransferRuleDTO {
     private String corporateName;
     private boolean rank;
     private List<CorporateRoleDTO> roles;
+
 
     public Long getId() {
         return id;
@@ -131,4 +134,7 @@ public class CorpTransferRuleDTO {
     public void setRoles(List<CorporateRoleDTO> roles) {
         this.roles = roles;
     }
+
+
+
 }

@@ -111,7 +111,7 @@ public interface IntegrationService {
      * @param channel the transaction channel
      * @return map containing the total transaction limit
      */
-    BigDecimal getDailyAccountLimit(String accNo, String channel);
+    String getDailyAccountLimit(String accNo, String channel);
 
 
     NEnquiryDetails doNameEnquiry(String destinationInstitutionCode, String accountNumber);
@@ -120,8 +120,8 @@ public interface IntegrationService {
     BigDecimal getAvailableBalance(String s);
     @Async
     CompletableFuture<ObjectNode>  sendSMS(String message, String contact, String subject);
-    @Async
-    CompletableFuture<Rate> getFee(String channel);
+
+    Rate getFee(String channel);
 
 
 }

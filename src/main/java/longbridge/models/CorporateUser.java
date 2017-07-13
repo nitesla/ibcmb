@@ -1,5 +1,7 @@
 package longbridge.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
@@ -8,12 +10,9 @@ import longbridge.utils.PrettySerializer;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
+import javax.annotation.Nullable;
 import javax.persistence.*;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Wunmi on 27/03/2017. CorporateUser is a bank customer. Typically
@@ -23,16 +22,16 @@ import java.util.List;
 @Entity
 @Audited(withModifiedFlag=true)
 @Where(clause ="del_Flag='N'" )
-@Table(uniqueConstraints=@UniqueConstraint(columnNames={"userName","deletedOn"}))
-public class CorporateUser extends User {
+@Table(uniqueConstraints=@UniqueConstraint(columnNames={"userName"}))
+public class CorporateUser extends User implements PrettySerializer{
 
-	protected String isFirstTimeLogon;
+	protected String isFirstTimeLogon = "Y";
+
+	@Nullable
+	private boolean admin ;
 
 	@ManyToOne
-    private Corporate corporate;
-
-//	private CorporateRole corporateRole;
-//
+	private Corporate corporate;
 
     public String getIsFirstTimeLogon() {
         return isFirstTimeLogon;
@@ -54,15 +53,13 @@ public class CorporateUser extends User {
 		this.corporate = corporate;
 	}
 
+	public boolean isAdmin() {
+		return admin;
+	}
 
-//	public CorporateRole getCorporateRole() {
-//		return corporateRole;
-//	}
-//
-//	public void setCorporateRole(CorporateRole corporateRole) {
-//		this.corporateRole = corporateRole;
-//	}
-
+	public void setAdmin(boolean admin) {
+		this.admin = admin;
+	}
 
 	@Override
 	public int hashCode(){
@@ -75,6 +72,35 @@ public class CorporateUser extends User {
 	}
 
 
+	@Override
+	@JsonIgnore
+	public JsonSerializer<CorporateUser> getSerializer() {
+		return new JsonSerializer<CorporateUser>() {
+			@Override
+			public void serialize(CorporateUser value, JsonGenerator gen, SerializerProvider serializers)
+					throws IOException, JsonProcessingException {
 
+				gen.writeStartObject();
+				gen.writeStringField("Username", value.userName);
+				gen.writeStringField("First Name", value.firstName);
+				gen.writeStringField("Last Name", value.lastName);
+				gen.writeStringField("Email", value.email);
+				gen.writeStringField("Phone", value.phoneNumber);
+				String status =null;
+				if ("A".equals(value.status))
+					status = "Active";
+				else if ("I".equals(value.status))
+					status = "Inactive";
+				else if ("L".equals(value.status))
+					status = "Locked";
+				gen.writeStringField("Status", status);
+				gen.writeStringField("Role", value.role.getName());
+				if("MULTI".equals(corporate.getCorporateType())) {
+					gen.writeBooleanField("Is Admin", value.admin);
+				}
+				gen.writeEndObject();
+			}
+		};
+	}
 
 }

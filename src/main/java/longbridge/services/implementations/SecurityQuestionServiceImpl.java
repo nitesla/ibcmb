@@ -2,6 +2,7 @@ package longbridge.services.implementations;
 
 import longbridge.dtos.SecQuestionDTO;
 import longbridge.exception.InternetBankingException;
+import longbridge.exception.VerificationInterruptedException;
 import longbridge.models.SecurityQuestions;
 import longbridge.repositories.SecQuestionRepo;
 import longbridge.services.SecurityQuestionService;
@@ -72,7 +73,12 @@ public class SecurityQuestionServiceImpl implements SecurityQuestionService {
             this.secQuestionRepo.save(secQuestions);
             logger.info("Security Question {} added", question);
             return messageSource.getMessage("secQues.add.success", null, locale);
-        }catch (Exception e){
+        }
+        catch (VerificationInterruptedException e) {
+            return e.getMessage();
+        }
+
+        catch (Exception e){
             throw new InternetBankingException(messageSource.getMessage("secQues.add.failure", null, locale));
         }
     }
@@ -85,7 +91,14 @@ public class SecurityQuestionServiceImpl implements SecurityQuestionService {
             this.secQuestionRepo.save(securityQuestions);
             logger.info("Security Question {} updated", securityQuestions);
             return messageSource.getMessage("secQues.update.success", null, locale);
-        }catch (Exception e){
+        }
+        catch (VerificationInterruptedException e) {
+            return e.getMessage();
+        }
+        catch (InternetBankingException e){
+            throw e;
+        }
+        catch (Exception e){
             throw new InternetBankingException(messageSource.getMessage("secQues.update.failure", null, locale));
         }
     }
@@ -98,7 +111,14 @@ public class SecurityQuestionServiceImpl implements SecurityQuestionService {
             this.secQuestionRepo.delete(securityQuestions);
             logger.info("Security Question {} deleted", securityQuestions);
             return messageSource.getMessage("secQues.delete.success", null, locale);
-        }catch (Exception e){
+        }
+        catch (VerificationInterruptedException e) {
+            return e.getMessage();
+        }
+        catch (InternetBankingException e){
+            throw e;
+        }
+        catch (Exception e){
             throw new InternetBankingException(messageSource.getMessage("secQues.delete.failure", null, locale));
 
         }

@@ -27,3 +27,4 @@ nbdist/
 application.log
 .DS_Store
 application-local.properties
+*.jpage

@@ -11,8 +11,6 @@ import longbridge.services.AccountConfigService;
 import longbridge.services.AccountService;
 import longbridge.services.ConfigurationService;
 import longbridge.services.IntegrationService;
-//import longbridge.utils.AccountStatement;
-import longbridge.utils.Verifiable;
 import longbridge.utils.statement.AccountStatement;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
@@ -29,6 +27,8 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.StreamSupport;
+
+//import longbridge.utils.AccountStatement;
 
 /**
  * Created by chigozirim on 3/29/17.
@@ -64,6 +64,7 @@ public class AccountServiceImpl implements AccountService {
         Account account = new Account();
         account.setPrimaryFlag("N");
         account.setHiddenFlag("N");
+        account.setStatus(acct.getAccountStatus());
         account.setCustomerId(acct.getCustomerId());
         account.setAccountName(acct.getAccountName());
         account.setAccountNumber(acct.getAccountNumber());
@@ -230,22 +231,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
 
-    @Override
-    public List<Account> getAccountsForDebit(String customerId, String currencyCode) {
-        List<Account> accountsForDebit = new ArrayList<>();
-        List<Account> accounts = this.getCustomerAccounts(customerId, currencyCode);
 
-
-
-        for (Account account : accounts) {
-            if (!accountConfigService.isAccountHidden(account.getAccountNumber())
-                    && (!accountConfigService.isAccountRestrictedForView(account.getAccountNumber())) && !accountConfigService.isAccountRestrictedForDebit(account.getAccountNumber()) && (!accountConfigService.isAccountClassRestrictedForView(account.getSchemeCode()) && (!accountConfigService.isAccountClassRestrictedForDebit(account.getSchemeCode())))) {
-                accountsForDebit.add(account);
-            }
-
-        }
-        return accountsForDebit;
-    }
 
     @Override
     public List<Account> getAccountsForDebit(String customerId) {
@@ -262,7 +248,7 @@ public class AccountServiceImpl implements AccountService {
         Iterable<Account> accounts = accountRepo.findByCustomerIdAndSchemeTypeIn(customerId,schmTypes);
         for (Account account : accounts) {
             if ("A".equalsIgnoreCase(account.getStatus()) &&  !accountConfigService.isAccountHidden(account.getAccountNumber())
-                    && (!accountConfigService.isAccountRestrictedForView(account.getAccountNumber())) && !accountConfigService.isAccountRestrictedForDebit(account.getAccountNumber()) && (!accountConfigService.isAccountClassRestrictedForView(account.getSchemeCode()) && (!accountConfigService.isAccountClassRestrictedForDebit(account.getSchemeCode())))  )
+                    && (!accountConfigService.isAccountRestrictedForView(account.getAccountNumber())) && !accountConfigService.isAccountRestrictedForDebit(account.getAccountNumber()) && (!accountConfigService.isAccountSchemeTypeRestrictedForView(account.getSchemeCode()) && (!accountConfigService.isAccountSchemeTypeRestrictedForDebit(account.getSchemeCode())))  )
                      {
                 accountsForDebit.add(account);
             }
@@ -280,9 +266,14 @@ public class AccountServiceImpl implements AccountService {
                 .stream(accountDTOS.spliterator(), false)
                 .filter(i -> !accountConfigService.isAccountHidden(i.getAccountNumber()))
                 .filter(i -> !accountConfigService.isAccountRestrictedForView(i.getAccountNumber()))
-                .filter(i -> !accountConfigService.isAccountRestrictedForDebitAndCredit(i.getAccountNumber()))
-                .filter(i -> !accountConfigService.isAccountClassRestrictedForView(i.getSchemeCode()))
-                .filter(i -> !accountConfigService.isAccountClassRestrictedForDebitAndCredit(i.getSchemeCode()))
+                .filter(i -> !accountConfigService.isAccountRestrictedForDebit(i.getAccountNumber()))
+                .filter(i -> !accountConfigService.isAccountRestrictedForCredit(i.getAccountNumber()))
+                .filter(i -> !accountConfigService.isAccountSchemeCodeRestrictedForView(i.getSchemeCode()))
+                .filter(i -> !accountConfigService.isAccountSchemeCodeRestrictedForDebit(i.getSchemeCode()))
+                .filter(i -> !accountConfigService.isAccountSchemeCodeRestrictedForCredit(i.getSchemeCode()))
+                .filter(i -> !accountConfigService.isAccountSchemeTypeRestrictedForView(i.getSchemeType()))
+                .filter(i -> !accountConfigService.isAccountSchemeTypeRestrictedForDebit(i.getSchemeType()))
+                .filter(i -> !accountConfigService.isAccountSchemeTypeRestrictedForCredit(i.getSchemeType()))
                 .forEach(i -> accountsForDebitAndCredit.add(i));
 
         return accountsForDebitAndCredit;
@@ -297,9 +288,15 @@ public class AccountServiceImpl implements AccountService {
                 .stream(accountDTOS.spliterator(), false)
                 .filter(i -> !accountConfigService.isAccountHidden(i.getAccountNumber()))
                 .filter(i -> !accountConfigService.isAccountRestrictedForView(i.getAccountNumber()))
-                .filter(i -> !accountConfigService.isAccountRestrictedForDebitAndCredit(i.getAccountNumber()))
-                .filter(i -> !accountConfigService.isAccountClassRestrictedForView(i.getSchemeCode()))
-                .filter(i -> !accountConfigService.isAccountClassRestrictedForDebitAndCredit(i.getSchemeCode()))
+                .filter(i -> !accountConfigService.isAccountRestrictedForDebit(i.getAccountNumber()))
+                .filter(i -> !accountConfigService.isAccountRestrictedForCredit(i.getAccountNumber()))
+                .filter(i -> !accountConfigService.isAccountSchemeTypeRestrictedForView(i.getSchemeType()))
+                .filter(i -> !accountConfigService.isAccountSchemeTypeRestrictedForDebit(i.getSchemeType()))
+                .filter(i -> !accountConfigService.isAccountSchemeTypeRestrictedForCredit(i.getSchemeType()))
+                .filter(i -> !accountConfigService.isAccountSchemeCodeRestrictedForView(i.getSchemeCode()))
+                .filter(i -> !accountConfigService.isAccountSchemeCodeRestrictedForDebit(i.getSchemeCode()))
+                .filter(i -> !accountConfigService.isAccountSchemeCodeRestrictedForCredit(i.getSchemeCode()))
+
                 .forEach(i -> {
                     Map<String, BigDecimal> balance = integrationService.getBalance(i.getAccountNumber());
                     String availbalance = "0";
@@ -321,19 +318,7 @@ public class AccountServiceImpl implements AccountService {
         return accountsForDebitAndCredit;
     }
 
-    @Override
-    public Iterable<Account> getAccountsForCredit(String customerId, String currencyCode) {
-        List<Account> accountsForCredit = new ArrayList<Account>();
-        List<Account> accounts = this.getCustomerAccounts(customerId, currencyCode);
-        for (Account account : accounts) {
-            if (!accountConfigService.isAccountHidden(account.getAccountNumber())
-                    && (!accountConfigService.isAccountRestrictedForView(account.getAccountNumber())) && !accountConfigService.isAccountRestrictedForCredit(account.getAccountNumber()) && (!accountConfigService.isAccountClassRestrictedForView(account.getSchemeCode()) && (!accountConfigService.isAccountClassRestrictedForCredit(account.getSchemeCode())))) {
-                accountsForCredit.add(account);
-            }
 
-        }
-        return accountsForCredit;
-    }
 
     @Override
     public Iterable<Account> getAccountsForCredit(String customerId) {
@@ -343,7 +328,7 @@ public class AccountServiceImpl implements AccountService {
         logger.info("accounts are {}", accounts);
         for (Account account : accounts) {
             if (!accountConfigService.isAccountHidden(account.getAccountNumber())
-                    && (!accountConfigService.isAccountRestrictedForView(account.getAccountNumber())) && !accountConfigService.isAccountRestrictedForCredit(account.getAccountNumber()) && (!accountConfigService.isAccountClassRestrictedForView(account.getSchemeCode()) && (!accountConfigService.isAccountClassRestrictedForCredit(account.getSchemeCode())))) {
+                    && (!accountConfigService.isAccountRestrictedForView(account.getAccountNumber())) && !accountConfigService.isAccountRestrictedForCredit(account.getAccountNumber()) && (!accountConfigService.isAccountSchemeTypeRestrictedForView(account.getSchemeType()) && (!accountConfigService.isAccountSchemeTypeRestrictedForCredit(account.getSchemeType()))&& (!accountConfigService.isAccountSchemeCodeRestrictedForView(account.getSchemeCode()) && (!accountConfigService.isAccountSchemeCodeRestrictedForCredit(account.getSchemeCode()))))) {
                 accountsForCredit.add(account);
             }
 

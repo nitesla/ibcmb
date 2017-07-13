@@ -1,9 +1,8 @@
 package longbridge.controllers;
 
-import com.sun.javafx.binding.StringFormatter;
-import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingSecurityException;
-import longbridge.exception.InternetBankingTransferException;
+import longbridge.models.RetailUser;
+import longbridge.services.RetailUserService;
 import longbridge.services.SecurityService;
 import longbridge.utils.HostMaster;
 import org.slf4j.Logger;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.security.Principal;
 import java.util.Locale;
 
@@ -35,16 +33,22 @@ public class TokenAuthController {
 
     @Autowired
     private MessageSource messageSource;
+
+    @Autowired
+    RetailUserService retailUserService;
+
 @Autowired
         HostMaster hostMaster;
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @PostMapping("/otp/authenticate")
-    public String authenticate(HttpServletRequest request, RedirectAttributes redirectAttributes, Locale locale) {
+    public String authenticate(HttpServletRequest request, RedirectAttributes redirectAttributes, Locale locale, Principal principal) {
 
         String redirectUrl = "";
         String otpUrl="";
         String username = "";
+
+
 
 
         if (request.getSession().getAttribute("redirectUrl") != null) {
@@ -64,7 +68,8 @@ public class TokenAuthController {
             }
 
         try {
-            boolean result = securityService.performOtpValidation(username, otp);
+            RetailUser user  = retailUserService.getUserByName(principal.getName());
+            boolean result = securityService.performOtpValidation(user.getEntrustId(), user.getEntrustGroup(), otp);
             if (result) {
                 redirectAttributes.addFlashAttribute("message", messageSource.getMessage("token.auth.success", null, locale));
                 return "redirect:/" + redirectUrl;
@@ -88,7 +93,9 @@ public class TokenAuthController {
         if(!username.equalsIgnoreCase("")) {
             boolean sendOtp;
             try {
-                if (securityService.sendOtp(username)) sendOtp = true;
+                RetailUser user  = retailUserService.getUserByName(principal.getName());
+                if (securityService.sendOtp(user.getEntrustId(), user.getEntrustGroup()))
+                    sendOtp = true;
                 else sendOtp = false;
                 logger.info("otp sent {}",sendOtp);
                 if (sendOtp){

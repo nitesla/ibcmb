@@ -27,7 +27,7 @@
             <div class="">
                 <div class="page-title">
                     <div class="title_left">
-                        <h3 th:text="${corporateRule.corporateName}"></h3>
+                        <h3 th:text="${corporate.name}"></h3>
                     </div>
 
                 </div>
@@ -56,20 +56,22 @@
 
 
                                         <div class="form-group">
-                                            <label class="col-sm-2 control-label">Lower Limit Amount</label>
+                                            <label class="col-sm-2 control-label">Lower Limit Amount <span style="color: red">*</span></label>
                                             <div class="col-sm-6">
-                                                <input type="text" class="form-control" th:field="*{lowerLimitAmount}"/>
+                                                <input type="number" class="form-control" th:field="*{lowerLimitAmount}"/>
                                             </div>
                                         </div>
 
                                         <div class="form-group">
-                                            <label class="col-sm-2 control-label">Upper Limit Amount</label>
+                                            <label class="col-sm-2 control-label">Upper Limit Amount <span style="color: red">*</span></label>
                                             <div class="col-sm-6">
-                                                <input id="upperLimit" type="text" class="form-control" th:field="*{upperLimitAmount}"/>
+                                                <input th:if ="${!corporateRule.unlimited}" id="upperLimit" type="number" class="form-control" th:field="*{upperLimitAmount}"/>
+                                                <input th:if ="${corporateRule.unlimited}" id="upperLimit" type="number" class="form-control" th:field="*{upperLimitAmount}" disabled="disabled"/>
+
                                             </div>
                                             <input id="unlimited" type="checkbox" class="checkbox-inline"
                                                    th:field="*{unlimited}"/>
-                                            <label><strong>Unlimited Amount</strong></label>
+                                            <label><strong>No Upper Limit</strong></label>
                                         </div>
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">Currency</label>
@@ -82,30 +84,34 @@
                                         </div>
                                         <hr/>
                                         <div class="form-group">
-                                            <label class="col-sm-2 control-label">Select Roles</label>
+                                            <label class="col-sm-2 control-label">Approval Roles <span style="color: red">*</span></label>
                                             <div class="col-sm-6">
                                                 <p th:each="role: ${roleList}">
                                                     <input type="checkbox" name="roles" th:value="${role.id}" th:checked="${role.ruleMember}"/>
-                                                    <label th:text="${role.name +' [' +role.rank +']'}"></label>
-                                                </p>
+                                                    <span th:if="${role.rank!=null}" th:text="${role.name}+' '+${role.rank}"></span>
+                                                    <span th:if="${role.rank==null}" th:text="${role.name}"></span>                                                </p>
                                             </div>
                                         </div>
 
                                         <hr/>
 
                                         <div class="form-group">
-                                            <label class="col-sm-2 control-label">Check If</label>
-                                            <div class="col-sm-8">
-                                                <input id="anyAuthorizer" type="checkbox" class="checkbox-inline" th:field="*{anyCanAuthorize}"/>
-                                                <label><strong>Any of the roles selected above can authorize transactions</strong></label>
+                                            <div>
+                                                <div class="radio">
+                                                    <label class="col-sm-2 control-label"></label>
 
-                                            </div>
-                                            <div class="col-sm-8">
-                                                <input id="rank" type="checkbox" class="checkbox-inline" th:field="*{rank}"/>
-                                                <label><strong>Follow role rank for authorization</strong></label>
+                                                    <label><input type="radio" name="anyCanAuthorize" value="N" th:checked="*{!anyCanAuthorize}"/>All the
+                                                        roles selected above must authorize transaction</label>
+                                                </div>
+                                                <div class="radio">
+                                                    <label class="col-sm-2 control-label"></label>
+
+                                                    <label><input type="radio" name="anyCanAuthorize" value="Y" th:checked="*{anyCanAuthorize}"/>Any of
+                                                        the roles selected above can authorize transaction</label>
+                                                </div>
                                             </div>
                                         </div>
-
+                                        <br/>
 
                                         <div class="form-group">
                                             <div class="col-sm-4 col-sm-offset-2">

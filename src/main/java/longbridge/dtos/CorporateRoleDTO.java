@@ -89,6 +89,11 @@ public class CorporateRoleDTO {
 
     @Override
     public String toString() {
-       return name+" "+rank;
+        if(rank!=null) {
+            return name + " " + rank;
+        }
+        else{
+            return name;
+        }
     }
 }

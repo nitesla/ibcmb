@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="corp_layout :: site-head">
+    <link th:href="@{~/bank/vendors/sweetalert/sweetalert.css}" rel="stylesheet"/>
+</head>
+<body>
+<div class="container">
+    <header th:replace="corp_layout ::corp-header">
+    </header>
+
+    <section class="content-wrapper">
+        <div class="">
+            <div class="row">
+                <div class="col-md-4 col-sm-4">
+                    <h5 class="page_header">Bulk Transfers</h5>
+                    <select class="form-control invisible">
+                        <option value="account">Account Overview</option>
+                    </select>
+                </div>
+                <p class="col-xs-12 invisible">
+                    Fields marked <span style="color:red">*</span> are compulsory
+                </p>
+            </div>
+            <div class="row">
+                <div class="col-md-9 content-bg">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h4 class="sub_header"></h4>
+                            <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+                                <div class="btn-group" role="group" aria-label="First group">
+                                    <a type="button" th:href="@{/corporate/transfer/upload}" class="btn btn-default bt-link-act"><i class="fa fa-plus"></i>New</a>
+                                    <a  type="button" class="btn bt-select btn-default bt-link-act" th:href="@{/corporate/transfer/index/view}" disabled="disabled" ><i class="fa fa-eye"></i> View Details</a>
+                                </div>
+                            </div>
+                            <br/>
+                            <table class="table table-striped table-bordered table-hover" id="bulk">
+                                <thead>
+                                <tr>
+                                    <th>Debit Account</th>
+                                    <th>Request Date</th>
+                                    <th>Status</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+
+                                </tbody>
+                                <!--<tfoot>-->
+                                <!--<tr>-->
+                                    <!--<th>Batch ID</th>-->
+                                    <!--<th>Debit Account</th>-->
+                                    <!--<th>Request Date</th>-->
+                                    <!--<th>Status</th>-->
+                                <!--</tr>-->
+                                <!--</tfoot>-->
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 pull-right" >
+                    <div th:replace="corp_layout :: corp-sidebar" class="" >
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTENT-WRAPPER SECTION END-->
+    <footer th:replace="corp_layout :: corp-footer">
+    </footer>
+
+
+    <script th:src="@{~/bank/vendors/sweetalert/sweetalert.min.js}"></script>
+    <script th:src="@{~/bank/vendors/bootstrap-dialog/js/bootstrap-dialog.js}"></script>
+    <script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
+
+    <!-- Page-Level Scripts -->
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        $(document).ready(function() {
+            var table = $('#bulk').DataTable({
+                select:true,
+                responsive: true,
+                "lengthMenu" : [ [ 5, 10, 20],  [ 5, 10, 20 ] ],
+                "pagingType" : "simple_numbers",
+                "searching": false,
+                "paging": true,
+                "serverSide" : true,
+                "ajax": "/corporate/transfer/alltransfers",
+                "dom": 'T<"clear">frtlp',
+                "columns": [
+                    { "data": "debitAccount" },
+                    { "data": "requestDate" },
+                    { "data": "status" }
+                ] });
+
+            table.on('select', function() {
+                if (table.rows({
+                        selected : true
+                    }).indexes().length === 0) {
+                    $('.bt-select').attr("disabled", true);
+                } else {
+                    $('.bt-select').removeAttr("disabled");
+                }
+
+            });
+
+            table.on('deselect', function() {
+                if (table.rows({
+                        selected : true
+                    }).indexes().length === 0) {
+                    $('.bt-select').attr("disabled", true);
+                } else {
+                    $('.bt-select').removeAttr("disabled");
+                }
+            });
+
+        });
+
+        $("a.bt-link-act").on("click", function(e) {
+            e.preventDefault();
+            var link = $(e.currentTarget);
+            if($(link).attr("disabled")){
+                return;
+            }
+            var dt = $('#bulk').DataTable();
+            var id = $(dt.row({
+                selected: true
+            }).node()).attr("id");
+            var ooo = link.attr("href").replace("index",id);
+            window.location.assign(ooo);
+
+        } );
+
+        $("#delete-btn").on("click", function(e) {
+            e.preventDefault();
+            var link = $(e.currentTarget);
+            if($(link).attr("disabled")){
+                return;
+            }
+            var dt = $('#bulk').DataTable();
+            var id = $(dt.row({
+                selected: true
+            }).node()).attr("id");
+            //window.location.href = link.attr("formaction") + '?id=' + id;
+            //replace {id} with id
+            var ooo = link.attr("href").replace("index",id);
+            warnBeforeRedirect(ooo);
+
+        } );
+
+
+        function warnBeforeRedirect(ooo) {
+            swal({
+                title: "Are you sure?",
+                text: "Are you sure that you want to delete this code?",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes, delete code!",
+                closeOnConfirm: false
+            }, function() {
+                // Redirect the user
+                window.location.assign(ooo);
+            });
+        }
+
+        /*]]>*/
+    </script>
+</div>
+</body>
+</html>

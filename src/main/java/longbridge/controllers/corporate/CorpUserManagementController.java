@@ -1,12 +1,12 @@
 package longbridge.controllers.corporate;
 
-import longbridge.dtos.CorpCorporateUserDTO;
-import longbridge.dtos.CorporateDTO;
-import longbridge.dtos.CorporateUserDTO;
-import longbridge.dtos.RoleDTO;
+import longbridge.dtos.*;
 import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.InternetBankingException;
+import longbridge.exception.PasswordException;
 import longbridge.models.CorporateUser;
+import longbridge.models.UserType;
+import longbridge.services.CodeService;
 import longbridge.services.CorporateService;
 import longbridge.services.CorporateUserService;
 import longbridge.services.RoleService;
@@ -30,6 +30,7 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.security.Principal;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -43,6 +44,9 @@ public class CorpUserManagementController {
     private CorporateUserService corporateUserService;
     @Autowired
     private CorporateService corporateService;
+
+    @Autowired
+    CodeService codeService;
     @Autowired
     private RoleService roleService;
 
@@ -53,15 +57,18 @@ public class CorpUserManagementController {
 
     @ModelAttribute
     public void init(Model model, Principal principal){
-        Iterable<RoleDTO> roles = roleService.getRoles();
+        List<CodeDTO> corporateTypes = codeService.getCodesByType("CORPORATE_TYPE");
+        model.addAttribute("corporateTypes", corporateTypes);
+
+        Iterable<RoleDTO> roles = roleService.getRolesByUserType(UserType.CORPORATE);
         Iterator<RoleDTO> roleDTOIterator = roles.iterator();
-        while (roleDTOIterator.hasNext()){
+        while (roleDTOIterator.hasNext()) {
             RoleDTO roleDTO = roleDTOIterator.next();
-            if(roleDTO.getName().equals("Sole Admin")){
+            if (roleDTO.getName().equals("SOLE")) {
                 roleDTOIterator.remove();
             }
         }
-        model.addAttribute("roles",roles);
+        model.addAttribute("roles", roles);
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
         CorporateDTO corporate = corporateService.getCorporate(corporateUser.getCorporate().getId());
         model.addAttribute("corporate", corporate);
@@ -105,15 +112,6 @@ public class CorpUserManagementController {
         CorpCorporateUserDTO corporateUserDTO = new CorpCorporateUserDTO();
         model.addAttribute("corporateUser", corporateUserDTO);
         model.addAttribute("corporate", corporate);
-        Iterable<RoleDTO> roles = roleService.getRoles();
-        Iterator<RoleDTO> roleDTOIterator = roles.iterator();
-        while (roleDTOIterator.hasNext()){
-            RoleDTO roleDTO = roleDTOIterator.next();
-            if(roleDTO.getName().equals("Sole Admin")){
-                roleDTOIterator.remove();
-            }
-        }
-        model.addAttribute("roles",roles);
         return "corp/user/add";
     }
 
@@ -155,5 +153,24 @@ public class CorpUserManagementController {
 
         return "redirect:/corporate/users";
     }
+
+
+    @GetMapping("/{id}/password/reset")
+    public String resetPassword(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+
+        try {
+            String message = corporateUserService.resetCorpPassword(id);
+            redirectAttributes.addFlashAttribute("message", message);
+        } catch (PasswordException pe) {
+            redirectAttributes.addFlashAttribute("failure", pe.getMessage());
+            logger.error("Error resetting password for corporate user", pe);
+        }
+        catch (InternetBankingException ibe) {
+            redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
+            logger.error("Error resetting password for corporate user", ibe);
+        }
+        return "redirect:/corporate/users";
+    }
+
 
 }

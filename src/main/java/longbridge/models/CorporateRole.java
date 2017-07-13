@@ -1,5 +1,6 @@
 package longbridge.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
@@ -43,8 +44,6 @@ public class CorporateRole extends AbstractEntity implements PrettySerializer{
     @JoinColumn(name="user_id")
     Set<CorporateUser> users = new HashSet<CorporateUser>();
 
-    @OneToMany
-    List<PendAuth> pendAuths;
 
     public String getName() {
         return name;
@@ -86,15 +85,9 @@ public class CorporateRole extends AbstractEntity implements PrettySerializer{
         this.roleType = roleType;
     }
 
-    public List<PendAuth> getPendAuths() {
-        return pendAuths;
-    }
-
-    public void setPendAuths(List<PendAuth> pendAuths) {
-        this.pendAuths = pendAuths;
-    }
 
 	@Override
+    @JsonIgnore
 	public JsonSerializer<CorporateRole> getSerializer() {
 		return new JsonSerializer<CorporateRole>() {
 
@@ -104,14 +97,14 @@ public class CorporateRole extends AbstractEntity implements PrettySerializer{
 				  gen.writeStartObject();
 	                gen.writeStringField("Name", value.name);
 	                gen.writeNumberField("Rank",value.rank);
-	                gen.writeStringField("Type", value.roleType);
 	                gen.writeStringField("Corporate", value.corporate.getName());
 	                // gen.writeArrayFieldStart("permissions");
 	                gen.writeObjectFieldStart("Members");
 	                for(CorporateUser user : value.users){
 	                    gen.writeObjectFieldStart(user.getId().toString());
 	                    //gen.writeStartObject();
-	                    gen.writeStringField("First Name",user.firstName);
+                        gen.writeStringField("Username",user.userName);
+                        gen.writeStringField("First Name",user.firstName);
 	                    gen.writeStringField("Last Name",user.lastName);
 	                    gen.writeEndObject();
 	                }

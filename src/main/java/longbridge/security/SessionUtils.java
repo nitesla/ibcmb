@@ -45,14 +45,14 @@ public class SessionUtils {
             SettingDTO settingDTO = configService.getSettingByName("LOGIN_ALERT");
             if (settingDTO.isEnabled()) {
                 String preference = user.getAlertPreference().getCode();
-                if (preference.equalsIgnoreCase("SMS")) {
+                if ("SMS".equalsIgnoreCase(preference)) {
 
-                    // integrationService.sendSMS(user.getPhoneNumber())
-                } else if (preference.equalsIgnoreCase("EMAIL")) {
+                  // integrationService.sendSMS(user.getPhoneNumber())
+                } else if ("EMAIL".equalsIgnoreCase(preference)) {
                     //   mailService.send();
                 	;
 
-                } else if (preference.equalsIgnoreCase("BOTH")) {
+                } else if ("BOTH".equalsIgnoreCase(preference)) {
                 		;
                 }
 

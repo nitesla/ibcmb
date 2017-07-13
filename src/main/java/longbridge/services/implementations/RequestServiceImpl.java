@@ -223,9 +223,7 @@ public class RequestServiceImpl implements RequestService {
             SRConfig reqConfig = reqConfigRepo.findOne(request.getServiceReqConfigId());
             if(reqConfig!=null) {
                 for (UserGroup group : opsUserGroups) {
-
                     if (group != null) {
-
                         if (group.equals(userGroupRepo.findOne(reqConfig.getGroupId()))) {
                             requestsForOpsUser.add(request);
                         }

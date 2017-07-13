@@ -11,10 +11,12 @@ public class AccountRestrictionDTO {
     @JsonProperty("DT_RowId")
     private Long id;
     private int version;
-    @NotEmpty(message = "accountNumber")
-    private String accountNumber;
+    @NotEmpty(message = "restrictionValue")
+    private String restrictionValue;
     @NotEmpty(message = "restrictionType")
     private String restrictionType;
+    @NotEmpty(message = "restrictedFor")
+    private String restrictedFor;
     private String dateCreated;
 
     public Long getId() {
@@ -33,12 +35,12 @@ public class AccountRestrictionDTO {
         this.version = version;
     }
 
-    public String getAccountNumber() {
-        return accountNumber;
+    public String getRestrictionValue() {
+        return restrictionValue;
     }
 
-    public void setAccountNumber(String accountNumber) {
-        this.accountNumber = accountNumber;
+    public void setRestrictionValue(String restrictionValue) {
+        this.restrictionValue = restrictionValue;
     }
 
     public String getRestrictionType() {
@@ -47,6 +49,14 @@ public class AccountRestrictionDTO {
 
     public void setRestrictionType(String restrictionType) {
         this.restrictionType = restrictionType;
+    }
+
+    public String getRestrictedFor() {
+        return restrictedFor;
+    }
+
+    public void setRestrictedFor(String restrictedFor) {
+        this.restrictedFor = restrictedFor;
     }
 
     public String getDateCreated() {
@@ -62,8 +72,9 @@ public class AccountRestrictionDTO {
         return "AccountRestrictionDTO{" +
                 "id=" + id +
                 ", version=" + version +
-                ", accountNumber='" + accountNumber + '\'' +
+                ", restrictionValue='" + restrictionValue + '\'' +
                 ", restrictionType='" + restrictionType + '\'' +
+                ", restrictedFor='" + restrictedFor + '\'' +
                 ", dateCreated='" + dateCreated + '\'' +
                 '}';
     }

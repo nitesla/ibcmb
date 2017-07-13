@@ -5,16 +5,14 @@ import longbridge.models.CorporateUser;
 import longbridge.models.SRConfig;
 import longbridge.services.*;
 import longbridge.utils.DateFormatter;
+import longbridge.utils.HostMaster;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.StreamSupport;
 
 /**
@@ -28,6 +26,9 @@ public class CorporateControllerAdvice {
     private AccountService accountService;
     private ServiceReqConfigService reqConfigService;
     private MessageService messageService;
+
+    @Autowired
+    HostMaster hostMaster;
 
     @Autowired
     public CorporateControllerAdvice(CorporateUserService corporateUserService, IntegrationService integrationService, TransferService transferService, AccountService accountService, ServiceReqConfigService reqConfigService, MessageService messageService) {
@@ -103,6 +104,14 @@ public class CorporateControllerAdvice {
             model.addAttribute("numOfUnreadMessages",numOfUnreadMessages);
         }
 
+        if ("Y".equals(corporateUser.getIsFirstTimeLogon())){
+            return "redirect:/corporate/setup";
+        }
+
+        boolean isUserAdmin = corporateUser.isAdmin();
+        model.addAttribute("isUserAdmin",isUserAdmin);
+
+        model.addAttribute("corporateType",corporateUser.getCorporate().getCorporateType());
 
         return "";
     }
@@ -133,6 +142,12 @@ public class CorporateControllerAdvice {
         return "";
     }
 
-
+//    @GetMapping
+//    public String passwordEx(){
+//        if (hostMaster.isPasswordExpired()){
+//            return "redirect:/corporate/reset_password";
+//        }
+//        return "";
+//    }
 
 }

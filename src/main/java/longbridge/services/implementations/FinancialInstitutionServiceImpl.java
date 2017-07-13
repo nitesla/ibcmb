@@ -3,6 +3,7 @@ package longbridge.services.implementations;
 import longbridge.dtos.FinancialInstitutionDTO;
 import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.InternetBankingException;
+import longbridge.exception.VerificationInterruptedException;
 import longbridge.models.FinancialInstitution;
 import longbridge.models.FinancialInstitutionType;
 import longbridge.repositories.FinancialInstitutionRepo;
@@ -88,6 +89,11 @@ public class FinancialInstitutionServiceImpl implements FinancialInstitutionServ
             logger.info("New financial institution: {} created", financialInstitution.getInstitutionName());
             return messageSource.getMessage("institution.add.success", null, locale);
         }
+
+        catch (VerificationInterruptedException e) {
+            return e.getMessage();
+        }
+
         catch (Exception e){
             throw new InternetBankingException(messageSource.getMessage("institution.add.failure", null, locale),e);
         }
@@ -106,7 +112,14 @@ public class FinancialInstitutionServiceImpl implements FinancialInstitutionServ
             this.financialInstitutionRepo.save(financialInstitution);
             logger.info("Financial Institution {} updated", financialInstitution.getInstitutionName());
             return messageSource.getMessage("institution.update.success", null, locale);
-        } catch (Exception e) {
+        }
+        catch (VerificationInterruptedException e) {
+            return e.getMessage();
+        }
+        catch (InternetBankingException e){
+            throw e;
+        }
+        catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("institution.update.failure", null, locale));
         }
 
@@ -139,9 +152,16 @@ public class FinancialInstitutionServiceImpl implements FinancialInstitutionServ
     @Verifiable(operation="DELETE_FIN_INST",description="Deleting a Financial Institution")
     public String deleteFinancialInstitution(Long id) throws InternetBankingException {
       try {
-          this.financialInstitutionRepo.delete(id);
+          FinancialInstitution finInst = financialInstitutionRepo.findOne(id);
+          financialInstitutionRepo.delete(finInst);
           logger.info("Financial institution  with Id {} deleted ", id.toString());
           return messageSource.getMessage("institution.delete.success", null, locale);
+      }
+      catch (VerificationInterruptedException e) {
+          return e.getMessage();
+      }
+      catch (InternetBankingException e){
+          throw e;
       }
       catch (Exception e){
           throw new InternetBankingException(messageSource.getMessage("institution.delete.failure", null, locale));

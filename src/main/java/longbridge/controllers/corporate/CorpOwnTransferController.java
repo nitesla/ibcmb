@@ -77,7 +77,7 @@ public class CorpOwnTransferController {
 		CorpTransferRequestDTO corptransferRequestDTO = new CorpTransferRequestDTO();
 		corptransferRequestDTO
 				.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode("bankCode"));
-		view.addObject("transferRequest", corptransferRequestDTO);
+		view.addObject("corpTransferRequest", corptransferRequestDTO);
 		view.setViewName(page + "pagei");
 		return view;
 
@@ -87,7 +87,7 @@ public class CorpOwnTransferController {
 
 
 	@PostMapping("/summary")
-	public String transferSummary(@ModelAttribute("transferRequest") @Valid CorpTransferRequestDTO request,
+	public String transferSummary(@ModelAttribute("corpTransferRequest") @Valid CorpTransferRequestDTO request,
 			Locale locale, BindingResult result, Model model,
 			HttpServletRequest servletRequest) {
 		try {

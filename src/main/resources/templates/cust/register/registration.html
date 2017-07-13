@@ -12,52 +12,70 @@
 </head>
 <body>
 
-<header class="header">
+
     <div class="container">
-        <div class="top_bar">
-            <ul class="list_group">
-                <li><a href="#"> CORONATION MERCHANT BANK</a></li>
-            </ul>
-        </div>
-        <nav class="navbar navbar-default">
-            <div class="container-fluid">
-                <div class="navbar-header navbar-left">
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
-                        <span class="sr-only">MENU</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="#" data-toggle="collapse" data-target="#navbar-collapse-1">Menu</a>
-                </div>
-                <div class="collapse navbar-collapse" id="navbar-collapse-1">
-                    <ul class="nav navbar-nav">
-                        <li><a href="/">HOME</a></li>
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> LOG IN </a>
-                            <ul class="dropdown-menu">
-                                <li><a th:href="@{/login/retail}"> INDIVIDUAL </a></li>
-                                <li><a th:href="@{/login/corporate}"> CORPORATE</a></li>
-                            </ul>
-                        </li>
-                        <li><a href="/register">REGISTER</a></li>
-                        <li><a href="/#contact_us">CONTACT US</a></li>
-                        <li><a href="/">HELP</a></li>
-                    </ul>
+
+        <div class="row">
+                <div class="top-bar col-xs-12">
+                        <ul class="top-link">
+                            
+                            <li class="no-bd"><a href="https://www.coronationmb.com/" target="_blank"> Coronation merchant bank</a>&nbsp;</li>
+                            
+                        </ul>
                 </div>
             </div>
-        </nav>
-        <a href="#" class="logo">
-            <img th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
-        </a>
-    </div>
-</header>
-<br/>
-<br/>
-<br/>
+
+            <div  class="row  margin-bottom">
+
+                <div class="col-sm-10">
+
+                    <nav class="navbar navbar-default bg-success" >
+                        <div class="">
+                            <div class="navbar-header navbar-left ">
+                                <button type="button" class="navbar-toggle collapsed " data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
+                                    <span class="sr-only">MENU</span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                </button>
+                                <a class="navbar-brand" href="#" data-toggle="collapse" data-target="#navbar-collapse-1">Menu</a>
+                            </div>
+                            <div class="collapse navbar-collapse no-pad-left" id="navbar-collapse-1">
+                                <ul class="nav navbar-nav ">
+                                    <li><a href="/"> HOME</a></li>
+                                    <li class="dropdown">
+                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> LOGIN</a>
+                                        <ul class="dropdown-menu">
+                                            <li><a th:href="@{/login/retail}"> INDIVIDUAL </a></li>
+                                            <li><a th:href="@{/login/corporate}"> CORPORATE </a></li>
+                                        </ul>
+                                    </li>
+                                    <li><a href="/register"> REGISTER</a></li>
+                                    <li><a href="/#contact_us"> CONTACT US</a></li>
+                                    <li><a href="/faqs"> FAQ</a></li>
+                                </ul>
+
+                            </div>
+                        </div>
+                    </nav>
+
+                </div>
+
+                <div class="col-sm-2">
+                     <div class="center" style="margin:0px auto;">
+                        <a href="/" class="log" data-toggle="tooltip" data-placement="bottom" title="Coronation Merchant Bank">
+                            <img class="img-responsive" style="display:block;margin:0px auto;" th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
+                        </a>
+                    </div>
+                </div>
+               
+               
+
+            </div>
+
 
 <section class="content-wrapper">
-    <div class="container">
+    <div class="containe">
         <!-- Start row-->
         <div class="row">
             <div class="col-sm-12">
@@ -69,6 +87,7 @@
                             <h3>Account Details</h3>
                             <section>
                                 <div class="row">
+                                    <br/>
                                     <div class="col-md-offset-4 col-md-4">
                                         <div class="form-group clearfix">
 
@@ -94,6 +113,10 @@
                                         </div>
 
 
+                                        <p id='loading-icon' style="display:none"><i class='fa fa-spinner fa-spin' style="font-size:10px;color:#003056"></i> Confirming Account details. Please Wait</p>
+
+
+
                                     </div>
                                 </div>
                             </section>
@@ -102,8 +125,6 @@
                                 <div class="row">
                                     <div class="col-md-offset-4 col-md-4">
                                         <br/>
-
-
 
                                         <div id='regcodebox' class="form-group clearfix">
                                             <label>Registration Code</label>
@@ -114,13 +135,7 @@
                                         <div class="form-group clearfix">
                                             <label>Username</label>
                                             <span class='req'></span><input type="text" name="userName" autocomplete="off" class="my-select required" placeholder="Preferred Username"/>
-                                            <div id="myModal" class="modal fade" role="dialog">
 
-
-
-                                                    <!-- Modal content-->
-                                                <div id="load" style='display:none'></div>
-                                                </div>
 
                                         </div>
 
@@ -140,9 +155,6 @@
 
                                         <input id="customerId" name="customerId" type="hidden"/>
                                     </div>
-                                    <div id="loa"  class='loader' style='display:none'>
-
-                                    </div>
 
                                     <div class="col-md-4">
                                         <br/>
@@ -155,22 +167,15 @@
                             <section>
                                 <div class="row">
                                     <div class="col-md-offset-4 col-md-4">
-                                        <div class='alert alert-danger' id="myspan2">
-                                        </div>
+                                        <br/>
                                         <input id="returnValue" type="hidden"/>
                                         <input th:name="noOfQuestions" th:value="${noOfQuestions}" type="hidden"/>
-                                        <!--<p th:each="question,id : ${securityQuestion}" th:text="${question.securityQuestion.}"></p>-->
-
-                                        <!--<select name="securityQuestion" class="my-select required">-->
-                                        <!--<option th:each="question : ${secQuestions}" th:text="*{question.securityQuestion}"></option>-->
-                                        <!--</select>-->
-                                        <div th:each="questionList,ind : ${questionBank}">
+                                        <div th:each="questionList,ind : ${secQuestions}">
                                             <div class="form-group clearfix">
-                                                <label>Question</label>
-                                                <select th:name="'secretQuestion'+${ind.index}" class="my-select">
-                                                    <p th:each="question : ${questionList}">
-                                                        <option th:text="${question.securityQuestion}" th:value="${question.securityQuestion}"></option>
-                                                    </p></select>
+                                                <label th:text="'Security Question '+${ind.index+1}" >Question</label>
+                                                <select th:name="'securityQuestion'+${ind.index}" class="my-select">
+                                                    <option th:each="question : ${questionList}" th:text="${question.securityQuestion}" th:value="${question.securityQuestion}"></option>
+                                                </select>
                                             </div>
                                             <div class="form-group clearfix">
                                                 <label>Answer</label>
@@ -183,6 +188,7 @@
                             <h3>Phishing Image</h3>
                             <section>
                                 <div class="row">
+                                    <br/>
                                     <div class="col-md-offset-3 col-md-6">
 
                                         <div class="form-group">
@@ -195,12 +201,6 @@
                                                 </div>
                                             </div>
 
-                                            <!--<table>-->
-                                                <!--<td th:each="image : ${images}" style="position: relative;">-->
-                                                    <!--<img th:src="${imagePath} + ${image}" width="100px" height="100px"/>-->
-                                                    <!--<input type="radio" name="phishing" th:value="${image}" id="check1" class="required" style="position: absolute; bottom: 20px; right: 20px;" />-->
-                                                <!--</td>-->
-                                            <!--</table>-->
 
                                         </div>
                                     </div>
@@ -230,22 +230,13 @@
     <div class="modal-dialog">
 
         <!-- Modal content-->
-
         <div class="modal-content no-bd-rad content ">
-
             <div class="modal-body">
-
-
                 <p id='errorMess' class='mess text-danger'>Put something here iff need be.</p>
-
-
             </div>
-
-
             <div class="modal-footer no-bd-top">
                 <button type="button" class="btn btn-link" data-dismiss="modal">OK</button>
             </div>
-
         </div>
 
     </div>
@@ -256,29 +247,20 @@
     <div class="modal-dialog">
 
         <!-- Modal content-->
-
         <div class="modal-content no-bd-rad content ">
-
             <div class="modal-body">
-
-
                 <p id='successMess' class='mess text-primary'>Put something here iff need be.</p>
-
-
             </div>
-
-
             <div class="modal-footer no-bd-top">
                 <button type="button" class="btn btn-link" data-dismiss="modal">OK</button>
             </div>
-
         </div>
 
     </div>
 </div>
 
 <footer>
-    <div class="container">
+    <div class="containe">
         <div class="footer_bar">
             <div class="col-md-6 col-xs-12">
                 <ul class="list_group">
@@ -293,6 +275,9 @@
         </div>
     </div>
 </footer>
+
+
+    </div>
 <!-- CORE JQUERY SCRIPTS -->
 <script th:src="@{~/customer/js/jquery-1.11.1.js}"></script>
 <!-- BOOTSTRAP SCRIPTS  -->

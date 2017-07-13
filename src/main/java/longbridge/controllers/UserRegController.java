@@ -13,10 +13,7 @@ import longbridge.forms.CustResetPassword;
 import longbridge.forms.RegistrationForm;
 import longbridge.forms.ResetPasswordForm;
 import longbridge.forms.RetrieveUsernameForm;
-import longbridge.models.Account;
-import longbridge.models.Email;
-import longbridge.models.RetailUser;
-import longbridge.models.SecurityQuestions;
+import longbridge.models.*;
 import longbridge.services.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -24,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -70,7 +68,7 @@ public class UserRegController {
     @Autowired
     private CodeService codeService;
 
-    private Locale locale;
+    private Locale locale = LocaleContextHolder.getLocale();
 
     private Logger logger= LoggerFactory.getLogger(this.getClass());
 
@@ -90,19 +88,20 @@ public class UserRegController {
         logger.info("Email : " + email);
         logger.info("BirthDate : " + birthDate);
         CustomerDetails details = integrationService.isAccountValid(accountNumber, email, birthDate);
-        if (details != null){
-              customerId = details.getCifId();
-                logger.info("CustomerId", customerId);
-//            RetailUser retailUser = retailUserService.getUserByCustomerId(details.getCifId());
-//            if (retailUser != null) {
-//               customerId = retailUser.getCustomerId();
-//            }else {
-//                customerId="";
-//            }
+        logger.info("DETAILS {} ", details);
+        if (details.getCifId() != null && !details.isCorp()){
 
-        }else {
+            customerId = details.getCifId();
+            logger.info("CustomerId", customerId);
+            return "true";
+
+        }
+        else if (details != null && details.isCorp()){
+            customerId= messageSource.getMessage("not.retail.account", null, locale);
+        }
+        else {
             //nothing
-            customerId = "";
+            customerId= messageSource.getMessage("not.valid.account", null, locale);
         }
         return customerId;
     }
@@ -114,14 +113,17 @@ public class UserRegController {
         logger.info("Email : " + email);
         logger.info("BirthDate : " + birthDate);
         CustomerDetails details = integrationService.isAccountValid(accountNumber, email, birthDate);
-        if (details != null){
+        logger.info("details {} ", details);
+        if (details.getCifId() != null){
             RetailUser user = retailUserService.getUserByCustomerId(details.getCifId());
-            if (user != null) {
-                customerId="";
-
+            List<AccountDTO> account = accountService.getAccounts(details.getCifId());
+            logger.info("ACCOUNT {} ", account);
+            if (user == null && account.isEmpty()) {
+                logger.info("customer does not exist on the platform currently " + details.getCifId());
+                customerId = details.getCifId();
             }else {
-                customerId="does not exsist";
-                logger.info("customer does not exist");
+                logger.info("user exists on out system");
+                customerId="";
             }
 
         }else {
@@ -158,7 +160,7 @@ public class UserRegController {
         if (user != null){
             logger.info("USER NAME {}", user.getUserName());
             session.setAttribute("username", user.getUserName());
-            Map<String, List<String>> qa = securityService.getUserQA(user.getUserName());
+            Map<String, List<String>> qa = securityService.getUserQA(user.getEntrustId(), user.getEntrustGroup());
             //List<String> sec = null;
             if (qa != null && !qa.isEmpty()){
                 List<String> question = qa.get("questions");
@@ -187,7 +189,7 @@ public class UserRegController {
         if (user != null){
             logger.info("USER NAME {}", user.getUserName());
             try{
-                Map<String, List<String>> qa = securityService.getUserQA(user.getUserName());
+                Map<String, List<String>> qa = securityService.getUserQA(user.getEntrustId(), user.getEntrustGroup());
                 logger.info("QQQAAAA {}", qa);
                 //List<String> sec = null;
                 if (qa != null && !qa.isEmpty()){
@@ -214,10 +216,11 @@ public class UserRegController {
 
     @GetMapping("/rest/secAns/{answer}")
     public @ResponseBody String getSecAns(@PathVariable String answer, HttpSession session){
-
+        try{
         //confirm security question is correct
         String secAnswer="";
-        Map<String, List<String>> qa = securityService.getUserQA((String) session.getAttribute("username"));
+        RetailUser retailUser = retailUserService.getUserByName((String) session.getAttribute("username"));
+        Map<String, List<String>> qa = securityService.getUserQA(retailUser.getEntrustId(), retailUser.getEntrustGroup());
         //List<String> sec = null;
         if (qa != null){
             List<String> question = qa.get("answers");
@@ -235,6 +238,10 @@ public class UserRegController {
             return "";
         }
         //return (String) session.getAttribute("username");
+    }catch (Exception e){
+        logger.info(e.getMessage());
+        return "";
+    }
     }
 
     @GetMapping("/rest/secAnswer/{answer}/{username}")
@@ -243,7 +250,8 @@ public class UserRegController {
         //confirm security question is correct
         String secAnswer="";
         try {
-            Map<String, List<String>> qa = securityService.getUserQA(username);
+            RetailUser retailUser = retailUserService.getUserByName(username);
+            Map<String, List<String>> qa = securityService.getUserQA(retailUser.getEntrustId(), retailUser.getEntrustGroup());
             //List<String> sec = null;
             if (qa != null) {
                 List<String> question = qa.get("answers");
@@ -277,7 +285,7 @@ public class UserRegController {
         if (user != null){
             logger.info("USER NAME {}", user.getUserName());
             try{
-                String sn = securityService.getTokenSerials(user.getUserName());
+                String sn = securityService.getTokenSerials(user.getEntrustId(), user.getEntrustGroup());
                 logger.info("SERIALS {}", sn);
                 //List<String> sec = null;
                 if (sn != null && !sn.isEmpty()){
@@ -345,10 +353,11 @@ public class UserRegController {
     }
 
     @GetMapping("/rest/regCode/check/{code}")
-    public @ResponseBody String checkRegCode(@PathVariable Integer code, HttpSession session){
+    public @ResponseBody String checkRegCode(@PathVariable String code, HttpSession session){
         String regCode = (String) session.getAttribute("regCode");
-        Integer reg = Integer.parseInt(regCode);
-        if (!code.equals(reg)){
+        logger.info("REGCODE IN SESSION {} ", regCode);
+//        Integer reg = Integer.parseInt(regCode);
+        if (!code.equals(regCode)){
             return "false";
         }
         return "true";
@@ -359,7 +368,9 @@ public class UserRegController {
     public @ResponseBody String checkUsername(@PathVariable String username){
         RetailUser user = retailUserService.getUserByName(username);
         logger.info("USER RETURNED{}", user);
-        if(user == null){
+        RetailUser retailUser = retailUserService.getUserByEntrustId(UserType.RETAIL.toString()+"_"+username);
+        logger.info("ENTRUST USER RETURNED{}", retailUser);
+        if(user == null && retailUser == null){
             return "true";
         }
         return "false";
@@ -413,7 +424,8 @@ public class UserRegController {
                 return "false";
             }
 
-            Boolean res = securityService.deActivateToken(username, token);
+            RetailUser retailUser = retailUserService.getUserByName(username);
+            Boolean res = securityService.deActivateToken(retailUser.getEntrustId(), retailUser.getEntrustGroup(), token);
             if (res){
                 return "true";
             }else {
@@ -460,7 +472,7 @@ public class UserRegController {
 
             //confirm security question is correct
             String secAnswer="";
-            Map<String, List<String>> qa = securityService.getUserQA(user.getUserName());
+            Map<String, List<String>> qa = securityService.getUserQA(user.getEntrustId(), user.getEntrustGroup());
             //List<String> sec = null;
             if (qa != null){
                 List<String> questions= qa.get("questions");
@@ -532,6 +544,29 @@ public class UserRegController {
         List<String> policies = passwordPolicyService.getPasswordRules();
         model.addAttribute("policies", policies);
 
+
+
+//        List<SecurityQuestions> secQues = securityQuestionService.getSecQuestions();
+//        logger.info("security questions "+secQues);
+//        int noOfQuestions = securityService.getMinUserQA();
+//
+//        ArrayList[] masterList = new ArrayList[noOfQuestions];
+//
+//        //init arrays
+//        for (int idx=0; idx < noOfQuestions ; ++idx) {
+//           masterList[idx] = new ArrayList();
+//        }
+//
+//        //porpulate arrays
+//        for(int idx=0 ; idx < secQues.size() ; ++idx){
+//            masterList[idx % noOfQuestions].add(secQues.get(idx));
+//        }
+//
+//        for (ArrayList m:masterList
+//                ) {
+//            logger.info("master question "+masterList);
+//        }
+
         List<SecurityQuestions> secQues = securityQuestionService.getSecQuestions();
         int noOfQuestions = securityService.getMinUserQA();
         logger.info("num of qs on entrust {}",noOfQuestions);
@@ -547,31 +582,21 @@ public class UserRegController {
             }
 
         }
-                logger.info("master question length"+masterList.length);
+        logger.info("master question length"+masterList.length);
 
         for (int i=0;i<masterList.length;i++  ) {
             logger.info("master question "+i+" "+masterList[i]);
         }
         logger.info("master question "+masterList);
+
+
+        logger.info("MASTER LIST {}", masterList);
+        model.addAttribute("secQuestions", masterList);
+        model.addAttribute("noOfQuestions", noOfQuestions);
+
         PasswordStrengthDTO passwordStrengthDTO = passwordPolicyService.getPasswordStengthParams();
         logger.info("Password Strength {}" + passwordStrengthDTO);
         model.addAttribute("passwordStrength", passwordStrengthDTO);
-
-//
-//        ArrayList[] masterList = new ArrayList[noOfQuestions];
-//
-//        //init arrays
-//        for (int idx=0; idx < noOfQuestions ; ++idx) {
-//           masterList[idx] = new ArrayList();
-//        }
-//
-//        //porpulate arrays
-//        for(int idx=0 ; idx < secQues.size() ; ++idx){
-//            masterList[idx / noOfQuestions].add(secQues.get(idx));
-//        }
-//
-//        logger.info("MASTER LIST {}", masterList);
-        model.addAttribute("questionBank", masterList);
 
         //logger.info("MIN SEC {}", noOfQuestions);
 
@@ -614,7 +639,7 @@ public class UserRegController {
         String phishing = webRequest.getParameter("phishing");
         String caption = webRequest.getParameter("caption");
         String noOfQuestions = webRequest.getParameter("noOfQuestions");
-        logger.info("no of questions {}",noOfQuestions);
+        logger.info("no of questions {} ", noOfQuestions);
         String bvn ="";
 //        String secQuestion = webRequest.getParameter("securityQuestion1");
 //        String secAnswer = webRequest.getParameter("securityAnswer1");
@@ -622,13 +647,13 @@ public class UserRegController {
         List<String> securityAnswers = new ArrayList<>();
         logger.info("Customer Id {}:", customerId);
         if(noOfQuestions != null){
-        for(int i =0; i<Integer.parseInt(noOfQuestions); i++){
-            secQuestions.add(webRequest.getParameter("securityQuestion"+i));
-            securityAnswers.add(webRequest.getParameter("securityAnswer"+i));
+            for(int i =0; i < Integer.parseInt(noOfQuestions); i++){
+                secQuestions.add(webRequest.getParameter("securityQuestion"+i));
+                securityAnswers.add(webRequest.getParameter("securityAnswer"+i));
 
-            logger.info(" sec questions list {}",secQuestions);
-            logger.info("sec answer list {}",securityAnswers);
-        }
+                logger.info(" sec questions list {}",secQuestions);
+                logger.info("sec answer list {}",securityAnswers);
+            }
         }
         CustomerDetails details = integrationService.isAccountValid(accountNumber, email, dob);
 
@@ -659,9 +684,9 @@ public class UserRegController {
         //security questions
 //        String securityQuestion = secQuestion;
 //        String securityAnswer = secAnswer;
-
 //        logger.info("Question" + secQuestion);
 //        logger.info("Answer" + secAnswer);
+
 
         //phishing image
         //byte[] encodedBytes = Base64.encodeBase64(phishing.getBytes());
@@ -674,8 +699,8 @@ public class UserRegController {
 
         try {
             FileInputStream fis = new FileInputStream(image);
-                int cnt = fis.read(buffer);
-                //ensure cnt == length
+            int cnt = fis.read(buffer);
+            //ensure cnt == length
         }catch (Exception e){
             //TODO: handle exception
         }
@@ -708,6 +733,7 @@ public class UserRegController {
         }
 
         return "false";
+
     }
 
     private void doesUserExist(String customerId){
@@ -729,7 +755,8 @@ public class UserRegController {
         resetPasswordForm.step = "1";
         resetPasswordForm.username = (String) session.getAttribute("username");
         try{
-            Map<String, List<String>> qa = securityService.getUserQA((String) session.getAttribute("username"));
+            RetailUser retailUser = retailUserService.getUserByName((String) session.getAttribute("username"));
+            Map<String, List<String>> qa = securityService.getUserQA(retailUser.getEntrustId(), retailUser.getEntrustGroup());
             if (qa != null && !qa.isEmpty()){
                 List<String> questions= qa.get("questions");
                 List<String> answers= qa.get("answers");
@@ -749,6 +776,8 @@ public class UserRegController {
             }
 
             model.addAttribute("forgotPasswordForm", resetPasswordForm);
+            List<String> policies = passwordPolicyService.getPasswordRules();
+            model.addAttribute("policies", policies);
             return "cust/passwordreset";
         }catch (InternetBankingException e){
             return "redirect:/login/retail";

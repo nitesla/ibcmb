@@ -62,6 +62,7 @@ public class CorpTransferController {
     private FinancialInstitutionService financialInstitutionService;
     private TransferErrorService transferErrorService;
     private SecurityService securityService;
+    private ApplicationContext appContext;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
@@ -84,24 +85,7 @@ public class CorpTransferController {
     }
 
 
-    @GetMapping("/{corpId}/{amount}")
-    public void getQualifiedRoles(@PathVariable Long corpId, @PathVariable String amount) {
 
-        CorpTransRequest transferRequest = new CorpTransRequest();
-        transferRequest.setAmount(new BigDecimal(amount));
-        Corporate corporate = corporateRepo.findOne(corpId);
-        transferRequest.setCorporate(corporate);
-        List<CorporateRole> roles = corporateService.getQualifiedRoles(transferRequest);
-        PendAuth pendAuth = new PendAuth();
-        List<PendAuth> pendAuths = new ArrayList<>();
-        for (CorporateRole role : roles) {
-            pendAuth.setRole(role);
-            pendAuths.add(pendAuth);
-        }
-//        transferRequest.setPendAuths(pendAuths);
-        transferRequestRepo.save(transferRequest);
-
-    }
 
 
     @GetMapping(value = "")
@@ -221,7 +205,8 @@ public class CorpTransferController {
 
             if (request.getSession().getAttribute("AUTH") != null) {
                 String token = request.getParameter("token");
-                boolean ok = securityService.performTokenValidation(principal.getName(), token);
+                CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
+                boolean ok = securityService.performTokenValidation(corporateUser.getEntrustId(), corporateUser.getEntrustGroup(), token);
 
                 if (!ok) {
                     model.addAttribute("failure", messages.getMessage("auth.token.failure", null, locale));
@@ -289,27 +274,50 @@ public class CorpTransferController {
     }
 
 
-
-
-    @GetMapping("/{id}/pending")
-    public String getPendingAuth(@PathVariable Long id,  Model model){
+    @GetMapping("/{id}/authorizations")
+    public String getAuthorizations(@PathVariable Long id, Model model) {
 
         CorpTransRequest corpTransRequest = corpTransferService.getTransfer(id);
         CorpTransferAuth corpTransferAuth = corpTransferService.getAuthorizations(corpTransRequest);
-        model.addAttribute("corpTransferAuth",corpTransferAuth);
-        model.addAttribute("corpTransRequest",corpTransRequest);
+        CorpTransRule corpTransRule = corporateService.getApplicableTransferRule(corpTransRequest);
+        boolean userCanAuthorize = corpTransferService.userCanAuthorize(corpTransRequest);
+        model.addAttribute("authorizationMap", corpTransferAuth);
+        model.addAttribute("corpTransRequest", corpTransRequest);
         model.addAttribute("corpTransReqEntry", new CorpTransReqEntry());
-        return "corp/transfer/pendingtransfer/view";
+        model.addAttribute("corpTransRule", corpTransRule);
+        model.addAttribute("userCanAuthorize", userCanAuthorize);
+
+        List<CorporateRole> rolesNotInAuthList = new ArrayList<>();
+        List<CorporateRole> rolesInAuth = new ArrayList<>();
+
+        if(corpTransferAuth.getAuths()!=null) {
+            for (CorpTransReqEntry transReqEntry : corpTransferAuth.getAuths()) {
+                rolesInAuth.add(transReqEntry.getRole());
+            }
+        }
+
+            if(corpTransRule!=null) {
+                for (CorporateRole role : corpTransRule.getRoles()) {
+                    if (!rolesInAuth.contains(role)) {
+                        rolesNotInAuthList.add(role);
+                    }
+                }
+            }
+        logger.info("Roles not In Auth List..{}", rolesNotInAuthList.toString());
+        model.addAttribute("rolesNotAuth", rolesNotInAuthList);
+
+        return "corp/transfer/request/summary";
     }
 
     @GetMapping("/requests")
-    public String getTransfers(){
-        return "";
+    public String getTransfers() {
+        return "corp/transfer/request/view";
     }
 
 
     @GetMapping("/requests/all")
-    public @ResponseBody
+    public
+    @ResponseBody
     DataTablesOutput<CorpTransRequest> getTransferRequests(DataTablesInput input) {
         Pageable pageable = DataTablesUtils.getPageable(input);
         Page<CorpTransRequest> requests = corpTransferService.getTransfers(pageable);
@@ -322,12 +330,11 @@ public class CorpTransferController {
     }
 
 
-
     @PostMapping("/authorize")
-    public String addAuthorization(@ModelAttribute CorpTransReqEntry corpTransReqEntry, CorpTransRequest corpTransRequest, RedirectAttributes redirectAttributes){
+    public String addAuthorization(@ModelAttribute("corpTransReqEntry") CorpTransReqEntry corpTransReqEntry, RedirectAttributes redirectAttributes) {
 
         try {
-            String message = corpTransferService.addAuthorization(corpTransReqEntry, corpTransRequest);
+            String message = corpTransferService.addAuthorization(corpTransReqEntry);
             redirectAttributes.addFlashAttribute("message", message);
 
         } catch (InternetBankingException ibe) {
@@ -335,7 +342,7 @@ public class CorpTransferController {
             redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
 
         }
-        return "redirect:/corporate/pending";
+        return "redirect:/corporate/transfer/requests";
 
     }
 
@@ -362,6 +369,27 @@ public class CorpTransferController {
         return object.toString();
     }
 
-
+    @RequestMapping(path = "{id}/receipt", method = RequestMethod.GET)
+    public ModelAndView report(@PathVariable Long id, HttpServletRequest servletRequest, Principal principal) {
+        CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
+        JasperReportsPdfView view = new JasperReportsPdfView();
+        view.setUrl("classpath:jasperreports/rpt_receipt.jrxml");
+        view.setApplicationContext(appContext);
+        Map<String, Object> modelMap = new HashMap<>();
+        modelMap.put("datasource", new ArrayList<>());
+        modelMap.put("amount", transferService.getTransfer(id).getAmount());
+        modelMap.put("recipient", transferService.getTransfer(id).getBeneficiaryAccountName());
+        modelMap.put("AccountNum", transferService.getTransfer(id).getCustomerAccountNumber());
+        modelMap.put("sender", corporateUser.getFirstName() + " " + corporateUser.getLastName());
+        modelMap.put("remarks", transferService.getTransfer(id).getRemarks());
+        modelMap.put("recipientBank", transferService.getTransfer(id).getFinancialInstitution().getInstitutionName());
+        modelMap.put("acctNo2", transferService.getTransfer(id).getBeneficiaryAccountNumber());
+        modelMap.put("acctNo1", transferService.getTransfer(id).getCustomerAccountNumber());
+        modelMap.put("refNUm", transferService.getTransfer(id).getReferenceNumber());
+        modelMap.put("date",DateFormatter.format(new Date()));
+        modelMap.put("tranDate", DateFormatter.format(new Date()));
+        ModelAndView modelAndView = new ModelAndView(view, modelMap);
+        return modelAndView;
+    }
 
 }

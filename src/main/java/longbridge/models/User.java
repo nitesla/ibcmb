@@ -3,14 +3,11 @@ package longbridge.models;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import longbridge.utils.PrettySerializer;
 
-import javax.persistence.*;
-import java.io.IOException;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.ManyToOne;
+import javax.persistence.MappedSuperclass;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -18,7 +15,7 @@ import java.util.List;
  * Created by Wunmi on 29/03/2017.
  */
 @MappedSuperclass
-public class User extends AbstractEntity implements PrettySerializer {
+public class User extends AbstractEntity{
 
     protected String userName;
     protected String firstName;
@@ -44,6 +41,7 @@ public class User extends AbstractEntity implements PrettySerializer {
     @ManyToOne
     protected Role role;
     protected String entrustId;
+    protected String entrustGroup;
 
 
 
@@ -53,6 +51,14 @@ public class User extends AbstractEntity implements PrettySerializer {
 
     public void setEntrustId(String entrustId) {
         this.entrustId = entrustId;
+    }
+
+    public String getEntrustGroup() {
+        return entrustGroup;
+    }
+
+    public void setEntrustGroup(String entrustGroup) {
+        this.entrustGroup = entrustGroup;
     }
 
     public String getUserName() {
@@ -193,31 +199,5 @@ public class User extends AbstractEntity implements PrettySerializer {
 		return Arrays.asList("userName", "firstName","lastName");
 	}
 
-    @Override
-    @JsonIgnore
-    public JsonSerializer<User> getSerializer() {
-        return new JsonSerializer<User>() {
-            @Override
-            public void serialize(User value, JsonGenerator gen, SerializerProvider serializers)
-                    throws IOException, JsonProcessingException {
 
-                gen.writeStartObject();
-                gen.writeStringField("User Name", value.userName);
-                gen.writeStringField("First Name", value.firstName);
-                gen.writeStringField("Last Name", value.lastName);
-                gen.writeStringField("Email", value.email);
-                gen.writeStringField("Phone", value.phoneNumber);
-                String status =null;
-                if ("A".equals(value.status))
-                    status = "Active";
-                else if ("I".equals(value.status))
-                    status = "Inactive";
-                else if ("L".equals(value.status))
-                    status = "Locked";
-                gen.writeStringField("Status", status);
-                gen.writeStringField("Role", value.role.getName());
-                gen.writeEndObject();
-            }
-        };
-    }
 }

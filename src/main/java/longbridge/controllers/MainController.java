@@ -5,10 +5,7 @@ import longbridge.dtos.SettingDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.PasswordException;
 import longbridge.exception.UnknownResourceException;
-import longbridge.models.Corporate;
-import longbridge.models.CorporateUser;
-import longbridge.models.Email;
-import longbridge.models.RetailUser;
+import longbridge.models.*;
 import longbridge.services.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -174,7 +171,7 @@ public class MainController {
         }
 
         try{
-            Map<String, List<String>> mutualAuth =  securityService.getMutualAuth(username);
+            Map<String, List<String>> mutualAuth =  securityService.getMutualAuth(user.getEntrustId(), user.getEntrustGroup());
             if (mutualAuth != null){
                 String image = mutualAuth.get("imageSecret")
                         .stream()
@@ -202,7 +199,7 @@ public class MainController {
         RetailUser user =  retailUserService.getUserByName(username);
         if (user != null && phishing != null) {
             model.addAttribute("username", user.getUserName());
-            session.setAttribute("username", user.getUserName());
+            session.setAttribute("username", UserType.RETAIL+"_"+user.getUserName());
             return "retaillogin";
         }
 
@@ -218,13 +215,28 @@ public class MainController {
         String corpKey = webRequest.getParameter("corporateId");
         CorporateUser user = corporateUserService.getUserByName(username);
         Corporate corporate = corporateService.getCorporateByCustomerId(corpKey);
-//        Map<List<String>, List<String>> mutualAuth = securityService.getMutualAuth(user.getUserName());
-
-        //get map
 
         if (corporate != null && user != null) {
 //            model.addAttribute("images", mutualAuth.get("imageSecret"));
 //            model.addAttribute("captions", mutualAuth.get("captionSecret"));
+            try{
+                Map<String, List<String>> mutualAuth =  securityService.getMutualAuth(user.getEntrustId(), user.getEntrustGroup());
+                if (mutualAuth != null){
+                    String image = mutualAuth.get("imageSecret")
+                            .stream()
+                            .filter(Objects::nonNull)
+                            .findFirst()
+                            .orElse("");
+
+//                logger.info("SECIMAGE"+ image);
+
+                    model.addAttribute("secImage", image);
+                }
+            }catch (InternetBankingException e){
+                model.addAttribute("imageException", "You are yet to set your antiphishing image");
+            }
+
+
             model.addAttribute("username", user.getUserName());
             model.addAttribute("corpKey", corpKey);
             return "corppage2";
@@ -403,4 +415,22 @@ public class MainController {
         session.invalidate();
     }*/
 
+
+
+
+
+    @ModelAttribute
+    public void sessionTimeout(Model model){
+        SettingDTO setting = configurationService.getSettingByName("SESSION_TIMEOUT");
+        try{
+            if (setting != null && setting.isEnabled()){
+                Long timeOuts = Long.parseLong(setting.getValue())* 60000;
+                logger.info("SESSION TIME OUT PERIOD" + timeOuts);
+                model.addAttribute("timeOut", timeOuts);
+            }
+
+        }catch(Exception ex){
+        }
+
+    }
 }

@@ -136,17 +136,18 @@ public class RetailControllerAdvice {
 
         RetailUser user = retailUserService.getUserByName(principal.getName());
         if (user != null) {
-            List<String> accountList = new ArrayList<>();
+            List<Account> accountList = new ArrayList<>();
 
             Iterable<Account> accounts = accountService.getAccountsForDebit(user.getCustomerId());
 
             StreamSupport.stream(accounts.spliterator(), false)
                     .filter(Objects::nonNull)
 
-                    .forEach(i -> accountList.add(i.getAccountNumber()));
+                    .forEach(i -> accountList.add(i));
 
 
             model.addAttribute("accounts", accountList);
+            logger.info("fetch accounts from account table {} ",accountList);
         }
 
         return "";
@@ -167,20 +168,7 @@ public class RetailControllerAdvice {
 
     }
 
-    @ModelAttribute
-    public void sessionTimeout(Model model){
-        SettingDTO setting = configurationService.getSettingByName("SESSION_TIMEOUT");
-            try{
-                if (setting != null && setting.isEnabled()){
-                    Long timeOuts = Long.parseLong(setting.getValue())* 60000;
-                    logger.info("SESSION TIME OUT PERIOD" + timeOuts);
-                    model.addAttribute("timeOut", timeOuts);
-                }
 
-        }catch(Exception ex){
-            }
-
-    }
 
 
 

@@ -91,7 +91,7 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
-    public boolean performTokenValidation(String username, String tokenString) {
+    public boolean performTokenValidation(String username,String group, String tokenString) {
         boolean result = false;
 
         try {
@@ -99,7 +99,7 @@ public class SecurityServiceImpl implements SecurityService {
             this.t = this.ve.getTemplate("entrust/performTokenAuth.vm");
             this.context.put("appCode", appCode);
             this.context.put("appDesc", appDesc);
-            this.context.put("appGroup", appGroup);
+            this.context.put("appGroup", group);
             this.context.put("userName", username);
             this.context.put("token", tokenString);
 
@@ -136,7 +136,7 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
-    public boolean performOtpValidation(String username, String otp) {
+    public boolean performOtpValidation(String username,String group, String otp) {
         boolean result = false;
 
         try {
@@ -145,7 +145,7 @@ public class SecurityServiceImpl implements SecurityService {
             this.context.put("appCode", appCode);
             this.context.put("appDesc", appDesc);
             this.context.put("otp", otp);
-            this.context.put("appGroup", appGroup);
+            this.context.put("appGroup", group);
             this.context.put("userName", username);
 
             this.t.merge(this.context, writer);
@@ -179,8 +179,8 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
-    public boolean synchronizeToken(String username, String sNo, String tokenResp1, String tokenResp2) {
-        boolean result = false;
+    public boolean synchronizeToken(String username,String group, String sNo, String tokenResp1, String tokenResp2) {
+        boolean result ;
 
         try {
             StringWriter writer = new StringWriter();
@@ -189,7 +189,7 @@ public class SecurityServiceImpl implements SecurityService {
             this.context.put("appDesc", appDesc);
             this.context.put("token1", tokenResp1);
             this.context.put("token2", tokenResp2);
-            this.context.put("appGroup", appGroup);
+            this.context.put("appGroup", group);
             this.context.put("userName", username);
             this.context.put("sn", sNo);
 
@@ -225,7 +225,7 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
-    public boolean sendOtp(String username) {
+    public boolean sendOtp(String username,String group) {
         boolean result;
 
         try {
@@ -233,7 +233,7 @@ public class SecurityServiceImpl implements SecurityService {
             this.t = this.ve.getTemplate("entrust/performCreateSendOTP.vm");
             this.context.put("appCode", appCode);
             this.context.put("appDesc", appDesc);
-            this.context.put("appGroup", appGroup);
+            this.context.put("appGroup", group);
             this.context.put("userName", username);
             this.t.merge(this.context, writer);
             String payload = writer.toString();
@@ -263,7 +263,7 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
-    public boolean createEntrustUser(String username, String fullName, boolean enableOtp) {
+    public boolean createEntrustUser(String username,String group, String fullName, boolean enableOtp) {
         boolean result = false;
 
         try {
@@ -273,7 +273,7 @@ public class SecurityServiceImpl implements SecurityService {
             this.context.put("appDesc", appDesc);
             this.context.put("otp", enableOtp);
             this.context.put("fullname", fullName);
-            this.context.put("appGroup", appGroup);
+            this.context.put("appGroup", group);
             this.context.put("userName", username);
             this.t.merge(this.context, writer);
             String payload = writer.toString();
@@ -301,7 +301,7 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
-    public void deleteEntrustUser(String username) {
+    public void deleteEntrustUser(String username,String group) {
 
 
         try {
@@ -310,7 +310,7 @@ public class SecurityServiceImpl implements SecurityService {
             this.context.put("appCode", appCode);
             this.context.put("appDesc", appDesc);
             this.context.put("userName", username);
-            this.context.put("appGroup", appGroup);
+            this.context.put("appGroup", group);
             this.t.merge(this.context, writer);
             String payload = writer.toString();
             EntrustServiceResponse webServiceResponse = httpClient.sendHttpRequest(payload);
@@ -342,7 +342,7 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
-    public boolean assignToken(String username, String serialNumber) {
+    public boolean assignToken(String username,String group, String serialNumber) {
         boolean result = false;
 
         try {
@@ -351,7 +351,7 @@ public class SecurityServiceImpl implements SecurityService {
             this.context.put("appCode", appCode);
             this.context.put("appDesc", appDesc);
             this.context.put("sn", serialNumber);
-            this.context.put("appGroup", appGroup);
+            this.context.put("appGroup", group);
             this.context.put("userName", username);
             this.t.merge(this.context, writer);
             String payload = writer.toString();
@@ -382,7 +382,7 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
-    public boolean activateToken(String username, String serialNumber) {
+    public boolean activateToken(String username,String group, String serialNumber) {
 
         boolean result = false;
 
@@ -392,7 +392,7 @@ public class SecurityServiceImpl implements SecurityService {
             this.context.put("appCode", appCode);
             this.context.put("appDesc", appDesc);
             this.context.put("sn", serialNumber);
-            this.context.put("appGroup", appGroup);
+            this.context.put("appGroup", group);
             this.context.put("userName", username);
 
             this.t.merge(this.context, writer);
@@ -426,7 +426,7 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
-    public boolean deActivateToken(String username, String serialNumber) {
+    public boolean deActivateToken(String username,String group, String serialNumber) {
 
         boolean result = false;
 
@@ -436,7 +436,7 @@ public class SecurityServiceImpl implements SecurityService {
             this.context.put("appCode", appCode);
             this.context.put("appDesc", appDesc);
             this.context.put("sn", serialNumber);
-            this.context.put("appGroup", appGroup);
+            this.context.put("appGroup", group);
             this.context.put("userName", username);
             this.t.merge(this.context, writer);
             String payload = writer.toString();
@@ -468,16 +468,38 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
-    public void setUserQA(String username, String questions, String answer) {
+    public void setUserQA(String username,String group, String question, String answer) {
+        try {
+           List<String>  questions= new ArrayList<>();
+           List<String>  answers= new ArrayList<>();
+             questions.add(question);
+             answers.add(answer);
+             setUserQA(username,group,questions,answers);
+
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new InternetBankingSecurityException(e.getMessage(), e);
+
+        }
+
+
+    }
+
+    @Override
+    public void setUserQA(String username,String group, List<String> questions, List<String> answers) throws InternetBankingTransferException
+    {
+        if ( questions==null  ||questions.isEmpty())throw new IllegalArgumentException();
+        if ( answers==null  ||answers.isEmpty())throw new IllegalArgumentException();
+
         try {
             StringWriter writer = new StringWriter();
             this.t = this.ve.getTemplate("entrust/performSetQA.vm");
             this.context.put("appCode", appCode);
             this.context.put("appDesc", appDesc);
             this.context.put("userName", username);
-            this.context.put("appGroup", appGroup);
-            this.context.put("question", questions);
-            this.context.put("answer", answer);
+            this.context.put("appGroup", group);
+            this.context.put("questions", questions);
+            this.context.put("answers", answers);
             this.t.merge(this.context, writer);
             String payload = writer.toString();
             EntrustServiceResponse webServiceResponse = httpClient.sendHttpRequest(payload);
@@ -506,33 +528,18 @@ public class SecurityServiceImpl implements SecurityService {
         }
 
 
-    }
-
-    @Override
-    public void setUserQA(String username, List<String> questions, List<String> answers) throws InternetBankingTransferException
-    {
-        if ( questions==null  ||questions.isEmpty())throw new IllegalArgumentException();
-        if ( answers==null  ||answers.isEmpty())throw new IllegalArgumentException();
-
-        Iterator<String> stringIterator= answers.iterator();
-        questions.forEach(i ->
-            setUserQA(username,i,stringIterator.next()));
-
-
-
-
 
     }
 
     @Override
-    public Map<String, List<String>> getUserQA(String username) {
+    public Map<String, List<String>> getUserQA(String username,String group) {
         Map<String, List<String>> list = new HashMap<>();
         try {
             StringWriter writer = new StringWriter();
             this.t = this.ve.getTemplate("entrust/performGetQA.vm");
             this.context.put("appCode", appCode);
             this.context.put("appDesc", appDesc);
-            this.context.put("appGroup", appGroup);
+            this.context.put("appGroup", group);
             this.context.put("userName", username);
             this.t.merge(this.context, writer);
             String payload = writer.toString();
@@ -574,13 +581,13 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
-    public Integer getMinUserQA(String username) {
+    public Integer getMinUserQA(String username,String group) {
         try {
             StringWriter writer = new StringWriter();
             this.t = this.ve.getTemplate("entrust/performGetMinQASize.vm");
             this.context.put("appCode", appCode);
             this.context.put("appDesc", appDesc);
-            this.context.put("appGroup", appGroup);
+            this.context.put("appGroup", group);
             this.context.put("userName", username);
             this.t.merge(this.context, writer);
             String payload = writer.toString();
@@ -617,11 +624,12 @@ public class SecurityServiceImpl implements SecurityService {
     @Override
     public Integer getMinUserQA() {
         try {
+            String group="";
             StringWriter writer = new StringWriter();
             this.t = this.ve.getTemplate("entrust/performGetMinQASize.vm");
             this.context.put("appCode", appCode);
             this.context.put("appDesc", appDesc);
-            this.context.put("appGroup", appGroup);
+            this.context.put("appGroup", group);
             this.context.put("userName", defaultUser);
             this.t.merge(this.context, writer);
             String payload = writer.toString();
@@ -655,13 +663,13 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
-    public Integer geUserQASize(String username) {
+    public Integer geUserQASize(String username,String group) {
         try {
             StringWriter writer = new StringWriter();
             this.t = this.ve.getTemplate("entrust/performGetQASize.vm");
             this.context.put("appCode", appCode);
             this.context.put("appDesc", appDesc);
-            this.context.put("appGroup", appGroup);
+            this.context.put("appGroup", group);
             this.context.put("userName", username);
             this.t.merge(this.context, writer);
             String payload = writer.toString();
@@ -695,7 +703,7 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
-    public Map<String, List<String>> getMutualAuth(String username) throws InternetBankingTransferException {
+    public Map<String, List<String>> getMutualAuth(String username,String group) throws InternetBankingTransferException {
         Map<String, List<String>> list = new HashMap<>();
 
         try {
@@ -703,7 +711,7 @@ public class SecurityServiceImpl implements SecurityService {
             this.t = this.ve.getTemplate("entrust/performGetMutualAuth.vm");
             this.context.put("appCode", appCode);
             this.context.put("appDesc", appDesc);
-            this.context.put("appGroup", appGroup);
+            this.context.put("appGroup", group);
             this.context.put("userName", username);
             this.t.merge(this.context, writer);
             String payload = writer.toString();
@@ -744,20 +752,20 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
-    public void setMutualAuth(String username, List<String> mutualCaption, List<String> mutualImage) {
+    public void setMutualAuth(String username,String group, List<String> mutualCaption, List<String> mutualImage) {
 
 
     }
 
     @Override
-    public void setMutualAuth(String username, String mutualCaption, String mutualImagePath) {
+    public void setMutualAuth(String username,String group, String mutualCaption, String mutualImagePath) {
 
         try {
             StringWriter writer = new StringWriter();
             this.t = this.ve.getTemplate("entrust/performSetMutualAuthX.vm");
             this.context.put("appCode", appCode);
             this.context.put("appDesc", appDesc);
-            this.context.put("appGroup", appGroup);
+            this.context.put("appGroup", group);
             this.context.put("caption", mutualCaption);
             this.context.put("image", mutualImagePath);
             this.t.merge(this.context, writer);
@@ -788,13 +796,13 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
-    public void setMutualAuth(String username, List<String> mutualCaption, List<String> mutualImage, String token) {
+    public void setMutualAuth(String username,String group, List<String> mutualCaption, List<String> mutualImage, String token) {
 
 
     }
 
     @Override
-    public String getTokenSerials(String username) {
+    public String getTokenSerials(String username,String group) {
         String result = "";
 
         try {
@@ -802,7 +810,7 @@ public class SecurityServiceImpl implements SecurityService {
             this.t = this.ve.getTemplate("entrust/performGetTokenSerial.vm");
             this.context.put("appCode", appCode);
             this.context.put("appDesc", appDesc);
-            this.context.put("appGroup", appGroup);
+            this.context.put("appGroup", group);
             this.context.put("userName", username);
 
 
@@ -835,7 +843,7 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
-    public boolean unLockUser(String username) {
+    public boolean unLockUser(String username,String group) {
 
         boolean result = false;
 
@@ -844,7 +852,7 @@ public class SecurityServiceImpl implements SecurityService {
             this.t = this.ve.getTemplate("entrust/performUnLockUser.vm");
             this.context.put("appCode", appCode);
             this.context.put("appDesc", appDesc);
-            this.context.put("appGroup", appGroup);
+            this.context.put("appGroup", group);
             this.context.put("userName", username);
             this.t.merge(this.context, writer);
             String payload = writer.toString();
@@ -876,7 +884,7 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
-    public boolean updateUser(String username, String fullName, boolean enableOtp) {
+    public boolean updateUser(String username,String group, String fullName, boolean enableOtp) {
         boolean result = false;
 
         try {
@@ -886,7 +894,7 @@ public class SecurityServiceImpl implements SecurityService {
             this.context.put("appDesc", appDesc);
             this.context.put("fullName", fullName);
             this.context.put("otp", enableOtp);
-            this.context.put("appGroup", appGroup);
+            this.context.put("appGroup", group);
             this.context.put("userName", username);
             this.t.merge(this.context, writer);
             String payload = writer.toString();
@@ -918,7 +926,7 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
-    public boolean addUserContacts(String email, String phone, boolean phoneDefault, String userName) {
+    public boolean addUserContacts(String email, String phone, boolean phoneDefault, String userName,String group) {
         boolean result = false;
 
         try {
@@ -926,12 +934,12 @@ public class SecurityServiceImpl implements SecurityService {
             this.t = this.ve.getTemplate("entrust/performAddContactDetail.vm");
             this.context.put("appCode", appCode);
             this.context.put("appDesc", appDesc);
-            this.context.put("phoneDefault", phoneDefault);
+            this.context.put("phoneDefault", false);
             this.context.put("email", email);
-            this.context.put("appGroup", appGroup);
+            this.context.put("appGroup", group);
             this.context.put("userName", userName);
             this.context.put("emailDevLabel", "CmbEmailOtp");
-            this.context.put("emailDefault", false);
+            this.context.put("emailDefault", true);
             this.context.put("PhoneDevLabel", "Vanso");
             this.context.put("phone", phone);
 

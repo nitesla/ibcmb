@@ -1,6 +1,7 @@
 package longbridge.services;
 
 import longbridge.dtos.FaqsDTO;
+import longbridge.exception.InternetBankingException;
 import longbridge.models.Faqs;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,13 +21,13 @@ public interface FaqsService {
     FaqsDTO getFaq(Long id);
 
     @PreAuthorize("hasAuthority('ADD_FAQ')")
-    String addFaq(FaqsDTO faqsDTO);
+    String addFaq(FaqsDTO faqsDTO) throws InternetBankingException;
 
     @PreAuthorize("hasAuthority('UPDATE_FAQ')")
-    String updateFaq(FaqsDTO faqsDTO);
+    String updateFaq(FaqsDTO faqsDTO) throws InternetBankingException;
 
     @PreAuthorize("hasAuthority('DELETE_FAQ')")
-    String deleteFaq(Long id);
+    String deleteFaq(Long id) throws InternetBankingException;
 
     FaqsDTO convertEntityToDTO(Faqs faqs);
 

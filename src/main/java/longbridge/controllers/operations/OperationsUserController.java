@@ -1,7 +1,5 @@
 package longbridge.controllers.operations;
 
-import longbridge.dtos.OperationsUserDTO;
-import longbridge.dtos.RoleDTO;
 import longbridge.dtos.SettingDTO;
 import longbridge.exception.*;
 import longbridge.forms.ChangeDefaultPassword;
@@ -20,7 +18,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
@@ -70,7 +70,7 @@ public class OperationsUserController {
         String tokenCode = request.getParameter("token");
 
         try{
-            boolean result = securityService.performTokenValidation(username,tokenCode);
+            boolean result = securityService.performTokenValidation(opsUser.getEntrustId(), opsUser.getEntrustGroup(), tokenCode);
             if(result){
                 if( request.getSession().getAttribute("2FA") !=null) {
                     request.getSession().removeAttribute("2FA");
@@ -166,7 +166,7 @@ public class OperationsUserController {
             SettingDTO setting = configService.getSettingByName("ENABLE_OPS_2FA");
             boolean tokenAuth = false;
             if (setting != null && setting.isEnabled()) {
-                tokenAuth = (setting.getValue().equalsIgnoreCase("yes") ? true : false);
+                tokenAuth = (setting.getValue().equalsIgnoreCase("YES") ? true : false);
             }
             if (tokenAuth) {
                 return "redirect:/ops/token";
