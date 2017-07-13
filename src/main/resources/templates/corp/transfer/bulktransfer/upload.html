@@ -20,20 +20,27 @@
 </style>
 
 <body>
-<header th:replace="corp_layout ::corp-header">
-</header>
+<div class="container">
+    <header th:replace="corp_layout ::corp-header">
+    </header>
 
-<section class="content-wrapper">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-4 col-sm-4">
-                <h5 class="page_header">Upload Bulk Transfer File</h5>
+    <section class="content-wrapper">
+        <div class="">
+            <div class="row">
+                <div class="col-md-4 col-sm-4">
+                    <h5 class="page_header">Upload Bulk Transfer File</h5>
+                    <select class="form-control invisible">
+                        <option value="account">Account Overview</option>
+                    </select>
+                </div>
+                <p class="col-xs-12">
+                    Fields marked <span style="color:red">*</span> are compulsory
+                </p>
             </div>
-        </div>
         <div class="row">
-            <div class="col-md-8 content-bg">
-                <div class="row form-spacing">
-                    <div>
+            <div class="col-md-9 content-bg">
+                <div class="row">
+                    <div class="form-spacing">
                         <p>To make a bulk transfer, You are required to download a pre-formatted file and fill
                             in the details of the beneficiaries... <a th:href="@{/corporate/transfer/bulk/download}">Download File</a></p>
                     </div>
@@ -62,7 +69,9 @@
                     </div>
                 </div>
             </div>
-            <div th:replace="corp_layout :: corp-sidebar" class="col-md-3 sidebar">
+            <div class="col-md-3 pull-right" >
+                <div th:replace="corp_layout :: corp-sidebar" class="" >
+                </div>
             </div>
         </div>
     </div>
@@ -80,5 +89,6 @@
         );
     } );
 </script>
+</div>
 </body>
 </html>

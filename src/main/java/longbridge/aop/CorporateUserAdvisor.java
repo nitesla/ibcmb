@@ -80,7 +80,7 @@ public class CorporateUserAdvisor {
     public void postCorporateUserActivation(JoinPoint p, VerificationDTO verificationDto) throws IOException {
 
         Verification verification  = verificationRepo.findOne(verificationDto.getId());
-        if(verification.getOperation().equals("CORP_USER_STATUS")){
+        if(verification.getOperation().equals("UPDATE_CORP_USER_STATUS")){
 
             log.info("Inside Advisor for Post Corporate user activation...");
 
@@ -103,7 +103,14 @@ public class CorporateUserAdvisor {
             }
         }
 
-    }
+        if(verification.getOperation().equals("ADD_CORPORATE_USER")) {
+            ObjectMapper objectMapper = new ObjectMapper();
+            CorporateUser corpUser = objectMapper.readValue(verification.getOriginalObject(),CorporateUser.class);
+            corporateUserService.createUserOnEntrust(corpUser);
+        }
+
+
+        }
 
 
 

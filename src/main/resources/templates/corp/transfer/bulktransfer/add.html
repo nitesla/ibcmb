@@ -28,11 +28,12 @@
 </style>
 
 <body>
+<div class="container">
 <header th:replace="corp_layout ::corp-header">
 </header>
 
 <section class="content-wrapper">
-    <div class="container">
+    <div class="">
         <div class="row">
             <div class="col-md-4 col-sm-4">
                 <h5 class="page_header"> Bulk Transfer </h5>
@@ -109,8 +110,11 @@
 <!-- CONTENT-WRAPPER SECTION END-->
 <footer th:replace="corp_layout ::corp-footer">
 </footer>
+
 <script th:inline="javascript">
-    //<![CDATA[
+    /*<![CDATA[*/
+
+
     //datepicker
 //    $( function() {
 //        $( "#datepicker" ).datepicker(
@@ -170,7 +174,9 @@
     //});
 
 
+    /*]]>*/
 
 </script>
+</div>
 </body>
 </html>

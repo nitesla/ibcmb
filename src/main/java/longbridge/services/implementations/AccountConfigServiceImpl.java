@@ -4,6 +4,7 @@ import longbridge.dtos.AccountClassRestrictionDTO;
 import longbridge.dtos.AccountRestrictionDTO;
 import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.InternetBankingException;
+import longbridge.exception.VerificationInterruptedException;
 import longbridge.models.Account;
 import longbridge.models.AccountClassRestriction;
 import longbridge.models.AccountRestriction;
@@ -81,7 +82,11 @@ public class AccountConfigServiceImpl implements AccountConfigService {
             accountRestriction.setDateCreated(new Date());
             accountRestrictionRepo.save(accountRestriction);
             return messageSource.getMessage("account.restrict.add.success", null, locale);
-        } catch (Exception e) {
+        }  catch (VerificationInterruptedException e) {
+            return e.getMessage();
+        }
+
+        catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("account.restrict.add.failure", null, locale), e);
         }
     }
@@ -99,7 +104,14 @@ public class AccountConfigServiceImpl implements AccountConfigService {
             accountRestriction.setRestrictionType(accountRestrictionDTO.getRestrictionType());
             accountRestrictionRepo.save(accountRestriction);
             return messageSource.getMessage("account.restrict.update.success", null, locale);
-        } catch (Exception e) {
+        }
+        catch (VerificationInterruptedException e) {
+            return e.getMessage();
+        }
+        catch (InternetBankingException e){
+            throw e;
+        }
+        catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("account.restrict.update.failure", null, locale), e);
         }
     }
@@ -125,7 +137,14 @@ public class AccountConfigServiceImpl implements AccountConfigService {
             accountRestrictionRepo.delete(accountRestriction);
             return messageSource.getMessage("account.restrict.delete.success", null, LocaleContextHolder.getLocale());
 
-        } catch (Exception e) {
+        }
+        catch (VerificationInterruptedException e) {
+            return e.getMessage();
+        }
+        catch (InternetBankingException e){
+            throw e;
+        }
+        catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("account.restrict.delete.failure", null, locale), e);
 
         }
@@ -140,7 +159,12 @@ public class AccountConfigServiceImpl implements AccountConfigService {
             accountClassRestriction.setDateCreated(new Date());
             accountClassRestrictionRepo.save(accountClassRestriction);
             return messageSource.getMessage("class.restrict.add.success", null, locale);
-        } catch (Exception e) {
+        }
+        catch (VerificationInterruptedException e) {
+            return e.getMessage();
+        }
+
+        catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("class.restrict.add.failure", null, locale), e);
         }
     }
@@ -157,7 +181,14 @@ public class AccountConfigServiceImpl implements AccountConfigService {
             accountClassRestrictionRepo.save(accountClassRestriction);
             return messageSource.getMessage("class.restrict.update.success", null, locale);
 
-        } catch (Exception e) {
+        }
+        catch (VerificationInterruptedException e) {
+            return e.getMessage();
+        }
+        catch (InternetBankingException e){
+            throw e;
+        }
+        catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("class.restrict.update.failure", null, locale), e);
 
         }

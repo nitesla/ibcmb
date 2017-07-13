@@ -135,5 +135,7 @@ public interface CorporateUserService{
     @PreAuthorize("hasAuthority('UNLOCK_CORP_USER')")
     String unlockUser(Long id) throws InternetBankingException;
 
+    void createUserOnEntrust(CorporateUser user);
+
 
 }

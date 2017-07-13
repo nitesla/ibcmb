@@ -2,6 +2,7 @@ package longbridge.services.implementations;
 
 import longbridge.dtos.*;
 import longbridge.exception.InternetBankingException;
+import longbridge.exception.VerificationInterruptedException;
 import longbridge.models.*;
 import longbridge.repositories.AccountLimitRepo;
 import longbridge.repositories.ClassLimitRepo;
@@ -19,12 +20,9 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 
-import javax.xml.crypto.dsig.spec.ExcC14NParameterSpec;
 import java.math.BigDecimal;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -61,26 +59,32 @@ public class TransactionLimitServiceImpl implements TransactionLimitService {
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
-    @Verifiable(operation="ADD_TRANS_LIMIT",description="Adding a Global Limit")
+    @Verifiable(operation = "ADD_TRANS_LIMIT", description = "Adding a Global Limit")
     public String addGlobalLimit(GlobalLimitDTO globalLimitDTO) throws InternetBankingException {
         try {
             GlobalLimit globalLimit = convertGlobalLimitDTOToEntity(globalLimitDTO);
             globalLimitRepo.save(globalLimit);
             logger.info("Added global limit {}", globalLimit.toString());
             return messageSource.getMessage("limit.add.success", null, locale);
+        } catch (VerificationInterruptedException e) {
+            return e.getMessage();
         } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("limit.add.failure", null, locale), e);
         }
     }
 
     @Override
-    @Verifiable(operation="UPDATE_TRANS_LIMIT",description="Updating a Global Limit")
+    @Verifiable(operation = "UPDATE_TRANS_LIMIT", description = "Updating a Global Limit")
     public String updateGlobalLimit(GlobalLimitDTO globalLimitDTO) throws InternetBankingException {
         try {
             GlobalLimit globalLimit = convertGlobalLimitDTOToEntity(globalLimitDTO);
             globalLimitRepo.save(globalLimit);
             logger.info("Updated global limit {}", globalLimit.toString());
             return messageSource.getMessage("limit.update.success", null, locale);
+        } catch (VerificationInterruptedException e) {
+            return e.getMessage();
+        } catch (InternetBankingException e) {
+            throw e;
         } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("limit.update.failure", null, locale), e);
         }
@@ -130,26 +134,32 @@ public class TransactionLimitServiceImpl implements TransactionLimitService {
     }
 
     @Override
-    @Verifiable(operation="ADD_TRANS_LIMIT",description="Adding a Class Limit")
+    @Verifiable(operation = "ADD_TRANS_LIMIT", description = "Adding a Class Limit")
     public String addClassLimit(ClassLimitDTO classLimitDTO) throws InternetBankingException {
         try {
             ClassLimit classLimit = convertClassLimitDTOToEntity(classLimitDTO);
             classLimitRepo.save(classLimit);
             logger.info("Added class limit {}", classLimit.toString());
             return messageSource.getMessage("limit.add.success", null, locale);
+        } catch (VerificationInterruptedException e) {
+            return e.getMessage();
         } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("limit.add.success", null, locale), e);
         }
     }
 
     @Override
-    @Verifiable(operation="UPDATE_TRANS_LIMIT",description="Updating a Class Limit")
+    @Verifiable(operation = "UPDATE_TRANS_LIMIT", description = "Updating a Class Limit")
     public String updateClassLimit(ClassLimitDTO classLimitDTO) throws InternetBankingException {
         try {
             ClassLimit classLimit = convertClassLimitDTOToEntity(classLimitDTO);
             classLimitRepo.save(classLimit);
             logger.info("Update class limit {}", classLimit.toString());
             return messageSource.getMessage("limit.update.success", null, locale);
+        } catch (VerificationInterruptedException e) {
+            return e.getMessage();
+        } catch (InternetBankingException e) {
+            throw e;
         } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("limit.update.success", null, locale), e);
         }
@@ -183,26 +193,32 @@ public class TransactionLimitServiceImpl implements TransactionLimitService {
     }
 
     @Override
-    @Verifiable(operation="ADD_TRANS_LIMIT",description="Adding an Account Limit")
+    @Verifiable(operation = "ADD_TRANS_LIMIT", description = "Adding an Account Limit")
     public String addAccountLimit(AccountLimitDTO accountLimitDTO) throws InternetBankingException {
         try {
             AccountLimit accountLimit = convertAccountLimitDTOToEntity(accountLimitDTO);
             accountLimitRepo.save(accountLimit);
             logger.info("Added account limit {}", accountLimit.toString());
             return messageSource.getMessage("limit.add.success", null, locale);
+        } catch (VerificationInterruptedException e) {
+            return e.getMessage();
         } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("limit.add.failure", null, locale), e);
         }
     }
 
     @Override
-    @Verifiable(operation="UPDATE_TRANS_LIMIT",description="Updating an Account Limit")
+    @Verifiable(operation = "UPDATE_TRANS_LIMIT", description = "Updating an Account Limit")
     public String updateAccountLimit(AccountLimitDTO accountLimitDTO) throws InternetBankingException {
         try {
             AccountLimit accountLimit = convertAccountLimitDTOToEntity(accountLimitDTO);
             accountLimitRepo.save(accountLimit);
             logger.info("Updated account limit {}", accountLimit.toString());
             return messageSource.getMessage("limit.update.success", null, locale);
+        } catch (VerificationInterruptedException e) {
+            return e.getMessage();
+        } catch (InternetBankingException e) {
+            throw e;
         } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("limit.update.failure", null, locale), e);
         }
@@ -223,78 +239,102 @@ public class TransactionLimitServiceImpl implements TransactionLimitService {
     }
 
     @Override
-    @Verifiable(operation="DELETE_TRANS_LIMIT",description="Deleting a Coporate Account Limit")
+    @Verifiable(operation = "DELETE_TRANS_LIMIT", description = "Deleting a Coporate Account Limit")
     public String deleteCorporateAccountLimit(Long id) throws InternetBankingException {
         try {
             AccountLimit limit = accountLimitRepo.findOne(id);
             accountLimitRepo.delete(limit);
             logger.info("Deleted account limit with Id {}", id);
             return messageSource.getMessage("limit.delete.success", null, locale);
+        } catch (VerificationInterruptedException e) {
+            return e.getMessage();
+        } catch (InternetBankingException e) {
+            throw e;
         } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("limit.delete.failure", null, locale), e);
         }
     }
 
     @Override
-    @Verifiable(operation="DELETE_TRANS_LIMIT",description="Deleting a Coporate Class Limit")
+    @Verifiable(operation = "DELETE_TRANS_LIMIT", description = "Deleting a Coporate Class Limit")
     public String deleteCorporateClassLimit(Long id) throws InternetBankingException {
         try {
             ClassLimit classLimit = classLimitRepo.findOne(id);
             classLimitRepo.delete(classLimit);
             logger.info("Deleted class limit with Id {}", id);
             return messageSource.getMessage("limit.delete.success", null, locale);
+        } catch (VerificationInterruptedException e) {
+            return e.getMessage();
+        } catch (InternetBankingException e) {
+            throw e;
         } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("limit.delete.failure", null, locale), e);
         }
     }
 
     @Override
-    @Verifiable(operation="DELETE_TRANS_LIMIT",description="Deleting a Corporate Global Limit")
+    @Verifiable(operation = "DELETE_TRANS_LIMIT", description = "Deleting a Corporate Global Limit")
     public String deleteCorporateGlobalLimit(Long id) throws InternetBankingException {
         try {
-           GlobalLimit globalLimit = globalLimitRepo.findOne(id);
-           globalLimitRepo.delete(globalLimit);
+            GlobalLimit globalLimit = globalLimitRepo.findOne(id);
+            globalLimitRepo.delete(globalLimit);
             logger.info("Deleted global limit with Id {}", id);
             return messageSource.getMessage("limit.delete.success", null, locale);
+        } catch (VerificationInterruptedException e) {
+            return e.getMessage();
+        } catch (InternetBankingException e) {
+            throw e;
         } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("limit.delete.failure", null, locale), e);
         }
     }
 
     @Override
-    @Verifiable(operation="DELETE_TRANS_LIMIT",description="Deleting a  Retail Account Limit")
+    @Verifiable(operation = "DELETE_TRANS_LIMIT", description = "Deleting a  Retail Account Limit")
     public String deleteRetailAccountLimit(Long id) throws InternetBankingException {
         try {
-           AccountLimit accountLimit =  accountLimitRepo.findOne(id);
-           accountLimitRepo.delete(accountLimit);
+            AccountLimit accountLimit = accountLimitRepo.findOne(id);
+            accountLimitRepo.delete(accountLimit);
             logger.info("Deleted account limit with Id {}", id);
             return messageSource.getMessage("limit.delete.success", null, locale);
+        } catch (VerificationInterruptedException e) {
+            return e.getMessage();
+        } catch (InternetBankingException e) {
+            throw e;
         } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("limit.delete.failure", null, locale), e);
         }
     }
 
     @Override
-    @Verifiable(operation="DELETE_TRANS_LIMIT",description="Deleting a Retail Class Limit")
+    @Verifiable(operation = "DELETE_TRANS_LIMIT", description = "Deleting a Retail Class Limit")
     public String deleteRetailClassLimit(Long id) throws InternetBankingException {
         try {
             ClassLimit classLimit = classLimitRepo.findOne(id);
             classLimitRepo.delete(classLimit);
             logger.info("Deleted class limit with Id {}", id);
             return messageSource.getMessage("limit.delete.success", null, locale);
+        } catch (VerificationInterruptedException e) {
+            return e.getMessage();
+        } catch (InternetBankingException e) {
+            throw e;
         } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("limit.delete.failure", null, locale), e);
         }
     }
 
     @Override
-    @Verifiable(operation="DELETE_TRANS_LIMIT",description="Deleting a Retail Global Limit")
+    @Verifiable(operation = "DELETE_TRANS_LIMIT", description = "Deleting a Retail Global Limit")
     public String deleteRetailGlobalLimit(Long id) throws InternetBankingException {
         try {
-           GlobalLimit globalLimit = globalLimitRepo.findOne(id);
-           globalLimitRepo.delete(globalLimit);
+            GlobalLimit globalLimit = globalLimitRepo.findOne(id);
+            globalLimitRepo.delete(globalLimit);
             logger.info("Deleted global limit with Id {}", id);
             return messageSource.getMessage("limit.delete.success", null, locale);
+        } catch (VerificationInterruptedException e) {
+            return e.getMessage();
+        } catch (InternetBankingException e) {
+            throw e;
         } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("limit.delete.failure", null, locale), e);
         }
