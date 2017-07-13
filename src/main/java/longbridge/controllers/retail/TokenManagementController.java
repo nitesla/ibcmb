@@ -3,6 +3,7 @@ package longbridge.controllers.retail;
 import longbridge.exception.InternetBankingSecurityException;
 import longbridge.forms.CustSyncTokenForm;
 import longbridge.forms.TokenProp;
+import longbridge.services.RetailUserService;
 import longbridge.services.SecurityService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -43,6 +44,9 @@ public class TokenManagementController {
     private Locale locale = LocaleContextHolder.getLocale();
     @Autowired
     private MessageSource messageSource;
+    @Autowired
+    private RetailUserService retailUserService;
+
 
     @GetMapping
     public String getRetailToken( HttpServletRequest httpServletRequest, Principal principal, Model model){
@@ -55,9 +59,10 @@ public class TokenManagementController {
     public String performTokenAuthentication(HttpServletRequest request, Principal principal, RedirectAttributes redirectAttributes, Locale locale){
 
         String username = principal.getName();
+        String entrustId=retailUserService.getUserByName(username).getEntrustId();
         String tokenCode = request.getParameter("token");
         try{
-            boolean result = securityService.performTokenValidation(username,tokenCode);
+            boolean result = securityService.performTokenValidation(entrustId,tokenCode);
             if(result){
                 if( request.getSession().getAttribute("2FA") !=null) {
                     request.getSession().removeAttribute("2FA");
