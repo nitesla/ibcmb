@@ -77,8 +77,8 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     @Autowired
     private RoleRepo roleRepo;
-    @Autowired
-    HostMaster hostMaster;
+
+
 
     @Autowired
     EntityManager entityManager;
