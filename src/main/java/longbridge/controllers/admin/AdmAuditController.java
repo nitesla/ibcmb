@@ -141,6 +141,7 @@ public class AdmAuditController {
         Map<String,Object> m =null;
         model.addAttribute("pastDetails", entityPastDetails.get("pastDetails"));
         model.addAttribute("currentDetails",(entityPastDetails.get("currentDetails")));
+        model.addAttribute("headers",(entityPastDetails.get("keys")));
         return  "adm/audit/entityDetails";
     }
 

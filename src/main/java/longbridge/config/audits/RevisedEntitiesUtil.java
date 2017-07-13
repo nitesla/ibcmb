@@ -61,13 +61,16 @@ public class RevisedEntitiesUtil {
         return builder.toString();
     }
     @Transactional
-    public static  Map<String, JSONObject> getEntityPastDetails(String entityName,String[] revId)
+    public static  Map<String, List<String>> getEntityPastDetails(String entityName,String[] revId)
     {
         List<Integer> refIds = new ArrayList<>();
         for (String rev:revId) {
             refIds.add(Integer.parseInt(rev));
         }
-        Map<String,JSONObject> mergedDetails =  new HashMap<>();
+        List<String> itemList =  new ArrayList<>();
+        List<String> itemList2 =  new ArrayList<>();
+        List<String> headers =  new ArrayList<>();
+        Map<String,List<String>> mergedDetails =  new HashMap<>();
         JSONObject jsonObject = null;
         entityName = getOracleEntity(entityName);
         String auditEntity = entityName + "_AUD";
@@ -81,14 +84,22 @@ public class RevisedEntitiesUtil {
            entityDetails = removeIrrelevantDetails(entityDetails);
            if(entityDetails.size()>1)
            {
-               jsonObject =  new JSONObject(entityDetails.get(0));
-               mergedDetails.put("pastDetails",jsonObject);
-               mergedDetails.put("currentDetails", new JSONObject(entityDetails.get(1)));
+               for (String item:entityDetails.get(0).keySet()) {
+                   itemList.add(entityDetails.get(0).get(item).toString());
+               }
 
+               mergedDetails.put("pastDetails",itemList);
+               for (String item:entityDetails.get(1).keySet()) {
+                   itemList2.add(entityDetails.get(1).get(item).toString());
+               }
+               mergedDetails.put("currentDetails",itemList2);
+               mergedDetails.put("keys",new ArrayList<>(entityDetails.get(0).keySet()));
            }
            else{
-               jsonObject =  new JSONObject(entityDetails.get(0));
-               mergedDetails.put("pastDetails",jsonObject);
+               for (String item:entityDetails.get(0).keySet()) {
+                   itemList.add(entityDetails.get(0).get(item).toString());
+               }
+               mergedDetails.put("currentDetails",itemList);
            }
 
         }
