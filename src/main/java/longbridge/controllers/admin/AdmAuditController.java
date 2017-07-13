@@ -138,8 +138,9 @@ public class AdmAuditController {
         model.addAttribute("itemId",revisionId[0]);
         Map entityPastDetails = RevisedEntitiesUtil.getEntityPastDetails(classname, revisionId);
         logger.info("entity details is {}",entityPastDetails);
-        model.addAttribute("pastDetails",entityPastDetails.get("pastDetails"));
-        model.addAttribute("currentDetails",entityPastDetails.get("currentDetails"));
+        Map<String,Object> m =null;
+        model.addAttribute("pastDetails", entityPastDetails.get("pastDetails"));
+        model.addAttribute("currentDetails",(entityPastDetails.get("currentDetails")));
         return  "adm/audit/entityDetails";
     }
 
