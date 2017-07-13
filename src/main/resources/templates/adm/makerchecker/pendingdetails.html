@@ -208,10 +208,13 @@
 
                 current_path = path.endsWith('[') ? path + node + ']' : path + '.' +node;
 
+                alert(current_path);
                 b = jsonPath(beforeData,current_path) ? jsonPath(beforeData,current_path)[0] : 'undefined' ;
 
                 a = jsonPath(afterData,current_path) ? jsonPath(afterData,current_path)[0] : 'undefined' ;
 
+                console.log(a);
+                console.log(b);
 
                 if(a == b && typeof a != 'undefined' && typeof b != 'undefined' ){
 
@@ -228,7 +231,6 @@
     }
     var beforeData = JSON.parse([[${verify.beforeObject}]]);
     var afterData =JSON.parse([[${verify.afterObject}]]);
-    console.log(afterData);
     $(document).ready(function() {
 
         $("#table").DataTable({

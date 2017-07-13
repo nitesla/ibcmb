@@ -79,9 +79,17 @@ public class RevisedEntitiesUtil {
         List<Map<String ,Object>> entityDetails = namedParameterJdbcTemplate.queryForList(sql, namedParameters);
         if(!entityDetails.isEmpty()) {
            entityDetails = removeIrrelevantDetails(entityDetails);
-            jsonObject =  new JSONObject(entityDetails.get(0));
-            mergedDetails.put("pastDetails",jsonObject);
-            mergedDetails.put("currentDetails", new JSONObject(entityDetails.get(1)));
+           if(entityDetails.size()>1)
+           {
+               jsonObject =  new JSONObject(entityDetails.get(0));
+               mergedDetails.put("pastDetails",jsonObject);
+               mergedDetails.put("currentDetails", new JSONObject(entityDetails.get(1)));
+
+           }
+           else{
+               jsonObject =  new JSONObject(entityDetails.get(0));
+               mergedDetails.put("pastDetails",jsonObject);
+           }
 
         }
 
