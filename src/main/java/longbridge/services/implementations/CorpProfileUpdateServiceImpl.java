@@ -5,6 +5,7 @@ import longbridge.dtos.SettingDTO;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingSecurityException;
 import longbridge.models.CorporateUser;
+import longbridge.models.UserType;
 import longbridge.repositories.CorporateUserRepo;
 import longbridge.services.ConfigurationService;
 import longbridge.services.CorpProfileUpdateService;
@@ -92,6 +93,8 @@ public class CorpProfileUpdateServiceImpl implements CorpProfileUpdateService{
                     user.setIsFirstTimeLogon("N");
 
                     CorporateUser corporateUser = convertDTOToEntity(user);
+
+                    corporateUser.setUserType(UserType.CORPORATE);
 
                     corporateUserRepo.save(corporateUser);
                 }

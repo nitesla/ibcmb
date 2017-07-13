@@ -103,7 +103,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
     @Override
     public CorporateUser getUserByName(String username) {
-        return corporateUserRepo.findByUserName(username);
+        return corporateUserRepo.findFirstByUserNameIgnoreCase(username);
     }
 
 
