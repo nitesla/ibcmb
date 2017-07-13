@@ -1,6 +1,7 @@
 package longbridge.controllers.operations;
 
 import longbridge.api.AccountInfo;
+import longbridge.api.CustomerDetails;
 import longbridge.dtos.*;
 import longbridge.exception.InternetBankingException;
 import longbridge.exception.TransferRuleException;
@@ -106,12 +107,18 @@ public class OpsCorporateController {
         List<AccountInfo> accountInfos = integrationService.fetchAccounts(corporate.getCustomerId());
 
         if (accountInfos == null || accountInfos.isEmpty()) {
-            result.addError(new ObjectError("invalid", messageSource.getMessage("cifid.invalid", null, locale)));
+            result.addError(new ObjectError("invalid", messageSource.getMessage("corp.cifid.invalid", null, locale)));
             return "/ops/corporate/add";
         } else {
-            String accountName = integrationService.viewCustomerDetails(accountInfos.get(0).getAccountNumber()).getCustomerName();
-            corporate.setName(accountName);
+//                String accountName = integrationService.viewCustomerDetails(accountInfos.get(0).getAccountNumber()).getCustomerName();
+            CustomerDetails customerDetails = integrationService.viewCustomerDetailsByCif(corporate.getCustomerId());
+            if (!customerDetails.isCorp()) {
+                result.addError(new ObjectError("invalid", messageSource.getMessage("corp.cifid.invalid", null, locale)));
+                return "/ops/corporate/add";
+            }
+            corporate.setName(customerDetails.getCustomerName());
             if (!makerCheckerService.isEnabled("ADD_CORPORATE")) {
+
                 session.setAttribute("corporate", corporate);
                 return "redirect:/ops/corporates/user/first";
             } else {

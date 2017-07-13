@@ -289,7 +289,7 @@ public class CorporateServiceImpl implements CorporateService {
     @Override
 
     @Transactional
-//    @Verifiable(operation = "UPDATE_CORPORATE_STATUS", description = "Change Corporate Activation Status")
+    @Verifiable(operation = "UPDATE_CORPORATE_STATUS", description = "Change Corporate Activation Status")
     public String changeActivationStatus(Long id) throws InternetBankingException {
         try {
             Corporate corporate = corporateRepo.findOne(id);
