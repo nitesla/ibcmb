@@ -3,10 +3,6 @@ package longbridge.controllers.retail;
 import longbridge.exception.InternetBankingSecurityException;
 import longbridge.forms.CustSyncTokenForm;
 import longbridge.forms.TokenProp;
-<<<<<<< HEAD
-=======
-import longbridge.models.RetailUser;
->>>>>>> fc09b24f00435f1c6652c5d77977f6e0806b77e6
 import longbridge.services.RetailUserService;
 import longbridge.services.SecurityService;
 import org.apache.commons.lang3.StringUtils;
