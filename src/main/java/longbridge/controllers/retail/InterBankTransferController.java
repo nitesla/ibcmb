@@ -75,8 +75,28 @@ public class InterBankTransferController {
 
     @PostMapping(value = "/index")
 
-    public String startTransfer(HttpServletRequest request, Model model, Principal principal) {
+    public String startTransfer(HttpServletRequest request, Model model,Principal principal) {
+        RetailUser retailUser = retailUserService.getUserByName(principal.getName());
+        List<LocalBeneficiary> beneficiaries = StreamSupport.stream(localBeneficiaryService.getLocalBeneficiaries(retailUser).spliterator(), false)
+                .filter(i -> !i.getBeneficiaryBank().equalsIgnoreCase(financialInstitutionService.getFinancialInstitutionByCode(bankCode).getInstitutionCode()))
+                .collect(Collectors.toList());
 
+        beneficiaries
+                .stream()
+                .filter(Objects::nonNull)
+                .forEach(i ->
+                        {
+                            FinancialInstitution financialInstitution = financialInstitutionService.getFinancialInstitutionByCode(i.getBeneficiaryBank());
+
+                            if (financialInstitution != null)
+                                i.setBeneficiaryBank(financialInstitution.getInstitutionName());
+
+
+                        }
+
+                );
+
+        model.addAttribute("localBen", beneficiaries);
 
         TransferRequestDTO requestDTO = new TransferRequestDTO();
         String type = request.getParameter("tranType");
@@ -205,27 +225,7 @@ public class InterBankTransferController {
 
     @ModelAttribute
     public void getOtherBankBeneficiaries(Model model, Principal principal) {
-        RetailUser retailUser = retailUserService.getUserByName(principal.getName());
-        List<LocalBeneficiary> beneficiaries = StreamSupport.stream(localBeneficiaryService.getLocalBeneficiaries(retailUser).spliterator(), false)
-                .filter(i -> !i.getBeneficiaryBank().equalsIgnoreCase(financialInstitutionService.getFinancialInstitutionByCode(bankCode).getInstitutionCode()))
-                .collect(Collectors.toList());
 
-        beneficiaries
-                .stream()
-                .filter(Objects::nonNull)
-                .forEach(i ->
-                        {
-                            FinancialInstitution financialInstitution = financialInstitutionService.getFinancialInstitutionByCode(i.getBeneficiaryBank());
-
-                            if (financialInstitution != null)
-                                i.setBeneficiaryBank(financialInstitution.getInstitutionName());
-
-
-                        }
-
-                );
-
-        model.addAttribute("localBen", beneficiaries);
 
         List<FinancialInstitutionDTO> sortedNames = financialInstitutionService.getOtherLocalBanks(bankCode);
         sortedNames.sort(Comparator.comparing(FinancialInstitutionDTO::getInstitutionName));

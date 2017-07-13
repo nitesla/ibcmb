@@ -22,7 +22,6 @@ public class TransferUtils {
 
     private String createMessage(String message, boolean successOrFailure) {
         JSONObject object = new JSONObject();
-        //ObjectNode object = Json.newObject();
         try {
             object.put("message", message);
             object.put("success", successOrFailure);
@@ -34,16 +33,16 @@ public class TransferUtils {
     }
 
 
-    public String doIntraBankkNameLookup(String acctNo){
+    public String doIntraBankkNameLookup(String acctNo) {
         String name = integrationService.viewAccountDetails(acctNo).getAcctName();
-        if (name!=null && !name.isEmpty()) return createMessage(name,true);
+        if (name != null && !name.isEmpty()) return createMessage(name, true);
 
-        return createMessage("Invalid Account",false);
+        return createMessage("Invalid Account", false);
 
 
     }
 
-    public String doInterBankNameLookup(String bank,String accountNo){
+    public String doInterBankNameLookup(String bank, String accountNo) {
 
         NEnquiryDetails details = integrationService.doNameEnquiry(bank, accountNo);
         if (details == null)
@@ -60,9 +59,6 @@ public class TransferUtils {
 
         return createMessage("session expired", false);
     }
-
-
-
 
 
 }
