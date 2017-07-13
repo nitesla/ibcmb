@@ -9,14 +9,10 @@ import longbridge.utils.HostMaster;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.StreamSupport;
 
 /**
@@ -108,8 +104,6 @@ public class CorporateControllerAdvice {
             model.addAttribute("numOfUnreadMessages",numOfUnreadMessages);
         }
 
-
-
         if ("Y".equals(corporateUser.getIsFirstTimeLogon())){
             return "redirect:/corporate/setup";
         }
@@ -146,12 +140,12 @@ public class CorporateControllerAdvice {
         return "";
     }
 
-    @GetMapping
-    public String passwordEx(){
-        if (hostMaster.isPasswordExpired()){
-            return "redirect:/corporate/reset_password";
-        }
-        return "";
-    }
+//    @GetMapping
+//    public String passwordEx(){
+//        if (hostMaster.isPasswordExpired()){
+//            return "redirect:/corporate/reset_password";
+//        }
+//        return "";
+//    }
 
 }
