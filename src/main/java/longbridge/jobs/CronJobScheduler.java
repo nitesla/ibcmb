@@ -49,9 +49,6 @@ public class CronJobScheduler {
 //        JobDetail SevenDaysKeyJobs = JobBuilder.newJob(SevenDays.class)
 //                .withIdentity(SevenDaysKey).build();
 
-//        JobKey LetterUpdateKey = new JobKey("SevenDays", "ibtest");
-//        JobDetail LetterUpdateKeyJobs = JobBuilder.newJob(LetterUpdates.class)
-//                .withIdentity(LetterUpdateKey).build();
 
 
         /**

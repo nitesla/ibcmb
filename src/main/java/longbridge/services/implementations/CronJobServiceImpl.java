@@ -65,16 +65,6 @@ public class CronJobServiceImpl implements CronJobService {
     }
 
     @Override
-    public void keepJobDetials(String username,String cronExpression) throws InternetBankingException {
-            CronJob cronJob = new CronJob();
-            cronJob.setUsername(username);
-            cronJob.setCreatedOn(new Date());
-            cronJob.setFlag("Y");
-            cronJob.setCronExpression(cronExpression);
-            cronJobRepo.save(cronJob);
-    }
-
-    @Override
     public void deleteRunningJob() throws InternetBankingException {
         CronJob cronJob = cronJobRepo.findByFlag("Y");
         if (cronJob != null){
@@ -117,7 +107,7 @@ public class CronJobServiceImpl implements CronJobService {
             try {
 //                updateAllAccountName(account,accountDetails);
 //                updateAllAccountCurrency(account,accountDetails);
-                updateAccountStatus(account,accountDetails);
+//                updateAccountStatus(account,accountDetails);
                 return true;
             } catch (Exception e) {
                 e.printStackTrace();
@@ -127,5 +117,13 @@ public class CronJobServiceImpl implements CronJobService {
         }
         return false;
     }
-
+    @Override
+    public void keepJobDetials(String username,String cronExpression) throws InternetBankingException {
+        CronJob cronJob = new CronJob();
+        cronJob.setUsername(username);
+        cronJob.setCreatedOn(new Date());
+        cronJob.setFlag("Y");
+        cronJob.setCronExpression(cronExpression);
+        cronJobRepo.save(cronJob);
+    }
 }
