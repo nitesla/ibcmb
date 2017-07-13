@@ -192,8 +192,8 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             corporateUser.setCorporate(corporate);
             passwordPolicyService.saveCorporatePassword(corporateUser);
             try {
-                corporateUserRepo.save(corporateUser);
-                createUserOnEntrust(corporateUser);
+                CorporateUser corpUser = corporateUserRepo.save(corporateUser);
+                createUserOnEntrust(corpUser);
                 String fullName = corporateUser.getFirstName() + " " + corporateUser.getLastName();
                 sendPostCreationMessage(corporateUser, fullName, user.getUserName(), password, corporateUser.getCorporate().getCustomerId());
 
@@ -212,32 +212,35 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         }
     }
 
-    private void createUserOnEntrust(CorporateUser user) {
+    public void createUserOnEntrust(CorporateUser corporateUser) {
+        CorporateUser user = corporateUserRepo.findFirstByUserName(corporateUser.getUserName());
+        if (user != null) {
 
-        if ("".equals(user.getEntrustId()) || user.getEntrustId() == null) {
-            String fullName = user.getFirstName() + " " + user.getLastName();
-            SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_CREATION");
-            String entrustId = user.getUserType().toString() + "_" + user.getUserName();
+            if ("".equals(user.getEntrustId()) || user.getEntrustId() == null) {
+                String fullName = user.getFirstName() + " " + user.getLastName();
+                SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_CREATION");
+                String entrustId = user.getUserType().toString() + "_" + user.getUserName();
 
-            if (setting != null && setting.isEnabled()) {
-                if ("YES".equalsIgnoreCase(setting.getValue())) {
-                    boolean result = securityService.createEntrustUser(entrustId, fullName, true);
-                    if (!result) {
-                        throw new EntrustException(messageSource.getMessage("entrust.create.failure", null, locale));
+                if (setting != null && setting.isEnabled()) {
+                    if ("YES".equalsIgnoreCase(setting.getValue())) {
+                        boolean result = securityService.createEntrustUser(entrustId, fullName, true);
+                        if (!result) {
+                            throw new EntrustException(messageSource.getMessage("entrust.create.failure", null, locale));
 
+                        }
+                        boolean contactResult = securityService.addUserContacts(user.getEmail(), user.getPhoneNumber(), true, entrustId);
+                        if (!contactResult) {
+                            logger.error("Failed to add user contacts on Entrust");
+                            securityService.deleteEntrustUser(entrustId);
+                            throw new EntrustException(messageSource.getMessage("entrust.contact.failure", null, locale));
+
+
+                        }
                     }
-                    boolean contactResult = securityService.addUserContacts(user.getEmail(), user.getPhoneNumber(), true, entrustId);
-                    if (!contactResult) {
-                        logger.error("Failed to add user contacts on Entrust");
-                        securityService.deleteEntrustUser(entrustId);
-                        throw new EntrustException(messageSource.getMessage("entrust.contact.failure", null, locale));
+                    user.setEntrustId(entrustId);
+                    corporateUserRepo.save(user);
 
-
-                    }
                 }
-                user.setEntrustId(entrustId);
-                corporateUserRepo.save(user);
-
             }
         }
     }

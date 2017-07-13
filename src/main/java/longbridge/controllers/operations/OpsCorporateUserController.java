@@ -70,11 +70,10 @@ public class OpsCorporateUserController {
     @GetMapping("{corpId}/new")
     public String addUser(@PathVariable Long corpId, Model model, RedirectAttributes redirectAttributes) {
         CorporateDTO corporateDTO = corporateService.getCorporate(corpId);
-        if (corporateDTO.getCorporateType().equals("SOLE")) {
-            redirectAttributes.addFlashAttribute("failure", "Corporate entity has sole user");
-            return "redirect:/ops/corporates";
-        }
-
+//        if (corporateDTO.getCorporateType().equals("SOLE")) {
+//            redirectAttributes.addFlashAttribute("failure", "Corporate entity has sole user");
+//            return "redirect:/ops/corporates";
+//        }
 
         CorporateUserDTO corporateUserDTO = new CorporateUserDTO();
         model.addAttribute("corporate", corporateDTO);

@@ -42,11 +42,11 @@ public class Corporate extends AbstractEntity implements PrettySerializer{
 
     @OneToMany
     @JsonIgnore
-    Set<CorporateRole> corporateRoles = new HashSet<CorporateRole>();
+    Set<CorporateRole> corporateRoles;
 
     @OneToMany(mappedBy = "corporate")
     @JsonIgnore
-    private List<CorporateUser> users =  new ArrayList<CorporateUser>();
+    private List<CorporateUser> users;
 
     @OneToMany
     @JsonIgnore
@@ -190,25 +190,6 @@ public class Corporate extends AbstractEntity implements PrettySerializer{
                 gen.writeStringField("RC Number",value.rcNumber);
                 gen.writeStringField("Status",getStatusDescription(value.status));
 
-                gen.writeObjectFieldStart("User");
-
-                for(CorporateUser user: users){
-                    if(user.getId()!=null) {
-                        gen.writeObjectFieldStart(user.getId().toString());
-                    }
-
-                    gen.writeStringField("Username", user.userName);
-                    gen.writeStringField("First Name", user.firstName);
-                    gen.writeStringField("Last Name", user.lastName);
-                    gen.writeStringField("Email", user.email);
-                    gen.writeStringField("Phone", user.phoneNumber);
-                    gen.writeStringField("Status",getStatusDescription(user.status));
-
-                    if(user.getId()!=null) {
-                        gen.writeEndObject();
-                    }
-                }
-                gen.writeEndObject();
                 gen.writeEndObject();
             }
         };

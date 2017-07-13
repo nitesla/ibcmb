@@ -63,8 +63,9 @@
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">Upper Limit Amount <span style="color: red">*</span></label>
                                             <div class="col-sm-6">
-                                                <input id="upperLimit" type="number" class="form-control"
-                                                       th:field="*{upperLimitAmount}"/>
+                                                <input th:if ="${!corporateRule.unlimited}" id="upperLimit" type="number" class="form-control" th:field="*{upperLimitAmount}"/>
+                                                <input th:if ="${corporateRule.unlimited}" id="upperLimit" type="number" class="form-control" th:field="*{upperLimitAmount}" disabled="disabled"/>
+
                                             </div>
                                             <input id="unlimited" type="checkbox" class="checkbox-inline"
                                                    th:field="*{unlimited}"/>

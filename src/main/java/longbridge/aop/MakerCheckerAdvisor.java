@@ -209,7 +209,7 @@ public class MakerCheckerAdvisor {
 
         log.info(entityName + " has been saved for verification");
 
-        return entity;
+        throw new VerificationInterruptException(verifier.description()+" has gone for verification");
     }
 
 

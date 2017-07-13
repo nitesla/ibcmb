@@ -81,9 +81,7 @@ public class CorporateAdvisor {
         logger.info("Executing Post Corporate Creation Operation...");
         if(!accountRepo.existsByCustomerId(corporate.getCustomerId())) {
             corporateService.addAccounts(corporate);
-            for (CorporateUser corpUser : corporate.getUsers()) {
-                corporateService.createUserOnEntrustAndSendCredentials(corpUser);
-            }
+
         }
     }
 }

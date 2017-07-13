@@ -3,6 +3,7 @@ package longbridge.services.implementations;
 import longbridge.dtos.SettingDTO;
 import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.InternetBankingException;
+import longbridge.exception.VerificationInterruptException;
 import longbridge.models.Setting;
 import longbridge.repositories.SettingRepo;
 import longbridge.services.ConfigurationService;
@@ -55,6 +56,9 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 			Setting setting = mapper.map(dto, Setting.class);
 			settingRepo.save(setting);
 			return messageSource.getMessage("setting.add.success", null, locale);
+		}
+		catch (VerificationInterruptException e){
+			return e.getMessage();
 		}
 		catch (Exception e){
 			throw new InternetBankingException(messageSource.getMessage("setting.add.failure",null,locale),e);
@@ -112,8 +116,11 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 			settingRepo.save(setting);
 			return messageSource.getMessage("setting.update.success", null, locale);
 		}
-		catch (DuplicateObjectException e) {
-			throw new DuplicateObjectException(e.getMessage());
+		catch (VerificationInterruptException e){
+			return e.getMessage();
+		}
+		catch (InternetBankingException e) {
+			throw e;
 		}
 		catch (Exception e) {
 			throw new InternetBankingException(messageSource.getMessage("setting.update.failure",null,locale),e);
@@ -127,6 +134,12 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 			Setting setting = settingRepo.findOne(id);
 			settingRepo.delete(setting);
 			return messageSource.getMessage("setting.delete.success", null, locale);
+		}
+		catch (VerificationInterruptException e){
+			return e.getMessage();
+		}
+		catch (InternetBankingException e){
+			throw e;
 		}
 		catch (Exception e){
 			throw new InternetBankingException(messageSource.getMessage("setting.delete.failure", null, locale),e);

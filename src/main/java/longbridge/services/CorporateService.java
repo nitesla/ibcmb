@@ -20,6 +20,14 @@ public interface CorporateService{
     /**
      * Adds a new corporate customer to the system
      *
+     * @param corporateDTO the corporate customer
+     *
+     */
+    String addCorporate(CorporateDTO corporateDTO) throws InternetBankingException;
+
+    /**
+     * Adds a new corporate customer to the system
+     *
      * @param corporate the corporate customer
      */
     @PreAuthorize("hasAuthority('ADD_CORPORATE')")
