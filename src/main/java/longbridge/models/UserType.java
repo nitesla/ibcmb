@@ -12,7 +12,6 @@ public enum UserType {
     RETAIL("RET"),
     CORPORATE("CORP");
 
-
     private String description;
 
     UserType(String description){
