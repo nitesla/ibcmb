@@ -622,8 +622,9 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
-    public Integer getMinUserQA(String group) {
+    public Integer getMinUserQA() {
         try {
+            String group="";
             StringWriter writer = new StringWriter();
             this.t = this.ve.getTemplate("entrust/performGetMinQASize.vm");
             this.context.put("appCode", appCode);

@@ -3,6 +3,10 @@ package longbridge.controllers.retail;
 import longbridge.exception.InternetBankingSecurityException;
 import longbridge.forms.CustSyncTokenForm;
 import longbridge.forms.TokenProp;
+<<<<<<< HEAD
+=======
+import longbridge.models.RetailUser;
+>>>>>>> fc09b24f00435f1c6652c5d77977f6e0806b77e6
 import longbridge.services.RetailUserService;
 import longbridge.services.SecurityService;
 import org.apache.commons.lang3.StringUtils;
@@ -59,10 +63,12 @@ public class TokenManagementController {
     public String performTokenAuthentication(HttpServletRequest request, Principal principal, RedirectAttributes redirectAttributes, Locale locale){
 
         String username = principal.getName();
-        String entrustId=retailUserService.getUserByName(username).getEntrustId();
+
+        RetailUser user = retailUserService.getUserByName(username);
         String tokenCode = request.getParameter("token");
         try{
-            boolean result = securityService.performTokenValidation(entrustId,tokenCode);
+            boolean result = securityService.performTokenValidation(user.getEntrustId(),user.getEntrustGroup(),tokenCode);
+
             if(result){
                 if( request.getSession().getAttribute("2FA") !=null) {
                     request.getSession().removeAttribute("2FA");
