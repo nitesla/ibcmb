@@ -110,6 +110,7 @@ public class AdmAuditController {
     @GetMapping("/{id}/{classname}/view")
     public String revisionEntites(@PathVariable String id,@PathVariable String classname,Model model)
     {
+        logger.info("class {} and id is {}",classname,id);
         model.addAttribute("classname",classname);
         model.addAttribute("itemId",id);
         return  "adm/audit/entityDetails";
@@ -132,7 +133,7 @@ public class AdmAuditController {
     @GetMapping("/{revisionId}/{classname}/view/compare")
     public String compareEntityDetails(@PathVariable String[] revisionId,@PathVariable String classname,Model model)
     {
-        logger.info("id and class is {}, {}",revisionId,classname);
+//        logger.info("id and class is {}, {}",revisionId,classname);
         model.addAttribute("classname",classname);
         model.addAttribute("itemId",revisionId[0]);
         Map entityPastDetails = RevisedEntitiesUtil.getEntityPastDetails(classname, revisionId);

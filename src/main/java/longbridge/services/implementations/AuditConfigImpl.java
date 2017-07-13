@@ -100,7 +100,12 @@ public class AuditConfigImpl implements AuditConfigService {
 	}
 	public Page<ModifiedEntityTypeEntity> getRevisionEntitiesByDate(Pageable pageable)
 	{
+//		Page<RevisionInfo> customRevision = customRevisionEntityRepo.getRevisonList(pageable);
+		List<CustomRevisionEntity> customRevisionEntities = customRevisionEntityRepo.findAll();
 		Page<ModifiedEntityTypeEntity> modifiedEntityTypeEntities=modifiedEntityTypeEntityRepo.findAllEnityByRevision(pageable);
+
+//		logger.info("Custom Revision{}",modifiedEntityTypeEntityRepo.findAll());
+
 		return modifiedEntityTypeEntities;
 	}
 	@Override
@@ -153,9 +158,11 @@ public class AuditConfigImpl implements AuditConfigService {
 	}
 	public Page<ModifiedEntityTypeEntity> getRevisedDetailsForEntity(Integer id,String classname,Pageable pageable)
 	{
+
 		List<Integer> revIds = RevisedEntitiesUtil.revisedEntityDetails(classname,id);
 		List<CustomRevisionEntity> revisionEntity = customRevisionEntityRepo.findCustomEnityDetails(revIds);
-		Page<ModifiedEntityTypeEntity> modifiedEntityTypeEntities=modifiedEntityTypeEntityRepo.findEnityByRevisions(revisionEntity,pageable);
+		classname = PACKAGE_NAME+classname;
+		Page<ModifiedEntityTypeEntity> modifiedEntityTypeEntities=modifiedEntityTypeEntityRepo.findEnityByRevisions(revisionEntity,pageable,classname);
 		return modifiedEntityTypeEntities;
 
 	}
