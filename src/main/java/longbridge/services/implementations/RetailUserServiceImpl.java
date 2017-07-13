@@ -288,7 +288,7 @@ public class RetailUserServiceImpl implements RetailUserService {
                     retailUserRepo.save(user);
                     sendActivationMessage(user, fullName, user.getUserName(), password);
                 }
-                catch (VerificationInterruptException e){
+                catch (VerificationInterruptedException e){
                     return e.getMessage();
                 }
             } else {
@@ -296,7 +296,7 @@ public class RetailUserServiceImpl implements RetailUserService {
                 try {
                     retailUserRepo.save(user);
                 }
-                catch (VerificationInterruptException e){
+                catch (VerificationInterruptedException e){
                     return  e.getMessage();
                 }
             }

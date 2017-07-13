@@ -4,7 +4,7 @@ import longbridge.dtos.PermissionDTO;
 import longbridge.dtos.RoleDTO;
 import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.InternetBankingException;
-import longbridge.exception.VerificationInterruptException;
+import longbridge.exception.VerificationInterruptedException;
 import longbridge.models.*;
 import longbridge.repositories.*;
 import longbridge.services.RoleService;
@@ -18,7 +18,6 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -85,7 +84,7 @@ public class RoleServiceImpl implements RoleService {
             roleRepo.save(role);
             logger.info("Added role {}", role.toString());
             return messageSource.getMessage("role.add.success", null, locale);
-        } catch (VerificationInterruptException e) {
+        } catch (VerificationInterruptedException e) {
             return e.getMessage();
         } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("role.add.failure", null, locale), e);
@@ -124,7 +123,7 @@ public class RoleServiceImpl implements RoleService {
             roleRepo.save(role);
             logger.info("Updated role {}", role.toString());
             return messageSource.getMessage("role.update.success", null, locale);
-        } catch (VerificationInterruptException e) {
+        } catch (VerificationInterruptedException e) {
             return e.getMessage();
         } catch (InternetBankingException e) {
             throw e;
@@ -146,7 +145,7 @@ public class RoleServiceImpl implements RoleService {
             roleRepo.delete(role);
             logger.warn("Deleted role with Id {}", id);
             return messageSource.getMessage("role.delete.success", null, locale);
-        } catch (VerificationInterruptException e) {
+        } catch (VerificationInterruptedException e) {
             return e.getMessage();
         } catch (InternetBankingException e) {
             throw e;
@@ -163,7 +162,7 @@ public class RoleServiceImpl implements RoleService {
             logger.info("Added permission {}", permission.toString());
             return messageSource.getMessage("permission.add.success", null, locale);
         }
-        catch (VerificationInterruptException e) {
+        catch (VerificationInterruptedException e) {
             return e.getMessage();
         }
 
@@ -212,7 +211,7 @@ public class RoleServiceImpl implements RoleService {
             logger.info("Updated permission {}", permission.toString());
             return messageSource.getMessage("permission.update.success", null, locale);
         }
-        catch (VerificationInterruptException e) {
+        catch (VerificationInterruptedException e) {
             return e.getMessage();
         }
         catch (InternetBankingException e){
@@ -232,7 +231,7 @@ public class RoleServiceImpl implements RoleService {
             logger.warn("Deleted permission with Id {}", id);
             return messageSource.getMessage("permission.delete.success", null, locale);
         }
-        catch (VerificationInterruptException e) {
+        catch (VerificationInterruptedException e) {
             return e.getMessage();
         }
         catch (InternetBankingException e){

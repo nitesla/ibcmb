@@ -27,7 +27,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import sun.awt.image.PixelConverter;
 
 import javax.persistence.EntityManager;
 import java.util.*;
@@ -151,7 +150,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             }
             try {
                 corporateUserRepo.save(corporateUser);
-            } catch (VerificationInterruptException e) {
+            } catch (VerificationInterruptedException e) {
                 return e.getMessage();
             }
             return messageSource.getMessage("user.update.success", null, locale);
@@ -197,7 +196,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
                 String fullName = corporateUser.getFirstName() + " " + corporateUser.getLastName();
                 sendPostCreationMessage(corporateUser, fullName, user.getUserName(), password, corporateUser.getCorporate().getCustomerId());
 
-            } catch (VerificationInterruptException e) {
+            } catch (VerificationInterruptedException e) {
                 return e.getMessage();
             }
             logger.info("New corporate user {} created", corporateUser.getUserName());
@@ -311,7 +310,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
                 try {
                     CorporateUser corpUser = corporateUserRepo.save(user);
                     sendActivationMessage(corpUser, fullName, user.getUserName(), password, user.getCorporate().getCustomerId());
-                } catch (VerificationInterruptException e) {
+                } catch (VerificationInterruptedException e) {
                     return e.getMessage();
                 }
             } else {

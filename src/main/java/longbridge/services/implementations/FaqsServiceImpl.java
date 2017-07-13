@@ -2,7 +2,7 @@ package longbridge.services.implementations;
 
 import longbridge.dtos.FaqsDTO;
 import longbridge.exception.InternetBankingException;
-import longbridge.exception.VerificationInterruptException;
+import longbridge.exception.VerificationInterruptedException;
 import longbridge.models.Faqs;
 import longbridge.repositories.FaqsRepo;
 import longbridge.services.FaqsService;
@@ -73,7 +73,7 @@ public class FaqsServiceImpl implements FaqsService {
             return messageSource.getMessage("faq.add.success", null, locale);
         }
 
-        catch (VerificationInterruptException e){
+        catch (VerificationInterruptedException e){
             return e.getMessage();
         }
         catch (Exception e){
@@ -90,7 +90,7 @@ public class FaqsServiceImpl implements FaqsService {
             logger.info("Updated Notification with Id {}", faqs.getQuestion());
             return messageSource.getMessage("faq.update.success", null, locale);
         }
-        catch (VerificationInterruptException e){
+        catch (VerificationInterruptedException e){
             return e.getMessage();
         }
         catch (InternetBankingException e){
@@ -110,7 +110,7 @@ public class FaqsServiceImpl implements FaqsService {
             logger.info("Notification {} has been deleted",id.toString());
             return messageSource.getMessage("faq.delete.success",null,locale);
         }
-        catch (VerificationInterruptException e){
+        catch (VerificationInterruptedException e){
             return e.getMessage();
         }
         catch (InternetBankingException e){

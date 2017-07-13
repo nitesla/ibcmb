@@ -4,7 +4,7 @@ import longbridge.dtos.AccountClassRestrictionDTO;
 import longbridge.dtos.AccountRestrictionDTO;
 import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.InternetBankingException;
-import longbridge.exception.VerificationInterruptException;
+import longbridge.exception.VerificationInterruptedException;
 import longbridge.models.Account;
 import longbridge.models.AccountClassRestriction;
 import longbridge.models.AccountRestriction;
@@ -82,7 +82,7 @@ public class AccountConfigServiceImpl implements AccountConfigService {
             accountRestriction.setDateCreated(new Date());
             accountRestrictionRepo.save(accountRestriction);
             return messageSource.getMessage("account.restrict.add.success", null, locale);
-        }  catch (VerificationInterruptException e) {
+        }  catch (VerificationInterruptedException e) {
             return e.getMessage();
         }
 
@@ -105,7 +105,7 @@ public class AccountConfigServiceImpl implements AccountConfigService {
             accountRestrictionRepo.save(accountRestriction);
             return messageSource.getMessage("account.restrict.update.success", null, locale);
         }
-        catch (VerificationInterruptException e) {
+        catch (VerificationInterruptedException e) {
             return e.getMessage();
         }
         catch (InternetBankingException e){
@@ -138,7 +138,7 @@ public class AccountConfigServiceImpl implements AccountConfigService {
             return messageSource.getMessage("account.restrict.delete.success", null, LocaleContextHolder.getLocale());
 
         }
-        catch (VerificationInterruptException e) {
+        catch (VerificationInterruptedException e) {
             return e.getMessage();
         }
         catch (InternetBankingException e){
@@ -160,7 +160,7 @@ public class AccountConfigServiceImpl implements AccountConfigService {
             accountClassRestrictionRepo.save(accountClassRestriction);
             return messageSource.getMessage("class.restrict.add.success", null, locale);
         }
-        catch (VerificationInterruptException e) {
+        catch (VerificationInterruptedException e) {
             return e.getMessage();
         }
 
@@ -182,7 +182,7 @@ public class AccountConfigServiceImpl implements AccountConfigService {
             return messageSource.getMessage("class.restrict.update.success", null, locale);
 
         }
-        catch (VerificationInterruptException e) {
+        catch (VerificationInterruptedException e) {
             return e.getMessage();
         }
         catch (InternetBankingException e){

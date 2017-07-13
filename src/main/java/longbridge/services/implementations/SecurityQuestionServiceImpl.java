@@ -2,7 +2,7 @@ package longbridge.services.implementations;
 
 import longbridge.dtos.SecQuestionDTO;
 import longbridge.exception.InternetBankingException;
-import longbridge.exception.VerificationInterruptException;
+import longbridge.exception.VerificationInterruptedException;
 import longbridge.models.SecurityQuestions;
 import longbridge.repositories.SecQuestionRepo;
 import longbridge.services.SecurityQuestionService;
@@ -74,7 +74,7 @@ public class SecurityQuestionServiceImpl implements SecurityQuestionService {
             logger.info("Security Question {} added", question);
             return messageSource.getMessage("secQues.add.success", null, locale);
         }
-        catch (VerificationInterruptException e) {
+        catch (VerificationInterruptedException e) {
             return e.getMessage();
         }
 
@@ -92,7 +92,7 @@ public class SecurityQuestionServiceImpl implements SecurityQuestionService {
             logger.info("Security Question {} updated", securityQuestions);
             return messageSource.getMessage("secQues.update.success", null, locale);
         }
-        catch (VerificationInterruptException e) {
+        catch (VerificationInterruptedException e) {
             return e.getMessage();
         }
         catch (InternetBankingException e){
@@ -112,7 +112,7 @@ public class SecurityQuestionServiceImpl implements SecurityQuestionService {
             logger.info("Security Question {} deleted", securityQuestions);
             return messageSource.getMessage("secQues.delete.success", null, locale);
         }
-        catch (VerificationInterruptException e) {
+        catch (VerificationInterruptedException e) {
             return e.getMessage();
         }
         catch (InternetBankingException e){

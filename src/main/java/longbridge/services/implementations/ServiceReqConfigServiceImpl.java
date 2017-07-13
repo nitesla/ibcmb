@@ -3,7 +3,7 @@ package longbridge.services.implementations;
 import longbridge.dtos.ServiceReqConfigDTO;
 import longbridge.dtos.ServiceReqFormFieldDTO;
 import longbridge.exception.InternetBankingException;
-import longbridge.exception.VerificationInterruptException;
+import longbridge.exception.VerificationInterruptedException;
 import longbridge.models.SRConfig;
 import longbridge.models.ServiceReqFormField;
 import longbridge.repositories.ServiceReqConfigRepo;
@@ -77,7 +77,7 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 			logger.info("Added service request configuration {}", serviceReqConfigDTO.toString());
 			return messageSource.getMessage("req.config.add.success", null, locale);
 		}
-		catch (VerificationInterruptException e) {
+		catch (VerificationInterruptedException e) {
 			return e.getMessage();
 		}
 
@@ -149,7 +149,7 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 			return messageSource.getMessage("req.config.update.success", null, locale);
 
 		}
-		catch (VerificationInterruptException e) {
+		catch (VerificationInterruptedException e) {
 			return e.getMessage();
 		}
 		catch (InternetBankingException e){
@@ -168,7 +168,7 @@ public class ServiceReqConfigServiceImpl implements ServiceReqConfigService {
 			logger.warn("Deleted service request configuration with Id {}", id);
 			return messageSource.getMessage("req.config.delete.success", null, locale);
 		}
-		catch (VerificationInterruptException e) {
+		catch (VerificationInterruptedException e) {
 			return e.getMessage();
 		}
 		catch (InternetBankingException e){

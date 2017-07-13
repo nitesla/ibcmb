@@ -1,15 +1,13 @@
 package longbridge.services.implementations;
 
 import longbridge.dtos.SettingDTO;
-import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.InternetBankingException;
-import longbridge.exception.VerificationInterruptException;
+import longbridge.exception.VerificationInterruptedException;
 import longbridge.models.Setting;
 import longbridge.repositories.SettingRepo;
 import longbridge.services.ConfigurationService;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -57,7 +55,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 			settingRepo.save(setting);
 			return messageSource.getMessage("setting.add.success", null, locale);
 		}
-		catch (VerificationInterruptException e){
+		catch (VerificationInterruptedException e){
 			return e.getMessage();
 		}
 		catch (Exception e){
@@ -116,7 +114,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 			settingRepo.save(setting);
 			return messageSource.getMessage("setting.update.success", null, locale);
 		}
-		catch (VerificationInterruptException e){
+		catch (VerificationInterruptedException e){
 			return e.getMessage();
 		}
 		catch (InternetBankingException e) {
@@ -135,7 +133,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 			settingRepo.delete(setting);
 			return messageSource.getMessage("setting.delete.success", null, locale);
 		}
-		catch (VerificationInterruptException e){
+		catch (VerificationInterruptedException e){
 			return e.getMessage();
 		}
 		catch (InternetBankingException e){

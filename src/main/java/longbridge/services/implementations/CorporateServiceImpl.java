@@ -18,7 +18,6 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.mail.MailException;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -103,7 +102,7 @@ public class CorporateServiceImpl implements CorporateService {
             logger.info("Corporate {} created", corporate.getName());
             return messageSource.getMessage("corporate.add.success", null, locale);
 
-        } catch (VerificationInterruptException e) {
+        } catch (VerificationInterruptedException e) {
             return e.getMessage();
         } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("corporate.add.failure", null, locale), e);
@@ -302,7 +301,7 @@ public class CorporateServiceImpl implements CorporateService {
             return messageSource.getMessage("corporate.status.success", null, locale);
 
         }
-        catch (VerificationInterruptException e) {
+        catch (VerificationInterruptedException e) {
             return e.getMessage();
         }
 
@@ -382,7 +381,7 @@ public class CorporateServiceImpl implements CorporateService {
             logger.info("Added transfer rule for corporate with Id {}", transferRuleDTO.getCorporateId());
             return messageSource.getMessage("rule.add.success", null, locale);
         }
-        catch (VerificationInterruptException e) {
+        catch (VerificationInterruptedException e) {
             return e.getMessage();
         }
         catch (Exception e) {
@@ -416,7 +415,7 @@ public class CorporateServiceImpl implements CorporateService {
             logger.info("Updated transfer rule for corporate with Id {}", transferRuleDTO.getCorporateId());
             return messageSource.getMessage("rule.update.success", null, locale);
         }
-        catch (VerificationInterruptException e) {
+        catch (VerificationInterruptedException e) {
             return e.getMessage();
         }
         catch (InternetBankingException ibe) {
@@ -470,7 +469,7 @@ public class CorporateServiceImpl implements CorporateService {
             logger.info("Updated transfer rule  with Id {}", id);
             return messageSource.getMessage("rule.delete.success", null, locale);
         }
-        catch (VerificationInterruptException e) {
+        catch (VerificationInterruptedException e) {
             return e.getMessage();
         }
         catch (InternetBankingException e){
@@ -499,7 +498,7 @@ public class CorporateServiceImpl implements CorporateService {
             return messageSource.getMessage("role.add.success", null, locale);
 
         }
-        catch (VerificationInterruptException e) {
+        catch (VerificationInterruptedException e) {
             return e.getMessage();
         }
         catch (Exception e) {
@@ -529,7 +528,7 @@ public class CorporateServiceImpl implements CorporateService {
             return messageSource.getMessage("role.update.success", null, locale);
 
         }
-        catch (VerificationInterruptException e) {
+        catch (VerificationInterruptedException e) {
             return e.getMessage();
         }
         catch (InternetBankingException e){
@@ -568,7 +567,7 @@ public class CorporateServiceImpl implements CorporateService {
             corporateRoleRepo.delete(role);
             return messageSource.getMessage("role.delete.success", null, locale);
         }
-        catch (VerificationInterruptException e) {
+        catch (VerificationInterruptedException e) {
             return e.getMessage();
         }
         catch (InternetBankingException e){

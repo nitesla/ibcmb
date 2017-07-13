@@ -138,14 +138,14 @@ public class OperationsUserServiceImpl implements OperationsUserService {
                 try {
                     operationsUserRepo.save(user);
                     sendActivateMessage(user, fullName, user.getUserName(), password);
-                } catch (VerificationInterruptException e) {
+                } catch (VerificationInterruptedException e) {
                     return e.getMessage();
                 }
             } else {
                 user.setStatus(newStatus);
                 try {
                     operationsUserRepo.save(user);
-                } catch (VerificationInterruptException e) {
+                } catch (VerificationInterruptedException e) {
                     e.getMessage();
                 }
             }
@@ -217,7 +217,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             try {
                 OperationsUser newUser = operationsUserRepo.save(opsUser);
                 createUserOnEntrust(newUser);
-            } catch (VerificationInterruptException e) {
+            } catch (VerificationInterruptedException e) {
                 return e.getMessage();
             }
             logger.info("New Operation user  {} created", opsUser.getUserName());
@@ -286,7 +286,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             opsUser.setRole(role);
             try {
                 operationsUserRepo.save(opsUser);
-            } catch (VerificationInterruptException e) {
+            } catch (VerificationInterruptedException e) {
                return e.getMessage();
             }
             logger.info("Operations user {} updated", opsUser.getUserName());

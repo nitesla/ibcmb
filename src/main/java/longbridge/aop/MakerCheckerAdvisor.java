@@ -7,7 +7,7 @@ import javax.persistence.EntityManager;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import longbridge.exception.InternetBankingException;
-import longbridge.exception.VerificationInterruptException;
+import longbridge.exception.VerificationInterruptedException;
 import longbridge.models.AbstractEntity;
 import longbridge.models.User;
 import longbridge.models.Verification;
@@ -147,7 +147,7 @@ public class MakerCheckerAdvisor {
         log.info(entityName + " has been saved for verification");
 
         System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-        throw new VerificationInterruptException(verifier.description()+" has gone for verification");
+        throw new VerificationInterruptedException(verifier.description()+" has gone for verification");
 
     }
 
@@ -209,7 +209,7 @@ public class MakerCheckerAdvisor {
 
         log.info(entityName + " has been saved for verification");
 
-        throw new VerificationInterruptException(verifier.description()+" has gone for verification");
+        throw new VerificationInterruptedException(verifier.description()+" has gone for verification");
     }
 
 

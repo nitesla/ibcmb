@@ -2,7 +2,7 @@ package longbridge.services.implementations;
 
 import longbridge.dtos.*;
 import longbridge.exception.InternetBankingException;
-import longbridge.exception.VerificationInterruptException;
+import longbridge.exception.VerificationInterruptedException;
 import longbridge.models.*;
 import longbridge.repositories.AccountLimitRepo;
 import longbridge.repositories.ClassLimitRepo;
@@ -20,12 +20,9 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 
-import javax.xml.crypto.dsig.spec.ExcC14NParameterSpec;
 import java.math.BigDecimal;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -69,7 +66,7 @@ public class TransactionLimitServiceImpl implements TransactionLimitService {
             globalLimitRepo.save(globalLimit);
             logger.info("Added global limit {}", globalLimit.toString());
             return messageSource.getMessage("limit.add.success", null, locale);
-        } catch (VerificationInterruptException e) {
+        } catch (VerificationInterruptedException e) {
             return e.getMessage();
         } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("limit.add.failure", null, locale), e);
@@ -84,7 +81,7 @@ public class TransactionLimitServiceImpl implements TransactionLimitService {
             globalLimitRepo.save(globalLimit);
             logger.info("Updated global limit {}", globalLimit.toString());
             return messageSource.getMessage("limit.update.success", null, locale);
-        } catch (VerificationInterruptException e) {
+        } catch (VerificationInterruptedException e) {
             return e.getMessage();
         } catch (InternetBankingException e) {
             throw e;
@@ -144,7 +141,7 @@ public class TransactionLimitServiceImpl implements TransactionLimitService {
             classLimitRepo.save(classLimit);
             logger.info("Added class limit {}", classLimit.toString());
             return messageSource.getMessage("limit.add.success", null, locale);
-        } catch (VerificationInterruptException e) {
+        } catch (VerificationInterruptedException e) {
             return e.getMessage();
         } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("limit.add.success", null, locale), e);
@@ -159,7 +156,7 @@ public class TransactionLimitServiceImpl implements TransactionLimitService {
             classLimitRepo.save(classLimit);
             logger.info("Update class limit {}", classLimit.toString());
             return messageSource.getMessage("limit.update.success", null, locale);
-        } catch (VerificationInterruptException e) {
+        } catch (VerificationInterruptedException e) {
             return e.getMessage();
         } catch (InternetBankingException e) {
             throw e;
@@ -203,7 +200,7 @@ public class TransactionLimitServiceImpl implements TransactionLimitService {
             accountLimitRepo.save(accountLimit);
             logger.info("Added account limit {}", accountLimit.toString());
             return messageSource.getMessage("limit.add.success", null, locale);
-        } catch (VerificationInterruptException e) {
+        } catch (VerificationInterruptedException e) {
             return e.getMessage();
         } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("limit.add.failure", null, locale), e);
@@ -218,7 +215,7 @@ public class TransactionLimitServiceImpl implements TransactionLimitService {
             accountLimitRepo.save(accountLimit);
             logger.info("Updated account limit {}", accountLimit.toString());
             return messageSource.getMessage("limit.update.success", null, locale);
-        } catch (VerificationInterruptException e) {
+        } catch (VerificationInterruptedException e) {
             return e.getMessage();
         } catch (InternetBankingException e) {
             throw e;
@@ -249,7 +246,7 @@ public class TransactionLimitServiceImpl implements TransactionLimitService {
             accountLimitRepo.delete(limit);
             logger.info("Deleted account limit with Id {}", id);
             return messageSource.getMessage("limit.delete.success", null, locale);
-        } catch (VerificationInterruptException e) {
+        } catch (VerificationInterruptedException e) {
             return e.getMessage();
         } catch (InternetBankingException e) {
             throw e;
@@ -266,7 +263,7 @@ public class TransactionLimitServiceImpl implements TransactionLimitService {
             classLimitRepo.delete(classLimit);
             logger.info("Deleted class limit with Id {}", id);
             return messageSource.getMessage("limit.delete.success", null, locale);
-        } catch (VerificationInterruptException e) {
+        } catch (VerificationInterruptedException e) {
             return e.getMessage();
         } catch (InternetBankingException e) {
             throw e;
@@ -283,7 +280,7 @@ public class TransactionLimitServiceImpl implements TransactionLimitService {
             globalLimitRepo.delete(globalLimit);
             logger.info("Deleted global limit with Id {}", id);
             return messageSource.getMessage("limit.delete.success", null, locale);
-        } catch (VerificationInterruptException e) {
+        } catch (VerificationInterruptedException e) {
             return e.getMessage();
         } catch (InternetBankingException e) {
             throw e;
@@ -300,7 +297,7 @@ public class TransactionLimitServiceImpl implements TransactionLimitService {
             accountLimitRepo.delete(accountLimit);
             logger.info("Deleted account limit with Id {}", id);
             return messageSource.getMessage("limit.delete.success", null, locale);
-        } catch (VerificationInterruptException e) {
+        } catch (VerificationInterruptedException e) {
             return e.getMessage();
         } catch (InternetBankingException e) {
             throw e;
@@ -317,7 +314,7 @@ public class TransactionLimitServiceImpl implements TransactionLimitService {
             classLimitRepo.delete(classLimit);
             logger.info("Deleted class limit with Id {}", id);
             return messageSource.getMessage("limit.delete.success", null, locale);
-        } catch (VerificationInterruptException e) {
+        } catch (VerificationInterruptedException e) {
             return e.getMessage();
         } catch (InternetBankingException e) {
             throw e;
@@ -334,7 +331,7 @@ public class TransactionLimitServiceImpl implements TransactionLimitService {
             globalLimitRepo.delete(globalLimit);
             logger.info("Deleted global limit with Id {}", id);
             return messageSource.getMessage("limit.delete.success", null, locale);
-        } catch (VerificationInterruptException e) {
+        } catch (VerificationInterruptedException e) {
             return e.getMessage();
         } catch (InternetBankingException e) {
             throw e;

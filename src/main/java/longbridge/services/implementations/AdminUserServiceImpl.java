@@ -1,6 +1,5 @@
 package longbridge.services.implementations;
 
-import javassist.bytecode.stackmap.BasicBlock;
 import longbridge.dtos.AdminUserDTO;
 import longbridge.dtos.SettingDTO;
 import longbridge.exception.*;
@@ -149,7 +148,7 @@ public class AdminUserServiceImpl implements AdminUserService {
             try {
                 AdminUser newUser = adminUserRepo.save(adminUser);
                 createUserOnEntrust(newUser);
-            } catch (VerificationInterruptException e) {
+            } catch (VerificationInterruptedException e) {
                 return e.getMessage();
             }
 
@@ -217,14 +216,14 @@ public class AdminUserServiceImpl implements AdminUserService {
                 try {
                     AdminUser admin = adminUserRepo.save(user);
                     sendActivateMessage(admin, fullName, user.getUserName(), password);
-                } catch (VerificationInterruptException e) {
+                } catch (VerificationInterruptedException e) {
                     return e.getMessage();
                 }
             } else {
                 user.setStatus(newStatus);
                 try {
                     adminUserRepo.save(user);
-                } catch (VerificationInterruptException e) {
+                } catch (VerificationInterruptedException e) {
                     return e.getMessage();
                 }
             }
@@ -313,7 +312,7 @@ public class AdminUserServiceImpl implements AdminUserService {
             adminUser.setRole(role);
             try {
                 adminUserRepo.save(adminUser);
-            } catch (VerificationInterruptException e) {
+            } catch (VerificationInterruptedException e) {
                 return e.getMessage();
             }
 
