@@ -1,7 +1,6 @@
 package longbridge.controllers.retail;
 
 
-import longbridge.api.NEnquiryDetails;
 import longbridge.dtos.LocalBeneficiaryDTO;
 import longbridge.dtos.TransferRequestDTO;
 import longbridge.exception.InternetBankingException;
@@ -14,8 +13,6 @@ import longbridge.services.*;
 import longbridge.utils.DateFormatter;
 import longbridge.utils.TransferType;
 import longbridge.utils.TransferUtils;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
@@ -208,8 +205,8 @@ public class TransferController {
 
 
                 try {
-
-             securityService.performTokenValidation(principal.getName(), token);
+                    RetailUser retailUser = retailUserService.getUserByName(principal.getName());
+             securityService.performTokenValidation(retailUser.getEntrustId(), retailUser.getEntrustGroup(), token);
 
                 } catch (InternetBankingSecurityException ibse) {
                       ibse.printStackTrace();
@@ -342,9 +339,20 @@ public class TransferController {
 
     @RequestMapping(value = "/limit/{accountNumber}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    public String getBalance(@PathVariable String accountNumber) throws Exception {
+    public String getLimit(@PathVariable String accountNumber) throws Exception {
 
-        return integrationService.getDailyAccountLimit(accountNumber,"NIP");
+        return transferUtils.getLimit(accountNumber);
     }
+
+    @RequestMapping(value = "/balance/{accountNumber}", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public String getBalance(@PathVariable String accountNumber) {
+
+        return transferUtils.getBalance(accountNumber);
+
+    }
+
+
+
 }
 

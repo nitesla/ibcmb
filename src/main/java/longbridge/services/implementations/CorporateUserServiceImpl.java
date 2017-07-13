@@ -218,25 +218,27 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             if ("".equals(user.getEntrustId()) || user.getEntrustId() == null) {
                 String fullName = user.getFirstName() + " " + user.getLastName();
                 SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_CREATION");
-                String entrustId = user.getUserType().toString() + "_" + user.getUserName();
+                String entrustId = user.getUserName();
+                String group = configService.getSettingByName("DEF_ENTRUST_CORP_GRP").getValue();
 
                 if (setting != null && setting.isEnabled()) {
                     if ("YES".equalsIgnoreCase(setting.getValue())) {
-                        boolean result = securityService.createEntrustUser(entrustId, fullName, true);
+                        boolean result = securityService.createEntrustUser(entrustId, group, fullName, true);
                         if (!result) {
                             throw new EntrustException(messageSource.getMessage("entrust.create.failure", null, locale));
 
                         }
-                        boolean contactResult = securityService.addUserContacts(user.getEmail(), user.getPhoneNumber(), true, entrustId);
+                        boolean contactResult = securityService.addUserContacts(user.getEmail(), user.getPhoneNumber(), true, entrustId, group);
                         if (!contactResult) {
                             logger.error("Failed to add user contacts on Entrust");
-                            securityService.deleteEntrustUser(entrustId);
+                            securityService.deleteEntrustUser(entrustId, group);
                             throw new EntrustException(messageSource.getMessage("entrust.contact.failure", null, locale));
 
 
                         }
                     }
                     user.setEntrustId(entrustId);
+                    user.setEntrustGroup(group);
                     corporateUserRepo.save(user);
 
                 }
@@ -478,7 +480,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
             if (setting != null && setting.isEnabled()) {
                 if ("YES".equalsIgnoreCase(setting.getValue())) {
-                    securityService.deleteEntrustUser(corporateUser.getUserName());
+                    securityService.deleteEntrustUser(corporateUser.getEntrustId(), corporateUser.getEntrustGroup());
                 }
             }
             return messageSource.getMessage("user.delete.success", null, locale);

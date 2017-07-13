@@ -70,7 +70,7 @@ public class OperationsUserController {
         String tokenCode = request.getParameter("token");
 
         try{
-            boolean result = securityService.performTokenValidation(opsUser.getEntrustId(),tokenCode);
+            boolean result = securityService.performTokenValidation(opsUser.getEntrustId(), opsUser.getEntrustGroup(), tokenCode);
             if(result){
                 if( request.getSession().getAttribute("2FA") !=null) {
                     request.getSession().removeAttribute("2FA");

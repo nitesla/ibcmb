@@ -160,7 +160,7 @@ public class UserRegController {
         if (user != null){
             logger.info("USER NAME {}", user.getUserName());
             session.setAttribute("username", user.getUserName());
-            Map<String, List<String>> qa = securityService.getUserQA(user.getUserName());
+            Map<String, List<String>> qa = securityService.getUserQA(user.getEntrustId(), user.getEntrustGroup());
             //List<String> sec = null;
             if (qa != null && !qa.isEmpty()){
                 List<String> question = qa.get("questions");
@@ -189,7 +189,7 @@ public class UserRegController {
         if (user != null){
             logger.info("USER NAME {}", user.getUserName());
             try{
-                Map<String, List<String>> qa = securityService.getUserQA(user.getUserName());
+                Map<String, List<String>> qa = securityService.getUserQA(user.getEntrustId(), user.getEntrustGroup());
                 logger.info("QQQAAAA {}", qa);
                 //List<String> sec = null;
                 if (qa != null && !qa.isEmpty()){
@@ -216,10 +216,11 @@ public class UserRegController {
 
     @GetMapping("/rest/secAns/{answer}")
     public @ResponseBody String getSecAns(@PathVariable String answer, HttpSession session){
-
+        try{
         //confirm security question is correct
         String secAnswer="";
-        Map<String, List<String>> qa = securityService.getUserQA((String) session.getAttribute("username"));
+        RetailUser retailUser = retailUserService.getUserByName((String) session.getAttribute("username"));
+        Map<String, List<String>> qa = securityService.getUserQA(retailUser.getEntrustId(), retailUser.getEntrustGroup());
         //List<String> sec = null;
         if (qa != null){
             List<String> question = qa.get("answers");
@@ -237,6 +238,10 @@ public class UserRegController {
             return "";
         }
         //return (String) session.getAttribute("username");
+    }catch (Exception e){
+        logger.info(e.getMessage());
+        return "";
+    }
     }
 
     @GetMapping("/rest/secAnswer/{answer}/{username}")
@@ -245,7 +250,8 @@ public class UserRegController {
         //confirm security question is correct
         String secAnswer="";
         try {
-            Map<String, List<String>> qa = securityService.getUserQA(username);
+            RetailUser retailUser = retailUserService.getUserByName(username);
+            Map<String, List<String>> qa = securityService.getUserQA(retailUser.getEntrustId(), retailUser.getEntrustGroup());
             //List<String> sec = null;
             if (qa != null) {
                 List<String> question = qa.get("answers");
@@ -279,7 +285,7 @@ public class UserRegController {
         if (user != null){
             logger.info("USER NAME {}", user.getUserName());
             try{
-                String sn = securityService.getTokenSerials(user.getUserName());
+                String sn = securityService.getTokenSerials(user.getEntrustId(), user.getEntrustGroup());
                 logger.info("SERIALS {}", sn);
                 //List<String> sec = null;
                 if (sn != null && !sn.isEmpty()){
@@ -418,7 +424,8 @@ public class UserRegController {
                 return "false";
             }
 
-            Boolean res = securityService.deActivateToken(username, token);
+            RetailUser retailUser = retailUserService.getUserByName(username);
+            Boolean res = securityService.deActivateToken(retailUser.getEntrustId(), retailUser.getEntrustGroup(), token);
             if (res){
                 return "true";
             }else {
@@ -465,7 +472,7 @@ public class UserRegController {
 
             //confirm security question is correct
             String secAnswer="";
-            Map<String, List<String>> qa = securityService.getUserQA(user.getUserName());
+            Map<String, List<String>> qa = securityService.getUserQA(user.getEntrustId(), user.getEntrustGroup());
             //List<String> sec = null;
             if (qa != null){
                 List<String> questions= qa.get("questions");
@@ -748,7 +755,8 @@ public class UserRegController {
         resetPasswordForm.step = "1";
         resetPasswordForm.username = (String) session.getAttribute("username");
         try{
-            Map<String, List<String>> qa = securityService.getUserQA((String) session.getAttribute("username"));
+            RetailUser retailUser = retailUserService.getUserByName((String) session.getAttribute("username"));
+            Map<String, List<String>> qa = securityService.getUserQA(retailUser.getEntrustId(), retailUser.getEntrustGroup());
             if (qa != null && !qa.isEmpty()){
                 List<String> questions= qa.get("questions");
                 List<String> answers= qa.get("answers");

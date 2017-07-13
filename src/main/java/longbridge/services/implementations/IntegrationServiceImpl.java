@@ -186,7 +186,7 @@ public class IntegrationServiceImpl implements IntegrationService {
         try {
             AccountDetails details = viewAccountDetails(accountId);
 
-            BigDecimal availBal = new BigDecimal(details.getAvailableBalance());
+             BigDecimal availBal = new BigDecimal(details.getAvailableBalance());
             BigDecimal ledgBal = new BigDecimal(details.getLedgerBalAmt());
             response.put("AvailableBalance", availBal);
             response.put("LedgerBalance", ledgBal);

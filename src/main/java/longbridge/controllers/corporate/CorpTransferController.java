@@ -205,7 +205,8 @@ public class CorpTransferController {
 
             if (request.getSession().getAttribute("AUTH") != null) {
                 String token = request.getParameter("token");
-                boolean ok = securityService.performTokenValidation(principal.getName(), token);
+                CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
+                boolean ok = securityService.performTokenValidation(corporateUser.getEntrustId(), corporateUser.getEntrustGroup(), token);
 
                 if (!ok) {
                     model.addAttribute("failure", messages.getMessage("auth.token.failure", null, locale));

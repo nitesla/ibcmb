@@ -47,26 +47,26 @@ public class CorpProfileUpdateServiceImpl implements CorpProfileUpdateService{
     Locale locale = LocaleContextHolder.getLocale();
 
 
-    private void addUserContact(String username, String phone, String email){
+    private void addUserContact(String username, String group, String phone, String email){
         try{
-            securityService.addUserContacts(email, phone, true, username);
+            securityService.addUserContacts(email, phone, true, username, group);
         }catch (InternetBankingSecurityException e){
-            securityService.deleteEntrustUser(username);
+            securityService.deleteEntrustUser(username, group);
             throw new InternetBankingSecurityException(messageSource.getMessage("entrust.create.failure", null, locale), e);
         }
     }
 
-    private void setEntrustUserQA(String username, List<String> securityQuestion, List<String> securityAnswer){
+    private void setEntrustUserQA(String username, String group,  List<String> securityQuestion, List<String> securityAnswer){
         try{
-            securityService.setUserQA(username, securityQuestion, securityAnswer);
+            securityService.setUserQA(username, group, securityQuestion, securityAnswer);
         }catch (InternetBankingSecurityException e){
             throw new InternetBankingSecurityException(messageSource.getMessage("entrust.create.failure", null, locale), e);
         }
     }
 
-    private void setEntrustUserMutualAuth(String username, String captionSec, String phishingSec){
+    private void setEntrustUserMutualAuth(String username, String group, String captionSec, String phishingSec){
         try{
-            securityService.setMutualAuth(username, captionSec, phishingSec);
+            securityService.setMutualAuth(username, group, captionSec, phishingSec);
         }catch (InternetBankingSecurityException e){
             throw new InternetBankingSecurityException(messageSource.getMessage("entrust.create.failure", null, locale), e);
         }
@@ -84,11 +84,9 @@ public class CorpProfileUpdateServiceImpl implements CorpProfileUpdateService{
             if (setting != null && setting.isEnabled()) {
                 if ("YES".equalsIgnoreCase(setting.getValue())) {
 
-//                    addUserContact(user.getUserName(), phoneNo, user.getEmail());
+                    setEntrustUserQA(user.getEntrustId(), user.getEntrustId(), user.getSecurityQuestion(), user.getSecurityAnswer());
 
-                    setEntrustUserQA(user.getEntrustId(), user.getSecurityQuestion(), user.getSecurityAnswer());
-
-                    setEntrustUserMutualAuth(user.getEntrustId(), user.getCaptionSec(), user.getPhishingSec());
+                    setEntrustUserMutualAuth(user.getEntrustId(), user.getEntrustId(), user.getCaptionSec(), user.getPhishingSec());
 
                     user.setIsFirstTimeLogon("N");
 
