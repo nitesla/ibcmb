@@ -111,6 +111,8 @@ public class CorporateControllerAdvice {
         boolean isUserAdmin = corporateUser.isAdmin();
         model.addAttribute("isUserAdmin",isUserAdmin);
 
+        model.addAttribute("corporateType",corporateUser.getCorporate().getCorporateType());
+
         return "";
     }
 
