@@ -83,15 +83,15 @@
                                     </thead>
                                     <tbody>
                                     <tr th:each="list : ${currentDetails}">
-                                        <td th:if="${pastDetails.get(currentDetails.indexOf(list)) !=currentDetails.get(currentDetails.indexOf(list))}"  th:align="center" th:style="'background-color:#b46655; color:white'" th:text="${headers.get(currentDetails.indexOf(list))}" >
+                                        <td th:if="${pastDetails.get(currentDetails.indexOf(list)) !=currentDetails.get(currentDetails.indexOf(list))}"  th:align="center" th:style="'background-color:#f2dede; color:#a94442'" th:text="${headers.get(currentDetails.indexOf(list))}" >
                                         </td>
                                         <td th:if="${pastDetails.get(currentDetails.indexOf(list)) ==currentDetails.get(currentDetails.indexOf(list))}"  th:align="center" th:text="${headers.get(currentDetails.indexOf(list))}" >
                                         </td>
-                                        <td th:align="center" th:if="${pastDetails.get(currentDetails.indexOf(list)) !=currentDetails.get(currentDetails.indexOf(list))}" th:text="${list}" th:style="'background-color:#b46655; color:white'">
+                                        <td th:align="center" th:if="${pastDetails.get(currentDetails.indexOf(list)) !=currentDetails.get(currentDetails.indexOf(list))}" th:text="${list}" th:style="'background-color:#f2dede; color:#a94442'">
                                         </td>
                                         <td th:align="center" th:if="${pastDetails.get(currentDetails.indexOf(list)) ==currentDetails.get(currentDetails.indexOf(list))}" th:text="${list}">
                                         </td>
-                                        <td th:align="center" th:if="${pastDetails.get(currentDetails.indexOf(list)) !=currentDetails.get(currentDetails.indexOf(list))}" th:text="${pastDetails.get(currentDetails.indexOf(list))}" th:style="'background-color:#b46655; color:white'">     </td>
+                                        <td th:align="center" th:if="${pastDetails.get(currentDetails.indexOf(list)) !=currentDetails.get(currentDetails.indexOf(list))}" th:text="${pastDetails.get(currentDetails.indexOf(list))}" th:style="'background-color:#f2dede; color:#a94442'">     </td>
                                         <td th:align="center" th:if="${pastDetails.get(currentDetails.indexOf(list)) ==currentDetails.get(currentDetails.indexOf(list))}" th:text="${pastDetails.get(currentDetails.indexOf(list))}">     </td>
                                     </tr>
                                     </tbody>
