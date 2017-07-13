@@ -1,8 +1,11 @@
 package longbridge.controllers;
 
+import longbridge.dtos.OperationsUserDTO;
 import longbridge.exception.InternetBankingSecurityException;
 import longbridge.exception.PasswordException;
-import longbridge.exception.PasswordPolicyViolationException;
+import longbridge.models.OperationsUser;
+import longbridge.services.OperationsUserService;
+import longbridge.services.PasswordPolicyService;
 import longbridge.services.SecurityService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,10 +22,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import longbridge.dtos.OperationsUserDTO;
-import longbridge.services.OperationsUserService;
-import longbridge.services.PasswordPolicyService;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -78,7 +77,8 @@ public class OperationsUserGeneralContoller {
             return "/ops/username";
         }
         try {
-            boolean result = securityService.sendOtp(username);
+            OperationsUser operationsUser = operationsUserService.getUserByName(username);
+            boolean result = securityService.sendOtp(operationsUser.getEntrustId(), operationsUser.getEntrustGroup());
             if (result) {
                 session.setAttribute("username", username);
                 session.setAttribute("redirectUrl", "/password/reset");

@@ -67,7 +67,7 @@ public class AdmTokenController {
 
 		String tokenCode = request.getParameter("token");
 		try {
-			boolean result = securityService.performTokenValidation(user.getEntrustId(), tokenCode);
+			boolean result = securityService.performTokenValidation(user.getEntrustId(), user.getEntrustGroup(), tokenCode);
 			if (result) {
 				if (request.getSession().getAttribute("2FA") != null) {
 					request.getSession().removeAttribute("2FA");
@@ -101,8 +101,9 @@ public class AdmTokenController {
 		}
 
 		try {
-			String entrustId = tokenForm.getUserType()+"_"+tokenForm.getUsername();
-			boolean result = securityService.assignToken(entrustId, tokenForm.getSerialNumber());
+			String username = tokenForm.getUsername();
+			AdminUser adminUser = adminUserService.getUserByName(username);
+			boolean result = securityService.assignToken(adminUser.getUserName(), adminUser.getEntrustGroup(), tokenForm.getSerialNumber());
 			if (result) {
 				redirectAttributes.addFlashAttribute("message",
 						messageSource.getMessage("token.assign.success", null, locale));
@@ -130,8 +131,8 @@ public class AdmTokenController {
 		}
 
 		try {
-			String entustId = userType+"_"+username;
-			String serials = securityService.getTokenSerials(entustId);
+			AdminUser adminUser = adminUserService.getUserByName(username);
+			String serials = securityService.getTokenSerials(adminUser.getEntrustId(), adminUser.getEntrustGroup());
 			logger.info("Serials recieved are " + serials);
 			if (serials != null && !"".equals(serials)) {
 				String serialNums = StringUtils.trim(serials);
@@ -164,9 +165,9 @@ public class AdmTokenController {
 		}
 
 		try {
-			String entrustId = tokenForm.getUserType()+"_"+tokenForm.getUsername();
+			AdminUser adminUser = adminUserService.getUserByName(tokenForm.getUsername());
 
-			boolean result = securityService.activateToken(entrustId, tokenForm.getSerialNumber());
+			boolean result = securityService.activateToken(adminUser.getEntrustId(), adminUser.getEntrustGroup(), tokenForm.getSerialNumber());
 			if (result) {
 				redirectAttributes.addFlashAttribute("message",
 						messageSource.getMessage("token.activate.success", null, locale));
@@ -196,13 +197,13 @@ public class AdmTokenController {
 		}
 
 		try {
-			String entrustId = tokenForm.getUserType()+"_"+tokenForm.getUsername();
+			AdminUser adminUser = adminUserService.getUserByName(tokenForm.getUsername());
 
-			boolean result1 = securityService.assignToken(entrustId, tokenForm.getSerialNumber());
+			boolean result1 = securityService.assignToken(adminUser.getEntrustId(), adminUser.getEntrustGroup(), tokenForm.getSerialNumber());
 			if (result1) {
 				redirectAttributes.addFlashAttribute("message",
 						messageSource.getMessage("token.assign.success", null, locale));
-				boolean result2 = securityService.activateToken(tokenForm.getUsername(), tokenForm.getSerialNumber());
+				boolean result2 = securityService.activateToken(adminUser.getEntrustId(), adminUser.getEntrustGroup(), tokenForm.getSerialNumber());
 				if (result2) {
 					redirectAttributes.addFlashAttribute("message",
 							messageSource.getMessage("token.activate.success", null, locale));
@@ -231,8 +232,8 @@ public class AdmTokenController {
 		}
 
 		try {
-			String entrustId = userType+"_"+username;
-			String serials = securityService.getTokenSerials(entrustId);
+			AdminUser adminUser = adminUserService.getUserByName(username);
+			String serials = securityService.getTokenSerials(adminUser.getEntrustId(), adminUser.getEntrustGroup());
 			if (serials != null && !"".equals(serials)) {
 				String serialNums = StringUtils.trim(serials);
 				List<String> serialNos = Arrays.asList(StringUtils.split(serialNums, ","));
@@ -270,8 +271,8 @@ public class AdmTokenController {
 			return "/adm/token/deactivate2";
 		}
 		try {
-			String entustId = tokenForm.getUserType()+"_"+tokenForm.getUsername();
-			boolean result = securityService.deActivateToken(entustId, tokenForm.getSerialNumber());
+			AdminUser adminUser = adminUserService.getUserByName(tokenForm.getUsername());
+			boolean result = securityService.deActivateToken(adminUser.getEntrustId(), adminUser.getEntrustGroup(), tokenForm.getSerialNumber());
 			if (result) {
 				redirectAttributes.addFlashAttribute("message",
 						messageSource.getMessage("token.deactivate.success", null, locale));
@@ -300,8 +301,8 @@ public class AdmTokenController {
 			return "/adm/token/unlock";
 		}
 		try {
-			String entustId = tokenForm.getUserType()+"_"+tokenForm.getUsername();
-			boolean result = securityService.unLockUser(entustId);
+			AdminUser adminUser = adminUserService.getUserByName(tokenForm.getUsername());
+			boolean result = securityService.unLockUser(adminUser.getEntrustId(), adminUser.getEntrustGroup());
 			if (result) {
 				redirectAttributes.addFlashAttribute("message",
 						messageSource.getMessage("token.unlock.success", null, locale));
@@ -330,8 +331,8 @@ public class AdmTokenController {
 			return "/adm/token/synchronize";
 		}
 		try {
-			String entrustId = tokenForm.getUserType()+"_"+tokenForm.getUsername();
-			boolean result = securityService.synchronizeToken(entrustId, tokenForm.getSerialNumber(),
+			AdminUser adminUser = adminUserService.getUserByName(tokenForm.getUsername());
+			boolean result = securityService.synchronizeToken(adminUser.getEntrustId(), adminUser.getEntrustGroup(), tokenForm.getSerialNumber(),
 					tokenForm.getTokenCode1(), tokenForm.getTokenCode2());
 			if (result) {
 				redirectAttributes.addFlashAttribute("message",
@@ -349,8 +350,8 @@ public class AdmTokenController {
 	public List<String> getTokenSerials(@RequestParam("username") String username,@RequestParam("userType") String userType) {
 		List<String> serials = new ArrayList<>();
 		try {
-			String entrustId = userType+"_"+username;
-			String serial = securityService.getTokenSerials(entrustId);
+			AdminUser adminUser = adminUserService.getUserByName(username);
+			String serial = securityService.getTokenSerials(adminUser.getEntrustId(), adminUser.getEntrustGroup());
 			if (serials != null && !serials.isEmpty()) {
 				String serialNums = StringUtils.trim(serial);
 				serials = Arrays.asList(StringUtils.split(serialNums, ","));

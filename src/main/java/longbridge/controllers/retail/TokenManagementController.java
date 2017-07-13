@@ -3,10 +3,7 @@ package longbridge.controllers.retail;
 import longbridge.exception.InternetBankingSecurityException;
 import longbridge.forms.CustSyncTokenForm;
 import longbridge.forms.TokenProp;
-<<<<<<< HEAD
-=======
 import longbridge.models.RetailUser;
->>>>>>> fc09b24f00435f1c6652c5d77977f6e0806b77e6
 import longbridge.services.RetailUserService;
 import longbridge.services.SecurityService;
 import org.apache.commons.lang3.StringUtils;
@@ -64,9 +61,10 @@ public class TokenManagementController {
 
         String username = principal.getName();
 
-        RetailUser user = retailUserService.getUserByName(username);
+
         String tokenCode = request.getParameter("token");
         try{
+            RetailUser user = retailUserService.getUserByName(username);
             boolean result = securityService.performTokenValidation(user.getEntrustId(),user.getEntrustGroup(),tokenCode);
 
             if(result){
@@ -89,7 +87,8 @@ public class TokenManagementController {
     @GetMapping("/sync")
     public String syncToken(Principal principal, Model model){
         try {
-            String serials = securityService.getTokenSerials(principal.getName());
+            RetailUser user = retailUserService.getUserByName(principal.getName());
+            String serials = securityService.getTokenSerials(user.getEntrustId(), user.getEntrustGroup());
 
             logger.info("Serial received :"+serials);
             if (serials != null && !"".equals(serials)) {
@@ -113,7 +112,8 @@ public class TokenManagementController {
         }
 
         try{
-            boolean res = securityService.synchronizeToken(principal.getName(), custSyncTokenForm.getSerialNo(), custSyncTokenForm.getTokenCode1(), custSyncTokenForm.getTokenCode2());
+            RetailUser retailUser = retailUserService.getUserByName(principal.getName());
+            boolean res = securityService.synchronizeToken(retailUser.getEntrustId(), retailUser.getEntrustGroup(), custSyncTokenForm.getSerialNo(), custSyncTokenForm.getTokenCode1(), custSyncTokenForm.getTokenCode2());
             if (res){
                 redirectAttributes.addFlashAttribute("message", messageSource.getMessage("token.sync.success", null, locale));
                 return "redirect:/retail/token/sync";
@@ -131,7 +131,8 @@ public class TokenManagementController {
     public String lostToken(Principal principal, Model model){
 
         try {
-            String serials = securityService.getTokenSerials(principal.getName());
+            RetailUser retailUser = retailUserService.getUserByName(principal.getName());
+            String serials = securityService.getTokenSerials(retailUser.getEntrustId(), retailUser.getEntrustGroup());
             if (serials != null && !"".equals(serials)) {
                 String serialNums = StringUtils.trim(serials);
                 List<String> serialNos = Arrays.asList(StringUtils.split(serialNums, ","));
@@ -155,7 +156,8 @@ public class TokenManagementController {
             return "/cust/token/lost";
         }
         try {
-            boolean result = securityService.deActivateToken(principal.getName(), tokenProp.getSerialNo());
+            RetailUser retailUser = retailUserService.getUserByName(principal.getName());
+            boolean result = securityService.deActivateToken(retailUser.getEntrustId(), retailUser.getEntrustGroup(), tokenProp.getSerialNo());
             if (result) {
                 redirectAttributes.addFlashAttribute("message", messageSource.getMessage("token.deactivate.success", null, locale));
                 return "redirect:/retail/token/lost";
@@ -185,7 +187,8 @@ public class TokenManagementController {
             url = (String) session.getAttribute("redirectURL");
 
             try {
-                boolean result = securityService.performTokenValidation(principal.getName(), token);
+                RetailUser retailUser = retailUserService.getUserByName(principal.getName());
+                boolean result = securityService.performTokenValidation(retailUser.getEntrustId(), retailUser.getEntrustGroup(), token);
                 if (!result){
                     redirectAttributes.addFlashAttribute("failure", "Token Authentication Failed");
                     return "redirect:/retail/token/authenticate";

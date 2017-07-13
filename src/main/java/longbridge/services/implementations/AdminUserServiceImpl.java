@@ -173,24 +173,26 @@ public class AdminUserServiceImpl implements AdminUserService {
             if ("".equals(user.getEntrustId()) || user.getEntrustId() == null) {
                 String fullName = adminUser.getFirstName() + " " + adminUser.getLastName();
                 SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_CREATION");
-                String entrustId = user.getUserType().toString() + "_" + user.getUserName();
+                String entrustId = user.getUserName();
+                String group = configService.getSettingByName("DEF_ENTRUST_ADM_GRP").getValue();
 
                 if (setting != null && setting.isEnabled()) {
                     if ("YES".equalsIgnoreCase(setting.getValue())) {
-                        boolean creatResult = securityService.createEntrustUser(entrustId, fullName, true);
+                        boolean creatResult = securityService.createEntrustUser(entrustId, group, fullName, true);
                         if (!creatResult) {
                             throw new EntrustException(messageSource.getMessage("entrust.create.failure", null, locale));
                         }
 
-                        boolean contactResult = securityService.addUserContacts(adminUser.getEmail(), adminUser.getPhoneNumber(), true, entrustId);
+                        boolean contactResult = securityService.addUserContacts(adminUser.getEmail(), adminUser.getPhoneNumber(), true, entrustId, group);
                         if (!contactResult) {
                             logger.error("Failed to add user contacts on Entrust");
-                            securityService.deleteEntrustUser(entrustId);
+                            securityService.deleteEntrustUser(entrustId, group);
                             throw new EntrustException(messageSource.getMessage("entrust.contact.failure", null, locale));
 
                         }
                     }
                     user.setEntrustId(entrustId);
+                    user.setEntrustGroup(group);
                     adminUserRepo.save(user);
                 }
             }
@@ -275,7 +277,7 @@ public class AdminUserServiceImpl implements AdminUserService {
             SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_DELETION");
             if (setting != null && setting.isEnabled()) {
                 if ("YES".equalsIgnoreCase(setting.getValue())) {
-                    securityService.deleteEntrustUser(user.getUserName());
+                    securityService.deleteEntrustUser(user.getEntrustId(), user.getEntrustGroup());
                 }
             }
             logger.warn("Admin user {} deleted", user.getUserName());
