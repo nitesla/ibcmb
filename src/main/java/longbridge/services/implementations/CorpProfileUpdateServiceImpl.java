@@ -84,9 +84,9 @@ public class CorpProfileUpdateServiceImpl implements CorpProfileUpdateService{
             if (setting != null && setting.isEnabled()) {
                 if ("YES".equalsIgnoreCase(setting.getValue())) {
 
-                    setEntrustUserQA(user.getEntrustId(), user.getEntrustId(), user.getSecurityQuestion(), user.getSecurityAnswer());
+                    setEntrustUserQA(user.getEntrustId(), user.getEntrustGroup(), user.getSecurityQuestion(), user.getSecurityAnswer());
 
-                    setEntrustUserMutualAuth(user.getEntrustId(), user.getEntrustId(), user.getCaptionSec(), user.getPhishingSec());
+                    setEntrustUserMutualAuth(user.getEntrustId(), user.getEntrustGroup(), user.getCaptionSec(), user.getPhishingSec());
 
                     user.setIsFirstTimeLogon("N");
 
