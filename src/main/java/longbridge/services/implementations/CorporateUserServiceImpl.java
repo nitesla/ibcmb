@@ -148,12 +148,11 @@ public class CorporateUserServiceImpl implements CorporateUserService {
                 Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
                 corporateUser.setRole(role);
             }
-            try {
-                corporateUserRepo.save(corporateUser);
-            } catch (VerificationInterruptedException e) {
-                return e.getMessage();
-            }
+
+            corporateUserRepo.save(corporateUser);
             return messageSource.getMessage("user.update.success", null, locale);
+        } catch (VerificationInterruptedException e) {
+            return e.getMessage();
         } catch (InternetBankingException ibe) {
             throw ibe;
         } catch (Exception e) {
@@ -190,17 +189,15 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             corporate.setId(Long.parseLong(user.getCorporateId()));
             corporateUser.setCorporate(corporate);
             passwordPolicyService.saveCorporatePassword(corporateUser);
-            try {
-                CorporateUser corpUser = corporateUserRepo.save(corporateUser);
-                createUserOnEntrust(corpUser);
-                String fullName = corporateUser.getFirstName() + " " + corporateUser.getLastName();
-                sendPostCreationMessage(corporateUser, fullName, user.getUserName(), password, corporateUser.getCorporate().getCustomerId());
+            CorporateUser corpUser = corporateUserRepo.save(corporateUser);
+            createUserOnEntrust(corpUser);
+            String fullName = corporateUser.getFirstName() + " " + corporateUser.getLastName();
+            sendPostCreationMessage(corporateUser, fullName, user.getUserName(), password, corporateUser.getCorporate().getCustomerId());
 
-            } catch (VerificationInterruptedException e) {
-                return e.getMessage();
-            }
             logger.info("New corporate user {} created", corporateUser.getUserName());
             return messageSource.getMessage("user.add.success", null, locale);
+        } catch (VerificationInterruptedException e) {
+            return e.getMessage();
         } catch (MailException me) {
             throw new InternetBankingException(messageSource.getMessage("mail.failure", null, locale), me);
         } catch (Exception e) {
@@ -309,12 +306,9 @@ public class CorporateUserServiceImpl implements CorporateUserService {
                 user.setPassword(passwordEncoder.encode(password));
                 user.setExpiryDate(new Date());
                 passwordPolicyService.saveCorporatePassword(user);
-                try {
-                    CorporateUser corpUser = corporateUserRepo.save(user);
-                    sendActivationMessage(corpUser, fullName, user.getUserName(), password, user.getCorporate().getCustomerId());
-                } catch (VerificationInterruptedException e) {
-                    return e.getMessage();
-                }
+                CorporateUser corpUser = corporateUserRepo.save(user);
+                sendActivationMessage(corpUser, fullName, user.getUserName(), password, user.getCorporate().getCustomerId());
+
             } else {
                 user.setStatus(newStatus);
                 corporateUserRepo.save(user);
@@ -323,6 +317,8 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             logger.info("Corporate user {} status changed from {} to {}", user.getUserName(), oldStatus, newStatus);
             return messageSource.getMessage("user.status.success", null, locale);
 
+        } catch (VerificationInterruptedException e) {
+            return e.getMessage();
         } catch (MailException me) {
             throw new InternetBankingException(messageSource.getMessage("mail.failure", null, locale), me);
         } catch (InternetBankingException ibe) {
