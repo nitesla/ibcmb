@@ -29,10 +29,7 @@ import java.util.stream.StreamSupport;
 @EnableAsync
 
 public class InternetbankingApplication extends SpringBootServletInitializer implements CommandLineRunner {
-    @Autowired
-    RoleRepo repo;
-    @Autowired
-    PermissionRepo service;
+
 
 
     public static void main(String[] args) {

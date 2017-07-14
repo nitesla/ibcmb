@@ -26,6 +26,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView;
 
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.*;
 import java.util.stream.StreamSupport;
@@ -205,7 +206,7 @@ public class TransferController {
 
                 try {
                     RetailUser retailUser = retailUserService.getUserByName(principal.getName());
-             securityService.performTokenValidation(retailUser.getEntrustId(), retailUser.getEntrustGroup(), token);
+                   securityService.performTokenValidation(retailUser.getEntrustId(), retailUser.getEntrustGroup(), token);
 
                 } catch (InternetBankingSecurityException ibse) {
                       ibse.printStackTrace();
@@ -338,9 +339,20 @@ public class TransferController {
 
     @RequestMapping(value = "/limit/{accountNumber}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    public String getBalance(@PathVariable String accountNumber) throws Exception {
+    public String getLimit(@PathVariable String accountNumber) throws Exception {
 
-        return integrationService.getDailyAccountLimit(accountNumber,"NIP");
+        return transferUtils.getLimit(accountNumber);
     }
+
+    @RequestMapping(value = "/balance/{accountNumber}", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public String getBalance(@PathVariable String accountNumber) {
+
+        return transferUtils.getBalance(accountNumber);
+
+    }
+
+
+
 }
 

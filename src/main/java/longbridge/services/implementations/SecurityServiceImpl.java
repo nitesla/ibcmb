@@ -629,7 +629,7 @@ public class SecurityServiceImpl implements SecurityService {
             this.t = this.ve.getTemplate("entrust/performGetMinQASize.vm");
             this.context.put("appCode", appCode);
             this.context.put("appDesc", appDesc);
-            this.context.put("appGroup", group);
+            this.context.put("appGroup", appGroup);
             this.context.put("userName", defaultUser);
             this.t.merge(this.context, writer);
             String payload = writer.toString();

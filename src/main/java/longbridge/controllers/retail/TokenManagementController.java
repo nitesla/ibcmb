@@ -1,5 +1,4 @@
 package longbridge.controllers.retail;
-
 import longbridge.exception.InternetBankingSecurityException;
 import longbridge.forms.CustSyncTokenForm;
 import longbridge.forms.TokenProp;

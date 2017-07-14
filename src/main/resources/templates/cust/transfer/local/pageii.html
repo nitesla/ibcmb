@@ -111,18 +111,22 @@
         function getBalance() {
             var accountNumber = $('#source').val();
             $.ajax({
-                url: "/retail/transfer/local/balance/" + accountNumber,
+                url: "/retail/transfer/balance/" + accountNumber,
                 type: 'GET',
                 async: false,
-                success: function (availBal) {
-                    bal = '' + String(availBal);
-                    if (bal == "") {
+                success: function (jd) {
+                    var message = jd.message;
+                    var success =  jd.success;
+                    console.log(message);
+                    console.log(success);
+                    if (success==false){
                         document.getElementById("myspan").textContent = "Could not get balance from server, please try again.";
                         $("#myspan").show();
                     } else {
 //                    $('input[name=availBal]').val(bal);
 
-                        $('#availBal').text("Available Balance: " + bal);
+                        var  bal=message;
+                        $('#availBal').text("Available Balance: "+bal);
 
                     }
                 }
