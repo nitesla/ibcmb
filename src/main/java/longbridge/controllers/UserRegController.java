@@ -3,6 +3,7 @@ package longbridge.controllers;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import longbridge.api.CustomerDetails;
 import longbridge.dtos.AccountDTO;
+import longbridge.dtos.CodeDTO;
 import longbridge.dtos.PasswordStrengthDTO;
 import longbridge.dtos.RetailUserDTO;
 import longbridge.exception.InternetBankingException;
@@ -567,7 +568,7 @@ public class UserRegController {
 //            logger.info("master question "+masterList);
 //        }
 
-        List<SecurityQuestions> secQues = securityQuestionService.getSecQuestions();
+        List<CodeDTO> secQues = codeService.getCodesByType("SECURITY_QUESTION");
         int noOfQuestions = securityService.getMinUserQA();
         logger.info("num of qs on entrust {}",noOfQuestions);
         ArrayList[] masterList = new ArrayList[noOfQuestions];
