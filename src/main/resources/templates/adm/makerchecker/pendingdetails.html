@@ -208,22 +208,22 @@
 
                 current_path = path.endsWith('[') ? path + node + ']' : path + '.' +node;
 
-                alert(current_path);
                 b = jsonPath(beforeData,current_path) ? jsonPath(beforeData,current_path)[0] : 'undefined' ;
 
                 a = jsonPath(afterData,current_path) ? jsonPath(afterData,current_path)[0] : 'undefined' ;
 
-                console.log(a);
-                console.log(b);
+//                console.log(a);
+//                console.log(b);
 
-                if(a == b && typeof a != 'undefined' && typeof b != 'undefined' ){
-
+               // alert(jsn[node]);
+                if(a == b && typeof a != 'undefined' && typeof b != 'undefined' )
+                {
 
                     result += '<li class="list-group-item">' + node + ':'+jsn[node] +'</li>'
-                }else{
-
+                }else
+                {
                     result += '<li class="list-group-item list-group-item-danger">' + node + ':'+jsn[node] +'</li>'
-                }
+                  }
             }
 
         }

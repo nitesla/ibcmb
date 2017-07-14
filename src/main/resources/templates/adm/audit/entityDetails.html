@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="layout :: site-head">
+
+    <style>
+
+        table.dataTable tbody > tr > .selected {
+            background-color: white;
+        }
+
+    </style>
 </head>
 
 
@@ -45,7 +53,7 @@
                                         <div class="col-lg-4">
                                             <div class="title-action">
                                                 <a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/audit/ids/classname/view/compare" disabled="disabled" ><i class="fa fa-pencil"></i>  View</a>
-                                            <input id="pastDetails" type="hidden" th:value="${pastDetails}"/>
+                                                 <input id="pastDetails" type="hidden" th:value="${pastDetails}"/>
                                                 <input type="hidden" id="currentDetails" th:value="${currentDetails}"/>
                                             </div>
                                         </div>
@@ -68,7 +76,7 @@
 
                                 <div class="clearfix"></div>
                             </div>
-                                <table class="table table-striped dt-responsive no-wrap table-bordered table-hover" id="table">
+                                <table class="table table-striped dt-responsive no-wrap table-bordered table-hover" id="table" style="background: ">
                                     <thead>
                                     <tr>
                                         <th>Detials</th>
@@ -156,9 +164,10 @@
 
                 current_path = path.endsWith('[') ? path + node + ']' : path + '.' +node;
 
-                b = jsonPath(beforeData,current_path)[0] ;
+                b = jsonPath(beforeData,current_path)[0];
+
                 a = jsonPath(afterData,current_path)[0];
-                if(true ){
+                if(true){
 
                     result += '<li class="list-group-item">'+ node +':<ul class="list-group">' + parseJsonAsList(jsn[node],current_path+'[') + '</ul></li>';
                 }else{
@@ -168,8 +177,8 @@
             else if(Object.prototype.toString.call(jsn[node]) === '[object Object]')
             {
 
-
                 current_path = path.endsWith('[') ? path + node + ']' : path + '.' +node;
+
                 /* if(jsonPath(beforeData,current_path)){
 
                  }
@@ -178,11 +187,13 @@
                  */
                 if(true){
                     result += '<li class="list-group-item">'+ node +':<ul class="list-group">' + parseJsonAsList(jsn[node],current_path) + '</ul></li>';
-                }else{
+                }
+                else{
                     result += '<li class="list-group-item list-group-item-danger">'+ node +':<ul class="list-group">' + parseJsonAsList(jsn[node],current_path) + '</ul></li>';
                 }
             }
-            else{
+            else
+                {
 
 
                 current_path = path.endsWith('[') ? path + node + ']' : path + '.' +node;
@@ -195,28 +206,28 @@
                 console.log("a "+beforeData);
                 console.log("b "+afterData);
 
-                if(a == b && typeof a != 'undefined' && typeof b != 'undefined' ){
 
-
+                if(a == b && typeof a != 'undefined' && typeof b != 'undefined')
+                {
                     result += '<li class="list-group-item">' + node + ':'+jsn[node] +'</li>'
-                }else{
-
-                    result += '<li class="list-group-item list-group-item-danger">' + node + ':'+jsn[node] +'</li>'
+                }
+                else
+                {
+                    result += '<li class="list-group-item list-group-item-danger">' + node + ' : '+jsn[node] +'</li>'
                 }
             }
 
         }
         return result;
     }
-        var  beforeData =[[$(pastDetails)]];
+
+        var  beforeData =([[$(pastDetails)]]);
         var  afterData =[[$(currentDetails)]];
 
-        console.log(afterData);
-        console.log(beforeData);
+
 
     $(document).ready(function()
     {
-
         var itemid = [[${itemId}]];
         var classRef = [[${classname}]];
 
@@ -334,7 +345,7 @@
     var ids=[];
     $("#auditview").on("click", "tr", function()
     {
-        $(this).toggleClass('selected');
+        //$(this).toggleClass('selected');
         var table =  $('#auditview').DataTable();
         className = $(this).children(":first").text();
         var $name2 = $(this).children(":nth-child(3)").text();
@@ -345,33 +356,37 @@
 
     $('#auditview tbody').on('click', 'tr', function ()
     {
-        $(this).toggleClass('selected');
+
+        var tbl = document.getElementById("auditview tbody");
         var id = this.id;
         console.log("id is "+id);
         Array.prototype.remove = function() {
             var what, a = arguments, L = a.length, ax;
             while (L && this.length) {
                 what = a[--L];
+
                 while ((ax = this.indexOf(what)) !== -1) {
                     this.splice(ax, 1);
                 }
             }
             return this;
         };
-        if ( ids.length <2 ) {
-            if((jQuery.inArray("ids",id))=== -1) {
+        if ( ids.length <2 )
+        {
 
+            $(this).css('background', 'red');
+            if((jQuery.inArray("ids",id))=== -1)
+            {
+              //  $("tr").removeClass("selected");
                 ids.push(id);
             }
         }else {
-
-            ids.remove(ids[0]);
-            if(((jQuery.inArray("ids",id))=== -1)) {
+               ids.remove(ids[0]);
+                tbl.rows[0].style.backgroundColor = "#365890";
+                 if(((jQuery.inArray("ids",id))=== -1)) {
                 ids.push(id);
                 console.log("the new array index "+ids[0]);
-
             }
-
         }
 
       console.log("the array size "+ids.length+ " "+ids);
@@ -382,7 +397,6 @@
 
     $("a.bt-link-act").on("click", function(e) {
         e.preventDefault();
-
         var link = $(e.currentTarget);
         if($(link).attr("disabled")){
             return;

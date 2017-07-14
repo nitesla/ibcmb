@@ -140,7 +140,7 @@ public class AdmAuditController {
         logger.info("entity details is {}",entityPastDetails);
         Map<String,Object> m =null;
         model.addAttribute("pastDetails", entityPastDetails.get("pastDetails"));
-        model.addAttribute("currentDetails",(entityPastDetails.get("currentDetails")));
+        model.addAttribute("currentDetails",entityPastDetails.get("currentDetails"));
         return  "adm/audit/entityDetails";
     }
 
