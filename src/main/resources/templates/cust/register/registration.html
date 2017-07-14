@@ -174,7 +174,7 @@
                                             <div class="form-group clearfix">
                                                 <label th:text="'Security Question '+${ind.index+1}" >Question</label>
                                                 <select th:name="'securityQuestion'+${ind.index}" class="my-select">
-                                                    <option th:each="question : ${questionList}" th:text="${question.securityQuestion}" th:value="${question.securityQuestion}"></option>
+                                                    <option th:each="question : ${questionList}" th:text="${question.code}" th:value="${question.code}"></option>
                                                 </select>
                                             </div>
                                             <div class="form-group clearfix">

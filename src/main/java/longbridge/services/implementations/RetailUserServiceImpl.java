@@ -162,6 +162,7 @@ public class RetailUserServiceImpl implements RetailUserService {
             retailUser.setFirstName(details.getFirstName());
             retailUser.setLastName(details.getLastName());
             retailUser.setEmail(details.getEmail());
+            retailUser.setPhoneNumber(details.getPhone());
             retailUser.setCreatedOnDate(new Date());
             retailUser.setBirthDate(user.getBirthDate());
             retailUser.setBvn(user.getBvn());
