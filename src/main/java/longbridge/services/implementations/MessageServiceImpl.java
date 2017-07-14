@@ -42,7 +42,7 @@ public class MessageServiceImpl implements MessageService {
     @Autowired
     private MailService mailService;
 
-    Locale locale = LocaleContextHolder.getLocale();
+    private Locale locale = LocaleContextHolder.getLocale();
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private MessageRepo messageRepo;
