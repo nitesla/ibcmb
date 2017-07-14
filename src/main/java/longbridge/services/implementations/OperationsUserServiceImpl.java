@@ -260,6 +260,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
                         }
                     }
                     user.setEntrustId(entrustId);
+                    user.setEntrustGroup(group);
                     operationsUserRepo.save(user);
                 }
             }

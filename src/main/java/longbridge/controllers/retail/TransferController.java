@@ -206,7 +206,7 @@ public class TransferController {
 
                 try {
                     RetailUser retailUser = retailUserService.getUserByName(principal.getName());
-             securityService.performTokenValidation(retailUser.getEntrustId(), retailUser.getEntrustGroup(), token);
+                   securityService.performTokenValidation(retailUser.getEntrustId(), retailUser.getEntrustGroup(), token);
 
                 } catch (InternetBankingSecurityException ibse) {
                       ibse.printStackTrace();
