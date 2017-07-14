@@ -147,7 +147,7 @@ public class CorpUserManagementController {
             String message = corporateUserService.changeCorpActivationStatus(id);
             redirectAttributes.addFlashAttribute("message", message);
         }catch (InternetBankingException ibe){
-            logger.error("Error creating corporate user", ibe);
+            logger.error("Error changing corporate user activation status", ibe);
             redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
         }
 

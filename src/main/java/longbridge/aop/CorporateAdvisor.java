@@ -36,6 +36,7 @@ public class CorporateAdvisor {
 
     @Autowired
     EntityManager entityManager;
+
     private Logger log = LoggerFactory.getLogger(this.getClass());
 
 

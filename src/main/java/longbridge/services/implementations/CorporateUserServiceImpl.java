@@ -393,8 +393,14 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
     @Override
     public String changeCorpActivationStatus(Long userId) throws InternetBankingException {
+
+        CorporateUser user = corporateUserRepo.findOne(userId);
+        Corporate corporate = user.getCorporate();
+
+        if ("I".equals(corporate.getStatus())) {
+            throw new InternetBankingException(messageSource.getMessage("corporate.deactivated", null, locale));
+        }
         try {
-            CorporateUser user = corporateUserRepo.findOne(userId);
             String oldStatus = user.getStatus();
             String newStatus = "A".equals(oldStatus) ? "I" : "A";
             user.setStatus(newStatus);
@@ -452,6 +458,11 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     public String resetCorpPassword(Long userId) throws PasswordException {
 
         CorporateUser user = corporateUserRepo.findOne(userId);
+        Corporate corporate = user.getCorporate();
+
+        if ("I".equals(corporate.getStatus())) {
+            throw new InternetBankingException(messageSource.getMessage("corporate.deactivated", null, locale));
+        }
 
         try {
             String newPassword = passwordPolicyService.generatePassword();
@@ -499,6 +510,12 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         if (!"L".equals(user.getStatus())) {
             throw new InternetBankingException(messageSource.getMessage("user.unlocked", null, locale));
         }
+        Corporate corporate = user.getCorporate();
+
+        if ("I".equals(corporate.getStatus())) {
+            throw new InternetBankingException(messageSource.getMessage("corporate.deactivated", null, locale));
+        }
+
         try {
             failedLoginService.unLockUser(user);
             return messageSource.getMessage("unlock.success", null, locale);
