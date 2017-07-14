@@ -1,73 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
-<head>
-    <title>Insert title here</title>
-</head>
-<<<<<<< HEAD
-<body>
-<div class="container">
-    <header th:replace="corp_layout :: corp-header">
-    </header>
 
-    <section class="content-wrapper">
-        <div class="">
-            <div class="row">
-                <div class="col-md-4 col-sm-4">
-                    <h5 class="page_header"> Dashboard</h5>
-                    <select class="form-control" id="view">
-                        <option value="account">Account Overview</option>
-                    </select>
-                </div>
-                <p class="col-xs-12 invisible">
-                    Fields marked <span style="color:red">*</span> are compulsory
-                </p>
-            </div>
-            <div class="row">
-                <div class=" col-m-1" style="margin-op:20px">
-                    <div class="col-md-9 content-bg">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <table class="table">
-                                    <thead>
-                                    <th class="text-center">Account Number</th>
-                                    <th class="text-center">Account type</th>
-                                    <th class="text-center">Currency</th>
-                                    <th class="text-center">Available Balance</th>
-                                    <th class="text-center">Ledger Balance</th>
-                                    <th class="text-center">&nbsp;</th>
-                                    </thead>
-                                    <tbody>
-                                    <tr th:each="list : ${accountList}" class="tt">
-                                        <td th:align="center" th:text="${list.accountNumber}"></td>
-                                        <td th:align="center" th:text="${list.schemeType}"></td>
-                                        <td th:align="center" th:text="${list.currencyCode}"></td>
-                                        <td th:align="center" th:text="${list.accountBalance}" class="bal"></td>
-                                        <td th:align="center" th:text="${list.ledgerBalance}" class="bal"></td>
-
-                                        <td th:align="center">
-                                            <select th:id="${list.id}" class="quickAccess" th:attr="onchange='javascript:getId(\'' + ${list.id} + '\');'">
-                                                <option>Quick Actions</option>
-                                                <option value="Last 10 Transaction">Last 10 Transaction</option>
-                                                <option value="Transaction History">Transaction History</option>
-                                                <option value="Account Statement">Account Statement</option>
-
-                                            </select>
-
-                                        </td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3 pull-right">
-                    <div th:replace="corp_layout :: corp-sidebar" class="" >
-                    </div>
-                </div>
-            </div>
-=======
 <body onload="currentBar('dashboard')">
 
 <div layout:fragment="content">
@@ -110,7 +44,6 @@
                 </tr>
                 </tbody>
             </table>
->>>>>>> 2d78b282c2eecdc2e9e2f86d7247006d11f78eb4
         </div>
     </div>
 
@@ -145,11 +78,7 @@
                     window.location.href = "/corporate/account/viewonlyhistory";
                 }
             }
-<<<<<<< HEAD
           if ($('#'+Id).val() === "Account Statement") {
-=======
-            if ($('.quickAccess').val() === "Account Statement") {
->>>>>>> 2d78b282c2eecdc2e9e2f86d7247006d11f78eb4
                 if (( Id != null || Id != '' )) {
                     window.location.href = "/corporate/account/viewstatement";
                 }

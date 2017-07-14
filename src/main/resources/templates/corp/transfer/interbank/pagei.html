@@ -1,33 +1,20 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="corp_layout :: site-head">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
 
-</head>
-<body>
-<div class="container">
-<header th:replace="corp_layout :: corp-header">
-</header>
+<body onload="currentBar('Beneficiaries')">
 
-<section class="content-wrapper">
-    <div class="">
-        <div class="row">
-            <div class="col-md-4 col-sm-4">
-                <h5 class="page_header"> Interbank account transfer</h5>
-                 <select class="form-control invisible">
-                        <option value="account">Account Overview</option>
-                </select>
-            </div>
-             <p class="col-xs-12 invisible">
-                    Fields marked <span style="color:red">*</span> are compulsory
-            </p>
-        </div>
+<div layout:fragment="content">
+    <div class="col-md-5 col-sm-5 ">
 
-        <div class="row">
+        <select class="form-control full-width coronation-form-control hide-content-only" id="view">
+            <option value="account">Overview</option>
+        </select>
+    </div>
 
-            <div class="col-md-9 content-bg">
-
-                <div class="spacin">
-                    <div class="col-md-12 col-sm-12 col-xs-12">
+    <div class="col-xs-12 ml-15 " >
+        <div class="col-xs-11 no-pad-lef table-responsive no-mt no-bd  alert">
+          <div class="col-md-12 col-sm-12 col-xs-12">
                         <h6 class="sub_header">Interbank Transfer</h6>
                         <form method="post" th:action="@{/corporate/transfer/interbank/index}" style="">
                             <div class="form-group col-md-6 no-pad-left">
@@ -61,20 +48,13 @@
                     <!--</div>-->
 
                 </div>
-            </div>
-
-            <div class="col-md-3 pull-right">
-                <div th:replace="corp_layout :: corp-sidebar" class="" >
-                </div>
-            </div>
         </div>
     </div>
-</section>
+
 </div>
 
-<!-- CONTENT-WRAPPER SECTION END-->
-<footer th:replace="corp_layout ::corp-footer">
-</footer>
+
+<th:block layout:fragment="scripts">
 <script>
     //datepicker
     $(function () {
@@ -96,5 +76,7 @@
         }
     });
 </script>
+</th:block>
+
 </body>
 </html>
