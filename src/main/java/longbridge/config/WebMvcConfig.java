@@ -77,6 +77,7 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
         registry.addInterceptor(retailUserLoginInterceptor()).addPathPatterns("/retail/**");
         registry.addInterceptor(corporateUserLoginInterceptor()).addPathPatterns("/corporate/**");
      registry.addInterceptor(retailTransferAuthInterceptor()).addPathPatterns("/retail/transfer/process");
+     registry.addInterceptor(corpTransferAuthInterceptor()).addPathPatterns("/corporate/transfer/process");
      registry.addInterceptor(webContentInterceptor()).addPathPatterns("/retail/**");
       //  registry.addInterceptor(webContentInterceptor()).addPathPatterns("/retail/**");
        // registry.addInterceptor(webContentInterceptor()).addPathPatterns("/retail/**");
@@ -124,7 +125,10 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
     public RetailTransferAuthInterceptor retailTransferAuthInterceptor() {
         return new RetailTransferAuthInterceptor();
     }
-
+    @Bean
+    public CorporateTransferAuthInterceptor corpTransferAuthInterceptor() {
+        return new CorporateTransferAuthInterceptor();
+    }
     @Bean
     public OpUserLoginInterceptor OpUserLoginInterceptor()
     {

@@ -88,7 +88,7 @@
                                                         <!--</div>-->
                                                     <!--</li>-->
                                                 </ul>
-                                                <ul th:if="${corporate.corporateType =='MULTI'}" class="nav navbar-right panel_toolbox">
+                                                <ul  class="nav navbar-right panel_toolbox">
                                                     <li >
                                                         <div class="col-lg-4">
                                                             <div class="title-action">
@@ -634,7 +634,7 @@
         var table = $('#rules').DataTable({
             select: true,
             responsive : false,
-            "lengthMenu" : [ [ -1], [ "All"] ],
+            "lengthMenu" : [ [ 5,10,15,-1], [ 5,10,15,"All"] ],
             "pagingType" : "simple_numbers",
             "searching" : false,
             "paging" : true,

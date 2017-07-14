@@ -31,12 +31,17 @@
                                 <button class="btn btn-link required-step"> Submit</button>
                             </form>
 
+                    <div class="margin-bottom">
+                        <p style="margin-bottom:20px">All fields are required</p>
+                        <div class="form-group">
+                            <label>Set New Password</label>
+                            <input id="password" type="password" th:field="*{newPassword}"  class="form-control" required="required"/>
+                            <p class="errors" th:if="${#fields.hasErrors('newPassword')}" th:errors="*{newPassword}">&times;</p>
                         </div>
-                        <div class="col-md-5">
-                            <div class="form-group">
-                                <p th:each="rule : ${passwordRules}" th:text="${rule}">
-                                </p>
-                            </div>
+                        <div class="form-group">
+                            <label>Confirm New Password</label>
+                            <input id="confirm" type="password" th:field="*{confirmPassword}"  class="form-control" required="required"/>
+                            <p class="errors" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}">&times;</p>
                         </div>
         </div>
     </div>

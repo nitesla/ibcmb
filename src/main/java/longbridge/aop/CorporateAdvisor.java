@@ -36,6 +36,7 @@ public class CorporateAdvisor {
 
     @Autowired
     EntityManager entityManager;
+
     private Logger log = LoggerFactory.getLogger(this.getClass());
 
 
@@ -81,9 +82,7 @@ public class CorporateAdvisor {
         logger.info("Executing Post Corporate Creation Operation...");
         if(!accountRepo.existsByCustomerId(corporate.getCustomerId())) {
             corporateService.addAccounts(corporate);
-            for (CorporateUser corpUser : corporate.getUsers()) {
-                corporateService.createUserOnEntrustAndSendCredentials(corpUser);
-            }
+
         }
     }
 }

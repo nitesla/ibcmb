@@ -20,7 +20,7 @@
                         <div th:if="${error != null}" class="alert alert-info" th:text="${error}">message</div>
                         <div>
                             <form class='' method="post" th:action="@{/corporate/transfer/ownaccount/summary}"
-                                  th:object="${transferRequest}">
+                                  th:object="${corpTransferRequest}">
                                 <input type="hidden" th:field="*{financialInstitution}"/>
 
                                 <div class="form-group">
@@ -35,7 +35,7 @@
                                                 onchange="getBalance();getSourceCurrency()">
 
                                             <!--<option value=""> select an account</option>-->
-                                            <option th:each="s: ${accounts}" th:value="${s}" th:text="${s}"></option>
+                                            <option th:each="s: ${accounts}" th:value="${s.accountNumber}" th:text="${s.accountNumber}" th:selected="${s.primaryFlag=='Y'}"></option>
                                         </select><span class='req-inner'></span>
                                     </div>
 
@@ -50,7 +50,7 @@
                                                 th:field="*{beneficiaryAccountNumber}" onchange="getDestCurrency();"
                                                 required="required">
 
-                                            <option th:each="s: ${accounts}" th:value="${s}" th:text="${s}"></option>
+                                            <option th:each="s: ${destAccounts}" th:value="${s}" th:text="${s}"></option>
 
 
                                         </select><span class='req-inner'></span>
@@ -116,54 +116,42 @@
         <script th:inline="javascript">
         /*<![CDATA[*/
 
-        $(document).ready(function () {
-            document.getElementById("source").selectedIndex = -1;
+        $(document).ready(function(){
+
+
+//       document.getElementById("source").selectedIndex = -1;
             document.getElementById("destination").selectedIndex = -1;
 
-            sortSelect('#source', 'text', 'asc');
+//        sortSelect('#source', 'text', 'asc');
 
-            $("#source").prop("selectedIndex", -1);
+//  $("#source").prop("selectedIndex", -1);
             $("#destination").prop("selectedIndex", -1);
+            getBalance();
+            getSourceCurrency();
 
         })
 
 
-        var sortSelect = function (select, attr, order) {
-            if (attr === 'text') {
-                if (order === 'asc') {
-                    $(select).html($(select).children('option').sort(function (x, y) {
-                        return $(x).text().toUpperCase() < $(y).text().toUpperCase() ? -1 : 1;
-                    }));
-                    $(select).get(0).selectedIndex = 0;
-                    //e.preventDefault();
-                }// end asc
-                if (order === 'desc') {
-                    $(select).html($(select).children('option').sort(function (y, x) {
-                        return $(x).text().toUpperCase() < $(y).text().toUpperCase() ? -1 : 1;
-                    }));
-                    $(select).get(0).selectedIndex = 0;
-                    // e.preventDefault();
-                }// end desc
-            }
-
-        };
 
 
-        function getBalance() {
+
+        function getBalance(){
             var accountNumber = $('#source').val();
             $.ajax({
-                url: "/corporate/transfer/balance/" + accountNumber,
+                url: "/corporate/transfer/balance/"+accountNumber,
                 type: 'GET',
                 async: false,
-                success: function (availBal) {
-                    bal = '' + String(availBal);
-                    if (bal == "") {
-                        document.getElementById("myspan").textContent = "Could not get balance from server, please try again.";
+                success:function(jd){
+                    var message = jd.message;
+                    var success =  jd.success;
+                    console.log(message);
+                    console.log(success);
+                    if (success==false){
+                        document.getElementById("myspan").textContent="Could not get balance from server, please try again.";
                         $("#myspan").show();
-                    } else {
-//                    $('input[name=availBal]').val(bal);
-
-                        $('#availBal').text("Available Balance: " + bal);
+                    }else{
+                        var  bal=message;
+                        $('#availBal').text("Available Balance: "+bal);
 
                     }
                 }
@@ -172,21 +160,23 @@
 
         //
 
-        function getSourceCurrency() {
+        function getSourceCurrency(){
             var accountNumber = $('#source').val();
             $.ajax({
-                url: "/corporate/transfer/" + accountNumber + "/currency",
+                url: "/corporate/transfer/"+accountNumber+"/currency",
                 type: 'GET',
                 async: false,
-                success: function (currency) {
-                    cur = '' + String(currency);
-                    if (cur == "") {
-                        document.getElementById("sourceCurrency").textContent = " Unknown";
+                success:function(currency){
+                    cur = ''+String(currency);
+                    if(cur == "" ){
+                        document.getElementById("sourceCurrency").textContent=" NAN";
                         // $("#myspan").show();
-                    } else {
+                    }else{
 //                    $('input[name=availBal]').val(bal);
 
                         $('#sourceCurrency').text(cur);
+                        document.getElementById('sourceCurrency').style.visibility = 'visible';
+
 
                     }
                 }
@@ -194,21 +184,22 @@
         }
 
         ///
-        function getDestCurrency() {
+        function getDestCurrency(){
             var accountNumber = $('#destination').val();
             $.ajax({
-                url: "/corporate/transfer/" + accountNumber + "/currency",
+                url: "/corporate/transfer/"+accountNumber+"/currency",
                 type: 'GET',
                 async: false,
-                success: function (currency) {
-                    cur = '' + String(currency);
-                    if (cur == "") {
-                        document.getElementById("destCurrency").textContent = "NAN";
+                success:function(currency){
+                    cur = ''+String(currency);
+                    if(cur == "" ){
+                        document.getElementById("destCurrency").textContent="NAN";
                         // $("#myspan").show();
-                    } else {
+                    }else{
 //                    $('input[name=availBal]').val(bal);
 
                         $('#destCurrency').text(cur);
+                        document.getElementById('destCurrency').style.visibility = 'visible';
 
                     }
                 }

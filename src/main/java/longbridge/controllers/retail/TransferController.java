@@ -1,7 +1,6 @@
 package longbridge.controllers.retail;
 
 
-import longbridge.api.NEnquiryDetails;
 import longbridge.dtos.LocalBeneficiaryDTO;
 import longbridge.dtos.TransferRequestDTO;
 import longbridge.exception.InternetBankingException;
@@ -14,8 +13,6 @@ import longbridge.services.*;
 import longbridge.utils.DateFormatter;
 import longbridge.utils.TransferType;
 import longbridge.utils.TransferUtils;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
@@ -29,6 +26,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView;
 
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.*;
 import java.util.stream.StreamSupport;
@@ -207,8 +205,8 @@ public class TransferController {
 
 
                 try {
-
-             securityService.performTokenValidation(principal.getName(), token);
+                    RetailUser retailUser = retailUserService.getUserByName(principal.getName());
+                   securityService.performTokenValidation(retailUser.getEntrustId(), retailUser.getEntrustGroup(), token);
 
                 } catch (InternetBankingSecurityException ibse) {
                       ibse.printStackTrace();
@@ -338,6 +336,22 @@ public class TransferController {
 
         return getPreviousPageByRequest(request).orElse("/retail/dashboard"); //else go to home page
     }
+
+    @RequestMapping(value = "/limit/{accountNumber}", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public String getLimit(@PathVariable String accountNumber) throws Exception {
+
+        return transferUtils.getLimit(accountNumber);
+    }
+
+    @RequestMapping(value = "/balance/{accountNumber}", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public String getBalance(@PathVariable String accountNumber) {
+
+        return transferUtils.getBalance(accountNumber);
+
+    }
+
 
 
 }

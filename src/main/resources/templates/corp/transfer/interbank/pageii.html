@@ -37,7 +37,7 @@
                                 <select name="source" class="form-control" id="source"
                                         th:field="*{customerAccountNumber}" onchange="getBalance()">
                                     <option value=""> select an account</option>
-                                    <option th:each="s: ${accountList}" th:value="${s}" th:text="${s}"></option>
+                                    <option th:each="s: ${accountList}" th:value="${s.accountNumber}" th:text="${s.accountNumber}" th:selected="${s.primaryFlag=='Y'}"></option>
 
 
                                 </select>
@@ -79,6 +79,7 @@
                     <hr class="related-info"/>
                     <!--<input type="availBal" name="availBal"/>-->
                     <p id="availBal"><b></b></p>
+                    <p id="mylimit"><b></b></p>
                 </div>
         </div>
     </div>
@@ -90,22 +91,85 @@
  <script th:src="@{~/customer/js/jquery-1.11.1.js}"></script>
     <script th:inline="javascript">
         /*<![CDATA[*/
+
+
+        $(document).ready(function(){
+            getBalance();
+            getDestCurrency();
+
+        })
+
         function getBalance(){
 
             var accountNumber = $('#source').val();
             $.ajax({
-                url: "/corporate/transfer/balance/"+accountNumber,
+                url: "/retail/transfer/balance/"+accountNumber,
                 type: 'GET',
                 async: false,
-                success:function(availBal){
-                    bal = ''+String(availBal);
-                    if(bal == "" ){
+                success:function(jd){
+                    var message = jd.message;
+                    var success =  jd.success;
+                    console.log(message);
+                    console.log(success);
+                    if (success==false){
                         document.getElementById("myspan").textContent="Could not get balance from server, please try again.";
                         $("#myspan").show();
                     }else{
 //                    $('input[name=availBal]').val(bal);
 
+                        var  bal=message;
                         $('#availBal').text("Available Balance: "+bal);
+                        getLimit();
+
+                    }
+                }
+            })
+        }
+
+
+
+        function getLimit(){
+
+            var accountNumber = $('#source').val();
+            $.ajax({
+                url: "/corporate/transfer/limit/"+accountNumber,
+                type: 'GET',
+                async: false,
+                success:function(jd){
+                    var message = jd.message;
+                    var success =  jd.success;
+                    console.log(message);
+                    console.log(success);
+                    if (success==false){
+                        document.getElementById("mylimit").textContent="Could not get limit from server, please try again.";
+                        $("#mylimit").show();
+                    }else{
+//                    $('input[name=availBal]').val(bal);
+                        var  bal=message;
+                        $('#limit').text("Limit: "+bal);
+
+                    }
+                }
+            })
+        }
+
+
+
+        function getDestCurrency(){
+            var accountNumber = $('#source').val();
+            $.ajax({
+                url: "/corporate/transfer/"+accountNumber+"/currency",
+                type: 'GET',
+                async: false,
+                success:function(currency){
+                    cur = ''+String(currency);
+                    if(cur == "" ){
+                        document.getElementById("sourceCurrency").textContent="NAN";
+                        // $("#myspan").show();
+                    }else{
+//                    $('input[name=availBal]').val(bal);
+
+                        $('#sourceCurrency').text(cur);
 
                     }
                 }

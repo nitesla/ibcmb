@@ -1,11 +1,7 @@
 package longbridge.controllers;
 
-import com.sun.javafx.binding.StringFormatter;
-import longbridge.exception.InternetBankingException;
 import longbridge.exception.InternetBankingSecurityException;
-import longbridge.exception.InternetBankingTransferException;
 import longbridge.models.RetailUser;
-import longbridge.models.UserType;
 import longbridge.services.RetailUserService;
 import longbridge.services.SecurityService;
 import longbridge.utils.HostMaster;
@@ -22,7 +18,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.security.Principal;
 import java.util.Locale;
 
@@ -53,7 +48,7 @@ public class TokenAuthController {
         String otpUrl="";
         String username = "";
 
-        RetailUser user  = retailUserService.getUserByName(principal.getName());
+
 
 
         if (request.getSession().getAttribute("redirectUrl") != null) {
@@ -73,7 +68,8 @@ public class TokenAuthController {
             }
 
         try {
-            boolean result = securityService.performOtpValidation(user.getEntrustId(), otp);
+            RetailUser user  = retailUserService.getUserByName(principal.getName());
+            boolean result = securityService.performOtpValidation(user.getEntrustId(), user.getEntrustGroup(), otp);
             if (result) {
                 redirectAttributes.addFlashAttribute("message", messageSource.getMessage("token.auth.success", null, locale));
                 return "redirect:/" + redirectUrl;
@@ -97,7 +93,9 @@ public class TokenAuthController {
         if(!username.equalsIgnoreCase("")) {
             boolean sendOtp;
             try {
-                if (securityService.sendOtp(UserType.RETAIL.toString()+"_"+username)) sendOtp = true;
+                RetailUser user  = retailUserService.getUserByName(principal.getName());
+                if (securityService.sendOtp(user.getEntrustId(), user.getEntrustGroup()))
+                    sendOtp = true;
                 else sendOtp = false;
                 logger.info("otp sent {}",sendOtp);
                 if (sendOtp){

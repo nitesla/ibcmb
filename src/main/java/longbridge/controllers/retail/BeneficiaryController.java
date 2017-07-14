@@ -118,7 +118,8 @@ public class BeneficiaryController {
 
             try {
                 String token =request.getParameter("token");
-              securityService.performTokenValidation(principal.getName(), token);
+                RetailUser retailUser = retailUserService.getUserByName(principal.getName());
+              securityService.performTokenValidation(retailUser.getEntrustId(), retailUser.getEntrustGroup(), token);
             } catch (InternetBankingSecurityException ibse) {
 
                 model.addAttribute("failure", ibse.getMessage());

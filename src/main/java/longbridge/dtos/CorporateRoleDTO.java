@@ -20,6 +20,7 @@ public class CorporateRoleDTO {
     @NotEmpty(message = "name")
     private String name;
 
+    @NotNull(message = "rank")
     Integer rank;
 
     String corporateId;

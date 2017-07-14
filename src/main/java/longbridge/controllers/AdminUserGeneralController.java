@@ -2,6 +2,7 @@ package longbridge.controllers;
 
 import longbridge.exception.InternetBankingSecurityException;
 import longbridge.exception.PasswordException;
+import longbridge.models.AdminUser;
 import longbridge.services.AdminUserService;
 import longbridge.services.SecurityService;
 import org.slf4j.Logger;
@@ -56,7 +57,8 @@ public class AdminUserGeneralController {
         }
 
         try {
-            boolean result = securityService.sendOtp(username);
+            AdminUser adminUser = adminUserService.getUserByName(username);
+            boolean result = securityService.sendOtp(adminUser.getEntrustId(), adminUser.getEntrustGroup());
             if (result) {
                 session.setAttribute("username", username);
                 session.setAttribute("redirectUrl", "/password/reset");

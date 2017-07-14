@@ -2,9 +2,8 @@ package longbridge.services.implementations;
 
 import longbridge.dtos.CodeDTO;
 import longbridge.dtos.CodeTypeDTO;
-import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.InternetBankingException;
-import longbridge.exception.VerificationInterruptException;
+import longbridge.exception.VerificationInterruptedException;
 import longbridge.models.AdminUser;
 import longbridge.models.Code;
 import longbridge.repositories.CodeRepo;
@@ -24,7 +23,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -64,7 +62,7 @@ public class CodeServiceImpl implements CodeService {
             codeRepo.delete(code);
             logger.info("Code {} has been deleted", codeId.toString());
             return messageSource.getMessage("code.delete.success", null, locale);
-        } catch (VerificationInterruptException e) {
+        } catch (VerificationInterruptedException e) {
             return e.getMessage();
         } catch (InternetBankingException e) {
             throw e;
@@ -106,7 +104,7 @@ public class CodeServiceImpl implements CodeService {
             codeRepo.save(code);
             logger.info("Updated code with Id {}", code.getId());
             return messageSource.getMessage("code.update.success", null, locale);
-        } catch (VerificationInterruptException e) {
+        } catch (VerificationInterruptedException e) {
             return e.getMessage();
         }
         catch (InternetBankingException e){
@@ -169,7 +167,7 @@ public class CodeServiceImpl implements CodeService {
             codeRepo.save(code);
             logger.info("Added new code {} of type {}", code.getDescription(), code.getType());
             return messageSource.getMessage("code.add.success", null, locale);
-        } catch (VerificationInterruptException e) {
+        } catch (VerificationInterruptedException e) {
             return e.getMessage();
         } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("code.add.failure", null, locale), e);

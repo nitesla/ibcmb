@@ -178,9 +178,9 @@ public class CorpLocalTransferController {
 
         model.addAttribute("localBen", beneficiaries);
 
-
-
     }
+
+
 
 }
 

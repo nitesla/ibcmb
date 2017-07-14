@@ -3,14 +3,11 @@ package longbridge.models;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import longbridge.utils.PrettySerializer;
 
-import javax.persistence.*;
-import java.io.IOException;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.ManyToOne;
+import javax.persistence.MappedSuperclass;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -44,6 +41,7 @@ public class User extends AbstractEntity{
     @ManyToOne
     protected Role role;
     protected String entrustId;
+    protected String entrustGroup;
 
 
 
@@ -53,6 +51,14 @@ public class User extends AbstractEntity{
 
     public void setEntrustId(String entrustId) {
         this.entrustId = entrustId;
+    }
+
+    public String getEntrustGroup() {
+        return entrustGroup;
+    }
+
+    public void setEntrustGroup(String entrustGroup) {
+        this.entrustGroup = entrustGroup;
     }
 
     public String getUserName() {

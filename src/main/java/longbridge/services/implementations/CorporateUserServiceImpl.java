@@ -27,7 +27,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import sun.awt.image.PixelConverter;
 
 import javax.persistence.EntityManager;
 import java.util.*;
@@ -103,7 +102,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
     @Override
     public CorporateUser getUserByName(String username) {
-        return corporateUserRepo.findByUserName(username);
+        return corporateUserRepo.findFirstByUserNameIgnoreCase(username);
     }
 
 
@@ -151,7 +150,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             }
             try {
                 corporateUserRepo.save(corporateUser);
-            } catch (VerificationInterruptException e) {
+            } catch (VerificationInterruptedException e) {
                 return e.getMessage();
             }
             return messageSource.getMessage("user.update.success", null, locale);
@@ -192,12 +191,12 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             corporateUser.setCorporate(corporate);
             passwordPolicyService.saveCorporatePassword(corporateUser);
             try {
-                corporateUserRepo.save(corporateUser);
-                createUserOnEntrust(corporateUser);
+                CorporateUser corpUser = corporateUserRepo.save(corporateUser);
+                createUserOnEntrust(corpUser);
                 String fullName = corporateUser.getFirstName() + " " + corporateUser.getLastName();
                 sendPostCreationMessage(corporateUser, fullName, user.getUserName(), password, corporateUser.getCorporate().getCustomerId());
 
-            } catch (VerificationInterruptException e) {
+            } catch (VerificationInterruptedException e) {
                 return e.getMessage();
             }
             logger.info("New corporate user {} created", corporateUser.getUserName());
@@ -212,32 +211,37 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         }
     }
 
-    private void createUserOnEntrust(CorporateUser user) {
+    public void createUserOnEntrust(CorporateUser corporateUser) {
+        CorporateUser user = corporateUserRepo.findFirstByUserName(corporateUser.getUserName());
+        if (user != null) {
 
-        if ("".equals(user.getEntrustId()) || user.getEntrustId() == null) {
-            String fullName = user.getFirstName() + " " + user.getLastName();
-            SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_CREATION");
-            String entrustId = user.getUserType().toString() + "_" + user.getUserName();
+            if ("".equals(user.getEntrustId()) || user.getEntrustId() == null) {
+                String fullName = user.getFirstName() + " " + user.getLastName();
+                SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_CREATION");
+                String entrustId = user.getUserName();
+                String group = configService.getSettingByName("DEF_ENTRUST_CORP_GRP").getValue();
 
-            if (setting != null && setting.isEnabled()) {
-                if ("YES".equalsIgnoreCase(setting.getValue())) {
-                    boolean result = securityService.createEntrustUser(entrustId, fullName, true);
-                    if (!result) {
-                        throw new EntrustException(messageSource.getMessage("entrust.create.failure", null, locale));
+                if (setting != null && setting.isEnabled()) {
+                    if ("YES".equalsIgnoreCase(setting.getValue())) {
+                        boolean result = securityService.createEntrustUser(entrustId, group, fullName, true);
+                        if (!result) {
+                            throw new EntrustException(messageSource.getMessage("entrust.create.failure", null, locale));
 
+                        }
+                        boolean contactResult = securityService.addUserContacts(user.getEmail(), user.getPhoneNumber(), true, entrustId, group);
+                        if (!contactResult) {
+                            logger.error("Failed to add user contacts on Entrust");
+                            securityService.deleteEntrustUser(entrustId, group);
+                            throw new EntrustException(messageSource.getMessage("entrust.contact.failure", null, locale));
+
+
+                        }
                     }
-                    boolean contactResult = securityService.addUserContacts(user.getEmail(), user.getPhoneNumber(), true, entrustId);
-                    if (!contactResult) {
-                        logger.error("Failed to add user contacts on Entrust");
-                        securityService.deleteEntrustUser(entrustId);
-                        throw new EntrustException(messageSource.getMessage("entrust.contact.failure", null, locale));
+                    user.setEntrustId(entrustId);
+                    user.setEntrustGroup(group);
+                    corporateUserRepo.save(user);
 
-
-                    }
                 }
-                user.setEntrustId(entrustId);
-                corporateUserRepo.save(user);
-
             }
         }
     }
@@ -308,7 +312,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
                 try {
                     CorporateUser corpUser = corporateUserRepo.save(user);
                     sendActivationMessage(corpUser, fullName, user.getUserName(), password, user.getCorporate().getCustomerId());
-                } catch (VerificationInterruptException e) {
+                } catch (VerificationInterruptedException e) {
                     return e.getMessage();
                 }
             } else {
@@ -389,8 +393,14 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
     @Override
     public String changeCorpActivationStatus(Long userId) throws InternetBankingException {
+
+        CorporateUser user = corporateUserRepo.findOne(userId);
+        Corporate corporate = user.getCorporate();
+
+        if ("I".equals(corporate.getStatus())) {
+            throw new InternetBankingException(messageSource.getMessage("corporate.deactivated", null, locale));
+        }
         try {
-            CorporateUser user = corporateUserRepo.findOne(userId);
             String oldStatus = user.getStatus();
             String newStatus = "A".equals(oldStatus) ? "I" : "A";
             user.setStatus(newStatus);
@@ -448,6 +458,11 @@ public class CorporateUserServiceImpl implements CorporateUserService {
     public String resetCorpPassword(Long userId) throws PasswordException {
 
         CorporateUser user = corporateUserRepo.findOne(userId);
+        Corporate corporate = user.getCorporate();
+
+        if ("I".equals(corporate.getStatus())) {
+            throw new InternetBankingException(messageSource.getMessage("corporate.deactivated", null, locale));
+        }
 
         try {
             String newPassword = passwordPolicyService.generatePassword();
@@ -476,7 +491,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
             if (setting != null && setting.isEnabled()) {
                 if ("YES".equalsIgnoreCase(setting.getValue())) {
-                    securityService.deleteEntrustUser(corporateUser.getUserName());
+                    securityService.deleteEntrustUser(corporateUser.getEntrustId(), corporateUser.getEntrustGroup());
                 }
             }
             return messageSource.getMessage("user.delete.success", null, locale);
@@ -495,6 +510,12 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         if (!"L".equals(user.getStatus())) {
             throw new InternetBankingException(messageSource.getMessage("user.unlocked", null, locale));
         }
+        Corporate corporate = user.getCorporate();
+
+        if ("I".equals(corporate.getStatus())) {
+            throw new InternetBankingException(messageSource.getMessage("corporate.deactivated", null, locale));
+        }
+
         try {
             failedLoginService.unLockUser(user);
             return messageSource.getMessage("unlock.success", null, locale);

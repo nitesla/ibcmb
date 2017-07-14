@@ -7,7 +7,7 @@ import javax.persistence.EntityManager;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import longbridge.exception.InternetBankingException;
-import longbridge.exception.VerificationInterruptException;
+import longbridge.exception.VerificationInterruptedException;
 import longbridge.models.AbstractEntity;
 import longbridge.models.User;
 import longbridge.models.Verification;
@@ -95,9 +95,26 @@ public class MakerCheckerAdvisor {
 
         if (!makerCheckerService.isEnabled(verifier.operation())) {
             log.info("Maker checker is disabled for operation");
+
+            if (entity.getId() != null) {
+                Long id = entity.getId();
+                String entityName = entity.getClass().getSimpleName();
+
+                Verification pendingVerification = verificationRepo.findFirstByEntityNameAndEntityIdAndStatus(entityName,
+                        id, VerificationStatus.PENDING);
+                if (pendingVerification != null) {
+                    log.info("Found entity with pending verification");
+                    throw new InternetBankingException(entityName + " has changes pending for verification. Approve or " +
+                            "decline the changes before making another one.");
+                }
+            }
+
             pjp.proceed();
             return entity;
         }
+
+        log.info("Maker checker is enabled for operation");
+
 
         CustomUserPrincipal principal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();
@@ -147,7 +164,7 @@ public class MakerCheckerAdvisor {
         log.info(entityName + " has been saved for verification");
 
         System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-        throw new VerificationInterruptException(verifier.description()+" has gone for verification");
+        throw new VerificationInterruptedException(verifier.description() + " has gone for verification");
 
     }
 
@@ -209,7 +226,7 @@ public class MakerCheckerAdvisor {
 
         log.info(entityName + " has been saved for verification");
 
-        return entity;
+        throw new VerificationInterruptedException(verifier.description() + " has gone for verification");
     }
 
 

@@ -162,10 +162,13 @@ public class RetailUserServiceImpl implements RetailUserService {
             retailUser.setFirstName(details.getFirstName());
             retailUser.setLastName(details.getLastName());
             retailUser.setEmail(details.getEmail());
+            retailUser.setPhoneNumber(details.getPhone());
             retailUser.setCreatedOnDate(new Date());
             retailUser.setBirthDate(user.getBirthDate());
             retailUser.setBvn(user.getBvn());
-            retailUser.setRole(roleService.getTheRole("RETAIL"));
+            SettingDTO settingDTO = configService.getSettingByName("DEFAULT_RETAIL_ROLE");
+            Role role = roleService.getTheRole(settingDTO.getValue());
+            retailUser.setRole(role);
             retailUser.setStatus("A");
             retailUser.setAlertPreference(codeService.getByTypeAndCode("ALERT_PREFERENCE", "BOTH"));
             String errorMsg = passwordPolicyService.validate(user.getPassword(), null);
@@ -179,15 +182,19 @@ public class RetailUserServiceImpl implements RetailUserService {
             if (setting != null && setting.isEnabled()) {
                 if ("YES".equalsIgnoreCase(setting.getValue())) {
 
-                    retailUser.setEntrustId(UserType.RETAIL.toString()+"_"+user.getUserName());
+                    retailUser.setEntrustId(user.getUserName());
 
-                    createEntrustUser(retailUser.getEntrustId(), fullName, true);
+                    String defaultGroup = configService.getSettingByName("DEF_ENTRUST_RET_GRP").getValue();
 
-                    addUserContact(retailUser.getEntrustId(), phoneNo, user.getEmail());
+                    retailUser.setEntrustGroup(defaultGroup);
 
-                    setEntrustUserQA(retailUser.getEntrustId(), user.getSecurityQuestion(), user.getSecurityAnswer());
+                    createEntrustUser(retailUser.getEntrustId(), retailUser.getEntrustGroup(), fullName, true);
 
-                    setEntrustUserMutualAuth(retailUser.getEntrustId(), user.getCaptionSec(), user.getPhishingSec());
+                    addUserContact(retailUser.getEntrustId(), retailUser.getEntrustGroup(), phoneNo, user.getEmail());
+
+                    setEntrustUserQA(retailUser.getEntrustId(), retailUser.getEntrustGroup(), user.getSecurityQuestion(), user.getSecurityAnswer());
+
+                    setEntrustUserMutualAuth(retailUser.getEntrustId(), retailUser.getEntrustGroup(), user.getCaptionSec(), user.getPhishingSec());
                 }
             }
 
@@ -209,38 +216,38 @@ public class RetailUserServiceImpl implements RetailUserService {
         }
     }
 
-    private void createEntrustUser(String username, String fullName, boolean enableOtp) {
+    private void createEntrustUser(String username, String group, String fullName, boolean enableOtp) {
         try {
-            securityService.createEntrustUser(username, fullName, true);
+            securityService.createEntrustUser(username, group, fullName, true);
         } catch (InternetBankingSecurityException e) {
             throw new InternetBankingSecurityException(messageSource.getMessage("entrust.create.failure", null, locale), e);
         }
     }
 
-    private void addUserContact(String username, String phone, String email) {
+    private void addUserContact(String username, String group, String phone, String email) {
         try {
-            securityService.addUserContacts(email, phone, true, username);
+            securityService.addUserContacts(email, phone, true, username, group);
         } catch (InternetBankingSecurityException e) {
-            securityService.deleteEntrustUser(username);
+            securityService.deleteEntrustUser(username,group);
             throw new InternetBankingSecurityException(messageSource.getMessage("entrust.create.failure", null, locale), e);
         }
     }
 
-    private void setEntrustUserQA(String username, List<String> securityQuestion, List<String> securityAnswer){
+    private void setEntrustUserQA(String username, String group, List<String> securityQuestion, List<String> securityAnswer){
         try{
-            securityService.setUserQA(username, securityQuestion, securityAnswer);
+            securityService.setUserQA(username, group, securityQuestion, securityAnswer);
         } catch (InternetBankingSecurityException e) {
-            securityService.deleteEntrustUser(username);
+            securityService.deleteEntrustUser(username, group);
             throw new InternetBankingSecurityException(messageSource.getMessage("entrust.create.failure", null, locale), e);
         }
     }
 
-    private void setEntrustUserMutualAuth(String username, String captionSec, String phishingSec) {
+    private void setEntrustUserMutualAuth(String username, String group, String captionSec, String phishingSec) {
         try {
-            securityService.setMutualAuth(username, captionSec, phishingSec);
+            securityService.setMutualAuth(username, group, captionSec, phishingSec);
 
         } catch (InternetBankingSecurityException e) {
-            securityService.deleteEntrustUser(username);
+            securityService.deleteEntrustUser(username, group);
             throw new InternetBankingSecurityException(messageSource.getMessage("entrust.create.failure", null, locale), e);
         }
     }
@@ -255,7 +262,7 @@ public class RetailUserServiceImpl implements RetailUserService {
 
             if (setting != null && setting.isEnabled()) {
                 if ("YES".equalsIgnoreCase(setting.getValue())) {
-                    securityService.deleteEntrustUser(retailUser.getUserName());
+                    securityService.deleteEntrustUser(retailUser.getEntrustId(), retailUser.getEntrustGroup());
                 }
             }
             return messageSource.getMessage("user.delete.success", null, locale);
@@ -286,7 +293,7 @@ public class RetailUserServiceImpl implements RetailUserService {
                     retailUserRepo.save(user);
                     sendActivationMessage(user, fullName, user.getUserName(), password);
                 }
-                catch (VerificationInterruptException e){
+                catch (VerificationInterruptedException e){
                     return e.getMessage();
                 }
             } else {
@@ -294,7 +301,7 @@ public class RetailUserServiceImpl implements RetailUserService {
                 try {
                     retailUserRepo.save(user);
                 }
-                catch (VerificationInterruptException e){
+                catch (VerificationInterruptedException e){
                     return  e.getMessage();
                 }
             }

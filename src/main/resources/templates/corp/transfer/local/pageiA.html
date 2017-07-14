@@ -63,64 +63,54 @@
 
 
 
-<script th:inline="javascript">
-    /*<![CDATA[*/
-    $(document).ready(function () {
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        $(document).ready(function () {
 //        $('#acct_num').keypress(function () {
 //            $('#neq').hide();
 //
 //        });
 
-    })
+        })
 
 
-    function getAccountName() {
-        $('.acctError').hide();
-         $('#loading-icon').show();
-        //make sure alert message is not empty
-        var acct = $('#acct_num').val();
-        if(( acct==null || acct=='' ) ) {
+        function getAccountName() {
+            clearFields();
+            //make sure alert message is not empty
+            var acct = $('#acct_num').val();
+            if(( acct==null || acct=='' ) ) {
 
-             $('#loading-icon').hide();
-            $('.acctError').show().css("color", "red");
-            return false;
-        }
-
-
-
-
-        var options = {
-            type: 'GET',
-            url: '/corporate/transfer/local/' + acct + '/nameEnquiry',
-//					dataType: 'jsonp',
-            error: function (xhr, textStatus, errorThrown) {
-                 $('#loading-icon').hide();
+                $('#loading-icon').hide();
                 $('.acctError').show().css("color", "red");
-            },
-            success: function (data, textStatus) {
-                console.log(data);
-                console.log(textStatus);
-                var result = data;
-                //var result = (new Function("return " + result))();
-                // $('#acct_name').val(result.message);
-                $('#acct_name').val(result);
-                $('.acctError').hide();
+                return false;
+            }
 
-                if( result!=null && result!='' ) {
-
-                    $('#localsave').show();
-                    $('#neq').hide();
-                     $('#loading-icon').hide();
-                }else{
-
+            $.getJSON('/corporate/transfer/local/' + acct +'/nameEnquiry', function(jd) {
+                var message = jd.message;
+                var success =  jd.success;
+                console.log(message);
+                console.log(success);
+                if (success==false){
+                    $('.acctError').text(message);
                     $('.acctError').show().css("color", "red");
-                     $('#loading-icon').hide();
+                    $('#loading-icon').hide();
+                }else{
+                    $('#acct_name').val(message);
+                    $('#localsave').show();
+                    $('.acctError').hide()
+                    document.getElementById('loading-icon').style.display = 'none';
+                    $('#loading-icon').hide();
                 }
 
-            }
+
+
+
+
+            });
+
+
+
         };
-        $.ajax(options);
-    }
 
 
 
