@@ -266,7 +266,7 @@ public class PasswordPolicyService {
     }
 
 
-    public PasswordStrengthDTO getPasswordStengthParams(){
+    public PasswordStrengthDTO getPasswordStrengthParams(){
         init();
         char backslash = '\\';
         PasswordStrengthDTO passwordStrengthDTO = new PasswordStrengthDTO();

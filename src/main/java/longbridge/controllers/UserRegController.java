@@ -595,7 +595,7 @@ public class UserRegController {
         model.addAttribute("secQuestions", masterList);
         model.addAttribute("noOfQuestions", noOfQuestions);
 
-        PasswordStrengthDTO passwordStrengthDTO = passwordPolicyService.getPasswordStengthParams();
+        PasswordStrengthDTO passwordStrengthDTO = passwordPolicyService.getPasswordStrengthParams();
         logger.info("Password Strength {}" + passwordStrengthDTO);
         model.addAttribute("passwordStrength", passwordStrengthDTO);
 
