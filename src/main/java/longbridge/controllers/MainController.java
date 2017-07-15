@@ -171,6 +171,7 @@ public class MainController {
         }
 
         try{
+            logger.info("the username");
             Map<String, List<String>> mutualAuth =  securityService.getMutualAuth(user.getEntrustId(), user.getEntrustGroup());
             if (mutualAuth != null){
                 String image = mutualAuth.get("imageSecret")

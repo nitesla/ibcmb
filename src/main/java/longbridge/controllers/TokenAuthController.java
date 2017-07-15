@@ -43,14 +43,10 @@ public class TokenAuthController {
 
     @PostMapping("/otp/authenticate")
     public String authenticate(HttpServletRequest request, RedirectAttributes redirectAttributes, Locale locale, Principal principal) {
-
         String redirectUrl = "";
         String otpUrl="";
+        logger.info("the otp sent is {}",request.getParameter("otp"));
         String username = "";
-
-
-
-
         if (request.getSession().getAttribute("redirectUrl") != null) {
             redirectUrl = (String) request.getSession().getAttribute("redirectUrl");
         }
@@ -86,9 +82,12 @@ public class TokenAuthController {
         String username = "";
         String message = "";
         StringBuilder stringBuilder = new StringBuilder(message);
-        if (request.getSession().getAttribute("username") != null) {
-            username = (String) request.getSession().getAttribute("username");
-        }
+//        if (request.getSession().getAttribute("username") != null) {
+//            username = (String) request.getSession().getAttribute("username");
+//        }
+//        if(principal.getName() != null){
+//            username=principal.getName();
+//        }
         logger.info("The username {}",username);
         if(!username.equalsIgnoreCase("")) {
             boolean sendOtp;
