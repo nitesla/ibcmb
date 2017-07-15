@@ -424,7 +424,7 @@ public class MainController {
         SettingDTO setting = configurationService.getSettingByName("SESSION_TIMEOUT");
         try{
             if (setting != null && setting.isEnabled()){
-                Long timeOuts = Long.parseLong(setting.getValue())* 60000;
+                Long timeOuts = (Long.parseLong(setting.getValue())* 60000)-25000;
                 logger.info("SESSION TIME OUT PERIOD" + timeOuts);
                 model.addAttribute("timeOut", timeOuts);
             }

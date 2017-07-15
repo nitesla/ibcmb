@@ -12,6 +12,7 @@ import longbridge.repositories.CorporateRepo;
 import longbridge.services.*;
 import longbridge.utils.DateFormatter;
 import longbridge.utils.TransferType;
+import longbridge.utils.TransferUtils;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.slf4j.Logger;
@@ -63,13 +64,14 @@ public class CorpTransferController {
     private TransferErrorService transferErrorService;
     private SecurityService securityService;
     private ApplicationContext appContext;
+    private TransferUtils transferUtils;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     private CorpTransferService corpTransferService;
 
     @Autowired
-    public CorpTransferController(CorporateService corporateService, CorporateRepo corporateRepo, CorporateUserService corporateUserService, IntegrationService integrationService, CorpTransferService transferService, AccountService accountService, MessageSource messages, LocaleResolver localeResolver, CorpLocalBeneficiaryService corpLocalBeneficiaryService, FinancialInstitutionService financialInstitutionService, TransferErrorService transferErrorService, SecurityService securityService) {
+    public CorpTransferController(CorporateService corporateService, CorporateRepo corporateRepo, CorporateUserService corporateUserService, IntegrationService integrationService, CorpTransferService transferService, AccountService accountService, MessageSource messages, LocaleResolver localeResolver, CorpLocalBeneficiaryService corpLocalBeneficiaryService, FinancialInstitutionService financialInstitutionService, TransferErrorService transferErrorService, SecurityService securityService, TransferUtils transferUtils) {
         this.corporateService = corporateService;
         this.corporateRepo = corporateRepo;
         this.corporateUserService = corporateUserService;
@@ -82,6 +84,7 @@ public class CorpTransferController {
         this.financialInstitutionService = financialInstitutionService;
         this.transferErrorService = transferErrorService;
         this.securityService = securityService;
+        this.transferUtils=transferUtils;
     }
 
 
@@ -158,42 +161,18 @@ public class CorpTransferController {
     @GetMapping("/local/{accountNo}/nameEnquiry")
     public
     @ResponseBody
-    String getBankAccountName(@PathVariable String accountNo, Principal principal) {
-        try {
-            if (principal != null) {
-                String name = integrationService.viewAccountDetails(accountNo).getAcctName();
-                return name;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    String getBankAccountName(@PathVariable String accountNo) {
 
-        return "";
+        return transferUtils.doIntraBankkNameLookup(accountNo);
     }
 
 
     @GetMapping("/{accountNo}/{bank}/nameEnquiry")
     public
     @ResponseBody
-    String getInterBankAccountName(@PathVariable String accountNo, @PathVariable String bank, Principal principal) {
+    String getInterBankAccountName(@PathVariable String accountNo, @PathVariable String bank) {
 
-        if (principal != null) {
-            NEnquiryDetails details = integrationService.doNameEnquiry(bank, accountNo);
-            if (details == null)
-                return createMessage("service down please try later", false);
-
-
-            if (details.getResponseCode() != null && !details.getResponseCode().equalsIgnoreCase("00"))
-                return createMessage(details.getResponseDescription(), false);
-
-
-            if (details.getAccountName() != null && details.getResponseCode() != null && details.getResponseCode().equalsIgnoreCase("00"))
-                return createMessage(details.getAccountName(), true);
-        }
-
-
-        return createMessage("session expired", false);
-
+       return transferUtils.doInterBankNameLookup(bank,accountNo);
 
     }
 
@@ -233,7 +212,7 @@ public class CorpTransferController {
                         request.getSession().removeAttribute("Lbeneficiary");
                         // model.addAttribute("beneficiary", l);
                     } catch (InternetBankingException de) {
-                        logger.error("Error occured processing transfer");
+                        logger.error("Error occurred processing transfer");
 
                     }
                 }
@@ -349,25 +328,17 @@ public class CorpTransferController {
 
     @RequestMapping(value = "/balance/{accountNumber}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    public BigDecimal getBalance(@PathVariable String accountNumber) throws Exception {
-        Account account = accountService.getAccountByAccountNumber(accountNumber);
-        Map<String, BigDecimal> balance = accountService.getBalance(account);
-        BigDecimal availBal = balance.get("AvailableBalance");
-        return availBal;
+    public String getBalance(@PathVariable String accountNumber) throws Exception {
+
+        return transferUtils.getBalance(accountNumber);
+    }
+    @RequestMapping(value = "/limit/{accountNumber}", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public String getLimit(@PathVariable String accountNumber) throws Exception {
+
+        return transferUtils.getLimit(accountNumber);
     }
 
-    private String createMessage(String message, boolean successOrFailure) {
-        JSONObject object = new JSONObject();
-        //ObjectNode object = Json.newObject();
-        try {
-            object.put("message", message);
-            object.put("success", successOrFailure);
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return object.toString();
-    }
 
     @RequestMapping(path = "{id}/receipt", method = RequestMethod.GET)
     public ModelAndView report(@PathVariable Long id, HttpServletRequest servletRequest, Principal principal) {

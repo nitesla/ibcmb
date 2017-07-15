@@ -1,8 +1,8 @@
 package longbridge.controllers.corporate;
 
+import longbridge.dtos.CodeDTO;
 import longbridge.dtos.CorporateUserDTO;
 import longbridge.dtos.PasswordStrengthDTO;
-import longbridge.models.SecurityQuestions;
 import longbridge.services.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,7 +49,7 @@ public class CorpSetupController {
     MessageSource messageSource;
 
     @Autowired
-    private SecurityQuestionService securityQuestionService;
+    private CodeService codeService;
 
     @Autowired
     private SecurityService securityService;
@@ -96,7 +96,7 @@ public class CorpSetupController {
         model.addAttribute("images", images);
         model.addAttribute("imagePath", imagePath);
 
-        List<SecurityQuestions> secQues = securityQuestionService.getSecQuestions();
+        List<CodeDTO> secQues = codeService.getCodesByType("SECURITY_QUESTION");
         int noOfQuestions = securityService.getMinUserQA();
         logger.info("num of qs on entrust {}",noOfQuestions);
         ArrayList[] masterList = new ArrayList[noOfQuestions];
@@ -123,7 +123,7 @@ public class CorpSetupController {
         model.addAttribute("secQuestions", masterList);
         model.addAttribute("noOfQuestions", noOfQuestions);
 
-        PasswordStrengthDTO passwordStrengthDTO = passwordPolicyService.getPasswordStengthParams();
+        PasswordStrengthDTO passwordStrengthDTO = passwordPolicyService.getPasswordStrengthParams();
         logger.info("Password Strength {}" + passwordStrengthDTO);
         model.addAttribute("passwordStrength", passwordStrengthDTO);
 

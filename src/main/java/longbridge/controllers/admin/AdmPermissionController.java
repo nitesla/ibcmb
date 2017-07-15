@@ -95,14 +95,14 @@ public class AdmPermissionController {
     }
 
     @GetMapping("/{reqId}/edit")
-    public String editConfig(@PathVariable Long reqId, Model model) {
+    public String editPermission(@PathVariable Long reqId, Model model) {
         PermissionDTO permission = roleService.getPermission(reqId);
         model.addAttribute("permission", permission);
         return "/adm/permission/edit";
     }
 
     @PostMapping("/update")
-    public String updatePermission(@ModelAttribute("permissionForm") PermissionDTO permission, BindingResult result, RedirectAttributes redirectAttributes, Locale locale) {
+    public String updatePermission(@ModelAttribute("permission") PermissionDTO permission, BindingResult result, RedirectAttributes redirectAttributes, Locale locale) {
 
         if (result.hasErrors()) {
             result.addError(new ObjectError("invalid", messageSource.getMessage("permission.update.failure", null, locale)));

@@ -81,7 +81,7 @@
 
                         </form>
                         <form method="post" id="form_edit" th:action="@{/corporate/transfer/ownaccount/edit}"
-                              th:object="${transRequest}">
+                              th:object="${corpTransferRequest}">
                             <input type="hidden" th:field="*{customerAccountNumber}"/>
                             <input type="hidden" th:field="*{beneficiaryAccountNumber}"/>
                             <input type="hidden" th:field="*{beneficiaryAccountName}"/>

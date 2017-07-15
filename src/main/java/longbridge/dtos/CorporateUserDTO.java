@@ -21,6 +21,7 @@ public class CorporateUserDTO {
     @NotEmpty(message = "userName")
     private String userName;
     private String entrustId;
+    private String entrustGroup;
     @NotEmpty(message = "firstName")
     private String firstName;
     @NotEmpty(message = "lastName")
@@ -78,6 +79,14 @@ public class CorporateUserDTO {
 
     public void setEntrustId(String entrustId) {
         this.entrustId = entrustId;
+    }
+
+    public String getEntrustGroup() {
+        return entrustGroup;
+    }
+
+    public void setEntrustGroup(String entrustGroup) {
+        this.entrustGroup = entrustGroup;
     }
 
     public String getUserName() {

@@ -304,7 +304,6 @@ public class CorporateServiceImpl implements CorporateService {
         catch (VerificationInterruptedException e) {
             return e.getMessage();
         }
-
         catch (InternetBankingException ibe) {
             throw ibe;
         } catch (Exception e) {
