@@ -37,8 +37,8 @@ public class TokenAuthController {
     @Autowired
     RetailUserService retailUserService;
 
-@Autowired
-        HostMaster hostMaster;
+    @Autowired
+    HostMaster hostMaster;
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @PostMapping("/otp/authenticate")
