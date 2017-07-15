@@ -34,7 +34,7 @@
                             <div class="form-group">
                                 <label>Beneficiary Bank</label>
                                 <span class="req"></span>
-                                <select name="beneficiaryBank" id="beneficiaryBank" class="form-control"
+                                <select name="beneficiaryBank" id="beneficiaryBank" class="form-control full-width"
                                         placeholder="select"
                                         th:field="*{beneficiaryBank}" required="required">
                                     <option th:each="bank : ${localBanks}" th:value="${bank.institutionCode}"
@@ -44,7 +44,7 @@
                             <div class="form-group">
                                 <label>Account Number</label>
                                 <span class="req"></span><input onblur="getAccountName()" type="number" min="0"
-                                                                id="acct_num" name="acct_num" class="form-control"
+                                                                id="acct_num" name="acct_num" class="form-control full-width"
                                                                 th:field="*{accountNumber}"
                                                                 placeholder="Account Number"/>
                                 <p class="errors" th:if="${#fields.hasErrors('accountNumber')}"
@@ -59,7 +59,7 @@
                             <div class="form-group">
                                 <label>Account Name</label>
                                 <span class="req"></span><input type="text" id="acct_name" name="acct_name"
-                                                                class="form-control"
+                                                                class="form-control full-width"
                                                                 th:field="*{accountName}"
                                                                 placeholder="Beneficiary Name" readonly="readonly"/>
                                 <p class="errors" th:if="${#fields.hasErrors('accountName')}"
@@ -67,7 +67,7 @@
                             </div>
                             <div class="form-group">
                                 <label>Preferred Name</label>
-                                <input type="text" class="form-control" name="preferredName"
+                                <input type="text" class="form-control full-width" name="preferredName"
                                        placeholder="Preferred Name"/>
                             </div>
                             <button id="localsave" style="display: none;" class="btn btn-link">Save</button>
@@ -78,7 +78,7 @@
                         </form>
 
                         <form id="foreign" method="post" th:action="@{/corporate/beneficiary/foreign}"
-                              th:object="${corpInternationalBeneficiaryDTO}" style="display: none">
+                              th:object="${internationalBeneficiaryDTO}" style="display: none">
                             <input type="hidden" th:value="foreign" class="form-control"/>
                             <div class="form-group">
                                 <label>Beneficiary Bank</label>
@@ -117,7 +117,7 @@
                             <div class="form-group">
                                 <label>Currency Code</label>
                                 <span class="req"></span>
-                                <select name="currencyCode" id="currencyCode" class="form-control"
+                                <select name="currencyCode" id="currencyCode" class="form-control full-width"
                                         required="required">
 
                                     <option th:each="ccyCode : ${foreignCurrencyCodes}" th:value="${ccyCode.code}"
@@ -136,7 +136,7 @@
                             </div>
                             <div class="form-group">
                                 <label>Intermediary Account Number</label>
-                                <input min="0" type="number" class="form-control" name="intermediaryBankAcctNo"
+                                <input min="0" type="number" class="form-control full-width" name="intermediaryBankAcctNo"
                                        placeholder="Intermediary Bank Account Number"
                                        th:field="*{intermediaryBankAcctNo}"/>
 
@@ -149,7 +149,7 @@
                             <input type="hidden" th:value="intrabank" class="form-control"/>
                             <div class="form-group">
                                 <label>Beneficiary Bank</label>
-                                <span class="required"></span><select name="beneficiaryBank" class="form-control"
+                                <span class="required"></span><select name="beneficiaryBank" class="form-control full-width"
                                                                       th:field="*{beneficiaryBank}"
                                                                       required="required">
                                 <option th:value="${bankCode}">Coronation Merchant Bank</option>
@@ -159,7 +159,7 @@
                             </div>
                             <div class="form-group">
                                 <label>Account Number</label>
-                                <span class="required"></span><input onblur="getIntraBankAccountName();" type="number" min="0" class="form-control"
+                                <span class="required"></span><input onblur="getIntraBankAccountName();" type="number" min="0" class="form-control full-width"
                                                                      name="accountNumber"
                                                                      th:field="*{accountNumber}"
                                                                      id="iacct_num" placeholder="Account Number"
@@ -169,7 +169,7 @@
 
                             <div class="form-group">
                                 <label>Account Name</label>
-                                <span class="required"></span><input type="text" class="form-control"
+                                <span class="required"></span><input type="text" class="form-control full-width"
                                                                      name="accountNumber" th:field="*{accountName}"
                                                                      id="iacct_name" readonly="readonly"
                                                                      required="required"/>
@@ -179,7 +179,7 @@
                             </div>
                             <div class="form-group">
                                 <label>Preferred Name</label>
-                                <input type="text" class="form-control" name="preferredName"
+                                <input type="text" class="form-control full-width" name="preferredName"
                                        placeholder="Beneficiary Alias" th:field="*{preferredName}"
                                        required="required"/>
                             </div>
