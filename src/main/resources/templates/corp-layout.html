@@ -304,7 +304,6 @@
         <script th:src="@{~/customer/js/jquery-ui.js}"></script>
         <script th:src="@{~/customer/js/jquery.dataTables.js}"></script>
         <!--<script th:src="@{~/customer/js/date/js/bootstrap-datepicker.js}"></script>-->
-        <script th:src="@{~/customer/js/etoka-francis.js}"></script>
         <script th:src="@{~/customer/js/momentMin.js}"></script>
         <script th:src="@{~/customer/js/calendar.js}"></script>
         <script th:src="@{~/customer/js/jquery.spring-friendly.min.js}"></script>
@@ -317,66 +316,23 @@
         <script th:src="@{~/customer/js/bootstrap.js}"></script>
         <script th:src="@{~/customer/js/bootstrap-session-timeout.js}"></script>
 
-        <script th:inline='javascript'>
-            /*<![CDATA[*/
-
-            $(document).ready(function ()
-            {
-                $('[data-toggle="tooltip"]').tooltip();
-                $('.datepicker').datepicker({
-                    autoclose: true,
-                    todayBtn: true,
-                    todayHighlight: true});
-
-                var text = ['Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-                    'i am two  Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-                    'i am 3 Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-                    'i am 4 Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry. '];
-                var x = 0;
-                var end = 0;
-
-                function textArray()
-                {
-                    $(".marquee").fadeOut(function() {
-                        $(this).text(text[x]).fadeIn();
-
-                    });
-                    x++;
-
-                    end = x + 1;
-                    if (text.length < end)
-                    {
-                        x = 0;
-                    }
-                }
-                setInterval(textArray,30000 );
-
-            })
-
-            /*]]>*/
-        </script>
-        <script th:inline='javascript'>
-            $.sessionTimeout({
-                keepAliveUrl: '',
-                logoutUrl: '/retail/logout',
-                redirUrl: '/retail/logout',
-                warnAfter: null,
-                redirAfter: 10000,
-                countdownBar: true
-            });
-        </script>
 
 
-        <div>
+        <div th:if="${message}">
             <div hidden="hidden">
                 <ul class="actionMessage">
-                    <li>password.reset.notice</li>
+                    <li th:each="msg : ${message}" th:text="${msg}" >Message</li>
                 </ul>
             </div>
         </div>
 
-
-
+        <div th:if="${failure}">
+            <div hidden="hidden">
+                <ul class="actionError">
+                    <li th:each="msg : ${failure}" th:text="${msg}" id="error">Message</li>
+                </ul>
+            </div>
+        </div>
 
         <div id="myModalError" class="modal fade " role="dialog">
             <div class="modal-dialog">
@@ -433,6 +389,31 @@
 
 
         <!-- CORE JQUERY SCRIPTS -->
+        <script th:inline='javascript'>
+            /*<![CDATA[*/
+
+            $(document).ready(function ()
+            {
+                $('[data-toggle="tooltip"]').tooltip();
+                $('.datepicker').datepicker({
+                    autoclose: true,
+                    todayBtn: true,
+                    todayHighlight: true});
+
+            })
+
+            /*]]>*/
+        </script>
+        <script th:inline='javascript'>
+            $.sessionTimeout({
+                keepAliveUrl: '',
+                logoutUrl: '/corporate/logout',
+                redirUrl: '/corporate/logout',
+                warnAfter: null,
+                redirAfter: 10000,
+                countdownBar: true
+            });
+        </script>
 
     </footer>
 </div>

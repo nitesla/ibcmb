@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
 
-<body onload="currentBar('Beneficiaries')">
+<body onload="currentBar('Change Password')">
 
 <div layout:fragment="content">
     <div class="col-md-5 col-sm-5 ">
@@ -12,8 +12,10 @@
         </select>
     </div>
 
-    <div class="col-xs-12 ml-15 " >
-        <div class="col-xs-11 no-pad-lef table-responsive no-mt no-bd  alert">
+    <div class="col-xs-12 ml-15 no-pad-left no-pad-right" >
+        <div class="col-xs-11 no-pad-lef no-mt alert no-bd">
+            <div class="">
+                <div class="col-md-7 col-sm-7">
             <form method="post" th:action="@{/corporate/settings/change_password}" th:object="${custChangePassword}">
                             <div class="form-group">
                                 <label>Old Password</label>
@@ -37,6 +39,19 @@
 
                             </div>
                         </form>
+                </div>
+                <div class="col-xs-12 col-sm-5 wel">
+                    <div class=" ">
+                        <!--<p class="related" style="padding-top: 5%">Related Information</p>-->
+                        <div  class="related-box">
+                            <h3 class="related-bar">Related Information</h3>
+
+                            <!--<input type="availBal" name="availBal"/>-->
+                            <p class="related-info coronation-blue" th:each="rule : ${passwordRules}" th:text="${rule}"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 

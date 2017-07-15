@@ -225,7 +225,7 @@ public class SettingController {
         model.addAttribute("alertPref", user.getAlertPreference());
         model.addAttribute("prefs", pref);
         model.addAttribute("message", "Preference Change Successful successful");
-        return "redirect:/cust/settings/alertpref";
+        return "redirect:/retail/settings/alert_preference";
     }
 
 

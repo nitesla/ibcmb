@@ -35,25 +35,25 @@
                             </tbody>
                         </table>
                         </div>
-                        <h4 class="sub_header">International Beneficiaries</h4>
-                        <div class="bg-white">
-                        <table class="table">
-                           <thead class='thead'>
-                               <th >Name</th>
-                                <th class="text-cente">Account Number</th>
-                                <th class="text-cente">Bank</th>
-                                <th class="text-cente">Delete</th>
-                            </thead>
-                            <tbody>
-                                <tr th:each="int : ${intBen}">
-                                    <td th:text="${int.accountName}"></td>
-                                    <td th:text="${int.accountNumber}"></td>
-                                    <td th:text="${int.beneficiaryBank}"></td>
-                                    <td ><a th:id="${int.id}" onclick="validateIntDelete(this.id)"><i class="fa fa-trash"></i></a></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        </div>
+                        <!--<h4 class="sub_header">International Beneficiaries</h4>-->
+                        <!--<div class="bg-white">-->
+                        <!--<table class="table">-->
+                           <!--<thead class='thead'>-->
+                               <!--<th >Name</th>-->
+                                <!--<th class="text-cente">Account Number</th>-->
+                                <!--<th class="text-cente">Bank</th>-->
+                                <!--<th class="text-cente">Delete</th>-->
+                            <!--</thead>-->
+                            <!--<tbody>-->
+                                <!--<tr th:each="int : ${intBen}">-->
+                                    <!--<td th:text="${int.accountName}"></td>-->
+                                    <!--<td th:text="${int.accountNumber}"></td>-->
+                                    <!--<td th:text="${int.beneficiaryBank}"></td>-->
+                                    <!--<td ><a th:id="${int.id}" onclick="validateIntDelete(this.id)"><i class="fa fa-trash"></i></a></td>-->
+                                <!--</tr>-->
+                            <!--</tbody>-->
+                        <!--</table>-->
+                        <!--</div>-->
                     </div>
             </div>
         </div>
