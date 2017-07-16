@@ -1,30 +1,20 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="corp_layout :: site-head">
-    <link th:href="@{~/bank/vendors/sweetalert/sweetalert.css}" rel="stylesheet"/>
-</head>
-<body>
-<div class="container">
-    <header th:replace="corp_layout ::corp-header">
-    </header>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
+<link th:href="@{~/bank/vendors/sweetalert/sweetalert.css}" rel="stylesheet"/>
+<body onload="currentBar('Beneficiaries')">
 
-    <section class="content-wrapper">
-        <div class="">
-            <div class="row">
-                <div class="col-md-4 col-sm-4">
-                    <h5 class="page_header">Bulk Transfers</h5>
-                    <select class="form-control invisible">
-                        <option value="account">Account Overview</option>
-                    </select>
-                </div>
-                <p class="col-xs-12 invisible">
-                    Fields marked <span style="color:red">*</span> are compulsory
-                </p>
-            </div>
-            <div class="row">
-                <div class="col-md-9 content-bg">
-                    <div class="row">
-                        <div class="col-md-12">
+<div layout:fragment="content">
+    <div class="col-md-5 col-sm-5 ">
+
+        <select class="form-control full-width coronation-form-control hide-content-only" id="view">
+            <option value="account">Overview</option>
+        </select>
+    </div>
+
+    <div class="col-xs-12 ml-15 " >
+        <div class="col-xs-11 no-pad-lef  no-mt no-bd  alert">
+            <div class="">
                             <h4 class="sub_header"></h4>
                             <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
                                 <div class="btn-group" role="group" aria-label="First group">
@@ -33,7 +23,8 @@
                                 </div>
                             </div>
                             <br/>
-                            <table class="table table-striped table-bordered table-hover" id="bulk">
+                            <div class="table-responsive">
+                            <table class="table table-striped table-bordered bg-white table-hover" id="bulk">
                                 <thead>
                                 <tr>
                                     <th>Debit Account</th>
@@ -54,29 +45,21 @@
                                 <!--</tr>-->
                                 <!--</tfoot>-->
                             </table>
-
-                        </div>
-                    </div>
+                            </div>
                 </div>
-                <div class="col-md-3 pull-right" >
-                    <div th:replace="corp_layout :: corp-sidebar" class="" >
-                    </div>
-                </div>
-            </div>
         </div>
-    </section>
+    </div>
 
-    <!-- CONTENT-WRAPPER SECTION END-->
-    <footer th:replace="corp_layout :: corp-footer">
-    </footer>
+</div>
 
 
+<th:block layout:fragment="scripts">
     <script th:src="@{~/bank/vendors/sweetalert/sweetalert.min.js}"></script>
     <script th:src="@{~/bank/vendors/bootstrap-dialog/js/bootstrap-dialog.js}"></script>
     <script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
 
-    <!-- Page-Level Scripts -->
-    <script th:inline="javascript">
+
+      <script th:inline="javascript">
         /*<![CDATA[*/
         $(document).ready(function() {
             var table = $('#bulk').DataTable({
@@ -168,6 +151,7 @@
 
         /*]]>*/
     </script>
-</div>
+</th:block>
+
 </body>
 </html>

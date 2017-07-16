@@ -41,6 +41,8 @@ public class CorpBeneficiaryController {
     private CorporateUserService corporateUserService;
     @Autowired
     private ConfigurationService configService;
+    @Autowired
+    private CodeService codeService;
 
 
     @GetMapping
@@ -71,8 +73,8 @@ public class CorpBeneficiaryController {
     @GetMapping("/new")
     public String addBeneficiary(Model model) {
         model.addAttribute("corpLocalBeneficiaryDTO", new CorpLocalBeneficiaryDTO());
-        model.addAttribute("corpInternationalBeneficiaryDTO", new CorpInternationalBeneficiaryDTO());
-        model.addAttribute("foreignBanks", financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.FOREIGN));
+        model.addAttribute("internationalBeneficiaryDTO", new InternationalBeneficiaryDTO());
+        model.addAttribute("foreignCurrencyCodes", codeService.getCodesByType("CURRENCY"));
         model.addAttribute("localBanks", financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.LOCAL));
         return "corp/beneficiary/add";
     }

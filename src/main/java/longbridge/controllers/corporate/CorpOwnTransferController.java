@@ -110,7 +110,7 @@ public class CorpOwnTransferController {
 
         {
             exception.printStackTrace();
-            String errorMessage = errorService.getExactMessage(exception.getMessage());
+            String errorMessage = errorService.getMessage(exception);
             model.addAttribute("failure", errorMessage);
             return page + "pagei";
 

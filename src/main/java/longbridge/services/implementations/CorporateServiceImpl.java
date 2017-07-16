@@ -135,6 +135,7 @@ public class CorporateServiceImpl implements CorporateService {
             corporateUser.setEmail(user.getEmail());
             corporateUser.setPhoneNumber(user.getPhoneNumber());
             corporateUser.setAdmin(user.isAdmin());
+            corporateUser.setAlertPreference(codeService.getByTypeAndCode("ALERT_PREFERENCE", "BOTH"));
             corporateUser.setCreatedOnDate(new Date());
             corporateUser.setStatus("A");
             Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
@@ -304,7 +305,6 @@ public class CorporateServiceImpl implements CorporateService {
         catch (VerificationInterruptedException e) {
             return e.getMessage();
         }
-
         catch (InternetBankingException ibe) {
             throw ibe;
         } catch (Exception e) {

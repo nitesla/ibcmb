@@ -79,7 +79,6 @@ public class AdminUserServiceImpl implements AdminUserService {
     private RoleRepo roleRepo;
 
 
-
     @Autowired
     EntityManager entityManager;
 
@@ -145,24 +144,22 @@ public class AdminUserServiceImpl implements AdminUserService {
             adminUser.setCreatedOnDate(new Date());
             Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
             adminUser.setRole(role);
-            try {
-                AdminUser newUser = adminUserRepo.save(adminUser);
-                createUserOnEntrust(newUser);
-            } catch (VerificationInterruptedException e) {
-                return e.getMessage();
-            }
+            AdminUser newUser = adminUserRepo.save(adminUser);
+            createUserOnEntrust(newUser);
 
             logger.info("New admin user {} created", adminUser.getUserName());
             return messageSource.getMessage("user.add.success", null, locale);
 
+        } catch (VerificationInterruptedException e) {
+            return e.getMessage();
         } catch (InternetBankingSecurityException se) {
             throw new InternetBankingSecurityException(messageSource.getMessage("entrust.create.failure", null, locale), se);
         } catch (Exception e) {
             if (e instanceof EntrustException) {
                 throw e;
-            } else {
-                throw new InternetBankingException(messageSource.getMessage("user.add.failure", null, locale), e);
             }
+            throw new InternetBankingException(messageSource.getMessage("user.add.failure", null, locale), e);
+
         }
     }
 
@@ -215,24 +212,19 @@ public class AdminUserServiceImpl implements AdminUserService {
                 user.setPassword(passwordEncoder.encode(password));
                 user.setExpiryDate(new Date());
                 passwordPolicyService.saveAdminPassword(user);
-                try {
-                    AdminUser admin = adminUserRepo.save(user);
-                    sendActivateMessage(admin, fullName, user.getUserName(), password);
-                } catch (VerificationInterruptedException e) {
-                    return e.getMessage();
-                }
+                AdminUser admin = adminUserRepo.save(user);
+                sendActivateMessage(admin, fullName, user.getUserName(), password);
+
             } else {
                 user.setStatus(newStatus);
-                try {
-                    adminUserRepo.save(user);
-                } catch (VerificationInterruptedException e) {
-                    return e.getMessage();
-                }
+                adminUserRepo.save(user);
             }
 
             logger.info("Admin user {} status changed from {} to {}", user.getUserName(), oldStatus, newStatus);
             return messageSource.getMessage("user.status.success", null, locale);
 
+        } catch (VerificationInterruptedException e) {
+            return e.getMessage();
         } catch (MailException me) {
             throw new InternetBankingException(messageSource.getMessage("mail.failure", null, locale), me);
         } catch (InternetBankingException ibe) {
@@ -312,15 +304,14 @@ public class AdminUserServiceImpl implements AdminUserService {
             adminUser.setPhoneNumber(user.getPhoneNumber());
             Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
             adminUser.setRole(role);
-            try {
-                adminUserRepo.save(adminUser);
-            } catch (VerificationInterruptedException e) {
-                return e.getMessage();
-            }
-
+            adminUserRepo.save(adminUser);
             logger.info("Admin user {} updated", adminUser.getUserName());
             return messageSource.getMessage("user.update.success", null, locale);
-        } catch (InternetBankingException ibe) {
+        }
+        catch (VerificationInterruptedException e) {
+            return e.getMessage();
+        }
+        catch (InternetBankingException ibe) {
             throw ibe;
         } catch (Exception e) {
             throw new InternetBankingException(messageSource.getMessage("user.update.failure", null, locale), e);
@@ -440,7 +431,6 @@ public class AdminUserServiceImpl implements AdminUserService {
     public boolean generateAndSendPassword(AdminUser user) {
         return false;// TODO
     }
-
 
 
     private List<AdminUserDTO> convertEntitiesToDTOs(Iterable<AdminUser> adminUsers) {

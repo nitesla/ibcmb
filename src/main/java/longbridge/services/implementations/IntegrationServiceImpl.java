@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -232,11 +233,11 @@ public class IntegrationServiceImpl implements IntegrationService {
 
                     return transRequest;
 
-                } catch (Exception e) {
+                } catch (HttpStatusCodeException e) {
 
                     e.printStackTrace();
-                    transRequest.setStatus(ResultType.ERROR.toString());
-                    transRequest.setStatusDescription(errorService.getExactMessage(TransferExceptions.ERROR.toString()));
+                    transRequest.setStatus(e.getStatusCode().toString());
+                    transRequest.setStatusDescription(e.getStatusCode().getReasonPhrase());
                     return transRequest;
 
                 }
@@ -265,16 +266,16 @@ public class IntegrationServiceImpl implements IntegrationService {
                     transRequest.setStatusDescription(response.getResponseDescription());
 
                     return transRequest;
-
-
-                } catch (Exception e) {
-
-                    e.printStackTrace();
-                    transRequest.setStatus(ResultType.ERROR.toString());
-                    transRequest.setStatusDescription(errorService.getExactMessage(TransferExceptions.ERROR.toString()));
-                    return transRequest;
                 }
 
+                catch (HttpStatusCodeException e) {
+
+                        e.printStackTrace();
+                        transRequest.setStatus(e.getStatusCode().toString());
+                        transRequest.setStatusDescription(e.getStatusCode().getReasonPhrase());
+                        return transRequest;
+
+                    }
 
             }
             case INTERNATIONAL_TRANSFER: {
@@ -300,12 +301,13 @@ public class IntegrationServiceImpl implements IntegrationService {
                     return transRequest;
 
 
-                } catch (Exception e) {
+                }  catch (HttpStatusCodeException e) {
 
                     e.printStackTrace();
-                    transRequest.setStatus(ResultType.ERROR.toString());
-                    transRequest.setStatusDescription(errorService.getExactMessage(TransferExceptions.ERROR.toString()));
+                    transRequest.setStatus(e.getStatusCode().toString());
+                    transRequest.setStatusDescription(e.getStatusCode().getReasonPhrase());
                     return transRequest;
+
                 }
 
 

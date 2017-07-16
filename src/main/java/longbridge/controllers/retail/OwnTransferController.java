@@ -103,7 +103,7 @@ public class OwnTransferController {
         } catch (InternetBankingTransferException exception)
 
         {
-            String errorMessage = errorService.getMessage(exception, servletRequest);
+            String errorMessage = errorService.getMessage(exception);
             model.addAttribute("failure", errorMessage);
             return page + "pagei";
 

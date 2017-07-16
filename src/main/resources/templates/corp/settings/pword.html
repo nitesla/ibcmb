@@ -1,31 +1,22 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="corp_layout :: site-head">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
 
-</head>
-<body>
-<div class="container">
-<header th:replace="corp_layout :: corp-header">
-</header>
+<body onload="currentBar('Change Password')">
 
-<section class="content-wrapper">
-    <div class="">
-        <div class="row">
-            <div class="col-md-4 col-sm-4">
-                <h5 class="page_header"> Change Password</h5>
-                <select class="form-control invisible">
-                    <option value="account">Account Overview</option>
-                </select>
-            </div>
-            <p class="col-xs-12">
-                Fields marked <span style="color:red">*</span> are compulsory
-            </p>
-        </div>
-        <div class="row">
-            <div class="col-md-9 content-bg">
-                <div class="row">
-                    <div class="col-md-6 col-sm-6">
-                        <form method="post" th:action="@{/corporate/settings/change_password}" th:object="${custChangePassword}">
+<div layout:fragment="content">
+    <div class="col-md-5 col-sm-5 ">
+
+        <select class="form-control full-width coronation-form-control hide-content-only" id="view">
+            <option value="account">Overview</option>
+        </select>
+    </div>
+
+    <div class="col-xs-12 ml-15 no-pad-left no-pad-right" >
+        <div class="col-xs-11 no-pad-lef no-mt alert no-bd">
+            <div class="">
+                <div class="col-md-7 col-sm-7">
+            <form method="post" th:action="@{/corporate/settings/change_password}" th:object="${custChangePassword}">
                             <div class="form-group">
                                 <label>Old Password</label>
                                 <input id="old" type="password" th:field="*{oldPassword}" class="form-control"/><span class='req-inner'></span>
@@ -48,20 +39,26 @@
 
                             </div>
                         </form>
-                    </div>
                 </div>
-            </div>
-            <div class="col-md-3 pull-right " >
-                <div th:replace="corp_layout :: corp-sidebar" class="" >
+                <div class="col-xs-12 col-sm-5 wel">
+                    <div class=" ">
+                        <!--<p class="related" style="padding-top: 5%">Related Information</p>-->
+                        <div  class="related-box">
+                            <h3 class="related-bar">Related Information</h3>
+
+                            <!--<input type="availBal" name="availBal"/>-->
+                            <p class="related-info coronation-blue" th:each="rule : ${passwordRules}" th:text="${rule}"></p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</section>
 
-<!-- CONTENT-WRAPPER SECTION END-->
-<footer th:replace="corp_layout ::corp-footer">
-</footer>
+</div>
+
+
+<th:block layout:fragment="scripts">
 <script>
 
     $('#old').bind("cut copy paste",function(e) {
@@ -76,6 +73,8 @@
         e.preventDefault();
     });
 </script>
-</div>
+   
+</th:block>
+
 </body>
 </html>

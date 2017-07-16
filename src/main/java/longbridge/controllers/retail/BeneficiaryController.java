@@ -100,6 +100,7 @@ public class BeneficiaryController {
         model.addAttribute("localBeneficiaryDTO", new LocalBeneficiaryDTO());
         model.addAttribute("internationalBeneficiaryDTO", new InternationalBeneficiaryDTO());
         model.addAttribute("foreignCurrencyCodes", codeService.getCodesByType("CURRENCY"));
+        model.addAttribute("localBanks", financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.LOCAL));
         return "cust/beneficiary/add";
     }
 

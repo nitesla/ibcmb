@@ -53,6 +53,11 @@ public class MainController {
     @Autowired
     private  FaqsService faqsService;
 
+    @GetMapping("/testing")
+    public String testing(){
+        return "abcd";
+    }
+
 
     @RequestMapping(value = {"/", "/home"})
     public String getHomePage(@RequestParam Optional<HttpServletRequest> request) {

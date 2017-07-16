@@ -21,6 +21,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -48,6 +49,8 @@ public class RoleServiceImpl implements RoleService {
 
     private CorporateUserRepo corpRepo;
 
+    private EntityManager entityManager;
+
     private ModelMapper modelMapper = new ModelMapper();
 
     private Locale locale = LocaleContextHolder.getLocale();
@@ -56,7 +59,7 @@ public class RoleServiceImpl implements RoleService {
 
 
     @Autowired
-    public RoleServiceImpl(RoleRepo roleRepo, VerificationService verificationService, PermissionRepo permissionRepo, MessageSource messageSource, AdminUserRepo adminRepo, RetailUserRepo retailRepo, OperationsUserRepo opRepo, CorporateUserRepo corpRepo) {
+    public RoleServiceImpl(RoleRepo roleRepo, VerificationService verificationService, PermissionRepo permissionRepo, MessageSource messageSource, AdminUserRepo adminRepo, RetailUserRepo retailRepo, OperationsUserRepo opRepo, EntityManager entityManager, CorporateUserRepo corpRepo) {
         this.roleRepo = roleRepo;
         this.verificationService = verificationService;
         this.permissionRepo = permissionRepo;
@@ -64,6 +67,7 @@ public class RoleServiceImpl implements RoleService {
         this.adminRepo = adminRepo;
         this.retailRepo = retailRepo;
         this.opRepo = opRepo;
+        this.entityManager = entityManager;
         this.corpRepo = corpRepo;
     }
 
@@ -206,7 +210,13 @@ public class RoleServiceImpl implements RoleService {
     @Verifiable(operation = "UPDATE_PERMISSION", description = "Updating a Permission")
     public String updatePermission(PermissionDTO permissionDTO) throws InternetBankingException {
         try {
-            Permission permission = convertDTOToEntity(permissionDTO);
+            Permission permission = permissionRepo.findOne(permissionDTO.getId());
+            entityManager.detach(permission);
+            permission.setVersion(permissionDTO.getVersion());
+            permission.setUserType(permissionDTO.getUserType());
+            permission.setCode(permissionDTO.getCode());
+            permission.setName(permissionDTO.getName());
+            permission.setDescription(permissionDTO.getDescription());
             permissionRepo.save(permission);
             logger.info("Updated permission {}", permission.toString());
             return messageSource.getMessage("permission.update.success", null, locale);

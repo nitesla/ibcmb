@@ -251,7 +251,7 @@ public class TransferController {
                 e.printStackTrace();
                 if (request.getSession().getAttribute("Lbeneficiary") != null)
                     request.getSession().removeAttribute("Lbeneficiary");
-                String errorMessage = transferErrorService.getMessage(e, request);
+                String errorMessage = transferErrorService.getMessage(e);
                 redirectAttributes.addFlashAttribute("failure", errorMessage);
                 return index(request);
 

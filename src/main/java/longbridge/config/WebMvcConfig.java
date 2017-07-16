@@ -106,7 +106,7 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
     @Bean
     public ResourceBundleMessageSource messageSource() {
         ResourceBundleMessageSource source = new ResourceBundleMessageSource();
-        String[] baseNames = new String[]{"i18n/messages", "i18n/menu"};
+        String[] baseNames = new String[]{"i18n/messages", "i18n/menu" ,"i18n/integration"};
         source.setBasenames(baseNames);  // name of the resource bundle
         source.setCacheSeconds(1000);
         source.setUseCodeAsDefaultMessage(true);

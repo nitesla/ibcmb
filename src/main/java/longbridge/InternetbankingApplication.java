@@ -47,7 +47,7 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
     @Override
     public void run(String... strings) throws Exception {
 
-        securityService.unLockUser("RETAIL_ronke","default");
+//        securityService.unLockUser("RETAIL_ronke","default");
    }
 }
 

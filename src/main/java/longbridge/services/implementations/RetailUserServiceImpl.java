@@ -113,7 +113,7 @@ public class RetailUserServiceImpl implements RetailUserService {
     }
 
     @Override
-    public RetailUser getUserByEntrustId(String entrustId){
+    public RetailUser getUserByEntrustId(String entrustId) {
         RetailUser retailUser = this.retailUserRepo.findFirstByEntrustIdIgnoreCase(entrustId);
         return retailUser;
     }
@@ -228,13 +228,13 @@ public class RetailUserServiceImpl implements RetailUserService {
         try {
             securityService.addUserContacts(email, phone, true, username, group);
         } catch (InternetBankingSecurityException e) {
-            securityService.deleteEntrustUser(username,group);
+            securityService.deleteEntrustUser(username, group);
             throw new InternetBankingSecurityException(messageSource.getMessage("entrust.create.failure", null, locale), e);
         }
     }
 
-    private void setEntrustUserQA(String username, String group, List<String> securityQuestion, List<String> securityAnswer){
-        try{
+    private void setEntrustUserQA(String username, String group, List<String> securityQuestion, List<String> securityAnswer) {
+        try {
             securityService.setUserQA(username, group, securityQuestion, securityAnswer);
         } catch (InternetBankingSecurityException e) {
             securityService.deleteEntrustUser(username, group);
@@ -289,26 +289,20 @@ public class RetailUserServiceImpl implements RetailUserService {
                 user.setPassword(passwordEncoder.encode(password));
                 user.setExpiryDate(new Date());
                 passwordPolicyService.saveRetailPassword(user);
-                try {
-                    retailUserRepo.save(user);
-                    sendActivationMessage(user, fullName, user.getUserName(), password);
-                }
-                catch (VerificationInterruptedException e){
-                    return e.getMessage();
-                }
+                retailUserRepo.save(user);
+                sendActivationMessage(user, fullName, user.getUserName(), password);
+
             } else {
                 user.setStatus(newStatus);
-                try {
-                    retailUserRepo.save(user);
-                }
-                catch (VerificationInterruptedException e){
-                    return  e.getMessage();
-                }
+                retailUserRepo.save(user);
+
             }
 
             logger.info("Retail user {} status changed from {} to {}", user.getUserName(), oldStatus, newStatus);
             return messageSource.getMessage("user.status.success", null, locale);
 
+        } catch (VerificationInterruptedException e) {
+            return e.getMessage();
         } catch (MailException me) {
             throw new InternetBankingException(messageSource.getMessage("mail.failure", null, locale), me);
         } catch (InternetBankingException ibe) {
@@ -377,7 +371,7 @@ public class RetailUserServiceImpl implements RetailUserService {
             passwordPolicyService.saveRetailPassword(user);
             retailUserRepo.save(user);
             String fullName = user.getFirstName() + " " + user.getLastName();
-            sendPostPasswordResetMessage(user,fullName,user.getUserName(),newPassword);
+            sendPostPasswordResetMessage(user, fullName, user.getUserName(), newPassword);
             logger.info("Retail user {} password reset successfully", user.getUserName());
             return messageSource.getMessage("password.reset.success", null, locale);
         } catch (MailException me) {
