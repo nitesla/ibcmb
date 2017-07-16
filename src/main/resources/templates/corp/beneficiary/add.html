@@ -225,7 +225,7 @@
                 $('.acctError').hide();
             });
 
-            $('#acct_num').change(function () {
+            $('#acct_num').blur(function () {
                 $('#acct_name').val("");
                 $('.acctError').hide();
             });
@@ -288,7 +288,7 @@
             }
 
 
-            $.getJSON('/corporate/transfer/' + acct + '/nameEnquiry', function (jd) {
+            $.getJSON('/corporate/transfer/local/' + acct + '/nameEnquiry', function (jd) {
                 var message = jd.message;
                 var success = jd.success;
                 console.log(message);

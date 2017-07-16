@@ -103,7 +103,7 @@
 
             var accountNumber = $('#source').val();
             $.ajax({
-                url: "/retail/transfer/balance/"+accountNumber,
+                url: "/corporate/transfer/balance/"+accountNumber,
                 type: 'GET',
                 async: false,
                 success:function(jd){

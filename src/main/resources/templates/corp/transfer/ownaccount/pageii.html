@@ -46,7 +46,7 @@
                         </table>
                          </div>
 
-                        <form method="post" th:action="@{/corporate/transfer/ownaccount}"
+                        <form method="post" th:action="@{/corporate/transfer/process}"
                               th:object="${corpTransferRequest}">
                             <input type="hidden" th:field="*{customerAccountNumber}"/>
                             <input type="hidden" th:field="*{beneficiaryAccountNumber}"/>
@@ -54,8 +54,8 @@
                             <input type="hidden" th:field="*{amount}"/>
                             <input type="hidden" th:field="*{remarks}"/>
                             <div class="form-group text-center">
-                                <label>Token *</label>
-                                <input type="text" name="token" placeholder="" class="form-control full-width"/>
+                                <!--<label>Token *</label>-->
+                                <!--<input type="text" name="token" placeholder="" class="form-control full-width"/>-->
                                 <br/>
                                 <div class="form-group">
                                     <button type="submit" class="btn btn-link required-step">Proceed</button>
