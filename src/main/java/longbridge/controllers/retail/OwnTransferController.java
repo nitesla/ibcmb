@@ -125,7 +125,7 @@ public class OwnTransferController {
     @ModelAttribute
     public void getDestAccounts(Model model, Principal principal) {
 
-        if (principal != null || principal.getName() != null) {
+        if (principal != null && principal.getName() != null) {
 
             RetailUser user = retailUserService.getUserByName(principal.getName());
             if (user != null) {
