@@ -211,14 +211,18 @@
 
 
 
-            table.on('select', function()
-            {
+//        $("#admin").on("click", "tr", function()
+//            {
+        table.on('select', function() {
             if (table.rows({
                     selected : true
                 }).indexes().length === 0) {
-
                 $('.bt-select').attr("disabled", true);
             } else {
+              //  var  className =$(this).find(':eq(2)').text();
+                // console.log(this.data()[3]);
+                   //  var className= $(this).children()[5];
+             // var className = $(this).children(":first").text();console.log(className);
                 $('.bt-select').removeAttr("disabled");
             }
 

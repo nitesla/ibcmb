@@ -167,21 +167,25 @@ public class AdminUserController {
 
     @PostMapping("/update")
     public String updateUser(@ModelAttribute("adminUser") @Valid AdminUserDTO adminUser, BindingResult result, RedirectAttributes redirectAttributes, Locale locale,Principal principal) {
-        if (result.hasErrors()) {
+        if (result.hasErrors())
+        {
             result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
             return "adm/admin/edit";
         }
-        try {
+        try
+        {
             String message = adminUserService.updateUser(adminUser);
             redirectAttributes.addFlashAttribute("message", message);
             return "redirect:/admin/users";
         }
-        catch (DuplicateObjectException ibe) {
+        catch (DuplicateObjectException ibe)
+        {
             result.addError(new ObjectError("error", ibe.getMessage()));
             logger.error("Existing user found", ibe);
             return "adm/admin/edit";
         }
-        catch (InternetBankingException ibe) {
+        catch (InternetBankingException ibe)
+        {
             result.addError(new ObjectError("error", ibe.getMessage()));
             logger.error("Error updating admin user", ibe);
             return "adm/admin/edit";
@@ -231,10 +235,20 @@ public class AdminUserController {
         try {
             String message = adminUserService.resetPassword(id);
             redirectAttributes.addFlashAttribute("message", message);
-        } catch (PasswordException pe) {
+        }
+
+
+        catch (PasswordException pe)
+        {
             redirectAttributes.addFlashAttribute("failure", pe.getMessage());
             logger.error("Error resetting password for admin user", pe);
         }
+
+        catch (InternetBankingException e)
+        {
+            redirectAttributes.addFlashAttribute("failure",e.getMessage());
+        }
+
         return "redirect:/admin/users";
     }
 

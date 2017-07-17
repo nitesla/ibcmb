@@ -291,10 +291,10 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Verifiable(operation = "UPDATE_ADMIN_USER", description = "Updating an Admin User")
     public String updateUser(AdminUserDTO user) throws InternetBankingException {
 
-
         AdminUser adminUser = adminUserRepo.findById(user.getId());
 
-        if ("I".equals(adminUser.getStatus())) {
+        if ("I".equals(adminUser.getStatus()))
+        {
             throw new InternetBankingException(messageSource.getMessage("user.deactivated", null, locale));
         }
         try {
@@ -327,8 +327,14 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Transactional
     public String resetPassword(Long userId) throws PasswordException {
 
-        try {
+
             AdminUser user = adminUserRepo.findOne(userId);
+            logger.info("this is the admin user"+user.getStatus());
+            if("I".equals(user.getStatus()))
+            {
+                throw new InternetBankingException(messageSource.getMessage("admin.deactivated", null, locale));
+            }
+        try {
             String newPassword = passwordPolicyService.generatePassword();
             user.setPassword(passwordEncoder.encode(newPassword));
             passwordPolicyService.saveAdminPassword(user);
