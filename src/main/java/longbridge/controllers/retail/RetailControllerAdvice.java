@@ -147,6 +147,7 @@ public class RetailControllerAdvice {
 
 
             model.addAttribute("accounts", accountList);
+            logger.info("fetch accounts from account table {} ",accountList);
         }
 
         return "";

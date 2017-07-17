@@ -17,6 +17,7 @@ import java.util.List;
  */
 public interface CorporateUserRepo extends JpaRepository<CorporateUser, Long> {
     CorporateUser findFirstByUserName(String s);
+    CorporateUser findFirstByUserNameIgnoreCaseAndCorporate_Id(String s,Long id);
 //    CorporateUser findFirstByCustomerId(String customerId);
 	Iterable<CorporateUser> findByRole(Role r);
     Page<CorporateUser> findByRole(Role r, Pageable pageDetail);

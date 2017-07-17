@@ -28,11 +28,12 @@
 </style>
 
 <body>
+<div class="container">
 <header th:replace="corp_layout ::corp-header">
 </header>
 
 <section class="content-wrapper">
-    <div class="container">
+    <div class="">
         <div class="row">
             <div class="col-md-4 col-sm-4">
                 <h5 class="page_header"> Bulk Transfer Details</h5>
@@ -52,12 +53,12 @@
                         <br/>
                         <div class="form-group col-md-6">
                             <label>Source account</label>
-                            <input type="text" class="form-control" th:field="*{bulkTransfer.debitAccount}" readonly/>
+                            <input type="text" class="form-control" th:field="*{bulkTransfer.debitAccount}" />
                             </div>
 
 
                     <br/>
-                        <input type="hidden" class="form-control" th:value="${bulkTransfer.id}" th:field="*{bulkTransfer.id}" th:id="bk" id="bk" readonly/>
+                        <input type="hidden" class="form-control" th:value="${bulkTransfer.id}" th:field="*{bulkTransfer.id}" th:id="bk" id="bk" />
 
                         <br/>
                     <table id="mytab" class="table table-striped table-bordered table-hover" cellspacing="0"  >
@@ -146,8 +147,9 @@
 
     //});
 
-
+    /*]]>*/
 
 </script>
+</div>
 </body>
 </html>

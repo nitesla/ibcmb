@@ -44,8 +44,16 @@ public class CorpBeneficiaryController {
         logger.info("local BEN {}", corpLocalBeneficiaryService.getCorpLocalBeneficiaries(corporateUser.getCorporate()));
         Iterable<CorpLocalBeneficiary> corpLocalBeneficiaries = corpLocalBeneficiaryService.getCorpLocalBeneficiaries(corporateUser.getCorporate());
 
-        for (CorpLocalBeneficiary localBenef : corpLocalBeneficiaries) {
-            localBenef.setBeneficiaryBank(financialInstitutionService.getFinancialInstitutionByCode(localBenef.getBeneficiaryBank()).getInstitutionName());
+
+        for (CorpLocalBeneficiary localBenef : corpLocalBeneficiaries){
+
+            String code =  localBenef.getBeneficiaryBank();
+            FinancialInstitution financialInstitution = financialInstitutionService.getFinancialInstitutionByCode(code);
+            if(financialInstitution!=null) {
+                String beneficiaryBank = financialInstitution.getInstitutionName();
+                localBenef.setBeneficiaryBank(beneficiaryBank);
+            }
+
         }
         model.addAttribute("localBen", corpLocalBeneficiaries);
 

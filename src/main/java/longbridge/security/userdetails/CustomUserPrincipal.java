@@ -1,5 +1,6 @@
 package longbridge.security.userdetails;
 
+import longbridge.models.CorporateUser;
 import longbridge.models.Role;
 import longbridge.models.User;
 import org.joda.time.LocalDate;
@@ -13,17 +14,21 @@ import java.util.Collection;
 import java.util.List;
 
 @Transactional
-public class CustomUserPrincipal implements UserDetails {
+public class CustomUserPrincipal implements CustomeUserDetails {
 
 	private static final long serialVersionUID = 1L;
 
 	private final User user;
 	private String ipAddress;
 	private LocalDate today = LocalDate.now();
+	private Long corpId;
 
 	public CustomUserPrincipal(User user) {
 		this.user = user;
-
+	}
+	public CustomUserPrincipal(CorporateUser user) {
+		this.user = user;
+		this.corpId=user.getCorporate().getId();
 	}
 
 	public String getIpAddress() {
@@ -104,6 +109,9 @@ public class CustomUserPrincipal implements UserDetails {
 		return privileges;
 	}
 
+	public Long getCorpId() {
+		return corpId;
+	}
 
 	@Override
 	public boolean equals(Object o) {

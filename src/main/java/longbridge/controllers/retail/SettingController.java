@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -64,6 +65,8 @@ public class SettingController {
     @Autowired
     private IntegrationService integrationService;
 
+    private Locale locale = LocaleContextHolder.getLocale();
+
     @Autowired
     private FinancialInstitutionService financialInstitutionService;
     @Autowired
@@ -74,8 +77,15 @@ public class SettingController {
     @RequestMapping("/dashboard")
     public String getRetailDashboard(Model model, Principal principal) {
         RetailUser retailUser = retailUserService.getUserByName(principal.getName());
-        List<AccountDTO> accountList = accountService.getAccounts(retailUser.getCustomerId());
+        List<AccountDTO> accountList = accountService.getAccountsAndBalances(retailUser.getCustomerId());
         model.addAttribute("accountList", accountList);
+
+        boolean exp = passwordPolicyService.displayPasswordExpiryDate(retailUser.getExpiryDate());
+        logger.info("EXPIRY RESULT {} ", exp);
+        if (exp){
+            model.addAttribute("message", messageSource.getMessage("password.reset.notice", null, locale));
+        }
+
         return "cust/dashboard";
     }
 

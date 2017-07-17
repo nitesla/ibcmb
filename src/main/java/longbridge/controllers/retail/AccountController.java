@@ -214,6 +214,7 @@ import longbridge.services.AccountService;
 import longbridge.services.IntegrationService;
 import longbridge.services.RetailUserService;
 import longbridge.services.TransferService;
+import longbridge.utils.DateFormatter;
 import longbridge.utils.statement.AccountStatement;
 import longbridge.utils.statement.TransactionDetails;
 import longbridge.utils.statement.TransactionHistory;
@@ -247,6 +248,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.ByteArrayOutputStream;
 import java.security.Principal;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
  import org.joda.time.Duration;
@@ -459,14 +461,16 @@ public class AccountController {
 
 		Map<String, Object> modelMap = new HashMap<>();
 		for(TransactionHistory transactionHistory:transRequestList) {
+			double amount = Double.parseDouble(transactionHistory.getBalance());
+			DecimalFormat formatter = new DecimalFormat("#,###.00");
 		modelMap.put("datasource", new ArrayList<>());
-	modelMap.put("amount", transactionHistory.getBalance());
+	modelMap.put("amount", formatter.format(amount));
 	modelMap.put("sender",retailUser.getFirstName()+" "+retailUser.getLastName() );
 	modelMap.put("remarks", transactionHistory.getNarration());
 	modelMap.put("recipientBank", "");
 	modelMap.put("refNUm", transactionHistory.getTranType());
-	modelMap.put("date",transactionHistory.getValueDate());
-	modelMap.put("tranDate", transactionHistory.getPostedDate());
+	modelMap.put("date",DateFormatter.format(transactionHistory.getValueDate()));
+	modelMap.put("tranDate", DateFormatter.format(transactionHistory.getPostedDate()));
 }
 
 	ModelAndView modelAndView=new ModelAndView(view, modelMap);
@@ -542,13 +546,15 @@ public class AccountController {
 			out.setDraw(input.getDraw());
 			List<TransactionDetails> list = accountStatement.getTransactionDetails();
 			RetailUser retailUser = retailUserService.getUserByName(principal.getName());
-
+			DecimalFormat formatter = new DecimalFormat("#,###.00");
 			modelMap.put("datasource", list);
 			modelMap.put("format", "pdf");
 			modelMap.put("summary.accountNum",acctNumber);
 			modelMap.put("summary.customerName",retailUser.getFirstName()+" "+retailUser.getLastName());
 			modelMap.put("summary.customerNo", retailUser.getCustomerId());
-			modelMap.put("summary.openingBalance", accountStatement.getOpeningBalance());
+
+			double amount = Double.parseDouble(accountStatement.getOpeningBalance());
+			modelMap.put("summary.openingBalance", formatter.format(amount));
 			if(accountStatement.getDebitCount()!=null) {
 				modelMap.put("summary.debitCount", accountStatement.getDebitCount());
 			}
@@ -559,7 +565,8 @@ public class AccountController {
 			else{modelMap.put("summary.creditCount", "");}
 			modelMap.put("summary.currencyCode", accountStatement.getCurrencyCode());
 			if (accountStatement.getClosingBalance() != null) {
-				modelMap.put("summary.closingBalance", accountStatement.getClosingBalance());
+				double closingbal = Double.parseDouble(accountStatement.getClosingBalance());
+				modelMap.put("summary.closingBalance", formatter.format(closingbal));
 			}else{modelMap.put("summary.closingBalance","" );}
 			modelMap.put("summary.totalDebit", accountStatement.getTotalDebit());
 			modelMap.put("summary.totalCredit", accountStatement.getTotalCredit());

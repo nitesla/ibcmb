@@ -1,5 +1,6 @@
 package longbridge.utils;
 
+import longbridge.security.userdetails.CustomUserPrincipal;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,4 +23,17 @@ public class HostMaster {
 
         return "";
     }
+
+    public  boolean isPasswordExpired(){
+       try{
+           Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+           CustomUserPrincipal userPrincipal= (CustomUserPrincipal)authentication.getPrincipal();
+           return !userPrincipal.isCredentialsNonExpired();
+       }catch (Exception e){
+          e.printStackTrace();
+          return true;
+       }
+
+    }
+
 }

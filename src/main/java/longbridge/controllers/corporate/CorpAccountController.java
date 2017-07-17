@@ -18,6 +18,7 @@ import longbridge.utils.statement.AccountStatement;
 import longbridge.utils.statement.TransactionDetails;
 import longbridge.repositories.AccountRepo;
 import longbridge.services.*;
+import longbridge.utils.DateFormatter;
 import longbridge.utils.statement.AccountStatement;
 import longbridge.utils.statement.TransactionDetails;
 import longbridge.utils.statement.TransactionHistory;
@@ -42,6 +43,7 @@ import org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -202,21 +204,22 @@ catch(InternetBankingException e){
 
 
     @GetMapping("/{id}/statement")
-    public String getLastTenTransaction(@PathVariable Long id, Model model, Principal principal) {
+    public String getTransactionHistory(@PathVariable Long id, Model model, Principal principal) {
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
 
         Account account = accountRepo.findOne(id);
-        String LAST_TEN_TRANSACTION="10";
+        String LAST_TEN_TRANSACTION = "10";
         List<AccountDTO> accountList = accountService.getAccountsAndBalances(corporateUser.getCorporate().getCustomerId());
-        List<TransactionHistory> transRequestList=integrationService.getLastNTransactions(account.getAccountNumber(),LAST_TEN_TRANSACTION);
-        if (transRequestList != null  && ! transRequestList.isEmpty()) {
+        List<TransactionHistory> transRequestList = integrationService.getLastNTransactions(account.getAccountNumber(), LAST_TEN_TRANSACTION);
+        if (transRequestList != null && !transRequestList.isEmpty()) {
             model.addAttribute("transRequestList", transRequestList);
             model.addAttribute("accountList", accountList);
-           logger.info("Transaction list {}", transRequestList);
+            logger.info("Last 10 Transaction {}", transRequestList);
             return "corp/account/accountstatement";
         }
         return "redirect:/corporate/dashboard";
     }
+
     @RequestMapping(path = "{id}/downloadhistory", method = RequestMethod.GET)
     public ModelAndView getTransPDF(@PathVariable String id, Model model, Principal principal) {
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
@@ -232,14 +235,17 @@ catch(InternetBankingException e){
 
         Map<String, Object> modelMap = new HashMap<>();
         for(TransactionHistory transactionHistory:transRequestList) {
+            double amount = Double.parseDouble(transactionHistory.getBalance());
+            DecimalFormat formatter = new DecimalFormat("#,###.00");
+
             modelMap.put("datasource", new ArrayList<>());
-            modelMap.put("amount", transactionHistory.getBalance());
+            modelMap.put("amount", formatter.format(amount));
             modelMap.put("sender",corporateUser.getFirstName()+" "+corporateUser.getLastName() );
             modelMap.put("remarks", transactionHistory.getNarration());
             modelMap.put("recipientBank", "");
             modelMap.put("refNUm", transactionHistory.getTranType());
             modelMap.put("date",transactionHistory.getValueDate());
-            modelMap.put("tranDate", transactionHistory.getPostedDate());
+            modelMap.put("tranDate", DateFormatter.format(transactionHistory.getPostedDate()));
         }
 
         ModelAndView modelAndView=new ModelAndView(view, modelMap);
@@ -318,14 +324,17 @@ catch(InternetBankingException e){
 
             out.setDraw(input.getDraw());
             List<TransactionDetails> list = accountStatement.getTransactionDetails();
-            CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
+            CorporateUser corporateUser=corporateUserService.getUserByName(principal.getName());
+            DecimalFormat formatter = new DecimalFormat("#,###.00");
             System.out.println("list = " + list);
             modelMap.put("datasource", list);
             modelMap.put("format", "pdf");
               modelMap.put("summary.accountNum", acctNumber);
             modelMap.put("summary.customerName",corporateUser.getFirstName()+" "+corporateUser.getLastName());
             modelMap.put("summary.customerNo", corporateUser.getCorporate().getCustomerId());
-            modelMap.put("summary.openingBalance", accountStatement.getOpeningBalance());
+            double amount = Double.parseDouble(accountStatement.getOpeningBalance());
+
+            modelMap.put("summary.openingBalance", formatter.format(amount));
             if(accountStatement.getDebitCount()!=null) {
                 modelMap.put("summary.debitCount", accountStatement.getDebitCount());
             }
@@ -336,7 +345,9 @@ catch(InternetBankingException e){
             else{modelMap.put("summary.creditCount", "");}
             modelMap.put("summary.currencyCode", accountStatement.getCurrencyCode());
             if(accountStatement.getClosingBalance()!=null) {
-                modelMap.put("summary.closingBalance", accountStatement.getClosingBalance());
+                double closingbal = Double.parseDouble(accountStatement.getClosingBalance());
+
+                modelMap.put("summary.closingBalance", formatter.format(closingbal));
             }else{modelMap.put("summary.closingBalance","" );}
             modelMap.put("summary.totalDebit", accountStatement.getTotalDebit());
             modelMap.put("summary.totalCredit", accountStatement.getTotalCredit());

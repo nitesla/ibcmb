@@ -28,11 +28,12 @@
 </style>
 
 <body>
+<div class="container">
 <header th:replace="corp_layout ::corp-header">
 </header>
 
 <section class="content-wrapper">
-    <div class="container">
+    <div class="">
         <div class="row">
             <div class="col-md-4 col-sm-4">
                 <h5 class="page_header"> Bulk Transfer </h5>
@@ -109,39 +110,40 @@
 <!-- CONTENT-WRAPPER SECTION END-->
 <footer th:replace="corp_layout ::corp-footer">
 </footer>
+
 <script th:inline="javascript">
-    //<![CDATA[
-    //datepicker
-//    $( function() {
-//        $( "#datepicker" ).datepicker(
-//            { dateformat : 'dd/mm/yy'}
-//        );
-//    } );
+    /*<![CDATA[*/
 
-//    $(document).ready(function() {
-//        $.ajax({
-//            url: "/corporate/transfer/all",
-//            type: 'GET',
-//            async: false,
-//            success:function(crLists){
-//
-//
-//                var table = $('#mytab').DataTable({
-//
-//                     });
-//
-//            }
-//        })
-
-
+    var editor;
     $(document).ready(function() {
+        editor = new $.fn.dataTable.Editor( {
+            table: "#mytab",
+
+            fields: [ {
+                name: "serial"
+            }, {
+                name: "refCode"
+            }, {
+                name: "accountNumber"
+            }, {
+                name: "sortCode"
+            }, {
+                name: "accountName"
+            }, {
+                name: "amount"
+            }, {
+                name: "narration"
+            }
+            ]
+        } );
+
+
         var table = $('#mytab').DataTable({
-            select:true,
             "lengthMenu" : [ [ 5, 10, 20],	[ 5, 10, 20 ] ],
             "pagingType" : "simple_numbers",
             "searching": false,
             "paging": true,
-            "serverSide" : false,
+            "serverSide" : true,
             "ajax": "/corporate/transfer/all",
             "dom": 'T<"clear">frtlp',
             "columns": [
@@ -152,7 +154,16 @@
                 { "data": "accountName" },
                 { "data": "amount" },
                 { "data": "narration" }
-            ] });
+            ],
+
+            "columnDefs": [ {
+                "targets": '_all',
+                "render": function ( data, type, full, meta ) {
+                    return '<input type="text" value="'+data+'"/>';
+                }
+
+            } ]
+        });
 
 
 
@@ -170,7 +181,9 @@
     //});
 
 
+    /*]]>*/
 
 </script>
+</div>
 </body>
 </html>

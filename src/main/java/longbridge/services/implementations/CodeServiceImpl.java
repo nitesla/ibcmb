@@ -60,13 +60,13 @@ public class CodeServiceImpl implements CodeService {
     @Verifiable(operation="DELETE_CODE",description="Deleting a Code")
     public String deleteCode(Long codeId) throws InternetBankingException{
           try{
-
-           codeRepo.delete(codeId);
+            Code code = codeRepo.findOne(codeId);
+            codeRepo.delete(code);
            logger.info("Code {} has been deleted",codeId.toString());
            return messageSource.getMessage("code.delete.success",null,locale);
     }
     catch (Exception e){
-          throw new InternetBankingException(messageSource.getMessage("code.delete.failure",null,locale));
+          throw new InternetBankingException(messageSource.getMessage("code.delete.failure",null,locale),e);
           }
     }
 
@@ -108,7 +108,7 @@ public class CodeServiceImpl implements CodeService {
             throw new DuplicateObjectException(e.getMessage());
         }
         catch (Exception e){
-            throw new InternetBankingException(messageSource.getMessage("code.update.failure",null,locale));
+            throw new InternetBankingException(messageSource.getMessage("code.update.failure",null,locale),e);
         }
 
         
@@ -166,7 +166,7 @@ public class CodeServiceImpl implements CodeService {
             logger.info("Added new code {} of type {}",code.getDescription(),code.getType());
             return messageSource.getMessage("code.add.success", null, locale);
         }catch (Exception e){
-		    throw new InternetBankingException(messageSource.getMessage("code.add.failure",null,locale));
+		    throw new InternetBankingException(messageSource.getMessage("code.add.failure",null,locale),e);
         }
 
 //        try {

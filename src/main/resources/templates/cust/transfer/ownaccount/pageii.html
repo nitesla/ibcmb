@@ -12,55 +12,62 @@
     <div class="containe">
 
         <div class="row">
+            
+            
+            <div class="col-md-9 no-ml no-pad-left no-pad-right col-xs-12 ">
+                <div class="">
+                    <div class="current-bar  col-md-12 no-ml no-pad-left alert no-mb no-bd-rad " style="">
+                        <div class="">
+                            <strong>Own Accounts Transfer</strong>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-md-12 no-pad-right no-ml no-pad-left bg-danger alert no-mb no-mt no-bd-rad current-body">
+                        <div class="col-md-5 col-sm-5">
 
-            <div class="col-md-4 col-sm-4" >
-                <h5 class="page_header"> Own Account Transaction</h5>
-                <select class="form-control invisible">
-                        <option value="account">Account Overview</option>
-                </select>
-            </div>
-            <p class="col-xs-12 invisible">
-                    Fields marked <span style="color:red">*</span> are compulsory
-            </p>
-        </div>
-        <div class="row">
-            <div class="col-md-9 content-bg">
-                <!--<div class="row spacing">-->
+                           <p class="col-xs-12 hide-content-only" style="margin-bottom:22px;">
+                                    Fields marked <span style="color:red">*</span> are compulsory
+                            </p>
 
-                    <div class="spacin" >
-
-
-                        <table class="">
-                            <tr>
-
-                                <th colspan="2">Transaction Summary</th>
+                        </div>
 
 
-                            </tr>
-                            <tr>
+                        
+                    <div class="col-sm-offset-3  col-sm-6 " >
 
-                                <th>Source account</th>
-                                <td th:text="${transferRequest.customerAccountNumber}"></td>
 
-                            </tr>
-                            <tr>
+                        <table class="table table-hover center text-center">
+                              <tbody class="tab">
+                                    <tr>
 
-                                <th>Destination account</th>
-                                <td th:text="${transferRequest.beneficiaryAccountNumber}"></td>
+                                        <th colspan="2">Transaction Summary</th>
 
-                            </tr>
-                            <tr>
 
-                                <th>Amount</th>
-                                <td th:text="${transferRequest.amount}"></td>
+                                    </tr>
+                                    <tr>
 
-                            </tr>
-                            <tr>
+                                        <th>Source account</th>
+                                        <td th:text="${transferRequest.customerAccountNumber}"></td>
 
-                                <th>Remarks</th>
-                                <td th:text="${transferRequest.remarks}"></td>
+                                    </tr>
+                                    <tr>
 
-                            </tr>
+                                        <th>Destination account</th>
+                                        <td th:text="${transferRequest.beneficiaryAccountNumber}"></td>
+
+                                    </tr>
+                                    <tr>
+
+                                        <th>Amount</th>
+                                        <td th:text="${transferRequest.amount}"></td>
+
+                                    </tr>
+                                    <tr>
+
+                                        <th>Remarks</th>
+                                        <td th:text="${transferRequest.remarks}"></td>
+
+                                    </tr>
+                              </tbody>
                         </table>
 
                         <form method="post" th:action="@{/retail/transfer/process}" th:object="${transferRequest}">
@@ -71,10 +78,11 @@
                             <input type="hidden" th:field="*{remarks}"/>
                             <input type="hidden" th:field="*{id}"/>
 
-                            <div class="form-group">
+                            <div class="form-group text-center" style="margin:0px auto">
                                 <!--<a style="cursor: pointer;" onclick="goBack()" >Modify</a>-->
-                                <button type="submit" class="btn btn-link">Proceed</button>
-                                <a th:href="@{/retail/transfer/ownaccount}">Cancel</a>
+                                 <button type="submit" class="btn btn-link required-step">Proceed</button>
+                                   <button type="button" onclick="cancel();" class='btn btn-link less-required'>Cancel</button>
+                                <!--<a th:href="@{/retail/transfer/ownaccount}">Cancel</a>-->
                                 <!--<a th:href="@{'/retail/transfer/ownaccount/' + ${transferRequest.id} + '/receipt'}">Print</a>-->
 
                             </div>
@@ -82,9 +90,11 @@
 
                     </div>
 
-            </div>
-            <div class="col-md-3 pull-right " >
-                <div th:replace="cust_layout :: sidebar" class="" >
+
+
+
+                        
+                    </div>
                 </div>
                 <div class="col-md-6 col-sm-6">
                     <p class="related">Related Information</p>
@@ -92,6 +102,14 @@
                     <!--<p th:each="rule : ${passwordRules}" th:text="${rule}"></p>-->
                 </div>
             </div>
+            <div class="col-xs-12 col-md-3  no-bd alert no-bd-rad left-side">
+               <div class=" ">
+                        <div th:replace="cust_layout :: sidebar" class="" >
+
+                        </div>
+                    </div>
+            </div>
+
         </div>
 
     </div>

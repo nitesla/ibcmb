@@ -47,15 +47,6 @@ public abstract class AbstractEntity implements Serializable{
 
     protected Date deletedOn;
 
-//    pr
-// otected Date lastModificationTime;
-//
-//    protected Date createdTime = Date.now();
-//
-//    protected String createdBy;
-//
-//    protected String modifiedBy;
-//todo envers implementation
 
     public Long getId() {
         return id;

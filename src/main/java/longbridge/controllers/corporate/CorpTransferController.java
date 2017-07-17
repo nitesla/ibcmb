@@ -62,6 +62,7 @@ public class CorpTransferController {
     private FinancialInstitutionService financialInstitutionService;
     private TransferErrorService transferErrorService;
     private SecurityService securityService;
+    private ApplicationContext appContext;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
@@ -84,24 +85,7 @@ public class CorpTransferController {
     }
 
 
-    @GetMapping("/{corpId}/{amount}")
-    public void getQualifiedRoles(@PathVariable Long corpId, @PathVariable String amount) {
 
-        CorpTransRequest transferRequest = new CorpTransRequest();
-        transferRequest.setAmount(new BigDecimal(amount));
-        Corporate corporate = corporateRepo.findOne(corpId);
-        transferRequest.setCorporate(corporate);
-        List<CorporateRole> roles = corporateService.getQualifiedRoles(transferRequest);
-        PendAuth pendAuth = new PendAuth();
-        List<PendAuth> pendAuths = new ArrayList<>();
-        for (CorporateRole role : roles) {
-            pendAuth.setRole(role);
-            pendAuths.add(pendAuth);
-        }
-//        transferRequest.setPendAuths(pendAuths);
-        transferRequestRepo.save(transferRequest);
-
-    }
 
 
     @GetMapping(value = "")
@@ -384,5 +368,27 @@ public class CorpTransferController {
         return object.toString();
     }
 
+    @RequestMapping(path = "{id}/receipt", method = RequestMethod.GET)
+    public ModelAndView report(@PathVariable Long id, HttpServletRequest servletRequest, Principal principal) {
+        CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
+        JasperReportsPdfView view = new JasperReportsPdfView();
+        view.setUrl("classpath:jasperreports/rpt_receipt.jrxml");
+        view.setApplicationContext(appContext);
+        Map<String, Object> modelMap = new HashMap<>();
+        modelMap.put("datasource", new ArrayList<>());
+        modelMap.put("amount", transferService.getTransfer(id).getAmount());
+        modelMap.put("recipient", transferService.getTransfer(id).getBeneficiaryAccountName());
+        modelMap.put("AccountNum", transferService.getTransfer(id).getCustomerAccountNumber());
+        modelMap.put("sender", corporateUser.getFirstName() + " " + corporateUser.getLastName());
+        modelMap.put("remarks", transferService.getTransfer(id).getRemarks());
+        modelMap.put("recipientBank", transferService.getTransfer(id).getFinancialInstitution().getInstitutionName());
+        modelMap.put("acctNo2", transferService.getTransfer(id).getBeneficiaryAccountNumber());
+        modelMap.put("acctNo1", transferService.getTransfer(id).getCustomerAccountNumber());
+        modelMap.put("refNUm", transferService.getTransfer(id).getReferenceNumber());
+        modelMap.put("date",DateFormatter.format(new Date()));
+        modelMap.put("tranDate", DateFormatter.format(new Date()));
+        ModelAndView modelAndView = new ModelAndView(view, modelMap);
+        return modelAndView;
+    }
 
 }

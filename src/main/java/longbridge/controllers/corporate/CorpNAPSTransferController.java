@@ -3,6 +3,7 @@ package longbridge.controllers.corporate;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ibm.icu.impl.InvalidFormatException;
 import longbridge.dtos.BulkTransferDTO;
 import longbridge.dtos.CreditRequestDTO;
 import longbridge.models.*;
@@ -10,7 +11,10 @@ import longbridge.services.AccountService;
 import longbridge.services.BulkTransferService;
 import longbridge.services.CorporateUserService;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,9 +72,6 @@ public class CorpNAPSTransferController {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private static final String SERVER_FILE_PATH = "/Users/user/Documents/UPLOAD_FOLDER/Copy-of-NEFT-ECOB-ABC-old-mutual.xls";
-
-
     @GetMapping("/bulk")
     public String getBulkTransfers(Model model) {
         return "/corp/transfer/bulktransfer/list";
@@ -97,15 +98,15 @@ public class CorpNAPSTransferController {
         *   - inside project, located in resources folder.
         *   Added by Bimpe Ayoola
      */
-    //private static final String SERVER_FILE_PATH="C:\\ibanking\\files\\Copy-of-NEFT-ECOB-ABC-old-mutual.xls\\";
+    private static final String SERVER_FILE_PATH="C:\\ibanking\\files\\Copy-of-NEFT-ECOB-ABC-old-mutual.xls";
     private static final String FILENAME = "Copy-of-NEFT-ECOB-ABC-old-mutual.xls";
 
     @GetMapping("/bulk/download")
     public void downloadFile(HttpServletResponse response) throws IOException {
         File file = null;
-        //file = new File(SERVER_FILE_PATH);
-        ClassLoader classloader = Thread.currentThread().getContextClassLoader();
-        file = new File(classloader.getResource(FILENAME).getFile());
+        file = new File(SERVER_FILE_PATH);
+//        ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+//        file = new File(classloader.getResource(FILENAME).getFile());
         if (!file.exists()) {
             String errorMessage = "Sorry. The file you are looking for does not exist";
             System.out.println(errorMessage);
@@ -154,15 +155,25 @@ public class CorpNAPSTransferController {
         if (file.isEmpty()) {
             System.out.println("i got here");
             model.addAttribute("failure", messageSource.getMessage("file.required", null, locale));
-            return "/corp/transfer/bulktransfer/add";
+            return "/corp/transfer/bulktransfer/upload";
         }
 
         // Get the file and save it
         try {
             byte[] bytes = file.getBytes();
             InputStream inputStream = file.getInputStream();
-            httpSession.setAttribute("inputStream" , inputStream);
-            redirectAttributes.addFlashAttribute("message", messageSource.getMessage("file.upload.success", null, locale));
+            String filename = file.getOriginalFilename();
+
+            String extension = filename.substring(filename.lastIndexOf(".") + 1, filename.length());
+            if (!extension.equals("xls") && !extension.equals("xlsx")){
+                model.addAttribute("failure", messageSource.getMessage("file.format.failure", null, locale));
+                return "/corp/transfer/bulktransfer/upload";
+            }
+
+               httpSession.setAttribute("inputStream" , inputStream);
+                httpSession.setAttribute("fileExtension" , extension);
+               redirectAttributes.addFlashAttribute("message", messageSource.getMessage("file.upload.success", null, locale));
+
 
         } catch (IOException e) {
             logger.error("Error uploading file", e);
@@ -175,25 +186,59 @@ public class CorpNAPSTransferController {
 
     @GetMapping("/all")
     @ResponseBody
-    public DataTablesOutput<CreditRequest> getCreditRequests(HttpSession session) throws IOException {
-        InputStream excelFile = (InputStream) session.getAttribute("inputStream");
-        List<CreditRequest> crLists = new ArrayList<>();
+    public DataTablesOutput<CreditRequestDTO> getCreditRequests(HttpSession session , Model model) throws IOException {
+        FileInputStream excelFile = (FileInputStream) session.getAttribute("inputStream");
+        String fileExtension = (String)session.getAttribute("fileExtension");
+        List<CreditRequestDTO> crLists = new ArrayList<>();
         try {
-            Workbook workbook = new HSSFWorkbook(excelFile);
+            System.out.println(excelFile);
+           // Workbook workbook = new HSSFWorkbook(new POIFSFileSystem(excelFile));
+           // Workbook[] workbook = new Workbook[] { new HSSFWorkbook(excelFile), new XSSFWorkbook(excelFile) };
+            Workbook workbook;
+             if (fileExtension.equalsIgnoreCase("xls")) {
+
+             workbook = new HSSFWorkbook(excelFile);
+
+             }
+             else if (fileExtension.equalsIgnoreCase("xlsx")) {
+               workbook = new XSSFWorkbook(excelFile);
+             }
+             else {
+                 throw new IllegalArgumentException(fileExtension+" File does not have a standard excel extension.");
+             }
+
             Sheet datatypeSheet = workbook.getSheetAt(0);
+
             Iterator<Row> iterator = datatypeSheet.iterator();
             if (iterator.hasNext()) iterator.next();
             while (iterator.hasNext()) {
                 Row currentRow = iterator.next();
-                Iterator<Cell> cellIterator = currentRow.iterator();
+                //Iterator<Cell> cellIterator = currentRow.iterator();
                 ArrayList cellData = new ArrayList();
-                while (cellIterator.hasNext()) {
-
-                    Cell currentCell = cellIterator.next();
-                    cellData.add(currentCell);
+                for (int i = 0; i < currentRow.getLastCellNum(); i++){
+                    Cell currentCell = currentRow.getCell(i);
+                    System.out.println(currentCell);
+                    if (currentCell == null || currentCell.getCellType() == Cell.CELL_TYPE_BLANK || currentCell.toString().isEmpty() || currentCell.toString() == null) {
+                        cellData.add("ERROR HERE");
+                    } else {
+                        cellData.add(currentCell);
+                    }
                 }
+//                while (cellIterator.hasNext()) {
+//                           Cell currentCell = cellIterator.next();
+//                           System.out.println(currentCell);
+//                           if (currentCell == null || currentCell.getCellType() == Cell.CELL_TYPE_BLANK || currentCell.toString().isEmpty() || currentCell.toString() == null) {
+//
+//                           } else {
+//                               cellData.add(currentCell);
+//                           }
+//                }
+                int rowIndex = currentRow.getRowNum();
                 System.out.println(cellData);
-                CreditRequest creditRequest = new CreditRequest();
+                CreditRequestDTO creditRequest = new CreditRequestDTO();
+                Long id = Long.valueOf(rowIndex);
+                System.out.println(id);
+                creditRequest.setId(id);
                 creditRequest.setSerial((cellData.get(0).toString()));
                 creditRequest.setRefCode(cellData.get(1).toString());
                 creditRequest.setAccountNumber(cellData.get(2).toString());
@@ -206,11 +251,11 @@ public class CorpNAPSTransferController {
             }
 
 
-        } catch (IOException e) {
+        } catch (IOException  | IllegalArgumentException e) {
             logger.error("Error uploading file", e);
         }
         System.out.println(crLists);
-        DataTablesOutput<CreditRequest> dto = new DataTablesOutput<>();
+        DataTablesOutput<CreditRequestDTO> dto = new DataTablesOutput<>();
         dto.setData(crLists);
         dto.setRecordsFiltered(crLists.size());
         dto.setRecordsTotal(crLists.size());
@@ -223,6 +268,28 @@ public class CorpNAPSTransferController {
 
 
     }
+
+
+
+//    @GetMapping("/saveedit")
+//    @ResponseBody
+//    public DataTablesOutput<CreditRequest> saveCreditRequests(WebRequest request, HttpSession session , Model model) throws IOException {
+//        String requests = request.getParameter("requests");
+//        System.out.println(requests);
+//        System.out.println(crLists);
+//        DataTablesOutput<CreditRequest> dto = new DataTablesOutput<>();
+//        dto.setData(crLists);
+//        dto.setRecordsFiltered(crLists.size());
+//        dto.setRecordsTotal(crLists.size());
+//
+//        if(session.getAttribute("inputstream") != null){
+//            session.removeAttribute("inputstream");
+//        }
+//
+//        return dto;
+//
+//
+//    }
 
 
 

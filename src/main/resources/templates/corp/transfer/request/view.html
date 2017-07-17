@@ -15,11 +15,8 @@
 
             <div class="row">
                 <div class="col-md-4 col-sm-4">
-<<<<<<< HEAD
-                    <h5 class="page_header"> Pending Transfers</h5>
-=======
+
                     <h5 class="page_header">Transactions</h5>
->>>>>>> 7793600c5a324575ed63b4fdec5335ba1996dedf
 
                     <select class="form-control invisible" name="beneficiaries">
                         <option value="Overveiw">Beneficiaries</option>
@@ -34,14 +31,11 @@
                 <div class="col-md-9 content-bg">
                     <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
                         <div class="btn-group" role="group" aria-label="First group">
-<<<<<<< HEAD
-                            <a type="button" th:href="@{/corporate/transfer/index/authorizations}" class="btn btn-default bt-link-act"><i class="fa fa-plus" disabled="disabled" ></i>Edit</a>
-                            <a  type="button" class="btn bt-select btn-default bt-link-act" th:href="@{/corporate/transfer/index/authorizations}" disabled="disabled" ><i class="fa fa-eye"></i> View</a>
-=======
+
                             <a type="button" class="btn bt-select btn-default bt-link-act"
                                th:href="@{/corporate/transfer/index/authorizations}" disabled="disabled"><i
                                     class="fa fa-eye"></i> View</a>
->>>>>>> 7793600c5a324575ed63b4fdec5335ba1996dedf
+
                         </div>
                     </div>
                     <br/>
@@ -54,12 +48,10 @@
                             <td>Beneficiary</td>
                             <td>Bank</td>
                             <td>Amount</td>
-<<<<<<< HEAD
-                            <!--<td>Action</td>-->
-=======
+
                             <td>Date</td>
                             <td>Status</td>
->>>>>>> 7793600c5a324575ed63b4fdec5335ba1996dedf
+
                             </thead>
                             <tbody>
 
@@ -104,13 +96,7 @@
             "ajax": "/corporate/transfer/requests/all",
             "dom": 'T<"clear">frtlp',
             "columns": [
-<<<<<<< HEAD
-                { "data": "transferType" },
-                { "data": "beneficiaryAccountName" },
-                { "data": "financialInstitution.institutionName" },
-                { "data": "amount" }
-            ] });
-=======
+
                 {"data": "transferType"},
                 {"data": "beneficiaryAccountName"},
                 {"data": "financialInstitution.institutionName"},
@@ -134,7 +120,7 @@
                 }
             }]
         });
->>>>>>> 7793600c5a324575ed63b4fdec5335ba1996dedf
+
 
         table.on('select', function () {
             if (table.rows({
