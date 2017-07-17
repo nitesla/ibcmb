@@ -346,7 +346,7 @@ public class CorpTransferController {
 
 
     @RequestMapping(path = "{id}/receipt", method = RequestMethod.GET)
-    public ModelAndView report(@PathVariable Long id, HttpServletRequest servletRequest, Principal principal) {
+    public ModelAndView report(@PathVariable Long id, HttpServletRequest servletRequest, Principal principal) throws Exception {
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
         JasperReportsPdfView view = new JasperReportsPdfView();
         view.setUrl("classpath:jasperreports/rpt_receipt.jrxml");
@@ -355,9 +355,11 @@ public class CorpTransferController {
         modelMap.put("datasource", new ArrayList<>());
         modelMap.put("amount", transferService.getTransfer(id).getAmount());
         modelMap.put("recipient", transferService.getTransfer(id).getBeneficiaryAccountName());
+        modelMap.put("recipient",transferService.getTransfer(id).getBeneficiaryAccountName());
         modelMap.put("AccountNum", transferService.getTransfer(id).getCustomerAccountNumber());
         modelMap.put("sender", corporateUser.getFirstName() + " " + corporateUser.getLastName());
         modelMap.put("remarks", transferService.getTransfer(id).getRemarks());
+        modelMap.put("remarks",transferService.getTransfer(id));
         modelMap.put("recipientBank", transferService.getTransfer(id).getFinancialInstitution().getInstitutionName());
         modelMap.put("acctNo2", transferService.getTransfer(id).getBeneficiaryAccountNumber());
         modelMap.put("acctNo1", transferService.getTransfer(id).getCustomerAccountNumber());

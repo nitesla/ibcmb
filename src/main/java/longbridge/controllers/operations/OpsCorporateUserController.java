@@ -52,7 +52,6 @@ public class OpsCorporateUserController {
     private MessageSource messageSource;
 
 
-
     @ModelAttribute
     public void init(Model model) {
         Iterable<RoleDTO> roles = roleService.getRolesByUserType(UserType.CORPORATE);
@@ -174,20 +173,22 @@ public class OpsCorporateUserController {
     }
 
     @PostMapping("edit")
-    public String UpdateUser(@ModelAttribute("corporateUser") CorporateUserDTO corporateUserDTO, BindingResult result, RedirectAttributes redirectAttributes) {
+    public String UpdateUser(@ModelAttribute("corporateUser") @Valid CorporateUserDTO corporateUserDTO, BindingResult result, RedirectAttributes redirectAttributes, Locale locale, Model model) {
         if (result.hasErrors()) {
+            result.addError(new ObjectError("invalid", messageSource.getMessage("form.fields.required", null, locale)));
+            CorporateUserDTO user = corporateUserService.getUser(corporateUserDTO.getId());
             return "/ops/corporate/editUser";
         }
-      try {
-          String message = corporateUserService.updateUser(corporateUserDTO);
-          redirectAttributes.addFlashAttribute("message", message);
-      }
-      catch (InternetBankingException ibe){
-            logger.error("Failed to update corporate user",ibe);
-          redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
+        try {
+            String message = corporateUserService.updateUser(corporateUserDTO);
+            redirectAttributes.addFlashAttribute("message", message);
 
+        } catch (InternetBankingException ibe) {
+            logger.error("Failed to update corporate user", ibe);
+            redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
+            return "redirect:/ops/corporates/users/" + corporateUserDTO.getId() + "/edit";
 
-      }
+        }
 
         return "redirect:/ops/corporates/" + corporateUserDTO.getCorporateId() + "/view";
     }
@@ -231,8 +232,7 @@ public class OpsCorporateUserController {
         } catch (PasswordException pe) {
             redirectAttributes.addFlashAttribute("failure", pe.getMessage());
             logger.error("Error resetting password for corporate user", pe);
-        }
-        catch (InternetBankingException ibe) {
+        } catch (InternetBankingException ibe) {
             redirectAttributes.addFlashAttribute("failure", ibe.getMessage());
             logger.error("Error resetting password for corporate user", ibe);
         }

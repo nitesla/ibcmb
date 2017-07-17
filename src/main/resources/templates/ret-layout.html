@@ -364,6 +364,22 @@
         <script th:src="@{~/customer/js/bootstrap.js}"></script>
         <script th:src="@{~/customer/js/bootstrap-session-timeout.js}"></script>
 
+        <div th:if="${message}">
+            <div hidden="hidden">
+                <ul class="actionMessage">
+                    <li th:each="msg : ${message}" th:text="${msg}" >Message</li>
+                </ul>
+            </div>
+        </div>
+
+        <div th:if="${failure}">
+            <div hidden="hidden">
+                <ul class="actionError">
+                    <li th:each="msg : ${failure}" th:text="${msg}" id="error">Message</li>
+                </ul>
+            </div>
+        </div>
+
         <div id="myModalError" class="modal fade " role="dialog">
             <div class="modal-dialog">
 
