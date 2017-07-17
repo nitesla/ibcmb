@@ -28,7 +28,6 @@
         <thymeleaf-layout-dialect.version>2.2.2</thymeleaf-layout-dialect.version>
         <!--<thymeleaf-extras-data-attribute.version>2.0.1</thymeleaf-extras-data-attribute.version>-->
         <thymeleaf-extras-java8time.version>3.0.0.RELEASE</thymeleaf-extras-java8time.version>
-
     </properties>
     <dependencies>
         <dependency>
