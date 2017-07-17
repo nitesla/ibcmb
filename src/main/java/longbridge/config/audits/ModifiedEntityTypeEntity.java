@@ -20,7 +20,8 @@ public class ModifiedEntityTypeEntity implements Serializable{
     private String entityClassName;
 
 
-    public ModifiedEntityTypeEntity(CustomRevisionEntity revision, String entityClassName) {
+    public ModifiedEntityTypeEntity(CustomRevisionEntity revision, String entityClassName)
+    {
         this.revision = revision;
         this.entityClassName = entityClassName;
     }
@@ -41,7 +42,8 @@ public class ModifiedEntityTypeEntity implements Serializable{
         this.revision = revision;
     }
 
-    public String getEntityClassName() {
+    public String getEntityClassName()
+    {
         return entityClassName;
     }
 
