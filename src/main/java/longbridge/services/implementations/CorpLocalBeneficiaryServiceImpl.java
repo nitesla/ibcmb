@@ -2,6 +2,7 @@ package longbridge.services.implementations;
 
 import longbridge.dtos.CorpLocalBeneficiaryDTO;
 import longbridge.exception.DuplicateObjectException;
+import longbridge.exception.InternetBankingException;
 import longbridge.models.CorpLocalBeneficiary;
 import longbridge.models.Corporate;
 import longbridge.repositories.CorpLocalBeneficiaryRepo;
@@ -51,13 +52,22 @@ public class CorpLocalBeneficiaryServiceImpl implements CorpLocalBeneficiaryServ
 
     @Override
     public String addCorpLocalBeneficiary(CorpLocalBeneficiaryDTO beneficiary) {
-        CorpLocalBeneficiary corpLocalBeneficiary=convertDTOToEntity(beneficiary);
 
-        Corporate corporate= corporateRepo.findOne(getCurrentUser().getCorpId());
-        corpLocalBeneficiary.setCorporate(corporate);
-        this.corpLocalBeneficiaryRepo.save(corpLocalBeneficiary);
-        logger.trace("Beneficiary {} has been added");
-        return messageSource.getMessage("beneficiary.add.success",null,locale);
+
+       try{
+           validateBeneficiary(beneficiary);
+           CorpLocalBeneficiary corpLocalBeneficiary=convertDTOToEntity(beneficiary);
+
+           Corporate corporate= corporateRepo.findOne(getCurrentUser().getCorpId());
+           corpLocalBeneficiary.setCorporate(corporate);
+           this.corpLocalBeneficiaryRepo.save(corpLocalBeneficiary);
+           logger.trace("Beneficiary {} has been added");
+           return messageSource.getMessage("beneficiary.add.success",null,locale);
+
+
+       }catch (Exception e){
+           throw new InternetBankingException(e.getMessage());
+       }
 
     }
 
