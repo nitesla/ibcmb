@@ -95,6 +95,8 @@ public class CorporateAuthenticationSuccessHandler implements AuthenticationSucc
 
         String isFirstLogon= corporateUser.getIsFirstTimeLogon();
 
+
+
         if ("Y".equalsIgnoreCase(isFirstLogon)){
             return "/corporate/setup";
         }
