@@ -80,27 +80,36 @@ public class RevisedEntitiesUtil {
         String sql = "select * from "+ auditEntity +" a where a.REV in (:revIdList)";
         SqlParameterSource namedParameters = new MapSqlParameterSource("revIdList", refIds);
         List<Map<String ,Object>> entityDetails = namedParameterJdbcTemplate.queryForList(sql, namedParameters);
-        if(!entityDetails.isEmpty()) {
+
+        if(!entityDetails.isEmpty())
+        {
            entityDetails = removeIrrelevantDetails(entityDetails);
+           logger.info("this is the entity details {}",entityDetails);
+
            if(entityDetails.size()>1)
            {
-               for (String item:entityDetails.get(0).keySet()) {
+               for (String item:entityDetails.get(0).keySet())
+               {
                    itemList.add(entityDetails.get(0).get(item).toString());
                }
 
                mergedDetails.put("pastDetails",itemList);
-               for (String item:entityDetails.get(1).keySet()) {
+               for (String item:entityDetails.get(1).keySet())
+               {
                    itemList2.add(entityDetails.get(1).get(item).toString());
                }
                mergedDetails.put("currentDetails",itemList2);
                mergedDetails.put("keys",new ArrayList<>(entityDetails.get(0).keySet()));
            }
-           else{
-               for (String item:entityDetails.get(0).keySet()) {
+           else
+               {
+               for (String item:entityDetails.get(0).keySet())
+               {
                    itemList.add(entityDetails.get(0).get(item).toString());
                }
                mergedDetails.put("currentDetails",itemList);
-           }
+               mergedDetails.put("keys",new ArrayList<>(entityDetails.get(0).keySet()));
+              }
 
         }
 

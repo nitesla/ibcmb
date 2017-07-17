@@ -1,11 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="layout :: site-head">
-    <style>
-        .colortd{
-            background-color: #9F614B;
-        }
-    </style>
 </head>
 
 
@@ -16,7 +11,6 @@
         <div class="col-md-3 left_col">
             <div class="left_col scroll-view">
                 <div class="navbar nav_title" style="border: 0;">
-                    <!--<a href="index.html"><img th:src="@{~/images/cmb_logo.png}"/></a>-->
                 </div>
 
                 <div class="clearfix"></div>
@@ -49,9 +43,7 @@
                                     <li >
                                         <div class="col-lg-4">
                                             <div class="title-action">
-                                                <a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/audit/ids/classname/view/compare" disabled="disabled" ><i class="fa fa-pencil"></i>  View</a>
-                                            <input id="pastDetails" type="hidden" th:value="${pastDetails}"/>
-                                                <input type="hidden" id="currentDetails" th:value="${currentDetails}"/>
+                                                <a  class="btn btn-primary btn-sm bt-select bt-link-act" href="/admin/audit/ids/classname/view/compare" ><i class="fa fa-pencil"></i>  View</a>
                                             </div>
                                         </div>
                                     </li>
@@ -82,7 +74,9 @@
                                     </tr>
                                     </thead>
                                     <tbody>
+
                                     <tr th:each="list : ${currentDetails}">
+
                                         <td th:if="${pastDetails.get(currentDetails.indexOf(list)) !=currentDetails.get(currentDetails.indexOf(list))}"  th:align="center" th:style="'background-color:#f2dede; color:#a94442'" th:text="${headers.get(currentDetails.indexOf(list))}" >
                                         </td>
                                         <td th:if="${pastDetails.get(currentDetails.indexOf(list)) ==currentDetails.get(currentDetails.indexOf(list))}"  th:align="center" th:text="${headers.get(currentDetails.indexOf(list))}" >
@@ -91,8 +85,9 @@
                                         </td>
                                         <td th:align="center" th:if="${pastDetails.get(currentDetails.indexOf(list)) ==currentDetails.get(currentDetails.indexOf(list))}" th:text="${list}">
                                         </td>
-                                        <td th:align="center" th:if="${pastDetails.get(currentDetails.indexOf(list)) !=currentDetails.get(currentDetails.indexOf(list))}" th:text="${pastDetails.get(currentDetails.indexOf(list))}" th:style="'background-color:#f2dede; color:#a94442'">     </td>
-                                        <td th:align="center" th:if="${pastDetails.get(currentDetails.indexOf(list)) ==currentDetails.get(currentDetails.indexOf(list))}" th:text="${pastDetails.get(currentDetails.indexOf(list))}">     </td>
+                                        <td th:align="center" th:if="${pastDetails.get(currentDetails.indexOf(list)) !=currentDetails.get(currentDetails.indexOf(list))}" th:text="${pastDetails.get(currentDetails.indexOf(list))}"  th:style="'background-color:#f2dede; color:#a94442'">
+                                        </td>
+                                        <td th:align="center" th:if="${pastDetails.get(currentDetails.indexOf(list)) ==currentDetails.get(currentDetails.indexOf(list))}" th:text="${pastDetails.get(currentDetails.indexOf(list))}"></td>
                                     </tr>
                                     </tbody>
                                 </table>
@@ -107,10 +102,10 @@
                                         <th>IP Address</th>
                                         <th>Time</th>
                                         <th>Modifed By</th>
-
-
                                     </tr>
                                     </thead>
+
+
                                     <tbody>
 
                                     </tbody>
@@ -121,9 +116,6 @@
                                         <th>IP Address</th>
                                         <th>Time</th>
                                         <th>Modified By</th>
-
-
-
                                     </tr>
                                     </tfoot>
                                 </table>
@@ -156,79 +148,10 @@
 
 <!-- Page-Level Scripts -->
 <script th:inline="javascript">
+
     /*<![CDATA[*/
-function addColor() {
-
-}
-    var parseJsonAsList = function(jsn,path){
-
-        var result = '';
-        for(node in jsn){
-
-            if(Object.prototype.toString.call(jsn[node]) === '[object Array]'){
-
-                current_path = path.endsWith('[') ? path + node + ']' : path + '.' +node;
-
-                b = jsonPath(beforeData,current_path)[0] ;
-                a = jsonPath(afterData,current_path)[0];
-                if(true ){
-
-                    result += '<li class="list-group-item">'+ node +':<ul class="list-group">' + parseJsonAsList(jsn[node],current_path+'[') + '</ul></li>';
-                }else{
-                    result += '<li class="list-group-item list-group-item-danger">'+ node +':<ul class="list-group">' + parseJsonAsHTMLTree(jsn[node],current_path+'[') + '</ul></li>';
-                }
-            }
-            else if(Object.prototype.toString.call(jsn[node]) === '[object Object]'){
-
-
-                current_path = path.endsWith('[') ? path + node + ']' : path + '.' +node;
-                /* if(jsonPath(beforeData,current_path)){
-
-                 }
-                 b = jsonPath(beforeData,current_path)[0] ;
-                 a = jsonPath(afterData,current_path)[0];
-                 */
-                if(true){
-                    result += '<li class="list-group-item">'+ node +':<ul class="list-group">' + parseJsonAsList(jsn[node],current_path) + '</ul></li>';
-                }else{
-                    result += '<li class="list-group-item list-group-item-danger">'+ node +':<ul class="list-group">' + parseJsonAsList(jsn[node],current_path) + '</ul></li>';
-                }
-            }
-            else{
-
-
-                current_path = path.endsWith('[') ? path + node + ']' : path + '.' +node;
-
-//                alert(current_path);
-                b = jsonPath(beforeData,current_path) ? jsonPath(beforeData,current_path)[1] : 'undefined' ;
-
-                a = jsonPath(afterData,current_path) ? jsonPath(afterData,current_path)[1] : 'undefined' ;
-
-                console.log("a "+beforeData);
-                console.log("b "+afterData);
-
-                if(a == b && typeof a != 'undefined' && typeof b != 'undefined' ){
-
-
-                    result += '<li class="list-group-item">' + node + ':'+jsn[node] +'</li>'
-                }else{
-
-                    result += '<li class="list-group-item list-group-item-danger">' + node + ':'+jsn[node] +'</li>'
-                }
-            }
-
-        }
-        return result;
-    }
-        var  beforeData =[[$(pastDetails)]];
-        var  afterData =[[$(currentDetails)]];
-
-        console.log(afterData);
-        console.log(beforeData);
-
     $(document).ready(function()
     {
-
         var itemid = [[${itemId}]];
         var classRef = [[${classname}]];
 
@@ -294,15 +217,15 @@ function addColor() {
 
             ]});
 
-        table.on('select', function() {
-            if (table.rows({
-                        selected : true
-                    }).indexes().length === 0) {
-                $('.bt-select').attr("disabled", true);
-            } else {
-                $('.bt-select').removeAttr("disabled");
-            }
-        });
+//        table.on('select', function() {
+//            if (table.rows({
+//                        selected : true
+//                    }).indexes().length === 0) {
+//                $('.bt-select').attr("disabled", true);
+//            } else {
+//                $('.bt-select').removeAttr("disabled");
+//            }
+//        });
 
         $("#search").on("click", function(e)
         {
@@ -311,71 +234,12 @@ function addColor() {
             dt.ajax.reload(null, true);
         });
 
-        $("#table").DataTable({
-            "searching" : false,
-            "processing" : true,
-            "ordering" : false,
-            dom : 't',
-            "columnDefs" : [ {
-                "targets" : 0,
-                "className" : "dt-center",
-                "render" : function(data, type, full, meta)
-                {
-
-                    if (type === 'display') {
-                        temp = data;
-                        if(!temp || 0 === temp.length)
-                        {
-                            temp = '{}'
-                        }
-                        before = JSON.parse(temp);
-
-                        return '<ul>'+parseJsonAsList(before,'$')+'</ul>';
-                    }
-                    return data;
-                }
-            },{
-                "targets" : 1,
-                "className" : "dt-center",
-                "render" : function(data, type, full, meta) {
-                    if (type === 'display') {
-                        temp = data;
-                       if(!temp || 0 === temp.length ){
-                            temp = '{}'
-                        }
-                        before = JSON.parse(temp);
-
-                        return '<ul>'+parseJsonAsList(before,'$')+'</ul>';
-                    }
-                    return data;
-                }
-            }  ]
-        });
 
     });
 
     var id;
     var className = [[${classname}]];
     var ids=[];
-//    $("#auditview").on("click", "tr", function()
-//    {
-//        alert(this.checked);
-//        if(!this.checked) {
-//            $(this).find('input[type="checkbox"]').prop('checked', true);
-//            alert(this.value);
-//        }
-//        if(this.checked){
-//            alert("not checked");
-//            $(this).find('input[type="checkbox"]').prop('checked', false);
-//        }
-//        $(this).toggleClass('selected');
-//        var table =  $('#auditview').DataTable();
-//        className = $(this).children(":first").text();
-//        var $name2 = $(this).children(":nth-child(3)").text();
-//
-//        id =table.row( this ).id();
-
-//    });
 
 
     $('#auditview tbody').on('change', 'input[type="checkbox"]', function ()
@@ -392,7 +256,6 @@ function addColor() {
         };
         var row = $(this).closest('tr');
         if(this.checked) {
-//            alert(ids.length);
             if (ids.length >= 2) {
                 $(row).find('input[type="checkbox"]').prop('checked', false);
                 bootbox.alert("<div style='text-align: center'>You cannot not more than two items</div>");
@@ -400,75 +263,36 @@ function addColor() {
 
 
             $(this).toggleClass('selected');
-            var id = this.value;
-            console.log("id is " + id);
-
-                console.log("gate " + ids.indexOf(id));
-                if ((ids.indexOf(this.value)) === -1) {
-
+               var id = this.value;
+                if ((ids.indexOf(this.value)) === -1)
+                {
                     ids.push(this.value);
                 }
-                if(ids.length != 2){
-                    $('.bt-select').attr("disabled", true);
-                } else {
-                    $('.bt-select').removeAttr("disabled");
-                }
+//                if(ids.length != 2)
+//                {
+//                    $('.bt-select').attr("disabled", true);
+//                }
+//                else
+//                    {
+//                    $('.bt-select').removeAttr("disabled");
+//                    }
 
             console.log("the array size " + ids.length + " " + ids);
         }
         }else{
             $(this).toggleClass('deselected');
-            if ((ids.indexOf(this.value) != -1)) {
+            if ((ids.indexOf(this.value) != -1))
+            {
                 ids.remove(this.value);
                 console.log("the new array " + ids);
 
             }
         }
     } );
-//    $('#auditview tbody').on('click', 'tr', function ()
-//    {
-//
-//
-//        $(this).toggleClass('selected');
-//        var id = this.id;
-//        console.log("id is "+id);
-//        Array.prototype.remove = function() {
-//            var what, a = arguments, L = a.length, ax;
-//            while (L && this.length) {
-//                what = a[--L];
-//                while ((ax = this.indexOf(what)) !== -1) {
-//                    this.splice(ax, 1);
-//                }
-//            }
-//            return this;
-//        };
-//        if ( ids.length <2 ) {
-//            console.log("gate "+ids.indexOf(id));
-//            if((ids.indexOf(id))=== -1) {
-//
-//                ids.push(id);
-//            }
-//        }else {
-//
-//            if((ids.indexOf(id)=== -1)) {
-//                ids.remove(ids[0]);
-//                ids.push(id);
-//                console.log("the new array index "+ids[0]);
-//
-//            }
-//
-//        }
-//
-//      console.log("the array size "+ids.length+ " "+ids);
-//    } );
-
-
 
 
     $("a.bt-link-act").on("click", function(e) {
         e.preventDefault();
-      console.log("the array  "+ids+ " "+className);
-
         var link = $(e.currentTarget);
         if($(link).attr("disabled")){
             return;
@@ -479,9 +303,9 @@ function addColor() {
         window.location.assign(refDetials);
 
     } );
-
-
     /*]]>*/
+
+
 </script>
 
 

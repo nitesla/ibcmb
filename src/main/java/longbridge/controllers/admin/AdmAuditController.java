@@ -56,7 +56,8 @@ public class AdmAuditController {
     @GetMapping()
 	public String listSettings(Model model)
     {
-		return "adm/setting/audit";
+
+        return "adm/setting/audit";
 	}
     
     @GetMapping(path = "/all")
@@ -80,15 +81,9 @@ public class AdmAuditController {
 
 
     @GetMapping("/revised/entity")
-    public String ListRevisedEnties(){
-        return "adm/audit/revisedview";
-    }
-
-
-    @GetMapping("/revised/{revisedid}")
-    public  String getRevisionId(@PathVariable Long revisedid)
+    public String ListRevisedEnties()
     {
-        return  "adm/audit/revisedview";
+        return "adm/audit/revisedview";
     }
 
 
@@ -115,6 +110,8 @@ public class AdmAuditController {
         model.addAttribute("itemId",id);
         return  "adm/audit/entityDetails";
     }
+
+
     @GetMapping("/revised/entity/details")
     public @ResponseBody DataTablesOutput<ModifiedEntityTypeEntity> getRevisedEntityDetails(DataTablesInput input,WebRequest webRequest)
     {
@@ -130,10 +127,11 @@ public class AdmAuditController {
         out.setRecordsTotal(auditConf.getTotalElements());
         return out;
     }
+
+
     @GetMapping("/{revisionId}/{classname}/view/compare")
     public String compareEntityDetails(@PathVariable String[] revisionId,@PathVariable String classname,Model model)
     {
-//        logger.info("id and class is {}, {}",revisionId,classname);
         model.addAttribute("classname",classname);
         model.addAttribute("itemId",revisionId[0]);
         Map entityPastDetails = RevisedEntitiesUtil.getEntityPastDetails(classname, revisionId);

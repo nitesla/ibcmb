@@ -11,7 +11,6 @@
         <div class="col-md-3 left_col">
             <div class="left_col scroll-view">
                 <div class="navbar nav_title" style="border: 0;">
-                    <!--<a href="index.html"><img th:src="@{~/images/cmb_logo.png}"/></a>-->
                 </div>
 
                 <div class="clearfix"></div>
@@ -53,14 +52,14 @@
 
                                 <ul class="nav navbar-right panel_toolbox col-lg-4 pull-right">
 
-                                    <li class="pull-right" >
-                                        <div class="input-group col-lg-12">
-                                            <input type="text" class="form-control" id="pattern" placeholder="Search for..."/> <span
-                                                class="input-group-btn">
-										     <button class="btn btn-success" id="search" type="button">Go!</button>
-									       </span>
-                                        </div>
-                                    </li>
+                                    <!--<li class="pull-right" >-->
+                                        <!--<div class="input-group col-lg-12">-->
+                                            <!--<input type="text" class="form-control" id="pattern" placeholder="Search for..."/> <span-->
+                                                <!--class="input-group-btn">-->
+										     <!--<button class="btn btn-success" id="search" type="button">Go!</button>-->
+									       <!--</span>-->
+                                        <!--</div>-->
+                                    <!--</li>-->
 
                                 </ul>
 
@@ -76,10 +75,9 @@
                                         <th>IP Address</th>
                                         <th>Time</th>
                                         <th>Modifed By</th>
-
-
                                     </tr>
                                     </thead>
+
                                     <tbody>
 
                                     </tbody>
@@ -89,9 +87,6 @@
                                         <th>IP Address</th>
                                         <th>Time</th>
                                         <th>Modified By</th>
-
-
-
                                     </tr>
                                     </tfoot>
                                 </table>
@@ -123,7 +118,6 @@
 
 <!-- Page-Level Scripts -->
 <script th:inline="javascript">
-
 
 
     /*<![CDATA[*/
@@ -172,7 +166,8 @@
                 }
             }]});
 
-        table.on('select', function() {
+        table.on('select', function()
+        {
             if (table.rows({
                         selected : true
                     }).indexes().length === 0) {
@@ -188,65 +183,33 @@
             dt = $('#auditview').DataTable();
             dt.ajax.reload(null, true);
         });
-
-
-
-//        table.on('deselect', function() {
-//            if (table.rows({
-//                        selected : true
-//                    }).indexes().length === 0) {
-//                $('.bt-select').attr("disabled", true);
-//            } else {
-//                $('.bt-select').removeAttr("disabled");
-//            }
-//        });
-
     });
+
+
     var id;
     var className;
+
     $("#auditview").on("click", "tr", function()
     {
         var table =  $('#auditview').DataTable();
         className = $(this).children(":first").text();
-        var $name2 = $(this).children(":nth-child(3)").text();
-        id =table.row( this ).id();
-//        alert(id);
-//        alert(className);
-//        alert($name2);
-
+        id =table.row(this).id();
     });
+
     $("a.bt-link-act").on("click", function(e) {
         e.preventDefault();
         var link = $(e.currentTarget);
-        if($(link).attr("disabled")){
+        if($(link).attr("disabled"))
+        {
             return;
         }
         var dt = $('#auditview').DataTable();
-//        alert(id);
-//        alert(className);
         var details = id+"/"+className;
         var refDetials = link.attr("href").replace("id/classname",details);
         window.location.assign(refDetials);
 
     } );
 
-    $("#delete-btn").on("click", function(e)
-    {
-        e.preventDefault();
-        var link = $(e.currentTarget);
-        if($(link).attr("disabled")){
-            return;
-        }
-        var dt = $('#audit').DataTable();
-        var id = $(dt.row({
-            selected: true
-        }).node()).attr("id");
-        //window.location.href = link.attr("formaction") + '?id=' + id;
-        //replace {id} with id
-        var ooo = link.attr("href").replace("index",id);
-        warnBeforeRedirect(ooo);
-
-    } );
 
 
     function warnBeforeRedirect(ooo) {
@@ -259,36 +222,11 @@
             confirmButtonText: "Yes, delete code!",
             closeOnConfirm: false
         }, function() {
-            // Redirect the user
+
             window.location.assign(ooo);
         });
     }
-    function fetchEntityName() {
-        //make sure alert message is not empty
-//        alert("send otp");
-//        console.log(acct);
-        var dt = $('#audit').DataTable()
-        var id = $(dt.row({
-            selected: true
-        }).node()).attr("id");
-//        alert(id);
-        $.ajax({
-            type: 'GET',
-            url: '/admin/audit/edit',
-            asyn:false,
-            data: {id:id},
-//					dataType: 'String',
-            error: function (data) {
-                alert("failure");
-//                $('#sub').disabled();
-            },
-            success: function (reponse) {
-                alert(reponse);
-            }
 
-        });
-//        $.ajax({options});
-    }
 
     /*]]>*/
 </script>

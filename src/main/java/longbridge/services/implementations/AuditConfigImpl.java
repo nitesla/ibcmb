@@ -91,21 +91,15 @@ public class AuditConfigImpl implements AuditConfigService {
 
 	public Page<ModifiedEntityTypeEntity> getRevisionEntities(Pageable pageable)
 	{
-//		Page<RevisionInfo> customRevision = customRevisionEntityRepo.getRevisonList(pageable);
 		Page<ModifiedEntityTypeEntity> modifiedEntityTypeEntities=modifiedEntityTypeEntityRepo.findAll(pageable);
 
-//		logger.info("Custom Revision{}",modifiedEntityTypeEntityRepo.findAll());
 
 		return modifiedEntityTypeEntities;
 	}
 	public Page<ModifiedEntityTypeEntity> getRevisionEntitiesByDate(Pageable pageable)
 	{
-//		Page<RevisionInfo> customRevision = customRevisionEntityRepo.getRevisonList(pageable);
-		List<CustomRevisionEntity> customRevisionEntities = customRevisionEntityRepo.findAll();
+
 		Page<ModifiedEntityTypeEntity> modifiedEntityTypeEntities=modifiedEntityTypeEntityRepo.findAllEnityByRevision(pageable);
-
-//		logger.info("Custom Revision{}",modifiedEntityTypeEntityRepo.findAll());
-
 		return modifiedEntityTypeEntities;
 	}
 	@Override
