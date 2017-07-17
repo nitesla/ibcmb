@@ -1,79 +1,101 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="corp_layout :: site-head">
+<html xmlns:sec="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/jquery-ui.css}"/>
+    <!--<link rel="stylesheet" type="text/css" th:href="@{~/customer/css/date/css/bootstrap-datepicker.css}"/>-->
+    <!--<link rel="stylesheet" type="text/css" th:href="@{~/customer/css/date/css/bootstrap-datepicker.standalone.css}"/>-->
+
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/jquery-steps/css/jquery.steps.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/bootstrap.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/custom.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/css/select.bootstrap.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/font-awesome/font-awesome.min.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/bootstrap-daterangepicker/daterangepicker.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/datatables/css/jquery.dataTables.min.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{~/customer/plugins/datatables/css/dataTables.bootstrap.css}"/>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.0/css/bootstrap-datepicker.min.css"/>
+    <title>Coronation Merchant Bank</title>
 
 </head>
-<body>
-<div class="container">
-    <header class="heade">
-        <div class="row">
-            <div class="top-bar col-xs-12">
-                <ul class="top-link">
-                    <li><a target="_blank" href="/corporate/contact"> Contact Us&nbsp;</a></li>
-                    <li><a href="https://www.coronationmb.com/" target="_blank"> Coronation merchant bank&nbsp;</a></li>
+<body onload="currentBar('First Time Logon')">
 
-                </ul>
-            </div>
-        </div>
-        <div class='row header-bar'>
-            <div class="col-xs-12 col-sm-9 no-pad-left  ">
-                <div class="bvn-tab col-md-5 col-sm-5 ">
-                    <div class="header_inf bv">
-                        <p th:text="${compName}">Your RC Number</p>
-                        <h5 th:text="'RC N0: ' + ${RcNo}"></h5>
+<div class="container" style="">
 
-                    </div>
+    <div>
+        <header class="heade hidden-xs " >
+            <div class="row">
+                <div class="top-bar col-xs-12">
+                    <ul class="top-link">
+                        <li><a href="/corporate/contact"> Contact Us</a>&nbsp;</li>
+                        <li><a href="https://www.coronationmb.com/" target="_blank"> Coronation merchant bank</a>&nbsp;</li>
+                        <li><a  target="_blank" th:href="@{/faqs}" >Help</a>&nbsp;</li>
+                    </ul>
                 </div>
-                <div class="col-sm-7 col-md-7 user-info">
-                    <div class="">
-                        <h5>
-                            <span class='greeting' th:text="*{greeting}"></span>
-                            <br class="break"/>
-                            <b class="greeting-user" th:text="*{name}"></b> &nbsp;
-                            <a th:href="@{/corporate/mailbox/inbox}"><i class="fa fa-envelope" style="color:#003056"></i>
-                                <span th:if="${numOfUnreadMessages}" class="badge bg-green" th:text="${numOfUnreadMessages}">count</span>
+            </div>
+            <div class='row header-bar'>
+                <div class="col-xs-12 col-sm-9 no-pad-left  ">
+                    <div class="bvn-tab col-md-5 col-sm-5 ">
+                        <div class="header_inf bv">
+                            <p th:text="${compName}">Your RC Number</p>
+                            <h5 th:text="'RC N0: ' + ${RcNo}"></h5>
 
-                            </a>
-                        </h5>
+                        </div>
+                    </div>
+                    <div class="col-sm-7 col-md-7 user-info">
+                        <div class="">
+                            <h5>
+                                <span class='greeting' th:text="*{greeting}"></span>
+                                <br class="break"/>
+                                <b class="greeting-user" th:text="*{name}"></b> &nbsp;
+                                <a th:href="@{/corporate/mailbox/inbox}"><i class="fa fa-envelope" style="color:#003056"></i>
+                                    <span th:if="${numOfUnreadMessages}" class="badge bg-green" th:text="${numOfUnreadMessages}">count</span>
 
-                        <div class="hide-faq">
-                            <h6>
-                                <a target="_blank" th:href="@{/faqs}">FAQS &nbsp; &nbsp;
-                                    <i class="fa fa-question-circle"></i></a>
-                                <span class="date2 lorem">&nbsp; &nbsp;Login History:&nbsp;</span>&nbsp;
-                                <span class="lorem" th:text="*{lastLogin}"></span>
-                            </h6>
+                                </a>
+                            </h5>
+
+                            <div class="hide-faq">
+                                <h6>
+                                    <a target="_blank" th:href="@{/faqs}">FAQS &nbsp; &nbsp;
+                                        <i class="fa fa-question-circle"></i></a>
+                                    <span class="date2 lorem">&nbsp; &nbsp;Login History:&nbsp;</span>&nbsp;
+                                    <span class="lorem" th:text="*{lastLogin}"></span>
+                                </h6>
+                            </div>
                         </div>
                     </div>
                 </div>
+
+
+                <div class="col-xs-12 col-sm-3 ">
+                    <a href="/corporate/dashboard" class="">
+                        <img class='img-responsive pull-right' style="height:70px" th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
+                    </a>
+                </div>
+
+
+
             </div>
 
+        </header>
+ </div>
 
-            <div class="col-xs-12 col-sm-3 ">
-                <a href="/corporate/dashboard" class="">
-                    <img class='img-responsive pull-right' style="height:70px" th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
-                </a>
-            </div>
-
-
-
-        </div>
-
-    </header>
 
     <section class="content-wrapper">
-        <div class="">
-            <!--<div class="row">-->
-                <!--<div class="col-md-4 col-sm-4">-->
-                    <!--<h5 class="page_header"> Complete Registration</h5>-->
-                <!--</div>-->
-                <!--<p class="col-xs-12">-->
-                    <!--Fields marked <span style="color:red">*</span> are compulsory-->
-                <!--</p>-->
-            <!--</div>-->
-            <br/>
-            <div class="row">
-                <div class="col-md-12">
+        <div class="row">
+
+            <div class="col-xs-12  col-md-12  no-ml no-pad-left no-pad-right">
+                <div class="">
+                    <div class="current-bar  col-md-12 no-ml no-pad-left alert no-mb no-bd-rad " style="">
+                        <div class="">
+                            <strong id="bar">&nbsp;</strong>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-md-12 no-pad-right no-ml no-pad-left bg-danger alert no-mb no-mt no-bd-rad current-body">
                     <form id="setup-form"  action="/corporate/setup" method="post">
 
                         <div class="col-md-12">
@@ -134,18 +156,134 @@
                             </section>
                         </div>
                     </form>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- CONTENT-WRAPPER SECTION END-->
+<!-- CONTENT-WRAPPER SECTION END-->
+<footer>
+    <div class="containe bg-danger bg-grey">
 
-    <footer th:replace="corp_layout ::corp-footer">
-    </footer>
-    <script th:src="@{~/customer/js/jquery.validate.min.js}"></script>
+        <div class="footer_bar row">
+            <div class="col-md-6 col-xs-12">
+                <ul class="list_group">
+                    <li><a href="#" target="_blank">Privacy policy</a></li>
+                    <li><a href="#" target="_blank">Disclaimer</a></li>
+                    <li><a href="#" target="_blank">Terms &amp; Conditions</a></li>
+                </ul>
+
+            </div>
+            <div class="col-md-6 col-xs-12"><p> &copy; 2017 Coronation Merchant Bank. All rights reserved</p></div>
+
+        </div>
+    </div>
+
+
+
+    <script th:src="@{~/customer/js/jquery-1.11.1.js}"></script>
+    <script th:src="@{~/customer/js/jquery-ui.js}"></script>
+    <script th:src="@{~/customer/js/jquery.dataTables.js}"></script>
+    <script th:src="@{~/customer/js/momentMin.js}"></script>
     <script th:src="@{~/customer/plugins/jquery-steps/js/jquery.steps.min.js}" type="text/javascript"></script>
+    <script th:src="@{~/customer/js/jquery.validate.min.js}"></script>
+    <script th:src="@{~/customer/js/jquery.spring-friendly.min.js}"></script>
+    <script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
+    <script th:src="@{~/customer/plugins/bootstrap-daterangepicker/daterangepicker.js}"></script>
+
+    <script th:src="@{~/customer/js/coronation.js}"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
+
+    <!-- BOOTSTRAP SCRIPTS  -->
+    <script th:src="@{~/customer/js/bootstrap.js}"></script>
+    <script th:src="@{~/customer/js/bootstrap-session-timeout.js}"></script>
     <script th:src="@{~/customer/js/firstLogonCorp.js}" type="text/javascript"></script>
+
+    <script th:inline='javascript'>
+        /*<![CDATA[*/
+
+        $(document).ready(function ()
+        {
+            $('[data-toggle="tooltip"]').tooltip();
+            $('.datepicker').datepicker({
+                autoclose: true,
+                todayBtn: true,
+                todayHighlight: true});
+
+        })
+
+        /*]]>*/
+    </script>
+    <!--<script th:inline='javascript'>-->
+        <!--$.sessionTimeout({-->
+            <!--keepAliveUrl: '',-->
+            <!--logoutUrl: '/retail/logout',-->
+            <!--redirUrl: '/retail/logout',-->
+            <!--warnAfter: null,-->
+            <!--redirAfter: 10000,-->
+            <!--countdownBar: true-->
+        <!--});-->
+    <!--</script>-->
+
+
+
+
+    <div id="myModalError" class="modal fade " role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+
+            <div class="modal-content no-bd-rad content ">
+
+                <div class="modal-body">
+
+
+                    <p id="errorMess" class="mess text-danger">Put something here iff need be.</p>
+
+
+                </div>
+
+
+                <div class="modal-footer no-bd-top">
+                    <button type="button" class="btn btn-link" data-dismiss="modal">OK</button>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+
+    <div id="myModalSuccess" class="modal fade " role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+
+            <div class="modal-content no-bd-rad content ">
+
+                <div class="modal-body">
+
+
+                    <p id="successMess" class="mess text-primary">Put something here iff need be.</p>
+
+
+                </div>
+
+
+                <div class="modal-footer no-bd-top">
+                    <button type="button" class="btn btn-link" data-dismiss="modal">OK</button>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+    <!-- CORE JQUERY SCRIPTS -->
+
+
+</footer>
 </div>
+
 </body>
 </html>

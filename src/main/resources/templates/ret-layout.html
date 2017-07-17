@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:sec="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html  xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta charset="utf-8"/>
@@ -363,6 +363,22 @@
         <!-- BOOTSTRAP SCRIPTS  -->
         <script th:src="@{~/customer/js/bootstrap.js}"></script>
         <script th:src="@{~/customer/js/bootstrap-session-timeout.js}"></script>
+
+        <div th:if="${message}">
+            <div hidden="hidden">
+                <ul class="actionMessage">
+                    <li th:each="msg : ${message}" th:text="${msg}" >Message</li>
+                </ul>
+            </div>
+        </div>
+
+        <div th:if="${failure}">
+            <div hidden="hidden">
+                <ul class="actionError">
+                    <li th:each="msg : ${failure}" th:text="${msg}" id="error">Message</li>
+                </ul>
+            </div>
+        </div>
 
         <div id="myModalError" class="modal fade " role="dialog">
             <div class="modal-dialog">
