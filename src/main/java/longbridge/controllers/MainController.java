@@ -53,6 +53,11 @@ public class MainController {
     @Autowired
     private  FaqsService faqsService;
 
+    @GetMapping("/testing")
+    public String testing(){
+        return "abcd";
+    }
+
 
     @RequestMapping(value = {"/", "/home"})
     public String getHomePage(@RequestParam Optional<HttpServletRequest> request) {
@@ -171,7 +176,7 @@ public class MainController {
         }
 
         try{
-            Map<String, List<String>> mutualAuth =  securityService.getMutualAuth(user.getEntrustId());
+            Map<String, List<String>> mutualAuth =  securityService.getMutualAuth(user.getEntrustId(), user.getEntrustGroup());
             if (mutualAuth != null){
                 String image = mutualAuth.get("imageSecret")
                         .stream()
@@ -220,7 +225,7 @@ public class MainController {
 //            model.addAttribute("images", mutualAuth.get("imageSecret"));
 //            model.addAttribute("captions", mutualAuth.get("captionSecret"));
             try{
-                Map<String, List<String>> mutualAuth =  securityService.getMutualAuth(user.getEntrustId());
+                Map<String, List<String>> mutualAuth =  securityService.getMutualAuth(user.getEntrustId(), user.getEntrustGroup());
                 if (mutualAuth != null){
                     String image = mutualAuth.get("imageSecret")
                             .stream()

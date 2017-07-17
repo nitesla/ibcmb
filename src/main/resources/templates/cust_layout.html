@@ -143,8 +143,8 @@
                                             order</a></li>
                                     </ul>
                                 </li>
-                                <li sec:authorize="hasAuthority('MANAGE_BILL_PAYMENT')"><a href="#" th:text="#{menu.bill}">Bill Payments</a></li>
-                                <li sec:authorize="hasAuthority('MANAGE_INVESTMENT')"><a href="#" th:text="#{menu.investment}">Investment</a></li>
+                                <li sec:authorize="hasAuthority('MANAGE_BILL_PAYMENT')"><a class="menu-link" href="#" th:text="#{menu.bill}">Bill Payments</a></li>
+                                <li sec:authorize="hasAuthority('MANAGE_INVESTMENT')"><a class="menu-link" href="#" th:text="#{menu.investment}">Investment</a></li>
                                 <li class="dropdown" th:classappend="${#httpServletRequest.getRequestURI().startsWith('/retail/requests') ? 'active':''}" sec:authorize="hasAuthority('MANAGE_SERV_REQ')">
                                     <a href="#" class="dropdown-toggle menu-link" data-toggle="dropdown" role="button"
                                     aria-haspopup="true" aria-expanded="false" th:text="#{menu.servreq}"> Service
@@ -194,7 +194,7 @@
                             </ul>
 
                             <ul class="nav navbar-nav pull-right">
-                                <li><a th:href="@{/retail/logout}"> Log out 
+                                <li><a class="logout" th:href="@{/retail/logout}"> Log out 
                                 <!--<span class="fa-stack fa-lg no-bd-rad">-->
                             <!--<i class="fa fa-square fa-stack-1x fa-lg no-bd-rad"></i>-->
                                 <i class="fa fa-power-off fa-inverse no-bd-rad power" style="font-size:12px"></i>
@@ -212,8 +212,8 @@
 
     <!--<div class=' alert alert-info text-white  no-bd-rad' style="margin:1px 15px 1px 1px!important;background-color:#003056;color:white;"><marquee class='marquee'>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</marquee></div>-->
 
-    <div class="info-bar">
-        Lorem Ipsum Dorem er uu
+    <div id='bread-crumb' class="info-bar">
+        
     </div>
 </div>
 
@@ -288,8 +288,12 @@
     </div>
 </div>
 
-<div th:fragment="mail">
-
+<div th:fragment="current-bar">
+    <div class="current-bar  col-md-12 no-ml no-pad-left alert no-mb no-bd-rad " style="">
+                        <div class="">
+                            <strong id='bar'>&nbsp;</strong>
+                        </div>
+    </div>
 </div>
 
 
@@ -318,7 +322,8 @@
     <script th:src="@{~/customer/js/jquery.dataTables.js}"></script>
     <!--<script th:src="@{~/customer/js/date/js/bootstrap-datepicker.js}"></script>-->
     <script th:src="@{~/customer/js/momentMin.js}"></script>
-    <script th:src="@{~/customer/js/calendar.js}"></script>
+   
+     <script th:src="@{~/customer/js/etoka-francis.js}"></script>
     <script th:src="@{~/customer/js/jquery.spring-friendly.min.js}"></script>
     <script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
     <script th:src="@{~/customer/plugins/bootstrap-daterangepicker/daterangepicker.js}"></script>
@@ -339,30 +344,6 @@
             autoclose: true,
             todayBtn: true,
             todayHighlight: true});
-
-            var text = ['Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-             'i am two  Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-              'i am 3 Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-               'i am 4 Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry. '];
-            var x = 0;
-            var end = 0;
-
-            function textArray()
-            {
-                $(".marquee").fadeOut(function() {
-                $(this).text(text[x]).fadeIn();
-
-                });
-                x++;
-
-                end = x + 1;
-                if (text.length < end)
-                {
-                    x = 0;
-                }
-            }
-            setInterval(textArray,30000 );
-        
         })
 
         /*]]>*/

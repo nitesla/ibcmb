@@ -1,6 +1,9 @@
 package longbridge.controllers.corporate;
 
-import longbridge.dtos.*;
+import longbridge.dtos.AccountDTO;
+import longbridge.dtos.CodeDTO;
+import longbridge.dtos.CorporateDTO;
+import longbridge.dtos.SettingDTO;
 import longbridge.exception.*;
 import longbridge.forms.AlertPref;
 import longbridge.forms.CustChangePassword;
@@ -10,6 +13,8 @@ import longbridge.services.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -32,6 +37,8 @@ import java.util.Locale;
 public class CorpSettingController {
     private Logger logger= LoggerFactory.getLogger(this.getClass());
 
+    private Locale locale = LocaleContextHolder.getLocale();
+
     @Autowired
     private CodeService codeService;
 
@@ -53,12 +60,22 @@ public class CorpSettingController {
     @Autowired
     private MessageService messageService;
 
+    @Autowired
+    private MessageSource messageSource;
+
     @RequestMapping("/dashboard")
     public String getCorporateDashboard(Model model, Principal principal) {
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
         //List<AccountDTO> accountList = accountService.getAccountsForDebitAndCredit(corporateUser.getCorporate().getCustomerId());
         List<AccountDTO> accountList = accountService.getAccountsAndBalances(corporateUser.getCorporate().getCustomerId());
         model.addAttribute("accountList", accountList);
+
+        boolean exp = passwordPolicyService.displayPasswordExpiryDate(corporateUser.getExpiryDate());
+        logger.info("EXPIRY RESULT {} ", exp);
+        if (exp){
+            model.addAttribute("message", messageSource.getMessage("password.reset.notice", null, locale));
+        }
+
         return "corp/dashboard";
     }
 
@@ -184,7 +201,6 @@ public class CorpSettingController {
         CorporateUser user=corporateUserService.getUserByName(principal.getName());
         Iterable<CodeDTO> pref = codeService.getCodesByType("ALERT_PREFERENCE");
         model.addAttribute("alertPref", user.getAlertPreference());
-//        model.addAttribute("User",user);
         model.addAttribute("prefs", pref);
         return "corp/settings/alertpref";
     }

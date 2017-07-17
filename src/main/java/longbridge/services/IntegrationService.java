@@ -111,7 +111,7 @@ public interface IntegrationService {
      * @param channel the transaction channel
      * @return map containing the total transaction limit
      */
-    BigDecimal getDailyAccountLimit(String accNo, String channel);
+    String getDailyAccountLimit(String accNo, String channel);
 
 
     NEnquiryDetails doNameEnquiry(String destinationInstitutionCode, String accountNumber);

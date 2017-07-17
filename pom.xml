@@ -22,10 +22,9 @@
         <!--<start-class>longbridge.InternetbankingApplication</start-class>-->
         <guava.version>20.0</guava.version>
         <!-- MY THYMELEAF TWEAK -->
-        <!--<thymeleaf.version>3.0.2.RELEASE</thymeleaf.version>-->
-        <!--<thymeleaf-extras-java8time.version>3.0.0.RELEASE</thymeleaf-extras-java8time.version>-->
-        <!--<thymeleaf-layout-dialect.version>2.0.5</thymeleaf-layout-dialect.version>-->
-        <!--<thymeleaf-layout-dialect.version>2.0.5</thymeleaf-layout-dialect.version>-->
+        <thymeleaf.version>3.0.2.RELEASE</thymeleaf.version>
+        <thymeleaf-layout-dialect.version>2.1.1</thymeleaf-layout-dialect.version>
+        <thymeleaf-extras-java8time.version>3.0.0.RELEASE</thymeleaf-extras-java8time.version>
     </properties>
     <dependencies>
         <dependency>
@@ -64,14 +63,19 @@
             <groupId>org.thymeleaf.extras</groupId>
             <artifactId>thymeleaf-extras-java8time</artifactId>
         </dependency>
-        <!--<dependency>-->
-        <!--<groupId>org.liquibase</groupId>-->
-        <!--<artifactId>liquibase-core</artifactId>-->
-        <!--</dependency>-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
+        <dependency>
+            <groupId>nz.net.ultraq.thymeleaf</groupId>
+            <artifactId>thymeleaf-layout-dialect</artifactId>
+        </dependency>
+        <!--<dependency>-->
+        <!--<groupId>org.liquibase</groupId>-->
+        <!--<artifactId>liquibase-core</artifactId>-->
+        <!--</dependency>-->
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -151,11 +155,6 @@
         <!--<scope>test</scope>-->
         <!--</dependency>-->
 
-        <dependency>
-            <groupId>net.sourceforge.nekohtml</groupId>
-            <artifactId>nekohtml</artifactId>
-            <version>1.9.21</version><!--$NO-MVN-MAN-VER$ -->
-        </dependency>
         <!--<dependency>-->
         <!--<groupId>org.springframework</groupId>-->
         <!--<artifactId>spring-context</artifactId>-->
@@ -365,6 +364,15 @@
 			<artifactId>aspectjweaver</artifactId>
 			<version>1.8.9</version>
 		</dependency>
+
+
+        <!--<dependency>-->
+            <!--<groupId>dummiesmind</groupId>-->
+            <!--<artifactId>springmvc.breadcrumb</artifactId>-->
+            <!--<version>0.0.1</version>-->
+            <!--<scope>system</scope>-->
+            <!--<systemPath>${project.basedir}/springmvc.breadcrumb.jar</systemPath>-->
+        <!--</dependency>-->
 
         <dependency>
             <groupId>org.graylog2</groupId>

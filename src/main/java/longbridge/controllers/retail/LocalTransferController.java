@@ -120,7 +120,7 @@ public class LocalTransferController {
             return page + "pageiii";
         } catch (InternetBankingTransferException e) {
 
-            String errorMessage = transferErrorService.getMessage(e, servletRequest);
+            String errorMessage = transferErrorService.getMessage(e);
 
             model.addAttribute("failure", errorMessage);
             return page + "pageii";
@@ -193,15 +193,6 @@ public class LocalTransferController {
     @ModelAttribute
     public void getBankCode(Model model) {
         model.addAttribute("bankCode", bankCode);
-    }
-
-    @RequestMapping(value="/balance/{accountNumber}", method=RequestMethod.GET , produces="application/json")
-    @ResponseBody
-    public BigDecimal getBalance(@PathVariable String accountNumber) throws Exception {
-        Account account = accountService.getAccountByAccountNumber(accountNumber);
-        Map<String, BigDecimal> balance = accountService.getBalance(account);
-        BigDecimal availBal = balance.get("AvailableBalance");
-        return availBal;
     }
 
 

@@ -1,29 +1,20 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="cust_layout :: site-head">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{ret-layout}">
 
-</head>
-<body>
-<div class="container">
-    <header th:replace="cust_layout :: header">
-    </header>
+<body onload="currentBar('CMB transaction summary')">
 
-    <section class="content-wrapper">
-        <div class="containe">
-            <div class="row">
-                <div class="col-md-4 col-sm-4">
-                    <h5 class="page_header"> Transaction Summary</h5>
-                    <select class="form-control invisible">
-                        <option value="account">Account Overview</option>
-                </select>
-                </div>
-                 <p class="col-xs-12 invisible">
-                    Fields marked <span style="color:red">*</span> are compulsory
-            </p>
-            </div>
-            <div class="row">
-                <div class="col-md-9 content-bg">
-                    <div class="col-sm-offset-3  col-sm-6 form-spacin">
+<div layout:fragment="content">
+    <div class="col-md-5 col-sm-5 ">
+
+        <select class="form-control full-width coronation-form-control hide-content-only" id="view">
+            <option value="account">Overview</option>
+        </select>
+    </div>
+
+    <div class="col-xs-12 ml-15 " >
+        <div class="col-xs-11 no-pad-lef alert no-bd">
+          <div class="col-sm-offset-3  col-sm-6 form-spacin">
                         <!--<div class="col-md-6 col-sm-6">-->
 
 
@@ -73,8 +64,10 @@
 
 
                             <input type="hidden" th:field="*{id}"/>
-                        <div class="checkbox" th:if="${newBen}!=null">
-                            <label style="font-weight: bold; color: black"><input type="checkbox" id="add" name="add"/>Add Beneficiary</label>
+                        <div class="checkbo" th:if="${newBen}!=null">
+                            <input  type="checkbox" id="add" name="add" />
+                            <label for='add' style="font-weight: bold; color: black;display:inline !important">Add Beneficiary</label>
+                                
                         </div>
 
                         <!--<div class="form-group">-->
@@ -99,25 +92,17 @@
                             <!--</label>-->
                         <!--</span>-->
 
-                        <div class="form-group col-xs-12">
+                        <div class="form-group col-xs-12 text-center">
+
                             <!--<a style="cursor: pointer;" onclick="goBack()" >Modify</a>-->
-                            <button type="submit" class="btn btn-link required-step">Proceed</button>
+                            <button type="submit" class="btn btn-link required-step my-buttons">Proceed</button>
 
 
 
-                        <!--<div class="checkbox">-->
-                            <!--<label style="font-weight: bold; color: black"><input type="checkbox" id="add" name="add"/>Add Beneficiary</label>-->
-                        <!--</div>-->
-                        <!--<div class="form-group">-->
-                            <!--&lt;!&ndash;<a style="cursor: pointer;" onclick="goBack()" >Modify</a>&ndash;&gt;-->
-                            <!--<button type="submit" class="btn btn-outline-primary">Proceed</button>-->
-                            <!--<a th:href="@{/retail/transfer/local}">Cancel</a>-->
+                            <button type="button" onclick="cancel();" class='btn btn-link less-required my-buttons'>Cancel</button>
 
-                        <!--</div>-->
 
-                            <button type="button" onclick="cancel();" class='btn btn-link less-required'>Cancel</button>
-
-                             <button type='button' class='btn btn-link less-required' onclick="edit();">Modify</button>
+                             <button type='button' class='btn btn-link less-required my-buttons' onclick="edit();">Modify</button>
 
 
 
@@ -134,21 +119,14 @@
                         </form>
                         <!--</div>-->
                     </div>
-                </div>
-                <div class="col-md-3 pull-right">
-                    <div th:replace="cust_layout :: sidebar" class="" >
-                    </div>
-                </div>
-
-            </div>
         </div>
-    </section>
+    </div>
+
+</div>
 
 
-    <!-- CONTENT-WRAPPER SECTION END-->
-    <footer th:replace="cust_layout ::footer">
-    </footer>
-    <script th:src="@{~/customer/js/accountdetails.js}"></script>
+<th:block layout:fragment="scripts">
+ <script th:src="@{~/customer/js/accountdetails.js}"></script>
     <script>
          function edit(){
              $("#form_edit").submit();
@@ -158,6 +136,7 @@
          }
 
     </script>
-</div>
+</th:block>
+
 </body>
 </html>

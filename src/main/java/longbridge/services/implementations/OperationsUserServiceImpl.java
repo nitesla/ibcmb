@@ -135,25 +135,19 @@ public class OperationsUserServiceImpl implements OperationsUserService {
                 user.setPassword(passwordEncoder.encode(password));
                 user.setExpiryDate(new Date());
                 passwordPolicyService.saveOpsPassword(user);
-                try {
-                    operationsUserRepo.save(user);
-                    sendActivateMessage(user, fullName, user.getUserName(), password);
-                } catch (VerificationInterruptException e) {
-                    return e.getMessage();
-                }
+                operationsUserRepo.save(user);
+                sendActivateMessage(user, fullName, user.getUserName(), password);
+
             } else {
                 user.setStatus(newStatus);
-                try {
-                    operationsUserRepo.save(user);
-                } catch (VerificationInterruptException e) {
-                    e.getMessage();
-                }
+                operationsUserRepo.save(user);
             }
-
 
             logger.info("Operations user {} status changed from {} to {}", user.getUserName(), oldStatus, newStatus);
             return messageSource.getMessage("user.status.success", null, locale);
 
+        } catch (VerificationInterruptedException e) {
+            return e.getMessage();
         } catch (MailException me) {
             throw new InternetBankingException(messageSource.getMessage("mail.failure", null, locale), me);
         } catch (InternetBankingException ibe) {
@@ -214,22 +208,19 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             opsUser.setCreatedOnDate(new Date());
             Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
             opsUser.setRole(role);
-            try {
-                OperationsUser newUser = operationsUserRepo.save(opsUser);
-                createUserOnEntrust(newUser);
-            } catch (VerificationInterruptException e) {
-                return e.getMessage();
-            }
+            OperationsUser newUser = operationsUserRepo.save(opsUser);
+            createUserOnEntrust(newUser);
             logger.info("New Operation user  {} created", opsUser.getUserName());
             return messageSource.getMessage("user.add.success", null, LocaleContextHolder.getLocale());
+        } catch (VerificationInterruptedException e) {
+            return e.getMessage();
         } catch (InternetBankingSecurityException se) {
             throw new InternetBankingSecurityException(messageSource.getMessage("entrust.create.failure", null, locale), se);
         } catch (Exception e) {
             if (e instanceof EntrustException) {
                 throw e;
-            } else {
-                throw new InternetBankingException(messageSource.getMessage("user.add.failure", null, locale), e);
             }
+            throw new InternetBankingException(messageSource.getMessage("user.add.failure", null, locale), e);
         }
 
 
@@ -242,24 +233,25 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             if ("".equals(user.getEntrustId()) || user.getEntrustId() == null) {
                 String fullName = user.getFirstName() + " " + user.getLastName();
                 SettingDTO setting = configService.getSettingByName("ENABLE_ENTRUST_CREATION");
-                String entrustId = user.getUserType().toString() + "_" + user.getUserName();
+                String entrustId = user.getUserName();
+                String group = configService.getSettingByName("DEF_ENTRUST_OPS_GRP").getValue();
 
-                if (setting != null && setting.isEnabled()) {
+                if (setting != null && setting.isEnabled() && group != null) {
                     if ("YES".equalsIgnoreCase(setting.getValue())) {
-                        boolean creatResult = securityService.createEntrustUser(entrustId, fullName, true);
+                        boolean creatResult = securityService.createEntrustUser(entrustId, group, fullName, true);
                         if (!creatResult) {
                             throw new EntrustException(messageSource.getMessage("entrust.create.failure", null, locale));
                         }
 
-                        boolean contactResult = securityService.addUserContacts(user.getEmail(), user.getPhoneNumber(), true, entrustId);
+                        boolean contactResult = securityService.addUserContacts(user.getEmail(), user.getPhoneNumber(), true, entrustId, group);
                         if (!contactResult) {
                             logger.error("Failed to add user contacts on Entrust");
-                            securityService.deleteEntrustUser(entrustId);
+                            securityService.deleteEntrustUser(entrustId, group);
                             throw new EntrustException(messageSource.getMessage("entrust.contact.failure", null, locale));
-
                         }
                     }
                     user.setEntrustId(entrustId);
+                    user.setEntrustGroup(group);
                     operationsUserRepo.save(user);
                 }
             }
@@ -285,9 +277,12 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             opsUser.setPhoneNumber(user.getPhoneNumber());
             Role role = roleRepo.findOne(Long.parseLong(user.getRoleId()));
             opsUser.setRole(role);
-            this.operationsUserRepo.save(opsUser);
+            operationsUserRepo.save(opsUser);
+
             logger.info("Operations user {} updated", opsUser.getUserName());
             return messageSource.getMessage("user.update.success", null, locale);
+        } catch (VerificationInterruptedException e) {
+            return e.getMessage();
         } catch (InternetBankingException ibe) {
             throw ibe;
         } catch (Exception e) {
@@ -307,7 +302,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
 
             if (setting != null && setting.isEnabled()) {
                 if ("YES".equalsIgnoreCase(setting.getValue())) {
-                    securityService.deleteEntrustUser(opsUser.getUserName());
+                    securityService.deleteEntrustUser(opsUser.getEntrustId(), opsUser.getEntrustGroup());
                 }
             }
             return messageSource.getMessage("user.delete.success", null, locale);
@@ -389,7 +384,7 @@ public class OperationsUserServiceImpl implements OperationsUserService {
             opsUser.setPassword(this.passwordEncoder.encode(changePassword.getNewPassword()));
             opsUser.setExpiryDate(passwordPolicyService.getPasswordExpiryDate());
             passwordPolicyService.saveOpsPassword(user);
-            this.operationsUserRepo.save(opsUser);
+            operationsUserRepo.save(opsUser);
             logger.info("User {}'s password has been updated", user.getId());
             return messageSource.getMessage("password.change.success", null, locale);
         } catch (Exception e) {

@@ -107,6 +107,7 @@ public class BeneficiaryController {
         model.addAttribute("localBeneficiaryDTO", new LocalBeneficiaryDTO());
         model.addAttribute("internationalBeneficiaryDTO", new InternationalBeneficiaryDTO());
         model.addAttribute("foreignCurrencyCodes", codeService.getCodesByType("CURRENCY"));
+        model.addAttribute("localBanks", financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.LOCAL));
         return "cust/beneficiary/add";
     }
 
@@ -125,7 +126,8 @@ public class BeneficiaryController {
 
             try {
                 String token =request.getParameter("token");
-              securityService.performTokenValidation(principal.getName(), token);
+                RetailUser retailUser = retailUserService.getUserByName(principal.getName());
+              securityService.performTokenValidation(retailUser.getEntrustId(), retailUser.getEntrustGroup(), token);
             } catch (InternetBankingSecurityException ibse) {
 
                 model.addAttribute("failure", ibse.getMessage());

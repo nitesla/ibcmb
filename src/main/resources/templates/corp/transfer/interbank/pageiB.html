@@ -1,31 +1,20 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="corp_layout :: site-head">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
 
-</head>
-<body>
-<div class="container">
-    <header th:replace="corp_layout :: corp-header">
-    </header>
+<body onload="currentBar('Beneficiaries')">
 
-<section class="content-wrapper">
-    <div class="containe">
-        <div class="row">
-            <div class="col-md-4 col-sm-4">
-                <h5 class="page_header"> New Beneficiary</h5>
-                <select class="form-control invisible">
-                        <option value="account">Account Overview</option>
-                </select>
-            </div>
+<div layout:fragment="content">
+    <div class="col-md-5 col-sm-5 ">
 
-             <p class="col-xs-12">
-                    Fields marked <span style="color:red">*</span> are compulsory
-            </p>
-        </div>
-        <div class="row">
-            <div class="col-md-9 content-bg">
+        <select class="form-control full-width coronation-form-control hide-content-only" id="view">
+            <option value="account">Overview</option>
+        </select>
+    </div>
 
-                    <div class="form-spacig col-sm-8">
+    <div class="col-xs-12 ml-15 " >
+        <div class="col-xs-11 no-pad-lef table-responsive no-mt no-bd  alert">
+           <div class="form-spacig col-sm-8">
                         <form id="local" method="post" th:action="@{/corporate/transfer/interbank/new}"
                               th:object="${corpLocalBeneficiary}">
                             <div class="form-group">
@@ -62,20 +51,13 @@
 
                     </div>
 
-            </div>
-            <div class="col-md-3 pull-right " >
-                <div th:replace="corp_layout :: corp-sidebar" class="" >
-                </div>
-            </div>
         </div>
     </div>
-</section>
+
+</div>
 
 
-<!-- CONTENT-WRAPPER SECTION END-->
-<footer th:replace="corp_layout ::corp-footer">
-</footer>
-
+<th:block layout:fragment="scripts">
 <script th:inline="javascript">
     /*<![CDATA[*/
     $(document).ready(function () {
@@ -92,56 +74,60 @@
         });
 //        sortSelect('#bank_code', 'text', 'asc');
 
-        $("#bank_code").prop("selectedIndex", -1);
-
-    });
-
-    function getAccountName() {
-        $('#loading-icon').show();
-        //make sure alert message is not empty
-        var acct = $('#acct_num').val();
-        var bank = $('#bank_code').val();
-
-        if(( acct==null || acct=='' ) || ( bank==null || bank=='' )) {
-
-             $('#loading-icon').hide();
-            $('.acctError').show().css("color", "red");
-            $('#loading-icon').hide();
-            return false;
-        }
-
-        $.getJSON('/corporate/transfer/' + acct + '/'+bank+'/nameEnquiry', function(jd) {
-            var message = jd.message;
-            var success =  jd.success;
-           if (success==false){
-               $('.acctError').text(message);
-               $('.acctError').show().css("color", "red");
-               $('#loading-icon').hide();
-           }else{
-               $('#acct_name').val(message);
-               $('#localsave').show();
-               $('#neq').hide();
-               document.getElementById('loading-icon').style.display = 'none';
-               $('#loading-icon').hide();
-           }
-
-
-
-
+            $("#bank_code").prop("selectedIndex", -1);
 
         });
 
-    };
+
+        function getAccountName() {
+            $('#loading-icon').show();
+            $('#localsave').hide();
+            //make sure alert message is not empty
+            var acct = $('#acct_num').val();
+            var bank = $('#bank_code').val();
+
+            if(( acct==null || acct=='' ) || ( bank==null || bank=='' )) {
+
+                $('#loading-icon').hide();
+                $('.acctError').show().css("color", "red");
+                $('#loading-icon').hide();
+                return false;
+            }
+
+            $.getJSON('/corporate/transfer/' +acct+ '/'+bank+'/nameEnquiry', function(jd) {
+                var message = jd.message;
+                var success =  jd.success;
+                console.log(message);
+                console.log(success);
+                if (success==false){
+                    $('.acctError').text(message);
+                    $('.acctError').show().css("color", "red");
+                    $('#loading-icon').hide();
+                }else{
+                    $('#acct_name').val(message);
+                    $('#localsave').show();
+                    $('.acctError').hide()
+                    document.getElementById('loading-icon').style.display = 'none';
+                    $('#loading-icon').hide();
+                }
 
 
 
 
 
-    /*]]>*/
-</script>
+            });
+
+        };
 
 
 
-</div>
+
+
+        /*]]>*/
+    </script>
+
+   
+</th:block>
+
 </body>
 </html>

@@ -1,82 +1,20 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="corp_layout :: site-head">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
 
-</head>
-<body>
-<div class="container">
-    <header class="heade">
-        <div class="row">
-            <div class="top-bar col-xs-12">
-                <ul class="top-link">
-                    <li><a target="_blank" href="/corporate/contact"> Contact Us&nbsp;</a></li>
-                    <li><a href="https://www.coronationmb.com/" target="_blank"> Coronation merchant bank&nbsp;</a></li>
+<body onload="currentBar('Beneficiaries')">
 
-                </ul>
-            </div>
-        </div>
-        <div class='row header-bar'>
-            <div class="col-xs-12 col-sm-9 no-pad-left  ">
-                <div class="bvn-tab col-md-5 col-sm-5 ">
-                    <div class="header_inf bv">
-                        <p th:text="${compName}">Your RC Number</p>
-                        <h5 th:text="'RC N0: ' + ${RcNo}"></h5>
+<div layout:fragment="content">
+    <div class="col-md-5 col-sm-5 ">
 
-                    </div>
-                </div>
-                <div class="col-sm-7 col-md-7 user-info">
-                    <div class="">
-                        <h5>
-                            <span class='greeting' th:text="*{greeting}"></span>
-                            <br class="break"/>
-                            <b class="greeting-user" th:text="*{name}"></b> &nbsp;
-                            <a th:href="@{/corporate/mailbox/inbox}"><i class="fa fa-envelope" style="color:#003056"></i>
-                                <span th:if="${numOfUnreadMessages}" class="badge bg-green" th:text="${numOfUnreadMessages}">count</span>
+        <select class="form-control full-width coronation-form-control hide-content-only" id="view">
+            <option value="account">Overview</option>
+        </select>
+    </div>
 
-                            </a>
-                        </h5>
-
-                        <div class="hide-faq">
-                            <h6>
-                                <a target="_blank" th:href="@{/faqs}">FAQS &nbsp; &nbsp;
-                                    <i class="fa fa-question-circle"></i></a>
-                                <span class="date2 lorem">&nbsp; &nbsp;Login History:&nbsp;</span>&nbsp;
-                                <span class="lorem" th:text="*{lastLogin}"></span>
-                            </h6>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-            <div class="col-xs-12 col-sm-3 ">
-                <a href="/corporate/dashboard" class="">
-                    <img class='img-responsive pull-right' style="height:70px" th:src="@{~/customer/img/cmb_logo.png}" alt="Coronation Merchant Bank" />
-                </a>
-            </div>
-
-
-
-        </div>
-
-    </header>
-    <section class="content-wrapper">
-        <div class="">
-            <div class="row">
-                <div class="col-md-4 col-sm-4">
-                    <h5 class="page_header"> Change Password</h5>
-                    <select class="form-control invisible">
-                        <option value="account">Account Overview</option>
-                    </select>
-                </div>
-                <p class="col-xs-12">
-                    Fields marked <span style="color:red">*</span> are compulsory
-                </p>
-            </div>
-            <div class="row">
-                <div class="col-md-9 content-bg">
-                    <div class="row">
-                        <div class="col-md-6 col-sm-6">
+    <div class="col-xs-12 ml-15 " >
+        <div class="col-xs-11 no-pad-lef table-responsive no-mt no-bd  alert">
+            <div class="col-md-6 col-sm-6">
                         <p class="alert alert-danger"><span style="color: red;">Your current password has expired.</span> <br/>Please enter a new password.</p>
 
                             <form method="POST" th:action="@{/corporate/reset_password}" th:object="${custResetPassword}">
@@ -93,27 +31,26 @@
                                 <button class="btn btn-link required-step"> Submit</button>
                             </form>
 
+                    <div class="margin-bottom">
+                        <p style="margin-bottom:20px">All fields are required</p>
+                        <div class="form-group">
+                            <label>Set New Password</label>
+                            <input id="password" type="password" th:field="*{newPassword}"  class="form-control" required="required"/>
+                            <p class="errors" th:if="${#fields.hasErrors('newPassword')}" th:errors="*{newPassword}">&times;</p>
                         </div>
-                        <div class="col-md-5">
-                            <div class="form-group">
-                                <p th:each="rule : ${passwordRules}" th:text="${rule}">
-                                </p>
-                            </div>
+                        <div class="form-group">
+                            <label>Confirm New Password</label>
+                            <input id="confirm" type="password" th:field="*{confirmPassword}"  class="form-control" required="required"/>
+                            <p class="errors" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}">&times;</p>
                         </div>
-                    </div>
-                </div>
-                <div class="col-md-3 pull-right " >
-                    <div th:replace="corp_layout :: corp-sidebar" class="" >
-                    </div>
-                </div>
-            </div>
         </div>
-    </section>
+    </div>
 
-    <!-- CONTENT-WRAPPER SECTION END-->
-    <footer th:replace="corp_layout ::corp-footer">
-    </footer>
-    <script>
+</div>
+
+
+<th:block layout:fragment="scripts">
+     <script>
         $(document).ready(function() {
             $('#password').bind("cut copy paste", function (e) {
                 e.preventDefault();
@@ -124,6 +61,8 @@
             });
         });
     </script>
-</div>
+   
+</th:block>
+
 </body>
 </html>

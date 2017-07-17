@@ -1,35 +1,24 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="corp_layout :: site-head">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
 
-</head>
-<body>
-<div class="container">
-    <header th:replace="corp_layout :: corp-header">
-    </header>
+<body onload="currentBar('Transfers to other banks through NIP')">
 
-<section class="content-wrapper">
-    <div class="containe">
-        <div class="row">
-            <div class="col-md-4 col-sm-4">
-                <h5 class="page_header"> Transfers to other banks through NIP</h5>
+<div layout:fragment="content">
+    <div class="col-md-5 col-sm-5 ">
+         
+        <select class="form-control full-width coronation-form-control hide-content-only" id="view">
+            <option value="account">Overview</option>
+        </select>
 
-                <select class="form-control" name="beneficiaries">
-                    <option value="Overveiw">Beneficiaries</option>
-                </select>
-            </div>
-            <p class="col-xs-12 invisible">
-                    Fields marked <span style="color:red">*</span> are compulsory
-            </p>
-        </div>
+        
+    </div>
 
-        <div class="row">
-
-            <div class="col-md-9 content-bg">
-
-
-                    <div class="table-responsive">
-                        <h6 class="sub_header">Beneficiaries</h6>
+    <div class="col-xs-12 ml-15 " >
+        <div class="col-xs-11 no-pad-lef table-responsive no-mt no-bd  alert">
+            <h6 class="sub_header">Beneficiaries</h6>
+           <div class="table-responsive">
+                        
                         <form method="post" >
                             <table class="table">
                                 <thead>
@@ -65,6 +54,7 @@
 
                                 </tbody>
                             </table>
+                             </div>
                             <br/>
                             <input  type="hidden" th:value="${transferRequest}"/>
 <<<<<<< HEAD
@@ -79,21 +69,14 @@
 
                            <!-- <button type="submit" class="btn btn-default" style="float: right">Add beneficiary</button>
                        --> </form>
-                    </div>
-
-            </div>
-            <div class="col-md-3 pull-right " >
-                <div th:replace="corp_layout :: corp-sidebar" class="" >
-                </div>
-            </div>
+                   
         </div>
     </div>
-</section>
+
+</div>
 
 
-<!-- CONTENT-WRAPPER SECTION END-->
-<footer th:replace="corp_layout ::corp-footer">
-</footer>
+<th:block layout:fragment="scripts">
 <script>
     //datepicker
     $( function() {
@@ -102,6 +85,8 @@
         );
     } );
 </script>
-</div>
+   
+</th:block>
+
 </body>
 </html>

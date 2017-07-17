@@ -1,150 +1,95 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="cust_layout :: site-head">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{ret-layout}">
 
-</head>
-<body>
+<body onload="currentBar('dashboard')">
 
-<div class="container" style="">
+<div layout:fragment="content">
+    <div class="col-md-5 col-sm-5 ">
 
-    <header th:replace="cust_layout :: header">
-    </header>
+        <select class="form-control full-width coronation-form-control" id="view">
+            <option value="account">Overview</option>
+        </select>
+    </div>
 
+    <div class="col-xs-12 ml-15 " >
+        <div class="col-xs-11 no-pad-lef table-responsive bg-white alert">
+            <table class="table table-hover no-pad-lef" id="users">
+                <thead class='thead'>
+                <!--<tr>-->
+                <strong><th class="text-cente">Account Number</th></strong>
+                <th class="text-cente">Account type</th>
+                <th class="text-cente">Currency</th>
+                <th class="text-cente">Available Balance</th>
+                <th class="text-cente">Ledger Balance</th>
+                <th class="text-cente">&nbsp;</th>
+                <!--</tr>-->
+                </thead>
+                <tbody>
+                <tr th:each="list : ${accountList}" class="tt">
+                    <td th:align="cente" th:text="${list.accountNumber}"></td>
+                    <td th:align="cente" th:text="${list.schemeType}"></td>
+                    <td th:align="cente" th:text="${list.currencyCode}"></td>
+                    <td th:align="cente" th:text="${list.accountBalance}" class="bal"></td>
+                    <td th:align="cente" th:text="${list.ledgerBalance}" class="bal"></td>
 
-    <section class="content-wrapper">
+                    <td th:align="cente">
+                        <select class="quickAccess" th:attr="onchange='javascript:getId(\'' + ${list.id} + '\');'">
+                            <option>Quick Actions</option>
+                            <option value="Transaction History">Transaction History</option>
+                            <option value="Account Statement"> Account Statement</option>
+                            Account Statement
 
-        <div class="">
-            <div class="row">
-                <div class="col-md-4 col-sm-4">
-                    <h5 class="page_header"> Dashboard</h5>
-                    <select class="form-control" id="view">
-                        <option value="account">Account Overview</option>
-                    </select>
-                </div>
+                        </select>
 
-                <p class="col-xs-12 invisible">
-                    Fields marked <span style="color:red">*</span> are compulsory
-                </p>
-
-
-            </div>
-            <div class="row">
-
-                <div class=" col-m-1" style="margin-op:20px">
-        <div class="row">
-
-
-            <div class="col-xs-12  col-md-9  no-ml no-pad-left no-pad-right">
-                <div class="">
-                    <div class="current-bar  col-md-12 no-ml no-pad-left alert no-mb no-bd-rad " style="">
-                        <div class="">
-                            <strong>dashboard</strong>
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-md-12 no-pad-right no-ml no-pad-left bg-danger alert no-mb no-mt no-bd-rad current-body">
-                        <div class="col-md-5 col-sm-5 ">
-                           
-                            <select class="form-control full-width coronation-form-control" id="view">
-                                <option value="account">Overview</option>
-                            </select>
-                        </div>
-
-                        <div class="col-xs-12 ml-15 " >
-                            <div class="col-xs-11 no-pad-lef table-responsive bg-white alert">
-                            <table class="table table-hover no-pad-lef" id="users">
-                                <thead class='thead'>
-                                <!--<tr>-->
-                                <strong><th class="text-cente">Account Number</th></strong>
-                                <th class="text-cente">Account type</th>
-                                <th class="text-cente">Currency</th>
-                                <th class="text-cente">Available Balance</th>
-                                <th class="text-cente">Ledger Balance</th>
-                                <th class="text-cente">&nbsp;</th>
-                                <!--</tr>-->
-                                </thead>
-                                <tbody>
-                                <tr th:each="list : ${accountList}" class="tt">
-                                    <td th:align="cente" th:text="${list.accountNumber}"></td>
-                                    <td th:align="cente" th:text="${list.schemeType}"></td>
-                                    <td th:align="cente" th:text="${list.currencyCode}"></td>
-                                    <td th:align="cente" th:text="${list.accountBalance}" class="bal"></td>
-                                    <td th:align="cente" th:text="${list.ledgerBalance}" class="bal"></td>
-
-                                    <td th:align="cente">
-                                        <select class="quickAccess" th:attr="onchange='javascript:getId(\'' + ${list.id} + '\');'">
-                                            <option>Quick Actions</option>
-                                            <option value="Last 10 Transaction">Last 10 Transaction</option>
-                                            <option value="Transaction History">Transaction History</option>
-                                            <option value="Account Statement"> Account Statement</option>
-
-
-                                        </select>
-
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-
-
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-            <div class="col-xs-12   col-md-3  no-bd alert no-bd-rad left-side">
-               <div class=" ">
-                        <div th:replace="cust_layout :: sidebar" class="" >
-                        </div>
-                    </div>
-            </div>
-           
+                    </td>
+                </tr>
+                </tbody>
+            </table>
         </div>
-    </section>
+    </div>
 
-    <!-- CONTENT-WRAPPER SECTION END-->
-    <footer th:replace="cust_layout :: footer">
-    </footer>
 </div>
-<script>
-
-</script>
-<script>
-
-    $(document).ready(function () {
-        $('.tt').each(function () {
-            var sth = $(this).find(".bal").html();
-            $(this).find(".bal").html(numberWithCommas(sth));
-//                $(this).find(".bal").html('₦'+ numberWithCommas(sth));
-        })
-    });
 
 
-    function numberWithCommas(x) {
-        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    }
+<th:block layout:fragment="scripts">
+
+    <script>
+
+        $(document).ready(function () {
 
 
+                $('.tt').each(function () {
+                    var sth = $(this).find(".bal").html();
+                    $(this).find(".bal").html(numberWithCommas(sth));
+        //                $(this).find(".bal").html('₦'+ numberWithCommas(sth));
+                })
+            });
 
     function getId(Id) {
-        if ($('.quickAccess').val() === "Last 10 Transaction") {
+        function numberWithCommas(x) {
+            return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        if ($('#' + Id).val() === "Last 10 Transaction") {
             if (( Id != null || Id != '' )) {
                 window.location.href = "/retail/account/" + Id + "/statement";
             }
         }
-        if ($('.quickAccess').val() === "Transaction History") {
+        if ($('#' + Id).val() === "Transaction History") {
             if (( Id != null || Id != '' )) {
                 window.location.href = "/retail/account/viewonlyhistory";
             }
         }
-        if ($('.quickAccess').val() === "Account Statement") {
+        if ($('#' + Id).val() === "Account Statement") {
             if (( Id != null || Id != '' )) {
                 window.location.href = "/retail/account/viewstatement";
             }
         }
     }
 
-</script>
+    </script>
+</th:block>
 
 </body>
 </html>

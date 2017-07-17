@@ -1,76 +1,56 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="corp_layout :: site-head">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
 
-</head>
-<body>
-<div class="container">
-    <header th:replace="corp_layout :: corp-header">
-    </header>
+<body onload="currentBar('dashboard')">
 
-    <section class="content-wrapper">
-        <div class="">
-            <div class="row">
-                <div class="col-md-4 col-sm-4">
-                    <h5 class="page_header"> Dashboard</h5>
-                    <select class="form-control" id="view">
-                        <option value="account">Account Overview</option>
-                    </select>
-                </div>
-                <p class="col-xs-12 invisible">
-                    Fields marked <span style="color:red">*</span> are compulsory
-                </p>
-            </div>
+<div layout:fragment="content">
+    <div class="col-md-5 col-sm-5 ">
 
-            <div class="row">
-                <div class=" col-m-1" style="margin-op:20px">
-                    <div class="col-md-9 content-bg">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <table class="table">
-                                    <thead>
-                                    <th class="text-center">Account Number</th>
-                                    <th class="text-center">Account type</th>
-                                    <th class="text-center">Currency</th>
-                                    <th class="text-center">Available Balance</th>
-                                    <th class="text-center">Ledger Balance</th>
-                                    <th class="text-center">&nbsp;</th>
-                                    </thead>
-                                    <tbody>
-                                    <tr th:each="list : ${accountList}" class="tt">
-                                        <td th:align="center" th:text="${list.accountNumber}"></td>
-                                        <td th:align="center" th:text="${list.schemeType}"></td>
-                                        <td th:align="center" th:text="${list.currencyCode}"></td>
-                                        <td th:align="center" th:text="${list.accountBalance}" class="bal"></td>
-                                        <td th:align="center" th:text="${list.ledgerBalance}" class="bal"></td>
-                                        <td th:align="center">
-                                            <select class="quickAccess" th:attr="onchange='javascript:getId(\'' + ${list.id} + '\');'">
-                                                <option>Quick Actions</option>
-                                                <option value="Last 10 Transaction">Last 10 Transaction</option>
-                                                <option value="Transaction History">Transaction History</option>
-                                                <option value="Account Statement">Account Statement</option>
+        <select class="form-control full-width coronation-form-control" id="view">
+            <option value="account">Overview</option>
+        </select>
+    </div>
 
-                                            </select>
+    <div class="col-xs-12 ml-15 " >
+        <div class="col-xs-11 no-pad-lef table-responsive bg-white alert">
+            <table class="table table-hover no-pad-lef" id="users">
+                <thead class='thead'>
+                <strong><th class="text-cente">Account Number</th></strong>
+                <th class="text-cente">Account type</th>
+                <th class="text-cente">Currency</th>
+                <th class="text-cente">Available Balance</th>
+                <th class="text-cente">Ledger Balance</th>
+                <th class="text-cente">&nbsp;</th>
+                </thead>
+                <tbody>
+                <tr th:each="list : ${accountList}" class="tt">
+                    <td th:align="center" th:text="${list.accountNumber}"></td>
+                    <td th:align="center" th:text="${list.schemeType}"></td>
+                    <td th:align="center" th:text="${list.currencyCode}"></td>
+                    <td th:align="center" th:text="${list.accountBalance}" class="bal"></td>
+                    <td th:align="center" th:text="${list.ledgerBalance}" class="bal"></td>
 
-                                        </td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3 pull-right">
-                    <div th:replace="corp_layout :: corp-sidebar" class="" >
-                    </div>
-                </div>
-            </div>
+                    <td th:align="center">
+                        <select class="quickAccess" th:attr="onchange='javascript:getId(\'' + ${list.id} + '\');'">
+                            <option>Quick Actions</option>
+                            <option value="Last 10 Transaction">Last 10 Transaction</option>
+                            <option value="Transaction History">Transaction History</option>
+                            <option value="Account Statement">Account Statement</option>
+
+                        </select>
+
+                    </td>
+                </tr>
+                </tbody>
+            </table>
         </div>
-    </section>
+    </div>
 
-    <!-- CONTENT-WRAPPER SECTION END-->
-    <footer th:replace="corp_layout ::corp-footer">
-    </footer>
+</div>
+
+
+<th:block layout:fragment="scripts">
 
     <script>
 
@@ -88,17 +68,17 @@
         }
 
         function getId(Id) {
-            if ($('.quickAccess').val() === "Last 10 Transaction") {
+            if ($('#'+Id).val() === "Last 10 Transaction") {
                 if (( Id != null || Id != '' )) {
                     window.location.href = "/corporate/account/" + Id + "/statement";
                 }
             }
-            if ($('.quickAccess').val() === "Transaction History") {
+            if ($('#'+Id).val() === "Transaction History") {
                 if (( Id != null || Id != '' )) {
                     window.location.href = "/corporate/account/viewonlyhistory";
                 }
             }
-          if ($('.quickAccess').val() === "Account Statement") {
+          if ($('#'+Id).val() === "Account Statement") {
                 if (( Id != null || Id != '' )) {
                     window.location.href = "/corporate/account/viewstatement";
                 }
@@ -106,6 +86,7 @@
 
         }
     </script>
-</div>
+</th:block>
+
 </body>
 </html>

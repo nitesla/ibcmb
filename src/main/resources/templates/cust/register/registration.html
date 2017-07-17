@@ -90,9 +90,13 @@
                                     <br/>
                                     <div class="col-md-offset-4 col-md-4">
                                         <div class="form-group clearfix">
+                                            
 
                                             <label>Account Number</label>
-                                            <span class='req'></span><input type="text" name="accountNumber" autocomplete="off" class="my-select required" placeholder="Account Number"/>
+                                            <span class='req'></span><input  class="my-select required" placeholder="Account Number"/>
+                                           
+                                        
+                                        
                                         </div>
 
                                         <div class="form-group">
@@ -174,7 +178,7 @@
                                             <div class="form-group clearfix">
                                                 <label th:text="'Security Question '+${ind.index+1}" >Question</label>
                                                 <select th:name="'securityQuestion'+${ind.index}" class="my-select">
-                                                    <option th:each="question : ${questionList}" th:text="${question.securityQuestion}" th:value="${question.securityQuestion}"></option>
+                                                    <option th:each="question : ${questionList}" th:text="${question.code}" th:value="${question.code}"></option>
                                                 </select>
                                             </div>
                                             <div class="form-group clearfix">
@@ -278,6 +282,10 @@
 
 
     </div>
+
+
+
+
 <!-- CORE JQUERY SCRIPTS -->
 <script th:src="@{~/customer/js/jquery-1.11.1.js}"></script>
 <!-- BOOTSTRAP SCRIPTS  -->
@@ -293,6 +301,9 @@
 <script th:inline="javascript" type="text/javascript">
     /*<![CDATA[*/
 
+
+
+  
     $('#userdet').on('change', function () {
         if ($(this).val() === "email") {
             $("#email").show();

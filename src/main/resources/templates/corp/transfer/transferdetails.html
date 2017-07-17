@@ -32,25 +32,25 @@
                             <tr>
 
                                 <th>Source account</th>
-                                <td th:text="${transRequest.customerAccountNumber}"></td>
+                                <td th:text="${corpTransferRequest.customerAccountNumber}"></td>
 
                             </tr>
                             <tr>
 
                                 <th>Destination account</th>
-                                <td th:text="${transRequest.beneficiaryAccountNumber}"></td>
+                                <td th:text="${corpTransferRequest.beneficiaryAccountNumber}"></td>
 
                             </tr>
                             <tr>
 
                                 <th>Amount</th>
-                                <td th:text="${transRequest.amount}"></td>
+                                <td th:text="${corpTransferRequest.amount}"></td>
 
                             </tr>
                             <tr>
 
                                 <th>Remarks</th>
-                                <td th:text="${transRequest.remarks}"></td>
+                                <td th:text="${corpTransferRequest.remarks}"></td>
 
                             </tr>
                         </table>
@@ -59,7 +59,7 @@
                                 <div class="form-group">
 
 
-                                    <a target="_blank" th:href="@{'/corporate/transfer/' + ${transRequest.id} +'/receipt'}" >Receipt</a>
+                                    <a target="_blank" th:href="@{'/corporate/transfer/' + ${corpTransferRequest.id} +'/receipt'}" >Receipt</a>
 
                                     <a th:href="@{/corporate/dashboard}" >Home</a>
                                     <a th:href="@{/corporate/transfer/}" >Make another transfer</a>

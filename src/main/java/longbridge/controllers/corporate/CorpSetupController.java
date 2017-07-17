@@ -1,8 +1,8 @@
 package longbridge.controllers.corporate;
 
+import longbridge.dtos.CodeDTO;
 import longbridge.dtos.CorporateUserDTO;
 import longbridge.dtos.PasswordStrengthDTO;
-import longbridge.models.SecurityQuestions;
 import longbridge.services.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +24,7 @@ import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -49,7 +50,7 @@ public class CorpSetupController {
     MessageSource messageSource;
 
     @Autowired
-    private SecurityQuestionService securityQuestionService;
+    private CodeService codeService;
 
     @Autowired
     private SecurityService securityService;
@@ -96,7 +97,7 @@ public class CorpSetupController {
         model.addAttribute("images", images);
         model.addAttribute("imagePath", imagePath);
 
-        List<SecurityQuestions> secQues = securityQuestionService.getSecQuestions();
+        List<CodeDTO> secQues = codeService.getCodesByType("SECURITY_QUESTION");
         int noOfQuestions = securityService.getMinUserQA();
         logger.info("num of qs on entrust {}",noOfQuestions);
         ArrayList[] masterList = new ArrayList[noOfQuestions];
@@ -111,20 +112,20 @@ public class CorpSetupController {
             }
 
         }
-        logger.info("master question length"+masterList.length);
+        logger.trace("master question length"+masterList.length);
 
         for (int i=0;i<masterList.length;i++  ) {
-            logger.info("master question "+i+" "+masterList[i]);
+            logger.trace("master question "+i+" "+masterList[i]);
         }
-        logger.info("master question "+masterList);
+        logger.trace("master question "+ Arrays.toString(masterList));
 
 
-        logger.info("MASTER LIST {}", masterList);
+        logger.trace("MASTER LIST {}", masterList);
         model.addAttribute("secQuestions", masterList);
         model.addAttribute("noOfQuestions", noOfQuestions);
 
-        PasswordStrengthDTO passwordStrengthDTO = passwordPolicyService.getPasswordStengthParams();
-        logger.info("Password Strength {}" + passwordStrengthDTO);
+        PasswordStrengthDTO passwordStrengthDTO = passwordPolicyService.getPasswordStrengthParams();
+        logger.debug("Password Strength {}" + passwordStrengthDTO);
         model.addAttribute("passwordStrength", passwordStrengthDTO);
 
         return "corp/setup";

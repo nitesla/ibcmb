@@ -124,7 +124,7 @@
                                     <li sec:authorize="hasAuthority('BULK_TRANSFER')"><a th:href="@{/corporate/transfer/bulk}" th:text="#{menu.transfer.bulk}">Bulk transfer</a></li>
                                     <li sec:authorize="hasAuthority('CORP_TRANSACTION_LIMIT')"><a th:href="@{/corporate/transfer/settransferlimit}" th:text="#{menu.transfer.limit}">Set transfer limit</a></li>
                                     <li sec:authorize="hasAuthority('STANDING_ORDER')"><a th:href="@{/corporate/transfer/standingorder}" th:text="#{menu.transfer.order}">Standing order</a></li>
-                                    <li sec:authorize="hasAuthority('TRANSFER_REQUEST')"><a th:href="@{/corporate/transfer/requests}" th:text="#{menu.transfer.request}">Transaction Requests</a></li>
+                                    <li th:if="${corporateType=='MULTI'}"><a th:href="@{/corporate/transfer/requests}" th:text="#{menu.transfer.request}">Transaction Requests</a></li>
 
                                 </ul>
                             </li>

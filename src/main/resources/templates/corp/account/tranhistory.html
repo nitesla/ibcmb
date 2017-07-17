@@ -1,28 +1,21 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="corp_layout :: site-head">
-</head>
-<body>
-<div class="container">
-    <header th:replace="corp_layout :: corp-header">
-    </header>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
 
-    <section class="content-wrapper">
-        <div>
-            <div class="row">
-                <div class="col-md-4 col-sm-4">
-                    <h5 class="page_header"> Transaction History</h5>
-                    <select class="form-control invisible">
-                        <option value="account">Account Overview</option>
-                    </select>
-                </div>
-                <p class="col-xs-12 invisible">
-                    Fields marked <span style="color:red">*</span> are compulsory
-                </p>
-            </div>
-            <div class="row">
-                <div class="col-md-9 content-bg">
-                    <form method="post" th:action="@{/corporate/account/viewstatement/display}">
+<body onload="currentBar('account')">
+
+<div layout:fragment="content">
+    <div class="col-md-5 col-sm-5 ">
+
+        <select class="form-control full-width coronation-form-control hide-content-only" id="view">
+            <option value="account">Overview</option>
+        </select>
+    </div>
+
+    <div class="col-xs-12 ml-15 no-pad-left no-mt" >
+        <div class="col-xs-11 no-pad-lef table-responsive no-mt bg-white alert">
+            
+            <form method="post" th:action="@{/corporate/account/viewstatement/display}">
 
                         <div class="col-md">
                             <br/>
@@ -100,17 +93,17 @@
                     </form>
 
                 </div>
-                <div class="col-md-3 pull-right " >
-                    <div th:replace="corp_layout :: corp-sidebar" class="" >
-                    </div>
-                </div>
-            </div>
+
+        
         </div>
-    </section>
+    </div>
+
 </div>
-<!-- CONTENT-WRAPPER SECTION END-->
-<footer th:replace="corp_layout ::corp-footer">
-</footer>
+
+
+<th:block layout:fragment="scripts">
+
+
 <script th:inline="javascript">
     /*<![CDATA[*/
     jQuery.download = function(url, key, data) {
@@ -231,5 +224,8 @@
 
     /*]]>*/
 </script>
+   
+</th:block>
+
 </body>
 </html>

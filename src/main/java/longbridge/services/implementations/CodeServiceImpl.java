@@ -2,8 +2,8 @@ package longbridge.services.implementations;
 
 import longbridge.dtos.CodeDTO;
 import longbridge.dtos.CodeTypeDTO;
-import longbridge.exception.DuplicateObjectException;
 import longbridge.exception.InternetBankingException;
+import longbridge.exception.VerificationInterruptedException;
 import longbridge.models.AdminUser;
 import longbridge.models.Code;
 import longbridge.repositories.CodeRepo;
@@ -23,7 +23,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -33,7 +32,7 @@ import java.util.Locale;
 @Service
 public class CodeServiceImpl implements CodeService {
 
-    private Logger logger= LoggerFactory.getLogger(this.getClass());
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private CodeRepo codeRepo;
 
@@ -44,11 +43,10 @@ public class CodeServiceImpl implements CodeService {
     private Locale locale = LocaleContextHolder.getLocale();
 
     @Autowired
-    MessageSource messageSource;
+    private MessageSource messageSource;
 
     @Autowired
-    public CodeServiceImpl(CodeRepo codeRepository, VerificationService verificationService, ModelMapper modelMapper)
-    {
+    public CodeServiceImpl(CodeRepo codeRepository, VerificationService verificationService, ModelMapper modelMapper) {
         codeRepo = codeRepository;
         this.verificationService = verificationService;
         this.modelMapper = modelMapper;
@@ -57,17 +55,20 @@ public class CodeServiceImpl implements CodeService {
 
     @Override
     @Transactional
-    @Verifiable(operation="DELETE_CODE",description="Deleting a Code")
-    public String deleteCode(Long codeId) throws InternetBankingException{
-          try{
+    @Verifiable(operation = "DELETE_CODE", description = "Deleting a Code")
+    public String deleteCode(Long codeId) throws InternetBankingException {
+        try {
             Code code = codeRepo.findOne(codeId);
             codeRepo.delete(code);
-           logger.info("Code {} has been deleted",codeId.toString());
-           return messageSource.getMessage("code.delete.success",null,locale);
-    }
-    catch (Exception e){
-          throw new InternetBankingException(messageSource.getMessage("code.delete.failure",null,locale),e);
-          }
+            logger.info("Code {} has been deleted", codeId.toString());
+            return messageSource.getMessage("code.delete.success", null, locale);
+        } catch (VerificationInterruptedException e) {
+            return e.getMessage();
+        } catch (InternetBankingException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("code.delete.failure", null, locale), e);
+        }
     }
 
     @Override
@@ -91,42 +92,44 @@ public class CodeServiceImpl implements CodeService {
     @Override
     public Iterable<CodeDTO> getCodes() {
         Iterable<Code> codes = this.codeRepo.findAll();
-        return convertEntitiesToDTOs(codes);    }
+        return convertEntitiesToDTOs(codes);
+    }
 
-  
 
     @Transactional
-    @Verifiable(operation="UPDATE_CODE",description="Updating a Code")
-    public String updateCode(CodeDTO codeDTO, AdminUser adminUser) throws InternetBankingException{
+    @Verifiable(operation = "UPDATE_CODE", description = "Updating a Code")
+    public String updateCode(CodeDTO codeDTO, AdminUser adminUser) throws InternetBankingException {
         try {
             Code code = convertDTOToEntity(codeDTO);
             codeRepo.save(code);
-            logger.info("Updated code with Id {}",code.getId());
+            logger.info("Updated code with Id {}", code.getId());
             return messageSource.getMessage("code.update.success", null, locale);
+        } catch (VerificationInterruptedException e) {
+            return e.getMessage();
         }
-        catch (DuplicateObjectException e) {
-            throw new DuplicateObjectException(e.getMessage());
+        catch (InternetBankingException e){
+            throw e;
         }
-        catch (Exception e){
-            throw new InternetBankingException(messageSource.getMessage("code.update.failure",null,locale),e);
+        catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("code.update.failure", null, locale), e);
         }
 
-        
-    }
 
-  
-    public CodeDTO convertEntityToDTO(Code code){
-        return  modelMapper.map(code,CodeDTO.class);
     }
 
 
-    public Code convertDTOToEntity(CodeDTO codeDTO){
-        return  modelMapper.map(codeDTO,Code.class);
+    public CodeDTO convertEntityToDTO(Code code) {
+        return modelMapper.map(code, CodeDTO.class);
     }
 
-    public List<CodeDTO> convertEntitiesToDTOs(Iterable<Code> codes){
+
+    public Code convertDTOToEntity(CodeDTO codeDTO) {
+        return modelMapper.map(codeDTO, Code.class);
+    }
+
+    public List<CodeDTO> convertEntitiesToDTOs(Iterable<Code> codes) {
         List<CodeDTO> codeDTOList = new ArrayList<>();
-        for(Code code: codes){
+        for (Code code : codes) {
             CodeDTO codeDTO = convertEntityToDTO(code);
             codeDTOList.add(codeDTO);
         }
@@ -134,16 +137,15 @@ public class CodeServiceImpl implements CodeService {
     }
 
 
-
-	@Override
-	public Page<CodeDTO> getCodesByType(String codeType, Pageable pageDetails) {
-		// TODO Auto-generated method stub
-		Page<Code> page = codeRepo.findByType(codeType, pageDetails);
-		List<CodeDTO> dtOs = convertEntitiesToDTOs(page);
-		long t = page.getTotalElements();
-        Page<CodeDTO> pageImpl = new PageImpl<CodeDTO>(dtOs,pageDetails,t);
+    @Override
+    public Page<CodeDTO> getCodesByType(String codeType, Pageable pageDetails) {
+        // TODO Auto-generated method stub
+        Page<Code> page = codeRepo.findByType(codeType, pageDetails);
+        List<CodeDTO> dtOs = convertEntitiesToDTOs(page);
+        long t = page.getTotalElements();
+        Page<CodeDTO> pageImpl = new PageImpl<CodeDTO>(dtOs, pageDetails, t);
         return pageImpl;
-	}
+    }
 
     @Override
     public Page<CodeDTO> getCodes(Pageable pageDetails) {
@@ -152,49 +154,43 @@ public class CodeServiceImpl implements CodeService {
         long t = page.getTotalElements();
 
         // return  new PageImpl<ServiceReqConfigDTO>(dtOs,pageDetails,page.getTotalElements());
-        Page<CodeDTO> pageImpl = new PageImpl<CodeDTO>(dtOs,pageDetails,t);
+        Page<CodeDTO> pageImpl = new PageImpl<CodeDTO>(dtOs, pageDetails, t);
         return pageImpl;
     }
 
 
-	@Override
-    @Verifiable(operation="ADD_CODE",description="Adding a Code")
-	public String addCode(CodeDTO codeDTO, AdminUser adminUser) throws InternetBankingException {
-		try {
+    @Override
+    @Verifiable(operation = "ADD_CODE", description = "Adding a Code")
+    public String addCode(CodeDTO codeDTO, AdminUser adminUser) throws InternetBankingException {
+        try {
             Code code = convertDTOToEntity(codeDTO);
             codeRepo.save(code);
-            logger.info("Added new code {} of type {}",code.getDescription(),code.getType());
+            logger.info("Added new code {} of type {}", code.getDescription(), code.getType());
             return messageSource.getMessage("code.add.success", null, locale);
-        }catch (Exception e){
-		    throw new InternetBankingException(messageSource.getMessage("code.add.failure",null,locale),e);
+        } catch (VerificationInterruptedException e) {
+            return e.getMessage();
+        } catch (Exception e) {
+            throw new InternetBankingException(messageSource.getMessage("code.add.failure", null, locale), e);
         }
-
-//        try {
-//			return verificationService.addNewVerificationRequest(code);
-//		} catch (JsonProcessingException e) {
-//			// TODO Auto-generated catch block
-//			logger.error("Error", e);
-//			return "Error adding Code " + e.getMessage();
-//		}
-	}
+    }
 
     @Override
 
     public Code getByTypeAndCode(String type, String code) {
-        return codeRepo.findByTypeAndCode(type,code);
+        return codeRepo.findByTypeAndCode(type, code);
     }
 
 
-	@Override
-	public Page<CodeTypeDTO> getCodeTypes(Pageable pageDetails) {
+    @Override
+    public Page<CodeTypeDTO> getCodeTypes(Pageable pageDetails) {
 
-		Page<String> allTypes = codeRepo.findAllTypes(pageDetails);
-		long t = allTypes.getTotalElements();
-		List<CodeTypeDTO> list = new ArrayList<CodeTypeDTO>();
-		for(String s :allTypes){
-			list.add(new CodeTypeDTO(s));
-		}
-		return new PageImpl<CodeTypeDTO>(list,pageDetails,t);
-		
-	}
+        Page<String> allTypes = codeRepo.findAllTypes(pageDetails);
+        long t = allTypes.getTotalElements();
+        List<CodeTypeDTO> list = new ArrayList<CodeTypeDTO>();
+        for (String s : allTypes) {
+            list.add(new CodeTypeDTO(s));
+        }
+        return new PageImpl<CodeTypeDTO>(list, pageDetails, t);
+
+    }
 }

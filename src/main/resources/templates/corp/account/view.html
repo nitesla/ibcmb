@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<<<<<<< HEAD
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="corp_layout :: site-head">
 </head>
@@ -27,9 +28,29 @@
                     <form method="post" th:action="@{/corporate/account/viewstatement/display}">
 
                         <div class="col-md">
+=======
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
+
+<body onload="currentBar('account statement')">
+
+<div layout:fragment="content">
+    <div class="col-md-5 col-sm-5 ">
+
+        <select class="form-control full-width coronation-form-control hide-content-only" id="view">
+            <option value="account">Overview</option>
+        </select>
+    </div>
+
+    <div class="col-xs-12 ml-15  no-mt" >
+        <div class="col-xs-11  table-responsive no-mt no-bd alert">
+            <form method="post" th:action="@{/corporate/account/viewstatement/display}">
+
+                        <div class="">
+>>>>>>> f04b28e0080937776e50e0efdbd8f12b23545d4f
                             <br/>
-                            <div class="form-group col-md-12 col-sm-12">
-                                <div class="form-group col-md-6 col-sm-6">
+                            <div class="form-group col-md-12 no-pad-left col-sm-12">
+                                <div class="form-group col-md-6 no-pad-left col-sm-6">
                                     <label>Date Range</label>
                                     <div class="input-daterange input-group" id="date-range">
                                         <input type="text" data-date-format="dd-mm-yyyy" class="form-control datepicker" id="start" name="fromDate" placeholder="Start date" required="required" />
@@ -37,7 +58,7 @@
                                         <input type="text"  data-date-format="dd-mm-yyyy" class="form-control datepicker" name="toDate" id="endDate" placeholder="End date" required="required" />
                                     </div>
                                 </div>
-                                <div class="form-group col-md-6 col-sm-6">
+                                <div class="form-group col-md-6 no-pad-left col-sm-6">
                                     <label>Transaction Type</label>
                                     <select name="tranType"  class="form-control">
                                         <option value="B">All</option>
@@ -46,22 +67,26 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="form-group col-md-12 col-sm-12">
-                                <div class="form-group col-md-6 col-sm-6">
+                            <div class="form-group col-md-12 no-pad-left col-sm-12">
+                                <div class="form-group col-md-6 no-pad-left col-sm-6">
                                     <label>Account Number</label>
                                     <span class="req"></span>
                                     <select name="acctNumber" id="acctNumber" class="form-control"
                                             required="required">
-                                        <option th:each="s: ${accounts}" th:value="${s}" th:text="${s}"></option></select>
+                                        <option th:each="s: ${accounts}" th:value="${s.accountNumber}" th:text="${s.accountNumber}"></option></select>
                                 </div>
 
                                 <div class="form-group col-md-6">
                                     <label>&nbsp;</label>
+<<<<<<< HEAD
 
 
 
                                     <button type="submit" class="btn btn-link " id="btn-find"><i class="fa fa-search" style="color: white" ></i>&nbsp; view</button>
 
+=======
+                                    <button type="submit" class="btn btn-link " id="btn-find"><i class="fa fa-search"  ></i>&nbsp; view</button>
+>>>>>>> f04b28e0080937776e50e0efdbd8f12b23545d4f
                                 </div>
                             </div>
 
@@ -108,6 +133,7 @@
 
                         </div>
                     </form>
+<<<<<<< HEAD
 
                 </div>
                 <div class="col-md-3 pull-right " >
@@ -117,12 +143,22 @@
                     </div>
                 </div>
             </div>
+=======
+>>>>>>> f04b28e0080937776e50e0efdbd8f12b23545d4f
         </div>
-    </section>
+    </div>
+
 </div>
+<<<<<<< HEAD
 <!-- CONTENT-WRAPPER SECTION END-->
 <footer th:replace="corp_layout ::footer">
 </footer>
+=======
+
+
+<th:block layout:fragment="scripts">
+
+>>>>>>> f04b28e0080937776e50e0efdbd8f12b23545d4f
 <script th:inline="javascript">
     /*<![CDATA[*/
     jQuery.download = function(url, key, data) {
@@ -256,5 +292,8 @@
 
     /*]]>*/
 </script>
+   
+</th:block>
+
 </body>
 </html>

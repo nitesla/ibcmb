@@ -1,5 +1,6 @@
 package longbridge.security.corpuser;
 
+import longbridge.forms.CustResetPassword;
 import longbridge.services.PasswordPolicyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -20,18 +21,18 @@ private PasswordPolicyService passwordPolicyService;
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) throws Exception {
         String uri=httpServletRequest.getRequestURI();
-//        if (httpServletRequest.getSession().getAttribute("expired-password")!=null&& !(uri.equalsIgnoreCase("/corporate/reset_password")))
-//        {
-//
-//            CustResetPassword changePassword = new CustResetPassword();
-//
-//            ModelAndView modelAndView = new ModelAndView("forwarded-view");
-//            modelAndView.addObject("custResetPassword", changePassword);
-//            modelAndView.addObject("passwordRules", passwordPolicyService.getPasswordRules());
-//
-//            modelAndView.setViewName("corp/settings/new-pword");
-//            throw new ModelAndViewDefiningException(modelAndView);
-//        }
+        if (httpServletRequest.getSession().getAttribute("expired-password")!=null&& !(uri.equalsIgnoreCase("/corporate/reset_password")))
+        {
+
+            CustResetPassword changePassword = new CustResetPassword();
+
+            ModelAndView modelAndView = new ModelAndView("forwarded-view");
+            modelAndView.addObject("custResetPassword", changePassword);
+            modelAndView.addObject("passwordRules", passwordPolicyService.getPasswordRules());
+
+            modelAndView.setViewName("corp/settings/new-pword");
+            throw new ModelAndViewDefiningException(modelAndView);
+        }
 
         if (httpServletRequest.getSession().getAttribute("2FA")!=null&& !(uri.equalsIgnoreCase("/corporate/token")))
         {

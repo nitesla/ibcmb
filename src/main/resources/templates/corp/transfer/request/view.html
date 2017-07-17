@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<<<<<<< HEAD
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="corp_layout :: site-head">
 
@@ -30,6 +31,24 @@
             <div class="row">
                 <div class="col-md-9 content-bg">
                     <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+=======
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
+<link th:href="@{~/bank/vendors/sweetalert/sweetalert.css}" rel="stylesheet"/>
+<body onload="currentBar('Beneficiaries')">
+
+<div layout:fragment="content">
+    <div class="col-md-5 col-sm-5 ">
+
+        <select class="form-control full-width coronation-form-control hide-content-only" id="view">
+            <option value="account">Overview</option>
+        </select>
+    </div>
+
+    <div class="col-xs-12 ml-15 " >
+        <div class="col-xs-11 no-pad-lef  no-mt no-bd  alert">
+            <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+>>>>>>> f04b28e0080937776e50e0efdbd8f12b23545d4f
                         <div class="btn-group" role="group" aria-label="First group">
 
                             <a type="button" class="btn bt-select btn-default bt-link-act"
@@ -67,19 +86,16 @@
                         </table>
 
                     </div>
-                </div>
-                <div class="col-md-3 pull-right">
-                    <div th:replace="corp_layout :: corp-sidebar">
-                    </div>
-                </div>
-            </div>
         </div>
-    </section>
+    </div>
 
-    <!-- CONTENT-WRAPPER SECTION END-->
-    <footer th:replace="corp_layout ::corp-footer">
-    </footer>
 </div>
+
+
+<th:block layout:fragment="scripts">
+    <script th:src="@{~/bank/vendors/sweetalert/sweetalert.min.js}"></script>
+    <script th:src="@{~/bank/vendors/bootstrap-dialog/js/bootstrap-dialog.js}"></script>
+    <script th:src="@{~/bank/js/jquery.spring-friendly.min.js}"></script>
 
 <script th:inline="javascript">
     /*<![CDATA[*/
@@ -195,7 +211,7 @@
 
     /*]]>*/
 </script>
-
+</th:block>
 
 </body>
 </html>

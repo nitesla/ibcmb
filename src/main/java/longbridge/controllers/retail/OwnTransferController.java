@@ -105,7 +105,7 @@ public class OwnTransferController {
         } catch (InternetBankingTransferException exception)
 
         {
-            String errorMessage = errorService.getMessage(exception, servletRequest);
+            String errorMessage = errorService.getMessage(exception);
             model.addAttribute("failure", errorMessage);
             return page + "pagei";
 
@@ -113,14 +113,7 @@ public class OwnTransferController {
 
     }
 
-    @RequestMapping(value="/balance/{accountNumber}", method=RequestMethod.GET , produces="application/json")
-    @ResponseBody
-    public BigDecimal getBalance(@PathVariable String accountNumber) throws Exception {
-        Account account = accountService.getAccountByAccountNumber(accountNumber);
-        Map<String, BigDecimal> balance = accountService.getBalance(account);
-        BigDecimal availBal = balance.get("AvailableBalance");
-        return availBal;
-    }
+
 
     @PostMapping("/edit")
     public String editTransfer(@ModelAttribute("transferRequest")  TransferRequestDTO transferRequestDTO,Model model,HttpServletRequest request){
@@ -134,7 +127,7 @@ public class OwnTransferController {
     @ModelAttribute
     public void getDestAccounts(Model model, Principal principal) {
 
-        if (principal != null || principal.getName() != null) {
+        if (principal != null && principal.getName() != null) {
 
             RetailUser user = retailUserService.getUserByName(principal.getName());
             if (user != null) {

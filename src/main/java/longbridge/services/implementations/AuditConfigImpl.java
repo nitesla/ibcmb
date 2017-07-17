@@ -1,6 +1,7 @@
 package longbridge.services.implementations;
 
 import longbridge.exception.InternetBankingException;
+import longbridge.exception.VerificationInterruptedException;
 import longbridge.models.AuditConfig;
 import longbridge.repositories.AuditConfigRepo;
 import longbridge.services.AuditConfigService;
@@ -33,10 +34,20 @@ public class AuditConfigImpl implements AuditConfigService {
 	}
 
 	@Override
-	@Verifiable(operation="AUDIT_CONFIG",description="Configuring Audit")
     public boolean saveAuditConfig(AuditConfig cfg) throws InternetBankingException
 	{
-		configRepo.save(cfg);
+		try {
+			configRepo.save(cfg);
+		}
+		catch (VerificationInterruptedException e){
+		}
+		catch (InternetBankingException e){
+			throw e;
+		}
+		catch (Exception e){
+
+		}
+
 		return true;
 	}
 

@@ -545,6 +545,9 @@ public class AccountController {
 			AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to, tranType);
 			out.setDraw(input.getDraw());
 			List<TransactionDetails> list = accountStatement.getTransactionDetails();
+			for(TransactionDetails transactionDetails:list){
+				logger.info("What is the transactionDetails {}",transactionDetails.getPostDate());
+			}
 			RetailUser retailUser = retailUserService.getUserByName(principal.getName());
 			DecimalFormat formatter = new DecimalFormat("#,###.00");
 			modelMap.put("datasource", list);
@@ -555,22 +558,33 @@ public class AccountController {
 
 			double amount = Double.parseDouble(accountStatement.getOpeningBalance());
 			modelMap.put("summary.openingBalance", formatter.format(amount));
-			if(accountStatement.getDebitCount()!=null) {
-				modelMap.put("summary.debitCount", accountStatement.getDebitCount());
+			// the total debit and credit is referred as total debit count and credit count
+			if(accountStatement.getTotalDebit()!=null) {
+				modelMap.put("summary.debitCount", accountStatement.getTotalDebit());
 			}
 			else{modelMap.put("summary.debitCount", "");}
-			if(accountStatement.getCreditCount()!=null) {
-				modelMap.put("summary.creditCount", accountStatement.getCreditCount());
+			if(accountStatement.getTotalCredit()!=null) {
+				modelMap.put("summary.creditCount", accountStatement.getTotalCredit());
 			}
 			else{modelMap.put("summary.creditCount", "");}
 			modelMap.put("summary.currencyCode", accountStatement.getCurrencyCode());
-			if (accountStatement.getClosingBalance() != null) {
+			if(accountStatement.getClosingBalance()!=null) {
 				double closingbal = Double.parseDouble(accountStatement.getClosingBalance());
+
 				modelMap.put("summary.closingBalance", formatter.format(closingbal));
 			}else{modelMap.put("summary.closingBalance","" );}
-			modelMap.put("summary.totalDebit", accountStatement.getTotalDebit());
-			modelMap.put("summary.totalCredit", accountStatement.getTotalCredit());
-			modelMap.put("summary.address", "");
+
+			// the total debit and credit is referred as total debit count and credit count
+			if(accountStatement.getDebitCount()!=null) {
+				modelMap.put("summary.totalDebit", accountStatement.getDebitCount());
+			}else{modelMap.put("summary.totalDebit", "");}
+			if(accountStatement.getCreditCount()!=null) {
+				modelMap.put("summary.totalCredit", accountStatement.getCreditCount());
+			}else{ modelMap.put("summary.totalCredit", "");
+			}
+			if(accountStatement.getAddress()!=null) {
+				modelMap.put("summary.address", accountStatement.getAddress());
+			}else{modelMap.put("summary.address", "");}
 			modelMap.put("fromDate", fromDate);
 			modelMap.put("toDate", toDate);
 			Date today = new Date();

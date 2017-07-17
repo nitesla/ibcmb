@@ -75,8 +75,28 @@ public class InterBankTransferController {
 
     @PostMapping(value = "/index")
 
-    public String startTransfer(HttpServletRequest request, Model model, Principal principal) {
+    public String startTransfer(HttpServletRequest request, Model model,Principal principal) {
+        RetailUser retailUser = retailUserService.getUserByName(principal.getName());
+        List<LocalBeneficiary> beneficiaries = StreamSupport.stream(localBeneficiaryService.getLocalBeneficiaries(retailUser).spliterator(), false)
+                .filter(i -> !i.getBeneficiaryBank().equalsIgnoreCase(financialInstitutionService.getFinancialInstitutionByCode(bankCode).getInstitutionCode()))
+                .collect(Collectors.toList());
 
+        beneficiaries
+                .stream()
+                .filter(Objects::nonNull)
+                .forEach(i ->
+                        {
+                            FinancialInstitution financialInstitution = financialInstitutionService.getFinancialInstitutionByCode(i.getBeneficiaryBank());
+
+                            if (financialInstitution != null)
+                                i.setBeneficiaryBank(financialInstitution.getInstitutionName());
+
+
+                        }
+
+                );
+
+        model.addAttribute("localBen", beneficiaries);
 
         TransferRequestDTO requestDTO = new TransferRequestDTO();
         String type = request.getParameter("tranType");
@@ -166,8 +186,6 @@ public class InterBankTransferController {
             } else {
                 transferRequestDTO.setTransferType(TransferType.INTER_BANK_TRANSFER);
                 charge = integrationService.getFee("NIP").getFeeValue();
-                System.out.println("NIP TRANSFER");
-                System.out.println(charge);
             }
             // request.getSession().removeAttribute("NIP");
 
@@ -186,11 +204,11 @@ public class InterBankTransferController {
         requestDTO.setBeneficiaryAccountName(beneficiary.getAccountName());
         requestDTO.setBeneficiaryAccountNumber(beneficiary.getAccountNumber());
         requestDTO.setTransferType(TransferType.INTER_BANK_TRANSFER);
-        FinancialInstitution institution = financialInstitutionService.getFinancialInstitutionByName(beneficiary.getBeneficiaryBank());
+        FinancialInstitution institution = financialInstitutionService.getFinancialInstitutionByCode(beneficiary.getBeneficiaryBank());
         if (institution == null) {
 
-            model.addAttribute("failure", messages.getMessage("transfer.beneficiary.invalid", null, locale));
-            return page + "pageiA";
+            attributes.addFlashAttribute("failure", messages.getMessage("transfer.beneficiary.invalid", null, locale));
+            return"redirect:/retail/transfer/interbank/index";
         }
         requestDTO.setFinancialInstitution(institution);
 
@@ -204,28 +222,8 @@ public class InterBankTransferController {
 
 
     @ModelAttribute
-    public void getOtherBankBeneficiaries(Model model, Principal principal) {
-        RetailUser retailUser = retailUserService.getUserByName(principal.getName());
-        List<LocalBeneficiary> beneficiaries = StreamSupport.stream(localBeneficiaryService.getLocalBeneficiaries(retailUser).spliterator(), false)
-                .filter(i -> !i.getBeneficiaryBank().equalsIgnoreCase(financialInstitutionService.getFinancialInstitutionByCode(bankCode).getInstitutionCode()))
-                .collect(Collectors.toList());
+    public void getOtherBankBeneficiaries(Model model) {
 
-        beneficiaries
-                .stream()
-                .filter(Objects::nonNull)
-                .forEach(i ->
-                        {
-                            FinancialInstitution financialInstitution = financialInstitutionService.getFinancialInstitutionByCode(i.getBeneficiaryBank());
-
-                            if (financialInstitution != null)
-                                i.setBeneficiaryBank(financialInstitution.getInstitutionName());
-
-
-                        }
-
-                );
-
-        model.addAttribute("localBen", beneficiaries);
 
         List<FinancialInstitutionDTO> sortedNames = financialInstitutionService.getOtherLocalBanks(bankCode);
         sortedNames.sort(Comparator.comparing(FinancialInstitutionDTO::getInstitutionName));
@@ -249,14 +247,7 @@ public class InterBankTransferController {
 
     }
 
-    @RequestMapping(value = "/balance/{accountNumber}", method = RequestMethod.GET, produces = "application/json")
-    @ResponseBody
-    public BigDecimal getBalance(@PathVariable String accountNumber) throws Exception {
-        Account account = accountService.getAccountByAccountNumber(accountNumber);
-        Map<String, BigDecimal> balance = accountService.getBalance(account);
-        BigDecimal availBal = balance.get("AvailableBalance");
-        return availBal;
-    }
+
 
     @PostMapping("/edit")
     public String editTransfer(@ModelAttribute("transferRequest") TransferRequestDTO transferRequestDTO, Model model, HttpServletRequest request) {
@@ -275,13 +266,12 @@ public class InterBankTransferController {
         if (request.getSession().getAttribute("Lbeneficiary") != null) {
             LocalBeneficiaryDTO dto = (LocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary");
             model.addAttribute("beneficiary", dto);
-            if (null==dto.getId()){
-                transferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode(dto.getBeneficiaryBank()));
+            String  bank = dto.getBeneficiaryBank();
 
-            }else{
-                transferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByName(dto.getBeneficiaryBank()));
 
-            }
+                transferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode(bank));
+
+
 
         }
 
@@ -305,6 +295,7 @@ public class InterBankTransferController {
                     .forEach(i -> accountList.add(i));
 
             model.addAttribute("accountList", accountList);
+
 
 
         }

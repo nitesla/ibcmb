@@ -4,6 +4,7 @@ import longbridge.dtos.ContactDTO;
 import longbridge.dtos.OperationsUserDTO;
 import longbridge.dtos.UserGroupDTO;
 import longbridge.exception.InternetBankingException;
+import longbridge.exception.VerificationInterruptedException;
 import longbridge.models.Contact;
 import longbridge.models.OperationsUser;
 import longbridge.models.UserGroup;
@@ -59,6 +60,11 @@ public class UserGroupServiceImpl implements UserGroupService {
             userGroupRepo.save(userGroup);
             return messageSource.getMessage("group.add.success",null,locale);
         }
+
+        catch (VerificationInterruptedException e) {
+            return e.getMessage();
+        }
+
         catch (Exception e){
             throw new InternetBankingException(messageSource.getMessage("group.add.failure",null,locale),e);
         }
@@ -72,7 +78,14 @@ public class UserGroupServiceImpl implements UserGroupService {
             userGroup.setVersion(userGroupDTO.getVersion());
             userGroupRepo.save(userGroup);
             return messageSource.getMessage("group.update.success",null,locale);
+        } catch (VerificationInterruptedException e) {
+            return e.getMessage();
         }
+        catch (InternetBankingException e){
+            throw e;
+        }
+
+
         catch (Exception e){
             throw new InternetBankingException(messageSource.getMessage("group.update.failure",null,locale),e);
         }
@@ -84,6 +97,12 @@ public class UserGroupServiceImpl implements UserGroupService {
            UserGroup group = userGroupRepo.findOne(id);
            userGroupRepo.delete(group);
             return messageSource.getMessage("group.delete.success",null,locale);
+        }
+        catch (VerificationInterruptedException e) {
+            return e.getMessage();
+        }
+        catch (InternetBankingException e){
+            throw e;
         }
         catch (Exception e){
             throw new InternetBankingException(messageSource.getMessage("group.delete.failure",null,locale),e);
