@@ -86,7 +86,7 @@ public class TransferServiceImpl implements TransferService {
                 if (transRequest.getStatus().equalsIgnoreCase("000") || transRequest.getStatus().equalsIgnoreCase("00"))
                     return transferRequestDTO;
 
-                throw new InternetBankingTransferException(transRequest.getStatusDescription());
+                throw new InternetBankingTransferException(transRequest.getStatus());
             }
 
 

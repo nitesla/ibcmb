@@ -28,6 +28,7 @@ import java.util.Date;
 
 @Component("corporateAuthenticationSuccessHandler")
 public class CorporateAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
+
     private final Logger logger = LoggerFactory.getLogger(getClass());
     @Autowired
     SessionUtils sessionUtils;
@@ -94,6 +95,8 @@ public class CorporateAuthenticationSuccessHandler implements AuthenticationSucc
         boolean isUser = corporateUser.getUserType().equals(UserType.CORPORATE);
 
         String isFirstLogon= corporateUser.getIsFirstTimeLogon();
+
+
 
         if ("Y".equalsIgnoreCase(isFirstLogon)){
             return "/corporate/setup";

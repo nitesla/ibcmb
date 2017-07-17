@@ -42,10 +42,6 @@ public class RetailAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     private ConfigurationService configService;
     @Autowired
     private SessionUtils sessionUtils;
-    @Autowired
-    private MessageSource messageSource;
-
-    private Locale locale = LocaleContextHolder.getLocale();
 
     public RetailAuthenticationSuccessHandler() {
         super();
@@ -62,7 +58,7 @@ public class RetailAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             sessionUtils.validateExpiredPassword(user, session);
             //session.setAttribute("user",retailUserRepo.findFirstByUserName(authentication.getName()));
             retailUserRepo.updateUserAfterLogin(authentication.getName());
-            sendAlert(user);
+            sessionUtils.sendAlert(user);
 
         }
         clearAuthenticationAttributes(request);
@@ -117,31 +113,5 @@ public class RetailAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     }
 
 
-    private  void sendAlert(RetailUser user) {
-        try {
-            SettingDTO settingDTO = configService.getSettingByName("LOGIN_ALERT");
-            if (settingDTO.isEnabled()) {
-                String preference = user.getAlertPreference().getCode();
-                CustomerDetails details = integrationService.viewCustomerDetailsByCif(user.getCustomerId());
-                String alertMessage = String.format(messageSource.getMessage("login.alert.message", null, locale),details.getCustomerName());
 
-                String alertSubject = String.format(messageSource.getMessage("login.alert.subject", null, locale),details.getCustomerName());
-                if (preference.equalsIgnoreCase("SMS")) {
-
-                    integrationService.sendSMS(alertMessage,details.getPhone(),  alertSubject);
-
-                } else if (preference.equalsIgnoreCase("EMAIL")) {
-                    mailService.send(details.getEmail(),alertSubject,alertMessage);
-
-                } else if (preference.equalsIgnoreCase("BOTH")) {
-                    integrationService.sendSMS(alertMessage,details.getPhone(),  alertSubject);
-                    mailService.send(details.getEmail(),alertSubject,alertMessage);
-                }
-
-            }
-        } catch (Exception e) {
-            logger.error("EXCEPTION OCCURRED {}", e);
-        }
-
-    }
 }

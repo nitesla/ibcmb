@@ -229,13 +229,22 @@ public class CorpTransferController {
             model.addAttribute("message", response);
             return "corp/transfer/transferdetails";
 
-        } catch (InternetBankingTransferException | TransferRuleException e) {
-            e.printStackTrace();
-            if (request.getSession().getAttribute("Lbeneficiary") != null)
-                request.getSession().removeAttribute("Lbeneficiary");
-            String errorMessage = transferErrorService.getExactMessage(e.getMessage());
+        } catch (InternetBankingTransferException ex) {
+            ex.printStackTrace();
+
+            String errorMessage = transferErrorService.getMessage(ex);
             redirectAttributes.addFlashAttribute("failure", errorMessage);
             return index(request);
+        }
+        catch ( TransferRuleException e) {
+            e.printStackTrace();
+            String errorMessage = e.getMessage();
+            redirectAttributes.addFlashAttribute("failure", errorMessage);
+            return index(request);
+        }
+        finally {
+            if (request.getSession().getAttribute("Lbeneficiary") != null)
+                request.getSession().removeAttribute("Lbeneficiary");
         }
     }
 

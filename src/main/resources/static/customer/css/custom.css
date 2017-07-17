@@ -490,7 +490,7 @@ select
 
 .menu-link
 {
-    padding: 10px 20px !important;
+    padding: 10px 10px !important;
     font-size: 16px;
     font-weight: bold;
 
@@ -668,6 +668,8 @@ tokenInput
   
    
     padding: 20px;
+    padding-bottom: 5px;
+    padding-top: 5px;
    
 }
 
@@ -1666,7 +1668,7 @@ button, input, optgroup, select, textarea {
 
 
 .wizard > .content {
-    background: #ffffff;
+    background: transparent !important;
     min-height: 30em;
 }
 
@@ -1749,11 +1751,48 @@ button, input, optgroup, select, textarea {
 /*****************************************************************
                     RESPONSIVE DESIGN
 *******************************************************************/
-@media screen and (min-width: 993px){
+@media screen and (max-width: 1200px) and (min-width: 993px){
     .logo {
         right: 120px;
     }
+
+
+       .menu-link
+    {
+        padding: 10px 5px !important;
+        font-size: 15px;
+        font-weight: bold;
+
+    }
+
+
+
 }
+
+
+@media screen and (max-width: 388px) and (min-width: 325px){
+   
+   .my-buttons
+   {
+       padding: 6px 2px !important;
+   }
+
+
+}
+
+
+@media screen and (max-width: 324px) and (min-width: 0px){
+   
+   .my-buttons
+   {
+       padding: 6px 1px !important;
+   }
+
+
+}
+
+
+
 
 
 @media screen and (max-width: 992px) and (min-width: 760px){
@@ -1765,13 +1804,19 @@ button, input, optgroup, select, textarea {
         padding: 0 45px;
     }
 
-    .menu-link
-{
-    padding: 10px 5px !important;
-    font-size: 16px;
-    font-weight: bold;
+        .menu-link
+    {
+        padding: 10px 5px !important;
+        font-size: 12px;
+        font-weight: bold;
 
-}
+    }
+
+    .logout
+    {
+        font-size: 12px;
+        padding: 10px 1px !important; 
+    }
 
     .top_bar {
         padding-left: 45px;
@@ -1854,6 +1899,9 @@ button, input, optgroup, select, textarea {
 
     }
 }
+
+
+
 
 @media screen and (max-width: 759px) and (min-width: 0){
     .header {
@@ -2157,4 +2205,23 @@ button, input, optgroup, select, textarea {
 .bg-btn:focus
 {
     background: #003056 !important;
+}
+.popover
+{
+    width:100% !important;
+    text-align: center !important;
+    border-radius: 0px !important;
+    border:0px !important;
+    box-shadow: none;
+}
+
+.popover-content
+{
+    background: #f0dbdb;
+    padding:5px 5px !important;
+}
+
+.popover.right > .arrow
+{
+    display: none !important;
 }

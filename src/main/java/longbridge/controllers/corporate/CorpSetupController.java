@@ -24,6 +24,7 @@ import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -111,20 +112,20 @@ public class CorpSetupController {
             }
 
         }
-        logger.info("master question length"+masterList.length);
+        logger.trace("master question length"+masterList.length);
 
         for (int i=0;i<masterList.length;i++  ) {
-            logger.info("master question "+i+" "+masterList[i]);
+            logger.trace("master question "+i+" "+masterList[i]);
         }
-        logger.info("master question "+masterList);
+        logger.trace("master question "+ Arrays.toString(masterList));
 
 
-        logger.info("MASTER LIST {}", masterList);
+        logger.trace("MASTER LIST {}", masterList);
         model.addAttribute("secQuestions", masterList);
         model.addAttribute("noOfQuestions", noOfQuestions);
 
         PasswordStrengthDTO passwordStrengthDTO = passwordPolicyService.getPasswordStrengthParams();
-        logger.info("Password Strength {}" + passwordStrengthDTO);
+        logger.debug("Password Strength {}" + passwordStrengthDTO);
         model.addAttribute("passwordStrength", passwordStrengthDTO);
 
         return "corp/setup";

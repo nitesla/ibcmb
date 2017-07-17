@@ -108,7 +108,7 @@ public class LocalTransferController {
             return page + "pageiii";
         } catch (InternetBankingTransferException e) {
 
-            String errorMessage = transferErrorService.getMessage(e, servletRequest);
+            String errorMessage = transferErrorService.getMessage(e);
 
             model.addAttribute("failure", errorMessage);
             return page + "pageii";

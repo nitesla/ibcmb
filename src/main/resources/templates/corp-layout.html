@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:sec="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta charset="utf-8"/>
@@ -22,7 +22,7 @@
     <title>Coronation Merchant Bank</title>
 
 </head>
-<body onload="currentBar('Service Request')">
+<body>
 
 <div class="container" style="">
 
@@ -125,6 +125,7 @@
                                     <li sec:authorize="hasAuthority('CORP_TRANSACTION_LIMIT')"><a th:href="@{/corporate/transfer/settransferlimit}" th:text="#{menu.transfer.limit}">Set transfer limit</a></li>
                                     <li sec:authorize="hasAuthority('STANDING_ORDER')"><a th:href="@{/corporate/transfer/standingorder}" th:text="#{menu.transfer.order}">Standing order</a></li>
                                     <li th:if="${corporateType=='MULTI'}"><a th:href="@{/corporate/transfer/requests}" th:text="#{menu.transfer.request}">Transaction Requests</a></li>
+
                                 </ul>
                             </li>
                             <li sec:authorize="hasAuthority('MANAGE_BILL_PAYMENT')"><a href="#" class="menu-link" th:text="#{menu.bill}">Bill Payments</a></li>
@@ -195,76 +196,8 @@
                         </div>
                     </div>
                     <div class="col-xs-12 col-md-12 no-pad-right no-ml no-pad-left bg-danger alert no-mb no-mt no-bd-rad current-body">
-                        <!--<div layout:fragment="content">-->
+                        <div layout:fragment="content">
 
-                        <!--</div>-->
-                        <div class="col-md-5 col-sm-5 ">
-
-                            <select class="form-control full-width coronation-form-control hide-content-only" id="view">
-                                <option value="account">Overview</option>
-                            </select>
-                        </div>
-                        <div class="col-xs-12 ml-15 no-pad-left no-pad-right" >
-                            <div class="col-xs-11 no-pad-lef no-mt alert no-bd">
-                                <div class="">
-                                    <div class="col-md-7 col-sm-7">
-                                        <h5 class="sub_header" th:text="${requestConfig.requestName}"></h5>
-                                        <form method="post" th:action="@{/retail/requests}" th:object="${requestDTO}" id="reqForm">
-                                            <input class="form-control" type="hidden" id="requestName" name="requestName" th:value="${requestConfig.requestName}"/>
-                                            <input type="hidden" name="serviceReqConfigId" th:value="${requestConfig.id}"/>
-                                            <div th:each="field : ${requestConfig.formFields}">
-                                                <div class="form-group">
-                                                <label th:text="${field.fieldLabel}"></label>
-
-                                                <p th:if="${field.fieldType} == 'TEXT'">
-                                                    <input class="form-control" type="text" th:name="${field.fieldName}" required="required"/>
-                                                    <span class='req-inner'></span>
-                                                </p>
-
-                                                <p th:if="${field.fieldType} == 'NUMBER'">
-                                                    <input class="form-control" type="number" min="0" th:name="${field.fieldName}" required="required"/><span class='req-inner'></span>
-                                                </p>
-
-                                                <p th:if="${field.fieldType} == 'TEXTAREA'" required="required">
-                                            <textarea class="form-control" th:name="${field.fieldName}">
-                                            </textarea><span class='req-inner'></span>
-                                                </p>
-
-                                                <p th:if="${field.fieldType} == 'DATE'">
-                                                    <input class="form-control" id="datepicker" type="text" th:name="${field.fieldName}" required="required"/><span class='req-inner'></span>
-                                                </p>
-
-                                                <p th:if="${field.fieldType} == 'CODE'">
-                                                    <select class="form-control" th:name="${field.fieldName}" required="required">
-                                                        <option th:each="code : ${codes}" th:value="${code.code}" th:text="${code.description}"></option>
-                                                    </select><span class='req-inner'></span>
-                                                </p>
-
-                                                <p th:if="${field.fieldType} == 'FI'">
-                                                    <select class="form-control" th:name="${field.fieldName}" required="required">
-                                                        <option th:each="bank : ${banks}" th:value="${bank.institutionCode}" th:text="${bank.institutionName}"></option>
-                                                    </select><span class='req-inner'></span>
-                                                </p>
-
-                                                <p th:if="${field.fieldType} == 'ACCT'">
-                                                    <select class="form-control" th:name="${field.fieldName}" required="required">
-                                                        <option th:each="acc : ${accts}" th:value="${acc.accountNumber}" th:text="${acc.accountNumber}"></option>
-                                                    </select><span class='req-inner'></span>
-                                                </p>
-                                                <p th:if="${field.fieldType} == 'LIST'">
-                                                    <select class="form-control" th:name="${field.fieldName}" required="required">
-                                                        <option th:each="type : ${fixedList}" th:value="${type}" th:text="${type}"></option>
-                                                    </select><span class='req-inner'></span>
-                                                </p>
-                                                </div>
-                                            </div>
-
-                                            <button type="submit" class="btn btn-link required-step">Submit</button>
-                                        </form>
-
-                                    </div>
-                                </div>
-                            </div>
                         </div>
 
                     </div>
@@ -372,7 +305,6 @@
         <script th:src="@{~/customer/js/jquery.dataTables.js}"></script>
         <!--<script th:src="@{~/customer/js/date/js/bootstrap-datepicker.js}"></script>-->
         <script th:src="@{~/customer/js/momentMin.js}"></script>
-        <script th:src="@{~/customer/js/calendar.js}"></script>
         <script th:src="@{~/customer/js/jquery.spring-friendly.min.js}"></script>
         <script th:src="@{~/customer/plugins/bootstrap-notify/bootstrap-notify.js}"></script>
         <script th:src="@{~/customer/plugins/bootstrap-daterangepicker/daterangepicker.js}"></script>
@@ -383,34 +315,23 @@
         <script th:src="@{~/customer/js/bootstrap.js}"></script>
         <script th:src="@{~/customer/js/bootstrap-session-timeout.js}"></script>
 
-        <script th:inline='javascript'>
-            /*<![CDATA[*/
-
-            $(document).ready(function ()
-            {
-                $('[data-toggle="tooltip"]').tooltip();
-                $('.datepicker').datepicker({
-                    autoclose: true,
-                    todayBtn: true,
-                    todayHighlight: true});
-
-            })
-
-            /*]]>*/
-        </script>
-        <script th:inline='javascript'>
-            $.sessionTimeout({
-                keepAliveUrl: '',
-                logoutUrl: '/retail/logout',
-                redirUrl: '/retail/logout',
-                warnAfter: null,
-                redirAfter: 10000,
-                countdownBar: true
-            });
-        </script>
 
 
+        <div th:if="${message}">
+            <div hidden="hidden">
+                <ul class="actionMessage">
+                    <li th:each="msg : ${message}" th:text="${msg}" >Message</li>
+                </ul>
+            </div>
+        </div>
 
+        <div th:if="${failure}">
+            <div hidden="hidden">
+                <ul class="actionError">
+                    <li th:each="msg : ${failure}" th:text="${msg}" id="error">Message</li>
+                </ul>
+            </div>
+        </div>
 
         <div id="myModalError" class="modal fade " role="dialog">
             <div class="modal-dialog">
@@ -462,56 +383,42 @@
 
             </div>
         </div>
+
+
+
+
         <!-- CORE JQUERY SCRIPTS -->
+        <script th:inline='javascript'>
+            /*<![CDATA[*/
 
-        <script>
-            $('#reqForm').submit(function(event) {
-                //        event.preventDefault();
-                //        var formData = JSON.stringify($("#reqForm").serializeArray());
-                var arrays = [];
-                //        $('.form-group').each(function(index, element){
-                //            var select = $(element).find('select');
-                //            arrays.push({"name": select.prop('name'), "value": select.prop("value")});
-                //        });
-                //
-                //        $('.form-group').each(function(index, element){
-                //            var input = $(element).find('input');
-                //            arrays.push({"name": input.prop('name'), "value": input.prop("value")});
-                //        });
+            $(document).ready(function ()
+            {
+                $('[data-toggle="tooltip"]').tooltip();
+                $('.datepicker').datepicker({
+                    autoclose: true,
+                    todayBtn: true,
+                    todayHighlight: true});
 
-                //       var formData = $('#reqForm').serialize();
-                //
-                ////        alert(arrays);
-                //
+            })
 
-
-                //        alert(formData);
-
-
-                var form = $('#reqForm').serializeArray();
-                var formData =  JSON.stringify(form);
-                $('#requestName').val(formData);
-                $('#submitform').submit();
-
-
-
-                //        var s = '';
-                //        var data = {};
-                //        for(s in form){
-                //            data[form[s]['name']] = form[s]['value']
-                //        }
-
-
-                //            var formData = {
-                //            requestName: $('#requestName').val(),
-                //            body: data
-                //        }
-
+            /*]]>*/
+        </script>
+        <script th:inline='javascript'>
+            $.sessionTimeout({
+                keepAliveUrl: '',
+                logoutUrl: '/corporate/logout',
+                redirUrl: '/corporate/logout',
+                warnAfter: null,
+                redirAfter: 10000,
+                countdownBar: true
             });
         </script>
 
     </footer>
 </div>
+
+<th:block layout:fragment="scripts">
+</th:block>
 
 </body>
 </html>

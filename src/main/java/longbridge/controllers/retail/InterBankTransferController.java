@@ -186,8 +186,6 @@ public class InterBankTransferController {
             } else {
                 transferRequestDTO.setTransferType(TransferType.INTER_BANK_TRANSFER);
                 charge = integrationService.getFee("NIP").getFeeValue();
-                System.out.println("NIP TRANSFER");
-                System.out.println(charge);
             }
             // request.getSession().removeAttribute("NIP");
 
@@ -268,13 +266,12 @@ public class InterBankTransferController {
         if (request.getSession().getAttribute("Lbeneficiary") != null) {
             LocalBeneficiaryDTO dto = (LocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary");
             model.addAttribute("beneficiary", dto);
-            if (null==dto.getId()){
-                transferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode(dto.getBeneficiaryBank()));
+            String  bank = dto.getBeneficiaryBank();
 
-            }else{
-                transferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByName(dto.getBeneficiaryBank()));
 
-            }
+                transferRequestDTO.setFinancialInstitution(financialInstitutionService.getFinancialInstitutionByCode(bank));
+
+
 
         }
 

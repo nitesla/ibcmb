@@ -110,7 +110,7 @@ public class CorpOwnTransferController {
 
         {
             exception.printStackTrace();
-            String errorMessage = errorService.getExactMessage(exception.getMessage());
+            String errorMessage = errorService.getMessage(exception);
             model.addAttribute("failure", errorMessage);
             return page + "pagei";
 
@@ -135,7 +135,7 @@ public class CorpOwnTransferController {
     @ModelAttribute
     public void getDestAccounts(Model model, Principal principal) {
 
-        if (principal != null || principal.getName() != null) {
+        if (principal != null && principal.getName() != null) {
 
             CorporateUser user = corporateUserService.getUserByName(principal.getName());
             if (user != null) {

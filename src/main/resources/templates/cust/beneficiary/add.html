@@ -1,38 +1,30 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="cust_layout :: site-head">
-</head>
-<body>
-<div class="container">
-    <header th:replace="cust_layout :: header">
-    </header>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{ret-layout}">
 
-    <section class="content-wrapper">
-        <div>
-            <div class="row">
-                <div class="col-md-4 col-sm-4">
-                    <h5 class="page_header"> New Beneficiary</h5>
-                    <select class="form-control invisible">
-                        <option value="account">Account Overview</option>
-                    </select>
-                </div>
-                <p class="col-xs-12 invisible">
-                    Fields marked <span style="color:red">*</span> are compulsory
-                </p>
-            </div>
+<body onload="currentBar('Add new beneficiary')">
 
-            <div class="row">
-                <div class="col-md-9 content-bg">
-                    <div class="form-spacing">
-                        <div class="col-md-6 col-sm-6">
+<div layout:fragment="content">
+    <div class="col-md-5 col-sm-5 ">
+
+        <select class="form-control full-width coronation-form-control hide-content-only" id="view">
+            <option value="account">Overview</option>
+        </select>
+    </div>
+
+    <div class="col-xs-12 ml-15 no-pad-left no-pad-right" >
+        <div class="col-xs-11 no-pad-lef no-mt alert no-bd">
+           <div class="">
+                 <div class="col-md-6 col-sm-6">
+                        <div class="">
                             <div class="form-group">
                                 <label>Beneficiary Type</label>
                                 <span class="req"></span><select name="beneficiaryType" id="benType"
-                                                                 class="form-control">
+                                                                 class="form-control full-width">
                                 <option th:value="local">Other Banks</option>
                                 <!--<option th:value="foreign">Foreign Banks</option>-->
                                 <option th:value="intrabank">Coronation Bank</option>
-                            </select>
+                                </select>
                             </div>
 
 
@@ -42,7 +34,7 @@
                                 <div class="form-group">
                                     <label>Beneficiary Bank</label>
                                     <span class="req"></span>
-                                    <select name="beneficiaryBank" id="beneficiaryBank" class="form-control"
+                                    <select name="beneficiaryBank" id="beneficiaryBank" class="form-control full-width"
                                             placeholder="select"
                                             th:field="*{beneficiaryBank}" required="required">
                                         <option th:each="bank : ${localBanks}" th:value="${bank.institutionCode}"
@@ -52,7 +44,7 @@
                                 <div class="form-group">
                                     <label>Account Number</label>
                                     <span class="req"></span><input onblur="getAccountName()" type="number" min="0"
-                                                                    id="acct_num" name="acct_num" class="form-control"
+                                                                    id="acct_num" name="acct_num" class="form-control full-width"
                                                                     th:field="*{accountNumber}"
                                                                     placeholder="Account Number"/>
                                     <p class="errors" th:if="${#fields.hasErrors('accountNumber')}"
@@ -66,8 +58,8 @@
 
                                 <div class="form-group">
                                     <label>Account Name</label>
-                                    <span class="req"></span><input type="text" id="acct_name" name="acct_name"
-                                                                    class="form-control"
+                                    <input type="text" id="acct_name" name="acct_name"
+                                                                    class="form-control full-width"
                                                                     th:field="*{accountName}"
                                                                     placeholder="Beneficiary Name" readonly="readonly"/>
                                     <p class="errors" th:if="${#fields.hasErrors('accountName')}"
@@ -75,7 +67,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label>Preferred Name</label>
-                                    <input type="text" class="form-control" name="preferredName"
+                                    <input type="text" class="form-control full-width" name="preferredName"
                                            placeholder="Preferred Name"/>
                                 </div>
                                 <button id="localsave" style="display: none;" class="btn btn-link">Save</button>
@@ -125,7 +117,7 @@
                                 <div class="form-group">
                                     <label>Currency Code</label>
                                     <span class="req"></span>
-                                    <select name="currencyCode" id="currencyCode" class="form-control"
+                                    <select name="currencyCode" id="currencyCode" class="form-control full-width"
                                             required="required">
 
                                         <option th:each="ccyCode : ${foreignCurrencyCodes}" th:value="${ccyCode.code}"
@@ -144,7 +136,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label>Intermediary Account Number</label>
-                                    <input min="0" type="number" class="form-control" name="intermediaryBankAcctNo"
+                                    <input min="0" type="number" class="form-control full-width" name="intermediaryBankAcctNo"
                                            placeholder="Intermediary Bank Account Number"
                                            th:field="*{intermediaryBankAcctNo}"/>
 
@@ -154,10 +146,10 @@
 
                             <form id="intrabank" method="post" th:action="@{/retail/beneficiary/local/summary}"
                                   th:object="${localBeneficiaryDTO}" style="display: none">
-                                <input type="hidden" th:value="intrabank" class="form-control"/>
+                                <input type="hidden" th:value="intrabank" class="form-control "/>
                                 <div class="form-group">
                                     <label>Beneficiary Bank</label>
-                                    <span class="required"></span><select name="beneficiaryBank" class="form-control"
+                                    <span class="required"></span><select name="beneficiaryBank" class="form-control full-width"
                                                                           th:field="*{beneficiaryBank}"
                                                                           required="required">
                                     <option th:value="${bankCode}">Coronation Merchant Bank</option>
@@ -167,7 +159,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label>Account Number</label>
-                                    <span class="required"></span><input onblur="getIntraBankAccountName();" type="number" min="0" class="form-control"
+                                    <span class="required"></span><input onblur="getIntraBankAccountName();" type="number" min="0" class="form-control full-width"
                                                                          name="accountNumber"
                                                                          th:field="*{accountNumber}"
                                                                          id="iacct_num" placeholder="Account Number"
@@ -177,7 +169,7 @@
 
                                 <div class="form-group">
                                     <label>Account Name</label>
-                                    <span class="required"></span><input type="text" class="form-control"
+                                    <span class="required"></span><input type="text" class="form-control full-width"
                                                                          name="accountNumber" th:field="*{accountName}"
                                                                          id="iacct_name" readonly="readonly"
                                                                          required="required"/>
@@ -187,32 +179,25 @@
                                 </div>
                                 <div class="form-group">
                                     <label>Preferred Name</label>
-                                    <input type="text" class="form-control" name="preferredName"
+                                    <input type="text" class="form-control full-width" name="preferredName"
                                            placeholder="Beneficiary Alias" th:field="*{preferredName}"
                                            required="required"/>
                                 </div>
-                                <button id="ilocalsave" style="display: none;" class="btn btn-link">Save</button>
+                                <button id="ilocalsave" style="display: none;" class="btn btn-link required-step">Save</button>
 
-                                <a th:href="@{/retail/benficiary}" class="btn btn-link">Cancel</a>
+                                <a th:href="@{/retail/benficiary}" class="btn btn-link less-required">Cancel</a>
                             </form>
-
                         </div>
-                    </div>
-                </div>
-                <div class="col-md-3 pull-right ">
-                    <div th:replace="cust_layout :: sidebar" class="">
-                    </div>
-                </div>
+                 </div>
             </div>
         </div>
-        <!--</div>-->
-    </section>
+    </div>
+
+</div>
 
 
-    <!-- CONTENT-WRAPPER SECTION END-->
-    <footer th:replace="cust_layout ::footer">
-    </footer>
-
+<th:block layout:fragment="scripts">
+   
     <script>
         $('#benType').on('change', function () {
             if ($(this).val() === "foreign") {
@@ -326,7 +311,7 @@
         }
         /*]]>*/
     </script>
+</th:block>
 
-</div>
 </body>
 </html>

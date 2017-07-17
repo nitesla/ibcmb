@@ -2,13 +2,16 @@ package longbridge.dtos;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.io.Serializable;
+
 import org.hibernate.validator.constraints.NotEmpty;
 
 /**
  * Created by Fortune on 4/5/2017.
  */
 
-public class CorporateDTO {
+public class CorporateDTO implements Serializable{
 
     @JsonProperty("DT_RowId")
     private Long id;

@@ -1,33 +1,22 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="cust_layout :: site-head">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{ret-layout}">
 
-</head>
-<body>
-<div class="container">
-    <header th:replace="cust_layout :: header">
-    </header>
+<body onload="currentBar('New Beneficiary')">
 
-<section class="content-wrapper">
-    <div class="containe">
-        <div class="row">
-            <div class="col-md-4 col-sm-4">
-                <h5 class="page_header"> New Beneficiary</h5>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-9 content-bg">
+<div layout:fragment="content">
+    <div class="col-md-5 col-sm-5 ">
 
-                    <div class="">
-                        <div class="form-group">
-                            <label>Beneficiary Type</label>
-                            <select name="beneficiaryType" id="benType" class="form-control">
-                                <option th:value="local">Local</option>
-                                <option th:value="foreign">Foreign</option>
-                            </select>
-                        </div>
+        <select class="form-control full-width coronation-form-control "  name="beneficiaryType" id="benType" >
+            <option th:value="local">Local</option>
+            <option th:value="foreign">Foreign</option>
+        </select>
+    </div>
 
-                        <form id="local" method="post" th:action="@{/retail/beneficiary/local}" th:object="${localBeneficiaryDTO}">
+    <div class="col-xs-12 ml-15 " >
+        <div class="col-xs-11 no-pad-lef  alert no-bd">
+            <div class="col-md-6 col-xs-12">
+                           <form id="local" method="post" th:action="@{/retail/beneficiary/local}" th:object="${localBeneficiaryDTO}">
                             <input type="hidden" th:value="local" class="form-control"/>
                             <div class="form-group">
                                 <label>Bank Details</label>
@@ -46,7 +35,7 @@
                             <div class="form-group">
                                 <input type="text" class="form-control" name="preferredName" placeholder="Preferred Name"/>
                             </div>
-                            <button class="btn btn-primary">Save</button>
+                            <button class="btn btn-link required-step">Save</button>
                         </form>
 
                         <form id="foreign" method="post" th:action="@{/retail/beneficiary/foreign}" th:object="${internationalBeneficiaryDTO}" style="display: none">
@@ -80,36 +69,31 @@
                             <div class="form-group">
                                 <input type="text" class="form-control" name="intermediaryBankAcctNo" placeholder="Intermediary Bank Account Number"/>
                             </div>
-                            <button class="btn btn-primary">Save</button>
+                            <button class="btn btn-link required-step">Save</button>
                         </form>
-                    </div>
-
-            </div>
-            <div class="col-md-3 pull-right " >
-                <div th:replace="cust_layout :: sidebar" class="" >
-                </div>
             </div>
         </div>
     </div>
-</section>
 
-
-<!-- CONTENT-WRAPPER SECTION END-->
-<footer th:replace="cust_layout ::footer">
-</footer>
-
-<script>
-    $('#benType').on('change',function(){
-        if( $(this).val()==="foreign"){
-            $("#foreign").show()
-            $("#local").hide()
-        }
-        else if( $(this).val()==="local"){
-            $("#local").show()
-            $("#foreign").hide()
-        }
-    });
-</script>
 </div>
+
+
+<th:block layout:fragment="scripts">
+
+        <script>
+        $('#benType').on('change',function(){
+            if( $(this).val()==="foreign"){
+                $("#foreign").show()
+                $("#local").hide()
+            }
+            else if( $(this).val()==="local"){
+                $("#local").show()
+                $("#foreign").hide()
+            }
+        });
+    </script>
+            
+</th:block>
+
 </body>
 </html>

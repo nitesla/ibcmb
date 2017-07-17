@@ -1,35 +1,21 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
-<head th:replace="corp_layout :: site-head">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
 
-</head>
-<body>
-<div class="container">
-    <header th:replace="corp_layout :: corp-header">
-    </header>
+<body onload="currentBar('Own Account transfer')">
 
-<section class="content-wrapper">
-    <div class="containe">
+<div layout:fragment="content">
+    <div class="col-md-5 col-sm-5 ">
 
-        <div class="row">
+        <select class="form-control full-width coronation-form-control hide-content-only" id="view">
+            <option value="account">Overview</option>
+        </select>
+    </div>
 
-            <div class="col-md-4 col-sm-4">
-                <h5 class="page_header">  Transaction Successful</h5>
-                 <select class="form-control invisible">
-                        <option value="account">Account Overview</option>
-                </select>
-            </div>
-            <p class="col-xs-12">
-                    Fields marked <span style="color:red">*</span> are compulsory
-            </p>
-            
-        </div>
-        <div class="row">
-            <div class="col-md-9 content-bg">
-                <!--<div class="row form-spacing">-->
-                <div class="">
-
-
+    <div class="col-xs-12 ml-15 no-pad-left no-pad-right " >
+        <div class="col-xs-12 no-pad-lef table-responsive no-mt no-bd alert">
+            <div class="col-sm-offset-3 col-sm-6 ">
+                    <div class="table-responsive no-bd">
 
                         <table class="''table table-responsive">
                             <tr>
@@ -69,11 +55,11 @@
                                 <label>Token *</label>
                                 <input type="text" name="token" placeholder="" class="form-control"/>
                                 <br/>
-                                <div class="form-group">
+                                <div class="form-group text-center">
 
-                                    <a th:href="@{/retail/transfer/ownaccount}" >Receipt</a>
-                                    <a th:href="@{/retail/dashboard}" >Home</a>
-                                    <a th:href="@{/retail/transfer/ownaccount}" >Make another transfer</a>
+                                    <a class="btn btn-link required-step" th:href="@{/retail/transfer/ownaccount}" >Receipt</a>
+                                    <a class="btn btn-link less-required" th:href="@{/retail/dashboard}" >Home</a>
+                                    <a class="btn btn-link less-required" th:href="@{/retail/transfer/ownaccount}" >Make another transfer</a>
                                 </div>
 
 
@@ -82,22 +68,17 @@
                         </form>
 
 
-                </div>
-            </div>
-            <div class="col-md-3 pull-right " >
-                <div th:replace="corp_layout :: corp-sidebar" class="" >
-                </div>
-            </div>
+                    </div>
         </div>
     </div>
 
-</section>
-
-
-<!-- CONTENT-WRAPPER SECTION END-->
-<footer th:replace="corp_layout ::corp-footer">
-</footer>
 </div>
-</body>
 
+
+<th:block layout:fragment="scripts">
+ 
+   
+</th:block>
+
+</body>
 </html>

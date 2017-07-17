@@ -8,6 +8,7 @@ import longbridge.services.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,7 +19,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 
 /**
@@ -41,6 +45,13 @@ public class CorpBeneficiaryController {
     private CorporateUserService corporateUserService;
     @Autowired
     private ConfigurationService configService;
+    @Autowired
+    private CodeService codeService;
+    @Autowired
+    private MessageSource messages;
+
+    @Value("${bank.code}")
+    private String bankCode;
 
 
     @GetMapping
@@ -71,14 +82,13 @@ public class CorpBeneficiaryController {
     @GetMapping("/new")
     public String addBeneficiary(Model model) {
         model.addAttribute("corpLocalBeneficiaryDTO", new CorpLocalBeneficiaryDTO());
-        model.addAttribute("corpInternationalBeneficiaryDTO", new CorpInternationalBeneficiaryDTO());
-        model.addAttribute("foreignBanks", financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.FOREIGN));
-        model.addAttribute("localBanks", financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.LOCAL));
+        model.addAttribute("internationalBeneficiaryDTO", new InternationalBeneficiaryDTO());
+        model.addAttribute("foreignCurrencyCodes", codeService.getCodesByType("CURRENCY"));
         return "corp/beneficiary/add";
     }
 
     @PostMapping("/local")
-    public String createCorpLocalBeneficiary(@Valid CorpLocalBeneficiaryDTO corpLocalBeneficiaryDTO, BindingResult result, MessageSource messages, Principal principal, Model model, HttpServletRequest request, RedirectAttributes redirectAttributes, Locale locale) {
+    public String createCorpLocalBeneficiary(@Valid CorpLocalBeneficiaryDTO corpLocalBeneficiaryDTO, BindingResult result, Principal principal, Model model, HttpServletRequest request, RedirectAttributes redirectAttributes, Locale locale) {
 
         SettingDTO setting = configService.getSettingByName("ENABLE_CORPORATE_2FA");
         CorporateUser user = corporateUserService.getUserByName(principal.getName());
@@ -98,7 +108,7 @@ public class CorpBeneficiaryController {
 
                 model.addAttribute("failure", ibse.getMessage());
                 model.addAttribute("beneficiary",corpLocalBeneficiaryDTO);
-                return "cust/beneficiary/localSummary";
+                return "corp/beneficiary/localSummary";
             }
 
 
@@ -117,7 +127,7 @@ public class CorpBeneficiaryController {
 
             }
         }
-        return "corporate:/retail/beneficiary";
+        return "redirect:/corporate/beneficiary";
 
     }
 
@@ -169,7 +179,7 @@ public class CorpBeneficiaryController {
             model.addAttribute("corpLocalBeneficiaryDTO", new CorpLocalBeneficiaryDTO());
             model.addAttribute("corpInternationalBeneficiaryDTO", new CorpInternationalBeneficiaryDTO());
             model.addAttribute("foreignBanks", financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.FOREIGN));
-            model.addAttribute("localBanks", financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.LOCAL));
+
 
 
             return "corp/beneficiary/add";
@@ -193,5 +203,24 @@ public class CorpBeneficiaryController {
         }
         return "corp/beneficiary/localSummary";
     }
+
+
+      @ModelAttribute
+    public  void getOtherLocalBanks(Model model){
+        List<FinancialInstitutionDTO> sortedBanks =
+                financialInstitutionService.getFinancialInstitutionsByType(FinancialInstitutionType.LOCAL)
+                .stream()
+                .filter(i ->!i.getInstitutionCode().equalsIgnoreCase(bankCode))
+                .collect(Collectors.toList());
+
+        sortedBanks.sort(Comparator.comparing(FinancialInstitutionDTO::getInstitutionName));
+        model.addAttribute("localBanks",sortedBanks);
+        model.addAttribute("bankCode",bankCode);
+
+
+
+    }
+
+
 
 }
