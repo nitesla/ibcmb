@@ -68,7 +68,7 @@ form.children("div").steps({
     onFinished: function (event, currentIndex)
     {
 //            alert("Submitted!");
-        window.location.href = "/corporate/dashboard";
+        window.location.href = "/corporate/logout";
     }
 });
 
