@@ -135,6 +135,11 @@ public class CorporateUserServiceImpl implements CorporateUserService {
             throw new InternetBankingException(messageSource.getMessage("corporate.deactivated", null, locale));
         }
 
+        corporateUser = corporateUserRepo.findFirstByEmailIgnoreCase(user.getEmail());
+        if (corporateUser != null && user.getId()!=corporateUser.getId()) {
+            throw new DuplicateObjectException(messageSource.getMessage("email.exists", null, locale));
+        }
+
         try {
             entityManager.detach(corporateUser);
             corporateUser.setEmail(user.getEmail());
@@ -169,6 +174,11 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         CorporateUser corporateUser = corporateUserRepo.findFirstByUserNameIgnoreCase(user.getUserName());
         if (corporateUser != null) {
             throw new DuplicateObjectException(messageSource.getMessage("user.exists", null, locale));
+        }
+
+        corporateUser = corporateUserRepo.findFirstByEmailIgnoreCase(user.getEmail());
+        if (corporateUser != null) {
+            throw new DuplicateObjectException(messageSource.getMessage("email.exists", null, locale));
         }
         try {
             corporateUser = new CorporateUser();
@@ -252,6 +262,12 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         if (corporateUser != null) {
             throw new DuplicateObjectException(messageSource.getMessage("user.exists", null, locale));
         }
+
+        corporateUser = corporateUserRepo.findFirstByEmailIgnoreCase(user.getEmail());
+        if (corporateUser != null) {
+            throw new DuplicateObjectException(messageSource.getMessage("email.exists", null, locale));
+        }
+
         try {
             corporateUser = new CorporateUser();
             corporateUser.setFirstName(user.getFirstName());
