@@ -99,7 +99,7 @@ public class TransferUtils {
     public String getLimit(String accountNumber) {
         if (getCurrentUser() != null) {
             String limit = integrationService.getDailyAccountLimit(accountNumber, "NIP");
-            if (limit != null || limit.isEmpty())
+            if (limit != null && !limit.isEmpty())
                 return createMessage(limit, true);
         }
 

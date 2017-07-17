@@ -28,6 +28,7 @@ import java.util.Date;
 
 @Component("corporateAuthenticationSuccessHandler")
 public class CorporateAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
+
     private final Logger logger = LoggerFactory.getLogger(getClass());
     @Autowired
     SessionUtils sessionUtils;
