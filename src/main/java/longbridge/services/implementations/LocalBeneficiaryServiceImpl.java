@@ -120,7 +120,7 @@ public class LocalBeneficiaryServiceImpl implements LocalBeneficiaryService {
         return modelMapper.map(localBeneficiaryDTO, LocalBeneficiary.class);
     }
 
-    public void validateBeneficiary(LocalBeneficiary localBeneficiary, User user) {
+    private void validateBeneficiary(LocalBeneficiary localBeneficiary, User user) {
         if (localBeneficiaryRepo.findByUser_IdAndAccountNumber(user.getId(), localBeneficiary.getAccountNumber()) != null)
             throw new DuplicateObjectException("beneficiary.exist");
 

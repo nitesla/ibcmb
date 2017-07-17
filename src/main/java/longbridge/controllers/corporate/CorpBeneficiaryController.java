@@ -116,7 +116,7 @@ public class CorpBeneficiaryController {
 
 
         try {
-            String message = corpLocalBeneficiaryService.addCorpLocalBeneficiary(user.getCorporate(), corpLocalBeneficiaryDTO);
+            String message = corpLocalBeneficiaryService.addCorpLocalBeneficiary(corpLocalBeneficiaryDTO);
             redirectAttributes.addFlashAttribute("message", message);
         } catch (InternetBankingException e) {
 
