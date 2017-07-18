@@ -97,6 +97,47 @@ public class TokenAuthController {
             boolean sendOtp;
             try {
                 RetailUser user  = retailUserService.getUserByName(username);
+                logger.info("the user is {}",user);
+                if (securityService.sendOtp(user.getEntrustId(),user.getEntrustGroup())) sendOtp = true;
+                else sendOtp = false;
+                logger.info("otp sent {}",sendOtp);
+                if (sendOtp){
+                    stringBuilder.append("success");
+                }
+            } catch (InternetBankingSecurityException e) {
+                logger.info(e.getMessage());
+            } catch (NoSuchMessageException e) {
+//                e.printStackTrace();
+                logger.info(e.getMessage());
+
+            }catch (Exception e){
+                e.printStackTrace();
+                logger.info(e.getMessage());
+            }
+        }else {
+            stringBuilder.append("empty");
+        }
+
+        if(stringBuilder.toString().equalsIgnoreCase("")){
+            stringBuilder.append("failed");
+        }
+        return stringBuilder.toString();
+    }
+    @GetMapping("/otp/send/corporate")
+    @ResponseBody
+    public String sendOTPForCorporate(Principal principal, RedirectAttributes redirectAttributes,Locale locale,HttpServletRequest request){
+        String username = "";
+        String message = "";
+        StringBuilder stringBuilder = new StringBuilder(message);
+        if (request.getParameter("username") != null) {
+            username = request.getParameter("username");
+        }
+        logger.info("The username {}",username);
+        if(!username.equalsIgnoreCase("")) {
+            boolean sendOtp;
+            try {
+                CorporateUser user  = corporateUserService.getUserByName(username);
+                logger.info("the user is {}",user);
                 if (securityService.sendOtp(user.getEntrustId(),user.getEntrustGroup())) sendOtp = true;
                 else sendOtp = false;
                 logger.info("otp sent {}",sendOtp);
