@@ -137,7 +137,6 @@ public class TokenAuthController {
             boolean sendOtp;
             try {
                 CorporateUser user  = corporateUserService.getUserByName(username);
-                logger.info("the user is {}",user);
                 if (securityService.sendOtp(user.getEntrustId(),user.getEntrustGroup())) sendOtp = true;
                 else sendOtp = false;
                 logger.info("otp sent {}",sendOtp);
