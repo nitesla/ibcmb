@@ -1,20 +1,19 @@
 package longbridge.controllers.corporate;
 
 
-import longbridge.api.NEnquiryDetails;
-import longbridge.dtos.*;
-import longbridge.exception.*;
+import longbridge.dtos.CorpLocalBeneficiaryDTO;
+import longbridge.dtos.CorpTransferRequestDTO;
+import longbridge.exception.InternetBankingException;
+import longbridge.exception.InternetBankingTransferException;
+import longbridge.exception.TransferErrorService;
+import longbridge.exception.TransferRuleException;
 import longbridge.models.*;
-
-
 import longbridge.repositories.CorpTransferRequestRepo;
 import longbridge.repositories.CorporateRepo;
 import longbridge.services.*;
 import longbridge.utils.DateFormatter;
 import longbridge.utils.TransferType;
 import longbridge.utils.TransferUtils;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,8 +34,6 @@ import org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-
-import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.*;
 import java.util.stream.StreamSupport;
@@ -207,8 +204,7 @@ public class CorpTransferController {
                     CorporateUser user = corporateUserService.getUserByName(principal.getName());
                     try {
                         Corporate corporate = corporateService.getCorporateByCustomerId(user.getCorporate().getCustomerId());
-
-                        corpLocalBeneficiaryService.addCorpLocalBeneficiary(corporate, l);
+                        corpLocalBeneficiaryService.addCorpLocalBeneficiary(l);
                         request.getSession().removeAttribute("Lbeneficiary");
                         // model.addAttribute("beneficiary", l);
                     } catch (InternetBankingException de) {
@@ -253,7 +249,7 @@ public class CorpTransferController {
         if (request.getSession().getAttribute("Lbeneficiary") != null) {
             CorporateUser user = corporateUserService.getUserByName(principal.getName());
             CorpLocalBeneficiaryDTO l = (CorpLocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary");
-            corpLocalBeneficiaryService.addCorpLocalBeneficiary(user.getCorporate(), l);
+            corpLocalBeneficiaryService.addCorpLocalBeneficiary(l);
         }
 
         attributes.addFlashAttribute("message", "New Beneficiary Added");
@@ -352,7 +348,7 @@ public class CorpTransferController {
 
 
     @RequestMapping(path = "{id}/receipt", method = RequestMethod.GET)
-    public ModelAndView report(@PathVariable Long id, HttpServletRequest servletRequest, Principal principal) {
+    public ModelAndView report(@PathVariable Long id, HttpServletRequest servletRequest, Principal principal) throws Exception {
         CorporateUser corporateUser = corporateUserService.getUserByName(principal.getName());
         JasperReportsPdfView view = new JasperReportsPdfView();
         view.setUrl("classpath:jasperreports/rpt_receipt.jrxml");
@@ -361,9 +357,11 @@ public class CorpTransferController {
         modelMap.put("datasource", new ArrayList<>());
         modelMap.put("amount", transferService.getTransfer(id).getAmount());
         modelMap.put("recipient", transferService.getTransfer(id).getBeneficiaryAccountName());
+        modelMap.put("recipient",transferService.getTransfer(id).getBeneficiaryAccountName());
         modelMap.put("AccountNum", transferService.getTransfer(id).getCustomerAccountNumber());
         modelMap.put("sender", corporateUser.getFirstName() + " " + corporateUser.getLastName());
         modelMap.put("remarks", transferService.getTransfer(id).getRemarks());
+        modelMap.put("remarks",transferService.getTransfer(id));
         modelMap.put("recipientBank", transferService.getTransfer(id).getFinancialInstitution().getInstitutionName());
         modelMap.put("acctNo2", transferService.getTransfer(id).getBeneficiaryAccountNumber());
         modelMap.put("acctNo1", transferService.getTransfer(id).getCustomerAccountNumber());

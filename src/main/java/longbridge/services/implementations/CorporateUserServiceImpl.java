@@ -105,6 +105,10 @@ public class CorporateUserServiceImpl implements CorporateUserService {
         return corporateUserRepo.findFirstByUserNameIgnoreCase(username);
     }
 
+    @Override
+    public CorporateUser getUserByNameAndCorpCif(String username, String cif){
+        return corporateUserRepo.findByUserNameAndCorporate_CustomerId(username, cif);
+    }
 
     @Override
     public Iterable<CorporateUserDTO> getUsers(Corporate corporate) {

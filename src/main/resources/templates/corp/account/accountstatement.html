@@ -1,86 +1,67 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="corp_layout :: site-head">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
 
-</head>
-<body>
-<div class="container">
-    <header th:replace="corp_layout :: corp-header">
-    </header>
+<body onload="currentBar('Last 10 Transaction')">
 
+<div layout:fragment="content">
+    <div class="col-md-5 col-sm-5 ">
 
-<section class="content-wrapper">
-    <div class="containe">
-        <div class="row">
-            <div class="col-md-4 col-sm-4">
-                <h5 class="page_header"> Transaction History</h5>
+        <select class="form-control full-width coronation-form-control hide-content-only" id="view">
+            <option value="account">Overview</option>
+        </select>
+    </div>
 
-                 <select class="form-control invisible">
-                        <option value="account">Account Overview</option>
-                </select>
-            </div>
-
-              <p class="col-xs-12 invisible">
-                    Fields marked <span style="color:red">*</span> are compulsory
-                </p>
-        </div>
-        <div class="row">
-            <div class="col-md-9 content-bg">
-
-                    <div  class="col-md- col-sm-">
-                        <form method="post">
-                            <h2 class="page_header">Last 10 transaction</h2>
-
-                            <table class="table" id="users">
-                                <thead>
-                                <tr>
-
-                                    <th>Transaction Narration</th>
-                                    <th>Post Date</th>
-                                    <th>Value Date</th>
-                                    <th>Debit/Credit</th>
-                                    <th>Transaction ReferenceID</th>
-                                    <th>Account Balance</th>
+    <div class="col-xs-12 ml-15  no-mt" >
+        <div class="col-xs-11  table-responsive no-mt no-bd alert">
+            <form method="post">
 
 
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr th:each="list : ${transRequestList}">
-                                    <td  th:text="${list.narration}"></td>
-                                    <td th:text="${#dates.format(list.postedDate, 'dd-MMM-yyyy')}"></td>
-                                    <td th:text="${#dates.format(list.valueDate, 'dd-MMM-yyyy')}"></td>
-                                    <td th:text="${list.tranType}"></td>
-                                    <td th:text="${list.tranId}"></td>
-                                    <td th:text="${#numbers.formatDecimal(list.balance, 0, 'COMMA', 2, 'POINT')}"></td>
+                <table class="table" id="users">
+                    <thead>
+                    <tr>
 
-                                    <td><a target="_blank"  th:href="@{'/corporate/account/' + ${list.tranId} + '/downloadhistory'}">Print</a></td>
+                        <th>Transaction Narration</th>
+                        <th>Post Date</th>
+                        <th>Value Date</th>
+                        <th>Debit/Credit</th>
+                        <th>Transaction ReferenceID</th>
+                        <th>Account Balance</th>
+                        <th>&nbsp;</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="list : ${transRequestList}">
+                        <td  th:text="${list.narration}"></td>
+                        <td th:text="${#dates.format(list.postedDate, 'dd-MMM-yyyy')}"></td>
+                        <td th:text="${#dates.format(list.valueDate, 'dd-MMM-yyyy')}"></td>
+                        <td th:text="${list.tranType}"></td>
+                        <td th:text="${list.tranId}"></td>
+                        <td th:text="${#numbers.formatDecimal(list.balance, 0, 'COMMA', 2, 'POINT')}"></td>
 
-                                </tr>
-                                </tbody>
+                        <td><a target="_blank"  th:href="@{'/corporate/account/' + ${list.tranId} + '/downloadhistory'}">Print</a></td>
 
-                            </table>
+                    </tr>
+                    </tbody>
 
-                        </form>
+                </table>
 
-                    </div>
-            </div>
+            </form>
 
-             <div class="col-md-3 pull-right">
-                <div th:replace="corp_layout :: corp-sidebar" class="" >
-                </div>
-            </div>
         </div>
     </div>
-</section>
 
-<!-- CONTENT-WRAPPER SECTION END-->
-<footer th:replace="corp_layout ::corp-footer">
-</footer>
-<script>
-
-
-</script>
 </div>
+
+
+<th:block layout:fragment="scripts">
+
+    <script th:inline="javascript">
+
+        /*]]>*/
+    </script>
+
+</th:block>
+
 </body>
 </html>
