@@ -9,5 +9,6 @@ import longbridge.models.CorporateUser;
  */
 public interface CorpLocalBeneficiaryRepo extends CommonRepo<CorpLocalBeneficiary, Long> {
     Iterable<CorpLocalBeneficiary> findByCorporate(Corporate corporate);
+    boolean existsByCorporate_IdAndAccountNumber(Long id,String s);
 
 }

@@ -30,6 +30,8 @@ import java.util.stream.StreamSupport;
 
 public class InternetbankingApplication extends SpringBootServletInitializer implements CommandLineRunner {
 
+    @Autowired
+    SecurityService securityService;
 
 
     public static void main(String[] args) {
@@ -44,6 +46,8 @@ public class InternetbankingApplication extends SpringBootServletInitializer imp
 
     @Override
     public void run(String... strings) throws Exception {
+
+//        securityService.unLockUser("RETAIL_ronke","default");
    }
 }
 

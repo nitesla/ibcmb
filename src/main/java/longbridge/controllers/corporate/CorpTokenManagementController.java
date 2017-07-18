@@ -66,6 +66,11 @@ public class CorpTokenManagementController {
                 if (request.getSession().getAttribute("2FA") != null) {
                     request.getSession().removeAttribute("2FA");
                 }
+
+                if ("Y".equals(user.getIsFirstTimeLogon())){
+                    return "redirect:/corporate/setup";
+                }
+
                 redirectAttributes.addFlashAttribute("message", messageSource.getMessage("token.auth.success", null, locale));
                 return "redirect:/corporate/dashboard";
             }

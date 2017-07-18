@@ -588,7 +588,7 @@ public class UserRegController {
         for (int i=0;i<masterList.length;i++  ) {
             logger.info("master question "+i+" "+masterList[i]);
         }
-        logger.info("master question "+masterList);
+        logger.trace("master question "+ Arrays.toString(masterList));
 
 
         logger.info("MASTER LIST {}", masterList);
@@ -801,7 +801,7 @@ public class UserRegController {
         String confirmPassword = webRequest.getParameter("confirm");
         String username = (String) session.getAttribute("username");
 
-        if (username.equals("")||username==null){
+        if (StringUtils.isBlank(username)){
             return "false";
         }
         

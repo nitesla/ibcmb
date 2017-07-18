@@ -90,6 +90,7 @@
                                     <br/>
                                     <div class="col-md-offset-4 col-md-4">
                                         <div class="form-group clearfix">
+                                            
 
                                             <label>Account Number</label>
                                             <span class='req'></span><input type="text" name="accountNumber" autocomplete="off" class="my-select required" placeholder="Account Number"/>
@@ -278,6 +279,10 @@
 
 
     </div>
+
+
+
+
 <!-- CORE JQUERY SCRIPTS -->
 <script th:src="@{~/customer/js/jquery-1.11.1.js}"></script>
 <!-- BOOTSTRAP SCRIPTS  -->
@@ -293,6 +298,9 @@
 <script th:inline="javascript" type="text/javascript">
     /*<![CDATA[*/
 
+
+
+  
     $('#userdet').on('change', function () {
         if ($(this).val() === "email") {
             $("#email").show();

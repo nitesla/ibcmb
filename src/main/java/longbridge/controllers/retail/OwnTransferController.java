@@ -103,7 +103,7 @@ public class OwnTransferController {
         } catch (InternetBankingTransferException exception)
 
         {
-            String errorMessage = errorService.getMessage(exception, servletRequest);
+            String errorMessage = errorService.getMessage(exception);
             model.addAttribute("failure", errorMessage);
             return page + "pagei";
 
@@ -125,7 +125,7 @@ public class OwnTransferController {
     @ModelAttribute
     public void getDestAccounts(Model model, Principal principal) {
 
-        if (principal != null || principal.getName() != null) {
+        if (principal != null && principal.getName() != null) {
 
             RetailUser user = retailUserService.getUserByName(principal.getName());
             if (user != null) {

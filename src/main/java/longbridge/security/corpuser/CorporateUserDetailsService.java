@@ -77,7 +77,7 @@ public class CorporateUserDetailsService implements UserDetailsService {
             try {
                 Corporate corporate = corporateRepo.findFirstByCustomerId(corpId);
                 if (corporate != null && user != null) {
-                    if(!corporate.getStatus().equalsIgnoreCase("A")){
+                    if(!"A".equalsIgnoreCase(corporate.getStatus())){
                         throw  new DisabledException("User is disabled");
                     }
 

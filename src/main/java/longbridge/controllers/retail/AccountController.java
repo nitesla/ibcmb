@@ -345,9 +345,6 @@ public class AccountController {
 			AccountStatement accountStatement = integrationService.getAccountStatements(acctNumber, from, to, tranType);
 			out.setDraw(input.getDraw());
 			List<TransactionDetails> list = accountStatement.getTransactionDetails();
-			for(TransactionDetails transactionDetails:list){
-				logger.info("What is the transactionDetails {}",transactionDetails.getPostDate());
-			}
 			RetailUser retailUser = retailUserService.getUserByName(principal.getName());
 			DecimalFormat formatter = new DecimalFormat("#,###.00");
 			modelMap.put("datasource", list);

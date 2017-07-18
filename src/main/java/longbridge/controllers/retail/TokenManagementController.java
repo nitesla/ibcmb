@@ -57,12 +57,9 @@ public class TokenManagementController {
     @PostMapping
     public String performTokenAuthentication(HttpServletRequest request, Principal principal, RedirectAttributes redirectAttributes, Locale locale){
 
-        String username = principal.getName();
-
-
         String tokenCode = request.getParameter("token");
         try{
-            RetailUser user = retailUserService.getUserByName(username);
+            RetailUser user = retailUserService.getUserByName(principal.getName());
             boolean result = securityService.performTokenValidation(user.getEntrustId(),user.getEntrustGroup(),tokenCode);
 
             if(result){

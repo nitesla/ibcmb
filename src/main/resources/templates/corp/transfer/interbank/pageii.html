@@ -1,37 +1,24 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
-<head th:replace="corp_layout :: site-head">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
 
-</head>
-<body>
-<div class="container">
-    <header th:replace="corp_layout :: corp-header">
-    </header>
+<body onload="currentBar('Beneficiaries')">
 
-<section class="content-wrapper">
-    <div class="containe">
-
-        <div class="row">
-
-            <div class="col-md-4 col-sm-4">
-
-                <h5 class="page_header"> Transfer to
+<div layout:fragment="content">
+    <div class="col-md-5 col-sm-5 ">
+        <h5 class="page_header"> Transfer to
                     <span  th:if="${benName}== null"  th:text="${corpTransferRequest.beneficiaryAccountName}"></span>
                     <span th:if="${benName}!= null" th:text="${benName}"></span>
-                    <select class="form-control invisible">
+                    <select class="form-control invisible hide-content-only">
                         <option value="account">Account Overview</option>
                     </select>
-                </h5>
+        </h5>
+       
+    </div>
 
-            </div>
-             <p class="col-xs-12">
-                    Fields marked <span style="color:red">*</span> are compulsory
-            </p>
-        </div>
-        <div class="row">
-            <div class="col-md-9 content-bg">
-
-                <div class="form-spacin col-md-7 col-sm-7">
+    <div class="col-xs-12 ml-15 " >
+        <div class="col-xs-11 no-pad-lef table-responsive no-mt no-bd  alert">
+            <div class="form-spacin col-md-7 col-sm-7">
 
                         <div th:if="${message != null}" class="alert alert-info" th:text="${message}">message</div>
                         <div th:if="${error != null}" class="alert alert-info" th:text="${error}">message</div>
@@ -94,21 +81,14 @@
                     <p id="availBal"><b></b></p>
                     <p id="mylimit"><b></b></p>
                 </div>
-            </div>
-            <div class="col-md-3 pull-right " >
-                <div th:replace="corp_layout :: corp-sidebar" class="" >
-                </div>
-            </div>
         </div>
     </div>
-</section>
+
+</div>
 
 
-<!-- CONTENT-WRAPPER SECTION END-->
-<footer th:replace="corp_layout ::corp-footer">
-</footer>
-<!--<script th:src="@{~/customer/js/accountdetails.js}"></script>-->
-    <script th:src="@{~/customer/js/jquery-1.11.1.js}"></script>
+<th:block layout:fragment="scripts">
+ <script th:src="@{~/customer/js/jquery-1.11.1.js}"></script>
     <script th:inline="javascript">
         /*<![CDATA[*/
 
@@ -123,7 +103,7 @@
 
             var accountNumber = $('#source').val();
             $.ajax({
-                url: "/retail/transfer/balance/"+accountNumber,
+                url: "/corporate/transfer/balance/"+accountNumber,
                 type: 'GET',
                 async: false,
                 success:function(jd){
@@ -200,7 +180,8 @@
 
 
     </script>
-</div>
-</body>
+   
+</th:block>
 
+</body>
 </html>

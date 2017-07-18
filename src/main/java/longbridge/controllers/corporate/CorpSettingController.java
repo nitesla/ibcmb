@@ -1,6 +1,9 @@
 package longbridge.controllers.corporate;
 
-import longbridge.dtos.*;
+import longbridge.dtos.AccountDTO;
+import longbridge.dtos.CodeDTO;
+import longbridge.dtos.CorporateDTO;
+import longbridge.dtos.SettingDTO;
 import longbridge.exception.*;
 import longbridge.forms.AlertPref;
 import longbridge.forms.CustChangePassword;
@@ -169,7 +172,12 @@ public class CorpSettingController {
             if (tokenAuth) {
                 return "redirect:/corporate/token";
             }
-            return "redirect:/corporate/dashboard";
+
+            if ("Y".equals(user.getIsFirstTimeLogon())){
+                return "redirect:/corporate/setup";
+            }
+
+            return "redirect:/corporate/logout";
 
         }
         catch (PasswordPolicyViolationException pve) {
@@ -198,7 +206,6 @@ public class CorpSettingController {
         CorporateUser user=corporateUserService.getUserByName(principal.getName());
         Iterable<CodeDTO> pref = codeService.getCodesByType("ALERT_PREFERENCE");
         model.addAttribute("alertPref", user.getAlertPreference());
-//        model.addAttribute("User",user);
         model.addAttribute("prefs", pref);
         return "corp/settings/alertpref";
     }
