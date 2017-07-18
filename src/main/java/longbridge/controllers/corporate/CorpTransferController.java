@@ -1,20 +1,19 @@
 package longbridge.controllers.corporate;
 
 
-import longbridge.api.NEnquiryDetails;
-import longbridge.dtos.*;
-import longbridge.exception.*;
+import longbridge.dtos.CorpLocalBeneficiaryDTO;
+import longbridge.dtos.CorpTransferRequestDTO;
+import longbridge.exception.InternetBankingException;
+import longbridge.exception.InternetBankingTransferException;
+import longbridge.exception.TransferErrorService;
+import longbridge.exception.TransferRuleException;
 import longbridge.models.*;
-
-
 import longbridge.repositories.CorpTransferRequestRepo;
 import longbridge.repositories.CorporateRepo;
 import longbridge.services.*;
 import longbridge.utils.DateFormatter;
 import longbridge.utils.TransferType;
 import longbridge.utils.TransferUtils;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,8 +34,6 @@ import org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-
-import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.*;
 import java.util.stream.StreamSupport;
@@ -207,8 +204,7 @@ public class CorpTransferController {
                     CorporateUser user = corporateUserService.getUserByName(principal.getName());
                     try {
                         Corporate corporate = corporateService.getCorporateByCustomerId(user.getCorporate().getCustomerId());
-
-                        corpLocalBeneficiaryService.addCorpLocalBeneficiary(corporate, l);
+                        corpLocalBeneficiaryService.addCorpLocalBeneficiary(l);
                         request.getSession().removeAttribute("Lbeneficiary");
                         // model.addAttribute("beneficiary", l);
                     } catch (InternetBankingException de) {
@@ -253,7 +249,7 @@ public class CorpTransferController {
         if (request.getSession().getAttribute("Lbeneficiary") != null) {
             CorporateUser user = corporateUserService.getUserByName(principal.getName());
             CorpLocalBeneficiaryDTO l = (CorpLocalBeneficiaryDTO) request.getSession().getAttribute("Lbeneficiary");
-            corpLocalBeneficiaryService.addCorpLocalBeneficiary(user.getCorporate(), l);
+            corpLocalBeneficiaryService.addCorpLocalBeneficiary(l);
         }
 
         attributes.addFlashAttribute("message", "New Beneficiary Added");

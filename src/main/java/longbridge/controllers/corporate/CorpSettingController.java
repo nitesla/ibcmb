@@ -172,7 +172,12 @@ public class CorpSettingController {
             if (tokenAuth) {
                 return "redirect:/corporate/token";
             }
-            return "redirect:/corporate/dashboard";
+
+            if ("Y".equals(user.getIsFirstTimeLogon())){
+                return "redirect:/corporate/setup";
+            }
+
+            return "redirect:/corporate/logout";
 
         }
         catch (PasswordPolicyViolationException pve) {
