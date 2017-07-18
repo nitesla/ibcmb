@@ -154,14 +154,24 @@ public class OpsRetailUserController {
     }
 
     @GetMapping("/{id}/password/reset")
-    public String resetPassword(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        try {
+    public String resetPassword(@PathVariable Long id, RedirectAttributes redirectAttributes)
+    {
+        try
+        {
             String message = retailUserService.resetPassword(id);
             redirectAttributes.addFlashAttribute("message", message);
-        } catch (PasswordException pe) {
+        }
+
+        catch (PasswordException pe)
+        {
             redirectAttributes.addAttribute("failure", pe.getMessage());
             logger.error("Error resetting password for retail user", pe);
         }
+        catch (InternetBankingException e)
+        {
+            redirectAttributes.addFlashAttribute("failure",e.getMessage());
+        }
+
         return "redirect:/ops/retail/users";
     }
 

@@ -14,7 +14,6 @@ import longbridge.services.*;
 import java.util.*;
 
 import longbridge.utils.DateFormatter;
-import longbridge.utils.HostMaster;
 import longbridge.utils.Verifiable;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -332,7 +331,7 @@ public class AdminUserServiceImpl implements AdminUserService {
             logger.info("this is the admin user"+user.getStatus());
             if("I".equals(user.getStatus()))
             {
-                throw new InternetBankingException(messageSource.getMessage("admin.deactivated", null, locale));
+                throw new InternetBankingException(messageSource.getMessage("users.deactivated", null, locale));
             }
         try {
             String newPassword = passwordPolicyService.generatePassword();
