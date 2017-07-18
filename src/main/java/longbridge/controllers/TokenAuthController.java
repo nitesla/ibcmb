@@ -1,7 +1,10 @@
 package longbridge.controllers;
 
 import longbridge.exception.InternetBankingSecurityException;
+import longbridge.models.CorporateUser;
 import longbridge.models.RetailUser;
+import longbridge.services.CorporateService;
+import longbridge.services.CorporateUserService;
 import longbridge.services.RetailUserService;
 import longbridge.services.SecurityService;
 import longbridge.utils.HostMaster;
@@ -18,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.security.Principal;
 import java.util.Locale;
 
@@ -36,6 +40,9 @@ public class TokenAuthController {
 
     @Autowired
     RetailUserService retailUserService;
+
+    @Autowired
+    private CorporateUserService corporateUserService;
 
     @Autowired
     HostMaster hostMaster;
@@ -115,5 +122,59 @@ public class TokenAuthController {
             stringBuilder.append("failed");
         }
         return stringBuilder.toString();
+    }
+    @PostMapping("/otp/retail/login")
+    public String authenticateOTPforRetails(HttpServletRequest request, RedirectAttributes redirectAttributes, Locale locale,HttpSession session) {
+        String redirectUrl = "";
+        String otpUrl = "";
+        String otp=request.getParameter("otp");
+        String username = request.getParameter("username");
+        logger.info("the otp {} username{} redirect {}",otp,username,redirectUrl);
+        if (request.getSession().getAttribute("otpUrl") != null) {
+            otpUrl = (String) request.getSession().getAttribute("otpUrl");
+        }
+        try {
+            RetailUser user  = retailUserService.getUserByName(username);
+            boolean result = securityService.performOtpValidation(user.getEntrustId(), user.getEntrustGroup(), otp);
+            logger.info("the result is {}",result);
+            if (result) {
+                if( request.getSession().getAttribute("2FA") !=null) {
+                    request.getSession().removeAttribute("2FA");
+                }
+                redirectAttributes.addFlashAttribute("message", messageSource.getMessage("otp.auth.success", null, locale));
+                return "redirect:/retail/dashboard";
+            }
+        } catch (InternetBankingSecurityException ibe) {
+            logger.error("Error authenticating token {}",ibe);
+        }
+        redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("otp.auth.failure", null, locale));
+        return "redirect:/retail/token";
+    }
+    @PostMapping("/otp/corporate/login")
+    public String authenticateOTPForCorp(HttpServletRequest request, RedirectAttributes redirectAttributes, Locale locale,HttpSession session) {
+        String redirectUrl = "";
+        String otpUrl = "";
+        String otp=request.getParameter("otp");
+        String username = request.getParameter("username");
+        logger.info("the otp {} username{} redirect {}",otp,username,redirectUrl);
+        if (request.getSession().getAttribute("otpUrl") != null) {
+            otpUrl = (String) request.getSession().getAttribute("otpUrl");
+        }
+        try {
+            CorporateUser user  = corporateUserService.getUserByName(username);
+            boolean result = securityService.performOtpValidation(user.getEntrustId(), user.getEntrustGroup(), otp);
+            logger.info("the result is {}",result);
+            if (result) {
+                if( request.getSession().getAttribute("2FA") !=null) {
+                    request.getSession().removeAttribute("2FA");
+                }
+                redirectAttributes.addFlashAttribute("message", messageSource.getMessage("otp.auth.success", null, locale));
+                return "redirect:/corporate/dashboard";
+            }
+        } catch (InternetBankingSecurityException ibe) {
+            logger.error("Error authenticating token {}",ibe);
+        }
+        redirectAttributes.addFlashAttribute("failure", messageSource.getMessage("otp.auth.failure", null, locale));
+        return "redirect:/corporate/token";
     }
 }

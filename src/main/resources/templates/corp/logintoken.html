@@ -101,10 +101,10 @@
 </div>
 
 <div id="myModal" class="modal fade" role="dialog">
-    <div class="modal-dialog">
+    <div class="modal-dialog" >
 
         <!-- Modal content-->
-        <div class="modal-content no-bd-rad tokenBox" >
+        <div class="modal-content no-bd-rad tokenBox" id="tokenModalCorp">
             <form id="loginform" th:action="@{/corporate/token}" method="POST" >
                 <div class="modal-body no-bd-rad">
 
@@ -118,11 +118,11 @@
 
                         </div>
                         <div id='errorMess' class=" text-danger "></div>
-                        <div id='successMess' class=" text-success "></div>
+                        <!--<div id='successMess' class=" text-success "></div>-->
                     </div>
                     <div >
                         <p>Don't have a token?</p>
-                        <p><a href='javascript:sendOtp()' >Send me an OTP </a><i class='fa fa-angle-down'  style="font-size:18px;"></i></p>
+                        <p><a href='javascript:sendOtp()' id="getOtp">Send me an OTP </a><i class='fa fa-angle-down'  style="font-size:18px;"></i></p>
                     </div>
 
                 </div>
@@ -133,18 +133,44 @@
                 </div>
 
             </form>
-
-
-
         </div>
+        <div class="modal-content no-bd-rad tokenBox" id="otpmodalCorp">
+            <form id="otpform" th:action="@{/otp/corporate/login}" method="POST" >
+                <div class="modal-body no-bd-rad">
 
+                    <h3 class="tokenHeader"><span class='text-danger'>Hello</span>, <span th:text="*{username}" style="text-transform: capitalize">Tolu</span></h3>
+                    <input type="hidden" name="username" id="username" th:value="${username}"/>
+                    <div class="margin-bottom">
+                        <p style="margin-bottom:20px">Kindly enter the OTP from your email/sms</p>
+                        <div id="username_div1" class="form-group">
+                            <input  type="text" id="otp" name="otp" class='my-select tokenInput' placeholder="Otp " autocomplete="off"/>
+                        </div>
+                        <!--<div id='errorMess' class=" text-danger "></div>-->
+                        <div id='successMess' class=" text-success "></div>
+                    </div>
+                    <!--<div >-->
+                    <!--<p>Don't have a token?</p>-->
+                    <!--<p><a class="btn" id="usetoken">Send me an OTP </a><i class='fa fa-angle-down'  style="font-size:18px;"></i></p>-->
+                    <!--</div>-->
+
+                </div>
+                <div class="modal-footer no-bd-top ">
+                    <input type='button' class="btn btn-link less-required token-btn" id="usetoken" value='Back'/>
+
+                    <input type='submit' class="btn btn-link token-btn required-step" value='Continue'/>
+                </div>
+
+            </form>
+        </div>
     </div>
+
 </div>
 
 
 <script>
     function token()
     {
+        $("#otpmodalCorp").hide();
         $('#myModal').modal({
             backdrop: 'static',
             keyboard: false,
@@ -183,7 +209,19 @@
 <!-- BOOTSTRAP SCRIPTS  -->
 <script th:src="@{~/customer/js/bootstrap.js}"></script>
 <script>
+    $(document).ready(function () {
+        $("#otpmodalCorp").hide();
+    });
+//    $("#getOtp").click(function() {
+//        $("#tokenModalCorp").hide();
+//        $("#otpmodalCorp").show();
+//    });
+    $("#usetoken").click(function() {
+        $("#tokenModalCorp").show();
+        $("#otpmodalCorp").hide();
+    });
     function sendOtp() {
+//        console.log([[${username}]]);
         $('#loading-icon').show();
         $('#errorMess').hide();
         //make sure alert message is not empty
@@ -194,6 +232,7 @@
             url: '/otp/send',
             asyn:false,
 //					dataType: 'String',
+            data: {username:$('#username').val()},
             error: function (data) {
                 $('#loading-icon').hide();
                 // alert("failure");
@@ -201,12 +240,17 @@
             },
             success: function (reponse) {
                 if (reponse === 'success') {
-                    $('#loading-icon').hide();
+//                    $("#tokenmodal").hide();
+//                    $("#otpmodal").show();
+//                    $('#loading-icon').hide();
                     $('#errorMess').show();
                     document.getElementById("successMess").textContent = "Successfully sent";
 
                 }else{
+                    $("#tokenModalCorp").show();
+                    $("#otpmodalCorp").hide();
                     if(reponse==="empty"){
+
                         $('#loading-icon').hide();
                         $('#errorMess').show();
                         document.getElementById("errorMess").textContent = "Invalid username";
