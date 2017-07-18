@@ -39,7 +39,7 @@ public class TokenAuthController {
     private MessageSource messageSource;
 
     @Autowired
-    RetailUserService retailUserService;
+    private  RetailUserService retailUserService;
 
     @Autowired
     private CorporateUserService corporateUserService;
@@ -109,6 +109,9 @@ public class TokenAuthController {
 //                e.printStackTrace();
                 logger.info(e.getMessage());
 
+            }catch (Exception e){
+                e.printStackTrace();
+                logger.info(e.getMessage());
             }
         }else {
             stringBuilder.append("empty");
