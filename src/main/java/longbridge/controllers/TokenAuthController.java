@@ -89,19 +89,15 @@ public class TokenAuthController {
         String username = "";
         String message = "";
         StringBuilder stringBuilder = new StringBuilder(message);
-//        if (request.getSession().getAttribute("username") != null) {
-//            username = (String) request.getSession().getAttribute("username");
-//        }
-//        if(principal.getName() != null){
-//            username=principal.getName();
-//        }
+        if (request.getParameter("username") != null) {
+            username = request.getParameter("username");
+        }
         logger.info("The username {}",username);
         if(!username.equalsIgnoreCase("")) {
             boolean sendOtp;
             try {
-                RetailUser user  = retailUserService.getUserByName(principal.getName());
-                if (securityService.sendOtp(user.getEntrustId(), user.getEntrustGroup()))
-                    sendOtp = true;
+                RetailUser user  = retailUserService.getUserByName(username);
+                if (securityService.sendOtp(user.getEntrustId(),user.getEntrustGroup())) sendOtp = true;
                 else sendOtp = false;
                 logger.info("otp sent {}",sendOtp);
                 if (sendOtp){
