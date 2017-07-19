@@ -6,6 +6,7 @@ import longbridge.exception.TransferErrorService;
 import longbridge.models.*;
 import longbridge.services.*;
 import longbridge.utils.TransferType;
+import longbridge.utils.TransferUtils;
 import longbridge.validator.transfer.TransferValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,13 +41,14 @@ public class CorpLocalTransferController {
     private TransferValidator validator;
     private TransferErrorService transferErrorService;
     private CorporateService corporateService;
+    private TransferUtils transferUtils;
     private String page = "corp/transfer/local/";
     @Value("${bank.code}")
     private String bankCode;
 
     @Autowired
     public CorpLocalTransferController(CorporateUserService corporateUserService, CorpTransferService corpTransferService, MessageSource messages, LocaleResolver localeResolver, CorpLocalBeneficiaryService corpLocalBeneficiaryService, FinancialInstitutionService financialInstitutionService, TransferValidator validator, TransferErrorService transferErrorService
-            ,CorporateService corporateService) {
+            ,CorporateService corporateService,TransferUtils transferUtils) {
         this.corporateUserService = corporateUserService;
         this.corpTransferService = corpTransferService;
         this.messages = messages;
@@ -56,6 +58,7 @@ public class CorpLocalTransferController {
         this.validator = validator;
         this.transferErrorService = transferErrorService;
         this.corporateService=corporateService;
+        this.transferUtils=transferUtils;
     }
 
 
@@ -180,7 +183,18 @@ public class CorpLocalTransferController {
 
     }
 
+    @ModelAttribute
+    public void setNairaSourceAccount(Model model, Principal principal) {
 
+        CorporateUser user = corporateUserService.getUserByName(principal.getName());
+
+
+            model.addAttribute("accountList", transferUtils.getNairaAccounts(user.getCorporate().getCustomerId()));
+
+
+
+
+    }
 
 }
 

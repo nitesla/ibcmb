@@ -262,6 +262,7 @@ public class SettingController {
                         .build();
                 mailService.send(email);
                 String message =  messageSource.getMessage("bvn.add.success", null, locale);
+                logger.info("BVN request sent successfully");
                 redirectAttributes.addFlashAttribute("message", message);
 
             } catch (Exception ex) {

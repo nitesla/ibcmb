@@ -218,33 +218,37 @@ public class MainController {
     public String userExist(WebRequest webRequest, Model model, RedirectAttributes redirectAttributes) {
         String username = webRequest.getParameter("username");
         String corpKey = webRequest.getParameter("corporateId");
-        CorporateUser user = corporateUserService.getUserByName(username);
-        Corporate corporate = corporateService.getCorporateByCustomerId(corpKey);
+//        CorporateUser user = corporateUserService.getUserByName(username);
+//        Corporate corporate = corporateService.getCorporateByCustomerId(corpKey);
 
-        if (corporate != null && user != null) {
+        CorporateUser user = corporateUserService.getUserByNameAndCorpCif(username, corpKey);
+
+        //if (corporate != null && user != null) {
+        if (user != null) {
 //            model.addAttribute("images", mutualAuth.get("imageSecret"));
 //            model.addAttribute("captions", mutualAuth.get("captionSecret"));
-            try{
-                Map<String, List<String>> mutualAuth =  securityService.getMutualAuth(user.getEntrustId(), user.getEntrustGroup());
-                if (mutualAuth != null){
-                    String image = mutualAuth.get("imageSecret")
-                            .stream()
-                            .filter(Objects::nonNull)
-                            .findFirst()
-                            .orElse("");
+                try{
+                    Map<String, List<String>> mutualAuth =  securityService.getMutualAuth(user.getEntrustId(), user.getEntrustGroup());
+                    if (mutualAuth != null){
+                        String image = mutualAuth.get("imageSecret")
+                                .stream()
+                                .filter(Objects::nonNull)
+                                .findFirst()
+                                .orElse("");
 
 //                logger.info("SECIMAGE"+ image);
 
-                    model.addAttribute("secImage", image);
+                        model.addAttribute("secImage", image);
+                    }
+                }catch (InternetBankingException e){
+                    model.addAttribute("imageException", "You are yet to set your antiphishing image");
                 }
-            }catch (InternetBankingException e){
-                model.addAttribute("imageException", "You are yet to set your antiphishing image");
-            }
 
 
-            model.addAttribute("username", user.getUserName());
-            model.addAttribute("corpKey", corpKey);
-            return "corppage2";
+                model.addAttribute("username", user.getUserName());
+                model.addAttribute("corpKey", corpKey);
+                return "corppage2";
+
         }
 
 

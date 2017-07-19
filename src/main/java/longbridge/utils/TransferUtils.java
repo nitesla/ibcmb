@@ -2,10 +2,12 @@ package longbridge.utils;
 
 import longbridge.api.NEnquiryDetails;
 import longbridge.models.Account;
+import longbridge.models.RetailUser;
 import longbridge.models.User;
 import longbridge.security.userdetails.CustomUserPrincipal;
 import longbridge.services.AccountService;
 import longbridge.services.IntegrationService;
+import longbridge.services.RetailUserService;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +17,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.StreamSupport;
 
 /**
  * Created by ayoade_farooq@yahoo.com on 7/10/2017.
@@ -25,6 +31,12 @@ public class TransferUtils {
 
     private IntegrationService integrationService;
     private AccountService accountService;
+    private RetailUserService retailUserService;
+
+    @Autowired
+    public void setRetailUserService(RetailUserService retailUserService) {
+        this.retailUserService = retailUserService;
+    }
 
     @Autowired
     public void setAccountService(AccountService accountService) {
@@ -117,4 +129,41 @@ public class TransferUtils {
         return null;
     }
 
+    public List<Account> getNairaAccounts() {
+
+        RetailUser user = retailUserService.getUserByName(getCurrentUser().getUserName());
+        List<Account> accountList = new ArrayList<>();
+        if (user != null) {
+
+
+            Iterable<Account> accounts = accountService.getAccountsForDebit(user.getCustomerId());
+
+            StreamSupport.stream(accounts.spliterator(), false)
+                    .filter(Objects::nonNull)
+                    .filter(i -> "NGN".equalsIgnoreCase(i.getCurrencyCode()))
+
+                    .forEach(i -> accountList.add(i));
+
+        }
+        return accountList;
+    }
+
+
+    public List<Account> getNairaAccounts(String custId ) {
+
+        List<Account> accountList = new ArrayList<>();
+        if (custId != null && !custId.isEmpty()) {
+
+
+            Iterable<Account> accounts = accountService.getAccountsForDebit(custId);
+
+            StreamSupport.stream(accounts.spliterator(), false)
+                    .filter(Objects::nonNull)
+                    .filter(i -> "NGN".equalsIgnoreCase(i.getCurrencyCode()))
+
+                    .forEach(i -> accountList.add(i));
+
+        }
+        return accountList;
+    }
 }
