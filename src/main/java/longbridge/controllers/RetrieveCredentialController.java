@@ -216,7 +216,7 @@ public class RetrieveCredentialController {
     }
 
     @GetMapping("/rest/verGenPass/{username}/{genpassword}")
-    private @ResponseBody String verifyGenPassword(@PathVariable String username, @PathVariable String genpassword){
+    public  @ResponseBody String verifyGenPassword(@PathVariable String username, @PathVariable String genpassword){
         try {
             RetailUser retailUser = retailUserService.getUserByName(username);
             boolean match = passwordEncoder.matches(genpassword, retailUser.getTempPassword());
@@ -228,5 +228,21 @@ public class RetrieveCredentialController {
             return messageSource.getMessage("reset.password.gpv.failed", null, locale);
         }
     }
+
+    @GetMapping("/rest/tokenAuth/{username}/{token}")
+    public @ResponseBody String tokenAth(@PathVariable String username, @PathVariable String token){
+        try {
+            RetailUser retailUser = retailUserService.getUserByName(username);
+            boolean message = securityService.performTokenValidation(retailUser.getEntrustId(), retailUser.getEntrustGroup(), token);
+            if (message){
+                return "true";
+            }
+            return messageSource.getMessage("token.auth.failed", null, locale);
+        }catch (InternetBankingException e){
+            logger.error("ERROR AUTHENTICATING USER >>>>> ",e);
+            return e.getMessage();
+        }
+    }
+
 
 }

@@ -74,6 +74,9 @@ public class TokenManagementController {
             logger.error("Error authenticating token",ibe);
             redirectAttributes.addFlashAttribute("failure",ibe.getMessage());
 
+        }catch (Exception e){
+            logger.error("Error authenticating token",e);
+            redirectAttributes.addFlashAttribute("failure",e.getMessage());
         }
         return "redirect:/retail/token";
 
