@@ -20,11 +20,13 @@ public interface OperationsUserRepo extends CommonRepo<OperationsUser, Long> {
 
     OperationsUser findFirstByUserName(String s);
     OperationsUser findFirstByUserNameIgnoreCase (String s);
+    OperationsUser findByEmail(String email);
     Iterable<OperationsUser> findByRole(Role r);
     Page<OperationsUser> findByRole(Role r, Pageable pageDetail);
     Integer countByRole(Role r);
     @Modifying
     @Query("update OperationsUser  u set u.lastLoginDate = current_timestamp() , u.lockedUntilDate = NULL, u.noOfLoginAttempts = 0 where u.userName = :name")
     void updateUserAfterLogin(@Param("name") String userName);
+
 
 }
