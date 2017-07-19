@@ -496,6 +496,12 @@ select
 
 }
 
+
+.trans-but
+{
+    font-size: 12px !important;
+}
+
 .menu-link:hover
 {
     color: #9F614B !important;
