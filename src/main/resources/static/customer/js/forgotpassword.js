@@ -16,7 +16,9 @@
 
     var SECURITY_QUESTION_STEP = 0;
     var VALIDATE_GEN_PASS = 1;
-    var CHANGE_PASSWORD_STEP = 2;
+    var VALIDATE_PASSWORD_STEP = 2;
+    var TOKEN_AUTH = 3;
+    var CHANGE_PASSWORD_STEP = 4;
 
     //var condition = [[${success}]];
 
@@ -41,11 +43,15 @@
                 console.log("Current step is the account details step");
                 return isValid && validateGenPassword();
             }
-            if(CHANGE_PASSWORD_STEP === currentIndex){
+            if(VALIDATE_PASSWORD_STEP === currentIndex){
                 console.log("Current step is the change password step");
                 //form.submit();
                 var confirm = $('input[name="confirm"]').val();
-                return isValid && validatePassword(confirm) && changePassword();
+                return isValid && validatePassword(confirm);
+            }
+            if(TOKEN_AUTH === currentIndex){
+                console.log("Current step is the account details step");
+                return isValid && validateToken() && changePassword();
             }
 
             form.validate().settings.ignore = ":disabled,:hidden";
@@ -174,6 +180,34 @@
 
         if(res === 'true'){
             //username is valid and available
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    function validateToken(){
+        var username = $('input[name="username"]').val();
+        var token = $('input[name="token"]').val();
+        var result;
+        $.ajax({
+            type:'GET',
+            url:"/rest/tokenAuth/"+username+"/"+token,
+            async:false,
+            success:function(data1){
+                result = ''+String(data1);
+                if(result == "true"){
+
+                }else{
+                    //invalid account number
+                    //alert("Account number not found");
+                    $('#errorMess').text(result);
+                    $('#myModalError').modal('show');
+                }
+            }
+        });
+
+        if(result == "true"){
             return true;
         }else{
             return false;
