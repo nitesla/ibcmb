@@ -170,7 +170,7 @@ public class CorpLocalTransferController {
         CorporateUser user = corporateUserService.getUserByName(principal.getName());
         Corporate corporate = corporateService.getCorporateByCustomerId(user.getCorporate().getCustomerId());
         List<CorpLocalBeneficiary> beneficiaries = StreamSupport.stream(corpLocalBeneficiaryService.getCorpLocalBeneficiaries(corporate).spliterator(), false)
-                .filter(i -> !i.getBeneficiaryBank().equalsIgnoreCase(financialInstitutionService.getFinancialInstitutionByCode(bankCode).getInstitutionCode()))
+                .filter(i -> i.getBeneficiaryBank().equalsIgnoreCase(bankCode))
                 .collect(Collectors.toList());
 
         beneficiaries = beneficiaries
