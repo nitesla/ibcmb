@@ -1,32 +1,20 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="corp_layout :: site-head">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{corp-layout}">
 
-</head>
-<body>
-<div class="container">
-<header th:replace="corp_layout :: corp-header">
-</header>
-kk
-<section class="content-wrapper">
-    <div class="">
-        <div class="row">
-            <div class="col-md-4 col-sm-4">
-                <h5 class="page_header"> Add New User</h5>
-                <select class="form-control invisible" id="view">
-                    <option value="account">Account Overview</option>
-                </select>
-            </div>
-            <p class="col-xs-12">
-                Fields marked <span style="color:red">*</span> are compulsory
-            </p>
+<body onload="currentBar('add new user')">
 
-        </div>
-        <div class="row">
-            <div class="col-md-9 content-bg">
-                <div class="row ">
-                    <div class="col-md-6 col-sm-6">
-                        <form method="post" class="form-horizontal" th:action="@{/corporate/users}" th:object="${corporateUser}">
+<div layout:fragment="content">
+    <div class="col-md-5 col-sm-5 ">
+
+        <select class="form-control full-width coronation-form-control hide-content-only" id="view">
+            <option value="account">Overview</option>
+        </select>
+    </div>
+
+    <div class="col-xs-12 ml-15 no-pad-left" >
+        <div class="col-xs-12 col-sm-6 no-pad-lef no-mt no-bd  alert" >
+           <form method="post" class="form-horizonta" th:action="@{/corporate/users}" th:object="${corporateUser}">
 
                             <!--<div th:replace="corp_layout::form-validation"></div>-->
 
@@ -71,20 +59,14 @@ kk
                             </div>
 
                         </form>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 pull-right">
-                <div th:replace="corp_layout :: corp-sidebar" class="" >
-                </div>
-            </div>
+                   
         </div>
     </div>
-</section>
 
-<!-- CONTENT-WRAPPER SECTION END-->
-<footer th:replace="corp_layout :: corp-footer">
-</footer>
+</div>
+
+
+<th:block layout:fragment="scripts">
 <script>
     $( function() {
         $( "#datepicker" ).datepicker(
@@ -92,6 +74,8 @@ kk
         );
     } );
 </script>
-</div>
+   
+</th:block>
+
 </body>
 </html>
