@@ -7,16 +7,13 @@ import longbridge.dtos.CodeDTO;
 import longbridge.dtos.PasswordStrengthDTO;
 import longbridge.dtos.RetailUserDTO;
 import longbridge.exception.InternetBankingException;
-import longbridge.exception.PasswordException;
-import longbridge.exception.PasswordMismatchException;
-import longbridge.exception.PasswordPolicyViolationException;
-import longbridge.forms.CustResetPassword;
 import longbridge.forms.RegistrationForm;
-import longbridge.forms.ResetPasswordForm;
 import longbridge.forms.RetrieveUsernameForm;
-import longbridge.models.*;
+import longbridge.models.Account;
+import longbridge.models.Email;
+import longbridge.models.RetailUser;
+import longbridge.models.UserType;
 import longbridge.services.*;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -215,35 +212,7 @@ public class UserRegController {
         return secQuestion;
     }
 
-    @GetMapping("/rest/secAns/{answer}")
-    public @ResponseBody String getSecAns(@PathVariable String answer, HttpSession session){
-        try{
-        //confirm security question is correct
-        String secAnswer="";
-        RetailUser retailUser = retailUserService.getUserByName((String) session.getAttribute("username"));
-        Map<String, List<String>> qa = securityService.getUserQA(retailUser.getEntrustId(), retailUser.getEntrustGroup());
-        //List<String> sec = null;
-        if (qa != null){
-            List<String> question = qa.get("answers");
-            secAnswer = question.stream().filter(Objects::nonNull).findFirst().orElse("");
-            logger.info("user answer {}", answer);
-            logger.info("answer {}", secAnswer);
 
-            if (!secAnswer.equalsIgnoreCase(answer)){
-                return "";
-            }else {
-                return "true";
-            }
-
-        }else {
-            return "";
-        }
-        //return (String) session.getAttribute("username");
-    }catch (Exception e){
-        logger.info(e.getMessage());
-        return "";
-    }
-    }
 
     @GetMapping("/rest/secAnswer/{answer}/{username}")
     public @ResponseBody String getSecAns(@PathVariable String answer, @PathVariable String username){
@@ -661,10 +630,15 @@ public class UserRegController {
 
         if (details.getCifId() == null||details.getCifId().isEmpty() ){
             logger.error("Account Number not valid");
-            return "false";
+            return messageSource.getMessage("cif.not.valid", null, locale);
         }
 
-        doesUserExist(customerId);
+        try {
+            doesUserExist(customerId);
+        }catch (InternetBankingException e){
+            return messageSource.getMessage("user.reg.exists", null, locale);
+        }
+
 
         if (details.getBvn() != null && !details.getBvn().isEmpty() ){
 //            logger.error("No Bvn found");
@@ -676,7 +650,7 @@ public class UserRegController {
         boolean isValid = password.trim().equalsIgnoreCase(confirmPassword.trim());
         if(!isValid){
             logger.error("Passwords do not match");
-            return "false";
+            return messageSource.getMessage("password.mismatch", null, locale);
         }
 
         //password meets policy
@@ -733,8 +707,7 @@ public class UserRegController {
             redirectAttributes.addFlashAttribute(messageSource.getMessage("user.add.failure", null, locale));
         }
 
-        return "false";
-
+        return messageSource.getMessage("user.add.failure", null, locale);
     }
 
     private void doesUserExist(String customerId){
@@ -749,96 +722,6 @@ public class UserRegController {
         }
     }
 
-    @GetMapping("/forgot/password")
-    public String showResetPassword(Model model, HttpSession session, RedirectAttributes redirectAttributes){
 
-        ResetPasswordForm resetPasswordForm = new ResetPasswordForm();
-        resetPasswordForm.step = "1";
-        resetPasswordForm.username = (String) session.getAttribute("username");
-        try{
-            RetailUser retailUser = retailUserService.getUserByName((String) session.getAttribute("username"));
-            Map<String, List<String>> qa = securityService.getUserQA(retailUser.getEntrustId(), retailUser.getEntrustGroup());
-            if (qa != null && !qa.isEmpty()){
-                List<String> questions= qa.get("questions");
-                List<String> answers= qa.get("answers");
-                String secQuestion = questions.get(0);
-
-                if (secQuestion == null || secQuestion.equals("")){
-                    redirectAttributes.addFlashAttribute("failure", "Invalid Credentials");
-                    return "redirect:/login/retail";
-                }else{
-                    session.setAttribute("secretAnswer", answers);
-                    model.addAttribute("secQuestion", secQuestion);
-                }
-
-            }else {
-                redirectAttributes.addFlashAttribute("failure", "Invalid Credentials");
-                return "redirect:/login/retail";
-            }
-
-            model.addAttribute("forgotPasswordForm", resetPasswordForm);
-            List<String> policies = passwordPolicyService.getPasswordRules();
-            model.addAttribute("policies", policies);
-            return "cust/passwordreset";
-        }catch (InternetBankingException e){
-            return "redirect:/login/retail";
-        }
-    }
-
-    @PostMapping("/forgot/password")
-    public @ResponseBody  String resetPassword(WebRequest webRequest,  RedirectAttributes redirectAttributes, HttpSession session){
-        Iterator<String> iterator = webRequest.getParameterNames();
-
-        while(iterator.hasNext()){
-            logger.info(iterator.next());
-        }
-
-
-        String accountNumber = webRequest.getParameter("acct");
-        String securityQuestion = webRequest.getParameter("securityQuestion");
-        String securityAnswer = webRequest.getParameter("securityAnswer");
-        String password= webRequest.getParameter("password");
-        String confirmPassword = webRequest.getParameter("confirm");
-        String username = (String) session.getAttribute("username");
-
-        if (StringUtils.isBlank(username)){
-            return "false";
-        }
-        
-        if ( StringUtils.isBlank(username) ){
-            return "false";
-        }
-
-        //confirm passwords are the same
-        boolean isValid = password.trim().equalsIgnoreCase(confirmPassword.trim());
-        if(!isValid){
-            logger.error("Passwords do not match");
-            return "false";
-        }
-
-        //if ()
-
-        //get Retail User by username
-        RetailUser retailUser = retailUserService.getUserByName(username);
-        if (retailUser == null){
-            return "false";
-        }
-
-        //change password
-        CustResetPassword custResetPassword = new CustResetPassword();
-        custResetPassword.setNewPassword(password);
-        custResetPassword.setConfirmPassword(confirmPassword);
-        try{
-            String message = retailUserService.resetPassword(retailUser,custResetPassword);
-            redirectAttributes.addAttribute("success", message);
-            return "true";
-        }catch (PasswordPolicyViolationException e){
-            return e.getMessage();
-        }catch (PasswordMismatchException e){
-            return e.getMessage();
-        }catch (PasswordException e){
-            return e.getMessage();
-        }
-    }
 
 }

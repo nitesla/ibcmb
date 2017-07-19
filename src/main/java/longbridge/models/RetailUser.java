@@ -41,6 +41,8 @@ public class RetailUser extends User implements PrettySerializer{
 	@JsonIgnore
     private Collection<LocalBeneficiary> beneficiaries;
 
+	private String tempPassword;
+
 
 //	private Collection<Beneficiary> beneficiaries;
 //
@@ -80,6 +82,14 @@ public class RetailUser extends User implements PrettySerializer{
 
 	public void setBirthDate(Date birthDate) {
 		this.birthDate = birthDate;
+	}
+
+	public String getTempPassword() {
+		return tempPassword;
+	}
+
+	public void setTempPassword(String tempPassword) {
+		this.tempPassword = tempPassword;
 	}
 
 	public Collection<RetailCustLimit> getRtlCustLmt() {

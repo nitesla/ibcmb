@@ -107,7 +107,7 @@ public class CorporateUserServiceImpl implements CorporateUserService {
 
     @Override
     public CorporateUser getUserByNameAndCorpCif(String username, String cif){
-        return corporateUserRepo.findByUserNameAndCorporate_CustomerId(username, cif);
+        return corporateUserRepo.findFirstByUserNameIgnoreCaseAndCorporate_CustomerIdIgnoreCase(username, cif);
     }
 
     @Override

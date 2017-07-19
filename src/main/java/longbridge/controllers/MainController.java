@@ -163,6 +163,10 @@ public class MainController {
         // return "";
     }
 
+    @GetMapping("/login/u/retail")
+    public String login1(){
+        return "redirect:/login/retail";
+    }
     @PostMapping("/login/u/retail")
     public String userExists(WebRequest webRequest, Model model, RedirectAttributes redirectAttributes) {
         String username = webRequest.getParameter("username");
@@ -197,6 +201,10 @@ public class MainController {
         return "retpage2";
     }
 
+    @GetMapping("/login/p/retail")
+    public String login2(){
+        return "redirect:/login/retail";
+    }
     @PostMapping("/login/p/retail")
     public String step2(WebRequest webRequest, Model model, HttpSession session, RedirectAttributes redirectAttributes) {
         String username = webRequest.getParameter("username");
@@ -205,7 +213,7 @@ public class MainController {
         RetailUser user =  retailUserService.getUserByName(username);
         if (user != null && phishing != null) {
             model.addAttribute("username", user.getUserName());
-            session.setAttribute("username", UserType.RETAIL+"_"+user.getUserName());
+            session.setAttribute("username", user.getUserName());
             return "retaillogin";
         }
 
